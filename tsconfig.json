@@ -9,8 +9,16 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "lib": ["esnext", "dom"]
-  },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+    "lib": ["esnext", "dom"],
 
+    /* Vite 路径别名报错 */
+    "baseUrl": "./",
+    "paths": {
+      "@": ["src"],
+      "@/*": ["src/*"]
+    },
+
+    "skipLibCheck": true  // element-plus 生产打包报错，通过此配置修改 TS 不对第三方依赖类型检查
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

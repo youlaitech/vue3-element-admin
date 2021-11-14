@@ -1,42 +1,27 @@
 <template>
-  <el-input v-model="input" placeholder="Please input" />
-  <el-input-number v-model="num" :min="1" :max="10" @change="handleChange"/>
+  <el-input v-model="num"/>
+  <el-button @click="handleClick">点击+1</el-button>
 </template>
 
-<script lang="ts">
-import {defineComponent, ref} from 'vue'
-
+<script  lang="ts">
+import {defineComponent, computed} from 'vue'
+import {userStore} from '@/store';
 
 export default defineComponent({
   setup() {
-    const num = ref(1)
-    const handleChange = (value: string) => {
-      console.log(value)
+    const store = userStore()
+    const num = computed(()=>{
+      return store.state.count
+    })
+    const handleClick = () => {
+      store.commit('increment')
     }
     return {
-      input:ref(''),
       num,
-      handleChange,
+      handleClick
     }
   },
 })
 </script>
 
 
-<style scoped>
-a {
-  color: #42b983;
-}
-
-label {
-  margin: 0 0.5em;
-  font-weight: bold;
-}
-
-code {
-  background-color: #eee;
-  padding: 2px 4px;
-  border-radius: 4px;
-  color: #304455;
-}
-</style>
