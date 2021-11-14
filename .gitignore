@@ -3,5 +3,15 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Editor directories and files
 .idea
 .vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.local
+
+package-lock.json
+yarn.lock
