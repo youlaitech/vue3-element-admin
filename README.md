@@ -1,16 +1,13 @@
-# Vue 3 + Typescript + Vite + Element-Plus
-
-## 技术栈官网地址
+## 官网地址
 
 - vue3: https://v3.cn.vuejs.org/guide/introduction.html
 
 - vite2: https://cn.vitejs.dev/guide/
 
-- next-vuex: https://next.vuex.vuejs.org/zh/index.html
+- vuex4：https://next.vuex.vuejs.org/zh/index.html
 
-- vue-next-router: https://next.router.vuejs.org/zh/introduction.html
-  
-- element-plus: https://element-plus.gitee.io/zh-CN/
+- vue-router4 : https://next.router.vuejs.org/zh/introduction.html
+
 
 
 ## Vite项目构建
@@ -28,7 +25,7 @@ npm run dev
 
 访问本地: http://localhost:3000
 
-## vue-next-router
+## vue-router
 
 ```text
 npm install vue-router@next
@@ -66,7 +63,7 @@ export default router
 
 - [路由的 hash 模式和 history 模式的区别](https://www.cnblogs.com/GGbondLearn/p/12239651.html)
 
-## next-vuex
+## vuex
 
 ```shell
 npm install vuex@next
@@ -205,7 +202,7 @@ TS配置别名路径，否则使用别名路径会报错，下面关键配置 `b
     "baseUrl": "./",
     "paths": {
       "@": ["src"],
-      "@/*": ["src/*"]
+      "@*": ["src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
@@ -279,7 +276,7 @@ export default defineComponent({
 ENV = 'development'
 
 # base api
-VUE_APP_BASE_API = '/dev-api'
+VITE_BASE_API = '/dev-api'
 ```
 
 
@@ -291,7 +288,7 @@ VUE_APP_BASE_API = '/dev-api'
 ENV = 'production'
 
 # base api
-VUE_APP_BASE_API = '/prod-api'
+VITE_BASE_API = '/prod-api'
 ```
 
 
@@ -303,7 +300,7 @@ VUE_APP_BASE_API = '/prod-api'
 ENV = 'staging'
 
 # base api
-VUE_APP_BASE_API = '/stage-api'
+VITE_BASE_API = '/stage-api'
 ```
 
 
@@ -332,11 +329,138 @@ VUE_APP_BASE_API = '/stage-api'
 
 ```
 
-执行 `npm run build:prod` 命令打包，生成的打包文件在项目根目录 `dist` 目录下 
+执行 `npm run build:prod` 命令打包，生成的打包文件在项目根目录 `dist` 目录下
 
 
 
+##  axios 封装
 
+#### 安装axios
+
+```
+ npm i axios
+```
+
+#### 缓存工具类
+
+**src/utils/storage.ts**
+
+```typescript
+/**
+ * window.localStorage 浏览器永久缓存
+ */
+export const Local = {
+	// 设置永久缓存
+	set(key: string, val: any) {
+		window.localStorage.setItem(key, JSON.stringify(val));
+	},
+	// 获取永久缓存
+	get(key: string) {
+		let json: any = window.localStorage.getItem(key);
+		return JSON.parse(json);
+	},
+	// 移除永久缓存
+	remove(key: string) {
+		window.localStorage.removeItem(key);
+	},
+	// 移除全部永久缓存
+	clear() {
+		window.localStorage.clear();
+	},
+};
+
+/**
+ * window.sessionStorage 浏览器临时缓存
+ */
+export const Session = {
+	// 设置临时缓存
+	set(key: string, val: any) {
+		window.sessionStorage.setItem(key, JSON.stringify(val));
+	},
+	// 获取临时缓存
+	get(key: string) {
+		let json: any = window.sessionStorage.getItem(key);
+		return JSON.parse(json);
+	},
+	// 移除临时缓存
+	remove(key: string) {
+		window.sessionStorage.removeItem(key);
+	},
+	// 移除全部临时缓存
+	clear() {
+		window.sessionStorage.clear();
+	}
+};
+
+```
+
+
+
+#### 创建axios实例
+
+**src/utils/request.ts**
+
+```typescript
+import axios from "axios";
+import {ElMessage, ElMessageBox} from "element-plus";
+import {Session} from "@utils/storage";
+
+
+// 创建 axios 实例
+const service = axios.create({
+    baseURL: import.meta.env.VITE_BASE_API as any,
+    timeout: 50000,
+    headers: {'Content-Type': 'application/json;charset=utf-8'}
+})
+
+// 请求拦截器
+service.interceptors.request.use(
+    (config) => {
+        if (!config?.headers) {
+            throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
+        }
+        if (Session.get('token')) {
+            config.headers.Authorization = `${Session.get('token')}`;
+        }
+
+    }, (error) => {
+        return Promise.reject(error);
+    }
+)
+
+// 响应拦截器
+service.interceptors.response.use(
+    ({data}) => {
+        // 对响应数据做点什么
+        const {code, msg} = data;
+        if (code === '00000') {
+            return data;
+        } else {
+            ElMessage({
+                message: msg || '系统出错',
+                type: 'error'
+            })
+            return Promise.reject(new Error(msg || 'Error'))
+        }
+    },
+    (error) => {
+        const {code, msg} = error.response.data
+        if (code === 'A0230') {  // token 过期
+            Session.clear(); // 清除浏览器全部临时缓存
+            window.location.href = '/'; // 跳转登录页
+            ElMessageBox.alert('当前页面已失效，请重新登录', '提示', {})
+                .then(() => {
+                })
+                .catch(() => {
+                });
+        }
+        return Promise.reject(new Error(msg || 'Error'))
+    }
+);
+
+// 导出 axios 实例
+export default service
+```
 
 
 

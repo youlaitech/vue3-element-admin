@@ -37,6 +37,10 @@ export default defineConfig({
             {
                 find: "@api",
                 replacement: path.resolve("./src/api")
+            },
+            {
+                find:"@utils",
+                replacement: path.resolve("./src/utils")
             }
         ]
     }
