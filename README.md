@@ -265,45 +265,55 @@ export default defineComponent({
 
 ## Vite 环境变量配置
 
-**官方说明：** https://cn.vitejs.dev/guide/env-and-mode.html
+**官方环境变量配置文档：** https://cn.vitejs.dev/guide/env-and-mode.html
 
-项目根目录添加多个环境的配置文件
+#### 多环境配置
 
 开发环境变量文件：`.env.development`
 
 ```properties
 # 开发环境变量
-ENV = 'development'
 
-# base api
-VITE_BASE_API = '/dev-api'
+# 变量必须以 VITE_ 为前缀才能暴露给外部读取
+
+VITE_APP_TITLE = '管理系统'
+VITE_APP_PORT = 3000
+VITE_APP_BASE_API = '/dev-api'
+
 ```
-
 
 
 生产环境变量文件：`.env.production`
 
 ```properties
 # 生产环境变量
-ENV = 'production'
-
-# base api
-VITE_BASE_API = '/prod-api'
+VITE_APP_TITLE = '管理系统'
+VITE_APP_PORT = 3000
+VITE_APP_BASE_API = '/prod-api'
 ```
-
 
 
 模拟环境变量文件：`.env.staging`
 
 ```properties
 # 模拟环境变量
-ENV = 'staging'
-
-# base api
-VITE_BASE_API = '/stage-api'
+VITE_APP_TITLE = '管理系统'
+VITE_APP_PORT = 3000
+VITE_APP_BASE_API = '/stage-api'
 ```
 
+#### 环境变量智能提示
 
+`src/env.d.ts` 添加以下配置
+
+```typescript
+// 环境变量智能提示
+interface ImportMetaEnv {
+    VITE_APP_TITLE: string,
+    VITE_APP_PORT: string,
+    VITE_APP_BASE_API: string
+}
+```
 
 ## 生产打包配置
 
