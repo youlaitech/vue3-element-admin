@@ -1,17 +1,19 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
-import HelloWord from '../components/HelloWorld.vue'
+import Layout from '@/layout/index.vue'
 
 const routes: Array<RouteRecordRaw> = [
     {
-        path: '',
-        redirect: (_) => {
-            return {path: '/home'}
-        }
-    },
-    {
-        path: '/home',
-        name: 'HelloWord',
-        component: HelloWord
+        path: '/',
+        component: Layout,
+        redirect: '/dashboard',
+        children: [
+            {
+                path: 'dashboard',
+                component: () => import('@views/dashboard/index.vue'),
+                name: 'Dashboard',
+                meta: {title: '首页', icon: 'dashboard', affix: true}
+            }
+        ]
     }
 ]
 

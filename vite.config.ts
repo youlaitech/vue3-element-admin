@@ -41,6 +41,10 @@ export default defineConfig({
             {
                 find:"@utils",
                 replacement: path.resolve("./src/utils")
+            },
+            {
+                find:"@views",
+                replacement: path.resolve("./src/views")
             }
         ]
     }

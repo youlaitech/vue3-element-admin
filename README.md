@@ -8,6 +8,8 @@
 
 - vue-router4 : https://next.router.vuejs.org/zh/introduction.html
 
+- element-plus: https://element-plus.gitee.io/zh-CN/
+
 
 
 ## Vite项目构建
@@ -210,80 +212,27 @@ TS配置别名路径，否则使用别名路径会报错，下面关键配置 `b
 
 ```
 
-## HelloWorld.vue
 
-```typescript
-<template>
-  <el-input v-model="num"/>
-  <el-button @click="handleClick">点击+1</el-button>
-</template>
-
-<script  lang="ts">
-import {defineComponent, computed} from 'vue'
-import {userStore} from '@/store';
-
-
-export default defineComponent({
-  setup() {
-    const store = userStore()
-    const num = computed(()=>{
-      return store.state.count
-    })
-    const handleClick = () => {
-      store.commit('increment')
-    }
-    return {
-      num,
-      handleClick
-    }
-  },
-})
-</script>
-```
-
-## App.vue
-
-```typescript
-
-<template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <router-view/>
-</template>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
-
-```
 
 ## Vite 环境变量配置
 
 **官方环境变量配置文档：** https://cn.vitejs.dev/guide/env-and-mode.html
 
-#### 多环境配置
+#### 配置文件
 
-开发环境变量文件：`.env.development`
+在项目根目录分别添加 `开发环境配置` 、 `生产环境配置`和`模拟环境配置`文件
+
+开发环境配置：`.env.development`
 
 ```properties
-# 开发环境变量
-
-# 变量必须以 VITE_ 为前缀才能暴露给外部读取
-
+# 开发环境变量 注意：变量必须以 VITE_ 为前缀才能暴露给外部读取
 VITE_APP_TITLE = '管理系统'
 VITE_APP_PORT = 3000
 VITE_APP_BASE_API = '/dev-api'
-
 ```
 
 
-生产环境变量文件：`.env.production`
+生产环境配置：`.env.production`
 
 ```properties
 # 生产环境变量
@@ -293,7 +242,7 @@ VITE_APP_BASE_API = '/prod-api'
 ```
 
 
-模拟环境变量文件：`.env.staging`
+模拟环境配置：`.env.staging`
 
 ```properties
 # 模拟环境变量
@@ -473,6 +422,59 @@ export default service
 ```
 
 
+
+## HelloWorld.vue
+
+```typescript
+<template>
+  <el-input v-model="num"/>
+  <el-button @click="handleClick">点击+1</el-button>
+</template>
+
+<script  lang="ts">
+import {defineComponent, computed} from 'vue'
+import {userStore} from '@/store';
+
+
+export default defineComponent({
+  setup() {
+    const store = userStore()
+    const num = computed(()=>{
+      return store.state.count
+    })
+    const handleClick = () => {
+      store.commit('increment')
+    }
+    return {
+      num,
+      handleClick
+    }
+  },
+})
+</script>
+```
+
+## App.vue
+
+```typescript
+
+<template>
+  <img alt="Vue logo" src="./assets/logo.png" />
+  <router-view/>
+</template>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+
+```
 
 
 
