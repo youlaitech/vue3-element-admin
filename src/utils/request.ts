@@ -1,6 +1,6 @@
 import axios from "axios";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {Session} from "@utils/storage";
+import {Local} from "@utils/storage";
 
 
 // 创建 axios 实例
@@ -16,9 +16,7 @@ service.interceptors.request.use(
         if (!config?.headers) {
             throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
         }
-        if (Session.get('token')) {
-            config.headers.Authorization = `${Session.get('token')}`;
-        }
+        config.headers.Authorization = `${Local.get('token')}`;
 
     }, (error) => {
         return Promise.reject(error);
@@ -43,7 +41,7 @@ service.interceptors.response.use(
     (error) => {
         const {code, msg} = error.response.data
         if (code === 'A0230') {  // token 过期
-            Session.clear(); // 清除浏览器全部临时缓存
+            Local.clear(); // 清除浏览器全部缓存
             window.location.href = '/'; // 跳转登录页
             ElMessageBox.alert('当前页面已失效，请重新登录', '提示', {})
                 .then(() => {
