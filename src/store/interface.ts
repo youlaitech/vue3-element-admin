@@ -1,9 +1,8 @@
 // 接口类型声明
 export interface UserState {
     token: string,
-    name: string,
+    nickname: string,
     avatar: string,
-    introduction: string,
     roles: string[],
     perms: string[]
 }
