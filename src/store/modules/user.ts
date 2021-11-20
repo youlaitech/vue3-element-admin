@@ -1,8 +1,7 @@
 import {Module} from "vuex";
 import {UserState, RootStateTypes} from "@store/interface";
 import {Local} from "@utils/storage";
-import {getUserInfo, login,logout} from "@api/login"
-
+import {getUserInfo, login, logout} from "@api/login"
 
 const getDefaultState = () => {
     return {
@@ -13,7 +12,6 @@ const getDefaultState = () => {
         perms: []
     }
 }
-
 
 const userModule: Module<UserState, RootStateTypes> = {
     namespaced: true,
@@ -104,12 +102,12 @@ const userModule: Module<UserState, RootStateTypes> = {
         /**
          *  注销
          */
-        logout({commit,state}){
+        logout({commit, state}) {
             return new Promise(((resolve, reject) => {
-                logout().then(()=>{
+                logout().then(() => {
                     Local.remove('token')
                     commit('RESET_STATE')
-                }).catch(error=>{
+                }).catch(error => {
                     reject(error)
                 })
             }))

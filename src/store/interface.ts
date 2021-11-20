@@ -8,7 +8,16 @@ export interface UserState {
 }
 
 
+export interface AppState {
+    device: string,
+    sidebar: {
+        opened: boolean,
+        withoutAnimation: boolean
+    }
+}
+
 // 顶级类型声明
 export interface RootStateTypes {
-    user: UserState
+    user: UserState,
+    app:AppState
 }

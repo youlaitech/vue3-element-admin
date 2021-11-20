@@ -33,7 +33,7 @@ npm run dev
 npm install vue-router@next
 ```
 
-src 下创建 router/index.ts
+src 下创建 router/interface.ts
 
 ```typescript
 import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
@@ -71,7 +71,7 @@ export default router
 npm install vuex@next
 ```
 
-src 下创建 store/index.ts
+src 下创建 store/interface.ts
 
 ```typescript
 import {InjectionKey} from 'vue'
