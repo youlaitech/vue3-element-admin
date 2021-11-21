@@ -433,12 +433,12 @@ export default service
 
 <script  lang="ts">
 import {defineComponent, computed} from 'vue'
-import {userStore} from '@/store';
+import {useStore} from '@/store';
 
 
 export default defineComponent({
   setup() {
-    const store = userStore()
+    const store = useStore()
     const num = computed(()=>{
       return store.state.count
     })

@@ -21,7 +21,7 @@ export const key: InjectionKey<Store<RootStateTypes>> = Symbol()
 
 export const store = createStore<RootStateTypes>({modules})
 
-export function userStore(){
+export function useStore(){
     return baseUseStore(key)
 }
 

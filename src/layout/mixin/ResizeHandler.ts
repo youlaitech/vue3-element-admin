@@ -1,7 +1,7 @@
-import {userStore} from '@/store'
+import {useStore} from '@/store'
 import {computed, watch} from "vue";
 import { useRoute } from 'vue-router'
-const store = userStore()
+const store = useStore()
 
 const {body} = document
 const WIDTH = 992 // refer to Bootstrap's responsive design

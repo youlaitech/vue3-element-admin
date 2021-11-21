@@ -14,11 +14,10 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeMount, reactive, toRefs} from "vue";
+import {defineComponent, onBeforeMount, reactive, toRefs,watch} from "vue";
 import {compile} from 'path-to-regexp'
 import {useRoute, RouteLocationMatched} from "vue-router";
 import router from "@router";
-
 
 export default defineComponent({
   setup() {
@@ -29,65 +28,50 @@ export default defineComponent({
       return toPath(params)
     }
     const state = reactive({
-      breadcrumbs: [] as Array<RouteLocationMatched>,
-      getBreadcrumb:()=>{
-
+      levelList: [] as Array<RouteLocationMatched>,
+      getBreadcrumb: () => {
+        let matched = currentRoute.matched.filter((item) => item.meta && item.meta.title)
+        const first = matched[0]
+        if (!state.isDashboard(first)) {
+          matched = [{path: '/dashboard', meta: {title: 'dashboard'}} as any].concat(matched)
+        }
+        state.levelList = matched.filter((item) => {
+          return item.mate && item.meta.title && item.meta.breadcrumb !== false
+        })
+      },
+      isDashboard(route: RouteLocationMatched) {
+        const name = route && route.name
+        if (!name) {
+          return false
+        }
+        return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
+      },
+      handleLink(item: any) {
+        const {redirect, path} = item
+        if (redirect) {
+          router.push(redirect)
+          return
+        }
+        router.push(pathCompile(path))
       }
     })
+    watch(() => currentRoute.path, (path) => {
+      if (path.startsWith('/redirect/')) {
+        return
+      }
+      state.getBreadcrumb()
+    })
+    onBeforeMount(() => {
+      state.getBreadcrumb()
+    })
+
+    return {
+      ...toRefs(state)
+    }
   }
 })
 
-export default {
-  data() {
-    return {
-      levelList: null
-    }
-  },
-  watch: {
-    $route() {
-      this.getBreadcrumb()
-    }
-  },
-  created() {
-    this.getBreadcrumb()
-  },
-  methods: {
-    getBreadcrumb() {
-      // only show routes with meta.title
-      let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-      const first = matched[0]
-
-      if (!this.isDashboard(first)) {
-        matched = [{path: '/dashboard', meta: {title: 'Dashboard'}}].concat(matched)
-      }
-
-      this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
-    },
-    isDashboard(route) {
-      const name = route && route.name
-      if (!name) {
-        return false
-      }
-      return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
-    },
-    pathCompile(path) {
-      // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
-      const {params} = this.$route
-      var toPath = pathToRegexp.compile(path)
-      return toPath(params)
-    },
-    handleLink(item) {
-      const {redirect, path} = item
-      if (redirect) {
-        this.$router.push(redirect)
-        return
-      }
-      this.$router.push(this.pathCompile(path))
-    }
-  }
-}
 </script>
-
 <style lang="scss" scoped>
 .app-breadcrumb.el-breadcrumb {
   display: inline-block;

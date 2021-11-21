@@ -1,3 +1,5 @@
+import {RouteRecordRaw} from "vue-router";
+
 // 接口类型声明
 export interface UserState {
     token: string,
@@ -16,8 +18,24 @@ export interface AppState {
     }
 }
 
+export interface SettingState {
+    theme: string,
+    tagsView: boolean,
+    fixedHeader: boolean,
+    showSettings: boolean,
+    sidebarLogo: boolean
+}
+
+
+export interface PermissionState{
+    routes:RouteRecordRaw[]
+    addRoutes: RouteRecordRaw[]
+}
+
 // 顶级类型声明
 export interface RootStateTypes {
     user: UserState,
-    app:AppState
+    app: AppState,
+    setting: SettingState,
+    permission:PermissionState
 }

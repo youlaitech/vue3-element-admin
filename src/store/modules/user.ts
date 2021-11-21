@@ -1,7 +1,9 @@
 import {Module} from "vuex";
 import {UserState, RootStateTypes} from "@store/interface";
 import {Local} from "@utils/storage";
-import {getUserInfo, login, logout} from "@api/login"
+import {getUserInfo, login, logout} from "@api/login";
+import {resetRouter} from "@router";
+
 
 const getDefaultState = () => {
     return {
@@ -107,13 +109,24 @@ const userModule: Module<UserState, RootStateTypes> = {
                 logout().then(() => {
                     Local.remove('token')
                     commit('RESET_STATE')
+                    resetRouter()
+                    resolve(null)
                 }).catch(error => {
                     reject(error)
                 })
             }))
+        },
+
+        /**
+         * 清除 Token
+         */
+        resetToken({commit}){
+            return new Promise(resolve=>{
+                Local.remove('token')
+                commit('RESET_STATE')
+                resolve(null)
+            })
         }
-
-
     }
 }
 
