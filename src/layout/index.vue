@@ -1,15 +1,15 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
+    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
+    <sidebar class="sidebar-container"/>
     <div :class="{hasTagsView:needTagsView}" class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
-        <tags-view v-if="needTagsView" />
+        <navbar/>
+        <tags-view v-if="needTagsView"/>
       </div>
-      <app-main />
+      <app-main/>
       <right-panel v-if="showSettings">
-        <settings />
+        <settings/>
       </right-panel>
     </div>
   </div>
@@ -18,27 +18,30 @@
 
 <script>
 import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, reactive, toRefs} from "vue";
-import {Navbar, Sidebar, AppMain} from './components'
-import {
-  sidebar,
-  device,
-  resizeMounted,
-  addEventListenerOnResize,
-  removeEventListenerResize,
-  watchRouter
-} from './mixin/ResizeHandler'
+import {AppMain,Navbar, Settings,Sidebar,TagsView } from './components'
+import resize from './mixin/ResizeHandler'
 import {useStore} from "@store";
 
 
 export default defineComponent({
   name: 'Layout',
   components: {
+    AppMain,
     Navbar,
+    Settings,
     Sidebar,
-    AppMain
+    TagsView
   },
   setup() {
     const store = useStore()
+    const {
+      sidebar,
+      device,
+      resizeMounted,
+      addEventListenerOnResize,
+      removeEventListenerResize,
+      watchRouter
+    } = resize()
 
     const state = reactive({
       handleClickOutside: () => {
@@ -54,8 +57,41 @@ export default defineComponent({
         mobile: device === 'mobile'
       }
     })
-  }
+    const showSettings=computed(()=>{
+      return store.state.settings.showSettings
+    })
 
+    const needTagsView=computed(()=>{
+      return store.state.settings.tagsView
+    })
+
+    const fixedHeader=computed(()=>{
+      return store.state.settings.fixedHeader
+    })
+
+    watchRouter()
+
+    onBeforeMount(()=>{
+      addEventListenerOnResize()
+    })
+
+    onMounted(()=>{
+      resizeMounted()
+    })
+
+    onBeforeUnmount(()=>{
+      removeEventListenerResize()
+    })
+
+    return{
+      classObj,
+      sidebar,
+      showSettings,
+      needTagsView,
+      fixedHeader,
+      ...toRefs(state)
+    }
+  }
 })
 
 </script>

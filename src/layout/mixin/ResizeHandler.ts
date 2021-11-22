@@ -44,7 +44,6 @@ export default function () {
         window.removeEventListener('resize', resizeHandler)
     }
 
-
     const currentRoute = useRoute()
     const watchRouter = watch(() => currentRoute.name, () => {
         if (store.state.app.device === 'mobile' && store.state.app.sidebar.opened) {

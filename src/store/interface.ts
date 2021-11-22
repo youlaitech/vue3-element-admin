@@ -1,4 +1,4 @@
-import {RouteRecordRaw} from "vue-router";
+import {RouteRecordRaw,RouteLocationNormalized} from "vue-router";
 
 // 接口类型声明
 export interface UserState {
@@ -32,10 +32,21 @@ export interface PermissionState{
     addRoutes: RouteRecordRaw[]
 }
 
+export interface TagView extends Partial<RouteLocationNormalized> {
+    title?: string
+}
+
+export interface TagsViewState{
+    visitedViews: TagView[],
+    cachedViews: (string|undefined)[]
+}
+
+
 // 顶级类型声明
 export interface RootStateTypes {
     user: UserState,
     app: AppState,
     setting: SettingState,
-    permission:PermissionState
+    permission:PermissionState,
+    tagsView:TagsViewState
 }
