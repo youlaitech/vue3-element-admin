@@ -51,9 +51,9 @@ export default defineComponent({
     const instance = getCurrentInstance()
     const currentRoute = useRoute()
     const scrollPaneRef = ref(null)
-    const {ctx} = instance
+    const {ctx} = instance as any
 
-    const toLastView=(visitedViews,view)=>{
+    const toLastView=(visitedViews:TagView[],view:TagView)=>{
       const latestView = visitedViews.slice(-1)[0]
       if (latestView && latestView.fullPath) {
         router.push(latestView.fullPath)
@@ -70,12 +70,12 @@ export default defineComponent({
       visible: false,
       top: 0,
       left: 0,
-      selectedTag: {},
-      affixTags: [],
-      isActive: (route) => {
+      selectedTag: {} as TagView,
+      affixTags: [] as TagView[],
+      isActive: (route:TagView) => {
         return route.path === currentRoute.path
       },
-      isAffix: (tag) => {
+      isAffix: (tag:TagView) => {
         return tag.meta && tag.meta.affix
       },
       refreshSelectedTag: (view: TagView) => {

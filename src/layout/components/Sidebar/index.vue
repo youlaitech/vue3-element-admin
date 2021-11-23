@@ -22,7 +22,7 @@
 <script>
 import {computed, defineComponent} from "vue";
 import SidebarItem from './SidebarItem.vue'
-import SidebarLogo from './Logo.vue'
+import Logo from './Logo.vue'
 import variables from '@styles/variables.scss'
 import {useStore} from '@/store'
 import {useRoute} from 'vue-router'
@@ -31,13 +31,16 @@ import {useRoute} from 'vue-router'
 export default defineComponent({
   components: {
     SidebarItem,
-    SidebarLogo
+    Logo
   },
   setup() {
     const store = useStore()
     const route = useRoute()
     const sidebar = computed(() => {
       return store.state.app.sidebar
+    })
+    const routes = computed(() => {
+      return store.state.permission.routes
     })
     const showLogo = computed(() => {
       return store.state.settings.sidebarLogo
@@ -56,7 +59,7 @@ export default defineComponent({
 
     return {
       sidebar,
-      route,
+      routes,
       showLogo,
       variables,
       activeMenu,

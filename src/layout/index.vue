@@ -1,6 +1,6 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
+    <div v-if="classObj.mobile==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
     <sidebar class="sidebar-container"/>
     <div :class="{hasTagsView:needTagsView}" class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
@@ -8,20 +8,23 @@
         <tags-view v-if="needTagsView"/>
       </div>
       <app-main/>
+      <!--
       <right-panel v-if="showSettings">
-        <settings/>
-      </right-panel>
+              <settings/>
+            </right-panel>
+            -->
     </div>
   </div>
 </template>
 
 
 <script>
-import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, reactive, toRefs} from "vue";
-import {AppMain,Navbar, Settings,Sidebar,TagsView } from './components'
-import resize from './mixin/ResizeHandler'
+import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, reactive, toRefs, watch} from "vue";
+import {AppMain, Navbar, Settings, Sidebar, TagsView} from './components/index.ts'
 import {useStore} from "@store";
-
+import {useRoute} from "vue-router";
+const {body} = document
+const WIDTH = 992
 
 export default defineComponent({
   name: 'Layout',
@@ -34,14 +37,50 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
-    const {
-      sidebar,
-      device,
-      resizeMounted,
-      addEventListenerOnResize,
-      removeEventListenerResize,
-      watchRouter
-    } = resize()
+
+    const device = computed(() => {
+      return store.state.app.device
+    })
+
+    const sidebar = computed(() => {
+      return store.state.app.sidebar
+    })
+
+    const isMobile = () => {
+      const rect = body.getBoundingClientRect()
+      return rect.width - 1 < WIDTH
+    }
+
+    const resizeHandler = () => {
+      if (!document.hidden) {
+        store.dispatch('app/toggleDevice', isMobile() ? 'mobile' : 'desktop')
+        if (isMobile()) {
+          store.dispatch('app/closeSideBar', {withoutAnimation: true})
+        }
+      }
+    }
+
+    const resizeMounted = () => {
+      if (isMobile()) {
+        store.dispatch('app/toggleDevice', 'mobile')
+        store.dispatch('app/closeSideBar', {withoutAnimation: true})
+      }
+    }
+    const addEventListenerOnResize = () => {
+      window.addEventListener('resize', resizeHandler)
+    }
+
+    const removeEventListenerResize = () => {
+      window.removeEventListener('resize', resizeHandler)
+    }
+
+    const currentRoute = useRoute()
+    const watchRouter = watch(() => currentRoute.name, () => {
+      if (store.state.app.device === 'mobile' && store.state.app.sidebar.opened) {
+        store.dispatch('app/closeSideBar', false)
+      }
+    })
+
 
     const state = reactive({
       handleClickOutside: () => {
@@ -57,33 +96,33 @@ export default defineComponent({
         mobile: device === 'mobile'
       }
     })
-    const showSettings=computed(()=>{
+    const showSettings = computed(() => {
       return store.state.settings.showSettings
     })
 
-    const needTagsView=computed(()=>{
+    const needTagsView = computed(() => {
       return store.state.settings.tagsView
     })
 
-    const fixedHeader=computed(()=>{
+    const fixedHeader = computed(() => {
       return store.state.settings.fixedHeader
     })
 
     watchRouter()
 
-    onBeforeMount(()=>{
+    onBeforeMount(() => {
       addEventListenerOnResize()
     })
 
-    onMounted(()=>{
+    onMounted(() => {
       resizeMounted()
     })
 
-    onBeforeUnmount(()=>{
+    onBeforeUnmount(() => {
       removeEventListenerResize()
     })
 
-    return{
+    return {
       classObj,
       sidebar,
       showSettings,
