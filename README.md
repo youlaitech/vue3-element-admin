@@ -1,12 +1,12 @@
-## 官网地址
+## 技术栈官网
 
 - vue3: https://v3.cn.vuejs.org/guide/introduction.html
 
 - vite2: https://cn.vitejs.dev/guide/
 
-- vuex4：https://next.vuex.vuejs.org/zh/index.html
+- next-vuex：https://next.vuex.vuejs.org/zh/index.html
 
-- vue-router4 : https://next.router.vuejs.org/zh/introduction.html
+- vue-next-router : https://next.router.vuejs.org/zh/introduction.html
 
 - element-plus: https://element-plus.gitee.io/zh-CN/
 
@@ -17,6 +17,8 @@
 Vite是一种新型前端构建工具，能够显著提升前端开发体验。
 
 [Vite 官方中文文档](https://cn.vitejs.dev/ )
+
+项目构建命令：
 
 ```shell
 npm init vite@latest vue3-element-admin --template vue-ts
