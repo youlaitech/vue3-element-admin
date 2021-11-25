@@ -479,4 +479,14 @@ export default defineComponent({
 ```
 
 
+## SVG图标
 
+vite-plugin-svg-icons 使用说明：https://github.com/anncwb/vite-plugin-svg-icons/blob/main/README.zh_CN.md
+
+安装：
+
+```
+npm i vite-plugin-svg-icons -D
+```
+
+## 跨域处理

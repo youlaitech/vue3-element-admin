@@ -52,9 +52,13 @@
 </template>
 
 <script>
+import SvgIcon from '@/components/SvgIcon/index.vue';
 
 export default {
   name: 'Login',
+  components:{
+    SvgIcon
+  },
   data() {
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
