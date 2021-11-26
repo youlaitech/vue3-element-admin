@@ -40,11 +40,29 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+
+      <el-form-item prop="validateCode">
+         <span class="svg-container">
+            <svg-icon icon-class="validCode"/>
+          </span>
+        <el-input
+            v-model="loginForm.code"
+            auto-complete="off"
+            placeholder="请输入验证码"
+            style="width: 65%"
+            @keyup.enter.native="handleLogin"
+        />
+        <div class="validate-code">
+          <img :src="base64Captcha" @click="getCaptcha" height="38px"/>
+        </div>
+      </el-form-item>
+
+
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+        <span style="margin-right:20px;">用户名: admin</span>
+        <span> 密码: 123456</span>
       </div>
 
     </el-form>
@@ -53,6 +71,7 @@
 
 <script>
 import SvgIcon from '@/components/SvgIcon/index.vue';
+import {getCaptcha} from "@/api/login";
 
 export default {
   name: 'Login',
@@ -70,7 +89,9 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '111111'
+        password: '123456',
+        code: undefined,
+        uuid: undefined
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur'}],
@@ -78,8 +99,13 @@ export default {
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      base64Captcha: undefined
     }
+  },
+  created() {
+    // 生成验证码
+    this.getCaptcha()
   },
   watch: {
     $route: {
@@ -104,11 +130,6 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-
-          // 暂跳转首页控制台，后续整合登录
-          this.$router.push({ path:  '/' })
-          return false
-
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
@@ -119,6 +140,14 @@ export default {
           console.log('error submit!!')
           return false
         }
+      })
+    },
+    // 获取验证码
+    getCaptcha(){
+      getCaptcha().then(response => {
+        const {img, uuid} = response.data
+        this.base64Captcha = "data:image/gif;base64," + img
+        this.loginForm.uuid = uuid;
       })
     }
   }
@@ -233,5 +262,17 @@ $light_gray:#eee;
     cursor: pointer;
     user-select: none;
   }
+  .validate-code {
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    img {
+      height: 52px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+  }
+
 }
 </style>

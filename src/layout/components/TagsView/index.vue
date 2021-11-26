@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import ScrollPane from './ScrollPane.vue'
-import path from 'path'
+import path from 'path-browserify'
 import {useStore} from "@store";
 import {
   defineComponent,

@@ -1,11 +1,12 @@
 import axios from "axios";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {Local} from "@utils/storage";
+import {store} from "@store";
 
 
 // 创建 axios 实例
 const service = axios.create({
-    baseURL: import.meta.env.VITE_BASE_API as any,
+    baseURL: import.meta.env.VITE_APP_BASE_API as any,
     timeout: 50000,
     headers: {'Content-Type': 'application/json;charset=utf-8'}
 })
@@ -16,8 +17,10 @@ service.interceptors.request.use(
         if (!config?.headers) {
             throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
         }
-        config.headers.Authorization = `${Local.get('token')}`;
-
+        if (store.state.user.token) {
+            config.headers.Authorization = `${Local.get('token')}`;
+        }
+        return config
     }, (error) => {
         return Promise.reject(error);
     }
@@ -39,6 +42,7 @@ service.interceptors.response.use(
         }
     },
     (error) => {
+        console.log('error', error)
         const {code, msg} = error.response.data
         if (code === 'A0230') {  // token 过期
             Local.clear(); // 清除浏览器全部缓存

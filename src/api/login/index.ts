@@ -7,9 +7,10 @@ import request from "@utils/request";
 export function login(data: object) {
     return request({
         url: '/youlai-auth/oauth/token',
+        method:'post',
         params: data,
         headers: {
-            'Authorization': 'Basic bWFsbC1hZG1pbi13ZWI6MTIzNDU2' // 客户端信息加密摘要认证，明文：mall-admin-web:123456
+            'Authorization': 'Basic bWFsbC1hZG1pbi13ZWI6MTIzNDU2' // 客户端信息Base64明文：mall-admin-web:123456
         }
     })
 }
@@ -39,7 +40,7 @@ export function logout() {
  */
 export function getCaptcha() {
     return request({
-        url: '/captcha',
+        url: '/captcha?t='+(new Date()).getTime().toString(),
         method: 'get'
     })
 }

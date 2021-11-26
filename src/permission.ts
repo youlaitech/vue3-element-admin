@@ -1,8 +1,7 @@
 import router from "@router";
 import NProgress from 'nprogress';
-import {Local} from "@utils/storage";
-import {useStore} from "@store";
 import {ElMessage} from "element-plus";
+import {store} from "@store";
 
 NProgress.configure({showSpinner: false})
 
@@ -10,11 +9,9 @@ NProgress.configure({showSpinner: false})
 const whiteList = ['/login', '/auth-redirect']
 
 router.beforeEach(async (to, form, next) => {
-
     NProgress.start()
-    const store = useStore()
 
-    const hasToken = Local.get(`token`)
+    const hasToken =store.state.user.token
     if (hasToken) {
         // 如果登录成功，跳转到首页
         if (to.path === '/login') {

@@ -10,14 +10,7 @@
 
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template #title>
-        <svg
-            v-if="item.meta && item.meta.icon"
-            class="icon"
-            aria-hidden="true"
-            font-size="16px"
-        >
-          <use :xlink:href="item.meta.icon" />
-        </svg>
+
         <span v-if="item.meta && item.meta.title">{{
             t("route." + item.meta.title)
           }}</span>
@@ -36,7 +29,7 @@
 </template>
 
 <script>
-import path from 'path'
+import path from 'path-browserify'
 import { isExternal } from '@utils/validate'
 import AppLink from './Link.vue'
 

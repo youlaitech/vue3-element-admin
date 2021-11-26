@@ -69,6 +69,7 @@ const userModule: Module<UserState, RootStateTypes> = {
                     const accessToken = token_type + " " + access_token
                     Local.set("token", accessToken)
                     commit('SET_TOKEN', accessToken)
+                    resolve(access_token)
                 }).catch(error => {
                     reject(error)
                 })
