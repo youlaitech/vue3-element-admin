@@ -135,6 +135,7 @@ export default {
             this.loading = false
           }).catch(() => {
             this.loading = false
+            this.getCaptcha()
           })
         } else {
           console.log('error submit!!')

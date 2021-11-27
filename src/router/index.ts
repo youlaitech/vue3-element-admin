@@ -1,11 +1,14 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
 import Layout from '@/layout/index.vue'
 
+
+// 参数配置: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
+
 export const constantRoutes: Array<RouteRecordRaw> = [
     {
         path: '/redirect',
         component: Layout,
-        meta: {hidden: true},
+        hidden: true,
         children: [
             {
                 path: '/redirect/:path(.*)',
@@ -15,19 +18,18 @@ export const constantRoutes: Array<RouteRecordRaw> = [
     },
     {
         path: '/login',
-        name: 'Login',
         component: () => import('@/views/login/index.vue'),
-        meta: {title: '登录'}
+        hidden: true
     },
     {
         path: '/404',
         component: () => import('@/views/error-page/404.vue'),
-        meta: {hidden: true}
+        hidden: true
     },
     {
         path: '/401',
         component: () => import('@/views/error-page/401.vue'),
-        meta: {hidden: true}
+        hidden: true
     },
     {
         path: '/',

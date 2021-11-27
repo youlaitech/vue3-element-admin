@@ -42,7 +42,6 @@ service.interceptors.response.use(
         }
     },
     (error) => {
-        console.log('error', error)
         const {code, msg} = error.response.data
         if (code === 'A0230') {  // token 过期
             Local.clear(); // 清除浏览器全部缓存
@@ -52,6 +51,11 @@ service.interceptors.response.use(
                 })
                 .catch(() => {
                 });
+        }else{
+            ElMessage({
+                message: msg || '系统出错',
+                type: 'error'
+            })
         }
         return Promise.reject(new Error(msg || 'Error'))
     }

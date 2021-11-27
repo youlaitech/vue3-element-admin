@@ -27,7 +27,6 @@ import variables from '@styles/variables.scss'
 import {useStore} from '@/store'
 import {useRoute} from 'vue-router'
 
-
 export default defineComponent({
   components: {
     SidebarItem,
