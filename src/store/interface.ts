@@ -9,7 +9,6 @@ export interface UserState {
     perms: string[]
 }
 
-
 export interface AppState {
     device: string,
     sidebar: {
@@ -26,7 +25,6 @@ export interface SettingState {
     sidebarLogo: boolean
 }
 
-
 export interface PermissionState{
     routes:RouteRecordRaw[]
     addRoutes: RouteRecordRaw[]
@@ -41,12 +39,11 @@ export interface TagsViewState{
     cachedViews: (string|undefined)[]
 }
 
-
 // 顶级类型声明
 export interface RootStateTypes {
     user: UserState,
     app: AppState,
-    setting: SettingState,
+    settings: SettingState,
     permission:PermissionState,
     tagsView:TagsViewState
 }

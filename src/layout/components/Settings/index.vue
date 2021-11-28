@@ -52,7 +52,7 @@ export default defineComponent({
     })
 
     watch(() => state.sidebarLogo, (value) => {
-      store.dispatch('settings/changeSetting', { key: 'showSidebarLogo', value })
+      store.dispatch('settings/changeSetting', { key: 'sidebarLogo', value })
     })
 
     return {

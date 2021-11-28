@@ -14,6 +14,7 @@ const appModule: Module<AppState, RootStateTypes> = {
     mutations: {
         TOGGLE_SIDEBAR: state => {
             state.sidebar.opened = !state.sidebar.opened
+            console.log('state.sidebar.opened',state.sidebar.opened)
             state.sidebar.withoutAnimation = false
             if (state.sidebar.opened) {
                 Local.set('sidebarStatus', 1)
@@ -27,6 +28,7 @@ const appModule: Module<AppState, RootStateTypes> = {
             state.sidebar.withoutAnimation = withoutAnimation
         },
         TOGGLE_DEVICE: (state, device) => {
+            console.log('TOGGLE_DEVICE',device)
             state.device = device
         }
     },
@@ -37,7 +39,7 @@ const appModule: Module<AppState, RootStateTypes> = {
         closeSideBar({commit}, {withoutAnimation}) {
             commit('CLOSE_SIDEBAR', withoutAnimation)
         },
-        toggleDevice({commit}, device) {
+       async toggleDevice({commit}, device) {
             commit('TOGGLE_DEVICE', device)
         }
     }

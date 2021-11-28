@@ -3,7 +3,7 @@ import {createStore,useStore as baseUseStore ,Store} from 'vuex'
 import {RootStateTypes} from "@store/interface";
 
 // Vite 使用特殊的 import.meta.glob 函数从文件系统导入多个模块
-// see https://cn.vitejs.dev/guide/features.html#glob-import
+// @see https://cn.vitejs.dev/guide/features.html#glob-import
 const moduleFiles = import.meta.globEager('./modules/*.ts')
 const paths:string[]=[]
 

@@ -64,7 +64,7 @@ export default {
       return store.state.app.sidebar
     })
     const device = computed(() => {
-      return store.state.app.device.toString()
+      return store.state.app.device
     })
     const avatar = computed(() => {
       return store.state.user.avatar

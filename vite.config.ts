@@ -12,6 +12,7 @@ export default ({command, mode}: ConfigEnv): UserConfig => {
 
     return (
         {
+
             plugins: [
                 vue(),
                 viteSvgIcons({
@@ -35,6 +36,7 @@ export default ({command, mode}: ConfigEnv): UserConfig => {
                     }
                 }
             },
+
             resolve: {
                 // Vite2设置别名路径方式一
                 // alias:{

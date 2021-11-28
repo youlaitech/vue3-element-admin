@@ -9,10 +9,10 @@
       </div>
       <app-main/>
       <!--
-      <right-panel v-if="showSettings">
+        <right-panel v-if="showSettings">
               <settings/>
             </right-panel>
-            -->
+      -->
     </div>
   </div>
 </template>
@@ -23,6 +23,7 @@ import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, re
 import {AppMain, Navbar, Settings, Sidebar, TagsView} from './components/index.ts'
 import {useStore} from "@store";
 import {useRoute} from "vue-router";
+
 const {body} = document
 const WIDTH = 992
 
@@ -38,14 +39,7 @@ export default defineComponent({
   setup() {
     const store = useStore()
 
-    const device = computed(() => {
-      return store.state.app.device
-    })
-
-    const sidebar = computed(() => {
-      return store.state.app.sidebar
-    })
-
+    const sidebar = computed(() => store.state.app.sidebar)
     const isMobile = () => {
       const rect = body.getBoundingClientRect()
       return rect.width - 1 < WIDTH
@@ -81,7 +75,6 @@ export default defineComponent({
       }
     })
 
-
     const state = reactive({
       handleClickOutside: () => {
         store.dispatch('app/closeSideBar', false)
@@ -90,10 +83,10 @@ export default defineComponent({
 
     const classObj = computed(() => {
       return {
-        hideSidebar: !sidebar.opened,
-        openSidebar: sidebar.opened,
-        withoutAnimation: sidebar.withoutAnimation,
-        mobile: device === 'mobile'
+        hideSidebar:  !store.state.app.sidebar.opened,
+        openSidebar: store.state.app.sidebar.opened,
+        withoutAnimation: store.state.app.sidebar.withoutAnimation,
+        mobile: store.state.app.device === 'mobile'
       }
     })
     const showSettings = computed(() => {
@@ -124,10 +117,10 @@ export default defineComponent({
 
     return {
       classObj,
-      sidebar,
       showSettings,
       needTagsView,
       fixedHeader,
+      sidebar,
       ...toRefs(state)
     }
   }
