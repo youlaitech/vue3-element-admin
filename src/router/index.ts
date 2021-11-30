@@ -34,7 +34,6 @@ export const constantRoutes: Array<RouteRecordRaw> = [
         path: '/',
         component: Layout,
         redirect: '/dashboard',
-        meta:{hidden:true},
         children: [
             {
                 path: 'dashboard',

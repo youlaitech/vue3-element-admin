@@ -29,7 +29,10 @@ export default defineComponent({
   setup(props) {
     const router = useRouter()
     const push = () => {
-      router.push(props.to)
+      console.log(props.to)
+      router.push(props.to).catch((err) => {
+        console.log(err)
+      })
     }
     return {
       push,

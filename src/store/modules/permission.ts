@@ -2,8 +2,10 @@ import {Module} from "vuex";
 import {PermissionState, RootStateTypes} from "@store/interface";
 import {RouteRecordRaw} from 'vue-router'
 import {constantRoutes} from '@/router'
-import {getRouteList} from "@api/system/menu";
+import {getRouteList} from "@/api/system/menu";
 
+const modules = import.meta.glob("../../views/**/**.vue");
+import Layout from '@/layout/index.vue'
 
 const hasPermission = (roles: string[], route: RouteRecordRaw) => {
     // 超级管理员放行
@@ -26,10 +28,21 @@ export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => 
     routes.forEach(route => {
         const tmp = {...route}
         if (hasPermission(roles, tmp)) {
+            if (tmp.component == 'Layout') {
+                tmp.component = Layout
+            } else {
+                const component = modules[`../../views/${tmp.component}.vue`] as any;
+                if (component) {
+                    tmp.component = modules[`../../views/${tmp.component}.vue`];
+                } else {
+                    tmp.component = modules[`../../views/error-page/404.vue`];
+                }
+            }
+            res.push(tmp)
+
             if (tmp.children) {
                 tmp.children = filterAsyncRoutes(tmp.children, roles)
             }
-            res.push(tmp)
         }
     })
     return res

@@ -21,6 +21,7 @@
             :item="route"
             :key="route.path"
             :base-path="route.path"
+            :is-collapse="isCollapse"
         />
       </el-menu>
     </el-scrollbar>
