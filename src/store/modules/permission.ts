@@ -26,7 +26,7 @@ const hasPermission = (roles: string[], route: RouteRecordRaw) => {
 export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
     const res: RouteRecordRaw[] = []
     routes.forEach(route => {
-        const tmp = {...route}
+        const tmp = {...route} as any
         if (hasPermission(roles, tmp)) {
             if (tmp.component == 'Layout') {
                 tmp.component = Layout

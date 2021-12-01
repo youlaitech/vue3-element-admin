@@ -8,8 +8,7 @@ export default defineComponent({
     const {path} = params
     useRouter().replace({path: '/' + path, query})
   },
-  render(h) {
-    return h()
+  render() {
   }
 })
 </script>
