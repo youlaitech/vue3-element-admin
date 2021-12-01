@@ -80,8 +80,9 @@ export default {
         store.dispatch('app/toggleSideBar', false)
       },
       logout: () => {
-        store.dispatch('user/logout')
-        router.push(`/login?redirect=${route.fullPath}`)
+        store.dispatch('user/logout').then(()=>{
+          router.push(`/login?redirect=${route.fullPath}`)
+        })
       }
     })
     return {
