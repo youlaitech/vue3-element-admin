@@ -14,7 +14,7 @@
             :class="{'submenu-title-noDropdown':!isNest}"
         >
           <svg-icon v-if="onlyOneChild.meta&&onlyOneChild.meta.icon" :icon-class="onlyOneChild.meta.icon"></svg-icon>
-          <span v-if="onlyOneChild.meta && onlyOneChild.meta.title">{{ onlyOneChild.meta.title }}</span>
+          <template v-if="onlyOneChild.meta && onlyOneChild.meta.title" #title>{{ onlyOneChild.meta.title }}</template>
         </el-menu-item>
       </AppLink>
     </template>
@@ -179,10 +179,6 @@ export default defineComponent({
     .submenu-title-noDropdown {
       padding: 0 !important;
       position: relative;
-
-      .el-tooltip {
-        padding: 0 !important;
-      }
 
       & > span{
         display: none;
