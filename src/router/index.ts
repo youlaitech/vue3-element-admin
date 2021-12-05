@@ -1,5 +1,5 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
-import Layout from '@/layout/index.vue'
+export const Layout = () => import( '@/layout/index.vue')
 
 
 // 参数说明: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html

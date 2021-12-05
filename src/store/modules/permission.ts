@@ -5,7 +5,7 @@ import {constantRoutes} from '@/router'
 import {getRouteList} from "@/api/system/menu";
 
 const modules = import.meta.glob("../../views/**/**.vue");
-import Layout from '@/layout/index.vue'
+export const Layout = () => import( '@/layout/index.vue')
 
 const hasPermission = (roles: string[], route: RouteRecordRaw) => {
     // 超级管理员放行

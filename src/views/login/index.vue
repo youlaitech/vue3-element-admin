@@ -52,8 +52,8 @@
             style="width: 65%"
             @keyup.enter.native="handleLogin"
         />
-        <div class="validate-code">
-          <img :src="base64Captcha" @click="getCaptcha" height="38px"/>
+        <div class="captcha">
+          <img :src="base64Captcha" @click="handleCaptchaGenerate" height="38px"/>
         </div>
       </el-form-item>
 
@@ -105,7 +105,7 @@ export default {
   },
   created() {
     // 生成验证码
-    this.getCaptcha()
+    this.handleCaptchaGenerate()
   },
   watch: {
     $route: {
@@ -135,7 +135,7 @@ export default {
             this.loading = false
           }).catch(() => {
             this.loading = false
-            this.getCaptcha()
+            this.handleCaptchaGenerate()
           })
         } else {
           console.log('error submit!!')
@@ -144,7 +144,7 @@ export default {
       })
     },
     // 获取验证码
-    getCaptcha(){
+    handleCaptchaGenerate(){
       getCaptcha().then(response => {
         const {img, uuid} = response.data
         this.base64Captcha = "data:image/gif;base64," + img
@@ -263,7 +263,7 @@ $light_gray:#eee;
     cursor: pointer;
     user-select: none;
   }
-  .validate-code {
+  .captcha {
     position: absolute;
     right: 0;
     top: 0;

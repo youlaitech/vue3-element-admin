@@ -6,25 +6,29 @@ import '@/styles/index.scss'
 
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
+import locale from 'element-plus/lib/locale/lang/zh-cn'
 import 'virtual:svg-icons-register';
 
 
 // @see https://blog.csdn.net/qq_37213281/article/details/121422027
 import * as ElIconModules from '@element-plus/icons'
 
-
 import '@/permission'
+
+// 全局组件
+import  Pagination from '@/components/Pagination/index.vue'
+
 
 const app=createApp(App)
 
 // 统一注册el-icon图标
-for(let iconName in ElIconModules){
-    // @ts-ignore
-    app.component(iconName,ElIconModules[iconName] )
+for(let iconName in ElIconModules ){
+    app.component(iconName,(ElIconModules as any)[iconName] )
 }
 
 app
+    .component('Pagination',Pagination)
     .use(router)
     .use(store,key)
-    .use(ElementPlus)
+    .use(ElementPlus,{locale})
     .mount('#app')
