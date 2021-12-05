@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- 搜索表单 Begin -->
+    <!-- 搜索表单 -->
     <el-form
         ref="queryForm"
         :model="state.queryParams"
@@ -29,7 +29,7 @@
       </el-form-item>
     </el-form>
 
-    <!-- 数据表格  -->
+    <!-- 数据表格 -->
     <el-table
         v-loading="state.loading"
         :data="state.pageList"
@@ -76,6 +76,40 @@
         @pagination="handleQuery"
     />
 
+    <!-- 表单弹窗 -->
+    <el-dialog
+        :title="state.dialog.title"
+        v-model="state.dialog.visible"
+        width="700px"
+    >
+      <el-form ref="dataForm"
+               :model="state.formData"
+               :rules="state.rules"
+               label-width="100px"
+      >
+        <el-form-item label="客户端ID" prop="clientId">
+          <el-input v-model="state.formData.clientId" placeholder="请输入客户端ID"/>
+        </el-form-item>
+
+        <el-form-item label="客户端密钥" prop="clientSecret">
+          <el-input v-model="state.formData.clientSecret" placeholder="请输入客户端密钥"/>
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitForm">
+            确定
+          </el-button>
+          <el-button @click="cancel">
+            取消
+          </el-button>
+        </div>
+      </template>
+
+    </el-dialog>
+
+
   </div>
 </template>
 
@@ -83,6 +117,7 @@
 import {list, detail, update, add, del} from '@/api/system/client'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {onMounted, reactive, toRefs, ref, unref} from 'vue'
+import {ElForm, ElMessage,ElMessageBox} from "element-plus";
 
 const state = reactive({
   loading: true,
@@ -99,7 +134,7 @@ const state = reactive({
   pageList: [],
   total: 0,
   dialog: {
-    title: undefined,
+    title: '',
     visible: false,
     type: 'create'
   },
@@ -146,15 +181,82 @@ function handleSelectionChange(selection: any) {
 }
 
 function handleAdd() {
-
+  resetForm()
+  state.dialog = {
+    title: '添加客户端',
+    visible: true,
+    type: 'create'
+  }
 }
 
 function handleUpdate(row: any) {
-
+  resetForm()
+  state.dialog = {
+    title: '修改客户端',
+    visible: true,
+    type: 'edit'
+  }
+  const clientId = row.clientId || state.ids
+  detail(clientId).then(response => {
+    state.formData = response.data
+  })
 }
 
-function submitForm() {
+const dataForm = ref(ElForm)
 
+function submitForm() {
+  const form = unref(dataForm)
+  form.validate((valid: any) => {
+    if (valid) {
+      if (state.dialog.type == 'edit') {
+        update(state.formData.clientId as any, state.formData).then(response => {
+          ElMessage.success('修改成功')
+          state.dialog.visible = false
+          handleQuery()
+        })
+      } else {
+        add(state.formData).then(response => {
+          ElMessage.success('新增成功')
+          state.dialog.visible = false
+          handleQuery()
+        })
+      }
+    }
+  })
+}
+
+function cancel() {
+  state.dialog.visible=false
+}
+
+function resetForm() {
+  state.formData = {
+    authorizedGrantTypes: [],
+    clientSecret: undefined,
+    clientId: undefined,
+    accessTokenValidity: undefined,
+    refreshTokenValidity: undefined,
+    webServerRedirectUri: undefined,
+    authorities: undefined,
+    additionalInformation: undefined,
+    autoapprove: 'false'
+  }
+}
+
+function handleDelete(row:any) {
+  const clientIds=[row.clientId|| state.ids].join(',')
+  ElMessageBox.confirm('确认删除已选中的数据项?','警告',{
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    del(clientIds).then(() => {
+      ElMessage.success('删除成功')
+      handleQuery()
+    })
+  }).catch(() =>
+      ElMessage.info('已取消删除')
+  )
 }
 
 onMounted(() => {
