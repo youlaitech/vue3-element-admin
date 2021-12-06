@@ -262,7 +262,6 @@ import { defineComponent, onMounted, reactive, toRefs, unref, ref } from 'vue'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import { listDept, getDept, delDept, updateDept, addDept } from '@/api/system/dept'
 import treeselect  from '@/components/TreeSelect/Index.vue'
-import { handleTree, parseTime } from '@/utils/ruoyi'
 import { ElForm, ElMessage } from 'element-plus'
 
 export default defineComponent({
@@ -395,7 +394,7 @@ export default defineComponent({
     }
     /** 查询部门下拉树结构 */
     const getTreeselect = () => {
-      treeselect().then(response => {
+      treeselect().then(response=> {
         dataMap.deptOptions = response?.data
         dataMap.originOptions = flatten(response?.data) as any
       })
@@ -417,7 +416,7 @@ export default defineComponent({
       console.log(row.deptId)
       dataMap.deptidfix = row.deptId
 
-      const result = await getDept(row.deptId)
+      const result = await getDept(row.deptId) as any
       if (result?.code === 200) {
         dataMap.formUpdata = result.data
         dataMap.formVal.deptName = result.data.deptName
@@ -473,7 +472,7 @@ export default defineComponent({
     }
     /** 删除按钮操作 */
     const handleDelete = async(row: any) => {
-      const result = await delDept(row.deptId)
+      const result = await delDept(row.deptId) as any
       if (result?.code === 200) {
         getList()
       } else {
@@ -499,7 +498,7 @@ export default defineComponent({
       // })
     })
 
-    return { ...toRefs(dataMap),Search,Plus,Edit,Delete,Refresh,Delete, parseTime,dialogshow, getDeptId, flatten, getTreeselect, formDialog, statusFormat, queryForm, getList, normalizer, handleDelete, cancel, handleQuery, resetQuery, handleAdd, handleUpdate, submitForm }
+    return { ...toRefs(dataMap),Search,Plus,Edit,Delete,Refresh,dialogshow, getDeptId, flatten, getTreeselect, formDialog, statusFormat, queryForm, getList, normalizer, handleDelete, cancel, handleQuery, resetQuery, handleAdd, handleUpdate, submitForm }
   }
 })
 

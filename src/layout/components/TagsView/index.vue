@@ -13,7 +13,11 @@
           @contextmenu.prevent.native="openMenu(tag,$event)"
       >
         {{ tag.meta.title }}
-        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"/>
+        <span v-if="!isAffix(tag)" @click.prevent.stop="closeSelectedTag(tag)">
+          <el-icon :size="8">
+           <close />
+          </el-icon>
+        </span>
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
@@ -26,6 +30,9 @@
 </template>
 
 <script lang="ts">
+
+import {Close} from '@element-plus/icons'
+
 import ScrollPane from './ScrollPane.vue'
 import path from 'path-browserify'
 import {useStore} from "@store";
@@ -44,7 +51,7 @@ import {RouteRecordRaw, useRoute, useRouter} from 'vue-router'
 import {TagView} from "@store/interface";
 
 export default defineComponent({
-  components: {ScrollPane},
+  components: {ScrollPane,Close},
   setup() {
     const store = useStore()
     const router = useRouter()

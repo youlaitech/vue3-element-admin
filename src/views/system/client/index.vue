@@ -49,7 +49,7 @@
         <template #default="scope">
           <el-button
               type="primary"
-              :icon="Edit"
+              :icon="Plus"
               size="mini"
               circle
               plain
@@ -116,7 +116,7 @@
 <script setup lang="ts">
 import {list, detail, update, add, del} from '@/api/system/client'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
-import {onMounted, reactive, toRefs, ref, unref} from 'vue'
+import {onMounted, reactive, getCurrentInstance, ref, unref} from 'vue'
 import {ElForm, ElMessage,ElMessageBox} from "element-plus";
 
 const state = reactive({
@@ -261,6 +261,12 @@ function handleDelete(row:any) {
 
 onMounted(() => {
   handleQuery()
+
+  // 全局方法调用
+  const { proxy } = getCurrentInstance();
+  proxy.$listDictItems('gender').then(response=>{
+    console.log('性别字典数据',response.data)
+  })
 })
 
 </script>

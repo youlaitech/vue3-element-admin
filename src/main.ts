@@ -1,7 +1,7 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import router from "./router";
-import {store,key} from './store'
+import {store, key} from './store'
 import '@/styles/index.scss'
 
 import ElementPlus from 'element-plus'
@@ -12,23 +12,26 @@ import 'virtual:svg-icons-register';
 
 // @see https://blog.csdn.net/qq_37213281/article/details/121422027
 import * as ElIconModules from '@element-plus/icons'
-
 import '@/permission'
 
-// 全局组件
-import  Pagination from '@/components/Pagination/index.vue'
+
+import Pagination from '@/components/Pagination/index.vue'
+import {listDictItems} from '@/api/system/dict.ts'
 
 
-const app=createApp(App)
+const app = createApp(App)
 
 // 统一注册el-icon图标
-for(let iconName in ElIconModules ){
-    app.component(iconName,(ElIconModules as any)[iconName] )
+for (let iconName in ElIconModules) {
+    app.component(iconName, (ElIconModules as any)[iconName])
 }
 
+// 全局方法
+app.config.globalProperties.$listDictItems = listDictItems
+
 app
-    .component('Pagination',Pagination)
+    .component('Pagination', Pagination) // 全局组件
     .use(router)
-    .use(store,key)
-    .use(ElementPlus,{locale})
+    .use(store, key)
+    .use(ElementPlus, {locale})
     .mount('#app')

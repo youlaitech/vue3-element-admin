@@ -96,6 +96,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.el-dropdown-menu__item{
+  display: block!important;
+  line-height: 30px;
+}
+
 .navbar {
   height: 50px;
   overflow: hidden;
