@@ -106,10 +106,7 @@
           </el-button>
         </div>
       </template>
-
     </el-dialog>
-
-
   </div>
 </template>
 
@@ -117,10 +114,12 @@
 import {list, detail, update, add, del} from '@/api/system/client'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {onMounted, reactive, getCurrentInstance, ref, unref} from 'vue'
-import {ElForm, ElMessage,ElMessageBox} from "element-plus";
+import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 
 const state = reactive({
   loading: true,
+
+
   ids: [],
   // 非单个禁用
   single: true,
@@ -226,7 +225,7 @@ function submitForm() {
 }
 
 function cancel() {
-  state.dialog.visible=false
+  state.dialog.visible = false
 }
 
 function resetForm() {
@@ -243,9 +242,9 @@ function resetForm() {
   }
 }
 
-function handleDelete(row:any) {
-  const clientIds=[row.clientId|| state.ids].join(',')
-  ElMessageBox.confirm('确认删除已选中的数据项?','警告',{
+function handleDelete(row: any) {
+  const clientIds = [row.clientId || state.ids].join(',')
+  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -261,11 +260,10 @@ function handleDelete(row:any) {
 
 onMounted(() => {
   handleQuery()
-
   // 全局方法调用
-  const { proxy } = getCurrentInstance();
-  proxy.$listDictItems('gender').then(response=>{
-    console.log('性别字典数据',response.data)
+  const {proxy}: any = getCurrentInstance();
+  proxy.$listDictItems('gender').then((response: any) => {
+    console.log('性别字典数据', response.data)
   })
 })
 

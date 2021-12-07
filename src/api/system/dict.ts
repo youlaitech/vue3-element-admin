@@ -1,18 +1,30 @@
 import request from "@utils/request";
 
-
 /**
  * 获取字典分页列表
  *
  * @param queryParams
  */
-export function listDictByPage(queryParams: object) {
+export function listDictWithPage(queryParams: object) {
     return request({
         url: '/youlai-admin/api/v2/dict/page',
         method: 'get',
         params: queryParams
     })
 }
+
+/**
+ * 获取字典详情
+ *
+ * @param id
+ */
+export function getDictDetail(id: number) {
+    return request({
+        url: '/youlai-admin/api/v2/dict/' + id,
+        method: 'get'
+    })
+}
+
 
 /**
  * 新增字典
@@ -41,13 +53,23 @@ export function updateDict(id: number, data: object) {
     })
 }
 
+/**
+ * 批量删除字典
+ * @param ids 字典ID，多个以英文逗号(,)分割
+ */
+export function deleteDict(ids: string) {
+    return request({
+        url: '/youlai-admin/api/v2/dict/' + ids,
+        method: 'delete',
+    })
+}
 
 /**
  * 获取字典项分页列表
  *
  * @param queryParams
  */
-export function listDictItemsByPage(queryParams: object) {
+export function listDictItemsWithPage(queryParams: object) {
     return request({
         url: '/youlai-admin/api/v2/dict/items/page',
         method: 'get',
@@ -68,6 +90,19 @@ export function listDictItems(dictCode: string) {
         params: {dictCode: dictCode}
     })
 }
+
+/**
+ * 获取字典项详情
+ *
+ * @param id
+ */
+export function getDictItemDetail(id: number) {
+    return request({
+        url: '/youlai-admin/api/v2/dict/items/' + id,
+        method: 'get'
+    })
+}
+
 
 
 /**
@@ -97,4 +132,13 @@ export function updateDictItem(id: number, data: object) {
     })
 }
 
-
+/**
+ * 批量删除字典项
+ * @param ids 字典项ID，多个以英文逗号(,)分割
+ */
+export function deleteDictItem(ids: string) {
+    return request({
+        url: '/youlai-admin/api/v2/dict/items/' + ids,
+        method: 'delete',
+    })
+}
