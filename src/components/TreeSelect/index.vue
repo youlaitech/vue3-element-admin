@@ -50,7 +50,7 @@ export default defineComponent({
     // 选项列表数据(树形结构的对象数组)
     options: { type: Array, required: true },
     // 初始值
-    defalut: { type: Number, default: null },
+    defalut: { type: String, default: null },
     // 可清空选项
     clearable: { type: Boolean, default: true },
     // 自动收起
@@ -71,9 +71,6 @@ export default defineComponent({
   },
   emits: ['callBack'],
   setup(props, ctx) {
-    console.log(props.options)
-    console.log(props.treeProps)
-
     const instance = getCurrentInstance() as any
     const state = reactive({
       valueId: 0,
@@ -105,8 +102,6 @@ export default defineComponent({
 
     // 处理默认值并显示
     const defaultValue = () => {
-      console.log('xxxxxx')
-
       if (props.defalut !== null) {
         const deafaultModels = props.originOptions.filter((item: any) => {
           return item[props.treeProps.value] === props.defalut
@@ -168,9 +163,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.el-select.el-select--medium{
- width: 100%;
-}
+
 
 .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
   height: auto;
