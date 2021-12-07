@@ -70,16 +70,12 @@
           新增
         </el-button>
       </el-col>
-      <!-- <right-toolbar
-        v-model:showSearch="showSearch"
-        @queryTable="getList"
-      /> -->
     </el-row>
 
     <el-table
         v-loading="loading"
         :data="deptList"
-        row-key="deptId"
+        row-key="id"
         default-expand-all
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
@@ -135,7 +131,8 @@
         :title="title"
         v-model="open"
         width="600px"
-        @opened="dialogshow"
+        @open="dialogshow"
+        @closed="cancel"
     >
       <el-form
           ref="formDialog"
@@ -158,14 +155,6 @@
                   :disabled="disabled"
               />
             </el-form-item>
-
-<!--            <el-form-item label="上级部门" prop="parentId">-->
-<!--              <tree-select-->
-<!--                  v-model="formVal.parentId"-->
-<!--                  :options="deptOptions"-->
-<!--                  placeholder="选择上级部门"-->
-<!--              />-->
-<!--            </el-form-item>-->
             <el-form-item label="部门名称" prop="name">
               <el-input v-model="formVal.name" placeholder="请输入部门名称"/>
             </el-form-item>
@@ -215,7 +204,6 @@ export default defineComponent({
     const formDialog = ref(ElForm)
     const dataMap = reactive({
       disabled: false,
-      formUpdata: {} as any,
       isAdd: false,
       originOptions: [],
       props: { // 配置项（必选）
@@ -252,16 +240,15 @@ export default defineComponent({
         status: undefined
       },
       formVal: {
-        deptId: '',
+        id: '',
         parentId: '',
         name: '',
-        sort: 0,
+        sort: 1,
         status: ''
       },
 
-      deptidfix: 0,
-      // 表单参数
-      // 表单校验
+      deptidfix: 1,
+      // 表单参数校验
       rules: {
         parentId: [
           { required: true, message: '上级部门不能为空', trigger: 'blur' }
@@ -272,8 +259,7 @@ export default defineComponent({
         sort: [
           { required: true, message: '显示排序不能为空', trigger: 'blur' }
         ]
-      },
-      test: '8347213498'
+      }
     })
 
     /** 查询部门列表 */
@@ -290,7 +276,7 @@ export default defineComponent({
         delete node.children
       }
       return {
-        id: node.deptId,
+        id: node.id,
         label: node.name,
         children: node.children
       }
@@ -299,6 +285,13 @@ export default defineComponent({
     const cancel = () => {
       dataMap.open = false
       dataMap.isAdd = false
+      dataMap.formVal =  {
+        id: '',
+        parentId: '',
+        name: '',
+        sort: 1,
+        status: ''
+      }
     }
 
     /** 搜索按钮操作 */
@@ -330,15 +323,12 @@ export default defineComponent({
       getDeptSelectList().then(response => {
           dataMap.deptOptions = response.data
           dataMap.originOptions = flatten(response?.data) as any
-
       })
     }
     const handleAdd = (row: any) => {
       dataMap.isAdd = true
-      dataMap.formVal.parentId = {} as any
-      if (row.deptId) {
-        dataMap.formVal = {} as any
-        dataMap.formVal.parentId = row.deptId
+      if (row.id) {
+        dataMap.formVal.parentId = row.id.toString()
       }
       dataMap.open = true
       dataMap.title = '添加部门'
@@ -348,15 +338,9 @@ export default defineComponent({
       dataMap.disabled = true
       dataMap.isAdd = false
       dataMap.deptidfix = row.id
-      // 部门下拉数据
-      await getTreeselect()
       const result = await getDept(row.id) as any
       if (result?.code === "00000") {
-        dataMap.formUpdata = result.data
-        dataMap.formVal.name = result.data.name
-        dataMap.formVal.parentId = result.data.parentId
-        dataMap.formVal.sort = result.data.sort
-        dataMap.formVal.status = result.data.status
+        dataMap.formVal = result.data
         dataMap.title = '修改部门'
         dataMap.open = true
       }
@@ -367,12 +351,7 @@ export default defineComponent({
       formNode.validate((valid: any) => {
         if (valid) {
           if (!dataMap.isAdd) {
-            dataMap.formUpdata.parentId = dataMap.formVal.parentId
-            dataMap.formUpdata.id = dataMap.deptidfix
-            dataMap.formUpdata.name = dataMap.formVal.name
-            dataMap.formUpdata.sort = dataMap.formVal.sort
-            dataMap.formUpdata.status = dataMap.formVal.status
-            updateDept(dataMap.formUpdata.id,dataMap.formUpdata).then((res: any) => {
+            updateDept( dataMap.deptidfix,dataMap.formVal).then((res: any) => {
               if (res?.code === "00000") {
                 ElMessage.success('修改成功')
                 dataMap.open = false
@@ -384,7 +363,7 @@ export default defineComponent({
             })
           } else {
             addDept(dataMap.formVal).then((res: any) => {
-              if (res?.code === 200) {
+              if (res?.code === "00000") {
                 ElMessage.success('新增成功')
                 dataMap.open = false
                 getList()
@@ -399,8 +378,8 @@ export default defineComponent({
     }
     /** 删除按钮操作 */
     const handleDelete = async(row: any) => {
-      const result = await delDept(row.deptId) as any
-      if (result?.code === 200) {
+      const result = await delDept(row.id) as any
+      if (result?.code === "00000") {
         getList()
       } else {
         ElMessage.error(result?.msg)
@@ -412,7 +391,7 @@ export default defineComponent({
     }
 
     const getDeptId = (e: any) => {
-      dataMap.formVal.deptId = e
+      dataMap.formVal.parentId = e
     }
     const dialogshow = () => {
       getTreeselect()
@@ -422,7 +401,7 @@ export default defineComponent({
       getTreeselect()
     })
 
-    return { ...toRefs(dataMap),Search,Plus,Edit,Delete,Refresh,dialogshow, getDeptId, flatten, getTreeselect, formDialog, statusFormat, queryForm, getList, normalizer, handleDelete, cancel, handleQuery, resetQuery, handleAdd, handleUpdate, submitForm }
+    return { ...toRefs(dataMap),Search,Plus,Edit,Delete,Refresh,dialogshow, getDeptId, flatten, formDialog, statusFormat, queryForm, getList, normalizer, handleDelete, cancel, handleQuery, resetQuery, handleAdd, handleUpdate, submitForm }
   }
 })
 

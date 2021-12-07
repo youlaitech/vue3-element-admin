@@ -38,7 +38,7 @@ export default defineComponent({
   name: 'ElTreeSelect',
   props: {
     placeholder: {
-      type: String,
+      type: [String,Number],
       default: ''
     },
     user: {
@@ -50,7 +50,7 @@ export default defineComponent({
     // 选项列表数据(树形结构的对象数组)
     options: { type: Array, required: true },
     // 初始值
-    defalut: { type: String, default: null },
+    defalut: { type: [String,Number], default: null },
     // 可清空选项
     clearable: { type: Boolean, default: true },
     // 自动收起
@@ -163,7 +163,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+.el-select.el-select--medium{
+  width: 100%;
+}
 
 .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
   height: auto;
