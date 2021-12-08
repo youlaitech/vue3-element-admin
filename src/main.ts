@@ -16,7 +16,7 @@ import '@/permission'
 
 
 import Pagination from '@/components/Pagination/index.vue'
-import {listDictItems} from '@/api/system/dict.ts'
+import {listDictItems} from '@/api/system/dict'
 
 
 const app = createApp(App)
