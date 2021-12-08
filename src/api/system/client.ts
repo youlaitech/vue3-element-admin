@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function list(queryParams:object) {
+export function listClientsWithPage(queryParams:object) {
     return request({
         url: '/youlai-admin/api/v1/oauth-clients',
         method: 'get',

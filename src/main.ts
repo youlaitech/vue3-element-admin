@@ -16,7 +16,7 @@ import '@/permission'
 
 
 import Pagination from '@/components/Pagination/index.vue'
-import {listDictItems} from '@/api/system/dict.ts'
+import {getDictItemsByCode} from '@/api/system/dict'
 
 
 const app = createApp(App)
@@ -27,7 +27,7 @@ for (let iconName in ElIconModules) {
 }
 
 // 全局方法
-app.config.globalProperties.$listDictItems = listDictItems
+app.config.globalProperties.$getDictItemsByCode = getDictItemsByCode
 
 app
     .component('Pagination', Pagination) // 全局组件

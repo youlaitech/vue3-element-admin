@@ -111,15 +111,14 @@
 </template>
 
 <script setup lang="ts">
-import {list, detail, update, add, del} from '@/api/system/client'
+import {listClientsWithPage, detail, update, add, del} from '@/api/system/client'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {onMounted, reactive, getCurrentInstance, ref, unref} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 
 const state = reactive({
   loading: true,
-
-
+  // 选中ID数组
   ids: [],
   // 非单个禁用
   single: true,
@@ -152,11 +151,11 @@ const state = reactive({
     clientId: [
       {required: true, message: '客户端ID不能为空', trigger: 'blur'}
     ]
-  },
+  }
 })
 
 function handleQuery() {
-  list(state.queryParams).then(response => {
+  listClientsWithPage(state.queryParams).then(response => {
     const {data, total} = response as any
     state.pageList = data
     state.total = total
@@ -201,9 +200,8 @@ function handleUpdate(row: any) {
   })
 }
 
-const dataForm = ref(ElForm)
-
 function submitForm() {
+  const dataForm = ref(ElForm)
   const form = unref(dataForm)
   form.validate((valid: any) => {
     if (valid) {
@@ -224,10 +222,6 @@ function submitForm() {
   })
 }
 
-function cancel() {
-  state.dialog.visible = false
-}
-
 function resetForm() {
   state.formData = {
     authorizedGrantTypes: [],
@@ -240,6 +234,10 @@ function resetForm() {
     additionalInformation: undefined,
     autoapprove: 'false'
   }
+}
+
+function cancel() {
+  state.dialog.visible = false
 }
 
 function handleDelete(row: any) {
@@ -260,9 +258,9 @@ function handleDelete(row: any) {
 
 onMounted(() => {
   handleQuery()
-  // 全局方法调用
+  // 全局字典调用
   const {proxy}: any = getCurrentInstance();
-  proxy.$listDictItems('gender').then((response: any) => {
+  proxy.$getDictItemsByCode('gender').then((response: any) => {
     console.log('性别字典数据', response.data)
   })
 })
