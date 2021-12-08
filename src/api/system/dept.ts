@@ -8,16 +8,16 @@ export const listDept = (queryParams?: object) => {
     })
 }
 
-export const getDept = (deptId: any) => {
+export const getDept = (id: any) => {
     return request({
-        url: '/youlai-admin/api/v1/depts/'+deptId,
+        url: '/youlai-admin/api/v1/depts/'+id,
         method: 'get'
     })
 }
 
-export const delDept = (deptId: any) => {
+export const delDept = (id: any) => {
     return request({
-        url: '/youlai-admin/api/v1/depts/'+deptId,
+        url: '/youlai-admin/api/v1/depts/'+id,
         method: 'delete',
     })
 }
@@ -32,7 +32,7 @@ export const addDept = (data: any) => {
 }
 
 // 修改部门
-export const updateDept = (id:string,data: any) => {
+export const updateDept = (id:number,data: any) => {
     return request({
         url: '/youlai-admin/api/v1/depts/'+id,
         method: 'put',
