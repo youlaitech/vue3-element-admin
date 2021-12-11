@@ -3,9 +3,10 @@
     <el-row :gutter="10">
       <el-col :span="12" :xs="24">
         <el-card class="box-card">
-          <div class="clearfix" slot="header">
-            <b>字典列表</b>
-          </div>
+          <template #header>
+            <svg-icon color="#000" icon-class="dict"/>
+            字典列表
+          </template>
           <!-- 字典列表子组件 -->
           <dict @dictClick="handleDictClick"/>
         </el-card>
@@ -13,12 +14,13 @@
 
       <el-col :span="12" :xs="24">
         <el-card class="box-card">
-          <div class="clearfix" slot="header">
-            <b  v-if=" state.dictCode" style="margin-right: 5px">字典</b>
-            <el-tag type="success" v-if=" state.dictCode" ><b>{{ state.dictName }}</b></el-tag>
-            <b  v-if=" state.dictCode" style="margin-left: 5px">数据项</b>
-            <el-tag type="warning"  v-if=" !state.dictCode">未选择字典</el-tag>
-          </div>
+          <template #header>
+            <svg-icon color="#333" v-if=" state.dictCode" icon-class="education" />
+            <span v-if=" state.dictCode" style="margin:0 5px;">字典</span>
+            <el-tag type="primary" v-if=" state.dictCode" size="small">{{ state.dictName }}</el-tag>
+            <span v-if=" state.dictCode" style="margin-left: 5px">数据项</span>
+            <el-tag type="warning" v-if=" !state.dictCode" size="small">未选择字典</el-tag>
+          </template>
           <!-- 字典项组件 -->
           <dict-item :dictName="state.dictName" :dictCode='state.dictCode'/>
         </el-card>
@@ -28,6 +30,7 @@
 </template>
 
 <script setup lang="ts">
+import SvgIcon from '@/components/SvgIcon/index.vue';
 import Dict from './components/Dict.vue'
 import DictItem from './components/DictItem.vue'
 
@@ -39,12 +42,12 @@ const state = reactive({
 })
 
 const handleDictClick = (dictRow: any) => {
-  state.dictName = dictRow.name
-  state.dictCode = dictRow.code
+  if(dictRow){
+    state.dictName = dictRow.name
+    state.dictCode = dictRow.code
+  }else{
+    state.dictName = ''
+    state.dictCode = ''
+  }
 }
-
 </script>
-
-<style scoped>
-
-</style>

@@ -158,6 +158,7 @@ const state = reactive({
 })
 
 function handleQuery() {
+  emit('dictClick',{})
   state.loading = true
   listDictWithPage(state.queryParams).then(response => {
     const {data, total} = response as any

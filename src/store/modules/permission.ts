@@ -2,7 +2,7 @@ import {Module} from "vuex";
 import {PermissionState, RootStateTypes} from "@store/interface";
 import {RouteRecordRaw} from 'vue-router'
 import {constantRoutes} from '@/router'
-import {getRouteList} from "@/api/system/menu";
+import {listRoutes} from "@/api/system/menu";
 
 const modules = import.meta.glob("../../views/**/**.vue");
 export const Layout = () => import( '@/layout/index.vue')
@@ -64,7 +64,7 @@ const permissionModule: Module<PermissionState, RootStateTypes> = {
     actions: {
         generateRoutes({commit}, roles: string[]) {
             return new Promise((resolve, reject) => {
-                getRouteList().then(response => {
+                listRoutes().then(response => {
                     const asyncRoutes = response.data
                     let accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
                     commit('SET_ROUTES', accessedRoutes)
