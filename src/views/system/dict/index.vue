@@ -4,51 +4,45 @@
       <el-col :span="12" :xs="24">
         <el-card class="box-card">
           <div class="clearfix" slot="header">
-            <span>字典列表</span>
+            <b>字典列表</b>
           </div>
           <!-- 字典列表子组件 -->
-          <dict @dictClick="dictClick" @resetItem="resetItem" ref="dict"></dict>
+          <dict @dictClick="handleDictClick"/>
         </el-card>
       </el-col>
 
       <el-col :span="12" :xs="24">
         <el-card class="box-card">
           <div class="clearfix" slot="header">
-            <span>{{ dict.name }}数据项</span>
+            <b  v-if=" state.dictCode" style="margin-right: 5px">字典</b>
+            <el-tag type="success" v-if=" state.dictCode" ><b>{{ state.dictName }}</b></el-tag>
+            <b  v-if=" state.dictCode" style="margin-left: 5px">数据项</b>
+            <el-tag type="warning"  v-if=" !state.dictCode">未选择字典</el-tag>
           </div>
-          <!-- 字典数据项子组件 -->
-          <dict-item ref="dictItem"></dict-item>
+          <!-- 字典项组件 -->
+          <dict-item :dictName="state.dictName" :dictCode='state.dictCode'/>
         </el-card>
       </el-col>
     </el-row>
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import Dict from './components/Dict.vue'
 import DictItem from './components/DictItem.vue'
 
-export default {
-  name: "index",
-  components: {Dict, DictItem},
-  data() {
-    return {
-      dict: {
-        name: undefined
-      }
-    }
-  },
-  methods: {
-    dictClick(row) {
-      this.dict.name = row.name ? '【' + row.name + '】' : undefined
-      this.$refs.dictItem.dictClick(row)
-    },
-    resetItem() {
-      this.dict.name = undefined
-      this.$refs.dictItem.dictClick()
-    }
-  }
+import {reactive} from 'vue'
+
+const state = reactive({
+  dictCode: '',
+  dictName: ''  // 字典名称，用于字典项组件回显
+})
+
+const handleDictClick = (dictRow: any) => {
+  state.dictName = dictRow.name
+  state.dictCode = dictRow.code
 }
+
 </script>
 
 <style scoped>

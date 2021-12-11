@@ -49,7 +49,7 @@
         <template #default="scope">
           <el-button
               type="primary"
-              :icon="Plus"
+              :icon="Edit"
               size="mini"
               circle
               plain
@@ -200,8 +200,8 @@ function handleUpdate(row: any) {
   })
 }
 
+const dataForm = ref(ElForm)
 function submitForm() {
-  const dataForm = ref(ElForm)
   const form = unref(dataForm)
   form.validate((valid: any) => {
     if (valid) {

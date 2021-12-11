@@ -47,3 +47,8 @@
 .el-range-separator {
   box-sizing: content-box;
 }
+
+// select row color
+.el-table__body tr.current-row td {
+  background-color: #e1f3d8b5 !important;
+}

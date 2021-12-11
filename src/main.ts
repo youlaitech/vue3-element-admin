@@ -22,6 +22,7 @@ import {getDictItemsByCode} from '@/api/system/dict'
 const app = createApp(App)
 
 // 统一注册el-icon图标
+// @link https://blog.csdn.net/Alloom/article/details/119415984
 for (let iconName in ElIconModules) {
     app.component(iconName, (ElIconModules as any)[iconName])
 }

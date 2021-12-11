@@ -1,7 +1,9 @@
 <template>
-  <div v-if="!item.meta || !item.meta.hidden" :class="[
-      isCollapse ? 'simple-mode' : 'full-mode',
-      {'first-level': !isNest}]">
+  <div
+      v-if="!item.meta || !item.meta.hidden"
+      :class="[isCollapse ? 'simple-mode' : 'full-mode',
+      {'first-level': !isFirstLevel}]"
+  >
     <template
         v-if="!alwaysShowParent && onlyOneChild && !onlyOneChild.children"
     >
@@ -11,7 +13,7 @@
       >
         <el-menu-item
             :index="resolvePath(onlyOneChild.path)"
-            :class="{'submenu-title-noDropdown':!isNest}"
+            :class="{'submenu-title-noDropdown':!isFirstLevel}"
         >
           <svg-icon v-if="onlyOneChild.meta&&onlyOneChild.meta.icon" :icon-class="onlyOneChild.meta.icon"></svg-icon>
           <template v-if="onlyOneChild.meta && onlyOneChild.meta.title" #title>{{ onlyOneChild.meta.title }}</template>
@@ -33,7 +35,7 @@
             :key="child.path"
             :item="child"
             :is-collapse="isCollapse"
-            :is-nest="true"
+            :is-first-level="false"
             :base-path="resolvePath(child.path)"
             class="nest-menu"
         />
@@ -62,7 +64,7 @@ export default defineComponent({
       type: Boolean,
       required: false
     },
-    isNest: {
+    isFirstLevel: {
       type: Boolean,
       required: false
     },
@@ -180,10 +182,11 @@ export default defineComponent({
       padding: 0 !important;
       position: relative;
 
-      & > span{
+      & > span {
         display: none;
       }
-      & > svg{
+
+      & > svg {
         margin-left: 20px;
       }
     }

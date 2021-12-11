@@ -1,10 +1,11 @@
 <template>
   <div class="app-container">
     <!-- 搜索表单 -->
-    <el-form size="mini"
-             :model="state.queryParams"
-             ref="queryForm"
-             :inline="true"
+    <el-form
+        size="mini"
+        :model="state.queryParams"
+        ref="queryForm"
+        :inline="true"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
@@ -27,6 +28,7 @@
 
     <!-- 数据表格 -->
     <el-table
+        highlight-current-row
         :data="state.pageList"
         v-loading="state.loading"
         @row-click="handleRowClick"
@@ -39,12 +41,8 @@
       <el-table-column label="字典编码" prop="code"/>
       <el-table-column label="状态" align="center" width="80">
         <template #default="scope">
-          <el-switch
-              size="mini"
-              v-model="scope.row.status"
-              :active-value="1"
-              :inactive-value="0"
-          />
+          <el-tag v-if="scope.row.status===1" type="success" size="mini">启用</el-tag>
+          <el-tag v-else type="info" size="mini">禁用</el-tag>
         </template>
       </el-table-column>
 
@@ -69,11 +67,12 @@
         </template>
       </el-table-column>
     </el-table>
+
     <pagination
         v-show="state.total>0"
         :total="state.total"
-        :page.sync="state.queryParams.pageNum"
-        :limit.sync="state.queryParams.pageSize"
+        v-model:page="state.queryParams.pageNum"
+        v-model:limit="state.queryParams.pageSize"
         @pagination="handleQuery"
     />
 
@@ -104,7 +103,7 @@
           <el-input v-model="state.formData.remark" type="textarea" placeholder="请输入内容"></el-input>
         </el-form-item>
       </el-form>
-      <template  #footer>
+      <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="submitForm">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
@@ -117,8 +116,10 @@
 <script setup lang="ts">
 import {listDictWithPage, getDictDetail, addDict, updateDict, deleteDict} from "@/api/system/dict";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
-import {onMounted, reactive, getCurrentInstance, ref, unref} from 'vue'
+import {onMounted, reactive, ref, unref, defineEmits} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
+
+const emit = defineEmits(['dictClick'])
 
 const state = reactive({
   loading: true,
@@ -147,8 +148,11 @@ const state = reactive({
     remark: undefined
   },
   rules: {
-    clientId: [
-      {required: true, message: '客户端ID不能为空', trigger: 'blur'}
+    name: [
+      {required: true, message: '请输入字典名称', trigger: 'blur'}
+    ],
+    code: [
+      {required: true, message: '请输入字典编码', trigger: 'blur'}
     ]
   }
 })
@@ -199,8 +203,9 @@ function handleUpdate(row: any) {
   })
 }
 
+const dataForm = ref(ElForm)
+
 function submitForm() {
-  const dataForm = ref(ElForm)
   const form = unref(dataForm)
   form.validate((valid: any) => {
     if (valid) {
@@ -253,7 +258,7 @@ function handleDelete(row: any) {
 }
 
 function handleRowClick(row: any) {
-  console.log("handleRowClick")
+  emit('dictClick', row)
 }
 
 onMounted(() => {
