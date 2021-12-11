@@ -9,7 +9,7 @@
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" :icon="Delete" :disabled="state.single" @click="handleDelete">删除
+        <el-button type="danger" :icon="Delete" :disabled="state.multiple" @click="handleDelete">删除
         </el-button>
       </el-form-item>
 

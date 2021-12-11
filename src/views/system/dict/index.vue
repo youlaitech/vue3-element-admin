@@ -4,7 +4,7 @@
       <el-col :span="12" :xs="24">
         <el-card class="box-card">
           <template #header>
-            <svg-icon color="#000" icon-class="dict"/>
+            <svg-icon color="#333" icon-class="education"/>
             字典列表
           </template>
           <!-- 字典列表子组件 -->
@@ -15,11 +15,10 @@
       <el-col :span="12" :xs="24">
         <el-card class="box-card">
           <template #header>
-            <svg-icon color="#333" v-if=" state.dictCode" icon-class="education" />
-            <span v-if=" state.dictCode" style="margin:0 5px;">字典</span>
+            <svg-icon color="#333" icon-class="dict"/>
+            <span style="margin:0 5px;">字典数据项列表</span>
             <el-tag type="primary" v-if=" state.dictCode" size="small">{{ state.dictName }}</el-tag>
-            <span v-if=" state.dictCode" style="margin-left: 5px">数据项</span>
-            <el-tag type="warning" v-if=" !state.dictCode" size="small">未选择字典</el-tag>
+            <el-tag type="warning" v-else size="small">未选择字典</el-tag>
           </template>
           <!-- 字典项组件 -->
           <dict-item :dictName="state.dictName" :dictCode='state.dictCode'/>
@@ -42,10 +41,10 @@ const state = reactive({
 })
 
 const handleDictClick = (dictRow: any) => {
-  if(dictRow){
+  if (dictRow) {
     state.dictName = dictRow.name
     state.dictCode = dictRow.code
-  }else{
+  } else {
     state.dictName = ''
     state.dictCode = ''
   }
