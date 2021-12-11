@@ -1,13 +1,20 @@
 <template>
   <div class="app-container">
+
     <el-form
+        size="mini"
         :model="dataMap.queryParams"
         ref="queryForm"
         :inline="true"
         v-show="dataMap.showSearch"
     >
+      <el-form-item>
+        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
+        <el-button type="danger" :icon="Delete" :disabled="dataMap.single" @click="handleDelete">删除
+        </el-button>
+      </el-form-item>
+
       <el-form-item
-          label="部门名称"
           prop="name"
       >
         <el-input
@@ -18,7 +25,6 @@
         />
       </el-form-item>
       <el-form-item
-          label="状态"
           prop="status"
       >
         <el-select
@@ -55,30 +61,15 @@
       </el-form-item>
     </el-form>
 
-    <el-row
-        :gutter="10"
-        class="mb8"
-    >
-      <el-col :span="1.5">
-        <el-button
-            type="primary"
-            plain
-            :icon="Plus"
-            size="mini"
-            @click="handleAdd"
-        >
-          新增
-        </el-button>
-      </el-col>
-    </el-row>
-
     <el-table
         v-loading="dataMap.loading"
         :data="dataMap.deptList"
         row-key="id"
         default-expand-all
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        @selection-change = "handleSelectionChange"
     >
+      <el-table-column type="selection" width="55" align="center"/>
       <el-table-column prop="name" label="部门名称"/>
       <el-table-column prop="status" label="状态" width="100">
         <template #default="scope">
@@ -195,8 +186,15 @@ import {listDept, getDept, delDept, updateDept, addDept, getDeptSelectList} from
 import TreeSelect from '@/components/TreeSelect/Index.vue'
 import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
 import {del} from "@api/system/client";
+import {deleteDict} from "@api/system/dict";
 
 const dataMap = reactive({
+  // 选中ID数组
+  ids: [],
+  // 非单个禁用
+  single: true,
+  // 非多个禁用
+  multiple: true,
   disabled: false,
   isAdd: false,
   originOptions: [],
@@ -256,6 +254,14 @@ const dataMap = reactive({
 })
 const queryForm = ref(ElForm)
 const formDialog = ref(ElForm)
+
+/**
+ * 删除按钮
+ * */
+function handleSelectionChange(selection: any) {
+  dataMap.ids = selection.map((item: any) => item.id)
+  dataMap.single = selection.length === 0
+}
 
 /** 查询部门列表 */
 function getList() {
@@ -362,13 +368,13 @@ function submitForm() {
 
 /** 删除按钮操作 */
 async function handleDelete(row: any) {
-
-    ElMessageBox.confirm(`确认删除${row.name}部门?`, '警告', {
+  const ids = [row.id || dataMap.ids].join(',')
+    ElMessageBox.confirm(`确认删除已选中的数据项?`, '警告', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     }).then(() => {
-       delDept(row.id).then(rps=>{
+       delDept(ids).then(rps=>{
          getList()
          ElMessage.success('删除成功')
        }).catch(e=>{
