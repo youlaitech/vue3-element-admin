@@ -87,7 +87,7 @@ export function updateMenu(id: number, data: object) {
  *
  * @param ids 菜单ID，多个以英文逗号(,)分割
  */
-export function deleteMenu(ids: string) {
+export function deleteMenus(ids: string) {
     return request({
         url: '/youlai-admin/api/v1/menus/' + ids,
         method: 'delete'

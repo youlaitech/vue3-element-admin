@@ -8,10 +8,6 @@ const modules = import.meta.glob("../../views/**/**.vue");
 export const Layout = () => import( '@/layout/index.vue')
 
 const hasPermission = (roles: string[], route: RouteRecordRaw) => {
-    // 超级管理员放行
-    if (roles.includes('ROOT')) {
-        return true
-    }
     if (route.meta && route.meta.roles) {
         return roles.some(role => {
             if (route.meta?.roles !== undefined) {
@@ -66,7 +62,12 @@ const permissionModule: Module<PermissionState, RootStateTypes> = {
             return new Promise((resolve, reject) => {
                 listRoutes().then(response => {
                     const asyncRoutes = response.data
-                    let accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+                    let accessedRoutes
+                    if (roles.includes('ROOT')) { // 超级管理员拥有全部权限
+                        accessedRoutes = asyncRoutes || []
+                    } else {
+                        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+                    }
                     commit('SET_ROUTES', accessedRoutes)
                     resolve(accessedRoutes)
                 }).catch(error => {
@@ -74,7 +75,6 @@ const permissionModule: Module<PermissionState, RootStateTypes> = {
                 })
             })
         }
-
     }
 }
 export default permissionModule;

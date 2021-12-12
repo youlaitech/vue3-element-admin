@@ -11,7 +11,7 @@ const whiteList = ['/login', '/auth-redirect']
 router.beforeEach(async (to, form, next) => {
     NProgress.start()
 
-    const hasToken =store.state.user.token
+    const hasToken = store.state.user.token
     if (hasToken) {
         // 如果登录成功，跳转到首页
         if (to.path === '/login') {
@@ -25,8 +25,8 @@ router.beforeEach(async (to, form, next) => {
                 try {
                     await store.dispatch('user/getUserInfo')
                     const roles = store.state.user.roles
-                    await store.dispatch('permission/generateRoutes', roles)
-                    store.state.permission.addRoutes.forEach(route => {
+                    const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+                    accessRoutes.forEach((route: any) => {
                         router.addRoute(route)
                     })
                     next({...to, replace: true})
@@ -49,7 +49,6 @@ router.beforeEach(async (to, form, next) => {
         }
     }
 })
-
 
 router.afterEach(() => {
     NProgress.done()

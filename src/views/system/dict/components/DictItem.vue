@@ -14,7 +14,7 @@
       <el-form-item prop="name">
         <el-input
             v-model="state.queryParams.name"
-            placeholder="字典项名称"
+            placeholder="数据项名称"
             clearable/>
       </el-form-item>
       <el-form-item>
@@ -32,8 +32,8 @@
         size="mini"
     >
       <el-table-column type="selection" min-width="5%"/>
-      <el-table-column label="字典项名称" prop="name"/>
-      <el-table-column label="字典项值" prop="value"/>
+      <el-table-column label="数据项名称" prop="name"/>
+      <el-table-column label="数据项值" prop="value"/>
       <el-table-column label="状态" align="center">
         <template #default="scope">
           <el-tag v-if="scope.row.status===1" type="success" size="mini">启用</el-tag>
@@ -105,7 +105,6 @@
           <el-input v-model="state.formData.remark" type="textarea"></el-input>
         </el-form-item>
       </el-form>
-
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -125,17 +124,17 @@ import {
   deleteDictItem
 } from "@/api/system/dict";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons';
-import {onMounted, computed, reactive, ref, unref, watch} from 'vue'
+import {onMounted, reactive, ref, unref, watch} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 
 const props = defineProps({
   dictCode: {
     type: String,
-    default: false
+    default: ''
   },
   dictName: {
     type: String,
-    default: false
+    default: ''
   }
 })
 
@@ -143,7 +142,6 @@ watch(() => props.dictCode, (newVal, oldVal) => {
   state.queryParams.dictCode = newVal
   handleQuery()
 })
-
 
 const state = reactive({
   loading: true,
@@ -287,10 +285,6 @@ function handleDelete(row: any) {
   }).catch(() =>
       ElMessage.info('已取消删除')
   )
-}
-
-function handleRowClick(row: any) {
-  console.log("handleRowClick")
 }
 
 onMounted(() => {

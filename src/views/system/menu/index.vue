@@ -4,7 +4,8 @@
       <el-col :span="10" :xs="24">
         <el-card class="box-card" shadow="always">
           <template #header>
-            <svg-icon color="#333" icon-class="menu"/> 菜单列表
+            <svg-icon color="#333" icon-class="menu"/>
+            菜单列表
           </template>
           <menu-table @menuClick="handleMenuClick"/>
         </el-card>
@@ -13,10 +14,9 @@
         <el-card class="box-card" shadow="always">
           <template #header>
             <svg-icon color="#333" icon-class="perm"/>
-            <b v-if=" state.dictCode" style="margin-right: 5px">菜单</b>
-            <el-tag type="success" v-if=" state.dictCode"><b>{{ state.dictName }}</b></el-tag>
-            <b v-if=" state.dictCode" style="margin-left: 5px"></b>
-            <el-tag type="warning" v-if=" !state.dictCode" size="small">权限列表</el-tag>
+            <span style="margin:0 5px;">权限列表</span>
+            <el-tag type="success" v-if=" state.menuId">{{ state.menuName }}</el-tag>
+            <el-tag type="warning" v-else size="small">请点击左侧菜单列表选择</el-tag>
           </template>
           <perm-table :menuId="state.menuId" :menuName="state.menuName"/>
         </el-card>
@@ -38,8 +38,13 @@ const state = reactive({
 })
 
 const handleMenuClick = (menuRow: any) => {
-  state.menuId = menuRow.id
-  state.menuName = menuRow.name
+  if (menuRow) {
+    state.menuId = menuRow.id
+    state.menuName = menuRow.name
+  } else {
+    state.menuId = undefined
+    state.menuName = ''
+  }
 }
 
 </script>

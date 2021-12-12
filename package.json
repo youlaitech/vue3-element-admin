@@ -7,15 +7,16 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@element-plus/icons": "0.0.11",
     "axios": "^0.24.0",
     "element-plus": "^1.2.0-beta.6",
-    "@element-plus/icons": "0.0.11",
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
     "path-to-regexp": "^6.2.0",
     "screenfull": "^6.0.0",
     "vue": "^3.2.16",
     "vue-router": "^4.0.12",
+    "vue3-treeselect": "^0.1.10",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
