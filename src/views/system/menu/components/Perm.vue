@@ -44,7 +44,7 @@
       <el-table-column label="操作" align="center" width="100">
         <template #default="scope">
           <el-button
-
+              type="primary"
               :icon="Edit"
               size="mini"
               circle
@@ -88,28 +88,31 @@
 
         <el-form-item label="URL权限标识" prop="urlPerm">
           <el-input placeholder="/api/v1/users" v-model="state.urlPerm.requestPath" class="input-with-select">
-            <el-select
-                v-model="state.urlPerm.serviceName"
-                style="width: 130px;"
-                slot="prepend"
-                placeholder="所属服务"
-                clearable
-            >
-              <el-option v-for="item in state.microServiceOptions" :value="item.value" :label="item.name"/>
-            </el-select>
-            <el-select
-                v-model="state.urlPerm.requestMethod"
-                style="width: 120px;margin-left: 20px"
-                slot="prepend"
-                placeholder="请求方式"
-                clearable
-            >
-              <el-option
-                  v-for="item in state.requestMethodOptions"
-                  :value="item.value"
-                  :label="item.name"
-              />
-            </el-select>
+
+            <template #prepend>
+              <el-select
+                  v-model="state.urlPerm.serviceName"
+                  style="width: 130px;"
+                  placeholder="所属服务"
+                  clearable
+              >
+                <el-option v-for="item in state.microServiceOptions" :value="item.value" :label="item.name"/>
+              </el-select>
+
+              <el-select
+                  v-model="state.urlPerm.requestMethod"
+                  style="width: 120px;margin-left: 20px"
+                  slot="prepend"
+                  placeholder="请求方式"
+                  clearable
+              >
+                <el-option
+                    v-for="item in state.requestMethodOptions"
+                    :value="item.value"
+                    :label="item.name"
+                />
+              </el-select>
+            </template>
           </el-input>
           <el-link  v-show="state.urlPerm.requestMethod">
             {{ state.urlPerm.requestMethod }}:/{{ state.urlPerm.serviceName }}{{ state.urlPerm.requestPath }}
@@ -123,7 +126,7 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button  @click="submitForm">确 定</el-button>
+          <el-button type="primary"  @click="submitForm">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
         </div>
       </template>
@@ -134,19 +137,27 @@
 <script setup lang="ts">
 import {listPermsWithPage, getPermDetail, addPerm, updatePerm, deletePerms} from "@/api/system/perm"
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
-import {onMounted, reactive, ref, unref, getCurrentInstance} from 'vue'
+import {onMounted,watch, reactive, ref, unref, getCurrentInstance} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus"
+
+const {proxy}: any = getCurrentInstance();
 
 const props = defineProps({
   menuId: {
-    type: Number,
-    default: null
+    type: String,
+    default: undefined
   },
   menuName: {
     type: String,
     default: ''
   }
 })
+
+watch(() => props.menuId as any, (newVal, oldVal) => {
+  state.queryParams.menuId = newVal
+  handleQuery()
+})
+
 
 const state = reactive({
   loading: true,
@@ -228,11 +239,12 @@ function handleSelectionChange(selection: any) {
   state.multiple = !selection.length
 }
 
+
+
 /**
  * 字典数据准备
  */
 function loadDictData() {
-  const {proxy}: any = getCurrentInstance();
   proxy.$getDictItemsByCode('micro_service').then((response: any) => {
     state.microServiceOptions = response.data
   })
@@ -270,6 +282,27 @@ function submitForm() {
   const form = unref(dataForm)
   form.validate((valid: any) => {
     if (valid) {
+      // 接口权限和按钮权限必选其一
+      console.log(state.urlPerm.requestPath, state.formData.btnPerm)
+      if (!(state.urlPerm.requestPath || state.formData.btnPerm)) {
+        ElMessage.warning('请至少填写一种权限')
+        return false
+      }
+
+      if (!state.urlPerm.requestPath) {
+        if (!state.urlPerm.requestMethod) {
+          ElMessage.warning('URL权限的请求方式不能为空')
+          return false
+        }
+        if (!state.urlPerm.serviceName) {
+          ElMessage.warning('URL权限的所属服务不能为空')
+          return false
+        }
+      }
+      state.formData.urlPerm = state.urlPerm.requestMethod + ':/' + state.urlPerm.serviceName + state.urlPerm.requestPath;
+
+      state.formData.menuId = props.menuId
+
       if (state.formData.id) {
         updatePerm(state.formData.id, state.formData).then(response => {
           ElMessage.success('修改成功')
