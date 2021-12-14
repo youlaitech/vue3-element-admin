@@ -185,8 +185,7 @@ import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {listDept, getDept, delDept, updateDept, addDept, getDeptSelectList} from '@/api/system/dept'
 import TreeSelect from '@/components/TreeSelect/Index.vue'
 import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
-import {del} from "@api/system/client";
-import {deleteDict} from "@api/system/dict";
+
 
 const dataMap = reactive({
   // 选中ID数组
