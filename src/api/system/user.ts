@@ -2,7 +2,7 @@
 import request from "@utils/request";
 export const listUser = (queryParams:any)=> {
     return request({
-        url: '/youlai-admin/api/v1/users',
+        url: '/youlai-admin/api/v2/users',
         method: 'get',
         params: queryParams
     })
@@ -23,7 +23,7 @@ export const addUser = (data:any) => {
     })
 }
 
-export const updateUser = (id, data)=> {
+export const updateUser = (id:number, data:any)=> {
     return request({
         url: '/youlai-admin/api/v1/users/' + id,
         method: 'put',
@@ -31,7 +31,7 @@ export const updateUser = (id, data)=> {
     })
 }
 
-export const patch = (id, data) => {
+export const patch = (id:number, data:any) => {
     return request({
         url: '/youlai-admin/api/v1/users/' + id,
         method: 'patch',
@@ -39,7 +39,7 @@ export const patch = (id, data) => {
     })
 }
 
-export const delUser = (ids) =>{
+export const delUser =(ids:number) =>{
     return request({
         url: '/youlai-admin/api/v1/users/'+ids,
         method: 'delete',

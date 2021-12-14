@@ -85,6 +85,7 @@ const userModule: Module<UserState, RootStateTypes> = {
                         if (!data) {
                             return reject('Verification failed, please Login again.')
                         }
+                        console.log(data)
                         const {nickname, avatar, roles, perms} = data
                         if (!roles || roles.length <= 0) {
                             reject('getUserInfo: roles must be a non-null array!')

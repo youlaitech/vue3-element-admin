@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <!--部门数据-->
       <el-col
-          :span="4"
+          :span="3"
           :xs="24"
       >
         <div class="head-container">
@@ -30,7 +30,7 @@
       </el-col>
       <!--用户数据-->
       <el-col
-          :span="20"
+          :span="21"
           :xs="24"
       >
         <el-form
@@ -38,27 +38,26 @@
             ref="queryForm"
             :model="queryParams"
             :inline="true"
-            label-width="68px"
+
         >
           <el-form-item
-              label="用户名称"
-              prop="userName"
+              label="关键字"
+              prop="keywords"
           >
             <el-input
-                v-model="queryParams.userName"
-                placeholder="请输入用户名称"
+                v-model="queryParams.keywords"
+                placeholder="用户名/昵称/手机号"
                 clearable
                 size="small"
-                style="width: 240px"
                 @keyup.enter="handleQuery"
             />
           </el-form-item>
           <el-form-item
               label="手机号码"
-              prop="phonenumber"
+              prop="mobile"
           >
             <el-input
-                v-model="queryParams.phonenumber"
+                v-model="queryParams.mobile"
                 placeholder="请输入手机号码"
                 clearable
                 size="small"
@@ -85,41 +84,17 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="创建时间">
-            <el-date-picker
-                v-model="dateRange"
-                size="small"
-                style="width: 240px"
-                value-format="yyyy-MM-dd"
-                type="daterange"
-                range-separator="-"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-            />
-          </el-form-item>
-          <el-form-item label="创建时间">
-            <el-date-picker
-                v-model="dateRange"
-                size="small"
-                style="width: 240px"
-                value-format="yyyy-MM-dd"
-                type="daterange"
-                range-separator="-"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-            />
-          </el-form-item>
           <el-form-item>
             <el-button
                 type="primary"
-                icon="el-icon-search"
+                :icon="Search"
                 size="mini"
                 @click="handleQuery"
             >
               搜索
             </el-button>
             <el-button
-                icon="el-icon-refresh"
+                :icon="Refresh"
                 size="mini"
                 @click="resetQuery"
             >
@@ -136,7 +111,7 @@
             <el-button
                 type="primary"
                 plain
-                icon="el-icon-plus"
+                :icon="Plus"
                 size="mini"
                 @click="handleAdd"
             >
@@ -147,7 +122,7 @@
             <el-button
                 type="success"
                 plain
-                icon="el-icon-edit"
+                :icon="Edit"
                 size="mini"
                 :disabled="single"
                 @click="handleUpdate"
@@ -159,7 +134,7 @@
             <el-button
                 type="danger"
                 plain
-                icon="el-icon-delete"
+                :icon="Delete"
                 size="mini"
                 :disabled="multiple"
                 @click="handleDelete"
@@ -219,12 +194,7 @@
               prop="mobile"
               width="120"
           />
-          <el-table-column prop="status" label="状态" width="100">
-            <template #default="scope">
-              <el-tag v-if="scope.row.status==1" type="success">正常</el-tag>
-              <el-tag v-else type="info">禁用</el-tag>
-            </template>
-          </el-table-column>
+
           <el-table-column
               v-if="columns[5].visible"
               key="status"
@@ -235,8 +205,8 @@
             <template #default="scope">
               <el-switch
                   v-model="scope.row.status"
-                  inactive-value=0
-                  active-value=1
+                  :inactive-value=0
+                  :active-value=1
                   @change="handleStatusChange(scope.row)"
               />
             </template>
@@ -246,40 +216,41 @@
               label="创建时间"
               align="center"
               prop="gmtCreate"
-              width="120"
+              width="180"
           >
           </el-table-column>
           <el-table-column
               label="操作"
               align="center"
-              width="160"
-              class-name="small-padding fixed-width"
+              width="150"
           >
             <template #default="scope">
               <el-button
+                  type="primary"
+                  :icon="Edit"
                   size="mini"
-                  type="text"
-                  icon="el-icon-edit"
+                  circle
+                  plain
                   @click="handleUpdate(scope.row)"
               >
-                修改
               </el-button>
               <el-button
-                  v-if="scope.row.userId !== 1"
+                  type="success"
                   size="mini"
-                  type="text"
-                  icon="el-icon-delete"
+                  :icon="Delete"
+                  circle
+                  plain
                   @click="handleDelete(scope.row)"
               >
-                删除
               </el-button>
               <el-button
+                  type="danger"
                   size="mini"
-                  type="text"
-                  icon="el-icon-key"
+                  :icon="Refresh"
+                  circle
+                  plain
                   @click="handleResetPwd(scope.row)"
               >
-                重置
               </el-button>
             </template>
           </el-table-column>
@@ -313,10 +284,10 @@
           <el-col :span="12">
             <el-form-item
                 label="用户昵称"
-                prop="nickName"
+                prop="nickname"
             >
               <el-input
-                  v-model="formVal.nickName"
+                  v-model="formVal.nickname"
                   placeholder="请输入用户昵称"
               />
             </el-form-item>
@@ -332,8 +303,6 @@
                   placeholder="请选择归属部门"
                   :originOptions="originOptions"
                   :defalut="formVal.deptId"
-                  :accordion="isAccordion"
-                  @getValue="getParentValue($event)"
                   :user="true"
                   @callBack="getDeptId"
               />
@@ -344,10 +313,10 @@
           <el-col :span="12">
             <el-form-item
                 label="手机号码"
-                prop="phonenumber"
+                prop="mobile"
             >
               <el-input
-                  v-model="formVal.phonenumber"
+                  v-model="formVal.mobile"
                   placeholder="请输入手机号码"
                   maxlength="11"
               />
@@ -374,14 +343,14 @@
                 prop="userName"
             >
               <el-input
-                  v-model="formVal.userName"
+                  v-model="formVal.username"
                   placeholder="请输入用户名称"
               />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item
-                v-if="formVal.userId === undefined"
+                v-if="formVal.id === undefined"
                 label="用户密码"
                 prop="password"
             >
@@ -397,14 +366,14 @@
           <el-col :span="12">
             <el-form-item label="用户性别">
               <el-select
-                  v-model="formVal.sex"
+                  v-model="formVal.gender"
                   placeholder="请选择"
               >
                 <el-option
                     v-for="dict in sexOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
+                    :key="dict.value"
+                    :label="dict.name"
+                    :value="dict.value"
                 />
               </el-select>
             </el-form-item>
@@ -425,23 +394,6 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="岗位">
-              <el-select
-                  v-model="formVal.postIds"
-                  multiple
-                  placeholder="请选择"
-              >
-                <el-option
-                    v-for="item in postOptions"
-                    :key="item.postId"
-                    :label="item.postName"
-                    :value="item.postId"
-                    :disabled="item.status === 1"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="角色">
               <el-select
                   v-model="formVal.roleIds"
@@ -450,10 +402,10 @@
               >
                 <el-option
                     v-for="item in roleOptions"
-                    :key="item.roleId"
-                    :label="item.roleName"
-                    :value="item.roleId"
-                    :disabled="item.status === 1"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    :disabled="item.status === 0"
                 />
               </el-select>
             </el-form-item>
@@ -497,7 +449,8 @@ import { listUser, getUser, delUser, addUser, updateUser,patch } from '@/api/sys
 
 import {getDeptSelectList} from '@/api/system/dept'
 import Treeselect from '@/components/TreeSelect/Index.vue'
-
+import {listRoles} from '@/api/system/role'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
 import {defineComponent, reactive, toRefs, ref, unref, onMounted, watchEffect, getCurrentInstance} from 'vue'
 import { ElMessage, ElMessageBox, ElTree, ElUpload } from 'element-plus'
@@ -544,7 +497,7 @@ export default defineComponent({
       // 部门名称
       deptName: '',
       // 默认密码
-      initPassword: '',
+      initPassword: '123456',
       // 日期范围
       dateRange: [],
       // 状态数据字典
@@ -560,25 +513,22 @@ export default defineComponent({
       ],
       // 性别状态字典
       sexOptions: [],
-      // 岗位选项
-      postOptions: [],
       // 角色选项
       roleOptions: [],
       // 表单参数
       formVal: {
-        userId: undefined,
+        id: undefined,
         deptId: '',
-        userName: undefined,
-        nickName: undefined,
+        username: undefined,
+        nickname: undefined,
         password: '',
-        phonenumber: undefined,
+        mobile: undefined,
         email: undefined,
-        sex: undefined,
-        status: '1',
+        gender: undefined,
+        status: 1,
         remark: undefined,
         postIds: [],
         roleIds: []
-
       },
       defaultProps: {
         children: 'children',
@@ -588,8 +538,8 @@ export default defineComponent({
       queryParams: {
         page: 1,
         limit: 10,
-        userName: undefined,
-        phonenumber: undefined,
+        keywords: undefined,
+        mobile: undefined,
         status: undefined,
         deptId: undefined
       },
@@ -660,7 +610,7 @@ export default defineComponent({
       return result
     }
     /** 查询部门下拉树结构 */
-    const getTreeselect = () => {
+    const loadDeptOptions = () => {
       getDeptSelectList().then(response => {
         dataMap.deptOptions = response.data
         dataMap.originOptions = flatten(response?.data) as any
@@ -679,9 +629,7 @@ export default defineComponent({
     }
     // 用户状态修改
     const handleStatusChange = (row: {[key: string]: any}) => {
-      console.log(row.status)
-      if (!dataMap.tigger) {
-        console.log(row.status)
+      if (dataMap.tigger) {
         const text = row.status === '1' ? '启用' : '停用'
         ElMessageBox.confirm('确认要"' + text +'""'+ row.username + '"用户吗?', '警告', {
           confirmButtonText: '确定',
@@ -709,10 +657,9 @@ export default defineComponent({
       handleQuery()
     }
 
-
     // 多选框选中数据
     const handleSelectionChange = (selection: any) => {
-      dataMap.ids = selection.map((item: any) => item.userId)
+      dataMap.ids = selection.map((item: any) => item.id)
       dataMap.single = selection.length !== 1
       dataMap.multiple = !selection.length
     }
@@ -720,63 +667,40 @@ export default defineComponent({
     const handleAdd = () => {
       console.log(dataMap.formVal)
       dataMap.addformFlag = true
-      dataMap.formVal = {
-        userId: undefined,
-        deptId: '103',
-        userName: undefined,
-        nickName: undefined,
-        password: '',
-        phonenumber: undefined,
-        email: undefined,
-        sex: undefined,
-        status: '1',
-        remark: undefined,
-        postIds: [],
-        roleIds: []
-      }
+      resetForm()
       dataMap.originOptions = []
-      getTreeselect()
-      getUser().then(response => {
-        dataMap.postOptions = response.posts
-        dataMap.roleOptions = response.roles
-        dataMap.open = true
-        dataMap.title = '添加用户'
-        dataMap.formVal.password = dataMap.initPassword
-      })
+      // loadDeptOptions()
+      dataMap.open = true
+      dataMap.title = '添加用户'
+      dataMap.formVal.password = "123456"
     }
 
     // 表单重置
     const resetForm = ()=> {
-      dataMap.formVal= {
-        userId: undefined,
-            deptId: '',
-            userName: undefined,
-            nickName: undefined,
-            password: '',
-            phonenumber: undefined,
-            email: undefined,
-            sex: undefined,
-            status: '1',
-            remark: undefined,
-            postIds: [],
-            roleIds: []
-
-      }
-      if (this.$refs['form']) {
-        this.$refs['form'].resetFields()
+      dataMap.formVal=  {
+        id: undefined,
+        deptId: '',
+        username: undefined,
+        nickname: undefined,
+        password: '',
+        mobile: undefined,
+        email: undefined,
+        gender: undefined,
+        status: 1,
+        remark: undefined,
+        postIds: [],
+        roleIds: []
       }
     }
 
     /** 修改按钮操作 */
     const handleUpdate = (row: {[key: string]: any}) => {
-      this.resetForm()
-      const userId = row.userId || dataMap.ids
+      resetForm()
+      const userId = row.id || dataMap.ids
       getUser(userId).then(response => {
         dataMap.formVal = response.data
-        dataMap.postOptions = response.posts
-        dataMap.roleOptions = response.roles
-        dataMap.formVal.postIds = response.postIds
-        dataMap.formVal.roleIds = response.roleIds
+        // dataMap.formVal.postIds = response.postIds
+        // dataMap.formVal.roleIds = response.roleIds
         dataMap.open = true
         dataMap.title = '修改用户'
         dataMap.formVal.password = ''
@@ -799,14 +723,14 @@ export default defineComponent({
         }).then(() => {
           ElMessage.success('修改成功，新密码是：' + value)
         })
-      }).catch((err) => console.log(err))
+      }).catch((err) => {})
     }
     /** 提交按钮 */
     const submitForm = () => {
       (queryForm.value as any).validate((valid: any) => {
         if (valid) {
-          if (dataMap.formVal.userId !== undefined) {
-            updateUser(dataMap.formVal).then(() => {
+          if (dataMap.formVal.id !== undefined) {
+            updateUser(dataMap.formVal.id,dataMap.formVal).then(() => {
               ElMessage.success('修改成功')
               dataMap.open = false
               getList()
@@ -823,7 +747,7 @@ export default defineComponent({
     }
     /** 删除按钮操作 */
     const handleDelete = (row: {[key: string]: any}) => {
-      const userIds = row.userId || dataMap.ids.join(',')
+      const userIds = row.id || dataMap.ids.join(',')
       ElMessageBox.confirm('是否确认删除用户编号为"' + userIds + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -837,13 +761,11 @@ export default defineComponent({
           ElMessage.info('已取消删除')
       )
     }
-
-
-// 取消按钮
+     // 取消按钮
     function cancel() {
-      dataMap.loading = true
       dataMap.tigger = true
-      this.resetForm()
+      dataMap.open = false
+      resetForm()
     }
 
     const getParentValue = (event: any) => {
@@ -860,28 +782,27 @@ export default defineComponent({
         tree.filter(dataMap.deptName)
       }
     })
+    const loadRoleOptions = async ()=> {
+      listRoles({}).then(response => {
+        dataMap.roleOptions = response.data
+        console.log(response.data)
+      })
+    }
+
     onMounted(() => {
       getList()
-      getTreeselect()
-      // const {proxy}: any = getCurrentInstance();
-      // proxy.$getDictItemsByCode('gender').then((response: any) => {
-      //   console.log('性别字典数据', response.data)
-      // })
-      // getDicts('sys_normal_disable').then(response => {
-      //   dataMap.statusOptions = response?.data
-      // })
-      // getDicts('sys_user_sex').then(response => {
-      //   dataMap.sexOptions = response?.data
-      // })
-      // getConfigKey('sys.user.initPassword').then(response => {
-      //   dataMap.initPassword = String(response?.msg)
-      // })
+      loadDeptOptions()
+      loadRoleOptions()
+      const {proxy}: any = getCurrentInstance();
+      proxy.$getDictItemsByCode('gender').then((response: any) => {
+        dataMap.sexOptions = response?.data
+      })
     })
 
     const showDialog = () => {
-      getTreeselect()
+      loadDeptOptions()
     }
-    return { ...toRefs(dataMap), uploadRef, getDeptId, getParentValue, resetForm, addForm, showDialog, flatten, queryForm, treeRef, handleQuery, handleStatusChange, handleNodeClick, filterNode, getTreeselect, getList, resetQuery, handleAdd, handleSelectionChange, handleUpdate, handleResetPwd, submitForm, handleDelete,cancel }
+    return { ...toRefs(dataMap), uploadRef, getDeptId, getParentValue, resetForm, addForm, showDialog, flatten, queryForm, treeRef, handleQuery, handleStatusChange, handleNodeClick, filterNode, loadDeptOptions, getList, resetQuery, handleAdd, handleSelectionChange, handleUpdate, handleResetPwd, submitForm, handleDelete,cancel,Search, Plus, Edit, Refresh, Delete }
   }
 })
 </script>
