@@ -1,212 +1,102 @@
 <template>
-  <div
-      v-if="!item.meta || !item.meta.hidden"
-      :class="[isCollapse ? 'simple-mode' : 'full-mode',
-      {'first-level': !isFirstLevel}]"
-  >
+  <div v-if="!item.meta || !item.meta.hidden">
     <template
-        v-if="!alwaysShowParent && onlyOneChild && !onlyOneChild.children"
+        v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&(!item.meta|| !item.meta.alwaysShow)"
     >
-      <AppLink
-          v-if="onlyOneChild.meta"
-          :to="resolvePath(onlyOneChild.path)"
-      >
-        <el-menu-item
-            :index="resolvePath(onlyOneChild.path)"
-            :class="{'submenu-title-noDropdown':!isFirstLevel}"
-        >
-          <svg-icon v-if="onlyOneChild.meta&&onlyOneChild.meta.icon" :icon-class="onlyOneChild.meta.icon"></svg-icon>
-          <template v-if="onlyOneChild.meta && onlyOneChild.meta.title" #title>{{ onlyOneChild.meta.title }}</template>
+      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
+        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
+          <svg-icon v-if="onlyOneChild.meta && onlyOneChild.meta.icon" :icon-class="onlyOneChild.meta.icon"></svg-icon>
+          <template #title>{{ onlyOneChild.meta.title }}</template>
         </el-menu-item>
-      </AppLink>
+      </app-link>
     </template>
-    <el-sub-menu
-        v-else
-        :index="resolvePath(item.path)"
-    >
+    <el-sub-menu v-else :index="resolvePath(item.path)">
       <!-- popper-append-to-body -->
       <template #title>
-        <svg-icon v-if="item.meta&&item.meta.icon" :icon-class="item.meta.icon"></svg-icon>
+        <svg-icon v-if="item.meta && item.meta.icon" :icon-class="item.meta.icon"></svg-icon>
         <span v-if="item.meta && item.meta.title">{{ item.meta.title }}</span>
       </template>
-      <template v-if="item.children">
-        <sidebar-item
-            v-for="child in item.children"
-            :key="child.path"
-            :item="child"
-            :is-collapse="isCollapse"
-            :is-first-level="false"
-            :base-path="resolvePath(child.path)"
-            class="nest-menu"
-        />
-      </template>
+
+      <sidebar-item
+          v-for="child in item.children"
+          :key="child.path"
+          :item="child"
+          :is-nest="true"
+          :base-path="resolvePath(child.path)"
+          class="nest-menu"
+      />
     </el-sub-menu>
   </div>
 </template>
 
 
-<script lang="ts">
+<script setup lang="ts">
 import path from 'path-browserify'
-import {defineComponent, PropType, computed} from "vue";
-import {RouteRecordRaw} from 'vue-router'
+import {defineProps, PropType, computed, ref} from "vue";
 import {isExternal} from '@utils/validate'
 import AppLink from './Link.vue'
 import SvgIcon from '@/components/SvgIcon/index.vue';
+import {RouteRecordRaw} from "vue-router";
 
-
-export default defineComponent({
-  props: {
-    item: {
-      type: Object as PropType<RouteRecordRaw>,
-      required: true
-    },
-    isCollapse: {
-      type: Boolean,
-      required: false
-    },
-    isFirstLevel: {
-      type: Boolean,
-      required: false
-    },
-    basePath: {
-      type: String,
-      required: true
-    }
+const props = defineProps({
+  item: {
+    type: Object as PropType<RouteRecordRaw>,
+    required: true
   },
-  components: {
-    AppLink,
-    SvgIcon
+  isNest: {
+    type: Boolean,
+    required: false
   },
-  setup(props) {
-    const alwaysShowParent = computed(() => {
-      if (props.item.meta && props.item.meta.alwaysShow) {
-        return true
-      } else {
-        return false
-      }
-    })
-
-    const showingChildrenNum = computed(() => {
-      if (props.item.children) {
-        const showingChildren = props.item.children.filter((item) => {
-          if (item.meta && item.meta.hidden) {
-            return false
-          } else {
-            return true
-          }
-        })
-        return showingChildren.length
-      }
-      return 0
-    })
-
-    const onlyOneChild = computed(() => {
-      if (showingChildrenNum.value > 1) {
-        return null
-      }
-      if (props.item.children) {
-        for (const child of props.item.children) {
-          if (!child.meta || !child.meta.hidden) {
-            return child
-          }
-        }
-      }
-      // If there is no children, return itself with path removed,
-      // because this.basePath already contains item's path information
-      return {...props.item, path: ''}
-    })
-
-    const resolvePath = (routePath: string) => {
-      if (isExternal(routePath)) {
-        return routePath
-      }
-      if (isExternal(props.basePath)) {
-        return props.basePath
-      }
-      return path.resolve(props.basePath, routePath)
-    }
-
-    return {
-      alwaysShowParent,
-      showingChildrenNum,
-      onlyOneChild,
-      resolvePath
-    }
+  basePath: {
+    type: String,
+    required: true
   }
 })
+
+const onlyOneChild = ref({});
+
+function hasOneShowingChild(children = [] as any, parent: RouteRecordRaw) {
+  if (!children) {
+    children = [];
+  }
+  const showingChildren = children.filter((item: any) => {
+    if (item.mata && item.mata.hidden) {
+      return false
+    } else {
+      // Temp set(will be used if only has one showing child)
+      onlyOneChild.value = item
+      return true
+    }
+  })
+
+  // When there is only one child router, the child router is displayed by default
+  if (showingChildren.length === 1) {
+    return true
+  }
+
+  // Show parent if there are no child router to display
+  if (showingChildren.length === 0) {
+    onlyOneChild.value = {...parent, path: '', noShowingChildren: true}
+    return true
+  }
+
+  return false
+};
+
+
+function resolvePath(routePath: string) {
+  if (isExternal(routePath)) {
+    return routePath
+  }
+  if (isExternal(props.basePath)) {
+    return props.basePath
+  }
+  return path.resolve(props.basePath, routePath)
+}
+
 
 </script>
 
 <style lang="scss" scoped>
-.el-sub-menu.is-active > .el-sub-menu__title {
-  color: #f4f4f5 !important;
-}
 
-.full-mode {
-  .nest-menu .el-sub-menu > .el-sub-menu__title,
-  .el-sub-menu .el-menu-item {
-    min-width: 210px !important;
-    #background-color: #1f2d3d !important;
-
-    &:hover {
-      background-color: #001528 !important;
-    }
-  }
-
-  .el-menu-item {
-    & > span {
-      display: inline-block;
-      padding-left: 5px;
-    }
-  }
-
-  .el-sub-menu {
-    overflow: hidden;
-
-    & > .el-sub-menu__title {
-      .el-sub-menu__icon-arrow {
-        display: none;
-      }
-
-      & > span {
-        padding-left: 5px;
-
-      }
-    }
-  }
-}
-
-.simple-mode {
-  &.first-level {
-    .submenu-title-noDropdown {
-      padding: 0 !important;
-      position: relative;
-
-      & > span {
-        display: none;
-      }
-
-      & > svg {
-        margin-left: 20px;
-      }
-    }
-
-    .el-sub-menu {
-      overflow: hidden;
-
-
-      & > .el-sub-menu__title {
-        padding: 0px !important;
-
-        .el-sub-menu__icon-arrow {
-          display: none;
-        }
-
-        & > span {
-          visibility: hidden;
-        }
-      }
-    }
-  }
-}
 </style>

@@ -19,7 +19,7 @@
             @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item>
-        <el-button  :icon="Search" @click="handleQuery">搜索</el-button>
+        <el-button :icon="Search" @click="handleQuery">搜索</el-button>
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
@@ -114,7 +114,7 @@
               </el-select>
             </template>
           </el-input>
-          <el-link  v-show="state.urlPerm.requestMethod">
+          <el-link v-show="state.urlPerm.requestMethod">
             {{ state.urlPerm.requestMethod }}:/{{ state.urlPerm.serviceName }}{{ state.urlPerm.requestPath }}
           </el-link>
         </el-form-item>
@@ -126,7 +126,7 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary"  @click="submitForm">确 定</el-button>
+          <el-button type="primary" @click="submitForm">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
         </div>
       </template>
@@ -137,7 +137,7 @@
 <script setup lang="ts">
 import {listPermsWithPage, getPermDetail, addPerm, updatePerm, deletePerms} from "@/api/system/perm"
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
-import {onMounted,watch, reactive, ref, unref, getCurrentInstance} from 'vue'
+import {onMounted, watch, reactive, ref, unref, getCurrentInstance} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus"
 
 const {proxy}: any = getCurrentInstance();
@@ -183,7 +183,8 @@ const state = reactive({
     id: undefined,
     name: undefined,
     urlPerm: undefined,
-    btnPerm: undefined
+    btnPerm: undefined,
+    menuId: undefined
   },
   rules: {
     name: [
@@ -240,7 +241,6 @@ function handleSelectionChange(selection: any) {
 }
 
 
-
 /**
  * 字典数据准备
  */
@@ -272,7 +272,15 @@ function handleUpdate(row: any) {
   }
   const id = row.id || state.ids
   getPermDetail(id).then(response => {
-    state.formData = response.data
+    const {data} = response
+    state.formData = data
+    if (data && data.urlPerm) {
+      // GET:/youlai-admin/api/v1/users
+      const urlPermArr = data.urlPerm.split(':')
+      state.urlPerm.requestMethod = urlPermArr[0]
+      state.urlPerm.serviceName = urlPermArr[1].substring(1, urlPermArr[1].substring(1).indexOf('/') + 1)
+      state.urlPerm.requestPath = urlPermArr[1].substring(urlPermArr[1].substring(1).indexOf('/') + 1)
+    }
   })
 }
 
