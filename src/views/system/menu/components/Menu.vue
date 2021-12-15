@@ -83,12 +83,10 @@
           :rules="state.rules"
           label-width="80px">
         <el-form-item label="父级菜单" prop="parentId">
-          <treeselect
-              placeholder="请选择父级菜单"
-              v-model="state.formData.parentId"
-              :multiple="false"
+          <tree-select
+              v-model:value="state.formData.parentId"
               :options="state.menuOptions"
-              :defaultExpandLevel="1"
+              placeholder="选择上级菜单"
           />
         </el-form-item>
 
@@ -115,7 +113,30 @@
         </el-form-item>
 
         <el-form-item label="菜单图标">
-          <el-input v-model="state.formData.icon" placeholder="请输入图标" maxlength="50"/>
+
+          <el-popover
+              placement="bottom-start"
+              :width="540"
+              v-model:visible="showChooseIcon"
+              trigger="click"
+              @show="showSelectIcon"
+          >
+            <icon-select ref="iconSelectRef" @selected="selected"/>
+            <template #reference>
+              <el-input v-model="state.formData.icon" placeholder="点击选择图标" readonly>
+                <template #prefix>
+                  <svg-icon
+                      v-if="state.formData.icon"
+                      :icon-class="state.formData.icon"
+                      class="el-input__icon"
+                      style="height: 40px;width: 16px;"
+                      color="#999"
+                  />
+                  <i v-else class="el-icon-search el-input__icon"/>
+                </template>
+              </el-input>
+            </template>
+          </el-popover>
         </el-form-item>
 
         <el-form-item label="状态">
@@ -150,12 +171,15 @@ import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 import {defineEmits, reactive, ref, unref, onMounted, getCurrentInstance} from "vue";
 
-import Treeselect from 'vue3-treeselect'
-import 'vue3-treeselect/dist/vue3-treeselect.css'
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
-const emit = defineEmits(['menuClick'])
+import TreeSelect from '@/components/TreeSelect/index.vue';
+import IconSelect from '@/components/IconSelect/index.vue';
 
+
+const emit = defineEmits(['menuClick'])
+const showChooseIcon = ref(false);
+const iconSelectRef = ref(null);
 const state = reactive({
   loading: true,
   // 选中ID数组
@@ -180,7 +204,7 @@ const state = reactive({
     parentId: 0,
     name: undefined,
     visible: 1,
-    icon: undefined,
+    icon: '',
     sort: 1,
     component: 'Layout',
     path: undefined
@@ -220,7 +244,7 @@ function handleQuery() {
 function loadTreeSelectMenuOptions() {
   const menuOptions: any[] = []
   listTreeSelectMenus().then(response => {
-    const menuOption = {id: 0, label: '无', children: response.data}
+    const menuOption = {id: 0, label: '顶级菜单', children: response.data}
     menuOptions.push(menuOption)
     state.menuOptions = menuOptions
   })
@@ -268,6 +292,7 @@ function handleUpdate(row: any) {
 }
 
 const dataForm = ref(ElForm)
+
 function submitForm() {
   const form = unref(dataForm)
   form.validate((valid: any) => {
@@ -296,7 +321,7 @@ function resetForm() {
     parentId: 0,
     name: undefined,
     visible: 1,
-    icon: undefined,
+    icon: '',
     sort: 1,
     component: 'Layout',
     path: undefined
@@ -322,6 +347,17 @@ function handleDelete(row: any) {
       ElMessage.info('已取消删除')
   )
 }
+
+function showSelectIcon() {
+  (iconSelectRef as any).value.reset();
+  showChooseIcon.value = true;
+}
+
+function selected(name: string) {
+  state.formData.icon = name;
+  showChooseIcon.value = false;
+}
+
 
 onMounted(() => {
   handleQuery()

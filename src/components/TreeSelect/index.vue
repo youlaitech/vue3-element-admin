@@ -1,195 +1,155 @@
 <template>
-  <el-select
-    v-model="valueTitle"
-    :clearable="clearable"
-    @clear="clearHandle"
-    :placeholder="placeholder"
-  >
-    <el-option
-      :value="valueTitle"
-      :label="valueTitle"
-      class="options"
+  <div class="el-tree-select">
+    <el-select
+        style="width: 100%"
+        v-model="valueId"
+        ref="treeSelect"
+        :filterable="true"
+        :clearable="true"
+        @clear="clearHandle"
+        :filter-method="selectFilterData"
+        :placeholder="placeholder"
     >
-      <el-tree
-        id="tree-option"
-        ref="selectTree"
-        :accordion="accordion"
-        :data="options"
-        :props="treeProps"
-        :node-key="treeProps.value"
-        :default-expanded-keys="defaultExpandedKey"
-        @node-click="handleNodeClick"
-        :disabled="disabled"
-      />
-    </el-option>
-  </el-select>
+      <el-option :value="valueId" :label="valueTitle">
+        <el-tree
+            id="tree-option"
+            ref="selectTree"
+            :accordion="accordion"
+            :data="options"
+            :props="state.props"
+            :node-key="state.props.value"
+            :expand-on-click-node="false"
+            :default-expanded-keys="defaultExpandedKey"
+            :filter-node-method="filterNode"
+            @node-click="handleNodeClick"
+        ></el-tree>
+      </el-option>
+    </el-select>
+  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, toRefs, nextTick, onMounted, getCurrentInstance, PropType, watch } from 'vue'
+<script setup>
+import {defineEmits, ref, getCurrentInstance ,nextTick,onMounted,computed,watch} from "vue";
+const { proxy } = getCurrentInstance();
 
-interface TreeProps {
-  value: number
-  label: string
-  children: string
-}
-
-export default defineComponent({
-  name: 'ElTreeSelect',
+const state = defineProps({
+  /* 配置项 */
   props: {
-    placeholder: {
-      type: [String,Number],
-      default: ''
-    },
-    user: {
-      type: Boolean,
-      default: false
-    },
-    // 选项列表数据(一维数组)
-    originOptions: { type: Array, required: true },
-    // 选项列表数据(树形结构的对象数组)
-    options: { type: Array, required: true },
-    // 初始值
-    defalut: { type: [String,Number], default: null },
-    // 可清空选项
-    clearable: { type: Boolean, default: true },
-    // 自动收起
-    accordion: { type: Boolean, default: false },
-    treeProps: {
-      type: Object as PropType<TreeProps>,
-      default: () => {
-        return {
-          value: 'menuId',
-          label: 'menuName',
-          children: 'children'
-        }
+    type: Object,
+    default: () => {
+      return {
+        value: 'id', // ID字段名
+        label: 'label', // 显示名称
+        children: 'children' // 子级字段名
       }
-    },
-    disabled: {
-      type: Boolean, default: false
     }
   },
-  emits: ['callBack'],
-  setup(props, ctx) {
-    const instance = getCurrentInstance() as any
-    const state = reactive({
-      valueId: 0,
-      valueTitle: '',
-      defaultExpandedKey: Array<number>()
-    })
-
-    // 初始化滚动条
-    const initScroll = () => {
-      nextTick(() => {
-        const scrollWrap = document.querySelectorAll('.el-scrollbar .el-select-dropdown__wrap')[0] as any
-        const scrollBar = document.querySelectorAll('.el-scrollbar .el-scrollbar__bar') as any
-        scrollWrap.style.cssText = 'margin: 0px; max-height: none; overflow: hidden;'
-        scrollBar.forEach((ele: any) => {
-          ele.style.width = 0
-        })
-      })
+  /* 自动收起 */
+  accordion: {
+    type: Boolean,
+    default: () => {
+      return false
     }
-
-    // 清空选中样式
-    const clearSelected = () => {
-      const allNode = document.querySelectorAll('#tree-option .el-tree-node')
-      allNode.forEach((element) => element.classList.remove('is-current'))
-    }
-
-    const initHandle = () => {
-      initScroll()
-    }
-
-    // 处理默认值并显示
-    const defaultValue = () => {
-      if (props.defalut !== null) {
-        const deafaultModels = props.originOptions.filter((item: any) => {
-          return item[props.treeProps.value] === props.defalut
-        })
-
-        if (deafaultModels.length > 0) {
-          state.valueId = props.defalut
-          state.valueTitle = (deafaultModels[0] as any)[props.treeProps.label]
-        } else {
-          if (!props.user) {
-            state.valueId = 0
-            state.valueTitle = '主类目'
-          } else {
-            state.valueId = 0
-            state.valueTitle = ''
-          }
-        }
-        instance.ctx.$refs.selectTree.setCurrentKey(props.defalut)
-        state.defaultExpandedKey = [props.defalut] as number[]
-      }
-    }
-
-    onMounted(() => {
-      initHandle()
-    })
-
-    watch(() => props.options, () => {
-      if (props.options) {
-        defaultValue()
-      }
-    })
-
-    // 更新数据
-    const updateData = (value: any, label: any) => {
-      state.valueTitle = label
-      state.valueId = value
-      state.defaultExpandedKey = []
-      ctx.emit('callBack', value)
-    }
-
-    // 点击节点调用
-    const handleNodeClick = (node: any) => {
-      updateData(node[props.treeProps.value], node[props.treeProps.label])
-    }
-
-    // 清除选中
-    const clearHandle = () => {
-      updateData(null, null)
-      clearSelected()
-    }
-
-    return {
-      ...toRefs(state),
-      handleNodeClick,
-      clearHandle
-    }
+  },
+  /**当前双向数据绑定的值 */
+  value: {
+    type: [String, Number],
+    default: ''
+  },
+  /**当前的数据 */
+  options: {
+    type: Array,
+    default: () => []
+  },
+  /**输入框内部的文字 */
+  placeholder: {
+    type: String,
+    default: ''
   }
+})
+
+const emit = defineEmits(['update:value']);
+
+const valueId = computed({
+  get: () => state.value,
+  set: (val) => {
+    emit('update:value', val)
+  }
+});
+const valueTitle = ref('');
+const defaultExpandedKey = ref([]);
+
+function initHandle() {
+  nextTick(() => {
+    const selectedValue = valueId.value;
+    if(selectedValue !== null && typeof (selectedValue) !== "undefined"){
+      const node = proxy.$refs.selectTree.getNode(selectedValue)
+      if (node) {
+        valueTitle.value = node.data[state.props.label]
+        proxy.$refs.selectTree.setCurrentKey(selectedValue) // 设置默认选中
+        defaultExpandedKey.value = [selectedValue] // 设置默认展开
+      }else{
+        clearHandle()
+      }
+    }
+  })
+}
+function handleNodeClick(node) {
+  valueTitle.value = node[state.props.label]
+  valueId.value = node[state.props.value];
+  defaultExpandedKey.value = [];
+  proxy.$refs.treeSelect.blur()
+  selectFilterData('')
+}
+function selectFilterData(val) {
+  proxy.$refs.selectTree.filter(val)
+}
+function filterNode(value, data) {
+  if (!value) return true
+  return data[state.props['label']].indexOf(value) !== -1
+}
+function clearHandle() {
+  valueTitle.value = ''
+  valueId.value = ''
+  defaultExpandedKey.value = [];
+  clearSelected()
+}
+function clearSelected() {
+  const allNode = document.querySelectorAll('#tree-option .el-tree-node')
+  allNode.forEach((element) => element.classList.remove('is-current'))
+}
+
+onMounted(() => {
+  initHandle()
+})
+
+watch(valueId, () => {
+  initHandle();
 })
 </script>
 
-<style scoped>
-.el-select.el-select--medium{
-  width: 100%;
+<style lang='scss' scoped>
+.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
+  padding: 0;
+  background-color: #fff;
+  height: auto;
 }
 
-.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
-  height: auto;
-  max-height: 274px;
-  padding: 0;
-  overflow: hidden;
-  overflow-y: auto;
-}
 .el-select-dropdown__item.selected {
   font-weight: normal;
 }
-ul li :deep(.el-tree .el-tree-node__content) {
+
+ul li  .el-tree .el-tree-node__content {
   height: auto;
   padding: 0 20px;
+  box-sizing: border-box;
 }
-.el-tree-node__label {
-  font-weight: normal;
-}
-.el-tree :deep(.is-current .el-tree-node__label) {
-  color: #409eff;
-  font-weight: 700;
-}
-.el-tree :deep(.is-current .el-tree-node__children .el-tree-node__label) {
-  color: #606266;
-  font-weight: normal;
+
+:deep(.el-tree-node__content:hover),
+:deep(.el-tree-node__content:active),
+:deep(.is-current > div:first-child),
+:deep( .el-tree-node__content:focus ){
+  background-color: mix(#fff, #409EFF, 90%);
+  color: #409EFF;
 }
 </style>
