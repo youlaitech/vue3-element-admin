@@ -264,7 +264,7 @@
         width="600px"
         append-to-body
         @opened="showDialog"
-        @closed="cancel"
+        @close="cancel"
     >
       <el-form
           ref="addForm"
@@ -337,18 +337,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item
-                v-if="dataMap.formVal.id === undefined"
-                label="用户密码"
-                prop="password"
-            >
-              <el-input
-                  v-model="dataMap.formVal.password"
-                  placeholder="请输入用户密码"
-                  type="password"
-              />
+            <el-form-item label="状态">
+              <el-radio-group v-model="dataMap.formVal.status">
+                <el-radio
+                    v-for="dict in dataMap.statusOptions"
+                    :key="dict.dictValue"
+                    :label="dict.dictValue"
+                >
+                  {{ dict.dictLabel }}
+                </el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
+
         </el-row>
         <el-row>
           <el-col :span="12">
@@ -367,21 +368,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="状态">
-              <el-radio-group v-model="dataMap.formVal.status">
-                <el-radio
-                    v-for="dict in dataMap.statusOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictValue"
-                >
-                  {{ dict.dictLabel }}
-                </el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
             <el-form-item label="角色">
               <el-select
                   v-model="dataMap.formVal.roleIds"
@@ -396,6 +382,23 @@
                     :disabled="item.status === 0"
                 />
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+
+
+          <el-col :span="12">
+            <el-form-item
+                v-if="dataMap.formVal.id === undefined"
+                label="用户密码"
+                prop="password"
+            >
+              <el-input
+                  v-model="dataMap.formVal.password"
+                  placeholder="请输入用户密码"
+                  type="password"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -604,8 +607,8 @@ function handleNodeClick(data: { [key: string]: any }) {
 // 用户状态修改
 function handleStatusChange(row: { [key: string]: any }) {
   if (dataMap.tigger) {
-    const text = row.status === '1' ? '启用' : '停用'
-    ElMessageBox.confirm('确认要"' + text + '""' + row.username + '"用户吗?', '警告', {
+    const text = row.status === 1 ? '启用' : '停用'
+    ElMessageBox.confirm('确认要' + text + ''+ row.username + '用户吗?', '警告', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
@@ -614,7 +617,7 @@ function handleStatusChange(row: { [key: string]: any }) {
     }).then(() => {
       ElMessage.success(text + '成功')
     }).catch( ()=>{
-      row.status = row.status === '1' ? 1 : 0
+      row.status = row.status === 1 ? 0 : 1
     })
 
   }
