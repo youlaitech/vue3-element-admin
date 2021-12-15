@@ -264,6 +264,7 @@
         width="600px"
         append-to-body
         @opened="showDialog"
+        @closed="cancel"
     >
       <el-form
           ref="addForm"
@@ -288,14 +289,10 @@
                 label="归属部门"
                 prop="deptId"
             >
-              <Treeselect
-                  :treeProps="dataMap.props"
+              <tree-select
                   :options="dataMap.deptOptions"
                   placeholder="请选择归属部门"
-                  :originOptions="dataMap.originOptions"
-                  :defalut="dataMap.formVal.deptId"
-                  :user="true"
-                  @callBack="getDeptId"
+                  v-model:value="dataMap.formVal.deptId"
               />
             </el-form-item>
           </el-col>
@@ -428,7 +425,7 @@
 import {listUser, getUser, delUser, addUser, updateUser, patch} from '@/api/system/user'
 
 import {getDeptSelectList} from '@/api/system/dept'
-import Treeselect from '@/components/TreeSelect/Index.vue'
+import TreeSelect from '@/components/TreeSelect/Index.vue'
 import {listRoles} from '@/api/system/role'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
@@ -666,11 +663,7 @@ function handleSelectionChange(selection: any) {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  console.log(dataMap.formVal)
   dataMap.addformFlag = true
-  resetForm()
-  dataMap.originOptions = []
-  // loadDeptOptions()
   dataMap.open = true
   dataMap.title = '添加用户'
   dataMap.formVal.password = "123456"
@@ -696,15 +689,12 @@ function resetForm() {
 
 /** 修改按钮操作 */
 async function handleUpdate(row: { [key: string]: any }) {
-  resetForm()
   const userId = row.id || dataMap.ids
  const response = await getUser(userId);
   dataMap.formVal = response.data
-  console.log(response.data)
   dataMap.title = '修改用户'
   dataMap.formVal.password = ''
-  dataMap.formVal.deptId = 1
-  // dataMap.formVal.deptId = parseInt(response.data.deptId)
+  dataMap.formVal.deptId =response.data.deptId
   dataMap.open = true
 }
 
@@ -754,9 +744,6 @@ function cancel() {
   resetForm()
 }
 
-function getParentValue(event: any) {
-  console.log(event)
-}
 
 function getDeptId(e: any) {
   dataMap.formVal.deptId = e
@@ -787,6 +774,7 @@ onMounted(() => {
 
 function showDialog() {
   loadDeptOptions()
+  loadRoleOptions()
 }
 
 </script>

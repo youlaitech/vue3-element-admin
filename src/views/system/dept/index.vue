@@ -135,15 +135,10 @@
             label="上级部门"
             prop="parentId"
         >
-          <TreeSelect
-              :treeProps="dataMap.props"
+          <tree-select
               :options="dataMap.deptOptions"
               placeholder="选择上级部门"
-              :originOptions="dataMap.originOptions"
-              :defalut="dataMap.formVal.parentId"
-              :user="true"
-              @callBack="getDeptId"
-              :disabled="dataMap.disabled"
+              v-model:value="dataMap.formVal.parentId"
           />
         </el-form-item>
         <el-form-item label="部门名称" prop="name">
@@ -296,25 +291,10 @@ function resetQuery() {
   handleQuery()
 }
 
-function flatten(origin: any) {
-  let result: any = []
-  for (let i = 0; i < origin.length; i++) {
-    const item = origin[i]
-    if (Array.isArray(item.children)) {
-      result = result.concat(flatten(item.children))
-      result.push(item)
-    } else {
-      result.push(item)
-    }
-  }
-  return result
-}
-
 /** 查询部门下拉树结构 */
 function getTreeselect() {
   getDeptSelectList().then(response => {
     dataMap.deptOptions = response.data
-    dataMap.originOptions = flatten(response?.data) as any
   })
 }
 
