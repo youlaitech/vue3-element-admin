@@ -36,5 +36,6 @@ export default defineComponent({
   height: 1em;
   vertical-align: -0.15em;
   overflow: hidden;
+  fill: currentColor;
 }
 </style>

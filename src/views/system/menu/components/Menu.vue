@@ -169,11 +169,10 @@
 import {listTableMenus, getMenuDetail, listTreeSelectMenus, addMenu, deleteMenus, updateMenu} from "@/api/system/menu";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
-import {defineEmits, reactive, ref, unref, onMounted, getCurrentInstance} from "vue";
+import {defineEmits, reactive, ref, unref, onMounted, watch, getCurrentInstance, computed} from "vue";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import TreeSelect from '@/components/TreeSelect/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';
-
 
 const emit = defineEmits(['menuClick'])
 const showChooseIcon = ref(false);
@@ -275,15 +274,19 @@ async function handleAdd(row: any) {
     title: '添加菜单',
     visible: true,
   }
-  console.log('点击新增', row.id)
   if (row.id) {
     // 行点击新增
     state.formData.parentId = row.id
-    state.formData.component = ''
+    if (row.id == 0) {
+      state.formData.component = 'Layout'
+    } else {
+      state.formData.component = ''
+    }
+
   } else {
     if (state.currentRow) {
       // 工具栏新增
-      state.formData.parentId = state.currentRow.id
+      state.formData.parentId = (state.currentRow as any).id
       state.formData.component = ''
     } else {
       state.formData.parentId = 0
