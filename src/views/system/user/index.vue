@@ -264,6 +264,7 @@
         width="600px"
         append-to-body
         @opened="showDialog"
+        @close="cancel"
     >
       <el-form
           ref="addForm"
@@ -288,14 +289,10 @@
                 label="归属部门"
                 prop="deptId"
             >
-              <Treeselect
-                  :treeProps="dataMap.props"
+              <tree-select
                   :options="dataMap.deptOptions"
                   placeholder="请选择归属部门"
-                  :originOptions="dataMap.originOptions"
-                  :defalut="dataMap.formVal.deptId"
-                  :user="true"
-                  @callBack="getDeptId"
+                  v-model:value="dataMap.formVal.deptId"
               />
             </el-form-item>
           </el-col>
@@ -340,18 +337,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item
-                v-if="dataMap.formVal.id === undefined"
-                label="用户密码"
-                prop="password"
-            >
-              <el-input
-                  v-model="dataMap.formVal.password"
-                  placeholder="请输入用户密码"
-                  type="password"
-              />
+            <el-form-item label="状态">
+              <el-radio-group v-model="dataMap.formVal.status">
+                <el-radio
+                    v-for="dict in dataMap.statusOptions"
+                    :key="dict.dictValue"
+                    :label="dict.dictValue"
+                >
+                  {{ dict.dictLabel }}
+                </el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
+
         </el-row>
         <el-row>
           <el-col :span="12">
@@ -370,21 +368,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="状态">
-              <el-radio-group v-model="dataMap.formVal.status">
-                <el-radio
-                    v-for="dict in dataMap.statusOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictValue"
-                >
-                  {{ dict.dictLabel }}
-                </el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
             <el-form-item label="角色">
               <el-select
                   v-model="dataMap.formVal.roleIds"
@@ -399,6 +382,23 @@
                     :disabled="item.status === 0"
                 />
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+
+
+          <el-col :span="12">
+            <el-form-item
+                v-if="dataMap.formVal.id === undefined"
+                label="用户密码"
+                prop="password"
+            >
+              <el-input
+                  v-model="dataMap.formVal.password"
+                  placeholder="请输入用户密码"
+                  type="password"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -428,7 +428,7 @@
 import {listUser, getUser, delUser, addUser, updateUser, patch} from '@/api/system/user'
 
 import {getDeptSelectList} from '@/api/system/dept'
-import Treeselect from '@/components/TreeSelect/Index.vue'
+import TreeSelect from '@/components/TreeSelect/Index.vue'
 import {listRoles} from '@/api/system/role'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
@@ -607,8 +607,8 @@ function handleNodeClick(data: { [key: string]: any }) {
 // 用户状态修改
 function handleStatusChange(row: { [key: string]: any }) {
   if (dataMap.tigger) {
-    const text = row.status === '1' ? '启用' : '停用'
-    ElMessageBox.confirm('确认要"' + text + '""' + row.username + '"用户吗?', '警告', {
+    const text = row.status === 1 ? '启用' : '停用'
+    ElMessageBox.confirm('确认要' + text + ''+ row.username + '用户吗?', '警告', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
@@ -617,7 +617,7 @@ function handleStatusChange(row: { [key: string]: any }) {
     }).then(() => {
       ElMessage.success(text + '成功')
     }).catch( ()=>{
-      row.status = row.status === '1' ? 1 : 0
+      row.status = row.status === 1 ? 0 : 1
     })
 
   }
@@ -666,11 +666,7 @@ function handleSelectionChange(selection: any) {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  console.log(dataMap.formVal)
   dataMap.addformFlag = true
-  resetForm()
-  dataMap.originOptions = []
-  // loadDeptOptions()
   dataMap.open = true
   dataMap.title = '添加用户'
   dataMap.formVal.password = "123456"
@@ -696,15 +692,12 @@ function resetForm() {
 
 /** 修改按钮操作 */
 async function handleUpdate(row: { [key: string]: any }) {
-  resetForm()
   const userId = row.id || dataMap.ids
  const response = await getUser(userId);
   dataMap.formVal = response.data
-  console.log(response.data)
   dataMap.title = '修改用户'
   dataMap.formVal.password = ''
-  dataMap.formVal.deptId = 1
-  // dataMap.formVal.deptId = parseInt(response.data.deptId)
+  dataMap.formVal.deptId =response.data.deptId
   dataMap.open = true
 }
 
@@ -754,9 +747,6 @@ function cancel() {
   resetForm()
 }
 
-function getParentValue(event: any) {
-  console.log(event)
-}
 
 function getDeptId(e: any) {
   dataMap.formVal.deptId = e
@@ -787,6 +777,7 @@ onMounted(() => {
 
 function showDialog() {
   loadDeptOptions()
+  loadRoleOptions()
 }
 
 </script>
