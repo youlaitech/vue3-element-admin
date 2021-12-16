@@ -101,8 +101,8 @@
               placeholder="system/user/index"
               style="width: 95%"
           >
-            <template v-if="state.formData.parentId!=0" slot="prepend">src/views/</template>
-            <template v-if="state.formData.parentId!=0" slot="append">.vue</template>
+            <template v-if="state.formData.parentId!=0" #prepend>src/views/</template>
+            <template v-if="state.formData.parentId!=0" #append>.vue</template>
           </el-input>
 
           <el-tooltip effect="dark"
@@ -157,7 +157,7 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="submitForm">确 定</el-button>
+          <el-button type="primary" @click="submitForm">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
         </div>
       </template>
@@ -170,9 +170,7 @@ import {listTableMenus, getMenuDetail, listTreeSelectMenus, addMenu, deleteMenus
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 import {defineEmits, reactive, ref, unref, onMounted, getCurrentInstance} from "vue";
-
 import SvgIcon from '@/components/SvgIcon/index.vue';
-
 import TreeSelect from '@/components/TreeSelect/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';
 
@@ -241,9 +239,9 @@ function handleQuery() {
 /**
  * 加载菜单下拉树
  */
-function loadTreeSelectMenuOptions() {
+async function loadTreeSelectMenuOptions() {
   const menuOptions: any[] = []
-  listTreeSelectMenus().then(response => {
+  await listTreeSelectMenus().then(response => {
     const menuOption = {id: 0, label: '顶级菜单', children: response.data}
     menuOptions.push(menuOption)
     state.menuOptions = menuOptions
@@ -266,21 +264,37 @@ function handleSelectionChange(selection: any) {
 }
 
 function handleRowClick(row: any) {
+  state.currentRow = JSON.parse(JSON.stringify(row))
   emit('menuClick', row)
 }
 
-function handleAdd() {
+async function handleAdd(row: any) {
   resetForm()
-  loadTreeSelectMenuOptions()
+  await loadTreeSelectMenuOptions()
   state.dialog = {
     title: '添加菜单',
     visible: true,
   }
+  console.log('点击新增', row.id)
+  if (row.id) {
+    // 行点击新增
+    state.formData.parentId = row.id
+    state.formData.component = ''
+  } else {
+    if (state.currentRow) {
+      // 工具栏新增
+      state.formData.parentId = state.currentRow.id
+      state.formData.component = ''
+    } else {
+      state.formData.parentId = 0
+      state.formData.component = 'Layout'
+    }
+  }
 }
 
-function handleUpdate(row: any) {
+async function handleUpdate(row: any) {
   resetForm()
-  loadTreeSelectMenuOptions()
+  await loadTreeSelectMenuOptions()
   state.dialog = {
     title: '修改菜单',
     visible: true
