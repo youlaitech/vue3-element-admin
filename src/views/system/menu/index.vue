@@ -15,7 +15,7 @@
           <template #header>
             <svg-icon color="#333" icon-class="perm"/>
             <span style="margin:0 5px;">权限列表</span>
-            <el-tag type="success" v-if=" state.menuId">{{ state.menuName }}</el-tag>
+            <el-tag type="success" v-if="state.menuId">{{ state.menuName }}</el-tag>
             <el-tag type="warning" v-else size="small">请点击左侧菜单列表选择</el-tag>
           </template>
           <perm-table :menuId="state.menuId" :menuName="state.menuName"/>
@@ -37,7 +37,7 @@ const state = reactive({
   menuName: ''
 })
 
-const handleMenuClick = (menuRow: any) => {
+function handleMenuClick (menuRow: any){
   if (menuRow) {
     state.menuId = menuRow.id
     state.menuName = menuRow.name

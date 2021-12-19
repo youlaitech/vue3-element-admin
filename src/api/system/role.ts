@@ -31,7 +31,7 @@ export function listRoles(queryParams: object) {
  *
  * @param id
  */
-export function getPermDetail(id: number) {
+export function getRoleDetail(id: number) {
     return request({
         url: '/youlai-admin/api/v1/roles/' + id,
         method: 'get'
@@ -43,7 +43,7 @@ export function getPermDetail(id: number) {
  *
  * @param data
  */
-export function addPerm(data: object) {
+export function addRole(data: object) {
     return request({
         url: '/youlai-admin/api/v1/roles',
         method: 'post',
@@ -57,7 +57,7 @@ export function addPerm(data: object) {
  * @param id
  * @param data
  */
-export function updatePerm(id: number, data: object) {
+export function updateRole(id: number, data: object) {
     return request({
         url: '/youlai-admin/api/v1/roles/' + id,
         method: 'put',
@@ -77,3 +77,57 @@ export function deleteRoles(ids: string) {
     })
 }
 
+
+/**
+ * 获取角色的菜单列表
+ *
+ * @param roleId
+ */
+export function listRoleMenuIds(roleId: number) {
+    return request({
+        url: '/youlai-admin/api/v1/roles/' + roleId + '/menu_ids',
+        method: 'get',
+    })
+}
+
+/**
+ * 修改角色的菜单
+ *
+ * @param roleId
+ * @param menuIds
+ */
+export function updateRoleMenu(roleId: number, menuIds: Array<Number>) {
+    return request({
+        url: '/youlai-admin/api/v1/roles/' + roleId + '/menus',
+        method: 'put',
+        data: {menuIds: menuIds}
+    })
+}
+
+
+/**
+ * 获取角色的权限列表
+ *
+ * @param roleId
+ */
+export function listRolePerms(roleId: number) {
+    return request({
+        url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
+        method: 'get',
+    })
+}
+
+/**
+ * 保存角色权限
+ *
+ * @param menuId 菜单ID，归类权限
+ * @param roleId
+ * @param permIds
+ */
+export function saveRolePerms(menuId: number, roleId: number, permIds: Array<number>) {
+    return request({
+        url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
+        method: 'put',
+        data: {menuId: menuId, permIds: permIds}
+    })
+}

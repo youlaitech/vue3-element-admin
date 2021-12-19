@@ -1,22 +1,26 @@
 <template>
-  <div class="app-container">
+  <div>
     <!-- 搜索表单 -->
     <el-form
-        :model="state.queryParams"
         ref="queryForm"
-        :inline="true"
+        :model="state.queryParams"
         size="mini"
+        :inline="true"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" :icon="Delete" :disabled="state.multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" :icon='Delete' :disabled="state.multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
+
       <el-form-item prop="name">
         <el-input
             v-model="state.queryParams.name"
-            placeholder="数据项名称"
-            clearable/>
+            placeholder="角色名称"
+            clearable
+            @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
+
       <el-form-item>
         <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
@@ -25,22 +29,19 @@
 
     <!-- 数据表格 -->
     <el-table
-        :data="state.pageList"
+        ref="roleTable"
         v-loading="state.loading"
-        border
+        :data="state.pageList"
         @selection-change="handleSelectionChange"
+        @row-click="handleRowClick"
+        border
+        highlight-current-row
         size="mini"
     >
-      <el-table-column type="selection" min-width="5%"/>
-      <el-table-column label="数据项名称" prop="name"/>
-      <el-table-column label="数据项值" prop="value"/>
-      <el-table-column label="状态" align="center">
-        <template #default="scope">
-          <el-tag v-if="scope.row.status===1" type="success" size="mini">启用</el-tag>
-          <el-tag v-else type="info" size="mini">禁用</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="角色名称" prop="name"/>
+      <el-table-column label="角色编码" prop="code"/>
+      <el-table-column label="操作" align="center" width="100">
         <template #default="scope">
           <el-button
               type="primary"
@@ -62,6 +63,7 @@
       </el-table-column>
     </el-table>
 
+    <!-- 分页工具条 -->
     <pagination
         v-show="state.total>0"
         :total="state.total"
@@ -74,8 +76,7 @@
     <el-dialog
         :title="state.dialog.title"
         v-model="state.dialog.visible"
-        width="500px"
-        @close="cancel"
+        width="450px"
     >
       <el-form
           ref="dataForm"
@@ -83,65 +84,47 @@
           :rules="state.rules"
           label-width="100px"
       >
-        <el-form-item label="字典名称">
-          <el-input v-model="props.dictName" :disabled="true"/>
+        <el-form-item label="角色名称" prop="name">
+          <el-input v-model="state.formData.name" placeholder="请输入角色名称"/>
         </el-form-item>
-        <el-form-item label="字典项名称" prop="name">
-          <el-input v-model="state.formData.name" placeholder="请输入字典项名称"/>
+
+        <el-form-item label="角色编码" prop="code">
+          <el-input v-model="state.formData.code" placeholder="请输入角色编码"/>
         </el-form-item>
-        <el-form-item label="字典项值" prop="value">
-          <el-input v-model="state.formData.value" placeholder="请输入字典项值"/>
-        </el-form-item>
+
         <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="state.formData.sort" style="width: 80px;" controls-position="right" :min="0"/>
+          <el-input-number v-model="state.formData.sort" controls-position="right" :min="0" style="width: 100px"/>
         </el-form-item>
-        <el-form-item label="状态" prop="status">
+
+        <el-form-item label="状态">
           <el-radio-group v-model="state.formData.status">
             <el-radio :label="1">正常</el-radio>
             <el-radio :label="0">停用</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="state.formData.remark" type="textarea"></el-input>
-        </el-form-item>
       </el-form>
+
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="submitForm">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
         </div>
       </template>
+
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  listDictItemsWithPage,
-  getDictItemDetail,
-  addDictItem,
-  updateDictItem,
-  deleteDictItem
-} from "@/api/system/dict";
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons';
-import {onMounted, reactive, ref, unref, watch} from 'vue'
+import {listRolesWithPage, updateRole, getRoleDetail, addRole, deleteRoles} from '@/api/system/role'
+import {defineEmits, defineProps, onMounted, reactive, ref, unref} from "vue"
+import {add, del, detail, update} from "@api/system/client";
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
-const props = defineProps({
-  dictCode: {
-    type: String,
-    default: ''
-  },
-  dictName: {
-    type: String,
-    default: ''
-  }
-})
+const emit = defineEmits(['roleClick'])
 
-watch(() => props.dictCode, (newVal, oldVal) => {
-  state.queryParams.dictCode = newVal
-  handleQuery()
-})
+const dataForm = ref()  // 属性名必须和元素的ref属性值一致
 
 const state = reactive({
   loading: true,
@@ -154,8 +137,7 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    name: undefined,
-    dictCode: ''
+    name: undefined
   },
   pageList: [],
   total: 0,
@@ -165,44 +147,36 @@ const state = reactive({
   },
   formData: {
     id: undefined,
+    parentId: 0,
     name: undefined,
-    code: undefined,
-    status: undefined,
-    remark: undefined
+    sort: 1,
+    status: 1
   },
   rules: {
     name: [
-      {required: true, message: '请输入字典项名称', trigger: 'blur'}
+      {required: true, message: '请输入角色名称', trigger: 'blur'}
     ],
-    value: [
-      {required: true, message: '请输入字典项值', trigger: 'blur'}
+    code: [
+      {required: true, message: '请输入角色编码', trigger: 'blur'}
     ]
   }
 })
 
 function handleQuery() {
-  if (state.queryParams.dictCode) {
-    state.loading = true
-    listDictItemsWithPage(state.queryParams).then(response => {
-      const {data, total} = response as any
-      state.pageList = data
-      state.total = total
-      state.loading = false
-    })
-  } else {
+  state.loading = true
+  listRolesWithPage(state.queryParams).then(response => {
+    const {data, total} = response as any
+    state.pageList = data
+    state.total = total
     state.loading = false
-    state.pageList = []
-    state.total = 0
-    state.queryParams.pageNum = 1
-  }
+  })
 }
 
 function resetQuery() {
   state.queryParams = {
     pageNum: 1,
     pageSize: 10,
-    name: undefined,
-    dictCode: ''
+    name: undefined
   }
   handleQuery()
 }
@@ -213,10 +187,14 @@ function handleSelectionChange(selection: any) {
   state.multiple = !selection.length
 }
 
+function handleRowClick(row: any) {
+  emit('roleClick', row)
+}
+
 function handleAdd() {
   resetForm()
   state.dialog = {
-    title: '添加字典项',
+    title: '添加角色',
     visible: true,
   }
 }
@@ -224,29 +202,27 @@ function handleAdd() {
 function handleUpdate(row: any) {
   resetForm()
   state.dialog = {
-    title: '修改字典项',
-    visible: true
+    title: '修改角色',
+    visible: true,
   }
-  const id = row.id || state.ids
-  getDictItemDetail(id).then(response => {
+  const roleId = row.id || state.ids
+  getRoleDetail(roleId).then(response => {
     state.formData = response.data
   })
 }
-
-const dataForm = ref(ElForm)
 
 function submitForm() {
   const form = unref(dataForm)
   form.validate((valid: any) => {
     if (valid) {
       if (state.formData.id) {
-        updateDictItem(state.formData.id, state.formData).then(response => {
+        updateRole(state.formData.id as any, state.formData).then(response => {
           ElMessage.success('修改成功')
           state.dialog.visible = false
           handleQuery()
         })
       } else {
-        addDictItem(state.formData).then(response => {
+        addRole(state.formData).then(response => {
           ElMessage.success('新增成功')
           state.dialog.visible = false
           handleQuery()
@@ -256,18 +232,18 @@ function submitForm() {
   })
 }
 
-
 function resetForm() {
   state.formData = {
     id: undefined,
+    parentId: 0,
     name: undefined,
-    code: undefined,
-    status: undefined,
-    remark: undefined
+    sort: 1,
+    status: 1
   }
 }
 
 function cancel() {
+  resetForm()
   state.dialog.visible = false
 }
 
@@ -278,7 +254,7 @@ function handleDelete(row: any) {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteDictItem(ids).then(() => {
+    deleteRoles(ids).then(() => {
       ElMessage.success('删除成功')
       handleQuery()
     })
@@ -290,8 +266,5 @@ function handleDelete(row: any) {
 onMounted(() => {
   handleQuery()
 })
+
 </script>
-
-<style scoped>
-
-</style>

@@ -8,8 +8,7 @@
         size="mini"
     >
       <el-form-item>
-        <el-button type="primary" :icon="Plus" @click="handleAdd">新增</el-button>
-        <el-button type="success" :icon="Edit" :disabled="state.single" @click="handleUpdate">修改</el-button>
+        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
         <el-button type="danger" :icon='Delete' :disabled="state.multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
 
@@ -71,8 +70,8 @@
     <pagination
         v-show="state.total>0"
         :total="state.total"
-        :page.sync="state.queryParams.pageNum"
-        :limit.sync="state.queryParams.pageSize"
+        v-model:page="state.queryParams.pageNum"
+        v-model:limit="state.queryParams.pageSize"
         @pagination="handleQuery"
     />
 
@@ -114,8 +113,9 @@
 import {listClientsWithPage, detail, update, add, del} from '@/api/system/client'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {onMounted, reactive, getCurrentInstance, ref, unref} from 'vue'
-import {ElForm, ElMessage, ElMessageBox} from "element-plus";
+import {ElForm, ElMessage, ElMessageBox} from "element-plus"
 
+const dataForm = ref(ElForm)
 const state = reactive({
   loading: true,
   // 选中ID数组
@@ -200,7 +200,7 @@ function handleUpdate(row: any) {
   })
 }
 
-const dataForm = ref(ElForm)
+
 function submitForm() {
   const form = unref(dataForm)
   form.validate((valid: any) => {
@@ -237,6 +237,7 @@ function resetForm() {
 }
 
 function cancel() {
+  resetForm()
   state.dialog.visible = false
 }
 

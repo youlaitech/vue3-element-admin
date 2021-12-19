@@ -10,6 +10,7 @@
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
       </el-form-item>
+
       <el-form-item>
         <el-input
             v-model="state.queryParams.name"
@@ -169,7 +170,7 @@
 import {listTableMenus, getMenuDetail, listTreeSelectMenus, addMenu, deleteMenus, updateMenu} from "@/api/system/menu";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
-import {defineEmits, reactive, ref, unref, onMounted, watch, getCurrentInstance, computed} from "vue";
+import {defineEmits, reactive, ref, unref, onMounted} from "vue";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import TreeSelect from '@/components/TreeSelect/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';
@@ -229,8 +230,6 @@ function handleQuery() {
     const {data, total} = response as any
     state.menuList = data
     state.total = total
-    state.loading = false
-  }).catch(() => {
     state.loading = false
   })
 }
@@ -331,7 +330,6 @@ function submitForm() {
   })
 }
 
-
 function resetForm() {
   state.formData = {
     id: undefined,
@@ -346,6 +344,7 @@ function resetForm() {
 }
 
 function cancel() {
+  resetForm()
   state.dialog.visible = false
 }
 
@@ -374,7 +373,6 @@ function selected(name: string) {
   state.formData.icon = name;
   showChooseIcon.value = false;
 }
-
 
 onMounted(() => {
   handleQuery()

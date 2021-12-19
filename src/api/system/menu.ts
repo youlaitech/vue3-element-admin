@@ -38,7 +38,7 @@ export function listSelectMenus() {
  */
 export function listTreeSelectMenus() {
     return request({
-        url: '/youlai-admin/api/v1/menus/tree-select',
+        url: '/youlai-admin/api/v1/menus/tree_select',
         method: 'get'
     })
 }
