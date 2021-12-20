@@ -1,13 +1,13 @@
 <template>
   <div style="width: 100%;">
-    <el-form size="mini" >
+    <el-form size="mini">
       <el-form-item>
         <el-row>
           <el-col :span="12">
-            <el-button type="success" plain :icon="Switch" >展开/折叠</el-button>
+            <el-button type="success" plain :icon="Switch" @click="toggleExpandAll">展开/折叠</el-button>
           </el-col>
-          <el-col :span="12"  style="text-align: right">
-            <el-button type="primary" :icon="Check" @click="handleQuery">提交</el-button>
+          <el-col :span="12" style="text-align: right">
+            <el-button type="primary" :icon="Check" @click="handleSubmit">提交</el-button>
           </el-col>
         </el-row>
       </el-form-item>
@@ -16,8 +16,9 @@
 
     <el-tree
         ref="menuRef"
+        v-if="state.refreshTree"
         :default-expanded-keys="state.expandedKeys"
-        :default-expand-all="true"
+        :default-expand-all="state.isExpandAll"
         :data="state.menuOptions"
         show-checkbox
         node-key="id"
@@ -32,10 +33,10 @@
 <script setup lang="ts">
 import {listTreeSelectMenus} from "@/api/system/menu";
 import {listRoleMenuIds, updateRoleMenu} from "@/api/system/role"
-import {defineEmits, defineProps,onMounted, reactive, ref, watch} from "vue"
+import {defineEmits, defineProps, nextTick, onMounted, reactive, ref, watch} from "vue"
 import {ElTree, ElMessage, ElMessageBox} from "element-plus"
 
-import {Switch,Check} from '@element-plus/icons'
+import {Switch, Check} from '@element-plus/icons'
 
 const emit = defineEmits(['menuClick'])
 const props = defineProps({
@@ -53,7 +54,6 @@ watch(() => props.role.id as any, (newVal, oldVal) => {
     state.checkStrictly = true
     listRoleMenuIds(roleId).then(response => {
       const checkedMenuIds = response.data
-      console.log('选中的菜单',checkedMenuIds)
       menuRef.value.setCheckedKeys(checkedMenuIds)
       state.checkStrictly = false
     })
@@ -63,9 +63,10 @@ watch(() => props.role.id as any, (newVal, oldVal) => {
 const state = reactive({
   expandedKeys: [],  // 展开的节点
   menuOptions: [],
-  checkStrictly: false
+  checkStrictly: false,
+  isExpandAll: true,
+  refreshTree: true
 })
-
 
 /**
  * 加载菜单树
@@ -80,10 +81,30 @@ function handleNodeClick(node: any) {
   emit('menuClick', node)
 }
 
+/**
+ * 展开/收缩
+ */
+function toggleExpandAll() {
+  state.refreshTree = false
+  state.isExpandAll = !state.isExpandAll
+  nextTick(() => {
+    state.refreshTree = true
+  })
+}
+
+/**
+ * 保存角色的菜单
+ */
+function handleSubmit() {
+  const checkedMenuIds = menuRef.value.getCheckedNodes(false, true).map((node: any) => node.id)
+  updateRoleMenu(props.role.id, checkedMenuIds).then(() => {
+    ElMessage.success('提交成功')
+  })
+}
+
 onMounted(() => {
   loadTreeSelectMenuOptions()
 })
-
 
 </script>
 

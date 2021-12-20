@@ -163,6 +163,7 @@ const state = reactive({
 })
 
 function handleQuery() {
+  emit('roleClick', {})
   state.loading = true
   listRolesWithPage(state.queryParams).then(response => {
     const {data, total} = response as any
