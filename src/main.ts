@@ -1,7 +1,8 @@
 import {createApp} from 'vue'
 import App from './App.vue'
 import router from "./router";
-import {store, key} from './store'
+// import {store, key} from './store'
+import { setupStore } from "@/store";
 import '@/styles/index.scss'
 
 import ElementPlus from 'element-plus'
@@ -29,10 +30,8 @@ for (let iconName in ElIconModules) {
 
 // 全局方法
 app.config.globalProperties.$getDictItemsByCode = getDictItemsByCode
-
-app
-    .component('Pagination', Pagination) // 全局组件
+setupStore(app);
+app.component('Pagination', Pagination) // 全局组件
     .use(router)
-    .use(store, key)
     .use(ElementPlus, {locale})
     .mount('#app')

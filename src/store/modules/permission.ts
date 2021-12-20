@@ -1,9 +1,10 @@
-import {Module} from "vuex";
+// import {Module} from "vuex";
 import {PermissionState, RootStateTypes} from "@store/interface";
 import {RouteRecordRaw} from 'vue-router'
 import {constantRoutes} from '@/router'
 import {listRoutes} from "@/api/system/menu";
-
+import { defineStore } from "pinia";
+import { store } from "@/store";
 const modules = import.meta.glob("../../views/**/**.vue");
 export const Layout = () => import( '@/layout/index.vue')
 
@@ -45,20 +46,18 @@ export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => 
 }
 
 
-const permissionModule: Module<PermissionState, RootStateTypes> = {
-    namespaced: true,
-    state: {
+export const usePermissionStore = defineStore({
+    id:"youlai-permission",
+    state:():PermissionState=>( {
         routes: [],
         addRoutes: []
-    },
-    mutations: {
-        SET_ROUTES: (state: PermissionState, routes: RouteRecordRaw[]) => {
-            state.addRoutes = routes
-            state.routes = constantRoutes.concat(routes)
-        }
-    },
+    }),
     actions: {
-        generateRoutes({commit}, roles: string[]) {
+        async SET_ROUTES( routes: RouteRecordRaw[]){
+          this.addRoutes = routes
+         this.routes = constantRoutes.concat(routes)
+        },
+         generateRoutes( roles: string[]) {
             return new Promise((resolve, reject) => {
                 listRoutes().then(response => {
                     const asyncRoutes = response.data
@@ -68,7 +67,7 @@ const permissionModule: Module<PermissionState, RootStateTypes> = {
                     } else {
                         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
                     }
-                    commit('SET_ROUTES', accessedRoutes)
+                    this.SET_ROUTES(accessedRoutes)
                     resolve(accessedRoutes)
                 }).catch(error => {
                     reject(error)
@@ -76,5 +75,7 @@ const permissionModule: Module<PermissionState, RootStateTypes> = {
             })
         }
     }
+})
+export function usePermissionStoreHook() {
+    return usePermissionStore(store);
 }
-export default permissionModule;

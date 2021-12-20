@@ -1,4 +1,5 @@
-import {Module} from "vuex";
+import { defineStore } from "pinia";
+import { store } from "@/store";
 import {UserState, RootStateTypes} from "@store/interface";
 import {Local} from "@utils/storage";
 import {getUserInfo, login, logout} from "@api/login";
@@ -15,36 +16,35 @@ const getDefaultState = () => {
     }
 }
 
-const userModule: Module<UserState, RootStateTypes> = {
-    namespaced: true,
-    state: {
+export const useUserStore = defineStore({
+   id:"youlai-user",
+    state: ():UserState=>({
         token: Local.get('token') || '',
         nickname: '',
         avatar: '',
         roles: [],
         perms: []
-    },
-    mutations: {
-        RESET_STATE: (state) => {
-            Object.assign(state, getDefaultState())
-        },
-        SET_TOKEN(state: UserState, token: string) {
-            state.token = token
-        },
-        SET_NICKNAME(state: UserState, nickname: string) {
-            state.nickname = nickname
-        },
-        SET_AVATAR(state: UserState, avatar: string) {
-            state.avatar = avatar
-        },
-        SET_ROLES(state: UserState, roles: string[]) {
-            state.roles = roles
-        },
-        SET_PERMS(state: UserState, perms: string[]) {
-            state.perms = perms
-        }
-    },
+    }),
     actions: {
+        async RESET_STATE () {
+            // Object.assign(this.state, getDefaultState())
+            this.$reset()
+        },
+        async SET_TOKEN(token: string) {
+            this.token = token
+        },
+        async  SET_NICKNAME( nickname: string) {
+            this.nickname = nickname
+        },
+        async SET_AVATAR(avatar: string) {
+            this.avatar = avatar
+        },
+        async  SET_ROLES(roles: string[]) {
+            this.roles = roles
+        },
+        async SET_PERMS( perms: string[]) {
+            this.perms = perms
+        },
         /**
          * 用户登录请求
          * @param userInfo 登录用户信息
@@ -53,7 +53,7 @@ const userModule: Module<UserState, RootStateTypes> = {
          *  code: 验证码
          *  uuid: 匹配正确验证码的 key
          */
-        login({commit}, userInfo: { username: string, password: string, code: string, uuid: string }) {
+        login(userInfo: { username: string, password: string, code: string, uuid: string }) {
             const {username, password, code, uuid} = userInfo
             return new Promise((resolve, reject) => {
                 login(
@@ -68,7 +68,7 @@ const userModule: Module<UserState, RootStateTypes> = {
                     const {access_token, token_type} = response.data
                     const accessToken = token_type + " " + access_token
                     Local.set("token", accessToken)
-                    commit('SET_TOKEN', accessToken)
+                    this.SET_TOKEN(accessToken)
                     resolve(access_token)
                 }).catch(error => {
                     reject(error)
@@ -78,7 +78,7 @@ const userModule: Module<UserState, RootStateTypes> = {
         /**
          *  获取用户信息（昵称、头像、角色集合、权限集合）
          */
-        getUserInfo({commit, state}) {
+        getUserInfo() {
             return new Promise(((resolve, reject) => {
                     getUserInfo().then(response => {
                         const {data} = response
@@ -90,10 +90,10 @@ const userModule: Module<UserState, RootStateTypes> = {
                         if (!roles || roles.length <= 0) {
                             reject('getUserInfo: roles must be a non-null array!')
                         }
-                        commit('SET_NICKNAME', nickname)
-                        commit('SET_AVATAR', avatar)
-                        commit('SET_ROLES', roles)
-                        commit('SET_PERMS', perms)
+                        this.SET_NICKNAME(nickname)
+                        this.SET_AVATAR( avatar)
+                        this.SET_ROLES( roles)
+                        this.SET_PERMS( perms)
 
                         resolve(data)
                     }).catch(error => {
@@ -106,11 +106,11 @@ const userModule: Module<UserState, RootStateTypes> = {
         /**
          *  注销
          */
-        logout({commit, state}) {
+        logout() {
             return new Promise(((resolve, reject) => {
                 logout().then(() => {
                     Local.remove('token')
-                    commit('RESET_STATE')
+                    this.RESET_STATE()
                     resetRouter()
                     resolve(null)
                 }).catch(error => {
@@ -122,15 +122,17 @@ const userModule: Module<UserState, RootStateTypes> = {
         /**
          * 清除 Token
          */
-        resetToken({commit}){
+        resetToken(){
             return new Promise(resolve=>{
                 Local.remove('token')
-                commit('RESET_STATE')
+                this.RESET_STATE()
                 resolve(null)
             })
         }
     }
-}
+})
 
-export default userModule;
+export function useUserStoreHook() {
+    return useUserStore(store);
+}
 

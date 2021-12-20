@@ -1,49 +1,50 @@
-import {Module} from "vuex";
+import { defineStore } from "pinia";
+import { store } from "@/store";
+// import {Module} from "vuex";
 import {SettingState, RootStateTypes} from "@store/interface";
 import defaultSettings from '../../settings'
 
 const {showSettings, tagsView, fixedHeader, sidebarLogo} = defaultSettings
 
-const settingModule: Module<SettingState, RootStateTypes> = {
-    namespaced: true,
-    state: {
+export const useSettingStore = defineStore({
+    id: "pure-setting",
+    state:():SettingState =>({
         theme: '',
         showSettings: showSettings,
         tagsView: tagsView,
         fixedHeader: fixedHeader,
         sidebarLogo: sidebarLogo,
-    },
-    mutations: {
-        CHANGE_SETTING: (state: SettingState, payload: { key: string, value: any }) => {
+    }),
+    actions: {
+        async CHANGE_SETTING( payload: { key: string, value: any }){
             const {key, value} = payload
             switch (key) {
                 case 'theme':
-                    state.theme = value
+                   this.theme = value
                     break
                 case 'showSettings':
-                    state.showSettings = value
+                    this.showSettings = value
                     break
                 case 'fixedHeader':
-                    state.fixedHeader = value
+                    this.fixedHeader = value
                     break
                 case 'tagsView':
-                    state.tagsView = value
+                    this.tagsView = value
                     break
                 case 'sidebarLogo':
-                    state.sidebarLogo = value
+                    this.sidebarLogo = value
                     break
                 default:
                     break
             }
-        }
-    },
-    actions: {
-        changeSetting({commit}, data) {
-            commit('CHANGE_SETTING', data)
+        },
+        changeSetting(data:any) {
+            this.CHANGE_SETTING(data)
         }
     }
+})
+
+export function useSettingStoreHook() {
+    return useSettingStore(store);
 }
-
-export default settingModule;
-
 
