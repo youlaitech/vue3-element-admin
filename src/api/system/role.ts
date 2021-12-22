@@ -110,10 +110,11 @@ export function updateRoleMenu(roleId: number, menuIds: Array<Number>) {
  *
  * @param roleId
  */
-export function listRolePerms(roleId: number) {
+export function listRolePerms(roleId: number, menuId: number) {
     return request({
         url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
         method: 'get',
+        data: {menuId: menuId}
     })
 }
 
@@ -124,7 +125,7 @@ export function listRolePerms(roleId: number) {
  * @param roleId
  * @param permIds
  */
-export function saveRolePerms(menuId: number, roleId: number, permIds: Array<number>) {
+export function saveRolePerms(roleId: number, menuId: number, permIds: Array<number>) {
     return request({
         url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
         method: 'put',

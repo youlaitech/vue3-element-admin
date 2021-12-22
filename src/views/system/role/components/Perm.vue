@@ -1,187 +1,154 @@
 <template>
   <div class="perm-container">
-    <el-card class="box-card" shadow="always">
-      <div class="clearfix" slot="header">
-        <b>
-          <svg-icon icon-class="menu"/>
-          {{ menu && menu.label ? "【" + menu.label + "】" : "" }}权限分配
-        </b>
-      </div>
-      <el-row style="margin-bottom: 10px">
-        <el-col :span="18">
-          <el-tag v-if="role" type="primary">{{ role.name }}</el-tag>
-          <el-tag v-if="menu" type="success" style="margin-left: 5px">{{
-              menu.label
-            }}
-          </el-tag>
-          <el-tag v-if="!role" type="info" style="margin-left: 5px"
-          ><i class="el-icon-info"> </i> 请选择角色
-          </el-tag>
-          <el-tag v-if="!menu" type="info" style="margin-left: 5px"
-          ><i class="el-icon-info"> </i> 请选择菜单
-          </el-tag>
-        </el-col>
-        <el-col :span="6" style="text-align: right">
-          <el-button
-            type="primary"
-            :disabled="isRoot"
-            icon="el-icon-check"
-            size="mini"
-            @click="handleSubmit"
-          >提交
-          </el-button>
-        </el-col>
-      </el-row>
+    <el-form size="mini">
+      <el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-button type="success" plain :icon="Switch" @click="toggleExpandAll">展开/折叠</el-button>
+          </el-col>
+          <el-col :span="12" style="text-align: right">
+            <el-button type="primary" :icon="Check" @click="handleSubmit">提交</el-button>
+          </el-col>
+        </el-row>
+      </el-form-item>
+    </el-form>
 
-      <div v-if="permissionList.length > 0">
-        <el-checkbox
+
+    <div v-if="permissionOptions.length > 0">
+      <el-checkbox
           :indeterminate="isIndeterminate"
           v-model="checkAll"
           @change="handleCheckAllChange"
           style="margin-top: 20px"
-        >全选
-        </el-checkbox>
-        <el-row>
-          <el-col
+      >全选
+      </el-checkbox>
+      <el-row>
+        <el-col
             :span="8"
-            v-for="permission in permissionList"
+            v-for="item in permissionOptions"
             style="margin-top: 20px"
-          >
-            <el-checkbox
+        >
+          <el-checkbox
               border
-              v-model="permission.checked"
-              :label="permission.id"
-              :key="permission.id"
-              @change="handleCheckChange"
+              v-model="item.checked"
+              :label="item.id"
+              :key="item.id"
+              @change="handleCheckedPermChange"
               size="mini"
-            >
-              {{ permission.name }}
-            </el-checkbox>
-          </el-col>
-        </el-row>
-      </div>
-      <div style="text-align: center" v-else>
-        <el-empty :description=" !role? '请选择角色': !menu? '请选择菜单': '暂无数据，您可在【菜单管理】配置权限数据'"></el-empty>
-      </div>
-    </el-card>
+          >
+            {{ permission.name }}
+          </el-checkbox>
+        </el-col>
+      </el-row>
+    </div>
+    <div style="text-align: center" v-else>
+      <el-empty :description=" !role? '请选择角色': !menu? '请选择菜单': '暂无数据，您可在【菜单管理】配置权限数据'"></el-empty>
+    </div>
   </div>
 </template>
 
-<script>
-import {getPermissionList} from "@/api/system/permission";
-import {listRolePermission, updateRolePermission} from "@/api/system/role";
+<script setup lang="ts">
+import {listPerms} from "@/api/system/perm";
+import { listRolePerms, saveRolePerms} from "@/api/system/role";
+import {defineProps, onMounted, reactive, toRefs, watch} from "vue";
+import {ElMessage} from "element-plus";
 
-export default {
-  name: "Permission",
-  props: ["type"],
-  data() {
-    return {
-      loading: false,
-      ids: [],
-      initialCheckedPermissionIds: [],
-      menu: undefined,
-      role: undefined,
-      isIndeterminate: true,
-      checkAll: false,
-      permissionList: [],
-      isRoot: false,
-    };
+
+const props = defineProps({
+  role: {
+    type: Object,
+    default: {}
   },
-  methods: {
-    handleQuery() {
-      this.loading = true;
-      const menuId = this.menu.value;
-      getPermissionList({
-        menuId: menuId
-      }).then((response) => {
-        const {data} = response;
-        if (this.role.code == this.ROOT_ROLE_CODE) {
-          // 如果是超级管理员默认勾选全部且不可编辑
-          this.isRoot = true
-          this.checkAll = true
-          this.isIndeterminate = false
-          data.map((item) => this.$set(item, "checked", true))
-          this.permissionList = data
-          this.loading = false
+  menu: {
+    type: Object,
+    default: {}
+  }
+})
+
+watch(() => props.role.id as any, (newVal, oldVal) => {
+  const roleId = props.role.id
+  if (roleId) {
+  }
+})
+
+watch(() => props.menu.id as any, (newVal, oldVal) => {
+  const menuId = props.menu.id
+  if (menuId) {
+  }
+})
+
+const state = reactive({
+  loading: false,
+  permissionOptions: [] as Array<any>,
+  isIndeterminate: true,
+  checkAll: false,
+  checkedPerms: []
+})
+
+const {permissionOptions, isIndeterminate, checkAll, checkedPerms} = toRefs(state)
+
+function handleCheckAllChange(checked: Boolean) {
+  state.isIndeterminate = false;
+  if (checked) {
+    state.permissionOptions.map((item) => (item.checked = true));
+  } else {
+    // 全不选
+    state.permissionOptions.map((item) => (item.checked = false));
+  }
+}
+
+function handleCheckedPermChange(value: any) {
+  const checkedCount = value.length;
+  state.checkAll = checkedCount === state.permissionOptions.length;
+  state.isIndeterminate = checkedCount > 0 && checkedCount < state.permissionOptions.length;
+}
+
+function loadData() {
+  if(! props.menu.id){
+    return false
+  }
+
+  state.loading = true;
+  listPerms({menuId: props.menu.id}).then(response => {
+    state.permissionOptions =  response.data
+    listRolePerms(props.role.id, props.menu.id).then(res => {
+      const checkedPermIds = res.data
+      state.permissionOptions.map((item:any)=> {
+        if (checkedPermIds.includes(item.id)) {
+          item.checked = true;
         } else {
-          this.isRoot = false;
-          listRolePermission(this.role.id, {menuId: menuId}).then((res) => {
-            this.initialCheckedPermissionIds = res.data;
-            let checkAll = true
-            data.map((item) => {
-              if (this.initialCheckedPermissionIds.includes(item.id)) {
-                item.checked = true;
-              } else {
-                checkAll = false
-              }
-            });
-            this.checkAll = checkAll
-            if (checkAll) {
-              this.isIndeterminate = false
-            }
-            this.permissionList = data;
-            this.loading = false;
-          });
+          state.checkAll = false
         }
       });
-    },
-    menuClick(menu, role) {
-      this.role = role;
-      this.menu = menu;
 
-      if (role && menu) {
-        this.handleQuery();
-      } else {
-        this.permissionList = [];
-        this.initialCheckedPermissionIds = [];
-      }
-    },
-    handleSubmit: function () {
-      const checkedPermissionIds = this.permissionList
-        .filter((item) => item.checked)
-        .map((item) => item.id);
-      // 判断选中权限是否变动
-      if (
-        this.initialCheckedPermissionIds.length ==
-        checkedPermissionIds.length &&
-        this.initialCheckedPermissionIds.sort().every(function (v, i) {
-          return v == checkedPermissionIds[i];
-        })
-      ) {
-        this.$message.warning("数据未变动");
-        return;
-      }
-      updateRolePermission(
-        this.menu.value,
-        this.role.id,
-        checkedPermissionIds
-      ).then((response) => {
-        this.$message.success("提交成功");
-      });
-    },
-    handleCheckAllChange(checked) {
-      if (checked) {
-        this.permissionList.map((item) => (item.checked = true));
-      } else {
-        // 全不选
-        this.permissionList.map((item) => (item.checked = false));
-      }
-      this.isIndeterminate = false;
-    },
-    handleCheckChange(item, val) {
-      const checkedCount = this.permissionList.filter(
-        (item) => item.checked
-      ).length;
-      this.checkAll = checkedCount === this.permissionList.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.permissionList.length;
-    },
-  },
-};
+      state.loading=false
+
+    })
+  })
+}
+
+function handleSubmit(){
+  const checkedPermIds = state.permissionOptions
+      .filter((item) => item.checked)
+      .map((item) => item.id);
+
+
+saveRolePerms(  props.menu.id,
+    props.role.id,
+    checkedPermIds
+).then(() => {
+  ElMessage.success("提交成功");
+});
+
+}
+
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <style scoped>
 .perm-container {
-  margin-bottom: 20px;
+  width: 100%;
 }
 </style>

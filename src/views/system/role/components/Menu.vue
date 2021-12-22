@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%;">
+  <div class="menu-container">
     <el-form size="mini">
       <el-form-item>
         <el-row>
@@ -13,17 +13,16 @@
       </el-form-item>
     </el-form>
 
-
     <el-tree
         ref="menuRef"
-        v-if="state.refreshTree"
-        :default-expanded-keys="state.expandedKeys"
-        :default-expand-all="state.isExpandAll"
-        :data="state.menuOptions"
+        v-if="refreshTree"
+        :default-expanded-keys="expandedKeys"
+        :default-expand-all="isExpandAll"
+        :data="menuOptions"
         show-checkbox
         node-key="id"
         empty-text="加载菜单中..."
-        :check-strictly="state.checkStrictly"
+        :check-strictly="checkStrictly"
         highlight-current
         @node-click="handleNodeClick"
     />
@@ -33,9 +32,8 @@
 <script setup lang="ts">
 import {listTreeSelectMenus} from "@/api/system/menu";
 import {listRoleMenuIds, updateRoleMenu} from "@/api/system/role"
-import {defineEmits, defineProps, nextTick, onMounted, reactive, ref, watch} from "vue"
+import {defineEmits, defineProps, nextTick, onMounted, reactive, ref, toRefs, watch} from "vue"
 import {ElTree, ElMessage, ElMessageBox} from "element-plus"
-
 import {Switch, Check} from '@element-plus/icons'
 
 const emit = defineEmits(['menuClick'])
@@ -67,6 +65,8 @@ const state = reactive({
   isExpandAll: true,
   refreshTree: true
 })
+
+const {expandedKeys, menuOptions, checkStrictly, isExpandAll, refreshTree} = toRefs(state)
 
 /**
  * 加载菜单树
@@ -109,5 +109,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-
+.menu-container {
+  width: 100%;
+}
 </style>

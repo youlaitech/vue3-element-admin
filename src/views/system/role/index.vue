@@ -17,7 +17,10 @@
           <template #header>
             <svg-icon color="#333" icon-class="menu"/>
             <span style="margin:0 5px;">菜单分配</span>
-            <el-tag type="success" v-if="state.role.id" size="small"> <svg-icon color="green  " icon-class="role"/>  {{ state.role.name }}</el-tag>
+            <el-tag type="success" v-if="state.role.id" size="small">
+              <svg-icon color="green  " icon-class="role"/>
+              {{ state.role.name }}
+            </el-tag>
             <el-tag type="warning" v-else size="small">请选择角色</el-tag>
           </template>
           <menus ref="menu" @menuClick="handleMenuClick" :role="state.role"/>
@@ -30,13 +33,19 @@
             <svg-icon color="#333" icon-class="perm"/>
             <span style="margin:0 5px;">权限分配</span>
 
-            <el-tag type="success" style="margin:0 5px 0 0;" v-if="state.role.id" size="small"> <svg-icon color="green" icon-class="role"/>  {{ state.role.name }}</el-tag>
+            <el-tag type="success" style="margin:0 5px 0 0;" v-if="state.role.id" size="small">
+              <svg-icon color="green" icon-class="role"/>
+              {{ state.role.name }}
+            </el-tag>
             <el-tag type="warning" style="margin:0 5px  0 0;" v-else size="small"> 请选择角色</el-tag>
 
-            <el-tag type="primary" v-if="state.role.id" size="small"><svg-icon color="red" icon-class="menu"/>  {{ state.role.name }}</el-tag>
+            <el-tag type="primary" v-if="state.role.id" size="small">
+              <svg-icon color="red" icon-class="menu"/>
+              {{ state.role.name }}
+            </el-tag>
             <el-tag type="warning" v-else size="small"> 请选择菜单</el-tag>
           </template>
-          <!--<perm ref="perm" :menu="state.menu" :role="state.role"/>-->
+          <perm ref="perm" :menu="state.menu" :role="state.role"/>
         </el-card>
       </el-col>
 
@@ -47,6 +56,7 @@
 <script setup lang="ts">
 import Role from './components/Role.vue'
 import Menus from './components/Menu.vue'
+import Perm from './components/Perm.vue'
 import {reactive} from "vue";
 import {ElMessage} from "element-plus";
 import SvgIcon from '@/components/SvgIcon/index.vue';
