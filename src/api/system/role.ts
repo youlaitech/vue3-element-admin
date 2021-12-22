@@ -114,7 +114,7 @@ export function listRolePerms(roleId: number, menuId: number) {
     return request({
         url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
         method: 'get',
-        data: {menuId: menuId}
+        params: {menuId: menuId}
     })
 }
 

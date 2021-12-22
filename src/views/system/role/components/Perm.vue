@@ -1,27 +1,20 @@
 <template>
   <div class="perm-container">
-    <el-form size="mini">
-      <el-form-item>
-        <el-row>
-          <el-col :span="12">
-            <el-button type="success" plain :icon="Switch" @click="toggleExpandAll">展开/折叠</el-button>
-          </el-col>
-          <el-col :span="12" style="text-align: right">
-            <el-button type="primary" :icon="Check" @click="handleSubmit">提交</el-button>
-          </el-col>
-        </el-row>
-      </el-form-item>
-    </el-form>
-
-
     <div v-if="permissionOptions.length > 0">
-      <el-checkbox
-          :indeterminate="isIndeterminate"
-          v-model="checkAll"
-          @change="handleCheckAllChange"
-          style="margin-top: 20px"
-      >全选
-      </el-checkbox>
+      <el-row>
+        <el-col :span="12">
+          <el-checkbox
+              :indeterminate="isIndeterminate"
+              v-model="checkAll"
+              @change="handleCheckAllChange"
+          >全选
+          </el-checkbox>
+        </el-col>
+        <el-col :span="12" style="text-align: right">
+          <el-button type="primary" :icon="Check" size="mini" @click="handleSubmit">提交</el-button>
+        </el-col>
+      </el-row>
+
       <el-row>
         <el-col
             :span="8"
@@ -36,7 +29,7 @@
               @change="handleCheckedPermChange"
               size="mini"
           >
-            {{ permission.name }}
+            {{ item.name }}
           </el-checkbox>
         </el-col>
       </el-row>
@@ -49,10 +42,10 @@
 
 <script setup lang="ts">
 import {listPerms} from "@/api/system/perm";
-import { listRolePerms, saveRolePerms} from "@/api/system/role";
+import {listRolePerms, saveRolePerms} from "@/api/system/role";
 import {defineProps, onMounted, reactive, toRefs, watch} from "vue";
 import {ElMessage} from "element-plus";
-
+import {Check} from '@element-plus/icons'
 
 const props = defineProps({
   role: {
@@ -65,15 +58,11 @@ const props = defineProps({
   }
 })
 
-watch(() => props.role.id as any, (newVal, oldVal) => {
-  const roleId = props.role.id
-  if (roleId) {
-  }
-})
 
 watch(() => props.menu.id as any, (newVal, oldVal) => {
   const menuId = props.menu.id
   if (menuId) {
+    loadData()
   }
 })
 
@@ -98,48 +87,50 @@ function handleCheckAllChange(checked: Boolean) {
 }
 
 function handleCheckedPermChange(value: any) {
-  const checkedCount = value.length;
+  const checkedCount = state.permissionOptions.filter(item => item.checked).length;
   state.checkAll = checkedCount === state.permissionOptions.length;
   state.isIndeterminate = checkedCount > 0 && checkedCount < state.permissionOptions.length;
 }
 
 function loadData() {
-  if(! props.menu.id){
+  if (!props.menu.id) {
+    resetData()
     return false
   }
-
   state.loading = true;
   listPerms({menuId: props.menu.id}).then(response => {
-    state.permissionOptions =  response.data
+    state.permissionOptions = response.data
     listRolePerms(props.role.id, props.menu.id).then(res => {
       const checkedPermIds = res.data
-      state.permissionOptions.map((item:any)=> {
+      state.permissionOptions.map((item: any) => {
         if (checkedPermIds.includes(item.id)) {
           item.checked = true;
         } else {
           state.checkAll = false
         }
       });
-
-      state.loading=false
-
+      state.loading = false
     })
   })
 }
 
-function handleSubmit(){
+function handleSubmit() {
   const checkedPermIds = state.permissionOptions
       .filter((item) => item.checked)
       .map((item) => item.id);
+  saveRolePerms(
+      props.role.id,
+      props.menu.id,
+      checkedPermIds
+  ).then(() => {
+    ElMessage.success("提交成功");
+  });
+}
 
-
-saveRolePerms(  props.menu.id,
-    props.role.id,
-    checkedPermIds
-).then(() => {
-  ElMessage.success("提交成功");
-});
-
+function resetData() {
+  state.permissionOptions = []
+  state.isIndeterminate = true
+  state.checkAll = false
 }
 
 onMounted(() => {

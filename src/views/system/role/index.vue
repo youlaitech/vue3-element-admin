@@ -39,9 +39,9 @@
             </el-tag>
             <el-tag type="warning" style="margin:0 5px  0 0;" v-else size="small"> 请选择角色</el-tag>
 
-            <el-tag type="primary" v-if="state.role.id" size="small">
+            <el-tag type="success" v-if="state.menu.id" size="small">
               <svg-icon color="red" icon-class="menu"/>
-              {{ state.role.name }}
+              {{ state.menu.name }}
             </el-tag>
             <el-tag type="warning" v-else size="small"> 请选择菜单</el-tag>
           </template>
@@ -92,10 +92,12 @@ function handleMenuClick(menuRow: any) {
     return false
   }
 
+  console.log('选择菜单',menuRow)
+
   if (menuRow) {
     state.menu = {
       id: menuRow.id,
-      name: menuRow.name
+      name: menuRow.label
     }
   } else {
     state.menu = {
