@@ -290,13 +290,14 @@ function submitForm() {
   const form = unref(dataForm)
   form.validate((valid: any) => {
     if (valid) {
-      // 接口权限和按钮权限必选其一
+      // 接口权限和按钮权限必填其一
       console.log(state.urlPerm.requestPath, state.formData.btnPerm)
       if (!(state.urlPerm.requestPath || state.formData.btnPerm)) {
         ElMessage.warning('请至少填写一种权限')
         return false
       }
 
+      // 如果填写了URL权限，完整性校验
       if (!state.urlPerm.requestPath) {
         if (!state.urlPerm.requestMethod) {
           ElMessage.warning('URL权限的请求方式不能为空')
@@ -306,11 +307,10 @@ function submitForm() {
           ElMessage.warning('URL权限的所属服务不能为空')
           return false
         }
+        state.formData.urlPerm = state.urlPerm.requestMethod + ':/' + state.urlPerm.serviceName + state.urlPerm.requestPath;
       }
-      state.formData.urlPerm = state.urlPerm.requestMethod + ':/' + state.urlPerm.serviceName + state.urlPerm.requestPath;
 
       state.formData.menuId = props.menuId
-
       if (state.formData.id) {
         updatePerm(state.formData.id, state.formData).then(response => {
           ElMessage.success('修改成功')

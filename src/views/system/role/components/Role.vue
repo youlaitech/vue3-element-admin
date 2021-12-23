@@ -3,18 +3,18 @@
     <!-- 搜索表单 -->
     <el-form
         ref="queryForm"
-        :model="state.queryParams"
+        :model="queryParams"
         size="mini"
         :inline="true"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" :icon='Delete' :disabled="state.multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" :icon='Delete' :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
 
       <el-form-item prop="name">
         <el-input
-            v-model="state.queryParams.name"
+            v-model="queryParams.name"
             placeholder="角色名称"
             clearable
             @keyup.enter.native="handleQuery"
@@ -30,8 +30,8 @@
     <!-- 数据表格 -->
     <el-table
         ref="roleTable"
-        v-loading="state.loading"
-        :data="state.pageList"
+        v-loading="loading"
+        :data="pageList"
         @selection-change="handleSelectionChange"
         @row-click="handleRowClick"
         border
@@ -65,39 +65,39 @@
 
     <!-- 分页工具条 -->
     <pagination
-        v-show="state.total>0"
-        :total="state.total"
-        v-model:page="state.queryParams.pageNum"
-        v-model:limit="state.queryParams.pageSize"
+        v-show="total>0"
+        :total="total"
+        v-model:page="queryParams.pageNum"
+        v-model:limit="queryParams.pageSize"
         @pagination="handleQuery"
     />
 
     <!-- 表单弹窗 -->
     <el-dialog
-        :title="state.dialog.title"
-        v-model="state.dialog.visible"
+        :title="dialog.title"
+        v-model="dialog.visible"
         width="450px"
     >
       <el-form
           ref="dataForm"
-          :model="state.formData"
-          :rules="state.rules"
+          :model="formData"
+          :rules="rules"
           label-width="100px"
       >
         <el-form-item label="角色名称" prop="name">
-          <el-input v-model="state.formData.name" placeholder="请输入角色名称"/>
+          <el-input v-model="formData.name" placeholder="请输入角色名称"/>
         </el-form-item>
 
         <el-form-item label="角色编码" prop="code">
-          <el-input v-model="state.formData.code" placeholder="请输入角色编码"/>
+          <el-input v-model="formData.code" placeholder="请输入角色编码"/>
         </el-form-item>
 
         <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="state.formData.sort" controls-position="right" :min="0" style="width: 100px"/>
+          <el-input-number v-model="formData.sort" controls-position="right" :min="0" style="width: 100px"/>
         </el-form-item>
 
         <el-form-item label="状态">
-          <el-radio-group v-model="state.formData.status">
+          <el-radio-group v-model="formData.status">
             <el-radio :label="1">正常</el-radio>
             <el-radio :label="0">停用</el-radio>
           </el-radio-group>
@@ -117,14 +117,14 @@
 
 <script setup lang="ts">
 import {listRolesWithPage, updateRole, getRoleDetail, addRole, deleteRoles} from '@/api/system/role'
-import {defineEmits, defineProps, onMounted, reactive, ref, unref} from "vue"
+import {defineEmits, defineProps, onMounted, reactive, ref, toRefs, unref} from "vue"
 import {add, del, detail, update} from "@api/system/client";
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
 const emit = defineEmits(['roleClick'])
 
-const dataForm = ref()  // 属性名必须和元素的ref属性值一致
+const dataForm = ref(ElForm)  // 属性名必须和元素的ref属性值一致
 
 const state = reactive({
   loading: true,
@@ -147,9 +147,9 @@ const state = reactive({
   },
   formData: {
     id: undefined,
-    parentId: 0,
     name: undefined,
-    sort: 1,
+    code: undefined,
+    sort: 100,
     status: 1
   },
   rules: {
@@ -161,6 +161,8 @@ const state = reactive({
     ]
   }
 })
+
+const {loading,single, multiple, queryParams, pageList, total, dialog, formData, rules} = toRefs(state)
 
 function handleQuery() {
   emit('roleClick', {})
@@ -196,7 +198,7 @@ function handleAdd() {
   resetForm()
   state.dialog = {
     title: '添加角色',
-    visible: true,
+    visible: true
   }
 }
 
@@ -207,7 +209,7 @@ function handleUpdate(row: any) {
     visible: true,
   }
   const roleId = row.id || state.ids
-  getRoleDetail(roleId).then(response => {
+  getRoleDetail(roleId).then((response) => {
     state.formData = response.data
   })
 }
@@ -236,9 +238,9 @@ function submitForm() {
 function resetForm() {
   state.formData = {
     id: undefined,
-    parentId: 0,
     name: undefined,
-    sort: 1,
+    code: undefined,
+    sort: 100,
     status: 1
   }
 }

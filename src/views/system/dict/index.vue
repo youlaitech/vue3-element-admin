@@ -16,7 +16,7 @@
         <el-card class="box-card">
           <template #header>
             <svg-icon color="#333" icon-class="dict"/>
-            <span style="margin:0 5px;">字典数据项列表</span>
+            <span style="margin:0 5px;">字典数据项</span>
             <el-tag type="primary" v-if=" state.dictCode" size="small">{{ state.dictName }}</el-tag>
             <el-tag type="warning" v-else size="small">未选择字典</el-tag>
           </template>

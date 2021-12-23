@@ -38,7 +38,7 @@
               <el-dropdown-item>项目文档</el-dropdown-item>
             </a>
             <el-dropdown-item divided @click.native="logout">
-              <span style="display:block;">退出</span>
+              退出
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -96,12 +96,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.el-dropdown-menu__item{
-  display: block!important;
-  line-height: 30px;
-}
-
 .navbar {
   height: 50px;
   overflow: hidden;
