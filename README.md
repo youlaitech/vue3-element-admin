@@ -80,7 +80,7 @@ import { createPinia } from "pinia";
 const store = createPinia();
 export { store };
 ```
-## main.ts
+  main.ts
 
 ```typescript
 import {createApp} from 'vue'
