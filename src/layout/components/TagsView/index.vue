@@ -32,10 +32,10 @@
 <script lang="ts">
 
 import {Close} from '@element-plus/icons'
-
+import {tagsViewStoreHook} from '@/store/modules/tagsView'
+import {usePermissionStoreHook} from '@/store/modules/Permission'
 import ScrollPane from './ScrollPane.vue'
 import path from 'path-browserify'
-import {useStore} from "@store";
 import {
   defineComponent,
   computed,
@@ -53,7 +53,6 @@ import {TagView} from "@store/interface";
 export default defineComponent({
   components: {ScrollPane,Close},
   setup() {
-    const store = useStore()
     const router = useRouter()
     const instance = getCurrentInstance()
     const currentRoute = useRoute()
@@ -86,7 +85,7 @@ export default defineComponent({
         return tag.meta && tag.meta.affix
       },
       refreshSelectedTag: (view: TagView) => {
-        store.dispatch('tagsView/delCachedView', view)
+        tagsViewStoreHook().delCachedView(view)
         const { fullPath } = view
         nextTick(() => {
           router.replace({ path: '/redirect' + fullPath }).catch(err => {
@@ -95,23 +94,24 @@ export default defineComponent({
         })
       },
       closeSelectedTag: (view: TagView) => {
-        store.dispatch('tagsView/delView', view)
+        tagsViewStoreHook().delView(view);
         if (state.isActive(view)) {
-          toLastView(store.state.tagsView.visitedViews, view)
+
+          toLastView(tagsViewStoreHook().visitedViews, view)
         }
       },
       closeOthersTags: () => {
         if (state.selectedTag.fullPath !== currentRoute.path && state.selectedTag.fullPath !== undefined) {
           router.push(state.selectedTag.fullPath)
         }
-        store.dispatch('tagsView/delOthersViews', state.selectedTag as TagView)
+        tagsViewStoreHook().delOthersViews(state.selectedTag as TagView)
       },
       closeAllTags: (view: TagView) => {
-        store.dispatch('tagsView/delAllViews', undefined)
+        tagsViewStoreHook().delAllViews(undefined);
         if (state.affixTags.some(tag => tag.path === currentRoute.path)) {
           return
         }
-        toLastView(store.state.tagsView.visitedViews, view)
+        toLastView(tagsViewStoreHook().visitedViews, view)
       },
       openMenu: (tag: TagView, e: MouseEvent) => {
         const menuMinWidth = 105
@@ -138,9 +138,9 @@ export default defineComponent({
     })
 
     const visitedViews = computed(() => {
-      return store.state.tagsView.visitedViews
+      return tagsViewStoreHook().visitedViews
     })
-    const routes = computed(() => store.state.permission.routes)
+    const routes = computed(() =>usePermissionStoreHook().routes)
 
     const filterAffixTags = (routes: RouteRecordRaw[], basePath = '/') => {
       let tags: TagView[] = []
@@ -171,14 +171,14 @@ export default defineComponent({
       for (const tag of state.affixTags) {
         // Must have tag name
         if (tag.name) {
-          store.dispatch('tagsView/addVisitedView', tag as TagView)
+          tagsViewStoreHook().addVisitedView(tag as TagView)
         }
       }
     }
 
     const addTags = () => {
       if (currentRoute.name) {
-        store.dispatch('tagsView/addView', currentRoute)
+        tagsViewStoreHook().addView(currentRoute)
       }
       return false
     }
@@ -192,7 +192,7 @@ export default defineComponent({
             (scrollPaneRef.value as any).moveToCurrentTag(tag)
             // When query is different then update
             if ((tag.to as TagView).fullPath !== currentRoute.fullPath) {
-              store.dispatch('tagsView/updateVisitedView', currentRoute)
+              tagsViewStoreHook().updateVisitedView(currentRoute)
             }
           }
         }

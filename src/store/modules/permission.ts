@@ -1,5 +1,4 @@
-// import {Module} from "vuex";
-import {PermissionState, RootStateTypes} from "@store/interface";
+import {PermissionState} from "@store/interface";
 import {RouteRecordRaw} from 'vue-router'
 import {constantRoutes} from '@/router'
 import {listRoutes} from "@/api/system/menu";
@@ -53,7 +52,7 @@ export const usePermissionStore = defineStore({
         addRoutes: []
     }),
     actions: {
-        async SET_ROUTES( routes: RouteRecordRaw[]){
+         setRoutes( routes: RouteRecordRaw[]){
           this.addRoutes = routes
          this.routes = constantRoutes.concat(routes)
         },
@@ -67,7 +66,7 @@ export const usePermissionStore = defineStore({
                     } else {
                         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
                     }
-                    this.SET_ROUTES(accessedRoutes)
+                    this.setRoutes(accessedRoutes)
                     resolve(accessedRoutes)
                 }).catch(error => {
                     reject(error)

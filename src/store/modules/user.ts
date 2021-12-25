@@ -27,23 +27,7 @@ export const useUserStore = defineStore({
     }),
     actions: {
         async RESET_STATE () {
-            // Object.assign(this.state, getDefaultState())
             this.$reset()
-        },
-        async SET_TOKEN(token: string) {
-            this.token = token
-        },
-        async  SET_NICKNAME( nickname: string) {
-            this.nickname = nickname
-        },
-        async SET_AVATAR(avatar: string) {
-            this.avatar = avatar
-        },
-        async  SET_ROLES(roles: string[]) {
-            this.roles = roles
-        },
-        async SET_PERMS( perms: string[]) {
-            this.perms = perms
         },
         /**
          * 用户登录请求
@@ -68,7 +52,7 @@ export const useUserStore = defineStore({
                     const {access_token, token_type} = response.data
                     const accessToken = token_type + " " + access_token
                     Local.set("token", accessToken)
-                    this.SET_TOKEN(accessToken)
+                    this.token = accessToken
                     resolve(access_token)
                 }).catch(error => {
                     reject(error)
@@ -85,16 +69,14 @@ export const useUserStore = defineStore({
                         if (!data) {
                             return reject('Verification failed, please Login again.')
                         }
-                        console.log(data)
                         const {nickname, avatar, roles, perms} = data
                         if (!roles || roles.length <= 0) {
                             reject('getUserInfo: roles must be a non-null array!')
                         }
-                        this.SET_NICKNAME(nickname)
-                        this.SET_AVATAR( avatar)
-                        this.SET_ROLES( roles)
-                        this.SET_PERMS( perms)
-
+                        this.nickname = nickname
+                        this.avatar = avatar
+                        this.roles = roles
+                        this.perms = perms
                         resolve(data)
                     }).catch(error => {
                         reject(error)

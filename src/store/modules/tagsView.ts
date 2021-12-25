@@ -1,8 +1,7 @@
 
 import { defineStore } from "pinia";
 import { store } from "@/store";
-// import {Module} from "vuex";
-import {TagsViewState,RootStateTypes} from "@store/interface";
+import {TagsViewState} from "@store/interface";
 
 const tagsViewStore=defineStore({
     id:"youlai-tagsView",
@@ -11,7 +10,7 @@ const tagsViewStore=defineStore({
         cachedViews: []
     }),
     actions: {
-        async ADD_VISITED_VIEW ( view:any) {
+         addVisitedView ( view:any) {
             if (this.visitedViews.some(v => v.path === view.path)) return
             this.visitedViews.push(
                 Object.assign({}, view, {
@@ -19,51 +18,58 @@ const tagsViewStore=defineStore({
                 })
             )
         },
-        async  ADD_CACHED_VIEW(view:any) {
+          addCachedView(view:any) {
             if (this.cachedViews.includes(view.name)) return
             if (!view.meta.noCache) {
                 this.cachedViews.push(view.name)
             }
         },
 
-        async  DEL_VISITED_VIEW( view:any) {
-            for (const [i, v] of this.visitedViews.entries()) {
-                if (v.path === view.path) {
-                    this.visitedViews.splice(i, 1)
-                    break
-                }
-            }
+          delVisitedView( view:any) {
+              return new Promise(resolve => {
+                  for (const [i, v] of this.visitedViews.entries()) {
+                      if (v.path === view.path) {
+                          this.visitedViews.splice(i, 1)
+                          break
+                      }
+                  }
+                  resolve([...this.visitedViews])
+              })
+
         },
-        async  DEL_CACHED_VIEW ( view:any)  {
-            const index = this.cachedViews.indexOf(view.name)
-            index > -1 && this.cachedViews.splice(index, 1)
+          delCachedView ( view:any)  {
+              return new Promise(resolve => {
+                  const index = this.cachedViews.indexOf(view.name)
+                  index > -1 && this.cachedViews.splice(index, 1)
+                  resolve([...this.cachedViews])
+              })
+
         },
 
-        async DEL_OTHERS_VISITED_VIEWS (view:any) {
-            this.visitedViews = this.visitedViews.filter(v => {
-                return v.meta?.affix || v.path === view.path
-            })
+         delOthersVisitedViews (view:any) {
+             return new Promise(resolve => {
+                 this.visitedViews = this.visitedViews.filter(v => {
+                     return v.meta?.affix || v.path === view.path
+                 })
+                 resolve([...this.visitedViews])
+             })
+
         },
-        async DEL_OTHERS_CACHED_VIEWS( view:any) {
-            const index = this.cachedViews.indexOf(view.name)
-            if (index > -1) {
-                this.cachedViews = this.cachedViews.slice(index, index + 1)
-            } else {
-                // if index = -1, there is no cached tags
-                this.cachedViews = []
-            }
+         delOthersCachedViews( view:any) {
+             return new Promise(resolve => {
+                 const index = this.cachedViews.indexOf(view.name)
+                 if (index > -1) {
+                     this.cachedViews = this.cachedViews.slice(index, index + 1)
+                 } else {
+                     // if index = -1, there is no cached tags
+                     this.cachedViews = []
+                 }
+                 resolve([...this.cachedViews])
+             })
+
         },
 
-        DEL_ALL_VISITED_VIEWS() {
-            // keep affix tags
-            const affixTags = this.visitedViews.filter(tag => tag.meta?.affix)
-            this.visitedViews = affixTags
-        },
-        DEL_ALL_CACHED_VIEWS()  {
-            this.cachedViews = []
-        },
-
-        UPDATE_VISITED_VIEW (view:any) {
+        updateVisitedView (view:any) {
             for (let v of this.visitedViews) {
                 if (v.path === view.path) {
                     v = Object.assign(v, view)
@@ -72,14 +78,8 @@ const tagsViewStore=defineStore({
             }
         },
         addView( view:any) {
-           this.addVisitedView( view)
+            this.addVisitedView( view)
             this.addCachedView(view)
-        },
-        addVisitedView( view:any) {
-          this.ADD_VISITED_VIEW( view)
-        },
-        addCachedView( view:any) {
-           this.ADD_CACHED_VIEW(view)
         },
         delView( view:any) {
             return new Promise(resolve => {
@@ -89,18 +89,6 @@ const tagsViewStore=defineStore({
                     visitedViews: [...this.visitedViews],
                     cachedViews: [...this.cachedViews]
                 })
-            })
-        },
-        delVisitedView( view:any) {
-            return new Promise(resolve => {
-               this.DEL_VISITED_VIEW( view)
-                resolve([...this.visitedViews])
-            })
-        },
-        delCachedView( view:any) {
-            return new Promise(resolve => {
-               this.DEL_CACHED_VIEW(view)
-                resolve([...this.cachedViews])
             })
         },
         delOthersViews( view:any) {
@@ -113,23 +101,11 @@ const tagsViewStore=defineStore({
                 })
             })
         },
-        delOthersVisitedViews( view:any) {
-            return new Promise(resolve => {
-               this.DEL_OTHERS_VISITED_VIEWS(view)
-                resolve([...this.visitedViews])
-            })
-        },
-        delOthersCachedViews( view:any) {
-            return new Promise(resolve => {
-               this.DEL_OTHERS_CACHED_VIEWS(view)
-                resolve([...this.cachedViews])
-            })
-        },
-
         delAllViews( view:any) {
             return new Promise(resolve => {
-               this.delAllVisitedViews()
-                this.delAllCachedViews()
+                const affixTags = this.visitedViews.filter(tag => tag.meta?.affix)
+                this.visitedViews = affixTags
+                this.cachedViews = []
                 resolve({
                     visitedViews: [...this.visitedViews],
                     cachedViews: [...this.cachedViews]
@@ -138,19 +114,17 @@ const tagsViewStore=defineStore({
         },
         delAllVisitedViews() {
             return new Promise(resolve => {
-               this.DEL_ALL_VISITED_VIEWS
+                const affixTags = this.visitedViews.filter(tag => tag.meta?.affix)
+                this.visitedViews = affixTags
                 resolve([...this.visitedViews])
             })
         },
         delAllCachedViews() {
             return new Promise(resolve => {
-               this.DEL_ALL_CACHED_VIEWS
+                this.cachedViews = []
                 resolve([...this.cachedViews])
             })
         },
-        updateVisitedView( view:any) {
-           this.UPDATE_VISITED_VIEW(view)
-        }
     }
 })
 

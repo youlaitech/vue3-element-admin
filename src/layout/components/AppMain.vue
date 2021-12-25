@@ -13,15 +13,13 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import {useStore} from '@/store'
 import {useRoute} from "vue-router";
-
+import {tagsViewStoreHook} from '@/store/modules/tagsView'
 export default defineComponent({
   setup() {
-    const store = useStore()
     const route = useRoute()
     const cachedViews = () => {
-      return store.state.tagsView.cachedViews
+      return tagsViewStoreHook().cachedViews
     }
     const key = () => {
       return route.path

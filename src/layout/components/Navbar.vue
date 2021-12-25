@@ -48,12 +48,13 @@
 </template>
 <script>
 import {reactive, computed, toRefs} from "vue";
-import {useStore} from "@/store";
 import {useRoute, useRouter} from "vue-router"
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
 import Screenfull from '@/components/screenfull/index.vue'
-
+import {tagsViewStoreHook} from '@/store/modules/tagsView'
+import {useAppStoreHook} from '@/store/modules/app'
+import {useUserStoreHook} from '@/store/modules/user'
 export default {
   components: {
     Breadcrumb,
@@ -61,26 +62,25 @@ export default {
     Screenfull
   },
   setup() {
-    const store = useStore()
     const route = useRoute()
     const router = useRouter()
 
     const sidebar = computed(() => {
-      return store.state.app.sidebar
+      return useAppStoreHook().sidebar
     })
     const device = computed(() => {
-      return store.state.app.device
+      return useAppStoreHook().device
     })
     const avatar = computed(() => {
-      return store.state.user.avatar
+      return useUserStoreHook().avatar
     })
 
     const state = reactive({
       toggleSideBar: () => {
-        store.dispatch('app/toggleSideBar', false)
+        useAppStoreHook().toggleSidebar(false)
       },
       logout: () => {
-        store.dispatch('user/logout').then(()=>{
+        useUserStoreHook().logout().then(()=>{
           router.push(`/login?redirect=${route.fullPath}`)
         })
       }

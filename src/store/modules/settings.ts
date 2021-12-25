@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { store } from "@/store";
-// import {Module} from "vuex";
-import {SettingState, RootStateTypes} from "@store/interface";
+import {SettingState} from "@store/interface";
 import defaultSettings from '../../settings'
 
 const {showSettings, tagsView, fixedHeader, sidebarLogo} = defaultSettings
@@ -16,7 +15,7 @@ export const useSettingStore = defineStore({
         sidebarLogo: sidebarLogo,
     }),
     actions: {
-        async CHANGE_SETTING( payload: { key: string, value: any }){
+        async changeSetting( payload: { key: string, value: any }){
             const {key, value} = payload
             switch (key) {
                 case 'theme':
@@ -37,9 +36,6 @@ export const useSettingStore = defineStore({
                 default:
                     break
             }
-        },
-        changeSetting(data:any) {
-            this.CHANGE_SETTING(data)
         }
     }
 })
