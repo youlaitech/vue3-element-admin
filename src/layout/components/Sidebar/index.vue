@@ -34,7 +34,9 @@ import {computed, defineComponent} from "vue";
 import SidebarItem from './SidebarItem.vue'
 import Logo from './Logo.vue'
 import variables from '@/styles/variables.scss'
-import {useStore} from '@/store'
+import { useSettingStoreHook } from "@/store/modules/settings";
+import { useAppStoreHook } from "@/store/modules/app";
+import { usePermissionStoreHook } from "@/store/modules/permission";
 import {useRoute} from 'vue-router'
 
 export default defineComponent({
@@ -43,11 +45,10 @@ export default defineComponent({
     Logo
   },
   setup() {
-    const store = useStore();
     const route = useRoute()
-    const sidebar = computed(() => store.state.app.sidebar)
-    const routes = computed(() => store.state.permission.routes)
-    const showLogo = computed(() => store.state.settings.sidebarLogo)
+    const sidebar = computed(() => useAppStoreHook().sidebar)
+    const routes = computed(() => usePermissionStoreHook().routes)
+    const showLogo = computed(() => useSettingStoreHook().sidebarLogo)
     const activeMenu = computed(() => {
       const {meta, path} = route
       // if set path, the sidebar will highlight the path you set
@@ -56,7 +57,7 @@ export default defineComponent({
       }
       return path
     })
-    const isCollapse = computed(() => !store.state.app.sidebar.opened)
+    const isCollapse = computed(() => !useAppStoreHook().sidebar.opened)
 
     return {
       sidebar,

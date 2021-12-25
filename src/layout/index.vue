@@ -21,9 +21,9 @@
 <script>
 import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, reactive, toRefs, watch} from "vue";
 import {AppMain, Navbar, Settings, Sidebar, TagsView} from './components/index.ts'
-import {useStore} from "@store";
-import {useRoute} from "vue-router";
-
+       import {useRoute} from "vue-router";
+import { useAppStoreHook } from "@/store/modules/app";
+import { useSettingStoreHook } from "@/store/modules/settings";
 const {body} = document
 const WIDTH = 992
 
@@ -37,9 +37,7 @@ export default defineComponent({
     TagsView
   },
   setup() {
-    const store = useStore()
-
-    const sidebar = computed(() => store.state.app.sidebar)
+    const sidebar = computed(() => useAppStoreHook().sidebar)
     const isMobile = () => {
       const rect = body.getBoundingClientRect()
       return rect.width - 1 < WIDTH
@@ -47,17 +45,17 @@ export default defineComponent({
 
     const resizeHandler = () => {
       if (!document.hidden) {
-        store.dispatch('app/toggleDevice', isMobile() ? 'mobile' : 'desktop')
+        useAppStoreHook().toggleSidebar( isMobile() ? 'mobile' : 'desktop')
         if (isMobile()) {
-          store.dispatch('app/closeSideBar', {withoutAnimation: true})
+          useAppStoreHook().closeSideBar({withoutAnimation: true});
         }
       }
     }
 
     const resizeMounted = () => {
       if (isMobile()) {
-        store.dispatch('app/toggleDevice', 'mobile')
-        store.dispatch('app/closeSideBar', {withoutAnimation: true})
+        useAppStoreHook().toggleDevice(  'mobile' )
+        useAppStoreHook().toggleSidebar({withoutAnimation: true});
       }
     }
     const addEventListenerOnResize = () => {
@@ -70,35 +68,35 @@ export default defineComponent({
 
     const currentRoute = useRoute()
     const watchRouter = watch(() => currentRoute.name, () => {
-      if (store.state.app.device === 'mobile' && store.state.app.sidebar.opened) {
-        store.dispatch('app/closeSideBar', false)
+      if (useAppStoreHook().device === 'mobile' && useAppStoreHook().sidebar.opened) {
+        useAppStoreHook().closeSideBar(false)
       }
     })
 
     const state = reactive({
       handleClickOutside: () => {
-        store.dispatch('app/closeSideBar', false)
+        useAppStoreHook().closeSideBar(false)
       }
     })
 
     const classObj = computed(() => {
       return {
-        hideSidebar:  !store.state.app.sidebar.opened,
-        openSidebar: store.state.app.sidebar.opened,
-        withoutAnimation: store.state.app.sidebar.withoutAnimation,
-        mobile: store.state.app.device === 'mobile'
+        hideSidebar:  !useAppStoreHook().sidebar.opened,
+        openSidebar: useAppStoreHook().sidebar.opened,
+        withoutAnimation: useAppStoreHook().sidebar.withoutAnimation,
+        mobile: useAppStoreHook().device === 'mobile'
       }
     })
     const showSettings = computed(() => {
-      return store.state.settings.showSettings
+      return useSettingStoreHook().showSettings
     })
 
     const needTagsView = computed(() => {
-      return store.state.settings.tagsView
+      return useSettingStoreHook().tagsView
     })
 
     const fixedHeader = computed(() => {
-      return store.state.settings.fixedHeader
+      return useSettingStoreHook().fixedHeader
     })
 
     watchRouter()

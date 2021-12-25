@@ -29,30 +29,30 @@
 <script>
 import ThemePicker from '@/components/ThemePicker/index.vue'
 import {defineComponent, reactive, toRefs, watch} from "vue"
-import {useStore} from '@/store'
-
+// import {useStore} from '@/store'
+import { useSettingStoreHook } from "@/store/modules/settings";
 export default defineComponent({
   components: {ThemePicker},
   setup() {
-    const store = useStore()
+    // const store = useStore()
     const state = reactive({
-      fixedHeader:store.state.settings.fixedHeader,
-      tagsView:store.state.settings.tagsView,
-      sidebarLogo:store.state.settings.sidebarLogo,
+      fixedHeader:useSettingStoreHook().fixedHeader,
+      tagsView:useSettingStoreHook().tagsView,
+      sidebarLogo:useSettingStoreHook().sidebarLogo,
       themeChange: (val) => {
-        store.dispatch('settings/changeSetting', { key: 'theme', val })
+        useSettingStoreHook().changeSetting( { key: 'theme', val })
       }
     })
     watch(()=>state.fixedHeader,(value)=>{
-      store.dispatch('settings/changeSetting',{ key: 'fixedHeader', value })
+      useSettingStoreHook().changeSetting( { key: 'fixedHeader', value })
     })
 
     watch(() => state.tagsView, (value) => {
-      store.dispatch('settings/changeSetting', { key: 'showTagsView', value })
+      useSettingStoreHook().changeSetting( { key: 'showTagsView', value })
     })
 
     watch(() => state.sidebarLogo, (value) => {
-      store.dispatch('settings/changeSetting', { key: 'sidebarLogo', value })
+      useSettingStoreHook().changeSetting( { key: 'sidebarLogo', value })
     })
 
     return {

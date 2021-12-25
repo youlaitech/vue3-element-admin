@@ -1,49 +1,38 @@
-import {Module} from "vuex";
-import {AppState,RootStateTypes} from "@store/interface";
+import {AppState} from "@store/interface";
 import {Local} from "@utils/storage";
+import { store } from "@/store";
+import { defineStore } from "pinia";
 
-const appModule: Module<AppState, RootStateTypes> = {
-    namespaced: true,
-    state: {
+export const useAppStore = defineStore({
+    id: "youlai-app",
+    state: ():AppState=>({
         device: 'desktop',
         sidebar: {
             opened: Local.get('sidebarStatus') ? !!+Local.get('sidebarStatus') : true,
             withoutAnimation: false
         }
-    },
-    mutations: {
-        TOGGLE_SIDEBAR: state => {
-            state.sidebar.opened = !state.sidebar.opened
-            console.log('state.sidebar.opened',state.sidebar.opened)
-            state.sidebar.withoutAnimation = false
-            if (state.sidebar.opened) {
+    }),
+    actions: {
+         toggleSidebar() {
+            this.sidebar.opened = !this.sidebar.opened
+            this.sidebar.withoutAnimation = false
+            if (this.sidebar.opened) {
                 Local.set('sidebarStatus', 1)
             } else {
                 Local.set('sidebarStatus', 0)
             }
         },
-        CLOSE_SIDEBAR: (state, withoutAnimation) => {
+         closeSideBar ( withoutAnimation:any) {
             Local.set('sidebarStatus', 0)
-            state.sidebar.opened = false
-            state.sidebar.withoutAnimation = withoutAnimation
+            this.sidebar.opened = false
+            this.sidebar.withoutAnimation = withoutAnimation
         },
-        TOGGLE_DEVICE: (state, device) => {
+        toggleDevice( device:any) {
             console.log('TOGGLE_DEVICE',device)
-            state.device = device
-        }
-    },
-    actions: {
-        toggleSideBar({commit}) {
-            commit('TOGGLE_SIDEBAR')
-        },
-        closeSideBar({commit}, {withoutAnimation}) {
-            commit('CLOSE_SIDEBAR', withoutAnimation)
-        },
-       async toggleDevice({commit}, device) {
-            commit('TOGGLE_DEVICE', device)
+            this.device = device
         }
     }
+})
+export function useAppStoreHook() {
+    return useAppStore(store);
 }
-
-export default appModule;
-
