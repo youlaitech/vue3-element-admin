@@ -8,7 +8,7 @@
       >
         <div class="head-container">
           <el-input
-              v-model="dataMap.deptName"
+              v-model="deptName"
               placeholder="请输入部门名称"
               clearable
               size="small"
@@ -19,8 +19,8 @@
         <div class="head-container">
           <el-tree
               ref="treeRef"
-              :data="dataMap.deptOptions"
-              :props="dataMap.defaultProps"
+              :data="deptOptions"
+              :props="defaultProps"
               :expand-on-click-node="false"
               :filter-node-method="filterNode"
               default-expand-all
@@ -34,9 +34,9 @@
           :xs="24"
       >
         <el-form
-            v-show="dataMap.showSearch"
+            v-show="showSearch"
             ref="queryForm"
-            :model="dataMap.queryParams"
+            :model="queryParams"
             :inline="true"
 
         >
@@ -55,7 +55,7 @@
                 plain
                 :icon="Edit"
                 size="mini"
-                :disabled="dataMap.single"
+                :disabled="single"
                 @click="handleUpdate"
             >
               修改
@@ -65,7 +65,7 @@
                 plain
                 :icon="Delete"
                 size="mini"
-                :disabled="dataMap.multiple"
+                :disabled="multiple"
                 @click="handleDelete"
             >
               删除
@@ -77,7 +77,7 @@
               prop="keywords"
           >
             <el-input
-                v-model="dataMap.queryParams.keywords"
+                v-model="queryParams.keywords"
                 placeholder="用户名/昵称/手机号"
                 clearable
                 size="small"
@@ -90,7 +90,7 @@
               prop="mobile"
           >
             <el-input
-                v-model="dataMap.queryParams.mobile"
+                v-model="queryParams.mobile"
                 placeholder="请输入手机号码"
                 clearable
                 size="small"
@@ -103,14 +103,14 @@
               prop="status"
           >
             <el-select
-                v-model="dataMap.queryParams.status"
+                v-model="queryParams.status"
                 placeholder="用户状态"
                 clearable
                 size="small"
                 style="width: 200px"
             >
               <el-option
-                  v-for="dict in dataMap.statusOptions"
+                  v-for="dict in statusOptions"
                   :key="dict.dictValue"
                   :label="dict.dictLabel"
                   :value="dict.dictValue"
@@ -137,8 +137,8 @@
         </el-form>
 
         <el-table
-            v-loading="dataMap.loading"
-            :data="dataMap.userList"
+            v-loading="loading"
+            :data="userList"
             @selection-change="handleSelectionChange"
         >
           <el-table-column
@@ -147,14 +147,14 @@
               align="center"
           />
           <el-table-column
-              v-if="dataMap.columns[0].visible"
+              v-if="columns[0].visible"
               key="id"
               label="用户编号"
               align="center"
               prop="id"
           />
           <el-table-column
-              v-if="dataMap.columns[1].visible"
+              v-if="columns[1].visible"
               key="username"
               label="用户名称"
               align="center"
@@ -162,7 +162,7 @@
               :show-overflow-tooltip="true"
           />
           <el-table-column
-              v-if="dataMap.columns[2].visible"
+              v-if="columns[2].visible"
               key="nickname"
               label="用户昵称"
               align="center"
@@ -170,7 +170,7 @@
               :show-overflow-tooltip="true"
           />
           <el-table-column
-              v-if="dataMap.columns[3].visible"
+              v-if="columns[3].visible"
               key="deptName"
               label="部门"
               align="center"
@@ -178,7 +178,7 @@
               :show-overflow-tooltip="true"
           />
           <el-table-column
-              v-if="dataMap.columns[4].visible"
+              v-if="columns[4].visible"
               key="mobile"
               label="手机号码"
               align="center"
@@ -187,7 +187,7 @@
           />
 
           <el-table-column
-              v-if="dataMap.columns[5].visible"
+              v-if="columns[5].visible"
               key="status"
               label="状态"
               align="center"
@@ -203,7 +203,7 @@
             </template>
           </el-table-column>
           <el-table-column
-              v-if="dataMap.columns[6].visible"
+              v-if="columns[6].visible"
               label="创建时间"
               align="center"
               prop="gmtCreate"
@@ -248,10 +248,10 @@
         </el-table>
 
         <pagination
-            v-show="dataMap.total>0"
-            :total="dataMap.total"
-            v-model:page="dataMap.queryParams.page"
-            v-model:limit="dataMap.queryParams.limit"
+            v-show="total>0"
+            :total="total"
+            v-model:page="queryParams.page"
+            v-model:limit="queryParams.limit"
             @pagination="getList"
         />
       </el-col>
@@ -259,8 +259,8 @@
 
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog
-        :title="dataMap.title"
-        v-model="dataMap.open"
+        :title="title"
+        v-model="open"
         width="600px"
         append-to-body
         @opened="showDialog"
@@ -268,8 +268,8 @@
     >
       <el-form
           ref="addForm"
-          :model="dataMap.formVal"
-          :rules="dataMap.rules"
+          :model="formVal"
+          :rules="rules"
           label-width="80px"
       >
         <el-row>
@@ -279,7 +279,7 @@
                 prop="nickname"
             >
               <el-input
-                  v-model="dataMap.formVal.nickname"
+                  v-model="formVal.nickname"
                   placeholder="请输入用户昵称"
               />
             </el-form-item>
@@ -290,9 +290,9 @@
                 prop="deptId"
             >
               <tree-select
-                  :options="dataMap.deptOptions"
+                  :options="deptOptions"
                   placeholder="请选择归属部门"
-                  v-model:value="dataMap.formVal.deptId"
+                  v-model="formVal.deptId"
               />
             </el-form-item>
           </el-col>
@@ -304,7 +304,7 @@
                 prop="mobile"
             >
               <el-input
-                  v-model="dataMap.formVal.mobile"
+                  v-model="formVal.mobile"
                   placeholder="请输入手机号码"
                   maxlength="11"
               />
@@ -316,7 +316,7 @@
                 prop="email"
             >
               <el-input
-                  v-model="dataMap.formVal.email"
+                  v-model="formVal.email"
                   placeholder="请输入邮箱"
                   maxlength="50"
               />
@@ -326,21 +326,21 @@
         <el-row>
           <el-col :span="12">
             <el-form-item
-                v-if="dataMap.formVal.userId === undefined"
+                v-if="formVal.userId === undefined"
                 label="用户名称"
                 prop="userName"
             >
               <el-input
-                  v-model="dataMap.formVal.username"
+                  v-model="formVal.username"
                   placeholder="请输入用户名称"
               />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="状态">
-              <el-radio-group v-model="dataMap.formVal.status">
+              <el-radio-group v-model="formVal.status">
                 <el-radio
-                    v-for="dict in dataMap.statusOptions"
+                    v-for="dict in statusOptions"
                     :key="dict.dictValue"
                     :label="dict.dictValue"
                 >
@@ -355,11 +355,11 @@
           <el-col :span="12">
             <el-form-item label="用户性别">
               <el-select
-                  v-model="dataMap.formVal.gender"
+                  v-model="formVal.gender"
                   placeholder="请选择"
               >
                 <el-option
-                    v-for="dict in dataMap.sexOptions"
+                    v-for="dict in sexOptions"
                     :key="dict.value"
                     :label="dict.name"
                     :value="dict.value"
@@ -370,12 +370,12 @@
           <el-col :span="12">
             <el-form-item label="角色">
               <el-select
-                  v-model="dataMap.formVal.roleIds"
+                  v-model="formVal.roleIds"
                   multiple
                   placeholder="请选择"
               >
                 <el-option
-                    v-for="item in dataMap.roleOptions"
+                    v-for="item in roleOptions"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id"
@@ -390,12 +390,12 @@
 
           <el-col :span="12">
             <el-form-item
-                v-if="dataMap.formVal.id === undefined"
+                v-if="formVal.id === undefined"
                 label="用户密码"
                 prop="password"
             >
               <el-input
-                  v-model="dataMap.formVal.password"
+                  v-model="formVal.password"
                   placeholder="请输入用户密码"
                   type="password"
               />
@@ -432,7 +432,7 @@ import TreeSelect from '@/components/TreeSelect/Index.vue'
 import {listRoles} from '@/api/system/role'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
-import {reactive, ref, unref, onMounted, watchEffect, getCurrentInstance} from 'vue'
+import {reactive, ref, unref, onMounted, watchEffect, getCurrentInstance,toRefs} from 'vue'
 import {ElMessage, ElMessageBox, ElTree} from 'element-plus'
 
 
@@ -780,6 +780,55 @@ function showDialog() {
   loadRoleOptions()
 }
 
+const {
+  props,
+  addformFlag,
+  // 阻止触发switch  change事件
+  tigger,
+  // 遮罩层
+  loading,
+  // 选中数组
+  ids,
+  // 非单个禁用
+  single,
+  // 非多个禁用
+  multiple,
+  // 显示搜索条件
+  showSearch,
+  // 总条数
+  total,
+  originOptions,
+  // 用户表格数据
+  userList,
+  // 弹出层标题
+  title,
+  // 部门树选项
+  deptOptions,
+  // 是否显示弹出层
+  open,
+  // 部门名称
+  deptName,
+  // 默认密码
+  initPassword,
+  // 日期范围
+  dateRange,
+  // 状态数据字典
+  statusOptions,
+  // 性别状态字典
+  sexOptions,
+  // 角色选项
+  roleOptions,
+  // 表单参数
+  formVal,
+  defaultProps,
+  // 查询参数
+  queryParams,
+  // 列信息
+  columns,
+  // 表单校验
+  rules
+
+} = toRefs(dataMap)
 </script>
 <style lang="scss" scoped>
 .small-padding {
