@@ -1,5 +1,5 @@
 <template>
-  <div class="role-container">
+  <div class="app-container">
     <!-- 搜索表单 -->
     <el-form
         ref="queryForm"
@@ -9,39 +9,57 @@
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" :icon='Delete' :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" :icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
 
-      <el-form-item prop="name">
+      <el-form-item>
         <el-input
             v-model="queryParams.name"
-            placeholder="角色名称"
+            placeholder="广告名称"
             clearable
             @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
       <el-form-item>
         <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
-    <!-- 数据表格 -->
     <el-table
         ref="dataTable"
         v-loading="loading"
         :data="pageList"
         @selection-change="handleSelectionChange"
-        @row-click="handleRowClick"
-        highlight-current-row
-        size="mini"
         border
     >
-      <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="角色名称" prop="name"/>
-      <el-table-column label="角色编码" prop="code"/>
-      <el-table-column label="操作" align="center" width="100">
+      <el-table-column type="selection" min-width="5" align="center"/>
+      <el-table-column type="index" label="序号" width="50" align="center"/>
+      <el-table-column prop="title" label="广告标题" min-width="10"/>
+      <el-table-column label="广告图片" min-width="10">
+        <template #default="scope">
+          <el-popover
+              placement="right"
+              title=""
+              trigger="hover">
+            <img :src="scope.row.picUrl"/>
+            <img slot="reference"
+                 :src="scope.row.picUrl"
+                 :alt="scope.row.picUrl"
+                 style="max-height: 60px;max-width: 60px"
+            >
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column prop="beginDate" label="开始时间" min-width="10"/>
+      <el-table-column prop="endTime" label="到期时间" min-width="10"/>
+      <el-table-column prop="status" label="状态" min-width="6">
+        <template #default="scope">
+          <el-tag v-if="scope.row.status===1" type="success" size="mini">开启</el-tag>
+          <el-tag v-else type="info" size="mini">关闭</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="sort" label="排序" min-width="6"/>
+      <el-table-column label="操作" align="center" min-width="10" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button
               type="primary"
@@ -76,7 +94,7 @@
     <el-dialog
         :title="dialog.title"
         v-model="dialog.visible"
-        width="450px"
+        width="700px"
     >
       <el-form
           ref="dataForm"
@@ -84,23 +102,45 @@
           :rules="rules"
           label-width="100px"
       >
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入角色名称"/>
+        <el-form-item label="广告标题" required prop="title">
+          <el-input v-model="formData.title"/>
         </el-form-item>
 
-        <el-form-item label="角色编码" prop="code">
-          <el-input v-model="formData.code" placeholder="请输入角色编码"/>
+        <el-form-item label="有效期" required prop="beginTime">
+          <el-date-picker
+              v-model="formData.beginTime"
+              value-format="yyyy-MM-dd"
+              placeholder="开始日期"
+          />
+          ~
+          <el-date-picker
+              v-model="formData.endTime"
+              value-format="yyyy-MM-dd"
+              placeholder="结束日期"
+          />
+        </el-form-item>
+
+        <el-form-item label="广告图片" prop="picUrl">
+          <single-upload v-model="formData.picUrl"/>
         </el-form-item>
 
         <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="formData.sort" controls-position="right" :min="0" style="width: 100px"/>
+          <el-input v-model="formData.sort" style="width: 200px"/>
         </el-form-item>
 
-        <el-form-item label="状态">
+        <el-form-item label="状态" prop="status">
           <el-radio-group v-model="formData.status">
-            <el-radio :label="1">正常</el-radio>
-            <el-radio :label="0">停用</el-radio>
+            <el-radio :label="1">开启</el-radio>
+            <el-radio :label="0">关闭</el-radio>
           </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="跳转链接" prop="url">
+          <el-input v-model="formData.url"/>
+        </el-form-item>
+
+        <el-form-item label="备注" prop="remark">
+          <el-input type="textarea" v-model="formData.remark"/>
         </el-form-item>
       </el-form>
 
@@ -116,13 +156,14 @@
 </template>
 
 <script setup lang="ts">
-import {listRolesWithPage, updateRole, getRoleDetail, addRole, deleteRoles} from '@/api/system/role'
-import {defineEmits, defineProps, onMounted, reactive, ref, toRefs, unref} from "vue"
+import {listAdvertsWithPage, getAdvertDetail, updateAdvert, addAdvert, deleteAdverts} from '@/api/sms/advert'
+import SingleUpload from "@/components/Upload/SingleUpload.vue";
+import {onMounted, reactive, ref, toRefs, unref} from "vue";
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
-const emit = defineEmits(['roleClick'])
 const dataForm = ref(ElForm)  // 属性名必须和元素的ref属性值一致
+
 const state = reactive({
   loading: true,
   // 选中ID数组
@@ -134,7 +175,7 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    name: undefined
+    title: undefined
   },
   pageList: [],
   total: 0,
@@ -144,17 +185,21 @@ const state = reactive({
   },
   formData: {
     id: undefined,
-    name: undefined,
-    code: undefined,
+    title: '',
+    picUrl: '',
+    beginTime: undefined,
+    endTime: undefined,
+    status: 1,
     sort: 100,
-    status: 1
+    url: undefined,
+    remark: undefined
   },
   rules: {
     name: [
-      {required: true, message: '请输入角色名称', trigger: 'blur'}
+      {required: true, message: '请输入广告名称', trigger: 'blur'}
     ],
-    code: [
-      {required: true, message: '请输入角色编码', trigger: 'blur'}
+    pic: [
+      {required: true, message: '请上传广告图片', trigger: 'blur'}
     ]
   }
 })
@@ -162,9 +207,8 @@ const state = reactive({
 const {loading, single, multiple, queryParams, pageList, total, dialog, formData, rules} = toRefs(state)
 
 function handleQuery() {
-  emit('roleClick', {})
   state.loading = true
-  listRolesWithPage(state.queryParams).then(response => {
+  listAdvertsWithPage(state.queryParams).then(response => {
     const {data, total} = response as any
     state.pageList = data
     state.total = total
@@ -176,7 +220,7 @@ function resetQuery() {
   state.queryParams = {
     pageNum: 1,
     pageSize: 10,
-    name: undefined
+    title: undefined
   }
   handleQuery()
 }
@@ -187,14 +231,10 @@ function handleSelectionChange(selection: any) {
   state.multiple = !selection.length
 }
 
-function handleRowClick(row: any) {
-  emit('roleClick', row)
-}
-
 function handleAdd() {
   resetForm()
   state.dialog = {
-    title: '添加角色',
+    title: '添加广告',
     visible: true
   }
 }
@@ -202,11 +242,11 @@ function handleAdd() {
 function handleUpdate(row: any) {
   resetForm()
   state.dialog = {
-    title: '修改角色',
+    title: '修改广告',
     visible: true,
   }
-  const roleId = row.id || state.ids
-  getRoleDetail(roleId).then((response) => {
+  const advertId = row.id || state.ids
+  getAdvertDetail(advertId).then((response) => {
     state.formData = response.data
   })
 }
@@ -216,13 +256,13 @@ function submitForm() {
   form.validate((valid: any) => {
     if (valid) {
       if (state.formData.id) {
-        updateRole(state.formData.id as any, state.formData).then(response => {
+        updateAdvert(state.formData.id as any, state.formData).then(response => {
           ElMessage.success('修改成功')
           state.dialog.visible = false
           handleQuery()
         })
       } else {
-        addRole(state.formData).then(response => {
+        addAdvert(state.formData).then(response => {
           ElMessage.success('新增成功')
           state.dialog.visible = false
           handleQuery()
@@ -235,10 +275,14 @@ function submitForm() {
 function resetForm() {
   state.formData = {
     id: undefined,
-    name: undefined,
-    code: undefined,
+    title: '',
+    picUrl: '',
+    beginTime: undefined,
+    endTime: undefined,
+    status: 1,
     sort: 100,
-    status: 1
+    url: undefined,
+    remark: undefined
   }
 }
 
@@ -254,7 +298,7 @@ function handleDelete(row: any) {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteRoles(ids).then(() => {
+    deleteAdverts(ids).then(() => {
       ElMessage.success('删除成功')
       handleQuery()
     })
@@ -268,9 +312,3 @@ onMounted(() => {
 })
 
 </script>
-
-<style lang="scss" scoped>
-.role-container {
-  width: 100%;
-}
-</style>

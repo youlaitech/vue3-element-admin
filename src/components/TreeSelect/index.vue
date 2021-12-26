@@ -16,8 +16,8 @@
             ref="selectTree"
             :accordion="accordion"
             :data="options"
-            :props="state.props"
-            :node-key="state.props.value"
+            :props="props.props"
+            :node-key="props.props.value"
             :expand-on-click-node="false"
             :default-expanded-keys="defaultExpandedKey"
             :filter-node-method="filterNode"
@@ -29,10 +29,11 @@
 </template>
 
 <script setup>
-import {defineEmits, ref, getCurrentInstance ,nextTick,onMounted,computed,watch} from "vue";
-const { proxy } = getCurrentInstance();
+import {defineEmits, ref, getCurrentInstance, nextTick, onMounted, computed, watch} from "vue";
 
-const state = defineProps({
+const {proxy} = getCurrentInstance();
+
+const props = defineProps({
   /* 配置项 */
   props: {
     type: Object,
@@ -44,24 +45,22 @@ const state = defineProps({
       }
     }
   },
-  /* 自动收起 */
+  // 自动收起
   accordion: {
     type: Boolean,
     default: () => {
       return false
     }
   },
-  /**当前双向数据绑定的值 */
+  // 双向数据绑定的值
   value: {
     type: [String, Number],
     default: ''
   },
-  /**当前的数据 */
   options: {
     type: Array,
     default: () => []
   },
-  /**输入框内部的文字 */
   placeholder: {
     type: String,
     default: ''
@@ -71,7 +70,7 @@ const state = defineProps({
 const emit = defineEmits(['update:value']);
 
 const valueId = computed({
-  get: () => state.value,
+  get: () => props.value,
   set: (val) => {
     emit('update:value', val)
   }
@@ -82,38 +81,43 @@ const defaultExpandedKey = ref([]);
 function initHandle() {
   nextTick(() => {
     const selectedValue = valueId.value;
-    if(selectedValue !== null && typeof (selectedValue) !== "undefined"){
+    if (selectedValue !== null && typeof (selectedValue) !== "undefined") {
       const node = proxy.$refs.selectTree.getNode(selectedValue)
       if (node) {
-        valueTitle.value = node.data[state.props.label]
+        valueTitle.value = node.data[props.props.label]
         proxy.$refs.selectTree.setCurrentKey(selectedValue) // 设置默认选中
         defaultExpandedKey.value = [selectedValue] // 设置默认展开
-      }else{
+      } else {
         clearHandle()
       }
     }
   })
 }
+
 function handleNodeClick(node) {
-  valueTitle.value = node[state.props.label]
-  valueId.value = node[state.props.value];
+  valueTitle.value = node[props.props.label]
+  valueId.value = node[props.props.value];
   defaultExpandedKey.value = [];
   proxy.$refs.treeSelect.blur()
   selectFilterData('')
 }
+
 function selectFilterData(val) {
   proxy.$refs.selectTree.filter(val)
 }
+
 function filterNode(value, data) {
   if (!value) return true
-  return data[state.props['label']].indexOf(value) !== -1
+  return data[props.props['label']].indexOf(value) !== -1
 }
+
 function clearHandle() {
   valueTitle.value = ''
   valueId.value = ''
   defaultExpandedKey.value = [];
   clearSelected()
 }
+
 function clearSelected() {
   const allNode = document.querySelectorAll('#tree-option .el-tree-node')
   allNode.forEach((element) => element.classList.remove('is-current'))
@@ -139,7 +143,7 @@ watch(valueId, () => {
   font-weight: normal;
 }
 
-ul li  .el-tree .el-tree-node__content {
+ul li .el-tree .el-tree-node__content {
   height: auto;
   padding: 0 20px;
   box-sizing: border-box;
@@ -148,7 +152,7 @@ ul li  .el-tree .el-tree-node__content {
 :deep(.el-tree-node__content:hover),
 :deep(.el-tree-node__content:active),
 :deep(.is-current > div:first-child),
-:deep( .el-tree-node__content:focus ){
+:deep( .el-tree-node__content:focus ) {
   background-color: mix(#fff, #409EFF, 90%);
   color: #409EFF;
 }

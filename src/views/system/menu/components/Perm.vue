@@ -145,7 +145,7 @@ const {proxy}: any = getCurrentInstance();
 const props = defineProps({
   menuId: {
     type: String,
-    default: undefined
+    default: ''
   },
   menuName: {
     type: String,
@@ -157,7 +157,6 @@ watch(() => props.menuId as any, (newVal, oldVal) => {
   state.queryParams.menuId = newVal
   handleQuery()
 })
-
 
 const state = reactive({
   loading: true,
@@ -182,9 +181,9 @@ const state = reactive({
   formData: {
     id: undefined,
     name: undefined,
-    urlPerm: undefined,
-    btnPerm: undefined,
-    menuId: undefined
+    urlPerm: '',
+    btnPerm: '',
+    menuId: ''
   },
   rules: {
     name: [
@@ -332,8 +331,9 @@ function resetForm() {
   state.formData = {
     id: undefined,
     name: undefined,
-    urlPerm: undefined,
-    btnPerm: undefined
+    urlPerm: '',
+    btnPerm: '',
+    menuId: ''
   }
 }
 
