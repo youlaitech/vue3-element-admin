@@ -3,14 +3,14 @@
 
     <el-form
         size="mini"
-        :model="dataMap.queryParams"
+        :model="queryParams"
         ref="queryForm"
         :inline="true"
-        v-show="dataMap.showSearch"
+        v-show="showSearch"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" :icon="Delete" :disabled="dataMap.single" @click="handleDelete">删除
+        <el-button type="danger" :icon="Delete" :disabled="single" @click="handleDelete">删除
         </el-button>
       </el-form-item>
 
@@ -18,7 +18,7 @@
           prop="name"
       >
         <el-input
-            v-model="dataMap.queryParams.name"
+            v-model="queryParams.name"
             placeholder="请输入部门名称"
             size="small"
             @keyup.enter="handleQuery"
@@ -28,13 +28,13 @@
           prop="status"
       >
         <el-select
-            v-model="dataMap.queryParams.status"
+            v-model="queryParams.status"
             placeholder="部门状态"
             clearable
             size="small"
         >
           <el-option
-              v-for="dict in dataMap.statusOptions"
+              v-for="dict in statusOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -62,12 +62,12 @@
     </el-form>
 
     <el-table
-        v-loading="dataMap.loading"
-        :data="dataMap.deptList"
+        v-loading="loading"
+        :data="deptList"
         row-key="id"
         default-expand-all
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-        @selection-change = "handleSelectionChange"
+        @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column prop="name" label="部门名称"/>
@@ -119,16 +119,16 @@
 
     <!-- 添加或修改部门对话框 -->
     <el-dialog
-        :title="dataMap.title"
-        v-model="dataMap.open"
+        :title="title"
+        v-model="open"
         width="600px"
         @open="dialogshow"
         @closed="cancel"
     >
       <el-form
           ref="formDialog"
-          :model="dataMap.formVal"
-          :rules="dataMap.rules"
+          :model="formVal"
+          :rules="rules"
           label-width="80px"
       >
         <el-form-item
@@ -136,19 +136,19 @@
             prop="parentId"
         >
           <tree-select
-              :options="dataMap.deptOptions"
+              :options="deptOptions"
               placeholder="选择上级部门"
-              v-model:value="dataMap.formVal.parentId"
+              v-model="formVal.parentId"
           />
         </el-form-item>
         <el-form-item label="部门名称" prop="name">
-          <el-input v-model="dataMap.formVal.name" placeholder="请输入部门名称"/>
+          <el-input v-model="formVal.name" placeholder="请输入部门名称"/>
         </el-form-item>
         <el-form-item label="显示排序" prop="sort">
-          <el-input-number v-model="dataMap.formVal.sort" controls-position="right" style="width: 100px" :min="0"/>
+          <el-input-number v-model="formVal.sort" controls-position="right" style="width: 100px" :min="0"/>
         </el-form-item>
         <el-form-item label="部门状态">
-          <el-radio-group v-model="dataMap.formVal.status">
+          <el-radio-group v-model="formVal.status">
             <el-radio :label="1">正常</el-radio>
             <el-radio :label="0">禁用</el-radio>
           </el-radio-group>
@@ -175,7 +175,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, reactive, unref, ref} from 'vue'
+import {onMounted, reactive, unref, ref, toRefs} from 'vue'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {listDept, getDept, delDept, updateDept, addDept, getDeptSelectList} from '@/api/system/dept'
 import TreeSelect from '@/components/TreeSelect/Index.vue'
@@ -248,6 +248,8 @@ const dataMap = reactive({
 })
 const queryForm = ref(ElForm)
 const formDialog = ref(ElForm)
+
+
 
 /**
  * 删除按钮
@@ -348,30 +350,42 @@ function submitForm() {
 /** 删除按钮操作 */
 async function handleDelete(row: any) {
   const ids = [row.id || dataMap.ids].join(',')
-    ElMessageBox.confirm(`确认删除已选中的数据项?`, '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(() => {
-       delDept(ids).then(rps=>{
-         getList()
-         ElMessage.success('删除成功')
-       }).catch(e=>{
-         console.log(`删除失败:${e}`)
-       })
-      }).catch(() =>
-        ElMessage.info('已取消删除')
-    )
-}
-
-
-function getDeptId(e: any) {
-  dataMap.formVal.parentId = e
+  ElMessageBox.confirm(`确认删除已选中的数据项?`, '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    delDept(ids).then(rps => {
+      getList()
+      ElMessage.success('删除成功')
+    }).catch(e => {
+      console.log(`删除失败:${e}`)
+    })
+  }).catch(() =>
+      ElMessage.info('已取消删除')
+  )
 }
 
 function dialogshow() {
   getTreeselect()
 }
+const {
+  ids, single,
+  multiple,
+  disabled,
+  isAdd,
+  originOptions, props, loading,
+  // 显示搜索条件
+  showSearch,
+  // 表格树数据
+  deptList,
+  // 部门树选项
+  deptOptions,
+  // 弹出层标题
+  title,
+  // 是否显示弹出层
+  open, statusOptions, queryParams, formVal, deptidfix, rules
+} = toRefs(dataMap)
 
 onMounted(() => {
   getList()
