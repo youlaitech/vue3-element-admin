@@ -16,9 +16,7 @@
     "pinia": "^2.0.9",
     "screenfull": "^6.0.0",
     "vue": "^3.2.16",
-    "vue-router": "^4.0.12",
-    "vue3-treeselect": "^0.1.10",
-    "vuex": "^4.0.2"
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@types/node": "^16.11.7",

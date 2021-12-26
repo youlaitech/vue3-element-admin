@@ -46,7 +46,7 @@ export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => 
 
 
 export const usePermissionStore = defineStore({
-    id:"youlai-permission",
+    id:"permission",
     state:():PermissionState=>( {
         routes: [],
         addRoutes: []

@@ -6,7 +6,7 @@ import defaultSettings from '../../settings'
 const {showSettings, tagsView, fixedHeader, sidebarLogo} = defaultSettings
 
 export const useSettingStore = defineStore({
-    id: "pure-setting",
+    id: "setting",
     state:():SettingState =>({
         theme: '',
         showSettings: showSettings,

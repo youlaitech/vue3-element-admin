@@ -4,7 +4,7 @@ import { store } from "@/store";
 import {TagsViewState} from "@store/interface";
 
 const tagsViewStore=defineStore({
-    id:"youlai-tagsView",
+    id:"tagsView",
     state:():TagsViewState=>( {
         visitedViews: [],
         cachedViews: []

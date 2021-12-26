@@ -4,7 +4,7 @@ import { store } from "@/store";
 import { defineStore } from "pinia";
 
 export const useAppStore = defineStore({
-    id: "youlai-app",
+    id: "app",
     state: ():AppState=>({
         device: 'desktop',
         sidebar: {
