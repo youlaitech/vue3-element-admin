@@ -85,7 +85,7 @@
           label-width="80px">
         <el-form-item label="父级菜单" prop="parentId">
           <tree-select
-              v-model:value="state.formData.parentId"
+              v-model="state.formData.parentId"
               :options="state.menuOptions"
               placeholder="选择上级菜单"
           />
