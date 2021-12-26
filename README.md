@@ -67,43 +67,59 @@ export default router
 
 - [路由的 hash 模式和 history 模式的区别](https://www.cnblogs.com/GGbondLearn/p/12239651.html)
 
-## vuex
+## pinia
 
 ```shell
-npm install vuex@next
+npm install pinia
 ```
 
-src 下创建 store/interface.ts
+src 下创建 store/index.ts
 
 ```typescript
-import {InjectionKey} from 'vue'
-import {createStore, Store} from 'vuex'
+import { createPinia } from "pinia";
+const store = createPinia();
+export { store };
+```
+  main.ts
 
-export interface State {
-    count: number
+```typescript
+import {createApp} from 'vue'
+import App from './App.vue'
+import router from "./router";
+import '@/styles/index.scss'
+import { store } from "./store";
+import ElementPlus from 'element-plus'
+import 'element-plus/theme-chalk/index.css'
+import locale from 'element-plus/lib/locale/lang/zh-cn'
+import 'virtual:svg-icons-register';
+
+
+// @see https://blog.csdn.net/qq_37213281/article/details/121422027
+import * as ElIconModules from '@element-plus/icons'
+import '@/permission'
+
+
+import Pagination from '@/components/Pagination/index.vue'
+import {getDictItemsByCode} from '@/api/system/dict'
+
+
+const app = createApp(App)
+
+// 统一注册el-icon图标
+// @link https://blog.csdn.net/Alloom/article/details/119415984
+for (let iconName in ElIconModules) {
+    app.component(iconName, (ElIconModules as any)[iconName])
 }
 
-export const key: InjectionKey<Store<State>> = Symbol()
+// 全局方法
+app.config.globalProperties.$getDictItemsByCode = getDictItemsByCode
+app.component('Pagination', Pagination) // 全局组件
+     .use(store)
+    .use(router)
+    .use(ElementPlus, {locale})
+    .mount('#app')
 
-
-export const store = createStore<State>({
-    state() {
-        return {
-            count: 0
-        }
-    },
-    mutations: {
-        increment(state: { count: number }) {
-            state.count++
-        }
-    }
-})
 ```
-
-**参考文档：**
-
-- [Vue3 的 InjectionKey 解决提供者和消费者同步注入值的类型](https://www.jianshu.com/p/7064c5f8f143)
-
 
 
 ## element-plus
