@@ -25,6 +25,7 @@
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+
     <el-table
         ref="dataTable"
         v-loading="loading"
