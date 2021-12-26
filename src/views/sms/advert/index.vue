@@ -39,19 +39,17 @@
         <template #default="scope">
           <el-popover
               placement="right"
-              title=""
+              :width="540"
               trigger="hover">
-            <img :src="scope.row.picUrl"/>
-            <img slot="reference"
-                 :src="scope.row.picUrl"
-                 :alt="scope.row.picUrl"
-                 style="max-height: 60px;max-width: 60px"
-            >
+            <img :src="scope.row.picUrl" width="400" height="400"/>
+            <template #reference>
+              <img :src="scope.row.picUrl" style="max-height: 60px;max-width: 60px"/>
+            </template>
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="beginDate" label="开始时间" min-width="10"/>
-      <el-table-column prop="endTime" label="到期时间" min-width="10"/>
+      <el-table-column prop="beginTime" label="开始时间" min-width="10"/>
+      <el-table-column prop="endTime" label="结束时间" min-width="10"/>
       <el-table-column prop="status" label="状态" min-width="6">
         <template #default="scope">
           <el-tag v-if="scope.row.status===1" type="success" size="mini">开启</el-tag>
@@ -102,21 +100,21 @@
           :rules="rules"
           label-width="100px"
       >
-        <el-form-item label="广告标题" required prop="title">
+        <el-form-item label="广告标题" prop="title">
           <el-input v-model="formData.title"/>
         </el-form-item>
 
-        <el-form-item label="有效期" required prop="beginTime">
+        <el-form-item label="有效期" prop="beginTime">
           <el-date-picker
               v-model="formData.beginTime"
-              value-format="yyyy-MM-dd"
-              placeholder="开始日期"
+              placeholder="开始时间"
+              value-format="YYYY-MM-DD"
           />
           ~
           <el-date-picker
               v-model="formData.endTime"
-              value-format="yyyy-MM-dd"
-              placeholder="结束日期"
+              placeholder="结束时间"
+              value-format="YYYY-MM-DD"
           />
         </el-form-item>
 
@@ -195,12 +193,19 @@ const state = reactive({
     remark: undefined
   },
   rules: {
-    name: [
+    title: [
       {required: true, message: '请输入广告名称', trigger: 'blur'}
     ],
-    pic: [
+    beginTime: [
+      {required: true, message: '请填写开始时间', trigger: 'blur'}
+    ],
+    endTime: [
+      {required: true, message: '请填写结束时间', trigger: 'blur'}
+    ],
+    picUrl: [
       {required: true, message: '请上传广告图片', trigger: 'blur'}
     ]
+
   }
 })
 
