@@ -5,7 +5,6 @@ import {Local} from "@utils/storage";
 import {getUserInfo, login, logout} from "@api/login";
 import {resetRouter} from "@router";
 
-
 const getDefaultState = () => {
     return {
         token: Local.get('token'),

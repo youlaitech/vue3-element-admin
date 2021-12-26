@@ -114,7 +114,6 @@
         </el-form-item>
 
         <el-form-item label="菜单图标">
-
           <el-popover
               placement="bottom-start"
               :width="540"
