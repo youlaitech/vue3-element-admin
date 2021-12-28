@@ -1,6 +1,6 @@
 import request from "@utils/request";
 
-export function list(queryParams:object) {
+export const list=(queryParams:object)=>{
     return request({
         url: '/mall-pms/api/v1/categories',
         method: 'get',
@@ -8,7 +8,7 @@ export function list(queryParams:object) {
     })
 }
 
-export function cascadeList(queryParams:object) {
+export const cascadeList=(queryParams:object)=> {
     return request({
         url: '/mall-pms/api/v1/categories/cascade',
         method: 'get',
@@ -18,14 +18,14 @@ export function cascadeList(queryParams:object) {
 
 
 
-export function detail(id:number) {
+export const detail=(id:number)=> {
     return request({
         url: '/mall-pms/api/v1/categories/' + id,
         method: 'get'
     })
 }
 
-export function add(data:object) {
+export const add=(data:object)=> {
     return request({
         url: '/mall-pms/api/v1/categories',
         method: 'post',

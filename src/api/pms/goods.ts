@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-export function page(queryParams:object) {
+export const page = (queryParams:object)=> {
     return request({
         url: '/mall-pms/api/v1/goods/page',
         method: 'get',
@@ -7,14 +7,14 @@ export function page(queryParams:object) {
     })
 }
 
-export function detail(id:number) {
+export const detail=(id:number)=> {
     return request({
         url: '/mall-pms/api/v1/goods/' + id,
         method: 'get'
     })
 }
 
-export function addGoods(data:object) {
+export const addGoods=(data:object)=> {
     return request({
         url: '/mall-pms/api/v1/goods',
         method: 'post',
@@ -22,7 +22,7 @@ export function addGoods(data:object) {
     })
 }
 
-export function updateGoods(id:number, data:object) {
+export const  updateGoods=(id:number, data:object)=> {
     return request({
         url: '/mall-pms/api/v1/goods/' + id,
         method: 'put',
@@ -30,14 +30,14 @@ export function updateGoods(id:number, data:object) {
     })
 }
 
-export function removeGoods(ids:string) {
+export const removeGoods=(ids:string)=> {
     return request({
         url: '/mall-pms/api/v1/goods/'+ids,
         method: 'delete'
     })
 }
 
-export function patch(id:number, data:object) {
+export const patch=(id:number, data:object)=> {
     return request({
         url: '/mall-pms/api/v1/goods/' + id,
         method: 'patch',
