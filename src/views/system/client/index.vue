@@ -3,18 +3,18 @@
     <!-- 搜索表单 -->
     <el-form
         ref="queryForm"
-        :model="state.queryParams"
+        :model="queryParams"
         :inline="true"
         size="mini"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" :icon='Delete' :disabled="state.multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" :icon='Delete' :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
 
       <el-form-item prop="clientId">
         <el-input
-            v-model="state.queryParams.clientId"
+            v-model="queryParams.clientId"
             placeholder="输入客户端ID"
             clearable
             style="width: 240px"
@@ -30,8 +30,8 @@
 
     <!-- 数据表格 -->
     <el-table
-        v-loading="state.loading"
-        :data="state.pageList"
+        v-loading="loading"
+        :data="pageList"
         border
         @selection-change="handleSelectionChange"
     >
@@ -68,30 +68,30 @@
 
     <!-- 分页工具条 -->
     <pagination
-        v-show="state.total>0"
-        :total="state.total"
-        v-model:page="state.queryParams.pageNum"
-        v-model:limit="state.queryParams.pageSize"
+        v-show="total>0"
+        :total="total"
+        v-model:page="queryParams.pageNum"
+        v-model:limit="queryParams.pageSize"
         @pagination="handleQuery"
     />
 
     <!-- 表单弹窗 -->
     <el-dialog
-        :title="state.dialog.title"
-        v-model="state.dialog.visible"
+        :title="dialog.title"
+        v-model="dialog.visible"
         width="700px"
     >
       <el-form ref="dataForm"
-               :model="state.formData"
-               :rules="state.rules"
+               :model="formData"
+               :rules="rules"
                label-width="100px"
       >
         <el-form-item label="客户端ID" prop="clientId">
-          <el-input v-model="state.formData.clientId" placeholder="请输入客户端ID"/>
+          <el-input v-model="formData.clientId" placeholder="请输入客户端ID"/>
         </el-form-item>
 
         <el-form-item label="客户端密钥" prop="clientSecret">
-          <el-input v-model="state.formData.clientSecret" placeholder="请输入客户端密钥"/>
+          <el-input v-model="formData.clientSecret" placeholder="请输入客户端密钥"/>
         </el-form-item>
       </el-form>
 
@@ -112,7 +112,7 @@
 <script setup lang="ts">
 import {listClientsWithPage, detail, update, add, del} from '@/api/system/client'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
-import {onMounted, reactive, getCurrentInstance, ref, unref} from 'vue'
+import {onMounted, reactive, getCurrentInstance, ref, unref, toRefs} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus"
 
 const dataForm = ref(ElForm)
@@ -154,8 +154,10 @@ const state = reactive({
   }
 })
 
+const {loading, ids, single, multiple, queryParams, pageList, total, dialog, formData, rules} = toRefs(state)
+
 function handleQuery() {
-  listClientsWithPage(state.queryParams).then(response => {
+  listClientsWithPage(queryParams).then(response => {
     const {data, total} = response as any
     state.pageList = data
     state.total = total
@@ -194,7 +196,7 @@ function handleUpdate(row: any) {
     visible: true,
     type: 'edit'
   }
-  const clientId = row.clientId || state.ids
+  const clientId = row.clientId || ids
   detail(clientId).then(response => {
     state.formData = response.data
   })
@@ -206,13 +208,13 @@ function submitForm() {
   form.validate((valid: any) => {
     if (valid) {
       if (state.dialog.type == 'edit') {
-        update(state.formData.clientId as any, state.formData).then(response => {
+        update(state.formData.clientId as any, formData).then(response => {
           ElMessage.success('修改成功')
           state.dialog.visible = false
           handleQuery()
         })
       } else {
-        add(state.formData).then(response => {
+        add(formData).then(response => {
           ElMessage.success('新增成功')
           state.dialog.visible = false
           handleQuery()
@@ -242,7 +244,7 @@ function cancel() {
 }
 
 function handleDelete(row: any) {
-  const clientIds = [row.clientId || state.ids].join(',')
+  const clientIds = [row.clientId || ids].join(',')
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',

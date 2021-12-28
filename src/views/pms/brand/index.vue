@@ -9,64 +9,72 @@
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" :icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" :icon='Delete' click="handleDelete" :disabled="multiple">删除</el-button>
+      </el-form-item>
+
+      <el-form-item prop="name">
+        <el-input v-model="queryParams.name" placeholder="品牌名称"/>
       </el-form-item>
 
       <el-form-item>
-        <el-input
-            v-model="queryParams.name"
-            placeholder="广告名称"
-            clearable
-            @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
         <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
-        <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
+        <el-button :icon="Refresh" @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
 
+    <!-- 数据表格 -->
     <el-table
         ref="dataTable"
         v-loading="loading"
         :data="pageList"
         @selection-change="handleSelectionChange"
+        @row-click="handleRowClick"
         border
     >
-      <el-table-column type="selection" min-width="5" align="center"/>
-      <el-table-column type="index" label="序号" width="50" align="center"/>
-      <el-table-column prop="title" label="广告标题" min-width="10"/>
-      <el-table-column label="广告图片" min-width="10">
+      <el-table-column
+          type="selection"
+          min-width="5%"
+      />
+      <el-table-column
+          prop="name"
+          label="品牌名称"
+          min-width="10"
+      />
+      <el-table-column
+          prop="logoUrl"
+          label="LOGO"
+          min-width="10"
+      >
         <template #default="scope">
           <el-popover
               placement="right"
               :width="400"
               trigger="hover">
-            <img :src="scope.row.picUrl" width="400" height="400"/>
+            <img :src="scope.row.logoUrl" width="400" height="400"/>
             <template #reference>
-              <img :src="scope.row.picUrl" style="max-height: 60px;max-width: 60px"/>
+              <img :src="scope.row.logoUrl" style="max-height: 60px;max-width: 60px"/>
             </template>
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="beginTime" label="开始时间" min-width="10"/>
-      <el-table-column prop="endTime" label="结束时间" min-width="10"/>
-      <el-table-column prop="status" label="状态" min-width="6">
-        <template #default="scope">
-          <el-tag v-if="scope.row.status===1" type="success" size="mini">开启</el-tag>
-          <el-tag v-else type="info" size="mini">关闭</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="sort" label="排序" min-width="6"/>
-      <el-table-column label="操作" align="center" width="150">
+
+      <el-table-column
+          prop="sort"
+          label="排序"
+          min-width="10"
+      />
+
+      <el-table-column
+          label="操作"
+          width="150">
         <template #default="scope">
           <el-button
+              @click="handleUpdate(scope.row)"
               type="primary"
               :icon="Edit"
               size="mini"
               circle
               plain
-              @click.stop="handleUpdate(scope.row)"
           />
           <el-button
               type="danger"
@@ -74,7 +82,7 @@
               size="mini"
               circle
               plain
-              @click.stop="handleDelete(scope.row)"
+              @click="handleDelete(scope.row)"
           />
         </template>
       </el-table-column>
@@ -93,7 +101,8 @@
     <el-dialog
         :title="dialog.title"
         v-model="dialog.visible"
-        width="700px"
+        top="5vh"
+        width="600px"
     >
       <el-form
           ref="dataForm"
@@ -101,46 +110,18 @@
           :rules="rules"
           label-width="100px"
       >
-        <el-form-item label="广告标题" prop="title">
-          <el-input v-model="formData.title"/>
+        <el-form-item label="品牌名称" prop="name">
+          <el-input v-model="formData.name" auto-complete="off"/>
         </el-form-item>
 
-        <el-form-item label="有效期" prop="beginTime">
-          <el-date-picker
-              v-model="formData.beginTime"
-              placeholder="开始时间"
-              value-format="YYYY-MM-DD"
-          />
-          ~
-          <el-date-picker
-              v-model="formData.endTime"
-              placeholder="结束时间"
-              value-format="YYYY-MM-DD"
-          />
-        </el-form-item>
-
-        <el-form-item label="广告图片" prop="picUrl">
-          <single-upload v-model="formData.picUrl"/>
+        <el-form-item label="LOGO" prop="logoUrl">
+          <single-upload v-model="formData.logoUrl"/>
         </el-form-item>
 
         <el-form-item label="排序" prop="sort">
-          <el-input v-model="formData.sort" style="width: 200px"/>
+          <el-input v-model="formData.sort"/>
         </el-form-item>
 
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :label="1">开启</el-radio>
-            <el-radio :label="0">关闭</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="跳转链接" prop="url">
-          <el-input v-model="formData.url"/>
-        </el-form-item>
-
-        <el-form-item label="备注" prop="remark">
-          <el-input type="textarea" v-model="formData.remark"/>
-        </el-form-item>
       </el-form>
 
       <template #footer>
@@ -149,19 +130,19 @@
           <el-button @click="cancel">取 消</el-button>
         </div>
       </template>
-
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import {listAdvertsWithPage, getAdvertDetail, updateAdvert, addAdvert, deleteAdverts} from '@/api/sms/advert'
-import SingleUpload from "@/components/Upload/SingleUpload.vue";
+import {listBrandsWithPage, getBrandDetail, updateBrand, addBrand, deleteBrands} from '@/api/pms/brand'
+import SingleUpload from "@/components/Upload/SingleUpload.vue"
 import {onMounted, reactive, ref, toRefs, unref} from "vue";
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
 const dataForm = ref(ElForm)  // 属性名必须和元素的ref属性值一致
+const dataTable = ref()
 
 const state = reactive({
   loading: true,
@@ -184,28 +165,14 @@ const state = reactive({
   },
   formData: {
     id: undefined,
-    title: '',
-    picUrl: '',
-    beginTime: undefined,
-    endTime: undefined,
-    status: 1,
-    sort: 100,
-    url: undefined,
-    remark: undefined
+    name: undefined,
+    logoUrl: undefined,
+    sort: 1
   },
   rules: {
-    title: [
-      {required: true, message: '请输入广告名称', trigger: 'blur'}
-    ],
-    beginTime: [
-      {required: true, message: '请填写开始时间', trigger: 'blur'}
-    ],
-    endTime: [
-      {required: true, message: '请填写结束时间', trigger: 'blur'}
-    ],
-    picUrl: [
-      {required: true, message: '请上传广告图片', trigger: 'blur'}
-    ]
+    name: [{
+      required: true, message: '请输入品牌名称', trigger: 'blur'
+    }]
   }
 })
 
@@ -213,7 +180,7 @@ const {loading, single, multiple, queryParams, pageList, total, dialog, formData
 
 function handleQuery() {
   state.loading = true
-  listAdvertsWithPage(state.queryParams).then(response => {
+  listBrandsWithPage(state.queryParams).then(response => {
     const {data, total} = response as any
     state.pageList = data
     state.total = total
@@ -230,6 +197,10 @@ function resetQuery() {
   handleQuery()
 }
 
+function handleRowClick(row: any) {
+  dataTable.value.toggleRowSelection(row);
+}
+
 function handleSelectionChange(selection: any) {
   state.ids = selection.map((item: any) => item.id)
   state.single = selection.length !== 1
@@ -239,7 +210,7 @@ function handleSelectionChange(selection: any) {
 function handleAdd() {
   resetForm()
   state.dialog = {
-    title: '添加广告',
+    title: '添加品牌',
     visible: true
   }
 }
@@ -247,11 +218,11 @@ function handleAdd() {
 function handleUpdate(row: any) {
   resetForm()
   state.dialog = {
-    title: '修改广告',
+    title: '修改品牌',
     visible: true,
   }
   const advertId = row.id || state.ids
-  getAdvertDetail(advertId).then((response) => {
+  getBrandDetail(advertId).then((response) => {
     state.formData = response.data
   })
 }
@@ -261,13 +232,13 @@ function submitForm() {
   form.validate((valid: any) => {
     if (valid) {
       if (state.formData.id) {
-        updateAdvert(state.formData.id as any, state.formData).then(response => {
+        updateBrand(state.formData.id as any, state.formData).then(response => {
           ElMessage.success('修改成功')
           state.dialog.visible = false
           handleQuery()
         })
       } else {
-        addAdvert(state.formData).then(response => {
+        addBrand(state.formData).then(response => {
           ElMessage.success('新增成功')
           state.dialog.visible = false
           handleQuery()
@@ -280,14 +251,9 @@ function submitForm() {
 function resetForm() {
   state.formData = {
     id: undefined,
-    title: '',
-    picUrl: '',
-    beginTime: undefined,
-    endTime: undefined,
-    status: 1,
-    sort: 100,
-    url: undefined,
-    remark: undefined
+    name: undefined,
+    logoUrl: undefined,
+    sort: 1
   }
 }
 
@@ -303,7 +269,7 @@ function handleDelete(row: any) {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteAdverts(ids).then(() => {
+    deleteBrands(ids).then(() => {
       ElMessage.success('删除成功')
       handleQuery()
     })
@@ -317,3 +283,7 @@ onMounted(() => {
 })
 
 </script>
+
+<style scoped>
+
+</style>
