@@ -13,16 +13,15 @@
         <el-cascader
             v-model="queryParams.categoryId"
             placeholder="商品分类"
-            :props="{emitPath:false}"
+            :props="cascaderProps"
             :options="categoryOptions"
-            expand-trigger="hover"
             clearable
             style="width: 300px"
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="handleQuery">查询</el-button>
-        <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
+        <el-button type="primary" :icon="Search" @click="handleQuery">查询</el-button>
+        <el-button  :icon="Refresh" @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -50,7 +49,7 @@
               </template>
             </el-table-column>
             <el-table-column align="center" label="现价" prop="price">
-              <template #default="scope">{{ scope.row.price | moneyFormatter }}</template>
+              <template #default="scope">{{  moneyFormatter(scope.row.price) }}</template>
             </el-table-column>
             <el-table-column align="center" label="库存" prop="stock"/>
           </el-table>
@@ -66,17 +65,17 @@
       <el-table-column label="商品类目" prop="categoryName" min-width="100"/>
       <el-table-column label="商品品牌" prop="brandName" min-width="100"/>
       <el-table-column align="center" label="零售价" prop="originalPrice">
-        <template #default="scope">{{ scope.row.originPrice | moneyFormatter }}</template>
+        <template #default="scope">{{ moneyFormatter(scope.row.price) }}</template>
       </el-table-column>
       <el-table-column align="center" label="促销价" prop="price">
-        <template #default="scope">{{ scope.row.price | moneyFormatter }}</template>
+        <template #default="scope">{{ moneyFormatter(scope.row.price) }}</template>
       </el-table-column>
       <el-table-column label="销量" prop="sales" min-width="100"/>
       <el-table-column label="单位" prop="unit" min-width="100"/>
       <el-table-column label="描述" prop="description" min-width="100"/>
       <el-table-column label="详情" prop="detail">
         <template #default="scope">
-          <el-dialog :visible.sync="dialogVisible" title="商品详情">
+          <el-dialog v-model="dialogVisible" title="商品详情">
             <div class="goods-detail-box" v-html="goodDetail"/>
           </el-dialog>
           <el-button type="primary" size="mini" @click="handleGoodsView(scope.row.detail)">查看</el-button>
@@ -96,22 +95,24 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination
-        v-show="data.pagination.total>0"
-        :total="data.pagination.total"
-        :page.sync="data.pagination.page"
-        :limit.sync="data.pagination.limit"
-        @pagination="handleQuery"/>
+    <el-pagination
+        v-show="pagination.total>0"
+        :total="pagination.total"
+        :page.sync="pagination.page"
+        :limit.sync="pagination.limit"
+        @pagination="handleQuery">
+    </el-pagination>
   </div>
 </template>
 
 <script setup lang="ts">
+import {Search, Refresh} from '@element-plus/icons'
 import {page, removeGoods} from '@/api/pms/goods'
 import {cascadeList} from '@/api/pms/category'
-import {reactive, ref,onBeforeMount, unref, watchEffect, getCurrentInstance, toRefs} from 'vue'
+import {reactive, ref,onMounted, toRefs} from 'vue'
 import {ElMessage, ElMessageBox, ElTree} from 'element-plus'
-
-const data = reactive({
+import {moneyFormatter} from '@/utils/filter'
+const state = reactive({
   // 遮罩层
   loading: true,
   // 选中数组
@@ -132,45 +133,40 @@ const data = reactive({
   pageList: [],
   categoryOptions: [],
   goodDetail: undefined,
-  dialogVisible: false
+  dialogVisible: false,
+  cascaderProps:{emitPath:false,expandTrigger:'hover'}
 })
 
-onBeforeMount(()=>{
-  loadData()
-})
+
 function loadData() {
   loadCategoryOptions()
   handleQuery()
 }
 
 function loadCategoryOptions() {
-  cascadeList().then(response => {
-    data.categoryOptions = ref(response.data)
+  cascadeList({}).then(response => {
+    state.categoryOptions = ref(response.data)
   })
 }
 
-function handleQuery() {
-  data.queryParams.page = data.pagination.page
-  data.queryParams.limit = data.pagination.limit
-  console.log(data.pagination)
-  page(data.queryParams).then(response => {
-    console.log(response)
+ function handleQuery() {
+   state.queryParams.page = state.pagination.page
+   state.queryParams.limit = state.pagination.limit
+  page(state.queryParams).then(response => {
     const {data, total} = response
-    console.log(total)
-    console.log(data.pagination)
-    data.pageList = data
-    data.pagination.total = total ? total : 0
-    data.loading = false
+    state.pageList = data
+    state.pagination.total = total ? total : 0
+    state.loading = false
   })
 }
 
 function handleReset() {
-  data.pagination = {
+  state.pagination = {
     page: 1,
     limit: 10,
     total: 0
   }
-  data.queryParams = {
+  state.queryParams = {
     name: undefined,
     categoryId: undefined,
     queryMode: 'page'
@@ -179,8 +175,8 @@ function handleReset() {
 }
 
 function handleGoodsView(detail: any) {
-  data.goodDetail = detail
-  data.dialogVisible = true
+  state.goodDetail = detail
+  state.dialogVisible = true
 }
 
 function handleAdd() {
@@ -192,7 +188,7 @@ function handleUpdate(row: any) {
 }
 
 function handleDelete(row: any) {
-  const ids = row.id || data.ids.join(',')
+  const ids = row.id || state.ids.join(',')
   ElMessageBox.confirm('是否确认删除选中的数据项?', "警告", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
@@ -212,9 +208,9 @@ function handleRowClick(row: any) {
 }
 
 function handleSelectionChange(selection: any) {
-  data.ids = selection.map((item: { id: any }) => item.id)
-  data.single = selection.length != 1
-  data.multiple = !selection.length
+  state.ids = selection.map((item: { id: any }) => item.id)
+  state.single = selection.length != 1
+  state.multiple = !selection.length
 }
 
 function formatAlbum(val: any) {
@@ -239,8 +235,13 @@ const {
   pageList,
   categoryOptions,
   goodDetail,
-  dialogVisible
-} = toRefs(data);
+  dialogVisible,
+  cascaderProps
+} = toRefs(state);
+
+onMounted(()=>{
+  loadData()
+})
 </script>
 
 <style scoped>
