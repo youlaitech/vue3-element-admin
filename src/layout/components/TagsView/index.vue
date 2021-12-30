@@ -1,6 +1,6 @@
 <template>
   <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll">
+    <scroll-pane ref="scrollPaneRef" class="tags-view-wrapper" @scroll="handleScroll">
       <router-link
           v-for="tag in visitedViews"
           ref="tag"
@@ -13,11 +13,9 @@
           @contextmenu.prevent.native="openMenu(tag,$event)"
       >
         {{ tag.meta.title }}
-        <span v-if="!isAffix(tag)" @click.prevent.stop="closeSelectedTag(tag)">
-          <el-icon :size="8">
-           <close />
-          </el-icon>
-        </span>
+        <span v-if="!isAffix(tag)" class="el-icon-close"  @click.prevent.stop="closeSelectedTag(tag)"/>
+
+
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
@@ -29,26 +27,24 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {Close} from '@element-plus/icons'
 import {tagsViewStoreHook} from '@/store/modules/tagsView'
 import {usePermissionStoreHook} from '@/store/modules/Permission'
-import ScrollPane from './ScrollPane.vue'
 import path from 'path-browserify'
-import {
-  defineComponent,
-  computed,
-  getCurrentInstance,
-  nextTick,
-  onBeforeMount,
-  reactive,
-  ref,
-  toRefs,
-  watch
-} from "vue";
+import { defineComponent, computed, getCurrentInstance, nextTick, onBeforeMount, reactive, ref, toRefs, watch} from "vue";
 import {RouteRecordRaw, useRoute, useRouter} from 'vue-router'
 import {TagView} from "@store/interface";
+
+import ScrollPane from './ScrollPane.vue'
+import {Close} from '@element-plus/icons'
+
+const {ctx} = getCurrentInstance() as any
+const router = useRouter()
+const route = useRoute();
+
+const visitedViews = computed(() => tagsViewStoreHook().visitedViews)
+const routes = computed(() =>usePermissionStoreHook().routes)
 
 export default defineComponent({
   components: {ScrollPane,Close},
@@ -232,14 +228,13 @@ export default defineComponent({
 
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .tags-view-container {
   height: 34px;
   width: 100%;
   background: #fff;
   border-bottom: 1px solid #d8dce5;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
-
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
   .tags-view-wrapper {
     .tags-view-item {
       display: inline-block;
@@ -254,22 +249,18 @@ export default defineComponent({
       font-size: 12px;
       margin-left: 5px;
       margin-top: 4px;
-
       &:first-of-type {
         margin-left: 15px;
       }
-
       &:last-of-type {
         margin-right: 15px;
       }
-
       &.active {
         background-color: #42b983;
         color: #fff;
         border-color: #42b983;
-
         &::before {
-          content: '';
+          content: "";
           background: #fff;
           display: inline-block;
           width: 8px;
@@ -281,7 +272,6 @@ export default defineComponent({
       }
     }
   }
-
   .contextmenu {
     margin: 0;
     background: #fff;
@@ -293,13 +283,11 @@ export default defineComponent({
     font-size: 12px;
     font-weight: 400;
     color: #333;
-    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
-
+    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
     li {
       margin: 0;
       padding: 7px 16px;
       cursor: pointer;
-
       &:hover {
         background: #eee;
       }
@@ -318,18 +306,18 @@ export default defineComponent({
       vertical-align: 2px;
       border-radius: 50%;
       text-align: center;
-      transition: all .3s cubic-bezier(.645, .045, .355, 1);
+      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
       transform-origin: 100% 50%;
-
       &:before {
-        transform: scale(.6);
+        transform: scale(0.6);
         display: inline-block;
         vertical-align: -3px;
       }
-
       &:hover {
         background-color: #b4bccc;
         color: #fff;
+        width: 12px !important;
+        height: 12px !important;
       }
     }
   }
