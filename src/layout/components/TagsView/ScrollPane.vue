@@ -10,7 +10,8 @@
 
 <script setup lang="ts">
 import {ref, computed, onMounted, onBeforeUnmount, getCurrentInstance} from "vue";
-import {tagsViewStoreHook} from "@store/modules/tagsView";
+import {tagsViewStoreHook} from "@store/modules/tagsView"
+
 
 const tagAndTagSpacing = ref(4)
 const scrollContainerRef = ref(null)
@@ -20,7 +21,7 @@ const emitScroll = () => {
   emits('scroll')
 }
 
-const {ctx} = getCurrentInstance()
+const {ctx} = getCurrentInstance() as any
 const scrollWrapper = computed(() => {
   return (scrollContainerRef.value as any).$refs.wrap as HTMLElement
 })
@@ -39,41 +40,56 @@ function handleScroll(e: WheelEvent) {
   scrollWrapper.value.scrollLeft = scrollWrapper.value.scrollLeft + eventDelta / 4
 }
 
-
-function moveToCurrentTag(currentTag: HTMLElement) {
-  const container = (scrollContainerRef.value as any).$el as HTMLElement
-  const containerWidth = container.offsetWidth
-  const tagList = ctx.$parent.$refs.tag as any[]
+function moveToTarget(currentTag) {
+  const $container = ctx.$refs.scrollContainer.$el
+  const $containerWidth = $container.offsetWidth
+  const $scrollWrapper = scrollWrapper.value;
 
   let firstTag = null
   let lastTag = null
 
-  if (tagList.length > 0) {
-    firstTag = tagList[0]
-    lastTag = tagList[tagList.length - 1]
+  // find first tag and last tag
+  if (visitedViews.value.length > 0) {
+    firstTag = visitedViews.value[0]
+    lastTag = visitedViews.value[visitedViews.value.length - 1]
   }
 
   if (firstTag === currentTag) {
-    scrollWrapper.value.scrollLeft = 0
+    $scrollWrapper.scrollLeft = 0
   } else if (lastTag === currentTag) {
-    scrollWrapper.value.scrollLeft = scrollWrapper.value.scrollWidth - containerWidth
+    $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth
   } else {
-    const currentIndex = tagList.findIndex(item => item === currentTag)
-    const prevTag = tagList[currentIndex - 1]
-    const nextTag = tagList[currentIndex + 1]
+    const tagListDom = document.getElementsByClassName('tags-view-item');
+    const currentIndex = visitedViews.value.findIndex(item => item === currentTag)
+    let prevTag = null
+    let nextTag = null
+    for (const k in tagListDom) {
+      if (k !== 'length' && Object.hasOwnProperty.call(tagListDom, k)) {
+        if (tagListDom[k].dataset.path === visitedViews.value[currentIndex - 1].path) {
+          prevTag = tagListDom[k];
+        }
+        if (tagListDom[k].dataset.path === visitedViews.value[currentIndex + 1].path) {
+          nextTag = tagListDom[k];
+        }
+      }
+    }
 
     // the tag's offsetLeft after of nextTag
-    const afterNextTagOffsetLeft = nextTag.$el.offsetLeft + nextTag.$el.offsetWidth + tagAndTagSpacing.value
-    // the tag's offsetLeft before of prevTag
-    const beforePrevTagOffsetLeft = prevTag.$el.offsetLeft - tagAndTagSpacing.value
+    const afterNextTagOffsetLeft = nextTag.offsetLeft + nextTag.offsetWidth + tagAndTagSpacing.value
 
-    if (afterNextTagOffsetLeft > scrollWrapper.value.scrollLeft + containerWidth) {
-      scrollWrapper.value.scrollLeft = afterNextTagOffsetLeft - containerWidth
-    } else if (beforePrevTagOffsetLeft < scrollWrapper.value.scrollLeft) {
-      scrollWrapper.value.scrollLeft = beforePrevTagOffsetLeft
+    // the tag's offsetLeft before of prevTag
+    const beforePrevTagOffsetLeft = prevTag.offsetLeft - tagAndTagSpacing.value
+    if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
+      $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth
+    } else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
+      $scrollWrapper.scrollLeft = beforePrevTagOffsetLeft
     }
   }
 }
+
+defineExpose({
+  moveToTarget
+})
 </script>
 
 <style lang="scss" scoped>
