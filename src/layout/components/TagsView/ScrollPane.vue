@@ -1,83 +1,96 @@
 <template>
-  <el-scrollbar ref="scrollContainer" :vertical="false" class="scroll-container" @wheel.native.prevent="handleScroll">
+  <el-scrollbar
+      ref="scrollContainerRef"
+      :vertical="false"
+      class="scroll-container"
+      @wheel.prevent="handleScroll">
     <slot/>
   </el-scrollbar>
 </template>
 
-<script lang="ts">
-import {defineComponent, reactive, ref, toRefs, computed, onMounted, onBeforeUnmount, getCurrentInstance} from "vue";
+<script setup lang="ts">
+import {ref, computed, onMounted, onBeforeUnmount, getCurrentInstance} from "vue";
+import {tagsViewStoreHook} from "@store/modules/tagsView"
 
-export default defineComponent({
-  emits: ['scroll'],
-  setup(_, context) {
-    const scrollContainer = ref(null)
-    const scrollWrapper = computed(() => {
-      return (scrollContainer.value as any).$refs.wrap as HTMLElement
-    })
-    const {ctx} = getCurrentInstance() as any
-    const tagAndTagSpacing = 4
 
-    const state = reactive({
-      handleScroll: (e: WheelEvent) => {
-        const eventDelta = (e as any).wheelDelta || -e.deltaY * 40
-        scrollWrapper.value.scrollLeft = scrollWrapper.value.scrollLeft + eventDelta / 4
-      },
-      moveToCurrentTag: (currentTag: HTMLElement) => {
-        const container = (scrollContainer.value as any).$el as HTMLElement
-        const containerWidth = container.offsetWidth
-        const tagList = ctx.$parent.$refs.tag as any[]
-        let firstTag = null
-        let lastTag = null
+const tagAndTagSpacing = ref(4)
+const scrollContainerRef = ref(null)
 
-        // find first tag and last tag
-        if (tagList.length > 0) {
-          firstTag = tagList[0]
-          lastTag = tagList[tagList.length - 1]
+const emits = defineEmits()
+const emitScroll = () => {
+  emits('scroll')
+}
+
+const {ctx} = getCurrentInstance() as any
+const scrollWrapper = computed(() => {
+  return (scrollContainerRef.value as any).$refs.wrap as HTMLElement
+})
+
+onMounted(() => {
+  console.log('scrollWrapper', scrollWrapper.value)
+  //scrollWrapper.value.addEventListener('scroll', emitScroll, true);
+})
+
+onBeforeUnmount(() => {
+  // scrollWrapper.value.removeEventListener('scroll', emitScroll);
+})
+
+function handleScroll(e: WheelEvent) {
+  const eventDelta = (e as any).wheelDelta || -e.deltaY * 40
+  scrollWrapper.value.scrollLeft = scrollWrapper.value.scrollLeft + eventDelta / 4
+}
+
+function moveToTarget(currentTag) {
+  const $container = ctx.$refs.scrollContainer.$el
+  const $containerWidth = $container.offsetWidth
+  const $scrollWrapper = scrollWrapper.value;
+
+  let firstTag = null
+  let lastTag = null
+
+  // find first tag and last tag
+  if (visitedViews.value.length > 0) {
+    firstTag = visitedViews.value[0]
+    lastTag = visitedViews.value[visitedViews.value.length - 1]
+  }
+
+  if (firstTag === currentTag) {
+    $scrollWrapper.scrollLeft = 0
+  } else if (lastTag === currentTag) {
+    $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth
+  } else {
+    const tagListDom = document.getElementsByClassName('tags-view-item');
+    const currentIndex = visitedViews.value.findIndex(item => item === currentTag)
+    let prevTag = null
+    let nextTag = null
+    for (const k in tagListDom) {
+      if (k !== 'length' && Object.hasOwnProperty.call(tagListDom, k)) {
+        if (tagListDom[k].dataset.path === visitedViews.value[currentIndex - 1].path) {
+          prevTag = tagListDom[k];
         }
-
-        if (firstTag === currentTag) {
-          scrollWrapper.value.scrollLeft = 0
-        } else if (lastTag === currentTag) {
-          scrollWrapper.value.scrollLeft = scrollWrapper.value.scrollWidth - containerWidth
-        } else {
-          // find preTag and nextTag
-          const currentIndex = tagList.findIndex(item => item === currentTag)
-          const prevTag = tagList[currentIndex - 1]
-          const nextTag = tagList[currentIndex + 1]
-          // the tag's offsetLeft after of nextTag
-          const afterNextTagOffsetLeft = nextTag.$el.offsetLeft + nextTag.$el.offsetWidth + tagAndTagSpacing
-          // the tag's offsetLeft before of prevTag
-          const beforePrevTagOffsetLeft = prevTag.$el.offsetLeft - tagAndTagSpacing
-
-          if (afterNextTagOffsetLeft > scrollWrapper.value.scrollLeft + containerWidth) {
-            scrollWrapper.value.scrollLeft = afterNextTagOffsetLeft - containerWidth
-          } else if (beforePrevTagOffsetLeft < scrollWrapper.value.scrollLeft) {
-            scrollWrapper.value.scrollLeft = beforePrevTagOffsetLeft
-          }
+        if (tagListDom[k].dataset.path === visitedViews.value[currentIndex + 1].path) {
+          nextTag = tagListDom[k];
         }
       }
-    })
-
-    const emitScroll = () => {
-      context.emit('scroll')
     }
 
-    onMounted(() => {
-      //scrollWrapper.value.addEventListener('scroll', emitScroll, true)
-    })
+    // the tag's offsetLeft after of nextTag
+    const afterNextTagOffsetLeft = nextTag.offsetLeft + nextTag.offsetWidth + tagAndTagSpacing.value
 
-    onBeforeUnmount(() => {
-      //scrollWrapper.value.removeEventListener('scroll', emitScroll)
-    })
-
-    return {
-      scrollContainer,
-      ...toRefs(state)
+    // the tag's offsetLeft before of prevTag
+    const beforePrevTagOffsetLeft = prevTag.offsetLeft - tagAndTagSpacing.value
+    if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
+      $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth
+    } else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
+      $scrollWrapper.scrollLeft = beforePrevTagOffsetLeft
     }
   }
+}
+
+defineExpose({
+  moveToTarget
 })
 </script>
-
 
 <style lang="scss" scoped>
 .scroll-container {
