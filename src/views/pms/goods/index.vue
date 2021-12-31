@@ -111,7 +111,12 @@ import {page, removeGoods} from '@/api/pms/goods'
 import {cascadeList} from '@/api/pms/category'
 import {reactive, ref,onMounted, toRefs} from 'vue'
 import {ElMessage, ElMessageBox, ElTree} from 'element-plus'
+import { getCurrentInstance } from 'vue'
+
 import {moneyFormatter} from '@/utils/filter'
+
+const {proxy}: any = getCurrentInstance();
+
 const state = reactive({
   // 遮罩层
   loading: true,
@@ -129,6 +134,9 @@ const state = reactive({
   queryParams: {
     name: undefined,
     categoryId: undefined,
+    page:1,
+    limit:10,
+    total: 0
   },
   pageList: [],
   categoryOptions: [],
@@ -180,11 +188,11 @@ function handleGoodsView(detail: any) {
 }
 
 function handleAdd() {
-  this.$router.push({path: 'goods-detail'})
+  proxy.$router.push({path: 'goods-detail'})
 }
 
 function handleUpdate(row: any) {
-  this.$router.push({path: 'goods-detail', query: {goodsId: row.id}})
+  proxy.$router.push({path: 'goods-detail', query: {goodsId: row.id}})
 }
 
 function handleDelete(row: any) {
@@ -204,7 +212,7 @@ function handleDelete(row: any) {
 }
 
 function handleRowClick(row: any) {
-  this.$refs.multipleTable.toggleRowSelection(row);
+  proxy.$refs.multipleTable.toggleRowSelection(row);
 }
 
 function handleSelectionChange(selection: any) {
