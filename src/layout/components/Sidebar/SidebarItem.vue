@@ -32,8 +32,8 @@
 
 <script setup lang="ts">
 import path from 'path-browserify'
-import {defineProps, PropType, computed, ref} from "vue";
-import {isExternal} from '@utils/validate'
+import {PropType, ref} from "vue";
+import {isExternal} from '@/utils/validate'
 import AppLink from './Link.vue'
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import {RouteRecordRaw} from "vue-router";
