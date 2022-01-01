@@ -45,19 +45,15 @@ import {tagsViewStoreHook} from '@/store/modules/tagsView'
 import {usePermissionStoreHook} from '@/store/modules/Permission'
 import path from 'path-browserify'
 import {
-  defineComponent,
   computed,
   getCurrentInstance,
   nextTick,
-  onBeforeMount,
-  reactive,
   ref,
-  toRefs,
   watch,
   onMounted
 } from "vue";
 import {RouteRecordRaw, useRoute, useRouter} from 'vue-router'
-import {TagView} from "@store/interface";
+import {TagView} from "@/store/interface";
 
 import ScrollPane from './ScrollPane.vue'
 import {Close} from '@element-plus/icons'
@@ -114,12 +110,12 @@ function filterAffixTags(routes: RouteRecordRaw[], basePath = '/') {
 }
 
 function initTags() {
-  const res = filterAffixTags(routes.value)
+  const res = filterAffixTags(routes.value) as []
   affixTags.value = res
   for (const tag of res) {
     // Must have tag name
-    if (tag.name) {
-      tagsViewStoreHook().addVisitedView(tag as TagView)
+    if ((tag as TagView).name) {
+      tagsViewStoreHook().addVisitedView(tag)
     }
   }
 }
@@ -159,7 +155,7 @@ function isAffix(tag: TagView) {
 
 function isFirstView() {
   try {
-    return selectedTag.value.fullPath === visitedViews.value[1].fullPath || selectedTag.value.fullPath === '/index'
+    return (selectedTag.value as TagView).fullPath === visitedViews.value[1].fullPath || (selectedTag.value as TagView).fullPath === '/index'
   } catch (err) {
     return false
   }
@@ -167,7 +163,7 @@ function isFirstView() {
 
 function isLastView() {
   try {
-    return selectedTag.value.fullPath === visitedViews.value[visitedViews.value.length - 1].fullPath
+    return (selectedTag.value as TagView).fullPath === visitedViews.value[visitedViews.value.length - 1].fullPath
   } catch (err) {
     return false
   }

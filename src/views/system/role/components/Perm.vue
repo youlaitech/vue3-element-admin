@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import {listPerms} from "@/api/system/perm";
 import {listRolePerms, saveRolePerms} from "@/api/system/role";
-import {defineProps, onMounted, reactive, toRefs, watch} from "vue";
+import { onMounted, reactive, toRefs, watch} from "vue";
 import {ElMessage} from "element-plus";
 import {Check} from '@element-plus/icons'
 

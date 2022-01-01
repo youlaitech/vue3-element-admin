@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import {listTreeSelectMenus} from "@/api/system/menu";
 import {listRoleMenuIds, updateRoleMenu} from "@/api/system/role"
-import {defineEmits, defineProps, nextTick, onMounted, reactive, ref, toRefs, watch} from "vue"
+import { nextTick, onMounted, reactive, ref, toRefs, watch} from "vue"
 import {ElTree, ElMessage, ElMessageBox} from "element-plus"
 import {Switch, Check} from '@element-plus/icons'
 

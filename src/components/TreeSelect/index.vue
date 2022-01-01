@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import {defineEmits, ref, getCurrentInstance ,nextTick,onMounted,computed,watch} from "vue";
+import {ref, getCurrentInstance ,nextTick,onMounted,computed,watch} from "vue";
 const { proxy } = getCurrentInstance();
 
 const state = defineProps({

@@ -169,7 +169,7 @@
 import {listTableMenus, getMenuDetail, listTreeSelectMenus, addMenu, deleteMenus, updateMenu} from "@/api/system/menu";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
-import {defineEmits, reactive, ref, unref, onMounted} from "vue";
+import { reactive, ref, unref, onMounted} from "vue";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import TreeSelect from '@/components/TreeSelect/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';

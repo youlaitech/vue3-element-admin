@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import {defineEmits, ref} from "vue";
+import { ref} from "vue";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
 let icons = []
