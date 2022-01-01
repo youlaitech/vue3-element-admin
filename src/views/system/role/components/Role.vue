@@ -117,7 +117,7 @@
 
 <script setup lang="ts">
 import {listRolesWithPage, updateRole, getRoleDetail, addRole, deleteRoles} from '@/api/system/role'
-import {defineEmits, defineProps, onMounted, reactive, ref, toRefs, unref} from "vue"
+import { onMounted, reactive, ref, toRefs, unref} from "vue"
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
