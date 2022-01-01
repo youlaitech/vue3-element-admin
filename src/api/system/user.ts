@@ -1,5 +1,5 @@
 
-import request from "@utils/request";
+import request from "@/utils/request";
 export const listUser = (queryParams:any)=> {
     return request({
         url: '/youlai-admin/api/v2/users',

@@ -1,4 +1,4 @@
-import {PermissionState} from "@store/interface";
+import {PermissionState} from "@/store/interface";
 import {RouteRecordRaw} from 'vue-router'
 import {constantRoutes} from '@/router'
 import {listRoutes} from "@/api/system/menu";

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { store } from "@/store";
-import {SettingState} from "@store/interface";
+import {SettingState} from "@/store/interface";
 import defaultSettings from '../../settings'
 
 const {showSettings, tagsView, fixedHeader, sidebarLogo} = defaultSettings

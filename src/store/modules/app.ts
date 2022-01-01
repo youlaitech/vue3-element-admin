@@ -1,5 +1,5 @@
-import {AppState} from "@store/interface";
-import {Local} from "@utils/storage";
+import {AppState} from "@/store/interface";
+import {Local} from "@/utils/storage";
 import { store } from "@/store";
 import { defineStore } from "pinia";
 

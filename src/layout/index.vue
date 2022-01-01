@@ -1,6 +1,6 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="classObj.mobile==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
+    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
     <sidebar class="sidebar-container"/>
     <div :class="{hasTagsView:needTagsView}" class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
@@ -8,123 +8,56 @@
         <tags-view v-if="needTagsView"/>
       </div>
       <app-main/>
-      <!--
-        <right-panel v-if="showSettings">
-              <settings/>
-            </right-panel>
-      -->
+<!--      <right-panel v-if="showSettings">
+        <settings/>
+      </right-panel>-->
     </div>
   </div>
 </template>
 
+<script setup lang="ts">
+import {computed, watchEffect,markRaw } from "vue"
+import {useWindowSize} from '@vueuse/core'
+import {AppMain, Navbar, Settings,TagsView} from './components/index.ts'
+import Sidebar from './components/Sidebar/index.vue'
 
-<script>
-import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, reactive, toRefs, watch} from "vue";
-import {AppMain, Navbar, Settings, Sidebar, TagsView} from './components/index.ts'
-       import {useRoute} from "vue-router";
-import { useAppStoreHook } from "@/store/modules/app";
-import { useSettingStoreHook } from "@/store/modules/settings";
-const {body} = document
+import {useAppStoreHook} from "@/store/modules/app"
+import {useSettingStoreHook} from "@/store/modules/settings"
+
+const classObj = computed(() => ({
+  hideSidebar: !useAppStoreHook().sidebar.opened,
+  openSidebar: useAppStoreHook().sidebar.opened,
+  withoutAnimation: useAppStoreHook().sidebar.withoutAnimation,
+  mobile: useAppStoreHook().device === 'mobile'
+}))
+
+
+const {width, height} = useWindowSize();
 const WIDTH = 992
 
-export default defineComponent({
-  name: 'Layout',
-  components: {
-    AppMain,
-    Navbar,
-    Settings,
-    Sidebar,
-    TagsView
-  },
-  setup() {
-    const sidebar = computed(() => useAppStoreHook().sidebar)
-    const isMobile = () => {
-      const rect = body.getBoundingClientRect()
-      return rect.width - 1 < WIDTH
-    }
+const sidebar = computed(() => useAppStoreHook().sidebar);
+const device = computed(() => useAppStoreHook().device);
+const needTagsView = computed(() => useSettingStoreHook().tagsView);
+const fixedHeader = computed(() => useSettingStoreHook().fixedHeader);
 
-    const resizeHandler = () => {
-      if (!document.hidden) {
-        useAppStoreHook().toggleSidebar( isMobile() ? 'mobile' : 'desktop')
-        if (isMobile()) {
-          useAppStoreHook().closeSideBar({withoutAnimation: true});
-        }
-      }
-    }
-
-    const resizeMounted = () => {
-      if (isMobile()) {
-        useAppStoreHook().toggleDevice(  'mobile' )
-        useAppStoreHook().toggleSidebar({withoutAnimation: true});
-      }
-    }
-    const addEventListenerOnResize = () => {
-      window.addEventListener('resize', resizeHandler)
-    }
-
-    const removeEventListenerResize = () => {
-      window.removeEventListener('resize', resizeHandler)
-    }
-
-    const currentRoute = useRoute()
-    const watchRouter = watch(() => currentRoute.name, () => {
-      if (useAppStoreHook().device === 'mobile' && useAppStoreHook().sidebar.opened) {
-        useAppStoreHook().closeSideBar(false)
-      }
-    })
-
-    const state = reactive({
-      handleClickOutside: () => {
-        useAppStoreHook().closeSideBar(false)
-      }
-    })
-
-    const classObj = computed(() => {
-      return {
-        hideSidebar:  !useAppStoreHook().sidebar.opened,
-        openSidebar: useAppStoreHook().sidebar.opened,
-        withoutAnimation: useAppStoreHook().sidebar.withoutAnimation,
-        mobile: useAppStoreHook().device === 'mobile'
-      }
-    })
-    const showSettings = computed(() => {
-      return useSettingStoreHook().showSettings
-    })
-
-    const needTagsView = computed(() => {
-      return useSettingStoreHook().tagsView
-    })
-
-    const fixedHeader = computed(() => {
-      return useSettingStoreHook().fixedHeader
-    })
-
-    watchRouter()
-
-    onBeforeMount(() => {
-      addEventListenerOnResize()
-    })
-
-    onMounted(() => {
-      resizeMounted()
-    })
-
-    onBeforeUnmount(() => {
-      removeEventListenerResize()
-    })
-
-    return {
-      classObj,
-      showSettings,
-      needTagsView,
-      fixedHeader,
-      sidebar,
-      ...toRefs(state)
-    }
+watchEffect(() => {
+  if (device.value === 'mobile' && sidebar.value.opened == true) {
+    useAppStoreHook().closeSideBar(false)
+  }
+  if (width.value < WIDTH) {
+    useAppStoreHook().toggleDevice("mobile")
+    useAppStoreHook().closeSideBar(true)
+  } else {
+    useAppStoreHook().toggleDevice("desktop")
   }
 })
 
+function handleClickOutside() {
+  useAppStoreHook().closeSideBar(false)
+}
 </script>
+
+
 <style lang="scss" scoped>
 @import "@/styles/mixin.scss";
 @import "@/styles/variables.scss";

@@ -1,4 +1,4 @@
-import router from "@router";
+import router from "@/router";
 import NProgress from 'nprogress';
 import {ElMessage} from "element-plus";
 import { usePermissionStoreHook } from "@/store/modules/permission";

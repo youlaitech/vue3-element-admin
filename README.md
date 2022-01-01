@@ -194,15 +194,15 @@ export default defineConfig({
                 replacement: path.resolve("./src/assets/images")
             },
             {
-                find: "@router",
+                find: "@/router",
                 replacement: path.resolve("./src/router")
             },
             {
-                find: "@store",
+                find: "@/store",
                 replacement: path.resolve("./src/store")
             },
             {
-                find: "@api",
+                find: "@/api",
                 replacement: path.resolve("./src/api")
             }
         ]
@@ -380,7 +380,7 @@ export const Session = {
 ```typescript
 import axios from "axios";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {Session} from "@utils/storage";
+import {Session} from "@/utils/storage";
 
 
 // 创建 axios 实例

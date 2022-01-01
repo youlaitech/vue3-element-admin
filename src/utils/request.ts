@@ -1,6 +1,6 @@
 import axios from "axios";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {Local} from "@utils/storage";
+import {Local} from "@/utils/storage";
 import { useUserStoreHook } from "@/store/modules/user";
 
 // 创建 axios 实例
