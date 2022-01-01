@@ -157,7 +157,7 @@ const state = reactive({
 const {loading, ids, single, multiple, queryParams, pageList, total, dialog, formData, rules} = toRefs(state)
 
 function handleQuery() {
-  listClientsWithPage(queryParams).then(response => {
+  listClientsWithPage(state.queryParams).then(response => {
     const {data, total} = response as any
     state.pageList = data
     state.total = total
