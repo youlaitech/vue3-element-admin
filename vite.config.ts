@@ -22,7 +22,7 @@ export default ({command, mode}: ConfigEnv): UserConfig => {
                 })
 
             ],
-            // 本地反向代理解决跨域
+            // 本地反向代理解决浏览器跨域限制
             server: {
                 host: 'localhost',
                 port: Number(env.VITE_APP_PORT),
@@ -38,44 +38,44 @@ export default ({command, mode}: ConfigEnv): UserConfig => {
 
             resolve: {
                 // Vite2设置别名路径方式一
-                // alias:{
-                //     "/@":path.resolve("./src"),  // 相对路径别名配置，@表示src
-                //  },
+                alias: {
+                    "@": path.resolve("./src"),  // 相对路径别名配置，@表示src
+                },
                 // Vite2设置别名路径方式二
-                alias: [
-                    {
-                        find: "@",
-                        replacement: path.resolve("./src")
-                    },
-                    {
-                        find: "@image",
-                        replacement: path.resolve("./src/assets/images")
-                    },
-                    {
-                        find: "@router",
-                        replacement: path.resolve("./src/router")
-                    },
-                    {
-                        find: "@store",
-                        replacement: path.resolve("./src/store")
-                    },
-                    {
-                        find: "@api",
-                        replacement: path.resolve("./src/api")
-                    },
-                    {
-                        find: "@utils",
-                        replacement: path.resolve("./src/utils")
-                    },
-                    {
-                        find: "@views",
-                        replacement: path.resolve("./src/views")
-                    },
-                    {
-                        find: "@styles",
-                        replacement: path.resolve("./src/styles")
-                    },
-                ]
+                // alias: [
+                //     {
+                //         find: "@",
+                //         replacement: path.resolve("./src")
+                //     },
+                //     {
+                //         find: "@image",
+                //         replacement: path.resolve("./src/assets/images")
+                //     },
+                //     {
+                //         find: "@/router",
+                //         replacement: path.resolve("./src/router")
+                //     },
+                //     {
+                //         find: "@/store",
+                //         replacement: path.resolve("./src/store")
+                //     },
+                //     {
+                //         find: "@/api",
+                //         replacement: path.resolve("./src/api")
+                //     },
+                //     {
+                //         find: "@/utils",
+                //         replacement: path.resolve("./src/utils")
+                //     },
+                //     {
+                //         find: "@/views",
+                //         replacement: path.resolve("./src/views")
+                //     },
+                //     {
+                //         find: "@/styles",
+                //         replacement: path.resolve("./src/styles")
+                //     },
+                // ]
             }
         }
 
