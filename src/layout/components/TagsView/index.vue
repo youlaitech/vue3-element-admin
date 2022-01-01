@@ -210,7 +210,7 @@ function closeSelectedTag(view: TagView) {
 }
 
 function closeLeftTags() {
-  ctx.$tab.closeLeftPage(selectedTag.value).then(visitedViews => {
+  tagsViewStoreHook().delLeftViews(selectedTag.value).then(({visitedViews}) => {
     if (!visitedViews.find(i => i.fullPath === route.fullPath)) {
       toLastView(visitedViews)
     }
@@ -218,7 +218,7 @@ function closeLeftTags() {
 }
 
 function closeRightTags() {
-  ctx.$tab.closeRightPage(selectedTag.value).then(visitedViews => {
+  tagsViewStoreHook().delRightViews(selectedTag.value).then(({visitedViews}) => {
     if (!visitedViews.find(i => i.fullPath === route.fullPath)) {
       toLastView(visitedViews)
     }

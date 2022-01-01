@@ -101,14 +101,49 @@ const tagsViewStore = defineStore({
             })
         },
         delLeftViews(view: any) {
-            const currIndex = this.visitedViews.findIndex(v => v.path === view.path)
-            if (currIndex === -1) {
-                return
-            }
-            this.visitedViews = this.visitedViews.filter((item, index) => {
-                if(index>=currIndex||(item.meta&&item.meta.affix)){
-                    return true
+            return new Promise(resolve => {
+                const currIndex = this.visitedViews.findIndex(v => v.path === view.path)
+                if (currIndex === -1) {
+                    return
                 }
+                this.visitedViews = this.visitedViews.filter((item, index) => {
+                    // affix:true 固定tag，例如“首页”
+                    if (index >= currIndex || (item.meta && item.meta.affix)) {
+                        return true
+                    }
+
+                    const cacheIndex = this.cachedViews.indexOf(item.name)
+                    if (cacheIndex > -1) {
+                        this.cachedViews.splice(cacheIndex, 1)
+                    }
+                    return false
+                })
+                resolve({
+                    visitedViews: [...this.visitedViews]
+                })
+            })
+        },
+        delRightViews(view: any) {
+            return new Promise(resolve => {
+                const currIndex = this.visitedViews.findIndex(v => v.path === view.path)
+                if (currIndex === -1) {
+                    return
+                }
+                this.visitedViews = this.visitedViews.filter((item, index) => {
+                    // affix:true 固定tag，例如“首页”
+                    if (index <= currIndex || (item.meta && item.meta.affix)) {
+                        return true
+                    }
+
+                    const cacheIndex = this.cachedViews.indexOf(item.name)
+                    if (cacheIndex > -1) {
+                        this.cachedViews.splice(cacheIndex, 1)
+                    }
+                    return false
+                })
+                resolve({
+                    visitedViews: [...this.visitedViews]
+                })
             })
         },
         delAllViews(view: any) {
