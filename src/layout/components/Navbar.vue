@@ -10,7 +10,7 @@
         <!--        <search id="header-search" class="right-menu-item" />
                 <error-log class="errLog-container right-menu-item hover-effect" />-->
         <screenfull id="screenfull" class="right-menu-item hover-effect"/>
-        <!--        <el-tooltip content="Global Size" effect="dark" placement="bottom">
+        <!--<el-tooltip content="Global Size" effect="dark" placement="bottom">
                   <size-select id="size-select" class="right-menu-item hover-effect" />
                 </el-tooltip>-->
       </template>
@@ -18,9 +18,7 @@
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <el-icon>
-            <caret-bottom/>
-          </el-icon>
+          <CaretBottom style="width: .6em; height: .6em;" />
         </div>
 
         <template #dropdown>
@@ -37,7 +35,7 @@
             <a target="_blank" href="https://www.cnblogs.com/haoxianrui/">
               <el-dropdown-item>项目文档</el-dropdown-item>
             </a>
-            <el-dropdown-item divided @click.native="logout">
+            <el-dropdown-item divided @click="logout">
               退出
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -46,8 +44,9 @@
     </div>
   </div>
 </template>
-<script>
-import {reactive, computed, toRefs} from "vue";
+<script setup lang="ts">
+import { computed} from "vue"
+import {ElMessageBox} from 'element-plus'
 import {useRoute, useRouter} from "vue-router"
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
@@ -55,43 +54,30 @@ import Screenfull from '@/components/screenfull/index.vue'
 import {tagsViewStoreHook} from '@/store/modules/tagsView'
 import {useAppStoreHook} from '@/store/modules/app'
 import {useUserStoreHook} from '@/store/modules/user'
-export default {
-  components: {
-    Breadcrumb,
-    Hamburger,
-    Screenfull
-  },
-  setup() {
-    const route = useRoute()
-    const router = useRouter()
 
-    const sidebar = computed(() => {
-      return useAppStoreHook().sidebar
-    })
-    const device = computed(() => {
-      return useAppStoreHook().device
-    })
-    const avatar = computed(() => {
-      return useUserStoreHook().avatar
-    })
+import SvgIcon from '@/components/SvgIcon/index.vue'
 
-    const state = reactive({
-      toggleSideBar: () => {
-        useAppStoreHook().toggleSidebar(false)
-      },
-      logout: () => {
-        useUserStoreHook().logout().then(()=>{
-          router.push(`/login?redirect=${route.fullPath}`)
-        })
-      }
+const route = useRoute()
+const router = useRouter()
+
+const sidebar = computed(() => useAppStoreHook().sidebar)
+const device = computed(() => useAppStoreHook().device)
+const avatar = computed(() => useUserStoreHook().avatar)
+
+function toggleSideBar() {
+  useAppStoreHook().toggleSidebar()
+}
+
+function logout() {
+  ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    useUserStoreHook().logout().then(() => {
+      router.push(`/login?redirect=${route.fullPath}`)
     })
-    return {
-      sidebar,
-      device,
-      avatar,
-      ...toRefs(state)
-    }
-  }
+  })
 }
 </script>
 
