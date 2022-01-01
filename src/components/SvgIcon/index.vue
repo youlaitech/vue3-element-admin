@@ -1,5 +1,5 @@
 <template>
-  <svg aria-hidden="true"  class="svg-icon">
+  <svg aria-hidden="true" class="svg-icon">
     <use :xlink:href="symbolId" :fill="color" />
   </svg>
 </template>
@@ -20,7 +20,7 @@ export default defineComponent({
     },
     color: {
       type: String,
-      default: '#FFF',
+      default: ''
     },
   },
   setup(props) {
