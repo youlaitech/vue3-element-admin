@@ -116,7 +116,7 @@
 <script setup lang="ts">
 import {listDictWithPage, getDictDetail, addDict, updateDict, deleteDict} from "@/api/system/dict";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
-import {onMounted, reactive, ref, unref, defineEmits} from 'vue'
+import {onMounted, reactive, ref, unref} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 
 const emit = defineEmits(['dictClick'])
