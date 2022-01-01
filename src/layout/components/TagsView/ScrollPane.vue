@@ -10,15 +10,16 @@
 
 <script setup lang="ts">
 import {ref, computed, onMounted, onBeforeUnmount, getCurrentInstance} from "vue";
-import {tagsViewStoreHook} from "@store/modules/tagsView"
-
+import {tagsViewStoreHook} from "@/store/modules/tagsView"
+import {TagView} from "@store/interface";
+const emits = defineEmits()
 
 const tagAndTagSpacing = ref(4)
 const scrollContainerRef = ref(null)
+const visitedViews = computed(() => tagsViewStoreHook().visitedViews)
 
-const emits = defineEmits()
 const emitScroll = () => {
-  emits('scroll')
+  (emits as any)('scroll')
 }
 
 const {ctx} = getCurrentInstance() as any
@@ -40,7 +41,7 @@ function handleScroll(e: WheelEvent) {
   scrollWrapper.value.scrollLeft = scrollWrapper.value.scrollLeft + eventDelta / 4
 }
 
-function moveToTarget(currentTag) {
+function moveToTarget(currentTag:TagView) {
   const $container = ctx.$refs.scrollContainer.$el
   const $containerWidth = $container.offsetWidth
   const $scrollWrapper = scrollWrapper.value;
@@ -65,20 +66,20 @@ function moveToTarget(currentTag) {
     let nextTag = null
     for (const k in tagListDom) {
       if (k !== 'length' && Object.hasOwnProperty.call(tagListDom, k)) {
-        if (tagListDom[k].dataset.path === visitedViews.value[currentIndex - 1].path) {
-          prevTag = tagListDom[k];
+        if ((tagListDom[k] as any).dataset.path === visitedViews.value[currentIndex - 1].path) {
+          prevTag = tagListDom[k] ;
         }
-        if (tagListDom[k].dataset.path === visitedViews.value[currentIndex + 1].path) {
+        if ((tagListDom[k] as any).dataset.path === visitedViews.value[currentIndex + 1].path) {
           nextTag = tagListDom[k];
         }
       }
     }
 
     // the tag's offsetLeft after of nextTag
-    const afterNextTagOffsetLeft = nextTag.offsetLeft + nextTag.offsetWidth + tagAndTagSpacing.value
+    const afterNextTagOffsetLeft = (nextTag as any).offsetLeft + (nextTag as any).offsetWidth + tagAndTagSpacing.value
 
     // the tag's offsetLeft before of prevTag
-    const beforePrevTagOffsetLeft = prevTag.offsetLeft - tagAndTagSpacing.value
+    const beforePrevTagOffsetLeft = (prevTag as any).offsetLeft - tagAndTagSpacing.value
     if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
       $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth
     } else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
