@@ -1,8 +1,6 @@
 <template>
   <div :class="{'has-logo':showLogo}">
     <logo v-if="showLogo" :collapse="isCollapse"/>
-
-
     <!-- :background-color="variables.menuBg"
           :text-color="variables.menuText"
           :active-text-color="variables.menuActiveText"-->
@@ -25,11 +23,10 @@
         />
       </el-menu>
     </el-scrollbar>
-
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {computed, defineComponent} from "vue";
 import SidebarItem from './SidebarItem.vue'
 import Logo from './Logo.vue'
@@ -39,34 +36,19 @@ import { useAppStoreHook } from "@/store/modules/app";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import {useRoute} from 'vue-router'
 
-export default defineComponent({
-  components: {
-    SidebarItem,
-    Logo
-  },
-  setup() {
-    const route = useRoute()
-    const sidebar = computed(() => useAppStoreHook().sidebar)
-    const routes = computed(() => usePermissionStoreHook().routes)
-    const showLogo = computed(() => useSettingStoreHook().sidebarLogo)
-    const activeMenu = computed(() => {
-      const {meta, path} = route
-      // if set path, the sidebar will highlight the path you set
-      if (meta.activeMenu) {
-        return meta.activeMenu
-      }
-      return path
-    })
-    const isCollapse = computed(() => !useAppStoreHook().sidebar.opened)
+const route =useRoute()
 
-    return {
-      sidebar,
-      routes,
-      showLogo,
-      variables,
-      activeMenu,
-      isCollapse,
-    }
+const routes =computed(() => usePermissionStoreHook().routes)
+const showLogo = computed(() => useSettingStoreHook().sidebarLogo)
+const isCollapse = computed(() => !useAppStoreHook().sidebar.opened)
+
+
+const activeMenu = computed(() => {
+  const {meta, path} = route
+  // if set path, the sidebar will highlight the path you set
+  if (meta.activeMenu) {
+    return meta.activeMenu
   }
+  return path
 })
 </script>
