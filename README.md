@@ -4,12 +4,13 @@
 
 - vite2: https://cn.vitejs.dev/guide/
 
-- next-vuex：https://next.vuex.vuejs.org/zh/index.html
+- element-plus: https://element-plus.gitee.io/zh-CN/component/button.html
 
 - vue-next-router : https://next.router.vuejs.org/zh/introduction.html
-
-- element-plus: https://element-plus.gitee.io/zh-CN/
-
+  
+- ~~next-vuex：https://next.vuex.vuejs.org/zh/index.html~~ (替换解决方案：pinia)
+  
+- pinia: https://pinia.vuejs.org 
 
 
 ## Vite项目构建
