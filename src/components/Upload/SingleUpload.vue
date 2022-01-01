@@ -25,11 +25,11 @@
 </template>
 
 <script setup lang="ts">
-import {defineEmits, computed, reactive, toRefs, ref, watch} from "vue";
+import { computed, reactive, toRefs, ref, watch} from "vue";
 import {Plus} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus"
-import {deleteFile} from "@api/system/file";
-import {Local} from "@utils/storage";
+import {deleteFile} from "@/api/system/file";
+import {Local} from "@/utils/storage";
 
 const emit = defineEmits(['update:modelValue']);
 
