@@ -17,7 +17,7 @@
           <template #header>
             <svg-icon color="#333" icon-class="dict"/>
             <span style="margin:0 5px;">字典数据项</span>
-            <el-tag type="primary" v-if=" state.dictCode" size="small">{{ state.dictName }}</el-tag>
+            <el-tag type="success" v-if=" state.dictCode" size="small">{{ state.dictName }}</el-tag>
             <el-tag type="warning" v-else size="small">未选择字典</el-tag>
           </template>
           <!-- 字典项组件 -->
@@ -33,12 +33,14 @@ import SvgIcon from '@/components/SvgIcon/index.vue';
 import Dict from './components/Dict.vue'
 import DictItem from './components/DictItem.vue'
 
-import {reactive} from 'vue'
+import {reactive,toRefs} from 'vue'
 
 const state = reactive({
   dictCode: '',
   dictName: ''  // 字典名称，用于字典项组件回显
 })
+
+const {dictCode,dictName} =toRefs(state)
 
 const handleDictClick = (dictRow: any) => {
   if (dictRow) {
