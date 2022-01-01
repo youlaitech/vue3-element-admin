@@ -92,8 +92,6 @@ function handleMenuClick(menuRow: any) {
     return false
   }
 
-  console.log('选择菜单',menuRow)
-
   if (menuRow) {
     state.menu = {
       id: menuRow.id,
