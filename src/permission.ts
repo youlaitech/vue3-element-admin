@@ -1,9 +1,10 @@
 import router from "@/router";
-import NProgress from 'nprogress';
 import {ElMessage} from "element-plus";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import { useUserStoreHook } from "@/store/modules/user";
-NProgress.configure({showSpinner: false})
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css'
+NProgress.configure({showSpinner: false}) // 进度环显示/隐藏
 
 // 白名单
 const whiteList = ['/login', '/auth-redirect']
