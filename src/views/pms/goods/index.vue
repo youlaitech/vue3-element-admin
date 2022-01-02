@@ -108,7 +108,7 @@
 <script setup lang="ts">
 import {Search, Refresh} from '@element-plus/icons'
 import {page, removeGoods} from '@/api/pms/goods'
-import {cascadeList} from '@/api/pms/category'
+import {listCascadeCategories} from '@/api/pms/category'
 import {reactive, ref,onMounted, toRefs} from 'vue'
 import {ElMessage, ElMessageBox, ElTree} from 'element-plus'
 import { getCurrentInstance } from 'vue'
@@ -152,7 +152,7 @@ function loadData() {
 }
 
 function loadCategoryOptions() {
-  cascadeList({}).then(response => {
+  listCascadeCategories({}).then(response => {
     state.categoryOptions = ref(response.data)
   })
 }

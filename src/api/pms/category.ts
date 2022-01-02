@@ -1,6 +1,11 @@
 import request from "@/utils/request";
 
-export const list=(queryParams:object)=>{
+/**
+ * 获取商品分类列表
+ *
+ * @param queryParams
+ */
+export function listCategories(queryParams:object){
     return request({
         url: '/mall-pms/api/v1/categories',
         method: 'get',
@@ -8,7 +13,12 @@ export const list=(queryParams:object)=>{
     })
 }
 
-export const cascadeList=(queryParams:object)=> {
+/**
+ * 获取商品分类级联器树形列表
+ *
+ * @param queryParams
+ */
+export function listCascadeCategories(queryParams:object) {
     return request({
         url: '/mall-pms/api/v1/categories/cascade',
         method: 'get',
@@ -16,16 +26,24 @@ export const cascadeList=(queryParams:object)=> {
     })
 }
 
-
-
-export const detail=(id:number)=> {
+/**
+ * 获取商品分类详情
+ *
+ * @param id
+ */
+export function getCategoryDetail(id:number){
     return request({
         url: '/mall-pms/api/v1/categories/' + id,
         method: 'get'
     })
 }
 
-export const add=(data:object)=> {
+/**
+ * 添加商品分类
+ *
+ * @param data
+ */
+export function addCategory(data:object){
     return request({
         url: '/mall-pms/api/v1/categories',
         method: 'post',
@@ -33,7 +51,13 @@ export const add=(data:object)=> {
     })
 }
 
-export function update(id:number, data:object) {
+/**
+ * 修改商品分类
+ *
+ * @param id
+ * @param data
+ */
+export function updateCategory(id:number, data:object) {
     return request({
         url: '/mall-pms/api/v1/categories/' + id,
         method: 'put',
@@ -41,14 +65,25 @@ export function update(id:number, data:object) {
     })
 }
 
-export function del(ids:string) {
+/**
+ * 删除商品分类
+ *
+ * @param ids
+ */
+export function deleteCategories(ids:string) {
     return request({
         url: '/mall-pms/api/v1/categories/' + ids,
         method: 'delete'
     })
 }
 
-export function patch(id:number, data:object) {
+/**
+ * 选择性修改商品分类
+ *
+ * @param id
+ * @param data
+ */
+export function updateCategoryPart(id:number, data:object) {
     return request({
         url: '/mall-pms/api/v1/categories/' + id,
         method: 'patch',
