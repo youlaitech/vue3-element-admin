@@ -4,7 +4,6 @@
       <el-col :span="10" :xs="24">
         <el-card class="box-card" shadow="always">
           <template #header>
-
             <svg-icon color="#333" icon-class="role"/>
             角色列表
           </template>
@@ -17,13 +16,13 @@
           <template #header>
             <svg-icon color="#333" icon-class="menu"/>
             <span style="margin:0 5px;">菜单分配</span>
-            <el-tag type="success" v-if="state.role.id" size="small">
+            <el-tag type="success" v-if="role.id" size="small">
               <svg-icon color="green  " icon-class="role"/>
-              {{ state.role.name }}
+              {{ role.name }}
             </el-tag>
             <el-tag type="warning" v-else size="small">请选择角色</el-tag>
           </template>
-          <menus ref="menu" @menuClick="handleMenuClick" :role="state.role"/>
+          <menus ref="menu" @menuClick="handleMenuClick" :role="role"/>
         </el-card>
       </el-col>
 
@@ -33,19 +32,19 @@
             <svg-icon color="#333" icon-class="perm"/>
             <span style="margin:0 5px;">权限分配</span>
 
-            <el-tag type="success" style="margin:0 5px 0 0;" v-if="state.role.id" size="small">
+            <el-tag type="success" style="margin:0 5px 0 0;" v-if="role.id" size="small">
               <svg-icon color="green" icon-class="role"/>
-              {{ state.role.name }}
+              {{ role.name }}
             </el-tag>
             <el-tag type="warning" style="margin:0 5px  0 0;" v-else size="small"> 请选择角色</el-tag>
 
-            <el-tag type="success" v-if="state.menu.id" size="small">
+            <el-tag type="success" v-if="menu.id" size="small">
               <svg-icon color="red" icon-class="menu"/>
-              {{ state.menu.name }}
+              {{ menu.name }}
             </el-tag>
             <el-tag type="warning" v-else size="small"> 请选择菜单</el-tag>
           </template>
-          <perm ref="perm" :menu="state.menu" :role="state.role"/>
+          <perm ref="perm" :menu="menu" :role="role"/>
         </el-card>
       </el-col>
 
@@ -57,7 +56,7 @@
 import Role from './components/Role.vue'
 import Menus from './components/Menu.vue'
 import Perm from './components/Perm.vue'
-import {reactive} from "vue";
+import {reactive, toRefs} from "vue";
 import {ElMessage} from "element-plus";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
@@ -71,6 +70,8 @@ const state = reactive({
     name: ''
   }
 })
+
+const {role,menu} =toRefs(state)
 
 function handleRoleClick(roleRow: any) {
   if (roleRow) {

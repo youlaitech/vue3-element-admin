@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="component-container">
     <!-- 搜索表单 -->
     <el-form
         ref="queryForm"
         size="mini"
-        :model="state.queryParams"
+        :model="queryParams"
         :inline="true"
     >
       <el-form-item>
@@ -13,7 +13,7 @@
 
       <el-form-item>
         <el-input
-            v-model="state.queryParams.name"
+            v-model="queryParams.name"
             placeholder="菜单名称"
             clearable
             @keyup.enter.native="handleQuery"
@@ -27,8 +27,8 @@
 
     <!-- 数据表格 -->
     <el-table
-        v-loading="state.loading"
-        :data="state.menuList"
+        v-loading="loading"
+        :data="menuList"
         row-key="id"
         highlight-current-row
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
@@ -74,36 +74,36 @@
 
     <!-- 弹窗表单 -->
     <el-dialog
-        :title="state.dialog.title"
-        v-model="state.dialog.visible"
-        width="800px"
+        :title="dialog.title"
+        v-model="dialog.visible"
+        width="750px"
     >
       <el-form
           ref="dataForm"
-          :model="state.formData"
-          :rules="state.rules"
-          label-width="80px">
+          :model="formData"
+          :rules="rules"
+      >
         <el-form-item label="父级菜单" prop="parentId">
           <tree-select
-              v-model="state.formData.parentId"
-              :options="state.menuOptions"
+              v-model="formData.parentId"
+              :options="menuOptions"
               placeholder="选择上级菜单"
           />
         </el-form-item>
 
         <el-form-item label="菜单名称" prop="name">
-          <el-input v-model="state.formData.name" placeholder="请输入菜单名称"/>
+          <el-input v-model="formData.name" placeholder="请输入菜单名称"/>
         </el-form-item>
 
         <el-form-item label="页面路径" prop="component">
           <el-input
-              v-model="state.formData.component"
-              :readonly="state.formData.parentId==0?true:false"
+              v-model="formData.component"
+              :readonly="formData.parentId==0?true:false"
               placeholder="system/user/index"
               style="width: 95%"
           >
-            <template v-if="state.formData.parentId!=0" #prepend>src/views/</template>
-            <template v-if="state.formData.parentId!=0" #append>.vue</template>
+            <template v-if="formData.parentId!=0" #prepend>src/views/</template>
+            <template v-if="formData.parentId!=0" #append>.vue</template>
           </el-input>
 
           <el-tooltip effect="dark"
@@ -123,11 +123,11 @@
           >
             <icon-select ref="iconSelectRef" @selected="selected"/>
             <template #reference>
-              <el-input v-model="state.formData.icon" placeholder="点击选择图标" readonly>
+              <el-input v-model="formData.icon" placeholder="点击选择图标" readonly>
                 <template #prefix>
                   <svg-icon
-                      v-if="state.formData.icon"
-                      :icon-class="state.formData.icon"
+                      v-if="formData.icon"
+                      :icon-class="formData.icon"
                       class="el-input__icon"
                       style="height: 40px;width: 16px;"
                       color="#999"
@@ -140,18 +140,18 @@
         </el-form-item>
 
         <el-form-item label="状态">
-          <el-radio-group v-model="state.formData.visible">
+          <el-radio-group v-model="formData.visible">
             <el-radio :label="1">显示</el-radio>
             <el-radio :label="0">隐藏</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="state.formData.sort" style="width: 100px" controls-position="right" :min="0"/>
+          <el-input-number v-model="formData.sort" style="width: 100px" controls-position="right" :min="0"/>
         </el-form-item>
 
         <el-form-item label="跳转路径">
-          <el-input v-model="state.formData.redirect" placeholder="请输入跳转路径" maxlength="50"/>
+          <el-input v-model="formData.redirect" placeholder="请输入跳转路径" maxlength="50"/>
         </el-form-item>
       </el-form>
 
@@ -169,7 +169,7 @@
 import {listTableMenus, getMenuDetail, listTreeSelectMenus, addMenu, deleteMenus, updateMenu} from "@/api/system/menu";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
-import { reactive, ref, unref, onMounted} from "vue";
+import {reactive, ref, unref, onMounted, toRefs} from "vue";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import TreeSelect from '@/components/TreeSelect/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';
@@ -177,6 +177,8 @@ import IconSelect from '@/components/IconSelect/index.vue';
 const emit = defineEmits(['menuClick'])
 const showChooseIcon = ref(false);
 const iconSelectRef = ref(null);
+const dataForm = ref(ElForm)
+
 const state = reactive({
   loading: true,
   // 选中ID数组
@@ -220,6 +222,8 @@ const state = reactive({
   menuOptions: [] as any[],
   currentRow: undefined
 })
+
+const {loading,single,multiple,queryParams,menuList,total,dialog,formData,rules,menuOptions} =toRefs(state)
 
 function handleQuery() {
   // 重置父组件
@@ -306,8 +310,6 @@ async function handleUpdate(row: any) {
   })
 }
 
-const dataForm = ref(ElForm)
-
 function submitForm() {
   const form = unref(dataForm)
   form.validate((valid: any) => {
@@ -329,6 +331,22 @@ function submitForm() {
   })
 }
 
+function handleDelete(row: any) {
+  const ids = [row.id || state.ids].join(',')
+  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    deleteMenus(ids).then(() => {
+      ElMessage.success('删除成功')
+      handleQuery()
+    })
+  }).catch(() =>
+      ElMessage.info('已取消删除')
+  )
+}
+
 function resetForm() {
   state.formData = {
     id: undefined,
@@ -345,22 +363,6 @@ function resetForm() {
 function cancel() {
   resetForm()
   state.dialog.visible = false
-}
-
-function handleDelete(row: any) {
-  const ids = [row.id || state.ids].join(',')
-  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    deleteMenus(ids).then(() => {
-      ElMessage.success('删除成功')
-      handleQuery()
-    })
-  }).catch(() =>
-      ElMessage.info('已取消删除')
-  )
 }
 
 function showSelectIcon() {
