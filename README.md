@@ -500,10 +500,54 @@ export default defineComponent({
 
 vite-plugin-svg-icons 使用说明：https://github.com/anncwb/vite-plugin-svg-icons/blob/main/README.zh_CN.md
 
-安装：
+**安装**
 
 ```
 npm i vite-plugin-svg-icons -D
 ```
 
+
+
 ## 跨域处理
+
+
+**vite.config.ts**
+```
+// 本地反向代理解决浏览器跨域限制
+server: {
+    host: 'localhost',
+    port: Number(env.VITE_APP_PORT),
+    open: true, // 运行自动打开浏览器
+    proxy: {
+        [env.VITE_APP_BASE_API]: {
+            target: 'http://localhost:9999',
+            changeOrigin: true,
+            rewrite: path => path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
+        }
+    }
+}
+```
+
+## NProgress 进度条
+
+**安装**
+```
+npm install --save nprogress
+```
+
+**permission.ts**
+```
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css'
+NProgress.configure({showSpinner: false}) // 进度环显示/隐藏
+
+router.beforeEach((to, from, next) => {
+  NProgress.start()
+  ...
+})
+
+router.afterEach(() => {
+  NProgress.done()
+})
+
+```
