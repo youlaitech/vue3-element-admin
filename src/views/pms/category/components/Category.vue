@@ -13,19 +13,24 @@
         :accordion="true"
         @node-click="handleNodeClick"
     >
-
       <template #default="scope">
         <div class="custom-tree-node">
-              <span>
-                <el-image
-                    v-show="scope.data.level == 3"
-                    :src="scope.data.iconUrl"
-                    style="width: 30px; height: 30px;
-                    vertical-align: middle"
-                />
-                {{ scope.data.name }}
-              </span>
-              <span>
+          <span>
+            <el-image
+                v-show="scope.data.level == 3 "
+                :src="scope.data.iconUrl"
+                style="width: 20px; height:20px; vertical-align: middle;margin-top: -5px"
+            >
+              <template #error>
+                <div class="image-slot">
+                  <Picture style="width: 20px; height:20px;"/>
+                </div>
+              </template>
+            </el-image>
+
+            {{ scope.data.name }}
+          </span>
+          <span>
                 <el-button
                     v-show="scope.data.level != 3 "
                     type="primary"
@@ -49,7 +54,7 @@
                     :icon="Delete"
                     circle
                     plain
-                    @click.stop="handleDelete(scope.node, scope.data)"/>
+                    @click.stop="handleDelete(scope.data)"/>
               </span>
         </div>
       </template>
@@ -65,6 +70,7 @@
           ref="dataFormRef"
           :model="formData"
           :rules="rules"
+          label-width="100px"
       >
         <el-form-item label="上级分类" prop="parentId">
           <el-input v-model="parent.name" readonly/>
@@ -109,13 +115,13 @@ import {ElForm, ElMessage, ElMessageBox, ElTree} from "element-plus";
 
 const emit = defineEmits(['categoryClick'])
 
-const categoryTreeRef=ref(ElTree)
-const dataFormRef=ref(ElForm)
+const categoryTreeRef = ref(ElTree)
+const dataFormRef = ref(ElForm)
 
 const state = reactive({
   // 遮罩层
   loading: true,
-  ids:[],
+  ids: [],
   queryParam: {},
   categoryOptions: [] as Array<any>,
   formData: {
@@ -143,8 +149,7 @@ const state = reactive({
   current: {}
 })
 
-const {loading, categoryOptions, formData, rules, dialog} = toRefs(state)
-
+const {loading, categoryOptions, formData, rules, dialog, parent} = toRefs(state)
 
 function handleQuery() {
   state.loading = true
@@ -161,8 +166,8 @@ function handleQuery() {
 
 }
 
-function handleNodeClick(row:any) {
-  const categoryTree=unref(categoryTreeRef)
+function handleNodeClick(row: any) {
+  const categoryTree = unref(categoryTreeRef)
   const parentNode = categoryTree.getNode(row.parentId)
 
   state.parent = {
@@ -197,7 +202,7 @@ function handleUpdate(row: any) {
     title: '修改商品分类',
     visible: true
   }
-  Object.assign( state.formData ,state.current)
+  Object.assign(state.formData, state.current)
 }
 
 function submitForm() {
@@ -211,7 +216,12 @@ function submitForm() {
           handleQuery()
         })
       } else {
-        addCategory(state.formData).then(response => {
+        const parentCategory= state.parent as any
+        console.log('parent',parentCategory)
+        state.formData.parentId = parentCategory.id
+        state.formData.level = parentCategory.level+1
+
+        addCategory(state.formData).then(() => {
           ElMessage.success('新增成功')
           state.dialog.visible = false
           handleQuery()
@@ -232,10 +242,9 @@ function handleDelete(row: any) {
       ElMessage.success('删除成功')
       handleQuery()
     })
-  }).catch(() =>
-      ElMessage.info('已取消删除')
-  )
+  })
 }
+
 function resetForm() {
   state.formData = {
     id: undefined,
@@ -259,6 +268,10 @@ onMounted(() => {
 </script>
 
 <style>
+.component-container {
+  height: 100%;
+}
+
 .custom-tree-node {
   flex: 1;
   display: flex;
