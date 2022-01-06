@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, toRefs, ref, watch} from "vue";
+import { computed, reactive, toRefs} from "vue";
 import {Plus} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus"
 import {deleteFile} from "@/api/system/file";
@@ -45,7 +45,7 @@ const props = defineProps({
 })
 
 const state = reactive({
-  uploadAction: '/dev-api/youlai-admin/api/v1/files',
+  uploadAction: import.meta.env.VITE_APP_BASE_API+ '/youlai-admin/api/v1/files',
   viewImgUrl: '',
   viewDialogVisible: false,
   headers: {authorization: Local.get('token')}
