@@ -1,0 +1,94 @@
+<template>
+  <div class="components-container">
+    <div class="components-container__main">
+      <el-cascader-panel
+          ref="categoryRef"
+          :options="categoryOptions"
+          v-model="categoryId"
+          :props="{emitPath:false}"
+          @change="handleCategoryChange"
+
+      />
+
+      <div style="margin-top: 20px">
+        <el-link type="info" :underline="false" v-show="pathLabels.length>0">您选择的商品分类:</el-link>
+        <el-link type="danger" :underline="false" v-for="(item,index) in pathLabels" style="margin-left: 5px">
+          {{ item }}
+          <i v-show="index<pathLabels.length-1" class=" el-icon-arrow-right"></i>
+        </el-link>
+      </div>
+
+    </div>
+    <div class="components-container__footer">
+      <el-button type="primary" @click="onNextStepClick">下一步，填写商品信息</el-button>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import {listCascadeCategories} from "@/api/pms/category";
+import {nextTick, onMounted, reactive, ref, toRefs} from "vue";
+import {ElCascaderPanel, ElMessage} from "element-plus";
+const emit = defineEmits(['next'])
+
+const props = defineProps({
+  goodsId: Number,
+  categoryId: Number
+})
+
+const state = reactive({
+  categoryOptions: [],
+  pathLabels: [],
+  categoryId: undefined
+})
+
+const {categoryOptions, pathLabels, categoryId} = toRefs(state)
+
+onMounted(() => {
+  loadData()
+})
+
+function loadData() {
+  listCascadeCategories({}).then(response => {
+    state.categoryOptions = response.data
+    if (props.goodsId) {
+      state.categoryId = props.categoryId as any
+      nextTick(() => {
+        handleCategoryChange()
+      })
+    }
+  })
+}
+const categoryRef = ref(ElCascaderPanel)
+
+function handleCategoryChange() {
+  const checkNode = categoryRef.value.getCheckedNodes()[0]
+  state.pathLabels = checkNode.pathLabels // 商品分类选择层级提示
+  state.categoryId = checkNode.value
+}
+
+
+function onNextStepClick() {
+  if (!state.categoryId) {
+    ElMessage.warning('请选择商品分类')
+    return false
+  }
+  emit('next' )
+}
+
+</script>
+
+<style lang="scss" scoped>
+
+.components-container {
+  &__main {
+    margin: 20px auto
+  }
+
+  &__footer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+</style>

@@ -1,5 +1,11 @@
 import request from '@/utils/request'
-export const page = (queryParams:object)=> {
+
+/**
+ * 获取商品分页列表
+ *
+ * @param queryParams
+ */
+export function listGoodsWithPage(queryParams: object) {
     return request({
         url: '/mall-pms/api/v1/goods/page',
         method: 'get',
@@ -7,14 +13,24 @@ export const page = (queryParams:object)=> {
     })
 }
 
-export const detail=(id:number)=> {
+/**
+ * 获取商品详情
+ *
+ * @param id
+ */
+export function getGoodsDetail(id: number) {
     return request({
         url: '/mall-pms/api/v1/goods/' + id,
         method: 'get'
     })
 }
 
-export const addGoods=(data:object)=> {
+/**
+ * 添加商品
+ *
+ * @param data
+ */
+export function addGoods(data: object) {
     return request({
         url: '/mall-pms/api/v1/goods',
         method: 'post',
@@ -22,7 +38,13 @@ export const addGoods=(data:object)=> {
     })
 }
 
-export const  updateGoods=(id:number, data:object)=> {
+/**
+ * 修改商品
+ *
+ * @param id
+ * @param data
+ */
+export function updateGoods(id: number, data: object) {
     return request({
         url: '/mall-pms/api/v1/goods/' + id,
         method: 'put',
@@ -30,17 +52,14 @@ export const  updateGoods=(id:number, data:object)=> {
     })
 }
 
-export const removeGoods=(ids:string)=> {
+/**
+ * 删除商品
+ *
+ * @param ids
+ */
+export function deleteGoods(ids: string) {
     return request({
-        url: '/mall-pms/api/v1/goods/'+ids,
+        url: '/mall-pms/api/v1/goods/' + ids,
         method: 'delete'
-    })
-}
-
-export const patch=(id:number, data:object)=> {
-    return request({
-        url: '/mall-pms/api/v1/goods/' + id,
-        method: 'patch',
-        data: data
     })
 }

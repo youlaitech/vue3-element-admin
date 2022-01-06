@@ -1,10 +1,13 @@
 <template>
   <div class="app-container">
-    <el-form :inline="true" ref="queryForm">
+    <el-form
+        ref="queryForm"
+        :inline="true"
+        size="mini"
+    >
       <el-form-item>
-        <el-button type="primary" @click="handleAdd">发布商品</el-button>
-        <el-button type="success" @click="handleUpdate" :disabled="single">编辑商品</el-button>
-        <el-button type="danger" @click="handleDelete" :disabled="multiple">删除</el-button>
+        <el-button type="success" :icon="Plus" @click="handleAdd">发布商品</el-button>
+        <el-button type="danger" :icon="Delete" @click="handleDelete" :disabled="multiple">删除</el-button>
       </el-form-item>
       <el-form-item>
         <el-input v-model="queryParams.name" placeholder="商品名称" clearable></el-input>
@@ -13,7 +16,7 @@
         <el-cascader
             v-model="queryParams.categoryId"
             placeholder="商品分类"
-            :props="cascaderProps"
+            :props="{emitPath: false, expandTrigger: 'hover'}"
             :options="categoryOptions"
             clearable
             style="width: 300px"
@@ -21,18 +24,18 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" :icon="Search" @click="handleQuery">查询</el-button>
-        <el-button  :icon="Refresh" @click="handleReset">重置</el-button>
+        <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-table
         v-loading="loading"
-        id="dataTable"
         ref="multipleTable"
         :data="pageList"
         @selection-change="handleSelectionChange"
         @row-click="handleRowClick"
-        border>
+        border
+    >
       <el-table-column type="selection" min-width="5%" center/>
       <el-table-column type="expand" width="120" label="库存信息">
 
@@ -49,7 +52,7 @@
               </template>
             </el-table-column>
             <el-table-column align="center" label="现价" prop="price">
-              <template #default="scope">{{  moneyFormatter(scope.row.price) }}</template>
+              <template #default="scope">{{ moneyFormatter(scope.row.price) }}</template>
             </el-table-column>
             <el-table-column align="center" label="库存" prop="stock"/>
           </el-table>
@@ -81,38 +84,46 @@
           <el-button type="primary" size="mini" @click="handleGoodsView(scope.row.detail)">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="120">
+      <el-table-column label="操作" width="120">
         <template #default="scope">
           <el-button
+              @click="handleUpdate(scope.row)"
+              type="primary"
+              :icon="Edit"
               size="mini"
-              @click="handleUpdate(scope.row)">编辑
-          </el-button>
+              circle
+              plain
+          />
           <el-button
-              size="mini"
               type="danger"
-              @click="handleDelete(scope.row)">删除
-          </el-button>
+              :icon="Delete"
+              size="mini"
+              circle
+              plain
+              @click="handleDelete(scope.row)"
+          />
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-        v-show="pagination.total>0"
-        :total="pagination.total"
-        :page.sync="pagination.page"
-        :limit.sync="pagination.limit"
-        @pagination="handleQuery">
-    </el-pagination>
+
+    <!-- 分页工具条 -->
+    <pagination
+        v-show="total>0"
+        :total="total"
+        v-model:page="queryParams.pageNum"
+        v-model:limit="queryParams.pageSize"
+        @pagination="handleQuery"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import {Search, Refresh} from '@element-plus/icons'
-import {page, removeGoods} from '@/api/pms/goods'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+import {listGoodsWithPage, deleteGoods} from '@/api/pms/goods'
 import {listCascadeCategories} from '@/api/pms/category'
-import {reactive, ref,onMounted, toRefs} from 'vue'
+import {reactive, ref, onMounted, toRefs} from 'vue'
 import {ElMessage, ElMessageBox, ElTree} from 'element-plus'
-import { getCurrentInstance } from 'vue'
-
+import {getCurrentInstance} from 'vue'
 import {moneyFormatter} from '@/utils/filter'
 
 const {proxy}: any = getCurrentInstance();
@@ -126,61 +137,54 @@ const state = reactive({
   single: true,
   // 非多个禁用
   multiple: true,
-  pagination: {
-    page: 1,
-    limit: 10,
-    total: 0
-  },
+  total: 0,
   queryParams: {
+    pageNum: 1,
+    pageSize: 10,
     name: undefined,
-    categoryId: undefined,
-    page:1,
-    limit:10,
-    total: 0
+    categoryId: undefined
   },
   pageList: [],
   categoryOptions: [],
   goodDetail: undefined,
-  dialogVisible: false,
-  cascaderProps:{emitPath:false,expandTrigger:'hover'}
+  dialogVisible: false
 })
 
 
-function loadData() {
-  loadCategoryOptions()
-  handleQuery()
-}
+const {
+  loading,
+  ids,
+  single,
+  multiple,
+  queryParams,
+  pageList,
+  categoryOptions,
+  goodDetail,
+  total,
+  dialogVisible
+} = toRefs(state);
 
-function loadCategoryOptions() {
-  listCascadeCategories({}).then(response => {
-    state.categoryOptions = ref(response.data)
-  })
-}
 
- function handleQuery() {
-   state.queryParams.page = state.pagination.page
-   state.queryParams.limit = state.pagination.limit
-  page(state.queryParams).then(response => {
-    const {data, total} = response
+function handleQuery() {
+  state.loading = true
+  listGoodsWithPage(state.queryParams).then(response => {
+    const {data, total} = response as any
     state.pageList = data
-    state.pagination.total = total ? total : 0
+    state.total = total
     state.loading = false
   })
 }
 
-function handleReset() {
-  state.pagination = {
-    page: 1,
-    limit: 10,
-    total: 0
-  }
+function resetQuery() {
   state.queryParams = {
+    pageNum: 1,
+    pageSize: 10,
     name: undefined,
-    categoryId: undefined,
-    queryMode: 'page'
+    categoryId: undefined
   }
   handleQuery()
 }
+
 
 function handleGoodsView(detail: any) {
   state.goodDetail = detail
@@ -192,7 +196,7 @@ function handleAdd() {
 }
 
 function handleUpdate(row: any) {
-  proxy.$router.push({path: 'goods-detail', query: {goodsId: row.id}})
+  proxy.$router.push({path: 'goods-detail', query: {goodsId: row.id,categoryId:row.categoryId}})
 }
 
 function handleDelete(row: any) {
@@ -202,13 +206,11 @@ function handleDelete(row: any) {
     cancelButtonText: "取消",
     type: "warning"
   }).then(function () {
-    return removeGoods(ids)
+    return deleteGoods(ids)
   }).then(() => {
     ElMessage.success("删除成功")
     handleQuery()
-  }).catch(() =>
-      ElMessage.info("已取消删除")
-  )
+  })
 }
 
 function handleRowClick(row: any) {
@@ -221,34 +223,11 @@ function handleSelectionChange(selection: any) {
   state.multiple = !selection.length
 }
 
-function formatAlbum(val: any) {
-  const album = JSON.parse(val);
-  if (album && album.length > 0) {
-    return album[0]
-  }
-  return
-}
-
-const {
-  // 遮罩层
-  loading,
-  // 选中数组
-  ids,
-  // 非单个禁用
-  single,
-  // 非多个禁用
-  multiple,
-  pagination,
-  queryParams,
-  pageList,
-  categoryOptions,
-  goodDetail,
-  dialogVisible,
-  cascaderProps
-} = toRefs(state);
-
-onMounted(()=>{
-  loadData()
+onMounted(() => {
+  listCascadeCategories({}).then(response => {
+    state.categoryOptions = ref(response.data)
+  })
+  handleQuery()
 })
 </script>
 
