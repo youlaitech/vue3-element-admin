@@ -20,7 +20,7 @@
 
     </div>
     <div class="components-container__footer">
-      <el-button type="primary" @click="onNextStepClick">下一步，填写商品信息</el-button>
+      <el-button type="primary" @click="handleNext">下一步，填写商品信息</el-button>
     </div>
   </div>
 </template>
@@ -32,8 +32,10 @@ import {ElCascaderPanel, ElMessage} from "element-plus";
 const emit = defineEmits(['next'])
 
 const props = defineProps({
-  goodsId: Number,
-  categoryId: Number
+  modelValue: {
+    type: Object,
+    default:{ }
+  }
 })
 
 const state = reactive({
@@ -44,15 +46,11 @@ const state = reactive({
 
 const {categoryOptions, pathLabels, categoryId} = toRefs(state)
 
-onMounted(() => {
-  loadData()
-})
-
 function loadData() {
   listCascadeCategories({}).then(response => {
     state.categoryOptions = response.data
-    if (props.goodsId) {
-      state.categoryId = props.categoryId as any
+    if (props.modelValue.id) {
+      state.categoryId = props.modelValue.categoryId
       nextTick(() => {
         handleCategoryChange()
       })
@@ -67,14 +65,18 @@ function handleCategoryChange() {
   state.categoryId = checkNode.value
 }
 
-
-function onNextStepClick() {
+function handleNext() {
   if (!state.categoryId) {
     ElMessage.warning('请选择商品分类')
     return false
   }
   emit('next' )
 }
+
+
+onMounted(() => {
+  loadData()
+})
 
 </script>
 

@@ -503,7 +503,7 @@ vite-plugin-svg-icons 使用说明：https://github.com/anncwb/vite-plugin-svg-i
 **安装**
 
 ```
-npm i vite-plugin-svg-icons -D
+npm i -D vite-plugin-svg-icons
 ```
 
 
@@ -551,3 +551,19 @@ router.afterEach(() => {
 })
 
 ```
+
+## TinyMCE 富文本编辑器
+
+**官网：** http://tinymce.ax-z.cn/integrations/integrate-index.php
+
+**安装**
+
+```
+npm i -S tinymce
+
+npm i -S @tinymce/tinymce-vue
+
+npm i -D @types/tinymce
+```
+
+

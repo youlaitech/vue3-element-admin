@@ -1,49 +1,62 @@
-<!--
 <template>
   <div class="components-container">
     <div class="components-container__main">
       <el-form
-        ref="goodsForm"
-        :rules="rules"
-        :model="value"
-        label-width="150px">
+          ref="goodsForm"
+          :rules="rules"
+          :model="modelValue"
+          label-width="120px"
+      >
         <el-form-item label="商品名称" prop="name">
-          <el-input style="width: 400px" v-model="value.name"/>
+          <el-input style="width: 400px" v-model="modelValue.name"/>
         </el-form-item>
 
         <el-form-item label="原价" prop="originPrice">
-          <el-input style="width: 400px" v-model="value.originPrice"/>
+          <el-input style="width: 400px" v-model="modelValue.originPrice"/>
         </el-form-item>
 
         <el-form-item label="现价" prop="price">
-          <el-input style="width: 400px" v-model="value.price"/>
+          <el-input style="width: 400px" v-model="modelValue.price"/>
         </el-form-item>
 
         <el-form-item label="商品品牌" prop="brandId">
           <el-select
-            v-model="value.brandId"
-            clearable
-            style="width:400px">
-            <el-option v-for="item in brandOptions" :key="item.id" :label="item.name" :value="item.id"/>
+              v-model="modelValue.brandId"
+              style="width:400px"
+              clearable
+          >
+            <el-option
+                v-for="item in brandOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+            />
           </el-select>
         </el-form-item>
 
         <el-form-item label="商品简介">
-          <el-input type="textarea" style="width: 400px" v-model="value.description"/>
+          <el-input
+              type="textarea"
+              v-model="modelValue.description"
+              style="width: 400px"
+          />
         </el-form-item>
 
         <el-form-item label="商品相册">
           <el-row :gutter="10">
             <el-col style="width: 180px" v-for="(item,index) in pictures">
               <el-card :body-style="{ padding: '10px' }">
-                <single-upload v-model="item.url"></single-upload>
+
+                <single-upload v-model="item.url"/>
+
                 <div class="bottom" v-if="item.url">
                   <el-button type="text" class="button" v-if="item.main==true" style="color:#ff4d51">商品主图</el-button>
-                  <el-button type="text" class="button" v-else @click="setMainPicture(index)">设为主图</el-button>
-                  <el-button type="text" class="button" @click="handlePictureRemove(index)">删除图片</el-button>
+                  <el-button type="text" class="button" v-else @click="changeMainPicture(index)">设为主图</el-button>
+                  <el-button type="text" class="button" @click="removePicture(index)">删除图片</el-button>
                 </div>
+
                 <div class="bottom" v-else>
-                  <el-button type="text" class="button"></el-button>
+                  <el-button type="text" class="button"/>
                 </div>
               </el-card>
             </el-col>
@@ -51,7 +64,7 @@
         </el-form-item>
 
         <el-form-item label="商品详情" prop="detail">
-          <tinymce v-model="value.detail" :height="400"/>
+          <tinymce v-model="modelValue.detail" :height="400"/>
         </el-form-item>
 
       </el-form>
@@ -62,101 +75,107 @@
     </div>
   </div>
 </template>
-<script>
+<script setup lang="ts">
+import {listBrands} from "@/api/pms/brand"
+import SingleUpload from '@/components/Upload/SingleUpload.vue'
+import Tinymce from '@/components/Tinymce/index.vue'
+import {onMounted, reactive, ref, toRefs, unref} from "vue"
+import {ElForm} from "element-plus"
 
-import {list as listBrand} from "@/api/pms/brand"
-import SingleUpload from '@/components/Upload/SingleUpload'
-import Tinymce from '@/components/Tinymce'
+const emit = defineEmits(['prev', 'next'])
+const dataForm = ref(ElForm)
 
-export default {
-  name: "GoodsInfo",
-  components: {SingleUpload, Tinymce},
-  props: {
-    value: Object
-  },
-  data() {
-    return {
-      brandOptions: [],
-      pictures: [],
-      rules: {
-        name: [{required: true, message: '请填写商品名称', trigger: 'blur'}],
-        originPrice: [{required: true, message: '请填写原价', trigger: 'blur'}],
-        price: [{required: true, message: '请填写现价', trigger: 'blur'}],
-        brandId: [{required: true, message: '请选择商品品牌', trigger: 'blur'}],
-      }
+const props = defineProps({
+  modelValue: {
+    type: Object,
+    default: {}
+  }
+})
+
+const state = reactive({
+  brandOptions: [],
+  // 商品图册
+  pictures: [] as Array<any>,
+  rules: {
+    name: [{required: true, message: '请填写商品名称', trigger: 'blur'}],
+    originPrice: [{required: true, message: '请填写原价', trigger: 'blur'}],
+    price: [{required: true, message: '请填写现价', trigger: 'blur'}],
+    brandId: [{required: true, message: '请选择商品品牌', trigger: 'blur'}],
+  }
+})
+
+const {brandOptions, pictures, rules} = toRefs(state)
+
+function loadData() {
+  listBrands({}).then(response => {
+    state.brandOptions = response.data
+  })
+  const goodsId = props.modelValue.id
+  if (goodsId) {
+    const mainPicUrl = props.modelValue.picUrl
+    if (mainPicUrl) {
+      state.pictures.filter(item => item.main)[0].url = mainPicUrl
     }
-  },
-  created() {
-    this.loadData()
-  },
-  methods: {
-    async loadData() {
-      this.handleFormReset()
-
-      await listBrand().then(response => {
-        this.brandOptions = response.data
-      })
-
-      const goodsId = this.value.id
-      if (goodsId) {
-
-        const mainPicUrl = this.value.picUrl
-        if (mainPicUrl) {
-          this.pictures.filter(item => item.main == true)[0].url = mainPicUrl
-        }
-
-        const subPicUrls = this.value.subPicUrls
-        if (subPicUrls && subPicUrls.length > 0) {
-          for (let i = 1; i <= subPicUrls.length; i++) {
-            this.pictures[i].url = subPicUrls[i - 1]
-          }
-        }
+    const subPicUrls = props.modelValue.subPicUrls
+    if (subPicUrls && subPicUrls.length > 0) {
+      for (let i = 1; i <= subPicUrls.length; i++) {
+        state.pictures[i].url = subPicUrls[i - 1]
       }
-    },
-    // 设置主图
-    setMainPicture(changeIndex) {
-      const mainPicture = JSON.parse(JSON.stringify( this.pictures[0]))
-      const changePicture =  JSON.parse(JSON.stringify( this.pictures[changeIndex]))
-
-      console.log(changeIndex,changePicture.url,mainPicture.url)
-
-      this.pictures[0].url = changePicture.url
-      this.pictures[changeIndex].url = mainPicture.url
-
-    },
-    handlePictureRemove(index) {
-      this.pictures[index].url = undefined
-    },
-    handleFormReset: function () {
-      this.pictures = [
-        {url: undefined, main: true},
-        {url: undefined, main: false},
-        {url: undefined, main: false},
-        {url: undefined, main: false},
-        {url: undefined, main: false},
-      ]
-    },
-    handlePrev: function () {
-      this.$emit('prev')
-    },
-    handleNext: function () {
-      this.$refs["goodsForm"].validate((valid) => {
-        if (valid) {
-          // 商品图片处理
-          const tempMainPicUrl = this.pictures.filter(item => item.main == true && item.url).map(item => item.url)
-          if (tempMainPicUrl && tempMainPicUrl.length > 0) {
-            this.value.picUrl = tempMainPicUrl[0]
-          }
-          const tempSubPicUrl = this.pictures.filter(item => item.main == false && item.url).map(item => item.url)
-          if (tempSubPicUrl && tempSubPicUrl.length > 0) {
-            this.value.subPicUrls = tempSubPicUrl
-          }
-          this.$emit('next')
-        }
-      })
     }
   }
 }
+
+function resetForm() {
+  state.pictures = [
+    {url: undefined, main: true},
+    {url: undefined, main: false},
+    {url: undefined, main: false},
+    {url: undefined, main: false},
+    {url: undefined, main: false},
+  ]
+}
+
+/**
+ * 切换主图
+ */
+function changeMainPicture(changeIndex: number) {
+  const currMainPicture = JSON.parse(JSON.stringify(state.pictures[0]))
+  const nextMainPicture = JSON.parse(JSON.stringify(state.pictures[changeIndex]))
+
+  state.pictures[0].url = nextMainPicture.url
+  state.pictures[changeIndex].url = currMainPicture.url
+}
+
+function removePicture(index: number) {
+  state.pictures[index].url = undefined
+}
+
+function handlePrev() {
+  emit('prev')
+}
+
+function handleNext() {
+  const form = unref(dataForm)
+  form.validate((valid: any) => {
+    if (valid) {
+      // 商品图片
+      const mainPicUrl = state.pictures.filter(item => item.main == true && item.url).map(item => item.url)
+      if (mainPicUrl && mainPicUrl.length > 0) {
+        props.modelValue.picUrl = mainPicUrl[0]
+      }
+      const subPicUrl = state.pictures.filter(item => item.main == false && item.url).map(item => item.url)
+      if (subPicUrl && subPicUrl.length > 0) {
+        props.modelValue.subPicUrls = subPicUrl
+      }
+      emit('next')
+    }
+  })
+}
+
+onMounted(() => {
+  loadData()
+  resetForm()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -177,4 +196,3 @@ export default {
   }
 }
 </style>
--->
