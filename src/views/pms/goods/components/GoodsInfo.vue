@@ -2,7 +2,7 @@
   <div class="components-container">
     <div class="components-container__main">
       <el-form
-          ref="goodsForm"
+          ref="dataForm"
           :rules="rules"
           :model="modelValue"
           label-width="120px"
@@ -43,28 +43,26 @@
         </el-form-item>
 
         <el-form-item label="商品相册">
-          <el-row :gutter="10">
-            <el-col style="width: 180px" v-for="(item,index) in pictures">
-              <el-card :body-style="{ padding: '10px' }">
 
-                <single-upload v-model="item.url"/>
+          <el-card   v-for="(item,index) in pictures" style="width: 170px;display: inline-block;margin-left: 10px" :body-style="{ padding: '10px' }">
 
-                <div class="bottom" v-if="item.url">
-                  <el-button type="text" class="button" v-if="item.main==true" style="color:#ff4d51">商品主图</el-button>
-                  <el-button type="text" class="button" v-else @click="changeMainPicture(index)">设为主图</el-button>
-                  <el-button type="text" class="button" @click="removePicture(index)">删除图片</el-button>
-                </div>
+            <single-upload v-model="item.url"/>
 
-                <div class="bottom" v-else>
-                  <el-button type="text" class="button"/>
-                </div>
-              </el-card>
-            </el-col>
-          </el-row>
+            <div class="bottom" v-if="item.url">
+              <el-button type="text" class="button" v-if="item.main==true" style="color:#ff4d51">商品主图</el-button>
+              <el-button type="text" class="button" v-else @click="changeMainPicture(index)">设为主图</el-button>
+              <el-button type="text" class="button" @click="removePicture(index)">删除图片</el-button>
+            </div>
+
+            <div class="bottom" v-else>
+              <!-- 占位 -->
+              <el-button type="text"/>
+            </div>
+          </el-card>
         </el-form-item>
 
         <el-form-item label="商品详情" prop="detail">
-          <tinymce v-model="modelValue.detail" :height="400"/>
+          <editor v-model="modelValue.detail" ></editor>
         </el-form-item>
 
       </el-form>
@@ -78,9 +76,9 @@
 <script setup lang="ts">
 import {listBrands} from "@/api/pms/brand"
 import SingleUpload from '@/components/Upload/SingleUpload.vue'
-import Tinymce from '@/components/Tinymce/index.vue'
 import {onMounted, reactive, ref, toRefs, unref} from "vue"
 import {ElForm} from "element-plus"
+import Editor from '@/components/WangEditor/index.vue'
 
 const emit = defineEmits(['prev', 'next'])
 const dataForm = ref(ElForm)
