@@ -14,7 +14,9 @@ export interface AppState {
     sidebar: {
         opened: boolean,
         withoutAnimation: boolean
-    }
+    },
+    language:string,
+    size:string
 }
 
 export interface SettingState {

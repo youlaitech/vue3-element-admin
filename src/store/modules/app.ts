@@ -10,7 +10,9 @@ export const useAppStore = defineStore({
         sidebar: {
             opened: Local.get('sidebarStatus') ? !!+Local.get('sidebarStatus') : true,
             withoutAnimation: false
-        }
+        },
+        language:'zh',
+        size:'medium'
     }),
     actions: {
          toggleSidebar() {
