@@ -495,23 +495,41 @@ export default defineComponent({
 
 ```
 
-
 ## SVG图标
 
-vite-plugin-svg-icons 使用说明：https://github.com/anncwb/vite-plugin-svg-icons/blob/main/README.zh_CN.md
+[使用手册(详细)](https://github.com/anncwb/vite-plugin-svg-icons/blob/main/README.zh_CN.md)
 
-**安装**
+1. 安装
 
-```
-npm i -D vite-plugin-svg-icons
-```
+    ```
+    npm i vite-plugin-svg-icons -D 
+    ```
+2. 配置插件
 
+    源码坐标：[vite.config.ts](vite.config.ts)
+
+    ```
+    viteSvgIcons({
+        // 指定需要缓存的图标文件夹
+        iconDirs: [path.resolve(process.cwd(), 'src/assets/icons/svg')],
+        // 指定symbolId格式
+        symbolId: 'icon-[dir]-[name]',
+    })
+    ```
+3. 组件封装
+   
+    源码坐标：[src/components/SvgIcon/index.vue](src/components/SvgIcon/index.vue)
+
+
+4. 使用示例
+
+    源码坐标：[src/components/IconSelect/index.vue](src/components/IconSelect/index.vue)
 
 
 ## 跨域处理
 
+vite.config.ts 跨域配置
 
-**vite.config.ts**
 ```
 // 本地反向代理解决浏览器跨域限制
 server: {
@@ -530,40 +548,70 @@ server: {
 
 ## NProgress 进度条
 
-**安装**
-```
-npm install --save nprogress
-```
+1. 安装
+    ```
+    npm install --save nprogress
+    ```
 
-**permission.ts**
-```
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css'
-NProgress.configure({showSpinner: false}) // 进度环显示/隐藏
+2. 使用案例
 
-router.beforeEach((to, from, next) => {
-  NProgress.start()
-  ...
-})
+    源码坐标：[permission.ts](src/permission.ts)
+    ```
+    import NProgress from 'nprogress';
+    import 'nprogress/nprogress.css'
+    NProgress.configure({showSpinner: false}) // 进度环显示/隐藏
+    
+    router.beforeEach((to, from, next) => {
+      NProgress.start()
+      ...
+    })
+    
+    router.afterEach(() => {
+      NProgress.done()
+    })
+    ```
 
-router.afterEach(() => {
-  NProgress.done()
-})
+## 富文本编辑器 wangEditor
 
-```
+- [官方文档](https://www.wangeditor.com/v5/)
 
-## TinyMCE 富文本编辑器
+- [Vue3 使用](https://www.wangeditor.com/v5/guide/for-frame.html#vue3)
 
-**官网：** http://tinymce.ax-z.cn/integrations/integrate-index.php
+- [Vue3 示例](https://github.com/wangfupeng1988/vue3-wangeditor-demo)
 
-**安装**
+1. 安装
+    ```
+    # 安装 editor
+    npm install @wangeditor/editor --save
+    
+    # 安装 Vue3 组件
+    npm install @wangeditor/editor-for-vue@next --save
+    ```
 
-```
-npm i -S tinymce
+2. 组件封装
 
-npm i -S @tinymce/tinymce-vue
+    - 源码坐标：[src/components/WangEditor/index.vue](src/components/WangEditor/index.vue)
+      
+    - wangEditor自定义图片上传
+        ```aidl
+        const editorConfig = {
+          placeholder: '请输入内容...',
+          MENU_CONF: {
+            uploadImage: {
+              async customUpload(file, insertFn) {
+                uploadFile(file).then(response => {
+                  const url = response.data
+                  insertFn(url)
+                })
+              }
+            }
+          }
+        }
+        ```
+    
 
-npm i -D @types/tinymce
-```
+3. 使用示例
 
+    源码坐标：[src/views/pms/goods/components/GoodsInfo.vue](src/views/pms/goods/components/GoodsInfo.vue)
+    
 
