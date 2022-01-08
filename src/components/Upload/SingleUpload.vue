@@ -1,36 +1,30 @@
 <template>
   <div>
     <el-upload
-        class="image-uploader"
-        :headers="headers"
-        :action="uploadAction"
+        class="avatar-uploader"
+        action=""
+        list-type="picture-card"
         :show-file-list="false"
-        :on-success="handleUploadSuccess"
         :before-upload="handleBeforeUpload"
         :on-exceed="handleExceed"
         :on-remove="handleRemove"
-        :limit="props.maxCount"
-        :on-preview="handlePreview"
+        :limit="1"
+        :http-request="uploadImage"
     >
-      <img v-if="imgUrl" :src="imgUrl" class="image"/>
-      <el-icon v-else class="image-uploader-icon">
-        <plus/>
+      <img v-if="imgUrl" :src="imgUrl" class="avatar"/>
+
+      <el-icon v-else class="avatar-uploader-icon">
+        <Plus/>
       </el-icon>
     </el-upload>
-
-    <el-dialog v-model="viewDialogVisible">
-      <img width="100%" :src="viewImgUrl">
-    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, toRefs} from "vue";
+import {computed, reactive, toRefs} from "vue";
 import {Plus} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus"
-import {deleteFile} from "@/api/system/file";
-import {Local} from "@/utils/storage";
-
+import {deleteFile, uploadFile} from "@/api/system/file";
 const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps({
@@ -45,10 +39,8 @@ const props = defineProps({
 })
 
 const state = reactive({
-  uploadAction: import.meta.env.VITE_APP_BASE_API+ '/youlai-admin/api/v1/files',
-  viewImgUrl: '',
-  viewDialogVisible: false,
-  headers: {authorization: Local.get('token')}
+  previewImgUrl: '',
+  previewDialogVisible: false,
 })
 
 const imgUrl = computed({
@@ -60,32 +52,37 @@ const imgUrl = computed({
   }
 })
 
-const {uploadAction, viewImgUrl, viewDialogVisible, headers} = toRefs(state)
-
-function handleUploadSuccess(response: any) {
-  const fileUrl = response.data
-  emit('update:modelValue', fileUrl)
-}
-
 function handleBeforeUpload(file: any) {
   const isJPG = file.type === 'image/jpeg'
   const isLt2M = file.size / 1024 / 1024 < 2
-  if (!isJPG) {
-  }
+ /* if (!isJPG) {
+    ElMessage.warning("此文件非图片文件")
+    return false
+  }*/
 
   if (!isLt2M) {
+    ElMessage.warning("上传图片不能大于2M")
   }
   return true
 }
 
-function handleExceed(file: any) {
-  ElMessage.warning('最多只能上传' + props.maxCount + '')
+/**
+ * 自定义图片上传
+ *
+ * @param params
+ */
+function uploadImage(params: any) {
+  const file = params.file
+  uploadFile(file).then(response => {
+    const imgUrl = response.data
+    emit('update:modelValue', imgUrl)
+  })
 }
 
-function handlePreview(file: any) {
-  state.viewImgUrl = imgUrl.value as string
-  state.viewDialogVisible = true
+function handleExceed(file: any) {
+  ElMessage.warning('最多只能上传' + props.maxCount)
 }
+
 
 function handleRemove(file: any, fileList: Array<any>) {
   deleteFile(file.url)
@@ -94,28 +91,27 @@ function handleRemove(file: any, fileList: Array<any>) {
 </script>
 
 <style lang="scss">
-.image-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
+.avatar-uploader {
+  .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      border-color: #409EFF;
+    }
+  }
 }
 
-.image-uploader .el-upload:hover {
-  border-color: #409EFF;
-}
-
-.image-uploader-icon {
+.avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 148px;
-  height: 148px;
-  line-height: 146px;
   text-align: center;
 }
 
-.image {
+.avatar {
   width: 148px;
   height: 148px;
   display: block;
