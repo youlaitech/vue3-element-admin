@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@element-plus/icons": "0.0.11",
-    "@tinymce/tinymce-vue": "^4.0.5",
+    "@wangeditor/editor": "^0.13.6",
+    "@wangeditor/editor-for-vue": "^5.1.8-6",
     "axios": "^0.24.0",
     "element-plus": "^1.2.0-beta.6",
     "nprogress": "^0.2.0",
@@ -16,7 +17,6 @@
     "path-to-regexp": "^6.2.0",
     "pinia": "^2.0.9",
     "screenfull": "^6.0.0",
-    "tinymce": "^5.10.2",
     "vue": "^3.2.16",
     "vue-router": "^4.0.12"
   },
@@ -24,12 +24,11 @@
     "@types/node": "^16.11.7",
     "@types/nprogress": "^0.2.0",
     "@types/path-browserify": "^1.0.0",
-    "@types/tinymce": "^4.6.4",
     "@vitejs/plugin-vue": "^1.9.3",
     "sass": "^1.43.4",
     "typescript": "^4.4.3",
     "vite": "^2.6.4",
-    "vite-plugin-svg-icons": "^1.0.5",
+    "vite-plugin-svg-icons": "^1.1.0",
     "vue-tsc": "^0.3.0"
   }
 }
