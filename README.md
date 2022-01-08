@@ -6,9 +6,9 @@
 
 - element-plus: https://element-plus.gitee.io/zh-CN/component/button.html
 
-- vue-next-router : https://next.router.vuejs.org/zh/introduction.html
+- vue-router4 : https://next.router.vuejs.org/zh/introduction.html
   
-- ~~next-vuex：https://next.vuex.vuejs.org/zh/index.html~~ (替换解决方案：pinia)
+- ~~vuex4：https://next.vuex.vuejs.org/zh/index.html~~ (pinia替代)
   
 - pinia: https://pinia.vuejs.org 
 
@@ -497,7 +497,7 @@ export default defineComponent({
 
 ## SVG图标
 
-[使用手册(详细)](https://github.com/anncwb/vite-plugin-svg-icons/blob/main/README.zh_CN.md)
+- [使用手册(详细)](https://github.com/anncwb/vite-plugin-svg-icons/blob/main/README.zh_CN.md)
 
 1. 安装
 
@@ -615,3 +615,9 @@ server: {
     源码坐标：[src/views/pms/goods/components/GoodsInfo.vue](src/views/pms/goods/components/GoodsInfo.vue)
     
 
+## 列表排序 sortablejs
+
+1. 安装
+   ```
+   npm install sortablejs --save
+   ```
