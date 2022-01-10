@@ -78,6 +78,7 @@ export default {
   methods: {
     loadData() {
       const goodsId = this.$route.query.goodsId
+      console.log('goodsId',goodsId)
       if (goodsId) {
         getGoodsDetail(goodsId).then(response => {
           this.goods = response.data

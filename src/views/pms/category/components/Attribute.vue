@@ -58,7 +58,6 @@ import {listAttributes, saveAttributeBatch} from "@/api/pms/attribute";
 import {computed, reactive, toRefs, watch} from "vue";
 import {Plus, Check, Delete} from '@element-plus/icons'
 import {ElMessage} from "element-plus";
-import {listRoleMenuIds} from "@api/system/role";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
 const props = defineProps({

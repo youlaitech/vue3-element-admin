@@ -4,7 +4,7 @@
       <el-cascader-panel
           ref="categoryRef"
           :options="categoryOptions"
-          v-model="categoryId"
+          v-model="modelValue.categoryId"
           :props="{emitPath:false}"
           @change="handleCategoryChange"
 
@@ -40,17 +40,15 @@ const props = defineProps({
 
 const state = reactive({
   categoryOptions: [],
-  pathLabels: [],
-  categoryId: undefined
+  pathLabels: []
 })
 
-const {categoryOptions, pathLabels, categoryId} = toRefs(state)
+const {categoryOptions, pathLabels} = toRefs(state)
 
 function loadData() {
   listCascadeCategories({}).then(response => {
     state.categoryOptions = response.data
     if (props.modelValue.id) {
-      state.categoryId = props.modelValue.categoryId
       nextTick(() => {
         handleCategoryChange()
       })
@@ -66,7 +64,8 @@ function handleCategoryChange() {
 }
 
 function handleNext() {
-  if (!state.categoryId) {
+  console.log('商品属性',props.modelValue.categoryId)
+  if (!props.modelValue.categoryId) {
     ElMessage.warning('请选择商品分类')
     return false
   }

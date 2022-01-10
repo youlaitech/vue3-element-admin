@@ -1,32 +1,37 @@
-<!--
 <template>
   <div class="components-container">
     <div class="components-container__main">
       <el-card class="box-card">
-        <div slot="header">
+        <template #header>
           <span>商品属性</span>
-          <el-button style="float: right;" type="primary" size="mini" @click="handleAttributeAdd">
+          <el-button
+              style="float: right;"
+              type="success"
+              :icon="Plus"
+              size="mini"
+              @click="handleAdd"
+          >
             添加属性
           </el-button>
-        </div>
+        </template>
         <el-form
-          ref="attributeForm"
-          :model="value"
-          :rules="rules"
-          size="mini"
-          :inline="true"
+            ref="dataForm"
+            :model="modelValue"
+            :rules="rules"
+            size="mini"
+            :inline="true"
         >
           <el-table
-            :data="value.attrList"
-            size="mini"
-            highlight-current-row
-            border
+              :data="modelValue.attrList"
+              size="mini"
+              highlight-current-row
+              border
           >
             <el-table-column property="name" label="属性名称">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-form-item
-                  :prop="'attrList[' + scope.$index + '].name'"
-                  :rules="rules.attribute.name"
+                    :prop="'attrList[' + scope.$index + '].name'"
+                    :rules="rules.attribute.name"
                 >
                   <el-input v-model="scope.row.name"/>
                 </el-form-item>
@@ -34,10 +39,10 @@
             </el-table-column>
 
             <el-table-column property="value" label="属性值">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-form-item
-                  :prop="'attrList[' + scope.$index + '].value'"
-                  :rules="rules.attribute.value"
+                    :prop="'attrList[' + scope.$index + '].value'"
+                    :rules="rules.attribute.value"
                 >
                   <el-input v-model="scope.row.value"/>
                 </el-form-item>
@@ -45,9 +50,15 @@
             </el-table-column>
 
             <el-table-column label="操作" width="150">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-form-item>
-                  <el-button type="danger" icon="el-icon-minus" circle @click="handleAttributeRemove(scope.$index)"/>
+                  <el-button
+                      v-if="scope.$index>0"
+                      type="danger"
+                      icon="Minus"
+                      circle
+                      @click="handleRemove(scope.$index)"
+                  />
                 </el-form-item>
               </template>
             </el-table-column>
@@ -63,53 +74,77 @@
   </div>
 </template>
 
-<script>
-import {listAttribute} from "@/api/pms/attribute";
+<script setup lang="ts">
+import {listAttributes} from "@/api/pms/attribute";
+import {computed, nextTick, reactive, ref, toRefs, unref, watch} from "vue";
+import {ElForm} from "element-plus";
+import {Minus, Plus} from '@element-plus/icons'
 
-export default {
-  name: "GoodsAttribute",
-  props: {
-    value: Object
-  },
-  watch:{
-    // 监听选择的商品分类关联商品属性
-    'value.categoryId':{
-        handler(newVal,oldVal){
-          listAttribute({categoryId: newVal, type: 2}).then(res => {
-            this.value.attrList = res.data
-          })
-        }
+const emit = defineEmits(['prev', 'next'])
+const dataForm = ref(ElForm)
+
+const props = defineProps({
+  modelValue: {
+    type: Object,
+    default: {}
+  }
+})
+
+const categoryId = computed(() => props.modelValue.categoryId);
+
+watch(categoryId, (newVal, oldVal) => {
+      if (newVal) {
+        // type=2 商品普通属性(非销售属性)
+        listAttributes({categoryId: newVal, type: 2}).then(response => {
+          const attrList = response.data
+          if (attrList && attrList.length > 0) {
+            props.modelValue.attrList = attrList
+          } else {
+            props.modelValue.attrList = [{}]
+          }
+        })
+      } else {
+        props.modelValue.attrList = [{}]
+      }
+    },
+    {
+      immediate: true,
+      deep: true
     }
-  },
-  data() {
-    return {
-      rules: {
-        attribute: {
-          name: [{required: true, message: '请填写属性名称', trigger: 'blur'}],
-          value: [{required: true, message: '请填写属性值', trigger: 'blur'}]
-        }
-      },
-    }
-  },
-  methods: {
-    handleAttributeAdd: function () {
-      this.value.attrList.push({})
-    },
-    handleAttributeRemove: function (index) {
-      this.value.attrList.splice(index, 1)
-    },
-    handlePrev: function () {
-      this.$emit('prev')
-    },
-    handleNext: function () {
-      this.$refs["attributeForm"].validate((valid) => {
-        if (valid) {
-          this.$emit('next')
-        }
-      })
+)
+
+const state = reactive({
+  rules: {
+    attribute: {
+      name: [{required: true, message: '请填写属性名称', trigger: 'blur'}],
+      value: [{required: true, message: '请填写属性值', trigger: 'blur'}]
     }
   }
+})
+
+const {rules} = toRefs(state)
+
+function handleAdd() {
+  props.modelValue.attrList.push({})
 }
+
+function handleRemove(index:number) {
+  props.modelValue.attrList.splice(index, 1)
+}
+
+function handlePrev() {
+  emit('prev')
+}
+
+function handleNext() {
+  const form = unref(dataForm)
+  form.validate((valid: any) => {
+    if (valid) {
+      emit('next')
+    }
+  })
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -125,8 +160,8 @@ export default {
     right: 20px;
   }
 }
-.el-form-item&#45;&#45;mini.el-form-item{
+
+.el-form-item--mini.el-form-item {
   margin-top: 18px;
 }
 </style>
--->

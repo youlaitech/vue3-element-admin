@@ -11,10 +11,8 @@
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
 
-    /* Vite 路径别名报错 */
     "baseUrl": "./",
     "paths": {
-      "@": ["src"],
       "@*": ["src/*"],
     },
     "extends": "./tsconfig.extends.json",

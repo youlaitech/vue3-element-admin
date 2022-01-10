@@ -30,7 +30,7 @@
 
     <el-table
         v-loading="loading"
-        ref="multipleTable"
+        ref="dataTableRef"
         :data="pageList"
         @selection-change="handleSelectionChange"
         @row-click="handleRowClick"
@@ -87,12 +87,12 @@
       <el-table-column label="操作" width="120">
         <template #default="scope">
           <el-button
-              @click="handleUpdate(scope.row)"
               type="primary"
               :icon="Edit"
               size="mini"
               circle
               plain
+              @click.stop="handleUpdate(scope.row)"
           />
           <el-button
               type="danger"
@@ -100,7 +100,7 @@
               size="mini"
               circle
               plain
-              @click="handleDelete(scope.row)"
+              @click.stop="handleDelete(scope.row)"
           />
         </template>
       </el-table-column>
@@ -121,12 +121,16 @@
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {listGoodsWithPage, deleteGoods} from '@/api/pms/goods'
 import {listCascadeCategories} from '@/api/pms/category'
-import {reactive, ref, onMounted, toRefs} from 'vue'
-import {ElMessage, ElMessageBox, ElTree} from 'element-plus'
+import {reactive, ref, onMounted, toRefs, unref} from 'vue'
+import {ElTable, ElMessage, ElMessageBox, ElTree} from 'element-plus'
 import {getCurrentInstance} from 'vue'
 import {moneyFormatter} from '@/utils/filter'
 
-const {proxy}: any = getCurrentInstance();
+const dataTableRef = ref(ElTable)
+
+import {useRouter} from "vue-router"
+
+const router=useRouter()
 
 const state = reactive({
   // 遮罩层
@@ -185,18 +189,17 @@ function resetQuery() {
   handleQuery()
 }
 
-
 function handleGoodsView(detail: any) {
   state.goodDetail = detail
   state.dialogVisible = true
 }
 
 function handleAdd() {
-  proxy.$router.push({path: 'goods-detail'})
+  router.push({path: 'goods-detail'})
 }
 
 function handleUpdate(row: any) {
-  proxy.$router.push({path: 'goods-detail', query: {goodsId: row.id,categoryId:row.categoryId}})
+  router.push({path: 'goods-detail', query: {goodsId: row.id, categoryId: row.categoryId}})
 }
 
 function handleDelete(row: any) {
@@ -214,7 +217,7 @@ function handleDelete(row: any) {
 }
 
 function handleRowClick(row: any) {
-  proxy.$refs.multipleTable.toggleRowSelection(row);
+  dataTableRef.value.toggleRowSelection(row);
 }
 
 function handleSelectionChange(selection: any) {

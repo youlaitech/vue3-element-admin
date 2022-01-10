@@ -17,6 +17,7 @@
     "path-to-regexp": "^6.2.0",
     "pinia": "^2.0.9",
     "screenfull": "^6.0.0",
+    "sortablejs": "^1.14.0",
     "vue": "^3.2.16",
     "vue-router": "^4.0.12"
   },
