@@ -42,29 +42,37 @@
               </template>
             </el-table-column>
             <el-table-column>
-              <template slot="header">
+              <template #header>
                 规格值
                 <el-link type="danger" style="font-size:12px" :underline="false">（默认第一条规格包含图片）</el-link>
               </template>
-              <template slot-scope="{row}">
-                <div style="margin-right:15px;display: inline-block" v-for="item in row.values">
+
+              <template #default="scope">
+                <div style="margin-right:15px;display: inline-block" v-for="item in scope.row.values">
                   <el-tag
                       closable
-                      :type="colors[row.index%colors.length]"
-                      @close="handleSpecValueRemove(row.index,item.id)">
+                      :type="colors[scope.row.index%colors.length]"
+                      @close="handleSpecValueRemove(scope.row.index,item.id)">
                     {{ item.value }}
                   </el-tag>
-                  <mini-card-upload v-if="row.index==0" style="margin-top: 5px" v-model="item.picUrl"/>
+                  <mini-card-upload v-if="scope.row.index==0" style="margin-top: 5px" v-model="item.picUrl"/>
                 </div>
                 <el-input
+                    v-if="tagInputs[scope.row.index].visible"
+                    v-model="tagInputs[scope.row.index].value"
+                    @keyup.enter.native="handleSpecValueInput(scope.row.index)"
+                    @blur="handleSpecValueInput(scope.row.index)"
                     style="width: 80px;vertical-align: top"
                     size="mini"
-                    v-if="tagInputs[row.index].visible"
-                    v-model="tagInputs[row.index].value"
-                    @keyup.enter.native="handleSpecValueInput(row.index)"
-                    @blur="handleSpecValueInput(row.index)"/>
-                <el-button v-else size="mini" icon="el-icon-plus" style="vertical-align: top"
-                           @click="handleSpecValueAdd(row.index)">添加规格值
+                />
+                <el-button
+                    v-else
+                    @click="handleSpecValueAdd(scope.row.index)"
+                    :icon="Plus"
+                    style="vertical-align: top"
+                    size="mini"
+                >
+                  添加规格值
                 </el-button>
               </template>
             </el-table-column>
@@ -143,7 +151,7 @@
     </div>
     <div class="components-container__footer">
       <el-button @click="handlePrev">上一步，设置商品属性</el-button>
-      <el-button type="primary" @click="handleSubmit">提交</el-button>
+      <el-button type="primary" @click="submitForm">提交</el-button>
     </div>
   </div>
 </template>
@@ -155,6 +163,8 @@ import Sortable from 'sortablejs'
 import {addGoods, updateGoods} from "@/api/pms/goods";
 import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs, unref, watch} from "vue";
 import {ElMessage, ElTable, ElForm} from "element-plus"
+import {Plus} from '@element-plus/icons'
+import SvgIcon from '@/components/SvgIcon/index.vue'
 import {useRouter} from "vue-router";
 
 const emit = defineEmits(['prev', 'next'])
@@ -264,6 +274,7 @@ function loadData() {
     nextTick(() => {
       registerSpecDragSortEvent()
     })
+    console.log('tagInputs',tagInputs)
   }
 }
 
