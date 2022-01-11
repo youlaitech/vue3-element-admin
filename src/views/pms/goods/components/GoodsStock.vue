@@ -4,7 +4,13 @@
       <el-card class="box-card">
         <template #header>
           <span>商品规格</span>
-          <el-button style="float: right;" type="primary" size="mini" @click="handleSpecAdd">
+          <el-button
+              :icon="Plus"
+              type="success"
+              @click="handleSpecAdd"
+              size="mini"
+              style="float: right;"
+          >
             添加规格项
           </el-button>
         </template>
@@ -48,26 +54,35 @@
               </template>
 
               <template #default="scope">
-                <div style="margin-right:15px;display: inline-block" v-for="item in scope.row.values">
+                <div v-for="item in scope.row.values"
+                     style="margin-right:15px;display: inline-block"
+                >
                   <el-tag
+                      size="small"
                       closable
-                      :type="colors[scope.row.index%colors.length]"
-                      @close="handleSpecValueRemove(scope.row.index,item.id)">
+                      :type="colors[scope.$index%colors.length]"
+                      @close="handleSpecValueRemove(scope.$index,item.id)"
+                  >
                     {{ item.value }}
                   </el-tag>
-                  <mini-card-upload v-if="scope.row.index==0" style="margin-top: 5px" v-model="item.picUrl"/>
+                  <single-upload
+                      v-model="item.picUrl"
+                      v-if="scope.$index==0"
+                      style="margin-top: 5px"
+                  />
                 </div>
+
                 <el-input
-                    v-if="tagInputs[scope.row.index].visible"
-                    v-model="tagInputs[scope.row.index].value"
-                    @keyup.enter.native="handleSpecValueInput(scope.row.index)"
-                    @blur="handleSpecValueInput(scope.row.index)"
+                    v-if="tagInputs[scope.$index].visible"
+                    v-model="tagInputs[scope.$index].value"
+                    @keyup.enter.native="handleSpecValueInput(scope.$index)"
+                    @blur="handleSpecValueInput(scope.$index)"
                     style="width: 80px;vertical-align: top"
                     size="mini"
                 />
                 <el-button
                     v-else
-                    @click="handleSpecValueAdd(scope.row.index)"
+                    @click="handleSpecValueAdd(scope.$index)"
                     :icon="Plus"
                     style="vertical-align: top"
                     size="mini"
@@ -81,7 +96,7 @@
               <template #default="scope">
                 <el-button
                     type="danger"
-                    icon="el-icon-delete"
+                    :icon="Minus"
                     size="mini"
                     circle
                     plain
@@ -158,12 +173,12 @@
 
 <script setup lang="ts">
 import {listAttributes} from "@/api/pms/attribute";
-import MiniCardUpload from '@/components/Upload/MiniCardUpload.vue'
+import SingleUpload from '@/components/Upload/SingleUpload.vue'
 import Sortable from 'sortablejs'
 import {addGoods, updateGoods} from "@/api/pms/goods";
 import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs, unref, watch} from "vue";
 import {ElMessage, ElTable, ElForm} from "element-plus"
-import {Plus} from '@element-plus/icons'
+import {Plus, Minus} from '@element-plus/icons'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 import {useRouter} from "vue-router";
 
@@ -187,7 +202,7 @@ const categoryId = computed(() => props.modelValue.categoryId);
 
 const state = reactive({
   specForm: {
-    specList: [] as Array<any>,
+    specList: [{}] as Array<any>,
   },
   skuForm: {
     skuList: []
@@ -274,7 +289,6 @@ function loadData() {
     nextTick(() => {
       registerSpecDragSortEvent()
     })
-    console.log('tagInputs',tagInputs)
   }
 }
 
@@ -544,7 +558,6 @@ function submitForm() {
     }
   })
 }
-
 
 function openFullScreen() {
   state.loading = proxy.$loading({

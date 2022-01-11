@@ -1,41 +1,43 @@
 <template>
   <div class="components-container">
+
     <el-steps :active="active" process-status="finish" finish-status="success" simple>
       <el-step title="选择商品分类"></el-step>
       <el-step title="填写商品信息"></el-step>
       <el-step title="设置商品属性"></el-step>
       <el-step title="设置商品库存"></el-step>
     </el-steps>
+
     <goods-category
       v-show="active==0"
       v-model="goods"
       v-if="loaded==true"
       @prev="prev"
-      @next="next">
-    </goods-category>
+      @next="next"
+    />
+
     <goods-info
       v-show="active==1"
       v-model="goods"
       v-if="loaded==true"
       @prev="prev"
-      @next="next">
-    </goods-info>
-
+      @next="next"
+    />
     <goods-attribute
       v-show="active==2"
       v-model="goods"
       v-if="loaded==true"
       @prev="prev"
-      @next="next">
-    </goods-attribute>
+      @next="next"
+    />
 
     <goods-stock
       v-show="active==3"
       v-model="goods"
       v-if="loaded==true"
       @prev="prev"
-      @next="next">
-    </goods-stock>
+      @next="next"
+    />
   </div>
 </template>
 
