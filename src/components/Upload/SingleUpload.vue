@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div >
     <el-upload
-        class="avatar-uploader"
         action=""
+        class="avatar-uploader"
         list-type="picture-card"
         :show-file-list="false"
         :before-upload="handleBeforeUpload"
@@ -16,15 +16,25 @@
       <el-icon v-else class="avatar-uploader-icon">
         <Plus/>
       </el-icon>
+
+      <el-icon
+          v-if="imgUrl"
+          class="remove-icon"
+          @click.stop="handleRemove(imgUrl)"
+      >
+        <Close/>
+      </el-icon>
+
     </el-upload>
   </div>
 </template>
 
 <script setup lang="ts">
 import {computed, reactive, toRefs} from "vue";
-import {Plus} from '@element-plus/icons-vue'
+import {Plus, Close} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus"
-import {deleteFile, uploadFile} from "@/api/system/file";
+import {uploadFile, deleteFile} from "@/api/system/file";
+
 const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps({
@@ -55,10 +65,10 @@ const imgUrl = computed({
 function handleBeforeUpload(file: any) {
   const isJPG = file.type === 'image/jpeg'
   const isLt2M = file.size / 1024 / 1024 < 2
- /* if (!isJPG) {
-    ElMessage.warning("此文件非图片文件")
-    return false
-  }*/
+  /* if (!isJPG) {
+     ElMessage.warning("此文件非图片文件")
+     return false
+   }*/
 
   if (!isLt2M) {
     ElMessage.warning("上传图片不能大于2M")
@@ -83,10 +93,9 @@ function handleExceed(file: any) {
   ElMessage.warning('最多只能上传' + props.maxCount)
 }
 
-
-function handleRemove(file: any, fileList: Array<any>) {
-  deleteFile(file.url)
-  emit('update:modelValue', fileList)
+function handleRemove(imgUrl: string) {
+  deleteFile(imgUrl)
+  emit('update:modelValue', '')
 }
 </script>
 
@@ -115,5 +124,15 @@ function handleRemove(file: any, fileList: Array<any>) {
   width: 148px;
   height: 148px;
   display: block;
+}
+
+.remove-icon {
+  font-size: 12px;
+  color: #ff4d51 !important;
+  margin-top: 0px !important;
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #409eff;
 }
 </style>
