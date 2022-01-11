@@ -16,21 +16,13 @@
 </template>
 
 <script setup lang="ts">
-import {computed, watchEffect,markRaw } from "vue"
+import {computed, watchEffect } from "vue"
 import {useWindowSize} from '@vueuse/core'
-import {AppMain, Navbar, Settings,TagsView} from './components/index.ts'
+import {AppMain, Navbar, Settings,TagsView} from './components/index'
 import Sidebar from './components/Sidebar/index.vue'
 
 import {useAppStoreHook} from "@/store/modules/app"
 import {useSettingStoreHook} from "@/store/modules/settings"
-
-const classObj = computed(() => ({
-  hideSidebar: !useAppStoreHook().sidebar.opened,
-  openSidebar: useAppStoreHook().sidebar.opened,
-  withoutAnimation: useAppStoreHook().sidebar.withoutAnimation,
-  mobile: useAppStoreHook().device === 'mobile'
-}))
-
 
 const {width, height} = useWindowSize();
 const WIDTH = 992
@@ -40,10 +32,16 @@ const device = computed(() => useAppStoreHook().device);
 const needTagsView = computed(() => useSettingStoreHook().tagsView);
 const fixedHeader = computed(() => useSettingStoreHook().fixedHeader);
 
+const classObj = computed(() => ({
+  hideSidebar: !sidebar.value.opened,
+  openSidebar: sidebar.value.opened,
+  withoutAnimation: sidebar.value.withoutAnimation,
+  mobile: device.value === 'mobile'
+}))
+
+
 watchEffect(() => {
-  if (device.value === 'mobile' && sidebar.value.opened == true) {
-    useAppStoreHook().closeSideBar(false)
-  }
+
   if (width.value < WIDTH) {
     useAppStoreHook().toggleDevice("mobile")
     useAppStoreHook().closeSideBar(true)
