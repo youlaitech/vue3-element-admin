@@ -30,7 +30,6 @@ export const useAppStore = defineStore({
             this.sidebar.withoutAnimation = withoutAnimation
         },
         toggleDevice( device:any) {
-            console.log('TOGGLE_DEVICE',device)
             this.device = device
         }
     }
