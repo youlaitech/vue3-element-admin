@@ -121,15 +121,13 @@
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {listGoodsWithPage, deleteGoods} from '@/api/pms/goods'
 import {listCascadeCategories} from '@/api/pms/category'
-import {reactive, ref, onMounted, toRefs, unref} from 'vue'
-import {ElTable, ElMessage, ElMessageBox, ElTree} from 'element-plus'
+import {reactive, ref, onMounted, toRefs} from 'vue'
+import {ElTable, ElMessage, ElMessageBox} from 'element-plus'
 import {getCurrentInstance} from 'vue'
 import {moneyFormatter} from '@/utils/filter'
-
-const dataTableRef = ref(ElTable)
-
 import {useRouter} from "vue-router"
 
+const dataTableRef = ref(ElTable)
 const router=useRouter()
 
 const state = reactive({

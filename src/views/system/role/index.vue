@@ -17,7 +17,7 @@
             <svg-icon color="#333" icon-class="menu"/>
             <span style="margin:0 5px;">菜单分配</span>
             <el-tag type="success" v-if="role.id" size="small">
-              <svg-icon color="green  " icon-class="role"/>
+              <svg-icon color="green" icon-class="role"/>
               {{ role.name }}
             </el-tag>
             <el-tag type="warning" v-else size="small">请选择角色</el-tag>
