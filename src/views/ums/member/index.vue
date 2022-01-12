@@ -43,7 +43,7 @@
             </el-table-column>
             <el-table-column align="center" label="邮编" prop="zipCode"/>
             <el-table-column align="center" label="是否默认">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-tag v-if="scope.row.defaulted==1" type="success">是</el-tag>
                 <el-tag v-if="scope.row.defaulted==0" type="info">否</el-tag>
               </template>
@@ -65,10 +65,12 @@
         <template #default="scope">
           <el-popover
               placement="right"
+              :width="400"
               trigger="hover">
-            <img :src="scope.row.avatarUrl"/>
-            <img slot="reference" :src="scope.row.avatarUrl" :alt="scope.row.avatarUrl"
-                 style="max-height: 60px;max-width: 60px">
+            <img :src="scope.row.avatarUrl" width="400" height="400"/>
+            <template #reference>
+              <img :src="scope.row.avatarUrl" style="max-height: 60px;max-width: 60px"/>
+            </template>
           </el-popover>
         </template>
       </el-table-column>
@@ -83,7 +85,7 @@
 
       <el-table-column prop="gmtCreate" label="注册时间"/>
 
-      <el-table-column label="账户余额" width="80">
+      <el-table-column label="账户余额">
         <template #default="scope">
           {{ scope.row.balance / 100 }}
         </template>
