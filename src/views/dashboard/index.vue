@@ -156,82 +156,46 @@
                       <div style="padding: 6px;">
                         <span tyle="font-size: 14px">郝先瑞</span>
                         <div class="bottom clearfix" style="margin-top: 5px">
-                          <el-tag type="primary" size="mini">后端</el-tag>
+                          <el-tag  size="mini">后端</el-tag>
                           <el-tag type="success" style="margin-left: 5px" size="mini">前端</el-tag>
                           <el-tag type="danger" style="margin-left: 5px" size="mini">运维</el-tag>
                         </div>
                       </div>
                     </el-card>
+                  </el-col>
+                    <el-col :span="8">
+                      <el-card :body-style="{ padding: '0px' }" align="center">
+                        <el-image
+                            style="width: 60px; height: 60px"
+                            src="https://gitee.com/haoxr/image/raw/master/20210606203219.png"
+                            :preview-src-list="['https://gitee.com/haoxr/image/raw/master/20210606203219.png']">
+                        </el-image>
+                        <div style="padding: 6px;">
+                          <span>Mr.</span>
+                          <div class="bottom clearfix" style="margin-top: 5px">
+                            <el-tag type="primary" size="mini">后端</el-tag>
+                            <el-tag type="success" style="margin-left: 5px" size="mini">前端</el-tag>
+                            <el-tag type="danger" style="margin-left: 5px" size="mini">运维</el-tag>
+                          </div>
+                        </div>
+                      </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                      <el-card :body-style="{ padding: '0px' }" align="center">
+                        <el-image
+                            style="width: 60px; height: 60px"
+                            src="  https://gitee.com/haoxr/image/raw/master/20210606203659.png"
+                            :preview-src-list="['https://gitee.com/haoxr/image/raw/master/20210606203659.png']">
+                        </el-image>
+                        <div style="padding: 6px;">
+                          <span>???</span>
+                          <div class="bottom clearfix" style="margin-top: 5px">
+                            <el-tag type="warning" size="mini">??</el-tag>
+                          </div>
+                        </div>
+                      </el-card>
                   </el-col>
 
-                  <el-col :span="8">
-                    <el-card :body-style="{ padding: '0px' }" align="center">
-                      <el-image
-                        style="width: 60px; height: 60px"
-                        src="https://gitee.com/haoxr/image/raw/master/huawei.jpg"
-                        :preview-src-list="['https://gitee.com/haoxr/image/raw/master/huawei.jpg']">
-                      </el-image>
-                      <div style="padding: 6px;">
-                        <span>猴子也能上天</span>
-                        <div class="bottom clearfix" style="margin-top: 5px">
-                          <el-tag type="primary" size="mini">后端</el-tag>
-                          <el-tag type="success" style="margin-left: 5px" size="mini">前端</el-tag>
-                          <el-tag type="danger" style="margin-left: 5px" size="mini">运维</el-tag>
-                        </div>
-                      </div>
-                    </el-card>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-card :body-style="{ padding: '0px' }" align="center">
-                      <el-image
-                        style="width: 60px; height: 60px"
-                        src="  https://gitee.com/haoxr/image/raw/master/DaniR.png"
-                        :preview-src-list="['https://gitee.com/haoxr/image/raw/master/DaniR.png']">
-                      </el-image>
-                      <div style="padding: 6px;">
-                        <span>DaniR</span>
-                        <div class="bottom clearfix" style="margin-top: 5px">
-                          <el-tag type="primary" size="mini">后端</el-tag>
-                          <el-tag type="success" style="margin-left: 5px" size="mini">前端</el-tag>
-                          <el-tag type="danger" style="margin-left: 5px" size="mini">运维</el-tag>
-                        </div>
-                      </div>
-                    </el-card>
-                  </el-col>
-                </el-row>
-                <el-row :gutter="5" style="margin-top: 8px">
-                  <el-col :span="8">
-                    <el-card :body-style="{ padding: '0px' }" align="center">
-                      <el-image
-                        style="width: 60px; height: 60px"
-                        src="https://gitee.com/haoxr/image/raw/master/20210606203219.png"
-                        :preview-src-list="['https://gitee.com/haoxr/image/raw/master/20210606203219.png']">
-                      </el-image>
-                      <div style="padding: 6px;">
-                        <span>Mr.</span>
-                        <div class="bottom clearfix" style="margin-top: 5px">
-                          <el-tag type="primary" size="mini">后端</el-tag>
-                          <el-tag type="success" style="margin-left: 5px" size="mini">前端</el-tag>
-                          <el-tag type="danger" style="margin-left: 5px" size="mini">运维</el-tag>
-                        </div>
-                      </div>
-                    </el-card>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-card :body-style="{ padding: '0px' }" align="center">
-                      <el-image
-                        style="width: 60px; height: 60px"
-                        src="  https://gitee.com/haoxr/image/raw/master/20210606203659.png"
-                        :preview-src-list="['https://gitee.com/haoxr/image/raw/master/20210606203659.png']">
-                      </el-image>
-                      <div style="padding: 6px;">
-                        <span>???</span>
-                        <div class="bottom clearfix" style="margin-top: 5px">
-                          <el-tag type="warning" size="mini">??</el-tag>
-                        </div>
-                      </div>
-                    </el-card>
-                  </el-col>
                 </el-row>
               </el-tab-pane>
               <el-tab-pane label="微信群" name="2">

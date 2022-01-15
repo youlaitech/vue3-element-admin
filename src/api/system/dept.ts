@@ -41,7 +41,7 @@ export const updateDept = (id:number,data: any) => {
 }
 
 
-export const getDeptSelectList = ()=> {
+export const listDeptsForSelect = ()=> {
     return request({
         url: '/youlai-admin/api/v1/depts/select',
         method: 'get'

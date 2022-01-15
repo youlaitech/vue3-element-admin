@@ -18,7 +18,7 @@ export function listRolesWithPage(queryParams: object) {
  *
  * @param queryParams
  */
-export function listRoles(queryParams: object) {
+export function listRoles(queryParams?: object) {
     return request({
         url: '/youlai-admin/api/v1/roles',
         method: 'get',

@@ -1,21 +1,36 @@
-
 import request from "@/utils/request";
-export const listUser = (queryParams:any)=> {
+
+/**
+ * 获取用户分页列表
+ *
+ * @param queryParams
+ */
+export function listUsersWithPage(queryParams: any) {
     return request({
-        url: '/youlai-admin/api/v2/users',
+        url: '/youlai-admin/api/v1/users/page',
         method: 'get',
         params: queryParams
     })
 }
 
-export const getUser = (id ?:any) =>{
+/**
+ * 获取用户表单详情
+ *
+ * @param userId
+ */
+export function getUserFormDetail(userId: any) {
     return request({
-        url: '/youlai-admin/api/v1/users/' + id,
+        url: '/youlai-admin/api/v1/users/' + userId + '/form',
         method: 'get'
     })
 }
 
-export const addUser = (data:any) => {
+/**
+ * 添加用户
+ *
+ * @param data
+ */
+export function addUser(data: any) {
     return request({
         url: '/youlai-admin/api/v1/users',
         method: 'post',
@@ -23,7 +38,13 @@ export const addUser = (data:any) => {
     })
 }
 
-export const updateUser = (id:number, data:any)=> {
+/**
+ * 修改用户
+ *
+ * @param id
+ * @param data
+ */
+export function updateUser(id: number, data: any) {
     return request({
         url: '/youlai-admin/api/v1/users/' + id,
         method: 'put',
@@ -31,7 +52,13 @@ export const updateUser = (id:number, data:any)=> {
     })
 }
 
-export const patch = (id:number, data:any) => {
+/**
+ * 选择性修改用户
+ *
+ * @param id
+ * @param data
+ */
+export function updateUserPart(id: number, data: any) {
     return request({
         url: '/youlai-admin/api/v1/users/' + id,
         method: 'patch',
@@ -39,9 +66,14 @@ export const patch = (id:number, data:any) => {
     })
 }
 
-export const delUser =(ids:number) =>{
+
+/**
+ * 删除用户
+ * @param ids
+ */
+export function deleteUsers(ids: number) {
     return request({
-        url: '/youlai-admin/api/v1/users/'+ids,
+        url: '/youlai-admin/api/v1/users/' + ids,
         method: 'delete',
     })
 }

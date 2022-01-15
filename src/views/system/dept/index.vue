@@ -14,9 +14,7 @@
         </el-button>
       </el-form-item>
 
-      <el-form-item
-          prop="name"
-      >
+      <el-form-item>
         <el-input
             v-model="queryParams.name"
             placeholder="请输入部门名称"
@@ -24,9 +22,8 @@
             @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item
-          prop="status"
-      >
+
+      <el-form-item>
         <el-select
             v-model="queryParams.status"
             placeholder="部门状态"
@@ -177,7 +174,7 @@
 <script setup lang="ts">
 import {onMounted, reactive, unref, ref, toRefs} from 'vue'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
-import {listDept, getDept, delDept, updateDept, addDept, getDeptSelectList} from '@/api/system/dept'
+import {listDept, getDept, delDept, updateDept, addDept, listDeptsForSelect} from '@/api/system/dept'
 import TreeSelect from '@/components/TreeSelect/Index.vue'
 import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
 
@@ -250,7 +247,6 @@ const queryForm = ref(ElForm)
 const formDialog = ref(ElForm)
 
 
-
 /**
  * 删除按钮
  * */
@@ -295,7 +291,7 @@ function resetQuery() {
 
 /** 查询部门下拉树结构 */
 function getTreeselect() {
-  getDeptSelectList().then(response => {
+  listDeptsForSelect().then(response => {
     dataMap.deptOptions = response.data
   })
 }
@@ -369,6 +365,7 @@ async function handleDelete(row: any) {
 function dialogshow() {
   getTreeselect()
 }
+
 const {
   ids, single,
   multiple,

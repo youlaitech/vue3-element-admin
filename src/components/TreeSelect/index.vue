@@ -2,7 +2,7 @@
   <div class="el-tree-select">
     <el-select
         style="width: 100%"
-        v-model="valueId"
+        v-model="modelValue"
         ref="treeSelect"
         :filterable="true"
         :clearable="true"
@@ -10,7 +10,7 @@
         :filter-method="selectFilterData"
         :placeholder="placeholder"
     >
-      <el-option :value="valueId" :label="valueTitle">
+      <el-option :value="modelValue" :label="valueTitle">
         <el-tree
             id="tree-option"
             ref="selectTree"
@@ -33,7 +33,7 @@ import {ref, getCurrentInstance ,nextTick,onMounted,computed,watch} from "vue";
 const { proxy } = getCurrentInstance();
 
 const state = defineProps({
-  /* 配置项 */
+  // 配置项
   props: {
     type: Object,
     default: () => {
@@ -44,24 +44,24 @@ const state = defineProps({
       }
     }
   },
-  /* 自动收起 */
+  // 自动收起
   accordion: {
     type: Boolean,
     default: () => {
       return false
     }
   },
-  /**当前双向数据绑定的值 */
+  // v-model 绑定的值
   modelValue: {
-    type: [String, Number],
+    type: Object,
     default: ''
   },
-  /**当前的数据 */
+  // 数据源
   options: {
     type: Array,
-    default: () => []
+    default:[]
   },
-  /**输入框内部的文字 */
+  // 提示文字
   placeholder: {
     type: String,
     default: ''
@@ -70,8 +70,9 @@ const state = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const valueId = computed({
+const modelValue = computed({
   get: () => {
+    console.log('heihei',state.modelValue)
     return state.modelValue
   },
   set: (val) => {
@@ -83,7 +84,9 @@ const defaultExpandedKey = ref([]);
 
 function initHandle() {
   nextTick(() => {
-    const selectedValue = valueId.value;
+    console.log("selectedValue1",modelValue)
+    const selectedValue = modelValue.value;
+    console.log("selectedValue",modelValue.value)
     if(selectedValue !== null && typeof (selectedValue) !== "undefined"){
       const node = proxy.$refs.selectTree.getNode(selectedValue)
       if (node) {
@@ -98,34 +101,39 @@ function initHandle() {
 }
 function handleNodeClick(node) {
   valueTitle.value = node[state.props.label]
-  valueId.value = node[state.props.value];
+  modelValue.value = node[state.props.value];
   defaultExpandedKey.value = [];
   proxy.$refs.treeSelect.blur()
   selectFilterData('')
 }
+
 function selectFilterData(val) {
   proxy.$refs.selectTree.filter(val)
 }
+
 function filterNode(value, data) {
   if (!value) return true
   return data[state.props['label']].indexOf(value) !== -1
 }
+
 function clearHandle() {
   valueTitle.value = ''
-  valueId.value = ''
+  modelValue.value = ''
   defaultExpandedKey.value = [];
   clearSelected()
 }
+
 function clearSelected() {
   const allNode = document.querySelectorAll('#tree-option .el-tree-node')
   allNode.forEach((element) => element.classList.remove('is-current'))
 }
 
 onMounted(() => {
+  console.log('hah',modelValue)
   initHandle()
 })
 
-watch(valueId, () => {
+watch(modelValue, () => {
   initHandle();
 })
 </script>

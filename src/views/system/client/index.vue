@@ -263,7 +263,7 @@ onMounted(() => {
   handleQuery()
   // 全局字典调用
   const {proxy}: any = getCurrentInstance();
-  proxy.$getDictItemsByCode('gender').then((response: any) => {
+  proxy.$listDictsByCode('gender').then((response: any) => {
     console.log('性别字典数据', response.data)
   })
 })

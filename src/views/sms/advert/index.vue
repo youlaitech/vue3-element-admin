@@ -96,7 +96,7 @@
         width="700px"
     >
       <el-form
-          ref="dataForm"
+          ref="dataFormRef"
           :model="formData"
           :rules="rules"
           label-width="100px"
@@ -161,7 +161,7 @@ import {onMounted, reactive, ref, toRefs, unref} from "vue";
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
-const dataForm = ref(ElForm)  // 属性名必须和元素的ref属性值一致
+const dataFormRef = ref(ElForm)  // 属性名必须和元素的ref属性值一致
 
 const state = reactive({
   loading: true,
@@ -257,11 +257,12 @@ function handleUpdate(row: any) {
 }
 
 function submitForm() {
-  const form = unref(dataForm)
-  form.validate((valid: any) => {
+  const dataForm = unref(dataFormRef)
+  dataForm.validate((valid: any) => {
     if (valid) {
-      if (state.formData.id) {
-        updateAdvert(state.formData.id as any, state.formData).then(response => {
+      const avertId = state.formData.id
+      if (avertId) {
+        updateAdvert(avertId, state.formData).then(response => {
           ElMessage.success('修改成功')
           state.dialog.visible = false
           handleQuery()

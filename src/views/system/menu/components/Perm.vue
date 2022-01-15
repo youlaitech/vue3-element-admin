@@ -244,11 +244,11 @@ function handleSelectionChange(selection: any) {
  * 字典数据准备
  */
 function loadDictData() {
-  proxy.$getDictItemsByCode('micro_service').then((response: any) => {
+  proxy.$listDictsByCode('micro_service').then((response: any) => {
     state.microServiceOptions = response.data
   })
 
-  proxy.$getDictItemsByCode('request_method').then((response: any) => {
+  proxy.$listDictsByCode('request_method').then((response: any) => {
     state.requestMethodOptions = response.data
   })
 }

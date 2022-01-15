@@ -83,7 +83,7 @@ export function listDictItemsWithPage(queryParams: object) {
  *
  * @param dictCode
  */
-export function getDictItemsByCode(dictCode: string) {
+export function listDictsByCode(dictCode: string) {
     return request({
         url: '/youlai-admin/api/v2/dict/items',
         method: 'get',
