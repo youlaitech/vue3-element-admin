@@ -109,8 +109,6 @@ import {listMembersWithPage} from '@/api/ums/member'
 
 import {reactive, ref, onMounted, toRefs} from 'vue'
 import {ElTable, ElMessage, ElMessageBox} from 'element-plus'
-import {listCascadeCategories} from "@api/pms/category";
-import {listGoodsWithPage} from "@api/pms/goods";
 
 const state = reactive({
   // 遮罩层
