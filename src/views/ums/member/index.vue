@@ -7,9 +7,6 @@
         :inline="true"
     >
       <el-form-item>
-        <el-button type="danger" :icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
-      </el-form-item>
-      <el-form-item>
         <el-input
             v-model="queryParams.nickName"
             placeholder="会员昵称"
