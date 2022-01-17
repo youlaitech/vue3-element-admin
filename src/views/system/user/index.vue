@@ -15,7 +15,7 @@
             style="margin-bottom: 20px"
         />
         <el-tree
-            ref="treeRef"
+            ref="deptTreeRef"
             :data="deptOptions"
             :props="{ children: 'children',label: 'label'}"
             :expand-on-click-node="false"
@@ -391,10 +391,10 @@ import {listRoles} from '@/api/system/role'
 
 // 组件依赖
 import {ElMessage, ElMessageBox, ElTree, ElForm} from 'element-plus'
-import {Search, Plus, Edit, Refresh, Delete,Lock} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete, Lock} from '@element-plus/icons'
 import TreeSelect from '@/components/TreeSelect/Index.vue'
 
-const treeRef = ref(ElTree)
+const deptTreeRef = ref(ElTree)
 const dataFormRef = ref(ElForm)
 const queryFormRef = ref(ElForm) // 变量名和绑定名ref一致
 
@@ -505,14 +505,16 @@ async function loadDeptOptions() {
  * 部门筛选
  **/
 watchEffect(() => {
-  if (state.deptName) {
-    const tree = unref(treeRef)
-    tree.filter(state.deptName)
-  }
+  const deptTree = unref(deptTreeRef)
+  deptTree.filter(state.deptName)
+}, {
+  flush: 'post' // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
 })
 
 function filterDeptNode(value: string, data: any) {
-  if (!value) return true
+  if (!value) {
+    return true
+  }
   return data.label.indexOf(value) !== -1
 }
 
@@ -560,7 +562,7 @@ function resetPassword(row: { [key: string]: any }) {
     confirmButtonText: '确定',
     cancelButtonText: '取消'
   }).then(({value}) => {
-    if(!value){
+    if (!value) {
       ElMessage.warning("请输入新密码")
       return false
     }
@@ -569,7 +571,7 @@ function resetPassword(row: { [key: string]: any }) {
     }).then(() => {
       ElMessage.success('修改成功，新密码是：' + value)
     })
-  }).catch(()=>{
+  }).catch(() => {
 
   })
 }
