@@ -4,9 +4,8 @@
     <el-form
         size="mini"
         :model="queryParams"
-        ref="queryForm"
+        ref="queryFormRef"
         :inline="true"
-        v-show="showSearch"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
@@ -30,12 +29,8 @@
             clearable
             size="small"
         >
-          <el-option
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-          />
+          <el-option :value="1" label="正常"/>
+          <el-option :value="0" label="禁用"/>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -116,15 +111,14 @@
 
     <!-- 添加或修改部门对话框 -->
     <el-dialog
-        :title="title"
-        v-model="open"
+        :title="dialog.title"
+        v-model="dialog.visible"
         width="600px"
-        @open="dialogshow"
         @closed="cancel"
     >
       <el-form
-          ref="formDialog"
-          :model="formVal"
+          ref="dataFormRef"
+          :model="formData"
           :rules="rules"
           label-width="80px"
       >
@@ -135,17 +129,17 @@
           <tree-select
               :options="deptOptions"
               placeholder="选择上级部门"
-              v-model="formVal.parentId"
+              v-model="formData.parentId"
           />
         </el-form-item>
         <el-form-item label="部门名称" prop="name">
-          <el-input v-model="formVal.name" placeholder="请输入部门名称"/>
+          <el-input v-model="formData.name" placeholder="请输入部门名称"/>
         </el-form-item>
         <el-form-item label="显示排序" prop="sort">
-          <el-input-number v-model="formVal.sort" controls-position="right" style="width: 100px" :min="0"/>
+          <el-input-number v-model="formData.sort" controls-position="right" style="width: 100px" :min="0"/>
         </el-form-item>
         <el-form-item label="部门状态">
-          <el-radio-group v-model="formVal.status">
+          <el-radio-group v-model="formData.status">
             <el-radio :label="1">正常</el-radio>
             <el-radio :label="0">禁用</el-radio>
           </el-radio-group>
@@ -153,13 +147,10 @@
       </el-form>
 
       <template #footer>
-        <div
-            class="dialog-footer"
-        >
+        <div class="dialog-footer">
           <el-button
               type="primary"
-              @click="submitForm"
-          >
+              @click="submitForm">
             确 定
           </el-button>
           <el-button @click="cancel">
@@ -174,62 +165,45 @@
 <script setup lang="ts">
 import {onMounted, reactive, unref, ref, toRefs} from 'vue'
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
-import {listDept, getDept, delDept, updateDept, addDept, listDeptsForSelect} from '@/api/system/dept'
+import {listDeptTable, getDeptDetail, deleteDept, updateDept, addDept, listDeptSelect} from '@/api/system/dept'
 import TreeSelect from '@/components/TreeSelect/Index.vue'
 import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
+import {getUserFormDetail} from "@api/system/user";
+
+const queryFormRef = ref(ElForm)
+const dataFormRef = ref(ElForm)
 
 
-const dataMap = reactive({
+const state = reactive({
   // 选中ID数组
   ids: [],
   // 非单个禁用
   single: true,
-  // 非多个禁用
-  multiple: true,
   disabled: false,
-  isAdd: false,
   originOptions: [],
-  props: { // 配置项（必选）
-    value: 'id',
-    label: 'label',
-    children: 'children'
-  },
   loading: true,
-  // 显示搜索条件
-  showSearch: true,
   // 表格树数据
   deptList: [],
   // 部门树选项
   deptOptions: [],
-  // 弹出层标题
-  title: '',
-  // 是否显示弹出层
-  open: false,
-  // 状态数据字典
-  statusOptions: [
-    {
-      "dictValue": 0,
-      "dictLabel": "禁用"
-    },
-    {
-      "dictValue": 1,
-      "dictLabel": "正常"
-    }
-  ],
+  // 弹窗属性
+  dialog: {
+    title: '',
+    visible: false
+  },
   // 查询参数
   queryParams: {
     name: undefined,
     status: undefined
   },
-  formVal: {
-    id: '',
+  // 表单数据
+  formData: {
+    id: undefined,
     parentId: '',
     name: '',
     sort: 1,
-    status: ''
+    status:  1
   },
-
-  deptidfix: 1,
   // 表单参数校验
   rules: {
     parentId: [
@@ -243,150 +217,146 @@ const dataMap = reactive({
     ]
   }
 })
-const queryForm = ref(ElForm)
-const formDialog = ref(ElForm)
+
+
+const {ids, single, disabled, loading, deptList, deptOptions, queryParams, formData, rules, dialog} = toRefs(state)
 
 
 /**
- * 删除按钮
- * */
-function handleSelectionChange(selection: any) {
-  dataMap.ids = selection.map((item: any) => item.id)
-  dataMap.single = selection.length === 0
-}
-
-/** 查询部门列表 */
-function getList() {
-  dataMap.loading = true
-  listDept(dataMap.queryParams).then((response: any) => {
-    dataMap.deptList = response.data
-    dataMap.loading = false
+ * 部门查询
+ */
+function handleQuery() {
+  state.loading = true
+  listDeptTable(state.queryParams).then((response: any) => {
+    state.deptList = response.data
+    state.loading = false
   })
 }
 
-// 取消按钮
-function cancel() {
-  dataMap.open = false
-  dataMap.isAdd = false
-  dataMap.formVal = {
-    id: '',
-    parentId: '',
-    name: '',
-    sort: 1,
-    status: ''
-  }
-}
-
-/** 搜索按钮操作 */
-function handleQuery() {
-  getList()
-}
-
-/** 重置按钮操作 */
+/**
+ * 重置查询
+ */
 function resetQuery() {
-  const form = unref(queryForm)
-  form.resetFields()
+  const queryForm = unref(queryFormRef)
+  queryForm.resetFields()
   handleQuery()
 }
 
-/** 查询部门下拉树结构 */
-function getTreeselect() {
-  listDeptsForSelect().then(response => {
-    dataMap.deptOptions = response.data
+function handleSelectionChange(selection: any) {
+  state.ids = selection.map((item: any) => item.id)
+  state.single = selection.length === 0
+}
+
+
+/**
+ * 加载部门下拉数据源
+ */
+async function loadDeptOptions() {
+  const deptOptions: any[] = []
+  listDeptSelect().then(response => {
+    const rootDeptOption = {id: 0, label: '顶级部门', children: response.data}
+    deptOptions.push(rootDeptOption)
+    state.deptOptions = deptOptions
   })
 }
 
-function handleAdd(row: any) {
-  dataMap.isAdd = true
-  if (row.id) {
-    dataMap.formVal.parentId = row.id.toString()
+/**
+ * 表单重置
+ **/
+function resetForm() {
+  state.formData = {
+    id: undefined,
+    parentId: '',
+    name: '',
+    sort: 1,
+    status:  1
   }
-  dataMap.open = true
-  dataMap.title = '添加部门'
 }
 
-/** 修改按钮操作 */
+/**
+ * 添加部门
+ */
+function handleAdd() {
+  resetForm()
+  loadDeptOptions()
+  state.dialog = {
+    title: '添加部门',
+    visible: true
+  }
+}
+
+/**
+ * 修改部门
+ */
 async function handleUpdate(row: any) {
-  dataMap.disabled = true
-  dataMap.isAdd = false
-  dataMap.deptidfix = row.id
-  try {
-    const result = await getDept(row.id) as any
-    dataMap.formVal = result.data
-    dataMap.title = '修改部门'
-    dataMap.open = true
-  } catch (e) {
-    console.log("获取部门数据失败")
+  await loadDeptOptions()
+  const deptId = row.id || state.ids
+  state.dialog = {
+    title: '修改部门',
+    visible: true
   }
-
+  getDeptDetail(deptId).then((response: any) => {
+    state.formData = response.data
+  })
 }
 
-/** 提交按钮 */
+/**
+ * 部门表单提交
+ */
 function submitForm() {
-  const formNode = unref(formDialog)
-  formNode.validate((valid: any) => {
+  const dataForm = unref(dataFormRef)
+  dataForm.validate((valid: any) => {
+
     if (valid) {
-      if (!dataMap.isAdd) {
-        updateDept(dataMap.deptidfix, dataMap.formVal).then((res: any) => {
+      if (state.formData.id) {
+        updateDept(state.formData.id, state.formData).then((res: any) => {
           ElMessage.success('修改成功')
-          dataMap.open = false
-          getList()
+          state.dialog.visible = false
+          handleQuery()
         })
       } else {
-        addDept(dataMap.formVal).then((res: any) => {
+        addDept(state.formData).then(() => {
           ElMessage.success('新增成功')
-          dataMap.open = false
-          getList()
+          state.dialog.visible = false
+          handleQuery()
         })
       }
     }
   })
 }
 
-/** 删除按钮操作 */
-async function handleDelete(row: any) {
-  const ids = [row.id || dataMap.ids].join(',')
+/**
+ * 删除部门
+ *
+ * @param row
+ */
+function handleDelete(row: any) {
+  const ids = [row.id || state.ids].join(',')
   ElMessageBox.confirm(`确认删除已选中的数据项?`, '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    delDept(ids).then(rps => {
-      getList()
+    deleteDept(ids).then(() => {
+      handleQuery()
       ElMessage.success('删除成功')
-    }).catch(e => {
-      console.log(`删除失败:${e}`)
+    }).catch(()=> {
+      console.log(`删除失败`)
     })
   }).catch(() =>
       ElMessage.info('已取消删除')
   )
 }
 
-function dialogshow() {
-  getTreeselect()
+/**
+ * 取消/关闭弹窗
+ **/
+function cancel() {
+  resetForm()
+  state.dialog.visible = false
 }
 
-const {
-  ids, single,
-  multiple,
-  disabled,
-  isAdd,
-  originOptions, props, loading,
-  // 显示搜索条件
-  showSearch,
-  // 表格树数据
-  deptList,
-  // 部门树选项
-  deptOptions,
-  // 弹出层标题
-  title,
-  // 是否显示弹出层
-  open, statusOptions, queryParams, formVal, deptidfix, rules
-} = toRefs(dataMap)
-
 onMounted(() => {
-  getList()
-  getTreeselect()
+  handleQuery()
 })
-
 </script>

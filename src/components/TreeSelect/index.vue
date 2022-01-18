@@ -29,8 +29,9 @@
 </template>
 
 <script setup>
-import {ref, getCurrentInstance ,nextTick,onMounted,computed,watch} from "vue";
-const { proxy } = getCurrentInstance();
+import {ref, getCurrentInstance, nextTick, onMounted, computed, watch} from "vue";
+
+const {proxy} = getCurrentInstance();
 
 const state = defineProps({
   // 配置项
@@ -53,13 +54,13 @@ const state = defineProps({
   },
   // v-model 绑定的值
   modelValue: {
-    type: Object,
+    type: [String, Number],
     default: ''
   },
   // 数据源
   options: {
     type: Array,
-    default:[]
+    default: []
   },
   // 提示文字
   placeholder: {
@@ -72,7 +73,6 @@ const emit = defineEmits(['update:modelValue']);
 
 const modelValue = computed({
   get: () => {
-    console.log('heihei',state.modelValue)
     return state.modelValue
   },
   set: (val) => {
@@ -84,21 +84,22 @@ const defaultExpandedKey = ref([]);
 
 function initHandle() {
   nextTick(() => {
-    console.log("selectedValue1",modelValue)
+    console.log("selectedValue1", modelValue)
     const selectedValue = modelValue.value;
-    console.log("selectedValue",modelValue.value)
-    if(selectedValue !== null && typeof (selectedValue) !== "undefined"){
+    console.log("selectedValue", modelValue.value)
+    if (selectedValue !== null && typeof (selectedValue) !== "undefined") {
       const node = proxy.$refs.selectTree.getNode(selectedValue)
       if (node) {
         valueTitle.value = node.data[state.props.label]
         proxy.$refs.selectTree.setCurrentKey(selectedValue) // 设置默认选中
         defaultExpandedKey.value = [selectedValue] // 设置默认展开
-      }else{
+      } else {
         clearHandle()
       }
     }
   })
 }
+
 function handleNodeClick(node) {
   valueTitle.value = node[state.props.label]
   modelValue.value = node[state.props.value];
@@ -129,7 +130,7 @@ function clearSelected() {
 }
 
 onMounted(() => {
-  console.log('hah',modelValue)
+  console.log('hah', modelValue)
   initHandle()
 })
 
@@ -149,7 +150,7 @@ watch(modelValue, () => {
   font-weight: normal;
 }
 
-ul li  .el-tree .el-tree-node__content {
+ul li .el-tree .el-tree-node__content {
   height: auto;
   padding: 0 20px;
   box-sizing: border-box;
@@ -158,7 +159,7 @@ ul li  .el-tree .el-tree-node__content {
 :deep(.el-tree-node__content:hover),
 :deep(.el-tree-node__content:active),
 :deep(.is-current > div:first-child),
-:deep( .el-tree-node__content:focus ){
+:deep( .el-tree-node__content:focus ) {
   background-color: mix(#fff, #409EFF, 90%);
   color: #409EFF;
 }

@@ -1,6 +1,11 @@
 import request from '@/utils/request'
 
-export const listDept = (queryParams?: object) => {
+/**
+ * 部门树形表格
+ *
+ * @param queryParams
+ */
+export function listDeptTable(queryParams?: object) {
     return request({
         url: '/youlai-admin/api/v1/depts/table',
         method: 'get',
@@ -8,22 +13,35 @@ export const listDept = (queryParams?: object) => {
     })
 }
 
-export const getDept = (id: any) => {
+/**
+ * 部门下拉列表
+ */
+export function listDeptSelect() {
     return request({
-        url: '/youlai-admin/api/v1/depts/'+id,
+        url: '/youlai-admin/api/v1/depts/select',
         method: 'get'
     })
 }
 
-export const delDept = (id: any) => {
+/**
+ * 获取部门详情
+ *
+ * @param id
+ */
+export function getDeptDetail(id: any) {
     return request({
-        url: '/youlai-admin/api/v1/depts/'+id,
-        method: 'delete',
+        url: '/youlai-admin/api/v1/depts/' + id,
+        method: 'get'
     })
 }
 
-// 新增部门
-export const addDept = (data: any) => {
+
+/**
+ * 新增部门
+ *
+ * @param data
+ */
+export function addDept(data: any) {
     return request({
         url: '/youlai-admin/api/v1/depts',
         method: 'post',
@@ -31,19 +49,29 @@ export const addDept = (data: any) => {
     })
 }
 
-// 修改部门
-export const updateDept = (id:number,data: any) => {
+/**
+ *  修改部门
+ *
+ * @param id
+ * @param data
+ */
+export function updateDept(id: number, data: any) {
     return request({
-        url: '/youlai-admin/api/v1/depts/'+id,
+        url: '/youlai-admin/api/v1/depts/' + id,
         method: 'put',
         data: data
     })
 }
 
-
-export const listDeptsForSelect = ()=> {
+/**
+ * 删除部门
+ *
+ * @param id
+ */
+export function deleteDept(id: any) {
     return request({
-        url: '/youlai-admin/api/v1/depts/select',
-        method: 'get'
+        url: '/youlai-admin/api/v1/depts/' + id,
+        method: 'delete',
     })
 }
+

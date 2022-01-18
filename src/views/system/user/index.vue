@@ -334,7 +334,7 @@
                   placeholder="请选择"
               >
                 <el-option
-                    v-for="item in roleOptions"
+                    v-for="item  in roleOptions"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id"
@@ -386,7 +386,7 @@ import {reactive, ref, unref, watchEffect, onMounted, getCurrentInstance, toRefs
 
 // API依赖
 import {listUsersWithPage, getUserFormDetail, deleteUsers, addUser, updateUser, updateUserPart} from '@/api/system/user'
-import {listDeptsForSelect} from '@/api/system/dept'
+import {listDeptSelect} from '@/api/system/dept'
 import {listRoles} from '@/api/system/role'
 
 // 组件依赖
@@ -421,9 +421,9 @@ const state = reactive({
   // 部门名称
   deptName: '',
   // 性别状态字典
-  genderOptions: [],
+  genderOptions: [] as any[],
   // 角色选项
-  roleOptions: [],
+  roleOptions: [] as any[],
   // 表单参数
   formData: {
     id: undefined,
@@ -496,7 +496,7 @@ const {
  * 加载部门数据
  **/
 async function loadDeptOptions() {
-  listDeptsForSelect().then(response => {
+  listDeptSelect().then(response => {
     state.deptOptions = response.data
   })
 }
@@ -577,7 +577,7 @@ function resetPassword(row: { [key: string]: any }) {
 }
 
 /**
- *  用户查询
+ * 用户查询
  **/
 function handleQuery() {
   state.loading = true
@@ -628,31 +628,12 @@ async function handleUpdate(row: { [key: string]: any }) {
   await loadDeptOptions()
   await loadRoleOptions()
   state.dialog = {
-    title: '添加用户',
+    title: '修改用户',
     visible: true
   }
   getUserFormDetail(userId).then((response: any) => {
     state.formData = response.data
   })
-}
-
-/**
- * 表单重置
- **/
-function resetForm() {
-  state.formData = {
-    id: undefined,
-    deptId: undefined,
-    username: undefined,
-    nickname: undefined,
-    password: '',
-    mobile: undefined,
-    email: undefined,
-    gender: undefined,
-    status: 1,
-    remark: undefined,
-    roleIds: []
-  }
 }
 
 
@@ -681,7 +662,30 @@ function submitForm() {
   })
 }
 
-/** 删除按钮操作 */
+
+/**
+ * 表单重置
+ **/
+function resetForm() {
+  state.formData = {
+    id: undefined,
+    deptId: undefined,
+    username: undefined,
+    nickname: undefined,
+    password: '',
+    mobile: undefined,
+    email: undefined,
+    gender: undefined,
+    status: 1,
+    remark: undefined,
+    roleIds: []
+  }
+}
+
+
+/**
+ * 删除用户
+ **/
 function handleDelete(row: { [key: string]: any }) {
   const userIds = row.id || state.ids.join(',')
   ElMessageBox.confirm('是否确认删除用户编号为"' + userIds + '"的数据项?', '警告', {

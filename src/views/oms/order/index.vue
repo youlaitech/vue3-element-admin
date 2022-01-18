@@ -124,90 +124,6 @@
         v-model:limit="queryParams.pageSize"
         @pagination="handleQuery"
     />
-
-
-    <!-- 订单详情弹窗 -->
-    <el-dialog
-        v-model="dialog.visible"
-        :title="dialog.title"
-        width="800"
-        top="5vh"
-    >
-      <section
-          ref="print"
-      >
-        <el-form
-            :data="orderDetail"
-            label-position="left"
-        >
-          <el-form-item label="订单编号">
-            <span>{{ orderDetail.order.orderSn }}</span>
-          </el-form-item>
-          <el-form-item label="订单状态">
-            <el-tag>{{ orderDetail.order.status | orderStatusFilter }}</el-tag>
-          </el-form-item>
-          <el-form-item label="订单用户">
-            <span>{{ orderDetail.member.nickname }}</span>
-          </el-form-item>
-          <el-form-item label="买家留言">
-            <span>{{ orderDetail.order.message }}</span>
-          </el-form-item>
-          <el-form-item label="收货信息">
-            <span>（收货人）{{ orderDetail.order.consignee }}</span>
-            <span>（手机号）{{ orderDetail.order.mobile }}</span>
-            <span>（地址）{{ orderDetail.order.address }}</span>
-          </el-form-item>
-          <el-form-item label="商品信息">
-            <el-table :data="orderDetail.orderItems" border fit highlight-current-row>
-              <el-table-column align="center" label="商品名称" prop="spuName"/>
-              <el-table-column align="center" label="货品规格" prop="skuspecs"/>
-              <el-table-column align="center" label="货品价格" prop="skuPrice"/>
-              <el-table-column align="center" label="货品数量" prop="skuQuantity"/>
-              <el-table-column align="center" label="货品图片" prop="skuPic">
-                <template slot-scope="scope">
-                  <img :src="scope.row.skuPic" width="40">
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-form-item>
-          <el-form-item label="费用信息">
-            <span>
-              (订单费用){{ orderDetail.order.orderPrice }}元 =
-              (商品总价){{ orderDetail.order.skuPrice }}元 +
-              (快递费用){{ orderDetail.order.freightPrice }}元 -
-              (优惠减免){{ orderDetail.order.couponPrice }}元 -
-              (积分减免){{ orderDetail.order.integralPrice }}元
-            </span>
-          </el-form-item>
-          <el-form-item label="支付信息">
-            <span>（支付渠道）{{ orderDetail.order.payChannel | payTypeFilter }}</span>
-            <span>（支付时间）{{ orderDetail.order.gmtPay }}</span>
-          </el-form-item>
-          <el-form-item label="快递信息">
-            <span>（物流渠道）{{ orderDetail.order.shipChannel }}</span>
-            <span>（物流单号）{{ orderDetail.order.shipSn }}</span>
-            <span>（发货时间）{{ orderDetail.order.gmtDelivery }}</span>
-          </el-form-item>
-          <el-form-item label="退款信息">
-            <span>（退款金额）{{ orderDetail.order.refundAmount }}元</span>
-            <span>（退款类型）{{ orderDetail.order.refundType }}</span>
-            <span>（退款备注）{{ orderDetail.order.refundNote }}</span>
-            <span>（退款时间）{{ orderDetail.order.gmtRefund }}</span>
-          </el-form-item>
-          <el-form-item label="收货信息">
-            <span>（确认收货时间）{{ orderDetail.order.confirmTime }}</span>
-          </el-form-item>
-        </el-form>
-      </section>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="cancel">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
-
-
   </div>
 </template>
 
@@ -266,7 +182,24 @@ const state = reactive({
   },
   dialogVisible: false,
   orderDetail: {
-    order: {},
+    order: {
+      refundAmount: undefined,
+      refundType: undefined,
+      refundNote: undefined,
+      gmtRefund: undefined,
+      confirmTime: undefined,
+      gmtDelivery: undefined,
+      shipSn: undefined,
+      shipChannel: undefined,
+      gmtPay: undefined,
+      integralPrice: undefined,
+      payChannel: undefined,
+      skuPrice : undefined,
+      couponPrice: undefined,
+      freightPrice: undefined,
+      orderPrice : undefined,
+      couponPrice: undefined,
+    },
     member: {},
     orderItems: []
   },

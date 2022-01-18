@@ -173,7 +173,7 @@
                         <div style="padding: 6px;">
                           <span>Mr.</span>
                           <div class="bottom clearfix" style="margin-top: 5px">
-                            <el-tag type="primary" size="mini">后端</el-tag>
+                            <el-tag  size="mini">后端</el-tag>
                             <el-tag type="success" style="margin-left: 5px" size="mini">前端</el-tag>
                             <el-tag type="danger" style="margin-left: 5px" size="mini">运维</el-tag>
                           </div>
