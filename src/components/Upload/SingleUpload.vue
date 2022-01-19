@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, reactive, toRefs} from "vue";
+import {computed, reactive} from "vue";
 import {Plus, Close} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus"
 import {uploadFile, deleteFile} from "@/api/system/file";

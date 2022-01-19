@@ -18,22 +18,28 @@
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">
-        <refresh-right style="width: 1em; height: 1em;"/> 刷新
+        <refresh-right style="width: 1em; height: 1em;"/>
+        刷新
       </li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        <close style="width: 1em; height: 1em;"/>关闭
+        <close style="width: 1em; height: 1em;"/>
+        关闭
       </li>
-      <li @click="closeOthersTags">
-        <circle-close style="width: 1em; height: 1em;"/>关闭其它
+      <li @click="closeOtherTags">
+        <circle-close style="width: 1em; height: 1em;"/>
+        关闭其它
       </li>
       <li v-if="!isFirstView()" @click="closeLeftTags">
-        <back style="width: 1em; height: 1em;"/>关闭左侧
+        <back style="width: 1em; height: 1em;"/>
+        关闭左侧
       </li>
       <li v-if="!isLastView()" @click="closeRightTags">
-        <right style="width: 1em; height: 1em;"/>关闭右侧
+        <right style="width: 1em; height: 1em;"/>
+        关闭右侧
       </li>
       <li @click="closeAllTags(selectedTag)">
-        <circle-close style="width: 1em; height: 1em;"/>关闭所有
+        <circle-close style="width: 1em; height: 1em;"/>
+        关闭所有
       </li>
     </ul>
   </div>
@@ -68,7 +74,7 @@ const routes = computed(() => usePermissionStoreHook().routes)
 const affixTags = ref([]);
 const visible = ref(false);
 const selectedTag = ref({});
-const scrollPaneRef = ref(null);
+const scrollPaneRef = ref();
 const left = ref(0);
 const top = ref(0);
 
@@ -173,15 +179,13 @@ function refreshSelectedTag(view: TagView) {
   tagsViewStoreHook().delCachedView(view)
   const {fullPath} = view
   nextTick(() => {
-
-    console.log('fullPath',fullPath)
     router.replace({path: '/redirect' + fullPath}).catch(err => {
       console.warn(err)
     })
   })
 }
 
-function toLastView(visitedViews: TagView[], view: TagView) {
+function toLastView(visitedViews: TagView[], view?: any) {
   const latestView = visitedViews.slice(-1)[0]
   if (latestView && latestView.fullPath) {
     router.push(latestView.fullPath)
@@ -198,28 +202,43 @@ function toLastView(visitedViews: TagView[], view: TagView) {
 }
 
 function closeSelectedTag(view: TagView) {
-  tagsViewStoreHook().delView(view).then(({visitedViews}) => {
+  tagsViewStoreHook().delView(view).then((res: any) => {
     if (isActive(view)) {
-      toLastView(visitedViews, view)
+      toLastView(res.visitedViews, view)
     }
   })
 }
 
 function closeLeftTags() {
-  tagsViewStoreHook().delLeftViews(selectedTag.value).then(({visitedViews}) => {
-    if (!visitedViews.find(i => i.fullPath === route.fullPath)) {
-      toLastView(visitedViews)
+  tagsViewStoreHook().delLeftViews(selectedTag.value).then((res: any) => {
+    if (!res.visitedViews.find((item: any) => item.fullPath === route.fullPath)) {
+      toLastView(res.visitedViews)
+    }
+  })
+}
+function closeRightTags() {
+  tagsViewStoreHook().delRightViews(selectedTag.value).then((res:any) => {
+    if (!res.visitedViews.find((item:any) => item.fullPath === route.fullPath)) {
+      toLastView(res.visitedViews)
     }
   })
 }
 
-function closeRightTags() {
-  tagsViewStoreHook().delRightViews(selectedTag.value).then(({visitedViews}) => {
-    if (!visitedViews.find(i => i.fullPath === route.fullPath)) {
-      toLastView(visitedViews)
-    }
+function closeOtherTags() {
+  tagsViewStoreHook().delOtherViews(selectedTag.value).then(() => {
+    moveToCurrentTag()
   })
 }
+
+function closeAllTags(view: TagView) {
+  tagsViewStoreHook().delRightViews(selectedTag.value).then((res:any) => {
+    if (affixTags.value.some((tag:any) => tag.path === route.path)) {
+      return
+    }
+    toLastView(res.visitedViews, view)
+  })
+}
+
 
 function openMenu(tag: TagView, e: MouseEvent) {
   const menuMinWidth = 105
@@ -261,6 +280,7 @@ onMounted(() => {
   background: #fff;
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+
   .tags-view-wrapper {
     .tags-view-item {
       display: inline-block;
@@ -275,16 +295,20 @@ onMounted(() => {
       font-size: 12px;
       margin-left: 5px;
       margin-top: 4px;
+
       &:first-of-type {
         margin-left: 15px;
       }
+
       &:last-of-type {
         margin-right: 15px;
       }
+
       &.active {
         background-color: #42b983;
         color: #fff;
         border-color: #42b983;
+
         &::before {
           content: "";
           background: #fff;
@@ -298,6 +322,7 @@ onMounted(() => {
       }
     }
   }
+
   .contextmenu {
     margin: 0;
     background: #fff;
@@ -310,10 +335,12 @@ onMounted(() => {
     font-weight: 400;
     color: #333;
     box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
+
     li {
       margin: 0;
       padding: 7px 16px;
       cursor: pointer;
+
       &:hover {
         background: #eee;
       }
@@ -334,11 +361,13 @@ onMounted(() => {
       text-align: center;
       transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
       transform-origin: 100% 50%;
+
       &:before {
         transform: scale(0.6);
         display: inline-block;
         vertical-align: -3px;
       }
+
       &:hover {
         background-color: #b4bccc;
         color: #fff;

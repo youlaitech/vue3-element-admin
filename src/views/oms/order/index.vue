@@ -79,31 +79,31 @@
 
       <el-table-column align="center" label="订单来源">
         <template #default="scope">
-          <el-tag>{{ scope.row.sourceType | orderSourceFilter }}</el-tag>
+          <el-tag>{{ scope.row.sourceType }}</el-tag>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="订单状态">
         <template #default="scope">
-          <el-tag>{{ scope.row.status | orderStatusFilter }}</el-tag>
+          <el-tag>{{ scope.row.status }}</el-tag>
         </template>
       </el-table-column>
 
       <el-table-column align="center" prop="orderPrice" label="订单金额">
         <template #default="scope">
-          {{ scope.row.totalAmount | moneyFormatter }}
+          {{ scope.row.totalAmount }}
         </template>
       </el-table-column>
 
       <el-table-column align="center" prop="payPrice" label="支付金额">
         <template #default="scope">
-          {{ scope.row.payAmount | moneyFormatter }}
+          {{ scope.row.payAmount  }}
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="支付方式">
         <template #default="scope">
-          <el-tag>{{ scope.row.payType | payTypeFilter }}</el-tag>
+          <el-tag>{{ scope.row.payType  }}</el-tag>
         </template>
       </el-table-column>
 

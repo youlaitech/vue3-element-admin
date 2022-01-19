@@ -1,9 +1,9 @@
 <template>
   <section class="app-main">
-    <router-view v-slot="{ Component }">
+    <router-view v-slot="{ Component ,route}">
       <transition name="router-fade" mode="out-in">
-        <keep-alive :include="cachedViews()">
-          <component :is="Component" :key="key"/>
+        <keep-alive :include="cachedViews">
+          <component :is="Component" :key="route.path"/>
         </keep-alive>
       </transition>
     </router-view>
@@ -11,26 +11,11 @@
 </template>
 
 
-<script lang="ts">
-import {defineComponent} from "vue";
-import {useRoute} from "vue-router";
+<script setup lang="ts">
+import {computed} from "vue";
 import {tagsViewStoreHook} from '@/store/modules/tagsView'
-export default defineComponent({
-  setup() {
-    const route = useRoute()
-    const cachedViews = () => {
-      return tagsViewStoreHook().cachedViews
-    }
-    const key = () => {
-      return route.path
-    }
-    return {
-      cachedViews,
-      key
-    }
-  }
 
-})
+const cachedViews = computed(() => tagsViewStoreHook().cachedViews);
 
 </script>
 

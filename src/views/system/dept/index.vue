@@ -202,7 +202,7 @@ const state = reactive({
     parentId: '',
     name: '',
     sort: 1,
-    status:  1
+    status: 1
   },
   // 表单参数校验
   rules: {
@@ -269,16 +269,17 @@ function resetForm() {
     parentId: '',
     name: '',
     sort: 1,
-    status:  1
+    status: 1
   }
 }
 
 /**
  * 添加部门
  */
-function handleAdd() {
+function handleAdd(row: any) {
   resetForm()
   loadDeptOptions()
+  state.formData.parentId = row.id
   state.dialog = {
     title: '添加部门',
     visible: true
@@ -340,7 +341,7 @@ function handleDelete(row: any) {
     deleteDept(ids).then(() => {
       handleQuery()
       ElMessage.success('删除成功')
-    }).catch(()=> {
+    }).catch(() => {
       console.log(`删除失败`)
     })
   }).catch(() =>

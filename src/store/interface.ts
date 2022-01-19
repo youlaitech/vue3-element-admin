@@ -38,7 +38,7 @@ export interface TagView extends Partial<RouteLocationNormalized> {
 
 export interface TagsViewState{
     visitedViews: TagView[],
-    cachedViews: (string|undefined)[]
+    cachedViews: (string)[]
 }
 
 // 顶级类型声明

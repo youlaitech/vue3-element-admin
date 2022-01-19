@@ -53,7 +53,7 @@ const props = defineProps({
   }
 })
 
-const onlyOneChild = ref({});
+const onlyOneChild = ref();
 
 function hasOneShowingChild(children = [] as any, parent: RouteRecordRaw) {
   if (!children) {

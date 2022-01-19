@@ -45,7 +45,7 @@ const tagsViewStore = defineStore({
 
         },
 
-        delOthersVisitedViews(view: any) {
+        delOtherVisitedViews(view: any) {
             return new Promise(resolve => {
                 this.visitedViews = this.visitedViews.filter(v => {
                     return v.meta?.affix || v.path === view.path
@@ -54,7 +54,7 @@ const tagsViewStore = defineStore({
             })
 
         },
-        delOthersCachedViews(view: any) {
+        delOtherCachedViews(view: any) {
             return new Promise(resolve => {
                 const index = this.cachedViews.indexOf(view.name)
                 if (index > -1) {
@@ -90,10 +90,10 @@ const tagsViewStore = defineStore({
                 })
             })
         },
-        delOthersViews(view: any) {
+        delOtherViews(view: any) {
             return new Promise(resolve => {
-                this.delOthersVisitedViews(view)
-                this.delOthersCachedViews(view)
+                this.delOtherVisitedViews(view)
+                this.delOtherCachedViews(view)
                 resolve({
                     visitedViews: [...this.visitedViews],
                     cachedViews: [...this.cachedViews]

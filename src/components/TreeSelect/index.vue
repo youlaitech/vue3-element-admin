@@ -84,9 +84,7 @@ const defaultExpandedKey = ref([]);
 
 function initHandle() {
   nextTick(() => {
-    console.log("selectedValue1", modelValue)
     const selectedValue = modelValue.value;
-    console.log("selectedValue", modelValue.value)
     if (selectedValue !== null && typeof (selectedValue) !== "undefined") {
       const node = proxy.$refs.selectTree.getNode(selectedValue)
       if (node) {
