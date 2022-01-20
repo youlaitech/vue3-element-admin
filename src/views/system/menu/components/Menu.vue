@@ -206,7 +206,8 @@ const state = reactive({
     icon: '',
     sort: 1,
     component: 'Layout',
-    path: undefined
+    path: undefined,
+    redirect:''
   },
   rules: {
     parentId: [
@@ -356,7 +357,8 @@ function resetForm() {
     icon: '',
     sort: 1,
     component: 'Layout',
-    path: undefined
+    path: undefined,
+    redirect:''
   }
 }
 

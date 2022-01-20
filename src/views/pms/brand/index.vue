@@ -155,7 +155,7 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    title: undefined
+    name: undefined
   },
   pageList: [],
   total: 0,

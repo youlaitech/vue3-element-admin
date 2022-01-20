@@ -185,7 +185,7 @@ const state = reactive({
   // 表格树数据
   deptList: [],
   // 部门树选项
-  deptOptions: [],
+  deptOptions: [] as Array<any>,
   // 弹窗属性
   dialog: {
     title: '',

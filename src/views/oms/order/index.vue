@@ -64,7 +64,7 @@
               </template>
             </el-table-column>
             <el-table-column align="center" label="单价" prop="skuPrice">
-              <template slot-scope="scope">{{ scope.row.skuPrice | moneyFormatter }}</template>
+              <template slot-scope="scope">{{ scope.row.skuPrice}}</template>
             </el-table-column>
             <el-table-column align="center" label="数量" prop="skuQuantity">
               <template slot-scope="scope">{{ scope.row.skuQuantity }}</template>
@@ -197,8 +197,7 @@ const state = reactive({
       skuPrice : undefined,
       couponPrice: undefined,
       freightPrice: undefined,
-      orderPrice : undefined,
-      couponPrice: undefined,
+      orderPrice : undefined
     },
     member: {},
     orderItems: []
@@ -208,7 +207,7 @@ const state = reactive({
   payTypeMap
 })
 
-const {loading, single, multiple, queryParams, pageList, total, dialog, orderDetail} = toRefs(state)
+const {loading, single, multiple, queryParams, pageList, total, dialog,dateRange, orderDetail} = toRefs(state)
 
 function handleQuery() {
   state.loading = true

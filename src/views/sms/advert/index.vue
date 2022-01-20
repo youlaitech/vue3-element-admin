@@ -14,8 +14,8 @@
 
       <el-form-item>
         <el-input
-            v-model="queryParams.name"
-            placeholder="广告名称"
+            v-model="queryParams.title"
+            placeholder="广告标题"
             clearable
             @keyup.enter.native="handleQuery"
         />

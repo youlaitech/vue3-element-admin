@@ -17,7 +17,7 @@
         <el-tree
             ref="deptTreeRef"
             :data="deptOptions"
-            :props="{ children: 'children',label: 'label'}"
+            :props="{ children: 'children',label: 'label',disabled:''}"
             :expand-on-click-node="false"
             :filter-node-method="filterDeptNode"
             default-expand-all

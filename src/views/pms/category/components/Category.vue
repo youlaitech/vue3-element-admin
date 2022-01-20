@@ -6,7 +6,7 @@
         v-loading="loading"
         ref="categoryTreeRef"
         :data="categoryOptions"
-        :props="{ label: 'name', children: 'children' }"
+        :props="{ label: 'name', children: 'children',disabled:'' }"
         node-key="id"
         :expand-on-click-node="false"
         default-expand-all
@@ -145,8 +145,8 @@ const state = reactive({
     title: '',
     visible: false
   },
-  parent: {},
-  current: {}
+  parent: {} as any,
+  current: {} as any
 })
 
 const {loading, categoryOptions, formData, rules, dialog, parent} = toRefs(state)

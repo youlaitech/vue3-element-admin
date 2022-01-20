@@ -8,7 +8,7 @@
         :inline="true"
     >
       <el-form-item>
-        <el-button type="success" :icon="Plus" :disabled="state.disabled" @click="handleAdd">新增</el-button>
+        <el-button type="success" :icon="Plus" :disabled="state.single" @click="handleAdd">新增</el-button>
         <el-button type="danger" :icon="Delete" :disabled="state.multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
       <el-form-item>
@@ -137,7 +137,7 @@
 <script setup lang="ts">
 import {listPermsWithPage, getPermDetail, addPerm, updatePerm, deletePerms} from "@/api/system/perm"
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
-import {onMounted, watch, reactive, ref, unref, getCurrentInstance} from 'vue'
+import {onMounted, watch, reactive, ref, unref, getCurrentInstance, toRefs} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus"
 
 const {proxy}: any = getCurrentInstance();
@@ -197,7 +197,7 @@ const state = reactive({
     ]
   },
   microServiceOptions: [],
-  requestMethodOptions: [],
+  requestMethodOptions: [] as Array<any>,
   menuName: undefined,
   urlPerm: {
     requestMethod: undefined,
@@ -205,6 +205,9 @@ const state = reactive({
     requestPath: undefined
   },
 })
+
+ toRefs(state)
+
 
 function handleQuery() {
   if (state.queryParams.menuId) {

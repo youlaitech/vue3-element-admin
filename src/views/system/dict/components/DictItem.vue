@@ -168,7 +168,9 @@ const state = reactive({
     name: undefined,
     code: undefined,
     status: undefined,
-    remark: undefined
+    remark: undefined,
+    sort:undefined,
+    value:undefined
   },
   rules: {
     name: [
@@ -263,7 +265,9 @@ function resetForm() {
     name: undefined,
     code: undefined,
     status: undefined,
-    remark: undefined
+    remark: undefined,
+    sort:undefined,
+    value:undefined
   }
 }
 

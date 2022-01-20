@@ -11,16 +11,16 @@
         :limit="1"
         :http-request="uploadImage"
     >
-      <img v-if="imgUrl" :src="imgUrl" class="avatar"/>
+      <img v-if="imgURL" :src="imgURL" class="avatar"/>
 
       <el-icon v-else class="avatar-uploader-icon">
         <Plus/>
       </el-icon>
 
       <el-icon
-          v-if="imgUrl"
+          v-if="imgURL"
           class="remove-icon"
-          @click.stop="handleRemove(imgUrl)"
+          @click.stop="handleRemove(imgURL)"
       >
         <Close/>
       </el-icon>
@@ -53,7 +53,7 @@ const state = reactive({
   previewDialogVisible: false,
 })
 
-const imgUrl = computed({
+const imgURL = computed<string>({
   get() {
     return props.modelValue
   },
@@ -84,8 +84,8 @@ function handleBeforeUpload(file: any) {
 function uploadImage(params: any) {
   const file = params.file
   uploadFile(file).then(response => {
-    const imgUrl = response.data
-    emit('update:modelValue', imgUrl)
+    const imgURL = response.data
+    emit('update:modelValue', imgURL)
   })
 }
 
@@ -93,8 +93,8 @@ function handleExceed(file: any) {
   ElMessage.warning('最多只能上传' + props.maxCount)
 }
 
-function handleRemove(imgUrl: string) {
-  deleteFile(imgUrl)
+function handleRemove(imgURL: string) {
+  deleteFile(imgURL)
   emit('update:modelValue', '')
 }
 </script>

@@ -60,11 +60,10 @@ const categoryRef = ref(ElCascaderPanel)
 function handleCategoryChange() {
   const checkNode = categoryRef.value.getCheckedNodes()[0]
   state.pathLabels = checkNode.pathLabels // 商品分类选择层级提示
-  state.categoryId = checkNode.value
+  props.modelValue.categoryId = checkNode.value
 }
 
 function handleNext() {
-  console.log('商品属性',props.modelValue.categoryId)
   if (!props.modelValue.categoryId) {
     ElMessage.warning('请选择商品分类')
     return false
