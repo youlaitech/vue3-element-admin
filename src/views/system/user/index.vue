@@ -2,28 +2,31 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!-- 部门数据 -->
+
       <el-col
           :span="4"
           :xs="24"
       >
-        <el-input
-            v-model="deptName"
-            placeholder="部门名称"
-            clearable
-            size="small"
-            :prefix-icon="Search"
-            style="margin-bottom: 20px"
-        />
-        <el-tree
-            ref="deptTreeRef"
-            :data="deptOptions"
-            :props="{ children: 'children',label: 'label',disabled:''}"
-            :expand-on-click-node="false"
-            :filter-node-method="filterDeptNode"
-            default-expand-all
-            @node-click="handleDeptNodeClick"
-        >
-        </el-tree>
+        <el-card class="box-card">
+          <el-input
+              v-model="deptName"
+              placeholder="部门名称"
+              clearable
+              size="small"
+              :prefix-icon="Search"
+              style="margin-bottom: 20px"
+          />
+          <el-tree
+              ref="deptTreeRef"
+              :data="deptOptions"
+              :props="{ children: 'children',label: 'label',disabled:''}"
+              :expand-on-click-node="false"
+              :filter-node-method="filterDeptNode"
+              default-expand-all
+              @node-click="handleDeptNodeClick"
+          >
+          </el-tree>
+        </el-card>
       </el-col>
 
       <!-- 用户数据 -->
@@ -31,196 +34,199 @@
           :span="20"
           :xs="24"
       >
-        <el-form
-            ref="queryFormRef"
-            :model="queryParams"
-            :inline="true"
-        >
-          <el-form-item>
-            <el-button
-                type="success"
-                :icon="Plus"
-                size="mini"
-                @click="handleAdd"
-            >
-              新增
-            </el-button>
-            <el-button
-                type="primary"
-                :icon="Edit"
-                size="mini"
-                :disabled="single"
-                @click="handleUpdate"
-            >
-              修改
-            </el-button>
-            <el-button
-                type="danger"
-                plain
-                :icon="Delete"
-                size="mini"
-                :disabled="multiple"
-                @click="handleDelete"
-            >
-              删除
-            </el-button>
-          </el-form-item>
-
-          <el-form-item>
-            <el-input
-                v-model="queryParams.keywords"
-                placeholder="用户名/昵称/手机号"
-                clearable
-                size="small"
-                style="width: 200px"
-                @keyup.enter="handleQuery"
-            />
-          </el-form-item>
-
-          <el-form-item>
-            <el-select
-                v-model="queryParams.status"
-                placeholder="用户状态"
-                clearable
-                size="small"
-                style="width: 200px"
-            >
-              <el-option label="正常" value="1"/>
-              <el-option label="停用" value="0"/>
-            </el-select>
-          </el-form-item>
-
-
-          <el-form-item>
-            <el-button
-                type="primary"
-                :icon="Search"
-                size="mini"
-                @click="handleQuery"
-            >
-              搜索
-            </el-button>
-            <el-button
-                :icon="Refresh"
-                size="mini"
-                @click="resetQuery"
-            >
-              重置
-            </el-button>
-          </el-form-item>
-        </el-form>
-
-        <el-table
-            v-loading="loading"
-            :data="pageList"
-            @selection-change="handleSelectionChange"
-        >
-          <el-table-column
-              type="selection"
-              width="50"
-              align="center"
-          />
-          <el-table-column
-              key="id"
-              label="用户编号"
-              align="center"
-              prop="id"
-          />
-          <el-table-column
-              key="username"
-              label="用户名称"
-              align="center"
-              prop="username"
-              :show-overflow-tooltip="true"
-          />
-          <el-table-column
-              key="nickname"
-              label="用户昵称"
-              align="center"
-              prop="nickname"
-              :show-overflow-tooltip="true"
-          />
-          <el-table-column
-              key="deptName"
-              label="部门"
-              align="center"
-              prop="deptName"
-              :show-overflow-tooltip="true"
-          />
-          <el-table-column
-              key="mobile"
-              label="手机号码"
-              align="center"
-              prop="mobile"
-              width="120"
-          />
-
-          <el-table-column
-              key="status"
-              label="状态"
-              align="center"
-              prop="status"
+        <el-card class="box-card">
+          <el-form
+              ref="queryFormRef"
+              :model="queryParams"
+              :inline="true"
           >
-            <template #default="scope">
-              <el-switch
-                  v-model="scope.row.status"
-                  :inactive-value=0
-                  :active-value=1
-                  @change="handleStatusChange(scope.row)"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column
-              label="创建时间"
-              align="center"
-              prop="gmtCreate"
-              width="180"
-          >
-          </el-table-column>
-          <el-table-column
-              label="操作"
-              align="center"
-              width="150"
-          >
-            <template #default="scope">
+            <el-form-item>
+              <el-button
+                  type="success"
+                  :icon="Plus"
+                  size="mini"
+                  @click="handleAdd"
+              >
+                新增
+              </el-button>
               <el-button
                   type="primary"
                   :icon="Edit"
                   size="mini"
-                  circle
-                  plain
-                  @click="handleUpdate(scope.row)"
+                  :disabled="single"
+                  @click="handleUpdate"
               >
+                修改
               </el-button>
               <el-button
                   type="danger"
-                  size="mini"
-                  :icon="Delete"
-                  circle
                   plain
-                  @click="handleDelete(scope.row)"
+                  :icon="Delete"
+                  size="mini"
+                  :disabled="multiple"
+                  @click="handleDelete"
               >
+                删除
+              </el-button>
+            </el-form-item>
+
+            <el-form-item  prop="keywords">
+              <el-input
+                  v-model="queryParams.keywords"
+                  placeholder="用户名/昵称/手机号"
+                  clearable
+                  size="small"
+                  style="width: 200px"
+                  @keyup.enter="handleQuery"
+
+              />
+            </el-form-item>
+
+            <el-form-item prop="status">
+              <el-select
+                  v-model="queryParams.status"
+                  placeholder="用户状态"
+                  clearable
+                  size="small"
+                  style="width: 200px"
+              >
+                <el-option label="正常" value="1"/>
+                <el-option label="停用" value="0"/>
+              </el-select>
+            </el-form-item>
+
+
+            <el-form-item>
+              <el-button
+                  type="primary"
+                  :icon="Search"
+                  size="mini"
+                  @click="handleQuery"
+              >
+                搜索
               </el-button>
               <el-button
-                  type="warning"
+                  :icon="Refresh"
                   size="mini"
-                  :icon="Lock"
-                  circle
-                  plain
-                  @click="resetPassword(scope.row)"
+                  @click="resetQuery"
               >
+                重置
               </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            </el-form-item>
+          </el-form>
 
-        <pagination
-            v-show="total>0"
-            :total="total"
-            v-model:page="queryParams.page"
-            v-model:limit="queryParams.limit"
-            @pagination="handleQuery"
-        />
+          <el-table
+              v-loading="loading"
+              :data="pageList"
+              @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+                type="selection"
+                width="50"
+                align="center"
+            />
+            <el-table-column
+                key="id"
+                label="用户编号"
+                align="center"
+                prop="id"
+            />
+            <el-table-column
+                key="username"
+                label="用户名称"
+                align="center"
+                prop="username"
+                :show-overflow-tooltip="true"
+            />
+            <el-table-column
+                key="nickname"
+                label="用户昵称"
+                align="center"
+                prop="nickname"
+                :show-overflow-tooltip="true"
+            />
+            <el-table-column
+                key="deptName"
+                label="部门"
+                align="center"
+                prop="deptName"
+                :show-overflow-tooltip="true"
+            />
+            <el-table-column
+                key="mobile"
+                label="手机号码"
+                align="center"
+                prop="mobile"
+                width="120"
+            />
+
+            <el-table-column
+                key="status"
+                label="状态"
+                align="center"
+                prop="status"
+            >
+              <template #default="scope">
+                <el-switch
+                    v-model="scope.row.status"
+                    :inactive-value=0
+                    :active-value=1
+                    @change="handleStatusChange(scope.row)"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column
+                label="创建时间"
+                align="center"
+                prop="gmtCreate"
+                width="180"
+            >
+            </el-table-column>
+            <el-table-column
+                label="操作"
+                align="center"
+                width="150"
+            >
+              <template #default="scope">
+                <el-button
+                    type="primary"
+                    :icon="Edit"
+                    size="mini"
+                    circle
+                    plain
+                    @click="handleUpdate(scope.row)"
+                >
+                </el-button>
+                <el-button
+                    type="danger"
+                    size="mini"
+                    :icon="Delete"
+                    circle
+                    plain
+                    @click="handleDelete(scope.row)"
+                >
+                </el-button>
+                <el-button
+                    type="warning"
+                    size="mini"
+                    :icon="Lock"
+                    circle
+                    plain
+                    @click="resetPassword(scope.row)"
+                >
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+          <pagination
+              v-show="total>0"
+              :total="total"
+              v-model:page="queryParams.page"
+              v-model:limit="queryParams.limit"
+              @pagination="handleQuery"
+          />
+        </el-card>
       </el-col>
     </el-row>
 
@@ -519,7 +525,7 @@ function filterDeptNode(value: string, data: any) {
 }
 
 /**
- *  部门点击事件
+ * 部门树点击
  **/
 function handleDeptNodeClick(data: { [key: string]: any }) {
   state.queryParams.deptId = data.id
@@ -720,4 +726,5 @@ onMounted(() => {
 })
 </script>
 <style lang="scss" scoped>
+
 </style>
