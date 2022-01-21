@@ -172,7 +172,8 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    orderSn: undefined
+    orderSn: undefined,
+    status:undefined
   },
   pageList: [],
   total: 0,
@@ -223,7 +224,8 @@ function resetQuery() {
   state.queryParams = {
     pageNum: 1,
     pageSize: 10,
-    orderSn: undefined
+    orderSn: undefined,
+    status: undefined
   }
   handleQuery()
 }

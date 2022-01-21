@@ -31,7 +31,7 @@
               <template #default="scope">
                 <el-form-item
                     :prop="'attrList[' + scope.$index + '].name'"
-                    :rules="rules.attribute.name"
+                    :rules="rules.name"
                 >
                   <el-input v-model="scope.row.name"/>
                 </el-form-item>
@@ -42,7 +42,7 @@
               <template #default="scope">
                 <el-form-item
                     :prop="'attrList[' + scope.$index + '].value'"
-                    :rules="rules.attribute.value"
+                    :rules="rules.value"
                 >
                   <el-input v-model="scope.row.value"/>
                 </el-form-item>
@@ -115,10 +115,12 @@ watch(categoryId, (newVal, oldVal) => {
 
 const state = reactive({
   rules: {
-    attribute: {
-      name: [{required: true, message: '请填写属性名称', trigger: 'blur'}],
-      value: [{required: true, message: '请填写属性值', trigger: 'blur'}]
-    }
+    name: [
+      {required: true, message: '请填写属性名称', trigger: 'blur'}
+    ],
+    value: [
+      {required: true, message: '请填写属性值', trigger: 'blur'}
+    ]
   }
 })
 

@@ -91,7 +91,7 @@ const props = defineProps({
 })
 
 const state = reactive({
-  brandOptions: [],
+  brandOptions: [] as Array<any>,
   // 商品图册
   pictures: [] as Array<any>,
   rules: {

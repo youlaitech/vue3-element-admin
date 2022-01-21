@@ -68,8 +68,8 @@ const {ctx} = getCurrentInstance() as any
 const router = useRouter()
 const route = useRoute();
 
-const visitedViews = computed(() => tagsViewStoreHook().visitedViews)
-const routes = computed(() => usePermissionStoreHook().routes)
+const visitedViews = computed<any>(() => tagsViewStoreHook().visitedViews)
+const routes = computed<any>(() => usePermissionStoreHook().routes)
 
 const affixTags = ref([]);
 const visible = ref(false);

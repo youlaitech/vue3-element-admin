@@ -40,7 +40,7 @@ import {RouteRecordRaw} from "vue-router";
 
 const props = defineProps({
   item: {
-    type: Object as PropType<RouteRecordRaw>,
+    type: Object,
     required: true
   },
   isNest: {
@@ -55,7 +55,7 @@ const props = defineProps({
 
 const onlyOneChild = ref();
 
-function hasOneShowingChild(children = [] as any, parent: RouteRecordRaw) {
+function hasOneShowingChild(children = [] as any, parent: any) {
   if (!children) {
     children = [];
   }

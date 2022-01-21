@@ -33,7 +33,7 @@
                 circle
                 plain
                 size="mini"
-                @click.prevent="handleAdd(index)"
+                @click.prevent="handleAdd()"
                 style="margin-left: 15px"
             />
 
