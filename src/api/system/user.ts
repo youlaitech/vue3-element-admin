@@ -20,7 +20,7 @@ export function listUsersWithPage(queryParams: any) {
  */
 export function getUserFormDetail(userId: any) {
     return request({
-        url: '/youlai-admin/api/v1/users/' + userId + '/form',
+        url: '/youlai-admin/api/v1/users/' + userId + '/form_detail',
         method: 'get'
     })
 }
