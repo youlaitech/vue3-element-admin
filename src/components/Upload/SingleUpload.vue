@@ -65,7 +65,7 @@ const imgUrl = computed<string | null>({
  */
 function uploadImage({file}: any) {
   uploadFile(file).then(response => {
-     imgUrl.value = response.data
+    imgUrl.value = response.data
   })
 }
 
@@ -86,12 +86,14 @@ function handleExceed(files: UploadFile[]) {
 
 /**
  * 删除图片
- * 
+ *
  * @param file
  */
-function handleRemove(file: string) {
-  deleteFile(file)
-  imgUrl.value = null // 这里会触发imgUrl的computed的set方法
+function handleRemove(file: string | null) {
+  if (file) {
+    deleteFile(file)
+    imgUrl.value = null // 这里会触发imgUrl的computed的set方法
+  }
 }
 
 function handleBeforeUpload(file: any) {
@@ -111,7 +113,7 @@ function handleBeforeUpload(file: any) {
 
 <style lang="scss" scoped>
 
-.component-container{
+.component-container {
   .single-uploader {
     cursor: pointer;
     position: relative;
@@ -120,16 +122,19 @@ function handleBeforeUpload(file: any) {
     &:hover {
       border-color: #409EFF;
     }
-    &-icon{
+
+    &-icon {
       font-size: 28px;
       color: #8c939d;
       text-align: center;
     }
-    &-image{
+
+    &-image {
       width: 146px;
       height: 146px;
       display: block;
     }
+
     &-remove-icon {
       font-size: 12px;
       color: #ff4d51 !important;
