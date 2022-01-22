@@ -1,11 +1,10 @@
 <template>
-  <div class="components-container">
-
+  <div class="app-container">
     <el-steps :active="active" process-status="finish" finish-status="success" simple>
-      <el-step title="选择商品分类"></el-step>
-      <el-step title="填写商品信息"></el-step>
-      <el-step title="设置商品属性"></el-step>
-      <el-step title="设置商品库存"></el-step>
+      <el-step title="选择商品分类"/>
+      <el-step title="填写商品信息"/>
+      <el-step title="设置商品属性"/>
+      <el-step title="设置商品库存"/>
     </el-steps>
 
     <goods-category
@@ -107,8 +106,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.form-container {
-  width: 80%;
-  margin: 30px auto;
+.app-container {
+  width: 1200px;
+  margin: 50px auto;
+  border: 1px solid #eee;
 }
 </style>

@@ -1,24 +1,12 @@
 <template>
-  <div class="components-container">
-    <div class="components-container__main">
+  <div class="component-container">
+    <div class="component-container__main">
       <el-form
           ref="dataForm"
           :rules="rules"
           :model="modelValue"
           label-width="120px"
       >
-        <el-form-item label="商品名称" prop="name">
-          <el-input style="width: 400px" v-model="modelValue.name"/>
-        </el-form-item>
-
-        <el-form-item label="原价" prop="originPrice">
-          <el-input style="width: 400px" v-model="modelValue.originPrice"/>
-        </el-form-item>
-
-        <el-form-item label="现价" prop="price">
-          <el-input style="width: 400px" v-model="modelValue.price"/>
-        </el-form-item>
-
         <el-form-item label="商品品牌" prop="brandId">
           <el-select
               v-model="modelValue.brandId"
@@ -34,16 +22,23 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item label="商品名称" prop="name">
+          <el-input style="width: 400px" v-model="modelValue.name"/>
+        </el-form-item>
+
+        <el-form-item label="原价" prop="originPrice">
+          <el-input style="width: 400px" v-model="modelValue.originPrice"/>
+        </el-form-item>
+
+        <el-form-item label="现价" prop="price">
+          <el-input style="width: 400px" v-model="modelValue.price"/>
+        </el-form-item>
+
         <el-form-item label="商品简介">
-          <el-input
-              type="textarea"
-              v-model="modelValue.description"
-              style="width: 400px"
-          />
+          <el-input type="textarea" v-model="modelValue.description"/>
         </el-form-item>
 
         <el-form-item label="商品相册">
-
           <el-card   v-for="(item,index) in pictures" style="width: 170px;display: inline-block;margin-left: 10px" :body-style="{ padding: '10px' }">
 
             <single-upload v-model="item.url"/>
@@ -62,12 +57,12 @@
         </el-form-item>
 
         <el-form-item label="商品详情" prop="detail">
-          <editor v-model="modelValue.detail" ></editor>
+          <editor v-model="modelValue.detail" style="height: 600px"/>
         </el-form-item>
 
       </el-form>
     </div>
-    <div class="components-container__footer">
+    <div class="component-container__footer">
       <el-button @click="handlePrev">上一步，选择商品分类</el-button>
       <el-button type="primary" @click="handleNext">下一步，设置商品属性</el-button>
     </div>
@@ -178,7 +173,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 
-.components-container {
+.component-container {
   &__main {
     margin: 20px auto;
 

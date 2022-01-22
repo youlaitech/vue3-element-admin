@@ -1,5 +1,5 @@
 <template>
-  <div class="components-container">
+  <div class="component-container">
     <el-card class="box-card" shadow="always">
       <el-row>
         <el-col :span="12">
@@ -158,7 +158,7 @@ function submitForm() {
 </script>
 
 <style scoped>
-.components-container{
+.component-container{
   margin-bottom: 20px;
 }
 

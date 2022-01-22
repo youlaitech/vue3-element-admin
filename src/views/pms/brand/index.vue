@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 搜索表单 -->
     <el-form
-        ref="queryForm"
+        ref="queryFormRef"
         :model="queryParams"
         :inline="true"
         size="small"
@@ -105,7 +105,7 @@
         width="600px"
     >
       <el-form
-          ref="dataForm"
+          ref="dataFormRef"
           :model="formData"
           :rules="rules"
           label-width="100px"
@@ -121,7 +121,6 @@
         <el-form-item label="排序" prop="sort">
           <el-input v-model="formData.sort"/>
         </el-form-item>
-
       </el-form>
 
       <template #footer>
@@ -138,11 +137,12 @@
 import {listBrandsWithPage, getBrandDetail, updateBrand, addBrand, deleteBrands} from '@/api/pms/brand'
 import SingleUpload from "@/components/Upload/SingleUpload.vue"
 import {onMounted, reactive, ref, toRefs, unref} from "vue";
-import {ElForm, ElMessage, ElMessageBox} from "element-plus";
+import {ElForm, ElTable, ElMessage, ElMessageBox} from "element-plus";
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 
-const dataForm = ref(ElForm)  // 属性名必须和元素的ref属性值一致
-const dataTable = ref()
+const dataTableRef = ref(ElTable)
+const queryFormRef = ref(ElForm)  // 属性名必须和元素的ref属性值一致
+const dataFormRef = ref(ElForm)  // 属性名必须和元素的ref属性值一致
 
 const state = reactive({
   loading: true,
@@ -189,16 +189,14 @@ function handleQuery() {
 }
 
 function resetQuery() {
-  state.queryParams = {
-    pageNum: 1,
-    pageSize: 10,
-    title: undefined
-  }
+  const dataTable = unref(dataTableRef)
+  dataTable.resetFields()
   handleQuery()
 }
 
 function handleRowClick(row: any) {
-  dataTable.value.toggleRowSelection(row);
+  const dataTable = unref(dataTableRef)
+  dataTable.toggleRowSelection(row);
 }
 
 function handleSelectionChange(selection: any) {
@@ -208,7 +206,6 @@ function handleSelectionChange(selection: any) {
 }
 
 function handleAdd() {
-  resetForm()
   state.dialog = {
     title: '添加品牌',
     visible: true
@@ -216,7 +213,6 @@ function handleAdd() {
 }
 
 function handleUpdate(row: any) {
-  resetForm()
   state.dialog = {
     title: '修改品牌',
     visible: true,
@@ -228,19 +224,21 @@ function handleUpdate(row: any) {
 }
 
 function submitForm() {
-  const form = unref(dataForm)
-  form.validate((valid: any) => {
+  const dataForm = unref(dataFormRef)
+  dataForm.validate((valid: any) => {
     if (valid) {
       if (state.formData.id) {
         updateBrand(state.formData.id as any, state.formData).then(response => {
           ElMessage.success('修改成功')
           state.dialog.visible = false
+          resetForm()
           handleQuery()
         })
       } else {
         addBrand(state.formData).then(response => {
           ElMessage.success('新增成功')
           state.dialog.visible = false
+          resetForm()
           handleQuery()
         })
       }
@@ -248,18 +246,17 @@ function submitForm() {
   })
 }
 
+/**
+ * 重置表单
+ */
 function resetForm() {
-  state.formData = {
-    id: undefined,
-    name: undefined,
-    logoUrl: undefined,
-    sort: 1
-  }
+  const dataForm = unref(dataFormRef)
+  dataForm.resetFields()
 }
 
 function cancel() {
-  resetForm()
   state.dialog.visible = false
+  resetForm()
 }
 
 function handleDelete(row: any) {
@@ -285,5 +282,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
 </style>

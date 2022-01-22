@@ -2,7 +2,7 @@
   <div class="component-container">
     <!-- 搜索表单 -->
     <el-form
-        ref="queryForm"
+        ref="queryFormRef"
         size="mini"
         :model="queryParams"
         :inline="true"
@@ -11,7 +11,7 @@
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
       </el-form-item>
 
-      <el-form-item>
+      <el-form-item prop="name">
         <el-input
             v-model="queryParams.name"
             placeholder="菜单名称"
@@ -79,7 +79,7 @@
         width="750px"
     >
       <el-form
-          ref="dataForm"
+          ref="dataFormRef"
           :model="formData"
           :rules="rules"
       >
@@ -177,7 +177,9 @@ import IconSelect from '@/components/IconSelect/index.vue';
 const emit = defineEmits(['menuClick'])
 const showChooseIcon = ref(false);
 const iconSelectRef = ref(null);
-const dataForm = ref(ElForm)
+
+const queryFormRef = ref(ElForm)
+const dataFormRef = ref(ElForm)
 
 const state = reactive({
   loading: true,
@@ -207,7 +209,7 @@ const state = reactive({
     sort: 1,
     component: 'Layout',
     path: undefined,
-    redirect:''
+    redirect: ''
   },
   rules: {
     parentId: [
@@ -224,7 +226,7 @@ const state = reactive({
   currentRow: undefined
 })
 
-const {loading,single,multiple,queryParams,menuList,total,dialog,formData,rules,menuOptions} =toRefs(state)
+const {loading, single, multiple, queryParams, menuList, total, dialog, formData, rules, menuOptions} = toRefs(state)
 
 function handleQuery() {
   // 重置父组件
@@ -250,12 +252,12 @@ async function loadTreeSelectMenuOptions() {
   })
 }
 
+/**
+ * 重置查询
+ */
 function resetQuery() {
-  state.queryParams = {
-    pageNum: 1,
-    pageSize: 10,
-    name: undefined
-  }
+  const queryForm = unref(queryFormRef)
+  queryForm.resetFields()
   handleQuery()
 }
 
@@ -271,7 +273,6 @@ function handleRowClick(row: any) {
 }
 
 async function handleAdd(row: any) {
-  resetForm()
   await loadTreeSelectMenuOptions()
   state.dialog = {
     title: '添加菜单',
@@ -299,7 +300,6 @@ async function handleAdd(row: any) {
 }
 
 async function handleUpdate(row: any) {
-  resetForm()
   await loadTreeSelectMenuOptions()
   state.dialog = {
     title: '修改菜单',
@@ -312,8 +312,8 @@ async function handleUpdate(row: any) {
 }
 
 function submitForm() {
-  const form = unref(dataForm)
-  form.validate((valid: any) => {
+  const dataForm = unref(dataFormRef)
+  dataForm.validate((valid: any) => {
     if (valid) {
       if (state.formData.id) {
         updateMenu(state.formData.id, state.formData).then(response => {
@@ -348,23 +348,17 @@ function handleDelete(row: any) {
   )
 }
 
+/**
+ * 重置表单
+ */
 function resetForm() {
-  state.formData = {
-    id: undefined,
-    parentId: 0,
-    name: undefined,
-    visible: 1,
-    icon: '',
-    sort: 1,
-    component: 'Layout',
-    path: undefined,
-    redirect:''
-  }
+  const dataForm = unref(dataFormRef)
+  dataForm.resetFields
 }
 
 function cancel() {
-  resetForm()
   state.dialog.visible = false
+  resetForm()
 }
 
 function showSelectIcon() {

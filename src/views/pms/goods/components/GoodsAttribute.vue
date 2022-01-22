@@ -1,6 +1,6 @@
 <template>
-  <div class="components-container">
-    <div class="components-container__main">
+  <div class="component-container">
+    <div class="component-container__main">
       <el-card class="box-card">
         <template #header>
           <span>商品属性</span>
@@ -67,7 +67,7 @@
       </el-card>
 
     </div>
-    <div class="components-container__footer">
+    <div class="component-container__footer">
       <el-button @click="handlePrev">上一步，填写商品信息</el-button>
       <el-button type="primary" @click="handleNext">下一步，设置商品库存</el-button>
     </div>
@@ -151,7 +151,7 @@ function handleNext() {
 
 <style lang="scss" scoped>
 
-.components-container {
+.component-container {
   &__main {
     margin: 20px auto
   }

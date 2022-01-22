@@ -1,22 +1,23 @@
 <template>
-  <div>
+  <div claas="component-container">
     <!-- 搜索表单 -->
     <el-form
-        ref="queryForm"
+        ref="queryFormRef"
         size="mini"
-        :model="state.queryParams"
+        :model="queryParams"
         :inline="true"
     >
       <el-form-item>
-        <el-button type="success" :icon="Plus" :disabled="state.single" @click="handleAdd">新增</el-button>
-        <el-button type="danger" :icon="Delete" :disabled="state.multiple" @click="handleDelete">删除</el-button>
+        <el-button type="success" :icon="Plus" :disabled="!menuId" @click="handleAdd">新增</el-button>
+        <el-button type="danger" :icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="name">
         <el-input
-            v-model="state.queryParams.name"
+            v-model="queryParams.name"
             placeholder="权限名称"
             clearable
-            @keyup.enter.native="handleQuery"/>
+            @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
@@ -26,9 +27,8 @@
 
     <!-- 数据表格 -->
     <el-table
-        ref="dataTable"
-        :data="state.pageList"
-        v-loading="state.loading"
+        :data="pageList"
+        v-loading="loading"
         @selection-change="handleSelectionChange"
         border
         size="mini"
@@ -63,64 +63,65 @@
       </el-table-column>
     </el-table>
 
+    <!-- 分页工具条 -->
     <pagination
-        v-show="state.total>0"
-        :total="state.total"
-        :page="state.queryParams.pageNum"
-        :limit="state.queryParams.pageSize"
+        v-show="total>0"
+        :total="total"
+        :page="queryParams.pageNum"
+        :limit="queryParams.pageSize"
         @pagination="handleQuery"
     />
 
     <!-- 表单弹窗 -->
     <el-dialog
-        :title="state.dialog.title"
-        v-model="state.dialog.visible"
+        :title="dialog.title"
+        v-model="dialog.visible"
         width="700px">
       <el-form
-          ref="dataForm"
-          :model="state.formData"
-          :rules="state.rules"
-          label-width="120px">
+          ref="dataFormRef"
+          :model="formData"
+          :rules="rules"
+          label-width="120px"
+      >
 
         <el-form-item label="权限名称" prop="name">
-          <el-input v-model="state.formData.name" placeholder="请输入权限名称"/>
+          <el-input v-model="formData.name" placeholder="请输入权限名称"/>
         </el-form-item>
 
         <el-form-item label="URL权限标识" prop="urlPerm">
-          <el-input placeholder="/api/v1/users" v-model="state.urlPerm.requestPath" class="input-with-select">
-
+          <el-input placeholder="/api/v1/users" v-model="urlPerm.requestPath" class="input-with-select">
             <template #prepend>
               <el-select
-                  v-model="state.urlPerm.serviceName"
+                  v-model="urlPerm.serviceName"
                   style="width: 130px;"
                   placeholder="所属服务"
                   clearable
               >
-                <el-option v-for="item in state.microServiceOptions" :value="item.value" :label="item.name"/>
+                <el-option v-for="item in microServiceOptions" :value="item.value" :label="item.name"/>
               </el-select>
 
               <el-select
-                  v-model="state.urlPerm.requestMethod"
+                  v-model="urlPerm.requestMethod"
                   style="width: 120px;margin-left: 20px"
                   slot="prepend"
                   placeholder="请求方式"
                   clearable
               >
                 <el-option
-                    v-for="item in state.requestMethodOptions"
+                    v-for="item in requestMethodOptions"
                     :value="item.value"
                     :label="item.name"
                 />
               </el-select>
             </template>
           </el-input>
-          <el-link v-show="state.urlPerm.requestMethod">
-            {{ state.urlPerm.requestMethod }}:/{{ state.urlPerm.serviceName }}{{ state.urlPerm.requestPath }}
+          <el-link v-show="urlPerm.requestMethod">
+            {{ urlPerm.requestMethod }}:/{{ urlPerm.serviceName }}{{ urlPerm.requestPath }}
           </el-link>
         </el-form-item>
 
         <el-form-item label="按钮权限标识" prop="btnPerm">
-          <el-input v-model="state.formData.btnPerm" placeholder="sys:user:add"/>
+          <el-input v-model="formData.btnPerm" placeholder="sys:user:add"/>
         </el-form-item>
 
       </el-form>
@@ -142,12 +143,11 @@ import {ElForm, ElMessage, ElMessageBox} from "element-plus"
 
 const {proxy}: any = getCurrentInstance();
 
+const queryFormRef = ref(ElForm)
+const dataFormRef = ref(ElForm)
+
 const props = defineProps({
   menuId: {
-    type: String,
-    default: ''
-  },
-  menuName: {
     type: String,
     default: ''
   }
@@ -196,9 +196,8 @@ const state = reactive({
       {required: true, message: '请选择请求方式', trigger: 'blur'}
     ]
   },
-  microServiceOptions: [],
+  microServiceOptions: [] as Array<any>,
   requestMethodOptions: [] as Array<any>,
-  menuName: undefined,
   urlPerm: {
     requestMethod: undefined,
     serviceName: undefined,
@@ -206,8 +205,21 @@ const state = reactive({
   },
 })
 
- toRefs(state)
-
+const {
+  loading,
+  ids,
+  single,
+  multiple,
+  pageList,
+  total,
+  dialog,
+  formData,
+  rules,
+  microServiceOptions,
+  requestMethodOptions,
+  urlPerm,
+  queryParams
+} = toRefs(state)
 
 function handleQuery() {
   if (state.queryParams.menuId) {
@@ -227,12 +239,8 @@ function handleQuery() {
 }
 
 function resetQuery() {
-  state.queryParams = {
-    pageNum: 1,
-    pageSize: 10,
-    menuId: undefined,
-    name: undefined
-  }
+  const queryForm = unref(queryFormRef)
+  queryForm.resetFields()
   handleQuery()
 }
 
@@ -242,11 +250,10 @@ function handleSelectionChange(selection: any) {
   state.multiple = !selection.length
 }
 
-
 /**
- * 字典数据准备
+ * 加载字典数据
  */
-function loadDictData() {
+function loadDictOptions() {
   proxy.$listDictsByCode('micro_service').then((response: any) => {
     state.microServiceOptions = response.data
   })
@@ -257,8 +264,7 @@ function loadDictData() {
 }
 
 function handleAdd() {
-  resetForm()
-  loadDictData()
+  loadDictOptions()
   state.dialog = {
     title: '添加权限',
     visible: true
@@ -266,8 +272,7 @@ function handleAdd() {
 }
 
 function handleUpdate(row: any) {
-  resetForm()
-  loadDictData()
+  loadDictOptions()
   state.dialog = {
     title: '修改权限',
     visible: true
@@ -286,11 +291,9 @@ function handleUpdate(row: any) {
   })
 }
 
-const dataForm = ref(ElForm)
-
 function submitForm() {
-  const form = unref(dataForm)
-  form.validate((valid: any) => {
+  const dataForm = unref(dataFormRef)
+  dataForm.validate((valid: any) => {
     if (valid) {
       // 接口权限和按钮权限必填其一
       console.log(state.urlPerm.requestPath, state.formData.btnPerm)
@@ -298,7 +301,6 @@ function submitForm() {
         ElMessage.warning('请至少填写一种权限')
         return false
       }
-
       // 如果填写了URL权限，完整性校验
       if (!state.urlPerm.requestPath) {
         if (!state.urlPerm.requestMethod) {
@@ -317,12 +319,14 @@ function submitForm() {
         updatePerm(state.formData.id, state.formData).then(response => {
           ElMessage.success('修改成功')
           state.dialog.visible = false
+          resetForm()
           handleQuery()
         })
       } else {
         addPerm(state.formData).then(response => {
           ElMessage.success('新增成功')
           state.dialog.visible = false
+          resetForm()
           handleQuery()
         })
       }
@@ -330,14 +334,13 @@ function submitForm() {
   })
 }
 
+/**
+ * 重置表单
+ */
 function resetForm() {
-  state.formData = {
-    id: undefined,
-    name: undefined,
-    urlPerm: '',
-    btnPerm: '',
-    menuId: ''
-  }
+  const dataForm = unref(dataFormRef)
+  dataForm.resetFields()
+
 }
 
 function cancel() {
@@ -366,7 +369,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.perm-container {
+.component-container {
   margin-bottom: 20px;
 }
 </style>

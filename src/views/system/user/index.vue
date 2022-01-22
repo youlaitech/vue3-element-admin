@@ -442,9 +442,9 @@ const state = reactive({
     ],
     email: [
       {
-        type: 'email',
-        message: '\'请输入正确的邮箱地址',
-        trigger: ['blur', 'change']
+        pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
+        message: '请输入正确的邮箱地址',
+        trigger: 'blur'
       }
     ],
     mobile: [

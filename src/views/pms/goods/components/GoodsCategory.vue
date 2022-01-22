@@ -1,6 +1,6 @@
 <template>
-  <div class="components-container">
-    <div class="components-container__main">
+  <div class="component-container">
+    <div class="component-container__main">
       <el-cascader-panel
           ref="categoryRef"
           :options="categoryOptions"
@@ -19,7 +19,7 @@
       </div>
 
     </div>
-    <div class="components-container__footer">
+    <div class="component-container__footer">
       <el-button type="primary" @click="handleNext">下一步，填写商品信息</el-button>
     </div>
   </div>
@@ -80,7 +80,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 
-.components-container {
+.component-container {
   &__main {
     margin: 20px auto
   }
