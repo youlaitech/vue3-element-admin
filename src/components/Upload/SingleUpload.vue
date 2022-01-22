@@ -1,26 +1,26 @@
 <template>
-  <div >
+  <div>
     <el-upload
+        ref="uploadRef"
         action=""
         class="avatar-uploader"
         list-type="picture-card"
         :show-file-list="false"
         :before-upload="handleBeforeUpload"
         :on-exceed="handleExceed"
-        :on-remove="handleRemove"
         :limit="1"
         :http-request="uploadImage"
     >
-      <img v-if="imgURL" :src="imgURL" class="avatar"/>
+      <img v-if="imgUrl" :src="imgUrl" class="avatar"/>
 
       <el-icon v-else class="avatar-uploader-icon">
         <Plus/>
       </el-icon>
 
       <el-icon
-          v-if="imgURL"
+          v-if="imgUrl"
           class="remove-icon"
-          @click.stop="handleRemove(imgURL)"
+          @click.stop="handleRemove(imgUrl)"
       >
         <Close/>
       </el-icon>
@@ -30,37 +30,63 @@
 </template>
 
 <script setup lang="ts">
-import {computed, reactive} from "vue";
+import {computed, ref} from "vue";
 import {Plus, Close} from '@element-plus/icons-vue'
-import {ElMessage} from "element-plus"
+import {ElMessage, ElUpload} from "element-plus"
 import {uploadFile, deleteFile} from "@/api/system/file";
+import {UploadFile} from "element-plus/es/components/upload/src/upload.type";
 
+const uploadRef = ref(ElUpload)
 const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps({
   modelValue: {
     type: String,
     default: ''
-  },
-  maxCount: {
-    type: Number,
-    default: 1
   }
 })
 
-const state = reactive({
-  previewImgUrl: '',
-  previewDialogVisible: false,
-})
-
-const imgURL = computed<string>({
+const imgUrl = computed<string | null>({
   get() {
     return props.modelValue
   },
   set(val) {
+    // imgUrl改变时触发修改父组件绑定的v-model的值
     emit('update:modelValue', val)
   }
 })
+
+
+/**
+ * 自定义图片上传
+ *
+ * @param params
+ */
+function uploadImage({file}: any) {
+  uploadFile(file).then(response => {
+     imgUrl.value = response.data
+  })
+}
+
+/**
+ * 后选择文件覆盖前面的文件
+ *
+ * Set limit and on-exceed to automatically replace the previous file when select a new file.
+ *
+ * @param files
+ */
+function handleExceed(files: UploadFile[]) {
+  uploadRef.value.clearFiles()
+  uploadRef.value.handleStart(files[0])
+  uploadFile(files[0]).then(response => {
+    imgUrl.value = response.data
+  })
+}
+
+function handleRemove(file: string) {
+  deleteFile(file)
+  imgUrl.value = null
+}
 
 function handleBeforeUpload(file: any) {
   const isJPG = file.type === 'image/jpeg'
@@ -74,28 +100,6 @@ function handleBeforeUpload(file: any) {
     ElMessage.warning("上传图片不能大于2M")
   }
   return true
-}
-
-/**
- * 自定义图片上传
- *
- * @param params
- */
-function uploadImage(params: any) {
-  const file = params.file
-  uploadFile(file).then(response => {
-    const imgURL = response.data
-    emit('update:modelValue', imgURL)
-  })
-}
-
-function handleExceed(file: any) {
-  ElMessage.warning('最多只能上传' + props.maxCount)
-}
-
-function handleRemove(imgURL: string) {
-  deleteFile(imgURL)
-  emit('update:modelValue', '')
 }
 </script>
 
