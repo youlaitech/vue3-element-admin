@@ -1,6 +1,6 @@
 <template>
-  <div class="components-container">
-    <div class="components-container__main">
+  <div class="component-container">
+    <div class="component-container__main">
       <el-card class="box-card">
         <template #header>
           <span>商品规格</span>
@@ -73,7 +73,7 @@
                 </div>
 
                 <el-input
-                    v-if="tagInputs[scope.$index].visible"
+                    v-if="tagInputs.length>0 &&tagInputs[scope.$index].visible"
                     v-model="tagInputs[scope.$index].value"
                     @keyup.enter.native="handleSpecValueInput(scope.$index)"
                     @blur="handleSpecValueInput(scope.$index)"
@@ -118,11 +118,11 @@
             :inline="true"
         >
           <el-table
+
               :data="skuForm.skuList"
-              :span-method="handleCellMerge"
+              :span-method="objectSpanMethod"
               highlight-current-row
               size="mini"
-              fit
               border
           >
 
@@ -161,30 +161,33 @@
             </el-table-column>
 
           </el-table>
+
         </el-form>
       </el-card>
     </div>
-    <div class="components-container__footer">
+    <div class="component-container__footer">
       <el-button @click="handlePrev">上一步，设置商品属性</el-button>
       <el-button type="primary" @click="submitForm">提交</el-button>
     </div>
+
+
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {listAttributes} from "@/api/pms/attribute";
 import SingleUpload from '@/components/Upload/SingleUpload.vue'
-import Sortable from 'sortablejs'
+// import Sortable from 'sortablejs'
 import {addGoods, updateGoods} from "@/api/pms/goods";
 import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs, unref, watch} from "vue";
-import {ElMessage, ElTable, ElForm} from "element-plus"
+import  {ElNotification,ElMessage, ElTable, ElForm} from "element-plus"
 import {Plus, Minus} from '@element-plus/icons'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 import {useRouter} from "vue-router";
 
 const emit = defineEmits(['prev', 'next'])
 
-const proxy = getCurrentInstance() as any
+const proxy = getCurrentInstance()
 const router = useRouter()
 
 const specTableRef = ref(ElTable)
@@ -202,7 +205,7 @@ const categoryId = computed(() => props.modelValue.categoryId);
 
 const state = reactive({
   specForm: {
-    specList: [{}] as Array<any>,
+    specList: []
   },
   skuForm: {
     skuList: []
@@ -233,12 +236,13 @@ watch(categoryId, (newVal, oldVal) => {
         listAttributes({categoryId: newVal, type: 1}).then(response => {
           const specList = response.data
           if (specList && specList.length > 0) {
-            specList.forEach((item: any) => {
+            specList.forEach((item) => {
               state.specForm.specList.push({
                 name: item.name,
                 values: []
               })
             })
+            loadData()
           }
         })
       }
@@ -252,44 +256,42 @@ watch(categoryId, (newVal, oldVal) => {
 
 function loadData() {
   const goodsId = props.modelValue.id
-  // 编辑数据加载
-  if (goodsId) {
-    props.modelValue.specList.forEach((specItem: any) => {
-      const specIndex = state.specForm.specList.findIndex(item => item.name == specItem.name)
-      if (specIndex > -1) {
-        state.specForm.specList[specIndex].values.push({
-          id: specItem.id,
-          value: specItem.value,
-          picUrl: specItem.picUrl
-        })
-      } else {
-        state.specForm.specList.push({
-          name: specItem.name,
-          values: [{id: specItem.id, value: specItem.value, picUrl: specItem.picUrl}]
-        })
-      }
-    })
 
-    // 每个规格项追加一个添加规格值按钮
-    for (let i = 0; i < state.specForm.specList.length; i++) {
-      state.tagInputs.push({'value': undefined, 'visible': false})
+  props.modelValue.specList.forEach((specItem) => {
+    const specIndex = state.specForm.specList.findIndex(item => item.name == specItem.name)
+    if (specIndex > -1) {
+      state.specForm.specList[specIndex].values.push({
+        id: specItem.id,
+        value: specItem.value,
+        picUrl: specItem.picUrl
+      })
+    } else {
+      state.specForm.specList.push({
+        name: specItem.name,
+        values: [{id: specItem.id, value: specItem.value, picUrl: specItem.picUrl}]
+      })
     }
+  })
 
-    // SKU规格ID拼接字符串处理
-    props.modelValue.skuList.forEach((sku: any) => {
-      sku.specIdArr = sku.specIds.split('_')
-    })
-
-    generateSkuList()
-
-    handleSpecChange()
-
-    handleSpecReorder()
-
-    nextTick(() => {
-      registerSpecDragSortEvent()
-    })
+  // 每个规格项追加一个添加规格值按钮
+  for (let i = 0; i < state.specForm.specList.length; i++) {
+    state.tagInputs.push({'value': undefined, 'visible': false})
   }
+
+  // SKU规格ID拼接字符串处理
+  props.modelValue.skuList.forEach((sku) => {
+    sku.specIdArr = sku.specIds.split('_')
+  })
+
+  generateSkuList()
+
+  handleSpecChange()
+
+  handleSpecReorder()
+
+  nextTick(() => {
+    // registerSpecDragSortEvent()
+  })
 }
 
 /**
@@ -297,7 +299,7 @@ function loadData() {
  */
 function handleSpecChange() {
   const specList = JSON.parse(JSON.stringify(state.specForm.specList))
-  state.specTitles = specList.map((item: any) => item.name)
+  state.specTitles = specList.map((item) => item.name)
 }
 
 /**
@@ -312,7 +314,7 @@ function handleSpecReorder() {
 /**
  * 注册拖拽排序事件
  */
-function registerSpecDragSortEvent() {
+/*function registerSpecDragSortEvent() {
   const el = specTableRef.value.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
   Sortable.create(el, {
     ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
@@ -329,7 +331,7 @@ function registerSpecDragSortEvent() {
       handleSpecReorder()
     }
   })
-}
+}*/
 
 /**
  *  根据商品规格笛卡尔积生成SKU列表
@@ -342,11 +344,11 @@ function registerSpecDragSortEvent() {
  */
 function generateSkuList() {
   const specList = JSON.parse(JSON.stringify(state.specForm.specList.filter(item => item.values.length > 0))) // 深拷贝，取有属性的规格项，否则笛卡尔积运算得到的SKU列表值为空
-  const skuList = specList.reduce((acc: any, curr: any) => {
-    let result = [] as any
-    acc.forEach((item: any) => {
+  const skuList = specList.reduce((acc, curr) => {
+    let result = []
+    acc.forEach((item) => {
       // curr => { 'id':1,'name':'颜色','values':[{id:1,value:'白色'},{id:2,value:'黑色'},{id:3,value:'蓝色'}] }
-      curr.values.forEach((v: any) => {  // v=>{id:1,value:'白色'}
+      curr.values.forEach((v) => {  // v=>{id:1,value:'白色'}
         let temp = Object.assign({}, item)
         temp.specValues += v.value + '_' // 规格值拼接
         temp.specIds += v.id + '|' // 规格ID拼接
@@ -356,14 +358,14 @@ function generateSkuList() {
     return result
   }, [{specValues: '', specIds: ''}])
 
-  skuList.forEach((item: any) => {
+  skuList.forEach((item) => {
     item.specIds = item.specIds.substring(0, item.specIds.length - 1)
     item.name = item.specValues.substring(0, item.specIds.length - 1).replaceAll('_', ' ')
     const specIdArr = item.specIds.split('|')
-    const skus = props.modelValue.skuList.filter((sku: any) =>
+    const skus = props.modelValue.skuList.filter((sku) =>
         sku.specIdArr.length === specIdArr.length &&
-        sku.specIdArr.every((a: number) => specIdArr.some((b: number) => a === b)) &&
-        specIdArr.every((x: number) => sku.specIdArr.some((y: number) => x === y))
+        sku.specIdArr.every((a) => specIdArr.some((b) => a === b)) &&
+        specIdArr.every((x) => sku.specIdArr.some((y) => x === y))
     ) // 数据库的SKU列表
 
     if (skus && skus.length > 0) {
@@ -374,11 +376,11 @@ function generateSkuList() {
       item.stock = sku.stock
     }
     const specValueArr = item.specValues.substring(0, item.specValues.length - 1).split('_')  // ['黑','6+128G','官方标配']
-    specValueArr.forEach((v: any, i: any) => {
+    specValueArr.forEach((v, i) => {
       const key = 'specValue' + (i + 1)
       item[key] = v
       if (i == 0 && state.specForm.specList.length > 0) {
-        const valueIndex = state.specForm.specList[0].values.findIndex((specValue: any) => specValue.value == v)
+        const valueIndex = state.specForm.specList[0].values.findIndex((specValue) => specValue.value == v)
         if (valueIndex > -1) {
           item.picUrl = state.specForm.specList[0].values[valueIndex].picUrl
         }
@@ -405,7 +407,7 @@ function handleSpecAdd() {
  * 删除规格
  * @param index
  */
-function handleSpecRemove(index: number) {
+function handleSpecRemove(index) {
   state.specForm.specList.splice(index, 1)
   state.tagInputs.splice(index, 1)
   generateSkuList()
@@ -418,7 +420,7 @@ function handleSpecRemove(index: number) {
  *
  * @param specIndex
  */
-function handleSpecValueAdd(specIndex: number) {
+function handleSpecValueAdd(specIndex) {
   state.tagInputs[specIndex].visible = true
 }
 
@@ -428,11 +430,12 @@ function handleSpecValueAdd(specIndex: number) {
  * @param rowIndex
  * @param specValueId
  */
-function handleSpecValueRemove(rowIndex: number, specValueId: number) {
+function handleSpecValueRemove(rowIndex, specValueId) {
   const specList = JSON.parse(JSON.stringify(state.specForm.specList))
-  const removeIndex = specList[rowIndex].values.map((item: any) => item.id).indexOf(specValueId)
+  const removeIndex = specList[rowIndex].values.map((item) => item.id).indexOf(specValueId)
   specList[rowIndex].values.splice(removeIndex, 1)
   state.specForm.specList = specList
+  generateSkuList()
   handleSpecChange()
   handleSpecReorder()
 }
@@ -440,17 +443,17 @@ function handleSpecValueRemove(rowIndex: number, specValueId: number) {
 /**
  * 规格值输入
  */
-function handleSpecValueInput(rowIndex: number) {
+function handleSpecValueInput(rowIndex) {
   const currSpecValue = state.tagInputs[rowIndex].value
   const specValues = state.specForm.specList[rowIndex].values
-  if (specValues && specValues.length > 0 && specValues.map((item: any) => item.value).includes(currSpecValue)) {
+  if (specValues && specValues.length > 0 && specValues.map((item) => item.value).includes(currSpecValue)) {
     ElMessage.warning("规格值重复，请重新输入")
     return false
   }
   if (currSpecValue) {
     if (specValues && specValues.length > 0) {
       // 临时规格值ID tid_1_1
-      let maxSpecValueIndex = specValues.filter((item: any) => item.id.includes('tid_')).map((item: any) => item.id.split('_')[2]).reduce((acc: any, curr: any) => {
+      let maxSpecValueIndex = specValues.filter((item) => item.id.includes('tid_')).map((item) => item.id.split('_')[2]).reduce((acc, curr) => {
         return acc > curr ? acc : curr
       }, 0)
       console.log('maxSpecValueIndex', maxSpecValueIndex)
@@ -467,13 +470,20 @@ function handleSpecValueInput(rowIndex: number) {
   generateSkuList()
 }
 
+
 /**
  * 合并规格单元格
  *
  * @param cellObj 单元格对象
  */
-function handleCellMerge(cellObj: any) {
-  const {rowIndex, columnIndex} = cellObj
+
+const objectSpanMethod = ({
+                            row,
+                            column,
+                            rowIndex,
+                            columnIndex,
+                          }) => {
+
   let mergeRows = [1, 1, 1] // 分别对应规格1、规格2、规格3列合并的行数
   const specLen = state.specForm.specList.filter(item => item.values && item.values.length > 0).length
   if (specLen == 2) {
@@ -500,24 +510,25 @@ function handleCellMerge(cellObj: any) {
   }
 }
 
+
 /**
  * 商品表单提交
  */
 function submitForm() {
   const specForm = unref(specFormRef)
-  specForm.validate((specValid: boolean) => {
+  specForm.validate((specValid) => {
     if (specValid) {
       const skuForm = unref(skuFormRef)
-      skuForm.validate((skuValid: boolean) => {
+      skuForm.validate((skuValid) => {
         if (skuValid) {
-          openFullScreen()
+          // openFullScreen()
           let submitsData = Object.assign({}, props.modelValue)
           delete submitsData.specList
           delete submitsData.skuList
 
-          let specList = [] as Array<any>
+          let specList = []
           state.specForm.specList.forEach(item => {
-            item.values.forEach((value: any) => {
+            item.values.forEach((value) => {
               value.name = item.name
             })
             specList = specList.concat(item.values)
@@ -528,7 +539,7 @@ function submitForm() {
           submitsData.originPrice *= 100
 
           let skuList = JSON.parse(JSON.stringify(state.skuForm.skuList))
-          skuList.map((item: any) => {
+          skuList.map((item) => {
             item.price *= 100
             return item
           })
@@ -537,20 +548,28 @@ function submitForm() {
           const goodsId = props.modelValue.id
           if (goodsId) { // 编辑商品提交
             updateGoods(goodsId, submitsData).then((res) => {
-                  router.push({path: '/pms/good'})
-                  proxy.$notify.success('修改商品成功')
-                  closeFullScreen()
+                  router.push({path: '/pms/goods'})
+                  ElNotification({
+                    title: 'Success',
+                    message: '新增商品成功',
+                    type: 'success',
+                  })
+                  //closeFullScreen()
                 }, (err) => {
-                  closeFullScreen()
+                  //closeFullScreen()
                 }
             )
           } else { // 新增商品提交
             addGoods(submitsData).then(response => {
-              router.push({path: '/pms/good'})
-              proxy.$notify.success('新增商品成功')
-              closeFullScreen()
+              router.push({path: '/pms/goods'})
+              ElNotification({
+                title: 'Success',
+                message: '新增商品成功',
+                type: 'success',
+              })
+              // closeFullScreen()
             }, (err) => {
-              closeFullScreen()
+              // closeFullScreen()
             })
           }
         }
@@ -570,7 +589,7 @@ function openFullScreen() {
 
 function closeFullScreen() {
   if (state.loading) {
-    (state.loading as any).close()
+    state.loading.close()
   }
 }
 
@@ -590,7 +609,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 
-.components-container {
+.component-container {
   &__main {
     margin: 20px auto
   }
