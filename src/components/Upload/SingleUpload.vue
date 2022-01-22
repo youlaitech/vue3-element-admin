@@ -1,9 +1,10 @@
 <template>
-  <div>
+  <div class="component-container">
+    <!-- 上传组件 -->
     <el-upload
         ref="uploadRef"
         action=""
-        class="avatar-uploader"
+        class="single-uploader"
         list-type="picture-card"
         :show-file-list="false"
         :before-upload="handleBeforeUpload"
@@ -11,20 +12,20 @@
         :limit="1"
         :http-request="uploadImage"
     >
-      <img v-if="imgUrl" :src="imgUrl" class="avatar"/>
+      <img v-if="imgUrl" :src="imgUrl" class="single-uploader-image"/>
 
-      <el-icon v-else class="avatar-uploader-icon">
+      <el-icon v-else class="single-uploader-icon">
         <Plus/>
       </el-icon>
 
+      <!-- 删除图标 -->
       <el-icon
           v-if="imgUrl"
-          class="remove-icon"
+          class="single-uploader-remove-icon"
           @click.stop="handleRemove(imgUrl)"
       >
         <Close/>
       </el-icon>
-
     </el-upload>
   </div>
 </template>
@@ -83,9 +84,14 @@ function handleExceed(files: UploadFile[]) {
   })
 }
 
+/**
+ * 删除图片
+ * 
+ * @param file
+ */
 function handleRemove(file: string) {
   deleteFile(file)
-  imgUrl.value = null
+  imgUrl.value = null // 这里会触发imgUrl的computed的set方法
 }
 
 function handleBeforeUpload(file: any) {
@@ -103,11 +109,10 @@ function handleBeforeUpload(file: any) {
 }
 </script>
 
-<style lang="scss">
-.avatar-uploader {
-  .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
+<style lang="scss" scoped>
+
+.component-container{
+  .single-uploader {
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -115,28 +120,25 @@ function handleBeforeUpload(file: any) {
     &:hover {
       border-color: #409EFF;
     }
+    &-icon{
+      font-size: 28px;
+      color: #8c939d;
+      text-align: center;
+    }
+    &-image{
+      width: 146px;
+      height: 146px;
+      display: block;
+    }
+    &-remove-icon {
+      font-size: 12px;
+      color: #ff4d51 !important;
+      margin-top: 0px !important;
+      position: absolute;
+      right: 0;
+      top: 0;
+      color: #409eff;
+    }
   }
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  text-align: center;
-}
-
-.avatar {
-  width: 148px;
-  height: 148px;
-  display: block;
-}
-
-.remove-icon {
-  font-size: 12px;
-  color: #ff4d51 !important;
-  margin-top: 0px !important;
-  position: absolute;
-  right: 0;
-  top: 0;
-  color: #409eff;
 }
 </style>
