@@ -42,6 +42,14 @@
           {{ scope.row.name }}
         </template>
       </el-table-column>
+
+      <el-table-column label="状态" align="center" width="80">
+        <template #default="scope">
+          <el-tag v-if="scope.row.visible===1" type="success" size="mini">显示</el-tag>
+          <el-tag v-else type="info" size="mini">隐藏</el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column label="操作" align="center" width="130">
         <template #default="scope">
           <el-button
