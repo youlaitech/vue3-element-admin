@@ -168,7 +168,6 @@ import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import {listDeptTable, getDeptDetail, deleteDept, updateDept, addDept, listDeptSelect} from '@/api/system/dept'
 import TreeSelect from '@/components/TreeSelect/Index.vue'
 import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
-import {getUserFormDetail} from "@api/system/user";
 
 const queryFormRef = ref(ElForm)
 const dataFormRef = ref(ElForm)
