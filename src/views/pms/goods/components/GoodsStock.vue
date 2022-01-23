@@ -118,7 +118,6 @@
             :inline="true"
         >
           <el-table
-
               :data="skuForm.skuList"
               :span-method="objectSpanMethod"
               highlight-current-row
@@ -180,7 +179,7 @@ import SingleUpload from '@/components/Upload/SingleUpload.vue'
 // import Sortable from 'sortablejs'
 import {addGoods, updateGoods} from "@/api/pms/goods";
 import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs, unref, watch} from "vue";
-import  {ElNotification,ElMessage, ElTable, ElForm} from "element-plus"
+import {ElNotification, ElMessage, ElTable, ElForm} from "element-plus"
 import {Plus, Minus} from '@element-plus/icons'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 import {useRouter} from "vue-router";
@@ -231,8 +230,13 @@ const state = reactive({
 const {specForm, skuForm, specTitles, rules, colors, tagInputs, loading} = toRefs(state)
 
 watch(categoryId, (newVal, oldVal) => {
+      // 商品编辑不加载分类下的规格
+      const spuId = props.modelValue.id
+      if (spuId) {
+        return false;
+      }
       if (newVal) {
-        // type=1 商品规格(销售属性)
+        // type=1 商品分类下的规格
         listAttributes({categoryId: newVal, type: 1}).then(response => {
           const specList = response.data
           if (specList && specList.length > 0) {
@@ -255,8 +259,6 @@ watch(categoryId, (newVal, oldVal) => {
 
 
 function loadData() {
-  const goodsId = props.modelValue.id
-
   props.modelValue.specList.forEach((specItem) => {
     const specIndex = state.specForm.specList.findIndex(item => item.name == specItem.name)
     if (specIndex > -1) {
@@ -344,6 +346,11 @@ function handleSpecReorder() {
  */
 function generateSkuList() {
   const specList = JSON.parse(JSON.stringify(state.specForm.specList.filter(item => item.values.length > 0))) // 深拷贝，取有属性的规格项，否则笛卡尔积运算得到的SKU列表值为空
+  // 如果规格为空，生成SKU列表为空
+  if (specList.length === 0) {
+    state.skuForm.skuList = []
+    return
+  }
   const skuList = specList.reduce((acc, curr) => {
     let result = []
     acc.forEach((item) => {
@@ -515,6 +522,12 @@ const objectSpanMethod = ({
  * 商品表单提交
  */
 function submitForm() {
+  // 判断商品SKU列表是否为空
+  if (!state.skuForm.skuList || state.skuForm.skuList.length === 0) {
+    ElMessage.warning("未添加商品库存")
+    return false;
+  }
+
   const specForm = unref(specFormRef)
   specForm.validate((specValid) => {
     if (specValid) {
@@ -522,6 +535,8 @@ function submitForm() {
       skuForm.validate((skuValid) => {
         if (skuValid) {
           // openFullScreen()
+
+          // 重组商品的规格和SKU列表
           let submitsData = Object.assign({}, props.modelValue)
           delete submitsData.specList
           delete submitsData.skuList
@@ -550,8 +565,8 @@ function submitForm() {
             updateGoods(goodsId, submitsData).then((res) => {
                   router.push({path: '/pms/goods'})
                   ElNotification({
-                    title: 'Success',
-                    message: '新增商品成功',
+                    title: '提示',
+                    message: '编辑商品成功',
                     type: 'success',
                   })
                   //closeFullScreen()
@@ -563,7 +578,7 @@ function submitForm() {
             addGoods(submitsData).then(response => {
               router.push({path: '/pms/goods'})
               ElNotification({
-                title: 'Success',
+                title: '提示',
                 message: '新增商品成功',
                 type: 'success',
               })
