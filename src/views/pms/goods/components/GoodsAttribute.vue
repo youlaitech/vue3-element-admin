@@ -75,6 +75,7 @@
 </template>
 
 <script setup lang="ts">
+
 import {listAttributes} from "@/api/pms/attribute";
 import {computed, nextTick, reactive, ref, toRefs, unref, watch} from "vue";
 import {ElForm} from "element-plus";
@@ -92,9 +93,16 @@ const props = defineProps({
 
 const categoryId = computed(() => props.modelValue.categoryId);
 
-watch(categoryId, (newVal, oldVal) => {
+watch(categoryId, (newVal) => {
+      // 商品编辑不加载分类下的属性
+      const spuId = props.modelValue.id
+      if (spuId) {
+        return false;
+      }
+
+      // 商品新增加载默认分类下的属性
       if (newVal) {
-        // type=2 商品普通属性(非销售属性)
+        // type=2 商品分类下的属性
         listAttributes({categoryId: newVal, type: 2}).then(response => {
           const attrList = response.data
           if (attrList && attrList.length > 0) {
@@ -130,7 +138,7 @@ function handleAdd() {
   props.modelValue.attrList.push({})
 }
 
-function handleRemove(index:number) {
+function handleRemove(index: number) {
   props.modelValue.attrList.splice(index, 1)
 }
 
