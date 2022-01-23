@@ -163,15 +163,20 @@
 </template>
 
 <script setup lang="ts">
+// Vue依赖
 import {onMounted, reactive, unref, ref, toRefs} from 'vue'
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+
+// API依赖
 import {listDeptTable, getDeptDetail, deleteDept, updateDept, addDept, listDeptSelect} from '@/api/system/dept'
+
+// 组件依赖
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
 import TreeSelect from '@/components/TreeSelect/Index.vue'
 import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
 
+// DOM元素的引用声明定义
 const queryFormRef = ref(ElForm)
 const dataFormRef = ref(ElForm)
-
 
 const state = reactive({
   // 选中ID数组

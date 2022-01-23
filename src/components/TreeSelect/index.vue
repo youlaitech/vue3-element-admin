@@ -128,7 +128,6 @@ function clearSelected() {
 }
 
 onMounted(() => {
-  console.log('hah', modelValue)
   initHandle()
 })
 

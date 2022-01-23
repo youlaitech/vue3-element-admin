@@ -46,25 +46,17 @@
                   :icon="Plus"
                   size="mini"
                   @click="handleAdd"
+                  v-hasPerm="['sys:user:add']"
               >
                 新增
               </el-button>
               <el-button
-                  type="primary"
-                  :icon="Edit"
-                  size="mini"
-                  :disabled="single"
-                  @click="handleUpdate"
-              >
-                修改
-              </el-button>
-              <el-button
                   type="danger"
-                  plain
                   :icon="Delete"
                   size="mini"
                   :disabled="multiple"
                   @click="handleDelete"
+                  v-hasPerm="['sys:user:delete']"
               >
                 删除
               </el-button>
@@ -193,6 +185,7 @@
                     circle
                     plain
                     @click="handleUpdate(scope.row)"
+                    v-hasPerm="['sys:user:edit']"
                 >
                 </el-button>
                 <el-button
@@ -202,6 +195,7 @@
                     circle
                     plain
                     @click="handleDelete(scope.row)"
+                    v-hasPerm="['sys:user:delete']"
                 >
                 </el-button>
                 <el-button
@@ -248,7 +242,7 @@
             prop="username"
         >
           <el-input
-              :readonly="!formData.id"
+              :readonly="!!formData.id"
               v-model="formData.username"
               placeholder="请输入用户名"
           />
@@ -297,14 +291,14 @@
           />
         </el-form-item>
 
-        <el-form-item label="状态">
+        <el-form-item label="状态" prop="status">
           <el-radio-group v-model="formData.status">
             <el-radio :label="1">正常</el-radio>
             <el-radio :label="0">禁用</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="用户性别">
+        <el-form-item label="用户性别" prop="gender">
           <el-select
               v-model="formData.gender"
               placeholder="请选择"
@@ -315,7 +309,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="角色">
+        <el-form-item label="角色" prop="roleIds">
           <el-select
               v-model="formData.roleIds"
               multiple
@@ -329,19 +323,6 @@
             />
           </el-select>
         </el-form-item>
-
-        <el-form-item
-            v-if="formData.id === undefined"
-            label="用户密码"
-            prop="password"
-        >
-          <el-input
-              v-model="formData.password"
-              placeholder="请输入用户密码"
-              type="password"
-          />
-        </el-form-item>
-
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -374,9 +355,12 @@ import {ElMessage, ElMessageBox, ElTree, ElForm} from 'element-plus'
 import {Search, Plus, Edit, Refresh, Delete, Lock} from '@element-plus/icons'
 import TreeSelect from '@/components/TreeSelect/Index.vue'
 
-const deptTreeRef = ref(ElTree)
+// DOM元素的引用声明定义
+const deptTreeRef = ref(ElTree) // 变量名和DOM的ref属性值一致
+const queryFormRef = ref(ElForm)
 const dataFormRef = ref(ElForm)
-const queryFormRef = ref(ElForm) // 变量名和绑定名ref一致
+
+const {proxy}: any = getCurrentInstance();
 
 const state = reactive({
   // 遮罩层
@@ -431,14 +415,14 @@ const state = reactive({
     username: [
       {required: true, message: '用户名不能为空', trigger: 'blur'}
     ],
-    password: [
-      {required: true, message: '用户密码不能为空', trigger: 'blur'}
-    ],
-    roleId: [
-      {required: true, message: '用户角色不能为空', trigger: 'blur'}
+    nickname: [
+      {required: true, message: '用户昵称不能为空', trigger: 'blur'}
     ],
     deptId: [
       {required: true, message: '归属部门不能为空', trigger: 'blur'}
+    ],
+    roleId: [
+      {required: true, message: '用户角色不能为空', trigger: 'blur'}
     ],
     email: [
       {
@@ -472,14 +456,6 @@ const {
   roleOptions
 } = toRefs(state)
 
-/**
- * 加载部门数据
- **/
-async function loadDeptOptions() {
-  listDeptSelect().then(response => {
-    state.deptOptions = response.data
-  })
-}
 
 /**
  * 部门筛选
@@ -515,7 +491,6 @@ async function loadRoleOptions() {
   })
 }
 
-
 /**
  * 用户状态修改
  **/
@@ -531,28 +506,6 @@ function handleStatusChange(row: { [key: string]: any }) {
     ElMessage.success(text + '成功')
   }).catch(() => {
     row.status = row.status === 1 ? 0 : 1
-  })
-}
-
-/**
- * 密码重置
- **/
-function resetPassword(row: { [key: string]: any }) {
-  ElMessageBox.prompt('请输入"' + row.username + '"的新密码', '修改密码', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
-  }).then(({value}) => {
-    if (!value) {
-      ElMessage.warning("请输入新密码")
-      return false
-    }
-    updateUserPart(row.id, {
-      password: value
-    }).then(() => {
-      ElMessage.success('修改成功，新密码是：' + value)
-    })
-  }).catch(() => {
-
   })
 }
 
@@ -588,10 +541,31 @@ function handleSelectionChange(selection: any) {
 }
 
 /**
+ * 密码重置
+ **/
+function resetPassword(row: { [key: string]: any }) {
+  ElMessageBox.prompt('请输入用户「' + row.username + '」的新密码', '重置密码', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消'
+  }).then(({value}) => {
+    if (!value) {
+      ElMessage.warning("请输入新密码")
+      return false
+    }
+    updateUserPart(row.id, {
+      password: value
+    }).then(() => {
+      ElMessage.success('修改成功，新密码是：' + value)
+    })
+  }).catch(() => {
+
+  })
+}
+
+/**
  * 添加用户
  **/
 async function handleAdd() {
-  resetForm()
   await loadDeptOptions()
   await loadRoleOptions()
   state.dialog = {
@@ -627,14 +601,16 @@ function submitForm() {
       const userId = state.formData.id
       if (userId) {
         updateUser(userId, state.formData).then(() => {
-          ElMessage.success('修改成功')
+          ElMessage.success('修改用户成功')
           state.dialog.visible = false
+          resetForm()
           handleQuery()
         })
       } else {
         addUser(state.formData).then((response: any) => {
-          ElMessage.success('新增成功')
+          ElMessage.success('新增用户成功')
           state.dialog.visible = false
+          resetForm()
           handleQuery()
         })
       }
@@ -647,19 +623,8 @@ function submitForm() {
  * 表单重置
  **/
 function resetForm() {
-  state.formData = {
-    id: undefined,
-    deptId: undefined,
-    username: undefined,
-    nickname: undefined,
-    password: '',
-    mobile: undefined,
-    email: undefined,
-    gender: undefined,
-    status: 1,
-    remark: undefined,
-    roleIds: []
-  }
+  const dataForm = unref(dataFormRef)
+  dataForm.resetFields()
 }
 
 
@@ -668,7 +633,7 @@ function resetForm() {
  **/
 function handleDelete(row: { [key: string]: any }) {
   const userIds = row.id || state.ids.join(',')
-  ElMessageBox.confirm('是否确认删除用户编号为"' + userIds + '"的数据项?', '警告', {
+  ElMessageBox.confirm('是否确认删除用户编号为「' + userIds + '」的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -686,17 +651,40 @@ function handleDelete(row: { [key: string]: any }) {
  * 取消关闭
  */
 function cancel() {
-  resetForm()
   state.dialog.visible = false
+  resetForm()
 }
 
-onMounted(() => {
-  loadDeptOptions()
-  handleQuery()
-  const {proxy}: any = getCurrentInstance();
+
+/**
+ * 加载部门数据
+ **/
+async function loadDeptOptions() {
+  listDeptSelect().then(response => {
+    state.deptOptions = response.data
+  })
+}
+
+/**
+ * 加载性别字典数据
+ */
+function loadGenderOptions() {
   proxy.$listDictsByCode('gender').then((response: any) => {
     state.genderOptions = response?.data
   })
+}
+
+/**
+ * 初始化数据
+ */
+function loadData() {
+  loadGenderOptions()
+  loadDeptOptions()
+  handleQuery()
+}
+
+onMounted(() => {
+  loadData()
 })
 </script>
 <style lang="scss" scoped>
