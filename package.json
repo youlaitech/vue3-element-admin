@@ -11,6 +11,7 @@
     "@wangeditor/editor": "^0.13.6",
     "@wangeditor/editor-for-vue": "^5.1.8-6",
     "axios": "^0.24.0",
+    "echarts": "^5.2.2",
     "element-plus": "^1.2.0-beta.6",
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",

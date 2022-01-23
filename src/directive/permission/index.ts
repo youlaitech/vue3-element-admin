@@ -11,7 +11,7 @@ export const hasPerm: Directive = {
         if (roles.includes('ROOT')) {
             return true
         }
-        // 其他角色按钮权限校验
+        // 「其他角色」按钮权限校验
         const {value} = binding;
         if (value) {
             const requiredPerms = value; // DOM绑定需要的按钮权限标识
