@@ -8,8 +8,10 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick, onMounted} from "vue";
+import {nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted} from "vue";
 import {init, EChartsOption} from 'echarts'
+import resize from '@/utils/resize'
+import {FunnelChart} from "echarts/charts";
 
 const props = defineProps({
   id: {
@@ -32,10 +34,18 @@ const props = defineProps({
   }
 })
 
-function initChart() {
-  const pieChart = init(document.getElementById(props.id) as HTMLDivElement)
+const {
+  mounted,
+  chart,
+  beforeDestroy,
+  activated,
+  deactivated
+} = resize()
 
-  pieChart.setOption({
+function initChart() {
+  const funnelChart = init(document.getElementById(props.id) as HTMLDivElement)
+
+  funnelChart.setOption({
     title: {
       show: true,
       text: '订单线索转化漏斗图',
@@ -103,14 +113,29 @@ function initChart() {
         ]
       }
     ]
-  })
+  } as EChartsOption)
+  chart.value = funnelChart
 }
 
+onBeforeUnmount(() => {
+  beforeDestroy()
+})
+
+onActivated(() => {
+  activated()
+})
+
+onDeactivated(() => {
+  deactivated()
+})
+
 onMounted(() => {
+  mounted()
   nextTick(() => {
     initChart()
   })
 })
+
 </script>
 
 <style lang="scss" scoped>

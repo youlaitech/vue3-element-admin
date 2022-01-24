@@ -62,19 +62,19 @@
       </el-col>
     </el-row>
 
-    <BarChart id="barChart" height="400px" width="100%" class="bar-chart-container"/>
+    <BarChart id="barChart" height="400px" width="100%" class="chart-container"/>
 
     <el-row :gutter="40" style="margin-top: 20px">
       <el-col :xs="24" :span="8">
-        <PieChart id="pieChart" height="500px" width="100%" class="pie-chart-container"/>
+        <PieChart id="pieChart" height="400px" width="100%" class="chart-container"/>
       </el-col>
 
       <el-col :xs="24" :span="8">
-        <FunnelChart id="funnelChart" height="500px" width="100%" class="pie-chart-container"/>
+        <FunnelChart id="funnelChart" height="400px" width="100%" class="chart-container"/>
       </el-col>
 
       <el-col :xs="24" :span="8">
-        <RadarChart id="radarChart" height="500px" width="100%" class="pie-chart-container"/>
+        <RadarChart id="radarChart" height="400px" width="100%" class="chart-container"/>
       </el-col>
     </el-row>
 
@@ -82,10 +82,13 @@
 </template>
 
 <script setup lang="ts">
-import GithubCorner from '@/components/GithubCorner/index.vue'
-import TodoList from './components/TodoList/index.vue'
+
+// Vue引用
 import {computed, reactive, toRefs} from "vue";
 
+// 组件引用
+import GithubCorner from '@/components/GithubCorner/index.vue'
+import TodoList from './components/TodoList/index.vue'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 import BarChart from "./components/BarChart.vue";
 import PieChart from "./components/PieChart.vue";
@@ -241,8 +244,7 @@ const {updateLogActiveName, contactActiveName, documentActiveName} = toRefs(stat
     .card-panel-description {
       float: right;
       font-weight: bold;
-      margin: 26px;
-      margin-left: 0px;
+      margin: 26px 20px 0;
 
       .card-panel-text {
         line-height: 18px;
@@ -257,13 +259,10 @@ const {updateLogActiveName, contactActiveName, documentActiveName} = toRefs(stat
     }
   }
 
-  .bar-chart-container {
+  .chart-container {
     background: #ffffff;
   }
 
-  .pie-chart-container {
-    background: #ffffff;
-  }
 }
 
 </style>

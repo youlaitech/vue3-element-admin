@@ -8,8 +8,9 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick, onMounted} from "vue";
+import {nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted} from "vue";
 import {init, EChartsOption} from 'echarts'
+import resize from "@/utils/resize";
 
 const props = defineProps({
   id: {
@@ -31,6 +32,14 @@ const props = defineProps({
     required: true
   }
 })
+
+const {
+  mounted,
+  chart,
+  beforeDestroy,
+  activated,
+  deactivated
+} = resize()
 
 function initChart() {
   const pieChart = init(document.getElementById(props.id) as HTMLDivElement)
@@ -61,7 +70,7 @@ function initChart() {
       {
         name: 'Nightingale Chart',
         type: 'pie',
-        radius: [50, 180],
+        radius: [50, 160],
         center: ['50%', '50%'],
         roseType: 'area',
         itemStyle: {
@@ -74,15 +83,29 @@ function initChart() {
           { value: 30, name: 'rose 4' },
           { value: 28, name: 'rose 5' },
           { value: 26, name: 'rose 6' },
-          { value: 22, name: 'rose 7' },
-          { value: 18, name: 'rose 8' }
+          { value: 22, name: 'rose 7' }
         ]
       }
     ]
-  })
+  } as EChartsOption)
+
+  chart.value = pieChart
 }
 
+onBeforeUnmount(() => {
+  beforeDestroy()
+})
+
+onActivated(() => {
+  activated()
+})
+
+onDeactivated(() => {
+  deactivated()
+})
+
 onMounted(() => {
+  mounted()
   nextTick(() => {
     initChart()
   })

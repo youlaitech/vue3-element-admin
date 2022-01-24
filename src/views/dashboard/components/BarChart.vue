@@ -8,8 +8,9 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick, onMounted} from "vue";
+import {nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted} from "vue";
 import {init, EChartsOption} from 'echarts'
+import resize from '@/utils/resize'
 
 const props = defineProps({
   id: {
@@ -32,6 +33,14 @@ const props = defineProps({
   }
 })
 
+const {
+  mounted,
+  chart,
+  beforeDestroy,
+  activated,
+  deactivated
+} = resize()
+
 function initChart() {
   const barChart = init(document.getElementById(props.id) as HTMLDivElement)
 
@@ -45,7 +54,7 @@ function initChart() {
         fontSize: 18,
         fontStyle: 'normal',
         fontWeight: 'bold',
-        color:'#096b92'
+        color: '#096b92'
       }
     },
     grid: {
@@ -71,7 +80,7 @@ function initChart() {
     xAxis: [
       {
         type: 'category',
-        data: ['上海', '北京', '浙江', '广东', '深圳', '四川', '湖北', '安徽', '湖南', '山东','海外'],
+        data: ['上海', '北京', '浙江', '广东', '深圳', '四川', '湖北', '安徽', '湖南', '山东', '海外'],
         axisPointer: {
           type: 'shadow'
         }
@@ -104,22 +113,22 @@ function initChart() {
         data: [
           8000, 8200, 7000, 6200, 6500, 5500, 4500, 4200, 3800, 4200, 6700, 5213
         ],
-        barWidth : 20
+        barWidth: 20
 
       },
       {
         name: '毛利润',
         type: 'bar',
         data: [
-           6200, 6500, 5500, 4500, 4200, 3800, 4200, 6700, 5213, 8000,8200, 7000
+          6200, 6500, 5500, 4500, 4200, 3800, 4200, 6700, 5213, 8000, 8200, 7000
         ],
-        barWidth : 20
+        barWidth: 20
       },
       {
         name: '收入增长率',
         type: 'line',
         yAxisIndex: 1,
-        data: [42, 41, 53, 65, 67, 65, 52, 45, 43, 54, 42,46]
+        data: [42, 41, 53, 65, 67, 65, 52, 45, 43, 54, 42, 46]
       },
       {
         name: '利润增长率',
@@ -128,14 +137,29 @@ function initChart() {
         data: [82, 81, 56, 45, 51, 65, 65, 67, 78, 76, 67, 78]
       }
     ]
-  })
+  } as EChartsOption)
+  chart.value = barChart
 }
 
+onBeforeUnmount(() => {
+  beforeDestroy()
+})
+
+onActivated(() => {
+  activated()
+})
+
+onDeactivated(() => {
+  deactivated()
+})
+
 onMounted(() => {
+  mounted()
   nextTick(() => {
     initChart()
   })
 })
+
 </script>
 
 <style lang="scss" scoped>
