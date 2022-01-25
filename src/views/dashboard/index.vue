@@ -2,12 +2,13 @@
   <div class="dashboard-container">
     <github-corner class="github-corner"/>
 
+
     <el-row :gutter="40" class="card-panel-col">
       <el-col :xs="12" :span="12" :lg="6">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper" style="margin-top: -10px">
-            <el-image style="width:200px; height: 90px"
-                      src="https://gitee.com/haoxr/image/raw/master/20210606213932.png"></el-image>
+            <el-image style="width:180px; height: 100px"
+                      src="https://gitee.com/haoxr/image/raw/master/20210606213932.png"/>
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">
@@ -34,6 +35,7 @@
           </div>
         </div>
       </el-col>
+
       <el-col :xs="12" :span="12" :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-money">
@@ -62,18 +64,108 @@
       </el-col>
     </el-row>
 
-    <BarChart id="barChart" height="400px" width="100%" class="chart-container"/>
 
+    <!-- 项目 + 团队成员介绍 -->
+    <el-row :gutter="40">
+
+      <!-- 项目介绍 -->
+      <el-col :sm="24" :lg="12">
+        <el-card class="project-card">
+          <template #header>
+            <span class="fw-b">有来项目简介</span>
+          </template>
+          <div class="project-card__main">
+            <!-- 项目简介 -->
+            <el-link target="_blank" type="primary" href="https://gitee.com/haoxr">
+              youlai-mall
+            </el-link>
+            是基于Spring Boot 2.5、Spring Cloud 2020 &
+            Alibaba 2021、Vue3、Element-Plus、uni-app等主流技术栈构建的一整套全栈开源商城项目，
+            涉及
+            <el-link target="_blank" type="primary" href="https://gitee.com/youlaitech/youlai-mall">后端微服务</el-link>
+            、
+            <el-link target="_blank" type="success" href="https://gitee.com/youlaitech/youlai-mall-admin">前端管理</el-link>
+            、
+            <el-link target="_blank" type="warning" href="https://gitee.com/youlaitech/youlai-mall-weapp">微信小程序
+            </el-link>
+            和
+            <el-link target="_blank" type="danger" href="https://gitee.com/youlaitech/youlai-mall-weapp">APP应用</el-link>
+            等多端的开发。
+            <el-divider/>
+
+            <!-- 源码地址 -->
+            <el-row :gutter="10">
+              <el-col :span="4">
+                <el-badge value="免费开源" class="fw-b">
+                  源码地址
+                </el-badge>
+              </el-col>
+              <el-col :span="4">
+                <el-link target="_blank" type="primary" href="https://github.com/youlaitech">Github</el-link>
+              </el-col>
+              <el-col :span="16">
+                <el-link target="_blank" type="success" href="https://gitee.com/youlaiorg">码云</el-link>
+              </el-col>
+            </el-row>
+            <el-divider/>
+            <!-- 技术栈 -->
+            <el-row :gutter="10">
+              <el-col :span="4" class="fw-b">
+                后端技术栈
+              </el-col>
+              <el-col :span="20" >
+                Spring Boot、Spring Cloud & Alibaba、Spring Security
+                OAuth2、JWT、Seata、Sentinel、Elastic Stack ...
+              </el-col>
+            </el-row>
+            <el-divider/>
+            <el-row :gutter="10" >
+              <el-col :span="4" class="fw-b">
+                前端技术栈
+              </el-col>
+              <el-col :span="20">
+                Vue3、TypeScript、Element-Plus、uni-app、vue3-element-admin ...
+              </el-col>
+            </el-row>
+          </div>
+        </el-card>
+      </el-col>
+
+      <!-- 团队介绍 -->
+      <el-col :sm="24" :lg="12">
+        <el-card class="team-card">
+          <template #header>
+            <span class="fw-b">有来开源组织</span>
+          </template>
+          <el-tabs>
+            <el-tab-pane label="开发人员" name="1">
+            </el-tab-pane>
+
+            <el-tab-pane label="有来交流群" name="2">
+            </el-tab-pane>
+
+            <el-tab-pane label="无回开发群(加入我们)" name="3">
+            </el-tab-pane>
+
+          </el-tabs>
+        </el-card>
+      </el-col>
+    </el-row>
+
+
+    <!-- Echarts 图表 -->
     <el-row :gutter="40" style="margin-top: 20px">
-      <el-col :xs="24" :span="8">
+      <el-col :sm="24" :lg="8">
+        <BarChart id="barChart" height="400px" width="100%" class="chart-container"/>
+      </el-col>
+
+      <el-col :xs="24" :sm="12" :lg="8">
         <PieChart id="pieChart" height="400px" width="100%" class="chart-container"/>
+        <!--订单漏斗图-->
+        <!--<FunnelChart id="funnelChart" height="400px" width="100%" class="chart-container"/>-->
       </el-col>
 
-      <el-col :xs="24" :span="8">
-        <FunnelChart id="funnelChart" height="400px" width="100%" class="chart-container"/>
-      </el-col>
-
-      <el-col :xs="24" :span="8">
+      <el-col :xs="24" :sm="12" :lg="8">
         <RadarChart id="radarChart" height="400px" width="100%" class="chart-container"/>
       </el-col>
     </el-row>
@@ -259,8 +351,26 @@ const {updateLogActiveName, contactActiveName, documentActiveName} = toRefs(stat
     }
   }
 
+  .project-card {
+    font-size: 14px;
+    &__main {
+      line-height: 28px;
+    }
+  }
+
+  .team-card {
+    font-size: 14px;
+    &__main {
+      line-height: 28px;
+    }
+  }
+
   .chart-container {
     background: #ffffff;
+  }
+
+  .fw-b {
+    font-weight: bold;
   }
 
 }

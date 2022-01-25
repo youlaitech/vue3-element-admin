@@ -47,7 +47,7 @@ function initChart() {
   barChart.setOption({
     title: {
       show: true,
-      text: '分公司业绩总览(2021年财报)',
+      text: '分公司业绩总览(2021年)',
       x: 'center',
       padding: 15,
       textStyle: {
@@ -80,7 +80,7 @@ function initChart() {
     xAxis: [
       {
         type: 'category',
-        data: ['上海', '北京', '浙江', '广东', '深圳', '四川', '湖北', '安徽', '湖南', '山东', '海外'],
+        data: ['上海', '北京', '浙江', '广东', '深圳', '四川', '湖北', '安徽'],
         axisPointer: {
           type: 'shadow'
         }
@@ -111,7 +111,7 @@ function initChart() {
         name: '收入',
         type: 'bar',
         data: [
-          8000, 8200, 7000, 6200, 6500, 5500, 4500, 4200, 3800, 4200, 6700, 5213
+          8000, 8200, 7000, 6200, 6500, 5500, 4500, 4200, 3800,
         ],
         barWidth: 20
 
@@ -120,7 +120,7 @@ function initChart() {
         name: '毛利润',
         type: 'bar',
         data: [
-          6200, 6500, 5500, 4500, 4200, 3800, 4200, 6700, 5213, 8000, 8200, 7000
+          6200, 6500, 5500, 4500, 4200, 3800, 4200, 6700, 5213,
         ],
         barWidth: 20
       },
@@ -128,13 +128,13 @@ function initChart() {
         name: '收入增长率',
         type: 'line',
         yAxisIndex: 1,
-        data: [42, 41, 53, 65, 67, 65, 52, 45, 43, 54, 42, 46]
+        data: [42, 41, 53, 65, 67, 65, 52, 45, 43]
       },
       {
         name: '利润增长率',
         type: 'line',
         yAxisIndex: 1,
-        data: [82, 81, 56, 45, 51, 65, 65, 67, 78, 76, 67, 78]
+        data: [82, 81, 56, 45, 51, 65, 65, 67, 78]
       }
     ]
   } as EChartsOption)

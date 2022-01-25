@@ -77,13 +77,10 @@ function initChart() {
           borderRadius: 8
         },
         data: [
-          { value: 22, name: 'rose 1' },
-          { value: 24, name: 'rose 2' },
-          { value: 32, name: 'rose 3' },
-          { value: 30, name: 'rose 4' },
-          { value: 28, name: 'rose 5' },
-          { value: 26, name: 'rose 6' },
-          { value: 22, name: 'rose 7' }
+          { value: 26, name: '家用电器' },
+          { value: 27, name: '户外运动' },
+          { value: 24, name: '汽车用品' },
+          { value: 23, name: '手机数码' }
         ]
       }
     ]
