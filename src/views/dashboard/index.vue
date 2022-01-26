@@ -2,7 +2,7 @@
   <div class="dashboard-container">
     <github-corner class="github-corner"/>
 
-
+    <!-- 数据 -->
     <el-row :gutter="40" class="card-panel-col">
       <el-col :xs="12" :span="12" :lg="6">
         <div class="card-panel">
@@ -64,7 +64,6 @@
       </el-col>
     </el-row>
 
-
     <!-- 项目 + 团队成员介绍 -->
     <el-row :gutter="40">
 
@@ -113,13 +112,13 @@
               <el-col :span="4" class="fw-b">
                 后端技术栈
               </el-col>
-              <el-col :span="20" >
+              <el-col :span="20">
                 Spring Boot、Spring Cloud & Alibaba、Spring Security
                 OAuth2、JWT、Seata、Sentinel、Elastic Stack ...
               </el-col>
             </el-row>
             <el-divider/>
-            <el-row :gutter="10" >
+            <el-row :gutter="10">
               <el-col :span="4" class="fw-b">
                 前端技术栈
               </el-col>
@@ -135,16 +134,32 @@
       <el-col :sm="24" :lg="12">
         <el-card class="team-card">
           <template #header>
-            <span class="fw-b">有来开源组织</span>
+            <span class="fw-b">有来开源组织 X 有来技术团队 </span>
           </template>
-          <el-tabs>
-            <el-tab-pane label="开发人员" name="1">
+          <el-tabs v-model="teamActiveName">
+            <el-tab-pane label="开发人员" name="developer">
+              <div class="developer-wrapper">
+                <ul class="developer-content">
+                  <li>12</li>
+                  <li>12</li>
+                  <li>123</li>
+                  <li>12</li>
+                  <li>123</li>
+                  <li>33</li>
+                  <li>33</li>
+                  <li>33</li>
+                  <li>33</li>
+                  <li>33</li>
+                  <li>33</li>
+                  <li>33</li>
+                </ul>
+              </div>
             </el-tab-pane>
 
             <el-tab-pane label="有来交流群" name="2">
             </el-tab-pane>
 
-            <el-tab-pane label="无回开发群(加入我们)" name="3">
+            <el-tab-pane label="加入开源组织" name="3">
             </el-tab-pane>
 
           </el-tabs>
@@ -176,7 +191,7 @@
 <script setup lang="ts">
 
 // Vue引用
-import {computed, reactive, toRefs} from "vue";
+import {computed, nextTick, onMounted, reactive, toRefs, watchEffect} from "vue";
 
 // 组件引用
 import GithubCorner from '@/components/GithubCorner/index.vue'
@@ -186,6 +201,7 @@ import BarChart from "./components/BarChart.vue";
 import PieChart from "./components/PieChart.vue";
 import RadarChart from "./components/RadarChart.vue";
 import FunnelChart from "./components/FunnelChart.vue";
+import BScroll from 'better-scroll'
 
 import {useUserStoreHook} from "@/store/modules/user"
 
@@ -194,13 +210,28 @@ const avatar = computed(() => useUserStoreHook().avatar);
 const nickname = computed(() => useUserStoreHook().nickname);
 
 const state = reactive({
-  updateLogActiveName: '1',
-  contactActiveName: '1',
-  documentActiveName: '1'
+  teamActiveName: 'developer'
 })
 
-const {updateLogActiveName, contactActiveName, documentActiveName} = toRefs(state)
+const {teamActiveName} = toRefs(state)
 
+let bScroll = reactive({})
+
+onMounted(() => {
+  bScroll = new BScroll(document.querySelector('.developer-wrapper') as any, {
+    startX: 0,
+    click: true,
+    scrollX: true,
+    scrollY: false,
+    eventPassthrough: "vertical" // 横向滚动，保留纵向原生滚动
+  })
+})
+
+watchEffect(() => {
+  nextTick(() => {
+    bScroll && (bScroll as any).refresh()
+  })
+})
 </script>
 
 
@@ -353,6 +384,7 @@ const {updateLogActiveName, contactActiveName, documentActiveName} = toRefs(stat
 
   .project-card {
     font-size: 14px;
+
     &__main {
       line-height: 28px;
     }
@@ -360,6 +392,7 @@ const {updateLogActiveName, contactActiveName, documentActiveName} = toRefs(stat
 
   .team-card {
     font-size: 14px;
+
     &__main {
       line-height: 28px;
     }
