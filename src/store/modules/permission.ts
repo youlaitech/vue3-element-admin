@@ -2,21 +2,24 @@ import {PermissionState} from "@/store/interface";
 import {RouteRecordRaw} from 'vue-router'
 import {constantRoutes} from '@/router'
 import {listRoutes} from "@/api/system/menu";
-import { defineStore } from "pinia";
-import { store } from "@/store";
+import {defineStore} from "pinia";
+import {store} from "@/store";
+
 const modules = import.meta.glob("../../views/**/**.vue");
 export const Layout = () => import( '@/layout/index.vue')
 
 const hasPermission = (roles: string[], route: RouteRecordRaw) => {
     if (route.meta && route.meta.roles) {
+        if (roles.includes('ROOT')) {
+            return true
+        }
         return roles.some(role => {
             if (route.meta?.roles !== undefined) {
                 return (route.meta.roles as string[]).includes(role);
             }
         })
-    } else {
-        return true
     }
+    return false
 }
 
 export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
@@ -46,26 +49,21 @@ export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => 
 
 
 export const usePermissionStore = defineStore({
-    id:"permission",
-    state:():PermissionState=>( {
+    id: "permission",
+    state: (): PermissionState => ({
         routes: [],
         addRoutes: []
     }),
     actions: {
-         setRoutes( routes: RouteRecordRaw[]){
-          this.addRoutes = routes
-         this.routes = constantRoutes.concat(routes)
+        setRoutes(routes: RouteRecordRaw[]) {
+            this.addRoutes = routes
+            this.routes = constantRoutes.concat(routes)
         },
-         generateRoutes( roles: string[]) {
+        generateRoutes(roles: string[]) {
             return new Promise((resolve, reject) => {
                 listRoutes().then(response => {
                     const asyncRoutes = response.data
-                    let accessedRoutes
-                    if (roles.includes('ROOT')) { // 超级管理员拥有全部权限
-                        accessedRoutes = asyncRoutes || []
-                    } else {
-                        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-                    }
+                    let accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
                     this.setRoutes(accessedRoutes)
                     resolve(accessedRoutes)
                 }).catch(error => {
@@ -75,6 +73,7 @@ export const usePermissionStore = defineStore({
         }
     }
 })
+
 export function usePermissionStoreHook() {
     return usePermissionStore(store);
 }
