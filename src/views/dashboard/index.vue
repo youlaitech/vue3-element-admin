@@ -69,101 +69,12 @@
 
       <!-- 项目介绍 -->
       <el-col :sm="24" :lg="12">
-        <el-card class="project-card">
-          <template #header>
-            <span class="fw-b">有来项目简介</span>
-          </template>
-          <div class="project-card__main">
-            <!-- 项目简介 -->
-            <el-link target="_blank" type="primary" href="https://gitee.com/haoxr">
-              youlai-mall
-            </el-link>
-            是基于Spring Boot 2.5、Spring Cloud 2020 &
-            Alibaba 2021、Vue3、Element-Plus、uni-app等主流技术栈构建的一整套全栈开源商城项目，
-            涉及
-            <el-link target="_blank" type="primary" href="https://gitee.com/youlaitech/youlai-mall">后端微服务</el-link>
-            、
-            <el-link target="_blank" type="success" href="https://gitee.com/youlaitech/youlai-mall-admin">前端管理</el-link>
-            、
-            <el-link target="_blank" type="warning" href="https://gitee.com/youlaitech/youlai-mall-weapp">微信小程序
-            </el-link>
-            和
-            <el-link target="_blank" type="danger" href="https://gitee.com/youlaitech/youlai-mall-weapp">APP应用</el-link>
-            等多端的开发。
-            <el-divider/>
-
-            <!-- 源码地址 -->
-            <el-row :gutter="10">
-              <el-col :span="4">
-                <el-badge value="免费开源" class="fw-b">
-                  源码地址
-                </el-badge>
-              </el-col>
-              <el-col :span="4">
-                <el-link target="_blank" type="primary" href="https://github.com/youlaitech">Github</el-link>
-              </el-col>
-              <el-col :span="16">
-                <el-link target="_blank" type="success" href="https://gitee.com/youlaiorg">码云</el-link>
-              </el-col>
-            </el-row>
-            <el-divider/>
-            <!-- 技术栈 -->
-            <el-row :gutter="10">
-              <el-col :span="4" class="fw-b">
-                后端技术栈
-              </el-col>
-              <el-col :span="20">
-                Spring Boot、Spring Cloud & Alibaba、Spring Security
-                OAuth2、JWT、Seata、Sentinel、Elastic Stack ...
-              </el-col>
-            </el-row>
-            <el-divider/>
-            <el-row :gutter="10">
-              <el-col :span="4" class="fw-b">
-                前端技术栈
-              </el-col>
-              <el-col :span="20">
-                Vue3、TypeScript、Element-Plus、uni-app、vue3-element-admin ...
-              </el-col>
-            </el-row>
-          </div>
-        </el-card>
+        <Project/>
       </el-col>
 
       <!-- 团队介绍 -->
       <el-col :sm="24" :lg="12">
-        <el-card class="team-card">
-          <template #header>
-            <span class="fw-b">有来开源组织 X 有来技术团队 </span>
-          </template>
-          <el-tabs v-model="teamActiveName">
-            <el-tab-pane label="开发人员" name="developer">
-              <div class="developer-wrapper">
-                <ul class="developer-content">
-                  <li>12</li>
-                  <li>12</li>
-                  <li>123</li>
-                  <li>12</li>
-                  <li>123</li>
-                  <li>33</li>
-                  <li>33</li>
-                  <li>33</li>
-                  <li>33</li>
-                  <li>33</li>
-                  <li>33</li>
-                  <li>33</li>
-                </ul>
-              </div>
-            </el-tab-pane>
-
-            <el-tab-pane label="有来交流群" name="2">
-            </el-tab-pane>
-
-            <el-tab-pane label="加入开源组织" name="3">
-            </el-tab-pane>
-
-          </el-tabs>
-        </el-card>
+        <Team/>
       </el-col>
     </el-row>
 
@@ -197,10 +108,14 @@ import {computed, nextTick, onMounted, reactive, toRefs, watchEffect} from "vue"
 import GithubCorner from '@/components/GithubCorner/index.vue'
 import TodoList from './components/TodoList/index.vue'
 import SvgIcon from '@/components/SvgIcon/index.vue'
-import BarChart from "./components/BarChart.vue";
-import PieChart from "./components/PieChart.vue";
-import RadarChart from "./components/RadarChart.vue";
-import FunnelChart from "./components/FunnelChart.vue";
+import BarChart from "./components/Chart/BarChart.vue";
+import PieChart from "./components/Chart/PieChart.vue";
+import RadarChart from "./components/Chart/RadarChart.vue";
+import FunnelChart from "./components/Chart/FunnelChart.vue";
+
+import Project from "./components/Project/index.vue";
+import Team from "./components/Team/index.vue";
+
 import BScroll from 'better-scroll'
 
 import {useUserStoreHook} from "@/store/modules/user"
@@ -209,29 +124,7 @@ const roles = computed(() => useUserStoreHook().roles);
 const avatar = computed(() => useUserStoreHook().avatar);
 const nickname = computed(() => useUserStoreHook().nickname);
 
-const state = reactive({
-  teamActiveName: 'developer'
-})
 
-const {teamActiveName} = toRefs(state)
-
-let bScroll = reactive({})
-
-onMounted(() => {
-  bScroll = new BScroll(document.querySelector('.developer-wrapper') as any, {
-    startX: 0,
-    click: true,
-    scrollX: true,
-    scrollY: false,
-    eventPassthrough: "vertical" // 横向滚动，保留纵向原生滚动
-  })
-})
-
-watchEffect(() => {
-  nextTick(() => {
-    bScroll && (bScroll as any).refresh()
-  })
-})
 </script>
 
 
@@ -382,29 +275,11 @@ watchEffect(() => {
     }
   }
 
-  .project-card {
-    font-size: 14px;
-
-    &__main {
-      line-height: 28px;
-    }
-  }
-
-  .team-card {
-    font-size: 14px;
-
-    &__main {
-      line-height: 28px;
-    }
-  }
 
   .chart-container {
     background: #ffffff;
   }
 
-  .fw-b {
-    font-weight: bold;
-  }
 
 }
 
