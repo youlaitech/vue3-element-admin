@@ -129,21 +129,18 @@
                 :show-overflow-tooltip="true"
             />
             <el-table-column
-                key="nickname"
                 label="用户昵称"
                 align="center"
                 prop="nickname"
                 :show-overflow-tooltip="true"
             />
             <el-table-column
-                key="deptName"
                 label="部门"
                 align="center"
                 prop="deptName"
                 :show-overflow-tooltip="true"
             />
             <el-table-column
-                key="mobile"
                 label="手机号码"
                 align="center"
                 prop="mobile"
@@ -151,7 +148,6 @@
             />
 
             <el-table-column
-                key="status"
                 label="状态"
                 align="center"
                 prop="status"
@@ -214,8 +210,8 @@
           <pagination
               v-show="total>0"
               :total="total"
-              v-model:page="queryParams.page"
-              v-model:limit="queryParams.limit"
+              v-model:page="queryParams.pageNum"
+              v-model:limit="queryParams.pageSize"
               @pagination="handleQuery"
           />
         </el-card>
@@ -383,7 +379,6 @@ const state = reactive({
   // 部门树选项
   deptOptions: [],
   // 部门名称
-  deptName: '',
   // 性别状态字典
   genderOptions: [] as any[],
   // 角色选项
@@ -404,8 +399,8 @@ const state = reactive({
   },
   // 查询参数
   queryParams: {
-    page: 1,
-    limit: 10,
+    pageNum: 1,
+    pageSize: 10,
     keywords: undefined,
     status: undefined,
     deptId: undefined
@@ -451,7 +446,6 @@ const {
   dialog,
   formData,
   rules,
-  deptName,
   deptOptions,
   roleOptions
 } = toRefs(state)
