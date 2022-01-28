@@ -9,57 +9,38 @@
         <el-tab-pane label="开发者「无回」" name="developer">
           <div class="developers">
             <ul class="developers__content">
-              <li class="developer">
+              <li class="developer" v-for="(item,index) in developers">
                 <div class="developer__content">
                   <el-image
                       class="developer-img"
-                      src="https://gitee.com/haoxr/image/raw/master/hxr.jpg"
-                      :preview-src-list="['https://gitee.com/haoxr/image/raw/master/hxr.jpg']">
+                      :src="item.imgUrl"
+                      :preview-src-list="[item.imgUrl]">
                   </el-image>
                   <div class="developer-info">
-                    <span class="developer-info-nickname">郝先瑞</span>
+                    <span class="developer-info-nickname">{{ item.nickname }}</span>
                     <div class="developer-info-position">
-                      <el-tag type="primary" size="mini">后端</el-tag>
-                      <el-tag type="success" class="f-ml" size="mini">前端</el-tag>
-                      <el-tag type="danger" class="f-ml" size="mini">运维</el-tag>
+                      <el-tag v-for="(position,i) in item.positions"
+                              :type="colors[i%colors.length]"
+                              :class="i!==0?'f-ml':''"
+                              size="mini">
+                        {{ position }}
+                      </el-tag>
+                    </div>
+                    <div class="developer-info-homepage">
+                      <a :href="item.homepage" target="_blank">
+                        个人主页
+                      </a>
                     </div>
                   </div>
                 </div>
               </li>
 
-              <li class="developer">
-                <div class="developer__content">
-                  <el-image
-                      class="developer-img"
-                      src="https://gitee.com/haoxr/image/raw/master/hxr.jpg"
-                      :preview-src-list="['https://gitee.com/haoxr/image/raw/master/hxr.jpg']">
-                  </el-image>
-                  <div class="developer-info">
-                    <span class="developer-info-nickname">XLSS</span>
-                    <div class="developer-info-position">
-                      <el-tag type="primary" class="f-ml" size="mini">DevOps</el-tag>
-                    </div>
-                  </div>
+              <li class="pointer">
+                <el-image src="https://gitee.com/haoxr/image/raw/master/default/left.png"/>
+                <div class="pointer-tip">
+                  欢迎添加开发者微信🤗🤗🤗
                 </div>
               </li>
-
-              <li class="developer">
-                <div class="developer__content">
-                  <el-image
-                      class="developer-img"
-                      src="https://gitee.com/haoxr/image/raw/master/hxr.jpg"
-                      :preview-src-list="['https://gitee.com/haoxr/image/raw/master/hxr.jpg']">
-                  </el-image>
-                  <div class="developer-info">
-                    <span class="developer-info-nickname">总有刁民要害朕</span>
-                    <div class="developer-info-position">
-                      <el-tag size="mini">后端</el-tag>
-                      <el-tag type="success" class="f-ml" size="mini">前端</el-tag>
-                    </div>
-                  </div>
-                </div>
-              </li>
-
             </ul>
           </div>
         </el-tab-pane>
@@ -68,6 +49,12 @@
         </el-tab-pane>
 
         <el-tab-pane label="加入我们" name="3">
+          <div class="join-us">
+            <p>1. 人品良好、善于思考、执行力强；</p>
+            <p>2. 至少给项目提交过一个PR(无论大小)； </p>
+            <p>3. Git代码库活跃，个人主页、博客完善者优先；</p>
+            <p>4. 过份优秀者我们会主动联系您...</p>
+          </div>
         </el-tab-pane>
 
       </el-tabs>
@@ -81,12 +68,33 @@ import {nextTick, onMounted, reactive, toRefs, watchEffect} from "vue";
 import BScroll from "better-scroll";
 
 const state = reactive({
-  teamActiveName: 'developer'
+  teamActiveName: 'developer',
+  developers: [
+    {
+      imgUrl: 'https://gitee.com/haoxr/image/raw/master/hxr.jpg',
+      nickname: '郝先瑞',
+      positions: ['后端', '前端', '打杂'],
+      homepage: 'https://www.cnblogs.com/haoxianrui/'
+    },
+    {
+      imgUrl: 'https://gitee.com/haoxr/image/raw/master/default/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20220128222910_gaitubao_841x841.jpg',
+      nickname: '张加林',
+      positions: ['DevOps'],
+      homepage: 'https://gitee.com/ximy'
+    },
+    {
+      imgUrl: 'https://gitee.com/haoxr/image/raw/master/default/ba695a5e70410a066b7052c5dc9db5c.jpg',
+      nickname: '张川',
+      positions: ['后端', '前端'],
+      homepage: 'https://blog.csdn.net/qq_41595149'
+    },
+  ],
+  colors: ['', 'success', 'warning', 'danger']
 })
 
-const {teamActiveName} = toRefs(state)
+const {teamActiveName, developers, colors} = toRefs(state)
 
-let bScroll = reactive({})
+/*let bScroll = reactive({})
 
 onMounted(() => {
   bScroll = new BScroll(document.querySelector('.developer-wrapper') as any, {
@@ -102,7 +110,7 @@ watchEffect(() => {
   nextTick(() => {
     bScroll && (bScroll as any).refresh()
   })
-})
+})*/
 </script>
 
 <style lang="scss" scoped>
@@ -118,18 +126,36 @@ watchEffect(() => {
         display: flex;
         justify-content: flex-start;
 
+        .pointer {
+          list-style: none;
+          width: 180px;
+          min-width: 180px;
+          align-items: center;
+          margin-left: 50px;
+
+          &-tip {
+            position: absolute;
+            min-width: 180px;
+            top: 18px;
+            color: #5959d0;
+          }
+        }
+
         .developer {
-          margin-left: 20px;
+          &:not(:first-child) {
+            margin-left: 20px;
+          }
+
           align-items: center;
           list-style: none;
-          width: 200px;
-          height: 206px;
+          width: 180px;
+          min-width: 180px;
 
           &__content {
             border: 1px solid #cccccc;
             border-radius: 5px;
-            box-shadow: 10px 10px 5px #CCC;
-            padding: 23px;
+            box-shadow: 6px 6px 6px #AAA;
+            padding: 8px;
             text-align: center;
 
             .developer-img {
@@ -139,17 +165,39 @@ watchEffect(() => {
 
             .developer-info {
               padding: 6px;
-
-              &-nickname {
-                font-size: 14px;
-              }
+              font-size: 14px;
 
               &-position {
-                margin-top: 5px;
+                margin-top: 10px;
+              }
+
+              &-homepage {
+                margin-top: 16px;
+
+                a {
+                  display: inline-block;
+                  padding: 4px 10px;
+                  color: #409EFF;
+                  border: 1px solid #409EFF;
+                  border-radius: 5px;
+                  background: #ecf5ff;
+
+                  &:hover {
+                    background: #409EFF;
+                    color: #FFFFFF;
+                  }
+                }
               }
             }
           }
         }
+      }
+    }
+
+    .join-us{
+      height: 247px;
+      p{
+        font-weight: bold;
       }
     }
   }

@@ -45,7 +45,7 @@
           </el-col>
           <el-col :span="20">
             Spring Boot、Spring Cloud & Alibaba、Spring Security
-            OAuth2、Sentinel、Elastic Stack ...
+            OAuth2、JWT、Elastic Stack ...
           </el-col>
         </el-row>
         <el-divider/>
@@ -76,14 +76,13 @@ export default {
 
     &__main {
       line-height: 28px;
+      height: 315px;
     }
   }
 
   .fw-b {
     font-weight: bold;
   }
-
-
 }
 
 </style>

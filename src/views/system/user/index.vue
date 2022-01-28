@@ -369,13 +369,14 @@ const state = reactive({
   multiple: true,
   // 总条数
   total: 0,
-  // 用户表格数据
+  // 用户分页数据
   pageList: [],
   // 弹窗属性
   dialog: {
     title: '',
     visible: false
   },
+  deptName:undefined,
   // 部门树选项
   deptOptions: [],
   // 部门名称
@@ -446,10 +447,10 @@ const {
   dialog,
   formData,
   rules,
+  deptName,
   deptOptions,
   roleOptions
 } = toRefs(state)
-
 
 /**
  * 部门筛选
