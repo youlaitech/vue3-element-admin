@@ -78,7 +78,9 @@
       <el-table-column label="描述" prop="description" min-width="100"/>
       <el-table-column label="详情" prop="detail">
         <template #default="scope">
-
+          <el-dialog v-model="dialogVisible" title="商品详情">
+            <div class="goods-detail-box" v-html="goodDetail"/>
+          </el-dialog>
           <el-button type="primary" size="mini" @click="handleGoodsView(scope.row.detail)">查看</el-button>
         </template>
       </el-table-column>
@@ -112,9 +114,6 @@
         v-model:limit="queryParams.pageSize"
         @pagination="handleQuery"
     />
-    <el-dialog v-model="dialogVisible" title="商品详情">
-      <div class="goods-detail-box" v-html="goodDetail"/>
-    </el-dialog>
   </div>
 </template>
 
