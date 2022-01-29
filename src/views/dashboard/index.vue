@@ -4,10 +4,10 @@
 
     <!-- 数据 -->
     <el-row :gutter="40" class="card-panel-col">
-      <el-col :xs="12" :span="12" :lg="6">
+      <el-col :xs="24" :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper" style="margin-top: -10px">
-            <el-image style="width:180px; height: 100px"
+            <el-image style="width:240px; height: 100px"
                       src="https://gitee.com/haoxr/image/raw/master/20210606213932.png"/>
           </div>
           <div class="card-panel-description">
@@ -22,7 +22,7 @@
         </div>
       </el-col>
 
-      <el-col :xs="12" :span="12" :lg="6" class="card-panel-col">
+      <el-col :xs="24"  :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-people">
             <svg-icon icon-class="peoples" class-name="card-panel-icon"/>
@@ -36,7 +36,7 @@
         </div>
       </el-col>
 
-      <el-col :xs="12" :span="12" :lg="6" class="card-panel-col">
+      <el-col :xs="24"  :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-money">
             <svg-icon icon-class="money" class-name="card-panel-icon"/>
@@ -49,7 +49,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="12" :span="12" :lg="6" class="card-panel-col">
+      <el-col :xs="24"  :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-shopping">
             <svg-icon icon-class="shopping" class-name="card-panel-icon"/>
@@ -68,12 +68,12 @@
     <el-row :gutter="40">
 
       <!-- 项目介绍 -->
-      <el-col :md="12" :lg="12">
+      <el-col :md="12" :lg="12" class="card-panel-col">
         <Project/>
       </el-col>
 
       <!-- 团队介绍 -->
-      <el-col :md="12" :lg="12">
+      <el-col :md="12" :lg="12" class="card-panel-col">
         <Team/>
       </el-col>
     </el-row>
@@ -81,17 +81,17 @@
 
     <!-- Echarts 图表 -->
     <el-row :gutter="40" style="margin-top: 20px">
-      <el-col :sm="24" :lg="8">
+      <el-col :sm="24" :lg="8" class="card-panel-col">
         <BarChart id="barChart" height="400px" width="100%" class="chart-container"/>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="8">
+      <el-col :xs="24" :sm="12" :lg="8" class="card-panel-col">
         <PieChart id="pieChart" height="400px" width="100%" class="chart-container"/>
         <!--订单漏斗图-->
         <!--<FunnelChart id="funnelChart" height="400px" width="100%" class="chart-container"/>-->
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="8">
+      <el-col :xs="24" :sm="12" :lg="8" class="card-panel-col">
         <RadarChart id="radarChart" height="400px" width="100%" class="chart-container"/>
       </el-col>
     </el-row>
@@ -235,8 +235,8 @@ const nickname = computed(() => useUserStoreHook().nickname);
       color: #f4516c;
 
       .svg-icon {
-        width: 3.2em !important;
-        height: 3.2em !important;
+        width: 3em !important;
+        height: 3em !important;
       }
     }
 
@@ -251,7 +251,7 @@ const nickname = computed(() => useUserStoreHook().nickname);
 
     .card-panel-icon-wrapper {
       float: left;
-      margin: 14px 0 0 14px;
+      margin: 14px 0 0 6px;
       padding: 16px;
       transition: all 0.38s ease-out;
       border-radius: 6px;

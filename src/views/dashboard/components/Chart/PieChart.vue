@@ -70,7 +70,7 @@ function initChart() {
       {
         name: 'Nightingale Chart',
         type: 'pie',
-        radius: [50, 150],
+        radius: [50, 130],
         center: ['50%', '50%'],
         roseType: 'area',
         itemStyle: {
