@@ -48,7 +48,7 @@
           </el-col>
           <el-col :span="18">
             Spring Boot、Spring Cloud & Alibaba、Spring Security
-            OAuth2、JWT、Elastic Stack ...
+            OAuth2、JWT、Elastic Stack 、K8s...
           </el-col>
         </el-row>
         <el-divider/>

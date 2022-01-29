@@ -7,7 +7,7 @@
       <el-col :xs="24" :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper" style="margin-top: -10px">
-            <el-image style="width:240px; height: 100px"
+            <el-image style="width:200px; height: 100px"
                       src="https://gitee.com/haoxr/image/raw/master/20210606213932.png"/>
           </div>
           <div class="card-panel-description">
@@ -226,8 +226,8 @@ const nickname = computed(() => useUserStoreHook().nickname);
       color: #36a3f7;
 
       .svg-icon {
-        width: 3em !important;
-        height: 3em !important;
+        width: 3.2em !important;
+        height: 3.2em !important;
       }
     }
 
@@ -235,8 +235,8 @@ const nickname = computed(() => useUserStoreHook().nickname);
       color: #f4516c;
 
       .svg-icon {
-        width: 3em !important;
-        height: 3em !important;
+        width: 3.2em !important;
+        height: 3.2em !important;
       }
     }
 
@@ -244,8 +244,8 @@ const nickname = computed(() => useUserStoreHook().nickname);
       color: #34bfa3;
 
       .svg-icon {
-        width: 3em !important;
-        height: 3em !important;
+        width: 3.2em !important;
+        height: 3.2em !important;
       }
     }
 
