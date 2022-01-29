@@ -39,7 +39,7 @@
               <li class="pointer">
                 <el-image class="pointer-img" src="https://gitee.com/haoxr/image/raw/master/default/left.png"/>
                 <div class="pointer-tip">
-                  欢迎添加开发者微信🤗🤗🤗
+                  欢迎添加开发者微信🤗🤗
                 </div>
               </li>
             </ul>
@@ -142,19 +142,21 @@ watchEffect(() => {
 
         .pointer {
           list-style: none;
-          width: 180px;
-          min-width: 180px;
+          width: 160px;
+          min-width: 160px;
           align-items: center;
           margin-left: 20px;
           &-img{
+            background: #FFFFFF;
             position: absolute;
             right: 0;
-            width: 180px;
-            height: 233px;
+            width: 160px;
+            height: 220px;
           }
           &-tip {
+            font-weight: bold;
             position: absolute;
-            min-width: 180px;
+            min-width: 160px;
             top: 18px;
             right: 0;
             color: #5959d0;

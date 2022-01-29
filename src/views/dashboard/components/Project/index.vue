@@ -25,35 +25,38 @@
 
         <!-- 源码地址 -->
         <el-row :gutter="10">
-          <el-col :span="4">
+          <el-col :span="6">
             <el-badge value="免费开源" class="fw-b">
-              源码地址
+              项目地址
             </el-badge>
+          </el-col>
+          <el-col :span="6">
+            <el-link target="_blank" type="warning" href="http://youlaitech.gitee.io/youlai-mall">官方文档(完善中..)</el-link>
           </el-col>
           <el-col :span="6">
             <el-link target="_blank" type="primary" href="https://github.com/youlaitech">Github</el-link>
           </el-col>
-          <el-col :span="14">
+          <el-col :span="6">
             <el-link target="_blank" type="success" href="https://gitee.com/youlaiorg">码云</el-link>
           </el-col>
         </el-row>
         <el-divider/>
         <!-- 技术栈 -->
         <el-row :gutter="10">
-          <el-col :span="4" class="fw-b">
+          <el-col :span="6" class="fw-b">
             后端技术栈
           </el-col>
-          <el-col :span="20">
+          <el-col :span="18">
             Spring Boot、Spring Cloud & Alibaba、Spring Security
             OAuth2、JWT、Elastic Stack ...
           </el-col>
         </el-row>
         <el-divider/>
         <el-row :gutter="10">
-          <el-col :span="4" class="fw-b">
+          <el-col :span="6" class="fw-b">
             前端技术栈
           </el-col>
-          <el-col :span="20">
+          <el-col :span="18">
             Vue3、TypeScript、Element-Plus、uni-app、vue3-element-admin ...
           </el-col>
         </el-row>
