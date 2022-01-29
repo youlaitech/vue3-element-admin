@@ -76,7 +76,7 @@ export default {
 
     &__main {
       line-height: 28px;
-      height: 315px;
+      height: 308.5px;
     }
   }
 

@@ -14,7 +14,8 @@
                   <el-image
                       class="developer-img"
                       :src="item.imgUrl"
-                      :preview-src-list="[item.imgUrl]">
+                      :preview-src-list="[item.imgUrl]"
+                  >
                   </el-image>
                   <div class="developer-info">
                     <span class="developer-info-nickname">{{ item.nickname }}</span>
@@ -36,7 +37,7 @@
               </li>
 
               <li class="pointer">
-                <el-image src="https://gitee.com/haoxr/image/raw/master/default/left.png"/>
+                <el-image class="pointer-img" src="https://gitee.com/haoxr/image/raw/master/default/left.png"/>
                 <div class="pointer-tip">
                   欢迎添加开发者微信🤗🤗🤗
                 </div>
@@ -46,14 +47,27 @@
         </el-tab-pane>
 
         <el-tab-pane label="交流群「有来」" name="2">
+          <div class="group">
+            <el-image
+                class="group-img"
+                      src="https://gitee.com/haoxr/image/raw/master/default/20220129090754.png"
+                :preview-src-list="['https://gitee.com/haoxr/image/raw/master/default/20220129090754.png']"
+            />
+            <div class="group-tip">
+              群二维码过期可添加开发者微信由其拉入群，备注「有来」即可。
+            </div>
+          </div>
         </el-tab-pane>
 
         <el-tab-pane label="加入我们" name="3">
-          <div class="join-us">
+          <div class="join">
             <p>1. 人品良好、善于思考、执行力强；</p>
-            <p>2. 至少给项目提交过一个PR(无论大小)； </p>
-            <p>3. Git代码库活跃，个人主页、博客完善者优先；</p>
-            <p>4. 过份优秀者我们会主动联系您...</p>
+            <p>2. 熟悉项目，至少给项目提交一个PR； </p>
+            <p>3. Git代码库活跃，个人主页或博客完善者优先；</p>
+            <p>4. 过分优秀者我们会主动联系您...</p>
+            <div class="join-tip">
+              申请加入方式: 添加开发者微信申请即可。
+            </div>
           </div>
         </el-tab-pane>
 
@@ -131,12 +145,18 @@ watchEffect(() => {
           width: 180px;
           min-width: 180px;
           align-items: center;
-          margin-left: 50px;
-
+          margin-left: 20px;
+          &-img{
+            position: absolute;
+            right: 0;
+            width: 180px;
+            height: 233px;
+          }
           &-tip {
             position: absolute;
             min-width: 180px;
             top: 18px;
+            right: 0;
             color: #5959d0;
           }
         }
@@ -194,10 +214,23 @@ watchEffect(() => {
       }
     }
 
-    .join-us{
-      height: 247px;
+    .join{
+      height: 240px;
       p{
         font-weight: bold;
+      }
+      &-tip{
+        margin-top: 20px;
+        color: #409EFF;
+        font-weight: bold;
+      }
+    }
+
+    .group{
+      height: 254px;
+      &-img{
+        height: 200px;
+        width: 200px;
       }
     }
   }

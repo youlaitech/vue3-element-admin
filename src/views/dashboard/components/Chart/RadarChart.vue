@@ -70,6 +70,7 @@ function initChart() {
     },
     radar: {
       // shape: 'circle',
+      radius: '70%',
       indicator: [
         { name: '家用电器', max: 6500 },
         { name: '服装箱包', max: 16000 },
