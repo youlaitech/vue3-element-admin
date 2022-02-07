@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "@element-plus/icons": "0.0.11",
-    "@wangeditor/editor": "^0.13.6",
-    "@wangeditor/editor-for-vue": "^5.1.8-6",
+    "@wangeditor/editor": "^0.14.2",
+    "@wangeditor/editor-for-vue": "^5.1.8-7",
     "axios": "^0.24.0",
     "better-scroll": "^2.4.2",
     "echarts": "^5.2.2",
