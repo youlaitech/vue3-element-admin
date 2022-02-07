@@ -106,7 +106,6 @@ import {computed, nextTick, onMounted, reactive, toRefs, watchEffect} from "vue"
 
 // 组件引用
 import GithubCorner from '@/components/GithubCorner/index.vue'
-import TodoList from './components/TodoList/index.vue'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 import BarChart from "./components/Chart/BarChart.vue";
 import PieChart from "./components/Chart/PieChart.vue";
