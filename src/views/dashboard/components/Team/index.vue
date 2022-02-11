@@ -131,10 +131,15 @@ watchEffect(() => {
 .component-container {
   .team-card {
     font-size: 14px;
+    
+    .el-tabs__content{
+      .el-tab-pane{
+        height: 252px;
+      }
+    }
 
     .developers {
       width: 100%;
-      overflow: hidden;
 
       &__content {
         display: flex;

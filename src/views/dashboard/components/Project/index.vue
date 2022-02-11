@@ -79,7 +79,9 @@ export default {
 
     &__main {
       line-height: 28px;
-      height: 308.5px;
+      height: 320px;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
   }
 
