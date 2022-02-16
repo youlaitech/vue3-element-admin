@@ -90,6 +90,7 @@
           ref="dataFormRef"
           :model="formData"
           :rules="rules"
+          label-width="100px"
       >
         <el-form-item label="父级菜单" prop="parentId">
           <tree-select

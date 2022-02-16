@@ -1,4 +1,5 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
+
 export const Layout = () => import( '@/layout/index.vue')
 
 
@@ -28,7 +29,7 @@ export const constantRoutes: Array<RouteRecordRaw> = [
     {
         path: '/401',
         component: () => import('@/views/error-page/401.vue'),
-        meta:{hidden: true}
+        meta: {hidden: true}
     },
     {
         path: '/',
@@ -42,7 +43,47 @@ export const constantRoutes: Array<RouteRecordRaw> = [
                 meta: {title: '首页', icon: 'dashboard', affix: true}
             }
         ]
-    }
+    },
+    // 多级嵌套路由
+    /* {
+         path: '/nested',
+         component: Layout,
+         redirect: '/nested/level1/level2',
+         name: 'Nested',
+         meta: {title: '多级菜单', icon: 'nested'},
+         children: [
+             {
+                 path: 'level1',
+                 component: () => import('@/views/nested/level1/index.vue'),
+                 name: 'Level1',
+                 meta: {title: '菜单一级'},
+                 redirect: '/nested/level1/level2',
+                 children: [
+                     {
+                         path: 'level2',
+                         component: () => import('@/views/nested/level1/level2/index.vue'),
+                         name: 'Level2',
+                         meta: {title: '菜单二级'},
+                         redirect: '/nested/level1/level2/level3',
+                         children: [
+                             {
+                                 path: 'level3-1',
+                                 component: () => import('@/views/nested/level1/level2/level3/index1.vue'),
+                                 name: 'Level3-1',
+                                 meta: {title: '菜单三级-1'}
+                             },
+                             {
+                                 path: 'level3-2',
+                                 component: () => import('@/views/nested/level1/level2/level3/index2.vue'),
+                                 name: 'Level3-2',
+                                 meta: {title: '菜单三级-2'}
+                             }
+                         ]
+                     }
+                 ]
+             },
+         ]
+     }*/
 ]
 
 const router = createRouter({
