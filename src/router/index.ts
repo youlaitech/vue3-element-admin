@@ -44,6 +44,17 @@ export const constantRoutes: Array<RouteRecordRaw> = [
             }
         ]
     },
+    // 外部链接
+    /*{
+        path: '/external-link',
+        component: Layout,
+        children: [
+            {
+                path: 'https://www.cnblogs.com/haoxianrui/',
+                meta: { title: '外部链接', icon: 'link' }
+            }
+        ]
+    }*/
     // 多级嵌套路由
     /* {
          path: '/nested',

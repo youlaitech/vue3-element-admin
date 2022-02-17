@@ -104,10 +104,20 @@
           <el-input v-model="formData.name" placeholder="请输入菜单名称"/>
         </el-form-item>
 
-        <el-form-item label="页面路径" prop="component">
+        <el-form-item label="是否外链" >
+          <el-radio-group v-model="isExternal">
+            <el-radio :label="false">否</el-radio>
+            <el-radio :label="true">是</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item v-if="isExternal" label="外链地址" prop="path">
+          <el-input v-model="formData.path" placeholder="请输入外链完整路径"/>
+        </el-form-item>
+
+        <el-form-item v-if="!isExternal" label="页面路径" prop="component">
           <el-input
               v-model="formData.component"
-              :readonly="formData.parentId==0?true:false"
               placeholder="system/user/index"
               style="width: 95%"
           >
@@ -116,7 +126,7 @@
           </el-input>
 
           <el-tooltip effect="dark"
-                      content="请输入页面路径，如果是父级菜单请填写 Layout 即可"
+                      content="请输入组件路径，如果是父组件填写 Layout 即可"
                       placement="right">
             <i class="el-icon-info" style="margin-left: 10px;color:darkseagreen"></i>
           </el-tooltip>
@@ -232,10 +242,11 @@ const state = reactive({
     ]
   },
   menuOptions: [] as any[],
-  currentRow: undefined
+  currentRow: undefined,
+  isExternal: false
 })
 
-const {loading, single, multiple, queryParams, menuList, total, dialog, formData, rules, menuOptions} = toRefs(state)
+const {loading, single, multiple, queryParams, menuList, total, dialog, formData, rules, menuOptions,isExternal} = toRefs(state)
 
 function handleQuery() {
   // 重置父组件
