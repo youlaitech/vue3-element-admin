@@ -104,18 +104,18 @@
           <el-input v-model="formData.name" placeholder="请输入菜单名称"/>
         </el-form-item>
 
-        <el-form-item label="是否外链" >
-          <el-radio-group v-model="isExternal">
+        <el-form-item label="是否外链">
+          <el-radio-group v-model="isExternalPath">
             <el-radio :label="false">否</el-radio>
             <el-radio :label="true">是</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="isExternal" label="外链地址" prop="path">
+        <el-form-item v-if="isExternalPath" label="外链地址" prop="path">
           <el-input v-model="formData.path" placeholder="请输入外链完整路径"/>
         </el-form-item>
 
-        <el-form-item v-if="!isExternal" label="页面路径" prop="component">
+        <el-form-item v-if="!isExternalPath" label="页面路径" prop="component">
           <el-input
               v-model="formData.component"
               placeholder="system/user/index"
@@ -192,9 +192,9 @@ import {reactive, ref, unref, onMounted, toRefs} from "vue";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import TreeSelect from '@/components/TreeSelect/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';
+import {isExternal} from '@/utils/validate.ts'
 
 const emit = defineEmits(['menuClick'])
-const showChooseIcon = ref(false);
 const iconSelectRef = ref(null);
 
 const queryFormRef = ref(ElForm)
@@ -243,10 +243,24 @@ const state = reactive({
   },
   menuOptions: [] as any[],
   currentRow: undefined,
-  isExternal: false
+  showChooseIcon: false,
+  isExternalPath: false
 })
 
-const {loading, single, multiple, queryParams, menuList, total, dialog, formData, rules, menuOptions,isExternal} = toRefs(state)
+const {
+  loading,
+  single,
+  multiple,
+  queryParams,
+  menuList,
+  total,
+  dialog,
+  formData,
+  rules,
+  menuOptions,
+  isExternalPath,
+  showChooseIcon
+} = toRefs(state)
 
 function handleQuery() {
   // 重置父组件
@@ -328,6 +342,8 @@ async function handleUpdate(row: any) {
   const id = row.id || state.ids
   getMenuDetail(id).then(response => {
     state.formData = response.data
+    const path = state.formData.path
+    state.isExternalPath = isExternal(path);
   })
 }
 
@@ -383,12 +399,12 @@ function cancel() {
 
 function showSelectIcon() {
   (iconSelectRef as any).value.reset();
-  showChooseIcon.value = true;
+  state.showChooseIcon = true;
 }
 
 function selected(name: string) {
   state.formData.icon = name;
-  showChooseIcon.value = false;
+  state.showChooseIcon = false;
 }
 
 onMounted(() => {
