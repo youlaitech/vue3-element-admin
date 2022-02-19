@@ -2,7 +2,7 @@
   <div class="app-container">
 
     <el-form
-        size="mini"
+        size="small"
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"

@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 搜索表单 -->
     <el-form
-        size="mini"
+        size="small"
         :model="state.queryParams"
         ref="queryForm"
         :inline="true"

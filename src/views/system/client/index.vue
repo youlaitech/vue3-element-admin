@@ -5,7 +5,7 @@
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        size="mini"
+        size="small"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>

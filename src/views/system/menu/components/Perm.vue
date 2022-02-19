@@ -3,7 +3,7 @@
     <!-- 搜索表单 -->
     <el-form
         ref="queryFormRef"
-        size="mini"
+        size="small"
         :model="queryParams"
         :inline="true"
     >

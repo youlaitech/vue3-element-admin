@@ -18,7 +18,7 @@
             ref="dataForm"
             :model="modelValue"
             :rules="rules"
-            size="mini"
+            size="small"
             :inline="true"
         >
           <el-table

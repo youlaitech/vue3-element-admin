@@ -3,7 +3,7 @@
     <!-- 搜索表单 -->
     <el-form
         ref="queryFormRef"
-        size="mini"
+        size="small"
         :model="queryParams"
         :inline="true"
     >
@@ -222,12 +222,12 @@ const state = reactive({
   formData: {
     id: undefined,
     parentId: 0,
-    name: undefined,
+    name: '',
     visible: 1,
     icon: '',
     sort: 1,
     component: 'Layout',
-    path: undefined,
+    path: '',
     redirect: ''
   },
   rules: {
@@ -342,7 +342,7 @@ async function handleUpdate(row: any) {
   const id = row.id || state.ids
   getMenuDetail(id).then(response => {
     state.formData = response.data
-    const path = state.formData.path
+    const path = state.formData.path as string
     state.isExternalPath = isExternal(path);
   })
 }
