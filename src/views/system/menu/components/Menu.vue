@@ -192,7 +192,7 @@ import {reactive, ref, unref, onMounted, toRefs} from "vue";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import TreeSelect from '@/components/TreeSelect/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';
-import {isExternal} from '@/utils/validate.ts'
+import {isExternal} from '@/utils/validate'
 
 const emit = defineEmits(['menuClick'])
 const iconSelectRef = ref(null);
