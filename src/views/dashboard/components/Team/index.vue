@@ -7,19 +7,18 @@
       </template>
       <el-tabs v-model="teamActiveName">
         <el-tab-pane label="开发者「无回」" name="developer">
-          <div class="developers">
-            <ul class="developers__content">
-              <li class="developer" v-for="(item,index) in developers">
-                <div class="developer__content">
+          <div class="developer">
+            <ul class="developer__container">
+              <li class="developer__item" v-for="(item,index) in developers">
+                <div class="developer__inner">
                   <el-image
-                      class="developer-img"
+                      class="developer__img"
                       :src="item.imgUrl"
-                      :preview-src-list="[item.imgUrl]"
-                  >
+                      :preview-src-list="[item.imgUrl]">
                   </el-image>
-                  <div class="developer-info">
-                    <span class="developer-info-nickname">{{ item.nickname }}</span>
-                    <div class="developer-info-position">
+                  <div class="developer__info">
+                    <span class="developer__nickname">{{ item.nickname }}</span>
+                    <div class="developer__position">
                       <el-tag v-for="(position,i) in item.positions"
                               :type="colors[i%colors.length]"
                               :class="i!==0?'f-ml':''"
@@ -27,7 +26,7 @@
                         {{ position }}
                       </el-tag>
                     </div>
-                    <div class="developer-info-homepage">
+                    <div class="developer__homepage">
                       <a :href="item.homepage" target="_blank">
                         个人主页
                       </a>
@@ -35,14 +34,8 @@
                   </div>
                 </div>
               </li>
-
-              <li class="pointer">
-                <el-image class="pointer-img" src="https://gitee.com/haoxr/image/raw/master/default/left.png"/>
-                <div class="pointer-tip">
-                  欢迎添加开发者微信🤗🤗
-                </div>
-              </li>
             </ul>
+            <el-image class="developer__indicator" :src="indicatorImgUrl"/>
           </div>
         </el-tab-pane>
 
@@ -50,7 +43,7 @@
           <div class="group">
             <el-image
                 class="group-img"
-                      src="https://gitee.com/haoxr/image/raw/master/default/20220129090754.png"
+                src="https://gitee.com/haoxr/image/raw/master/default/20220129090754.png"
                 :preview-src-list="['https://gitee.com/haoxr/image/raw/master/default/20220129090754.png']"
             />
             <div class="group-tip">
@@ -65,7 +58,7 @@
             <p>2. 熟悉项目，且至少给项目提交(过)一个PR； </p>
             <p>3. Git代码库活跃，个人主页或博客完善者优先；</p>
             <p>4. 过分优秀者我们会主动联系您...</p>
-            <div class="join-tip">
+            <div class="join__desc">
               申请加入方式: 添加开发者微信申请即可。
             </div>
           </div>
@@ -103,10 +96,11 @@ const state = reactive({
       homepage: 'https://blog.csdn.net/qq_41595149'
     },
   ],
-  colors: ['', 'success', 'warning', 'danger']
+  colors: ['', 'success', 'warning', 'danger'],
+  indicatorImgUrl: new URL(`../../../../assets/index/indicator.png`, import.meta.url).href
 })
 
-const {teamActiveName, developers, colors} = toRefs(state)
+const {teamActiveName, developers, colors, indicatorImgUrl} = toRefs(state)
 
 /*let bScroll = reactive({})
 
@@ -125,50 +119,28 @@ watchEffect(() => {
     bScroll && (bScroll as any).refresh()
   })
 })*/
+
 </script>
 
 <style lang="scss" scoped>
 .component-container {
   .team-card {
     font-size: 14px;
-    
-    .el-tabs__content{
-      .el-tab-pane{
+
+    .el-tabs__content {
+      .el-tab-pane {
         height: 252px;
       }
     }
 
-    .developers {
+    .developer {
       width: 100%;
 
-      &__content {
+      &__container {
         display: flex;
         justify-content: flex-start;
 
-        .pointer {
-          list-style: none;
-          width: 160px;
-          min-width: 160px;
-          align-items: center;
-          margin-left: 20px;
-          &-img{
-            background: #FFFFFF;
-            position: absolute;
-            right: 0;
-            width: 160px;
-            height: 220px;
-          }
-          &-tip {
-            font-weight: bold;
-            position: absolute;
-            min-width: 160px;
-            top: 18px;
-            right: 0;
-            color: #5959d0;
-          }
-        }
-
-        .developer {
+        .developer__item {
           &:not(:first-child) {
             margin-left: 20px;
           }
@@ -178,27 +150,27 @@ watchEffect(() => {
           width: 180px;
           min-width: 180px;
 
-          &__content {
+          .developer__inner {
             border: 1px solid #cccccc;
             border-radius: 5px;
             box-shadow: 6px 6px 6px #AAA;
             padding: 8px;
             text-align: center;
 
-            .developer-img {
+            .developer__img {
               height: 100px;
               width: 100px;
             }
 
-            .developer-info {
+            .developer__info {
               padding: 6px;
               font-size: 14px;
 
-              &-position {
+              .developer__position {
                 margin-top: 10px;
               }
 
-              &-homepage {
+              .developer__homepage {
                 margin-top: 16px;
 
                 a {
@@ -219,23 +191,34 @@ watchEffect(() => {
           }
         }
       }
+
+      &__indicator{
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 120px;
+        height: 100px;
+      }
     }
 
-    .join{
+    .join {
       height: 240px;
-      p{
+
+      p {
         font-weight: bold;
       }
-      &-tip{
+
+      &__desc {
         margin-top: 20px;
         color: #409EFF;
         font-weight: bold;
       }
     }
 
-    .group{
+    .group {
       height: 254px;
-      &-img{
+
+      &-img {
         height: 200px;
         width: 200px;
       }
