@@ -3,7 +3,6 @@
     <!-- 搜索表单 -->
     <el-form
         ref="queryFormRef"
-        size="small"
         :model="queryParams"
         :inline="true"
     >
@@ -34,7 +33,6 @@
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         @row-click="handleRowClick"
         border
-        size="mini"
     >
       <el-table-column label="菜单名称">
         <template #default="scope">
@@ -45,8 +43,8 @@
 
       <el-table-column label="状态" align="center" width="80">
         <template #default="scope">
-          <el-tag v-if="scope.row.visible===1" type="success" size="mini">显示</el-tag>
-          <el-tag v-else type="info" size="mini">隐藏</el-tag>
+          <el-tag v-if="scope.row.visible===1" type="success">显示</el-tag>
+          <el-tag v-else type="info">隐藏</el-tag>
         </template>
       </el-table-column>
 
@@ -55,7 +53,6 @@
           <el-button
               type="success"
               :icon="Plus"
-              size="mini"
               circle
               plain
               @click.stop="handleAdd(scope.row)"
@@ -63,7 +60,6 @@
           <el-button
               type="primary"
               :icon="Edit"
-              size="mini"
               circle
               plain
               @click.stop="handleUpdate(scope.row)"
@@ -71,7 +67,6 @@
           <el-button
               type="danger"
               :icon="Delete"
-              size="mini"
               circle
               plain
               @click.stop="handleDelete(scope.row)"

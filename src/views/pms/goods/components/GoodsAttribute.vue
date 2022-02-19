@@ -8,7 +8,7 @@
               style="float: right;"
               type="success"
               :icon="Plus"
-              size="mini"
+              size="small"
               @click="handleAdd"
           >
             添加属性
@@ -23,7 +23,7 @@
         >
           <el-table
               :data="modelValue.attrList"
-              size="mini"
+              size="small"
               highlight-current-row
               border
           >

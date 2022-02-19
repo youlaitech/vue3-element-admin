@@ -11,7 +11,7 @@
           </el-checkbox>
         </el-col>
         <el-col :span="12" style="text-align: right">
-          <el-button type="primary" :icon="Check" size="mini" @click="handleSubmit">提交</el-button>
+          <el-button type="primary" :icon="Check"  @click="handleSubmit">提交</el-button>
         </el-col>
       </el-row>
 
@@ -27,7 +27,6 @@
               :label="item.id"
               :key="item.id"
               @change="handleCheckedPermChange"
-              size="mini"
           >
             {{ item.name }}
           </el-checkbox>

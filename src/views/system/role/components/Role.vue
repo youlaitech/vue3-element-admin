@@ -5,7 +5,6 @@
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        size="small"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
@@ -35,18 +34,16 @@
         @selection-change="handleSelectionChange"
         @row-click="handleRowClick"
         highlight-current-row
-        size="mini"
         border
     >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="角色名称" prop="name"/>
       <el-table-column label="角色编码" prop="code"/>
-      <el-table-column label="操作" align="center" width="100">
+      <el-table-column label="操作" align="center" width="120">
         <template #default="scope">
           <el-button
               type="primary"
               :icon="Edit"
-              size="mini"
               circle
               plain
               @click.stop="handleUpdate(scope.row)"
@@ -54,7 +51,6 @@
           <el-button
               type="danger"
               :icon="Delete"
-              size="mini"
               circle
               plain
               @click.stop="handleDelete(scope.row)"

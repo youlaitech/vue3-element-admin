@@ -47,7 +47,7 @@
 
 <script lang="ts" setup>
 
-import {tagsViewStoreHook} from '@/store/modules/tagsView'
+import {useTagsViewStoreHook} from '@/store/modules/tagsView'
 import {usePermissionStoreHook} from '@/store/modules/Permission'
 import path from 'path-browserify'
 import {
@@ -68,7 +68,7 @@ const {ctx} = getCurrentInstance() as any
 const router = useRouter()
 const route = useRoute();
 
-const visitedViews = computed<any>(() => tagsViewStoreHook().visitedViews)
+const visitedViews = computed<any>(() => useTagsViewStoreHook().visitedViews)
 const routes = computed<any>(() => usePermissionStoreHook().routes)
 
 const affixTags = ref([]);
@@ -121,14 +121,14 @@ function initTags() {
   for (const tag of res) {
     // Must have tag name
     if ((tag as TagView).name) {
-      tagsViewStoreHook().addVisitedView(tag)
+      useTagsViewStoreHook().addVisitedView(tag)
     }
   }
 }
 
 function addTags() {
   if (route.name) {
-    tagsViewStoreHook().addView(route)
+    useTagsViewStoreHook().addView(route)
   }
   return false
 }
@@ -144,7 +144,7 @@ function moveToCurrentTag() {
         (scrollPaneRef.value as any).value.moveToTarget(tag)
         // when query is different then update
         if ((tag.to as TagView).fullPath !== route.fullPath) {
-          tagsViewStoreHook().updateVisitedView(route)
+          useTagsViewStoreHook().updateVisitedView(route)
         }
       }
     }
@@ -176,7 +176,7 @@ function isLastView() {
 }
 
 function refreshSelectedTag(view: TagView) {
-  tagsViewStoreHook().delCachedView(view)
+  useTagsViewStoreHook().delCachedView(view)
   const {fullPath} = view
   nextTick(() => {
     router.replace({path: '/redirect' + fullPath}).catch(err => {
@@ -202,7 +202,7 @@ function toLastView(visitedViews: TagView[], view?: any) {
 }
 
 function closeSelectedTag(view: TagView) {
-  tagsViewStoreHook().delView(view).then((res: any) => {
+  useTagsViewStoreHook().delView(view).then((res: any) => {
     if (isActive(view)) {
       toLastView(res.visitedViews, view)
     }
@@ -210,14 +210,14 @@ function closeSelectedTag(view: TagView) {
 }
 
 function closeLeftTags() {
-  tagsViewStoreHook().delLeftViews(selectedTag.value).then((res: any) => {
+  useTagsViewStoreHook().delLeftViews(selectedTag.value).then((res: any) => {
     if (!res.visitedViews.find((item: any) => item.fullPath === route.fullPath)) {
       toLastView(res.visitedViews)
     }
   })
 }
 function closeRightTags() {
-  tagsViewStoreHook().delRightViews(selectedTag.value).then((res:any) => {
+  useTagsViewStoreHook().delRightViews(selectedTag.value).then((res:any) => {
     if (!res.visitedViews.find((item:any) => item.fullPath === route.fullPath)) {
       toLastView(res.visitedViews)
     }
@@ -225,13 +225,13 @@ function closeRightTags() {
 }
 
 function closeOtherTags() {
-  tagsViewStoreHook().delOtherViews(selectedTag.value).then(() => {
+  useTagsViewStoreHook().delOtherViews(selectedTag.value).then(() => {
     moveToCurrentTag()
   })
 }
 
 function closeAllTags(view: TagView) {
-  tagsViewStoreHook().delRightViews(selectedTag.value).then((res:any) => {
+  useTagsViewStoreHook().delRightViews(selectedTag.value).then((res:any) => {
     if (affixTags.value.some((tag:any) => tag.path === route.path)) {
       return
     }

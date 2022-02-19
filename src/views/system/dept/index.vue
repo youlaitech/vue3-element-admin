@@ -2,7 +2,6 @@
   <div class="app-container">
 
     <el-form
-        size="small"
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
@@ -17,7 +16,6 @@
         <el-input
             v-model="queryParams.name"
             placeholder="请输入部门名称"
-            size="small"
             @keyup.enter="handleQuery"
         />
       </el-form-item>
@@ -27,7 +25,6 @@
             v-model="queryParams.status"
             placeholder="部门状态"
             clearable
-            size="small"
         >
           <el-option :value="1" label="正常"/>
           <el-option :value="0" label="禁用"/>
@@ -37,7 +34,6 @@
         <el-button
             class="filter-item"
             type="primary"
-            size="mini"
             :icon="Search"
             @click="handleQuery"
         >
@@ -45,7 +41,6 @@
         </el-button>
         <el-button
             :icon="Refresh"
-            size="mini"
             @click="resetQuery"
         >
           重置
@@ -81,7 +76,6 @@
           <el-button
               type="primary"
               :icon="Edit"
-              size="mini"
               circle
               plain
               @click.stop="handleUpdate(scope.row)"
@@ -89,7 +83,6 @@
           </el-button>
           <el-button
               type="success"
-              size="mini"
               :icon="Plus"
               circle
               plain
@@ -100,7 +93,6 @@
           <el-button
               type="danger"
               :icon="Delete"
-              size="mini"
               circle
               plain
               @click.stop="handleDelete(scope.row)">

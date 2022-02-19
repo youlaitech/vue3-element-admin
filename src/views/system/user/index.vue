@@ -2,7 +2,6 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!-- 部门数据 -->
-
       <el-col
           :span="4"
           :xs="24"
@@ -12,7 +11,6 @@
               v-model="deptName"
               placeholder="部门名称"
               clearable
-              size="small"
               :prefix-icon="Search"
               style="margin-bottom: 20px"
           />
@@ -44,7 +42,6 @@
               <el-button
                   type="success"
                   :icon="Plus"
-                  size="mini"
                   @click="handleAdd"
                   v-hasPerm="['sys:user:add']"
               >
@@ -53,7 +50,6 @@
               <el-button
                   type="danger"
                   :icon="Delete"
-                  size="mini"
                   :disabled="multiple"
                   @click="handleDelete"
                   v-hasPerm="['sys:user:delete']"
@@ -67,7 +63,6 @@
                   v-model="queryParams.keywords"
                   placeholder="用户名/昵称/手机号"
                   clearable
-                  size="small"
                   style="width: 200px"
                   @keyup.enter="handleQuery"
               />
@@ -78,7 +73,6 @@
                   v-model="queryParams.status"
                   placeholder="用户状态"
                   clearable
-                  size="small"
                   style="width: 200px"
               >
                 <el-option label="正常" value="1"/>
@@ -90,14 +84,12 @@
               <el-button
                   type="primary"
                   :icon="Search"
-                  size="mini"
                   @click="handleQuery"
               >
                 搜索
               </el-button>
               <el-button
                   :icon="Refresh"
-                  size="mini"
                   @click="resetQuery"
               >
                 重置
@@ -177,7 +169,6 @@
                 <el-button
                     type="primary"
                     :icon="Edit"
-                    size="mini"
                     circle
                     plain
                     @click="handleUpdate(scope.row)"
@@ -186,7 +177,6 @@
                 </el-button>
                 <el-button
                     type="danger"
-                    size="mini"
                     :icon="Delete"
                     circle
                     plain
@@ -196,7 +186,6 @@
                 </el-button>
                 <el-button
                     type="warning"
-                    size="mini"
                     :icon="Lock"
                     circle
                     plain

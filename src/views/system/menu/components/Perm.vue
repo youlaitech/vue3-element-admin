@@ -3,7 +3,6 @@
     <!-- 搜索表单 -->
     <el-form
         ref="queryFormRef"
-        size="small"
         :model="queryParams"
         :inline="true"
     >
@@ -31,7 +30,6 @@
         v-loading="loading"
         @selection-change="handleSelectionChange"
         border
-        size="mini"
     >
       <el-table-column type="selection" width="40" align="center"/>
       <el-table-column label="权限名称" prop="name" width="150"/>
@@ -46,7 +44,6 @@
           <el-button
               type="primary"
               :icon="Edit"
-              size="mini"
               circle
               plain
               @click="handleUpdate(scope.row)"
@@ -54,7 +51,6 @@
           <el-button
               type="danger"
               :icon="Delete"
-              size="mini"
               circle
               plain
               @click="handleDelete(scope.row)"

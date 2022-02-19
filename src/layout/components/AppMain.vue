@@ -13,9 +13,9 @@
 
 <script setup lang="ts">
 import {computed} from "vue";
-import {tagsViewStoreHook} from '@/store/modules/tagsView'
+import {useTagsViewStoreHook} from '@/store/modules/tagsView'
 
-const cachedViews = computed(() => tagsViewStoreHook().cachedViews);
+const cachedViews = computed(() => useTagsViewStoreHook().cachedViews);
 
 </script>
 

@@ -5,7 +5,6 @@
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        size="small"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
@@ -49,7 +48,6 @@
           <el-button
               type="primary"
               :icon="Edit"
-              size="mini"
               circle
               plain
               @click.stop="handleUpdate(scope.row)"
@@ -57,7 +55,6 @@
           <el-button
               type="danger"
               :icon="Delete"
-              size="mini"
               circle
               plain
               @click.stop="handleDelete(scope.row)"

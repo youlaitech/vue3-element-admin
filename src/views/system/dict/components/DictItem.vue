@@ -5,7 +5,6 @@
         :model="state.queryParams"
         ref="queryForm"
         :inline="true"
-        size="small"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
@@ -29,15 +28,14 @@
         v-loading="state.loading"
         border
         @selection-change="handleSelectionChange"
-        size="mini"
     >
       <el-table-column type="selection" min-width="5%"/>
       <el-table-column label="数据项名称" prop="name"/>
       <el-table-column label="数据项值" prop="value"/>
       <el-table-column label="状态" align="center">
         <template #default="scope">
-          <el-tag v-if="scope.row.status===1" type="success" size="mini">启用</el-tag>
-          <el-tag v-else type="info" size="mini">禁用</el-tag>
+          <el-tag v-if="scope.row.status===1" type="success">启用</el-tag>
+          <el-tag v-else type="info" >禁用</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center">
@@ -45,7 +43,6 @@
           <el-button
               type="primary"
               :icon="Edit"
-              size="mini"
               circle
               plain
               @click.stop="handleUpdate(scope.row)"
@@ -53,7 +50,6 @@
           <el-button
               type="danger"
               :icon="Delete"
-              size="mini"
               circle
               plain
               @click.stop="handleDelete(scope.row)"

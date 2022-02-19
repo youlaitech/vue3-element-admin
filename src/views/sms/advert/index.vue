@@ -5,7 +5,6 @@
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        size="small"
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
@@ -53,8 +52,8 @@
       <el-table-column prop="endTime" label="结束时间" min-width="10"/>
       <el-table-column prop="status" label="状态" min-width="6">
         <template #default="scope">
-          <el-tag v-if="scope.row.status===1" type="success" size="mini">开启</el-tag>
-          <el-tag v-else type="info" size="mini">关闭</el-tag>
+          <el-tag v-if="scope.row.status===1" type="success" >开启</el-tag>
+          <el-tag v-else type="info">关闭</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="6"/>
@@ -63,7 +62,6 @@
           <el-button
               type="primary"
               :icon="Edit"
-              size="mini"
               circle
               plain
               @click.stop="handleUpdate(scope.row)"
@@ -71,7 +69,6 @@
           <el-button
               type="danger"
               :icon="Delete"
-              size="mini"
               circle
               plain
               @click.stop="handleDelete(scope.row)"

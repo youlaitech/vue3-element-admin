@@ -34,7 +34,6 @@
                 <el-button
                     v-show="scope.data.level != 3 "
                     type="primary"
-                    size="mini"
                     icon="Plus"
                     circle
                     plain
@@ -43,14 +42,12 @@
                     v-show="scope.data.id !== 0"
                     type="warning"
                     :icon="Edit"
-                    size="mini"
                     circle
                     plain
                     @click.stop="handleUpdate(scope.data)"/>
                 <el-button
                     v-show="scope.data.id && (!scope.data.children || scope.data.children.length <= 0)"
                     type="danger"
-                    size="mini"
                     :icon="Delete"
                     circle
                     plain

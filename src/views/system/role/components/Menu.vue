@@ -1,12 +1,12 @@
 <template>
   <div class="menu-container">
-    <el-form size="mini">
+    <el-form >
       <el-form-item>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-button type="success" plain :icon="Switch" @click="toggleExpandAll">展开/折叠</el-button>
           </el-col>
-          <el-col :span="12" style="text-align: right">
+          <el-col :span="8" style="text-align: right">
             <el-button type="primary" :icon="Check" @click="handleSubmit">提交</el-button>
           </el-col>
         </el-row>

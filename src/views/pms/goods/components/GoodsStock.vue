@@ -8,7 +8,7 @@
               :icon="Plus"
               type="success"
               @click="handleSpecAdd"
-              size="mini"
+              size="small"
               style="float: right;"
           >
             添加规格项
@@ -19,13 +19,13 @@
             ref="specFormRef"
             :model="specForm"
             :inline="true"
-            size="mini"
+            size="small"
         >
           <el-table
               ref="specTableRef"
               :data="specForm.specList"
               row-key="id"
-              size="mini"
+              size="small"
           >
             <el-table-column align="center" width="50">
               <template>
@@ -41,7 +41,7 @@
                   <el-input
                       type="text"
                       v-model="scope.row.name"
-                      size="mini"
+                      size="small"
                       @input="handleSpecChange()"
                   />
                 </el-form-item>
@@ -78,14 +78,14 @@
                     @keyup.enter.native="handleSpecValueInput(scope.$index)"
                     @blur="handleSpecValueInput(scope.$index)"
                     style="width: 80px;vertical-align: top"
-                    size="mini"
+                    size="small"
                 />
                 <el-button
                     v-else
                     @click="handleSpecValueAdd(scope.$index)"
                     :icon="Plus"
                     style="vertical-align: top"
-                    size="mini"
+                    size="small"
                 >
                   添加规格值
                 </el-button>
@@ -97,7 +97,7 @@
                 <el-button
                     type="danger"
                     :icon="Minus"
-                    size="mini"
+                    size="small"
                     circle
                     plain
                     @click.stop="handleSpecRemove(scope.$index)"/>
@@ -114,14 +114,14 @@
         <el-form
             ref="skuFormRef"
             :model="skuForm"
-            size="mini"
+            size="small"
             :inline="true"
         >
           <el-table
               :data="skuForm.skuList"
               :span-method="objectSpanMethod"
               highlight-current-row
-              size="mini"
+              size="small"
               border
           >
 

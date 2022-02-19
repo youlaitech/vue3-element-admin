@@ -10,15 +10,15 @@
         <!--        <search id="header-search" class="right-menu-item" />
                 <error-log class="errLog-container right-menu-item hover-effect" />-->
         <screenfull id="screenfull" class="right-menu-item hover-effect"/>
-        <!--<el-tooltip content="Global Size" effect="dark" placement="bottom">
-                  <size-select id="size-select" class="right-menu-item hover-effect" />
-                </el-tooltip>-->
+        <el-tooltip content="全局大小" effect="dark" placement="bottom">
+          <size-select id="size-select" class="right-menu-item hover-effect"/>
+        </el-tooltip>
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <CaretBottom style="width: .6em; height: .6em;" />
+          <CaretBottom style="width: .6em; height: .6em;"/>
         </div>
 
         <template #dropdown>
@@ -45,13 +45,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed} from "vue"
+import {computed} from "vue"
 import {ElMessageBox} from 'element-plus'
 import {useRoute, useRouter} from "vue-router"
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
 import Screenfull from '@/components/screenfull/index.vue'
-import {tagsViewStoreHook} from '@/store/modules/tagsView'
+import SizeSelect from '@/components/SizeSelect/index.vue'
+import {useTagsViewStoreHook} from '@/store/modules/tagsView'
 import {useAppStoreHook} from '@/store/modules/app'
 import {useUserStoreHook} from '@/store/modules/user'
 

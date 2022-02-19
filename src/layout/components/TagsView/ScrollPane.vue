@@ -10,13 +10,13 @@
 
 <script setup lang="ts">
 import {ref, computed, onMounted, onBeforeUnmount, getCurrentInstance} from "vue";
-import {tagsViewStoreHook} from "@/store/modules/tagsView"
-import {TagView} from "@store/interface";
+import {useTagsViewStoreHook} from "@/store/modules/tagsView"
+import {TagView} from "@/store/interface";
 const emits = defineEmits()
 
 const tagAndTagSpacing = ref(4)
 const scrollContainerRef = ref(null)
-const visitedViews = computed(() => tagsViewStoreHook().visitedViews)
+const visitedViews = computed(() => useTagsViewStoreHook().visitedViews)
 
 const emitScroll = () => {
   (emits as any)('scroll')

@@ -2,7 +2,6 @@
   <div class="app-container">
     <!-- 搜索表单 -->
     <el-form
-        size="small"
         :model="state.queryParams"
         ref="queryForm"
         :inline="true"
@@ -34,15 +33,14 @@
         @row-click="handleRowClick"
         @selection-change="handleSelectionChange"
         border
-        size="mini"
     >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="字典名称" prop="name" width="120"/>
       <el-table-column label="字典编码" prop="code"/>
       <el-table-column label="状态" align="center" width="80">
         <template #default="scope">
-          <el-tag v-if="scope.row.status===1" type="success" size="mini">启用</el-tag>
-          <el-tag v-else type="info" size="mini">禁用</el-tag>
+          <el-tag v-if="scope.row.status===1" type="success" >启用</el-tag>
+          <el-tag v-else type="info">禁用</el-tag>
         </template>
       </el-table-column>
 
@@ -51,7 +49,6 @@
           <el-button
               type="primary"
               :icon="Edit"
-              size="mini"
               circle
               plain
               @click.stop="handleUpdate(scope.row)"
@@ -59,7 +56,6 @@
           <el-button
               type="danger"
               :icon="Delete"
-              size="mini"
               circle
               plain
               @click.stop="handleDelete(scope.row)"

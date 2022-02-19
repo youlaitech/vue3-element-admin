@@ -5,7 +5,6 @@
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        size="small"
     >
       <el-form-item prop="orderSn">
         <el-input v-model="queryParams.orderSn" placeholder="订单号"/>
@@ -52,7 +51,6 @@
         <template #default="scope">
           <el-table
               :data="scope.row.orderItems"
-              size="small"
               border
           >
             <el-table-column label="序号" type="index" width="100"/>
@@ -111,7 +109,7 @@
 
       <el-table-column align="center" label="操作">
         <template #default="scope">
-          <el-button size="mini" @click="viewDetail(scope.row)">查看</el-button>
+          <el-button @click="viewDetail(scope.row)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>

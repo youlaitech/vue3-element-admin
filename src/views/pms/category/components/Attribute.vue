@@ -7,7 +7,7 @@
           <el-tag v-else type="info"><i class="el-icon-info"></i> 请选择商品分类</el-tag>
         </el-col>
         <el-col :span="12" style="text-align: right">
-          <el-button type="primary" :icon="Check" size="mini" @click="submitForm">提交</el-button>
+          <el-button type="primary" :icon="Check"  @click="submitForm">提交</el-button>
         </el-col>
       </el-row>
 
@@ -32,7 +32,6 @@
                 :icon="Plus"
                 circle
                 plain
-                size="mini"
                 @click.prevent="handleAdd()"
                 style="margin-left: 15px"
             />
@@ -42,7 +41,6 @@
                 :icon="Delete"
                 plain
                 circle
-                size="mini"
                 @click.prevent="handleDelete(index)"
                 style="margin-left: 15px"
             />

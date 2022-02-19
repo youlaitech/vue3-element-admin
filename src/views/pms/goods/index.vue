@@ -3,7 +3,7 @@
     <el-form
         ref="queryForm"
         :inline="true"
-        size="mini"
+
     >
       <el-form-item>
         <el-button type="success" :icon="Plus" @click="handleAdd">发布商品</el-button>
@@ -42,7 +42,6 @@
         <template #default="props">
           <el-table
               :data="props.row.skuList"
-              size="small"
               border>
             <el-table-column align="center" label="商品编码" prop="sn"/>
             <el-table-column align="center" label="商品规格" prop="name"/>
@@ -78,7 +77,7 @@
       <el-table-column label="描述" prop="description" min-width="100"/>
       <el-table-column label="详情" prop="detail">
         <template #default="scope">
-          <el-button type="primary" size="mini" @click="handleGoodsView(scope.row.detail)">查看</el-button>
+          <el-button type="primary"  @click="handleGoodsView(scope.row.detail)">查看</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="120">
@@ -86,7 +85,6 @@
           <el-button
               type="primary"
               :icon="Edit"
-              size="mini"
               circle
               plain
               @click.stop="handleUpdate(scope.row)"
@@ -94,7 +92,6 @@
           <el-button
               type="danger"
               :icon="Delete"
-              size="mini"
               circle
               plain
               @click.stop="handleDelete(scope.row)"
