@@ -1,21 +1,21 @@
 import {AppState} from "@/store/interface";
 import {Local} from "@/utils/storage";
-import { store } from "@/store";
-import { defineStore } from "pinia";
+import {store} from "@/store";
+import {defineStore} from "pinia";
 
 export const useAppStore = defineStore({
     id: "app",
-    state: ():AppState=>({
+    state: (): AppState => ({
         device: 'desktop',
         sidebar: {
             opened: Local.get('sidebarStatus') ? !!+Local.get('sidebarStatus') : true,
             withoutAnimation: false
         },
-        language:'zh',
-        size:'medium'
+        language: 'zh',
+        size: Local.get('size')||'default'
     }),
     actions: {
-         toggleSidebar() {
+        toggleSidebar() {
             this.sidebar.opened = !this.sidebar.opened
             this.sidebar.withoutAnimation = false
             if (this.sidebar.opened) {
@@ -24,16 +24,21 @@ export const useAppStore = defineStore({
                 Local.set('sidebarStatus', 0)
             }
         },
-         closeSideBar ( withoutAnimation:any) {
+        closeSideBar(withoutAnimation: any) {
             Local.set('sidebarStatus', 0)
             this.sidebar.opened = false
             this.sidebar.withoutAnimation = withoutAnimation
         },
-        toggleDevice( device:any) {
+        toggleDevice(device: string) {
             this.device = device
+        },
+        setSize(size: string) {
+            this.size = size
+            Local.set('size', size)
         }
     }
 })
+
 export function useAppStoreHook() {
     return useAppStore(store);
 }

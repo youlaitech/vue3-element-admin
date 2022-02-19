@@ -2,10 +2,11 @@ import {createApp, Directive} from 'vue'
 import App from './App.vue'
 import router from "./router";
 import '@/styles/index.scss'
-import { store } from "./store";
+import {store} from "@/store";
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
 import locale from 'element-plus/lib/locale/lang/zh-cn'
+import {Local} from "@/utils/storage";
 import 'virtual:svg-icons-register';
 
 // @see https://blog.csdn.net/qq_37213281/article/details/121422027
@@ -19,6 +20,8 @@ const app = createApp(App)
 
 // 自定义指令
 import * as directive from "@/directive";
+
+
 Object.keys(directive).forEach(key => {
     app.directive(key, (directive as { [key: string]: Directive })[key]);
 });
@@ -30,8 +33,9 @@ for (let iconName in ElIconModules) {
 
 // 全局方法
 app.config.globalProperties.$listDictsByCode = listDictsByCode
+
 app.component('Pagination', Pagination) // 全局组件
-     .use(store)
+    .use(store)
     .use(router)
-    .use(ElementPlus, {locale})
+    .use(ElementPlus, {locale: locale, size: Local.get('size')||'small'})
     .mount('#app')

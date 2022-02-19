@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {store} from "@/store";
 import {TagsViewState} from "@/store/interface";
 
-const tagsViewStore = defineStore({
+const useTagsViewStore = defineStore({
     id: "tagsView",
     state: (): TagsViewState => ({
         visitedViews: [],
@@ -174,7 +174,7 @@ const tagsViewStore = defineStore({
 })
 
 
-export function tagsViewStoreHook() {
-    return tagsViewStore(store);
+export function useTagsViewStoreHook() {
+    return useTagsViewStore(store);
 }
 
