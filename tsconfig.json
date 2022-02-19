@@ -13,7 +13,7 @@
 
     "baseUrl": "./",
     "paths": {
-      "@*": ["src/*"]
+      "@/*": ["src/*"]
     },
     "extends": "./tsconfig.extends.json",
     "skipLibCheck": true,  // element-plus 生产打包报错，通过此配置修改 TS 不对第三方依赖类型检查
