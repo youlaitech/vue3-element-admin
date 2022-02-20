@@ -10,9 +10,10 @@
         <!--        <search id="header-search" class="right-menu-item" />
                 <error-log class="errLog-container right-menu-item hover-effect" />-->
         <screenfull id="screenfull" class="right-menu-item hover-effect"/>
-        <el-tooltip content="全局大小" effect="dark" placement="bottom">
+        <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect"/>
         </el-tooltip>
+
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
@@ -41,6 +42,7 @@
           </el-dropdown-menu>
         </template>
       </el-dropdown>
+
     </div>
   </div>
 </template>

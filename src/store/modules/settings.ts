@@ -1,13 +1,12 @@
-import { defineStore } from "pinia";
-import { store } from "@/store";
+import {defineStore} from "pinia";
+import {store} from "@/store";
 import {SettingState} from "@/store/interface";
 import defaultSettings from '../../settings'
-
 const {showSettings, tagsView, fixedHeader, sidebarLogo} = defaultSettings
 
 export const useSettingStore = defineStore({
     id: "setting",
-    state:():SettingState =>({
+    state: (): SettingState => ({
         theme: '',
         showSettings: showSettings,
         tagsView: tagsView,
@@ -15,11 +14,11 @@ export const useSettingStore = defineStore({
         sidebarLogo: sidebarLogo,
     }),
     actions: {
-        async changeSetting( payload: { key: string, value: any }){
+        async changeSetting(payload: { key: string, value: any }) {
             const {key, value} = payload
             switch (key) {
                 case 'theme':
-                   this.theme = value
+                    this.theme = value
                     break
                 case 'showSettings':
                     this.showSettings = value
