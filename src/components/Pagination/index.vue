@@ -17,7 +17,7 @@
 import {computed} from "vue";
 import {scrollTo} from '@/utils/scroll-to'
 
-const props=defineProps({
+const props = defineProps({
   total: {
     required: true,
     type: Number,
@@ -70,18 +70,19 @@ const pageSize = computed({
   get() {
     return props.limit
   },
-  set(val){
+  set(val) {
     emit('update:limit', val)
   }
 })
 
-function handleSizeChange(val){
+function handleSizeChange(val) {
   emit('pagination', {page: currentPage, limit: val})
   if (props.autoScroll) {
     scrollTo(0, 800)
   }
 }
-function handleCurrentChange(val){
+
+function handleCurrentChange(val) {
   emit('pagination', {page: val, limit: props.pageSizes})
   if (props.autoScroll) {
     scrollTo(0, 800)

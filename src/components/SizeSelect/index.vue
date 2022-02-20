@@ -27,8 +27,6 @@ import {ElMessage} from 'element-plus'
 import {useAppStoreHook} from '@/store/modules/app'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 
-const route = useRoute()
-const router = useRouter()
 const size = computed(() => useAppStoreHook().size)
 
 const sizeOptions = ref([
@@ -40,7 +38,7 @@ const sizeOptions = ref([
 function handleSetSize(size: string) {
   useAppStoreHook().setSize(size)
   window.location.reload()
-  ElMessage.success('切换全局大小成功')
+  ElMessage.success('切换布局大小成功')
 }
 
 </script>

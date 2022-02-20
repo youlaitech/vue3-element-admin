@@ -4,7 +4,7 @@
 
     <!-- 数据 -->
     <el-row :gutter="40" class="card-panel-col">
-      <el-col :xs="24" :lg="6" class="card-panel-col">
+<!--      <el-col :xs="24" :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper" style="margin-top: -10px">
             <el-image style="width:200px; height: 100px"
@@ -20,7 +20,7 @@
             </div>
           </div>
         </div>
-      </el-col>
+      </el-col>-->
 
       <el-col :xs="24"  :lg="6" class="card-panel-col">
         <div class="card-panel">
@@ -29,9 +29,23 @@
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">
-              总访问量
+             访问数
             </div>
-            <div class="card-panel-num">123456</div>
+            <div class="card-panel-num">1000</div>
+          </div>
+        </div>
+      </el-col>
+
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel">
+          <div class="card-panel-icon-wrapper icon-message">
+            <svg-icon icon-class="message" class-name="card-panel-icon" />
+          </div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              消息数
+            </div>
+            <div class="card-panel-num">1000</div>
           </div>
         </div>
       </el-col>
@@ -45,7 +59,7 @@
             <div class="card-panel-text">
               支付金额
             </div>
-            <div class="card-panel-num">123456</div>
+            <div class="card-panel-num">1000</div>
           </div>
         </div>
       </el-col>
@@ -58,7 +72,7 @@
             <div class="card-panel-text">
               订单数
             </div>
-            <div class="card-panel-num">123456</div>
+            <div class="card-panel-num">1000</div>
           </div>
         </div>
       </el-col>
@@ -202,6 +216,9 @@ const nickname = computed(() => useUserStoreHook().nickname);
         background: #40c9c6;
       }
 
+      .icon-message {
+        background: #36a3f7;
+      }
 
       .icon-money {
         background: #f4516c;
@@ -216,8 +233,8 @@ const nickname = computed(() => useUserStoreHook().nickname);
       color: #40c9c6;
 
       .svg-icon {
-        width: 3em !important;
-        height: 3em !important;
+        width: 4em !important;
+        height: 4em !important;
       }
     }
 
@@ -225,8 +242,8 @@ const nickname = computed(() => useUserStoreHook().nickname);
       color: #36a3f7;
 
       .svg-icon {
-        width: 3.2em !important;
-        height: 3.2em !important;
+        width: 4em !important;
+        height: 4em !important;
       }
     }
 
@@ -234,8 +251,8 @@ const nickname = computed(() => useUserStoreHook().nickname);
       color: #f4516c;
 
       .svg-icon {
-        width: 3.2em !important;
-        height: 3.2em !important;
+        width: 4em !important;
+        height: 4em !important;
       }
     }
 
@@ -243,14 +260,14 @@ const nickname = computed(() => useUserStoreHook().nickname);
       color: #34bfa3;
 
       .svg-icon {
-        width: 3.2em !important;
-        height: 3.2em !important;
+        width: 4em !important;
+        height: 4em !important;
       }
     }
 
     .card-panel-icon-wrapper {
       float: left;
-      margin: 14px 0 0 6px;
+      margin: 14px 0 0 14px;
       padding: 16px;
       transition: all 0.38s ease-out;
       border-radius: 6px;

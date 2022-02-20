@@ -22,7 +22,7 @@
                       <el-tag v-for="(position,i) in item.positions"
                               :type="colors[i%colors.length]"
                               :class="i!==0?'f-ml':''"
-                              size="mini">
+                              size="small">
                         {{ position }}
                       </el-tag>
                     </div>

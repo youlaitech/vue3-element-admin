@@ -1,7 +1,6 @@
 <template>
-  <div class="app-container">
+  <div class="component-container">
     <el-form
-        size="mini"
         ref="queryForm"
         :model="queryParams"
         :inline="true"
@@ -75,8 +74,8 @@
       <el-table-column prop="birthday" label="出生日期"/>
       <el-table-column prop="status" width="80" label="状态">
         <template #default="scope">
-          <el-tag v-if="scope.row.status===1" type="success" size="mini">正常</el-tag>
-          <el-tag v-else type="info" size="mini">禁用</el-tag>
+          <el-tag v-if="scope.row.status===1" type="success" >正常</el-tag>
+          <el-tag v-else type="info" >禁用</el-tag>
         </template>
       </el-table-column>
 

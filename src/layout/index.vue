@@ -8,18 +8,19 @@
         <tags-view v-if="needTagsView"/>
       </div>
       <app-main/>
-<!--      <right-panel v-if="showSettings">
+      <right-panel v-if="showSettings">
         <settings/>
-      </right-panel>-->
+      </right-panel>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, watchEffect } from "vue"
+import {computed, watchEffect} from "vue"
 import {useWindowSize} from '@vueuse/core'
-import {AppMain, Navbar, Settings,TagsView} from './components/index'
+import {AppMain, Navbar, Settings, TagsView} from './components/index'
 import Sidebar from './components/Sidebar/index.vue'
+import RightPanel from '@/components/RightPanel/index.vue'
 
 import {useAppStoreHook} from "@/store/modules/app"
 import {useSettingStoreHook} from "@/store/modules/settings"
@@ -31,6 +32,7 @@ const sidebar = computed(() => useAppStoreHook().sidebar);
 const device = computed(() => useAppStoreHook().device);
 const needTagsView = computed(() => useSettingStoreHook().tagsView);
 const fixedHeader = computed(() => useSettingStoreHook().fixedHeader);
+const showSettings = computed(() => useSettingStoreHook().showSettings);
 
 const classObj = computed(() => ({
   hideSidebar: !sidebar.value.opened,
@@ -39,9 +41,7 @@ const classObj = computed(() => ({
   mobile: device.value === 'mobile'
 }))
 
-
 watchEffect(() => {
-
   if (width.value < WIDTH) {
     useAppStoreHook().toggleDevice("mobile")
     useAppStoreHook().closeSideBar(true)

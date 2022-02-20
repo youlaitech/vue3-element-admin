@@ -29,12 +29,10 @@
 <script>
 import ThemePicker from '@/components/ThemePicker/index.vue'
 import {defineComponent, reactive, toRefs, watch} from "vue"
-// import {useStore} from '@/store'
 import { useSettingStoreHook } from "@/store/modules/settings";
 export default defineComponent({
   components: {ThemePicker},
   setup() {
-    // const store = useStore()
     const state = reactive({
       fixedHeader:useSettingStoreHook().fixedHeader,
       tagsView:useSettingStoreHook().tagsView,
