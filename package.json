@@ -21,6 +21,7 @@
     "screenfull": "^6.0.0",
     "sortablejs": "^1.14.0",
     "vue": "^3.2.16",
+    "vue-i18n": "^9.1.9",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
