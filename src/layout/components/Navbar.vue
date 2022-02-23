@@ -14,6 +14,8 @@
           <size-select id="size-select" class="right-menu-item hover-effect"/>
         </el-tooltip>
 
+        <lang-select class="right-menu-item hover-effect" />
+
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
@@ -48,16 +50,18 @@
 </template>
 <script setup lang="ts">
 import {computed} from "vue"
-import {ElMessageBox} from 'element-plus'
 import {useRoute, useRouter} from "vue-router"
+import {ElMessageBox} from 'element-plus'
+
+import {useAppStoreHook} from '@/store/modules/app'
+import {useUserStoreHook} from '@/store/modules/user'
+
+// 组件依赖
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
 import Screenfull from '@/components/screenfull/index.vue'
 import SizeSelect from '@/components/SizeSelect/index.vue'
-import {useTagsViewStoreHook} from '@/store/modules/tagsView'
-import {useAppStoreHook} from '@/store/modules/app'
-import {useUserStoreHook} from '@/store/modules/user'
-
+import LangSelect from '@/components/LangSelect/index.vue'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 
 const route = useRoute()
