@@ -28,7 +28,6 @@ const scrollWrapper = computed(() => {
 })
 
 onMounted(() => {
-  console.log('scrollWrapper', scrollWrapper.value)
   //scrollWrapper.value.addEventListener('scroll', emitScroll, true);
 })
 

@@ -2,8 +2,7 @@
   <div ref="rightPanel" :class="{show:show}" class="rightPanel-container">
     <div class="rightPanel-background"/>
     <div class="rightPanel">
-      <!--      <div class="handle-button" :style="{'top':buttonTop+'px','background-color:blue'}" @click="show=!show">-->
-        <div class="handle-button" @click="show=!show">
+       <div class="handle-button" :style="{'top':buttonTop+'px','background-color':theme}" @click="show=!show">
           <Close v-show="show"/>
           <Setting v-show="!show"/>
         </div>
@@ -31,9 +30,7 @@ const props = defineProps({
   }
 })
 
-const theme = computed(() => {
-  useSettingStoreHook().theme
-})
+const theme =  ""
 
 const show = ref(false)
 

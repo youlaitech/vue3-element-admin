@@ -5,8 +5,10 @@
     >
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
-          <svg-icon v-if="onlyOneChild.meta && onlyOneChild.meta.icon" :icon-class="onlyOneChild.meta.icon"></svg-icon>
-          <template #title>{{ onlyOneChild.meta.title }}</template>
+          <svg-icon v-if="onlyOneChild.meta && onlyOneChild.meta.icon" :icon-class="onlyOneChild.meta.icon"/>
+          <template #title>
+            {{ generateTitle(onlyOneChild.meta.title ) }}
+          </template>
         </el-menu-item>
       </app-link>
     </template>
@@ -14,7 +16,7 @@
       <!-- popper-append-to-body -->
       <template #title>
         <svg-icon v-if="item.meta && item.meta.icon" :icon-class="item.meta.icon"></svg-icon>
-        <span v-if="item.meta && item.meta.title">{{ item.meta.title }}</span>
+        <span v-if="item.meta && item.meta.title">{{generateTitle(item.meta.title) }}</span>
       </template>
 
       <sidebar-item
@@ -32,11 +34,13 @@
 
 <script setup lang="ts">
 import path from 'path-browserify'
-import {PropType, ref} from "vue";
+import { ref} from "vue";
 import {isExternal} from '@/utils/validate'
 import AppLink from './Link.vue'
-import SvgIcon from '@/components/SvgIcon/index.vue';
 import {RouteRecordRaw} from "vue-router";
+
+import SvgIcon from '@/components/SvgIcon/index.vue';
+import { generateTitle } from '@/utils/i18n'
 
 const props = defineProps({
   item: {

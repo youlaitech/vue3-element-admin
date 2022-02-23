@@ -11,7 +11,7 @@
         <span
             v-if="item.redirect === 'noredirect' || index === breadcrumbs.length-1"
             class="no-redirect"
-        >{{ item.meta.title }}</span>
+        >{{ generateTitle(item.meta.title) }}</span>
         <a
             v-else
             @click.prevent="handleLink(item)"
@@ -21,70 +21,65 @@
   </el-breadcrumb>
 </template>
 
-<script lang="ts">
-import { defineComponent, onBeforeMount, reactive, toRefs, watch } from 'vue'
-import { useRoute, RouteLocationMatched } from 'vue-router'
-import { compile } from 'path-to-regexp'
+<script setup lang="ts">
+import {onBeforeMount, ref, watch} from 'vue'
+import {useRoute, RouteLocationMatched} from 'vue-router'
+import {compile} from 'path-to-regexp'
 import router from '@/router'
-export default defineComponent({
-  setup() {
-    const currentRoute = useRoute()
-    const pathCompile = (path: string) => {
-      const { params } = currentRoute
-      const toPath = compile(path)
-      return toPath(params)
-    }
+import {generateTitle} from '@/utils/i18n'
 
-    const state = reactive({
-      breadcrumbs: [] as Array<RouteLocationMatched>,
-      getBreadcrumb: () => {
-        let matched = currentRoute.matched.filter((item) => item.meta && item.meta.title)
-        const first = matched[0]
-        if (!state.isDashboard(first)) {
-          matched = [{ path: '/dashboard', meta: { title: '首页' } } as any].concat(matched)
-        }
-        state.breadcrumbs = matched.filter((item) => {
-          return item.meta && item.meta.title && item.meta.breadcrumb !== false
-        })
-      },
-      isDashboard(route: RouteLocationMatched) {
-        const name = route && route.name
-        if (!name) {
-          return false
-        }
-        return name.toString().trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
-      },
-      handleLink(item: any) {
-        const { redirect, path } = item
-        if (redirect) {
-          router.push(redirect).catch((err) => {
-            console.warn(err)
-          })
-          return
-        }
-        router.push(pathCompile(path)).catch((err) => {
-          console.warn(err)
-        })
-      }
-    })
+const currentRoute = useRoute()
+const pathCompile = (path: string) => {
+  const {params} = currentRoute
+  const toPath = compile(path)
+  return toPath(params)
+}
 
-    watch(() => currentRoute.path, (path) => {
-      if (path.startsWith('/redirect/')) {
-        return
-      }
-      state.getBreadcrumb()
-    })
+const breadcrumbs = ref( [] as Array<RouteLocationMatched>)
 
-    onBeforeMount(() => {
-      state.getBreadcrumb()
-    })
-
-    return {
-      ...toRefs(state)
-    }
+function getBreadcrumb() {
+  let matched = currentRoute.matched.filter((item) => item.meta && item.meta.title)
+  const first = matched[0]
+  if (!isDashboard(first)) {
+    matched = [{path: '/dashboard', meta: {title: 'dashboard'}} as any].concat(matched)
   }
+  breadcrumbs.value = matched.filter((item) => {
+    return item.meta && item.meta.title && item.meta.breadcrumb !== false
+  })
+}
 
+function isDashboard(route: RouteLocationMatched) {
+  const name = route && route.name
+  if (!name) {
+    return false
+  }
+  return name.toString().trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
+}
+
+function handleLink(item: any) {
+  const {redirect, path} = item
+  if (redirect) {
+    router.push(redirect).catch((err) => {
+      console.warn(err)
+    })
+    return
+  }
+  router.push(pathCompile(path)).catch((err) => {
+    console.warn(err)
+  })
+}
+
+watch(() => currentRoute.path, (path) => {
+  if (path.startsWith('/redirect/')) {
+    return
+  }
+  getBreadcrumb()
 })
+
+onBeforeMount(() => {
+  getBreadcrumb()
+})
+
 
 </script>
 

@@ -10,7 +10,7 @@
           @click.middle="!isAffix(tag)?closeSelectedTag(tag):''"
           @contextmenu.prevent="openMenu(tag,$event)"
       >
-        {{ tag.meta.title }}
+        {{ generateTitle(tag.meta.title) }}
         <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)">
           <close class="el-icon-close" style="width: 1em; height: 1em;vertical-align: middle;"/>
         </span>
@@ -63,6 +63,7 @@ import {TagView} from "@/store/interface";
 
 import ScrollPane from './ScrollPane.vue'
 import {Close} from '@element-plus/icons'
+import { generateTitle } from '@/utils/i18n'
 
 const {ctx} = getCurrentInstance() as any
 const router = useRouter()

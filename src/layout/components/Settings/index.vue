@@ -4,11 +4,6 @@
       <h3 class="drawer-title">系统布局配置</h3>
 
       <div class="drawer-item">
-        <span>主题色</span>
-        <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange"/>
-      </div>
-
-      <div class="drawer-item">
         <span>开启 Tags-View</span>
         <el-switch v-model="tagsView" class="drawer-switch"/>
       </div>
@@ -27,11 +22,9 @@
 </template>
 
 <script>
-import ThemePicker from '@/components/ThemePicker/index.vue'
 import {defineComponent, reactive, toRefs, watch} from "vue"
 import { useSettingStoreHook } from "@/store/modules/settings";
 export default defineComponent({
-  components: {ThemePicker},
   setup() {
     const state = reactive({
       fixedHeader:useSettingStoreHook().fixedHeader,
