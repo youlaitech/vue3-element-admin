@@ -19,6 +19,8 @@ $--border-color-lighter: #e6ebf5;
 
 $--table-border: 1px solid #dfe6ec;
 
+$--font-path: "~element-plus/theme-chalk/fonts";
+
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
 :export {

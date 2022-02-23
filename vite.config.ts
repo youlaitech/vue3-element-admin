@@ -43,14 +43,14 @@ export default ({command, mode}: ConfigEnv): UserConfig => {
             },
             // SCSS 变量导出
             // @see https://www.vitejs.net/config/#css-preprocessoroptions
-            css: {
+            /*css: {
                 preprocessorOptions: {
                     scss: {
                         additionalData:  `@import "./src/styles/element-variables.scss";`,
                         javascriptEnabled: true
                     }
                 }
-            }
+            }*/
         }
     )
 }
