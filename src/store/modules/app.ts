@@ -1,31 +1,32 @@
 import {AppState} from "@/store/interface";
-import {Local} from "@/utils/storage";
+import {localStorage} from "@/utils/storage";
 import {store} from "@/store";
 import {defineStore} from "pinia";
+import { getLanguage } from '@/lang/index'
 
 export const useAppStore = defineStore({
     id: "app",
     state: (): AppState => ({
         device: 'desktop',
         sidebar: {
-            opened: Local.get('sidebarStatus') ? !!+Local.get('sidebarStatus') : true,
+            opened: localStorage.get('sidebarStatus') ? !!+localStorage.get('sidebarStatus') : true,
             withoutAnimation: false
         },
-        language: 'zh',
-        size: Local.get('size')||'default'
+        language: getLanguage(),
+        size: localStorage.get('size')||'default'
     }),
     actions: {
         toggleSidebar() {
             this.sidebar.opened = !this.sidebar.opened
             this.sidebar.withoutAnimation = false
             if (this.sidebar.opened) {
-                Local.set('sidebarStatus', 1)
+                localStorage.set('sidebarStatus', 1)
             } else {
-                Local.set('sidebarStatus', 0)
+                localStorage.set('sidebarStatus', 0)
             }
         },
         closeSideBar(withoutAnimation: any) {
-            Local.set('sidebarStatus', 0)
+            localStorage.set('sidebarStatus', 0)
             this.sidebar.opened = false
             this.sidebar.withoutAnimation = withoutAnimation
         },
@@ -34,7 +35,11 @@ export const useAppStore = defineStore({
         },
         setSize(size: string) {
             this.size = size
-            Local.set('size', size)
+            localStorage.set('size', size)
+        },
+        setLanguage(language: string) {
+            this.language = language
+            localStorage.set('language', language)
         }
     }
 })

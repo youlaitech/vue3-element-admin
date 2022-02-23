@@ -1,7 +1,7 @@
 /**
  * window.localStorage 浏览器永久缓存
  */
-export const Local = {
+export const localStorage = {
     // 设置永久缓存
     set(key: string, val: any) {
         window.localStorage.setItem(key, JSON.stringify(val));
@@ -18,13 +18,13 @@ export const Local = {
     // 移除全部永久缓存
     clear() {
         window.localStorage.clear();
-    },
+    }
 };
 
 /**
  * window.sessionStorage 浏览器临时缓存
  */
-export const Session = {
+export const sessionStorage = {
     // 设置临时缓存
     set(key: string, val: any) {
         window.sessionStorage.setItem(key, JSON.stringify(val));

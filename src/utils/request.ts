@@ -1,7 +1,7 @@
 import axios from "axios";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {Local} from "@/utils/storage";
-import { useUserStoreHook } from "@/store/modules/user";
+import {localStorage} from "@/utils/storage";
+import {useUserStoreHook} from "@/store/modules/user";
 
 // 创建 axios 实例
 const service = axios.create({
@@ -17,7 +17,7 @@ service.interceptors.request.use(
             throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
         }
         if (useUserStoreHook().token) {
-            config.headers.Authorization = `${Local.get('token')}`;
+            config.headers.Authorization = `${localStorage.get('token')}`;
         }
         return config
     }, (error) => {
@@ -43,14 +43,14 @@ service.interceptors.response.use(
     (error) => {
         const {code, msg} = error.response.data
         if (code === 'A0230') {  // token 过期
-            Local.clear(); // 清除浏览器全部缓存
+            localStorage.clear(); // 清除浏览器全部缓存
             window.location.href = '/'; // 跳转登录页
             ElMessageBox.alert('当前页面已失效，请重新登录', '提示', {})
                 .then(() => {
                 })
                 .catch(() => {
                 });
-        }else{
+        } else {
             ElMessage({
                 message: msg || '系统出错',
                 type: 'error'

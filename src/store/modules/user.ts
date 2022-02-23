@@ -1,13 +1,13 @@
 import { defineStore } from "pinia";
 import { store } from "@/store";
 import {UserState} from "@/store/interface";
-import {Local} from "@/utils/storage";
+import {localStorage} from "@/utils/storage";
 import {getUserInfo, login, logout} from "@/api/login";
 import {resetRouter} from "@/router";
 
 const getDefaultState = () => {
     return {
-        token: Local.get('token'),
+        token: localStorage.get('token'),
         nickname: '',
         avatar: '',
         roles: [],
@@ -18,7 +18,7 @@ const getDefaultState = () => {
 export const useUserStore = defineStore({
    id:"user",
     state: ():UserState=>({
-        token: Local.get('token') || '',
+        token: localStorage.get('token') || '',
         nickname: '',
         avatar: '',
         roles: [],
@@ -50,7 +50,7 @@ export const useUserStore = defineStore({
                 ).then(response => {
                     const {access_token, token_type} = response.data
                     const accessToken = token_type + " " + access_token
-                    Local.set("token", accessToken)
+                    localStorage.set("token", accessToken)
                     this.token = accessToken
                     resolve(access_token)
                 }).catch(error => {
@@ -90,7 +90,7 @@ export const useUserStore = defineStore({
         logout() {
             return new Promise(((resolve, reject) => {
                 logout().then(() => {
-                    Local.remove('token')
+                    localStorage.remove('token')
                     this.RESET_STATE()
                     resetRouter()
                     resolve(null)
@@ -105,7 +105,7 @@ export const useUserStore = defineStore({
          */
         resetToken(){
             return new Promise(resolve=>{
-                Local.remove('token')
+                localStorage.remove('token')
                 this.RESET_STATE()
                 resolve(null)
             })
