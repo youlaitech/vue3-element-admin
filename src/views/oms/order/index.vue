@@ -54,18 +54,18 @@
               border
           >
             <el-table-column label="序号" type="index" width="100"/>
-            <el-table-column label="商品编号" align="center" prop="skuCode"/>
+            <el-table-column label="商品编号" align="center" prop="skuSn"/>
             <el-table-column label="商品规格" align="center" prop="skuName"/>
-            <el-table-column label="图片" prop="skuPic">
+            <el-table-column label="图片" prop="picUrl">
               <template slot-scope="scope">
-                <img :src="scope.row.skuPic" width="40">
+                <img :src="scope.row.picUrl" width="40">
               </template>
             </el-table-column>
-            <el-table-column align="center" label="单价" prop="skuPrice">
-              <template slot-scope="scope">{{ scope.row.skuPrice}}</template>
+            <el-table-column align="center" label="单价" prop="price">
+              <template slot-scope="scope">{{ scope.row.price}}</template>
             </el-table-column>
-            <el-table-column align="center" label="数量" prop="skuQuantity">
-              <template slot-scope="scope">{{ scope.row.skuQuantity }}</template>
+            <el-table-column align="center" label="数量" prop="count">
+              <template slot-scope="scope">{{ scope.row.count }}</template>
             </el-table-column>
           </el-table>
         </template>
