@@ -12,10 +12,9 @@
             v-if="item.redirect === 'noredirect' || index === breadcrumbs.length-1"
             class="no-redirect"
         >{{ generateTitle(item.meta.title) }}</span>
-        <a
-            v-else
-            @click.prevent="handleLink(item)"
-        >{{ item.meta.title }}</a>
+        <a v-else @click.prevent="handleLink(item)">
+          {{ generateTitle(item.meta.title) }}
+        </a>
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>
@@ -35,7 +34,7 @@ const pathCompile = (path: string) => {
   return toPath(params)
 }
 
-const breadcrumbs = ref( [] as Array<RouteLocationMatched>)
+const breadcrumbs = ref([] as Array<RouteLocationMatched>)
 
 function getBreadcrumb() {
   let matched = currentRoute.matched.filter((item) => item.meta && item.meta.title)
