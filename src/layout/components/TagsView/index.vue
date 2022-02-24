@@ -48,7 +48,7 @@
 <script lang="ts" setup>
 
 import {useTagsViewStoreHook} from '@/store/modules/tagsView'
-import {usePermissionStoreHook} from '@/store/modules/Permission'
+import {usePermissionStoreHook} from '@/store/modules/permission'
 import path from 'path-browserify'
 import {
   computed,
