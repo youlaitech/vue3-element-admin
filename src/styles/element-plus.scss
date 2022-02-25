@@ -15,14 +15,6 @@
 }
 
 
-// to fixed https://github.com/ElemeFE/element/issues/2461
-.el-dialog {
-  transform: none;
-  left: 0;
-  position: relative;
-  margin: 0 auto;
-}
-
 // refine element ui upload
 .upload-container {
   .el-upload {
