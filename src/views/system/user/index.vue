@@ -338,7 +338,7 @@ import {listRoles} from '@/api/system/role'
 // 组件依赖
 import {ElMessage, ElMessageBox, ElTree, ElForm} from 'element-plus'
 import {Search, Plus, Edit, Refresh, Delete, Lock} from '@element-plus/icons'
-import TreeSelect from '@/components/TreeSelect/Index.vue'
+import TreeSelect from '@/components/TreeSelect/index.vue'
 
 // DOM元素的引用声明定义
 const deptTreeRef = ref(ElTree) // 变量名和DOM的ref属性值一致

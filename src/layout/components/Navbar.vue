@@ -59,7 +59,7 @@ import {useUserStoreHook} from '@/store/modules/user'
 // 组件依赖
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
-import Screenfull from '@/components/screenfull/index.vue'
+import Screenfull from '@/components/Screenfull/index.vue'
 import SizeSelect from '@/components/SizeSelect/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import SvgIcon from '@/components/SvgIcon/index.vue'

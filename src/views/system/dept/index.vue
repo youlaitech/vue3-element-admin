@@ -163,7 +163,7 @@ import {listDeptTable, getDeptDetail, deleteDept, updateDept, addDept, listDeptS
 
 // 组件依赖
 import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
-import TreeSelect from '@/components/TreeSelect/Index.vue'
+import TreeSelect from '@/components/TreeSelect/index.vue'
 import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
 
 // DOM元素的引用声明定义
