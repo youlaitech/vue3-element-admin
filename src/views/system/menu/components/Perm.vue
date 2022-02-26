@@ -39,7 +39,7 @@
         <el-table-column prop="requestPath" label="请求路径"/>
       </el-table-column>
       <el-table-column label="按钮权限" prop="btnPerm" width="200"/>
-      <el-table-column label="操作" align="center" width="100">
+      <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
           <el-button
               type="primary"
