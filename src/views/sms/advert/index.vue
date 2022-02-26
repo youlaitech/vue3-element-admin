@@ -33,9 +33,9 @@
         border
     >
       <el-table-column type="selection" min-width="5" align="center"/>
-      <el-table-column type="index" label="序号" width="50" align="center"/>
-      <el-table-column prop="title" label="广告标题" min-width="10"/>
-      <el-table-column label="广告图片" min-width="10">
+      <el-table-column type="index" label="序号" width="80" align="center"/>
+      <el-table-column prop="title" min-width="100" label="广告标题" />
+      <el-table-column label="广告图片" width="100">
         <template #default="scope">
           <el-popover
               placement="right"
@@ -48,15 +48,15 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="beginTime" label="开始时间" min-width="10"/>
-      <el-table-column prop="endTime" label="结束时间" min-width="10"/>
-      <el-table-column prop="status" label="状态" min-width="6">
+      <el-table-column prop="beginTime" label="开始时间" width="150"/>
+      <el-table-column prop="endTime" label="结束时间" width="150"/>
+      <el-table-column prop="status" label="状态" width="100">
         <template #default="scope">
           <el-tag v-if="scope.row.status===1" type="success" >开启</el-tag>
           <el-tag v-else type="info">关闭</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="排序" min-width="6"/>
+      <el-table-column prop="sort" label="排序" width="80"/>
       <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
           <el-button
