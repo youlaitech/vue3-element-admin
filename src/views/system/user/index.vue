@@ -639,7 +639,6 @@ function cancel() {
   resetForm()
 }
 
-
 /**
  * 加载部门数据
  **/
