@@ -79,7 +79,6 @@ onBeforeMount(() => {
   getBreadcrumb()
 })
 
-
 </script>
 
 <style lang="scss" scoped>
