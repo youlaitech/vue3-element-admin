@@ -1,18 +1,20 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+             label-position="left">
       <div class="title-container">
-        <h3 class="title">有来商城管理系统 Vue3</h3>
+        <h3 class="title">{{ $t('login.title') }}</h3>
+        <lang-select class="set-language"/>
       </div>
 
       <el-form-item prop="username">
         <span class="svg-container">
-          <svg-icon icon-class="user" />
+          <svg-icon icon-class="user"/>
         </span>
         <el-input
             ref="username"
             v-model="loginForm.username"
-            placeholder="Username"
+            :placeholder="$t('login.username')"
             name="username"
             type="text"
             tabindex="1"
@@ -20,157 +22,216 @@
         />
       </el-form-item>
 
-      <el-form-item prop="password">
+      <el-tooltip :disabled="capslockTooltipDisabled" content="Caps lock is On" placement="right">
+        <el-form-item prop="password">
         <span class="svg-container">
-          <svg-icon icon-class="password" />
+          <svg-icon icon-class="password"/>
         </span>
-        <el-input
-            :key="passwordType"
-            ref="password"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="Password"
-            name="password"
-            tabindex="2"
-            auto-complete="on"
-            @keyup.enter.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          <el-input
+              :key="passwordType"
+              ref="passwordRef"
+              v-model="loginForm.password"
+              :type="passwordType"
+              placeholder="Password"
+              name="password"
+              tabindex="2"
+              auto-complete="on"
+              @keyup.native="checkCapslock"
+              @blur="capslockTooltipDisabled = true"
+              @keyup.enter.native="handleLogin"
+          />
+          <span class="show-pwd" @click="showPwd">
+          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
         </span>
-      </el-form-item>
+        </el-form-item>
+      </el-tooltip>
 
-
-      <el-form-item prop="validateCode">
+      <!-- 验证码 -->
+      <el-form-item prop="code">
          <span class="svg-container">
             <svg-icon icon-class="validCode"/>
           </span>
         <el-input
             v-model="loginForm.code"
             auto-complete="off"
-            placeholder="请输入验证码"
+            :placeholder="$t('login.code')"
             style="width: 65%"
             @keyup.enter.native="handleLogin"
         />
+
         <div class="captcha">
-          <img :src="base64Captcha" @click="handleCaptchaGenerate" height="38px"/>
+          <img :src="captchaBase64" @click="handleCaptchaGenerate" height="38px"/>
         </div>
       </el-form-item>
 
-
-      <el-button size="default" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button size="default" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
+                 @click.native.prevent="handleLogin">{{ $t('login.login') }}
+      </el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">用户名: admin</span>
-        <span> 密码: 123456</span>
+        <span style="margin-right:20px;">{{ $t('login.username') }}: admin</span>
+        <span> {{ $t('login.password') }}: 123456</span>
       </div>
-
     </el-form>
+
+    <div class="copyright">
+      <p>{{ $t('login.copyright') }}</p>
+      <p>{{ $t('login.icp') }}</p>
+    </div>
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import {nextTick, onMounted, reactive, ref, toRefs, watch} from "vue";
+
+// 组件依赖
+import router from '@/router'
+import {ElForm, ElInput} from "element-plus";
+import LangSelect from '@/components/LangSelect/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
+import {useUserStoreHook} from "@/store/modules/user";
+
+// API依赖
 import {getCaptcha} from "@/api/login";
-import { useUserStoreHook } from "@/store/modules/user";
-export default {
-  name: 'Login',
-  components:{
-    SvgIcon
+import {useRoute} from "vue-router";
+
+const route = useRoute();
+
+const loginFormRef = ref(ElForm)
+const passwordRef = ref(ElInput)
+
+const state = reactive({
+  loginForm: {
+    username: 'admin',
+    password: '123456',
+    code: '',
+    uuid: ''
   },
-  data() {
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
-    return {
-      loginForm: {
-        username: 'admin',
-        password: '123456',
-        code: undefined,
-        uuid: undefined
-      },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur'}],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
-      },
-      loading: false,
-      passwordType: 'password',
-      redirect: undefined,
-      base64Captcha: undefined
-    }
+  loginRules: {
+    username: [{required: true, trigger: 'blur'}],
+    password: [{required: true, trigger: 'blur', validator: validatePassword}]
   },
-  created() {
-    // 生成验证码
-    this.handleCaptchaGenerate()
-  },
-  watch: {
-    $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
-    },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          useUserStoreHook().login(this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-            this.handleCaptchaGenerate()
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    // 获取验证码
-    handleCaptchaGenerate(){
-      getCaptcha().then(response => {
-        const {img, uuid} = response.data
-        this.base64Captcha = "data:image/gif;base64," + img
-        this.loginForm.uuid = uuid;
-      })
-    }
+  loading: false,
+  passwordType: 'password',
+  redirect:  '',
+  captchaBase64: '',
+  // 大写提示禁用
+  capslockTooltipDisabled: true,
+  otherQuery: {}
+})
+
+function validatePassword(rule: any, value: any, callback: any) {
+  if (value.length < 6) {
+    callback(new Error('The password can not be less than 6 digits'))
+  } else {
+    callback()
   }
 }
+
+const {loginForm, loginRules, loading, passwordType, redirect, captchaBase64, capslockTooltipDisabled} = toRefs(state)
+
+function checkCapslock(e: any) {
+  const {key} = e
+  state.capslockTooltipDisabled = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+}
+
+function showPwd() {
+  if (state.passwordType === 'password') {
+    state.passwordType = ''
+  } else {
+    state.passwordType = 'password'
+  }
+  nextTick(() => {
+    passwordRef.value.focus()
+  })
+}
+
+function handleLogin() {
+  loginFormRef.value.validate((valid: boolean) => {
+    if (valid) {
+      state.loading = true
+      useUserStoreHook().login(state.loginForm).then(() => {
+        router.push({path: state.redirect || '/', query: state.otherQuery})
+        state.loading = false
+      }).catch(() => {
+        state.loading = false
+        handleCaptchaGenerate()
+      })
+    } else {
+      return false
+    }
+  })
+}
+
+// 获取验证码
+function handleCaptchaGenerate() {
+  getCaptcha().then(response => {
+    const {img, uuid} = response.data
+    state.captchaBase64 = "data:image/gif;base64," + img
+    state.loginForm.uuid = uuid;
+  })
+}
+
+watch(route, () => {
+      const query = route.query
+      if (query) {
+        state.redirect = query.redirect as string
+        state.otherQuery = getOtherQuery(query)
+      }
+    },
+    {
+      immediate: true
+    }
+)
+
+
+function getOtherQuery(query: any) {
+  return Object.keys(query).reduce((acc: any, cur: any) => {
+    if (cur !== 'redirect') {
+      acc[cur] = query[cur]
+    }
+    return acc
+  }, {})
+}
+
+onMounted(() => {
+  handleCaptchaGenerate()
+})
 </script>
 
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg:#283443;
-$light_gray:#fff;
+$bg: #283443;
+$light_gray: #fff;
 $cursor: #fff;
-
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
 
 /* reset element-ui css */
 .login-container {
+
+  .title-container {
+    position: relative;
+
+    .title {
+      font-size: 26px;
+      color: $light_gray;
+      margin: 0px auto 40px auto;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .set-language {
+      color: #fff;
+      position: absolute;
+      top: 3px;
+      font-size: 18px;
+      right: 0px;
+      cursor: pointer;
+    }
+  }
+
+
   .el-input {
     display: inline-block;
     height: 47px;
@@ -199,13 +260,22 @@ $cursor: #fff;
     border-radius: 5px;
     color: #454545;
   }
+
+  .copyright {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    font-size: 12px;
+    text-align: center;
+    color: #cccccc;
+  }
 }
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #eee;
 
 .login-container {
   min-height: 100%;
@@ -263,6 +333,7 @@ $light_gray:#eee;
     cursor: pointer;
     user-select: none;
   }
+
   .captcha {
     position: absolute;
     right: 0;
