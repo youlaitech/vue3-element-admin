@@ -21,25 +21,25 @@
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <CaretBottom style="width: .6em; height: .6em;"/>
+          <CaretBottom style="width: .6em; height: .6em;margin-left: 5px"/>
         </div>
 
         <template #dropdown>
           <el-dropdown-menu>
             <router-link to="/">
-              <el-dropdown-item>首页</el-dropdown-item>
+              <el-dropdown-item>{{$t('navbar.dashboard')}}</el-dropdown-item>
             </router-link>
             <a target="_blank" href="https://github.com/hxrui">
               <el-dropdown-item>Github</el-dropdown-item>
             </a>
             <a target="_blank" href="https://gitee.com/haoxr">
-              <el-dropdown-item>Gitee</el-dropdown-item>
+              <el-dropdown-item>{{$t('navbar.gitee')}}</el-dropdown-item>
             </a>
             <a target="_blank" href="https://www.cnblogs.com/haoxianrui/">
-              <el-dropdown-item>项目文档</el-dropdown-item>
+              <el-dropdown-item>{{$t('navbar.document')}}</el-dropdown-item>
             </a>
             <el-dropdown-item divided @click="logout">
-              退出
+              {{$t('navbar.logout')}}
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
