@@ -41,14 +41,14 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="状态" align="center" width="80">
+      <el-table-column label="状态" align="center" width="100">
         <template #default="scope">
           <el-tag v-if="scope.row.visible===1" type="success">显示</el-tag>
           <el-tag v-else type="info">隐藏</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="130">
+      <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
           <el-button
               type="success"
@@ -143,7 +143,7 @@
                       v-if="formData.icon"
                       :icon-class="formData.icon"
                       class="el-input__icon"
-                      style="height: 40px;width: 16px;"
+                      style="margin:auto"
                       color="#999"
                   />
                   <i v-else class="el-icon-search el-input__icon"/>
@@ -257,6 +257,9 @@ const {
   showChooseIcon
 } = toRefs(state)
 
+/**
+ * 查询
+ */
 function handleQuery() {
   // 重置父组件
   emit('menuClick', null)
@@ -379,12 +382,9 @@ function handleDelete(row: any) {
   )
 }
 
-/**
- * 重置表单
- */
+// 重置表单
 function resetForm() {
-  const dataForm = unref(dataFormRef)
-  dataForm.resetFields
+  dataFormRef.value.resetFields()
 }
 
 function cancel() {
