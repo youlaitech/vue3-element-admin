@@ -119,7 +119,7 @@ import {
   updateDictItem,
   deleteDictItem
 } from "@/api/system/dict";
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons';
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue';
 import {onMounted, reactive, ref, unref, watch} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 

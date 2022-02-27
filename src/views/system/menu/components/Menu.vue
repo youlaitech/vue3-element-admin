@@ -181,7 +181,7 @@
 
 <script setup lang="ts">
 import {listTableMenus, getMenuDetail, listTreeSelectMenus, addMenu, deleteMenus, updateMenu} from "@/api/system/menu";
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 import {reactive, ref, unref, onMounted, toRefs} from "vue";
 import SvgIcon from '@/components/SvgIcon/index.vue';

@@ -64,6 +64,9 @@ import SizeSelect from '@/components/SizeSelect/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 
+// 图标依赖
+import {CaretBottom} from '@element-plus/icons-vue'
+
 const route = useRoute()
 const router = useRouter()
 

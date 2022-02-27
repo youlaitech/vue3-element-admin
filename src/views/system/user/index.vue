@@ -337,7 +337,7 @@ import {listRoles} from '@/api/system/role'
 
 // 组件依赖
 import {ElMessage, ElMessageBox, ElTree, ElForm} from 'element-plus'
-import {Search, Plus, Edit, Refresh, Delete, Lock} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete, Lock} from '@element-plus/icons-vue'
 import TreeSelect from '@/components/TreeSelect/index.vue'
 
 // DOM元素的引用声明定义
@@ -459,8 +459,8 @@ function filterDeptNode(value: string, data: any) {
 }
 
 /**
- * 部门树点击
- **/
+ * 部门树节点点击事件
+ */
 function handleDeptNodeClick(data: { [key: string]: any }) {
   state.queryParams.deptId = data.id
   handleQuery()
@@ -477,7 +477,7 @@ async function loadRoleOptions() {
 
 /**
  * 用户状态修改
- **/
+ */
 function handleStatusChange(row: { [key: string]: any }) {
   const text = row.status === 1 ? '启用' : '停用'
   ElMessageBox.confirm('确认要' + text + '' + row.username + '用户吗?', '警告', {
@@ -604,11 +604,10 @@ function submitForm() {
 
 
 /**
- * 表单重置
- **/
+ * 重置表单
+ */
 function resetForm() {
-  const dataForm = unref(dataFormRef)
-  dataForm.resetFields()
+  dataFormRef.value.resetFields()
 }
 
 
@@ -667,6 +666,7 @@ function loadData() {
 }
 
 onMounted(() => {
+
   loadData()
 })
 </script>

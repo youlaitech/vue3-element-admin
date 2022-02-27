@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import {listAttributes, saveAttributeBatch} from "@/api/pms/attribute";
 import {computed, reactive, toRefs, watch} from "vue";
-import {Plus, Check, Delete} from '@element-plus/icons'
+import {Plus, Check, Delete} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 

@@ -180,7 +180,7 @@ import SingleUpload from '@/components/Upload/SingleUpload.vue'
 import {addGoods, updateGoods} from "@/api/pms/goods";
 import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs, unref, watch} from "vue";
 import {ElNotification, ElMessage, ElTable, ElForm} from "element-plus"
-import {Plus, Minus} from '@element-plus/icons'
+import {Plus, Minus} from '@element-plus/icons-vue'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 import {useRouter} from "vue-router";
 

@@ -62,7 +62,7 @@ import {RouteRecordRaw, useRoute, useRouter} from 'vue-router'
 import {TagView} from "@/store/interface";
 
 import ScrollPane from './ScrollPane.vue'
-import {Close} from '@element-plus/icons'
+import {Close,RefreshRight,CircleClose,Back,Right} from '@element-plus/icons-vue'
 import { generateTitle } from '@/utils/i18n'
 
 const {ctx} = getCurrentInstance() as any

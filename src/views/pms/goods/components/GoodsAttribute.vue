@@ -79,7 +79,7 @@
 import {listAttributes} from "@/api/pms/attribute";
 import {computed, nextTick, reactive, ref, toRefs, unref, watch} from "vue";
 import {ElForm} from "element-plus";
-import {Minus, Plus} from '@element-plus/icons'
+import {Minus, Plus} from '@element-plus/icons-vue'
 
 const emit = defineEmits(['prev', 'next'])
 const dataForm = ref(ElForm)

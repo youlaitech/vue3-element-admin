@@ -3,8 +3,8 @@
     <div class="rightPanel-background"/>
     <div class="rightPanel">
        <div class="handle-button" :style="{'top':buttonTop+'px','background-color':theme}" @click="show=!show">
-          <Close v-show="show"/>
-          <Setting v-show="!show"/>
+          <Close style="width: 1em; height: 1em;vertical-align: middle " v-show="show"/>
+          <Setting style="width:1em; height:1em;vertical-align: middle " v-show="!show"/>
         </div>
         <div class="rightPanel-items">
           <slot/>
@@ -14,10 +14,13 @@
 </template>
 
 <script setup lang="ts">
-import {addClass, removeClass} from '@/utils/index'
 import {computed, onBeforeUnmount, onMounted, ref, watchEffect} from "vue";
+
+import {addClass, removeClass} from '@/utils/index'
 import {useSettingStoreHook} from "@/store/modules/settings";
-import {Close, Setting} from '@element-plus/icons'
+
+// 图标依赖
+import {Close, Setting} from '@element-plus/icons-vue'
 
 const props = defineProps({
   clickNotClose: {
@@ -30,7 +33,7 @@ const props = defineProps({
   }
 })
 
-const theme =  ""
+const theme = computed(() => useSettingStoreHook().theme)
 
 const show = ref(false)
 

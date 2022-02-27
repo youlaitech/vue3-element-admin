@@ -102,7 +102,7 @@
 <script setup lang="ts">
 import {reactive, onMounted, toRefs} from 'vue'
 import {ElTable, ElMessage, ElMessageBox} from 'element-plus'
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
 
 import {listMembersWithPage} from '@/api/ums/member'
 

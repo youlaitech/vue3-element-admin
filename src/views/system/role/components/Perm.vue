@@ -44,7 +44,7 @@ import {listPerms} from "@/api/system/perm";
 import {listRolePerms, saveRolePerms} from "@/api/system/role";
 import { onMounted, reactive, toRefs, watch} from "vue";
 import {ElMessage} from "element-plus";
-import {Check} from '@element-plus/icons'
+import {Check} from '@element-plus/icons-vue'
 
 const props = defineProps({
   role: {

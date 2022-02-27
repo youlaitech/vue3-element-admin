@@ -108,7 +108,7 @@
 
 <script setup lang="ts">
 import {listClientsWithPage, detail, update, add, del} from '@/api/system/client'
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
 import {onMounted, reactive, getCurrentInstance, ref, unref, toRefs} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus"
 

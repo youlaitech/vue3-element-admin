@@ -133,7 +133,7 @@
 
 <script setup lang="ts">
 import {listPermsWithPage, getPermDetail, addPerm, updatePerm, deletePerms} from "@/api/system/perm"
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
 import {onMounted, watch, reactive, ref, unref, getCurrentInstance, toRefs} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus"
 

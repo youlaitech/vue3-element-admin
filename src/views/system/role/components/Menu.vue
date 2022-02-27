@@ -34,7 +34,7 @@ import {listTreeSelectMenus} from "@/api/system/menu";
 import {listRoleMenuIds, updateRoleMenu} from "@/api/system/role"
 import { nextTick, onMounted, reactive, ref, toRefs, watch} from "vue"
 import {ElTree, ElMessage, ElMessageBox} from "element-plus"
-import {Switch, Check} from '@element-plus/icons'
+import {Switch, Check} from '@element-plus/icons-vue'
 
 const emit = defineEmits(['menuClick'])
 const props = defineProps({

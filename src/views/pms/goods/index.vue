@@ -115,7 +115,7 @@
 </template>
 
 <script setup lang="ts">
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
 import {listGoodsWithPage, deleteGoods} from '@/api/pms/goods'
 import {listCascadeCategories} from '@/api/pms/category'
 import {reactive, ref, onMounted, toRefs} from 'vue'

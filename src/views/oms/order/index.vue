@@ -130,7 +130,7 @@
 import {listOrdersWithPage, getOrderDetail} from '@/api/oms/order'
 import {onMounted, reactive, ref, toRefs} from "vue"
 import {ElForm, ElMessage, ElMessageBox} from "element-plus"
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
 
 const dataForm = ref(ElForm)  // 属性名必须和元素的ref属性值一致
 

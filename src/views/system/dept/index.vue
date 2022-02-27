@@ -162,7 +162,7 @@ import {onMounted, reactive, unref, ref, toRefs} from 'vue'
 import {listDeptTable, getDeptDetail, deleteDept, updateDept, addDept, listDeptSelect} from '@/api/system/dept'
 
 // 组件依赖
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
 import TreeSelect from '@/components/TreeSelect/index.vue'
 import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
 

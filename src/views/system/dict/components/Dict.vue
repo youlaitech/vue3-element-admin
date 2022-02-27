@@ -111,7 +111,7 @@
 
 <script setup lang="ts">
 import {listDictWithPage, getDictDetail, addDict, updateDict, deleteDict} from "@/api/system/dict";
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref, unref} from 'vue'
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 

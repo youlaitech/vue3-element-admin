@@ -156,7 +156,7 @@ import {listAdvertsWithPage, getAdvertDetail, updateAdvert, addAdvert, deleteAdv
 import SingleUpload from "@/components/Upload/SingleUpload.vue";
 import {onMounted, reactive, ref, toRefs, unref} from "vue";
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons'
+import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
 
 const dataFormRef = ref(ElForm)  // 属性名必须和元素的ref属性值一致
 
