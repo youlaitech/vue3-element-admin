@@ -25,6 +25,9 @@ watch(language, (value) => {
   } else {
     locale.value = zhCn
   }
+}, {
+  // 初始化立即执行，
+  immediate: true
 })
 </script>
 <style>
