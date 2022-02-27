@@ -40,17 +40,7 @@ export default ({command, mode}: ConfigEnv): UserConfig => {
                 alias: {
                     "@": path.resolve("./src"),  // 相对路径别名配置，@表示src
                 }
-            },
-            // SCSS 变量导出
-            // @see https://www.vitejs.net/config/#css-preprocessoroptions
-            /*css: {
-                preprocessorOptions: {
-                    scss: {
-                        additionalData:  `@import "./src/styles/element-variables.scss";`,
-                        javascriptEnabled: true
-                    }
-                }
-            }*/
+            }
         }
     )
 }
