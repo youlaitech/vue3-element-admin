@@ -7,7 +7,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@element-plus/icons": "0.0.11",
+    "@element-plus/icons-vue": "^1.0.0",
     "@wangeditor/editor": "^0.15.7",
     "@wangeditor/editor-for-vue": "^5.1.8-9",
     "axios": "^0.24.0",
