@@ -30,10 +30,4 @@ watch(language, (value) => {
   immediate: true
 })
 </script>
-<style>
-/* 表格线条对齐 */
-.el-table__header col[name="gutter"] {
-  display: table-cell !important;
-}
-</style>
 
