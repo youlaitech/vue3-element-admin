@@ -1,3 +1,7 @@
+:root {
+  --el-color-primary: #409EFF;
+}
+
 // 覆盖 element-plus 的样式
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {
@@ -46,4 +50,9 @@
 // card 的header统一高度
 .el-card__header{
   height: 60px!important;
+}
+
+// 表格表头和表体未对齐
+.el-table__header col[name="gutter"] {
+  display: table-cell !important;
 }
