@@ -1,7 +1,13 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
-             label-position="left">
+    <el-form
+        ref="loginFormRef"
+        :model="loginForm"
+        :rules="loginRules"
+        class="login-form"
+        auto-complete="on"
+        label-position="left"
+    >
       <div class="title-container">
         <h3 class="title">{{ $t('login.title') }}</h3>
         <lang-select class="set-language"/>
@@ -22,7 +28,11 @@
         />
       </el-form-item>
 
-      <el-tooltip :disabled="capslockTooltipDisabled" content="Caps lock is On" placement="right">
+      <el-tooltip
+          :disabled="capslockTooltipDisabled"
+          content="Caps lock is On"
+          placement="right"
+      >
         <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password"/>
@@ -74,7 +84,7 @@
       </div>
     </el-form>
 
-    <div class="copyright">
+    <div v-if="showCopyright==true" class="copyright">
       <p>{{ $t('login.copyright') }}</p>
       <p>{{ $t('login.icp') }}</p>
     </div>
@@ -82,14 +92,17 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick, onMounted, reactive, ref, toRefs, watch} from "vue";
+import {onMounted, reactive, ref, toRefs, watch, nextTick} from "vue";
 
 // 组件依赖
-import router from '@/router'
 import {ElForm, ElInput} from "element-plus";
+import router from '@/router'
 import LangSelect from '@/components/LangSelect/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
+
+// 状态管理依赖
 import {useUserStoreHook} from "@/store/modules/user";
+import {useAppStoreHook} from "@/store/modules/app";
 
 // API依赖
 import {getCaptcha} from "@/api/login";
@@ -113,11 +126,13 @@ const state = reactive({
   },
   loading: false,
   passwordType: 'password',
-  redirect:  '',
+  redirect: '',
   captchaBase64: '',
   // 大写提示禁用
   capslockTooltipDisabled: true,
-  otherQuery: {}
+  otherQuery: {},
+  clientHeight: document.documentElement.clientHeight,
+  showCopyright: true
 })
 
 function validatePassword(rule: any, value: any, callback: any) {
@@ -128,7 +143,16 @@ function validatePassword(rule: any, value: any, callback: any) {
   }
 }
 
-const {loginForm, loginRules, loading, passwordType, redirect, captchaBase64, capslockTooltipDisabled} = toRefs(state)
+const {
+  loginForm,
+  loginRules,
+  loading,
+  passwordType,
+  redirect,
+  captchaBase64,
+  capslockTooltipDisabled,
+  showCopyright
+} = toRefs(state)
 
 function checkCapslock(e: any) {
   const {key} = e
@@ -196,6 +220,13 @@ function getOtherQuery(query: any) {
 
 onMounted(() => {
   handleCaptchaGenerate()
+  window.onresize = () => {
+    if (state.clientHeight > document.documentElement.clientHeight) {
+      state.showCopyright = false
+    } else {
+      state.showCopyright = true
+    }
+  }
 })
 </script>
 
