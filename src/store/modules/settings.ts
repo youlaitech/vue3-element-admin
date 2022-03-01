@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {store} from "@/store";
 import {SettingState} from "@/store/interface";
 import defaultSettings from '../../settings'
+import {localStorage} from "@/utils/storage";
 
 const {showSettings, tagsView, fixedHeader, sidebarLogo} = defaultSettings
 import variables from '@/styles/element-variables.module.scss'

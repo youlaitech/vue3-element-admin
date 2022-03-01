@@ -9,6 +9,7 @@
 import {computed, onMounted, ref, watch} from "vue";
 import {useAppStoreHook} from "@/store/modules/app";
 import {ElConfigProvider} from 'element-plus'
+import {localStorage} from "@/utils/storage";
 
 //官方文档: https://element-plus.gitee.io/zh-CN/guide/i18n.html
 
@@ -30,7 +31,7 @@ watch(language, (value) => {
   immediate: true
 })
 onMounted(()=>{
-  const style = localStorage.getItem("style");
+  const style = localStorage.get("style");
   document.documentElement.style.cssText = style as string;
 })
 </script>

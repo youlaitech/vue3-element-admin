@@ -35,7 +35,6 @@ const theme = computed(() => useSettingStoreHook().theme)
 const show = ref(false)
 
 watch(show, (value) => {
-  console.log('show', value)
   if (value) {
     addEventClick()
   }

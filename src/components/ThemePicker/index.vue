@@ -12,6 +12,7 @@ import {computed, nextTick, watch} from "vue";
 import {useSettingStoreHook} from "@/store/modules/settings";
 import {useTagsViewStoreHook} from "@/store/modules/tagsView";
 import {useRoute, useRouter} from "vue-router";
+import {localStorage} from "@/utils/storage";
 
 // 参考连接:https://juejin.cn/post/7024025899813044232#heading-1
 import {mix} from "@/utils";
@@ -26,14 +27,14 @@ const theme = computed(() => useSettingStoreHook().theme)
 
 watch(theme, (color: string) => {
   node.style.setProperty("--el-color-primary", color);
-  localStorage.setItem("theme", color)
+  localStorage.set("theme", color)
 
   for (let i = 1; i < 10; i += 1) {
     node.style.setProperty(`--el-color-primary-light-${i}`, mix(color, mixWhite, i * 0.1));
   }
   node.style.setProperty("--el-color-primary-dark", mix(color, mixBlack, 0.1));
 
-  localStorage.setItem("style", node.style.cssText);
+  localStorage.set("style", node.style.cssText);
 })
 
 </script>
