@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 
-import {computed, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {useAppStoreHook} from "@/store/modules/app";
 import {ElConfigProvider} from 'element-plus'
 
@@ -28,6 +28,10 @@ watch(language, (value) => {
 }, {
   // 初始化立即执行，
   immediate: true
+})
+onMounted(()=>{
+  const style = localStorage.getItem("style");
+  document.documentElement.style.cssText = style as string;
 })
 </script>
 

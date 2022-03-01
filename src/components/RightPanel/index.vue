@@ -2,31 +2,28 @@
   <div ref="rightPanel" :class="{show:show}" class="rightPanel-container">
     <div class="rightPanel-background"/>
     <div class="rightPanel">
-       <div class="handle-button" :style="{'top':buttonTop+'px','background-color':theme}" @click="show=!show">
-          <Close style="width: 1em; height: 1em;vertical-align: middle " v-show="show"/>
-          <Setting style="width:1em; height:1em;vertical-align: middle " v-show="!show"/>
-        </div>
-        <div class="rightPanel-items">
-          <slot/>
-        </div>
+      <div class="handle-button" :style="{'top':buttonTop+'px','background-color':theme}" @click="show=!show">
+        <Close style="width: 1em; height: 1em;vertical-align: middle " v-show="show"/>
+        <Setting style="width:1em; height:1em;vertical-align: middle " v-show="!show"/>
+      </div>
+      <div class="rightPanel-items">
+        <slot/>
       </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import {computed, onBeforeUnmount, onMounted, ref, watchEffect} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 
 import {addClass, removeClass} from '@/utils/index'
 import {useSettingStoreHook} from "@/store/modules/settings";
 
 // 图标依赖
 import {Close, Setting} from '@element-plus/icons-vue'
+import {ElColorPicker} from "element-plus";
 
 const props = defineProps({
-  clickNotClose: {
-    default: false,
-    type: Boolean
-  },
   buttonTop: {
     default: 250,
     type: Number
@@ -37,11 +34,12 @@ const theme = computed(() => useSettingStoreHook().theme)
 
 const show = ref(false)
 
-watchEffect(() => {
-  if (show.value && !props.clickNotClose) {
+watch(show, (value) => {
+  console.log('show', value)
+  if (value) {
     addEventClick()
   }
-  if (show.value) {
+  if (value) {
     addClass(document.body, 'showRightPanel')
   } else {
     removeClass(document.body, 'showRightPanel')
@@ -53,24 +51,29 @@ function addEventClick() {
 }
 
 function closeSidebar(evt: any) {
-  const parent = evt.target.closest('.rightPanel')
+
+  // 主题选择点击不关闭
+  let parent = evt.target.closest('.theme-picker-dropdown')
+  if (parent) {
+    return
+  }
+
+  parent = evt.target.closest('.rightPanel')
   if (!parent) {
     show.value = false
     window.removeEventListener('click', closeSidebar)
   }
 }
 
-const rightPanel = ref(null)
+const rightPanel = ref(ElColorPicker)
 
 function insertToBody() {
-  console.log('insertToBody', rightPanel)
   const elx = rightPanel.value as any
   const body = document.querySelector('body') as any
   body.insertBefore(elx, body.firstChild)
 }
 
 onMounted(() => {
-  console.log('theme', useSettingStoreHook().theme)
   insertToBody()
 })
 

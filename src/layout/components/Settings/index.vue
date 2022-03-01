@@ -1,11 +1,16 @@
 <template>
   <div class="drawer-container">
-    <div>
       <h3 class="drawer-title">系统布局配置</h3>
+      <div class="drawer-item">
+        <span>主题颜色</span>
+        <div style="float: right;height: 26px;margin: -3px 8px 0 0;">
+          <theme-picker @change="themeChange"/>
+        </div>
+      </div>
 
       <div class="drawer-item">
         <span>开启 Tags-View</span>
-        <el-switch v-model="tagsView" class="drawer-switch"/>
+        <el-switch v-model="state.tagsView" class="drawer-switch"/>
       </div>
 
       <div class="drawer-item">
@@ -17,40 +22,38 @@
         <span>侧边栏 Logo</span>
         <el-switch v-model="sidebarLogo" class="drawer-switch"/>
       </div>
-    </div>
   </div>
 </template>
 
-<script>
-import {defineComponent, reactive, toRefs, watch} from "vue"
-import { useSettingStoreHook } from "@/store/modules/settings";
-export default defineComponent({
-  setup() {
-    const state = reactive({
-      fixedHeader:useSettingStoreHook().fixedHeader,
-      tagsView:useSettingStoreHook().tagsView,
-      sidebarLogo:useSettingStoreHook().sidebarLogo,
-      themeChange: (val) => {
-        useSettingStoreHook().changeSetting( { key: 'theme', val })
-      }
-    })
-    watch(()=>state.fixedHeader,(value)=>{
-      useSettingStoreHook().changeSetting( { key: 'fixedHeader', value })
-    })
+<script setup lang="ts">
+import {reactive, toRefs, watch} from "vue";
+import {useSettingStoreHook} from "@/store/modules/settings";
+import ThemePicker from '@/components/ThemePicker/index.vue';
 
-    watch(() => state.tagsView, (value) => {
-      useSettingStoreHook().changeSetting( { key: 'showTagsView', value })
-    })
-
-    watch(() => state.sidebarLogo, (value) => {
-      useSettingStoreHook().changeSetting( { key: 'sidebarLogo', value })
-    })
-
-    return {
-      ...toRefs(state)
-    }
-  }
+const state = reactive({
+  fixedHeader: useSettingStoreHook().fixedHeader,
+  tagsView: useSettingStoreHook().tagsView,
+  sidebarLogo: useSettingStoreHook().sidebarLogo
 })
+
+const {fixedHeader, tagsView, sidebarLogo} = toRefs(state)
+
+function themeChange(val: any) {
+  useSettingStoreHook().changeSetting({key: 'theme', value: val})
+}
+
+watch(() => state.fixedHeader, (value) => {
+  useSettingStoreHook().changeSetting({key: 'fixedHeader', value: value})
+})
+
+watch(() => state.tagsView, (value) => {
+  useSettingStoreHook().changeSetting({key: 'showTagsView', value: value})
+})
+
+watch(() => state.sidebarLogo, (value) => {
+  useSettingStoreHook().changeSetting({key: 'sidebarLogo', value: value})
+})
+
 </script>
 
 <style lang="scss" scoped>

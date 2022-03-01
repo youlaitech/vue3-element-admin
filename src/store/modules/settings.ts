@@ -2,13 +2,14 @@ import {defineStore} from "pinia";
 import {store} from "@/store";
 import {SettingState} from "@/store/interface";
 import defaultSettings from '../../settings'
+
 const {showSettings, tagsView, fixedHeader, sidebarLogo} = defaultSettings
 import variables from '@/styles/element-variables.module.scss'
 
 export const useSettingStore = defineStore({
     id: "setting",
     state: (): SettingState => ({
-        theme: variables.theme,
+        theme: localStorage.get("theme") || variables.theme,
         showSettings: showSettings,
         tagsView: tagsView,
         fixedHeader: fixedHeader,
