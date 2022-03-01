@@ -32,7 +32,8 @@ Object.keys(directive).forEach(key => {
 // 全局方法
 app.config.globalProperties.$listDictsByCode = listDictsByCode
 
-app.component('Pagination', Pagination) // 全局组件
+// 注册全局组件
+app.component('Pagination', Pagination)
     .use(store)
     .use(router)
     .use(ElementPlus, {size: localStorage.get('size') || 'small'})
