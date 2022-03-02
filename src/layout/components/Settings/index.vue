@@ -10,7 +10,7 @@
 
       <div class="drawer-item">
         <span>开启 Tags-View</span>
-        <el-switch v-model="state.tagsView" class="drawer-switch"/>
+        <el-switch v-model="tagsView" class="drawer-switch"/>
       </div>
 
       <div class="drawer-item">
@@ -47,7 +47,7 @@ watch(() => state.fixedHeader, (value) => {
 })
 
 watch(() => state.tagsView, (value) => {
-  useSettingStoreHook().changeSetting({key: 'showTagsView', value: value})
+  useSettingStoreHook().changeSetting({key: 'tagsView', value: value})
 })
 
 watch(() => state.sidebarLogo, (value) => {

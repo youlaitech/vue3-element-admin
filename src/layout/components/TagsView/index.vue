@@ -45,7 +45,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts" >
 
 import {useTagsViewStoreHook} from '@/store/modules/tagsView'
 import {usePermissionStoreHook} from '@/store/modules/permission'
@@ -239,7 +239,6 @@ function closeAllTags(view: TagView) {
     toLastView(res.visitedViews, view)
   })
 }
-
 
 function openMenu(tag: TagView, e: MouseEvent) {
   const menuMinWidth = 105
