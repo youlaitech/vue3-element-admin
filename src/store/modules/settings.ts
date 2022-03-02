@@ -10,9 +10,9 @@ import variables from '@/styles/element-variables.module.scss'
 export const useSettingStore = defineStore({
     id: "setting",
     state: (): SettingState => ({
-        theme: localStorage.get("theme") || variables.theme,
+        theme: variables.theme || localStorage.get("theme"),
         showSettings: showSettings,
-        tagsView: tagsView,
+        tagsView: localStorage.get("tagsView") != null ? localStorage.get("tagsView") : tagsView,
         fixedHeader: fixedHeader,
         sidebarLogo: sidebarLogo,
     }),
@@ -31,6 +31,7 @@ export const useSettingStore = defineStore({
                     break
                 case 'tagsView':
                     this.tagsView = value
+                    localStorage.set("tagsView", value)
                     break
                 case 'sidebarLogo':
                     this.sidebarLogo = value
