@@ -285,6 +285,14 @@ $cursor: #fff;
     }
   }
 
+  .el-input__inner{
+    &:hover{
+      border-color: var(--el-input-hover-border,var(--el-border-color-hover));
+      box-shadow:none;
+    }
+    box-shadow:none;
+  }
+
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
