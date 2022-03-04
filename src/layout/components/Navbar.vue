@@ -90,6 +90,7 @@ function logout() {
 </script>
 
 <style lang="scss" scoped>
+ul { list-style: none; margin: 0; padding: 0; }
 .navbar {
   height: 50px;
   overflow: hidden;
