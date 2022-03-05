@@ -14,7 +14,7 @@
         <el-link type="info" :underline="false" v-show="pathLabels.length>0">您选择的商品分类:</el-link>
         <el-link type="danger" :underline="false" v-for="(item,index) in pathLabels" style="margin-left: 5px">
           {{ item }}
-          <i v-show="index<pathLabels.length-1" class=" el-icon-arrow-right"></i>
+          <CaretRight  v-show="index<pathLabels.length-1"/>
         </el-link>
       </div>
 
@@ -26,11 +26,15 @@
 </template>
 
 <script setup lang="ts">
-import {listCascadeCategories} from "@/api/pms/category";
-import {nextTick, onMounted, reactive, ref, toRefs} from "vue";
+import {onMounted,nextTick, reactive, ref, toRefs} from "vue";
 import {ElCascaderPanel, ElMessage} from "element-plus";
-const emit = defineEmits(['next'])
+import {CaretRight} from '@element-plus/icons-vue';
 
+// API 引用
+import {listCascadeCategories} from "@/api/pms/category";
+
+
+const emit = defineEmits(['next'])
 const props = defineProps({
   modelValue: {
     type: Object,
@@ -70,7 +74,6 @@ function handleNext() {
   }
   emit('next' )
 }
-
 
 onMounted(() => {
   loadData()
