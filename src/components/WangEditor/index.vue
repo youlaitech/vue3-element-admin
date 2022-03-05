@@ -1,31 +1,57 @@
+<!--
+  author: haoxr
+  link: https://www.wangeditor.com/v5/guide/for-frame.html#vue3
+-->
 <template>
-  <div>
-    <div v-if="isEditorShow" style="border: 1px solid #ccc">
-      <Toolbar
-          :editorId="editorId"
-          :defaultConfig="toolbarConfig"
-          style="border-bottom: 1px solid #ccc"
-      />
-      <Editor
-          :editorId="editorId"
-          :defaultConfig="editorConfig"
-          style="height: 500px"
-      />
-    </div>
-    <p v-else>loading</p>
+  <div style="border: 1px solid #ccc">
+    <!-- 工具栏 -->
+    <Toolbar
+        :editorId="editorId"
+        :defaultConfig="toolbarConfig"
+        style="border-bottom: 1px solid #ccc"
+    />
+    <!-- 编辑器 -->
+    <Editor
+        :editorId="editorId"
+        :defaultConfig="editorConfig"
+        :defaultHtml="defaultHtml"
+        @onChange="handleChange"
+        style="height: 500px; overflow-y: hidden;"
+    />
   </div>
 </template>
 
 <script setup>
-import {onBeforeUnmount, reactive, ref, toRefs} from 'vue'
+import {computed, nextTick, onBeforeUnmount, onMounted, reactive, toRefs} from 'vue'
 import {Editor, Toolbar, getEditor, removeEditor} from '@wangeditor/editor-for-vue'
+import cloneDeep from 'lodash.clonedeep'
+
+// API 引用
 import {uploadFile} from "@/api/system/file";
 
-const state =reactive({
-  editorId : `w-e-${Math.random().toString().slice(-5)}`, //【注意】编辑器 id ，要全局唯一
-  toolbarConfig : {},
-  isEditorShow : true,
-  editorConfig : {
+const props = defineProps({
+  modelValue: {
+    type: [String],
+    default: ''
+  },
+})
+
+const emit = defineEmits(['update:modelValue']);
+
+const modelValue = computed({
+  get: () => {
+    return props.modelValue
+  },
+  set: (val) => {
+    emit('update:modelValue', val)
+  }
+});
+
+
+const state = reactive({
+  editorId: `w-e-${Math.random().toString().slice(-5)}`, //【注意】编辑器 id ，要全局唯一
+  toolbarConfig: {},
+  editorConfig: {
     placeholder: '请输入内容...',
     MENU_CONF: {
       uploadImage: {
@@ -39,11 +65,17 @@ const state =reactive({
         }
       }
     }
-  }
+  },
+  defaultHtml: props.modelValue
 })
 
-const {isEditorShow,editorId,toolbarConfig,editorConfig}  =toRefs(state)
+const {editorId, toolbarConfig, editorConfig,defaultHtml} = toRefs(state)
 
+function handleChange(editor) {
+  modelValue.value = editor.getHtml()
+}
+
+// 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {
   const editor = getEditor(state.editorId)
   if (editor == null) return
