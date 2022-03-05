@@ -2,7 +2,7 @@
   <div class="component-container">
     <div class="component-container__main">
       <el-form
-          ref="dataForm"
+          ref="dataFormRef"
           :rules="rules"
           :model="modelValue"
           label-width="120px"
@@ -35,11 +35,12 @@
         </el-form-item>
 
         <el-form-item label="商品简介">
-          <el-input type="textarea" v-model="modelValue.description"/>
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 6 }" v-model="modelValue.description"/>
         </el-form-item>
 
         <el-form-item label="商品相册">
-          <el-card   v-for="(item,index) in pictures" style="width: 170px;display: inline-block;margin-left: 10px" :body-style="{ padding: '10px' }">
+          <el-card v-for="(item,index) in pictures" style="width: 170px;display: inline-block;margin-left: 10px"
+                   :body-style="{ padding: '10px' }">
 
             <single-upload v-model="item.url"/>
 
@@ -69,14 +70,19 @@
   </div>
 </template>
 <script setup lang="ts">
-import {listBrands} from "@/api/pms/brand"
-import SingleUpload from '@/components/Upload/SingleUpload.vue'
+
 import {onMounted, reactive, ref, toRefs, unref} from "vue"
 import {ElForm} from "element-plus"
+
+// API 依赖
+import {listBrands} from "@/api/pms/brand"
+
+// 自定义组件依赖
+import SingleUpload from '@/components/Upload/SingleUpload.vue'
 import Editor from '@/components/WangEditor/index.vue'
 
 const emit = defineEmits(['prev', 'next'])
-const dataForm = ref(ElForm)
+const dataFormRef = ref(ElForm)
 
 const props = defineProps({
   modelValue: {
@@ -88,7 +94,13 @@ const props = defineProps({
 const state = reactive({
   brandOptions: [] as Array<any>,
   // 商品图册
-  pictures: [] as Array<any>,
+  pictures: [
+    {url: undefined, main: true}, // main = true 代表主图，可切换
+    {url: undefined, main: false},
+    {url: undefined, main: false},
+    {url: undefined, main: false},
+    {url: undefined, main: false}
+  ] as Array<any>,
   rules: {
     name: [{required: true, message: '请填写商品名称', trigger: 'blur'}],
     originPrice: [{required: true, message: '请填写原价', trigger: 'blur'}],
@@ -103,13 +115,15 @@ function loadData() {
   listBrands({}).then(response => {
     state.brandOptions = response.data
   })
-  const goodsId = props.modelValue.id
+  const goodsInfo = props.modelValue
+  console.log('商品信息', goodsInfo)
+  const goodsId = goodsInfo.id
   if (goodsId) {
-    const mainPicUrl = props.modelValue.picUrl
+    const mainPicUrl = goodsInfo.picUrl
     if (mainPicUrl) {
       state.pictures.filter(item => item.main)[0].url = mainPicUrl
     }
-    const subPicUrls = props.modelValue.subPicUrls
+    const subPicUrls = goodsInfo.subPicUrls
     if (subPicUrls && subPicUrls.length > 0) {
       for (let i = 1; i <= subPicUrls.length; i++) {
         state.pictures[i].url = subPicUrls[i - 1]
@@ -120,11 +134,11 @@ function loadData() {
 
 function resetForm() {
   state.pictures = [
-    {url: undefined, main: true},
+    {url: undefined, main: true}, // main 代表主图，可以切换
     {url: undefined, main: false},
     {url: undefined, main: false},
     {url: undefined, main: false},
-    {url: undefined, main: false},
+    {url: undefined, main: false}
   ]
 }
 
@@ -148,8 +162,7 @@ function handlePrev() {
 }
 
 function handleNext() {
-  const form = unref(dataForm)
-  form.validate((valid: any) => {
+  dataFormRef.value.validate((valid: any) => {
     if (valid) {
       // 商品图片
       const mainPicUrl = state.pictures.filter(item => item.main == true && item.url).map(item => item.url)
@@ -167,7 +180,6 @@ function handleNext() {
 
 onMounted(() => {
   loadData()
-  resetForm()
 })
 </script>
 

@@ -43,7 +43,7 @@
           <el-table
               :data="props.row.skuList"
               border>
-            <el-table-column align="center" label="商品编码" prop="sn"/>
+            <el-table-column align="center" label="商品编码" prop="skuSn"/>
             <el-table-column align="center" label="商品规格" prop="name"/>
             <el-table-column label="图片" prop="picUrl">
               <template #default="scope">
@@ -53,21 +53,29 @@
             <el-table-column align="center" label="现价" prop="price">
               <template #default="scope">{{ moneyFormatter(scope.row.price) }}</template>
             </el-table-column>
-            <el-table-column align="center" label="库存" prop="stock"/>
+            <el-table-column align="center" label="库存" prop="stockNum"/>
           </el-table>
         </template>
 
       </el-table-column>
       <el-table-column label="商品名称" prop="name" min-width="140"/>
       <el-table-column label="商品图片">
-        <template #default="row">
-          <img :src="row.picUrl" width="40">
+        <template #default="scope">
+          <el-popover
+              placement="right"
+              :width="400"
+              trigger="hover">
+            <img :src="scope.row.picUrl" width="400" height="400"/>
+            <template #reference>
+              <img :src="scope.row.picUrl" style="max-height: 60px;max-width: 60px"/>
+            </template>
+          </el-popover>
         </template>
       </el-table-column>
       <el-table-column label="商品类目" prop="categoryName" min-width="100"/>
       <el-table-column label="商品品牌" prop="brandName" min-width="100"/>
       <el-table-column align="center" label="零售价" prop="originalPrice">
-        <template #default="scope">{{ moneyFormatter(scope.row.price) }}</template>
+        <template #default="scope">{{ moneyFormatter(scope.row.originPrice) }}</template>
       </el-table-column>
       <el-table-column align="center" label="促销价" prop="price">
         <template #default="scope">{{ moneyFormatter(scope.row.price) }}</template>

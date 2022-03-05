@@ -137,8 +137,8 @@
                 align="center"
             >
               <template #default="scope">
-                <el-form-item :prop="'skuList['+scope.$index+'].sn'" :rules="rules.sku.sn">
-                  <el-input v-model="scope.row.sn"/>
+                <el-form-item :prop="'skuList['+scope.$index+'].skuSn'" :rules="rules.sku.skuSn">
+                  <el-input v-model="scope.row.skuSn"/>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -153,8 +153,8 @@
 
             <el-table-column label="库存" align="center">
               <template #default="scope">
-                <el-form-item :prop="'skuList['+scope.$index+'].stock'" :rules="rules.sku.stock">
-                  <el-input v-model="scope.row.stock"/>
+                <el-form-item :prop="'skuList['+scope.$index+'].stockNum'" :rules="rules.sku.stockNum">
+                  <el-input v-model="scope.row.stockNum"/>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -174,16 +174,21 @@
 </template>
 
 <script setup>
+import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs, unref, watch} from "vue";
+import {useRouter} from "vue-router";
+import {Plus, Minus} from '@element-plus/icons-vue'
+import {ElNotification, ElMessage, ElTable, ElForm} from "element-plus"
+
+// API 引用
 import {listAttributes} from "@/api/pms/attribute";
+import {addGoods, updateGoods} from "@/api/pms/goods";
+
+// 自定义组件引用
+import SvgIcon from '@/components/SvgIcon/index.vue'
 import SingleUpload from '@/components/Upload/SingleUpload.vue'
 // import Sortable from 'sortablejs'
-import {addGoods, updateGoods} from "@/api/pms/goods";
-import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs, unref, watch} from "vue";
-import {ElNotification, ElMessage, ElTable, ElForm} from "element-plus"
-import {Plus, Minus} from '@element-plus/icons-vue'
-import SvgIcon from '@/components/SvgIcon/index.vue'
-import {useRouter} from "vue-router";
 
+const categoryId = computed(() => props.modelValue.categoryId);
 const emit = defineEmits(['prev', 'next'])
 
 const proxy = getCurrentInstance()
@@ -200,7 +205,6 @@ const props = defineProps({
   }
 })
 
-const categoryId = computed(() => props.modelValue.categoryId);
 
 const state = reactive({
   specForm: {
@@ -217,9 +221,9 @@ const state = reactive({
       value: [{required: true, message: '请输入规格值', trigger: 'blur'}]
     },
     sku: {
-      sn: [{required: true, message: '请输入商品编号', trigger: 'blur'}],
+      skuSn: [{required: true, message: '请输入商品编号', trigger: 'blur'}],
       price: [{required: true, message: '请输入商品价格', trigger: 'blur'}],
-      stock: [{required: true, message: '请输入商品库存', trigger: 'blur'}],
+      stockNum: [{required: true, message: '请输入商品库存', trigger: 'blur'}],
     }
   },
   colors: ['', 'success', 'warning', 'danger'],
@@ -367,7 +371,7 @@ function generateSkuList() {
 
   skuList.forEach((item) => {
     item.specIds = item.specIds.substring(0, item.specIds.length - 1)
-    item.name = item.specValues.substring(0, item.specIds.length - 1).replaceAll('_', ' ')
+    item.name = item.specValues.substring(0, item.specValues.length - 1).replaceAll('_', ' ')
     const specIdArr = item.specIds.split('|')
     const skus = props.modelValue.skuList.filter((sku) =>
         sku.specIdArr.length === specIdArr.length &&
@@ -378,9 +382,9 @@ function generateSkuList() {
     if (skus && skus.length > 0) {
       const sku = skus[0]
       item.id = sku.id
-      item.sn = sku.sn
+      item.skuSn = sku.skuSn
       item.price = sku.price / 100
-      item.stock = sku.stock
+      item.stockNum = sku.stockNum
     }
     const specValueArr = item.specValues.substring(0, item.specValues.length - 1).split('_')  // ['黑','6+128G','官方标配']
     specValueArr.forEach((v, i) => {
@@ -527,12 +531,9 @@ function submitForm() {
     ElMessage.warning("未添加商品库存")
     return false;
   }
-
-  const specForm = unref(specFormRef)
-  specForm.validate((specValid) => {
+  specFormRef.value.validate((specValid) => {
     if (specValid) {
-      const skuForm = unref(skuFormRef)
-      skuForm.validate((skuValid) => {
+      skuFormRef.value.validate((skuValid) => {
         if (skuValid) {
           // openFullScreen()
 
