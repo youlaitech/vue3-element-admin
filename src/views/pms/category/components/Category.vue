@@ -27,14 +27,13 @@
                 </div>
               </template>
             </el-image>
-
             {{ scope.data.name }}
           </span>
           <span>
                 <el-button
                     v-show="scope.data.level != 3 "
-                    type="primary"
-                    icon="Plus"
+                    type="success"
+                    :icon="Plus"
                     circle
                     plain
                     @click.stop="handleAdd(scope.data)"/>
