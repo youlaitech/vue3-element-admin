@@ -36,6 +36,6 @@ app.config.globalProperties.$listDictsByCode = listDictsByCode
 app.component('Pagination', Pagination)
     .use(store)
     .use(router)
-    .use(ElementPlus, {size: localStorage.get('size') || 'small'})
+    .use(ElementPlus, {size: localStorage.get('size') || 'default'})
     .use(i18n)
     .mount('#app')
