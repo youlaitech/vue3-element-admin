@@ -22,9 +22,8 @@
 </template>
 
 <script setup>
-import {computed, nextTick, onBeforeUnmount, onMounted, reactive, toRefs} from 'vue'
+import {computed, onBeforeUnmount, reactive, toRefs} from 'vue'
 import {Editor, Toolbar, getEditor, removeEditor} from '@wangeditor/editor-for-vue'
-import cloneDeep from 'lodash.clonedeep'
 
 // API 引用
 import {uploadFile} from "@/api/system/file";
@@ -46,7 +45,6 @@ const modelValue = computed({
     emit('update:modelValue', val)
   }
 });
-
 
 const state = reactive({
   editorId: `w-e-${Math.random().toString().slice(-5)}`, //【注意】编辑器 id ，要全局唯一
