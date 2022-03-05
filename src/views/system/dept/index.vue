@@ -12,7 +12,7 @@
         </el-button>
       </el-form-item>
 
-      <el-form-item>
+      <el-form-item prop="name">
         <el-input
             v-model="queryParams.name"
             placeholder="请输入部门名称"
@@ -20,7 +20,7 @@
         />
       </el-form-item>
 
-      <el-form-item>
+      <el-form-item prop="status">
         <el-select
             v-model="queryParams.status"
             placeholder="部门状态"
@@ -66,7 +66,6 @@
       </el-table-column>
 
       <el-table-column prop="sort" label="显示排序" width="200"/>
-
 
       <el-table-column
           label="操作"
