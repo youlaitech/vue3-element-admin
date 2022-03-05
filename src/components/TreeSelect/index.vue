@@ -82,22 +82,6 @@ const modelValue = computed({
 const valueTitle = ref('');
 const defaultExpandedKey = ref([]);
 
-function initHandle() {
-  nextTick(() => {
-    const selectedValue = modelValue.value;
-    if (selectedValue !== null && typeof (selectedValue) !== "undefined") {
-      const node = proxy.$refs.selectTree.getNode(selectedValue)
-      if (node) {
-        valueTitle.value = node.data[state.props.label]
-        proxy.$refs.selectTree.setCurrentKey(selectedValue) // 设置默认选中
-        defaultExpandedKey.value = [selectedValue] // 设置默认展开
-      } else {
-        clearHandle()
-      }
-    }
-  })
-}
-
 function handleNodeClick(node) {
   valueTitle.value = node[state.props.label]
   modelValue.value = node[state.props.value];
@@ -128,7 +112,19 @@ function clearSelected() {
 }
 
 onMounted(() => {
-  initHandle()
+  nextTick(() => {
+    const selectedValue = modelValue.value;
+    if (selectedValue !== null && typeof (selectedValue) !== "undefined") {
+      const node = proxy.$refs.selectTree.getNode(selectedValue)
+      if (node) {
+        valueTitle.value = node.data[state.props.label]
+        proxy.$refs.selectTree.setCurrentKey(selectedValue) // 设置默认选中
+        defaultExpandedKey.value = [selectedValue] // 设置默认展开
+      } else {
+        clearHandle()
+      }
+    }
+  })
 })
 
 watch(modelValue, () => {
