@@ -54,7 +54,7 @@ function initChart() {
         fontSize: 18,
         fontStyle: 'normal',
         fontWeight: 'bold',
-        color:'#096b92'
+        color:'#337ecc'
       }
     },
     grid: {
@@ -84,6 +84,18 @@ function initChart() {
       {
         name: 'Budget vs spending',
         type: 'radar',
+        itemStyle: {
+          borderRadius: 6,
+          normal: {
+            color: function (params: any) {
+              //自定义颜色
+              const colorList = [
+                '#409EFF', '#67C23A', '#E6A23C', '#F56C6C'
+              ];
+              return colorList[params.dataIndex]
+            }
+          }
+        },
         data: [
           {
             value: [4200, 10000, 20000, 35000, 50000, 18000],

@@ -1,4 +1,4 @@
-<!-- 柱状图 -->
+<!--  线 + 柱混合图 -->
 <template>
   <div
       :id="id"
@@ -10,6 +10,7 @@
 <script setup lang="ts">
 import {nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted} from "vue";
 import {init, EChartsOption} from 'echarts'
+import * as echarts from 'echarts';
 import resize from '@/utils/resize'
 
 const props = defineProps({
@@ -47,14 +48,14 @@ function initChart() {
   barChart.setOption({
     title: {
       show: true,
-      text: '分公司业绩总览(2021年)',
+      text: '业绩总览(2021年)',
       x: 'center',
       padding: 15,
       textStyle: {
         fontSize: 18,
         fontStyle: 'normal',
         fontWeight: 'bold',
-        color: '#096b92'
+        color: '#337ecc'
       }
     },
     grid: {
@@ -113,28 +114,47 @@ function initChart() {
         data: [
           8000, 8200, 7000, 6200, 6500, 5500, 4500, 4200, 3800,
         ],
-        barWidth: 20
-
+        barWidth: 20,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#83bff6' },
+            { offset: 0.5, color: '#188df0' },
+            { offset: 1, color: '#188df0' }
+          ])
+        }
       },
       {
         name: '毛利润',
         type: 'bar',
         data: [
-          6200, 6500, 5500, 4500, 4200, 3800, 4200, 6700, 5213,
+          6700, 6800, 6300, 5213, 4500, 4200, 4200, 3800
         ],
-        barWidth: 20
+        barWidth: 20,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#25d73c' },
+            { offset: 0.5, color: '#1bc23d' },
+            { offset: 1, color: '#179e61' }
+          ])
+        }
       },
       {
         name: '收入增长率',
         type: 'line',
         yAxisIndex: 1,
-        data: [42, 41, 53, 65, 67, 65, 52, 45, 43]
+        data: [65, 67, 65, 53, 47, 45, 43, 42, 41],
+        itemStyle: {
+          color: '#67C23A'
+        }
       },
       {
         name: '利润增长率',
         type: 'line',
         yAxisIndex: 1,
-        data: [82, 81, 56, 45, 51, 65, 65, 67, 78]
+        data: [80, 81, 78, 67, 65, 60, 56,51, 45 ],
+        itemStyle: {
+          color: '#409EFF'
+        }
       }
     ]
   } as EChartsOption)

@@ -11,7 +11,6 @@
 import {nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted} from "vue";
 import {init, EChartsOption} from 'echarts'
 import resize from '@/utils/resize'
-import {FunnelChart} from "echarts/charts";
 
 const props = defineProps({
   id: {
@@ -55,7 +54,7 @@ function initChart() {
         fontSize: 18,
         fontStyle: 'normal',
         fontWeight: 'bold',
-        color:'#096b92'
+        color:'#337ecc'
       }
     },
     grid: {
