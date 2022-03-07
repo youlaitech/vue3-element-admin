@@ -111,8 +111,8 @@ function clearSelected() {
   allNode.forEach((element) => element.classList.remove('is-current'))
 }
 
-onMounted(() => {
-  nextTick(() => {
+function initHandle(){
+   nextTick(() => {
     const selectedValue = modelValue.value;
     if (selectedValue !== null && typeof (selectedValue) !== "undefined") {
       const node = proxy.$refs.selectTree.getNode(selectedValue)
@@ -125,6 +125,10 @@ onMounted(() => {
       }
     }
   })
+}
+
+onMounted(() => {
+ initHandle();
 })
 
 watch(modelValue, () => {

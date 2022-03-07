@@ -5,7 +5,7 @@ import {useUserStoreHook} from "@/store/modules/user";
 
 // 创建 axios 实例
 const service = axios.create({
-    baseURL: import.meta.env.VITE_APP_BASE_API as any,
+    baseURL: import.meta.env.VITE_APP_BASE_API,
     timeout: 50000,
     headers: {'Content-Type': 'application/json;charset=utf-8'}
 })
@@ -28,7 +28,6 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
     ({data}) => {
-        // 对响应数据做点什么
         const {code, msg} = data;
         if (code === '00000') {
             return data;

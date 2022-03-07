@@ -1,7 +1,7 @@
 import {UserConfig, ConfigEnv, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import viteSvgIcons from 'vite-plugin-svg-icons';
-// 如果编辑器提示 path 模块找不到，则可以安装一下 @types/node -> npm i @types/node -D
+// 如果编辑器提示 path 模块找不到，则可以安装一下 @types/node -> npm install @types/node --save-dev
 import path from 'path'
 
 // @see: https://gitee.com/holysheng/vite2-config-description/blob/master/vite.config.ts
@@ -38,7 +38,7 @@ export default ({command, mode}: ConfigEnv): UserConfig => {
             resolve: {
                 // Vite 设置别名路径
                 alias: {
-                    "@": path.resolve("./src"),  // 相对路径别名配置，@表示src
+                    "@": path.resolve("./src"),  // @ 代替 src
                 }
             }
         }
