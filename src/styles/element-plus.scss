@@ -17,11 +17,6 @@
   --el-tag-hover-color: var(--el-color-primary);
 }
 
-.el-button--default:active {
-  color: var(--el-color-primary-dark) !important;
-  border-color: var(--el-color-primary-dark) !important;
-}
-
 .el-button--primary {
   --el-button-text-color: var(--el-color-white) !important;
   --el-button-bg-color: var(--el-color-primary) !important;
