@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import {Plus, Close} from '@element-plus/icons-vue'
-import {ElMessage, ElUpload} from "element-plus"
+import {ElMessage, ElUpload, UploadFile, UploadRequestOptions} from "element-plus"
 import {uploadFile, deleteFile} from "@/api/system/file";
 
 const uploadRef = ref(ElUpload)
@@ -62,10 +62,9 @@ const imgUrl = computed<string | null>({
  *
  * @param params
  */
-function uploadImage({file}: any) {
-  uploadFile(file).then(response => {
-    imgUrl.value = response.data
-  })
+async function uploadImage(options: UploadRequestOptions): Promise<any> {
+  const response=await uploadFile(options.file);
+  imgUrl.value=response.data;
 }
 
 /**
@@ -75,7 +74,8 @@ function uploadImage({file}: any) {
  *
  * @param files
  */
-function handleExceed(files: UploadFile[]) {
+
+function handleExceed(files: File[], uploadFiles: UploadFile[]) {
   uploadRef.value.clearFiles()
   uploadRef.value.handleStart(files[0])
   uploadFile(files[0]).then(response => {
