@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ${web_app_name}
+  name: ${web_app_name}-deployment
+  namespace: ${k8s_namespace}   #一定要写名称空间
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${web_app_name}
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ${web_app_name}
+    spec:
+      containers:
+        - image: $remote_tag
+          #         readinessProbe:
+          #           httpGet:
+          #             path: /actuator/health
+          #             port: 8080
+          #           timeoutSeconds: 10
+          #           failureThreshold: 30
+          #           periodSeconds: 5
+          imagePullPolicy: Always
+          name: ${web_app_name}
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ${web_app_name}
+  name: ${web_app_name}-svc
+  namespace: ${k8s_namespace}
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+      nodePort: 32609
+  selector:
+    app: ${web_app_name}
+  sessionAffinity: None
+  type: NodePort
