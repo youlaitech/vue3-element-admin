@@ -27,6 +27,17 @@
   --el-button-active-border-color: var(--el-color-primary-dark) !important;
 }
 
+.el-button--primary.is-plain{
+    --el-button-text-color: var(--el-color-primary)!important;
+    --el-button-bg-color: var(--el-color-primary-light-9)!important;
+    --el-button-border-color: var(--el-color-primary-light-5)!important;
+    --el-button-hover-text-color: var(--el-color-white)!important;
+    --el-button-hover-bg-color: var(--el-color-primary)!important;
+    --el-button-hover-border-color: var(--el-color-primary)!important;
+    --el-button-active-text-color: var(--el-color-white)!important;
+    --el-button-active-border-color: var(--el-color-primary)!important;
+}
+
 // 覆盖 element-plus 的样式
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {
