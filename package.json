@@ -17,7 +17,7 @@
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
     "path-to-regexp": "^6.2.0",
-    "pinia": "^2.0.9",
+    "pinia": "^2.0.11",
     "screenfull": "^6.0.0",
     "sortablejs": "^1.14.0",
     "vue": "^3.2.16",
