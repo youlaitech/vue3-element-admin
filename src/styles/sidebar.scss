@@ -93,6 +93,9 @@
   .hideSidebar {
     .sidebar-container {
       width: 54px !important;
+      .svg-icon {
+        margin-right: 0px;
+      }
     }
 
     .main-container {
