@@ -9,8 +9,7 @@
 
 <script setup lang="ts">
 import {computed, nextTick, watch} from "vue";
-import {useSettingStoreHook} from "@/store/modules/settings";
-import {useTagsViewStoreHook} from "@/store/modules/tagsView";
+import useStore from "@/store";
 import {useRoute, useRouter} from "vue-router";
 import {localStorage} from "@/utils/storage";
 
@@ -23,7 +22,8 @@ const mixBlack = "#000000";
 
 const node = document.documentElement;
 
-const theme = computed(() => useSettingStoreHook().theme)
+const {setting} =useStore()
+const theme = computed(() => setting.theme)
 
 watch(theme, (color: string) => {
   node.style.setProperty("--el-color-primary", color);

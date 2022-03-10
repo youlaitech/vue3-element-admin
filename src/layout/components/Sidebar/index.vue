@@ -24,20 +24,22 @@
 </template>
 
 <script setup lang="ts">
+
+
 import {computed, defineComponent} from "vue";
+import {useRoute} from 'vue-router'
+
 import SidebarItem from './SidebarItem.vue'
 import Logo from './Logo.vue'
 import variables from '@/styles/variables.module.scss'
-import { useSettingStoreHook } from "@/store/modules/settings";
-import { useAppStoreHook } from "@/store/modules/app";
-import { usePermissionStoreHook } from "@/store/modules/permission";
-import {useRoute} from 'vue-router'
+import useStore from "@/store";
 
+const {permission,setting,app} =useStore();
 
 const route =useRoute()
-const routes =computed(() => usePermissionStoreHook().routes)
-const showLogo = computed(() => useSettingStoreHook().sidebarLogo)
-const isCollapse = computed(() => !useAppStoreHook().sidebar.opened)
+const routes =computed(() => permission.routes)
+const showLogo = computed(() => setting.sidebarLogo)
+const isCollapse = computed(() => !app.sidebar.opened)
 
 const activeMenu = computed(() => {
   const {meta, path} = route

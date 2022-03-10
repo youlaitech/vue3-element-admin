@@ -39,8 +39,8 @@ import {isExternal} from '@/utils/validate'
 import AppLink from './Link.vue'
 import {RouteRecordRaw} from "vue-router";
 
-import SvgIcon from '@/components/SvgIcon/index.vue';
 import { generateTitle } from '@/utils/i18n'
+import SvgIcon from '@/components/SvgIcon/index.vue';
 
 const props = defineProps({
   item: {

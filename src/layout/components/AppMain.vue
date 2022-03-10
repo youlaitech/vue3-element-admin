@@ -1,9 +1,9 @@
 <template>
   <section class="app-main">
-    <router-view v-slot="{ Component ,route}">
+    <router-view v-slot="{ Component, route }">
       <transition name="router-fade" mode="out-in">
         <keep-alive :include="cachedViews">
-          <component :is="Component" :key="route.path"/>
+          <component :is="Component" :key="route.path" />
         </keep-alive>
       </transition>
     </router-view>
@@ -12,11 +12,12 @@
 
 
 <script setup lang="ts">
-import {computed} from "vue";
-import {useTagsViewStoreHook} from '@/store/modules/tagsView'
+import { computed } from "vue";
+import useStore from "@/store";
 
-const cachedViews = computed(() => useTagsViewStoreHook().cachedViews);
+const { tagsView } = useStore();
 
+const cachedViews = computed(() => tagsView.cachedViews);
 </script>
 
 <style lang="scss" scoped>
@@ -28,7 +29,7 @@ const cachedViews = computed(() => useTagsViewStoreHook().cachedViews);
   overflow: hidden;
 }
 
-.fixed-header+.app-main {
+.fixed-header + .app-main {
   padding-top: 50px;
 }
 
@@ -38,7 +39,7 @@ const cachedViews = computed(() => useTagsViewStoreHook().cachedViews);
     min-height: calc(100vh - 84px);
   }
 
-  .fixed-header+.app-main {
+  .fixed-header + .app-main {
     padding-top: 84px;
   }
 }

@@ -1,13 +1,15 @@
 import axios from "axios";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {localStorage} from "@/utils/storage";
-import {useUserStoreHook} from "@/store/modules/user";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { localStorage } from "@/utils/storage";
+import useStore from "@/store";
+
+
 
 // 创建 axios 实例
 const service = axios.create({
     baseURL: import.meta.env.VITE_APP_BASE_API,
     timeout: 50000,
-    headers: {'Content-Type': 'application/json;charset=utf-8'}
+    headers: { 'Content-Type': 'application/json;charset=utf-8' }
 })
 
 // 请求拦截器
@@ -16,7 +18,8 @@ service.interceptors.request.use(
         if (!config?.headers) {
             throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
         }
-        if (useUserStoreHook().token) {
+        const { user } = useStore()
+        if (user.token) {
             config.headers.Authorization = `${localStorage.get('token')}`;
         }
         return config
@@ -27,8 +30,8 @@ service.interceptors.request.use(
 
 // 响应拦截器
 service.interceptors.response.use(
-    ({data}) => {
-        const {code, msg} = data;
+    ({ data }) => {
+        const { code, msg } = data;
         if (code === '00000') {
             return data;
         } else {
@@ -40,7 +43,7 @@ service.interceptors.response.use(
         }
     },
     (error) => {
-        const {code, msg} = error.response.data
+        const { code, msg } = error.response.data
         if (code === 'A0230') {  // token 过期
             localStorage.clear(); // 清除浏览器全部缓存
             window.location.href = '/'; // 跳转登录页

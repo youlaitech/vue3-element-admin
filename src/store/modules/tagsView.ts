@@ -1,6 +1,5 @@
-import {defineStore} from "pinia";
-import {store} from "@/store";
-import {TagsViewState} from "@/store/interface";
+import { defineStore } from "pinia";
+import { TagsViewState } from "@/store/interface";
 
 const useTagsViewStore = defineStore({
     id: "tagsView",
@@ -112,7 +111,7 @@ const useTagsViewStore = defineStore({
                         return true
                     }
 
-                    const cacheIndex = this.cachedViews.indexOf(item.name as  string)
+                    const cacheIndex = this.cachedViews.indexOf(item.name as string)
                     if (cacheIndex > -1) {
                         this.cachedViews.splice(cacheIndex, 1)
                     }
@@ -173,8 +172,4 @@ const useTagsViewStore = defineStore({
     }
 })
 
-
-export function useTagsViewStoreHook() {
-    return useTagsViewStore(store);
-}
-
+export default useTagsViewStore;

@@ -19,10 +19,13 @@
 import {computed, defineComponent} from 'vue'
 import { isExternal } from '@/utils/validate'
 import { useRouter } from 'vue-router'
-import {useAppStoreHook} from "@/store/modules/app";
 
-const sidebar = computed(() => useAppStoreHook().sidebar);
-const device = computed(() => useAppStoreHook().device);
+import useStore from "@/store";
+
+const {app}=useStore()
+
+const sidebar = computed(() => app.sidebar);
+const device = computed(() => app.device);
 
 export default defineComponent({
   props: {
@@ -35,7 +38,7 @@ export default defineComponent({
     const router = useRouter()
     const push = () => {
       if (device.value === 'mobile' && sidebar.value.opened == true) {
-        useAppStoreHook().closeSideBar(false)
+        app.closeSideBar(false)
       }
       router.push(props.to).catch((err) => {
         console.log(err)

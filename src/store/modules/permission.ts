@@ -3,7 +3,6 @@ import {RouteRecordRaw} from 'vue-router'
 import {constantRoutes} from '@/router'
 import {listRoutes} from "@/api/system/menu";
 import {defineStore} from "pinia";
-import {store} from "@/store";
 
 const modules = import.meta.glob("../../views/**/**.vue");
 export const Layout = () => import( '@/layout/index.vue')
@@ -48,7 +47,7 @@ export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => 
 }
 
 
-export const usePermissionStore = defineStore({
+ const usePermissionStore = defineStore({
     id: "permission",
     state: (): PermissionState => ({
         routes: [],
@@ -74,6 +73,6 @@ export const usePermissionStore = defineStore({
     }
 })
 
-export function usePermissionStoreHook() {
-    return usePermissionStore(store);
-}
+
+
+export default usePermissionStore;

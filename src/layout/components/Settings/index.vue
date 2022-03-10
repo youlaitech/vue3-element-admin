@@ -1,59 +1,71 @@
 <template>
   <div class="drawer-container">
-      <h3 class="drawer-title">系统布局配置</h3>
-      <div class="drawer-item">
-        <span>主题颜色</span>
-        <div style="float: right;height: 26px;margin: -3px 8px 0 0;">
-          <theme-picker @change="themeChange"/>
-        </div>
+    <h3 class="drawer-title">系统布局配置</h3>
+    <div class="drawer-item">
+      <span>主题颜色</span>
+      <div style="float: right; height: 26px; margin: -3px 8px 0 0">
+        <theme-picker @change="themeChange" />
       </div>
+    </div>
 
-      <div class="drawer-item">
-        <span>开启 Tags-View</span>
-        <el-switch v-model="tagsView" class="drawer-switch"/>
-      </div>
+    <div class="drawer-item">
+      <span>开启 Tags-View</span>
+      <el-switch v-model="tagsView" class="drawer-switch" />
+    </div>
 
-      <div class="drawer-item">
-        <span>固定 Header</span>
-        <el-switch v-model="fixedHeader" class="drawer-switch"/>
-      </div>
+    <div class="drawer-item">
+      <span>固定 Header</span>
+      <el-switch v-model="fixedHeader" class="drawer-switch" />
+    </div>
 
-      <div class="drawer-item">
-        <span>侧边栏 Logo</span>
-        <el-switch v-model="sidebarLogo" class="drawer-switch"/>
-      </div>
+    <div class="drawer-item">
+      <span>侧边栏 Logo</span>
+      <el-switch v-model="sidebarLogo" class="drawer-switch" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {reactive, toRefs, watch} from "vue";
-import {useSettingStoreHook} from "@/store/modules/settings";
-import ThemePicker from '@/components/ThemePicker/index.vue';
+import { reactive, toRefs, watch } from "vue";
+
+import ThemePicker from "@/components/ThemePicker/index.vue";
+
+import useStore from "@/store";
+
+const { setting } = useStore();
 
 const state = reactive({
-  fixedHeader: useSettingStoreHook().fixedHeader,
-  tagsView: useSettingStoreHook().tagsView,
-  sidebarLogo: useSettingStoreHook().sidebarLogo
-})
+  fixedHeader: setting.fixedHeader,
+  tagsView: setting.tagsView,
+  sidebarLogo: setting.sidebarLogo,
+});
 
-const {fixedHeader, tagsView, sidebarLogo} = toRefs(state)
+const { fixedHeader, tagsView, sidebarLogo } = toRefs(state);
 
 function themeChange(val: any) {
-  useSettingStoreHook().changeSetting({key: 'theme', value: val})
+  setting.changeSetting({ key: "theme", value: val });
 }
 
-watch(() => state.fixedHeader, (value) => {
-  useSettingStoreHook().changeSetting({key: 'fixedHeader', value: value})
-})
+watch(
+  () => state.fixedHeader,
+  (value) => {
+    setting.changeSetting({ key: "fixedHeader", value: value });
+  }
+);
 
-watch(() => state.tagsView, (value) => {
-  useSettingStoreHook().changeSetting({key: 'tagsView', value: value})
-})
+watch(
+  () => state.tagsView,
+  (value) => {
+    setting.changeSetting({ key: "tagsView", value: value });
+  }
+);
 
-watch(() => state.sidebarLogo, (value) => {
-  useSettingStoreHook().changeSetting({key: 'sidebarLogo', value: value})
-})
-
+watch(
+  () => state.sidebarLogo,
+  (value) => {
+    setting.changeSetting({ key: "sidebarLogo", value: value });
+  }
+);
 </script>
 
 <style lang="scss" scoped>
@@ -65,19 +77,19 @@ watch(() => state.sidebarLogo, (value) => {
 
   .drawer-title {
     margin-bottom: 12px;
-    color: rgba(0, 0, 0, .85);
+    color: rgba(0, 0, 0, 0.85);
     font-size: 14px;
     line-height: 22px;
   }
 
   .drawer-item {
-    color: rgba(0, 0, 0, .65);
+    color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     padding: 12px 0;
   }
 
   .drawer-switch {
-    float: right
+    float: right;
   }
 
   .job-link {

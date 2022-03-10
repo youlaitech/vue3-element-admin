@@ -1,21 +1,10 @@
 import { defineStore } from "pinia";
-import { store } from "@/store";
 import {UserState} from "@/store/interface";
 import {localStorage} from "@/utils/storage";
 import {getUserInfo, login, logout} from "@/api/login";
 import {resetRouter} from "@/router";
 
-const getDefaultState = () => {
-    return {
-        token: localStorage.get('token'),
-        nickname: '',
-        avatar: '',
-        roles: [],
-        perms: []
-    }
-}
-
-export const useUserStore = defineStore({
+ const useUserStore = defineStore({
    id:"user",
     state: ():UserState=>({
         token: localStorage.get('token') || '',
@@ -113,7 +102,4 @@ export const useUserStore = defineStore({
     }
 })
 
-export function useUserStoreHook() {
-    return useUserStore(store);
-}
-
+export default useUserStore;

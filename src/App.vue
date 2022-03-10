@@ -7,9 +7,10 @@
 <script setup lang="ts">
 
 import {computed, onMounted, ref, watch} from "vue";
-import {useAppStoreHook} from "@/store/modules/app";
 import {ElConfigProvider} from 'element-plus'
 import {localStorage} from "@/utils/storage";
+
+import useStore from "@/store";
 
 //官方文档: https://element-plus.gitee.io/zh-CN/guide/i18n.html
 
@@ -17,7 +18,8 @@ import {localStorage} from "@/utils/storage";
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import en from 'element-plus/es/locale/lang/en'
 
-const language = computed(() => useAppStoreHook().language)
+const {app} =useStore()
+const language = computed(() => app.language)
 
 const locale = ref()
 watch(language, (value) => {

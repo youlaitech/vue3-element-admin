@@ -1,57 +1,62 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
-    <sidebar class="sidebar-container"/>
-    <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
-        <navbar/>
-        <tags-view v-if="needTagsView"/>
+    <div
+      v-if="device === 'mobile' && sidebar.opened"
+      class="drawer-bg"
+      @click="handleClickOutside"
+    />
+    <sidebar class="sidebar-container" />
+    <div :class="{ hasTagsView: needTagsView }" class="main-container">
+      <div :class="{ 'fixed-header': fixedHeader }">
+        <navbar />
+        <tags-view v-if="needTagsView" />
       </div>
-      <app-main/>
+      <app-main />
       <right-panel v-if="showSettings">
-        <settings/>
+        <settings />
       </right-panel>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, watchEffect} from "vue"
-import {useWindowSize} from '@vueuse/core'
-import {AppMain, Navbar, Settings, TagsView} from './components/index'
-import Sidebar from './components/Sidebar/index.vue'
-import RightPanel from '@/components/RightPanel/index.vue'
+import { computed, watchEffect } from "vue";
+import { useWindowSize } from "@vueuse/core";
+import { AppMain, Navbar, Settings, TagsView } from "./components/index";
+import Sidebar from "./components/Sidebar/index.vue";
+import RightPanel from "@/components/RightPanel/index.vue";
 
-import {useAppStoreHook} from "@/store/modules/app"
-import {useSettingStoreHook} from "@/store/modules/settings"
+import useStore from "@/store";
 
-const {width, height} = useWindowSize();
-const WIDTH = 992
+const { width, height } = useWindowSize();
+const WIDTH = 992;
 
-const sidebar = computed(() => useAppStoreHook().sidebar);
-const device = computed(() => useAppStoreHook().device);
-const needTagsView = computed(() => useSettingStoreHook().tagsView);
-const fixedHeader = computed(() => useSettingStoreHook().fixedHeader);
-const showSettings = computed(() => useSettingStoreHook().showSettings);
+const { app, setting } = useStore();
+
+const sidebar = computed(() => app.sidebar);
+const device = computed(() => app.device);
+const needTagsView = computed(() => setting.tagsView);
+const fixedHeader = computed(() => setting.fixedHeader);
+const showSettings = computed(() => setting.showSettings);
 
 const classObj = computed(() => ({
   hideSidebar: !sidebar.value.opened,
   openSidebar: sidebar.value.opened,
   withoutAnimation: sidebar.value.withoutAnimation,
-  mobile: device.value === 'mobile'
-}))
+  mobile: device.value === "mobile",
+}));
 
 watchEffect(() => {
   if (width.value < WIDTH) {
-    useAppStoreHook().toggleDevice("mobile")
-    useAppStoreHook().closeSideBar(true)
+    app.toggleDevice("mobile");
+    app.closeSideBar(true);
   } else {
-    useAppStoreHook().toggleDevice("desktop")
+    app.toggleDevice("desktop");
   }
-})
+});
 
 function handleClickOutside() {
-  useAppStoreHook().closeSideBar(false)
+  app.closeSideBar(false);
 }
 </script>
 
@@ -91,7 +96,7 @@ function handleClickOutside() {
 }
 
 .hideSidebar .fixed-header {
-  width: calc(100% - 54px)
+  width: calc(100% - 54px);
 }
 
 .mobile .fixed-header {

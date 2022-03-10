@@ -1,10 +1,9 @@
 import {AppState} from "@/store/interface";
 import {localStorage} from "@/utils/storage";
-import {store} from "@/store";
 import {defineStore} from "pinia";
 import { getLanguage } from '@/lang/index'
 
-export const useAppStore = defineStore({
+ const useAppStore = defineStore({
     id: "app",
     state: (): AppState => ({
         device: 'desktop',
@@ -44,6 +43,4 @@ export const useAppStore = defineStore({
     }
 })
 
-export function useAppStoreHook() {
-    return useAppStore(store);
-}
+export default useAppStore;

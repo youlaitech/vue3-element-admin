@@ -1,5 +1,4 @@
 import {defineStore} from "pinia";
-import {store} from "@/store";
 import {SettingState} from "@/store/interface";
 import defaultSettings from '../../settings'
 import {localStorage} from "@/utils/storage";
@@ -43,7 +42,4 @@ export const useSettingStore = defineStore({
     }
 })
 
-export function useSettingStoreHook() {
-    return useSettingStore(store);
-}
-
+export default useSettingStore;

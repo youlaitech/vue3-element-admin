@@ -19,9 +19,10 @@
 <script setup lang="ts">
 
 import {computed} from "vue";
-import {useAppStoreHook} from "@/store/modules/app";
+import useStore from "@/store";
 
-const language = computed(() => useAppStoreHook().language)
+const {app}=useStore()
+const language = computed(() => app.language)
 
 import {useI18n} from 'vue-i18n'
 import {ElMessage} from 'element-plus'
@@ -31,7 +32,7 @@ const {locale} = useI18n()
 
 function handleSetLanguage(lang: string) {
   locale.value = lang
-  useAppStoreHook().setLanguage(lang)
+  app.setLanguage(lang)
   if (lang == 'en') {
     ElMessage.success('Switch Language Successful!')
   } else {

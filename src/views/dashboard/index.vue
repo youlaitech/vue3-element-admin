@@ -1,10 +1,10 @@
 <template>
   <div class="dashboard-container">
-    <github-corner class="github-corner"/>
+    <github-corner class="github-corner" />
 
     <!-- 数据 -->
     <el-row :gutter="40" class="card-panel-col">
-<!--      <el-col :xs="24" :lg="6" class="card-panel-col">
+      <!--      <el-col :xs="24" :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper" style="margin-top: -10px">
             <el-image style="width:200px; height: 100px"
@@ -22,15 +22,13 @@
         </div>
       </el-col>-->
 
-      <el-col :xs="24" :sm="12"  :lg="6" class="card-panel-col">
+      <el-col :xs="24" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-people">
-            <svg-icon icon-class="peoples" class-name="card-panel-icon"/>
+            <svg-icon icon-class="peoples" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">
-             访问数
-            </div>
+            <div class="card-panel-text">访问数</div>
             <div class="card-panel-num">1000</div>
           </div>
         </div>
@@ -42,9 +40,7 @@
             <svg-icon icon-class="message" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">
-              消息数
-            </div>
+            <div class="card-panel-text">消息数</div>
             <div class="card-panel-num">1000</div>
           </div>
         </div>
@@ -53,25 +49,21 @@
       <el-col :xs="24" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-money">
-            <svg-icon icon-class="money" class-name="card-panel-icon"/>
+            <svg-icon icon-class="money" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">
-              支付金额
-            </div>
+            <div class="card-panel-text">支付金额</div>
             <div class="card-panel-num">1000</div>
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12"  :lg="6" class="card-panel-col">
+      <el-col :xs="24" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-shopping">
-            <svg-icon icon-class="shopping" class-name="card-panel-icon"/>
+            <svg-icon icon-class="shopping" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">
-              订单数
-            </div>
+            <div class="card-panel-text">订单数</div>
             <div class="card-panel-num">1000</div>
           </div>
         </div>
@@ -80,47 +72,65 @@
 
     <!-- 项目 + 团队成员介绍 -->
     <el-row :gutter="40">
-
       <!-- 项目介绍 -->
       <el-col :md="12" :lg="12" class="card-panel-col">
-        <Project/>
+        <Project />
       </el-col>
 
       <!-- 团队介绍 -->
       <el-col :md="12" :lg="12" class="card-panel-col">
-        <Team/>
+        <Team />
       </el-col>
     </el-row>
-
 
     <!-- Echarts 图表 -->
     <el-row :gutter="40" style="margin-top: 20px">
       <el-col :sm="24" :lg="8" class="card-panel-col">
-        <BarChart id="barChart" height="400px" width="100%" class="chart-container"/>
+        <BarChart
+          id="barChart"
+          height="400px"
+          width="100%"
+          class="chart-container"
+        />
       </el-col>
 
       <el-col :xs="24" :sm="12" :lg="8" class="card-panel-col">
-        <PieChart id="pieChart" height="400px" width="100%" class="chart-container"/>
+        <PieChart
+          id="pieChart"
+          height="400px"
+          width="100%"
+          class="chart-container"
+        />
         <!--订单漏斗图-->
         <!--<FunnelChart id="funnelChart" height="400px" width="100%" class="chart-container"/>-->
       </el-col>
 
       <el-col :xs="24" :sm="12" :lg="8" class="card-panel-col">
-        <RadarChart id="radarChart" height="400px" width="100%" class="chart-container"/>
+        <RadarChart
+          id="radarChart"
+          height="400px"
+          width="100%"
+          class="chart-container"
+        />
       </el-col>
     </el-row>
-
   </div>
 </template>
 
 <script setup lang="ts">
-
 // Vue引用
-import {computed, nextTick, onMounted, reactive, toRefs, watchEffect} from "vue";
+import {
+  computed,
+  nextTick,
+  onMounted,
+  reactive,
+  toRefs,
+  watchEffect,
+} from "vue";
 
 // 组件引用
-import GithubCorner from '@/components/GithubCorner/index.vue'
-import SvgIcon from '@/components/SvgIcon/index.vue'
+import GithubCorner from "@/components/GithubCorner/index.vue";
+import SvgIcon from "@/components/SvgIcon/index.vue";
 import BarChart from "./components/Chart/BarChart.vue";
 import PieChart from "./components/Chart/PieChart.vue";
 import RadarChart from "./components/Chart/RadarChart.vue";
@@ -129,20 +139,19 @@ import FunnelChart from "./components/Chart/FunnelChart.vue";
 import Project from "./components/Project/index.vue";
 import Team from "./components/Team/index.vue";
 
-import BScroll from 'better-scroll'
+import BScroll from "better-scroll";
 
-import {useUserStoreHook} from "@/store/modules/user"
+import useStore from "@/store";
 
-const roles = computed(() => useUserStoreHook().roles);
-const avatar = computed(() => useUserStoreHook().avatar);
-const nickname = computed(() => useUserStoreHook().nickname);
+const { user } = useStore();
 
-
+const roles = computed(() => user.roles);
+const avatar = computed(() => user.avatar);
+const nickname = computed(() => user.nickname);
 </script>
 
 
 <style lang="scss" scoped>
-
 .dashboard-container {
   padding: 24px;
   background-color: rgb(240, 242, 245);
@@ -200,8 +209,8 @@ const nickname = computed(() => useUserStoreHook().nickname);
     overflow: hidden;
     color: #666;
     background: #fff;
-    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-    border-color: rgba(0, 0, 0, .05);
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.05);
 
     &:hover {
       .card-panel-icon-wrapper {
@@ -225,7 +234,7 @@ const nickname = computed(() => useUserStoreHook().nickname);
       }
 
       .icon-shopping {
-        background: #34bfa3
+        background: #34bfa3;
       }
     }
 
@@ -291,12 +300,8 @@ const nickname = computed(() => useUserStoreHook().nickname);
     }
   }
 
-
   .chart-container {
     background: #ffffff;
   }
-
-
 }
-
 </style>

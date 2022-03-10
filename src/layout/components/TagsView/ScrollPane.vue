@@ -1,95 +1,119 @@
 <template>
   <el-scrollbar
-      ref="scrollContainerRef"
-      :vertical="false"
-      class="scroll-container"
-      @wheel.prevent="handleScroll">
-    <slot/>
+    ref="scrollContainerRef"
+    :vertical="false"
+    class="scroll-container"
+    @wheel.prevent="handleScroll"
+  >
+    <slot />
   </el-scrollbar>
 </template>
 
 <script setup lang="ts">
-import {ref, computed, onMounted, onBeforeUnmount, getCurrentInstance} from "vue";
-import {useTagsViewStoreHook} from "@/store/modules/tagsView"
-import {TagView} from "@/store/interface";
-const emits = defineEmits()
+import {
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  getCurrentInstance,
+} from "vue";
+import { TagView } from "@/store/interface";
+import useStore from "@/store";
 
-const tagAndTagSpacing = ref(4)
-const scrollContainerRef = ref(null)
-const visitedViews = computed(() => useTagsViewStoreHook().visitedViews)
+const emits = defineEmits();
+
+const tagAndTagSpacing = ref(4);
+const scrollContainerRef = ref(null);
+
+const { tagsView } = useStore();
+
+const visitedViews = computed(() => tagsView.visitedViews);
 
 const emitScroll = () => {
-  (emits as any)('scroll')
-}
+  (emits as any)("scroll");
+};
 
-const {ctx} = getCurrentInstance() as any
+const { ctx } = getCurrentInstance() as any;
 const scrollWrapper = computed(() => {
-  return (scrollContainerRef.value as any).$refs.wrap as HTMLElement
-})
+  return (scrollContainerRef.value as any).$refs.wrap as HTMLElement;
+});
 
 onMounted(() => {
   //scrollWrapper.value.addEventListener('scroll', emitScroll, true);
-})
+});
 
 onBeforeUnmount(() => {
   // scrollWrapper.value.removeEventListener('scroll', emitScroll);
-})
+});
 
 function handleScroll(e: WheelEvent) {
-  const eventDelta = (e as any).wheelDelta || -e.deltaY * 40
-  scrollWrapper.value.scrollLeft = scrollWrapper.value.scrollLeft + eventDelta / 4
+  const eventDelta = (e as any).wheelDelta || -e.deltaY * 40;
+  scrollWrapper.value.scrollLeft =
+    scrollWrapper.value.scrollLeft + eventDelta / 4;
 }
 
-function moveToTarget(currentTag:TagView) {
-  const $container = ctx.$refs.scrollContainer.$el
-  const $containerWidth = $container.offsetWidth
+function moveToTarget(currentTag: TagView) {
+  const $container = ctx.$refs.scrollContainer.$el;
+  const $containerWidth = $container.offsetWidth;
   const $scrollWrapper = scrollWrapper.value;
 
-  let firstTag = null
-  let lastTag = null
+  let firstTag = null;
+  let lastTag = null;
 
   // find first tag and last tag
   if (visitedViews.value.length > 0) {
-    firstTag = visitedViews.value[0]
-    lastTag = visitedViews.value[visitedViews.value.length - 1]
+    firstTag = visitedViews.value[0];
+    lastTag = visitedViews.value[visitedViews.value.length - 1];
   }
 
   if (firstTag === currentTag) {
-    $scrollWrapper.scrollLeft = 0
+    $scrollWrapper.scrollLeft = 0;
   } else if (lastTag === currentTag) {
-    $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth
+    $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth;
   } else {
-    const tagListDom = document.getElementsByClassName('tags-view-item');
-    const currentIndex = visitedViews.value.findIndex(item => item === currentTag)
-    let prevTag = null
-    let nextTag = null
+    const tagListDom = document.getElementsByClassName("tags-view-item");
+    const currentIndex = visitedViews.value.findIndex(
+      (item) => item === currentTag
+    );
+    let prevTag = null;
+    let nextTag = null;
     for (const k in tagListDom) {
-      if (k !== 'length' && Object.hasOwnProperty.call(tagListDom, k)) {
-        if ((tagListDom[k] as any).dataset.path === visitedViews.value[currentIndex - 1].path) {
-          prevTag = tagListDom[k] ;
+      if (k !== "length" && Object.hasOwnProperty.call(tagListDom, k)) {
+        if (
+          (tagListDom[k] as any).dataset.path ===
+          visitedViews.value[currentIndex - 1].path
+        ) {
+          prevTag = tagListDom[k];
         }
-        if ((tagListDom[k] as any).dataset.path === visitedViews.value[currentIndex + 1].path) {
+        if (
+          (tagListDom[k] as any).dataset.path ===
+          visitedViews.value[currentIndex + 1].path
+        ) {
           nextTag = tagListDom[k];
         }
       }
     }
 
     // the tag's offsetLeft after of nextTag
-    const afterNextTagOffsetLeft = (nextTag as any).offsetLeft + (nextTag as any).offsetWidth + tagAndTagSpacing.value
+    const afterNextTagOffsetLeft =
+      (nextTag as any).offsetLeft +
+      (nextTag as any).offsetWidth +
+      tagAndTagSpacing.value;
 
     // the tag's offsetLeft before of prevTag
-    const beforePrevTagOffsetLeft = (prevTag as any).offsetLeft - tagAndTagSpacing.value
+    const beforePrevTagOffsetLeft =
+      (prevTag as any).offsetLeft - tagAndTagSpacing.value;
     if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
-      $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth
+      $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth;
     } else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
-      $scrollWrapper.scrollLeft = beforePrevTagOffsetLeft
+      $scrollWrapper.scrollLeft = beforePrevTagOffsetLeft;
     }
   }
 }
 
 defineExpose({
-  moveToTarget
-})
+  moveToTarget,
+});
 </script>
 
 <style lang="scss" scoped>

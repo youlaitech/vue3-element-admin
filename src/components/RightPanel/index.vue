@@ -17,11 +17,14 @@
 import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 
 import {addClass, removeClass} from '@/utils/index'
-import {useSettingStoreHook} from "@/store/modules/settings";
+
+import useStore from "@/store";
 
 // 图标依赖
 import {Close, Setting} from '@element-plus/icons-vue'
 import {ElColorPicker} from "element-plus";
+
+const {setting} =useStore()
 
 const props = defineProps({
   buttonTop: {
@@ -30,7 +33,7 @@ const props = defineProps({
   }
 })
 
-const theme = computed(() => useSettingStoreHook().theme)
+const theme = computed(() =>setting.theme)
 
 const show = ref(false)
 

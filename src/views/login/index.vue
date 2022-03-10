@@ -1,145 +1,160 @@
 <template>
   <div class="login-container">
     <el-form
-        ref="loginFormRef"
-        :model="loginForm"
-        :rules="loginRules"
-        class="login-form"
-        auto-complete="on"
-        label-position="left"
+      ref="loginFormRef"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form"
+      auto-complete="on"
+      label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">{{ $t('login.title') }}</h3>
-        <lang-select class="set-language"/>
+        <h3 class="title">{{ $t("login.title") }}</h3>
+        <lang-select class="set-language" />
       </div>
 
       <el-form-item prop="username">
         <span class="svg-container">
-          <svg-icon icon-class="user"/>
+          <svg-icon icon-class="user" />
         </span>
         <el-input
-            ref="username"
-            v-model="loginForm.username"
-            :placeholder="$t('login.username')"
-            name="username"
-            type="text"
-            tabindex="1"
-            auto-complete="on"
+          ref="username"
+          v-model="loginForm.username"
+          :placeholder="$t('login.username')"
+          name="username"
+          type="text"
+          tabindex="1"
+          auto-complete="on"
         />
       </el-form-item>
 
       <el-tooltip
-          :disabled="capslockTooltipDisabled"
-          content="Caps lock is On"
-          placement="right"
+        :disabled="capslockTooltipDisabled"
+        content="Caps lock is On"
+        placement="right"
       >
         <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password"/>
-        </span>
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
           <el-input
-              :key="passwordType"
-              ref="passwordRef"
-              v-model="loginForm.password"
-              :type="passwordType"
-              placeholder="Password"
-              name="password"
-              tabindex="2"
-              auto-complete="on"
-              @keyup.native="checkCapslock"
-              @blur="capslockTooltipDisabled = true"
-              @keyup.enter.native="handleLogin"
+            :key="passwordType"
+            ref="passwordRef"
+            v-model="loginForm.password"
+            :type="passwordType"
+            placeholder="Password"
+            name="password"
+            tabindex="2"
+            auto-complete="on"
+            @keyup.native="checkCapslock"
+            @blur="capslockTooltipDisabled = true"
+            @keyup.enter.native="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
-        </span>
+            <svg-icon
+              :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+            />
+          </span>
         </el-form-item>
       </el-tooltip>
 
       <!-- 验证码 -->
       <el-form-item prop="code">
-         <span class="svg-container">
-            <svg-icon icon-class="validCode"/>
-          </span>
+        <span class="svg-container">
+          <svg-icon icon-class="validCode" />
+        </span>
         <el-input
-            v-model="loginForm.code"
-            auto-complete="off"
-            :placeholder="$t('login.code')"
-            style="width: 65%"
-            @keyup.enter.native="handleLogin"
+          v-model="loginForm.code"
+          auto-complete="off"
+          :placeholder="$t('login.code')"
+          style="width: 65%"
+          @keyup.enter.native="handleLogin"
         />
 
         <div class="captcha">
-          <img :src="captchaBase64" @click="handleCaptchaGenerate" height="38px"/>
+          <img
+            :src="captchaBase64"
+            @click="handleCaptchaGenerate"
+            height="38px"
+          />
         </div>
       </el-form-item>
 
-      <el-button size="default" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
-                 @click.native.prevent="handleLogin">{{ $t('login.login') }}
+      <el-button
+        size="default"
+        :loading="loading"
+        type="primary"
+        style="width: 100%; margin-bottom: 30px"
+        @click.native.prevent="handleLogin"
+        >{{ $t("login.login") }}
       </el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">{{ $t('login.username') }}: admin</span>
-        <span> {{ $t('login.password') }}: 123456</span>
+        <span style="margin-right: 20px"
+          >{{ $t("login.username") }}: admin</span
+        >
+        <span> {{ $t("login.password") }}: 123456</span>
       </div>
     </el-form>
 
-    <div v-if="showCopyright==true" class="copyright">
-      <p>{{ $t('login.copyright') }}</p>
-      <p>{{ $t('login.icp') }}</p>
+    <div v-if="showCopyright == true" class="copyright">
+      <p>{{ $t("login.copyright") }}</p>
+      <p>{{ $t("login.icp") }}</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {onMounted, reactive, ref, toRefs, watch, nextTick} from "vue";
+import { onMounted, reactive, ref, toRefs, watch, nextTick } from "vue";
 
 // 组件依赖
-import {ElForm, ElInput} from "element-plus";
-import router from '@/router'
-import LangSelect from '@/components/LangSelect/index.vue';
-import SvgIcon from '@/components/SvgIcon/index.vue';
+import { ElForm, ElInput } from "element-plus";
+import router from "@/router";
+import LangSelect from "@/components/LangSelect/index.vue";
+import SvgIcon from "@/components/SvgIcon/index.vue";
 
 // 状态管理依赖
-import {useUserStoreHook} from "@/store/modules/user";
-import {useAppStoreHook} from "@/store/modules/app";
+import useStore from "@/store";
 
 // API依赖
-import {getCaptcha} from "@/api/login";
-import {useRoute} from "vue-router";
+import { getCaptcha } from "@/api/login";
+import { useRoute } from "vue-router";
 
+const { user } = useStore();
 const route = useRoute();
 
-const loginFormRef = ref(ElForm)
-const passwordRef = ref(ElInput)
+const loginFormRef = ref(ElForm);
+const passwordRef = ref(ElInput);
 
 const state = reactive({
   loginForm: {
-    username: 'admin',
-    password: '123456',
-    code: '',
-    uuid: ''
+    username: "admin",
+    password: "123456",
+    code: "",
+    uuid: "",
   },
   loginRules: {
-    username: [{required: true, trigger: 'blur'}],
-    password: [{required: true, trigger: 'blur', validator: validatePassword}]
+    username: [{ required: true, trigger: "blur" }],
+    password: [
+      { required: true, trigger: "blur", validator: validatePassword },
+    ],
   },
   loading: false,
-  passwordType: 'password',
-  redirect: '',
-  captchaBase64: '',
+  passwordType: "password",
+  redirect: "",
+  captchaBase64: "",
   // 大写提示禁用
   capslockTooltipDisabled: true,
   otherQuery: {},
   clientHeight: document.documentElement.clientHeight,
-  showCopyright: true
-})
+  showCopyright: true,
+});
 
 function validatePassword(rule: any, value: any, callback: any) {
   if (value.length < 6) {
-    callback(new Error('The password can not be less than 6 digits'))
+    callback(new Error("The password can not be less than 6 digits"));
   } else {
-    callback()
+    callback();
   }
 }
 
@@ -151,83 +166,88 @@ const {
   redirect,
   captchaBase64,
   capslockTooltipDisabled,
-  showCopyright
-} = toRefs(state)
+  showCopyright,
+} = toRefs(state);
 
 function checkCapslock(e: any) {
-  const {key} = e
-  state.capslockTooltipDisabled = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+  const { key } = e;
+  state.capslockTooltipDisabled =
+    key && key.length === 1 && key >= "A" && key <= "Z";
 }
 
 function showPwd() {
-  if (state.passwordType === 'password') {
-    state.passwordType = ''
+  if (state.passwordType === "password") {
+    state.passwordType = "";
   } else {
-    state.passwordType = 'password'
+    state.passwordType = "password";
   }
   nextTick(() => {
-    passwordRef.value.focus()
-  })
+    passwordRef.value.focus();
+  });
 }
 
 function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
     if (valid) {
-      state.loading = true
-      useUserStoreHook().login(state.loginForm).then(() => {
-        router.push({path: state.redirect || '/', query: state.otherQuery})
-        state.loading = false
-      }).catch(() => {
-        state.loading = false
-        handleCaptchaGenerate()
-      })
+      state.loading = true;
+      user
+        .login(state.loginForm)
+        .then(() => {
+          router.push({ path: state.redirect || "/", query: state.otherQuery });
+          state.loading = false;
+        })
+        .catch(() => {
+          state.loading = false;
+          handleCaptchaGenerate();
+        });
     } else {
-      return false
+      return false;
     }
-  })
+  });
 }
 
 // 获取验证码
 function handleCaptchaGenerate() {
-  getCaptcha().then(response => {
-    const {img, uuid} = response.data
-    state.captchaBase64 = "data:image/gif;base64," + img
+  getCaptcha().then((response) => {
+    const { img, uuid } = response.data;
+    state.captchaBase64 = "data:image/gif;base64," + img;
     state.loginForm.uuid = uuid;
-  })
+  });
 }
 
-watch(route, () => {
-      const query = route.query
-      if (query) {
-        state.redirect = query.redirect as string
-        state.otherQuery = getOtherQuery(query)
-      }
-    },
-    {
-      immediate: true
+watch(
+  route,
+  () => {
+    const query = route.query;
+    if (query) {
+      state.redirect = query.redirect as string;
+      state.otherQuery = getOtherQuery(query);
     }
-)
-
+  },
+  {
+    immediate: true,
+  }
+);
 
 function getOtherQuery(query: any) {
   return Object.keys(query).reduce((acc: any, cur: any) => {
-    if (cur !== 'redirect') {
-      acc[cur] = query[cur]
+    if (cur !== "redirect") {
+      acc[cur] = query[cur];
     }
-    return acc
-  }, {})
+    return acc;
+  }, {});
 }
 
 onMounted(() => {
-  handleCaptchaGenerate()
+  handleCaptchaGenerate();
   window.onresize = () => {
     if (state.clientHeight > document.documentElement.clientHeight) {
-      state.showCopyright = false
+      state.showCopyright = false;
     } else {
-      state.showCopyright = true
+      state.showCopyright = true;
     }
-  }
-})
+  };
+});
 </script>
 
 <style lang="scss">
@@ -240,7 +260,6 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
-
   .title-container {
     position: relative;
 
@@ -261,7 +280,6 @@ $cursor: #fff;
       cursor: pointer;
     }
   }
-
 
   .el-input {
     display: inline-block;
@@ -285,12 +303,12 @@ $cursor: #fff;
     }
   }
 
-  .el-input__inner{
-    &:hover{
-      border-color: var(--el-input-hover-border,var(--el-border-color-hover));
-      box-shadow:none;
+  .el-input__inner {
+    &:hover {
+      border-color: var(--el-input-hover-border, var(--el-border-color-hover));
+      box-shadow: none;
     }
-    box-shadow:none;
+    box-shadow: none;
   }
 
   .el-form-item {
@@ -384,6 +402,5 @@ $light_gray: #eee;
       vertical-align: middle;
     }
   }
-
 }
 </style>
