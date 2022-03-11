@@ -1,11 +1,24 @@
 import request from "@/utils/request";
+import { AxiosPromise } from "axios";
+import { UserInfo, UserQueryParam } from "@/types";
+
+/**
+ * 登录成功后获取用户信息（包括用户头像、权限列表等）
+ */
+export function getUserInfo(): AxiosPromise<UserInfo> {
+    return request({
+        url: '/youlai-admin/api/v1/users/me',
+        method: 'get'
+    })
+}
+
 
 /**
  * 获取用户分页列表
  *
  * @param queryParams
  */
-export function listUsersWithPage(queryParams: any) {
+export function listUserPages(queryParams: UserQueryParam) {
     return request({
         url: '/youlai-admin/api/v1/users/page',
         method: 'get',

@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
-import {UserState} from "@/store/interface";
-import {localStorage} from "@/utils/storage";
-import {getUserInfo, login, logout} from "@/api/login";
-import {resetRouter} from "@/router";
+import { UserState } from "@/store/interface";
+import { localStorage } from "@/utils/storage";
+import { login, logout } from "@/api/login";
+import { resetRouter } from "@/router";
+import { getUserInfo } from "@/api/system/user";
 
- const useUserStore = defineStore({
-   id:"user",
-    state: ():UserState=>({
+const useUserStore = defineStore({
+    id: "user",
+    state: (): UserState => ({
         token: localStorage.get('token') || '',
         nickname: '',
         avatar: '',
@@ -14,7 +15,7 @@ import {resetRouter} from "@/router";
         perms: []
     }),
     actions: {
-        async RESET_STATE () {
+        async RESET_STATE() {
             this.$reset()
         },
         /**
@@ -26,7 +27,7 @@ import {resetRouter} from "@/router";
          *  uuid: 匹配正确验证码的 key
          */
         login(userInfo: { username: string, password: string, code: string, uuid: string }) {
-            const {username, password, code, uuid} = userInfo
+            const { username, password, code, uuid } = userInfo
             return new Promise((resolve, reject) => {
                 login(
                     {
@@ -37,7 +38,7 @@ import {resetRouter} from "@/router";
                         uuid: uuid
                     }
                 ).then(response => {
-                    const {access_token, token_type} = response.data
+                    const { access_token, token_type } = response.data
                     const accessToken = token_type + " " + access_token
                     localStorage.set("token", accessToken)
                     this.token = accessToken
@@ -52,24 +53,24 @@ import {resetRouter} from "@/router";
          */
         getUserInfo() {
             return new Promise(((resolve, reject) => {
-                    getUserInfo().then(response => {
-                        const {data} = response
-                        if (!data) {
-                            return reject('Verification failed, please Login again.')
-                        }
-                        const {nickname, avatar, roles, perms} = data
-                        if (!roles || roles.length <= 0) {
-                            reject('getUserInfo: roles must be a non-null array!')
-                        }
-                        this.nickname = nickname
-                        this.avatar = avatar
-                        this.roles = roles
-                        this.perms = perms
-                        resolve(data)
-                    }).catch(error => {
-                        reject(error)
-                    })
+                getUserInfo().then(response => {
+                    const { data } = response
+                    if (!data) {
+                        return reject('Verification failed, please Login again.')
+                    }
+                    const { nickname, avatar, roles, perms } = data
+                    if (!roles || roles.length <= 0) {
+                        reject('getUserInfo: roles must be a non-null array!')
+                    }
+                    this.nickname = nickname
+                    this.avatar = avatar
+                    this.roles = roles
+                    this.perms = perms
+                    resolve(data)
+                }).catch(error => {
+                    reject(error)
                 })
+            })
             )
         },
 
@@ -92,8 +93,8 @@ import {resetRouter} from "@/router";
         /**
          * 清除 Token
          */
-        resetToken(){
-            return new Promise(resolve=>{
+        resetToken() {
+            return new Promise(resolve => {
                 localStorage.remove('token')
                 this.RESET_STATE()
                 resolve(null)
