@@ -1,11 +1,13 @@
+import { BrandFormData, BrandItem, BrandPageResult, BrandQueryParam } from '@/types'
 import request from '@/utils/request'
+import { AxiosPromise } from 'axios'
 
 /**
  * 获取品牌分页列表
  *
  * @param queryParams
  */
-export function listBrandsWithPage(queryParams: object) {
+export function listBrandPages(queryParams: BrandQueryParam):AxiosPromise<BrandPageResult> {
     return request({
         url: '/mall-pms/api/v1/brands/page',
         method: 'get',
@@ -18,7 +20,7 @@ export function listBrandsWithPage(queryParams: object) {
  *
  * @param queryParams
  */
-export function listBrands(queryParams: object) {
+export function listBrands(queryParams?: BrandQueryParam):AxiosPromise<BrandItem[]> {
     return request({
         url: '/mall-pms/api/v1/brands',
         method: 'get',
@@ -31,7 +33,7 @@ export function listBrands(queryParams: object) {
  *
  * @param id
  */
-export function getBrandDetail(id: number) {
+export function getBrandFormDetail(id: number):AxiosPromise<BrandFormData> {
     return request({
         url: '/mall-pms/api/v1/brands/' + id,
         method: 'get'
@@ -43,7 +45,7 @@ export function getBrandDetail(id: number) {
  *
  * @param data
  */
-export function addBrand(data: object) {
+export function addBrand(data: BrandFormData) {
     return request({
         url: '/mall-pms/api/v1/brands',
         method: 'post',
@@ -57,7 +59,7 @@ export function addBrand(data: object) {
  * @param id
  * @param data
  */
-export function updateBrand(id:number, data:object) {
+export function updateBrand(id:number, data:BrandFormData) {
     return request({
         url: '/mall-pms/api/v1/brands/' + id,
         method: 'put',
