@@ -1,27 +1,27 @@
 <template>
   <div class="el-tree-select">
     <el-select
-        style="width: 100%"
-        v-model="modelValue"
-        ref="treeSelect"
-        :filterable="true"
-        :clearable="true"
-        @clear="clearHandle"
-        :filter-method="selectFilterData"
-        :placeholder="placeholder"
+      style="width: 100%"
+      v-model="modelValue"
+      ref="treeSelect"
+      :filterable="true"
+      :clearable="true"
+      @clear="clearHandle"
+      :filter-method="selectFilterData"
+      :placeholder="placeholder"
     >
       <el-option :value="modelValue" :label="valueTitle">
         <el-tree
-            id="tree-option"
-            ref="selectTree"
-            :accordion="accordion"
-            :data="options"
-            :props="state.props"
-            :node-key="state.props.value"
-            :expand-on-click-node="false"
-            :default-expanded-keys="defaultExpandedKey"
-            :filter-node-method="filterNode"
-            @node-click="handleNodeClick"
+          id="tree-option"
+          ref="selectTree"
+          :accordion="accordion"
+          :data="options"
+          :props="state.props"
+          :node-key="state.props.value"
+          :expand-on-click-node="false"
+          :default-expanded-keys="defaultExpandedKey"
+          :filter-node-method="filterNode"
+          @node-click="handleNodeClick"
         ></el-tree>
       </el-option>
     </el-select>
@@ -29,9 +29,16 @@
 </template>
 
 <script setup>
-import {ref, getCurrentInstance, nextTick, onMounted, computed, watch} from "vue";
+import {
+  ref,
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  computed,
+  watch,
+} from "vue";
 
-const {proxy} = getCurrentInstance();
+const { proxy } = getCurrentInstance();
 
 const state = defineProps({
   // 配置项
@@ -39,101 +46,101 @@ const state = defineProps({
     type: Object,
     default: () => {
       return {
-        value: 'id', // ID字段名
-        label: 'label', // 显示名称
-        children: 'children' // 子级字段名
-      }
-    }
+        value: "value", // 值
+        label: "label", // 名
+        children: "children", // 子级
+      };
+    },
   },
   // 自动收起
   accordion: {
     type: Boolean,
     default: () => {
-      return false
-    }
+      return false;
+    },
   },
   // v-model 绑定的值
   modelValue: {
     type: [String, Number],
-    default: ''
+    default: "",
   },
   // 数据源
   options: {
     type: Array,
-    default: []
+    default: [],
   },
   // 提示文字
   placeholder: {
     type: String,
-    default: ''
-  }
-})
+    default: "",
+  },
+});
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 
 const modelValue = computed({
   get: () => {
-    return state.modelValue
+    return state.modelValue;
   },
   set: (val) => {
-    emit('update:modelValue', val)
-  }
+    emit("update:modelValue", val);
+  },
 });
-const valueTitle = ref('');
+const valueTitle = ref("");
 const defaultExpandedKey = ref([]);
 
 function handleNodeClick(node) {
-  valueTitle.value = node[state.props.label]
+  valueTitle.value = node[state.props.label];
   modelValue.value = node[state.props.value];
   defaultExpandedKey.value = [];
-  proxy.$refs.treeSelect.blur()
-  selectFilterData('')
+  proxy.$refs.treeSelect.blur();
+  selectFilterData("");
 }
 
 function selectFilterData(val) {
-  proxy.$refs.selectTree.filter(val)
+  proxy.$refs.selectTree.filter(val);
 }
 
 function filterNode(value, data) {
-  if (!value) return true
-  return data[state.props['label']].indexOf(value) !== -1
+  if (!value) return true;
+  return data[state.props["label"]].indexOf(value) !== -1;
 }
 
 function clearHandle() {
-  valueTitle.value = ''
-  modelValue.value = ''
+  valueTitle.value = "";
+  modelValue.value = "";
   defaultExpandedKey.value = [];
-  clearSelected()
+  clearSelected();
 }
 
 function clearSelected() {
-  const allNode = document.querySelectorAll('#tree-option .el-tree-node')
-  allNode.forEach((element) => element.classList.remove('is-current'))
+  const allNode = document.querySelectorAll("#tree-option .el-tree-node");
+  allNode.forEach((element) => element.classList.remove("is-current"));
 }
 
-function initHandle(){
-   nextTick(() => {
+function initHandle() {
+  nextTick(() => {
     const selectedValue = modelValue.value;
-    if (selectedValue !== null && typeof (selectedValue) !== "undefined") {
-      const node = proxy.$refs.selectTree.getNode(selectedValue)
+    if (selectedValue !== null && typeof selectedValue !== "undefined") {
+      const node = proxy.$refs.selectTree.getNode(selectedValue);
       if (node) {
-        valueTitle.value = node.data[state.props.label]
-        proxy.$refs.selectTree.setCurrentKey(selectedValue) // 设置默认选中
-        defaultExpandedKey.value = [selectedValue] // 设置默认展开
+        valueTitle.value = node.data[state.props.label];
+        proxy.$refs.selectTree.setCurrentKey(selectedValue); // 设置默认选中
+        defaultExpandedKey.value = [selectedValue]; // 设置默认展开
       } else {
-        clearHandle()
+        clearHandle();
       }
     }
-  })
+  });
 }
 
 onMounted(() => {
- initHandle();
-})
+  initHandle();
+});
 
 watch(modelValue, () => {
   initHandle();
-})
+});
 </script>
 
 <style lang='scss' scoped>
@@ -156,8 +163,8 @@ ul li .el-tree .el-tree-node__content {
 :deep(.el-tree-node__content:hover),
 :deep(.el-tree-node__content:active),
 :deep(.is-current > div:first-child),
-:deep( .el-tree-node__content:focus ) {
-  background-color: mix(#fff, #409EFF, 90%);
-  color: #409EFF;
+:deep(.el-tree-node__content:focus) {
+  background-color: mix(#fff, #409eff, 90%);
+  color: #409eff;
 }
 </style>
