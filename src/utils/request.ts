@@ -1,9 +1,7 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { localStorage } from "@/utils/storage";
 import useStore from "@/store";
-
-
 
 // 创建 axios 实例
 const service = axios.create({
@@ -14,7 +12,7 @@ const service = axios.create({
 
 // 请求拦截器
 service.interceptors.request.use(
-    (config) => {
+    (config: AxiosRequestConfig) => {
         if (!config?.headers) {
             throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
         }
@@ -30,10 +28,10 @@ service.interceptors.request.use(
 
 // 响应拦截器
 service.interceptors.response.use(
-    ({ data }) => {
-        const { code, msg } = data;
+    (response: AxiosResponse) => {
+        const { code, msg } = response.data;
         if (code === '00000') {
-            return data;
+            return response.data;
         } else {
             ElMessage({
                 message: msg || '系统出错',
