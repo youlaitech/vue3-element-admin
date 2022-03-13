@@ -1,11 +1,13 @@
+import { AdvertFormData, AdvertPageResult, AdvertQueryParam } from '@/types'
 import request from '@/utils/request'
+import { AxiosPromise } from 'axios'
 
 /**
  * 获取广告分页列表
  *
  * @param queryParams
  */
-export function listAdvertsWithPage(queryParams: object) {
+export function listAdvertPages(queryParams: AdvertQueryParam):AxiosPromise<AdvertPageResult> {
     return request({
         url: '/mall-sms/api/v1/adverts',
         method: 'get',
@@ -18,7 +20,7 @@ export function listAdvertsWithPage(queryParams: object) {
  *
  * @param id
  */
-export function getAdvertDetail(id:number) {
+export function getAdvertFormDetail(id:number):AxiosPromise<AdvertFormData> {
     return request({
         url: '/mall-sms/api/v1/adverts/' + id,
         method: 'get'
@@ -30,7 +32,7 @@ export function getAdvertDetail(id:number) {
  *
  * @param data
  */
-export function addAdvert(data: object) {
+export function addAdvert(data: AdvertFormData) {
     return request({
         url: '/mall-sms/api/v1/adverts',
         method: 'post',
@@ -44,7 +46,7 @@ export function addAdvert(data: object) {
  * @param id
  * @param data
  */
-export function updateAdvert(id: number, data: object) {
+export function updateAdvert(id: number, data: AdvertFormData) {
     return request({
         url: '/mall-sms/api/v1/adverts/' + id,
         method: 'put',
