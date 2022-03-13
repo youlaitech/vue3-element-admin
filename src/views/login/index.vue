@@ -38,17 +38,17 @@
             <svg-icon icon-class="password" />
           </span>
           <el-input
-            :key="passwordType"
             ref="passwordRef"
+            :key="passwordType"
             v-model="loginForm.password"
             :type="passwordType"
             placeholder="Password"
             name="password"
             tabindex="2"
             auto-complete="on"
-            @keyup.native="checkCapslock"
+            @keyup="checkCapslock"
             @blur="capslockTooltipDisabled = true"
-            @keyup.enter.native="handleLogin"
+            @keyup.enter="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
             <svg-icon
@@ -68,7 +68,7 @@
           auto-complete="off"
           :placeholder="$t('login.code')"
           style="width: 65%"
-          @keyup.enter.native="handleLogin"
+          @keyup.enter="handleLogin"
         />
 
         <div class="captcha">
@@ -85,7 +85,7 @@
         :loading="loading"
         type="primary"
         style="width: 100%; margin-bottom: 30px"
-        @click.native.prevent="handleLogin"
+        @click.prevent="handleLogin"
         >{{ $t("login.login") }}
       </el-button>
 
