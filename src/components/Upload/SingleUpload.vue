@@ -3,10 +3,10 @@
     <!-- 上传组件 -->
     <el-upload
       ref="singleUploadRef"
+      action=""
       class="single-uploader"
       :show-file-list="false"
       :before-upload="handleBeforeUpload"
-      :on-exceed="handleExceed"
       :http-request="uploadImage"
     >
       <img v-if="imgUrl" :src="imgUrl" class="single-uploader__image" />
