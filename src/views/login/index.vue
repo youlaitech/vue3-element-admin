@@ -190,8 +190,7 @@ function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
     if (valid) {
       state.loading = true;
-      user
-        .login(state.loginForm)
+      user.login(state.loginForm)
         .then(() => {
           router.push({ path: state.redirect || "/", query: state.otherQuery });
           state.loading = false;
@@ -208,8 +207,8 @@ function handleLogin() {
 
 // 获取验证码
 function handleCaptchaGenerate() {
-  getCaptcha().then((response) => {
-    const { img, uuid } = response.data;
+  getCaptcha().then(({data}) => {
+    const { img, uuid } = data;
     state.captchaBase64 = "data:image/gif;base64," + img;
     state.loginForm.uuid = uuid;
   });
