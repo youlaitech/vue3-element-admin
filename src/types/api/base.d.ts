@@ -1,11 +1,11 @@
 
-export interface Page {
+export interface PageQueryParam {
     pageNum: number,
     pageSize: number
 }
 
 export interface PageResult<T> {
-    data: T,
+    list: T,
     total: number
 }
 
