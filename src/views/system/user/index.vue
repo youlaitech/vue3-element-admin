@@ -80,7 +80,7 @@
 
           <el-table
             v-loading="loading"
-            :data="pageList"
+            :data="userList"
             @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="50" align="center" />
@@ -283,7 +283,7 @@ import {
   updateUser,
   updateUserPart,
 } from "@/api/system/user";
-import { listDeptSelect } from "@/api/system/dept";
+import { listSelectDepartments } from "@/api/system/dept";
 import { listRoles } from "@/api/system/role";
 
 // 组件依赖
@@ -297,6 +297,14 @@ import {
   Lock,
 } from "@element-plus/icons-vue";
 import TreeSelect from "@/components/TreeSelect/index.vue";
+import {
+  UserItem,
+  UserQueryParam,
+  UserFormData,
+  Option,
+  RoleItem,
+  Dialog,
+} from "@/types";
 
 // DOM元素的引用声明定义
 const deptTreeRef = ref(ElTree); // 变量名和DOM的ref属性值一致
@@ -317,42 +325,26 @@ const state = reactive({
   // 总条数
   total: 0,
   // 用户分页数据
-  pageList: [],
+  userList: [] as UserItem[],
   // 弹窗属性
   dialog: {
-    title: "",
     visible: false,
-  },
+  } as Dialog,
   deptName: undefined,
   // 部门树选项
-  deptOptions: [],
+  deptOptions: [] as Option[],
   // 部门名称
   // 性别状态字典
   genderOptions: [] as any[],
   // 角色选项
-  roleOptions: [] as any[],
+  roleOptions: [] as RoleItem[],
   // 表单参数
-  formData: {
-    id: undefined,
-    deptId: undefined,
-    username: undefined,
-    nickname: undefined,
-    password: "",
-    mobile: undefined,
-    email: undefined,
-    gender: undefined,
-    status: 1,
-    remark: undefined,
-    roleIds: [],
-  },
+  formData: {} as UserFormData,
   // 查询参数
-  queryParams:{
+  queryParams: {
     pageNum: 1,
     pageSize: 10,
-    keywords: undefined,
-    status: undefined,
-    deptId: undefined,
-  },
+  } as UserQueryParam,
   // 表单校验
   rules: {
     username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
@@ -383,7 +375,7 @@ const {
   single,
   multiple,
   queryParams,
-  pageList,
+  userList,
   total,
   dialog,
   formData,
@@ -398,8 +390,7 @@ const {
  */
 watchEffect(
   () => {
-    const deptTree = unref(deptTreeRef);
-    deptTree.filter(state.deptName);
+    deptTreeRef.value.filter(state.deptName);
   },
   {
     flush: "post", // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
@@ -414,7 +405,7 @@ function filterDeptNode(value: string, data: any) {
 }
 
 /**
- * 部门树节点点击事件
+ * 部门树节点点击
  */
 function handleDeptNodeClick(data: { [key: string]: any }) {
   state.queryParams.deptId = data.id;
@@ -460,10 +451,9 @@ function handleStatusChange(row: { [key: string]: any }) {
  **/
 function handleQuery() {
   state.loading = true;
-  listUserPages(state.queryParams).then((response) => {
-    const { data, total } = response as any;
-    state.pageList = data;
-    state.total = total;
+  listUserPages(state.queryParams).then(({ data }) => {
+    state.userList = data.list;
+    state.total = data.total;
     state.loading = false;
   });
 }
@@ -472,8 +462,7 @@ function handleQuery() {
  * 重置查询
  */
 function resetQuery() {
-  const queryForm = unref(queryFormRef);
-  queryForm.resetFields();
+  queryFormRef.value.resetFields();
   handleQuery();
 }
 
@@ -535,8 +524,8 @@ async function handleUpdate(row: { [key: string]: any }) {
     title: "修改用户",
     visible: true,
   };
-  getUserFormDetail(userId).then((response: any) => {
-    state.formData = response.data;
+  getUserFormDetail(userId).then(({ data }) => {
+    state.formData = data;
   });
 }
 
@@ -544,8 +533,7 @@ async function handleUpdate(row: { [key: string]: any }) {
  * 表单提交
  */
 function submitForm() {
-  const dataForm = unref(dataFormRef);
-  dataForm.validate((valid: any) => {
+  dataFormRef.value.validate((valid: any) => {
     if (valid) {
       const userId = state.formData.id;
       if (userId) {
@@ -576,7 +564,7 @@ function resetForm() {
 
 /**
  * 删除用户
- **/
+ */
 function handleDelete(row: { [key: string]: any }) {
   const userIds = row.id || state.ids.join(",");
   ElMessageBox.confirm(
@@ -598,7 +586,7 @@ function handleDelete(row: { [key: string]: any }) {
 }
 
 /**
- * 取消关闭
+ * 取消
  */
 function cancel() {
   state.dialog.visible = false;
@@ -606,16 +594,16 @@ function cancel() {
 }
 
 /**
- * 加载部门数据
- **/
+ * 加载部门
+ */
 async function loadDeptOptions() {
-  listDeptSelect().then((response) => {
+  listSelectDepartments().then((response) => {
     state.deptOptions = response.data;
   });
 }
 
 /**
- * 加载性别字典数据
+ * 加载性别字典
  */
 function loadGenderOptions() {
   proxy.$listDictsByCode("gender").then((response: any) => {
@@ -627,8 +615,11 @@ function loadGenderOptions() {
  * 初始化数据
  */
 function loadData() {
+  // 初始化性别字典
   loadGenderOptions();
+  // 初始化部门
   loadDeptOptions();
+  // 初始化用户列表数据
   handleQuery();
 }
 
