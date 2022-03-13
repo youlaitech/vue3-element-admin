@@ -1,11 +1,13 @@
+import { DeptFormData, DeptItem, DeptQueryParam, Option } from '@/types'
 import request from '@/utils/request'
+import { AxiosPromise } from 'axios'
 
 /**
  * 部门树形表格
  *
  * @param queryParams
  */
-export function listDeptTable(queryParams?: object) {
+export function listTableDepartments(queryParams?: DeptQueryParam): AxiosPromise<DeptItem[]> {
     return request({
         url: '/youlai-admin/api/v1/depts/table',
         method: 'get',
@@ -16,7 +18,7 @@ export function listDeptTable(queryParams?: object) {
 /**
  * 部门下拉列表
  */
-export function listDeptSelect() {
+export function listSelectDepartments(): AxiosPromise<Option[]> {
     return request({
         url: '/youlai-admin/api/v1/depts/select',
         method: 'get'
@@ -28,7 +30,7 @@ export function listDeptSelect() {
  *
  * @param id
  */
-export function getDeptDetail(id: any) {
+export function getDeptFormDetail(id: number): AxiosPromise<DeptFormData> {
     return request({
         url: '/youlai-admin/api/v1/depts/' + id,
         method: 'get'
@@ -41,7 +43,7 @@ export function getDeptDetail(id: any) {
  *
  * @param data
  */
-export function addDept(data: any) {
+export function addDept(data: DeptFormData) {
     return request({
         url: '/youlai-admin/api/v1/depts',
         method: 'post',
@@ -55,7 +57,7 @@ export function addDept(data: any) {
  * @param id
  * @param data
  */
-export function updateDept(id: number, data: any) {
+export function updateDept(id: number, data: DeptFormData) {
     return request({
         url: '/youlai-admin/api/v1/depts/' + id,
         method: 'put',
@@ -66,11 +68,11 @@ export function updateDept(id: number, data: any) {
 /**
  * 删除部门
  *
- * @param id
+ * @param ids
  */
-export function deleteDept(id: any) {
+export function deleteDept(ids: string) {
     return request({
-        url: '/youlai-admin/api/v1/depts/' + id,
+        url: '/youlai-admin/api/v1/depts/' + ids,
         method: 'delete',
     })
 }

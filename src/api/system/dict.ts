@@ -1,11 +1,13 @@
+import { DictFormData, DictItemFormData, DictItemPageResult, DictItemQueryParam, DictPageResult, DictQueryParam, Option } from "@/types";
 import request from "@/utils/request";
+import { AxiosPromise } from "axios";
 
 /**
  * 获取字典分页列表
  *
  * @param queryParams
  */
-export function listDictWithPage(queryParams: object) {
+export function listDictPages(queryParams: DictQueryParam): AxiosPromise<DictPageResult> {
     return request({
         url: '/youlai-admin/api/v2/dict/page',
         method: 'get',
@@ -18,7 +20,7 @@ export function listDictWithPage(queryParams: object) {
  *
  * @param id
  */
-export function getDictDetail(id: number) {
+export function getDictFormDetail(id: number): AxiosPromise<DictFormData> {
     return request({
         url: '/youlai-admin/api/v2/dict/' + id,
         method: 'get'
@@ -31,7 +33,7 @@ export function getDictDetail(id: number) {
  *
  * @param data
  */
-export function addDict(data: object) {
+export function addDict(data: DictFormData) {
     return request({
         url: '/youlai-admin/api/v2/dict',
         method: 'post',
@@ -45,7 +47,7 @@ export function addDict(data: object) {
  * @param id
  * @param data
  */
-export function updateDict(id: number, data: object) {
+export function updateDict(id: number, data: DictFormData) {
     return request({
         url: '/youlai-admin/api/v2/dict/' + id,
         method: 'put',
@@ -69,7 +71,7 @@ export function deleteDict(ids: string) {
  *
  * @param queryParams
  */
-export function listDictItemsWithPage(queryParams: object) {
+export function listDictItemPages(queryParams: DictItemQueryParam): AxiosPromise<DictItemPageResult> {
     return request({
         url: '/youlai-admin/api/v2/dict/items/page',
         method: 'get',
@@ -83,11 +85,11 @@ export function listDictItemsWithPage(queryParams: object) {
  *
  * @param dictCode
  */
-export function listDictsByCode(dictCode: string) {
+export function listDictsByCode(dictCode: string): AxiosPromise<Option[]> {
     return request({
         url: '/youlai-admin/api/v2/dict/items',
         method: 'get',
-        params: {dictCode: dictCode}
+        params: { dictCode: dictCode }
     })
 }
 
@@ -96,7 +98,7 @@ export function listDictsByCode(dictCode: string) {
  *
  * @param id
  */
-export function getDictItemDetail(id: number) {
+export function getDictItemDetail(id: number): AxiosPromise<DictItemFormData> {
     return request({
         url: '/youlai-admin/api/v2/dict/items/' + id,
         method: 'get'
@@ -110,7 +112,7 @@ export function getDictItemDetail(id: number) {
  *
  * @param data
  */
-export function addDictItem(data: object) {
+export function addDictItem(data: DictFormData) {
     return request({
         url: '/youlai-admin/api/v2/dict/items',
         method: 'post',
@@ -124,7 +126,7 @@ export function addDictItem(data: object) {
  * @param id
  * @param data
  */
-export function updateDictItem(id: number, data: object) {
+export function updateDictItem(id: number, data: DictFormData) {
     return request({
         url: '/youlai-admin/api/v2/dict/items/' + id,
         method: 'put',

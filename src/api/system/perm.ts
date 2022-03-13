@@ -1,11 +1,13 @@
+import { PermFormData, PermItem, PermPageResult, PermQueryParam } from '@/types'
 import request from '@/utils/request'
+import { Axios, AxiosPromise } from 'axios'
 
 /**
  * 获取权限分页列表
  *
  * @param queryParams
  */
-export function listPermsWithPage(queryParams: object) {
+export function listPermPages(queryParams: PermQueryParam): AxiosPromise<PermPageResult> {
     return request({
         url: '/youlai-admin/api/v1/permissions/page',
         method: 'get',
@@ -18,7 +20,7 @@ export function listPermsWithPage(queryParams: object) {
  *
  * @param queryParams
  */
-export function listPerms(queryParams: object) {
+export function listPerms(queryParams: PermQueryParam): AxiosPromise<PermItem[]> {
     return request({
         url: '/youlai-admin/api/v1/permissions',
         method: 'get',
@@ -31,7 +33,7 @@ export function listPerms(queryParams: object) {
  *
  * @param id
  */
-export function getPermDetail(id: number) {
+export function getPermFormDetail(id: number): AxiosPromise<PermFormData> {
     return request({
         url: '/youlai-admin/api/v1/permissions/' + id,
         method: 'get'
@@ -43,7 +45,7 @@ export function getPermDetail(id: number) {
  *
  * @param data
  */
-export function addPerm(data: object) {
+export function addPerm(data: PermFormData) {
     return request({
         url: '/youlai-admin/api/v1/permissions',
         method: 'post',
@@ -57,7 +59,7 @@ export function addPerm(data: object) {
  * @param id
  * @param data
  */
-export function updatePerm(id: number, data: object) {
+export function updatePerm(id: number, data: PermFormData) {
     return request({
         url: '/youlai-admin/api/v1/permissions/' + id,
         method: 'put',

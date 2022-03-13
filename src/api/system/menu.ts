@@ -1,4 +1,6 @@
+import { MenuFormData, MenuItem, MenuQueryParam, Option } from '@/types'
 import request from '@/utils/request'
+import { AxiosPromise } from 'axios'
 
 /**
  * 获取路由列表
@@ -11,11 +13,11 @@ export function listRoutes() {
 }
 
 /**
- * 获取(表格)菜单列表
+ * 获取菜单表格列表
  *
  * @param queryParams
  */
-export function listTableMenus(queryParams: object) {
+export function listTableMenus(queryParams: MenuQueryParam): AxiosPromise<MenuItem[]> {
     return request({
         url: '/youlai-admin/api/v1/menus/table',
         method: 'get',
@@ -24,21 +26,11 @@ export function listTableMenus(queryParams: object) {
 }
 
 /**
- * 获取(下拉)菜单列表
+ * 获取菜单下拉列表
  */
-export function listSelectMenus() {
+export function listSelectMenus(): AxiosPromise<Option[]> {
     return request({
         url: '/youlai-admin/api/v1/menus/select',
-        method: 'get'
-    })
-}
-
-/**
- * 获取(树形下拉)菜单列表
- */
-export function listTreeSelectMenus() {
-    return request({
-        url: '/youlai-admin/api/v1/menus/tree_select',
         method: 'get'
     })
 }
@@ -48,7 +40,7 @@ export function listTreeSelectMenus() {
  * 获取菜单详情
  * @param id
  */
-export function getMenuDetail(id: number) {
+export function getMenuFormDetail(id: number): AxiosPromise<MenuFormData> {
     return request({
         url: '/youlai-admin/api/v1/menus/' + id,
         method: 'get'
@@ -60,7 +52,7 @@ export function getMenuDetail(id: number) {
  *
  * @param data
  */
-export function addMenu(data: object) {
+export function addMenu(data: MenuFormData) {
     return request({
         url: '/youlai-admin/api/v1/menus',
         method: 'post',
@@ -74,7 +66,7 @@ export function addMenu(data: object) {
  * @param id
  * @param data
  */
-export function updateMenu(id: number, data: object) {
+export function updateMenu(id: number, data: MenuFormData) {
     return request({
         url: '/youlai-admin/api/v1/menus/' + id,
         method: 'put',

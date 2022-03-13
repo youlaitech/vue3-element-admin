@@ -1,11 +1,13 @@
+import { RoleFormData, RoleItem, RolePageResult, RoleQueryParam } from '@/types'
 import request from '@/utils/request'
+import { AxiosPromise } from 'axios'
 
 /**
  * 获取角色分页列表
  *
  * @param queryParams
  */
-export function listRolesWithPage(queryParams: object) {
+export function listRolePages(queryParams?: RoleQueryParam):AxiosPromise<RolePageResult> {
     return request({
         url: '/youlai-admin/api/v1/roles/page',
         method: 'get',
@@ -18,7 +20,7 @@ export function listRolesWithPage(queryParams: object) {
  *
  * @param queryParams
  */
-export function listRoles(queryParams?: object) {
+export function listRoles(queryParams?: RoleQueryParam):AxiosPromise<RoleItem[]> {
     return request({
         url: '/youlai-admin/api/v1/roles',
         method: 'get',
@@ -31,7 +33,7 @@ export function listRoles(queryParams?: object) {
  *
  * @param id
  */
-export function getRoleDetail(id: number) {
+export function getRoleFormDetail(id: number):AxiosPromise<RoleFormData> {
     return request({
         url: '/youlai-admin/api/v1/roles/' + id,
         method: 'get'
@@ -43,7 +45,7 @@ export function getRoleDetail(id: number) {
  *
  * @param data
  */
-export function addRole(data: object) {
+export function addRole(data: RoleFormData) {
     return request({
         url: '/youlai-admin/api/v1/roles',
         method: 'post',
@@ -57,7 +59,7 @@ export function addRole(data: object) {
  * @param id
  * @param data
  */
-export function updateRole(id: number, data: object) {
+export function updateRole(id: number, data: RoleFormData) {
     return request({
         url: '/youlai-admin/api/v1/roles/' + id,
         method: 'put',
@@ -83,7 +85,7 @@ export function deleteRoles(ids: string) {
  *
  * @param roleId
  */
-export function listRoleMenuIds(roleId: number) {
+export function listRoleMenuIds(roleId: number):AxiosPromise<number[]> {
     return request({
         url: '/youlai-admin/api/v1/roles/' + roleId + '/menu_ids',
         method: 'get',

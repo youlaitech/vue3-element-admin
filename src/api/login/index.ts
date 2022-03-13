@@ -1,4 +1,4 @@
-import { LoginRequestParam, LoginResponseData } from "@/types";
+import { Captcha, LoginRequestParam, LoginResponseData } from "@/types";
 import request from "@/utils/request";
 import { AxiosPromise } from "axios";
 
@@ -30,7 +30,7 @@ export function logout() {
 /**
  * 获取图片验证码
  */
-export function getCaptcha(): AxiosPromise<string> {
+export function getCaptcha(): AxiosPromise<Captcha> {
     return request({
         url: '/captcha?t=' + (new Date()).getTime().toString(),
         method: 'get'

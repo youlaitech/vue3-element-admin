@@ -1,6 +1,8 @@
+import { ClientFormData, ClientPageResult, ClientQueryParam } from '@/types/api/client'
 import request from '@/utils/request'
+import { AxiosPromise } from 'axios'
 
-export function listClientsWithPage(queryParams:object) {
+export function listClientPages(queryParams:ClientQueryParam):AxiosPromise<ClientPageResult> {
     return request({
         url: '/youlai-admin/api/v1/oauth-clients',
         method: 'get',
@@ -8,14 +10,14 @@ export function listClientsWithPage(queryParams:object) {
     })
 }
 
-export function detail(id:number) {
+export function getClientFormDetial(id:number):AxiosPromise<ClientFormData> {
     return request({
         url: '/youlai-admin/api/v1/oauth-clients/' + id,
         method: 'get'
     })
 }
 
-export function add(data:object) {
+export function addClient(data:ClientFormData) {
     return request({
         url: '/youlai-admin/api/v1/oauth-clients',
         method: 'post',
@@ -23,7 +25,7 @@ export function add(data:object) {
     })
 }
 
-export function update(id:number, data:object) {
+export function updateClient(id:string, data:ClientFormData) {
     return request({
         url: '/youlai-admin/api/v1/oauth-clients/' + id,
         method: 'put',
@@ -31,14 +33,14 @@ export function update(id:number, data:object) {
     })
 }
 
-export function del(ids:string) {
+export function deleteClients(ids:string) {
     return request({
         url: '/youlai-admin/api/v1/oauth-clients/'+ids,
         method: 'delete'
     })
 }
 
-export function patch(id:number, data:object) {
+export function updateClientPart(id:number, data:object) {
     return request({
         url: '/youlai-admin/api/v1/oauth-clients/' + id,
         method: 'patch',

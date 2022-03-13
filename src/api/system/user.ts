@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 import { AxiosPromise } from "axios";
-import { UserInfo, UserQueryParam } from "@/types";
+import { UserFormData, UserInfo, UserPageResult, UserQueryParam } from "@/types";
 
 /**
  * 登录成功后获取用户信息（包括用户头像、权限列表等）
@@ -12,13 +12,12 @@ export function getUserInfo(): AxiosPromise<UserInfo> {
     })
 }
 
-
 /**
  * 获取用户分页列表
  *
  * @param queryParams
  */
-export function listUserPages(queryParams: UserQueryParam) {
+export function listUserPages(queryParams: UserQueryParam): AxiosPromise<UserPageResult> {
     return request({
         url: '/youlai-admin/api/v1/users/page',
         method: 'get',
@@ -31,7 +30,7 @@ export function listUserPages(queryParams: UserQueryParam) {
  *
  * @param userId
  */
-export function getUserFormDetail(userId: any) {
+export function getUserFormDetail(userId: number):AxiosPromise<UserFormData> {
     return request({
         url: '/youlai-admin/api/v1/users/' + userId + '/form_detail',
         method: 'get'
@@ -57,7 +56,7 @@ export function addUser(data: any) {
  * @param id
  * @param data
  */
-export function updateUser(id: number, data: any) {
+export function updateUser(id: number, data: UserFormData) {
     return request({
         url: '/youlai-admin/api/v1/users/' + id,
         method: 'put',
@@ -79,12 +78,11 @@ export function updateUserPart(id: number, data: any) {
     })
 }
 
-
 /**
  * 删除用户
  * @param ids
  */
-export function deleteUsers(ids: number) {
+export function deleteUsers(ids: string) {
     return request({
         url: '/youlai-admin/api/v1/users/' + ids,
         method: 'delete',
