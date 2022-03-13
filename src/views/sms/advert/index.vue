@@ -15,7 +15,7 @@
         >
       </el-form-item>
 
-      <el-form-item>
+      <el-form-item prop="title">
         <el-input
           v-model="queryParams.title"
           placeholder="广告标题"

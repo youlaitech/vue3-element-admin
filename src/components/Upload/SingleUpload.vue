@@ -56,7 +56,7 @@ const props = defineProps({
   },
 });
 
-const imgUrl = computed<string | null>({
+const imgUrl = computed<string | undefined>({
   get() {
     return props.modelValue;
   },
@@ -79,12 +79,12 @@ async function uploadImage(options: UploadRequestOptions): Promise<any> {
 /**
  * 删除图片
  *
- * @param file
+ * @param fileUrl
  */
-function handleRemove(file: UploadFile, fileList: UploadFile[]) {
-  if (file) {
-    deleteFile(file.url);
-    imgUrl.value = null; // 这里会触发imgUrl的computed的set方法
+function handleRemove(fileUrl?: string) {
+  if (fileUrl) {
+    deleteFile(fileUrl);
+    imgUrl.value = undefined; // 这里会触发imgUrl的computed的set方法
   }
 }
 /**

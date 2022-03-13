@@ -10,12 +10,13 @@ export * from './api/system/client'
 
 
 export * from './api/pms/goods'
-export * from './api/pms/goods'
+export * from './api/pms/brand'
 
 export * from './api/sms/advert'
 
 export * from './api/oms/order'
 
+export * from './api/ums/member'
 
 export * from './common'
 

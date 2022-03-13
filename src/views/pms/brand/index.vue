@@ -32,7 +32,6 @@
       v-loading="loading"
       :data="brandList"
       @selection-change="handleSelectionChange"
-      @row-click="handleRowClick"
       border
     >
       <el-table-column type="selection" min-width="5%" />

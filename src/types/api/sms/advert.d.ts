@@ -4,7 +4,7 @@ import { PageQueryParam, PageResult } from "../base"
  * 广告查询参数类型声明
  */
 export interface AdvertQueryParam extends PageQueryParam {
-    name: String | undefined
+    title: String | undefined
 }
 
 /**
