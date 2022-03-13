@@ -28,10 +28,10 @@
     <el-table
       v-loading="loading"
       :data="menuList"
-      row-key="id"
       highlight-current-row
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       @row-click="handleRowClick"
+      row-key="id"
       border
     >
       <el-table-column label="菜单名称">
@@ -134,17 +134,19 @@
         </el-form-item>
 
         <el-form-item label="图标" prop="icon">
-          <el-popover placement="bottom-start" :width="570" trigger="click"  v-model:visible="iconSelectVisible" >
-            <icon-select
-              ref="iconSelectRef"
-              @selected="selected"
-            />
+          <el-popover
+            placement="bottom-start"
+            :width="570"
+            trigger="click"
+            v-model:visible="iconSelectVisible"
+          >
+            <icon-select ref="iconSelectRef" @selected="selected" />
             <template #reference>
               <el-input
                 v-model="formData.icon"
                 placeholder="点击选择图标"
                 readonly
-                 @click="iconSelectVisible = true"
+                @click="iconSelectVisible = true"
               >
                 <template #prefix>
                   <svg-icon
@@ -195,18 +197,28 @@
 </template>
 
 <script setup lang="ts">
+import { reactive, ref, unref, onMounted, toRefs } from "vue";
+
+import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
+import { ElForm, ElMessage, ElMessageBox } from "element-plus";
+
+import { isExternal } from "@/utils/validate";
+import {
+  Dialog,
+  Option,
+  MenuFormData,
+  MenuItem,
+  MenuQueryParam,
+} from "@/types";
+// API 依赖
 import {
   listTableMenus,
-  getMenuDetail,
-  listTreeSelectMenus,
+  getMenuFormDetail,
+  listSelectMenus,
   addMenu,
   deleteMenus,
   updateMenu,
 } from "@/api/system/menu";
-import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
-import { ElForm, ElMessage, ElMessageBox } from "element-plus";
-import { reactive, ref, unref, onMounted, toRefs } from "vue";
-import { isExternal } from "@/utils/validate";
 
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import TreeSelect from "@/components/TreeSelect/index.vue";
@@ -226,34 +238,22 @@ const state = reactive({
   single: true,
   // 非多个禁用
   multiple: true,
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    name: undefined,
-  },
-  menuList: [],
+  queryParams: {} as MenuQueryParam,
+  menuList: [] as MenuItem[],
   total: 0,
-  dialog: {
-    title: "",
-    visible: false,
-  },
+  dialog: {visible:false} as Dialog,
   formData: {
-    id: undefined,
     parentId: 0,
-    name: "",
     visible: 1,
-    icon: "",
     sort: 1,
     component: "Layout",
-    path: "",
-    redirect: "",
-  },
+  } as MenuFormData,
   rules: {
     parentId: [{ required: true, message: "请选择顶级菜单", trigger: "blur" }],
     name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
     component: [{ required: true, message: "请输入页面路径", trigger: "blur" }],
   },
-  menuOptions: [] as any[],
+  menuOptions: [] as Option[],
   currentRow: undefined,
   isExternalPath: false,
   iconSelectVisible: false,
@@ -281,10 +281,8 @@ function handleQuery() {
   // 重置父组件
   emit("menuClick", null);
   state.loading = true;
-  listTableMenus(state.queryParams).then((response) => {
-    const { data, total } = response as any;
+  listTableMenus(state.queryParams).then(({ data }) => {
     state.menuList = data;
-    state.total = total;
     state.loading = false;
   });
 }
@@ -294,8 +292,8 @@ function handleQuery() {
  */
 async function loadTreeSelectMenuOptions() {
   const menuOptions: any[] = [];
-  await listTreeSelectMenus().then((response) => {
-    const menuOption = { id: 0, label: "顶级菜单", children: response.data };
+  await listSelectMenus().then(({ data }) => {
+    const menuOption = { value: 0, label: "顶级菜单", children: data };
     menuOptions.push(menuOption);
     state.menuOptions = menuOptions;
   });
@@ -305,8 +303,7 @@ async function loadTreeSelectMenuOptions() {
  * 重置查询
  */
 function resetQuery() {
-  const queryForm = unref(queryFormRef);
-  queryForm.resetFields();
+  queryFormRef.value.resetFields();
   handleQuery();
 }
 
@@ -317,6 +314,8 @@ function handleSelectionChange(selection: any) {
 }
 
 function handleRowClick(row: any) {
+
+  console.log('handleRowClick',row)
   state.currentRow = JSON.parse(JSON.stringify(row));
   emit("menuClick", row);
 }
@@ -354,17 +353,19 @@ async function handleUpdate(row: any) {
     visible: true,
   };
   const id = row.id || state.ids;
-  getMenuDetail(id).then((response) => {
-    state.formData = response.data;
-    const path = state.formData.path as string;
-    state.isExternalPath = isExternal(path);
+  getMenuFormDetail(id).then(({ data }) => {
+    state.formData = data;
+    // 判断是否外部链接
+    state.isExternalPath = isExternal(state.formData.path);
   });
 }
 
+/**
+ * 表单提交
+ */
 function submitForm() {
-  const dataForm = unref(dataFormRef);
-  dataForm.validate((valid: any) => {
-    if (valid) {
+  dataFormRef.value.validate((isValid: boolean) => {
+    if (isValid) {
       if (state.formData.id) {
         updateMenu(state.formData.id, state.formData).then((response) => {
           ElMessage.success("修改成功");
@@ -398,29 +399,34 @@ function handleDelete(row: any) {
     .catch(() => ElMessage.info("已取消删除"));
 }
 
-// 重置表单
+/**
+ * 重置表单
+ */
 function resetForm() {
   dataFormRef.value.resetFields();
 }
 
+/**
+ * 取消关闭弹窗
+ */
 function cancel() {
   state.dialog.visible = false;
   resetForm();
 }
 
-function showIconSelect(){
-   state.iconSelectVisible = true;
+/**
+ * 显示图标选择下拉
+ */
+function showIconSelect() {
+  state.iconSelectVisible = true;
 }
 
 function selected(name: string) {
   state.formData.icon = name;
-  state.iconSelectVisible=false
+  state.iconSelectVisible = false;
 }
 
 onMounted(() => {
   handleQuery();
 });
 </script>
-
-<style scoped>
-</style>
