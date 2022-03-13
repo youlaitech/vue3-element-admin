@@ -1,11 +1,13 @@
+import { GoodsPageResult, GoodsQueryParam } from '@/types'
 import request from '@/utils/request'
+import { AxiosPromise } from 'axios'
 
 /**
  * 获取商品分页列表
  *
  * @param queryParams
  */
-export function listGoodsWithPage(queryParams: object) {
+export function listGoodsPages(queryParams: GoodsQueryParam):AxiosPromise<GoodsPageResult> {
     return request({
         url: '/mall-pms/api/v1/goods/page',
         method: 'get',
@@ -18,7 +20,7 @@ export function listGoodsWithPage(queryParams: object) {
  *
  * @param id
  */
-export function getGoodsDetail(id: number) {
+export function getGoodsFormDetail(id: number) {
     return request({
         url: '/mall-pms/api/v1/goods/' + id,
         method: 'get'
