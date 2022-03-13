@@ -1,79 +1,70 @@
 <template>
   <div class="app-container">
     <!-- 搜索表单 -->
-    <el-form
-        ref="queryForm"
-        :model="queryParams"
-        :inline="true"
-    >
+    <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item prop="orderSn">
-        <el-input v-model="queryParams.orderSn" placeholder="订单号"/>
+        <el-input v-model="queryParams.orderSn" placeholder="订单号" />
       </el-form-item>
 
       <el-form-item>
         <el-date-picker
-            v-model="dateRange"
-            style="width: 240px"
-            value-format="yyyy-MM-dd"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+          v-model="dateRange"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
         />
       </el-form-item>
 
       <el-form-item>
         <el-select
-            v-model="queryParams.status"
-            class="filter-item"
-            placeholder="订单状态"
+          v-model="queryParams.status"
+          class="filter-item"
+          placeholder="订单状态"
         >
           <el-option
-              v-for="(key, value) in orderStatusMap"
-              :label="key"
-              :value="value"
+            v-for="(key, value) in orderStatusMap"
+            :key="key"
+            :label="key"
+            :value="value"
           />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery">查询</el-button>
+        <el-button type="primary" :icon="Search" @click="handleQuery"
+          >查询</el-button
+        >
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-table
-        ref="dataTable"
-        v-loading="loading"
-        :data="pageList"
-        border
-    >
+    <el-table ref="dataTable" v-loading="loading" :data="orderList" border>
       <el-table-column type="expand" width="100" label="订单商品">
         <template #default="scope">
-          <el-table
-              :data="scope.row.orderItems"
-              border
-          >
-            <el-table-column label="序号" type="index" width="100"/>
-            <el-table-column label="商品编号" align="center" prop="skuSn"/>
-            <el-table-column label="商品规格" align="center" prop="skuName"/>
+          <el-table :data="scope.row.orderItems" border>
+            <el-table-column label="序号" type="index" width="100" />
+            <el-table-column label="商品编号" align="center" prop="skuSn" />
+            <el-table-column label="商品规格" align="center" prop="skuName" />
             <el-table-column label="图片" prop="picUrl">
-              <template slot-scope="scope">
-                <img :src="scope.row.picUrl" width="40">
+              <template #default="scope">
+                <img :src="scope.row.picUrl" width="40" />
               </template>
             </el-table-column>
             <el-table-column align="center" label="单价" prop="price">
-              <template slot-scope="scope">{{ scope.row.price}}</template>
+              <template #default="scope">{{ scope.row.price }}</template>
             </el-table-column>
             <el-table-column align="center" label="数量" prop="count">
-              <template slot-scope="scope">{{ scope.row.count }}</template>
+              <template #default="scope">{{ scope.row.count }}</template>
             </el-table-column>
           </el-table>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" prop="orderSn" label="订单编号"/>
+      <el-table-column align="center" prop="orderSn" label="订单编号" />
 
-      <el-table-column align="center" prop="memberId" label="会员ID"/>
+      <el-table-column align="center" prop="memberId" label="会员ID" />
 
       <el-table-column align="center" label="订单来源">
         <template #default="scope">
@@ -95,17 +86,17 @@
 
       <el-table-column align="center" prop="payPrice" label="支付金额">
         <template #default="scope">
-          {{ scope.row.payAmount  }}
+          {{ scope.row.payAmount }}
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="支付方式">
         <template #default="scope">
-          <el-tag>{{ scope.row.payType  }}</el-tag>
+          <el-tag>{{ scope.row.payType }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" prop="gmtCreate" label="创建时间"/>
+      <el-table-column align="center" prop="gmtCreate" label="创建时间" />
 
       <el-table-column align="center" label="操作">
         <template #default="scope">
@@ -116,50 +107,49 @@
 
     <!-- 分页工具条 -->
     <pagination
-        v-show="total>0"
-        :total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
-        @pagination="handleQuery"
+      v-show="total > 0"
+      :total="total"
+      v-model:page="queryParams.pageNum"
+      v-model:limit="queryParams.pageSize"
+      @pagination="handleQuery"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted, reactive, ref, toRefs } from "vue";
+import { ElForm, ElMessage, ElMessageBox } from "element-plus";
+import { Dialog, Order, OrderQueryParam } from "@/types";
+import { listOrderPages, getOrderDetail } from "@/api/oms/order";
+import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
 
-import {listOrdersWithPage, getOrderDetail} from '@/api/oms/order'
-import {onMounted, reactive, ref, toRefs} from "vue"
-import {ElForm, ElMessage, ElMessageBox} from "element-plus"
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
-
-const dataForm = ref(ElForm)  // 属性名必须和元素的ref属性值一致
+const queryFormRef = ref(ElForm);
 
 const orderSourceMap = {
-  1: '微信小程序',
-  2: 'APP',
-  3: 'PC'
-}
+  1: "微信小程序",
+  2: "APP",
+  3: "PC",
+};
 
 const orderStatusMap = {
-  101: '待付款',
-  102: '用户取消',
-  103: '系统取消',
-  201: '已付款',
-  202: '申请退款',
-  203: '已退款',
-  301: '待发货',
-  401: '已发货',
-  501: '用户收货',
-  502: '系统收货',
-  901: '已完成'
-}
+  101: "待付款",
+  102: "用户取消",
+  103: "系统取消",
+  201: "已付款",
+  202: "申请退款",
+  203: "已退款",
+  301: "待发货",
+  401: "已发货",
+  501: "用户收货",
+  502: "系统收货",
+  901: "已完成",
+};
 
 const payTypeMap = {
-  1: '支付宝',
-  2: '微信',
-  3: '会员余额'
-}
-
+  1: "支付宝",
+  2: "微信",
+  3: "会员余额",
+};
 
 const state = reactive({
   loading: false,
@@ -170,15 +160,13 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    orderSn: undefined,
-    status:undefined
-  },
-  pageList: [],
+  } as OrderQueryParam,
+  orderList: [] as Order[],
   total: 0,
   dialog: {
-    title: '订单详情',
-    visible: false
-  },
+    title: "订单详情",
+    visible: false,
+  } as Dialog,
   dialogVisible: false,
   orderDetail: {
     order: {
@@ -193,57 +181,60 @@ const state = reactive({
       gmtPay: undefined,
       integralPrice: undefined,
       payChannel: undefined,
-      skuPrice : undefined,
+      skuPrice: undefined,
       couponPrice: undefined,
       freightPrice: undefined,
-      orderPrice : undefined
+      orderPrice: undefined,
     },
     member: {},
-    orderItems: []
+    orderItems: [],
   },
   orderSourceMap,
   orderStatusMap,
-  payTypeMap
-})
+  payTypeMap,
+});
 
-const {loading, single, multiple, queryParams, pageList, total, dialog,dateRange, orderDetail} = toRefs(state)
+const {
+  loading,
+  single,
+  multiple,
+  queryParams,
+  orderList,
+  total,
+  dialog,
+  dateRange,
+  orderDetail,
+} = toRefs(state);
 
 function handleQuery() {
-  state.loading = true
-  listOrdersWithPage(state.queryParams).then(response => {
-    const {data, total} = response as any
-    state.pageList = data
-    state.total = total
-    state.loading = false
-  })
+  state.loading = true;
+  listOrderPages(state.queryParams).then(({ data }) => {
+    state.orderList = data.list;
+    state.total = data.total;
+    state.loading = false;
+  });
 }
 
 function resetQuery() {
-  state.queryParams = {
-    pageNum: 1,
-    pageSize: 10,
-    orderSn: undefined,
-    status: undefined
-  }
-  handleQuery()
+  queryFormRef.value.resetFields();
+  handleQuery();
 }
 
 function viewDetail(row: any) {
-  state.dialog.visible = true
-  getOrderDetail(row.id).then(response => {
-    state.orderDetail = response.data
-  })
+  state.dialog.visible = true;
+  getOrderDetail(row.id).then((response: any) => {
+    state.orderDetail = response.data;
+  });
 }
 
 function cancel() {
-  state.dialog.visible = false
+  state.dialog.visible = false;
 }
 
 onMounted(() => {
-  handleQuery()
-})
+  handleQuery();
+});
 </script>
 
 <style scoped>
-
 </style>

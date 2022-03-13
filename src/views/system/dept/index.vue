@@ -261,6 +261,7 @@ async function loadDeptOptions() {
  * 表单重置
  **/
 function resetForm() {
+  state.formData.id = undefined;
   dataFormRef.value.resetFields();
 }
 

@@ -1,4 +1,4 @@
-import { PageQueryParam, PageResult } from "./base"
+import { PageQueryParam, PageResult } from "../base"
 
 /**
  * 权限查询参数类型声明
@@ -31,7 +31,7 @@ export interface PermPageResult extends PageResult<PermItem[]> {
  * 权限表单类型声明
  */
 export interface PermFormData {
-    id: number,
+    id: number|undefined,
     name: string,
     urlPerm: string,
     btnPerm: string,

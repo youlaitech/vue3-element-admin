@@ -1,4 +1,4 @@
-import { ClientFormData, ClientPageResult, ClientQueryParam } from '@/types/api/client'
+import { ClientFormData, ClientPageResult, ClientQueryParam } from '@/types/api/system/client'
 import request from '@/utils/request'
 import { AxiosPromise } from 'axios'
 

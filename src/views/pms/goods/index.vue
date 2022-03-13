@@ -1,108 +1,122 @@
 <template>
   <div class="app-container">
-    <el-form
-        ref="queryForm"
-        :inline="true"
-
-    >
+    <el-form ref="queryForm" :inline="true">
       <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd">发布商品</el-button>
-        <el-button type="danger" :icon="Delete" @click="handleDelete" :disabled="multiple">删除</el-button>
+        <el-button type="success" :icon="Plus" @click="handleAdd"
+          >发布商品</el-button
+        >
+        <el-button
+          type="danger"
+          :icon="Delete"
+          @click="handleDelete"
+          :disabled="multiple"
+          >删除</el-button
+        >
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryParams.name" placeholder="商品名称" clearable></el-input>
+        <el-input
+          v-model="queryParams.name"
+          placeholder="商品名称"
+          clearable
+        ></el-input>
       </el-form-item>
       <el-form-item>
         <el-cascader
-            v-model="queryParams.categoryId"
-            placeholder="商品分类"
-            :props="{emitPath: false, expandTrigger: 'hover'}"
-            :options="categoryOptions"
-            clearable
-            style="width: 300px"
+          v-model="queryParams.categoryId"
+          placeholder="商品分类"
+          :props="{ emitPath: false, expandTrigger: 'hover' }"
+          :options="categoryOptions"
+          clearable
+          style="width: 300px"
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery">查询</el-button>
+        <el-button type="primary" :icon="Search" @click="handleQuery"
+          >查询</el-button
+        >
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-table
-        v-loading="loading"
-        ref="dataTableRef"
-        :data="pageList"
-        @selection-change="handleSelectionChange"
-        @row-click="handleRowClick"
-        border
+      ref="dataTableRef"
+      v-loading="loading"
+      :data="goodsList"
+      @selection-change="handleSelectionChange"
+      @row-click="handleRowClick"
+      border
     >
-      <el-table-column type="selection" min-width="5%" center/>
+      <el-table-column type="selection" min-width="5%" center />
       <el-table-column type="expand" width="120" label="库存信息">
-
         <template #default="props">
-          <el-table
-              :data="props.row.skuList"
-              border>
-            <el-table-column align="center" label="商品编码" prop="skuSn"/>
-            <el-table-column align="center" label="商品规格" prop="name"/>
+          <el-table :data="props.row.skuList" border>
+            <el-table-column align="center" label="商品编码" prop="skuSn" />
+            <el-table-column align="center" label="商品规格" prop="name" />
             <el-table-column label="图片" prop="picUrl">
               <template #default="scope">
-                <img :src="scope.row.picUrl" width="40">
+                <img :src="scope.row.picUrl" width="40" />
               </template>
             </el-table-column>
             <el-table-column align="center" label="现价" prop="price">
-              <template #default="scope">{{ moneyFormatter(scope.row.price) }}</template>
+              <template #default="scope">{{
+                moneyFormatter(scope.row.price)
+              }}</template>
             </el-table-column>
-            <el-table-column align="center" label="库存" prop="stockNum"/>
+            <el-table-column align="center" label="库存" prop="stockNum" />
           </el-table>
         </template>
-
       </el-table-column>
-      <el-table-column label="商品名称" prop="name" min-width="140"/>
+      <el-table-column label="商品名称" prop="name" min-width="140" />
       <el-table-column label="商品图片">
         <template #default="scope">
-          <el-popover
-              placement="right"
-              :width="400"
-              trigger="hover">
-            <img :src="scope.row.picUrl" width="400" height="400"/>
+          <el-popover placement="right" :width="400" trigger="hover">
+            <img :src="scope.row.picUrl" width="400" height="400" />
             <template #reference>
-              <img :src="scope.row.picUrl" style="max-height: 60px;max-width: 60px"/>
+              <img
+                :src="scope.row.picUrl"
+                style="max-height: 60px; max-width: 60px"
+              />
             </template>
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column label="商品类目" prop="categoryName" min-width="100"/>
-      <el-table-column label="商品品牌" prop="brandName" min-width="100"/>
+      <el-table-column label="商品类目" prop="categoryName" min-width="100" />
+      <el-table-column label="商品品牌" prop="brandName" min-width="100" />
       <el-table-column align="center" label="零售价" prop="originalPrice">
-        <template #default="scope">{{ moneyFormatter(scope.row.originPrice) }}</template>
+        <template #default="scope">{{
+          moneyFormatter(scope.row.originPrice)
+        }}</template>
       </el-table-column>
       <el-table-column align="center" label="促销价" prop="price">
-        <template #default="scope">{{ moneyFormatter(scope.row.price) }}</template>
+        <template #default="scope">{{
+          moneyFormatter(scope.row.price)
+        }}</template>
       </el-table-column>
-      <el-table-column label="销量" prop="sales" min-width="100"/>
-      <el-table-column label="单位" prop="unit" min-width="100"/>
-      <el-table-column label="描述" prop="description" min-width="100"/>
+      <el-table-column label="销量" prop="sales" min-width="100" />
+      <el-table-column label="单位" prop="unit" min-width="100" />
+      <el-table-column label="描述" prop="description" min-width="100" />
       <el-table-column label="详情" prop="detail">
         <template #default="scope">
-          <el-button type="primary"  @click="handleGoodsView(scope.row.detail)">查看</el-button>
+          <el-button type="primary" @click="handleGoodsView(scope.row.detail)"
+            >查看</el-button
+          >
         </template>
       </el-table-column>
       <el-table-column label="操作" width="120">
         <template #default="scope">
           <el-button
-              type="primary"
-              :icon="Edit"
-              circle
-              plain
-              @click.stop="handleUpdate(scope.row)"
+            type="primary"
+            :icon="Edit"
+            circle
+            plain
+            @click.stop="handleUpdate(scope.row)"
           />
           <el-button
-              type="danger"
-              :icon="Delete"
-              circle
-              plain
-              @click.stop="handleDelete(scope.row)"
+            type="danger"
+            :icon="Delete"
+            circle
+            plain
+            @click.stop="handleDelete(scope.row)"
           />
         </template>
       </el-table-column>
@@ -110,30 +124,31 @@
 
     <!-- 分页工具条 -->
     <pagination
-        v-show="total>0"
-        :total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
-        @pagination="handleQuery"
+      v-show="total > 0"
+      :total="total"
+      v-model:page="queryParams.pageNum"
+      v-model:limit="queryParams.pageSize"
+      @pagination="handleQuery"
     />
     <el-dialog v-model="dialogVisible" title="商品详情">
-      <div class="goods-detail-box" v-html="goodDetail"/>
+      <div class="goods-detail-box" v-html="goodDetail" />
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
-import {listGoodsWithPage, deleteGoods} from '@/api/pms/goods'
-import {listCascadeCategories} from '@/api/pms/category'
-import {reactive, ref, onMounted, toRefs} from 'vue'
-import {ElTable, ElMessage, ElMessageBox} from 'element-plus'
-import {getCurrentInstance} from 'vue'
-import {moneyFormatter} from '@/utils/filter'
-import {useRouter} from "vue-router"
+import { reactive, ref, onMounted, toRefs } from "vue";
+import { ElTable, ElMessage, ElMessageBox } from "element-plus";
+import { useRouter } from "vue-router";
 
-const dataTableRef = ref(ElTable)
-const router=useRouter()
+import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
+import { listGoodsPages, deleteGoods } from "@/api/pms/goods";
+import { listCascadeCategories } from "@/api/pms/category";
+import { GoodsItem, GoodsQueryParam } from "@/types";
+import {moneyFormatter} from '@/utils/filter'
+
+const dataTableRef = ref(ElTable);
+const router = useRouter();
 
 const state = reactive({
   // 遮罩层
@@ -148,15 +163,12 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    name: undefined,
-    categoryId: undefined
-  },
-  pageList: [],
+  } as GoodsQueryParam,
+  goodsList: [] as GoodsItem[],
   categoryOptions: [],
   goodDetail: undefined,
-  dialogVisible: false
-})
-
+  dialogVisible: false,
+});
 
 const {
   loading,
@@ -164,22 +176,20 @@ const {
   single,
   multiple,
   queryParams,
-  pageList,
+  goodsList,
   categoryOptions,
   goodDetail,
   total,
-  dialogVisible
+  dialogVisible,
 } = toRefs(state);
 
-
 function handleQuery() {
-  state.loading = true
-  listGoodsWithPage(state.queryParams).then(response => {
-    const {data, total} = response as any
-    state.pageList = data
-    state.total = total
-    state.loading = false
-  })
+  state.loading = true;
+  listGoodsPages(state.queryParams).then(({ data }) => {
+    state.goodsList = data.list;
+    state.total = data.total;
+    state.loading = false;
+  });
 }
 
 function resetQuery() {
@@ -187,36 +197,41 @@ function resetQuery() {
     pageNum: 1,
     pageSize: 10,
     name: undefined,
-    categoryId: undefined
-  }
-  handleQuery()
+    categoryId: undefined,
+  };
+  handleQuery();
 }
 
 function handleGoodsView(detail: any) {
-  state.goodDetail = detail
-  state.dialogVisible = true
+  state.goodDetail = detail;
+  state.dialogVisible = true;
 }
 
 function handleAdd() {
-  router.push({path: 'goods-detail'})
+  router.push({ path: "goods-detail" });
 }
 
 function handleUpdate(row: any) {
-  router.push({path: 'goods-detail', query: {goodsId: row.id, categoryId: row.categoryId}})
+  router.push({
+    path: "goods-detail",
+    query: { goodsId: row.id, categoryId: row.categoryId },
+  });
 }
 
 function handleDelete(row: any) {
-  const ids = row.id || state.ids.join(',')
-  ElMessageBox.confirm('是否确认删除选中的数据项?', "警告", {
+  const ids = row.id || state.ids.join(",");
+  ElMessageBox.confirm("是否确认删除选中的数据项?", "警告", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
-    type: "warning"
-  }).then(function () {
-    return deleteGoods(ids)
-  }).then(() => {
-    ElMessage.success("删除成功")
-    handleQuery()
+    type: "warning",
   })
+    .then(function () {
+      return deleteGoods(ids);
+    })
+    .then(() => {
+      ElMessage.success("删除成功");
+      handleQuery();
+    });
 }
 
 function handleRowClick(row: any) {
@@ -224,19 +239,18 @@ function handleRowClick(row: any) {
 }
 
 function handleSelectionChange(selection: any) {
-  state.ids = selection.map((item: { id: any }) => item.id)
-  state.single = selection.length != 1
-  state.multiple = !selection.length
+  state.ids = selection.map((item: { id: any }) => item.id);
+  state.single = selection.length != 1;
+  state.multiple = !selection.length;
 }
 
 onMounted(() => {
-  listCascadeCategories({}).then(response => {
-    state.categoryOptions = ref(response.data)
-  })
-  handleQuery()
-})
+  listCascadeCategories({}).then((response) => {
+    state.categoryOptions = ref(response.data);
+  });
+  handleQuery();
+});
 </script>
 
 <style scoped>
-
 </style>

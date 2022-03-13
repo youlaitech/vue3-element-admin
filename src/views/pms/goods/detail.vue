@@ -46,7 +46,7 @@ import GoodsInfo from "./components/GoodsInfo.vue";
 import GoodsAttribute from "./components/GoodsAttribute.vue";
 import GoodsStock from "./components/GoodsStock.vue";
 
-import {getGoodsDetail} from "@/api/pms/goods";
+import {getGoodsFormDetail} from "@/api/pms/goods";
 
 export default {
   name: "goods-detail",
@@ -81,7 +81,7 @@ export default {
       const goodsId = this.$route.query.goodsId
       console.log('goodsId',goodsId)
       if (goodsId) {
-        getGoodsDetail(goodsId).then(response => {
+        getGoodsFormDetail(goodsId).then(response => {
           this.goods = response.data
           this.goods.originPrice = this.goods.originPrice / 100
           this.goods.price = this.goods.price / 100

@@ -1,12 +1,21 @@
-export * from './api/login'
-export * from './api/user'
-export * from './api/role'
-export * from './api/menu'
-export * from './api/dept'
-export * from './api/dict'
-export * from './api/perm'
-export * from './api/client'
+
+export * from './api/system/login'
+export * from './api/system/user'
+export * from './api/system/role'
+export * from './api/system/menu'
+export * from './api/system/dept'
+export * from './api/system/dict'
+export * from './api/system/perm'
+export * from './api/system/client'
 
 
-export * from './component'
+export * from './api/pms/goods'
+export * from './api/pms/goods'
+
+export * from './api/sms/advert'
+
+export * from './api/oms/order'
+
+
+export * from './common'
 

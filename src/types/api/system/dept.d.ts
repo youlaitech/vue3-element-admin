@@ -28,7 +28,7 @@ export interface DeptItem {
  * 部门表单类型声明
  */
 export interface DeptFormData {
-    id: number,
+    id: number|undefined,
     parentId: number,
     name: string,
     sort: number,

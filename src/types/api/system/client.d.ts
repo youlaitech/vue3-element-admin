@@ -1,4 +1,4 @@
-import { PageQueryParam, PageResult } from "./base"
+import { PageQueryParam, PageResult } from "../base"
 
 /**
  * 客户端查询参数类型声明

@@ -1,4 +1,4 @@
-import { PageQueryParam, PageResult } from "./base"
+import { PageQueryParam, PageResult } from "../base"
 
 /**
  * 角色查询参数类型声明
@@ -33,7 +33,7 @@ export interface RolePageResult extends PageResult<RoleItem[]> {
  * 角色表单类型声明
  */
 export interface RoleFormData {
-    id: number,
+    id: number|undefined,
     name: string,
     code: string,
     sort: number,

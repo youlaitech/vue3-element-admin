@@ -5,7 +5,7 @@ import request from '@/utils/request'
  *
  * @param file
  */
-export function uploadFile(file: any) {
+export function uploadFile(file: File) {
     let formData = new FormData()
     formData.append('file', file)
     return request(
@@ -24,7 +24,7 @@ export function uploadFile(file: any) {
  *
  * @param path
  */
-export function deleteFile(path: string) {
+export function deleteFile(path?: string) {
     return request({
         url: '/youlai-admin/api/v1/files',
         method: 'delete',

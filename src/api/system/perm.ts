@@ -1,6 +1,6 @@
 import { PermFormData, PermItem, PermPageResult, PermQueryParam } from '@/types'
 import request from '@/utils/request'
-import { Axios, AxiosPromise } from 'axios'
+import {  AxiosPromise } from 'axios'
 
 /**
  * 获取权限分页列表

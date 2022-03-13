@@ -277,6 +277,7 @@ function submitForm() {
 }
 
 function resetForm() {
+  state.formData.id = undefined;
   dataFormRef.value.resetFields();
 }
 

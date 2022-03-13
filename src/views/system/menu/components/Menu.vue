@@ -403,6 +403,7 @@ function handleDelete(row: any) {
  * 重置表单
  */
 function resetForm() {
+  state.formData.id = undefined;
   dataFormRef.value.resetFields();
 }
 

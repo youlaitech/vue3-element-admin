@@ -5,35 +5,35 @@
         <template #header>
           <span>商品属性</span>
           <el-button
-              style="float: right;"
-              type="success"
-              :icon="Plus"
-              size="small"
-              @click="handleAdd"
+            style="float: right"
+            type="success"
+            :icon="Plus"
+            size="small"
+            @click="handleAdd"
           >
             添加属性
           </el-button>
         </template>
         <el-form
-            ref="dataForm"
-            :model="modelValue"
-            :rules="rules"
-            size="small"
-            :inline="true"
+          ref="dataForm"
+          :model="modelValue"
+          :rules="rules"
+          size="small"
+          :inline="true"
         >
           <el-table
-              :data="modelValue.attrList"
-              size="small"
-              highlight-current-row
-              border
+            :data="modelValue.attrList"
+            size="small"
+            highlight-current-row
+            border
           >
             <el-table-column property="name" label="属性名称">
               <template #default="scope">
                 <el-form-item
-                    :prop="'attrList[' + scope.$index + '].name'"
-                    :rules="rules.name"
+                  :prop="'attrList[' + scope.$index + '].name'"
+                  :rules="rules.name"
                 >
-                  <el-input v-model="scope.row.name"/>
+                  <el-input v-model="scope.row.name" />
                 </el-form-item>
               </template>
             </el-table-column>
@@ -41,10 +41,10 @@
             <el-table-column property="value" label="属性值">
               <template #default="scope">
                 <el-form-item
-                    :prop="'attrList[' + scope.$index + '].value'"
-                    :rules="rules.value"
+                  :prop="'attrList[' + scope.$index + '].value'"
+                  :rules="rules.value"
                 >
-                  <el-input v-model="scope.row.value"/>
+                  <el-input v-model="scope.row.value" />
                 </el-form-item>
               </template>
             </el-table-column>
@@ -53,11 +53,13 @@
               <template #default="scope">
                 <el-form-item>
                   <el-button
-                      v-if="scope.$index>0"
-                      type="danger"
-                      icon="Minus"
-                      circle
-                      @click="handleRemove(scope.$index)"
+                    v-if="scope.$index > 0"
+                    type="danger"
+                    :icon="Minus"
+                    size="small"
+                    circle
+                    plain
+                    @click.stop="handleRemove(scope.$index)"
                   />
                 </el-form-item>
               </template>
@@ -65,103 +67,99 @@
           </el-table>
         </el-form>
       </el-card>
-
     </div>
     <div class="component-container__footer">
       <el-button @click="handlePrev">上一步，填写商品信息</el-button>
-      <el-button type="primary" @click="handleNext">下一步，设置商品库存</el-button>
+      <el-button type="primary" @click="handleNext"
+        >下一步，设置商品库存</el-button
+      >
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { listAttributes } from "@/api/pms/attribute";
+import { computed, nextTick, reactive, ref, toRefs, unref, watch } from "vue";
+import { ElForm } from "element-plus";
+import { Plus, Minus } from "@element-plus/icons-vue";
 
-import {listAttributes} from "@/api/pms/attribute";
-import {computed, nextTick, reactive, ref, toRefs, unref, watch} from "vue";
-import {ElForm} from "element-plus";
-import {Minus, Plus} from '@element-plus/icons-vue'
-
-const emit = defineEmits(['prev', 'next'])
-const dataForm = ref(ElForm)
+const emit = defineEmits(["prev", "next"]);
+const dataForm = ref(ElForm);
 
 const props = defineProps({
   modelValue: {
     type: Object,
-    default: {}
-  }
-})
+    default: {},
+  },
+});
 
 const categoryId = computed(() => props.modelValue.categoryId);
 
-watch(categoryId, (newVal) => {
-      // 商品编辑不加载分类下的属性
-      const spuId = props.modelValue.id
-      if (spuId) {
-        return false;
-      }
-
-      // 商品新增加载默认分类下的属性
-      if (newVal) {
-        // type=2 商品分类下的属性
-        listAttributes({categoryId: newVal, type: 2}).then(response => {
-          const attrList = response.data
-          if (attrList && attrList.length > 0) {
-            props.modelValue.attrList = attrList
-          } else {
-            props.modelValue.attrList = [{}]
-          }
-        })
-      } else {
-        props.modelValue.attrList = [{}]
-      }
-    },
-    {
-      immediate: true,
-      deep: true
+watch(
+  categoryId,
+  (newVal) => {
+    // 商品编辑不加载分类下的属性
+    const spuId = props.modelValue.id;
+    if (spuId) {
+      return false;
     }
-)
+
+    // 商品新增加载默认分类下的属性
+    if (newVal) {
+      // type=2 商品分类下的属性
+      listAttributes({ categoryId: newVal, type: 2 }).then((response) => {
+        const attrList = response.data;
+        if (attrList && attrList.length > 0) {
+          props.modelValue.attrList = attrList;
+        } else {
+          props.modelValue.attrList = [{}];
+        }
+      });
+    } else {
+      props.modelValue.attrList = [{}];
+    }
+  },
+  {
+    immediate: true,
+    deep: true,
+  }
+);
 
 const state = reactive({
   rules: {
-    name: [
-      {required: true, message: '请填写属性名称', trigger: 'blur'}
-    ],
-    value: [
-      {required: true, message: '请填写属性值', trigger: 'blur'}
-    ]
-  }
-})
+    name: [{ required: true, message: "请填写属性名称", trigger: "blur" }],
+    value: [{ required: true, message: "请填写属性值", trigger: "blur" }],
+  },
+});
 
-const {rules} = toRefs(state)
+const { rules } = toRefs(state);
 
 function handleAdd() {
-  props.modelValue.attrList.push({})
+  props.modelValue.attrList.push({});
 }
 
 function handleRemove(index: number) {
-  props.modelValue.attrList.splice(index, 1)
+  props.modelValue.attrList.splice(index, 1);
 }
 
 function handlePrev() {
-  emit('prev')
+  emit("prev");
 }
 
 function handleNext() {
-  const form = unref(dataForm)
+  const form = unref(dataForm);
   form.validate((valid: any) => {
     if (valid) {
-      emit('next')
+      emit("next");
     }
-  })
+  });
 }
-
 </script>
 
 <style lang="scss" scoped>
-
 .component-container {
   &__main {
-    margin: 20px auto
+    margin: 20px auto;
   }
 
   &__footer {

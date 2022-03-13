@@ -303,7 +303,7 @@ import {
   UserFormData,
   Option,
   RoleItem,
-  Dialog,
+  Dialog
 } from "@/types";
 
 // DOM元素的引用声明定义
@@ -559,6 +559,7 @@ function submitForm() {
  * 重置表单
  */
 function resetForm() {
+  state.formData.id = undefined;
   dataFormRef.value.resetFields();
 }
 

@@ -1,61 +1,70 @@
 <template>
-  <div class="component-container">
+  <div>
     <!-- 上传组件 -->
     <el-upload
-        ref="uploadRef"
-        action=""
-        class="single-uploader"
-        list-type="picture-card"
-        :show-file-list="false"
-        :before-upload="handleBeforeUpload"
-        :on-exceed="handleExceed"
-        :limit="1"
-        :http-request="uploadImage"
+      ref="singleUploadRef"
+      class="single-uploader"
+      :show-file-list="false"
+      :before-upload="handleBeforeUpload"
+      :on-exceed="handleExceed"
+      :http-request="uploadImage"
     >
-      <img v-if="imgUrl" :src="imgUrl" class="single-uploader-image"/>
+      <img v-if="imgUrl" :src="imgUrl" class="single-uploader__image" />
 
-      <el-icon v-else class="single-uploader-icon">
-        <Plus/>
+      <el-icon v-else class="single-uploader__plus">
+        <Plus />
       </el-icon>
 
       <!-- 删除图标 -->
       <el-icon
-          v-if="imgUrl"
-          class="single-uploader-remove-icon"
-          @click.stop="handleRemove(imgUrl)"
+        v-if="props.showClose && imgUrl"
+        class="single-uploader__remove"
+        @click.stop="handleRemove(imgUrl)"
       >
-        <Close/>
+        <Close />
       </el-icon>
     </el-upload>
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from "vue";
-import {Plus, Close} from '@element-plus/icons-vue'
-import {ElMessage, ElUpload, UploadFile, UploadRequestOptions} from "element-plus"
-import {uploadFile, deleteFile} from "@/api/system/file";
+import { computed, ref } from "vue";
+import { Plus, Close } from "@element-plus/icons-vue";
+import {
+  ElMessage,
+  ElUpload,
+  UploadFile,
+  UploadRawFile,
+  UploadRequestOptions,
+} from "element-plus";
+import { uploadFile, deleteFile } from "@/api/system/file";
 
-const uploadRef = ref(ElUpload)
-const emit = defineEmits(['update:modelValue']);
+const uploadRef = ref(ElUpload);
+const emit = defineEmits(["update:modelValue"]);
 
 const props = defineProps({
   modelValue: {
     type: String,
-    default: ''
-  }
-})
+    default: "",
+  },
+  /**
+   * 是否显示右上角的删除图片按钮
+   */
+  showClose: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 const imgUrl = computed<string | null>({
   get() {
-    return props.modelValue
+    return props.modelValue;
   },
   set(val) {
     // imgUrl改变时触发修改父组件绑定的v-model的值
-    emit('update:modelValue', val)
-  }
-})
-
+    emit("update:modelValue", val);
+  },
+});
 
 /**
  * 自定义图片上传
@@ -63,24 +72,8 @@ const imgUrl = computed<string | null>({
  * @param params
  */
 async function uploadImage(options: UploadRequestOptions): Promise<any> {
-  const response=await uploadFile(options.file);
-  imgUrl.value=response.data;
-}
-
-/**
- * 后选择文件覆盖前面的文件
- *
- * Set limit and on-exceed to automatically replace the previous file when select a new file.
- *
- * @param files
- */
-
-function handleExceed(files: File[], uploadFiles: UploadFile[]) {
-  uploadRef.value.clearFiles()
-  uploadRef.value.handleStart(files[0])
-  uploadFile(files[0]).then(response => {
-    imgUrl.value = response.data
-  })
+  const response = await uploadFile(options.file);
+  imgUrl.value = response.data;
 }
 
 /**
@@ -88,61 +81,62 @@ function handleExceed(files: File[], uploadFiles: UploadFile[]) {
  *
  * @param file
  */
-function handleRemove(file: string | null) {
+function handleRemove(file: UploadFile, fileList: UploadFile[]) {
   if (file) {
-    deleteFile(file)
-    imgUrl.value = null // 这里会触发imgUrl的computed的set方法
+    deleteFile(file.url);
+    imgUrl.value = null; // 这里会触发imgUrl的computed的set方法
   }
 }
-
-function handleBeforeUpload(file: any) {
-  const isJPG = file.type === 'image/jpeg'
-  const isLt2M = file.size / 1024 / 1024 < 2
-  /* if (!isJPG) {
-     ElMessage.warning("此文件非图片文件")
-     return false
-   }*/
+/**
+ * 在 before-upload 钩子中限制用户上传文件的格式和大小
+ *
+ */
+function handleBeforeUpload(file: UploadRawFile) {
+  const isJPG = file.type === "image/jpeg";
+  const isLt2M = file.size / 1024 / 1024 < 2;
 
   if (!isLt2M) {
-    ElMessage.warning("上传图片不能大于2M")
+    ElMessage.warning("上传图片不能大于2M");
   }
-  return true
+  return true;
 }
 </script>
 
 <style lang="scss" scoped>
+.single-uploader {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+  text-align: center;
+  &:hover {
+    border-color: var(--el-color-primary);
+  }
 
-.component-container {
-  .single-uploader {
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
+  &__image {
+    width: 146px;
+    height: 146px;
+    display: block;
+  }
 
-    &:hover {
-      border-color: #409EFF;
-    }
+  &__plus {
+     width: 146px;
+    height: 157px;
+    font-size: 28px;
+    color: #8c939d;
+    text-align: center;
+  }
 
-    &-icon {
-      font-size: 28px;
-      color: #8c939d;
-      text-align: center;
-    }
-
-    &-image {
-      width: 146px;
-      height: 146px;
-      display: block;
-    }
-
-    &-remove-icon {
-      font-size: 12px;
-      color: #ff4d51 !important;
-      margin-top: 0px !important;
-      position: absolute;
-      right: 0;
-      top: 0;
-      color: #409eff;
-    }
+  &__remove {
+    font-size: 12px;
+    color: #ff4d51 !important;
+    margin-top: 0px !important;
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #409eff;
   }
 }
 </style>

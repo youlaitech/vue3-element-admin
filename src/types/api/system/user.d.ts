@@ -1,4 +1,4 @@
-import { PageQueryParam, PageResult } from "./base"
+import { PageQueryParam, PageResult } from "../base"
 
 /**
  * 用户信息类型声明
@@ -48,7 +48,7 @@ export interface UserPageResult extends PageResult<UserItem[]> {
  * 用户表单类型声明
  */
 export interface UserFormData {
-    id: number,
+    id: number | undefined,
     deptId: number,
     username: string,
     nickname: string,
