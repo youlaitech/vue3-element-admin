@@ -1,11 +1,13 @@
+import { OrderPageResult, OrderQueryParam } from '@/types'
 import request from '@/utils/request'
+import {  AxiosPromise } from 'axios'
 
 /**
  * 获取订单分页列表
  *
  * @param queryParams
  */
-export function listOrdersWithPage(queryParams: object) {
+export function listOrderPages(queryParams: OrderQueryParam): AxiosPromise<OrderPageResult> {
     return request({
         url: '/mall-oms/api/v1/orders',
         method: 'get',
@@ -19,7 +21,7 @@ export function listOrdersWithPage(queryParams: object) {
  *
  * @param orderId
  */
-export function getOrderDetail(orderId: number) {
+export function getOrderDetail(orderId: number){
     return request({
         url: '/mall-oms/api/v1/orders/' + orderId,
         method: 'get'
