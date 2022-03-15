@@ -68,6 +68,7 @@ import {
   ref,
   watch,
   onMounted,
+ComponentInternalInstance,
 } from "vue";
 
 import path from "path-browserify";
@@ -88,7 +89,7 @@ import useStore from "@/store";
 
 const { tagsView, permission } = useStore();
 
-const { ctx } = getCurrentInstance() as any;
+const { proxy } = getCurrentInstance() as ComponentInternalInstance; // 获取当前组件实例
 const router = useRouter();
 const route = useRoute();
 
@@ -276,8 +277,8 @@ function closeAllTags(view: TagView) {
 
 function openMenu(tag: TagView, e: MouseEvent) {
   const menuMinWidth = 105;
-  const offsetLeft = ctx.$el.getBoundingClientRect().left; // container margin left
-  const offsetWidth = ctx.$el.offsetWidth; // container width
+  const offsetLeft = proxy?.$el.getBoundingClientRect().left; // container margin left
+  const offsetWidth = proxy?.$el.offsetWidth; // container width
   const maxLeft = offsetWidth - menuMinWidth; // left boundary
   const l = e.clientX - offsetLeft + 15; // 15: margin right
 
