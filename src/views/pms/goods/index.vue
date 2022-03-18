@@ -94,12 +94,17 @@
       </el-table-column>
       <el-table-column label="销量" prop="sales" min-width="100" />
       <el-table-column label="单位" prop="unit" min-width="100" />
-      <el-table-column label="描述" prop="description" min-width="100" />
+      <el-table-column label="描述" prop="description"  width="300" :show-overflow-tooltip="true" />
       <el-table-column label="详情" prop="detail">
         <template #default="scope">
-          <el-button type="primary" @click="handleGoodsView(scope.row.detail)"
-            >查看</el-button
-          >
+
+           <el-button
+            type="primary"
+            :icon="View"
+            circle
+            plain
+            @click.stop="handleGoodsView(scope.row.detail)"
+          />
         </template>
       </el-table-column>
       <el-table-column label="操作" width="120">
@@ -141,7 +146,7 @@ import { reactive, ref, onMounted, toRefs } from "vue";
 import { ElTable, ElMessage, ElMessageBox } from "element-plus";
 import { useRouter } from "vue-router";
 
-import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
+import { Search, Plus, Edit, Refresh, Delete,View } from "@element-plus/icons-vue";
 import { listGoodsPages, deleteGoods } from "@/api/pms/goods";
 import { listCascadeCategories } from "@/api/pms/category";
 import { GoodsItem, GoodsQueryParam } from "@/types";
