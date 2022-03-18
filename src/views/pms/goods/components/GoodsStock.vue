@@ -142,7 +142,7 @@
                   :prop="'skuList[' + scope.$index + '].skuSn'"
                   :rules="rules.sku.skuSn"
                 >
-                  <el-input v-model="scope.row.skuSn" />
+                  <el-input v-model="scope.row.skuSn"/>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -253,15 +253,16 @@ const { specForm, skuForm, specTitles, rules, colors, tagInputs, loading } =
 
 watch(
   categoryId,
-  (newVal, oldVal) => {
+  (value) => {
+
     // 商品编辑不加载分类下的规格
     const spuId = props.modelValue.id;
     if (spuId) {
       return false;
     }
-    if (newVal) {
+    if (value) {
       // type=1 商品分类下的规格
-      listAttributes({ categoryId: newVal, type: 1 }).then((response) => {
+      listAttributes({ categoryId: value, type: 1 }).then((response) => {
         const specList = response.data;
         if (specList && specList.length > 0) {
           specList.forEach((item) => {
@@ -280,6 +281,12 @@ watch(
     deep: true,
   }
 );
+
+
+
+watch(state.specForm.specList,(value)=>{
+  generateSkuList()
+})
 
 function loadData() {
   props.modelValue.specList.forEach((specItem) => {
@@ -372,16 +379,18 @@ function handleSpecReorder() {
  * ]
  */
 function generateSkuList() {
-  const specList = JSON.parse(
-    JSON.stringify(
-      state.specForm.specList.filter((item) => item.values.length > 0)
-    )
-  ); // 深拷贝，取有属性的规格项，否则笛卡尔积运算得到的SKU列表值为空
   // 如果规格为空，生成SKU列表为空
-  if (specList.length === 0) {
-    state.skuForm.skuList = [];
+  if(state.specForm.specList.length==0){
+     state.skuForm.skuList = [];
     return;
   }
+
+  const specList = JSON.parse(
+    JSON.stringify(
+      state.specForm.specList.filter((item) => item.values&&item.values.length > 0)
+    )
+  ); // 深拷贝，取有属性的规格项，否则笛卡尔积运算得到的SKU列表值为空
+  
   const skuList = specList.reduce(
     (acc, curr) => {
       let result = [];
@@ -447,7 +456,7 @@ function handleSpecAdd() {
     ElMessage.warning("最多支持3组规格");
     return;
   }
-  state.specForm.specList.push({});
+  state.specForm.specList.push({values:[]});
   state.tagInputs.push({ value: undefined, visible: false });
   handleSpecReorder();
 }
@@ -695,7 +704,7 @@ onMounted(() => {
   }
 }
 
-.el-form-item--mini.el-form-item {
+.el-form--inline .el-form-item{
   margin-top: 18px;
 }
 </style>
