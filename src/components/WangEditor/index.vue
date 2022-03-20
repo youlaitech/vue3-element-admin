@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {computed, onBeforeUnmount, reactive, toRefs} from 'vue'
 import {Editor, Toolbar, getEditor, removeEditor} from '@wangeditor/editor-for-vue'
 
@@ -55,7 +55,7 @@ const state = reactive({
       uploadImage: {
         // 自定义图片上传
         // @link https://www.wangeditor.com/v5/guide/menu-config.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%9F%E8%83%BD
-        async customUpload(file, insertFn) {
+        async customUpload(file:any, insertFn:any) {
           uploadFile(file).then(response => {
             const url = response.data
             insertFn(url)
@@ -69,7 +69,7 @@ const state = reactive({
 
 const {editorId, toolbarConfig, editorConfig,defaultHtml} = toRefs(state)
 
-function handleChange(editor) {
+function handleChange(editor:any) {
   modelValue.value = editor.getHtml()
 }
 
