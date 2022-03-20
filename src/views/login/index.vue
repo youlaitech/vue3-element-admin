@@ -119,6 +119,7 @@ import useStore from "@/store";
 // API依赖
 import { getCaptcha } from "@/api/login";
 import { useRoute } from "vue-router";
+import { LoginFormData } from "@/types";
 
 const { user } = useStore();
 const route = useRoute();
@@ -132,7 +133,7 @@ const state = reactive({
     password: "123456",
     code: "",
     uuid: "",
-  },
+  } as LoginFormData,
   loginRules: {
     username: [{ required: true, trigger: "blur" }],
     password: [

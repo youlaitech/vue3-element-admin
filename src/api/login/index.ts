@@ -1,4 +1,4 @@
-import { Captcha, LoginRequestParam, LoginResponseData } from "@/types";
+import { Captcha, LoginFormData, LoginResponseData } from "@/types";
 import request from "@/utils/request";
 import { AxiosPromise } from "axios";
 
@@ -6,7 +6,7 @@ import { AxiosPromise } from "axios";
  * 登录
  * @param data
  */
-export function login(data: LoginRequestParam): AxiosPromise<LoginResponseData> {
+export function login(data: LoginFormData): AxiosPromise<LoginResponseData> {
     return request({
         url: '/youlai-auth/oauth/token',
         method: 'post',

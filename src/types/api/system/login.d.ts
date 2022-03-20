@@ -1,7 +1,7 @@
 /**
  * 登录请求参数类型声明
  */
-export interface LoginRequestParam {
+export interface LoginFormData {
     username: string,
     password: string,
     grant_type: string,
