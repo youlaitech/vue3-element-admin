@@ -17,7 +17,7 @@ import {
   onBeforeUnmount,
   getCurrentInstance,
 } from "vue";
-import { TagView } from "@/store/interface";
+import { TagView } from "@/types";
 import useStore from "@/store";
 
 const emits = defineEmits();

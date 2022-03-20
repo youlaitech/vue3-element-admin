@@ -74,7 +74,7 @@ ComponentInternalInstance,
 import path from "path-browserify";
 
 import { RouteRecordRaw, useRoute, useRouter } from "vue-router";
-import { TagView } from "@/store/interface";
+import { TagView } from "@/types";
 
 import ScrollPane from "./ScrollPane.vue";
 import {

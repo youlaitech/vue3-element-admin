@@ -11,12 +11,15 @@ export * from './api/system/client'
 
 export * from './api/pms/goods'
 export * from './api/pms/brand'
-
 export * from './api/sms/advert'
-
 export * from './api/oms/order'
-
 export * from './api/ums/member'
+
+export * from './store/user'
+export * from './store/app'
+export * from './store/permission'
+export * from './store/setting'
+export * from './store/tagsView'
 
 export * from './common'
 

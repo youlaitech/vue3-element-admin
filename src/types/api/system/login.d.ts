@@ -1,5 +1,5 @@
 /**
- * 登录请求参数类型声明
+ * 登录表单类型声明
  */
 export interface LoginFormData {
     username: string,

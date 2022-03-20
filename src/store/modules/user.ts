@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
-import { UserState } from "@/store/interface";
+import { LoginFormData, UserState } from "@/types";
 import { localStorage } from "@/utils/storage";
-import { login, logout } from "@/api/login";
 import { resetRouter } from "@/router";
+import { login, logout } from "@/api/login";
 import { getUserInfo } from "@/api/system/user";
 
 const useUserStore = defineStore({
@@ -26,7 +26,7 @@ const useUserStore = defineStore({
          *  code: 验证码
          *  uuid: 匹配正确验证码的 key
          */
-        login(userInfo: { username: string, password: string, code: string, uuid: string }) {
+        login(userInfo: LoginFormData) {
             const { username, password, code, uuid } = userInfo
             return new Promise((resolve, reject) => {
                 login(

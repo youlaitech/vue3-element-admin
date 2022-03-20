@@ -1,7 +1,6 @@
 import useStore from "@/store";
 import { Directive, DirectiveBinding } from "vue";
 
-
 /**
  * 按钮权限校验
  */

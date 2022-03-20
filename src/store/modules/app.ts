@@ -1,9 +1,9 @@
-import {AppState} from "@/store/interface";
-import {localStorage} from "@/utils/storage";
-import {defineStore} from "pinia";
+import { AppState } from "@/types";
+import { localStorage } from "@/utils/storage";
+import { defineStore } from "pinia";
 import { getLanguage } from '@/lang/index'
 
- const useAppStore = defineStore({
+const useAppStore = defineStore({
     id: "app",
     state: (): AppState => ({
         device: 'desktop',
@@ -12,7 +12,7 @@ import { getLanguage } from '@/lang/index'
             withoutAnimation: false
         },
         language: getLanguage(),
-        size: localStorage.get('size')||'default'
+        size: localStorage.get('size') || 'default'
     }),
     actions: {
         toggleSidebar() {

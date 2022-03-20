@@ -1,15 +1,15 @@
-import {defineStore} from "pinia";
-import {SettingState} from "@/store/interface";
+import { defineStore } from "pinia";
+import { SettingState } from "@/types";
 import defaultSettings from '../../settings'
-import {localStorage} from "@/utils/storage";
+import { localStorage } from "@/utils/storage";
 
-const {showSettings, tagsView, fixedHeader, sidebarLogo} = defaultSettings
+const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
 import variables from '@/styles/element-variables.module.scss'
 
 export const useSettingStore = defineStore({
     id: "setting",
     state: (): SettingState => ({
-        theme: localStorage.get("theme") || variables.theme ,
+        theme: localStorage.get("theme") || variables.theme,
         showSettings: showSettings,
         tagsView: localStorage.get("tagsView") != null ? localStorage.get("tagsView") : tagsView,
         fixedHeader: fixedHeader,
@@ -17,7 +17,7 @@ export const useSettingStore = defineStore({
     }),
     actions: {
         async changeSetting(payload: { key: string, value: any }) {
-            const {key, value} = payload
+            const { key, value } = payload
             switch (key) {
                 case 'theme':
                     this.theme = value

@@ -19,7 +19,6 @@ export interface UserQueryParam extends PageQueryParam {
     deptId: number | undefined
 }
 
-
 /**
  * 用户分页列表项声明
  */
