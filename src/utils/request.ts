@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { localStorage } from "@/utils/storage";
 import useStore from "@/store";
@@ -13,7 +13,7 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
     (config: AxiosRequestConfig) => {
-        if (!config?.headers) {
+        if (!config.headers) {
             throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
         }
         const { user } = useStore()
