@@ -6,7 +6,7 @@ import 'nprogress/nprogress.css'
 NProgress.configure({ showSpinner: false }) // 进度环显示/隐藏
 
 
-// 白名单
+// 白名单路由
 const whiteList = ['/login', '/auth-redirect']
 
 router.beforeEach(async (to, form, next) => {
@@ -32,7 +32,7 @@ router.beforeEach(async (to, form, next) => {
                     })
                     next({ ...to, replace: true })
                 } catch (error) {
-                    // remove token and go to login page to re-login
+                    // 移除 token 并跳转登录页
                     await user.resetToken()
                     ElMessage.error(error as any || 'Has Error')
                     next(`/login?redirect=${to.path}`)
@@ -41,7 +41,7 @@ router.beforeEach(async (to, form, next) => {
             }
         }
     } else {
-        // 无 token
+        // 未登录可以访问白名单页面(登录页面)
         if (whiteList.indexOf(to.path) !== -1) {
             next()
         } else {
