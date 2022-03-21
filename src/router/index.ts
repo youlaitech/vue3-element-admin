@@ -42,7 +42,8 @@ export const constantRoutes: Array<RouteRecordRaw> = [
                 name: 'Dashboard',
                 meta: { title: 'dashboard', icon: 'dashboard', affix: true }
             }
-        ]
+        ]   
+    }
    
     // 外部链接
     /*{
@@ -95,7 +96,6 @@ export const constantRoutes: Array<RouteRecordRaw> = [
              },
          ]
      }*/
-    }
 ]
 
 // 创建路由

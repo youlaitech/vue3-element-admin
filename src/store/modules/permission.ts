@@ -1,11 +1,11 @@
-import {PermissionState} from "@/types";
-import {RouteRecordRaw} from 'vue-router'
-import {constantRoutes} from '@/router'
-import {listRoutes} from "@/api/system/menu";
-import {defineStore} from "pinia";
+import { PermissionState } from "@/types";
+import { RouteRecordRaw } from 'vue-router'
+import { defineStore } from "pinia";
+import { constantRoutes } from '@/router'
+import { listRoutes } from "@/api/system/menu";
 
 const modules = import.meta.glob("../../views/**/**.vue");
-export const Layout = () => import( '@/layout/index.vue')
+export const Layout = () => import('@/layout/index.vue')
 
 const hasPermission = (roles: string[], route: RouteRecordRaw) => {
     if (route.meta && route.meta.roles) {
@@ -24,7 +24,7 @@ const hasPermission = (roles: string[], route: RouteRecordRaw) => {
 export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
     const res: RouteRecordRaw[] = []
     routes.forEach(route => {
-        const tmp = {...route} as any
+        const tmp = { ...route } as any
         if (hasPermission(roles, tmp)) {
             if (tmp.component == 'Layout') {
                 tmp.component = Layout
@@ -47,7 +47,7 @@ export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => 
 }
 
 
- const usePermissionStore = defineStore({
+const usePermissionStore = defineStore({
     id: "permission",
     state: (): PermissionState => ({
         routes: [],
@@ -72,7 +72,5 @@ export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => 
         }
     }
 })
-
-
 
 export default usePermissionStore;

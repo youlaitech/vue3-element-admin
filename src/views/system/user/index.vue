@@ -276,7 +276,7 @@ import {
 
 // API依赖
 import {
-  listUserPages,
+  listUsersPage,
   getUserFormDetail,
   deleteUsers,
   addUser,
@@ -451,7 +451,7 @@ function handleStatusChange(row: { [key: string]: any }) {
  **/
 function handleQuery() {
   state.loading = true;
-  listUserPages(state.queryParams).then(({ data }) => {
+  listUsersPage(state.queryParams).then(({ data }) => {
     state.userList = data.list;
     state.total = data.total;
     state.loading = false;

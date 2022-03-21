@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
 import { LoginFormData, UserState } from "@/types";
 import { localStorage } from "@/utils/storage";
-import { resetRouter } from "@/router";
 import { login, logout } from "@/api/login";
 import { getUserInfo } from "@/api/system/user";
+import { resetRouter } from "@/router";
 
 const useUserStore = defineStore({
     id: "user",
@@ -53,8 +53,7 @@ const useUserStore = defineStore({
          */
         getUserInfo() {
             return new Promise(((resolve, reject) => {
-                getUserInfo().then(response => {
-                    const { data } = response
+                getUserInfo().then(({data}) => {
                     if (!data) {
                         return reject('Verification failed, please Login again.')
                     }
