@@ -25,7 +25,6 @@
 
 <script setup lang="ts">
 
-
 import {computed, defineComponent} from "vue";
 import {useRoute} from 'vue-router'
 
