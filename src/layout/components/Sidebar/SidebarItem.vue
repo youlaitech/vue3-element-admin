@@ -87,7 +87,6 @@ function hasOneShowingChild(children = [] as any, parent: any) {
   return false
 };
 
-
 function resolvePath(routePath: string) {
   if (isExternal(routePath)) {
     return routePath
@@ -97,7 +96,6 @@ function resolvePath(routePath: string) {
   }
   return path.resolve(props.basePath, routePath)
 }
-
 
 </script>
 
