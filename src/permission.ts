@@ -14,7 +14,7 @@ router.beforeEach(async (to, form, next) => {
     const { user, permission } = useStore()
     const hasToken = user.token
     if (hasToken) {
-        // 如果登录成功，跳转到首页
+        // 登录成功，跳转到首页
         if (to.path === '/login') {
             next({ path: '/' })
             NProgress.done()
@@ -41,7 +41,7 @@ router.beforeEach(async (to, form, next) => {
             }
         }
     } else {
-        /* has no token*/
+        // 无 token
         if (whiteList.indexOf(to.path) !== -1) {
             next()
         } else {
