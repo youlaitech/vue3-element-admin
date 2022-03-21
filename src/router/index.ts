@@ -108,12 +108,13 @@ const router = createRouter({
 
 // 重置路由
 export function resetRouter() {
-    router.getRoutes().forEach((route) => {
+    //TODO
+   /*  router.getRoutes().forEach((route) => {
         const name = route.name
         if (name) {
             router.hasRoute(name) && router.removeRoute(name)
         }
-    })
+    }) */
 }
 
 export default router
