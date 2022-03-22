@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+import useStore from "@/store";
 
 export const Layout = () => import('@/layout/index.vue')
 
@@ -42,9 +43,9 @@ export const constantRoutes: Array<RouteRecordRaw> = [
                 name: 'Dashboard',
                 meta: { title: 'dashboard', icon: 'dashboard', affix: true }
             }
-        ]   
+        ]
     }
-   
+
     // 外部链接
     /*{
         path: '/external-link',
@@ -108,13 +109,13 @@ const router = createRouter({
 
 // 重置路由
 export function resetRouter() {
-    //TODO
-   /*  router.getRoutes().forEach((route) => {
+    const { permission } = useStore()
+    permission.routes.forEach((route) => {
         const name = route.name
-        if (name) {
-            router.hasRoute(name) && router.removeRoute(name)
+        if (name && router.hasRoute(name)) {
+            router.removeRoute(name)
         }
-    }) */
+    })
 }
 
 export default router
