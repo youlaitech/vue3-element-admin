@@ -6,7 +6,7 @@ export default {
     },
     // 登录页面国际化
     login:{
-        title: '有来商城管理系统Vue3',
+        title: '有来商城管理系统 Vue3',
         username:'用户名',
         password:'密码',
         login:'登 录',
@@ -20,5 +20,4 @@ export default {
         document:'项目文档',
         gitee:'码云'
     }
-
 }
