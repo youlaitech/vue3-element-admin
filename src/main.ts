@@ -3,13 +3,14 @@ import App from './App.vue'
 import router from "@/router";
 
 import { createPinia } from "pinia"
-import Pagination from '@/components/Pagination/index.vue'
-
 import {localStorage} from "@/utils/storage";
-import 'virtual:svg-icons-register';
-import '@/permission'
+
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
+import Pagination from '@/components/Pagination/index.vue'
+import '@/permission'
+
+import 'virtual:svg-icons-register';
 
 // 国际化
 import i18n from "@/lang/index";
