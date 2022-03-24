@@ -1,7 +1,3 @@
-<!--
-  author: haoxr
-  link: https://www.wangeditor.com/v5/guide/for-frame.html#vue3
--->
 <template>
   <div style="border: 1px solid #ccc">
     <!-- 工具栏 -->
@@ -37,15 +33,6 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const modelValue = computed({
-  get: () => {
-    return props.modelValue
-  },
-  set: (val) => {
-    emit('update:modelValue', val)
-  }
-});
-
 const state = reactive({
   editorId: `w-e-${Math.random().toString().slice(-5)}`, //【注意】编辑器 id ，要全局唯一
   toolbarConfig: {},
@@ -70,7 +57,7 @@ const state = reactive({
 const {editorId, toolbarConfig, editorConfig,defaultHtml} = toRefs(state)
 
 function handleChange(editor:any) {
-  modelValue.value = editor.getHtml()
+  emit('update:modelValue', editor.getHtml())
 }
 
 // 组件销毁时，也及时销毁编辑器
