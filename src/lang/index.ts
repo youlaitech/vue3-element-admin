@@ -1,32 +1,34 @@
+
+// 自定义国际化配置
 import {createI18n} from 'vue-i18n'
 import {localStorage} from '@/utils/storage'
 
-// Element Plus 国际化配置
-import elementPlusLocaleZhCn from 'element-plus/es/locale/lang/zh-cn'
-import elementPlusLocaleEn from 'element-plus/es/locale/lang/en'
-
-// 自定义国际化配置
+// 本地语言包
 import enLocale from './en'
 import zhCnLocale from './zh-cn'
-import {Locale, Path} from "@intlify/core-base";
 
 const messages = {
     'zh-cn': {
-        ...zhCnLocale,
-        ...elementPlusLocaleZhCn
+        ...zhCnLocale
     },
     en: {
-        ...enLocale,
-        ...elementPlusLocaleEn
+        ...enLocale
     }
 }
 
+/**
+ * 获取当前系统使用语言字符串
+ * 
+ * @returns zh-cn|en ...
+ */
 export const getLanguage = () => {
+    // 本地缓存获取
     let language = localStorage.get('language')
     if (language) {
         return language
     }
-    language = navigator.language.toLowerCase() // 浏览器使用的语言
+     // 浏览器使用语言
+    language = navigator.language.toLowerCase()
     const locales = Object.keys(messages)
     for (const locale of locales) {
         if (language.indexOf(locale) > -1) {
