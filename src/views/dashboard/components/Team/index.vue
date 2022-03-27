@@ -43,8 +43,8 @@
           <div class="group">
             <el-image
                 class="group-img"
-                src="https://gitee.com/haoxr/image/raw/master/default/20220129090754.png"
-                :preview-src-list="['https://gitee.com/haoxr/image/raw/master/default/20220129090754.png']"
+                src="http://cdn.youlai.tech/youlaiqun.png"
+                :preview-src-list="['http://cdn.youlai.tech/youlaiqun.png']"
             />
             <div class="group-tip">
               群二维码过期可添加开发者微信由其拉入群，备注「有来」即可。
@@ -78,23 +78,23 @@ const state = reactive({
   teamActiveName: 'developer',
   developers: [
     {
-      imgUrl: 'https://gitee.com/haoxr/image/raw/master/hxr.jpg',
+      imgUrl: 'http://cdn.youlai.tech/rui.jpg',
       nickname: '郝先瑞',
       positions: ['后端', '前端', '打杂'],
       homepage: 'https://www.cnblogs.com/haoxianrui/'
     },
     {
-      imgUrl: 'https://gitee.com/haoxr/image/raw/master/default/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20220128222910_gaitubao_841x841.jpg',
+      imgUrl: 'http://cdn.youlai.tech/lin.jpg',
       nickname: '张加林',
       positions: ['DevOps'],
       homepage: 'https://gitee.com/ximy'
     },
     {
-      imgUrl: 'https://gitee.com/haoxr/image/raw/master/default/ba695a5e70410a066b7052c5dc9db5c.jpg',
+      imgUrl: 'http://cdn.youlai.tech/chuan.jpg',
       nickname: '张川',
       positions: ['后端', '前端'],
       homepage: 'https://blog.csdn.net/qq_41595149'
-    },
+    }
   ],
   colors: ['', 'success', 'warning', 'danger'],
   indicatorImgUrl: new URL(`../../../../assets/index/indicator.png`, import.meta.url).href
