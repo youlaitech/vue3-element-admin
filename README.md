@@ -51,9 +51,9 @@
 
 在线预览地址: [www.youlai.tech](http://www.youlai.tech)
 
-| ![控制台](http://cdn.youlai.tech/dashboard.jpg) | ![国际化](http://cdn.youlai.tech/i18n.gif) |
+| ![控制台](http://cdn.youlai.tech/dashboard.png) | ![国际化](http://cdn.youlai.tech/i18n.gif) |
 | ----| ----|
-|![商品管理](http://cdn.youlai.tech/goods.jpg) | ![角色管理](http://cdn.youlai.tech/role.jpg) |
+|![商品管理](http://cdn.youlai.tech/goods.png) | ![角色管理](http://cdn.youlai.tech/role.jpg) |
 
 
 ## 项目地址
