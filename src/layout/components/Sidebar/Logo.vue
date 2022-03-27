@@ -13,34 +13,29 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'SidebarLogo',
-  props: {
-    collapse: {
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const props = defineProps({
+  collapse: {
       type: Boolean,
       required: true
     }
-  },
-  data() {
-    return {
-      title: 'youlai-mall',
-      logo: 'https://gitee.com/haoxr/image/raw/master/default/logo.png'
-    }
-  }
-}
+})
+
+const title=ref("youlai-mall")
+const logo=ref("http://cdn.youlai.tech/logo.png")
+
 </script>
 
 <style lang="scss" scoped>
 .sidebarLogoFade-enter-active {
   transition: opacity 1.5s;
 }
-
 .sidebarLogoFade-enter,
 .sidebarLogoFade-leave-to {
   opacity: 0;
 }
-
 .sidebar-logo-container {
   position: relative;
   width: 100%;
