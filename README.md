@@ -51,10 +51,9 @@
 
 在线预览地址: [www.youlai.tech](http://www.youlai.tech)
 
-| ![](https://gitee.com/haoxr/image/raw/master/default/20220314232531.png) | ![image-20210621005011310](https://gitee.com/haoxr/image/raw/master/image-20210621005011310.png) |
+| ![控制台](http://cdn.youlai.tech/dashboard.jpg) | ![国际化](http://cdn.youlai.tech/i18n.gif) |
 | ----| ----|
-|![](https://gitee.com/haoxr/image/raw/master/30719657a4b183428a2472231fee55a6_image-20210621005037964.png) | ![image-20210621005123432](https://gitee.com/haoxr/image/raw/master/image-20210621005123432.png) |
-
+|![商品管理](http://cdn.youlai.tech/goods.jpg) | ![角色管理](http://cdn.youlai.tech/role.jpg) |
 
 
 ## 项目地址
@@ -67,7 +66,7 @@
 | 小程序/H5/移动端 | [mall-app](https://gitee.com/youlaiorg/mall-app)| [mall-app](https://github.com/youlaitech/mall-app) | [mall-app](https://gitcode.net/youlai/mall-app) |
 
 
-## 项目启动和部署
+## 启动部署
 
 ### 环境准备
 
@@ -128,5 +127,5 @@
 > 欢迎添加开发者微信，备注「有来」进群
 
 
-| ![](https://gitee.com/haoxr/image/raw/master/hxr.jpg) |  ![](https://gitee.com/haoxr/image/raw/master/default/ba695a5e70410a066b7052c5dc9db5c.jpg) |
-| ----------------------------------------------------- |  ------------------------------------------------------------ |
+| ![郝先瑞](http://cdn.youlai.tech/rui.jpg) |![张川](http://cdn.youlai.tech/chuan.jpg) |
+| ---- |  ---- |
