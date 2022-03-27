@@ -6,12 +6,12 @@ export default {
     },
     // 登录页面国际化
     login: {
-        title: 'Youlai Mall Management System',
+        title: 'vue3-element-admin',
         username: 'Username',
         password: 'Password',
         login: 'Login',
         code: 'Verification Code',
-        copyright: 'Copyright © 2021 - 2022 youlai.tech All Rights Reserved. ',
+        copyright: '',
         icp: ''
     },
     // 导航栏国际化

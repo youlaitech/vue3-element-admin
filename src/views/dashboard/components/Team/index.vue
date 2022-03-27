@@ -80,20 +80,20 @@ const state = reactive({
     {
       imgUrl: 'http://cdn.youlai.tech/rui.jpg',
       nickname: '郝先瑞',
-      positions: ['后端', '前端', '打杂'],
+      positions: ['Vue3','Java',  '文档'],
       homepage: 'https://www.cnblogs.com/haoxianrui/'
-    },
-    {
-      imgUrl: 'http://cdn.youlai.tech/lin.jpg',
-      nickname: '张加林',
-      positions: ['DevOps'],
-      homepage: 'https://gitee.com/ximy'
     },
     {
       imgUrl: 'http://cdn.youlai.tech/chuan.jpg',
       nickname: '张川',
-      positions: ['后端', '前端'],
+      positions: ['Vue3','Java' ],
       homepage: 'https://blog.csdn.net/qq_41595149'
+    },
+     {
+      imgUrl: 'http://cdn.youlai.tech/lin.jpg',
+      nickname: '张加林',
+      positions: ['DevOps'],
+      homepage: 'https://gitee.com/ximy'
     }
   ],
   colors: ['', 'success', 'warning', 'danger'],
