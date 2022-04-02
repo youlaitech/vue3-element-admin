@@ -10,6 +10,7 @@ import 'element-plus/theme-chalk/index.css'
 import Pagination from '@/components/Pagination/index.vue'
 import '@/permission'
 
+// 引入svg注册脚本
 import 'virtual:svg-icons-register';
 
 // 国际化
