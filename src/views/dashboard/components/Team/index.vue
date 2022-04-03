@@ -43,8 +43,8 @@
           <div class="group">
             <el-image
                 class="group-img"
-                src="http://cdn.youlai.tech/youlaiqun.png"
-                :preview-src-list="['http://cdn.youlai.tech/youlaiqun.png']"
+                src="https://cdn.youlai.tech/youlaiqun.png"
+                :preview-src-list="['https://cdn.youlai.tech/youlaiqun.png']"
             />
             <div class="group-tip">
               群二维码过期可添加开发者微信由其拉入群，备注「有来」即可。
@@ -78,19 +78,19 @@ const state = reactive({
   teamActiveName: 'developer',
   developers: [
     {
-      imgUrl: 'http://cdn.youlai.tech/rui.jpg',
+      imgUrl: 'https://cdn.youlai.tech/rui.jpg',
       nickname: '郝先瑞',
       positions: ['Vue3','Java',  '文档'],
       homepage: 'https://www.cnblogs.com/haoxianrui/'
     },
     {
-      imgUrl: 'http://cdn.youlai.tech/chuan.jpg',
+      imgUrl: 'https://cdn.youlai.tech/chuan.jpg',
       nickname: '张川',
       positions: ['Vue3','Java' ],
       homepage: 'https://blog.csdn.net/qq_41595149'
     },
      {
-      imgUrl: 'http://cdn.youlai.tech/lin.jpg',
+      imgUrl: 'https://cdn.youlai.tech/lin.jpg',
       nickname: '张加林',
       positions: ['DevOps'],
       homepage: 'https://gitee.com/ximy'

@@ -51,9 +51,10 @@
 
 在线预览地址: [www.youlai.tech](http://www.youlai.tech)
 
-| ![控制台](http://cdn.youlai.tech/dashboard.png) | ![国际化](http://cdn.youlai.tech/i18n.gif) |
+| ![控制台](https://cdn.youlai.tech/dashboard.png) | ![国际化](https://cdn.youlai.tech/i18n.gif) |
 | ----| ----|
-|![商品管理](http://cdn.youlai.tech/goods.png) | ![角色管理](http://cdn.youlai.tech/role.jpg) |
+|![菜单管理](https://cdn.youlai.tech/menu.png) | ![角色管理](https://cdn.youlai.tech/role.png) |
+|![商品管理](https://cdn.youlai.tech/goods.png) | ![库存设置](https://cdn.youlai.tech/stock.png) |
 
 
 ## 项目地址
@@ -127,5 +128,5 @@
 > 欢迎添加开发者微信，备注「有来」进群
 
 
-| ![郝先瑞](http://cdn.youlai.tech/rui.jpg) |![张川](http://cdn.youlai.tech/chuan.jpg) |
+| ![郝先瑞](https://cdn.youlai.tech/rui.jpg) |![张川](https://cdn.youlai.tech/chuan.jpg) |
 | ---- |  ---- |
