@@ -16,6 +16,11 @@
 </p>
 <p align="center">
 <strong>在线预览：</strong><a target="_blank" href="http://www.youlai.tech">www.youlai.tech</a> 
+
+</p>
+
+<p align="center">
+<strong>官方文档：</strong><a target="_blank" href="http://youlaitech.gitee.io/youlai-mall/#/vue3-element-admin/">youlaitech.gitee.io/vue3-element-admin</a> 
 </p>
 
 ## 项目介绍
