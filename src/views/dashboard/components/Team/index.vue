@@ -70,13 +70,13 @@ const state = reactive({
   teamActiveName: "developer",
   developers: [
     {
-      imgUrl: "https://cdn.youlai.tech/rui.jpg",
+      imgUrl: "https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg",
       nickname: "郝先瑞",
       positions: ["Vue3", "Java", "文档"],
       homepage: "https://www.cnblogs.com/haoxianrui/",
     },
     {
-      imgUrl: "https://cdn.youlai.tech/chuan.jpg",
+      imgUrl: "https://s2.loli.net/2022/04/06/cQihGv9uPsTjXk1.jpg",
       nickname: "张川",
       positions: ["Vue3", "Java"],
       homepage: "https://blog.csdn.net/qq_41595149",
@@ -86,7 +86,7 @@ const state = reactive({
       nickname: "张加林",
       positions: ["DevOps"],
       homepage: "https://gitee.com/ximy",
-    },
+    }
   ],
   colors: ["", "success", "warning", "danger"],
   indicatorImgUrl: new URL(
@@ -102,7 +102,7 @@ let bScroll = reactive({})
 const dev_wapper = ref<HTMLElement | any>(null)
 
 onMounted(() => {
-    bScroll = new BScroll(dev_wapper.value, {
+  bScroll = new BScroll(dev_wapper.value, {
     mouseWheel: true,//开启鼠标滚轮
     disableMouse: false,//启用鼠标拖动
     scrollX: true,  //X轴滚动启用 
@@ -143,7 +143,7 @@ watchEffect(() => {
 
     .el-tabs__content {
       .el-tab-pane {
-        height: 252px;
+        height: 265px;
       }
     }
 
@@ -155,6 +155,7 @@ watchEffect(() => {
         display: inline-flex;
         overflow: hidden;
         justify-content: flex-start;
+        padding: 10px;
 
         .developer__item {
           &:not(:first-child) {
