@@ -24,7 +24,7 @@ const props = defineProps({
 })
 
 const title=ref("vue3-element-admin")
-const logo=ref("https://cdn.youlai.tech/logo.png")
+const logo=ref("https://s2.loli.net/2022/04/07/hyquWXELOoYvlP6.png")
 
 </script>
 
