@@ -82,7 +82,7 @@ const state = reactive({
       homepage: "https://blog.csdn.net/qq_41595149",
     },
     {
-      imgUrl: "https://cdn.youlai.tech/lin.jpg",
+      imgUrl: "https://s2.loli.net/2022/04/07/2IiOYBHnRGKgCSd.jpg",
       nickname: "张加林",
       positions: ["DevOps"],
       homepage: "https://gitee.com/ximy",
