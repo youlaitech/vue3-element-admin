@@ -56,10 +56,10 @@
 
 在线预览地址: [www.youlai.tech](http://www.youlai.tech)
 
-| ![控制台](https://cdn.youlai.tech/dashboard.png) | ![国际化](https://cdn.youlai.tech/i18n.gif) |
+| ![控制台](https://s2.loli.net/2022/04/07/fIEDs3GeSb8rxlt.png) | ![国际化](https://s2.loli.net/2022/04/07/lt6u2jMefpTJvkh.gif) |
 | ----| ----|
-|![菜单管理](https://cdn.youlai.tech/menu.png) | ![角色管理](https://cdn.youlai.tech/role.png) |
-|![商品管理](https://cdn.youlai.tech/goods.png) | ![库存设置](https://cdn.youlai.tech/stock.png) |
+|![菜单管理](https://s2.loli.net/2022/04/07/quTeB3pNIyQ4alG.png) | ![角色管理](https://s2.loli.net/2022/04/07/dmh5MYtuONGRJZn.png) |
+|![商品管理](https://s2.loli.net/2022/04/07/5XgYfMqBxhtdcG2.png) | ![库存设置](https://s2.loli.net/2022/04/07/s9IJeP7vRxq2WSL.png) |
 
 
 ## 项目地址
@@ -133,5 +133,5 @@
 > 欢迎添加开发者微信，备注「有来」进群
 
 
-| ![郝先瑞](https://cdn.youlai.tech/rui.jpg) |![张川](https://cdn.youlai.tech/chuan.jpg) |
+| ![郝先瑞](https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg) |![张川](https://s2.loli.net/2022/04/06/cQihGv9uPsTjXk1.jpg) |
 | ---- |  ---- |
