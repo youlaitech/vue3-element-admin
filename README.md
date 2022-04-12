@@ -96,6 +96,8 @@
 2. npm run dev
 3. 浏览器访问 http://localhost:3000
 
+🚨 如果安装依赖或启动报错，可尝试将依赖包 `/docs/node_modules.zip` 解压到项目根目录。
+
 
 ### 项目部署
  
