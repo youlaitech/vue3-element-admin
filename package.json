@@ -1,5 +1,5 @@
 {
-  "name": "mall-admin-web",
+  "name": "vue3-element-admin",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite serve --mode development",
