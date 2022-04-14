@@ -1,41 +1,40 @@
 <template>
-  <div ref="rightPanel" :class="{show:show}" class="rightPanel-container">
-    <div class="rightPanel-background"/>
+  <div ref="rightPanel" :class="{ show: show }" class="rightPanel-container">
+    <div class="rightPanel-background" />
     <div class="rightPanel">
-      <div class="handle-button" :style="{'top':buttonTop+'px','background-color':theme}" @click="show=!show">
-        <Close style="width: 1em; height: 1em;vertical-align: middle " v-show="show"/>
-        <Setting style="width:1em; height:1em;vertical-align: middle " v-show="!show"/>
+      <div class="handle-button" :style="{ 'top': buttonTop + 'px', 'background-color': theme }" @click="show = !show">
+        <Close style="width: 1em; height: 1em;vertical-align: middle " v-show="show" />
+        <Setting style="width:1em; height:1em;vertical-align: middle " v-show="!show" />
       </div>
       <div class="rightPanel-items">
-        <slot/>
+        <slot />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
-import {addClass, removeClass} from '@/utils/index'
+import { addClass, removeClass } from '@/utils/index'
 
 import useStore from "@/store";
 
 // 图标依赖
-import {Close, Setting} from '@element-plus/icons-vue'
-import {ElColorPicker} from "element-plus";
+import { Close, Setting } from '@element-plus/icons-vue'
+import { ElColorPicker } from "element-plus";
 
-const {setting} =useStore()
+const { setting } = useStore()
 
-const props = defineProps({
+const theme = computed(() => setting.theme)
+const show = ref(false)
+
+defineProps({
   buttonTop: {
     default: 250,
     type: Number
   }
 })
-
-const theme = computed(() =>setting.theme)
-
-const show = ref(false)
 
 watch(show, (value) => {
   if (value) {

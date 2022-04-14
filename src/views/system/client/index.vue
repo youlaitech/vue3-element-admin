@@ -3,43 +3,23 @@
     <!-- 搜索表单 -->
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd"
-          >新增</el-button
-        >
-        <el-button
-          type="danger"
-          :icon="Delete"
-          :disabled="multiple"
-          @click="handleDelete"
-          >删除</el-button
-        >
+        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
+        <el-button type="danger" :icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
 
       <el-form-item prop="clientId">
-        <el-input
-          v-model="queryParams.clientId"
-          placeholder="输入客户端ID"
-          clearable
-          style="width: 240px"
-          @keyup.enter="handleQuery"
-        />
+        <el-input v-model="queryParams.clientId" placeholder="输入客户端ID" clearable style="width: 240px"
+          @keyup.enter="handleQuery" />
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery"
-          >搜索</el-button
-        >
+        <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <!-- 数据表格 -->
-    <el-table
-      v-loading="loading"
-      :data="clientList"
-      border
-      @selection-change="handleSelectionChange"
-    >
+    <el-table v-loading="loading" :data="clientList" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="序号" type="index" width="55" align="center" />
       <el-table-column label="客户端ID" prop="clientId" width="200" />
@@ -47,69 +27,33 @@
       <el-table-column label="域" width="100" prop="scope" />
       <el-table-column label="自动放行" prop="autoapprove" width="100" />
       <el-table-column label="授权方式" prop="authorizedGrantTypes" />
-      <el-table-column
-        label="认证令牌时效(单位：秒)"
-        width="200"
-        prop="accessTokenValidity"
-      />
-      <el-table-column
-        label="刷新令牌时效(单位：秒)"
-        width="200"
-        prop="refreshTokenValidity"
-      />
+      <el-table-column label="认证令牌时效(单位：秒)" width="200" prop="accessTokenValidity" />
+      <el-table-column label="刷新令牌时效(单位：秒)" width="200" prop="refreshTokenValidity" />
       <el-table-column label="操作" align="center" width="120">
         <template #default="scope">
-          <el-button
-            type="primary"
-            :icon="Edit"
-            circle
-            plain
-            @click.stop="handleUpdate(scope.row)"
-          />
-          <el-button
-            type="danger"
-            :icon="Delete"
-            circle
-            plain
-            @click.stop="handleDelete(scope.row)"
-          />
+          <el-button type="primary" :icon="Edit" circle plain @click.stop="handleUpdate(scope.row)" />
+          <el-button type="danger" :icon="Delete" circle plain @click.stop="handleDelete(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 分页工具条 -->
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      v-model:page="queryParams.pageNum"
-      v-model:limit="queryParams.pageSize"
-      @pagination="handleQuery"
-    />
+    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+      @pagination="handleQuery" />
 
     <!-- 表单弹窗 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="700px">
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-      >
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="客户端ID" prop="clientId">
-              <el-input
-                v-model="formData.clientId"
-                placeholder="请输入客户端ID"
-              />
+              <el-input v-model="formData.clientId" placeholder="请输入客户端ID" />
             </el-form-item>
           </el-col>
 
           <el-col :span="12">
             <el-form-item label="客户端密钥" prop="clientSecret">
-              <el-input
-                v-model="formData.clientSecret"
-                placeholder="请输入客户端密钥"
-              />
+              <el-input v-model="formData.clientSecret" placeholder="请输入客户端密钥" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -132,11 +76,9 @@
 
         <el-form-item label="授权方式" prop="authorizedGrantTypes">
           <el-checkbox-group v-model="checkedAuthorizedGrantTypes">
-            <el-checkbox
-              v-for="item in authorizedGrantTypesOptions"
-              :key="item.value"
-              :label="item.value"
-              >{{ item.label }}
+            <el-checkbox v-for="item in authorizedGrantTypesOptions" :key="item.value" :label="item.value">{{
+              item.label
+            }}
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -144,19 +86,13 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="认证令牌时效" prop="accessTokenValidity">
-              <el-input
-                v-model="formData.accessTokenValidity"
-                placeholder="请输入认证令牌时效"
-              />
+              <el-input v-model="formData.accessTokenValidity" placeholder="请输入认证令牌时效" />
             </el-form-item>
           </el-col>
 
           <el-col :span="12">
             <el-form-item label="刷新令牌时效" prop="refreshTokenValidity">
-              <el-input
-                v-model="formData.refreshTokenValidity"
-                placeholder="请输入刷新令牌时效"
-              />
+              <el-input v-model="formData.refreshTokenValidity" placeholder="请输入刷新令牌时效" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -164,29 +100,19 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="回调地址" prop="webServerRedirectUri">
-              <el-input
-                v-model="formData.webServerRedirectUri"
-                placeholder="请输入回调地址"
-              />
+              <el-input v-model="formData.webServerRedirectUri" placeholder="请输入回调地址" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="权限" prop="authorities">
-              <el-input
-                v-model="formData.authorities"
-                placeholder="请输入权限"
-              />
+              <el-input v-model="formData.authorities" placeholder="请输入权限" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="扩展信息" prop="additionalInformation">
-              <el-input
-                v-model="formData.additionalInformation"
-                type="textarea"
-                placeholder="JSON格式"
-              />
+              <el-input v-model="formData.additionalInformation" type="textarea" placeholder="JSON格式" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -250,7 +176,6 @@ const state = reactive({
 const {
   loading,
   ids,
-  single,
   multiple,
   queryParams,
   clientList,
@@ -318,7 +243,7 @@ function submitForm() {
         state.checkedAuthorizedGrantTypes.join(",");
       if (state.dialog.type == "edit") {
         updateClient(state.formData.clientId, state.formData).then(
-          (response) => {
+          () => {
             ElMessage.success("修改成功");
             state.dialog.visible = false;
             cancel();
@@ -326,7 +251,7 @@ function submitForm() {
           }
         );
       } else {
-        addClient(state.formData).then((response) => {
+        addClient(state.formData).then(() => {
           ElMessage.success("新增成功");
           cancel();
           handleQuery();

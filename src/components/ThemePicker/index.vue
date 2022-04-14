@@ -8,9 +8,8 @@
 </template>
 
 <script setup lang="ts">
-import {computed, nextTick, watch} from "vue";
+import {computed, watch} from "vue";
 import useStore from "@/store";
-import {useRoute, useRouter} from "vue-router";
 import {localStorage} from "@/utils/storage";
 
 // 参考连接:https://juejin.cn/post/7024025899813044232#heading-1

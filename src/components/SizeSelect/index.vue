@@ -5,12 +5,8 @@
     </div>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item
-          v-for="item of sizeOptions"
-          :key="item.value"
-          :disabled="(size || 'default') == item.value"
-          :command="item.value"
-        >
+        <el-dropdown-item v-for="item of sizeOptions" :key="item.value" :disabled="(size || 'default') == item.value"
+          :command="item.value">
           {{ item.label }}
         </el-dropdown-item>
       </el-dropdown-menu>
@@ -20,8 +16,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-
 import { ElMessage } from "element-plus";
 
 import useStore from "@/store";

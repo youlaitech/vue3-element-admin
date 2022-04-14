@@ -1,12 +1,11 @@
 import { PageQueryParam, PageResult } from "../base"
 
-
 /**
  * 商品查询参数类型声明
  */
 export interface GoodsQueryParam extends PageQueryParam {
-    name: stirng | undefined,
-    categoryId: number | undefined
+	name?: stirng,
+	categoryId?: number
 }
 
 /**
@@ -49,25 +48,25 @@ export interface SkuItem {
 /**
  * 商品分页项类型声明
  */
-export interface GoodsPageResult extends PageResult<GoodsItem[]> {
-
-}
+export type GoodsPageResult = PageResult<GoodsItem[]>
 
 /**
  * 商品表单数据类型声明
  */
-export interface GoodsFormData {
-    id: number|undefined,
-    deptId: number,
-    username: string,
-    nickname: string,
-    password: string,
-    mobile: string,
-    email: string,
-    gender: number,
-    status: number,
-    remark: string,
-    roleIds: number[]
+export interface GoodsDetail {
+	id: string,
+	name: string,
+	categoryId: string,
+	brandId: string,
+	originPrice: number,
+	price: number,
+	picUrl: string,
+	album: string[],
+	description: string,
+	detail: string,
+	attrList: any[],
+	specList: any[],
+	skuList: any[]
 }
 
 

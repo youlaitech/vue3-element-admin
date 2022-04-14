@@ -6,7 +6,7 @@ import request from '@/utils/request'
  * @param file
  */
 export function uploadFile(file: File) {
-    let formData = new FormData()
+    const formData = new FormData()
     formData.append('file', file)
     return request(
         {

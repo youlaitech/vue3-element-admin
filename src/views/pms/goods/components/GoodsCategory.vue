@@ -1,20 +1,14 @@
 <template>
   <div class="component-container">
     <div class="component-container__main">
-      <el-cascader-panel
-          ref="categoryRef"
-          :options="categoryOptions"
-          v-model="modelValue.categoryId"
-          :props="{emitPath:false}"
-          @change="handleCategoryChange"
-
-      />
-
+      <el-cascader-panel ref="categoryRef" :options="categoryOptions" v-model="goodsInfo.categoryId"
+        :props="{ emitPath: false }" @change="handleCategoryChange" />
       <div style="margin-top: 20px">
-        <el-link type="info" :underline="false" v-show="pathLabels.length>0">您选择的商品分类:</el-link>
-        <el-link type="danger" :underline="false" v-for="(item,index) in pathLabels" style="margin-left: 5px">
+        <el-link type="info" :underline="false" v-show="pathLabels.length > 0">您选择的商品分类:</el-link>
+        <el-link type="danger" :underline="false" v-for="(item, index) in pathLabels" :key="index"
+          style="margin-left: 5px">
           {{ item }}
-          <CaretRight  v-show="index<pathLabels.length-1" style="width: 1em; height:1em;margin-left: 5px"/>
+          <CaretRight v-show="index < pathLabels.length - 1" style="width: 1em; height:1em;margin-left: 5px" />
         </el-link>
       </div>
 
@@ -26,18 +20,27 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted,nextTick, reactive, ref, toRefs} from "vue";
-import {ElCascaderPanel, ElMessage} from "element-plus";
-import {CaretRight} from '@element-plus/icons-vue';
+import { onMounted, nextTick, reactive, ref, toRefs } from "vue";
+import { ElCascaderPanel, ElMessage } from "element-plus";
+import { CaretRight } from '@element-plus/icons-vue';
 
 // API 引用
-import {listCascadeCategories} from "@/api/pms/category";
+import { listCascadeCategories } from "@/api/pms/category";
+import { computed } from "@vue/reactivity";
+import { GoodsDetail } from "@/types";
 
-const emit = defineEmits(['next'])
+const emit = defineEmits(['next', "update:modelValue"])
 const props = defineProps({
   modelValue: {
     type: Object,
-    default:{ }
+    default: () => {   }
+  }
+})
+
+const goodsInfo: any = computed({
+  get: () => props.modelValue,
+  set: (value) => {
+    emit('update:modelValue', value)
   }
 })
 
@@ -46,12 +49,12 @@ const state = reactive({
   pathLabels: []
 })
 
-const {categoryOptions, pathLabels} = toRefs(state)
+const { categoryOptions, pathLabels } = toRefs(state)
 
 function loadData() {
-  listCascadeCategories({}).then(response => {
+  listCascadeCategories().then(response => {
     state.categoryOptions = response.data
-    if (props.modelValue.id) {
+    if (goodsInfo.value.id) {
       nextTick(() => {
         handleCategoryChange()
       })
@@ -63,15 +66,15 @@ const categoryRef = ref(ElCascaderPanel)
 function handleCategoryChange() {
   const checkNode = categoryRef.value.getCheckedNodes()[0]
   state.pathLabels = checkNode.pathLabels // 商品分类选择层级提示
-  props.modelValue.categoryId = checkNode.value
+  goodsInfo.value.categoryId = checkNode.value
 }
 
 function handleNext() {
-  if (!props.modelValue.categoryId) {
+  if (!goodsInfo.value.categoryId) {
     ElMessage.warning('请选择商品分类')
     return false
   }
-  emit('next' )
+  emit('next')
 }
 
 onMounted(() => {
@@ -81,7 +84,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-
 .component-container {
   &__main {
     margin: 20px auto

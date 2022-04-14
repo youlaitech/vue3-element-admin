@@ -15,12 +15,11 @@ import {
   computed,
   onMounted,
   onBeforeUnmount,
-  getCurrentInstance,
+  getCurrentInstance
 } from "vue";
 import { TagView } from "@/types";
 import useStore from "@/store";
 
-const emits = defineEmits();
 
 const tagAndTagSpacing = ref(4);
 const scrollContainerRef = ref(null);
@@ -29,9 +28,6 @@ const { tagsView } = useStore();
 
 const visitedViews = computed(() => tagsView.visitedViews);
 
-const emitScroll = () => {
-  (emits as any)("scroll");
-};
 
 const { ctx } = getCurrentInstance() as any;
 const scrollWrapper = computed(() => {

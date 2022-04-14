@@ -28,18 +28,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { Plus, Close } from "@element-plus/icons-vue";
 import {
   ElMessage,
   ElUpload,
-  UploadFile,
   UploadRawFile,
   UploadRequestOptions,
 } from "element-plus";
 import { uploadFile, deleteFile } from "@/api/system/file";
 
-const uploadRef = ref(ElUpload);
 const emit = defineEmits(["update:modelValue"]);
 
 const props = defineProps({
@@ -89,10 +87,9 @@ function handleRemove(fileUrl?: string) {
 }
 /**
  * 在 before-upload 钩子中限制用户上传文件的格式和大小
- *
  */
 function handleBeforeUpload(file: UploadRawFile) {
-  const isJPG = file.type === "image/jpeg";
+  // const isJPG = file.type === "image/jpeg";
   const isLt2M = file.size / 1024 / 1024 < 2;
 
   if (!isLt2M) {

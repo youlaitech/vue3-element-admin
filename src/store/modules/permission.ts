@@ -62,7 +62,7 @@ const usePermissionStore = defineStore({
             return new Promise((resolve, reject) => {
                 listRoutes().then(response => {
                     const asyncRoutes = response.data
-                    let accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+                    const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
                     this.setRoutes(accessedRoutes)
                     resolve(accessedRoutes)
                 }).catch(error => {

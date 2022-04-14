@@ -1,83 +1,47 @@
 <!-- 商品分类层级最多为三层，level字段标识 -->
 <template>
   <div class="component-container">
-
-    <el-tree
-        v-loading="loading"
-        ref="categoryTreeRef"
-        :data="categoryOptions"
-        :props="{ label: 'name', children: 'children',disabled:'' }"
-        node-key="id"
-        :expand-on-click-node="false"
-        default-expand-all
-        :accordion="true"
-        @node-click="handleNodeClick"
-    >
+    <el-tree v-loading="loading" ref="categoryTreeRef" :data="categoryOptions"
+      :props="{ label: 'name', children: 'children', disabled: '' }" node-key="id" :expand-on-click-node="false"
+      default-expand-all :accordion="true" @node-click="handleNodeClick">
       <template #default="scope">
         <div class="custom-tree-node">
           <span>
-            <el-image
-                v-show="scope.data.level == 3 "
-                :src="scope.data.iconUrl"
-                style="width: 20px; height:20px; vertical-align: middle;margin-top: -5px"
-            >
+            <el-image v-show="scope.data.level == 3" :src="scope.data.iconUrl"
+              style="width: 20px; height:20px; vertical-align: middle;margin-top: -5px">
               <template #error>
                 <div class="image-slot">
-                  <Picture style="width: 20px; height:20px;"/>
+                  <Picture style="width: 20px; height:20px;" />
                 </div>
               </template>
             </el-image>
             {{ scope.data.name }}
           </span>
           <span>
-                <el-button
-                    v-show="scope.data.level != 3 "
-                    type="success"
-                    :icon="Plus"
-                    circle
-                    plain
-                    @click.stop="handleAdd(scope.data)"/>
-                <el-button
-                    v-show="scope.data.id !== 0"
-                    type="warning"
-                    :icon="Edit"
-                    circle
-                    plain
-                    @click.stop="handleUpdate(scope.data)"/>
-                <el-button
-                    v-show="scope.data.id && (!scope.data.children || scope.data.children.length <= 0)"
-                    type="danger"
-                    :icon="Delete"
-                    circle
-                    plain
-                    @click.stop="handleDelete(scope.data)"/>
-              </span>
+            <el-button v-show="scope.data.level != 3" type="success" :icon="Plus" circle plain
+              @click.stop="handleAdd(scope.data)" />
+            <el-button v-show="scope.data.id !== 0" type="warning" :icon="Edit" circle plain
+              @click.stop="handleUpdate(scope.data)" />
+            <el-button v-show="scope.data.id && (!scope.data.children || scope.data.children.length <= 0)" type="danger"
+              :icon="Delete" circle plain @click.stop="handleDelete(scope.data)" />
+          </span>
         </div>
       </template>
     </el-tree>
 
-    <el-dialog
-        :title="dialog.title"
-        v-model="dialog.visible"
-        width="750px"
-    >
+    <el-dialog :title="dialog.title" v-model="dialog.visible" width="750px">
 
-      <el-form
-          ref="dataFormRef"
-          :model="formData"
-          :rules="rules"
-          label-width="100px"
-      >
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="上级分类" prop="parentId">
-          <el-input v-model="parent.name" readonly/>
+          <el-input v-model="parent.name" readonly />
         </el-form-item>
 
         <el-form-item label="分类名称" prop="name">
-          <el-input v-model="formData.name"/>
+          <el-input v-model="formData.name" />
         </el-form-item>
 
         <el-form-item label="分类图标" prop="iconUrl">
-          <single-upload v-model="formData.iconUrl"/>
+          <single-upload v-model="formData.iconUrl" />
         </el-form-item>
 
         <el-form-item label="显示状态" prop="visible">
@@ -103,11 +67,11 @@
 </template>
 
 <script setup lang="ts">
-import {listCategories, addCategory, updateCategory, deleteCategories} from '@/api/pms/category'
-import {Search, Plus, Edit, Refresh, Delete} from '@element-plus/icons-vue'
+import { listCategories, addCategory, updateCategory, deleteCategories } from '@/api/pms/category'
+import { Plus, Edit, Delete } from '@element-plus/icons-vue'
 import SingleUpload from '@/components/Upload/SingleUpload.vue'
-import {getCurrentInstance, onMounted, reactive, ref, toRefs, unref} from "vue";
-import {ElForm, ElMessage, ElMessageBox, ElTree} from "element-plus";
+import { onMounted, reactive, ref, toRefs, unref, defineEmits } from "vue";
+import { ElForm, ElMessage, ElMessageBox, ElTree } from "element-plus";
 
 const emit = defineEmits(['categoryClick'])
 
@@ -145,7 +109,7 @@ const state = reactive({
   current: {} as any
 })
 
-const {loading, categoryOptions, formData, rules, dialog, parent} = toRefs(state)
+const { loading, categoryOptions, formData, rules, dialog, parent } = toRefs(state)
 
 function handleQuery() {
   state.loading = true
@@ -159,7 +123,6 @@ function handleQuery() {
     }]
     state.loading = false
   })
-
 }
 
 function handleNodeClick(row: any) {
@@ -175,9 +138,7 @@ function handleNodeClick(row: any) {
   emit('categoryClick', row)
 }
 
-
 function handleAdd(row: any) {
-  resetForm()
   state.dialog = {
     title: '新增商品分类',
     visible: true
@@ -192,7 +153,6 @@ function handleAdd(row: any) {
 }
 
 function handleUpdate(row: any) {
-  resetForm()
   handleNodeClick(row)
   state.dialog = {
     title: '修改商品分类',
@@ -202,24 +162,23 @@ function handleUpdate(row: any) {
 }
 
 function submitForm() {
-  const form = unref(dataFormRef)
-  form.validate((valid: any) => {
+  dataFormRef.value.validate((valid: any) => {
     if (valid) {
       if (state.formData.id) {
-        updateCategory(state.formData.id, state.formData).then(response => {
+        updateCategory(state.formData.id, state.formData).then(() => {
           ElMessage.success('修改成功')
-          state.dialog.visible = false
+          cancel()
           handleQuery()
         })
       } else {
-        const parentCategory= state.parent as any
-        console.log('parent',parentCategory)
+        const parentCategory = state.parent as any
+        console.log('parent', parentCategory)
         state.formData.parentId = parentCategory.id
-        state.formData.level = parentCategory.level+1
+        state.formData.level = parentCategory.level + 1
 
         addCategory(state.formData).then(() => {
           ElMessage.success('新增成功')
-          state.dialog.visible = false
+          cancel()
           handleQuery()
         })
       }
@@ -241,20 +200,9 @@ function handleDelete(row: any) {
   })
 }
 
-function resetForm() {
-  state.formData = {
-    id: undefined,
-    name: undefined,
-    parentId: 0,
-    level: undefined,
-    iconUrl: undefined,
-    visible: 1,
-    sort: 100
-  }
-}
-
 function cancel() {
-  resetForm()
+  state.dialog.visible = false;
+  dataFormRef.value.resetFields();
   state.dialog.visible = false
 }
 

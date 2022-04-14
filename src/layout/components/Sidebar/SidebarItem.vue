@@ -32,8 +32,8 @@
 </template>
 
 <script setup lang="ts">
-import path from 'path-browserify'
 import { ref} from "vue";
+import path from 'path-browserify'
 import {isExternal} from '@/utils/validate'
 import AppLink from './Link.vue'
 
@@ -83,7 +83,7 @@ function hasOneShowingChild(children = [] as any, parent: any) {
   }
 
   return false
-};
+}
 
 function resolvePath(routePath: string) {
   if (isExternal(routePath)) {

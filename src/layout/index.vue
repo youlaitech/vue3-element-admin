@@ -5,16 +5,16 @@
       class="drawer-bg"
       @click="handleClickOutside"
     />
-    <sidebar class="sidebar-container" />
+    <Sidebar class="sidebar-container" />
     <div :class="{ hasTagsView: needTagsView }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
-      <right-panel v-if="showSettings">
+      <RightPanel v-if="showSettings">
         <settings />
-      </right-panel>
+      </RightPanel>
     </div>
   </div>
 </template>
@@ -28,7 +28,7 @@ import RightPanel from "@/components/RightPanel/index.vue";
 
 import useStore from "@/store";
 
-const { width, height } = useWindowSize();
+const { width } = useWindowSize();
 const WIDTH = 992;
 
 const { app, setting } = useStore();

@@ -4,7 +4,7 @@ import { PageQueryParam, PageResult } from "../base"
  * 广告查询参数类型声明
  */
 export interface AdvertQueryParam extends PageQueryParam {
-    title: String | undefined
+    title?: string
 }
 
 /**
@@ -20,15 +20,13 @@ export interface AdvertItem {
 /**
  * 广告分页项类型声明
  */
-export interface AdvertPageResult extends PageResult<AdvertItem[]> {
-
-}
+export type AdvertPageResult = PageResult<AdvertItem[]>
 
 /**
  * 广告表单类型声明
  */
 export interface AdvertFormData {
-    id: number | undefined;
+    id?: number;
     title: string;
     picUrl: string;
     beginTime: string;

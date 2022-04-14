@@ -1,28 +1,19 @@
 <template>
   <div style="border: 1px solid #ccc">
     <!-- 工具栏 -->
-    <Toolbar
-        :editorId="editorId"
-        :defaultConfig="toolbarConfig"
-        style="border-bottom: 1px solid #ccc"
-    />
+    <Toolbar :editor="editorRef" :defaultConfig="toolbarConfig" style="border-bottom: 1px solid #ccc" :mode="mode" />
     <!-- 编辑器 -->
-    <Editor
-        :editorId="editorId"
-        :defaultConfig="editorConfig"
-        :defaultHtml="defaultHtml"
-        @onChange="handleChange"
-        style="height: 500px; overflow-y: hidden;"
-    />
+    <Editor :defaultConfig="editorConfig" v-model="defaultHtml" @onChange="handleChange"
+      style="height: 500px; overflow-y: hidden;" :mode="mode" @onCreated="handleCreated" />
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, onBeforeUnmount, reactive, toRefs} from 'vue'
-import {Editor, Toolbar, getEditor, removeEditor} from '@wangeditor/editor-for-vue'
+import { onBeforeUnmount, shallowRef, reactive, toRefs} from 'vue'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 
 // API 引用
-import {uploadFile} from "@/api/system/file";
+import { uploadFile } from "@/api/system/file";
 
 const props = defineProps({
   modelValue: {
@@ -33,16 +24,18 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
+// 编辑器实例，必须用 shallowRef
+const editorRef = shallowRef()
+
 const state = reactive({
-  editorId: `w-e-${Math.random().toString().slice(-5)}`, //【注意】编辑器 id ，要全局唯一
   toolbarConfig: {},
   editorConfig: {
     placeholder: '请输入内容...',
     MENU_CONF: {
       uploadImage: {
         // 自定义图片上传
-        // @link https://www.wangeditor.com/v5/guide/menu-config.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%9F%E8%83%BD
-        async customUpload(file:any, insertFn:any) {
+        async customUpload(file: any, insertFn: any) {
+          console.log("上传图片")
           uploadFile(file).then(response => {
             const url = response.data
             insertFn(url)
@@ -51,23 +44,28 @@ const state = reactive({
       }
     }
   },
-  defaultHtml: props.modelValue
+  defaultHtml: props.modelValue,
+  mode: 'default'
 })
 
-const {editorId, toolbarConfig, editorConfig,defaultHtml} = toRefs(state)
+const { toolbarConfig, editorConfig, defaultHtml, mode } = toRefs(state)
 
-function handleChange(editor:any) {
+const handleCreated = (editor: any) => {
+  editorRef.value = editor // 记录 editor 实例，重要！
+}
+
+function handleChange(editor: any) {
   emit('update:modelValue', editor.getHtml())
 }
 
 // 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {
-  const editor = getEditor(state.editorId)
+  const editor = editorRef.value
   if (editor == null) return
   editor.destroy()
-  removeEditor(state.editorId)
 })
 
 </script>
 
-<style src="@wangeditor/editor/dist/css/style.css"></style>
+<style src="@wangeditor/editor/dist/css/style.css">
+</style>

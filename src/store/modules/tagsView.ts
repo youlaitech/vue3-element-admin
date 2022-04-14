@@ -145,7 +145,7 @@ const useTagsViewStore = defineStore({
                 })
             })
         },
-        delAllViews(view: any) {
+        delAllViews() {
             return new Promise(resolve => {
                 const affixTags = this.visitedViews.filter(tag => tag.meta?.affix)
                 this.visitedViews = affixTags

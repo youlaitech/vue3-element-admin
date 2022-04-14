@@ -4,7 +4,7 @@ import { PageQueryParam, PageResult } from "../base"
  * 品牌查询参数类型声明
  */
 export interface BrandQueryParam extends PageQueryParam {
-    name: String | undefined
+    name?: string
 }
 
 
@@ -21,9 +21,7 @@ export interface BrandItem {
 /**
  * 品牌分页项类型声明
  */
-export interface BrandPageResult extends PageResult<BrandItem[]> {
-
-}
+export type BrandPageResult = PageResult<BrandItem[]>
 
 /**
  * 品牌表单类型声明

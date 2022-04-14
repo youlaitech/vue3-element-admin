@@ -118,10 +118,10 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from "vue";
-import { ElForm, ElMessage, ElMessageBox } from "element-plus";
+import { ElForm } from "element-plus";
 import { Dialog, Order, OrderQueryParam } from "@/types";
 import { listOrderPages, getOrderDetail } from "@/api/oms/order";
-import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
+import { Search, Refresh } from "@element-plus/icons-vue";
 
 const queryFormRef = ref(ElForm);
 
@@ -196,14 +196,10 @@ const state = reactive({
 
 const {
   loading,
-  single,
-  multiple,
   queryParams,
   orderList,
   total,
-  dialog,
   dateRange,
-  orderDetail,
 } = toRefs(state);
 
 function handleQuery() {
@@ -227,9 +223,6 @@ function viewDetail(row: any) {
   });
 }
 
-function cancel() {
-  state.dialog.visible = false;
-}
 
 onMounted(() => {
   handleQuery();

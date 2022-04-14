@@ -142,7 +142,6 @@ const state = reactive({
   },
   loading: false,
   passwordType: "password",
-  redirect: "",
   captchaBase64: "",
   // 大写提示禁用
   capslockTooltipDisabled: true,
@@ -164,7 +163,6 @@ const {
   loginRules,
   loading,
   passwordType,
-  redirect,
   captchaBase64,
   capslockTooltipDisabled,
   showCopyright,

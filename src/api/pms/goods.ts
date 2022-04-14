@@ -1,4 +1,4 @@
-import { GoodsPageResult, GoodsQueryParam } from '@/types'
+import { GoodsDetail, GoodsPageResult, GoodsQueryParam } from '@/types'
 import request from '@/utils/request'
 import { AxiosPromise } from 'axios'
 
@@ -20,7 +20,7 @@ export function listGoodsPages(queryParams: GoodsQueryParam):AxiosPromise<GoodsP
  *
  * @param id
  */
-export function getGoodsFormDetail(id: number) {
+export function getGoodsDetail(id: string):AxiosPromise<GoodsDetail> {
     return request({
         url: '/mall-pms/api/v1/goods/' + id,
         method: 'get'

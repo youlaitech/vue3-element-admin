@@ -212,7 +212,7 @@ import { listSelectDepartments } from "@/api/system/dept";
 import { listRoles } from "@/api/system/role";
 
 // 组件依赖
-import { ElMessage, ElMessageBox, ElTree, ElForm, UploadRequestOptions } from "element-plus";
+import { ElMessage, ElMessageBox, ElTree, ElForm, UploadFile } from "element-plus";
 import {
   Search,
   Plus,
@@ -234,7 +234,6 @@ import {
   Dialog,
   UserImportFormData
 } from "@/types";
-import { assertFile } from "@babel/types";
 
 // DOM元素的引用声明定义 ，变量名和DOM的ref属性值一致
 const deptTreeRef = ref(ElTree);  // 部门树
@@ -312,7 +311,6 @@ const state = reactive({
 
 const {
   loading,
-  single,
   multiple,
   queryParams,
   userList,
@@ -444,7 +442,7 @@ function resetPassword(row: { [key: string]: any }) {
         ElMessage.success("修改成功，新密码是：" + value);
       });
     })
-    .catch(() => { });
+    .catch(() => {});
 }
 
 /**
@@ -489,7 +487,7 @@ function submitForm() {
           handleQuery();
         });
       } else {
-        addUser(state.formData).then((response: any) => {
+        addUser(state.formData).then(() => {
           ElMessage.success("新增用户成功");
           cancel()
           handleQuery();
@@ -576,8 +574,7 @@ async function showImportDialog() {
 }
 
 
-function handleExcelChange(file: any, fileList: File[]) {
-  const fileName = file.name;
+function handleExcelChange(file: UploadFile) {
   if (!/\.(xlsx|xls|XLSX|XLS)$/.test(file.name)) {
     ElMessage.warning('上传Excel只能为xlsx、xls格式');
     state.excelFile = undefined

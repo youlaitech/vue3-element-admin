@@ -3,40 +3,20 @@
     <!-- 搜索表单 -->
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd"
-          >新增</el-button
-        >
-        <el-button
-          type="danger"
-          :icon="Delete"
-          :disabled="multiple"
-          @click="handleDelete"
-          >删除</el-button
-        >
+        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
+        <el-button type="danger" :icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
 
       <el-form-item prop="title">
-        <el-input
-          v-model="queryParams.title"
-          placeholder="广告标题"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+        <el-input v-model="queryParams.title" placeholder="广告标题" clearable @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery"
-          >搜索</el-button
-        >
+        <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-table
-      v-loading="loading"
-      :data="advertList"
-      @selection-change="handleSelectionChange"
-      border
-    >
+    <el-table v-loading="loading" :data="advertList" @selection-change="handleSelectionChange" border>
       <el-table-column type="selection" min-width="5" align="center" />
       <el-table-column type="index" label="序号" width="80" align="center" />
       <el-table-column prop="title" min-width="100" label="广告标题" />
@@ -45,10 +25,7 @@
           <el-popover placement="right" :width="400" trigger="hover">
             <img :src="scope.row.picUrl" width="400" height="400" />
             <template #reference>
-              <img
-                :src="scope.row.picUrl"
-                style="max-height: 60px; max-width: 60px"
-              />
+              <img :src="scope.row.picUrl" style="max-height: 60px; max-width: 60px" />
             </template>
           </el-popover>
         </template>
@@ -64,57 +41,27 @@
       <el-table-column prop="sort" label="排序" width="80" />
       <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
-          <el-button
-            type="primary"
-            :icon="Edit"
-            circle
-            plain
-            @click.stop="handleUpdate(scope.row)"
-          />
-          <el-button
-            type="danger"
-            :icon="Delete"
-            circle
-            plain
-            @click.stop="handleDelete(scope.row)"
-          />
+          <el-button type="primary" :icon="Edit" circle plain @click.stop="handleUpdate(scope.row)" />
+          <el-button type="danger" :icon="Delete" circle plain @click.stop="handleDelete(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 分页工具条 -->
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      v-model:page="queryParams.pageNum"
-      v-model:limit="queryParams.pageSize"
-      @pagination="handleQuery"
-    />
+    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+      @pagination="handleQuery" />
 
     <!-- 表单弹窗 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="700px">
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-      >
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="广告标题" prop="title">
           <el-input v-model="formData.title" />
         </el-form-item>
 
         <el-form-item label="有效期" prop="beginTime">
-          <el-date-picker
-            v-model="formData.beginTime"
-            placeholder="开始时间"
-            value-format="YYYY-MM-DD"
-          />
+          <el-date-picker v-model="formData.beginTime" placeholder="开始时间" value-format="YYYY-MM-DD" />
           ~
-          <el-date-picker
-            v-model="formData.endTime"
-            placeholder="结束时间"
-            value-format="YYYY-MM-DD"
-          />
+          <el-date-picker v-model="formData.endTime" placeholder="结束时间" value-format="YYYY-MM-DD" />
         </el-form-item>
 
         <el-form-item label="广告图片" prop="picUrl">
@@ -152,7 +99,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, toRefs, unref } from "vue";
+import { onMounted, reactive, ref, toRefs } from "vue";
 import { ElForm, ElMessage, ElMessageBox } from "element-plus";
 import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
 import SingleUpload from "@/components/Upload/SingleUpload.vue";
@@ -194,7 +141,6 @@ const state = reactive({
 
 const {
   loading,
-  single,
   multiple,
   queryParams,
   advertList,
@@ -206,7 +152,7 @@ const {
 
 function handleQuery() {
   state.loading = true;
-  listAdvertPages(state.queryParams).then(({data}) => {
+  listAdvertPages(state.queryParams).then(({ data }) => {
     state.advertList = data.list;
     state.total = data.total;
     state.loading = false;
@@ -225,7 +171,6 @@ function handleSelectionChange(selection: any) {
 }
 
 function handleAdd() {
-  resetForm();
   state.dialog = {
     title: "添加广告",
     visible: true,
@@ -248,13 +193,13 @@ function submitForm() {
     if (valid) {
       const avertId = state.formData.id;
       if (avertId) {
-        updateAdvert(avertId, state.formData).then((response) => {
+        updateAdvert(avertId, state.formData).then(() => {
           ElMessage.success("修改成功");
           cancel();
           handleQuery();
         });
       } else {
-        addAdvert(state.formData).then((response) => {
+        addAdvert(state.formData).then(() => {
           ElMessage.success("新增成功");
           cancel();
           handleQuery();
@@ -264,16 +209,9 @@ function submitForm() {
   });
 }
 
-/**
- * 重置表单
- */
-function resetForm() {
+function cancel() {
   state.formData.id = undefined;
   dataFormRef.value.resetFields();
-}
-
-function cancel() {
-  resetForm();
   state.dialog.visible = false;
 }
 

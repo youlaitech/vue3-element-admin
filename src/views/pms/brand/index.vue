@@ -3,16 +3,8 @@
     <!-- 搜索表单 -->
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd"
-          >新增</el-button
-        >
-        <el-button
-          type="danger"
-          :icon="Delete"
-          click="handleDelete"
-          :disabled="multiple"
-          >删除</el-button
-        >
+        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
+        <el-button type="danger" :icon="Delete" click="handleDelete" :disabled="multiple">删除</el-button>
       </el-form-item>
 
       <el-form-item prop="name">
@@ -20,20 +12,13 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery"
-          >搜索</el-button
-        >
-        <el-button :icon="Refresh" @click="resetForm">重置</el-button>
+        <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
+        <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <!-- 数据表格 -->
-    <el-table
-      v-loading="loading"
-      :data="brandList"
-      @selection-change="handleSelectionChange"
-      border
-    >
+    <el-table v-loading="loading" :data="brandList" @selection-change="handleSelectionChange" border>
       <el-table-column type="selection" min-width="5%" />
       <el-table-column prop="name" label="品牌名称" min-width="10" />
       <el-table-column prop="logoUrl" label="LOGO" min-width="10">
@@ -41,10 +26,7 @@
           <el-popover placement="right" :width="400" trigger="hover">
             <img :src="scope.row.logoUrl" width="400" height="400" />
             <template #reference>
-              <img
-                :src="scope.row.logoUrl"
-                style="max-height: 60px; max-width: 60px"
-              />
+              <img :src="scope.row.logoUrl" style="max-height: 60px; max-width: 60px" />
             </template>
           </el-popover>
         </template>
@@ -54,46 +36,19 @@
 
       <el-table-column label="操作" width="150">
         <template #default="scope">
-          <el-button
-            @click="handleUpdate(scope.row)"
-            type="primary"
-            :icon="Edit"
-            circle
-            plain
-          />
-          <el-button
-            type="danger"
-            :icon="Delete"
-            circle
-            plain
-            @click="handleDelete(scope.row)"
-          />
+          <el-button @click="handleUpdate(scope.row)" type="primary" :icon="Edit" circle plain />
+          <el-button type="danger" :icon="Delete" circle plain @click="handleDelete(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 分页工具条 -->
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      v-model:page="queryParams.pageNum"
-      v-model:limit="queryParams.pageSize"
-      @pagination="handleQuery"
-    />
+    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+      @pagination="handleQuery" />
 
     <!-- 表单弹窗 -->
-    <el-dialog
-      :title="dialog.title"
-      v-model="dialog.visible"
-      top="5vh"
-      width="600px"
-    >
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-      >
+    <el-dialog :title="dialog.title" v-model="dialog.visible" top="5vh" width="600px">
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="品牌名称" prop="name">
           <el-input v-model="formData.name" auto-complete="off" />
         </el-form-item>
@@ -118,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, toRefs, unref } from "vue";
+import { onMounted, reactive, ref, toRefs } from "vue";
 import { ElForm, ElTable, ElMessage, ElMessageBox } from "element-plus";
 import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
 import { BrandFormData, BrandItem, BrandQueryParam, Dialog } from "@/types";
@@ -156,14 +111,13 @@ const state = reactive({
         required: true,
         message: "请输入品牌名称",
         trigger: "blur",
-      },
-    ],
+      }
+    ]
   },
 });
 
 const {
   loading,
-  single,
   multiple,
   queryParams,
   brandList,
@@ -211,17 +165,20 @@ function handleUpdate(row: any) {
   });
 }
 
+/**
+ * 表单提交
+ */
 function submitForm() {
   dataFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
       if (state.formData.id) {
-        updateBrand(state.formData.id, state.formData).then((response) => {
+        updateBrand(state.formData.id, state.formData).then(() => {
           ElMessage.success("修改成功");
           cancel();
           handleQuery();
         });
       } else {
-        addBrand(state.formData).then((response) => {
+        addBrand(state.formData).then(() => {
           ElMessage.success("新增成功");
           cancel();
           handleQuery();
@@ -232,18 +189,16 @@ function submitForm() {
 }
 
 /**
- * 重置表单
+ * 取消
  */
-function resetForm() {
-  state.formData.id = undefined;
+function cancel() {
+  state.dialog.visible = false;
   dataFormRef.value.resetFields();
 }
 
-function cancel() {
-  state.dialog.visible = false;
-  resetForm();
-}
-
+/**
+ * 删除
+ */
 function handleDelete(row: any) {
   const ids = [row.id || state.ids].join(",");
   ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {

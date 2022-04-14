@@ -65,7 +65,6 @@ import Hamburger from "@/components/Hamburger/index.vue";
 import Screenfull from "@/components/Screenfull/index.vue";
 import SizeSelect from "@/components/SizeSelect/index.vue";
 import LangSelect from "@/components/LangSelect/index.vue";
-import SvgIcon from "@/components/SvgIcon/index.vue";
 
 // 图标依赖
 import { CaretBottom } from "@element-plus/icons-vue";

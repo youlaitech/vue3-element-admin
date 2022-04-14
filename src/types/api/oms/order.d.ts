@@ -38,9 +38,7 @@ export interface OrderItem {
 /**
  * 订单分页项类型声明
  */
-export interface OrderPageResult extends PageResult<Order[]> {
-
-}
+export type OrderPageResult = PageResult<Order[]>
 
 /**
  * 订单表单类型声明

@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
+  <div class="sidebar-logo-container" :class="{ 'collapse': isCollapse }">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo">
@@ -14,17 +14,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, reactive, toRefs } from 'vue';
 
 const props = defineProps({
   collapse: {
-      type: Boolean,
-      required: true
-    }
+    type: Boolean,
+    required: true
+  }
 })
 
-const title=ref("vue3-element-admin")
-const logo=ref("https://s2.loli.net/2022/04/07/hyquWXELOoYvlP6.png")
+const state = reactive({
+  isCollapse: props.collapse
+})
+
+const { isCollapse } = toRefs(state)
+
+const title = ref("vue3-element-admin")
+const logo = ref("https://s2.loli.net/2022/04/07/hyquWXELOoYvlP6.png")
 
 </script>
 
@@ -32,10 +38,12 @@ const logo=ref("https://s2.loli.net/2022/04/07/hyquWXELOoYvlP6.png")
 .sidebarLogoFade-enter-active {
   transition: opacity 1.5s;
 }
+
 .sidebarLogoFade-enter,
 .sidebarLogoFade-leave-to {
   opacity: 0;
 }
+
 .sidebar-logo-container {
   position: relative;
   width: 100%;

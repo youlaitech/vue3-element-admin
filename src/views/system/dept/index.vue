@@ -179,7 +179,6 @@ const state = reactive({
   ids: [] as number[],
   // 非单个禁用
   single: true,
-  disabled: false,
   loading: true,
   // 表格树数据
   deptList: [] as DeptItem[],
@@ -205,9 +204,7 @@ const state = reactive({
 });
 
 const {
-  ids,
   single,
-  disabled,
   loading,
   deptList,
   deptOptions,
@@ -258,14 +255,6 @@ async function loadDeptOptions() {
 }
 
 /**
- * 表单重置
- **/
-function resetForm() {
-  state.formData.id = undefined;
-  dataFormRef.value.resetFields();
-}
-
-/**
  * 添加部门
  */
 function handleAdd(row: any) {
@@ -300,15 +289,15 @@ function submitForm() {
   dataForm.validate((valid: any) => {
     if (valid) {
       if (state.formData.id) {
-        updateDept(state.formData.id, state.formData).then((res: any) => {
+        updateDept(state.formData.id, state.formData).then(() => {
           ElMessage.success("修改成功");
-          state.dialog.visible = false;
+          cancel();
           handleQuery();
         });
       } else {
         addDept(state.formData).then(() => {
           ElMessage.success("新增成功");
-          state.dialog.visible = false;
+          cancel();
           handleQuery();
         });
       }
@@ -345,7 +334,8 @@ function handleDelete(row: any) {
  * 取消/关闭弹窗
  **/
 function cancel() {
-  resetForm();
+  state.formData.id = undefined;
+  dataFormRef.value.resetFields();
   state.dialog.visible = false;
 }
 
