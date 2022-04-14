@@ -132,7 +132,7 @@ const state = reactive({
     dictCode: props.dictCode,
     dictName: props.dictName,
     status: 1,
-    sort: 1,
+    sort: 1
   } as DictItemFormData,
   rules: {
     name: [{ required: true, message: "请输入字典项名称", trigger: "blur" }],

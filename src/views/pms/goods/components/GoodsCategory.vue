@@ -27,7 +27,6 @@ import { CaretRight } from '@element-plus/icons-vue';
 // API 引用
 import { listCascadeCategories } from "@/api/pms/category";
 import { computed } from "@vue/reactivity";
-import { GoodsDetail } from "@/types";
 
 const emit = defineEmits(['next', "update:modelValue"])
 const props = defineProps({
