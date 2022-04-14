@@ -25,9 +25,7 @@ export interface Dict {
 /**
  * 字典分页项类型声明
  */
-export interface DictPageResult extends PageResult<Dict[]> {
-
-}
+export type DictPageResult = PageResult<Dict[]>
 
 /**
  * 字典表单类型声明
@@ -71,16 +69,15 @@ export interface DictItem {
 /**
  * 字典分页项类型声明
  */
-export interface DictItemPageResult extends PageResult<DictItem[]> {
-
-}
+export type DictItemPageResult = PageResult<DictItem[]>
 
 /**
  * 字典表单类型声明
  */
 export interface DictItemFormData {
-    id: number | undefined;
-    dictCode:string,
+    id?: number;
+    dictCode?:string,
+    dictName?:string;
     name: string;
     code: string;
     value: string;

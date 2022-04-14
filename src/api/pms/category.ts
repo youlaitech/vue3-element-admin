@@ -18,7 +18,7 @@ export function listCategories(queryParams:object){
  *
  * @param queryParams
  */
-export function listCascadeCategories(queryParams:object) {
+export function listCascadeCategories(queryParams?:object) {
     return request({
         url: '/mall-pms/api/v1/categories/cascade',
         method: 'get',

@@ -23,9 +23,7 @@ export interface PermItem {
 /**
  * 权限分页项类型声明
  */
-export interface PermPageResult extends PageResult<PermItem[]> {
-
-}
+export type PermPageResult = PageResult<PermItem[]>
 
 /**
  * 权限表单类型声明

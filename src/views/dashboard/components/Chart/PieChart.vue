@@ -11,7 +11,6 @@
 import {nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted} from "vue";
 import {init, EChartsOption} from 'echarts'
 import resize from "@/utils/resize";
-import * as echarts from "echarts";
 
 const props = defineProps({
   id: {

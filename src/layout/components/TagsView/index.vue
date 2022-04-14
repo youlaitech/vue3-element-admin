@@ -20,7 +20,7 @@
           class="el-icon-close"
           @click.prevent.stop="closeSelectedTag(tag)"
         >
-          <close
+          <Close
             class="el-icon-close"
             style="width: 1em; height: 1em; vertical-align: middle"
           />

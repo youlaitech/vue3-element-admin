@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 import { AxiosPromise } from "axios";
-import { UserFormData, UserImportFormData, UserInfo, UserPageResult, UserQueryParam } from "@/types";
+import { UserFormData, UserInfo, UserPageResult, UserQueryParam } from "@/types";
 
 /**
  * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
@@ -113,6 +113,7 @@ export function exportUser(queryParams: UserQueryParam) {
     return request({
         url: '/youlai-admin/api/v1/users/_export',
         method: 'get',
+        params:queryParams,
         responseType: "arraybuffer"
     })
 }
@@ -123,7 +124,7 @@ export function exportUser(queryParams: UserQueryParam) {
  * @param file
  */
 export function importUser(deptId: number, roleIds: string, file: File) {
-    let formData = new FormData()
+    const formData = new FormData()
     formData.append('file', file)
     formData.append('deptId',deptId.toString())
     formData.append('roleIds',roleIds)

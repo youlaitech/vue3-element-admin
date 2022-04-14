@@ -31,9 +31,7 @@ export interface ClientItem {
 /**
  * 客户端分页项类型声明
  */
-export interface ClientPageResult extends PageResult<ClientItem[]> {
-
-}
+export type ClientPageResult = PageResult<ClientItem[]>
 
 /**
  * 客户端表单类型声明

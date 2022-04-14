@@ -1,44 +1,27 @@
 <template>
   <div class="el-tree-select">
-    <el-select
-      style="width: 100%"
-      v-model="modelValue"
-      ref="treeSelect"
-      :filterable="true"
-      :clearable="true"
-      @clear="clearHandle"
-      :filter-method="selectFilterData"
-      :placeholder="placeholder"
-    >
+    <el-select style="width: 100%" v-model="modelValue" ref="treeSelect" :filterable="true" :clearable="true"
+      @clear="clearHandle" :filter-method="selectFilterData" :placeholder="placeholder">
       <el-option :value="modelValue" :label="valueTitle">
-        <el-tree
-          id="tree-option"
-          ref="selectTree"
-          :accordion="accordion"
-          :data="options"
-          :props="state.props"
-          :node-key="state.props.value"
-          :expand-on-click-node="false"
-          :default-expanded-keys="defaultExpandedKey"
-          :filter-node-method="filterNode"
-          @node-click="handleNodeClick"
-        ></el-tree>
+        <el-tree id="tree-option" ref="selectTree" :accordion="accordion" :data="options" :props="state.props"
+          :node-key="state.props.value" :expand-on-click-node="false" :default-expanded-keys="defaultExpandedKey"
+          :filter-node-method="filterNode" @node-click="handleNodeClick"></el-tree>
       </el-option>
     </el-select>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
   ref,
   getCurrentInstance,
   nextTick,
   onMounted,
   computed,
-  watch,
+  watch
 } from "vue";
 
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance() as any;
 
 const state = defineProps({
   // 配置项
@@ -67,7 +50,9 @@ const state = defineProps({
   // 数据源
   options: {
     type: Array,
-    default: [],
+    default: () => {
+      return []
+    }
   },
   // 提示文字
   placeholder: {
@@ -87,9 +72,9 @@ const modelValue = computed({
   },
 });
 const valueTitle = ref("");
-const defaultExpandedKey = ref([]);
+const defaultExpandedKey = ref([] as any[]);
 
-function handleNodeClick(node) {
+function handleNodeClick(node: any) {
   valueTitle.value = node[state.props.label];
   modelValue.value = node[state.props.value];
   defaultExpandedKey.value = [];
@@ -97,11 +82,11 @@ function handleNodeClick(node) {
   selectFilterData("");
 }
 
-function selectFilterData(val) {
+function selectFilterData(val: any) {
   proxy.$refs.selectTree.filter(val);
 }
 
-function filterNode(value, data) {
+function filterNode(value: any, data: any) {
   if (!value) return true;
   return data[state.props["label"]].indexOf(value) !== -1;
 }

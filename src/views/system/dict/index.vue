@@ -17,11 +17,11 @@
           <template #header>
             <svg-icon color="#333" icon-class="dict"/>
             <span style="margin:0 5px;">字典数据项</span>
-            <el-tag type="success" v-if=" state.dictCode" size="small">{{ state.dictName }}</el-tag>
+            <el-tag type="success" v-if="dictCode" size="small">{{dictName }}</el-tag>
             <el-tag type="warning" v-else size="small">未选择字典</el-tag>
           </template>
           <!-- 字典项组件 -->
-          <dict-item :dictName="state.dictName" :dictCode='state.dictCode'/>
+          <dict-item :dictName="dictName" :dictCode='dictCode'/>
         </el-card>
       </el-col>
     </el-row>

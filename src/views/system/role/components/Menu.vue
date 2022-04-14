@@ -4,44 +4,26 @@
       <el-form-item>
         <el-row>
           <el-col :span="16">
-            <el-button
-              type="success"
-              plain
-              :icon="Switch"
-              @click="toggleExpandAll"
-              >展开/折叠</el-button
-            >
+            <el-button type="success" plain :icon="Switch" @click="toggleExpandAll">展开/折叠</el-button>
           </el-col>
           <el-col :span="8" style="text-align: right">
-            <el-button type="primary" :icon="Check" @click="handleSubmit"
-              >提交</el-button
-            >
+            <el-button type="primary" :icon="Check" @click="handleSubmit">提交</el-button>
           </el-col>
         </el-row>
       </el-form-item>
     </el-form>
 
-    <el-tree
-      ref="menuRef"
-      v-if="refreshTree"
-      :default-expanded-keys="expandedKeys"
-      :default-expand-all="isExpandAll"
-      :data="menuOptions"
-      show-checkbox
-      node-key="id"
-      empty-text="加载菜单中..."
-      :check-strictly="checkStrictly"
-      highlight-current
-      @node-click="handleNodeClick"
-    />
+    <el-tree ref="menuRef" v-if="refreshTree" :default-expanded-keys="expandedKeys" :default-expand-all="isExpandAll"
+      :data="menuOptions" show-checkbox node-key="id" empty-text="加载菜单中..." :check-strictly="checkStrictly"
+      highlight-current @node-click="handleNodeClick" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { nextTick, onMounted, reactive, ref, toRefs, watch } from "vue";
 import { listSelectMenus } from "@/api/system/menu";
 import { listRoleMenuIds, updateRoleMenu } from "@/api/system/role";
-import { nextTick, onMounted, reactive, ref, toRefs, watch } from "vue";
-import { ElTree, ElMessage, ElMessageBox } from "element-plus";
+import { ElTree, ElMessage } from "element-plus";
 import { Switch, Check } from "@element-plus/icons-vue";
 import { Option } from "@/types";
 
@@ -49,7 +31,9 @@ const emit = defineEmits(["menuClick"]);
 const props = defineProps({
   role: {
     type: Object,
-    default: {},
+    default: () => {
+      return {}
+    },
   },
 });
 
@@ -57,7 +41,7 @@ const menuRef = ref(ElTree); // 属性名必须和元素的ref属性值一致
 
 watch(
   () => props.role.id as any,
-  (newVal, oldVal) => {
+  () => {
     const roleId = props.role.id;
     if (roleId) {
       state.checkStrictly = true;

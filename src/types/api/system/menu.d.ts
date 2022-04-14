@@ -2,8 +2,8 @@
 /**
  * 菜单查询参数类型声明
  */
-export interface MenuQueryParam {
-    name: String | undefined
+ export interface MenuQueryParam {
+    name?: string
 }
 
 /**

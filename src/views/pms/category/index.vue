@@ -7,7 +7,7 @@
             <svg-icon icon-class="menu"/>
             商品分类
           </template>
-          <category ref="categoryRef" @categoryClick="handleCategoryClick"/>
+          <Category ref="categoryRef" @categoryClick="handleCategoryClick"/>
         </el-card>
       </el-col>
 
@@ -18,9 +18,9 @@
             {{category.name}} 规格属性
           </template>
           <!-- 商品规格 -->
-          <attribute ref="specificationRef" :attributeType="1" :category="category"/>
+          <Attribute ref="specificationRef" :attributeType="1" :category="category"/>
           <!-- 商品属性 -->
-          <attribute ref="attributeRef" :attributeType="2" :category="category"/>
+          <Attribute ref="attributeRef" :attributeType="2" :category="category"/>
         </el-card>
       </el-col>
     </el-row>

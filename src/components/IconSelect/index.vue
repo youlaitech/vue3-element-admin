@@ -1,13 +1,7 @@
 <template>
   <div class="icon-body">
-    <el-input
-      v-model="iconName"
-      style="position: relative;"
-      clearable
-      placeholder="请输入图标名称"
-      @clear="filterIcons"
-      @input="filterIcons"
-    >
+    <el-input v-model="iconName" style="position: relative;" clearable placeholder="请输入图标名称" @clear="filterIcons"
+      @input="filterIcons">
       <template #suffix><i class="el-icon-search el-input__icon" /></template>
     </el-input>
     <div class="icon-list">
@@ -19,11 +13,11 @@
   </div>
 </template>
 
-<script setup>
-import { ref} from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
-let icons = []
+const icons = [] as string[]
 const modules = import.meta.glob('../../assets/icons/svg/*.svg');
 for (const path in modules) {
   const p = path.split('assets/icons/svg/')[1].split('.svg')[0];
@@ -42,7 +36,7 @@ function filterIcons() {
   }
 }
 
-function selectedIcon(name) {
+function selectedIcon(name: string) {
   emit('selected', name)
   document.body.click()
 }
@@ -61,9 +55,11 @@ defineExpose({
 .icon-body {
   width: 100%;
   padding: 10px;
+
   .icon-list {
     height: 200px;
     overflow-y: scroll;
+
     div {
       height: 30px;
       line-height: 30px;
@@ -72,6 +68,7 @@ defineExpose({
       width: 33%;
       float: left;
     }
+
     span {
       display: inline-block;
       vertical-align: -0.15em;

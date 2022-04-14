@@ -7,7 +7,7 @@
       </template>
       <el-tabs v-model="teamActiveName">
         <el-tab-pane label="开发者「无回」" name="developer">
-          <div class="developer" ref="dev_wapper">
+          <div class="developer" ref="dev_wrapper">
             <ul class="developer__container">
               <li class="developer__item" v-for="(item, index) in developers" :key="index">
                 <div class="developer__inner">
@@ -21,9 +21,10 @@
                     <div class="developer__position">
                       <el-tag
                         v-for="(position, i) in item.positions"
-                        :type="colors[i % colors.length]"
+                        :type="(colors[i % colors.length] as any)"
                         :class="i !== 0 ? 'f-ml' : ''"
                         size="small"
+                        :key="i"
                       >{{ position }}</el-tag>
                     </div>
                     <div class="developer__homepage">
@@ -41,8 +42,8 @@
           <div class="group">
             <el-image
               class="group-img"
-              src="https://cdn.youlai.tech/youlaiqun.png"
-              :preview-src-list="['https://cdn.youlai.tech/youlaiqun.png']"
+              src="https://www.youlai.tech/files/blog/youlaiqun.png"
+              :preview-src-list="['https://www.youlai.tech/files/blog/youlaiqun.png']"
             />
             <div class="group-tip">群二维码过期可添加开发者微信由其拉入群，备注「有来」即可。</div>
           </div>
@@ -99,10 +100,10 @@ const { teamActiveName, developers, colors, indicatorImgUrl } = toRefs(state);
 
 let bScroll = reactive({})
 
-const dev_wapper = ref<HTMLElement | any>(null)
+const dev_wrapper = ref<HTMLElement | any>(null)
 
 onMounted(() => {
-  bScroll = new BScroll(dev_wapper.value, {
+  bScroll = new BScroll(dev_wrapper.value, {
     mouseWheel: true,//开启鼠标滚轮
     disableMouse: false,//启用鼠标拖动
     scrollX: true,  //X轴滚动启用 

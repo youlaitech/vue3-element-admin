@@ -86,68 +86,32 @@
     <!-- Echarts 图表 -->
     <el-row :gutter="40" style="margin-top: 20px">
       <el-col :sm="24" :lg="8" class="card-panel-col">
-        <BarChart
-          id="barChart"
-          height="400px"
-          width="100%"
-          class="chart-container"
-        />
+        <BarChart id="barChart" height="400px" width="100%" class="chart-container" />
       </el-col>
 
       <el-col :xs="24" :sm="12" :lg="8" class="card-panel-col">
-        <PieChart
-          id="pieChart"
-          height="400px"
-          width="100%"
-          class="chart-container"
-        />
+        <PieChart id="pieChart" height="400px" width="100%" class="chart-container" />
         <!--订单漏斗图-->
         <!--<FunnelChart id="funnelChart" height="400px" width="100%" class="chart-container"/>-->
       </el-col>
 
       <el-col :xs="24" :sm="12" :lg="8" class="card-panel-col">
-        <RadarChart
-          id="radarChart"
-          height="400px"
-          width="100%"
-          class="chart-container"
-        />
+        <RadarChart id="radarChart" height="400px" width="100%" class="chart-container" />
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script setup lang="ts">
-// Vue引用
-import {
-  computed,
-  nextTick,
-  onMounted,
-  reactive,
-  toRefs,
-  watchEffect,
-} from "vue";
-
 // 组件引用
 import GithubCorner from "@/components/GithubCorner/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import BarChart from "./components/Chart/BarChart.vue";
 import PieChart from "./components/Chart/PieChart.vue";
 import RadarChart from "./components/Chart/RadarChart.vue";
-import FunnelChart from "./components/Chart/FunnelChart.vue";
 
 import Project from "./components/Project/index.vue";
 import Team from "./components/Team/index.vue";
-
-import BScroll from "better-scroll";
-
-import useStore from "@/store";
-
-const { user } = useStore();
-
-const roles = computed(() => user.roles);
-const avatar = computed(() => user.avatar);
-const nickname = computed(() => user.nickname);
 </script>
 
 
@@ -171,8 +135,7 @@ const nickname = computed(() => user.nickname);
   }
 
   .user-profile {
-    .user-name {
-    }
+    .user-name {}
 
     .box-center {
       padding-top: 10px;

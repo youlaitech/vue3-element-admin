@@ -7,43 +7,21 @@
           <el-tag v-else type="info"><i class="el-icon-info"></i> 请选择商品分类</el-tag>
         </el-col>
         <el-col :span="12" style="text-align: right">
-          <el-button type="primary" :icon="Check"  @click="submitForm">提交</el-button>
+          <el-button type="primary" :icon="Check" @click="submitForm">提交</el-button>
         </el-col>
       </el-row>
 
       <el-row style="margin-top: 10px">
-        <el-form
-            ref="form"
-            :model="formData"
-            :disabled="category?.childrenLen>0"
-            label-width="100"
-        >
-          <el-form-item
-              v-for="(item, index) in formData.attributes"
-              :label="attributeTypeName + (index+1)"
-              :prop="'attributes.' + index + '.name'"
-              :rules="rules.attribute.name"
-          >
-            <el-input v-model="item.name" style="width: 300px"/>
+        <el-form ref="form" :model="formData" :disabled="category?.childrenLen > 0" label-width="100">
+          <el-form-item v-for="(item, index) in formData.attributes" :key="index" :label="attributeTypeName + (index + 1)"
+            :prop="'attributes.' + index + '.name'" :rules="rules.attribute.name">
+            <el-input v-model="item.name" style="width: 300px" />
 
-            <el-button
-                v-if="index===0"
-                type="success"
-                :icon="Plus"
-                circle
-                plain
-                @click.prevent="handleAdd()"
-                style="margin-left: 15px"
-            />
+            <el-button v-if="index === 0" type="success" :icon="Plus" circle plain @click.prevent="handleAdd()"
+              style="margin-left: 15px" />
 
-            <el-button
-                type="danger"
-                :icon="Delete"
-                plain
-                circle
-                @click.prevent="handleDelete(index)"
-                style="margin-left: 15px"
-            />
+            <el-button type="danger" :icon="Delete" plain circle @click.prevent="handleDelete(index)"
+              style="margin-left: 15px" />
           </el-form-item>
         </el-form>
       </el-row>
@@ -52,11 +30,12 @@
 </template>
 
 <script setup lang="ts">
-import {listAttributes, saveAttributeBatch} from "@/api/pms/attribute";
-import {computed, reactive, toRefs, watch} from "vue";
-import {Plus, Check, Delete} from '@element-plus/icons-vue'
-import {ElMessage} from "element-plus";
-import SvgIcon from '@/components/SvgIcon/index.vue';
+
+
+import { computed, reactive, toRefs, watch } from "vue";
+import { listAttributes, saveAttributeBatch } from "@/api/pms/attribute";
+import { Plus, Check, Delete } from '@element-plus/icons-vue'
+import { ElMessage } from "element-plus";
 
 const props = defineProps({
   attributeType: {
@@ -65,10 +44,12 @@ const props = defineProps({
   },
   category: {
     type: Object,
-    default: {
-      id: undefined,
-      name: '',
-      childrenLen: 0
+    default: () => {
+      return {
+        id: undefined,
+        name: '',
+        childrenLen: 0
+      }
     }
   }
 })
@@ -95,20 +76,20 @@ const state = reactive({
   rules: {
     attribute: {
       name: [
-        {required: true, validator: attributeNameValidator, trigger: 'blur'}
+        { required: true, validator: attributeNameValidator, trigger: 'blur' }
       ]
     }
   }
 })
 
-const {formData, rules} = toRefs(state)
+const { formData, rules } = toRefs(state)
 
-watch(() => props.category.id as any, (newVal, oldVal) => {
+watch(() => props.category.id as any, () => {
   const categoryId = props.category.id
   if (categoryId) {
-    listAttributes({categoryId: categoryId,type:props.attributeType}).then(response => {
+    listAttributes({ categoryId: categoryId, type: props.attributeType }).then(response => {
 
-      const {data} = response
+      const { data } = response
       if (data && data.length > 0) {
         state.formData.attributes = response.data
       } else {
@@ -156,8 +137,7 @@ function submitForm() {
 </script>
 
 <style scoped>
-.component-container{
+.component-container {
   margin-bottom: 20px;
 }
-
 </style>

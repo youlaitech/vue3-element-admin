@@ -1,74 +1,41 @@
 <template>
   <div class="component-container">
     <div class="component-container__main">
-      <el-form
-        ref="dataFormRef"
-        :rules="rules"
-        :model="modelValue"
-        label-width="120px"
-      >
+      <el-form ref="dataFormRef" :rules="rules" :model="goodsInfo" label-width="120px">
         <el-form-item label="商品品牌" prop="brandId">
-          <el-select
-            v-model="modelValue.brandId"
-            style="width: 400px"
-            clearable
-          >
-            <el-option
-              v-for="item in brandOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
+          <el-select v-model="goodsInfo.brandId" style="width: 400px" clearable>
+            <el-option v-for="item in brandOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="商品名称" prop="name">
-          <el-input style="width: 400px" v-model="modelValue.name" />
+          <el-input style="width: 400px" v-model="goodsInfo.name" />
         </el-form-item>
 
         <el-form-item label="原价" prop="originPrice">
-          <el-input style="width: 400px" v-model="modelValue.originPrice" />
+          <el-input style="width: 400px" v-model="goodsInfo.originPrice" />
         </el-form-item>
 
         <el-form-item label="现价" prop="price">
-          <el-input style="width: 400px" v-model="modelValue.price" />
+          <el-input style="width: 400px" v-model="goodsInfo.price" />
         </el-form-item>
 
         <el-form-item label="商品简介">
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 3, maxRows: 6 }"
-            v-model="modelValue.description"
-          />
+          <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" v-model="goodsInfo.description" />
         </el-form-item>
 
         <el-form-item label="商品相册">
-          <el-card
-            v-for="(item, index) in pictures"
-            :key="index"
+          <el-card v-for="(item, index) in pictures" :key="index"
             style="width: 170px; display: inline-block; margin-left: 10px;text-align:center"
-            :body-style="{ padding: '10px' }"
-          >
+            :body-style="{ padding: '10px' }">
             <single-upload v-model="item.url" :show-close="true" />
 
             <div v-if="item.url">
-              <el-button
-                type="text"
-                class="button"
-                v-if="item.main == true"
-                style="color: #ff4d51"
-                >商品主图</el-button
-              >
-              <el-button
-                type="text"
-                class="button"
-                v-else
-                @click="changeMainPicture(index)"
-                >设为主图</el-button
-              >
+              <el-button type="text" class="button" v-if="item.main == true" style="color: #ff4d51">商品主图</el-button>
+              <el-button type="text" class="button" v-else @click="changeMainPicture(index)">设为主图</el-button>
             </div>
 
-            <div  v-else>
+            <div v-else>
               <!-- 占位 -->
               <el-button type="text" />
             </div>
@@ -76,21 +43,19 @@
         </el-form-item>
 
         <el-form-item label="商品详情" prop="detail">
-          <editor v-model="modelValue.detail" style="height: 600px" />
+          <editor v-model="goodsInfo.detail" style="height: 600px" />
         </el-form-item>
       </el-form>
     </div>
     <div class="component-container__footer">
       <el-button @click="handlePrev">上一步，选择商品分类</el-button>
-      <el-button type="primary" @click="handleNext"
-        >下一步，设置商品属性</el-button
-      >
+      <el-button type="primary" @click="handleNext">下一步，设置商品属性</el-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, toRefs } from "vue";
+import { computed, onMounted, reactive, ref, toRefs } from "vue";
 import { ElForm } from "element-plus";
 
 // API 依赖
@@ -100,15 +65,22 @@ import { listBrands } from "@/api/pms/brand";
 import Editor from "@/components/WangEditor/index.vue";
 import SingleUpload from "@/components/Upload/SingleUpload.vue";
 
-const emit = defineEmits(["prev", "next"]);
+const emit = defineEmits(["prev", "next", "update:modelValue"]);
 const dataFormRef = ref(ElForm);
 
 const props = defineProps({
   modelValue: {
     type: Object,
-    default: {},
-  },
+    default: () => { }
+  }
 });
+
+const goodsInfo: any = computed({
+  get: () => props.modelValue,
+  set: (value) => {
+    emit('update:modelValue', value)
+  }
+})
 
 const state = reactive({
   brandOptions: [] as Array<any>,
@@ -131,33 +103,22 @@ const state = reactive({
 const { brandOptions, pictures, rules } = toRefs(state);
 
 function loadData() {
-  listBrands().then(({data}) => {
+  listBrands().then(({ data }) => {
     state.brandOptions = data;
   });
-  const goodsInfo = props.modelValue;
-  const goodsId = goodsInfo.id;
+  const goodsId = goodsInfo.value.id;
   if (goodsId) {
-    const mainPicUrl = goodsInfo.picUrl;
+    const mainPicUrl = goodsInfo.value.picUrl;
     if (mainPicUrl) {
       state.pictures.filter((item) => item.main)[0].url = mainPicUrl;
     }
-    const subPicUrls = goodsInfo.subPicUrls;
+    const subPicUrls = goodsInfo.value.subPicUrls;
     if (subPicUrls && subPicUrls.length > 0) {
       for (let i = 1; i <= subPicUrls.length; i++) {
         state.pictures[i].url = subPicUrls[i - 1];
       }
     }
   }
-}
-
-function resetForm() {
-  state.pictures = [
-    { url: undefined, main: true }, // main 代表主图，可以切换
-    { url: undefined, main: false },
-    { url: undefined, main: false },
-    { url: undefined, main: false },
-    { url: undefined, main: false },
-  ];
 }
 
 /**
@@ -185,13 +146,13 @@ function handleNext() {
         .filter((item) => item.main == true && item.url)
         .map((item) => item.url);
       if (mainPicUrl && mainPicUrl.length > 0) {
-        props.modelValue.picUrl = mainPicUrl[0];
+        goodsInfo.picUrl = mainPicUrl[0];
       }
       const subPicUrl = state.pictures
         .filter((item) => item.main == false && item.url)
         .map((item) => item.url);
       if (subPicUrl && subPicUrl.length > 0) {
-        props.modelValue.subPicUrls = subPicUrl;
+        goodsInfo.subPicUrls = subPicUrl;
       }
       emit("next");
     }

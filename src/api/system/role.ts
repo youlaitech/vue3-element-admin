@@ -98,7 +98,7 @@ export function listRoleMenuIds(roleId: number):AxiosPromise<number[]> {
  * @param roleId
  * @param menuIds
  */
-export function updateRoleMenu(roleId: number, menuIds: Array<Number>) {
+export function updateRoleMenu(roleId: number, menuIds: Array<number>) {
     return request({
         url: '/youlai-admin/api/v1/roles/' + roleId + '/menus',
         method: 'put',

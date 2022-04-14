@@ -7,7 +7,7 @@
             <svg-icon color="#333" icon-class="role" />
             角色列表
           </template>
-          <role ref="role" @roleClick="handleRoleClick" />
+          <Role ref="role" @roleClick="handleRoleClick" />
         </el-card>
       </el-col>
 
@@ -22,7 +22,7 @@
             </el-tag>
             <el-tag type="warning" v-else size="small">请选择角色</el-tag>
           </template>
-          <menus ref="menu" @menuClick="handleMenuClick" :role="role" />
+          <Menus ref="menu" @menuClick="handleMenuClick" :role="role" />
         </el-card>
       </el-col>
 

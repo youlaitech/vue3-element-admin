@@ -3,90 +3,41 @@
     <!-- 搜索表单 -->
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd"
-          >新增</el-button
-        >
-        <el-button
-          type="danger"
-          :icon="Delete"
-          :disabled="multiple"
-          @click="handleDelete"
-          >删除</el-button
-        >
+        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
+        <el-button type="danger" :icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
 
       <el-form-item prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="角色名称"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+        <el-input v-model="queryParams.name" placeholder="角色名称" clearable @keyup.enter="handleQuery" />
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery"
-          >搜索</el-button
-        >
+        <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <!-- 数据表格 -->
-    <el-table
-      ref="dataTableRef"
-      v-loading="loading"
-      :data="roleList"
-      @selection-change="handleSelectionChange"
-      @row-click="handleRowClick"
-      highlight-current-row
-      border
-    >
+    <el-table ref="dataTableRef" v-loading="loading" :data="roleList" @selection-change="handleSelectionChange"
+      @row-click="handleRowClick" highlight-current-row border>
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="角色名称" prop="name" />
       <el-table-column label="角色编码" prop="code" />
       <el-table-column label="操作" align="center" width="120">
         <template #default="scope">
-          <el-button
-            type="primary"
-            :icon="Edit"
-            circle
-            plain
-            @click.stop="handleUpdate(scope.row)"
-          />
-          <el-button
-            type="danger"
-            :icon="Delete"
-            circle
-            plain
-            @click.stop="handleDelete(scope.row)"
-          />
+          <el-button type="primary" :icon="Edit" circle plain @click.stop="handleUpdate(scope.row)" />
+          <el-button type="danger" :icon="Delete" circle plain @click.stop="handleDelete(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 分页工具条 -->
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      v-model:page="queryParams.pageNum"
-      v-model:limit="queryParams.pageSize"
-      @pagination="handleQuery"
-    />
+    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+      @pagination="handleQuery" />
 
     <!-- 表单弹窗 -->
-    <el-dialog
-      :title="dialog.title"
-      v-model="dialog.visible"
-      @close="cancel"
-      width="450px"
-    >
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-      >
+    <el-dialog :title="dialog.title" v-model="dialog.visible" @close="cancel" width="450px">
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="formData.name" placeholder="请输入角色名称" />
         </el-form-item>
@@ -96,12 +47,7 @@
         </el-form-item>
 
         <el-form-item label="排序" prop="sort">
-          <el-input-number
-            v-model="formData.sort"
-            controls-position="right"
-            :min="0"
-            style="width: 100px"
-          />
+          <el-input-number v-model="formData.sort" controls-position="right" :min="0" style="width: 100px" />
         </el-form-item>
 
         <el-form-item label="状态">
@@ -123,6 +69,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, reactive, ref, toRefs, defineEmits } from "vue";
 import {
   listRolePages,
   updateRole,
@@ -130,7 +77,6 @@ import {
   addRole,
   deleteRoles,
 } from "@/api/system/role";
-import { onMounted, reactive, ref, toRefs, unref } from "vue";
 import { ElForm, ElMessage, ElMessageBox } from "element-plus";
 import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
 import { RoleFormData, RoleItem, RoleQueryParam } from "@/types";
@@ -166,7 +112,6 @@ const state = reactive({
 
 const {
   loading,
-  single,
   multiple,
   queryParams,
   roleList,
@@ -224,16 +169,16 @@ function submitForm() {
     if (valid) {
       if (state.formData.id) {
         updateRole(state.formData.id as any, state.formData).then(
-          (response) => {
+          () => {
             ElMessage.success("修改成功");
-            state.dialog.visible = false;
+            cancel();
             handleQuery();
           }
         );
       } else {
-        addRole(state.formData).then((response) => {
+        addRole(state.formData).then(() => {
           ElMessage.success("新增成功");
-          state.dialog.visible = false;
+          cancel();
           handleQuery();
         });
       }
@@ -244,14 +189,9 @@ function submitForm() {
 /**
  * 重置表单
  */
-function resetForm() {
-  dataFormRef.value.resetFields();
-  handleQuery();
-}
-
 function cancel() {
-  resetForm();
   state.dialog.visible = false;
+  dataFormRef.value.resetFields();
 }
 
 function handleDelete(row: any) {
