@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "vite serve --mode development",
     "build:prod": "vue-tsc --noEmit && vite build --mode production",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "lint": "eslint \"src/**/*.{ts,js,vue}\" --fix",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^1.0.0",
@@ -25,11 +27,21 @@
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
     "@types/node": "^16.11.7",
     "@types/nprogress": "^0.2.0",
     "@types/path-browserify": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
     "@vitejs/plugin-vue": "^1.9.3",
+    "eslint": "^8.13.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^8.6.0",
     "fast-glob": "^3.2.11",
+    "husky": "^7.0.4",
+    "prettier": "^2.6.2",
     "sass": "^1.43.4",
     "typescript": "^4.4.3",
     "vite": "^2.6.4",
