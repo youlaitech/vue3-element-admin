@@ -112,7 +112,7 @@ export function getDictItemDetail(id: number): AxiosPromise<DictItemFormData> {
  *
  * @param data
  */
-export function addDictItem(data: DictFormData) {
+export function addDictItem(data: any) {
     return request({
         url: '/youlai-admin/api/v2/dict/items',
         method: 'post',
@@ -126,7 +126,7 @@ export function addDictItem(data: DictFormData) {
  * @param id
  * @param data
  */
-export function updateDictItem(id: number, data: DictFormData) {
+export function updateDictItem(id: number, data: any) {
     return request({
         url: '/youlai-admin/api/v2/dict/items/' + id,
         method: 'put',

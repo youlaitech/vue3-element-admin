@@ -1,13 +1,7 @@
 <template>
   <div class="login-container">
-    <el-form
-      ref="loginFormRef"
-      :model="loginForm"
-      :rules="loginRules"
-      class="login-form"
-      auto-complete="on"
-      label-position="left"
-    >
+    <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+      label-position="left">
       <div class="title-container">
         <h3 class="title">{{ $t("login.title") }}</h3>
         <lang-select class="set-language" />
@@ -17,43 +11,20 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          :placeholder="$t('login.username')"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
+        <el-input ref="username" v-model="loginForm.username" :placeholder="$t('login.username')" name="username"
+          type="text" tabindex="1" auto-complete="on" />
       </el-form-item>
 
-      <el-tooltip
-        :disabled="capslockTooltipDisabled"
-        content="Caps lock is On"
-        placement="right"
-      >
+      <el-tooltip :disabled="capslockTooltipDisabled" content="Caps lock is On" placement="right">
         <el-form-item prop="password">
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
-          <el-input
-            ref="passwordRef"
-            :key="passwordType"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="Password"
-            name="password"
-            tabindex="2"
-            auto-complete="on"
-            @keyup="checkCapslock"
-            @blur="capslockTooltipDisabled = true"
-            @keyup.enter="handleLogin"
-          />
+          <el-input ref="passwordRef" :key="passwordType" v-model="loginForm.password" :type="passwordType"
+            placeholder="Password" name="password" tabindex="2" auto-complete="on" @keyup="checkCapslock"
+            @blur="capslockTooltipDisabled = true" @keyup.enter="handleLogin" />
           <span class="show-pwd" @click="showPwd">
-            <svg-icon
-              :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
-            />
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
       </el-tooltip>
@@ -63,36 +34,20 @@
         <span class="svg-container">
           <svg-icon icon-class="validCode" />
         </span>
-        <el-input
-          v-model="loginForm.code"
-          auto-complete="off"
-          :placeholder="$t('login.code')"
-          style="width: 65%"
-          @keyup.enter="handleLogin"
-        />
+        <el-input v-model="loginForm.code" auto-complete="off" :placeholder="$t('login.code')" style="width: 65%"
+          @keyup.enter="handleLogin" />
 
         <div class="captcha">
-          <img
-            :src="captchaBase64"
-            @click="handleCaptchaGenerate"
-            height="38px"
-          />
+          <img :src="captchaBase64" @click="handleCaptchaGenerate" height="38px" />
         </div>
       </el-form-item>
 
-      <el-button
-        size="default"
-        :loading="loading"
-        type="primary"
-        style="width: 100%; margin-bottom: 30px"
-        @click.prevent="handleLogin"
-        >{{ $t("login.login") }}
+      <el-button size="default" :loading="loading" type="primary" style="width: 100%; margin-bottom: 30px"
+        @click.prevent="handleLogin">{{ $t("login.login") }}
       </el-button>
 
       <div class="tips">
-        <span style="margin-right: 20px"
-          >{{ $t("login.username") }}: admin</span
-        >
+        <span style="margin-right: 20px">{{ $t("login.username") }}: admin</span>
         <span> {{ $t("login.password") }}: 123456</span>
       </div>
     </el-form>
@@ -128,6 +83,7 @@ const loginFormRef = ref(ElForm);
 const passwordRef = ref(ElInput);
 
 const state = reactive({
+  redirect: "",
   loginForm: {
     username: "admin",
     password: "123456",
@@ -206,7 +162,7 @@ function handleLogin() {
 
 // 获取验证码
 function handleCaptchaGenerate() {
-  getCaptcha().then(({data}) => {
+  getCaptcha().then(({ data }) => {
     const { img, uuid } = data;
     state.captchaBase64 = "data:image/gif;base64," + img;
     state.loginForm.uuid = uuid;
@@ -306,6 +262,7 @@ $cursor: #fff;
       border-color: var(--el-input-hover-border, var(--el-border-color-hover));
       box-shadow: none;
     }
+
     box-shadow: none;
   }
 

@@ -28,12 +28,6 @@ import { useRoute } from "vue-router";
 import { GoodsDetail } from "@/types";
 
 const route = useRoute();
-const props = defineProps({
-  goodsId: {
-    type: String,
-    default: () => ''
-  }
-})
 
 const state = reactive({
   loaded: false,
