@@ -116,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted, toRefs, defineEmits } from "vue";
+import { reactive, ref, onMounted, toRefs } from "vue";
 
 import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
 import { ElForm, ElMessage, ElMessageBox } from "element-plus";

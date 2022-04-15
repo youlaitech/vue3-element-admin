@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, toRefs, defineEmits } from "vue";
+import { onMounted, reactive, ref, toRefs } from "vue";
 import {
   listDictPages,
   getDictFormDetail,
