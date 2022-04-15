@@ -69,13 +69,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, toRefs, defineEmits } from "vue";
+import { onMounted, reactive, ref, toRefs } from "vue";
 import {
   listRolePages,
   updateRole,
   getRoleFormDetail,
   addRole,
-  deleteRoles,
+  deleteRoles
 } from "@/api/system/role";
 import { ElForm, ElMessage, ElMessageBox } from "element-plus";
 import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";

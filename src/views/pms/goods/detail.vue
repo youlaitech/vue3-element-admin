@@ -32,7 +32,12 @@ const route = useRoute();
 const state = reactive({
   loaded: false,
   active: 0,
-  goodsInfo: {} as GoodsDetail
+  goodsInfo: {
+    album: [] as string[],
+    attrList: [] as any[],
+    specList: [] as any[],
+    skuList: [] as any[]
+  } as GoodsDetail
 });
 
 const { loaded, active, goodsInfo } = toRefs(state)
