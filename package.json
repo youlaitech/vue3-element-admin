@@ -15,7 +15,7 @@
     "axios": "^0.24.0",
     "better-scroll": "^2.4.2",
     "echarts": "^5.2.2",
-    "element-plus": "^2.1.9",
+    "element-plus": "^2.1.8",
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
     "path-to-regexp": "^6.2.0",
