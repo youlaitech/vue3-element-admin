@@ -62,7 +62,7 @@ function hasOneShowingChild(children = [] as any, parent: any) {
     children = [];
   }
   const showingChildren = children.filter((item: any) => {
-    if (item.mata && item.mata.hidden) {
+    if (item.meta && item.meta.hidden) {
       return false
     } else {
       // Temp set(will be used if only has one showing child)
