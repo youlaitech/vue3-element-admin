@@ -1,7 +1,7 @@
 <p align="center">
     <img src="https://img.shields.io/badge/Vue-3.2.16-brightgreen.svg"/>
     <img src="https://img.shields.io/badge/Vite-2.6.4-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.1.0-blue.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.1.9-blue.svg"/>
     <a src="https://github.com/hxrui" target="_blank">
         <img src="https://img.shields.io/github/stars/youlaitech/youlai-mall.svg?style=social&label=Stars"/>
     </a>
