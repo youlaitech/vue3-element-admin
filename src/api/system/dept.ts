@@ -30,7 +30,7 @@ export function listSelectDepartments(): AxiosPromise<Option[]> {
  *
  * @param id
  */
-export function getDeptFormDetail(id: number): AxiosPromise<DeptFormData> {
+export function getDeptDetail(id: string): AxiosPromise<DeptFormData> {
     return request({
         url: '/youlai-admin/api/v1/depts/' + id,
         method: 'get'
@@ -57,7 +57,7 @@ export function addDept(data: DeptFormData) {
  * @param id
  * @param data
  */
-export function updateDept(id: number, data: DeptFormData) {
+export function updateDept(id: string, data: DeptFormData) {
     return request({
         url: '/youlai-admin/api/v1/depts/' + id,
         method: 'put',

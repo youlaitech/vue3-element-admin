@@ -30,11 +30,11 @@ export interface MenuFormData {
     /**
      * 菜单ID
      */
-    id: number | undefined,
+    id: string ,
     /**
      * 父菜单ID
      */
-    parentId: number,
+    parentId: string,
     /**
      * 菜单名称
      */

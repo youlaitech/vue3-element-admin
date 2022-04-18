@@ -1,10 +1,10 @@
 <template>
-  <div class="icon-body">
-    <el-input v-model="iconName" style="position: relative;" clearable placeholder="请输入图标名称" @clear="filterIcons"
+  <div class="icon-select">
+    <el-input v-model="iconName"  clearable placeholder="请输入图标名称" @clear="filterIcons"
       @input="filterIcons">
       <template #suffix><i class="el-icon-search el-input__icon" /></template>
     </el-input>
-    <div class="icon-list">
+    <div class="icon-select__list">
       <div v-for="(item, index) in iconList" :key="index" @click="selectedIcon(item)">
         <svg-icon color="#999" :icon-class="item" style="height: 30px;width: 16px;margin-right: 5px" />
         <span>{{ item }}</span>
@@ -18,9 +18,9 @@ import { ref } from "vue";
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
 const icons = [] as string[]
-const modules = import.meta.glob('../../assets/icons/svg/*.svg');
+const modules = import.meta.glob('../../assets/icons/*.svg');
 for (const path in modules) {
-  const p = path.split('assets/icons/svg/')[1].split('.svg')[0];
+  const p = path.split('assets/icons/')[1].split('.svg')[0];
   icons.push(p);
 }
 const iconList = ref(icons);
@@ -52,11 +52,11 @@ defineExpose({
 </script>
 
 <style lang='scss' scoped>
-.icon-body {
+.icon-select {
   width: 100%;
   padding: 10px;
 
-  .icon-list {
+  &__list {
     height: 200px;
     overflow-y: scroll;
 

@@ -33,6 +33,9 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="排序" align="center" width="100" prop="sort">
+      </el-table-column>
+
       <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
           <el-button type="success" :icon="Plus" circle plain @click.stop="handleAdd(scope.row)" />
@@ -43,7 +46,7 @@
     </el-table>
 
     <!-- 弹窗表单 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" width="750px">
+    <el-dialog :title="dialog.title" v-model="dialog.visible" @close="cancel" width="750px">
       <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="父级菜单" prop="parentId">
           <el-tree-select v-model="formData.parentId" placeholder="选择上级菜单" :data="menuOptions" filterable />
@@ -76,16 +79,16 @@
         </el-form-item>
 
         <el-form-item label="图标" prop="icon">
-          <el-popover placement="bottom-start" :width="570" trigger="click" visible="iconSelectVisible">
-            <icon-select ref="iconSelectRef" @selected="selected" />
+          <el-popover ref="popoverRef" placement="bottom-start" :width="570" trigger="click">
             <template #reference>
               <el-input v-model="formData.icon" placeholder="点击选择图标" readonly @click="iconSelectVisible = true">
                 <template #prefix>
-                  <svg-icon :icon-class="formData.icon ? formData.icon : 'color'" class="el-input__icon"
-                    style="margin: auto" color="#999" />
+                  <svg-icon :icon-class="formData.icon" style="margin: auto" />
                 </template>
               </el-input>
             </template>
+
+            <icon-select @selected="selected" />
           </el-popover>
         </el-form-item>
 
@@ -119,7 +122,7 @@
 import { reactive, ref, onMounted, toRefs } from "vue";
 
 import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
-import { ElForm, ElMessage, ElMessageBox } from "element-plus";
+import { ElForm, ElMessage, ElMessageBox, ElPopover } from "element-plus";
 
 import { isExternal } from "@/utils/validate";
 import {
@@ -132,21 +135,20 @@ import {
 // API 依赖
 import {
   listTableMenus,
-  getMenuFormDetail,
+  getMenuDetail,
   listSelectMenus,
   addMenu,
   deleteMenus,
-  updateMenu,
+  updateMenu
 } from "@/api/system/menu";
 
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import IconSelect from "@/components/IconSelect/index.vue";
 
 const emit = defineEmits(["menuClick"]);
-const iconSelectRef = ref(null);
-
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
+const popoverRef = ref(ElPopover)
 
 const state = reactive({
   loading: true,
@@ -160,7 +162,7 @@ const state = reactive({
   menuList: [] as MenuItem[],
   dialog: { visible: false } as Dialog,
   formData: {
-    parentId: 0,
+    parentId: "0",
     visible: 1,
     sort: 1,
     component: "Layout",
@@ -173,6 +175,7 @@ const state = reactive({
   menuOptions: [] as Option[],
   currentRow: undefined,
   isExternalPath: false,
+  // Icon选择器显示状态
   iconSelectVisible: false
 });
 
@@ -185,7 +188,7 @@ const {
   rules,
   menuOptions,
   isExternalPath,
-  iconSelectVisible,
+  iconSelectVisible
 } = toRefs(state);
 
 /**
@@ -204,10 +207,10 @@ function handleQuery() {
 /**
  * 加载菜单下拉树
  */
-async function loadTreeSelectMenuOptions() {
+async function loadMenuData() {
   const menuOptions: any[] = [];
   await listSelectMenus().then(({ data }) => {
-    const menuOption = { value: 0, label: "顶级菜单", children: data };
+    const menuOption = { value: "0", label: "顶级菜单", children: data };
     menuOptions.push(menuOption);
     state.menuOptions = menuOptions;
   });
@@ -227,7 +230,7 @@ function handleRowClick(row: any) {
 }
 
 async function handleAdd(row: any) {
-  await loadTreeSelectMenuOptions();
+  await loadMenuData();
   state.dialog = {
     title: "添加菜单",
     visible: true,
@@ -246,20 +249,22 @@ async function handleAdd(row: any) {
       state.formData.parentId = (state.currentRow as any).id;
       state.formData.component = "";
     } else {
-      state.formData.parentId = 0;
+      state.formData.parentId = "0";
       state.formData.component = "Layout";
     }
   }
 }
 
 async function handleUpdate(row: any) {
-  await loadTreeSelectMenuOptions();
+  await loadMenuData();
+  console.log('menuop',state.menuOptions)
   state.dialog = {
     title: "修改菜单",
-    visible: true,
+    visible: true
   };
   const id = row.id || state.ids;
-  getMenuFormDetail(id).then(({ data }) => {
+  console.log('id',id)
+  getMenuDetail(id).then(({ data }) => {
     state.formData = data;
     // 判断是否外部链接
     state.isExternalPath = isExternal(state.formData.path);
@@ -267,7 +272,7 @@ async function handleUpdate(row: any) {
 }
 
 /**
- * 表单提交
+ * 菜单表单提交
  */
 function submitForm() {
   dataFormRef.value.validate((isValid: boolean) => {
@@ -309,7 +314,6 @@ function handleDelete(row: any) {
  * 取消关闭弹窗
  */
 function cancel() {
-  state.formData.id = undefined;
   dataFormRef.value.resetFields();
   state.dialog.visible = false;
 }
@@ -321,6 +325,7 @@ function selected(name: string) {
   state.formData.icon = name;
   state.iconSelectVisible = false;
 }
+
 
 onMounted(() => {
   handleQuery();

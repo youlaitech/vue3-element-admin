@@ -87,7 +87,7 @@ import { onMounted, reactive, unref, ref, toRefs } from "vue";
 
 // API依赖
 import {
-  getDeptFormDetail,
+  getDeptDetail,
   deleteDept,
   updateDept,
   addDept,
@@ -177,11 +177,11 @@ function handleSelectionChange(selection: any) {
 /**
  * 加载部门下拉数据源
  */
-async function loadDeptOptions() {
+async function loadDeptData() {
   const deptOptions: any[] = [];
   listSelectDepartments().then((response) => {
     const rootDeptOption = {
-      id: 0,
+      value: "0",
       label: "顶级部门",
       children: response.data,
     };
@@ -194,11 +194,11 @@ async function loadDeptOptions() {
  * 添加部门
  */
 function handleAdd(row: any) {
-  loadDeptOptions();
+  loadDeptData();
   state.formData.parentId = row.id;
   state.dialog = {
     title: "添加部门",
-    visible: true,
+    visible: true
   };
 }
 
@@ -206,13 +206,13 @@ function handleAdd(row: any) {
  * 修改部门
  */
 async function handleUpdate(row: any) {
-  await loadDeptOptions();
+  await loadDeptData();
   const deptId = row.id || state.ids;
   state.dialog = {
     title: "修改部门",
-    visible: true,
+    visible: true
   };
-  getDeptFormDetail(deptId).then((response: any) => {
+  getDeptDetail(deptId).then((response: any) => {
     state.formData = response.data;
   });
 }
@@ -221,8 +221,7 @@ async function handleUpdate(row: any) {
  * 部门表单提交
  */
 function submitForm() {
-  const dataForm = unref(dataFormRef);
-  dataForm.validate((valid: any) => {
+  dataFormRef.value.validate((valid: any) => {
     if (valid) {
       if (state.formData.id) {
         updateDept(state.formData.id, state.formData).then(() => {
@@ -270,7 +269,6 @@ function handleDelete(row: any) {
  * 取消/关闭弹窗
  **/
 function cancel() {
-  state.formData.id = undefined;
   dataFormRef.value.resetFields();
   state.dialog.visible = false;
 }

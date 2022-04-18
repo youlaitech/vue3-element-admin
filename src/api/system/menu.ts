@@ -40,7 +40,7 @@ export function listSelectMenus(): AxiosPromise<Option[]> {
  * 获取菜单详情
  * @param id
  */
-export function getMenuFormDetail(id: number): AxiosPromise<MenuFormData> {
+export function getMenuDetail(id: number): AxiosPromise<MenuFormData> {
     return request({
         url: '/youlai-admin/api/v1/menus/' + id,
         method: 'get'
@@ -66,7 +66,7 @@ export function addMenu(data: MenuFormData) {
  * @param id
  * @param data
  */
-export function updateMenu(id: number, data: MenuFormData) {
+export function updateMenu(id: string, data: MenuFormData) {
     return request({
         url: '/youlai-admin/api/v1/menus/' + id,
         method: 'put',
