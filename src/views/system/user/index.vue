@@ -16,7 +16,7 @@
         <el-card class="box-card">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true">
             <el-row>
-              <el-col :span="18" :xs="24" :sm="14">
+              <el-col :span="18" :xs="24" >
                 <el-form-item>
                   <el-button type="success" :icon="Plus" @click="handleAdd" v-hasPerm="['sys:user:add']">新增</el-button>
                   <el-button type="danger" :icon="Delete" :disabled="multiple" @click="handleDelete"
@@ -41,7 +41,7 @@
                 </el-form-item>
               </el-col>
 
-              <el-col :span="6" :xs="24" :sm="10" style="text-align: right;">
+              <el-col :span="6" :xs="24"  style="text-align: right;">
                 <el-form-item>
                   <el-dropdown split-button style="margin-left: 12px;">
                     导入
@@ -105,7 +105,7 @@
         </el-form-item>
 
         <el-form-item label="所属部门" prop="deptId">
-          <el-tree-select v-model="formData.deptId" placeholder="请选择所属部门" :data="deptOptions" filterable  />
+           <el-tree-select v-model="formData.deptId" placeholder="请选择所属部门" :data="deptOptions" filterable  />
         </el-form-item>
 
         <el-form-item label="手机号码" prop="mobile">
@@ -149,7 +149,7 @@
       @close="closeImportDialog">
       <el-form ref="importFormRef" :model="importFormData" :rules="rules" label-width="80px">
         <el-form-item label="所属部门" prop="deptId">
-          <tree-select v-model="importFormData.deptId" :options="deptOptions" placeholder="请选择所属部门" />
+         <el-tree-select v-model="formData.deptId" placeholder="请选择所属部门" :data="deptOptions" filterable  />
         </el-form-item>
 
         <el-form-item label="角色" prop="roleIds">
