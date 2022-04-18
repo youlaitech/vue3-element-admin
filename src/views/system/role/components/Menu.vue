@@ -14,7 +14,7 @@
     </el-form>
 
     <el-tree ref="menuRef" v-if="refreshTree" :default-expanded-keys="expandedKeys" :default-expand-all="isExpandAll"
-      :data="menuOptions" show-checkbox node-key="id" empty-text="加载菜单中..." :check-strictly="checkStrictly"
+      :data="menuOptions" show-checkbox node-key="value" empty-text="加载菜单中..." :check-strictly="checkStrictly"
       highlight-current @node-click="handleNodeClick" />
   </div>
 </template>
