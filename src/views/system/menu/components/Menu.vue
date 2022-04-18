@@ -46,7 +46,7 @@
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="750px">
       <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="父级菜单" prop="parentId">
-          <tree-select v-model="formData.parentId" :options="menuOptions" placeholder="选择上级菜单" />
+          <el-tree-select v-model="formData.parentId" placeholder="选择上级菜单" :data="menuOptions" filterable />
         </el-form-item>
 
         <el-form-item label="菜单名称" prop="name">
@@ -140,7 +140,6 @@ import {
 } from "@/api/system/menu";
 
 import SvgIcon from "@/components/SvgIcon/index.vue";
-import TreeSelect from "@/components/TreeSelect/index.vue";
 import IconSelect from "@/components/IconSelect/index.vue";
 
 const emit = defineEmits(["menuClick"]);
