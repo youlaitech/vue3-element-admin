@@ -105,7 +105,7 @@
         </el-form-item>
 
         <el-form-item label="所属部门" prop="deptId">
-          <tree-select v-model="formData.deptId" :options="deptOptions" placeholder="请选择所属部门" />
+          <el-tree-select v-model="formData.deptId" placeholder="请选择所属部门" :data="deptOptions" filterable  />
         </el-form-item>
 
         <el-form-item label="手机号码" prop="mobile">
@@ -224,7 +224,6 @@ import {
   Top,
   UploadFilled
 } from "@element-plus/icons-vue";
-import TreeSelect from "@/components/TreeSelect/index.vue";
 import {
   UserItem,
   UserQueryParam,

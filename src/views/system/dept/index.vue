@@ -2,57 +2,31 @@
   <div class="app-container">
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd"
-          >新增</el-button
-        >
-        <el-button
-          type="danger"
-          :icon="Delete"
-          :disabled="single"
-          @click="handleDelete"
-          >删除
+        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
+        <el-button type="danger" :icon="Delete" :disabled="single" @click="handleDelete">删除
         </el-button>
       </el-form-item>
 
       <el-form-item prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入部门名称"
-          @keyup.enter="handleQuery"
-        />
+        <el-input v-model="queryParams.name" placeholder="请输入部门名称" @keyup.enter="handleQuery" />
       </el-form-item>
 
       <el-form-item prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="部门状态"
-          clearable
-        >
+        <el-select v-model="queryParams.status" placeholder="部门状态" clearable>
           <el-option :value="1" label="正常" />
           <el-option :value="0" label="禁用" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button
-          class="filter-item"
-          type="primary"
-          :icon="Search"
-          @click="handleQuery"
-        >
+        <el-button class="filter-item" type="primary" :icon="Search" @click="handleQuery">
           搜索
         </el-button>
         <el-button :icon="Refresh" @click="resetQuery"> 重置 </el-button>
       </el-form-item>
     </el-form>
 
-    <el-table
-      v-loading="loading"
-      :data="deptList"
-      row-key="id"
-      default-expand-all
-      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-      @selection-change="handleSelectionChange"
-    >
+    <el-table v-loading="loading" :data="deptList" row-key="id" default-expand-all
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column prop="name" label="部门名称" />
       <el-table-column prop="status" label="状态" width="100">
@@ -66,65 +40,28 @@
 
       <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
-          <el-button
-            type="primary"
-            :icon="Edit"
-            circle
-            plain
-            @click.stop="handleUpdate(scope.row)"
-          >
+          <el-button type="primary" :icon="Edit" circle plain @click.stop="handleUpdate(scope.row)">
           </el-button>
-          <el-button
-            type="success"
-            :icon="Plus"
-            circle
-            plain
-            @click.stop="handleAdd(scope.row)"
-          >
+          <el-button type="success" :icon="Plus" circle plain @click.stop="handleAdd(scope.row)">
           </el-button>
 
-          <el-button
-            type="danger"
-            :icon="Delete"
-            circle
-            plain
-            @click.stop="handleDelete(scope.row)"
-          >
+          <el-button type="danger" :icon="Delete" circle plain @click.stop="handleDelete(scope.row)">
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 添加或修改部门对话框 -->
-    <el-dialog
-      :title="dialog.title"
-      v-model="dialog.visible"
-      width="600px"
-      @closed="cancel"
-    >
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="80px"
-      >
+    <el-dialog :title="dialog.title" v-model="dialog.visible" width="600px" @closed="cancel">
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="80px">
         <el-form-item label="上级部门" prop="parentId">
-          <tree-select
-            :options="deptOptions"
-            placeholder="选择上级部门"
-            v-model="formData.parentId"
-          />
+          <el-tree-select v-model="formData.parentId" placeholder="选择上级部门" :data="deptOptions" filterable />
         </el-form-item>
         <el-form-item label="部门名称" prop="name">
           <el-input v-model="formData.name" placeholder="请输入部门名称" />
         </el-form-item>
         <el-form-item label="显示排序" prop="sort">
-          <el-input-number
-            v-model="formData.sort"
-            controls-position="right"
-            style="width: 100px"
-            :min="0"
-          />
+          <el-input-number v-model="formData.sort" controls-position="right" style="width: 100px" :min="0" />
         </el-form-item>
         <el-form-item label="部门状态">
           <el-radio-group v-model="formData.status">
@@ -160,7 +97,6 @@ import {
 
 // 组件依赖
 import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
-import TreeSelect from "@/components/TreeSelect/index.vue";
 import { ElForm, ElMessage, ElMessageBox } from "element-plus";
 import {
   DeptFormData,
@@ -185,7 +121,7 @@ const state = reactive({
   // 部门下拉选项
   deptOptions: [] as Option[],
   // 弹窗属性
-  dialog: {visible:false} as Dialog,
+  dialog: { visible: false } as Dialog,
   // 查询参数
   queryParams: {} as DeptQueryParam,
   // 表单数据
