@@ -14,7 +14,7 @@ const props=defineProps({
   },
   iconClass: {
     type: String,
-    required: true,
+    required: false
   },
   color: {
     type: String,

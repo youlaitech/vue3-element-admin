@@ -1,19 +1,15 @@
 <template>
   <div class="menu-container">
-    <el-form>
-      <el-form-item>
-        <el-row>
-          <el-col :span="16">
-            <el-button type="success" plain :icon="Switch" @click="toggleExpandAll">展开/折叠</el-button>
-          </el-col>
-          <el-col :span="8" style="text-align: right">
-            <el-button type="primary" :icon="Check" @click="handleSubmit">提交</el-button>
-          </el-col>
-        </el-row>
-      </el-form-item>
-    </el-form>
+    <el-row>
+      <el-col :span="12">
+        <el-button plain :icon="Switch" @click="toggleExpandAll">展开/折叠</el-button>
+      </el-col>
+      <el-col :span="12" style="text-align: right">
+        <el-button type="primary" :icon="Check" @click="handleSubmit">提交</el-button>
+      </el-col>
+    </el-row>
 
-    <el-tree ref="menuRef" v-if="refreshTree" :default-expanded-keys="expandedKeys" :default-expand-all="isExpandAll"
+    <el-tree class="menu-container__tree" ref="menuRef" v-if="refreshTree" :default-expanded-keys="expandedKeys" :default-expand-all="isExpandAll"
       :data="menuOptions" show-checkbox node-key="value" empty-text="加载菜单中..." :check-strictly="checkStrictly"
       highlight-current @node-click="handleNodeClick" />
   </div>
@@ -31,21 +27,19 @@ const emit = defineEmits(["menuClick"]);
 const props = defineProps({
   role: {
     type: Object,
-    default: () => {
-      return {}
-    },
+    default: () => { }
   },
 });
 
 const menuRef = ref(ElTree); // 属性名必须和元素的ref属性值一致
 
 watch(
-  () => props.role.id as any,
-  () => {
-    const roleId = props.role.id;
-    if (roleId) {
+  () => props.role.id,
+  (newVal) => {
+    if (newVal) {
       state.checkStrictly = true;
-      listRoleMenuIds(roleId).then(({ data }) => {
+      // 获取角色拥有的的菜单ID
+      listRoleMenuIds(newVal).then(({ data }) => {
         menuRef.value.setCheckedKeys(data);
         state.checkStrictly = false;
       });
@@ -67,7 +61,7 @@ const { expandedKeys, menuOptions, checkStrictly, isExpandAll, refreshTree } =
 /**
  * 加载菜单树
  */
-async function loadTreeSelectMenuOptions() {
+async function loadMenuData() {
   await listSelectMenus().then(({ data }) => {
     state.menuOptions = data;
   });
@@ -101,12 +95,14 @@ function handleSubmit() {
 }
 
 onMounted(() => {
-  loadTreeSelectMenuOptions();
+  loadMenuData();
 });
 </script>
 
 <style lang="scss" scoped>
 .menu-container {
-  width: 100%;
+  &__tree{
+    margin-top: 10px;
+  }
 }
 </style>
