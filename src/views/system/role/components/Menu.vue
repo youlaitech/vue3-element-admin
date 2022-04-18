@@ -89,12 +89,12 @@ function toggleExpandAll() {
 }
 
 /**
- * 保存角色的菜单
+ * 保存角色菜单
  */
 function handleSubmit() {
   const checkedMenuIds = menuRef.value
     .getCheckedNodes(false, true)
-    .map((node: any) => node.id);
+    .map((node: any) => node.value);
   updateRoleMenu(props.role.id, checkedMenuIds).then(() => {
     ElMessage.success("提交成功");
   });
