@@ -55,7 +55,7 @@
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="600px" @closed="cancel">
       <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="80px">
         <el-form-item label="上级部门" prop="parentId">
-          <el-tree-select v-model="formData.parentId" placeholder="选择上级部门" :data="deptOptions" filterable />
+          <el-tree-select v-model="formData.parentId" placeholder="选择上级部门" :data="deptOptions" filterable check-strictly />
         </el-form-item>
         <el-form-item label="部门名称" prop="name">
           <el-input v-model="formData.name" placeholder="请输入部门名称" />
