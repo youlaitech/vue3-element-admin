@@ -49,7 +49,8 @@
     <el-dialog :title="dialog.title" v-model="dialog.visible" @close="cancel" width="750px">
       <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="父级菜单" prop="parentId">
-          <el-tree-select v-model="formData.parentId" placeholder="选择上级菜单" :data="menuOptions" filterable check-strictly />
+          <el-tree-select v-model="formData.parentId" placeholder="选择上级菜单" :data="menuOptions" filterable
+            check-strictly />
         </el-form-item>
 
         <el-form-item label="菜单名称" prop="name">
@@ -230,10 +231,11 @@ function handleRowClick(row: any) {
 }
 
 async function handleAdd(row: any) {
+  state.formData.id = undefined
   await loadMenuData();
   state.dialog = {
     title: "添加菜单",
-    visible: true,
+    visible: true
   };
   if (row.id) {
     // 行点击新增
@@ -241,13 +243,13 @@ async function handleAdd(row: any) {
     if (row.id == '0') {
       state.formData.component = "Layout";
     } else {
-      state.formData.component = "";
+      state.formData.component = undefined;
     }
   } else {
     if (state.currentRow) {
       // 工具栏新增
       state.formData.parentId = (state.currentRow as any).id;
-      state.formData.component = "";
+      state.formData.component = undefined;
     } else {
       state.formData.parentId = "0";
       state.formData.component = "Layout";
