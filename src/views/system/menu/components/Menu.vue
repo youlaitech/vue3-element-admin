@@ -49,7 +49,7 @@
     <el-dialog :title="dialog.title" v-model="dialog.visible" @close="cancel" width="750px">
       <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="父级菜单" prop="parentId">
-          <el-tree-select v-model="formData.parentId" placeholder="选择上级菜单" :data="menuOptions" filterable />
+          <el-tree-select v-model="formData.parentId" placeholder="选择上级菜单" :data="menuOptions" filterable check-strictly />
         </el-form-item>
 
         <el-form-item label="菜单名称" prop="name">
@@ -238,7 +238,7 @@ async function handleAdd(row: any) {
   if (row.id) {
     // 行点击新增
     state.formData.parentId = row.id;
-    if (row.id == 0) {
+    if (row.id == '0') {
       state.formData.component = "Layout";
     } else {
       state.formData.component = "";
@@ -257,13 +257,11 @@ async function handleAdd(row: any) {
 
 async function handleUpdate(row: any) {
   await loadMenuData();
-  console.log('menuop',state.menuOptions)
   state.dialog = {
     title: "修改菜单",
     visible: true
   };
   const id = row.id || state.ids;
-  console.log('id',id)
   getMenuDetail(id).then(({ data }) => {
     state.formData = data;
     // 判断是否外部链接
