@@ -195,6 +195,7 @@ async function loadDeptData() {
  */
 function handleAdd(row: any) {
   loadDeptData();
+  state.formData.id = undefined
   state.formData.parentId = row.id;
   state.dialog = {
     title: "添加部门",
