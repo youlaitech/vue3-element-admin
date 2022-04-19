@@ -69,8 +69,8 @@
 
         <el-form-item v-if="!isExternalPath" label="页面路径" prop="component">
           <el-input v-model="formData.component" placeholder="system/user/index" style="width: 95%">
-            <template v-if="formData.parentId != 0" #prepend>src/views/</template>
-            <template v-if="formData.parentId != 0" #append>.vue</template>
+            <template v-if="formData.parentId != '0'" #prepend>src/views/</template>
+            <template v-if="formData.parentId != '0'" #append>.vue</template>
           </el-input>
 
           <el-tooltip effect="dark" content="请输入组件路径，如果是父组件填写 Layout 即可" placement="right">
