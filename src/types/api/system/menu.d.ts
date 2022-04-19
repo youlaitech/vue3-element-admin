@@ -30,7 +30,7 @@ export interface MenuFormData {
     /**
      * 菜单ID
      */
-    id: string ,
+    id?: string ,
     /**
      * 父菜单ID
      */
@@ -51,7 +51,7 @@ export interface MenuFormData {
     /**
      * 组件路径
      */
-    component: string,
+    component?: string,
     /**
      * 路由路径
      */
