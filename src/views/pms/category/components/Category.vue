@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import { listCategories, addCategory, updateCategory, deleteCategories } from '@/api/pms/category'
-import { Plus, Edit, Delete } from '@element-plus/icons-vue'
+import { Plus, Edit, Delete, Picture } from '@element-plus/icons-vue'
 import SingleUpload from '@/components/Upload/SingleUpload.vue'
 import { onMounted, reactive, ref, toRefs, unref } from "vue";
 import { ElForm, ElMessage, ElMessageBox, ElTree } from "element-plus";
