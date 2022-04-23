@@ -1,14 +1,13 @@
 <template>
   <el-config-provider :locale="locale">
-    <router-view />
+    <router-view/>
   </el-config-provider>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { ElConfigProvider } from "element-plus";
 
-import { localStorage } from "@/utils/storage";
 import useStore from "@/store";
 
 // 导入 Element Plus 语言包
@@ -24,21 +23,11 @@ const locale = ref();
 watch(
   language,
   (value) => {
-    if (value == "en") {
-      locale.value = en;
-    } else {
-      locale.value = zhCn;
-    }
-  },
-  {
-    // 初始化立即执行
-    immediate: true
-  }
-);
-
-onMounted(() => {
-  const style = localStorage.get("style");
-  document.documentElement.style.cssText = style as string;
+    locale.value = value == "en" ? en : zhCn;
+  }, {
+  // 初始化立即执行
+  immediate: true
 });
+
 </script>
 

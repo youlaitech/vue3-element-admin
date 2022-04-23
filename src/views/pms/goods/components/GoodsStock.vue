@@ -203,7 +203,6 @@ watch(() => goodsInfo.value.categoryId, (newVal) => {
     });
   }
 
-
 },
   {
     immediate: true,

@@ -146,13 +146,13 @@ function handleNext() {
         .filter((item) => item.main == true && item.url)
         .map((item) => item.url);
       if (mainPicUrl && mainPicUrl.length > 0) {
-        goodsInfo.picUrl = mainPicUrl[0];
+        goodsInfo.value.picUrl = mainPicUrl[0];
       }
       const subPicUrl = state.pictures
         .filter((item) => item.main == false && item.url)
         .map((item) => item.url);
       if (subPicUrl && subPicUrl.length > 0) {
-        goodsInfo.subPicUrls = subPicUrl;
+        goodsInfo.value.subPicUrls = subPicUrl;
       }
       emit("next");
     }

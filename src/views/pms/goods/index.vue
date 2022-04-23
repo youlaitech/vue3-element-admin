@@ -1,8 +1,129 @@
+<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
+<script lang="ts">
+export default {
+  name: "goods"
+};
+</script>
+
+<script setup lang="ts">
+import { reactive, ref, onMounted, toRefs } from "vue";
+import { ElTable, ElMessage, ElMessageBox } from "element-plus";
+import { useRouter } from "vue-router";
+
+import { Search, Position, Edit, Refresh, Delete,View } from "@element-plus/icons-vue";
+import { listGoodsPages, deleteGoods } from "@/api/pms/goods";
+import { listCascadeCategories } from "@/api/pms/category";
+import { GoodsItem, GoodsQueryParam } from "@/types";
+import {moneyFormatter} from '@/utils/filter'
+
+const dataTableRef = ref(ElTable);
+const router = useRouter();
+
+const state = reactive({
+  // 遮罩层
+  loading: true,
+  // 选中数组
+  ids: [],
+  // 非单个禁用
+  single: true,
+  // 非多个禁用
+  multiple: true,
+  total: 0,
+  queryParams: {
+    pageNum: 1,
+    pageSize: 10,
+  } as GoodsQueryParam,
+  goodsList: [] as GoodsItem[],
+  categoryOptions: [],
+  goodDetail: undefined,
+  dialogVisible: false,
+});
+
+const {
+  loading,
+  multiple,
+  queryParams,
+  goodsList,
+  categoryOptions,
+  goodDetail,
+  total,
+  dialogVisible,
+} = toRefs(state);
+
+function handleQuery() {
+  state.loading = true;
+  listGoodsPages(state.queryParams).then(({ data }) => {
+    state.goodsList = data.list;
+    state.total = data.total;
+    state.loading = false;
+  });
+}
+
+function resetQuery() {
+  state.queryParams = {
+    pageNum: 1,
+    pageSize: 10,
+    name: undefined,
+    categoryId: undefined,
+  };
+  handleQuery();
+}
+
+function handleGoodsView(detail: any) {
+  state.goodDetail = detail;
+  state.dialogVisible = true;
+}
+
+function handleAdd() {
+  router.push({ path: "goods-detail" });
+}
+
+function handleUpdate(row: any) {
+  router.push({
+    path: "goods-detail",
+    query: { goodsId: row.id, categoryId: row.categoryId },
+  });
+}
+
+function handleDelete(row: any) {
+  const ids = row.id || state.ids.join(",");
+  ElMessageBox.confirm("是否确认删除选中的数据项?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(function () {
+      return deleteGoods(ids);
+    })
+    .then(() => {
+      ElMessage.success("删除成功");
+      handleQuery();
+    });
+}
+
+function handleRowClick(row: any) {
+  dataTableRef.value.toggleRowSelection(row);
+}
+
+function handleSelectionChange(selection: any) {
+  state.ids = selection.map((item: { id: any }) => item.id);
+  state.single = selection.length != 1;
+  state.multiple = !selection.length;
+}
+
+onMounted(() => {
+  listCascadeCategories({}).then((response) => {
+    state.categoryOptions = ref(response.data);
+  });
+  handleQuery();
+});
+</script>
+
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :inline="true">
       <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd"
+        <el-button type="success" :icon="Position" @click="handleAdd"
           >发布商品</el-button
         >
         <el-button
@@ -140,120 +261,6 @@
     </el-dialog>
   </div>
 </template>
-
-<script setup lang="ts">
-import { reactive, ref, onMounted, toRefs } from "vue";
-import { ElTable, ElMessage, ElMessageBox } from "element-plus";
-import { useRouter } from "vue-router";
-
-import { Search, Plus, Edit, Refresh, Delete,View } from "@element-plus/icons-vue";
-import { listGoodsPages, deleteGoods } from "@/api/pms/goods";
-import { listCascadeCategories } from "@/api/pms/category";
-import { GoodsItem, GoodsQueryParam } from "@/types";
-import {moneyFormatter} from '@/utils/filter'
-
-const dataTableRef = ref(ElTable);
-const router = useRouter();
-
-const state = reactive({
-  // 遮罩层
-  loading: true,
-  // 选中数组
-  ids: [],
-  // 非单个禁用
-  single: true,
-  // 非多个禁用
-  multiple: true,
-  total: 0,
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-  } as GoodsQueryParam,
-  goodsList: [] as GoodsItem[],
-  categoryOptions: [],
-  goodDetail: undefined,
-  dialogVisible: false,
-});
-
-const {
-  loading,
-  multiple,
-  queryParams,
-  goodsList,
-  categoryOptions,
-  goodDetail,
-  total,
-  dialogVisible,
-} = toRefs(state);
-
-function handleQuery() {
-  state.loading = true;
-  listGoodsPages(state.queryParams).then(({ data }) => {
-    state.goodsList = data.list;
-    state.total = data.total;
-    state.loading = false;
-  });
-}
-
-function resetQuery() {
-  state.queryParams = {
-    pageNum: 1,
-    pageSize: 10,
-    name: undefined,
-    categoryId: undefined,
-  };
-  handleQuery();
-}
-
-function handleGoodsView(detail: any) {
-  state.goodDetail = detail;
-  state.dialogVisible = true;
-}
-
-function handleAdd() {
-  router.push({ path: "goods-detail" });
-}
-
-function handleUpdate(row: any) {
-  router.push({
-    path: "goods-detail",
-    query: { goodsId: row.id, categoryId: row.categoryId },
-  });
-}
-
-function handleDelete(row: any) {
-  const ids = row.id || state.ids.join(",");
-  ElMessageBox.confirm("是否确认删除选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  })
-    .then(function () {
-      return deleteGoods(ids);
-    })
-    .then(() => {
-      ElMessage.success("删除成功");
-      handleQuery();
-    });
-}
-
-function handleRowClick(row: any) {
-  dataTableRef.value.toggleRowSelection(row);
-}
-
-function handleSelectionChange(selection: any) {
-  state.ids = selection.map((item: { id: any }) => item.id);
-  state.single = selection.length != 1;
-  state.multiple = !selection.length;
-}
-
-onMounted(() => {
-  listCascadeCategories({}).then((response) => {
-    state.categoryOptions = ref(response.data);
-  });
-  handleQuery();
-});
-</script>
 
 <style scoped>
 </style>

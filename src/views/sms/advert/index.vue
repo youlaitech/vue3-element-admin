@@ -1,102 +1,9 @@
-<template>
-  <div class="app-container">
-    <!-- 搜索表单 -->
-    <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-      <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" :icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
-      </el-form-item>
-
-      <el-form-item prop="title">
-        <el-input v-model="queryParams.title" placeholder="广告标题" clearable @keyup.enter="handleQuery" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
-        <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-table v-loading="loading" :data="advertList" @selection-change="handleSelectionChange" border>
-      <el-table-column type="selection" min-width="5" align="center" />
-      <el-table-column type="index" label="序号" width="80" align="center" />
-      <el-table-column prop="title" min-width="100" label="广告标题" />
-      <el-table-column label="广告图片" width="100">
-        <template #default="scope">
-          <el-popover placement="right" :width="400" trigger="hover">
-            <img :src="scope.row.picUrl" width="400" height="400" />
-            <template #reference>
-              <img :src="scope.row.picUrl" style="max-height: 60px; max-width: 60px" />
-            </template>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column prop="beginTime" label="开始时间" width="150" />
-      <el-table-column prop="endTime" label="结束时间" width="150" />
-      <el-table-column prop="status" label="状态" width="100">
-        <template #default="scope">
-          <el-tag v-if="scope.row.status === 1" type="success">开启</el-tag>
-          <el-tag v-else type="info">关闭</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="sort" label="排序" width="80" />
-      <el-table-column label="操作" align="center" width="150">
-        <template #default="scope">
-          <el-button type="primary" :icon="Edit" circle plain @click.stop="handleUpdate(scope.row)" />
-          <el-button type="danger" :icon="Delete" circle plain @click.stop="handleDelete(scope.row)" />
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <!-- 分页工具条 -->
-    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
-      @pagination="handleQuery" />
-
-    <!-- 表单弹窗 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" width="700px">
-      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
-        <el-form-item label="广告标题" prop="title">
-          <el-input v-model="formData.title" />
-        </el-form-item>
-
-        <el-form-item label="有效期" prop="beginTime">
-          <el-date-picker v-model="formData.beginTime" placeholder="开始时间" value-format="YYYY-MM-DD" />
-          ~
-          <el-date-picker v-model="formData.endTime" placeholder="结束时间" value-format="YYYY-MM-DD" />
-        </el-form-item>
-
-        <el-form-item label="广告图片" prop="picUrl">
-          <single-upload v-model="formData.picUrl" />
-        </el-form-item>
-
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="formData.sort" style="width: 200px" />
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :label="1">开启</el-radio>
-            <el-radio :label="0">关闭</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="跳转链接" prop="url">
-          <el-input v-model="formData.url" />
-        </el-form-item>
-
-        <el-form-item label="备注" prop="remark">
-          <el-input type="textarea" v-model="formData.remark" />
-        </el-form-item>
-      </el-form>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
-  </div>
-</template>
+<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
+<script lang="ts">
+export default {
+  name: "advert"
+};
+</script>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from "vue";
@@ -235,3 +142,103 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+
+<template>
+  <div class="app-container">
+    <!-- 搜索表单 -->
+    <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+      <el-form-item>
+        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
+        <el-button type="danger" :icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+      </el-form-item>
+
+      <el-form-item prop="title">
+        <el-input v-model="queryParams.title" placeholder="广告标题" clearable @keyup.enter="handleQuery" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
+        <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-table v-loading="loading" :data="advertList" @selection-change="handleSelectionChange" border>
+      <el-table-column type="selection" min-width="5" align="center" />
+      <el-table-column type="index" label="序号" width="80" align="center" />
+      <el-table-column prop="title" min-width="100" label="广告标题" />
+      <el-table-column label="广告图片" width="100">
+        <template #default="scope">
+          <el-popover placement="right" :width="400" trigger="hover">
+            <img :src="scope.row.picUrl" width="400" height="400" />
+            <template #reference>
+              <img :src="scope.row.picUrl" style="max-height: 60px; max-width: 60px" />
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column prop="beginTime" label="开始时间" width="150" />
+      <el-table-column prop="endTime" label="结束时间" width="150" />
+      <el-table-column prop="status" label="状态" width="100">
+        <template #default="scope">
+          <el-tag v-if="scope.row.status === 1" type="success">开启</el-tag>
+          <el-tag v-else type="info">关闭</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="sort" label="排序" width="80" />
+      <el-table-column label="操作" align="center" width="150">
+        <template #default="scope">
+          <el-button type="primary" :icon="Edit" circle plain @click.stop="handleUpdate(scope.row)" />
+          <el-button type="danger" :icon="Delete" circle plain @click.stop="handleDelete(scope.row)" />
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 分页工具条 -->
+    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+      @pagination="handleQuery" />
+
+    <!-- 表单弹窗 -->
+    <el-dialog :title="dialog.title" v-model="dialog.visible" width="700px">
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
+        <el-form-item label="广告标题" prop="title">
+          <el-input v-model="formData.title" />
+        </el-form-item>
+
+        <el-form-item label="有效期" prop="beginTime">
+          <el-date-picker v-model="formData.beginTime" placeholder="开始时间" value-format="YYYY-MM-DD" />
+          ~
+          <el-date-picker v-model="formData.endTime" placeholder="结束时间" value-format="YYYY-MM-DD" />
+        </el-form-item>
+
+        <el-form-item label="广告图片" prop="picUrl">
+          <single-upload v-model="formData.picUrl" />
+        </el-form-item>
+
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="formData.sort" style="width: 200px" />
+        </el-form-item>
+
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="formData.status">
+            <el-radio :label="1">开启</el-radio>
+            <el-radio :label="0">关闭</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="跳转链接" prop="url">
+          <el-input v-model="formData.url" />
+        </el-form-item>
+
+        <el-form-item label="备注" prop="remark">
+          <el-input type="textarea" v-model="formData.remark" />
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
+</template>

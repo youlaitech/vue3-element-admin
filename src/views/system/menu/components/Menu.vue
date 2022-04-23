@@ -57,26 +57,30 @@
           <el-input v-model="formData.name" placeholder="请输入菜单名称" />
         </el-form-item>
 
-        <el-form-item label="是否外链">
-          <el-radio-group v-model="isExternalPath">
-            <el-radio :label="false">否</el-radio>
-            <el-radio :label="true">是</el-radio>
+        <el-form-item label="菜单类型">
+          <el-radio-group v-model="formData.type" @change="handleMenuTypeChange">
+            <el-radio label="MENU">菜单</el-radio>
+            <el-radio label="CATALOG">目录</el-radio>
+            <el-radio label="EXTLINK">外链</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="isExternalPath" label="外链地址" prop="path">
+        <!-- 路由路径(浏览器地址栏显示) -->
+        <el-form-item v-if="formData.type == 'EXTLINK'" label="外链地址" prop="path">
           <el-input v-model="formData.path" placeholder="请输入外链完整路径" />
         </el-form-item>
 
-        <el-form-item v-if="!isExternalPath" label="页面路径" prop="component">
+        <el-form-item v-else label="路由路径" prop="path">
+          <el-input v-if="formData.type == 'CATALOG'" v-model="formData.path" placeholder="/system  (注意:目录以/开头)" />
+          <el-input v-else v-model="formData.path" placeholder="user" />
+        </el-form-item>
+
+        <!-- 组件页面完整路径 -->
+        <el-form-item v-if="formData.type == 'MENU'" label="组件路径" prop="component">
           <el-input v-model="formData.component" placeholder="system/user/index" style="width: 95%">
             <template v-if="formData.parentId != '0'" #prepend>src/views/</template>
             <template v-if="formData.parentId != '0'" #append>.vue</template>
           </el-input>
-
-          <el-tooltip effect="dark" content="请输入组件路径，如果是父组件填写 Layout 即可" placement="right">
-            <i class="el-icon-info" style="margin-left: 10px; color: darkseagreen"></i>
-          </el-tooltip>
         </el-form-item>
 
         <el-form-item label="图标" prop="icon">
@@ -93,6 +97,10 @@
           </el-popover>
         </el-form-item>
 
+        <el-form-item label="跳转路由">
+          <el-input v-model="formData.redirect" placeholder="跳转路由路径" maxlength="50" />
+        </el-form-item>
+
         <el-form-item label="状态">
           <el-radio-group v-model="formData.visible">
             <el-radio :label="1">显示</el-radio>
@@ -104,9 +112,7 @@
           <el-input-number v-model="formData.sort" style="width: 100px" controls-position="right" :min="0" />
         </el-form-item>
 
-        <el-form-item label="跳转路径">
-          <el-input v-model="formData.redirect" placeholder="请输入跳转路径" maxlength="50" />
-        </el-form-item>
+
       </el-form>
 
       <template #footer>
@@ -125,7 +131,6 @@ import { reactive, ref, onMounted, toRefs } from "vue";
 import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
 import { ElForm, ElMessage, ElMessageBox, ElPopover } from "element-plus";
 
-import { isExternal } from "@/utils/validate";
 import {
   Dialog,
   Option,
@@ -164,20 +169,28 @@ const state = reactive({
   dialog: { visible: false } as Dialog,
   formData: {
     parentId: "0",
+    name: '',
     visible: 1,
     sort: 1,
-    component: "Layout",
+    component: 'Layout',
+    type: 'MENU'
   } as MenuFormData,
   rules: {
     parentId: [{ required: true, message: "请选择顶级菜单", trigger: "blur" }],
     name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
-    component: [{ required: true, message: "请输入页面路径", trigger: "blur" }],
+    type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
+    path: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
+    component: [{ required: true, message: "请输入组件完整路径", trigger: "blur" }]
   },
   menuOptions: [] as Option[],
   currentRow: undefined,
-  isExternalPath: false,
   // Icon选择器显示状态
-  iconSelectVisible: false
+  iconSelectVisible: false,
+  cacheData: {
+    menuType: '',
+    menuPath: ''
+  }
+
 });
 
 const {
@@ -188,8 +201,8 @@ const {
   formData,
   rules,
   menuOptions,
-  isExternalPath,
-  iconSelectVisible
+  iconSelectVisible,
+  cacheData
 } = toRefs(state);
 
 /**
@@ -237,26 +250,29 @@ async function handleAdd(row: any) {
     title: "添加菜单",
     visible: true
   };
-  if (row.id) {
-    // 行点击新增
+  if (row.id) {  // 行点击新增
+
     state.formData.parentId = row.id;
     if (row.id == '0') {
-      state.formData.component = "Layout";
+      state.formData.type = 'CATALOG';
     } else {
-      state.formData.component = undefined;
+      state.formData.type = 'MENU';
     }
-  } else {
+  } else { // 工具栏新增
     if (state.currentRow) {
-      // 工具栏新增
       state.formData.parentId = (state.currentRow as any).id;
-      state.formData.component = undefined;
+      state.formData.type = 'MENU';
     } else {
       state.formData.parentId = "0";
-      state.formData.component = "Layout";
+      state.formData.type = 'CATALOG';
     }
   }
 }
 
+
+/**
+ * 修改弹窗
+ */
 async function handleUpdate(row: any) {
   await loadMenuData();
   state.dialog = {
@@ -266,13 +282,25 @@ async function handleUpdate(row: any) {
   const id = row.id || state.ids;
   getMenuDetail(id).then(({ data }) => {
     state.formData = data;
-    // 判断是否外部链接
-    state.isExternalPath = isExternal(state.formData.path);
+    cacheData.value.menuType = data.type
+    cacheData.value.menuPath = data.path
   });
 }
 
 /**
- * 菜单表单提交
+ * 菜单类型change事件
+ */
+function handleMenuTypeChange(val: any) {
+  if (val !== cacheData.value.menuType) {
+    formData.value.path = ''
+  } else {
+    formData.value.path = cacheData.value.menuPath
+  }
+}
+
+
+/**
+ * 菜单提交
  */
 function submitForm() {
   dataFormRef.value.validate((isValid: boolean) => {
@@ -325,7 +353,6 @@ function selected(name: string) {
   state.formData.icon = name;
   state.iconSelectVisible = false;
 }
-
 
 onMounted(() => {
   handleQuery();

@@ -1,76 +1,10 @@
-<template>
-  <div class="app-container">
-    <!-- 搜索表单 -->
-    <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-      <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" :icon="Delete" click="handleDelete" :disabled="multiple">删除</el-button>
-      </el-form-item>
 
-      <el-form-item prop="name">
-        <el-input v-model="queryParams.name" placeholder="品牌名称" />
-      </el-form-item>
-
-      <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
-        <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <!-- 数据表格 -->
-    <el-table v-loading="loading" :data="brandList" @selection-change="handleSelectionChange" border>
-      <el-table-column type="selection" min-width="5%" />
-      <el-table-column prop="name" label="品牌名称" min-width="10" />
-      <el-table-column prop="logoUrl" label="LOGO" min-width="10">
-        <template #default="scope">
-          <el-popover placement="right" :width="400" trigger="hover">
-            <img :src="scope.row.logoUrl" width="400" height="400" />
-            <template #reference>
-              <img :src="scope.row.logoUrl" style="max-height: 60px; max-width: 60px" />
-            </template>
-          </el-popover>
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="sort" label="排序" min-width="10" />
-
-      <el-table-column label="操作" width="150">
-        <template #default="scope">
-          <el-button @click="handleUpdate(scope.row)" type="primary" :icon="Edit" circle plain />
-          <el-button type="danger" :icon="Delete" circle plain @click="handleDelete(scope.row)" />
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <!-- 分页工具条 -->
-    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
-      @pagination="handleQuery" />
-
-    <!-- 表单弹窗 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" top="5vh" width="600px">
-      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
-        <el-form-item label="品牌名称" prop="name">
-          <el-input v-model="formData.name" auto-complete="off" />
-        </el-form-item>
-
-        <el-form-item label="LOGO" prop="logoUrl">
-          <single-upload v-model="formData.logoUrl" />
-        </el-form-item>
-
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="formData.sort" />
-        </el-form-item>
-      </el-form>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
-  </div>
-</template>
+<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
+<script lang="ts">
+export default {
+  name: "brand"
+};
+</script>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from "vue";
@@ -219,6 +153,80 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+
+<template>
+  <div class="app-container">
+    <!-- 搜索表单 -->
+    <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+      <el-form-item>
+        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
+        <el-button type="danger" :icon="Delete" click="handleDelete" :disabled="multiple">删除</el-button>
+      </el-form-item>
+
+      <el-form-item prop="name">
+        <el-input v-model="queryParams.name" placeholder="品牌名称" />
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
+        <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
+
+    <!-- 数据表格 -->
+    <el-table v-loading="loading" :data="brandList" @selection-change="handleSelectionChange" border>
+      <el-table-column type="selection" min-width="5%" />
+      <el-table-column prop="name" label="品牌名称" min-width="10" />
+      <el-table-column prop="logoUrl" label="LOGO" min-width="10">
+        <template #default="scope">
+          <el-popover placement="right" :width="400" trigger="hover">
+            <img :src="scope.row.logoUrl" width="400" height="400" />
+            <template #reference>
+              <img :src="scope.row.logoUrl" style="max-height: 60px; max-width: 60px" />
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="sort" label="排序" min-width="10" />
+
+      <el-table-column label="操作" width="150">
+        <template #default="scope">
+          <el-button @click="handleUpdate(scope.row)" type="primary" :icon="Edit" circle plain />
+          <el-button type="danger" :icon="Delete" circle plain @click="handleDelete(scope.row)" />
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 分页工具条 -->
+    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+      @pagination="handleQuery" />
+
+    <!-- 表单弹窗 -->
+    <el-dialog :title="dialog.title" v-model="dialog.visible" top="5vh" width="600px">
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
+        <el-form-item label="品牌名称" prop="name">
+          <el-input v-model="formData.name" auto-complete="off" />
+        </el-form-item>
+
+        <el-form-item label="LOGO" prop="logoUrl">
+          <single-upload v-model="formData.logoUrl" />
+        </el-form-item>
+
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="formData.sort" />
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
+</template>
 
 <style scoped>
 </style>

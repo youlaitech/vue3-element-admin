@@ -1,3 +1,67 @@
+<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
+<script lang="ts">
+export default {
+  name: "member"
+};
+</script>
+
+<script setup lang="ts">
+import { reactive, onMounted, toRefs } from "vue";
+import { ElTable } from "element-plus";
+import { Search, Refresh } from "@element-plus/icons-vue";
+
+import { listMemebersPage } from "@/api/ums/member";
+import { MemberQueryParam, MemberItem } from "@/types";
+
+const state = reactive({
+  // 遮罩层
+  loading: true,
+  // 选中数组
+  ids: [],
+  // 非单个禁用
+  single: true,
+  // 非多个禁用
+  multiple: true,
+  total: 0,
+  queryParams: {
+    pageNum: 1,
+    pageSize: 10
+  } as MemberQueryParam,
+  memberList: [] as MemberItem[]
+});
+
+const { loading, queryParams, memberList, total } =
+  toRefs(state);
+
+function handleQuery() {
+  state.loading = true;
+  listMemebersPage(state.queryParams).then(({ data }) => {
+    state.memberList = data.list;
+    state.total = data.total;
+    state.loading = false;
+  });
+}
+
+function resetQuery() {
+  state.queryParams = {
+    pageNum: 1,
+    pageSize: 10,
+    nickName: ''
+  };
+  handleQuery();
+}
+
+function handleSelectionChange(selection: any) {
+  state.ids = selection.map((item: { id: any }) => item.id);
+  state.single = selection.length != 1;
+  state.multiple = !selection.length;
+}
+
+onMounted(() => {
+  handleQuery();
+});
+</script>
+
 <template>
   <div class="app-container">
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
@@ -80,63 +144,6 @@
       @pagination="handleQuery" />
   </div>
 </template>
-
-<script setup lang="ts">
-import { reactive, onMounted, toRefs } from "vue";
-import { ElTable } from "element-plus";
-import { Search, Refresh } from "@element-plus/icons-vue";
-
-import { listMemeberPages } from "@/api/ums/member";
-import { MemberQueryParam, MemberItem } from "@/types";
-
-const state = reactive({
-  // 遮罩层
-  loading: true,
-  // 选中数组
-  ids: [],
-  // 非单个禁用
-  single: true,
-  // 非多个禁用
-  multiple: true,
-  total: 0,
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10
-  } as MemberQueryParam,
-  memberList: [] as MemberItem[]
-});
-
-const { loading, queryParams, memberList, total } =
-  toRefs(state);
-
-function handleQuery() {
-  state.loading = true;
-  listMemeberPages(state.queryParams).then(({ data }) => {
-    state.memberList = data.list;
-    state.total = data.total;
-    state.loading = false;
-  });
-}
-
-function resetQuery() {
-  state.queryParams = {
-    pageNum: 1,
-    pageSize: 10,
-    nickName: ''
-  };
-  handleQuery();
-}
-
-function handleSelectionChange(selection: any) {
-  state.ids = selection.map((item: { id: any }) => item.id);
-  state.single = selection.length != 1;
-  state.multiple = !selection.length;
-}
-
-onMounted(() => {
-  handleQuery();
-});
-</script>
 
 <style scoped>
 </style>
