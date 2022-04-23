@@ -1,33 +1,23 @@
-<template>
-  <div class="menu-container">
-    <el-row>
-      <el-col :span="12">
-        <el-button plain :icon="Switch" @click="toggleExpandAll">展开/折叠</el-button>
-      </el-col>
-      <el-col :span="12" style="text-align: right">
-        <el-button type="primary" :icon="Check" @click="handleSubmit">提交</el-button>
-      </el-col>
-    </el-row>
-
-    <el-tree class="menu-container__tree" ref="menuRef" v-if="refreshTree" :default-expanded-keys="expandedKeys" :default-expand-all="isExpandAll"
-      :data="menuOptions" show-checkbox node-key="value" empty-text="加载菜单中..." :check-strictly="checkStrictly"
-      highlight-current @node-click="handleNodeClick" />
-  </div>
-</template>
+<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
+<script lang="ts">
+export default {
+  name: "cmenu"
+};
+</script>
 
 <script setup lang="ts">
 import { nextTick, onMounted, reactive, ref, toRefs, watch } from "vue";
 import { listSelectMenus } from "@/api/system/menu";
 import { listRoleMenuIds, updateRoleMenu } from "@/api/system/role";
 import { ElTree, ElMessage } from "element-plus";
-import { Switch, Check } from "@element-plus/icons-vue";
+import { Switch, Position } from "@element-plus/icons-vue";
 import { Option } from "@/types";
 
 const emit = defineEmits(["menuClick"]);
 const props = defineProps({
   role: {
     type: Object,
-    default: () => { }
+    default: () => {}
   },
 });
 
@@ -99,10 +89,25 @@ onMounted(() => {
 });
 </script>
 
+<template>
+  <div class="app-container">
+    <el-row>
+      <el-col :span="12">
+        <el-button plain :icon="Switch" @click="toggleExpandAll">展开/折叠</el-button>
+      </el-col>
+      <el-col :span="12" style="text-align: right">
+        <el-button type="primary" :icon="Position" @click="handleSubmit">提交</el-button>
+      </el-col>
+    </el-row>
+
+    <el-tree class="menu-tree" ref="menuRef" v-if="refreshTree" :default-expanded-keys="expandedKeys"
+      :default-expand-all="isExpandAll" :data="menuOptions" show-checkbox node-key="value" empty-text="加载菜单中..."
+      :check-strictly="checkStrictly" highlight-current @node-click="handleNodeClick" />
+  </div>
+</template>
+
 <style lang="scss" scoped>
-.menu-container {
-  &__tree{
-    margin-top: 10px;
-  }
+.menu-tree {
+  margin-top: 10px;
 }
 </style>

@@ -7,7 +7,7 @@ import { AxiosPromise } from 'axios'
  */
 export function listRoutes() {
     return request({
-        url: '/youlai-admin/api/v2/menus/route',
+        url: '/youlai-admin/api/v1/menus/route',
         method: 'get'
     })
 }

@@ -7,7 +7,7 @@
           </el-checkbox>
         </el-col>
         <el-col :span="12" style="text-align: right">
-          <el-button type="primary" :icon="Check" @click="handleSubmit">提交</el-button>
+          <el-button type="primary" :icon="Position" @click="handleSubmit">提交</el-button>
         </el-col>
       </el-row>
 
@@ -36,7 +36,7 @@ import { onMounted, reactive, toRefs, watch } from "vue";
 import { listPerms } from "@/api/system/perm";
 import { listRolePerms, saveRolePerms } from "@/api/system/role";
 import { ElMessage } from "element-plus";
-import { Check } from "@element-plus/icons-vue";
+import { Position } from "@element-plus/icons-vue";
 import { PermQueryParam } from "@/types";
 
 const props = defineProps({

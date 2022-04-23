@@ -1,3 +1,10 @@
+<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
+<script lang="ts">
+export default {
+  name: "dict"
+};
+</script>
+
 <template>
   <div class="app-container">
     <!-- 搜索表单 -->

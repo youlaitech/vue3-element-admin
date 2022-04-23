@@ -1,3 +1,122 @@
+<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
+<script lang="ts">
+export default {
+  name: "order"
+};
+</script>
+
+<script setup lang="ts">
+import { onMounted, reactive, ref, toRefs } from "vue";
+import { ElForm } from "element-plus";
+import { Dialog, Order, OrderQueryParam } from "@/types";
+import { listOrderPages, getOrderDetail } from "@/api/oms/order";
+import { Search, Refresh } from "@element-plus/icons-vue";
+
+const queryFormRef = ref(ElForm);
+
+const orderSourceMap = {
+  1: "微信小程序",
+  2: "APP",
+  3: "PC",
+};
+
+const orderStatusMap = {
+  101: "待付款",
+  102: "用户取消",
+  103: "系统取消",
+  201: "已付款",
+  202: "申请退款",
+  203: "已退款",
+  301: "待发货",
+  401: "已发货",
+  501: "用户收货",
+  502: "系统收货",
+  901: "已完成",
+};
+
+const payTypeMap = {
+  1: "支付宝",
+  2: "微信",
+  3: "会员余额",
+};
+
+const state = reactive({
+  loading: false,
+  ids: [],
+  single: true,
+  multiple: true,
+  dateRange: [],
+  queryParams: {
+    pageNum: 1,
+    pageSize: 10,
+  } as OrderQueryParam,
+  orderList: [] as Order[],
+  total: 0,
+  dialog: {
+    title: "订单详情",
+    visible: false,
+  } as Dialog,
+  dialogVisible: false,
+  orderDetail: {
+    order: {
+      refundAmount: undefined,
+      refundType: undefined,
+      refundNote: undefined,
+      gmtRefund: undefined,
+      confirmTime: undefined,
+      gmtDelivery: undefined,
+      shipSn: undefined,
+      shipChannel: undefined,
+      gmtPay: undefined,
+      integralPrice: undefined,
+      payChannel: undefined,
+      skuPrice: undefined,
+      couponPrice: undefined,
+      freightPrice: undefined,
+      orderPrice: undefined,
+    },
+    member: {},
+    orderItems: [],
+  },
+  orderSourceMap,
+  orderStatusMap,
+  payTypeMap,
+});
+
+const {
+  loading,
+  queryParams,
+  orderList,
+  total,
+  dateRange,
+} = toRefs(state);
+
+function handleQuery() {
+  state.loading = true;
+  listOrderPages(state.queryParams).then(({ data }) => {
+    state.orderList = data.list;
+    state.total = data.total;
+    state.loading = false;
+  });
+}
+
+function resetQuery() {
+  queryFormRef.value.resetFields();
+  handleQuery();
+}
+
+function viewDetail(row: any) {
+  state.dialog.visible = true;
+  getOrderDetail(row.id).then((response: any) => {
+    state.orderDetail = response.data;
+  });
+}
+
+onMounted(() => {
+  handleQuery();
+});
+</script>
+
 <template>
   <div class="app-container">
     <!-- 搜索表单 -->
@@ -115,119 +234,6 @@
     />
   </div>
 </template>
-
-<script setup lang="ts">
-import { onMounted, reactive, ref, toRefs } from "vue";
-import { ElForm } from "element-plus";
-import { Dialog, Order, OrderQueryParam } from "@/types";
-import { listOrderPages, getOrderDetail } from "@/api/oms/order";
-import { Search, Refresh } from "@element-plus/icons-vue";
-
-const queryFormRef = ref(ElForm);
-
-const orderSourceMap = {
-  1: "微信小程序",
-  2: "APP",
-  3: "PC",
-};
-
-const orderStatusMap = {
-  101: "待付款",
-  102: "用户取消",
-  103: "系统取消",
-  201: "已付款",
-  202: "申请退款",
-  203: "已退款",
-  301: "待发货",
-  401: "已发货",
-  501: "用户收货",
-  502: "系统收货",
-  901: "已完成",
-};
-
-const payTypeMap = {
-  1: "支付宝",
-  2: "微信",
-  3: "会员余额",
-};
-
-const state = reactive({
-  loading: false,
-  ids: [],
-  single: true,
-  multiple: true,
-  dateRange: [],
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-  } as OrderQueryParam,
-  orderList: [] as Order[],
-  total: 0,
-  dialog: {
-    title: "订单详情",
-    visible: false,
-  } as Dialog,
-  dialogVisible: false,
-  orderDetail: {
-    order: {
-      refundAmount: undefined,
-      refundType: undefined,
-      refundNote: undefined,
-      gmtRefund: undefined,
-      confirmTime: undefined,
-      gmtDelivery: undefined,
-      shipSn: undefined,
-      shipChannel: undefined,
-      gmtPay: undefined,
-      integralPrice: undefined,
-      payChannel: undefined,
-      skuPrice: undefined,
-      couponPrice: undefined,
-      freightPrice: undefined,
-      orderPrice: undefined,
-    },
-    member: {},
-    orderItems: [],
-  },
-  orderSourceMap,
-  orderStatusMap,
-  payTypeMap,
-});
-
-const {
-  loading,
-  queryParams,
-  orderList,
-  total,
-  dateRange,
-} = toRefs(state);
-
-function handleQuery() {
-  state.loading = true;
-  listOrderPages(state.queryParams).then(({ data }) => {
-    state.orderList = data.list;
-    state.total = data.total;
-    state.loading = false;
-  });
-}
-
-function resetQuery() {
-  queryFormRef.value.resetFields();
-  handleQuery();
-}
-
-function viewDetail(row: any) {
-  state.dialog.visible = true;
-  getOrderDetail(row.id).then((response: any) => {
-    state.orderDetail = response.data;
-  });
-}
-
-
-onMounted(() => {
-  handleQuery();
-});
-</script>
 
 <style scoped>
 </style>
