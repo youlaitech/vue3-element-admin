@@ -47,7 +47,7 @@ function initChart() {
   pieChart.setOption({
     title: {
       show: true,
-      text: '产品分类总览南丁格尔饼图',
+      text: '产品分类总览',
       x: 'center',
       padding: 15,
       textStyle: {

@@ -3,8 +3,8 @@
     <github-corner class="github-corner" />
 
     <!-- 数据 -->
-    <el-row :gutter="40" class="card-panel-col">
-      <!--      <el-col :xs="24" :lg="6" class="card-panel-col">
+    <el-row :gutter="40" class="card-panel__col">
+      <!--      <el-col :xs="24" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper" style="margin-top: -10px">
             <el-image style="width:200px; height: 100px"
@@ -22,10 +22,10 @@
         </div>
       </el-col>-->
 
-      <el-col :xs="24" :sm="12" :lg="6" class="card-panel-col">
+      <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-people">
-            <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+            <svg-icon icon-class="uv" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">访问数</div>
@@ -34,7 +34,7 @@
         </div>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="6" class="card-panel-col">
+      <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-message">
             <svg-icon icon-class="message" class-name="card-panel-icon" />
@@ -46,18 +46,18 @@
         </div>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="6" class="card-panel-col">
+      <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-money">
             <svg-icon icon-class="money" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">支付金额</div>
+            <div class="card-panel-text">收入金额</div>
             <div class="card-panel-num">1000</div>
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6" class="card-panel-col">
+      <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-shopping">
             <svg-icon icon-class="shopping" class-name="card-panel-icon" />
@@ -73,29 +73,29 @@
     <!-- 项目 + 团队成员介绍 -->
     <el-row :gutter="40">
       <!-- 项目介绍 -->
-      <el-col :md="12" :lg="12" class="card-panel-col">
+      <el-col :md="12" :lg="12" class="card-panel__col">
         <Project />
       </el-col>
 
       <!-- 团队介绍 -->
-      <el-col :md="12" :lg="12" class="card-panel-col">
+      <el-col :md="12" :lg="12" class="card-panel__col">
         <Team />
       </el-col>
     </el-row>
 
     <!-- Echarts 图表 -->
     <el-row :gutter="40" style="margin-top: 20px">
-      <el-col :sm="24" :lg="8" class="card-panel-col">
+      <el-col :sm="24" :lg="8" class="card-panel__col">
         <BarChart id="barChart" height="400px" width="100%" class="chart-container" />
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="8" class="card-panel-col">
+      <el-col :xs="24" :sm="12" :lg="8" class="card-panel__col">
         <PieChart id="pieChart" height="400px" width="100%" class="chart-container" />
         <!--订单漏斗图-->
         <!--<FunnelChart id="funnelChart" height="400px" width="100%" class="chart-container"/>-->
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="8" class="card-panel-col">
+      <el-col :xs="24" :sm="12" :lg="8" class="card-panel__col">
         <RadarChart id="radarChart" height="400px" width="100%" class="chart-container" />
       </el-col>
     </el-row>
@@ -160,7 +160,7 @@ import Team from "./components/Team/index.vue";
     }
   }
 
-  .card-panel-col {
+  .card-panel__col {
     margin-bottom: 12px;
   }
 

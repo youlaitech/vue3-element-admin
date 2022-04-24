@@ -48,7 +48,7 @@ function initChart() {
   barChart.setOption({
     title: {
       show: true,
-      text: '业绩总览(2021年)',
+      text: '业绩总览',
       x: 'center',
       padding: 15,
       textStyle: {
