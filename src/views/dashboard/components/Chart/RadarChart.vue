@@ -47,7 +47,7 @@ function initChart() {
   radarChart.setOption({
     title: {
       show: true,
-      text: '订单状态总雷达图',
+      text: '订单状态统计',
       x: 'center',
       padding: 15,
       textStyle: {
