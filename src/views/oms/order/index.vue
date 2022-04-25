@@ -226,7 +226,7 @@ onMounted(() => {
 
     <!-- 分页工具条 -->
     <pagination
-      v-show="total > 0"
+      v-if="total > 0"
       :total="total"
       v-model:page="queryParams.pageNum"
       v-model:limit="queryParams.pageSize"

@@ -465,6 +465,8 @@ onMounted(() => {
   loadData();
 });
 </script>
+
+
 <template>
   <div class="app-container">
     <el-row :gutter="20">
@@ -498,7 +500,7 @@ onMounted(() => {
                 <el-form-item prop="status">
                   <el-select v-model="queryParams.status" placeholder="用户状态" clearable style="width: 200px">
                     <el-option label="正常" value="1" />
-                    <el-option label="停用" value="0" />
+                    <el-option label="禁用" value="0" />
                   </el-select>
                 </el-form-item>
 
@@ -554,7 +556,7 @@ onMounted(() => {
             </el-table-column>
           </el-table>
 
-          <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum"
+          <pagination v-if="total > 0" :total="total" v-model:page="queryParams.pageNum"
             v-model:limit="queryParams.pageSize" @pagination="handleQuery" />
         </el-card>
       </el-col>
