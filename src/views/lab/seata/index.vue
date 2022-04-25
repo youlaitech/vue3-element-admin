@@ -36,12 +36,12 @@ const state = reactive({
             orderSn: undefined,
             status: undefined
         },
-        skuInfo: {
+        stockInfo: {
             name: undefined,
             picUrl: undefined,
             stockNum: undefined
         },
-        memberInfo: {
+        accountInfo: {
             nickName: undefined,
             avatarUrl: undefined,
             balance: undefined
@@ -64,8 +64,8 @@ const { cacheSeataData, seataData, loading, submitData } = toRefs(state)
 function handleOrderPay() {
 
     // 数据校验
-    if (seataData.value.skuInfo.stockNum && seataData.value.skuInfo.stockNum != 999
-        || (seataData.value.memberInfo.balance && seataData.value.memberInfo.balance != 1000000000)
+    if (seataData.value.stockInfo.stockNum && seataData.value.stockInfo.stockNum != 999
+        || (seataData.value.accountInfo.balance && seataData.value.accountInfo.balance != 1000000000)
         || (seataData.value.orderInfo.status && seataData.value.orderInfo.status != 101)
     ) {
         ElMessageBox.confirm(
@@ -88,8 +88,8 @@ function handleOrderPay() {
         }).finally(() => {
             cacheSeataData.value = {
                 status: seataData.value.orderInfo.status,
-                stockNum: seataData.value.skuInfo.stockNum,
-                balance: seataData.value.memberInfo.balance
+                stockNum: seataData.value.stockInfo.stockNum,
+                balance: seataData.value.accountInfo.balance
             }
             loadData();
         })
@@ -189,10 +189,10 @@ onMounted(() => {
                     </template>
 
                     <div style="display: flex;">
-                        <el-image style="width: 100px; height: 100px" :src="seataData.skuInfo.picUrl" fit="fill" />
+                        <el-image style="width: 100px; height: 100px" :src="seataData.stockInfo.picUrl" fit="fill" />
                         <div style="margin-left: 10px;">
                             <el-form-item label="商品名称:">
-                                {{ seataData.skuInfo.name }}
+                                {{ seataData.stockInfo.name }}
                             </el-form-item>
                             <el-form-item label="库存数量:" style="display: flex;">
                                 <div v-if="cacheSeataData.stockNum != null">
@@ -202,14 +202,14 @@ onMounted(() => {
                                     </el-icon>
                                 </div>
 
-                                {{ seataData.skuInfo.stockNum }} 部
+                                {{ seataData.stockInfo.stockNum }} 部
 
                                 <div v-if="cacheSeataData.stockNum" style="margin-left: 50px;">
-                                    <el-link v-if="cacheSeataData.stockNum != seataData.skuInfo.stockNum" type="success"
+                                    <el-link v-if="cacheSeataData.stockNum != seataData.stockInfo.stockNum" type="success"
                                         :underline="false" :icon="CircleCheckFilled">
                                         修改成功
                                     </el-link>
-                                    <el-link v-else-if="cacheSeataData.stockNum == seataData.skuInfo.stockNum"
+                                    <el-link v-else-if="cacheSeataData.stockNum == seataData.stockInfo.stockNum"
                                         type="danger" :underline="false" :icon="CircleCloseFilled">
                                         修改失败
                                     </el-link>
@@ -229,11 +229,11 @@ onMounted(() => {
                     </template>
 
                     <div style="display: flex;">
-                        <el-image style="width: 100px; height: 100px" :src="seataData.memberInfo.avatarUrl"
+                        <el-image style="width: 100px; height: 100px" :src="seataData.accountInfo.avatarUrl"
                             fit="fill" />
                         <div style="margin-left: 10px;">
                             <el-form-item label="会员昵称:">
-                                {{ seataData.memberInfo.nickName }}
+                                {{ seataData.accountInfo.nickName }}
                             </el-form-item>
                             <el-form-item label="会员余额:">
                                 <div v-if="cacheSeataData.balance != null">
@@ -242,14 +242,14 @@ onMounted(() => {
                                         <right />
                                     </el-icon>
                                 </div>
-                                {{ (seataData.memberInfo.balance as any) / 100 }} 元
+                                {{ (seataData.accountInfo.balance as any) / 100 }} 元
 
                                 <div v-if="cacheSeataData.balance" style="margin-left: 50px;">
-                                    <el-link v-if="cacheSeataData.balance != seataData.memberInfo.balance"
+                                    <el-link v-if="cacheSeataData.balance != seataData.accountInfo.balance"
                                         type="success" :underline="false" :icon="CircleCheckFilled">
                                         修改成功
                                     </el-link>
-                                    <el-link v-else-if="cacheSeataData.balance == seataData.memberInfo.balance"
+                                    <el-link v-else-if="cacheSeataData.balance == seataData.accountInfo.balance"
                                         type="danger" :underline="false" :icon="CircleCloseFilled">
                                         修改失败
                                     </el-link>
@@ -306,7 +306,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .card-panel__col {
     margin-bottom: 12px;
-
     .el-link {
         font-size: 16px;
         margin-right: 8px;

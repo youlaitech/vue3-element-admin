@@ -35,7 +35,6 @@ const state = reactive({
       uploadImage: {
         // 自定义图片上传
         async customUpload(file: any, insertFn: any) {
-          console.log("上传图片")
           uploadFile(file).then(response => {
             const url = response.data
             insertFn(url)
