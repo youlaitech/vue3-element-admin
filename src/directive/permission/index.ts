@@ -17,7 +17,7 @@ export const hasPerm: Directive = {
         if (value) {
             const requiredPerms = value; // DOM绑定需要的按钮权限标识
 
-            const hasPerm = user.perms.some(perm => {
+            const hasPerm = user.perms?.some(perm => {
                 return requiredPerms.includes(perm)
             })
 
