@@ -38,6 +38,6 @@ app.config.globalProperties.$listDictsByCode = listDictsByCode
 app.component('Pagination', Pagination)
     .use(createPinia())
     .use(router)
-    .use(ElementPlus, {size: localStorage.get('size') || 'default'})
+    .use(ElementPlus)
     .use(i18n)
     .mount('#app')
