@@ -6,36 +6,6 @@
   --el-text-color-disabled: #ccc;
 }
 
-/* 核心组件的变量，下面这些样式是必须要写的 */
-
-.el-link.el-link--primary:hover {
-  color: var(--el-color-primary-light-2) !important;
-}
-
-.el-tag {
-  --el-tag-bg-color: var(--el-color-primary-light-9);
-  --el-tag-border-color: var(--el-color-primary-light-8);
-  --el-tag-text-color: var(--el-color-primary);
-  --el-tag-hover-color: var(--el-color-primary);
-}
-
-.el-button--primary {
-  --el-button-text-color: var(--el-color-white) !important;
-  --el-button-bg-color: var(--el-color-primary) !important;
-  --el-button-border-color: var(--el-color-primary) !important;
-  --el-button-active-bg-color: var(--el-color-primary-dark) !important;
-  --el-button-active-border-color: var(--el-color-primary-dark) !important;
-}
-
-.el-button--primary.is-plain{
-    --el-button-text-color: var(--el-color-primary)!important;
-    --el-button-bg-color: var(--el-color-primary-light-9)!important;
-    --el-button-border-color: var(--el-color-primary-light-5)!important;
-    --el-button-hover-text-color: var(--el-color-white)!important;
-    --el-button-active-text-color: var(--el-color-white)!important;
-    --el-button-active-border-color: var(--el-color-primary)!important;
-}
-
 // 覆盖 element-plus 的样式
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {
@@ -50,18 +20,6 @@
 
 .el-upload__input {
   display: none;
-}
-
-
-// refine element ui upload
-.upload-container {
-  .el-upload {
-    width: 100%;
-    .el-upload-dragger {
-      width: 100%;
-      height: 200px;
-    }
-  }
 }
 
 // dropdown
