@@ -4,12 +4,12 @@ import defaultSettings from '../../settings'
 import { localStorage } from "@/utils/storage";
 
 const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
-import variables from '@/styles/element-variables.module.scss'
+const el = document.documentElement
 
 export const useSettingStore = defineStore({
     id: "setting",
     state: (): SettingState => ({
-        theme: localStorage.get("theme") || variables.theme,
+        theme: localStorage.get("theme") || getComputedStyle(el).getPropertyValue(`--el-color-primary`),
         showSettings: showSettings,
         tagsView: localStorage.get("tagsView") != null ? localStorage.get("tagsView") : tagsView,
         fixedHeader: fixedHeader,
