@@ -1,38 +1,38 @@
 <template>
-  <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane ref="scrollPaneRef" class="tags-view-wrapper" @scroll="handleScroll">
+  <div class="tags-view__container">
+    <scroll-pane ref="scrollPaneRef" class="tags-view__wrapper" @scroll="handleScroll">
       <router-link v-for="tag in visitedViews" :key="tag.path" :class="isActive(tag) ? 'active' : ''"
-        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }" class="tags-view-item"
+        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }" class="tags-view__item"
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''" @contextmenu.prevent="openMenu(tag, $event)">
         {{ generateTitle(tag.meta.title) }}
-        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)">
-          <Close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: middle" />
+        <span v-if="!isAffix(tag)" class="icon-close" @click.prevent.stop="closeSelectedTag(tag)">
+          <svg-icon icon-class="close" />
         </span>
       </router-link>
     </scroll-pane>
-    <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="contextmenu">
+    <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="tags-view__menu">
       <li @click="refreshSelectedTag(selectedTag)">
-        <refresh-right style="width: 1em; height: 1em" />
+        <svg-icon icon-class="refresh" />
         刷新
       </li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        <close style="width: 1em; height: 1em" />
+        <svg-icon icon-class="close" />
         关闭
       </li>
       <li @click="closeOtherTags">
-        <circle-close style="width: 1em; height: 1em" />
+        <svg-icon icon-class="close_other" />
         关闭其它
       </li>
       <li v-if="!isFirstView()" @click="closeLeftTags">
-        <back style="width: 1em; height: 1em" />
+        <svg-icon icon-class="close_left" />
         关闭左侧
       </li>
       <li v-if="!isLastView()" @click="closeRightTags">
-        <right style="width: 1em; height: 1em" />
+        <svg-icon icon-class="close_right" />
         关闭右侧
       </li>
       <li @click="closeAllTags(selectedTag)">
-        <circle-close style="width: 1em; height: 1em" />
+        <svg-icon icon-class="close_all" />
         关闭所有
       </li>
     </ul>
@@ -56,13 +56,7 @@ import { RouteRecordRaw, useRoute, useRouter } from "vue-router";
 import { TagView } from "@/types";
 
 import ScrollPane from "./ScrollPane.vue";
-import {
-  Close,
-  RefreshRight,
-  CircleClose,
-  Back,
-  Right,
-} from "@element-plus/icons-vue";
+import SvgIcon from '@/components/SvgIcon/index.vue';
 import { generateTitle } from "@/utils/i18n";
 import useStore from "@/store";
 
@@ -281,20 +275,20 @@ function handleScroll() {
 
 onMounted(() => {
   initTags();
-   addTags();
+  addTags();
 });
 </script>
 
 <style lang='scss' scoped>
-.tags-view-container {
+.tags-view__container {
   height: 34px;
   width: 100%;
   background: #fff;
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
 
-  .tags-view-wrapper {
-    .tags-view-item {
+  .tags-view__wrapper {
+    .tags-view__item {
       display: inline-block;
       position: relative;
       cursor: pointer;
@@ -316,26 +310,30 @@ onMounted(() => {
         margin-right: 15px;
       }
 
-      &.active {
-        background-color: #42b983;
-        color: #fff;
-        border-color: #42b983;
+      &:hover {
+        color: var(--el-color-primary);
+      }
 
-        &::before {
-          content: "";
-          background: #fff;
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          position: relative;
-          margin-right: 2px;
+      &.active {
+        background-color: var(--el-color-primary-light-9);
+        color: var(--el-color-primary);
+      }
+
+      .icon-close {
+        border-radius: 50%;
+        text-align: center;
+
+        &:hover {
+          background-color: #ccc;
+          color: #fff;
         }
       }
     }
+
+
   }
 
-  .contextmenu {
+  .tags-view__menu {
     margin: 0;
     background: #fff;
     z-index: 3000;
@@ -355,36 +353,6 @@ onMounted(() => {
 
       &:hover {
         background: #eee;
-      }
-    }
-  }
-}
-</style>
-
-<style lang="scss">
-//reset element css of el-icon-close
-.tags-view-wrapper {
-  .tags-view-item {
-    .el-icon-close {
-      width: 16px;
-      height: 16px;
-      vertical-align: 0px;
-      border-radius: 50%;
-      text-align: center;
-      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-      transform-origin: 100% 50%;
-
-      &:before {
-        transform: scale(0.6);
-        display: inline-block;
-        vertical-align: -3px;
-      }
-
-      &:hover {
-        background-color: #b4bccc;
-        color: #fff;
-        width: 12px !important;
-        height: 12px !important;
       }
     }
   }
