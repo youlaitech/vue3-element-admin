@@ -18,7 +18,7 @@ import i18n from "@/lang/index";
 // 自定义样式
 import '@/styles/index.scss'
 
-// 根据字典编码获取字典列表
+// 根据字典编码获取字典列表全局方法
 import {listDictsByCode} from '@/api/system/dict'
 
 const app = createApp(App)
