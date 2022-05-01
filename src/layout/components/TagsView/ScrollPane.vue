@@ -67,7 +67,7 @@ function moveToTarget(currentTag: TagView) {
   } else if (lastTag === currentTag) {
     $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth;
   } else {
-    const tagListDom = document.getElementsByClassName("tags-view-item");
+    const tagListDom = document.getElementsByClassName("tags-view__item");
     const currentIndex = visitedViews.value.findIndex(
       (item) => item === currentTag
     );
