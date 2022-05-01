@@ -32,7 +32,6 @@ const sizeOptions = ref([
 
 function handleSetSize(size: string) {
   app.setSize(size);
-  window.location.reload();
   ElMessage.success("切换布局大小成功");
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <el-config-provider :locale="locale">
-    <router-view/>
+  <el-config-provider :locale="locale" :size="size">
+    <router-view />
   </el-config-provider>
 </template>
 
@@ -17,6 +17,7 @@ import en from "element-plus/es/locale/lang/en";
 const { app } = useStore();
 
 const language = computed(() => app.language);
+const size: any = computed(() => app.size);
 
 const locale = ref();
 
