@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from "@/router";
 
 import { createPinia } from "pinia"
-import {localStorage} from "@/utils/storage";
 
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
@@ -19,7 +18,7 @@ import i18n from "@/lang/index";
 // 自定义样式
 import '@/styles/index.scss'
 
-// 全局方法
+// 根据字典编码获取字典列表
 import {listDictsByCode} from '@/api/system/dict'
 
 const app = createApp(App)
