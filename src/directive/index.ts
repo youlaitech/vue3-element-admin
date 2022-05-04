@@ -1,1 +1,1 @@
-export {hasPerm,hasRole} from "./permission";
+export { hasPerm, hasRole } from './permission';

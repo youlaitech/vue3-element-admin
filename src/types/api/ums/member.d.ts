@@ -1,10 +1,10 @@
-import { PageQueryParam, PageResult } from "../base"
+import { PageQueryParam, PageResult } from '../base';
 
 /**
  * 会员查询参数类型声明
  */
 export interface MemberQueryParam extends PageQueryParam {
-    nickName?: string 
+	nickName?: string;
 }
 
 /**
@@ -46,19 +46,19 @@ export interface AddressItem {
 /**
  * 会员分页项类型声明
  */
-export type MemberPageResult = PageResult<MemberItem[]>
+export type MemberPageResult = PageResult<MemberItem[]>;
 
 /**
  * 会员表单类型声明
  */
 export interface MemberFormData {
-    id: number | undefined;
-    title: string;
-    picUrl: string;
-    beginTime: string;
-    endTime: string;
-    status: number;
-    sort: number;
-    url: string;
-    remark: string;
+	id: number | undefined;
+	title: string;
+	picUrl: string;
+	beginTime: string;
+	endTime: string;
+	status: number;
+	sort: number;
+	url: string;
+	remark: string;
 }

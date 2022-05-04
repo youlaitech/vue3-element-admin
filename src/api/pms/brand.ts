@@ -1,18 +1,25 @@
-import { BrandFormData, BrandItem, BrandPageResult, BrandQueryParam } from '@/types'
-import request from '@/utils/request'
-import { AxiosPromise } from 'axios'
+import {
+	BrandFormData,
+	BrandItem,
+	BrandPageResult,
+	BrandQueryParam
+} from '@/types';
+import request from '@/utils/request';
+import { AxiosPromise } from 'axios';
 
 /**
  * 获取品牌分页列表
  *
  * @param queryParams
  */
-export function listBrandPages(queryParams: BrandQueryParam):AxiosPromise<BrandPageResult> {
-    return request({
-        url: '/mall-pms/api/v1/brands/page',
-        method: 'get',
-        params: queryParams
-    })
+export function listBrandPages(
+	queryParams: BrandQueryParam
+): AxiosPromise<BrandPageResult> {
+	return request({
+		url: '/mall-pms/api/v1/brands/page',
+		method: 'get',
+		params: queryParams
+	});
 }
 
 /**
@@ -20,12 +27,14 @@ export function listBrandPages(queryParams: BrandQueryParam):AxiosPromise<BrandP
  *
  * @param queryParams
  */
-export function listBrands(queryParams?: BrandQueryParam):AxiosPromise<BrandItem[]> {
-    return request({
-        url: '/mall-pms/api/v1/brands',
-        method: 'get',
-        params: queryParams
-    })
+export function listBrands(
+	queryParams?: BrandQueryParam
+): AxiosPromise<BrandItem[]> {
+	return request({
+		url: '/mall-pms/api/v1/brands',
+		method: 'get',
+		params: queryParams
+	});
 }
 
 /**
@@ -33,11 +42,11 @@ export function listBrands(queryParams?: BrandQueryParam):AxiosPromise<BrandItem
  *
  * @param id
  */
-export function getBrandFormDetail(id: number):AxiosPromise<BrandFormData> {
-    return request({
-        url: '/mall-pms/api/v1/brands/' + id,
-        method: 'get'
-    })
+export function getBrandFormDetail(id: number): AxiosPromise<BrandFormData> {
+	return request({
+		url: '/mall-pms/api/v1/brands/' + id,
+		method: 'get'
+	});
 }
 
 /**
@@ -46,11 +55,11 @@ export function getBrandFormDetail(id: number):AxiosPromise<BrandFormData> {
  * @param data
  */
 export function addBrand(data: BrandFormData) {
-    return request({
-        url: '/mall-pms/api/v1/brands',
-        method: 'post',
-        data: data
-    })
+	return request({
+		url: '/mall-pms/api/v1/brands',
+		method: 'post',
+		data: data
+	});
 }
 
 /**
@@ -59,12 +68,12 @@ export function addBrand(data: BrandFormData) {
  * @param id
  * @param data
  */
-export function updateBrand(id:number, data:BrandFormData) {
-    return request({
-        url: '/mall-pms/api/v1/brands/' + id,
-        method: 'put',
-        data: data
-    })
+export function updateBrand(id: number, data: BrandFormData) {
+	return request({
+		url: '/mall-pms/api/v1/brands/' + id,
+		method: 'put',
+		data: data
+	});
 }
 
 /**
@@ -73,8 +82,8 @@ export function updateBrand(id:number, data:BrandFormData) {
  * @param ids
  */
 export function deleteBrands(ids: string) {
-    return request({
-        url: '/mall-pms/api/v1/brands/' + ids,
-        method: 'delete'
-    })
+	return request({
+		url: '/mall-pms/api/v1/brands/' + ids,
+		method: 'delete'
+	});
 }

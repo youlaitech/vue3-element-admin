@@ -1,18 +1,20 @@
-import { GoodsDetail, GoodsPageResult, GoodsQueryParam } from '@/types'
-import request from '@/utils/request'
-import { AxiosPromise } from 'axios'
+import { GoodsDetail, GoodsPageResult, GoodsQueryParam } from '@/types';
+import request from '@/utils/request';
+import { AxiosPromise } from 'axios';
 
 /**
  * 获取商品分页列表
  *
  * @param queryParams
  */
-export function listGoodsPages(queryParams: GoodsQueryParam):AxiosPromise<GoodsPageResult> {
-    return request({
-        url: '/mall-pms/api/v1/goods/page',
-        method: 'get',
-        params: queryParams
-    })
+export function listGoodsPages(
+	queryParams: GoodsQueryParam
+): AxiosPromise<GoodsPageResult> {
+	return request({
+		url: '/mall-pms/api/v1/goods/page',
+		method: 'get',
+		params: queryParams
+	});
 }
 
 /**
@@ -20,11 +22,11 @@ export function listGoodsPages(queryParams: GoodsQueryParam):AxiosPromise<GoodsP
  *
  * @param id
  */
-export function getGoodsDetail(id: string):AxiosPromise<GoodsDetail> {
-    return request({
-        url: '/mall-pms/api/v1/goods/' + id,
-        method: 'get'
-    })
+export function getGoodsDetail(id: string): AxiosPromise<GoodsDetail> {
+	return request({
+		url: '/mall-pms/api/v1/goods/' + id,
+		method: 'get'
+	});
 }
 
 /**
@@ -33,11 +35,11 @@ export function getGoodsDetail(id: string):AxiosPromise<GoodsDetail> {
  * @param data
  */
 export function addGoods(data: object) {
-    return request({
-        url: '/mall-pms/api/v1/goods',
-        method: 'post',
-        data: data
-    })
+	return request({
+		url: '/mall-pms/api/v1/goods',
+		method: 'post',
+		data: data
+	});
 }
 
 /**
@@ -47,11 +49,11 @@ export function addGoods(data: object) {
  * @param data
  */
 export function updateGoods(id: number, data: object) {
-    return request({
-        url: '/mall-pms/api/v1/goods/' + id,
-        method: 'put',
-        data: data
-    })
+	return request({
+		url: '/mall-pms/api/v1/goods/' + id,
+		method: 'put',
+		data: data
+	});
 }
 
 /**
@@ -60,8 +62,8 @@ export function updateGoods(id: number, data: object) {
  * @param ids
  */
 export function deleteGoods(ids: string) {
-    return request({
-        url: '/mall-pms/api/v1/goods/' + ids,
-        method: 'delete'
-    })
+	return request({
+		url: '/mall-pms/api/v1/goods/' + ids,
+		method: 'delete'
+	});
 }

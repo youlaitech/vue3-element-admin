@@ -1,11 +1,11 @@
-import { PageQueryParam, PageResult } from "../base"
+import { PageQueryParam, PageResult } from '../base';
 
 /**
  * 商品查询参数类型声明
  */
 export interface GoodsQueryParam extends PageQueryParam {
-	name?: stirng,
-	categoryId?: number
+	name?: stirng;
+	categoryId?: number;
 }
 
 /**
@@ -48,25 +48,23 @@ export interface SkuItem {
 /**
  * 商品分页项类型声明
  */
-export type GoodsPageResult = PageResult<GoodsItem[]>
+export type GoodsPageResult = PageResult<GoodsItem[]>;
 
 /**
  * 商品表单数据类型声明
  */
 export interface GoodsDetail {
-	id?: string,
-	name?: string,
-	categoryId?: string,
-	brandId?: string,
-	originPrice?: number,
-	price?: number,
-	picUrl?: string,
-	album: string[],
-	description?: string,
-	detail?: string,
-	attrList: any[],
-	specList: any[],
-	skuList: any[]
+	id?: string;
+	name?: string;
+	categoryId?: string;
+	brandId?: string;
+	originPrice?: number;
+	price?: number;
+	picUrl?: string;
+	album: string[];
+	description?: string;
+	detail?: string;
+	attrList: any[];
+	specList: any[];
+	skuList: any[];
 }
-
-

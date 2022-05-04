@@ -1,18 +1,20 @@
-import { MemberPageResult, MemberQueryParam } from '@/types'
-import request from '@/utils/request'
-import { AxiosPromise } from 'axios'
+import { MemberPageResult, MemberQueryParam } from '@/types';
+import request from '@/utils/request';
+import { AxiosPromise } from 'axios';
 
 /**
  * 获取会员分页列表
  *
  * @param queryParams
  */
-export function listMemebersPage(queryParams: MemberQueryParam): AxiosPromise<MemberPageResult> {
-    return request({
-        url: '/mall-ums/api/v1/members',
-        method: 'get',
-        params: queryParams
-    })
+export function listMemebersPage(
+	queryParams: MemberQueryParam
+): AxiosPromise<MemberPageResult> {
+	return request({
+		url: '/mall-ums/api/v1/members',
+		method: 'get',
+		params: queryParams
+	});
 }
 
 /**
@@ -21,10 +23,10 @@ export function listMemebersPage(queryParams: MemberQueryParam): AxiosPromise<Me
  * @param id
  */
 export function getMemberDetail(id: number) {
-    return request({
-        url: '/mall-ums/api/v1/members/' + id,
-        method: 'get'
-    })
+	return request({
+		url: '/mall-ums/api/v1/members/' + id,
+		method: 'get'
+	});
 }
 
 /**
@@ -33,11 +35,11 @@ export function getMemberDetail(id: number) {
  * @param data
  */
 export function addMember(data: object) {
-    return request({
-        url: '/mall-ums/api/v1/members',
-        method: 'post',
-        data: data
-    })
+	return request({
+		url: '/mall-ums/api/v1/members',
+		method: 'post',
+		data: data
+	});
 }
 
 /**
@@ -47,9 +49,9 @@ export function addMember(data: object) {
  * @param data
  */
 export function updateMember(id: number, data: object) {
-    return request({
-        url: '/mall-ums/api/v1/members/' + id,
-        method: 'put',
-        data: data
-    })
+	return request({
+		url: '/mall-ums/api/v1/members/' + id,
+		method: 'put',
+		data: data
+	});
 }
