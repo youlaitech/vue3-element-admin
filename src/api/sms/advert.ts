@@ -1,18 +1,20 @@
-import { AdvertFormData, AdvertPageResult, AdvertQueryParam } from '@/types'
-import request from '@/utils/request'
-import { AxiosPromise } from 'axios'
+import { AdvertFormData, AdvertPageResult, AdvertQueryParam } from '@/types';
+import request from '@/utils/request';
+import { AxiosPromise } from 'axios';
 
 /**
  * 获取广告分页列表
  *
  * @param queryParams
  */
-export function listAdvertPages(queryParams: AdvertQueryParam):AxiosPromise<AdvertPageResult> {
-    return request({
-        url: '/mall-sms/api/v1/adverts',
-        method: 'get',
-        params: queryParams
-    })
+export function listAdvertPages(
+	queryParams: AdvertQueryParam
+): AxiosPromise<AdvertPageResult> {
+	return request({
+		url: '/mall-sms/api/v1/adverts',
+		method: 'get',
+		params: queryParams
+	});
 }
 
 /**
@@ -20,11 +22,11 @@ export function listAdvertPages(queryParams: AdvertQueryParam):AxiosPromise<Adve
  *
  * @param id
  */
-export function getAdvertFormDetail(id:number):AxiosPromise<AdvertFormData> {
-    return request({
-        url: '/mall-sms/api/v1/adverts/' + id,
-        method: 'get'
-    })
+export function getAdvertFormDetail(id: number): AxiosPromise<AdvertFormData> {
+	return request({
+		url: '/mall-sms/api/v1/adverts/' + id,
+		method: 'get'
+	});
 }
 
 /**
@@ -33,11 +35,11 @@ export function getAdvertFormDetail(id:number):AxiosPromise<AdvertFormData> {
  * @param data
  */
 export function addAdvert(data: AdvertFormData) {
-    return request({
-        url: '/mall-sms/api/v1/adverts',
-        method: 'post',
-        data: data
-    })
+	return request({
+		url: '/mall-sms/api/v1/adverts',
+		method: 'post',
+		data: data
+	});
 }
 
 /**
@@ -47,11 +49,11 @@ export function addAdvert(data: AdvertFormData) {
  * @param data
  */
 export function updateAdvert(id: number, data: AdvertFormData) {
-    return request({
-        url: '/mall-sms/api/v1/adverts/' + id,
-        method: 'put',
-        data: data
-    })
+	return request({
+		url: '/mall-sms/api/v1/adverts/' + id,
+		method: 'put',
+		data: data
+	});
 }
 
 /**
@@ -59,9 +61,9 @@ export function updateAdvert(id: number, data: AdvertFormData) {
  *
  * @param ids
  */
-export function deleteAdverts(ids:string) {
-    return request({
-        url: '/mall-sms/api/v1/adverts/' + ids,
-        method: 'delete'
-    })
+export function deleteAdverts(ids: string) {
+	return request({
+		url: '/mall-sms/api/v1/adverts/' + ids,
+		method: 'delete'
+	});
 }

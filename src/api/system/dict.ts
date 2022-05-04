@@ -1,18 +1,28 @@
-import { DictFormData, DictItemFormData, DictItemPageResult, DictItemQueryParam, DictPageResult, DictQueryParam, Option } from "@/types";
-import request from "@/utils/request";
-import { AxiosPromise } from "axios";
+import {
+	DictFormData,
+	DictItemFormData,
+	DictItemPageResult,
+	DictItemQueryParam,
+	DictPageResult,
+	DictQueryParam,
+	Option
+} from '@/types';
+import request from '@/utils/request';
+import { AxiosPromise } from 'axios';
 
 /**
  * 获取字典分页列表
  *
  * @param queryParams
  */
-export function listDictPages(queryParams: DictQueryParam): AxiosPromise<DictPageResult> {
-    return request({
-        url: '/youlai-admin/api/v2/dict/page',
-        method: 'get',
-        params: queryParams
-    })
+export function listDictPages(
+	queryParams: DictQueryParam
+): AxiosPromise<DictPageResult> {
+	return request({
+		url: '/youlai-admin/api/v2/dict/page',
+		method: 'get',
+		params: queryParams
+	});
 }
 
 /**
@@ -21,12 +31,11 @@ export function listDictPages(queryParams: DictQueryParam): AxiosPromise<DictPag
  * @param id
  */
 export function getDictFormDetail(id: number): AxiosPromise<DictFormData> {
-    return request({
-        url: '/youlai-admin/api/v2/dict/' + id,
-        method: 'get'
-    })
+	return request({
+		url: '/youlai-admin/api/v2/dict/' + id,
+		method: 'get'
+	});
 }
-
 
 /**
  * 新增字典
@@ -34,11 +43,11 @@ export function getDictFormDetail(id: number): AxiosPromise<DictFormData> {
  * @param data
  */
 export function addDict(data: DictFormData) {
-    return request({
-        url: '/youlai-admin/api/v2/dict',
-        method: 'post',
-        data: data
-    })
+	return request({
+		url: '/youlai-admin/api/v2/dict',
+		method: 'post',
+		data: data
+	});
 }
 
 /**
@@ -48,11 +57,11 @@ export function addDict(data: DictFormData) {
  * @param data
  */
 export function updateDict(id: number, data: DictFormData) {
-    return request({
-        url: '/youlai-admin/api/v2/dict/' + id,
-        method: 'put',
-        data: data
-    })
+	return request({
+		url: '/youlai-admin/api/v2/dict/' + id,
+		method: 'put',
+		data: data
+	});
 }
 
 /**
@@ -60,10 +69,10 @@ export function updateDict(id: number, data: DictFormData) {
  * @param ids 字典ID，多个以英文逗号(,)分割
  */
 export function deleteDict(ids: string) {
-    return request({
-        url: '/youlai-admin/api/v2/dict/' + ids,
-        method: 'delete',
-    })
+	return request({
+		url: '/youlai-admin/api/v2/dict/' + ids,
+		method: 'delete'
+	});
 }
 
 /**
@@ -71,14 +80,15 @@ export function deleteDict(ids: string) {
  *
  * @param queryParams
  */
-export function listDictItemPages(queryParams: DictItemQueryParam): AxiosPromise<DictItemPageResult> {
-    return request({
-        url: '/youlai-admin/api/v2/dict/items/page',
-        method: 'get',
-        params: queryParams
-    })
+export function listDictItemPages(
+	queryParams: DictItemQueryParam
+): AxiosPromise<DictItemPageResult> {
+	return request({
+		url: '/youlai-admin/api/v2/dict/items/page',
+		method: 'get',
+		params: queryParams
+	});
 }
-
 
 /**
  * 根据字典编码获取字典项列表
@@ -86,11 +96,11 @@ export function listDictItemPages(queryParams: DictItemQueryParam): AxiosPromise
  * @param dictCode
  */
 export function listDictsByCode(dictCode: string): AxiosPromise<Option[]> {
-    return request({
-        url: '/youlai-admin/api/v2/dict/items',
-        method: 'get',
-        params: { dictCode: dictCode }
-    })
+	return request({
+		url: '/youlai-admin/api/v2/dict/items',
+		method: 'get',
+		params: { dictCode: dictCode }
+	});
 }
 
 /**
@@ -99,13 +109,11 @@ export function listDictsByCode(dictCode: string): AxiosPromise<Option[]> {
  * @param id
  */
 export function getDictItemDetail(id: number): AxiosPromise<DictItemFormData> {
-    return request({
-        url: '/youlai-admin/api/v2/dict/items/' + id,
-        method: 'get'
-    })
+	return request({
+		url: '/youlai-admin/api/v2/dict/items/' + id,
+		method: 'get'
+	});
 }
-
-
 
 /**
  * 新增字典项
@@ -113,11 +121,11 @@ export function getDictItemDetail(id: number): AxiosPromise<DictItemFormData> {
  * @param data
  */
 export function addDictItem(data: any) {
-    return request({
-        url: '/youlai-admin/api/v2/dict/items',
-        method: 'post',
-        data: data
-    })
+	return request({
+		url: '/youlai-admin/api/v2/dict/items',
+		method: 'post',
+		data: data
+	});
 }
 
 /**
@@ -127,11 +135,11 @@ export function addDictItem(data: any) {
  * @param data
  */
 export function updateDictItem(id: number, data: any) {
-    return request({
-        url: '/youlai-admin/api/v2/dict/items/' + id,
-        method: 'put',
-        data: data
-    })
+	return request({
+		url: '/youlai-admin/api/v2/dict/items/' + id,
+		method: 'put',
+		data: data
+	});
 }
 
 /**
@@ -139,8 +147,8 @@ export function updateDictItem(id: number, data: any) {
  * @param ids 字典项ID，多个以英文逗号(,)分割
  */
 export function deleteDictItem(ids: string) {
-    return request({
-        url: '/youlai-admin/api/v2/dict/items/' + ids,
-        method: 'delete',
-    })
+	return request({
+		url: '/youlai-admin/api/v2/dict/items/' + ids,
+		method: 'delete'
+	});
 }

@@ -1,18 +1,25 @@
-import { RoleFormData, RoleItem, RolePageResult, RoleQueryParam } from '@/types'
-import request from '@/utils/request'
-import { AxiosPromise } from 'axios'
+import {
+	RoleFormData,
+	RoleItem,
+	RolePageResult,
+	RoleQueryParam
+} from '@/types';
+import request from '@/utils/request';
+import { AxiosPromise } from 'axios';
 
 /**
  * 获取角色分页列表
  *
  * @param queryParams
  */
-export function listRolePages(queryParams?: RoleQueryParam):AxiosPromise<RolePageResult> {
-    return request({
-        url: '/youlai-admin/api/v1/roles/page',
-        method: 'get',
-        params: queryParams
-    })
+export function listRolePages(
+	queryParams?: RoleQueryParam
+): AxiosPromise<RolePageResult> {
+	return request({
+		url: '/youlai-admin/api/v1/roles/page',
+		method: 'get',
+		params: queryParams
+	});
 }
 
 /**
@@ -20,12 +27,14 @@ export function listRolePages(queryParams?: RoleQueryParam):AxiosPromise<RolePag
  *
  * @param queryParams
  */
-export function listRoles(queryParams?: RoleQueryParam):AxiosPromise<RoleItem[]> {
-    return request({
-        url: '/youlai-admin/api/v1/roles',
-        method: 'get',
-        params: queryParams
-    })
+export function listRoles(
+	queryParams?: RoleQueryParam
+): AxiosPromise<RoleItem[]> {
+	return request({
+		url: '/youlai-admin/api/v1/roles',
+		method: 'get',
+		params: queryParams
+	});
 }
 
 /**
@@ -33,11 +42,11 @@ export function listRoles(queryParams?: RoleQueryParam):AxiosPromise<RoleItem[]>
  *
  * @param id
  */
-export function getRoleFormDetail(id: number):AxiosPromise<RoleFormData> {
-    return request({
-        url: '/youlai-admin/api/v1/roles/' + id,
-        method: 'get'
-    })
+export function getRoleFormDetail(id: number): AxiosPromise<RoleFormData> {
+	return request({
+		url: '/youlai-admin/api/v1/roles/' + id,
+		method: 'get'
+	});
 }
 
 /**
@@ -46,11 +55,11 @@ export function getRoleFormDetail(id: number):AxiosPromise<RoleFormData> {
  * @param data
  */
 export function addRole(data: RoleFormData) {
-    return request({
-        url: '/youlai-admin/api/v1/roles',
-        method: 'post',
-        data: data
-    })
+	return request({
+		url: '/youlai-admin/api/v1/roles',
+		method: 'post',
+		data: data
+	});
 }
 
 /**
@@ -60,11 +69,11 @@ export function addRole(data: RoleFormData) {
  * @param data
  */
 export function updateRole(id: number, data: RoleFormData) {
-    return request({
-        url: '/youlai-admin/api/v1/roles/' + id,
-        method: 'put',
-        data: data
-    })
+	return request({
+		url: '/youlai-admin/api/v1/roles/' + id,
+		method: 'put',
+		data: data
+	});
 }
 
 /**
@@ -73,23 +82,22 @@ export function updateRole(id: number, data: RoleFormData) {
  * @param ids
  */
 export function deleteRoles(ids: string) {
-    return request({
-        url: '/youlai-admin/api/v1/roles/' + ids,
-        method: 'delete'
-    })
+	return request({
+		url: '/youlai-admin/api/v1/roles/' + ids,
+		method: 'delete'
+	});
 }
-
 
 /**
  * 获取角色的菜单列表
  *
  * @param roleId
  */
-export function listRoleMenuIds(roleId: number):AxiosPromise<number[]> {
-    return request({
-        url: '/youlai-admin/api/v1/roles/' + roleId + '/menu_ids',
-        method: 'get',
-    })
+export function listRoleMenuIds(roleId: number): AxiosPromise<number[]> {
+	return request({
+		url: '/youlai-admin/api/v1/roles/' + roleId + '/menu_ids',
+		method: 'get'
+	});
 }
 
 /**
@@ -99,13 +107,12 @@ export function listRoleMenuIds(roleId: number):AxiosPromise<number[]> {
  * @param menuIds
  */
 export function updateRoleMenu(roleId: number, menuIds: Array<number>) {
-    return request({
-        url: '/youlai-admin/api/v1/roles/' + roleId + '/menus',
-        method: 'put',
-        data: {menuIds: menuIds}
-    })
+	return request({
+		url: '/youlai-admin/api/v1/roles/' + roleId + '/menus',
+		method: 'put',
+		data: { menuIds: menuIds }
+	});
 }
-
 
 /**
  * 获取角色的权限列表
@@ -113,11 +120,11 @@ export function updateRoleMenu(roleId: number, menuIds: Array<number>) {
  * @param roleId
  */
 export function listRolePerms(roleId: number, menuId: number) {
-    return request({
-        url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
-        method: 'get',
-        params: {menuId: menuId}
-    })
+	return request({
+		url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
+		method: 'get',
+		params: { menuId: menuId }
+	});
 }
 
 /**
@@ -127,10 +134,14 @@ export function listRolePerms(roleId: number, menuId: number) {
  * @param roleId
  * @param permIds
  */
-export function saveRolePerms(roleId: number, menuId: number, permIds: Array<number>) {
-    return request({
-        url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
-        method: 'put',
-        data: {menuId: menuId, permIds: permIds}
-    })
+export function saveRolePerms(
+	roleId: number,
+	menuId: number,
+	permIds: Array<number>
+) {
+	return request({
+		url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
+		method: 'put',
+		data: { menuId: menuId, permIds: permIds }
+	});
 }
