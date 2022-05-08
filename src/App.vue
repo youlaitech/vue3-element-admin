@@ -1,7 +1,7 @@
 <template>
-	<el-config-provider :locale="locale" :size="size">
-		<router-view />
-	</el-config-provider>
+  <el-config-provider :locale="locale" :size="size">
+    <router-view />
+  </el-config-provider>
 </template>
 
 <script setup lang="ts">
@@ -22,13 +22,13 @@ const size: any = computed(() => app.size);
 const locale = ref();
 
 watch(
-	language,
-	value => {
-		locale.value = value == 'en' ? en : zhCn;
-	},
-	{
-		// 初始化立即执行
-		immediate: true
-	}
+  language,
+  value => {
+    locale.value = value == 'en' ? en : zhCn;
+  },
+  {
+    // 初始化立即执行
+    immediate: true
+  }
 );
 </script>

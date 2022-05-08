@@ -6,11 +6,11 @@ import request from '@/utils/request';
  * @param params
  */
 export function listAttributes(params: object) {
-	return request({
-		url: '/mall-pms/api/v1/attributes',
-		method: 'get',
-		params: params
-	});
+  return request({
+    url: '/mall-pms/api/v1/attributes',
+    method: 'get',
+    params: params
+  });
 }
 
 /**
@@ -19,9 +19,9 @@ export function listAttributes(params: object) {
  * @param data
  */
 export function saveAttributeBatch(data: object) {
-	return request({
-		url: '/mall-pms/api/v1/attributes/batch',
-		method: 'post',
-		data: data
-	});
+  return request({
+    url: '/mall-pms/api/v1/attributes/batch',
+    method: 'post',
+    data: data
+  });
 }

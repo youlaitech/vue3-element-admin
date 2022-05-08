@@ -6,10 +6,10 @@ import { AxiosPromise } from 'axios';
  * 获取路由列表
  */
 export function listRoutes() {
-	return request({
-		url: '/youlai-admin/api/v1/menus/route',
-		method: 'get'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/menus/route',
+    method: 'get'
+  });
 }
 
 /**
@@ -18,23 +18,23 @@ export function listRoutes() {
  * @param queryParams
  */
 export function listTableMenus(
-	queryParams: MenuQueryParam
+  queryParams: MenuQueryParam
 ): AxiosPromise<MenuItem[]> {
-	return request({
-		url: '/youlai-admin/api/v1/menus/table',
-		method: 'get',
-		params: queryParams
-	});
+  return request({
+    url: '/youlai-admin/api/v1/menus/table',
+    method: 'get',
+    params: queryParams
+  });
 }
 
 /**
  * 获取菜单下拉列表
  */
 export function listSelectMenus(): AxiosPromise<Option[]> {
-	return request({
-		url: '/youlai-admin/api/v1/menus/select',
-		method: 'get'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/menus/select',
+    method: 'get'
+  });
 }
 
 /**
@@ -42,10 +42,10 @@ export function listSelectMenus(): AxiosPromise<Option[]> {
  * @param id
  */
 export function getMenuDetail(id: number): AxiosPromise<MenuFormData> {
-	return request({
-		url: '/youlai-admin/api/v1/menus/' + id,
-		method: 'get'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/menus/' + id,
+    method: 'get'
+  });
 }
 
 /**
@@ -54,11 +54,11 @@ export function getMenuDetail(id: number): AxiosPromise<MenuFormData> {
  * @param data
  */
 export function addMenu(data: MenuFormData) {
-	return request({
-		url: '/youlai-admin/api/v1/menus',
-		method: 'post',
-		data: data
-	});
+  return request({
+    url: '/youlai-admin/api/v1/menus',
+    method: 'post',
+    data: data
+  });
 }
 
 /**
@@ -68,11 +68,11 @@ export function addMenu(data: MenuFormData) {
  * @param data
  */
 export function updateMenu(id: string, data: MenuFormData) {
-	return request({
-		url: '/youlai-admin/api/v1/menus/' + id,
-		method: 'put',
-		data: data
-	});
+  return request({
+    url: '/youlai-admin/api/v1/menus/' + id,
+    method: 'put',
+    data: data
+  });
 }
 
 /**
@@ -81,8 +81,8 @@ export function updateMenu(id: string, data: MenuFormData) {
  * @param ids 菜单ID，多个以英文逗号(,)分割
  */
 export function deleteMenus(ids: string) {
-	return request({
-		url: '/youlai-admin/api/v1/menus/' + ids,
-		method: 'delete'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/menus/' + ids,
+    method: 'delete'
+  });
 }

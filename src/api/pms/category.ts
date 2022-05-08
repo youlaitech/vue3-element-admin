@@ -6,11 +6,11 @@ import request from '@/utils/request';
  * @param queryParams
  */
 export function listCategories(queryParams: object) {
-	return request({
-		url: '/mall-pms/api/v1/categories',
-		method: 'get',
-		params: queryParams
-	});
+  return request({
+    url: '/mall-pms/api/v1/categories',
+    method: 'get',
+    params: queryParams
+  });
 }
 
 /**
@@ -19,11 +19,11 @@ export function listCategories(queryParams: object) {
  * @param queryParams
  */
 export function listCascadeCategories(queryParams?: object) {
-	return request({
-		url: '/mall-pms/api/v1/categories/cascade',
-		method: 'get',
-		params: queryParams
-	});
+  return request({
+    url: '/mall-pms/api/v1/categories/cascade',
+    method: 'get',
+    params: queryParams
+  });
 }
 
 /**
@@ -32,10 +32,10 @@ export function listCascadeCategories(queryParams?: object) {
  * @param id
  */
 export function getCategoryDetail(id: number) {
-	return request({
-		url: '/mall-pms/api/v1/categories/' + id,
-		method: 'get'
-	});
+  return request({
+    url: '/mall-pms/api/v1/categories/' + id,
+    method: 'get'
+  });
 }
 
 /**
@@ -44,11 +44,11 @@ export function getCategoryDetail(id: number) {
  * @param data
  */
 export function addCategory(data: object) {
-	return request({
-		url: '/mall-pms/api/v1/categories',
-		method: 'post',
-		data: data
-	});
+  return request({
+    url: '/mall-pms/api/v1/categories',
+    method: 'post',
+    data: data
+  });
 }
 
 /**
@@ -58,11 +58,11 @@ export function addCategory(data: object) {
  * @param data
  */
 export function updateCategory(id: number, data: object) {
-	return request({
-		url: '/mall-pms/api/v1/categories/' + id,
-		method: 'put',
-		data: data
-	});
+  return request({
+    url: '/mall-pms/api/v1/categories/' + id,
+    method: 'put',
+    data: data
+  });
 }
 
 /**
@@ -71,10 +71,10 @@ export function updateCategory(id: number, data: object) {
  * @param ids
  */
 export function deleteCategories(ids: string) {
-	return request({
-		url: '/mall-pms/api/v1/categories/' + ids,
-		method: 'delete'
-	});
+  return request({
+    url: '/mall-pms/api/v1/categories/' + ids,
+    method: 'delete'
+  });
 }
 
 /**
@@ -84,9 +84,9 @@ export function deleteCategories(ids: string) {
  * @param data
  */
 export function updateCategoryPart(id: number, data: object) {
-	return request({
-		url: '/mall-pms/api/v1/categories/' + id,
-		method: 'patch',
-		data: data
-	});
+  return request({
+    url: '/mall-pms/api/v1/categories/' + id,
+    method: 'patch',
+    data: data
+  });
 }
