@@ -1,8 +1,8 @@
 import {
-	RoleFormData,
-	RoleItem,
-	RolePageResult,
-	RoleQueryParam
+  RoleFormData,
+  RoleItem,
+  RolePageResult,
+  RoleQueryParam
 } from '@/types';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
@@ -13,13 +13,13 @@ import { AxiosPromise } from 'axios';
  * @param queryParams
  */
 export function listRolePages(
-	queryParams?: RoleQueryParam
+  queryParams?: RoleQueryParam
 ): AxiosPromise<RolePageResult> {
-	return request({
-		url: '/youlai-admin/api/v1/roles/page',
-		method: 'get',
-		params: queryParams
-	});
+  return request({
+    url: '/youlai-admin/api/v1/roles/page',
+    method: 'get',
+    params: queryParams
+  });
 }
 
 /**
@@ -28,13 +28,13 @@ export function listRolePages(
  * @param queryParams
  */
 export function listRoles(
-	queryParams?: RoleQueryParam
+  queryParams?: RoleQueryParam
 ): AxiosPromise<RoleItem[]> {
-	return request({
-		url: '/youlai-admin/api/v1/roles',
-		method: 'get',
-		params: queryParams
-	});
+  return request({
+    url: '/youlai-admin/api/v1/roles',
+    method: 'get',
+    params: queryParams
+  });
 }
 
 /**
@@ -43,10 +43,10 @@ export function listRoles(
  * @param id
  */
 export function getRoleFormDetail(id: number): AxiosPromise<RoleFormData> {
-	return request({
-		url: '/youlai-admin/api/v1/roles/' + id,
-		method: 'get'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/roles/' + id,
+    method: 'get'
+  });
 }
 
 /**
@@ -55,11 +55,11 @@ export function getRoleFormDetail(id: number): AxiosPromise<RoleFormData> {
  * @param data
  */
 export function addRole(data: RoleFormData) {
-	return request({
-		url: '/youlai-admin/api/v1/roles',
-		method: 'post',
-		data: data
-	});
+  return request({
+    url: '/youlai-admin/api/v1/roles',
+    method: 'post',
+    data: data
+  });
 }
 
 /**
@@ -69,11 +69,11 @@ export function addRole(data: RoleFormData) {
  * @param data
  */
 export function updateRole(id: number, data: RoleFormData) {
-	return request({
-		url: '/youlai-admin/api/v1/roles/' + id,
-		method: 'put',
-		data: data
-	});
+  return request({
+    url: '/youlai-admin/api/v1/roles/' + id,
+    method: 'put',
+    data: data
+  });
 }
 
 /**
@@ -82,10 +82,10 @@ export function updateRole(id: number, data: RoleFormData) {
  * @param ids
  */
 export function deleteRoles(ids: string) {
-	return request({
-		url: '/youlai-admin/api/v1/roles/' + ids,
-		method: 'delete'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/roles/' + ids,
+    method: 'delete'
+  });
 }
 
 /**
@@ -94,10 +94,10 @@ export function deleteRoles(ids: string) {
  * @param roleId
  */
 export function listRoleMenuIds(roleId: number): AxiosPromise<number[]> {
-	return request({
-		url: '/youlai-admin/api/v1/roles/' + roleId + '/menu_ids',
-		method: 'get'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/roles/' + roleId + '/menu_ids',
+    method: 'get'
+  });
 }
 
 /**
@@ -107,11 +107,11 @@ export function listRoleMenuIds(roleId: number): AxiosPromise<number[]> {
  * @param menuIds
  */
 export function updateRoleMenu(roleId: number, menuIds: Array<number>) {
-	return request({
-		url: '/youlai-admin/api/v1/roles/' + roleId + '/menus',
-		method: 'put',
-		data: { menuIds: menuIds }
-	});
+  return request({
+    url: '/youlai-admin/api/v1/roles/' + roleId + '/menus',
+    method: 'put',
+    data: { menuIds: menuIds }
+  });
 }
 
 /**
@@ -120,11 +120,11 @@ export function updateRoleMenu(roleId: number, menuIds: Array<number>) {
  * @param roleId
  */
 export function listRolePerms(roleId: number, menuId: number) {
-	return request({
-		url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
-		method: 'get',
-		params: { menuId: menuId }
-	});
+  return request({
+    url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
+    method: 'get',
+    params: { menuId: menuId }
+  });
 }
 
 /**
@@ -135,13 +135,13 @@ export function listRolePerms(roleId: number, menuId: number) {
  * @param permIds
  */
 export function saveRolePerms(
-	roleId: number,
-	menuId: number,
-	permIds: Array<number>
+  roleId: number,
+  menuId: number,
+  permIds: Array<number>
 ) {
-	return request({
-		url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
-		method: 'put',
-		data: { menuId: menuId, permIds: permIds }
-	});
+  return request({
+    url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
+    method: 'put',
+    data: { menuId: menuId, permIds: permIds }
+  });
 }

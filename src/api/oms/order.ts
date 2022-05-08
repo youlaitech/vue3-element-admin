@@ -8,13 +8,13 @@ import { AxiosPromise } from 'axios';
  * @param queryParams
  */
 export function listOrderPages(
-	queryParams: OrderQueryParam
+  queryParams: OrderQueryParam
 ): AxiosPromise<OrderPageResult> {
-	return request({
-		url: '/mall-oms/api/v1/orders',
-		method: 'get',
-		params: queryParams
-	});
+  return request({
+    url: '/mall-oms/api/v1/orders',
+    method: 'get',
+    params: queryParams
+  });
 }
 
 /**
@@ -23,8 +23,8 @@ export function listOrderPages(
  * @param orderId
  */
 export function getOrderDetail(orderId: number) {
-	return request({
-		url: '/mall-oms/api/v1/orders/' + orderId,
-		method: 'get'
-	});
+  return request({
+    url: '/mall-oms/api/v1/orders/' + orderId,
+    method: 'get'
+  });
 }

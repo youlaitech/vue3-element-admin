@@ -8,23 +8,23 @@ import { AxiosPromise } from 'axios';
  * @param queryParams
  */
 export function listTableDepartments(
-	queryParams?: DeptQueryParam
+  queryParams?: DeptQueryParam
 ): AxiosPromise<DeptItem[]> {
-	return request({
-		url: '/youlai-admin/api/v1/depts/table',
-		method: 'get',
-		params: queryParams
-	});
+  return request({
+    url: '/youlai-admin/api/v1/depts/table',
+    method: 'get',
+    params: queryParams
+  });
 }
 
 /**
  * 部门下拉列表
  */
 export function listSelectDepartments(): AxiosPromise<Option[]> {
-	return request({
-		url: '/youlai-admin/api/v1/depts/select',
-		method: 'get'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/depts/select',
+    method: 'get'
+  });
 }
 
 /**
@@ -33,10 +33,10 @@ export function listSelectDepartments(): AxiosPromise<Option[]> {
  * @param id
  */
 export function getDeptDetail(id: string): AxiosPromise<DeptFormData> {
-	return request({
-		url: '/youlai-admin/api/v1/depts/' + id,
-		method: 'get'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/depts/' + id,
+    method: 'get'
+  });
 }
 
 /**
@@ -45,11 +45,11 @@ export function getDeptDetail(id: string): AxiosPromise<DeptFormData> {
  * @param data
  */
 export function addDept(data: DeptFormData) {
-	return request({
-		url: '/youlai-admin/api/v1/depts',
-		method: 'post',
-		data: data
-	});
+  return request({
+    url: '/youlai-admin/api/v1/depts',
+    method: 'post',
+    data: data
+  });
 }
 
 /**
@@ -59,11 +59,11 @@ export function addDept(data: DeptFormData) {
  * @param data
  */
 export function updateDept(id: string, data: DeptFormData) {
-	return request({
-		url: '/youlai-admin/api/v1/depts/' + id,
-		method: 'put',
-		data: data
-	});
+  return request({
+    url: '/youlai-admin/api/v1/depts/' + id,
+    method: 'put',
+    data: data
+  });
 }
 
 /**
@@ -72,8 +72,8 @@ export function updateDept(id: string, data: DeptFormData) {
  * @param ids
  */
 export function deleteDept(ids: string) {
-	return request({
-		url: '/youlai-admin/api/v1/depts/' + ids,
-		method: 'delete'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/depts/' + ids,
+    method: 'delete'
+  });
 }

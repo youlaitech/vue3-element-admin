@@ -1,50 +1,50 @@
 :root {
-	// 这里可以设置你自定义的颜色变量
-	// 这个是element主要按钮:active的颜色，当主题更改后此变量的值也随之更改
-	--el-color-primary-dark: #0d84ff;
-	// element plus 2.1.0 禁用文本色值和正常文本色值无法区分问题
-	--el-text-color-disabled: #ccc;
+  // 这里可以设置你自定义的颜色变量
+  // 这个是element主要按钮:active的颜色，当主题更改后此变量的值也随之更改
+  --el-color-primary-dark: #0d84ff;
+  // element plus 2.1.0 禁用文本色值和正常文本色值无法区分问题
+  --el-text-color-disabled: #ccc;
 }
 
 // 覆盖 element-plus 的样式
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {
-	font-weight: 400 !important;
+  font-weight: 400 !important;
 }
 
 .el-upload {
-	input[type='file'] {
-		display: none !important;
-	}
+  input[type='file'] {
+    display: none !important;
+  }
 }
 
 .el-upload__input {
-	display: none;
+  display: none;
 }
 
 // dropdown
 .el-dropdown-menu {
-	a {
-		display: block;
-	}
+  a {
+    display: block;
+  }
 }
 
 // to fix el-date-picker css style
 .el-range-separator {
-	box-sizing: content-box;
+  box-sizing: content-box;
 }
 
 // 选中行背景色值
 .el-table__body tr.current-row td {
-	background-color: #e1f3d8b5 !important;
+  background-color: #e1f3d8b5 !important;
 }
 
 // card 的header统一高度
 .el-card__header {
-	height: 60px !important;
+  height: 60px !important;
 }
 
 // 表格表头和表体未对齐
 .el-table__header col[name='gutter'] {
-	display: table-cell !important;
+  display: table-cell !important;
 }

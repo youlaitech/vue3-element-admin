@@ -8,13 +8,13 @@ import { AxiosPromise } from 'axios';
  * @param queryParams
  */
 export function listMemebersPage(
-	queryParams: MemberQueryParam
+  queryParams: MemberQueryParam
 ): AxiosPromise<MemberPageResult> {
-	return request({
-		url: '/mall-ums/api/v1/members',
-		method: 'get',
-		params: queryParams
-	});
+  return request({
+    url: '/mall-ums/api/v1/members',
+    method: 'get',
+    params: queryParams
+  });
 }
 
 /**
@@ -23,10 +23,10 @@ export function listMemebersPage(
  * @param id
  */
 export function getMemberDetail(id: number) {
-	return request({
-		url: '/mall-ums/api/v1/members/' + id,
-		method: 'get'
-	});
+  return request({
+    url: '/mall-ums/api/v1/members/' + id,
+    method: 'get'
+  });
 }
 
 /**
@@ -35,11 +35,11 @@ export function getMemberDetail(id: number) {
  * @param data
  */
 export function addMember(data: object) {
-	return request({
-		url: '/mall-ums/api/v1/members',
-		method: 'post',
-		data: data
-	});
+  return request({
+    url: '/mall-ums/api/v1/members',
+    method: 'post',
+    data: data
+  });
 }
 
 /**
@@ -49,9 +49,9 @@ export function addMember(data: object) {
  * @param data
  */
 export function updateMember(id: number, data: object) {
-	return request({
-		url: '/mall-ums/api/v1/members/' + id,
-		method: 'put',
-		data: data
-	});
+  return request({
+    url: '/mall-ums/api/v1/members/' + id,
+    method: 'put',
+    data: data
+  });
 }

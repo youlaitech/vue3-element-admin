@@ -2,8 +2,8 @@
  * 部门查询参数类型声明
  */
 export interface DeptQueryParam {
-	name: string | undefined;
-	status: number | undefined;
+  name: string | undefined;
+  status: number | undefined;
 }
 
 /**
@@ -11,25 +11,25 @@ export interface DeptQueryParam {
  */
 
 export interface DeptItem {
-	id: string;
-	name: string;
-	parentId: string;
-	treePath: string;
-	sort: number;
-	status: number;
-	leader?: string;
-	mobile?: string;
-	email?: string;
-	children: DeptItem[];
+  id: string;
+  name: string;
+  parentId: string;
+  treePath: string;
+  sort: number;
+  status: number;
+  leader?: string;
+  mobile?: string;
+  email?: string;
+  children: DeptItem[];
 }
 
 /**
  * 部门表单类型声明
  */
 export interface DeptFormData {
-	id?: string;
-	parentId: string;
-	name: string;
-	sort: number;
-	status: number;
+  id?: string;
+  parentId: string;
+  name: string;
+  sort: number;
+  status: number;
 }

@@ -1,20 +1,20 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 import {
-	UserFormData,
-	UserInfo,
-	UserPageResult,
-	UserQueryParam
+  UserFormData,
+  UserInfo,
+  UserPageResult,
+  UserQueryParam
 } from '@/types';
 
 /**
  * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
  */
 export function getUserInfo(): AxiosPromise<UserInfo> {
-	return request({
-		url: '/youlai-admin/api/v1/users/me',
-		method: 'get'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/users/me',
+    method: 'get'
+  });
 }
 
 /**
@@ -23,13 +23,13 @@ export function getUserInfo(): AxiosPromise<UserInfo> {
  * @param queryParams
  */
 export function listUsersPage(
-	queryParams: UserQueryParam
+  queryParams: UserQueryParam
 ): AxiosPromise<UserPageResult> {
-	return request({
-		url: '/youlai-admin/api/v1/users/page',
-		method: 'get',
-		params: queryParams
-	});
+  return request({
+    url: '/youlai-admin/api/v1/users/page',
+    method: 'get',
+    params: queryParams
+  });
 }
 
 /**
@@ -38,10 +38,10 @@ export function listUsersPage(
  * @param userId
  */
 export function getUserDetail(userId: number): AxiosPromise<UserFormData> {
-	return request({
-		url: '/youlai-admin/api/v1/users/' + userId,
-		method: 'get'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/users/' + userId,
+    method: 'get'
+  });
 }
 
 /**
@@ -50,11 +50,11 @@ export function getUserDetail(userId: number): AxiosPromise<UserFormData> {
  * @param data
  */
 export function addUser(data: any) {
-	return request({
-		url: '/youlai-admin/api/v1/users',
-		method: 'post',
-		data: data
-	});
+  return request({
+    url: '/youlai-admin/api/v1/users',
+    method: 'post',
+    data: data
+  });
 }
 
 /**
@@ -64,11 +64,11 @@ export function addUser(data: any) {
  * @param data
  */
 export function updateUser(id: number, data: UserFormData) {
-	return request({
-		url: '/youlai-admin/api/v1/users/' + id,
-		method: 'put',
-		data: data
-	});
+  return request({
+    url: '/youlai-admin/api/v1/users/' + id,
+    method: 'put',
+    data: data
+  });
 }
 
 /**
@@ -78,11 +78,11 @@ export function updateUser(id: number, data: UserFormData) {
  * @param data
  */
 export function updateUserPart(id: number, data: any) {
-	return request({
-		url: '/youlai-admin/api/v1/users/' + id,
-		method: 'patch',
-		data: data
-	});
+  return request({
+    url: '/youlai-admin/api/v1/users/' + id,
+    method: 'patch',
+    data: data
+  });
 }
 
 /**
@@ -91,10 +91,10 @@ export function updateUserPart(id: number, data: any) {
  * @param ids
  */
 export function deleteUsers(ids: string) {
-	return request({
-		url: '/youlai-admin/api/v1/users/' + ids,
-		method: 'delete'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/users/' + ids,
+    method: 'delete'
+  });
 }
 
 /**
@@ -103,11 +103,11 @@ export function deleteUsers(ids: string) {
  * @returns
  */
 export function downloadTemplate() {
-	return request({
-		url: '/youlai-admin/api/v1/users/template',
-		method: 'get',
-		responseType: 'arraybuffer'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/users/template',
+    method: 'get',
+    responseType: 'arraybuffer'
+  });
 }
 
 /**
@@ -117,12 +117,12 @@ export function downloadTemplate() {
  * @returns
  */
 export function exportUser(queryParams: UserQueryParam) {
-	return request({
-		url: '/youlai-admin/api/v1/users/_export',
-		method: 'get',
-		params: queryParams,
-		responseType: 'arraybuffer'
-	});
+  return request({
+    url: '/youlai-admin/api/v1/users/_export',
+    method: 'get',
+    params: queryParams,
+    responseType: 'arraybuffer'
+  });
 }
 
 /**
@@ -131,16 +131,16 @@ export function exportUser(queryParams: UserQueryParam) {
  * @param file
  */
 export function importUser(deptId: number, roleIds: string, file: File) {
-	const formData = new FormData();
-	formData.append('file', file);
-	formData.append('deptId', deptId.toString());
-	formData.append('roleIds', roleIds);
-	return request({
-		url: '/youlai-admin/api/v1/users/_import',
-		method: 'post',
-		data: formData,
-		headers: {
-			'Content-Type': 'multipart/form-data'
-		}
-	});
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('deptId', deptId.toString());
+  formData.append('roleIds', roleIds);
+  return request({
+    url: '/youlai-admin/api/v1/users/_import',
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 }

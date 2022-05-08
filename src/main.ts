@@ -27,7 +27,7 @@ const app = createApp(App);
 import * as directive from '@/directive';
 
 Object.keys(directive).forEach(key => {
-	app.directive(key, (directive as { [key: string]: Directive })[key]);
+  app.directive(key, (directive as { [key: string]: Directive })[key]);
 });
 
 // 全局方法
@@ -35,9 +35,9 @@ app.config.globalProperties.$listDictsByCode = listDictsByCode;
 
 // 注册全局组件
 app
-	.component('Pagination', Pagination)
-	.use(createPinia())
-	.use(router)
-	.use(ElementPlus)
-	.use(i18n)
-	.mount('#app');
+  .component('Pagination', Pagination)
+  .use(createPinia())
+  .use(router)
+  .use(ElementPlus)
+  .use(i18n)
+  .mount('#app');

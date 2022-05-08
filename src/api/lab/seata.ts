@@ -6,11 +6,11 @@ import request from '@/utils/request';
  * @returns
  */
 export function payOrder(data: SeataFormData) {
-	return request({
-		url: '/youlai-lab/api/v1/seata/order/_pay',
-		method: 'post',
-		data: data
-	});
+  return request({
+    url: '/youlai-lab/api/v1/seata/order/_pay',
+    method: 'post',
+    data: data
+  });
 }
 
 /**
@@ -18,10 +18,10 @@ export function payOrder(data: SeataFormData) {
  * @returns
  */
 export function getSeataData() {
-	return request({
-		url: '/youlai-lab/api/v1/seata/data',
-		method: 'get'
-	});
+  return request({
+    url: '/youlai-lab/api/v1/seata/data',
+    method: 'get'
+  });
 }
 
 /**
@@ -29,8 +29,8 @@ export function getSeataData() {
  * @returns
  */
 export function resetSeataData() {
-	return request({
-		url: '/youlai-lab/api/v1/seata/data/_reset',
-		method: 'put'
-	});
+  return request({
+    url: '/youlai-lab/api/v1/seata/data/_reset',
+    method: 'put'
+  });
 }
