@@ -53,25 +53,23 @@
             <single-upload v-model="item.url" :show-close="true" />
 
             <div v-if="item.url">
-              <el-button
-                type="text"
+              <el-link
+                type="danger"
                 class="button"
                 v-if="item.main == true"
-                style="color: #ff4d51"
-                >商品主图</el-button
+                >商品主图</el-link
               >
-              <el-button
-                type="text"
+              <el-link
+                type="info"
                 class="button"
                 v-else
                 @click="changeMainPicture(index)"
-                >设为主图</el-button
-              >
+                >设为主图</el-link>
             </div>
 
             <div v-else>
               <!-- 占位 -->
-              <el-button type="text" />
+              <el-link type="info" />
             </div>
           </el-card>
         </el-form-item>
@@ -107,15 +105,15 @@ const dataFormRef = ref(ElForm);
 const props = defineProps({
   modelValue: {
     type: Object,
-    default: () => {}
-  }
+    default: () => {},
+  },
 });
 
 const goodsInfo: any = computed({
   get: () => props.modelValue,
-  set: value => {
+  set: (value) => {
     emit('update:modelValue', value);
-  }
+  },
 });
 
 const state = reactive({
@@ -126,14 +124,14 @@ const state = reactive({
     { url: undefined, main: false },
     { url: undefined, main: false },
     { url: undefined, main: false },
-    { url: undefined, main: false }
+    { url: undefined, main: false },
   ] as Array<any>,
   rules: {
     name: [{ required: true, message: '请填写商品名称', trigger: 'blur' }],
     originPrice: [{ required: true, message: '请填写原价', trigger: 'blur' }],
     price: [{ required: true, message: '请填写现价', trigger: 'blur' }],
-    brandId: [{ required: true, message: '请选择商品品牌', trigger: 'blur' }]
-  }
+    brandId: [{ required: true, message: '请选择商品品牌', trigger: 'blur' }],
+  },
 });
 
 const { brandOptions, pictures, rules } = toRefs(state);
@@ -146,7 +144,7 @@ function loadData() {
   if (goodsId) {
     const mainPicUrl = goodsInfo.value.picUrl;
     if (mainPicUrl) {
-      state.pictures.filter(item => item.main)[0].url = mainPicUrl;
+      state.pictures.filter((item) => item.main)[0].url = mainPicUrl;
     }
     const subPicUrls = goodsInfo.value.subPicUrls;
     if (subPicUrls && subPicUrls.length > 0) {
@@ -179,14 +177,14 @@ function handleNext() {
     if (valid) {
       // 商品图片
       const mainPicUrl = state.pictures
-        .filter(item => item.main == true && item.url)
-        .map(item => item.url);
+        .filter((item) => item.main == true && item.url)
+        .map((item) => item.url);
       if (mainPicUrl && mainPicUrl.length > 0) {
         goodsInfo.value.picUrl = mainPicUrl[0];
       }
       const subPicUrl = state.pictures
-        .filter(item => item.main == false && item.url)
-        .map(item => item.url);
+        .filter((item) => item.main == false && item.url)
+        .map((item) => item.url);
       if (subPicUrl && subPicUrl.length > 0) {
         goodsInfo.value.subPicUrls = subPicUrl;
       }
