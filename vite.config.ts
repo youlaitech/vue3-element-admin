@@ -20,7 +20,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
     ],
     // 本地反向代理解决浏览器跨域限制
     server: {
-      host: 'localhost',
+      host: '0.0.0.0',
       port: Number(env.VITE_APP_PORT),
       open: true, // 运行自动打开浏览器
       proxy: {
