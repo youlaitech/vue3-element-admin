@@ -6,10 +6,10 @@
         <img src="https://img.shields.io/github/stars/youlaitech/youlai-mall.svg?style=social&label=Stars"/>
     </a>
     <a href="https://gitee.com/youlaitech/youlai-mall" target="_blank">
-        <img src="https://gitee.com/youlaitech/youlai-mall/badge/star.svg"/>
+        <img src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
     </a> 
     <br/>
-    <img src="https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg"/>
+    <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
     </a>
