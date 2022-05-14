@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar-logo-container" :class="{ collapse: isCollapse }">
+  <div class="sidebar-logo-container" :class="{ collapse: collapse }">
     <transition name="sidebarLogoFade">
       <router-link
         v-if="collapse"
@@ -8,18 +8,18 @@
         to="/"
       >
         <img v-if="logo" :src="logo" class="sidebar-logo" />
-        <h1 v-else class="sidebar-title">{{ title }}</h1>
+        <h1 v-else class="sidebar-title">vue3-element-admin</h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo" />
-        <h1 class="sidebar-title">{{ title }}</h1>
+        <h1 class="sidebar-title">vue3-element-admin</h1>
       </router-link>
     </transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, toRefs } from 'vue';
+import { reactive, toRefs } from 'vue';
 
 const props = defineProps({
   collapse: {
@@ -29,13 +29,11 @@ const props = defineProps({
 });
 
 const state = reactive({
-  isCollapse: props.collapse
+  isCollapse: props.collapse,
+  logo: new URL(`../../../assets/logo.png`, import.meta.url).href
 });
 
-const { isCollapse } = toRefs(state);
-
-const title = ref('vue3-element-admin');
-const logo = ref('https://www.youlai.tech/files/blog/logo.png');
+const { logo } = toRefs(state);
 </script>
 
 <style lang="scss" scoped>
@@ -62,8 +60,8 @@ const logo = ref('https://www.youlai.tech/files/blog/logo.png');
     width: 100%;
 
     & .sidebar-logo {
-      width: 32px;
-      height: 32px;
+      width: 20px;
+      height: 20px;
       vertical-align: middle;
     }
 
