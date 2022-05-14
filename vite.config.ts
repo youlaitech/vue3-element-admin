@@ -25,7 +25,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       open: true, // 运行自动打开浏览器
       proxy: {
         [env.VITE_APP_BASE_API]: {
-          target: 'http://www.youlai.tech:9999',
+          target: 'https://api.youlai.tech',
           changeOrigin: true,
           rewrite: path =>
             path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
