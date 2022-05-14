@@ -1,7 +1,7 @@
 <!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'Page401',
+  name: 'Page401'
 };
 </script>
 
@@ -10,16 +10,14 @@ import { reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 
 const state = reactive({
-  errGif: new URL(
-    `../../assets/401_images/401.gif`,
-    import.meta.url).href,
+  errGif: new URL(`../../assets/401_images/401.gif`, import.meta.url).href,
 
   ewizardClap:
     'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646',
-  dialogVisible: false,
-})
+  dialogVisible: false
+});
 
-const { errGif, ewizardClap, dialogVisible } = toRefs(state)
+const { errGif, ewizardClap, dialogVisible } = toRefs(state);
 
 const router = useRouter();
 
@@ -53,7 +51,12 @@ function back() {
         </ul>
       </el-col>
       <el-col :span="12">
-        <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream." />
+        <img
+          :src="errGif"
+          width="313"
+          height="428"
+          alt="Girl has dropped her ice cream."
+        />
       </el-col>
     </el-row>
     <el-dialog v-model="dialogVisible" title="随便看">
@@ -61,7 +64,6 @@ function back() {
     </el-dialog>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .errPage-container {

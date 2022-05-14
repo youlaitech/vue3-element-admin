@@ -51,8 +51,8 @@
             <el-link
               target="_blank"
               type="warning"
-              href="http://youlaitech.gitee.io/youlai-mall"
-              >官方文档(完善中..)</el-link
+              href="https://www.youlai.tech/"
+              >官方文档</el-link
             >
           </el-col>
           <el-col :span="6">
@@ -95,7 +95,7 @@
 
 <script lang="ts">
 export default {
-  name: 'index',
+  name: 'index'
 };
 </script>
 
