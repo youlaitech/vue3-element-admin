@@ -6,7 +6,7 @@
         <span class="fw-b">有来开源组织 & 技术团队</span>
       </template>
       <el-tabs v-model="teamActiveName">
-        <el-tab-pane label="开发者" name="developer">
+        <el-tab-pane label="开发者" name="1">
           <div class="developer" ref="dev_wrapper">
             <ul class="developer__container">
               <li
@@ -77,7 +77,7 @@ import { nextTick, onMounted, reactive, ref, toRefs, watchEffect } from 'vue';
 import BScroll from 'better-scroll';
 
 const state = reactive({
-  teamActiveName: 'developer',
+  teamActiveName: '1',
   developers: [
     {
       imgUrl: 'https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg',
@@ -125,23 +125,6 @@ watchEffect(() => {
   });
 });
 
-// let bScroll = reactive({})
-
-// onMounted(() => {
-//   bScroll = new BScroll(document.querySelector('.developer-wrapper') as any, {
-//     startX: 0,
-//     click: true,
-//     scrollX: true,
-//     scrollY: false,
-//     eventPassthrough: "vertical" // 横向滚动，保留纵向原生滚动
-//   })
-// })
-
-// watchEffect(() => {
-//   nextTick(() => {
-//     bScroll && (bScroll as any).refresh()
-//   })
-// })
 </script>
 
 <style lang="scss" scoped>
@@ -227,8 +210,7 @@ watchEffect(() => {
     }
 
     .join {
-      height: 240px;
-
+      overflow: hidden;
       p {
         font-weight: bold;
       }
@@ -241,8 +223,6 @@ watchEffect(() => {
     }
 
     .group {
-      height: 254px;
-
       &-img {
         height: 200px;
         width: 200px;
