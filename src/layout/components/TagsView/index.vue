@@ -80,7 +80,7 @@ import useStore from '@/store';
 
 const { tagsView, permission } = useStore();
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance; // 获取当前组件实例
+const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const router = useRouter();
 const route = useRoute();
 
@@ -94,10 +94,17 @@ const scrollPaneRef = ref();
 const left = ref(0);
 const top = ref(0);
 
-watch(route, () => {
-  addTags();
-  moveToCurrentTag();
-});
+watch(
+  route,
+  () => {
+    addTags();
+    moveToCurrentTag();
+  },
+  {
+    //初始化立即执行
+    immediate: true
+  }
+);
 
 watch(visible, value => {
   if (value) {
