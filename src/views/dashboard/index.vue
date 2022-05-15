@@ -1,27 +1,25 @@
+<script lang="ts">
+export default { name: 'Dashboard' };
+</script>
+
+<script setup lang="ts">
+// 组件引用
+import GithubCorner from '@/components/GithubCorner/index.vue';
+import SvgIcon from '@/components/SvgIcon/index.vue';
+import BarChart from './components/Chart/BarChart.vue';
+import PieChart from './components/Chart/PieChart.vue';
+import RadarChart from './components/Chart/RadarChart.vue';
+
+import Project from './components/Project/index.vue';
+import Team from './components/Team/index.vue';
+</script>
+
 <template>
   <div class="dashboard-container">
     <github-corner class="github-corner" />
 
     <!-- 数据 -->
     <el-row :gutter="40" class="card-panel__col">
-      <!--      <el-col :xs="24" :lg="6" class="card-panel__col">
-        <div class="card-panel">
-          <div class="card-panel-icon-wrapper" style="margin-top: -10px">
-            <el-image style="width:200px; height: 100px"
-                      src="https://gitee.com/haoxr/image/raw/master/20210606213932.png"/>
-          </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">
-              {{ nickname }}
-            </div>
-            <div class="card-panel-text">
-              <el-tag size="mini" type="danger">莫得感情</el-tag>
-              <el-tag size="mini" type="success" style="margin-left: 5px">打工人</el-tag>
-            </div>
-          </div>
-        </div>
-      </el-col>-->
-
       <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-people">
@@ -101,8 +99,6 @@
           width="100%"
           class="chart-container"
         />
-        <!--订单漏斗图-->
-        <!--<FunnelChart id="funnelChart" height="400px" width="100%" class="chart-container"/>-->
       </el-col>
 
       <el-col :xs="24" :sm="12" :lg="8" class="card-panel__col">
@@ -116,18 +112,6 @@
     </el-row>
   </div>
 </template>
-
-<script setup lang="ts">
-// 组件引用
-import GithubCorner from '@/components/GithubCorner/index.vue';
-import SvgIcon from '@/components/SvgIcon/index.vue';
-import BarChart from './components/Chart/BarChart.vue';
-import PieChart from './components/Chart/PieChart.vue';
-import RadarChart from './components/Chart/RadarChart.vue';
-
-import Project from './components/Project/index.vue';
-import Team from './components/Team/index.vue';
-</script>
 
 <style lang="scss" scoped>
 .dashboard-container {
@@ -149,9 +133,6 @@ import Team from './components/Team/index.vue';
   }
 
   .user-profile {
-    .user-name {
-    }
-
     .box-center {
       padding-top: 10px;
     }
