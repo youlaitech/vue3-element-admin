@@ -35,7 +35,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
     resolve: {
       // Vite路径别名配置
       alias: {
-        '@': path.resolve('./src') // @代替src
+        '@': path.resolve('./src')
       }
     }
   };
