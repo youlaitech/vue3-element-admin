@@ -34,28 +34,28 @@
 
 ## 技术栈
 
-| 技术栈       | 描述                                   | 官网                                 |
-| ------------ | -------------------------------------- | ------------------------------------ |
-| Vue3         | 渐进式 JavaScript 框架                 | https://v3.cn.vuejs.org/             |
-| TypeScript   | JavaScript 的一个超集                  | https://www.tslang.cn/               |
-| Vite2        | 前端开发与构建工具                     | https://cn.vitejs.dev/               |
+| 技术栈 | 描述 | 官网 |
+| --- | --- | --- |
+| Vue3 | 渐进式 JavaScript 框架 | https://v3.cn.vuejs.org/ |
+| TypeScript | JavaScript 的一个超集 | https://www.tslang.cn/ |
+| Vite2 | 前端开发与构建工具 | https://cn.vitejs.dev/ |
 | Element Plus | 基于 Vue 3，面向设计师和开发者的组件库 | https://element-plus.gitee.io/zh-CN/ |
-| Pinia        | 新一代状态管理工具                     | https://pinia.vuejs.org/             |
-| Vue Router   | Vue.js 的官方路由                      | https://router.vuejs.org/zh/         |
+| Pinia | 新一代状态管理工具 | https://pinia.vuejs.org/ |
+| Vue Router | Vue.js 的官方路由 | https://router.vuejs.org/zh/ |
 
 ## 项目预览
 
 在线预览地址: [vue3.youlai.tech](http://vue3.youlai.tech)
 
-| ![控制台](https://s2.loli.net/2022/04/07/fIEDs3GeSb8rxlt.png)   | ![国际化](https://s2.loli.net/2022/04/07/lt6u2jMefpTJvkh.gif)   |
-| --------------------------------------------------------------- | --------------------------------------------------------------- |
+| ![控制台](https://s2.loli.net/2022/04/07/fIEDs3GeSb8rxlt.png) | ![国际化](https://s2.loli.net/2022/04/07/lt6u2jMefpTJvkh.gif) |
+| --- | --- |
 | ![菜单管理](https://s2.loli.net/2022/04/07/quTeB3pNIyQ4alG.png) | ![角色管理](https://s2.loli.net/2022/04/07/dmh5MYtuONGRJZn.png) |
 | ![商品管理](https://s2.loli.net/2022/04/07/5XgYfMqBxhtdcG2.png) | ![库存设置](https://s2.loli.net/2022/04/07/s9IJeP7vRxq2WSL.png) |
 
 ## 项目地址
 
-|                    | Gitee                                                                | Github                                                                 |
-| ------------------ | -------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+|  | Gitee | Github |
+| --- | --- | --- |
 | vue3-element-admin | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |
 
 ## 启动部署
@@ -117,4 +117,4 @@
 > 欢迎添加开发者微信，备注「有来」进群
 
 | ![郝先瑞](https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg) | ![张川](https://s2.loli.net/2022/04/06/cQihGv9uPsTjXk1.jpg) |
-| ------------------------------------------------------------- | ----------------------------------------------------------- |
+| --- | --- |
