@@ -133,11 +133,13 @@ const state = reactive({
     username: 'admin',
     password: '123456',
     code: '',
-    uuid: ''
+    uuid: '',
   } as LoginFormData,
   loginRules: {
     username: [{ required: true, trigger: 'blur' }],
-    password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+    password: [
+      { required: true, trigger: 'blur', validator: validatePassword },
+    ],
   },
   loading: false,
   passwordType: 'password',
@@ -146,7 +148,7 @@ const state = reactive({
   capslockTooltipDisabled: true,
   otherQuery: {},
   clientHeight: document.documentElement.clientHeight,
-  showCopyright: true
+  showCopyright: true,
 });
 
 function validatePassword(rule: any, value: any, callback: any) {
@@ -164,7 +166,7 @@ const {
   passwordType,
   captchaBase64,
   capslockTooltipDisabled,
-  showCopyright
+  showCopyright,
 } = toRefs(state);
 
 function checkCapslock(e: any) {
@@ -208,7 +210,7 @@ function handleLogin() {
 function handleCaptchaGenerate() {
   getCaptcha().then(({ data }) => {
     const { img, uuid } = data;
-    state.captchaBase64 = 'data:image/gif;base64,' + img;
+    state.captchaBase64 = img;
     state.loginForm.uuid = uuid;
   });
 }
@@ -223,7 +225,7 @@ watch(
     }
   },
   {
-    immediate: true
+    immediate: true,
   }
 );
 
@@ -281,7 +283,7 @@ $cursor: #fff;
 
   .el-input {
     display: inline-block;
-    height: 47px;
+    height: 36px;
     width: 85%;
     .el-input__wrapper {
       padding: 0;
@@ -292,9 +294,8 @@ $cursor: #fff;
         border: 0px;
         -webkit-appearance: none;
         border-radius: 0px;
-        padding: 12px 5px 12px 15px;
         color: $light_gray;
-        height: 47px;
+        height: 36px;
         caret-color: $cursor;
 
         &:-webkit-autofill {
@@ -365,7 +366,7 @@ $light_gray: #eee;
   }
 
   .svg-container {
-    padding: 6px 5px 6px 15px;
+    padding: 5px 10px;
     color: $dark_gray;
     vertical-align: middle;
     width: 30px;
@@ -400,7 +401,7 @@ $light_gray: #eee;
     top: 0;
 
     img {
-      height: 52px;
+      height: 42px;
       cursor: pointer;
       vertical-align: middle;
     }
