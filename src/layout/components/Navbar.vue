@@ -69,7 +69,7 @@ import LangSelect from '@/components/LangSelect/index.vue';
 // 图标依赖
 import { CaretBottom } from '@element-plus/icons-vue';
 
-const { app, user } = useStore();
+const { app, user, tagsView } = useStore();
 
 const route = useRoute();
 const router = useRouter();
@@ -88,9 +88,14 @@ function logout() {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    user.logout().then(() => {
-      router.push(`/login?redirect=${route.fullPath}`);
-    });
+    user
+      .logout()
+      .then(() => {
+        tagsView.delAllViews();
+      })
+      .then(() => {
+        router.push(`/login?redirect=${route.fullPath}`);
+      });
   });
 }
 </script>
