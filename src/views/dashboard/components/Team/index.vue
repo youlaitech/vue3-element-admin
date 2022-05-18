@@ -124,7 +124,6 @@ watchEffect(() => {
     bScroll && (bScroll as any).refresh();
   });
 });
-
 </script>
 
 <style lang="scss" scoped>
