@@ -133,13 +133,11 @@ const state = reactive({
     username: 'admin',
     password: '123456',
     code: '',
-    uuid: '',
+    uuid: ''
   } as LoginFormData,
   loginRules: {
     username: [{ required: true, trigger: 'blur' }],
-    password: [
-      { required: true, trigger: 'blur', validator: validatePassword },
-    ],
+    password: [{ required: true, trigger: 'blur', validator: validatePassword }]
   },
   loading: false,
   passwordType: 'password',
@@ -148,7 +146,7 @@ const state = reactive({
   capslockTooltipDisabled: true,
   otherQuery: {},
   clientHeight: document.documentElement.clientHeight,
-  showCopyright: true,
+  showCopyright: true
 });
 
 function validatePassword(rule: any, value: any, callback: any) {
@@ -166,7 +164,7 @@ const {
   passwordType,
   captchaBase64,
   capslockTooltipDisabled,
-  showCopyright,
+  showCopyright
 } = toRefs(state);
 
 function checkCapslock(e: any) {
@@ -225,7 +223,7 @@ watch(
     }
   },
   {
-    immediate: true,
+    immediate: true
   }
 );
 
