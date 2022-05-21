@@ -300,7 +300,6 @@ function handleScroll() {
 
 onMounted(() => {
   initTags();
-  addTags();
 });
 </script>
 
