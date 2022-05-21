@@ -86,8 +86,6 @@ function initChart() {
     yAxis: [
       {
         type: 'value',
-        min: 0,
-        max: 10000,
         interval: 2000,
         axisLabel: {
           formatter: '{value} '
@@ -95,8 +93,6 @@ function initChart() {
       },
       {
         type: 'value',
-        min: 0,
-        max: 100,
         interval: 20,
         axisLabel: {
           formatter: '{value}%'

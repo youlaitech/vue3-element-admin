@@ -73,10 +73,6 @@ function initChart() {
         top: 60,
         bottom: 60,
         width: '60%',
-        min: 0,
-        max: 100,
-        minSize: '0%',
-        maxSize: '100%',
         sort: 'descending',
         gap: 2,
         label: {

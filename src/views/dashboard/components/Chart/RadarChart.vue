@@ -68,12 +68,12 @@ function initChart() {
       // shape: 'circle',
       radius: '60%',
       indicator: [
-        { name: '家用电器', max: 6500 },
-        { name: '服装箱包', max: 16000 },
-        { name: '运动户外', max: 30000 },
-        { name: '手机数码', max: 38000 },
-        { name: '汽车用品', max: 52000 },
-        { name: '家具厨具', max: 25000 }
+        { name: '家用电器' },
+        { name: '服装箱包' },
+        { name: '运动户外' },
+        { name: '手机数码' },
+        { name: '汽车用品' },
+        { name: '家具厨具' }
       ]
     },
     series: [
@@ -82,25 +82,23 @@ function initChart() {
         type: 'radar',
         itemStyle: {
           borderRadius: 6,
-          normal: {
-            color: function (params: any) {
-              //自定义颜色
-              const colorList = ['#409EFF', '#67C23A', '#E6A23C', '#F56C6C'];
-              return colorList[params.dataIndex];
-            }
+          color: function (params: any) {
+            //自定义颜色
+            const colorList = ['#409EFF', '#67C23A', '#E6A23C', '#F56C6C'];
+            return colorList[params.dataIndex];
           }
         },
         data: [
           {
-            value: [4200, 10000, 20000, 35000, 50000, 18000],
+            value: [400, 400, 400, 400, 400, 400],
             name: '预定数量'
           },
           {
-            value: [5000, 14000, 28000, 26000, 42000, 21000],
+            value: [300, 300, 300, 300, 300, 300],
             name: '下单数量'
           },
           {
-            value: [5000, 12000, 23000, 18000, 31000, 11000],
+            value: [200, 200, 200, 200, 200, 200],
             name: '发货数量'
           }
         ]
