@@ -10,11 +10,19 @@ const useTagsViewStore = defineStore({
   actions: {
     addVisitedView(view: any) {
       if (this.visitedViews.some(v => v.path === view.path)) return;
-      this.visitedViews.push(
-        Object.assign({}, view, {
-          title: view.meta?.title || 'no-name'
-        })
-      );
+      if (view.meta && view.meta.affix) {
+        this.visitedViews.unshift(
+          Object.assign({}, view, {
+            title: view.meta?.title || 'no-name'
+          })
+        );
+      } else {
+        this.visitedViews.push(
+          Object.assign({}, view, {
+            title: view.meta?.title || 'no-name'
+          })
+        );
+      }
     },
     addCachedView(view: any) {
       if (this.cachedViews.includes(view.name)) return;
