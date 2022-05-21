@@ -6,7 +6,7 @@ import 'nprogress/nprogress.css';
 NProgress.configure({ showSpinner: false }); // 进度环显示/隐藏
 
 // 白名单路由
-const whiteList = ['/login', '/auth-redirect'];
+const whiteList = ['/login'];
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
@@ -21,7 +21,7 @@ router.beforeEach(async (to, from, next) => {
       const hasGetUserInfo = user.roles.length > 0;
       if (hasGetUserInfo) {
         if (to.matched.length === 0) {
-          from.name ? next({ name: from.name }) : next('/');
+          from.name ? next({ name: from.name }) : next('/401');
         } else {
           next();
         }
