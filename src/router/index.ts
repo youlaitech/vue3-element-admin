@@ -27,11 +27,7 @@ export const constantRoutes: Array<RouteRecordRaw> = [
     component: () => import('@/views/error-page/404.vue'),
     meta: { hidden: true }
   },
-  {
-    path: '/401',
-    component: () => import('@/views/error-page/401.vue'),
-    meta: { hidden: true }
-  },
+
   {
     path: '/',
     component: Layout,
@@ -42,7 +38,12 @@ export const constantRoutes: Array<RouteRecordRaw> = [
         component: () => import('@/views/dashboard/index.vue'),
         name: 'Dashboard',
         meta: { title: 'dashboard', icon: 'homepage', affix: true }
-      }
+      },
+      {
+        path: '401',
+        component: () => import('@/views/error-page/401.vue'),
+        meta: { hidden: true }
+      },
     ]
   }
 
