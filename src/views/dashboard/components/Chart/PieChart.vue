@@ -71,12 +71,10 @@ function initChart() {
         roseType: 'area',
         itemStyle: {
           borderRadius: 6,
-          normal: {
-            color: function (params: any) {
-              //自定义颜色
-              const colorList = ['#409EFF', '#67C23A', '#E6A23C', '#F56C6C'];
-              return colorList[params.dataIndex];
-            }
+          color: function (params: any) {
+            //自定义颜色
+            const colorList = ['#409EFF', '#67C23A', '#E6A23C', '#F56C6C'];
+            return colorList[params.dataIndex];
           }
         },
         data: [
