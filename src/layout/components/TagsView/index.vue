@@ -156,21 +156,17 @@ function addTags() {
 }
 
 function moveToCurrentTag() {
-  const tags = getCurrentInstance()?.refs.tag as any[];
   nextTick(() => {
-    if (tags === null || tags === undefined || !Array.isArray(tags)) {
-      return;
-    }
-    for (const tag of tags) {
-      if ((tag.to as TagView).path === route.path) {
-        (scrollPaneRef.value as any).value.moveToTarget(tag);
+    for (const r of visitedViews.value) {
+      if (r.path === route.path) {
+        scrollPaneRef.value.moveToTarget(r);
         // when query is different then update
-        if ((tag.to as TagView).fullPath !== route.fullPath) {
+        if (r.fullPath !== route.fullPath) {
           tagsView.updateVisitedView(route);
         }
       }
     }
-  });
+  })
 }
 
 function isActive(tag: TagView) {
@@ -258,6 +254,7 @@ function closeRightTags() {
 }
 
 function closeOtherTags() {
+  router.push(selectedTag.value)
   tagsView.delOtherViews(selectedTag.value).then(() => {
     moveToCurrentTag();
   });
