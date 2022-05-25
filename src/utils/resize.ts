@@ -16,7 +16,7 @@ export default function () {
   };
 
   const initResizeEvent = () => {
-    window.addEventListener('resize', chartResizeHandler);
+    window.addEventListener('resize', chartResizeHandler, {passive:true});
   };
 
   const destroyResizeEvent = () => {
@@ -28,7 +28,8 @@ export default function () {
     if (sidebarElm.value) {
       sidebarElm.value.addEventListener(
         'transitionend',
-        sidebarResizeHandler as EventListener
+        sidebarResizeHandler as EventListener,
+        {passive:true}
       );
     }
   };
