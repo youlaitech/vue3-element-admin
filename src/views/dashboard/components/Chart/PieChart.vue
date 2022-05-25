@@ -70,7 +70,7 @@ function initChart() {
         center: ['50%', '50%'],
         roseType: 'area',
         itemStyle: {
-          borderRadius: 6,
+          borderRadius: 1,
           color: function (params: any) {
             //自定义颜色
             const colorList = ['#409EFF', '#67C23A', '#E6A23C', '#F56C6C'];
