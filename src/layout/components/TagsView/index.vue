@@ -264,10 +264,7 @@ function closeOtherTags() {
 }
 
 function closeAllTags(view: TagView) {
-  tagsView.delRightViews(selectedTag.value).then((res: any) => {
-    if (affixTags.value.some((tag: any) => tag.path === route.path)) {
-      return;
-    }
+  tagsView.delAllViews().then((res: any) => {
     toLastView(res.visitedViews, view);
   });
 }
