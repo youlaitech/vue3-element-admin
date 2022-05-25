@@ -1,6 +1,6 @@
 <template>
   <el-scrollbar
-    ref="scrollContainerRef"
+    ref="scrollContainer"
     :vertical="false"
     class="scroll-container"
     @wheel.prevent="handleScroll"
@@ -21,24 +21,26 @@ import { TagView } from '@/types';
 import useStore from '@/store';
 
 const tagAndTagSpacing = ref(4);
-const scrollContainerRef = ref(null);
+const { proxy } = getCurrentInstance() as any;
+
+const emits = defineEmits(['scroll']);
+const emitScroll = () => {
+  emits('scroll')
+}
 
 const { tagsView } = useStore();
 
 const visitedViews = computed(() => tagsView.visitedViews);
 
-const { ctx } = getCurrentInstance() as any;
-const scrollWrapper = computed(() => {
-  return (scrollContainerRef.value as any).$refs.wrap as HTMLElement;
-});
+const scrollWrapper = computed(() => proxy?.$refs.scrollContainer.$refs.wrap$);
 
 onMounted(() => {
-  //scrollWrapper.value.addEventListener('scroll', emitScroll, true);
-});
-
+  scrollWrapper.value.addEventListener('scroll', emitScroll, true)
+})
 onBeforeUnmount(() => {
-  // scrollWrapper.value.removeEventListener('scroll', emitScroll);
-});
+  scrollWrapper.value.removeEventListener('scroll', emitScroll)
+})
+
 
 function handleScroll(e: WheelEvent) {
   const eventDelta = (e as any).wheelDelta || -e.deltaY * 40;
@@ -47,7 +49,7 @@ function handleScroll(e: WheelEvent) {
 }
 
 function moveToTarget(currentTag: TagView) {
-  const $container = ctx.$refs.scrollContainer.$el;
+  const $container = proxy.$refs.scrollContainer.$el;
   const $containerWidth = $container.offsetWidth;
   const $scrollWrapper = scrollWrapper.value;
 
