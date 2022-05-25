@@ -8,6 +8,7 @@
       <router-link
         v-for="tag in visitedViews"
         :key="tag.path"
+        :data-path="tag.path"
         :class="isActive(tag) ? 'active' : ''"
         :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
         class="tags-view__item"
@@ -64,8 +65,7 @@ import {
   nextTick,
   ref,
   watch,
-  onMounted,
-  ComponentInternalInstance
+  onMounted
 } from 'vue';
 
 import path from 'path-browserify';
@@ -80,7 +80,7 @@ import useStore from '@/store';
 
 const { tagsView, permission } = useStore();
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance;
+const { proxy } = getCurrentInstance() as any;
 const router = useRouter();
 const route = useRoute();
 
@@ -108,7 +108,7 @@ watch(
 
 watch(visible, value => {
   if (value) {
-    document.body.addEventListener('click', closeMenu);
+    document.body.addEventListener('click', closeMenu, {passive:true});
   } else {
     document.body.removeEventListener('click', closeMenu);
   }

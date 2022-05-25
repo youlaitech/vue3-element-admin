@@ -35,7 +35,7 @@ const visitedViews = computed(() => tagsView.visitedViews);
 const scrollWrapper = computed(() => proxy?.$refs.scrollContainer.$refs.wrap$);
 
 onMounted(() => {
-  scrollWrapper.value.addEventListener('scroll', emitScroll, true)
+  scrollWrapper.value.addEventListener('scroll', emitScroll, {passive:true})
 })
 onBeforeUnmount(() => {
   scrollWrapper.value.removeEventListener('scroll', emitScroll)
@@ -81,8 +81,7 @@ function moveToTarget(currentTag: TagView) {
         ) {
           prevTag = tagListDom[k];
         }
-        if (
-          (tagListDom[k] as any).dataset.path ===
+        if ((tagListDom[k] as any).dataset.path ===
           visitedViews.value[currentIndex + 1].path
         ) {
           nextTag = tagListDom[k];

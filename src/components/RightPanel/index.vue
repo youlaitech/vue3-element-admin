@@ -58,7 +58,7 @@ watch(show, value => {
 });
 
 function addEventClick() {
-  window.addEventListener('click', closeSidebar);
+  window.addEventListener('click', closeSidebar, {passive:true});
 }
 
 function closeSidebar(evt: any) {
