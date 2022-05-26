@@ -92,7 +92,7 @@ const state = reactive({
 
 const { permissionOptions, isIndeterminate, checkAll } = toRefs(state);
 
-function handleCheckAllChange(checked: boolean) {
+function handleCheckAllChange(checked: any) {
   state.isIndeterminate = false;
   if (checked) {
     state.permissionOptions.map(item => (item.checked = true));
