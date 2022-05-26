@@ -48,3 +48,42 @@
 .el-table__header col[name='gutter'] {
   display: table-cell !important;
 }
+
+
+// fix: 内核较旧的浏览器不支持:not(selector list)
+.el-button:not(.is-text),
+.el-button:not(.is-link),
+.el-button:not(.el-button--text) {
+  background-color: var(--el-button-bg-color);
+  border: var(--el-border);
+  border-color: var(--el-button-border-color)
+}
+
+.el-button:not(.is-text):focus,
+.el-button:not(.is-link):focus,
+.el-button:not(.el-button--text):focus,
+.el-button:not(.is-text):hover,
+.el-button:not(.is-link):hover,
+.el-button:not(.el-button--text):hover {
+  color: var(--el-button-hover-text-color);
+  border-color: var(--el-button-hover-border-color);
+  background-color: var(--el-button-hover-bg-color);
+  outline: 0
+}
+
+.el-button:not(.is-text):active,
+.el-button:not(.is-link):active,
+.el-button:not(.el-button--text):active {
+  color: var(--el-button-active-text-color);
+  border-color: var(--el-button-active-border-color);
+  background-color: var(--el-button-active-bg-color);
+  outline: 0
+}
+
+.el-button:not(.is-text):focus-visible,
+.el-button:not(.is-link):focus-visible,
+.el-button:not(.el-button--text):focus-visible {
+  border-color: transparent;
+  outline: 2px solid var(--el-button-border-color);
+  outline-offset: 1px
+}
