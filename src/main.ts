@@ -38,8 +38,8 @@ app.config.globalProperties.$listDictsByCode = listDictsByCode;
 // 注册全局组件
 app
   .component('Pagination', Pagination)
-  .use(createPinia())
-  .use(router)
+  .use(createPinia() as any)
+  .use(router as any)
   .use(ElementPlus)
-  .use(i18n)
+  .use(i18n as any)
   .mount('#app');
