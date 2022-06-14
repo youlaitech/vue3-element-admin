@@ -17,7 +17,7 @@
     "better-scroll": "^2.4.2",
     "default-passive-events": "^2.0.0",
     "echarts": "^5.2.2",
-    "element-plus": "^2.2.2",
+    "element-plus": "^2.2.5",
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
     "path-to-regexp": "^6.2.0",
