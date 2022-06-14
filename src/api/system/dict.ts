@@ -1,12 +1,12 @@
+import { Option } from '@/types/common';
 import {
-  DictFormData,
+  DictFormTypeData,
   DictItemFormData,
   DictItemPageResult,
   DictItemQueryParam,
   DictPageResult,
   DictQueryParam,
-  Option
-} from '@/types';
+} from '@/types/api/system/dict';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -15,13 +15,13 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listDictPages(
+export function listPageDictTypes(
   queryParams: DictQueryParam
 ): AxiosPromise<DictPageResult> {
   return request({
-    url: '/youlai-admin/api/v2/dict/page',
+    url: '/youlai-admin/api/v1/dict-types',
     method: 'get',
-    params: queryParams
+    params: queryParams,
   });
 }
 
@@ -30,48 +30,49 @@ export function listDictPages(
  *
  * @param id
  */
-export function getDictFormDetail(id: number): AxiosPromise<DictFormData> {
+export function getDictFormData(id: number): AxiosPromise<DictFormTypeData> {
   return request({
-    url: '/youlai-admin/api/v2/dict/' + id,
-    method: 'get'
+    url: '/youlai-admin/api/v1/dict-types/' + id + '/form_data',
+    method: 'get',
   });
 }
 
 /**
- * 新增字典
+ * 新增字典类型
  *
  * @param data
  */
-export function addDict(data: DictFormData) {
+export function addDictType(data: DictFormTypeData) {
   return request({
-    url: '/youlai-admin/api/v2/dict',
+    url: '/youlai-admin/api/v1/dict-types',
     method: 'post',
-    data: data
+    data: data,
   });
 }
 
 /**
- * 修改字典
+ * 修改字典类型
  *
  * @param id
  * @param data
  */
-export function updateDict(id: number, data: DictFormData) {
+export function updateDictType(id: number, data: DictFormTypeData) {
   return request({
-    url: '/youlai-admin/api/v2/dict/' + id,
+    url: '/youlai-admin/api/v1/dict-types/' + id,
     method: 'put',
-    data: data
+    data: data,
   });
 }
 
 /**
- * 批量删除字典
- * @param ids 字典ID，多个以英文逗号(,)分割
+ * 批量删除字典类型
+ *
+ * @param ids 字典类型ID，多个以英文逗号(,)分割
  */
-export function deleteDict(ids: string) {
+export function deleteDictTypes(ids: string) {
   return request({
-    url: '/youlai-admin/api/v2/dict/' + ids,
-    method: 'delete'
+    url: '/youlai-admin/api/v1/dict-types/' + ids,
+    method: 'delete',
   });
 }
 
@@ -80,38 +81,40 @@ export function deleteDict(ids: string) {
  *
  * @param queryParams
  */
-export function listDictItemPages(
+export function listPageDictItems(
   queryParams: DictItemQueryParam
 ): AxiosPromise<DictItemPageResult> {
   return request({
-    url: '/youlai-admin/api/v2/dict/items/page',
+    url: '/youlai-admin/api/v1/dict-items',
     method: 'get',
-    params: queryParams
+    params: queryParams,
   });
 }
 
 /**
- * 根据字典编码获取字典项列表
+ * 根据字典类型编码获取字典数据项
  *
- * @param dictCode
+ * @param typeCode 字典类型编码
  */
-export function listDictsByCode(dictCode: string): AxiosPromise<Option[]> {
+export function getDictItemsByTypeCode(
+  typeCode: string
+): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-admin/api/v2/dict/items',
+    url: '/youlai-admin/api/v1/dict-items/select_list',
     method: 'get',
-    params: { dictCode: dictCode }
+    params: { typeCode: typeCode },
   });
 }
 
 /**
- * 获取字典项详情
+ * 获取字典数据项表单
  *
  * @param id
  */
-export function getDictItemDetail(id: number): AxiosPromise<DictItemFormData> {
+export function getDictItemData(id: number): AxiosPromise<DictItemFormData> {
   return request({
-    url: '/youlai-admin/api/v2/dict/items/' + id,
-    method: 'get'
+    url: '/youlai-admin/api/v1/dict-items/' + id + '/form_data',
+    method: 'get',
   });
 }
 
@@ -120,11 +123,11 @@ export function getDictItemDetail(id: number): AxiosPromise<DictItemFormData> {
  *
  * @param data
  */
-export function addDictItem(data: any) {
+export function addDictItem(data: DictItemFormData) {
   return request({
-    url: '/youlai-admin/api/v2/dict/items',
+    url: '/youlai-admin/api/v1/dict-items',
     method: 'post',
-    data: data
+    data: data,
   });
 }
 
@@ -134,21 +137,22 @@ export function addDictItem(data: any) {
  * @param id
  * @param data
  */
-export function updateDictItem(id: number, data: any) {
+export function updateDictItem(id: number, data: DictItemFormData) {
   return request({
-    url: '/youlai-admin/api/v2/dict/items/' + id,
+    url: '/youlai-admin/api/v1/dict-items/' + id,
     method: 'put',
-    data: data
+    data: data,
   });
 }
 
 /**
- * 批量删除字典项
+ * 批量删除字典数据项
+ *
  * @param ids 字典项ID，多个以英文逗号(,)分割
  */
-export function deleteDictItem(ids: string) {
+export function deleteDictItems(ids: string) {
   return request({
-    url: '/youlai-admin/api/v2/dict/items/' + ids,
-    method: 'delete'
+    url: '/youlai-admin/api/v1/dict-items/' + ids,
+    method: 'delete',
   });
 }

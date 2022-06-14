@@ -48,26 +48,26 @@ const emit = defineEmits(['next', 'update:modelValue']);
 const props = defineProps({
   modelValue: {
     type: Object,
-    default: () => {}
-  }
+    default: () => {},
+  },
 });
 
 const goodsInfo: any = computed({
   get: () => props.modelValue,
-  set: value => {
+  set: (value) => {
     emit('update:modelValue', value);
-  }
+  },
 });
 
 const state = reactive({
   categoryOptions: [],
-  pathLabels: []
+  pathLabels: [],
 });
 
 const { categoryOptions, pathLabels } = toRefs(state);
 
 function loadData() {
-  listCascadeCategories().then(response => {
+  listCascadeCategories().then((response) => {
     state.categoryOptions = response.data;
     if (goodsInfo.value.id) {
       nextTick(() => {

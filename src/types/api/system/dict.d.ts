@@ -29,7 +29,7 @@ export type DictPageResult = PageResult<Dict[]>;
 /**
  * 字典表单类型声明
  */
-export interface DictFormData {
+export interface DictFormTypeData {
   id: number | undefined;
   name: string;
   code: string;
@@ -44,11 +44,11 @@ export interface DictItemQueryParam extends PageQueryParam {
   /**
    * 字典项名称
    */
-  name: string | undefined;
+  name?: string;
   /**
-   * 字典编码
+   * 字典类型编码
    */
-  dictCode: string | undefined;
+  typeCode?: string;
 }
 
 /**
@@ -75,8 +75,8 @@ export type DictItemPageResult = PageResult<DictItem[]>;
  */
 export interface DictItemFormData {
   id?: number;
-  dictCode?: string;
-  dictName?: string;
+  typeCode?: string;
+  typeName?: string;
   name: string;
   code: string;
   value: string;

@@ -187,7 +187,7 @@ import {
   reactive,
   ref,
   toRefs,
-  watch
+  watch,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { Plus, Minus } from '@element-plus/icons-vue';
@@ -216,39 +216,41 @@ const props = defineProps({
     type: Object,
     default: () => {
       return {};
-    }
-  }
+    },
+  },
 });
 
 const goodsInfo: any = computed({
   get: () => props.modelValue,
-  set: value => {
+  set: (value) => {
     emit('update:modelValue', value);
-  }
+  },
 });
 
 const state = reactive({
   specForm: {
-    specList: [] as any[]
+    specList: [] as any[],
   },
   skuForm: {
-    skuList: [] as any[]
+    skuList: [] as any[],
   },
   // 规格项表格标题
   specTitles: [] as any[],
   rules: {
     spec: {
       name: [{ required: true, message: '请输入规格名称', trigger: 'blur' }],
-      value: [{ required: true, message: '请输入规格值', trigger: 'blur' }]
+      value: [{ required: true, message: '请输入规格值', trigger: 'blur' }],
     },
     sku: {
       skuSn: [{ required: true, message: '请输入商品编号', trigger: 'blur' }],
       price: [{ required: true, message: '请输入商品价格', trigger: 'blur' }],
-      stockNum: [{ required: true, message: '请输入商品库存', trigger: 'blur' }]
-    }
+      stockNum: [
+        { required: true, message: '请输入商品库存', trigger: 'blur' },
+      ],
+    },
   },
   colors: ['', 'success', 'warning', 'danger'],
-  tagInputs: [{ value: undefined, visible: false }] // 规格值标签临时值和显隐控制
+  tagInputs: [{ value: undefined, visible: false }], // 规格值标签临时值和显隐控制
 });
 
 const { specForm, skuForm, specTitles, rules, colors, tagInputs } =
@@ -256,7 +258,7 @@ const { specForm, skuForm, specTitles, rules, colors, tagInputs } =
 
 watch(
   () => goodsInfo.value.categoryId,
-  newVal => {
+  (newVal) => {
     // 商品编辑不加载分类下的规格
     const goodsId = goodsInfo.value.id;
     if (goodsId) {
@@ -264,13 +266,13 @@ watch(
     }
     if (newVal) {
       // type=1 商品分类下的规格
-      listAttributes({ categoryId: newVal, type: 1 }).then(response => {
+      listAttributes({ categoryId: newVal, type: 1 }).then((response) => {
         const specList = response.data;
         if (specList && specList.length > 0) {
           specList.forEach((item: any) => {
             state.specForm.specList.push({
               name: item.name,
-              values: []
+              values: [],
             });
           });
           loadData();
@@ -280,7 +282,7 @@ watch(
   },
   {
     immediate: true,
-    deep: true
+    deep: true,
   }
 );
 
@@ -297,14 +299,14 @@ function loadData() {
       (state.specForm.specList[specIndex] as any).values.push({
         id: specItem.id,
         value: specItem.value,
-        picUrl: specItem.picUrl
+        picUrl: specItem.picUrl,
       });
     } else {
       state.specForm.specList.push({
         name: specItem.name,
         values: [
-          { id: specItem.id, value: specItem.value, picUrl: specItem.picUrl }
-        ]
+          { id: specItem.id, value: specItem.value, picUrl: specItem.picUrl },
+        ],
       });
     }
   });
@@ -388,7 +390,7 @@ function generateSkuList() {
   const specList = JSON.parse(
     JSON.stringify(
       state.specForm.specList.filter(
-        item => item.values && item.values.length > 0
+        (item) => item.values && item.values.length > 0
       )
     )
   ); // 深拷贝，取有属性的规格项，否则笛卡尔积运算得到的SKU列表值为空
@@ -527,11 +529,11 @@ function handleSpecValueInput(rowIndex: any) {
         }, 0);
       state.specForm.specList[rowIndex].values[specValues.length] = {
         value: currSpecValue,
-        id: 'tid_' + (rowIndex + 1) + '_' + ++maxSpecValueIndex
+        id: 'tid_' + (rowIndex + 1) + '_' + ++maxSpecValueIndex,
       };
     } else {
       state.specForm.specList[rowIndex].values = [
-        { value: currSpecValue, id: 'tid_' + (rowIndex + 1) + '_1' }
+        { value: currSpecValue, id: 'tid_' + (rowIndex + 1) + '_1' },
       ];
     }
   }
@@ -549,7 +551,7 @@ function handleSpecValueInput(rowIndex: any) {
 const objectSpanMethod = ({ rowIndex, columnIndex }: any) => {
   let mergeRows = [1, 1, 1]; // 分别对应规格1、规格2、规格3列合并的行数
   const specLen = state.specForm.specList.filter(
-    item => item.values && item.values.length > 0
+    (item) => item.values && item.values.length > 0
   ).length;
   if (specLen == 2) {
     const values_len_2 = state.specForm.specList[1].values
@@ -600,7 +602,7 @@ function submitForm() {
           delete submitsData.skuList;
 
           let specList = [] as any[];
-          state.specForm.specList.forEach(item => {
+          state.specForm.specList.forEach((item) => {
             item.values.forEach((value: any) => {
               value.name = item.name;
             });
@@ -626,7 +628,7 @@ function submitForm() {
               ElNotification({
                 title: '提示',
                 message: '编辑商品成功',
-                type: 'success'
+                type: 'success',
               });
             });
           } else {
@@ -636,7 +638,7 @@ function submitForm() {
               ElNotification({
                 title: '提示',
                 message: '新增商品成功',
-                type: 'success'
+                type: 'success',
               });
             });
           }

@@ -1,7 +1,7 @@
 <!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'category'
+  name: 'category',
 };
 </script>
 
@@ -16,8 +16,8 @@ const state = reactive({
   category: {
     id: undefined,
     name: '',
-    childrenLen: 0
-  }
+    childrenLen: 0,
+  },
 });
 
 const { category } = toRefs(state);
@@ -27,13 +27,13 @@ function handleCategoryClick(categoryRow: any) {
     state.category = {
       id: categoryRow.id,
       name: categoryRow.name,
-      childrenLen: categoryRow.children.length
+      childrenLen: categoryRow.children.length,
     };
   } else {
     state.category = {
       id: undefined,
       name: '',
-      childrenLen: 0
+      childrenLen: 0,
     };
   }
 }

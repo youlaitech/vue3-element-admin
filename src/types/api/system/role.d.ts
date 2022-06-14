@@ -1,14 +1,14 @@
 import { PageQueryParam, PageResult } from '../base';
 
 /**
- * 角色查询参数类型声明
+ * 角色查询参数类型
  */
 export interface RoleQueryParam extends PageQueryParam {
   name?: string;
 }
 
 /**
- * 角色分页列表项声明
+ * 角色分页列表项
  */
 export interface RoleItem {
   id: string;
@@ -22,17 +22,25 @@ export interface RoleItem {
 }
 
 /**
- * 角色分页项类型声明
+ * 角色分页项类型
  */
 export type RolePageResult = PageResult<RoleItem[]>;
 
 /**
- * 角色表单类型声明
+ * 角色表单类型
  */
 export interface RoleFormData {
-  id: number | undefined;
+  id: string | undefined;
   name: string;
   code: string;
   sort: number;
   status: number;
+}
+
+/**
+ *
+ */
+export interface RoleResourceData {
+  menuIds: string[];
+  permIds: string[];
 }

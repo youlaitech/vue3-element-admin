@@ -1,7 +1,7 @@
 <!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'client'
+  name: 'client',
 };
 </script>
 
@@ -11,12 +11,18 @@ import {
   getClientFormDetial,
   addClient,
   updateClient,
-  deleteClients
+  deleteClients,
 } from '@/api/system/client';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { onMounted, reactive, getCurrentInstance, ref, toRefs } from 'vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-import { ClientFormData, ClientItem, ClientQueryParam, Option } from '@/types';
+import {
+  ClientFormData,
+  ClientItem,
+  ClientQueryParam,
+} from '@/types/api/system/client';
+import { Option } from '@/types/common';
+
 const { proxy }: any = getCurrentInstance();
 
 const queryFormRef = ref(ElForm);
@@ -31,21 +37,23 @@ const state = reactive({
   multiple: true,
   queryParams: {
     pageNum: 1,
-    pageSize: 10
+    pageSize: 10,
   } as ClientQueryParam,
   clientList: [] as ClientItem[],
   total: 0,
   dialog: {
     title: '',
     visible: false,
-    type: 'create'
+    type: 'create',
   },
   formData: {} as ClientFormData,
   rules: {
-    clientId: [{ required: true, message: '客户端ID不能为空', trigger: 'blur' }]
+    clientId: [
+      { required: true, message: '客户端ID不能为空', trigger: 'blur' },
+    ],
   },
   authorizedGrantTypesOptions: [] as Option[],
-  checkedAuthorizedGrantTypes: [] as string[]
+  checkedAuthorizedGrantTypes: [] as string[],
 });
 
 const {
@@ -59,7 +67,7 @@ const {
   formData,
   rules,
   authorizedGrantTypesOptions,
-  checkedAuthorizedGrantTypes
+  checkedAuthorizedGrantTypes,
 } = toRefs(state);
 
 function handleQuery() {
@@ -82,14 +90,14 @@ function handleSelectionChange(selection: any) {
 }
 
 function handleAdd() {
-  proxy.$listDictsByCode('grant_type').then((response: any) => {
+  proxy.$getDictItemsByTypeCode('grant_type').then((response: any) => {
     state.authorizedGrantTypesOptions = response.data;
   });
 
   state.dialog = {
     title: '添加客户端',
     visible: true,
-    type: 'create'
+    type: 'create',
   };
 }
 
@@ -97,11 +105,11 @@ function handleUpdate(row: any) {
   state.dialog = {
     title: '修改客户端',
     visible: true,
-    type: 'edit'
+    type: 'edit',
   };
   const clientId = row.clientId || ids;
 
-  proxy.$listDictsByCode('grant_type').then((res: any) => {
+  proxy.$getDictItemsByTypeCode('grant_type').then((res: any) => {
     state.authorizedGrantTypesOptions = res.data;
 
     getClientFormDetial(clientId).then(({ data }) => {
@@ -149,7 +157,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteClients(clientIds).then(() => {
@@ -182,10 +190,10 @@ onMounted(() => {
         >
       </el-form-item>
 
-      <el-form-item prop="clientId">
+      <el-form-item>
         <el-input
-          v-model="queryParams.clientId"
-          placeholder="输入客户端ID"
+          v-model="queryParams.keywords"
+          placeholder="客户端ID"
           clearable
           style="width: 240px"
           @keyup.enter="handleQuery"

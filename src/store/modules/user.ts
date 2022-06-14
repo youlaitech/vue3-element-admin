@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
-import { LoginFormData, UserState } from '@/types';
+import { LoginFormData } from '@/types/api/system/login';
+import { UserState } from '@/types/store/user';
+
 import { localStorage } from '@/utils/storage';
 import { login, logout } from '@/api/login';
 import { getUserInfo } from '@/api/system/user';
@@ -12,38 +14,33 @@ const useUserStore = defineStore({
     nickname: '',
     avatar: '',
     roles: [],
-    perms: []
+    perms: [],
   }),
   actions: {
     async RESET_STATE() {
       this.$reset();
     },
     /**
-     * 用户登录请求
-     * @param userInfo 登录用户信息
-     *  username: 用户名
-     *  password: 密码
-     *  code: 验证码
-     *  uuid: 匹配正确验证码的 key
+     * 登录
      */
-    login(userInfo: LoginFormData) {
-      const { username, password, code, uuid } = userInfo;
+    login(loginData: LoginFormData) {
+      const { username, password, code, uuid } = loginData;
       return new Promise((resolve, reject) => {
         login({
           username: username.trim(),
           password: password,
           grant_type: 'captcha',
           code: code,
-          uuid: uuid
+          uuid: uuid,
         })
-          .then(response => {
+          .then((response) => {
             const { access_token, token_type } = response.data;
             const accessToken = token_type + ' ' + access_token;
             localStorage.set('token', accessToken);
             this.token = accessToken;
             resolve(access_token);
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       });
@@ -68,7 +65,7 @@ const useUserStore = defineStore({
             this.perms = perms;
             resolve(data);
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       });
@@ -86,7 +83,7 @@ const useUserStore = defineStore({
             resetRouter();
             resolve(null);
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       });
@@ -96,13 +93,13 @@ const useUserStore = defineStore({
      * 清除 Token
      */
     resetToken() {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         localStorage.remove('token');
         this.RESET_STATE();
         resolve(null);
       });
-    }
-  }
+    },
+  },
 });
 
 export default useUserStore;

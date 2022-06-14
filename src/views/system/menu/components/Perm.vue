@@ -5,7 +5,7 @@ import {
   reactive,
   ref,
   getCurrentInstance,
-  toRefs
+  toRefs,
 } from 'vue';
 
 import {
@@ -13,18 +13,18 @@ import {
   getPermFormDetail,
   addPerm,
   updatePerm,
-  deletePerms
+  deletePerms,
 } from '@/api/system/perm';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
+import { Dialog, Option } from '@/types/common';
+
 import {
-  Dialog,
   PermFormData,
   PermItem,
   PermQueryParam,
-  Option
-} from '@/types';
+} from '@/types/api/system/perm';
 
 const { proxy }: any = getCurrentInstance();
 
@@ -34,13 +34,15 @@ const dataFormRef = ref(ElForm);
 const props = defineProps({
   menuId: {
     type: String,
-    default: () => {}
-  }
+    default: () => {
+      return '';
+    },
+  },
 });
 
 watch(
   () => props.menuId,
-  value => {
+  (value) => {
     state.queryParams.menuId = value;
     handleQuery();
   }
@@ -56,26 +58,26 @@ const state = reactive({
   multiple: true,
   queryParams: {
     pageNum: 1,
-    pageSize: 10
+    pageSize: 10,
   } as PermQueryParam,
   permList: [] as PermItem[],
   total: 0,
   dialog: {
-    visible: false
+    visible: false,
   } as Dialog,
   formData: {} as PermFormData,
   rules: {
     name: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
     perm: [{ required: true, message: '请输入权限标识', trigger: 'blur' }],
-    method: [{ required: true, message: '请选择请求方式', trigger: 'blur' }]
+    method: [{ required: true, message: '请选择请求方式', trigger: 'blur' }],
   },
   microServiceOptions: [] as Option[],
   requestMethodOptions: [] as Option[],
   urlPerm: {
     requestMethod: '',
     serviceName: '',
-    requestPath: ''
-  }
+    requestPath: '',
+  },
 });
 
 const {
@@ -89,7 +91,7 @@ const {
   microServiceOptions,
   requestMethodOptions,
   urlPerm,
-  queryParams
+  queryParams,
 } = toRefs(state);
 
 function handleQuery() {
@@ -123,11 +125,11 @@ function handleSelectionChange(selection: any) {
  * 加载字典数据
  */
 function loadDictOptions() {
-  proxy.$listDictsByCode('micro_service').then((response: any) => {
+  proxy.$getDictItemsByTypeCode('micro_service').then((response: any) => {
     state.microServiceOptions = response.data;
   });
 
-  proxy.$listDictsByCode('request_method').then((response: any) => {
+  proxy.$getDictItemsByTypeCode('request_method').then((response: any) => {
     state.requestMethodOptions = response.data;
   });
 }
@@ -136,7 +138,7 @@ function handleAdd() {
   loadDictOptions();
   state.dialog = {
     title: '添加权限',
-    visible: true
+    visible: true,
   };
 }
 
@@ -144,10 +146,10 @@ function handleUpdate(row: any) {
   loadDictOptions();
   state.dialog = {
     title: '修改权限',
-    visible: true
+    visible: true,
   };
   const id = row.id || state.ids;
-  getPermFormDetail(id).then(response => {
+  getPermFormDetail(id).then((response) => {
     const { data } = response;
     state.formData = data;
     if (data && data.urlPerm) {
@@ -169,6 +171,7 @@ function submitForm() {
   dataFormRef.value.validate((isValid: any) => {
     if (isValid) {
       // 接口权限和按钮权限必填其一
+      console.log(state.urlPerm.requestPath, state.formData.btnPerm);
       if (!(state.urlPerm.requestPath || state.formData.btnPerm)) {
         ElMessage.warning('请至少填写一种权限');
         return false;
@@ -217,7 +220,7 @@ function resetForm() {
   state.urlPerm = {
     requestMethod: '',
     serviceName: '',
-    requestPath: ''
+    requestPath: '',
   };
 }
 
@@ -231,7 +234,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deletePerms(ids).then(() => {

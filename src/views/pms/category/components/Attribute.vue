@@ -67,7 +67,7 @@ import { ElMessage } from 'element-plus';
 const props = defineProps({
   attributeType: {
     type: Number,
-    default: 1
+    default: 1,
   },
   category: {
     type: Object,
@@ -75,10 +75,10 @@ const props = defineProps({
       return {
         id: undefined,
         name: '',
-        childrenLen: 0
+        childrenLen: 0,
       };
-    }
-  }
+    },
+  },
 });
 
 const attributeTypeName = computed(() =>
@@ -100,17 +100,17 @@ const state = reactive({
     attributes: [
       {
         id: undefined,
-        name: ''
-      }
-    ]
+        name: '',
+      },
+    ],
   },
   rules: {
     attribute: {
       name: [
-        { required: true, validator: attributeNameValidator, trigger: 'blur' }
-      ]
-    }
-  }
+        { required: true, validator: attributeNameValidator, trigger: 'blur' },
+      ],
+    },
+  },
 });
 
 const { formData, rules } = toRefs(state);
@@ -122,8 +122,8 @@ watch(
     if (categoryId) {
       listAttributes({
         categoryId: categoryId,
-        type: props.attributeType
-      }).then(response => {
+        type: props.attributeType,
+      }).then((response) => {
         const { data } = response;
         if (data && data.length > 0) {
           state.formData.attributes = response.data;
@@ -131,8 +131,8 @@ watch(
           state.formData.attributes = [
             {
               id: undefined,
-              name: ''
-            }
+              name: '',
+            },
           ];
         }
       });
@@ -140,8 +140,8 @@ watch(
       state.formData.attributes = [
         {
           id: undefined,
-          name: ''
-        }
+          name: '',
+        },
       ];
     }
   }
@@ -150,7 +150,7 @@ watch(
 function handleAdd() {
   state.formData.attributes.push({
     id: undefined,
-    name: ''
+    name: '',
   });
 }
 
@@ -159,8 +159,8 @@ function handleDelete(index: number) {
     state.formData.attributes = [
       {
         id: undefined,
-        name: ''
-      }
+        name: '',
+      },
     ];
     return;
   }

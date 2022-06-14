@@ -1,7 +1,7 @@
 <!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'seata'
+  name: 'seata',
 };
 </script>
 
@@ -14,42 +14,42 @@ import {
   RefreshLeft,
   Right,
   CircleCheckFilled,
-  CircleCloseFilled
+  CircleCloseFilled,
 } from '@element-plus/icons-vue';
 import { payOrder, getSeataData, resetSeataData } from '@/api/lab/seata';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { SeataFormData } from '@/types';
+import { SeataFormData } from '@/types/api/lab/seata';
 
 const state = reactive({
   // 保留改变前数据
   cacheSeataData: {
     status: undefined,
     stockNum: undefined,
-    balance: undefined
+    balance: undefined,
   },
   seataData: {
     orderInfo: {
       orderSn: undefined,
-      status: undefined
+      status: undefined,
     },
     stockInfo: {
       name: undefined,
       picUrl: undefined,
-      stockNum: undefined
+      stockNum: undefined,
     },
     accountInfo: {
       nickName: undefined,
       avatarUrl: undefined,
-      balance: undefined
-    }
+      balance: undefined,
+    },
   },
 
   loading: false,
 
   submitData: {
     openTx: true, // 是否开启事务
-    orderEx: true // 订单修改异常
-  } as SeataFormData
+    orderEx: true, // 订单修改异常
+  } as SeataFormData,
 });
 
 const { cacheSeataData, seataData, loading, submitData } = toRefs(state);
@@ -73,7 +73,7 @@ function handleOrderPay() {
       {
         confirmButtonText: '重置数据',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       }
     )
       .then(() => {
@@ -92,7 +92,7 @@ function handleOrderPay() {
         cacheSeataData.value = {
           status: seataData.value.orderInfo.status,
           stockNum: seataData.value.stockInfo.stockNum,
-          balance: seataData.value.accountInfo.balance
+          balance: seataData.value.accountInfo.balance,
         };
         loadData();
       });
@@ -129,7 +129,7 @@ function handleDataReset() {
     cacheSeataData.value = {
       status: undefined,
       stockNum: undefined,
-      balance: undefined
+      balance: undefined,
     };
     loadData();
   });
@@ -367,6 +367,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .card-panel__col {
   margin-bottom: 12px;
+
   .el-link {
     font-size: 16px;
     margin-right: 8px;

@@ -1,7 +1,6 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'brand'
+  name: 'brand',
 };
 </script>
 
@@ -9,13 +8,18 @@ export default {
 import { onMounted, reactive, ref, toRefs } from 'vue';
 import { ElForm, ElTable, ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
-import { BrandFormData, BrandItem, BrandQueryParam, Dialog } from '@/types';
+import {
+  BrandFormData,
+  BrandItem,
+  BrandQueryParam,
+} from '@/types/api/pms/brand';
+import { Dialog } from '@/types/common';
 import {
   listBrandPages,
   getBrandFormDetail,
   updateBrand,
   addBrand,
-  deleteBrands
+  deleteBrands,
 } from '@/api/pms/brand';
 import SingleUpload from '@/components/Upload/SingleUpload.vue';
 
@@ -32,7 +36,7 @@ const state = reactive({
   multiple: true,
   queryParams: {
     pageNum: 1,
-    pageSize: 10
+    pageSize: 10,
   } as BrandQueryParam,
   brandList: [] as BrandItem[],
   total: 0,
@@ -43,10 +47,10 @@ const state = reactive({
       {
         required: true,
         message: '请输入品牌名称',
-        trigger: 'blur'
-      }
-    ]
-  }
+        trigger: 'blur',
+      },
+    ],
+  },
 });
 
 const {
@@ -57,7 +61,7 @@ const {
   total,
   dialog,
   formData,
-  rules
+  rules,
 } = toRefs(state);
 
 function handleQuery() {
@@ -83,14 +87,14 @@ function handleSelectionChange(selection: any) {
 function handleAdd() {
   state.dialog = {
     title: '添加品牌',
-    visible: true
+    visible: true,
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改品牌',
-    visible: true
+    visible: true,
   };
   const brandId = row.id || state.ids;
   getBrandFormDetail(brandId).then(({ data }) => {
@@ -137,7 +141,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteBrands(ids).then(() => {

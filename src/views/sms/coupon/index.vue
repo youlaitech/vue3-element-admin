@@ -8,20 +8,19 @@ export default {
 import { onMounted, reactive, ref, toRefs } from 'vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
-import SingleUpload from '@/components/Upload/SingleUpload.vue';
 import {
-  listAdvertsPage,
-  getAdvertFormDetail,
-  updateAdvert,
-  addAdvert,
-  deleteAdverts,
-} from '@/api/sms/advert';
+  listCouponsPage,
+  getCouponFormDetail,
+  updateCoupon,
+  addCoupon,
+  deleteCoupons,
+} from '@/api/sms/coupon';
 import { Dialog } from '@/types/common';
 import {
-  AdvertFormData,
-  AdvertItem,
-  AdvertQueryParam,
-} from '@/types/api/sms/advert';
+  CouponItem,
+  CouponQueryParam,
+  CouponFormData,
+} from '@/types/api/sms/coupon';
 
 const queryFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
 const dataFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
@@ -34,19 +33,20 @@ const state = reactive({
   single: true,
   // 非多个禁用
   multiple: true,
-  queryParams: { pageNum: 1, pageSize: 10 } as AdvertQueryParam,
-  advertList: [] as AdvertItem[],
+  queryParams: { pageNum: 1, pageSize: 10 } as CouponQueryParam,
+  couponList: [] as CouponItem[],
   total: 0,
   dialog: {} as Dialog,
   formData: {
-    status: 1,
-    sort: 100,
-  } as AdvertFormData,
+    id: undefined,
+    name: '',
+    type: '',
+  } as CouponFormData,
   rules: {
-    title: [{ required: true, message: '请输入广告名称', trigger: 'blur' }],
+    title: [{ required: true, message: '请输入优惠券名称', trigger: 'blur' }],
     beginTime: [{ required: true, message: '请填写开始时间', trigger: 'blur' }],
     endTime: [{ required: true, message: '请填写结束时间', trigger: 'blur' }],
-    picUrl: [{ required: true, message: '请上传广告图片', trigger: 'blur' }],
+    picUrl: [{ required: true, message: '请上传优惠券图片', trigger: 'blur' }],
   },
 });
 
@@ -54,7 +54,7 @@ const {
   loading,
   multiple,
   queryParams,
-  advertList,
+  couponList,
   total,
   dialog,
   formData,
@@ -63,8 +63,8 @@ const {
 
 function handleQuery() {
   state.loading = true;
-  listAdvertsPage(state.queryParams).then(({ data }) => {
-    state.advertList = data.list;
+  listCouponsPage(state.queryParams).then(({ data }) => {
+    state.couponList = data.list;
     state.total = data.total;
     state.loading = false;
   });
@@ -83,18 +83,18 @@ function handleSelectionChange(selection: any) {
 
 function handleAdd() {
   state.dialog = {
-    title: '添加广告',
+    title: '添加优惠券',
     visible: true,
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
-    title: '修改广告',
+    title: '修改优惠券',
     visible: true,
   };
   const advertId = row.id || state.ids;
-  getAdvertFormDetail(advertId).then((response) => {
+  getCouponFormDetail(advertId).then((response) => {
     state.formData = response.data;
   });
 }
@@ -104,13 +104,13 @@ function submitForm() {
     if (valid) {
       const avertId = state.formData.id;
       if (avertId) {
-        updateAdvert(avertId, state.formData).then(() => {
+        updateCoupon(avertId, state.formData).then(() => {
           ElMessage.success('修改成功');
           cancel();
           handleQuery();
         });
       } else {
-        addAdvert(state.formData).then(() => {
+        addCoupon(state.formData).then(() => {
           ElMessage.success('新增成功');
           cancel();
           handleQuery();
@@ -134,7 +134,7 @@ function handleDelete(row: any) {
     type: 'warning',
   })
     .then(() => {
-      deleteAdverts(ids).then(() => {
+      deleteCoupons(ids).then(() => {
         ElMessage.success('删除成功');
         handleQuery();
       });
@@ -166,8 +166,8 @@ onMounted(() => {
 
       <el-form-item prop="title">
         <el-input
-          v-model="queryParams.title"
-          placeholder="广告标题"
+          v-model="queryParams.status"
+          placeholder="优惠券标题"
           clearable
           @keyup.enter="handleQuery"
         />
@@ -182,14 +182,14 @@ onMounted(() => {
 
     <el-table
       v-loading="loading"
-      :data="advertList"
+      :data="couponList"
       @selection-change="handleSelectionChange"
       border
     >
       <el-table-column type="selection" min-width="5" align="center" />
       <el-table-column type="index" label="序号" width="80" align="center" />
-      <el-table-column prop="title" min-width="100" label="广告标题" />
-      <el-table-column label="广告图片" width="100">
+      <el-table-column prop="title" min-width="100" label="优惠券标题" />
+      <el-table-column label="优惠券图片" width="100">
         <template #default="scope">
           <el-popover placement="right" :width="400" trigger="hover">
             <img :src="scope.row.picUrl" width="400" height="400" />
@@ -248,7 +248,7 @@ onMounted(() => {
         :rules="rules"
         label-width="100px"
       >
-        <el-form-item label="广告标题" prop="title">
+        <!--   <el-form-item label="优惠券标题" prop="title">
           <el-input v-model="formData.title" />
         </el-form-item>
 
@@ -266,7 +266,7 @@ onMounted(() => {
           />
         </el-form-item>
 
-        <el-form-item label="广告图片" prop="picUrl">
+        <el-form-item label="优惠券图片" prop="picUrl">
           <single-upload v-model="formData.picUrl" />
         </el-form-item>
 
@@ -287,7 +287,7 @@ onMounted(() => {
 
         <el-form-item label="备注" prop="remark">
           <el-input type="textarea" v-model="formData.remark" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
 
       <template #footer>

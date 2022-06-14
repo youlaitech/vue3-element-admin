@@ -4,7 +4,7 @@
       <el-col :span="10" :xs="24">
         <el-card class="box-card" shadow="always">
           <template #header>
-            <svg-icon color="#333" icon-class="menu" />
+            <svg-icon icon-class="menu" />
             菜单列表
           </template>
           <menu-table @menuClick="handleMenuClick" />
@@ -13,7 +13,7 @@
       <el-col :span="14" :xs="24">
         <el-card class="box-card" shadow="always">
           <template #header>
-            <svg-icon color="#333" icon-class="perm" />
+            <svg-icon icon-class="perm" />
             <span style="margin: 0 5px">权限列表</span>
             <el-tag type="success" v-if="menuId" size="small">{{
               menuName
@@ -38,7 +38,7 @@ import { reactive, toRefs } from 'vue';
 
 const state = reactive({
   menuId: undefined,
-  menuName: ''
+  menuName: '',
 });
 
 const { menuId, menuName } = toRefs(state);

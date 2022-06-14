@@ -1,14 +1,15 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'order'
+  name: 'order',
 };
 </script>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from 'vue';
 import { ElForm } from 'element-plus';
-import { Dialog, Order, OrderQueryParam } from '@/types';
+import { Order, OrderQueryParam } from '@/types/api/oms/order';
+import { Dialog } from '@/types/common';
+
 import { listOrderPages, getOrderDetail } from '@/api/oms/order';
 import { Search, Refresh } from '@element-plus/icons-vue';
 
@@ -17,7 +18,7 @@ const queryFormRef = ref(ElForm);
 const orderSourceMap = {
   1: '微信小程序',
   2: 'APP',
-  3: 'PC'
+  3: 'PC',
 };
 
 const orderStatusMap = {
@@ -31,13 +32,13 @@ const orderStatusMap = {
   401: '已发货',
   501: '用户收货',
   502: '系统收货',
-  901: '已完成'
+  901: '已完成',
 };
 
 const payTypeMap = {
   1: '支付宝',
   2: '微信',
-  3: '会员余额'
+  3: '会员余额',
 };
 
 const state = reactive({
@@ -45,16 +46,16 @@ const state = reactive({
   ids: [],
   single: true,
   multiple: true,
-  dateRange: [],
+  dateRange: [] as any,
   queryParams: {
     pageNum: 1,
-    pageSize: 10
+    pageSize: 10,
   } as OrderQueryParam,
   orderList: [] as Order[],
   total: 0,
   dialog: {
     title: '订单详情',
-    visible: false
+    visible: false,
   } as Dialog,
   dialogVisible: false,
   orderDetail: {
@@ -73,14 +74,14 @@ const state = reactive({
       skuPrice: undefined,
       couponPrice: undefined,
       freightPrice: undefined,
-      orderPrice: undefined
+      orderPrice: undefined,
     },
     member: {},
-    orderItems: []
+    orderItems: [],
   },
   orderSourceMap,
   orderStatusMap,
-  payTypeMap
+  payTypeMap,
 });
 
 const { loading, queryParams, orderList, total, dateRange } = toRefs(state);

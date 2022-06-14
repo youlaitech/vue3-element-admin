@@ -89,20 +89,20 @@ const dataFormRef = ref(ElForm);
 const props = defineProps({
   modelValue: {
     type: Object,
-    default: () => {}
-  }
+    default: () => {},
+  },
 });
 
 const goodsInfo: any = computed({
   get: () => props.modelValue,
-  set: value => {
+  set: (value) => {
     emit('update:modelValue', value);
-  }
+  },
 });
 
 watch(
   () => goodsInfo.value.categoryId,
-  newVal => {
+  (newVal) => {
     // 商品编辑不加载分类下的属性
     const goodsId = goodsInfo.value.id;
     if (goodsId) {
@@ -111,7 +111,7 @@ watch(
     // 商品新增加载默认分类下的属性
     if (newVal) {
       // type=2 商品分类下的属性
-      listAttributes({ categoryId: newVal, type: 2 }).then(response => {
+      listAttributes({ categoryId: newVal, type: 2 }).then((response) => {
         const attrList = response.data;
         if (attrList && attrList.length > 0) {
           goodsInfo.value.attrList = attrList;
@@ -125,15 +125,15 @@ watch(
   },
   {
     immediate: true,
-    deep: true
+    deep: true,
   }
 );
 
 const state = reactive({
   rules: {
     name: [{ required: true, message: '请填写属性名称', trigger: 'blur' }],
-    value: [{ required: true, message: '请填写属性值', trigger: 'blur' }]
-  }
+    value: [{ required: true, message: '请填写属性值', trigger: 'blur' }],
+  },
 });
 
 const { rules } = toRefs(state);
