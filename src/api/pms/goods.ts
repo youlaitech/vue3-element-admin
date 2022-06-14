@@ -1,4 +1,8 @@
-import { GoodsDetail, GoodsPageResult, GoodsQueryParam } from '@/types';
+import {
+  GoodsDetail,
+  GoodsPageResult,
+  GoodsQueryParam,
+} from '@/types/api/pms/goods';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -7,13 +11,13 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listGoodsPages(
+export function listPageGoods(
   queryParams: GoodsQueryParam
 ): AxiosPromise<GoodsPageResult> {
   return request({
     url: '/mall-pms/api/v1/goods/page',
     method: 'get',
-    params: queryParams
+    params: queryParams,
   });
 }
 
@@ -25,7 +29,7 @@ export function listGoodsPages(
 export function getGoodsDetail(id: string): AxiosPromise<GoodsDetail> {
   return request({
     url: '/mall-pms/api/v1/goods/' + id,
-    method: 'get'
+    method: 'get',
   });
 }
 
@@ -38,7 +42,7 @@ export function addGoods(data: object) {
   return request({
     url: '/mall-pms/api/v1/goods',
     method: 'post',
-    data: data
+    data: data,
   });
 }
 
@@ -52,7 +56,7 @@ export function updateGoods(id: number, data: object) {
   return request({
     url: '/mall-pms/api/v1/goods/' + id,
     method: 'put',
-    data: data
+    data: data,
   });
 }
 
@@ -64,6 +68,6 @@ export function updateGoods(id: number, data: object) {
 export function deleteGoods(ids: string) {
   return request({
     url: '/mall-pms/api/v1/goods/' + ids,
-    method: 'delete'
+    method: 'delete',
   });
 }

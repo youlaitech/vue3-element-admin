@@ -1,7 +1,6 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'user'
+  name: 'user',
 };
 </script>
 
@@ -13,23 +12,23 @@ import {
   watchEffect,
   onMounted,
   getCurrentInstance,
-  toRefs
+  toRefs,
 } from 'vue';
 
 // 导入API
 import {
   listUsersPage,
-  getUserDetail,
+  getUserFormData,
   deleteUsers,
   addUser,
   updateUser,
   updateUserPart,
   downloadTemplate,
   exportUser,
-  importUser
+  importUser,
 } from '@/api/system/user';
 import { listSelectDepartments } from '@/api/system/dept';
-import { listRoles } from '@/api/system/role';
+import { listSelectRoles } from '@/api/system/role';
 
 // 组件依赖
 import {
@@ -37,7 +36,7 @@ import {
   ElMessageBox,
   ElTree,
   ElForm,
-  UploadFile
+  UploadFile,
 } from 'element-plus';
 import {
   Search,
@@ -48,17 +47,16 @@ import {
   Lock,
   Download,
   Top,
-  UploadFilled
+  UploadFilled,
 } from '@element-plus/icons-vue';
 import {
   UserItem,
   UserQueryParam,
   UserFormData,
-  Option,
-  RoleItem,
-  Dialog,
-  UserImportFormData
-} from '@/types';
+  UserImportFormData,
+} from '@/types/api/system/user';
+
+import { Option, Dialog } from '@/types/common';
 
 // DOM元素的引用声明定义 ，变量名和DOM的ref属性值一致
 const deptTreeRef = ref(ElTree); // 部门树
@@ -83,7 +81,7 @@ const state = reactive({
   userList: [] as UserItem[],
   // 弹窗属性
   dialog: {
-    visible: false
+    visible: false,
   } as Dialog,
   deptName: undefined,
   // 部门树选项
@@ -92,47 +90,47 @@ const state = reactive({
   // 性别状态字典
   genderOptions: [] as any[],
   // 角色选项
-  roleOptions: [] as RoleItem[],
+  roleOptions: [] as Option[],
   // 表单参数
   formData: {
-    status: 1
+    status: 1,
   } as UserFormData,
   // 查询参数
   queryParams: {
     pageNum: 1,
-    pageSize: 10
+    pageSize: 10,
   } as UserQueryParam,
   // 表单校验
   rules: {
     username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
     nickname: [
-      { required: true, message: '用户昵称不能为空', trigger: 'blur' }
+      { required: true, message: '用户昵称不能为空', trigger: 'blur' },
     ],
-    deptId: [{ required: true, message: '归属部门不能为空', trigger: 'blur' }],
+    deptId: [{ required: true, message: '所属部门不能为空', trigger: 'blur' }],
     roleIds: [{ required: true, message: '用户角色不能为空', trigger: 'blur' }],
     email: [
       {
         pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
         message: '请输入正确的邮箱地址',
-        trigger: 'blur'
-      }
+        trigger: 'blur',
+      },
     ],
     mobile: [
       {
         pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
         message: '请输入正确的手机号码',
-        trigger: 'blur'
-      }
-    ]
+        trigger: 'blur',
+      },
+    ],
   },
 
   importDialog: {
     title: '用户导出',
-    visible: false
+    visible: false,
   } as Dialog,
   importFormData: {} as UserImportFormData,
   excelFile: undefined as any,
-  excelFilelist: [] as File[]
+  excelFilelist: [] as File[],
 });
 
 const {
@@ -149,7 +147,7 @@ const {
   roleOptions,
   importDialog,
   importFormData,
-  excelFilelist
+  excelFilelist,
 } = toRefs(state);
 
 /**
@@ -160,7 +158,7 @@ watchEffect(
     deptTreeRef.value.filter(state.deptName);
   },
   {
-    flush: 'post' // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
+    flush: 'post', // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
   }
 );
 
@@ -186,7 +184,7 @@ function handleDeptNodeClick(data: { [key: string]: any }) {
  * 加载角色数据
  */
 async function loadRoleOptions() {
-  listRoles().then(response => {
+  listSelectRoles().then((response) => {
     state.roleOptions = response.data;
   });
 }
@@ -202,7 +200,7 @@ function handleStatusChange(row: { [key: string]: any }) {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning'
+      type: 'warning',
     }
   )
     .then(() => {
@@ -254,7 +252,7 @@ function resetPassword(row: { [key: string]: any }) {
     '重置密码',
     {
       confirmButtonText: '确定',
-      cancelButtonText: '取消'
+      cancelButtonText: '取消',
     }
   )
     .then(({ value }) => {
@@ -263,7 +261,7 @@ function resetPassword(row: { [key: string]: any }) {
         return false;
       }
       updateUserPart(row.id, {
-        password: value
+        password: value,
       }).then(() => {
         ElMessage.success('修改成功，新密码是：' + value);
       });
@@ -279,7 +277,7 @@ async function handleAdd() {
   await loadRoleOptions();
   state.dialog = {
     title: '添加用户',
-    visible: true
+    visible: true,
   };
 }
 
@@ -292,9 +290,9 @@ async function handleUpdate(row: { [key: string]: any }) {
   await loadRoleOptions();
   state.dialog = {
     title: '修改用户',
-    visible: true
+    visible: true,
   };
-  getUserDetail(userId).then(({ data }) => {
+  getUserFormData(userId).then(({ data }) => {
     state.formData = data;
   });
 }
@@ -334,7 +332,7 @@ function handleDelete(row: { [key: string]: any }) {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning'
+      type: 'warning',
     }
   )
     .then(function () {
@@ -359,7 +357,7 @@ function cancel() {
  * 加载部门
  */
 async function loadDeptOptions() {
-  listSelectDepartments().then(response => {
+  listSelectDepartments().then((response) => {
     state.deptOptions = response.data;
   });
 }
@@ -368,18 +366,18 @@ async function loadDeptOptions() {
  * 加载性别字典
  */
 function loadGenderOptions() {
-  proxy.$listDictsByCode('gender').then((response: any) => {
+  proxy.$getDictItemsByTypeCode('gender').then((response: any) => {
     state.genderOptions = response?.data;
   });
 }
 
 /**
- * 下载用户导入模板
+ * 下载导入模板
  */
 function handleDownloadTemplate() {
   downloadTemplate().then((response: any) => {
     const blob = new Blob([response.data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
     });
     const a = document.createElement('a');
     const href = window.URL.createObjectURL(blob); // 下载链接
@@ -395,7 +393,7 @@ function handleDownloadTemplate() {
 }
 
 /**
- * 导入用户表单弹窗
+ * 显示导入弹窗
  */
 async function showImportDialog() {
   await loadDeptOptions();
@@ -431,7 +429,7 @@ function submitImportForm() {
 
       const deptId = state.importFormData.deptId;
       const roleIds = state.importFormData.roleIds.join(',');
-      importUser(deptId, roleIds, state.excelFile).then(response => {
+      importUser(deptId, roleIds, state.excelFile).then((response) => {
         ElMessage.success(response.data);
         closeImportDialog();
         handleQuery();
@@ -456,7 +454,7 @@ function closeImportDialog() {
 function handleExport() {
   exportUser(queryParams.value).then((response: any) => {
     const blob = new Blob([response.data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
     });
     const a = document.createElement('a');
     const href = window.URL.createObjectURL(blob); // 下载的链接
@@ -617,7 +615,7 @@ onMounted(() => {
             />
             <el-table-column label="用户昵称" align="center" prop="nickname" />
 
-            <el-table-column label="性别" align="center" prop="gender" />
+            <el-table-column label="性别" align="center" prop="genderLabel" />
 
             <el-table-column label="部门" align="center" prop="deptName" />
             <el-table-column
@@ -754,9 +752,9 @@ onMounted(() => {
           <el-select v-model="formData.roleIds" multiple placeholder="请选择">
             <el-option
               v-for="item in roleOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             />
           </el-select>
         </el-form-item>
@@ -800,9 +798,9 @@ onMounted(() => {
           >
             <el-option
               v-for="item in roleOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             />
           </el-select>
         </el-form-item>

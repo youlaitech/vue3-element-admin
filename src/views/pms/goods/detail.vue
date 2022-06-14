@@ -53,7 +53,7 @@ import GoodsStock from './components/GoodsStock.vue';
 
 import { getGoodsDetail } from '@/api/pms/goods';
 import { useRoute } from 'vue-router';
-import { GoodsDetail } from '@/types';
+import { GoodsDetail } from '@/types/api/pms/goods';
 
 const route = useRoute();
 
@@ -64,8 +64,8 @@ const state = reactive({
     album: [],
     attrList: [],
     specList: [],
-    skuList: []
-  } as GoodsDetail
+    skuList: [],
+  } as GoodsDetail,
 });
 
 const { loaded, active, goodsInfo } = toRefs(state);
@@ -74,7 +74,7 @@ function loadData() {
   const goodsId = route.query.goodsId as string;
 
   if (goodsId) {
-    getGoodsDetail(goodsId).then(response => {
+    getGoodsDetail(goodsId).then((response) => {
       state.goodsInfo = response.data;
       state.goodsInfo.originPrice = (state.goodsInfo.originPrice as any) / 100;
       state.goodsInfo.price = (state.goodsInfo.price as any) / 100;

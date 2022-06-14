@@ -1,4 +1,4 @@
-import { MemberPageResult, MemberQueryParam } from '@/types';
+import { MemberPageResult, MemberQueryParam } from '@/types/api/ums/member';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -13,7 +13,7 @@ export function listMemebersPage(
   return request({
     url: '/mall-ums/api/v1/members',
     method: 'get',
-    params: queryParams
+    params: queryParams,
   });
 }
 
@@ -25,7 +25,7 @@ export function listMemebersPage(
 export function getMemberDetail(id: number) {
   return request({
     url: '/mall-ums/api/v1/members/' + id,
-    method: 'get'
+    method: 'get',
   });
 }
 
@@ -38,7 +38,7 @@ export function addMember(data: object) {
   return request({
     url: '/mall-ums/api/v1/members',
     method: 'post',
-    data: data
+    data: data,
   });
 }
 
@@ -52,6 +52,6 @@ export function updateMember(id: number, data: object) {
   return request({
     url: '/mall-ums/api/v1/members/' + id,
     method: 'put',
-    data: data
+    data: data,
   });
 }

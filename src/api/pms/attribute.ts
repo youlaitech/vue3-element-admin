@@ -9,7 +9,7 @@ export function listAttributes(params: object) {
   return request({
     url: '/mall-pms/api/v1/attributes',
     method: 'get',
-    params: params
+    params: params,
   });
 }
 
@@ -22,6 +22,6 @@ export function saveAttributeBatch(data: object) {
   return request({
     url: '/mall-pms/api/v1/attributes/batch',
     method: 'post',
-    data: data
+    data: data,
   });
 }

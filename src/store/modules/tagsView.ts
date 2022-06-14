@@ -1,38 +1,37 @@
 import { defineStore } from 'pinia';
-import { TagsViewState } from '@/types';
+import { TagsViewState } from '@/types/store/tagsview';
 
 const useTagsViewStore = defineStore({
   id: 'tagsView',
   state: (): TagsViewState => ({
     visitedViews: [],
-    cachedViews: []
+    cachedViews: [], //  keepAlive 缓存页面
   }),
   actions: {
     addVisitedView(view: any) {
-      if (this.visitedViews.some(v => v.path === view.path)) return;
+      if (this.visitedViews.some((v) => v.path === view.path)) return;
       if (view.meta && view.meta.affix) {
         this.visitedViews.unshift(
           Object.assign({}, view, {
-            title: view.meta?.title || 'no-name'
+            title: view.meta?.title || 'no-name',
           })
         );
       } else {
         this.visitedViews.push(
           Object.assign({}, view, {
-            title: view.meta?.title || 'no-name'
+            title: view.meta?.title || 'no-name',
           })
         );
       }
     },
     addCachedView(view: any) {
       if (this.cachedViews.includes(view.name)) return;
-      if (!view.meta.noCache) {
+      if (view.meta.keepAlive) {
         this.cachedViews.push(view.name);
       }
     },
-
     delVisitedView(view: any) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         for (const [i, v] of this.visitedViews.entries()) {
           if (v.path === view.path) {
             this.visitedViews.splice(i, 1);
@@ -43,23 +42,22 @@ const useTagsViewStore = defineStore({
       });
     },
     delCachedView(view: any) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const index = this.cachedViews.indexOf(view.name);
         index > -1 && this.cachedViews.splice(index, 1);
         resolve([...this.cachedViews]);
       });
     },
-
     delOtherVisitedViews(view: any) {
-      return new Promise(resolve => {
-        this.visitedViews = this.visitedViews.filter(v => {
+      return new Promise((resolve) => {
+        this.visitedViews = this.visitedViews.filter((v) => {
           return v.meta?.affix || v.path === view.path;
         });
         resolve([...this.visitedViews]);
       });
     },
     delOtherCachedViews(view: any) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const index = this.cachedViews.indexOf(view.name);
         if (index > -1) {
           this.cachedViews = this.cachedViews.slice(index, index + 1);
@@ -84,29 +82,29 @@ const useTagsViewStore = defineStore({
       this.addCachedView(view);
     },
     delView(view: any) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         this.delVisitedView(view);
         this.delCachedView(view);
         resolve({
           visitedViews: [...this.visitedViews],
-          cachedViews: [...this.cachedViews]
+          cachedViews: [...this.cachedViews],
         });
       });
     },
     delOtherViews(view: any) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         this.delOtherVisitedViews(view);
         this.delOtherCachedViews(view);
         resolve({
           visitedViews: [...this.visitedViews],
-          cachedViews: [...this.cachedViews]
+          cachedViews: [...this.cachedViews],
         });
       });
     },
     delLeftViews(view: any) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const currIndex = this.visitedViews.findIndex(
-          v => v.path === view.path
+          (v) => v.path === view.path
         );
         if (currIndex === -1) {
           return;
@@ -124,14 +122,14 @@ const useTagsViewStore = defineStore({
           return false;
         });
         resolve({
-          visitedViews: [...this.visitedViews]
+          visitedViews: [...this.visitedViews],
         });
       });
     },
     delRightViews(view: any) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const currIndex = this.visitedViews.findIndex(
-          v => v.path === view.path
+          (v) => v.path === view.path
         );
         if (currIndex === -1) {
           return;
@@ -149,35 +147,35 @@ const useTagsViewStore = defineStore({
           return false;
         });
         resolve({
-          visitedViews: [...this.visitedViews]
+          visitedViews: [...this.visitedViews],
         });
       });
     },
     delAllViews() {
-      return new Promise(resolve => {
-        const affixTags = this.visitedViews.filter(tag => tag.meta?.affix);
+      return new Promise((resolve) => {
+        const affixTags = this.visitedViews.filter((tag) => tag.meta?.affix);
         this.visitedViews = affixTags;
         this.cachedViews = [];
         resolve({
           visitedViews: [...this.visitedViews],
-          cachedViews: [...this.cachedViews]
+          cachedViews: [...this.cachedViews],
         });
       });
     },
     delAllVisitedViews() {
-      return new Promise(resolve => {
-        const affixTags = this.visitedViews.filter(tag => tag.meta?.affix);
+      return new Promise((resolve) => {
+        const affixTags = this.visitedViews.filter((tag) => tag.meta?.affix);
         this.visitedViews = affixTags;
         resolve([...this.visitedViews]);
       });
     },
     delAllCachedViews() {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         this.cachedViews = [];
         resolve([...this.cachedViews]);
       });
-    }
-  }
+    },
+  },
 });
 
 export default useTagsViewStore;

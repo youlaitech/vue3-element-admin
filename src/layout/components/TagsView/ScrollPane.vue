@@ -15,9 +15,9 @@ import {
   computed,
   onMounted,
   onBeforeUnmount,
-  getCurrentInstance
+  getCurrentInstance,
 } from 'vue';
-import { TagView } from '@/types';
+import { TagView } from '@/types/store/tagsview';
 import useStore from '@/store';
 
 const tagAndTagSpacing = ref(4);
@@ -25,8 +25,8 @@ const { proxy } = getCurrentInstance() as any;
 
 const emits = defineEmits(['scroll']);
 const emitScroll = () => {
-  emits('scroll')
-}
+  emits('scroll');
+};
 
 const { tagsView } = useStore();
 
@@ -35,12 +35,11 @@ const visitedViews = computed(() => tagsView.visitedViews);
 const scrollWrapper = computed(() => proxy?.$refs.scrollContainer.$refs.wrap$);
 
 onMounted(() => {
-  scrollWrapper.value.addEventListener('scroll', emitScroll, {passive:true})
-})
+  scrollWrapper.value.addEventListener('scroll', emitScroll, true);
+});
 onBeforeUnmount(() => {
-  scrollWrapper.value.removeEventListener('scroll', emitScroll)
-})
-
+  scrollWrapper.value.removeEventListener('scroll', emitScroll);
+});
 
 function handleScroll(e: WheelEvent) {
   const eventDelta = (e as any).wheelDelta || -e.deltaY * 40;
@@ -69,7 +68,7 @@ function moveToTarget(currentTag: TagView) {
   } else {
     const tagListDom = document.getElementsByClassName('tags-view__item');
     const currentIndex = visitedViews.value.findIndex(
-      item => item === currentTag
+      (item) => item === currentTag
     );
     let prevTag = null;
     let nextTag = null;
@@ -81,7 +80,8 @@ function moveToTarget(currentTag: TagView) {
         ) {
           prevTag = tagListDom[k];
         }
-        if ((tagListDom[k] as any).dataset.path ===
+        if (
+          (tagListDom[k] as any).dataset.path ===
           visitedViews.value[currentIndex + 1].path
         ) {
           nextTag = tagListDom[k];
@@ -107,7 +107,7 @@ function moveToTarget(currentTag: TagView) {
 }
 
 defineExpose({
-  moveToTarget
+  moveToTarget,
 });
 </script>
 

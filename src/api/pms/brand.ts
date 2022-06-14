@@ -2,8 +2,8 @@ import {
   BrandFormData,
   BrandItem,
   BrandPageResult,
-  BrandQueryParam
-} from '@/types';
+  BrandQueryParam,
+} from '@/types/api/pms/brand';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -18,7 +18,7 @@ export function listBrandPages(
   return request({
     url: '/mall-pms/api/v1/brands/page',
     method: 'get',
-    params: queryParams
+    params: queryParams,
   });
 }
 
@@ -33,7 +33,7 @@ export function listBrands(
   return request({
     url: '/mall-pms/api/v1/brands',
     method: 'get',
-    params: queryParams
+    params: queryParams,
   });
 }
 
@@ -45,7 +45,7 @@ export function listBrands(
 export function getBrandFormDetail(id: number): AxiosPromise<BrandFormData> {
   return request({
     url: '/mall-pms/api/v1/brands/' + id,
-    method: 'get'
+    method: 'get',
   });
 }
 
@@ -58,7 +58,7 @@ export function addBrand(data: BrandFormData) {
   return request({
     url: '/mall-pms/api/v1/brands',
     method: 'post',
-    data: data
+    data: data,
   });
 }
 
@@ -72,7 +72,7 @@ export function updateBrand(id: number, data: BrandFormData) {
   return request({
     url: '/mall-pms/api/v1/brands/' + id,
     method: 'put',
-    data: data
+    data: data,
   });
 }
 
@@ -84,6 +84,6 @@ export function updateBrand(id: number, data: BrandFormData) {
 export function deleteBrands(ids: string) {
   return request({
     url: '/mall-pms/api/v1/brands/' + ids,
-    method: 'delete'
+    method: 'delete',
   });
 }

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { SettingState } from '@/types';
+import { SettingState } from '@/types/store/setting';
 import defaultSettings from '../../settings';
 import { localStorage } from '@/utils/storage';
 
@@ -18,7 +18,7 @@ export const useSettingStore = defineStore({
         ? localStorage.get('tagsView')
         : tagsView,
     fixedHeader: fixedHeader,
-    sidebarLogo: sidebarLogo
+    sidebarLogo: sidebarLogo,
   }),
   actions: {
     async changeSetting(payload: { key: string; value: any }) {
@@ -43,8 +43,8 @@ export const useSettingStore = defineStore({
         default:
           break;
       }
-    }
-  }
+    },
+  },
 });
 
 export default useSettingStore;

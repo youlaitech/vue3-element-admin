@@ -1,7 +1,6 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'dept'
+  name: 'dept',
 };
 </script>
 
@@ -11,12 +10,12 @@ import { onMounted, reactive, ref, toRefs } from 'vue';
 
 // API依赖
 import {
-  getDeptDetail,
+  getDeptForrmData,
   deleteDept,
   updateDept,
   addDept,
   listSelectDepartments,
-  listTableDepartments
+  listDepartments,
 } from '@/api/system/dept';
 
 // 组件依赖
@@ -26,9 +25,8 @@ import {
   DeptFormData,
   DeptItem,
   DeptQueryParam,
-  Dialog,
-  Option
-} from '@/types';
+} from '@/types/api/system/dept';
+import { Dialog, Option } from '@/types/common';
 
 // DOM元素的引用声明定义
 const queryFormRef = ref(ElForm);
@@ -51,16 +49,16 @@ const state = reactive({
   // 表单数据
   formData: {
     sort: 1,
-    status: 1
+    status: 1,
   } as DeptFormData,
   // 表单参数校验
   rules: {
     parentId: [
-      { required: true, message: '上级部门不能为空', trigger: 'blur' }
+      { required: true, message: '上级部门不能为空', trigger: 'blur' },
     ],
     name: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
-    sort: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }]
-  }
+    sort: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
+  },
 });
 
 const {
@@ -71,7 +69,7 @@ const {
   queryParams,
   formData,
   rules,
-  dialog
+  dialog,
 } = toRefs(state);
 
 /**
@@ -79,7 +77,7 @@ const {
  */
 function handleQuery() {
   state.loading = true;
-  listTableDepartments(state.queryParams).then(({ data }) => {
+  listDepartments(state.queryParams).then(({ data }) => {
     state.deptList = data;
     state.loading = false;
   });
@@ -103,11 +101,11 @@ function handleSelectionChange(selection: any) {
  */
 async function loadDeptData() {
   const deptOptions: any[] = [];
-  listSelectDepartments().then(response => {
+  listSelectDepartments().then((response) => {
     const rootDeptOption = {
       value: '0',
       label: '顶级部门',
-      children: response.data
+      children: response.data,
     };
     deptOptions.push(rootDeptOption);
     state.deptOptions = deptOptions;
@@ -123,7 +121,7 @@ function handleAdd(row: any) {
   state.formData.parentId = row.id;
   state.dialog = {
     title: '添加部门',
-    visible: true
+    visible: true,
   };
 }
 
@@ -135,9 +133,9 @@ async function handleUpdate(row: any) {
   const deptId = row.id || state.ids;
   state.dialog = {
     title: '修改部门',
-    visible: true
+    visible: true,
   };
-  getDeptDetail(deptId).then((response: any) => {
+  getDeptForrmData(deptId).then((response: any) => {
     state.formData = response.data;
   });
 }
@@ -175,7 +173,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm(`确认删除已选中的数据项?`, '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteDept(ids)

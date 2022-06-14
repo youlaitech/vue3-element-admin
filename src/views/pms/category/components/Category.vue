@@ -111,7 +111,7 @@ import {
   listCategories,
   addCategory,
   updateCategory,
-  deleteCategories
+  deleteCategories,
 } from '@/api/pms/category';
 import { Plus, Edit, Delete, Picture } from '@element-plus/icons-vue';
 import SingleUpload from '@/components/Upload/SingleUpload.vue';
@@ -136,30 +136,30 @@ const state = reactive({
     level: undefined,
     iconUrl: undefined,
     visible: 1,
-    sort: 100
+    sort: 100,
   },
   rules: {
     parentId: [
       {
         required: true,
         message: '请选择上级分类',
-        trigger: 'blur'
-      }
+        trigger: 'blur',
+      },
     ],
     name: [
       {
         required: true,
         message: '请输入分类名称',
-        trigger: 'blur'
-      }
-    ]
+        trigger: 'blur',
+      },
+    ],
   },
   dialog: {
     title: '',
-    visible: false
+    visible: false,
   },
   parent: {} as any,
-  current: {} as any
+  current: {} as any,
 });
 
 const { loading, categoryOptions, formData, rules, dialog, parent } =
@@ -167,15 +167,15 @@ const { loading, categoryOptions, formData, rules, dialog, parent } =
 
 function handleQuery() {
   state.loading = true;
-  listCategories(state.queryParam).then(response => {
+  listCategories(state.queryParam).then((response) => {
     state.categoryOptions = [
       {
         id: 0,
         name: '全部分类',
         parentId: 0,
         level: 0,
-        children: response.data
-      }
+        children: response.data,
+      },
     ];
     state.loading = false;
   });
@@ -188,7 +188,7 @@ function handleNodeClick(row: any) {
   state.parent = {
     id: parentNode.key,
     name: parentNode.label,
-    level: row.level
+    level: row.level,
   };
   state.current = JSON.parse(JSON.stringify(row));
   emit('categoryClick', row);
@@ -197,14 +197,14 @@ function handleNodeClick(row: any) {
 function handleAdd(row: any) {
   state.dialog = {
     title: '新增商品分类',
-    visible: true
+    visible: true,
   };
   if (row.id != null) {
     // 行点击新增
     state.parent = {
       id: row.id,
       name: row.name,
-      level: row.level
+      level: row.level,
     };
   }
 }
@@ -213,7 +213,7 @@ function handleUpdate(row: any) {
   handleNodeClick(row);
   state.dialog = {
     title: '修改商品分类',
-    visible: true
+    visible: true,
   };
   Object.assign(state.formData, state.current);
 }
@@ -229,6 +229,7 @@ function submitForm() {
         });
       } else {
         const parentCategory = state.parent as any;
+        console.log('parent', parentCategory);
         state.formData.parentId = parentCategory.id;
         state.formData.level = parentCategory.level + 1;
 
@@ -247,7 +248,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   }).then(() => {
     deleteCategories(ids).then(() => {
       ElMessage.success('删除成功');

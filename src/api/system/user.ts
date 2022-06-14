@@ -4,8 +4,8 @@ import {
   UserFormData,
   UserInfo,
   UserPageResult,
-  UserQueryParam
-} from '@/types';
+  UserQueryParam,
+} from '@/types/api/system/user';
 
 /**
  * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
@@ -13,7 +13,7 @@ import {
 export function getUserInfo(): AxiosPromise<UserInfo> {
   return request({
     url: '/youlai-admin/api/v1/users/me',
-    method: 'get'
+    method: 'get',
   });
 }
 
@@ -26,9 +26,9 @@ export function listUsersPage(
   queryParams: UserQueryParam
 ): AxiosPromise<UserPageResult> {
   return request({
-    url: '/youlai-admin/api/v1/users/page',
+    url: '/youlai-admin/api/v1/users',
     method: 'get',
-    params: queryParams
+    params: queryParams,
   });
 }
 
@@ -37,10 +37,10 @@ export function listUsersPage(
  *
  * @param userId
  */
-export function getUserDetail(userId: number): AxiosPromise<UserFormData> {
+export function getUserFormData(userId: number): AxiosPromise<UserFormData> {
   return request({
-    url: '/youlai-admin/api/v1/users/' + userId,
-    method: 'get'
+    url: '/youlai-admin/api/v1/users/' + userId + '/form_data',
+    method: 'get',
   });
 }
 
@@ -53,7 +53,7 @@ export function addUser(data: any) {
   return request({
     url: '/youlai-admin/api/v1/users',
     method: 'post',
-    data: data
+    data: data,
   });
 }
 
@@ -67,7 +67,7 @@ export function updateUser(id: number, data: UserFormData) {
   return request({
     url: '/youlai-admin/api/v1/users/' + id,
     method: 'put',
-    data: data
+    data: data,
   });
 }
 
@@ -81,7 +81,7 @@ export function updateUserPart(id: number, data: any) {
   return request({
     url: '/youlai-admin/api/v1/users/' + id,
     method: 'patch',
-    data: data
+    data: data,
   });
 }
 
@@ -93,7 +93,7 @@ export function updateUserPart(id: number, data: any) {
 export function deleteUsers(ids: string) {
   return request({
     url: '/youlai-admin/api/v1/users/' + ids,
-    method: 'delete'
+    method: 'delete',
   });
 }
 
@@ -106,7 +106,7 @@ export function downloadTemplate() {
   return request({
     url: '/youlai-admin/api/v1/users/template',
     method: 'get',
-    responseType: 'arraybuffer'
+    responseType: 'arraybuffer',
   });
 }
 
@@ -121,7 +121,7 @@ export function exportUser(queryParams: UserQueryParam) {
     url: '/youlai-admin/api/v1/users/_export',
     method: 'get',
     params: queryParams,
-    responseType: 'arraybuffer'
+    responseType: 'arraybuffer',
   });
 }
 
@@ -140,7 +140,7 @@ export function importUser(deptId: number, roleIds: string, file: File) {
     method: 'post',
     data: formData,
     headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+      'Content-Type': 'multipart/form-data',
+    },
   });
 }

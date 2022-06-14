@@ -1,4 +1,9 @@
-import { MenuFormData, MenuItem, MenuQueryParam, Option } from '@/types';
+import {
+  MenuFormData,
+  MenuItem,
+  MenuQueryParam,
+} from '@/types/api/system/menu';
+import { Option } from '@/types/common';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -7,8 +12,8 @@ import { AxiosPromise } from 'axios';
  */
 export function listRoutes() {
   return request({
-    url: '/youlai-admin/api/v1/menus/route',
-    method: 'get'
+    url: '/youlai-admin/api/v1/menus/route_list',
+    method: 'get',
   });
 }
 
@@ -17,23 +22,33 @@ export function listRoutes() {
  *
  * @param queryParams
  */
-export function listTableMenus(
+export function listMenus(
   queryParams: MenuQueryParam
 ): AxiosPromise<MenuItem[]> {
   return request({
-    url: '/youlai-admin/api/v1/menus/table',
+    url: '/youlai-admin/api/v1/menus',
     method: 'get',
-    params: queryParams
+    params: queryParams,
   });
 }
 
 /**
- * 获取菜单下拉列表
+ * 获取菜单下拉树形列表
  */
 export function listSelectMenus(): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-admin/api/v1/menus/select',
-    method: 'get'
+    url: '/youlai-admin/api/v1/menus/select_list',
+    method: 'get',
+  });
+}
+
+/**
+ * 获取菜单权限树形列表
+ */
+export function getResource(): AxiosPromise<any> {
+  return request({
+    url: '/youlai-admin/api/v1/menus/resources',
+    method: 'get',
   });
 }
 
@@ -44,7 +59,7 @@ export function listSelectMenus(): AxiosPromise<Option[]> {
 export function getMenuDetail(id: number): AxiosPromise<MenuFormData> {
   return request({
     url: '/youlai-admin/api/v1/menus/' + id,
-    method: 'get'
+    method: 'get',
   });
 }
 
@@ -57,7 +72,7 @@ export function addMenu(data: MenuFormData) {
   return request({
     url: '/youlai-admin/api/v1/menus',
     method: 'post',
-    data: data
+    data: data,
   });
 }
 
@@ -71,7 +86,7 @@ export function updateMenu(id: string, data: MenuFormData) {
   return request({
     url: '/youlai-admin/api/v1/menus/' + id,
     method: 'put',
-    data: data
+    data: data,
   });
 }
 
@@ -83,6 +98,6 @@ export function updateMenu(id: string, data: MenuFormData) {
 export function deleteMenus(ids: string) {
   return request({
     url: '/youlai-admin/api/v1/menus/' + ids,
-    method: 'delete'
+    method: 'delete',
   });
 }

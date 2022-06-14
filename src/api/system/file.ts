@@ -13,8 +13,8 @@ export function uploadFile(file: File) {
     method: 'post',
     data: formData,
     headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+      'Content-Type': 'multipart/form-data',
+    },
   });
 }
 
@@ -27,6 +27,6 @@ export function deleteFile(path?: string) {
   return request({
     url: '/youlai-admin/api/v1/files',
     method: 'delete',
-    params: { path: path }
+    params: { path: path },
   });
 }

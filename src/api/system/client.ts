@@ -1,7 +1,7 @@
 import {
   ClientFormData,
   ClientPageResult,
-  ClientQueryParam
+  ClientQueryParam,
 } from '@/types/api/system/client';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
@@ -12,14 +12,14 @@ export function listClientPages(
   return request({
     url: '/youlai-admin/api/v1/oauth-clients',
     method: 'get',
-    params: queryParams
+    params: queryParams,
   });
 }
 
 export function getClientFormDetial(id: number): AxiosPromise<ClientFormData> {
   return request({
     url: '/youlai-admin/api/v1/oauth-clients/' + id,
-    method: 'get'
+    method: 'get',
   });
 }
 
@@ -27,7 +27,7 @@ export function addClient(data: ClientFormData) {
   return request({
     url: '/youlai-admin/api/v1/oauth-clients',
     method: 'post',
-    data: data
+    data: data,
   });
 }
 
@@ -35,14 +35,14 @@ export function updateClient(id: string, data: ClientFormData) {
   return request({
     url: '/youlai-admin/api/v1/oauth-clients/' + id,
     method: 'put',
-    data: data
+    data: data,
   });
 }
 
 export function deleteClients(ids: string) {
   return request({
     url: '/youlai-admin/api/v1/oauth-clients/' + ids,
-    method: 'delete'
+    method: 'delete',
   });
 }
 
@@ -50,6 +50,6 @@ export function updateClientPart(id: number, data: object) {
   return request({
     url: '/youlai-admin/api/v1/oauth-clients/' + id,
     method: 'patch',
-    data: data
+    data: data,
   });
 }

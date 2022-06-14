@@ -1,7 +1,6 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'member'
+  name: 'member',
 };
 </script>
 
@@ -11,7 +10,7 @@ import { ElTable } from 'element-plus';
 import { Search, Refresh } from '@element-plus/icons-vue';
 
 import { listMemebersPage } from '@/api/ums/member';
-import { MemberQueryParam, MemberItem } from '@/types';
+import { MemberQueryParam, MemberItem } from '@/types/api/ums/member';
 
 const state = reactive({
   // 遮罩层
@@ -25,9 +24,9 @@ const state = reactive({
   total: 0,
   queryParams: {
     pageNum: 1,
-    pageSize: 10
+    pageSize: 10,
   } as MemberQueryParam,
-  memberList: [] as MemberItem[]
+  memberList: [] as MemberItem[],
 });
 
 const { loading, queryParams, memberList, total } = toRefs(state);
@@ -45,7 +44,7 @@ function resetQuery() {
   state.queryParams = {
     pageNum: 1,
     pageSize: 10,
-    nickName: ''
+    nickName: '',
   };
   handleQuery();
 }

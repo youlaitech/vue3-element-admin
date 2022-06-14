@@ -1,4 +1,4 @@
-import { SeataFormData } from '@/types';
+import { SeataFormData } from '@/types/api/lab/seata';
 import request from '@/utils/request';
 
 /**
@@ -9,7 +9,7 @@ export function payOrder(data: SeataFormData) {
   return request({
     url: '/youlai-lab/api/v1/seata/order/_pay',
     method: 'post',
-    data: data
+    data: data,
   });
 }
 
@@ -20,7 +20,7 @@ export function payOrder(data: SeataFormData) {
 export function getSeataData() {
   return request({
     url: '/youlai-lab/api/v1/seata/data',
-    method: 'get'
+    method: 'get',
   });
 }
 
@@ -31,6 +31,6 @@ export function getSeataData() {
 export function resetSeataData() {
   return request({
     url: '/youlai-lab/api/v1/seata/data/_reset',
-    method: 'put'
+    method: 'put',
   });
 }

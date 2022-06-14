@@ -1,9 +1,5 @@
 /**
- * 组件类型声明
- */
-
-/**
- * 弹窗属性类型声明
+ * 弹窗类型
  */
 export interface Dialog {
   title: string;
@@ -11,10 +7,11 @@ export interface Dialog {
 }
 
 /**
- * 通用组件选择项类型声明
+ * 通用组件选择项类型
  */
 export interface Option {
   value: string;
   label: string;
+  checked?: boolean;
   children?: Option[];
 }

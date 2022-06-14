@@ -1,7 +1,7 @@
 <!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'goods'
+  name: 'goods',
 };
 </script>
 
@@ -16,11 +16,11 @@ import {
   Edit,
   Refresh,
   Delete,
-  View
+  View,
 } from '@element-plus/icons-vue';
-import { listGoodsPages, deleteGoods } from '@/api/pms/goods';
+import { listPageGoods, deleteGoods } from '@/api/pms/goods';
 import { listCascadeCategories } from '@/api/pms/category';
-import { GoodsItem, GoodsQueryParam } from '@/types';
+import { GoodsItem, GoodsQueryParam } from '@/types/api/pms/goods';
 import { moneyFormatter } from '@/utils/filter';
 
 const dataTableRef = ref(ElTable);
@@ -38,12 +38,12 @@ const state = reactive({
   total: 0,
   queryParams: {
     pageNum: 1,
-    pageSize: 10
+    pageSize: 10,
   } as GoodsQueryParam,
   goodsList: [] as GoodsItem[],
   categoryOptions: [],
   goodDetail: undefined,
-  dialogVisible: false
+  dialogVisible: false,
 });
 
 const {
@@ -54,12 +54,12 @@ const {
   categoryOptions,
   goodDetail,
   total,
-  dialogVisible
+  dialogVisible,
 } = toRefs(state);
 
 function handleQuery() {
   state.loading = true;
-  listGoodsPages(state.queryParams).then(({ data }) => {
+  listPageGoods(state.queryParams).then(({ data }) => {
     state.goodsList = data.list;
     state.total = data.total;
     state.loading = false;
@@ -71,7 +71,7 @@ function resetQuery() {
     pageNum: 1,
     pageSize: 10,
     name: undefined,
-    categoryId: undefined
+    categoryId: undefined,
   };
   handleQuery();
 }
@@ -88,7 +88,7 @@ function handleAdd() {
 function handleUpdate(row: any) {
   router.push({
     path: 'goods-detail',
-    query: { goodsId: row.id, categoryId: row.categoryId }
+    query: { goodsId: row.id, categoryId: row.categoryId },
   });
 }
 
@@ -97,7 +97,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('是否确认删除选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(function () {
       return deleteGoods(ids);
@@ -119,7 +119,7 @@ function handleSelectionChange(selection: any) {
 }
 
 onMounted(() => {
-  listCascadeCategories({}).then(response => {
+  listCascadeCategories({}).then((response) => {
     state.categoryOptions = ref(response.data);
   });
   handleQuery();
