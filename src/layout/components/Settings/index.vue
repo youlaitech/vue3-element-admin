@@ -22,6 +22,29 @@
       <span>侧边栏 Logo</span>
       <el-switch v-model="sidebarLogo" class="drawer-switch" />
     </div>
+
+    <el-divider>导航栏模式</el-divider>
+
+    <ul class="navbar">
+      <el-tooltip class="item" content="左侧模式" placement="bottom">
+        <li>
+          <div />
+          <div />
+        </li>
+      </el-tooltip>
+      <el-tooltip class="item" content="左侧模式" placement="bottom">
+        <li>
+          <div />
+          <div />
+        </li>
+      </el-tooltip>
+      <el-tooltip class="item" content="左侧模式" placement="bottom">
+        <li>
+          <div />
+          <div />
+        </li>
+      </el-tooltip>
+    </ul>
   </div>
 </template>
 
@@ -98,6 +121,46 @@ watch(
     width: 100%;
     left: 0;
     bottom: 0;
+  }
+}
+
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 100%;
+  height: 50px;
+  padding: 0;
+
+  li {
+    width: 18%;
+    height: 45px;
+    background: #f0f2f5;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 1px 2.5px 0 rgb(0 0 0 / 18%);
+
+    &:nth-child(1) {
+      div {
+        &:nth-child(1) {
+          width: 30%;
+          height: 100%;
+          background: #1b2a47;
+        }
+
+        &:nth-child(2) {
+          width: 70%;
+          height: 30%;
+          top: 0;
+          right: 0;
+          background: #fff;
+          box-shadow: 0 0 1px #888;
+          position: absolute;
+        }
+      }
+    }
   }
 }
 </style>

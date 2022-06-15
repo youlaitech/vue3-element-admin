@@ -1,22 +1,16 @@
 <template>
-  <div ref="rightPanel" :class="{ show: show }" class="rightPanel-container">
-    <div class="rightPanel-background" />
-    <div class="rightPanel">
+  <div ref="rightPanel" :class="{ show: show }">
+    <div class="right-panel-background" />
+    <div class="right-panel">
       <div
-        class="handle-button"
+        class="right-panel__button"
         :style="{ top: buttonTop + 'px', 'background-color': theme }"
         @click="show = !show"
       >
-        <Close
-          style="width: 1em; height: 1em; vertical-align: middle"
-          v-show="show"
-        />
-        <Setting
-          style="width: 1em; height: 1em; vertical-align: middle"
-          v-show="!show"
-        />
+        <Close class="icon" v-show="show" />
+        <Setting class="icon" v-show="!show" />
       </div>
-      <div class="rightPanel-items">
+      <div class="right-panel__items">
         <slot />
       </div>
     </div>
@@ -58,7 +52,7 @@ watch(show, value => {
 });
 
 function addEventClick() {
-  window.addEventListener('click', closeSidebar, {passive:true});
+  window.addEventListener('click', closeSidebar, { passive: true });
 }
 
 function closeSidebar(evt: any) {
@@ -68,7 +62,7 @@ function closeSidebar(evt: any) {
     return;
   }
 
-  parent = evt.target.closest('.rightPanel');
+  parent = evt.target.closest('.right-panel');
   if (!parent) {
     show.value = false;
     window.removeEventListener('click', closeSidebar);
@@ -102,7 +96,7 @@ onBeforeUnmount(() => {
 </style>
 
 <style lang="scss" scoped>
-.rightPanel-background {
+.right-panel-background {
   position: fixed;
   top: 0;
   left: 0;
@@ -112,9 +106,9 @@ onBeforeUnmount(() => {
   z-index: -1;
 }
 
-.rightPanel {
+.right-panel {
   width: 100%;
-  max-width: 260px;
+  max-width: 300px;
   height: 100vh;
   position: fixed;
   top: 0;
@@ -124,24 +118,29 @@ onBeforeUnmount(() => {
   transform: translate(100%);
   background: #fff;
   z-index: 40000;
+  .icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+  }
 }
 
 .show {
   transition: all 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
-  .rightPanel-background {
+  .right-panel-background {
     z-index: 20000;
     opacity: 1;
     width: 100%;
     height: 100%;
   }
 
-  .rightPanel {
+  .right-panel {
     transform: translate(0);
   }
 }
 
-.handle-button {
+.right-panel__button {
   width: 48px;
   height: 48px;
   position: absolute;
