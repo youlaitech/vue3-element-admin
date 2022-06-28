@@ -18,7 +18,7 @@ export function listRolePages(
   queryParams?: RoleQueryParam
 ): AxiosPromise<RolePageResult> {
   return request({
-    url: '/youlai-admin/api/v1/roles',
+    url: '/youlai-admin/api/v1/roles/pages',
     method: 'get',
     params: queryParams
   });
