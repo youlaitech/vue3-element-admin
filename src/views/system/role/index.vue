@@ -1,19 +1,19 @@
 <script lang="ts">
 export default {
-  name: 'role',
+  name: 'role'
 };
 </script>
 
 <script setup lang="ts">
 import { nextTick, onMounted, reactive, ref, toRefs } from 'vue';
 import {
-  listPageRoles,
+  listRolePages,
   updateRole,
   getRoleFormDetail,
   addRole,
   deleteRoles,
   getRoleResourceIds,
-  updateRoleResource,
+  updateRoleResource
 } from '@/api/system/role';
 import { getResource } from '@/api/system/menu';
 
@@ -22,7 +22,7 @@ import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import {
   RoleFormData,
   RoleItem,
-  RoleQueryParam,
+  RoleQueryParam
 } from '@/types/api/system/role';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
@@ -41,18 +41,18 @@ const state = reactive({
   multiple: true,
   queryParams: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 10
   } as RoleQueryParam,
   roleList: [] as RoleItem[],
   total: 0,
   dialog: {
     title: '',
-    visible: false,
+    visible: false
   },
   formData: {} as RoleFormData,
   rules: {
     name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-    code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
+    code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }]
   },
   resourceDialogVisible: false,
   menuOptions: [] as any[],
@@ -61,8 +61,8 @@ const state = reactive({
   permGroupList: [],
   checkedRole: {
     id: '',
-    name: '',
-  }, // 选中的角色
+    name: ''
+  } // 选中的角色
 });
 
 const {
@@ -78,13 +78,13 @@ const {
   menuOptions,
   permOptions,
   checkedRole,
-  checkStrictly,
+  checkStrictly
 } = toRefs(state);
 
 function handleQuery() {
   emit('roleClick', {});
   state.loading = true;
-  listPageRoles(state.queryParams).then(({ data }) => {
+  listRolePages(state.queryParams).then(({ data }) => {
     state.roleList = data.list;
     state.total = data.total;
     state.loading = false;
@@ -109,14 +109,14 @@ function handleRowClick(row: any) {
 function handleAdd() {
   state.dialog = {
     title: '添加角色',
-    visible: true,
+    visible: true
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改角色',
-    visible: true,
+    visible: true
   };
   const roleId = row.id || state.ids;
   getRoleFormDetail(roleId).then(({ data }) => {
@@ -160,7 +160,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'warning'
   })
     .then(() => {
       deleteRoles(ids).then(() => {
@@ -176,27 +176,27 @@ function handleDelete(row: any) {
  */
 function handleResourceAssign(row: RoleItem) {
   resourceDialogVisible.value = true;
-  permOptions.value.map((item) => (item.checked = false));
+  permOptions.value.map(item => (item.checked = false));
 
   const roleId: any = row.id;
   checkedRole.value = {
     id: roleId,
-    name: row.name,
+    name: row.name
   };
   //资源下拉数据
-  getResource().then((response) => {
+  getResource().then(response => {
     checkStrictly.value = true; // 父子节点不互相关联
     state.menuOptions = response.data.menus;
     state.permOptions = response.data.perms;
 
     // 获取角色拥有的资源数据进行勾选
-    getRoleResourceIds(roleId).then((res) => {
+    getRoleResourceIds(roleId).then(res => {
       const checkedMenuIds = res.data.menuIds;
       const checkedPermIds = res.data.permIds;
 
       nextTick(() => {
         resourceRef.value.setCheckedKeys(checkedMenuIds);
-        permOptions.value.forEach((perm) => {
+        permOptions.value.forEach(perm => {
           if (checkedPermIds.includes(perm.value)) {
             perm.checked = true;
           } else {
@@ -218,15 +218,15 @@ function handleRoleResourceSubmit() {
     .map((node: any) => node.value);
 
   const checkedPermIds = state.permOptions
-    .filter((item) => item.checked)
-    .map((item) => item.value);
+    .filter(item => item.checked)
+    .map(item => item.value);
 
   const roleResourceData = {
     menuIds: checkedMenuIds,
-    permIds: checkedPermIds,
+    permIds: checkedPermIds
   };
 
-  updateRoleResource(checkedRole.value.id, roleResourceData).then((res) => {
+  updateRoleResource(checkedRole.value.id, roleResourceData).then(res => {
     ElMessage.success('修改成功');
     state.resourceDialogVisible = false;
     handleQuery();
@@ -392,7 +392,7 @@ onMounted(() => {
               <div class="resource-tree-node__content">
                 <el-checkbox
                   v-for="perm in permOptions.filter(
-                    (perm) => perm.parentId == data.permPid
+                    perm => perm.parentId == data.permPid
                   )"
                   :key="perm.value"
                   :label="perm.value"

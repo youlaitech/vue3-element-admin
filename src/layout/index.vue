@@ -11,7 +11,11 @@
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
+
+      <!--主页面-->
       <app-main />
+
+      <!-- 设置面板 -->
       <RightPanel v-if="showSettings">
         <settings />
       </RightPanel>
