@@ -117,7 +117,8 @@ onBeforeUnmount(() => {
   transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
   transform: translate(100%);
   background: #fff;
-  z-index: 40000;
+  z-index: 199;
+
   .icon {
     width: 1em;
     height: 1em;
@@ -129,7 +130,7 @@ onBeforeUnmount(() => {
   transition: all 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
   .right-panel-background {
-    z-index: 20000;
+    z-index: 99;
     opacity: 1;
     width: 100%;
     height: 100%;

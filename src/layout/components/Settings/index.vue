@@ -26,20 +26,20 @@
     <el-divider>导航栏模式</el-divider>
 
     <ul class="navbar">
-      <el-tooltip class="item" content="左侧模式" placement="bottom">
-        <li>
+      <el-tooltip content="左侧模式" placement="bottom">
+        <li class="navbar__item navbar__item--left">
           <div />
           <div />
         </li>
       </el-tooltip>
-      <el-tooltip class="item" content="左侧模式" placement="bottom">
-        <li>
+      <el-tooltip content="顶部模式" placement="bottom">
+        <li class="navbar__item navbar__item--top">
           <div />
           <div />
         </li>
       </el-tooltip>
-      <el-tooltip class="item" content="左侧模式" placement="bottom">
-        <li>
+      <el-tooltip content="混合模式" placement="bottom">
+        <li class="navbar__item navbar__item--mix">
           <div />
           <div />
         </li>
@@ -132,7 +132,7 @@ watch(
   height: 50px;
   padding: 0;
 
-  li {
+  &__item {
     width: 18%;
     height: 45px;
     background: #f0f2f5;
@@ -142,7 +142,7 @@ watch(
     border-radius: 4px;
     box-shadow: 0 1px 2.5px 0 rgb(0 0 0 / 18%);
 
-    &:nth-child(1) {
+    &--left {
       div {
         &:nth-child(1) {
           width: 30%;
@@ -155,6 +155,38 @@ watch(
           height: 30%;
           top: 0;
           right: 0;
+          background: #fff;
+          box-shadow: 0 0 1px #888;
+          position: absolute;
+        }
+      }
+    }
+
+    &--top {
+      div {
+        &:nth-child(1) {
+          width: 100%;
+          height: 30%;
+          background: #1b2a47;
+          box-shadow: 0 0 1px #888;
+        }
+      }
+    }
+
+    &--mix {
+      div {
+        &:nth-child(1) {
+          width: 100%;
+          height: 30%;
+          background: #1b2a47;
+          box-shadow: 0 0 1px #888;
+        }
+
+        &:nth-child(2) {
+          width: 30%;
+          height: 70%;
+          bottom: 0;
+          left: 0;
           background: #fff;
           box-shadow: 0 0 1px #888;
           position: absolute;
