@@ -9,7 +9,7 @@
         <el-link target="_blank" type="primary" href="https://gitee.com/haoxr">
           youlai-mall
         </el-link>
-        是基于Spring Boot 2.6、Spring Cloud 2021 & Alibaba
+        是基于Spring Boot 2.7、Spring Cloud 2021 & Alibaba
         2021、Vue3、Element-Plus、uni-app等主流技术栈构建的一整套全栈开源商城项目，
         涉及
         <el-link
