@@ -19,7 +19,7 @@ export interface Order {
   payType: number;
   status: number;
   totalQuantity: number;
-  gmtCreate: string;
+  createTime: string;
   memberId: string;
   sourceType: number;
   orderItems: OrderItem[];

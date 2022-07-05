@@ -1,11 +1,11 @@
 <script lang="ts">
 export default {
-  name: 'role'
+  name: 'role',
 };
 </script>
 
 <script setup lang="ts">
-import { nextTick, onMounted, reactive, ref, toRefs } from 'vue';
+import { onMounted, reactive, ref, toRefs, nextTick } from 'vue';
 import {
   listRolePages,
   updateRole,
@@ -13,7 +13,7 @@ import {
   addRole,
   deleteRoles,
   getRoleResourceIds,
-  updateRoleResource
+  updateRoleResource,
 } from '@/api/system/role';
 import { getResource } from '@/api/system/menu';
 
@@ -22,7 +22,7 @@ import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import {
   RoleFormData,
   RoleItem,
-  RoleQueryParam
+  RoleQueryParam,
 } from '@/types/api/system/role';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
@@ -41,28 +41,26 @@ const state = reactive({
   multiple: true,
   queryParams: {
     pageNum: 1,
-    pageSize: 10
+    pageSize: 10,
   } as RoleQueryParam,
   roleList: [] as RoleItem[],
   total: 0,
   dialog: {
     title: '',
-    visible: false
+    visible: false,
   },
   formData: {} as RoleFormData,
   rules: {
     name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-    code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }]
+    code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
   },
   resourceDialogVisible: false,
   menuOptions: [] as any[],
   permOptions: [] as any[],
-  checkStrictly: false,
-  permGroupList: [],
   checkedRole: {
     id: '',
-    name: ''
-  } // 选中的角色
+    name: '',
+  }, // 选中的角色
 });
 
 const {
@@ -78,7 +76,6 @@ const {
   menuOptions,
   permOptions,
   checkedRole,
-  checkStrictly
 } = toRefs(state);
 
 function handleQuery() {
@@ -109,14 +106,14 @@ function handleRowClick(row: any) {
 function handleAdd() {
   state.dialog = {
     title: '添加角色',
-    visible: true
+    visible: true,
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改角色',
-    visible: true
+    visible: true,
   };
   const roleId = row.id || state.ids;
   getRoleFormDetail(roleId).then(({ data }) => {
@@ -125,19 +122,22 @@ function handleUpdate(row: any) {
 }
 
 function submitFormData() {
+  loading.value = true;
   dataFormRef.value.validate((valid: any) => {
     if (valid) {
       if (state.formData.id) {
         updateRole(state.formData.id as any, state.formData).then(() => {
-          ElMessage.success('修改成功');
+          ElMessage.success('修改角色成功');
           cancel();
           handleQuery();
+          loading.value = false;
         });
       } else {
         addRole(state.formData).then(() => {
           cancel();
-          ElMessage.success('新增成功');
+          ElMessage.success('新增角色成功');
           handleQuery();
+          loading.value = false;
         });
       }
     }
@@ -145,7 +145,7 @@ function submitFormData() {
 }
 
 /**
- * 弹窗关闭
+ * 取消
  */
 function cancel() {
   state.dialog.visible = false;
@@ -160,7 +160,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteRoles(ids).then(() => {
@@ -176,41 +176,40 @@ function handleDelete(row: any) {
  */
 function handleResourceAssign(row: RoleItem) {
   resourceDialogVisible.value = true;
-  permOptions.value.map(item => (item.checked = false));
+  loading.value = true;
+  permOptions.value.map((item) => (item.checked = false));
 
   const roleId: any = row.id;
   checkedRole.value = {
     id: roleId,
-    name: row.name
+    name: row.name,
   };
+
   //资源下拉数据
-  getResource().then(response => {
-    checkStrictly.value = true; // 父子节点不互相关联
+  getResource().then((response) => {
     state.menuOptions = response.data.menus;
     state.permOptions = response.data.perms;
 
     // 获取角色拥有的资源数据进行勾选
-    getRoleResourceIds(roleId).then(res => {
+    getRoleResourceIds(roleId).then((res) => {
       const checkedMenuIds = res.data.menuIds;
       const checkedPermIds = res.data.permIds;
+      resourceRef.value.setCheckedKeys(checkedMenuIds);
 
-      nextTick(() => {
-        resourceRef.value.setCheckedKeys(checkedMenuIds);
-        permOptions.value.forEach(perm => {
-          if (checkedPermIds.includes(perm.value)) {
-            perm.checked = true;
-          } else {
-            perm.checked = false;
-          }
-        });
+      permOptions.value.forEach((perm) => {
+        if (checkedPermIds.includes(perm.value)) {
+          perm.checked = true;
+        } else {
+          perm.checked = false;
+        }
       });
-      checkStrictly.value = false; // 父子节点互相关联
+      loading.value = false;
     });
   });
 }
 
 /**
- * 提交资源权限
+ * 分配资源权限提交
  */
 function handleRoleResourceSubmit() {
   const checkedMenuIds: any[] = resourceRef.value
@@ -218,16 +217,16 @@ function handleRoleResourceSubmit() {
     .map((node: any) => node.value);
 
   const checkedPermIds = state.permOptions
-    .filter(item => item.checked)
-    .map(item => item.value);
+    .filter((item) => item.checked)
+    .map((item) => item.value);
 
   const roleResourceData = {
     menuIds: checkedMenuIds,
-    permIds: checkedPermIds
+    permIds: checkedPermIds,
   };
 
-  updateRoleResource(checkedRole.value.id, roleResourceData).then(res => {
-    ElMessage.success('修改成功');
+  updateRoleResource(checkedRole.value.id, roleResourceData).then((res) => {
+    ElMessage.success('分配权限成功');
     state.resourceDialogVisible = false;
     handleQuery();
   });
@@ -374,12 +373,13 @@ onMounted(() => {
       </template>
     </el-dialog>
 
+    <!--分配权限弹窗-->
     <el-dialog
-      :title="'【' + checkedRole.name + '】资源权限'"
+      :title="'【' + checkedRole.name + '】分配权限'"
       v-model="resourceDialogVisible"
       width="1000px"
     >
-      <el-scrollbar max-height="600px">
+      <el-scrollbar max-height="600px" v-loading="loading">
         <el-tree
           ref="resourceRef"
           node-key="value"
@@ -392,7 +392,7 @@ onMounted(() => {
               <div class="resource-tree-node__content">
                 <el-checkbox
                   v-for="perm in permOptions.filter(
-                    perm => perm.parentId == data.permPid
+                    (perm) => perm.parentId == data.permPid
                   )"
                   :key="perm.value"
                   :label="perm.value"

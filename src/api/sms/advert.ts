@@ -11,11 +11,11 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listAdvertsPage(
+export function listAdvertPages(
   queryParams: AdvertQueryParam
 ): AxiosPromise<AdvertPageResult> {
   return request({
-    url: '/mall-sms/api/v1/adverts',
+    url: '/mall-sms/api/v1/adverts/pages',
     method: 'get',
     params: queryParams,
   });

@@ -180,34 +180,23 @@
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  nextTick,
-  onMounted,
-  reactive,
-  ref,
-  toRefs,
-  watch,
-} from 'vue';
+import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { Plus, Minus } from '@element-plus/icons-vue';
 import { ElNotification, ElMessage, ElTable, ElForm } from 'element-plus';
 
 // API 引用
 import { listAttributes } from '@/api/pms/attribute';
-import { addGoods, updateGoods } from '@/api/pms/goods';
+import { addSpu, updateSpu } from '@/api/pms/goods';
 
 // 自定义组件引用
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import SingleUpload from '@/components/Upload/SingleUpload.vue';
-// import Sortable from 'sortablejs'
 
 const emit = defineEmits(['prev', 'next', 'update:modelValue']);
 
-/* const proxy = getCurrentInstance(); */
 const router = useRouter();
 
-/* const specTableRef = ref(ElTable); */
 const specFormRef = ref(ElForm);
 const skuFormRef = ref(ElForm);
 
@@ -326,10 +315,6 @@ function loadData() {
   handleSpecChange();
 
   handleSpecReorder();
-
-  nextTick(() => {
-    // registerSpecDragSortEvent()
-  });
 }
 
 /**
@@ -348,28 +333,6 @@ function handleSpecReorder() {
     item.index = index;
   });
 }
-
-/**
- * 注册拖拽排序事件
- */
-/*function registerSpecDragSortEvent() {
-  const el = specTableRef.value.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
-  Sortable.create(el, {
-    ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
-    setData: function (dataTransfer: any) {
-      dataTransfer.setData('Text', '')
-    },
-    onEnd: (evt: any) => {
-      // oldIndex 拖拽行当前所在索引
-      // newIndex 拖拽行目标索引
-      const targetRow = state.specForm.specList.splice(evt.oldIndex, 1)[0] //  返回被删除的行
-      state.specForm.specList.splice(evt.newIndex, 0, targetRow) // 拼接
-      generateSkuList() // 重新生成sku
-      handleSpecChange()
-      handleSpecReorder()
-    }
-  })
-}*/
 
 /**
  *  根据商品规格笛卡尔积生成SKU列表
@@ -623,7 +586,7 @@ function submitForm() {
           const goodsId = goodsInfo.value.id;
           if (goodsId) {
             // 编辑商品提交
-            updateGoods(goodsId, submitsData).then(() => {
+            updateSpu(goodsId, submitsData).then(() => {
               router.push({ path: '/pms/goods' });
               ElNotification({
                 title: '提示',
@@ -633,7 +596,7 @@ function submitForm() {
             });
           } else {
             // 新增商品提交
-            addGoods(submitsData).then(() => {
+            addSpu(submitsData).then(() => {
               router.push({ path: '/pms/goods' });
               ElNotification({
                 title: '提示',
@@ -647,21 +610,6 @@ function submitForm() {
     }
   });
 }
-
-/* function openFullScreen() {
-  state.loading = (proxy as any).$loading({
-    lock: true,
-    text: "商品信息提交中，请等待...",
-    spinner: "el-icon-loading",
-    background: "rgba(0, 0, 0, 0.7)",
-  });
-}
-
-function closeFullScreen() {
-  if (state.loading) {
-    (state.loading as any).close();
-  }
-} */
 
 function handlePrev() {
   emit('prev');

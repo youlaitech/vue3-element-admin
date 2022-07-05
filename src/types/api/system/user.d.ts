@@ -33,7 +33,7 @@ export interface UserItem {
   status: number;
   deptName: string;
   roleNames: string;
-  gmtCreate: string;
+  createTime: string;
 }
 
 /**
