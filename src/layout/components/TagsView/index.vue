@@ -10,7 +10,7 @@
         :key="tag.path"
         :data-path="tag.path"
         :class="isActive(tag) ? 'active' : ''"
-        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
+        :to="{ path: tag.path, query: tag.query }"
         class="tags-view__item"
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent="openMenu(tag, $event)"
@@ -66,7 +66,7 @@ import {
   ref,
   watch,
   onMounted,
-  ComponentInternalInstance,
+  ComponentInternalInstance
 } from 'vue';
 
 import path from 'path-browserify';
@@ -103,11 +103,11 @@ watch(
   },
   {
     //初始化立即执行
-    immediate: true,
+    immediate: true
   }
 );
 
-watch(visible, (value) => {
+watch(visible, value => {
   if (value) {
     document.body.addEventListener('click', closeMenu);
   } else {
@@ -115,17 +115,17 @@ watch(visible, (value) => {
   }
 });
 
-function filterAffixTags(routes: RouteRecordRaw[], basePath = '/') {
+function filterAffixTags(routes: any[], basePath = '/') {
   let tags: TagView[] = [];
 
-  routes.forEach((route) => {
+  routes.forEach(route => {
     if (route.meta && route.meta.affix) {
       const tagPath = path.resolve(basePath, route.path);
       tags.push({
         fullPath: tagPath,
         path: tagPath,
         name: route.name,
-        meta: { ...route.meta },
+        meta: { ...route.meta }
       });
     }
 
@@ -205,7 +205,7 @@ function refreshSelectedTag(view: TagView) {
   tagsView.delCachedView(view);
   const { fullPath } = view;
   nextTick(() => {
-    router.replace({ path: '/redirect' + fullPath }).catch((err) => {
+    router.replace({ path: '/redirect' + fullPath }).catch(err => {
       console.warn(err);
     });
   });

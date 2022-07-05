@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'advert',
+  name: 'advert'
 };
 </script>
 
@@ -10,21 +10,21 @@ import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import SingleUpload from '@/components/Upload/SingleUpload.vue';
 import {
-  listAdvertsPage,
+  listAdvertPages,
   getAdvertFormDetail,
   updateAdvert,
   addAdvert,
-  deleteAdverts,
+  deleteAdverts
 } from '@/api/sms/advert';
 import { Dialog } from '@/types/common';
 import {
   AdvertFormData,
   AdvertItem,
-  AdvertQueryParam,
+  AdvertQueryParam
 } from '@/types/api/sms/advert';
 
-const queryFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
-const dataFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
+const queryFormRef = ref(ElForm);
+const dataFormRef = ref(ElForm);
 
 const state = reactive({
   loading: true,
@@ -37,17 +37,16 @@ const state = reactive({
   queryParams: { pageNum: 1, pageSize: 10 } as AdvertQueryParam,
   advertList: [] as AdvertItem[],
   total: 0,
-  dialog: {} as Dialog,
+  dialog: { title: '', visible: false } as Dialog,
   formData: {
     status: 1,
-    sort: 100,
+    sort: 100
   } as AdvertFormData,
   rules: {
     title: [{ required: true, message: '请输入广告名称', trigger: 'blur' }],
-    beginTime: [{ required: true, message: '请填写开始时间', trigger: 'blur' }],
-    endTime: [{ required: true, message: '请填写结束时间', trigger: 'blur' }],
-    picUrl: [{ required: true, message: '请上传广告图片', trigger: 'blur' }],
+    picUrl: [{ required: true, message: '请上传广告图片', trigger: 'blur' }]
   },
+  validityPeriod: '' as any
 });
 
 const {
@@ -59,11 +58,12 @@ const {
   dialog,
   formData,
   rules,
+  validityPeriod
 } = toRefs(state);
 
 function handleQuery() {
   state.loading = true;
-  listAdvertsPage(state.queryParams).then(({ data }) => {
+  listAdvertPages(state.queryParams).then(({ data }) => {
     state.advertList = data.list;
     state.total = data.total;
     state.loading = false;
@@ -84,18 +84,19 @@ function handleSelectionChange(selection: any) {
 function handleAdd() {
   state.dialog = {
     title: '添加广告',
-    visible: true,
+    visible: true
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改广告',
-    visible: true,
+    visible: true
   };
   const advertId = row.id || state.ids;
-  getAdvertFormDetail(advertId).then((response) => {
-    state.formData = response.data;
+  getAdvertFormDetail(advertId).then(({ data }) => {
+    state.formData = data;
+    validityPeriod.value = [data.beginTime, data.endTime];
   });
 }
 
@@ -104,6 +105,12 @@ function submitForm() {
     if (valid) {
       const avertId = state.formData.id;
       if (avertId) {
+        // 有效期转换
+        if (validityPeriod.value) {
+          formData.value.beginTime = validityPeriod.value[0];
+          formData.value.endTime = validityPeriod.value[1];
+        }
+
         updateAdvert(avertId, state.formData).then(() => {
           ElMessage.success('修改成功');
           cancel();
@@ -131,7 +138,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'warning'
   })
     .then(() => {
       deleteAdverts(ids).then(() => {
@@ -166,8 +173,8 @@ onMounted(() => {
 
       <el-form-item prop="title">
         <el-input
-          v-model="queryParams.title"
-          placeholder="广告标题"
+          v-model="queryParams.keywords"
+          placeholder="标题"
           clearable
           @keyup.enter="handleQuery"
         />
@@ -252,16 +259,14 @@ onMounted(() => {
           <el-input v-model="formData.title" />
         </el-form-item>
 
-        <el-form-item label="有效期" prop="beginTime">
+        <el-form-item label="有效期">
           <el-date-picker
-            v-model="formData.beginTime"
-            placeholder="开始时间"
-            value-format="YYYY-MM-DD"
-          />
-          ~
-          <el-date-picker
-            v-model="formData.endTime"
-            placeholder="结束时间"
+            v-model="validityPeriod"
+            type="daterange"
+            range-separator="~"
+            start-placeholder="起始时间"
+            end-placeholder="截止时间"
+            format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
           />
         </el-form-item>

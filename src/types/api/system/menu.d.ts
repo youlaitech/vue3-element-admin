@@ -2,7 +2,7 @@
  * 菜单查询参数类型声明
  */
 export interface MenuQueryParam {
-  name?: string;
+  name: string;
 }
 
 /**
@@ -12,8 +12,8 @@ export interface MenuQueryParam {
 export interface MenuItem {
   id: number;
   parentId: number;
-  gmtCreate: string;
-  gmtModified: string;
+  createTime: string;
+  updateTime: string;
   name: string;
   icon: string;
   component: string;

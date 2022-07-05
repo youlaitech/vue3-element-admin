@@ -11,11 +11,11 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listPageGoods(
+export function listSpuPages(
   queryParams: GoodsQueryParam
 ): AxiosPromise<GoodsPageResult> {
   return request({
-    url: '/mall-pms/api/v1/goods/page',
+    url: '/mall-pms/api/v1/spu/pages',
     method: 'get',
     params: queryParams,
   });
@@ -26,9 +26,9 @@ export function listPageGoods(
  *
  * @param id
  */
-export function getGoodsDetail(id: string): AxiosPromise<GoodsDetail> {
+export function getSpuDetail(id: string): AxiosPromise<GoodsDetail> {
   return request({
-    url: '/mall-pms/api/v1/goods/' + id,
+    url: '/mall-pms/api/v1/spu/' + id,
     method: 'get',
   });
 }
@@ -38,9 +38,9 @@ export function getGoodsDetail(id: string): AxiosPromise<GoodsDetail> {
  *
  * @param data
  */
-export function addGoods(data: object) {
+export function addSpu(data: object) {
   return request({
-    url: '/mall-pms/api/v1/goods',
+    url: '/mall-pms/api/v1/spu',
     method: 'post',
     data: data,
   });
@@ -52,9 +52,9 @@ export function addGoods(data: object) {
  * @param id
  * @param data
  */
-export function updateGoods(id: number, data: object) {
+export function updateSpu(id: number, data: object) {
   return request({
-    url: '/mall-pms/api/v1/goods/' + id,
+    url: '/mall-pms/api/v1/spu/' + id,
     method: 'put',
     data: data,
   });
@@ -65,9 +65,9 @@ export function updateGoods(id: number, data: object) {
  *
  * @param ids
  */
-export function deleteGoods(ids: string) {
+export function deleteSpu(ids: string) {
   return request({
-    url: '/mall-pms/api/v1/goods/' + ids,
+    url: '/mall-pms/api/v1/spu/' + ids,
     method: 'delete',
   });
 }

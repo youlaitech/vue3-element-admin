@@ -53,10 +53,7 @@
             <single-upload v-model="item.url" :show-close="true" />
 
             <div v-if="item.url">
-              <el-link
-                type="danger"
-                class="button"
-                v-if="item.main == true"
+              <el-link type="danger" class="button" v-if="item.main == true"
                 >商品主图</el-link
               >
               <el-link
@@ -64,7 +61,8 @@
                 class="button"
                 v-else
                 @click="changeMainPicture(index)"
-                >设为主图</el-link>
+                >设为主图</el-link
+              >
             </div>
 
             <div v-else>
@@ -120,7 +118,7 @@ const state = reactive({
   brandOptions: [] as Array<any>,
   // 商品图册
   pictures: [
-    { url: undefined, main: true }, // main = true 代表主图，可切换
+    { url: undefined, main: true }, // main为true代表主图，可切换
     { url: undefined, main: false },
     { url: undefined, main: false },
     { url: undefined, main: false },
@@ -142,10 +140,12 @@ function loadData() {
   });
   const goodsId = goodsInfo.value.id;
   if (goodsId) {
+    // 主图
     const mainPicUrl = goodsInfo.value.picUrl;
     if (mainPicUrl) {
       state.pictures.filter((item) => item.main)[0].url = mainPicUrl;
     }
+    // 商品副图
     const subPicUrls = goodsInfo.value.subPicUrls;
     if (subPicUrls && subPicUrls.length > 0) {
       for (let i = 1; i <= subPicUrls.length; i++) {
@@ -175,18 +175,21 @@ function handlePrev() {
 function handleNext() {
   dataFormRef.value.validate((valid: any) => {
     if (valid) {
-      // 商品图片
+      // 商品主图
       const mainPicUrl = state.pictures
         .filter((item) => item.main == true && item.url)
         .map((item) => item.url);
       if (mainPicUrl && mainPicUrl.length > 0) {
         goodsInfo.value.picUrl = mainPicUrl[0];
       }
-      const subPicUrl = state.pictures
+      // 商品副图
+      const subPicUrls = state.pictures
         .filter((item) => item.main == false && item.url)
         .map((item) => item.url);
-      if (subPicUrl && subPicUrl.length > 0) {
-        goodsInfo.value.subPicUrls = subPicUrl;
+      if (subPicUrls && subPicUrls.length > 0) {
+        goodsInfo.value.subPicUrls = subPicUrls;
+      } else {
+        goodsInfo.value.subPicUrls = [];
       }
       emit('next');
     }

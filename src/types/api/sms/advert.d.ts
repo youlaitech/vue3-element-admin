@@ -1,14 +1,14 @@
 import { PageQueryParam, PageResult } from '../base';
 
 /**
- * 广告查询参数类型声明
+ * 广告查询参数类型
  */
 export interface AdvertQueryParam extends PageQueryParam {
-  title?: string;
+  keywords: string;
 }
 
 /**
- * 广告分页列表项声明
+ * 广告分页列表项
  */
 export interface AdvertItem {
   id: string;
@@ -18,12 +18,12 @@ export interface AdvertItem {
 }
 
 /**
- * 广告分页项类型声明
+ * 广告分页项类型
  */
 export type AdvertPageResult = PageResult<AdvertItem[]>;
 
 /**
- * 广告表单类型声明
+ * 广告表单类型
  */
 export interface AdvertFormData {
   id?: number;

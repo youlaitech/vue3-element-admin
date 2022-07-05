@@ -18,7 +18,7 @@ import {
   Delete,
   View,
 } from '@element-plus/icons-vue';
-import { listPageGoods, deleteGoods } from '@/api/pms/goods';
+import { listSpuPages, deleteSpu } from '@/api/pms/goods';
 import { listCascadeCategories } from '@/api/pms/category';
 import { GoodsItem, GoodsQueryParam } from '@/types/api/pms/goods';
 import { moneyFormatter } from '@/utils/filter';
@@ -59,7 +59,7 @@ const {
 
 function handleQuery() {
   state.loading = true;
-  listPageGoods(state.queryParams).then(({ data }) => {
+  listSpuPages(state.queryParams).then(({ data }) => {
     state.goodsList = data.list;
     state.total = data.total;
     state.loading = false;
@@ -100,7 +100,7 @@ function handleDelete(row: any) {
     type: 'warning',
   })
     .then(function () {
-      return deleteGoods(ids);
+      return deleteSpu(ids);
     })
     .then(() => {
       ElMessage.success('删除成功');
