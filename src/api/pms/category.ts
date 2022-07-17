@@ -1,4 +1,6 @@
 import request from '@/utils/request';
+import { Option } from '@/types/common';
+import { AxiosPromise } from 'axios';
 
 /**
  * 获取商品分类列表
@@ -9,7 +11,7 @@ export function listCategories(queryParams: object) {
   return request({
     url: '/mall-pms/api/v1/categories',
     method: 'get',
-    params: queryParams,
+    params: queryParams
   });
 }
 
@@ -18,11 +20,10 @@ export function listCategories(queryParams: object) {
  *
  * @param queryParams
  */
-export function listCascadeCategories(queryParams?: object) {
+export function listCategoryOptions(): AxiosPromise<Option[]> {
   return request({
-    url: '/mall-pms/api/v1/categories/cascade',
-    method: 'get',
-    params: queryParams,
+    url: '/mall-pms/api/v1/categories/options',
+    method: 'get'
   });
 }
 
@@ -34,7 +35,7 @@ export function listCascadeCategories(queryParams?: object) {
 export function getCategoryDetail(id: number) {
   return request({
     url: '/mall-pms/api/v1/categories/' + id,
-    method: 'get',
+    method: 'get'
   });
 }
 
@@ -47,7 +48,7 @@ export function addCategory(data: object) {
   return request({
     url: '/mall-pms/api/v1/categories',
     method: 'post',
-    data: data,
+    data: data
   });
 }
 
@@ -61,7 +62,7 @@ export function updateCategory(id: number, data: object) {
   return request({
     url: '/mall-pms/api/v1/categories/' + id,
     method: 'put',
-    data: data,
+    data: data
   });
 }
 
@@ -73,7 +74,7 @@ export function updateCategory(id: number, data: object) {
 export function deleteCategories(ids: string) {
   return request({
     url: '/mall-pms/api/v1/categories/' + ids,
-    method: 'delete',
+    method: 'delete'
   });
 }
 
@@ -87,6 +88,6 @@ export function updateCategoryPart(id: number, data: object) {
   return request({
     url: '/mall-pms/api/v1/categories/' + id,
     method: 'patch',
-    data: data,
+    data: data
   });
 }
