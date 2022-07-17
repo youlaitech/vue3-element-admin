@@ -1,5 +1,4 @@
 import { PageQueryParam, PageResult } from '../base';
-import { Option } from '@/types/common';
 
 /**
  * 优惠券查询参数类型
@@ -51,6 +50,11 @@ export interface CouponFormData {
    * 优惠券类型(1:满减券;2:直减券;3:折扣券)
    */
   type: number;
+
+  /**
+   *  优惠券面值类型
+   */
+  faceValueType: number;
   /**
    *  优惠券面值
    */
@@ -60,9 +64,9 @@ export interface CouponFormData {
    */
   discount: number;
   /**
-   * 发放数量
+   * 发行量
    */
-  issueCount: number;
+  circulation: number;
   /**
    * 使用门槛(0:无门槛)
    */
@@ -72,7 +76,7 @@ export interface CouponFormData {
    */
   perLimit: number;
   /**
-   * 有效期类型(1:自领取之日起有效天数;2:有效起止时间)
+   * 有效期类型(1:日期范围;2:固定天数)
    */
   validityPeriodType: number;
   /**
@@ -88,34 +92,22 @@ export interface CouponFormData {
    */
   validityEndTime: string;
   /**
-   * 使用类型(0:全场通用;1:指定商品分类;2:指定商品)
+   * 应用范围(0:全场通用;1:指定商品分类;2:指定商品)
    */
-  useType: number;
+  applicationScope: number;
 
   /**
    * 使用类型：指定商品分类
    */
-  spuCategoryList: CouponSpuCategory[];
+  spuCategoryIds: number[];
 
   /**
    * 使用类型：指定商品
    */
-  spuList: CouponSpu[];
+  spuIds: number[];
 
   /**
    * 使用说明
    */
   remark: string;
-}
-
-export interface CouponSpuCategory {
-  id: number;
-  categoryId: number;
-  categoryName: string;
-}
-
-export interface CouponSpu {
-  id: number;
-  spuId: number;
-  spuName: string;
 }
