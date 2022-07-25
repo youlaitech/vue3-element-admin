@@ -2,7 +2,7 @@ import {
   RoleFormData,
   RolePageResult,
   RoleQueryParam,
-  RoleResourceData,
+  RoleResourceData
 } from '@/types/api/system/role';
 
 import { Option } from '@/types/common';
@@ -20,7 +20,7 @@ export function listRolePages(
   return request({
     url: '/youlai-admin/api/v1/roles/pages',
     method: 'get',
-    params: queryParams,
+    params: queryParams
   });
 }
 
@@ -35,7 +35,7 @@ export function listRoleOptions(
   return request({
     url: '/youlai-admin/api/v1/roles/options',
     method: 'get',
-    params: queryParams,
+    params: queryParams
   });
 }
 
@@ -46,8 +46,8 @@ export function listRoleOptions(
  */
 export function getRoleResourceIds(roleId: string): AxiosPromise<any> {
   return request({
-    url: '/youlai-admin/api/v1/roles/' + roleId + '/resource_ids',
-    method: 'get',
+    url: '/youlai-admin/api/v1/roles/' + roleId + '/resources',
+    method: 'get'
   });
 }
 
@@ -63,7 +63,7 @@ export function updateRoleResource(
   return request({
     url: '/youlai-admin/api/v1/roles/' + roleId + '/resources',
     method: 'put',
-    data: data,
+    data: data
   });
 }
 
@@ -75,7 +75,7 @@ export function updateRoleResource(
 export function getRoleFormDetail(id: number): AxiosPromise<RoleFormData> {
   return request({
     url: '/youlai-admin/api/v1/roles/' + id,
-    method: 'get',
+    method: 'get'
   });
 }
 
@@ -88,7 +88,7 @@ export function addRole(data: RoleFormData) {
   return request({
     url: '/youlai-admin/api/v1/roles',
     method: 'post',
-    data: data,
+    data: data
   });
 }
 
@@ -102,7 +102,7 @@ export function updateRole(id: number, data: RoleFormData) {
   return request({
     url: '/youlai-admin/api/v1/roles/' + id,
     method: 'put',
-    data: data,
+    data: data
   });
 }
 
@@ -114,6 +114,6 @@ export function updateRole(id: number, data: RoleFormData) {
 export function deleteRoles(ids: string) {
   return request({
     url: '/youlai-admin/api/v1/roles/' + ids,
-    method: 'delete',
+    method: 'delete'
   });
 }
