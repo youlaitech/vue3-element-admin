@@ -38,6 +38,7 @@ export const getLanguage = () => {
 };
 
 const i18n = createI18n({
+  legacy: false,
   locale: getLanguage(),
   messages: messages
 });

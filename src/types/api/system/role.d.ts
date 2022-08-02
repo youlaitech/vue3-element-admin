@@ -1,3 +1,4 @@
+import { StringMap } from 'i18next';
 import { PageQueryParam, PageResult } from '../base';
 
 /**
@@ -40,7 +41,7 @@ export interface RoleFormData {
 /**
  *
  */
-export interface RoleResourceData {
+export interface RoleResource {
   menuIds: string[];
   permIds: string[];
 }

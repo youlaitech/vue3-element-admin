@@ -2,6 +2,7 @@ import {
   MenuFormData,
   MenuItem,
   MenuQueryParam,
+  Resource,
 } from '@/types/api/system/menu';
 import { Option } from '@/types/common';
 import request from '@/utils/request';
@@ -43,9 +44,9 @@ export function listMenuOptions(): AxiosPromise<Option[]> {
 }
 
 /**
- * 获取菜单权限树形列表
+ * 获取资源(菜单+权限)树形列表
  */
-export function getResource(): AxiosPromise<any> {
+export function listResources(): AxiosPromise<Resource[]> {
   return request({
     url: '/youlai-admin/api/v1/menus/resources',
     method: 'get',
@@ -56,7 +57,7 @@ export function getResource(): AxiosPromise<any> {
  * 获取菜单详情
  * @param id
  */
-export function getMenuDetail(id: number): AxiosPromise<MenuFormData> {
+export function getMenuDetail(id: string): AxiosPromise<MenuFormData> {
   return request({
     url: '/youlai-admin/api/v1/menus/' + id,
     method: 'get',

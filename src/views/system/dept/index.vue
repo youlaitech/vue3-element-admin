@@ -192,8 +192,10 @@ function handleDelete(row: any) {
  * 取消/关闭弹窗
  **/
 function cancel() {
+  dialog.value.visible = false;
+  formData.value.id = undefined;
   dataFormRef.value.resetFields();
-  state.dialog.visible = false;
+  dataFormRef.value.clearValidate();
 }
 
 onMounted(() => {

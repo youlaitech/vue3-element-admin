@@ -49,20 +49,20 @@ const emit = defineEmits(['next', 'update:modelValue']);
 const props = defineProps({
   modelValue: {
     type: Object,
-    default: () => {}
-  }
+    default: () => {},
+  },
 });
 
 const goodsInfo: any = computed({
   get: () => props.modelValue,
-  set: value => {
+  set: (value) => {
     emit('update:modelValue', value);
-  }
+  },
 });
 
 const state = reactive({
   categoryOptions: [] as Option[],
-  pathLabels: []
+  pathLabels: [],
 });
 
 const { categoryOptions, pathLabels } = toRefs(state);

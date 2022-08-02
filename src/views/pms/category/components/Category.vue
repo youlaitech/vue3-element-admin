@@ -1,111 +1,3 @@
-<!-- 商品分类层级最多为三层，level字段标识 -->
-<template>
-  <div class="component-container">
-    <el-tree
-      v-loading="loading"
-      ref="categoryTreeRef"
-      :data="categoryOptions"
-      :props="{ label: 'name', children: 'children', disabled: '' }"
-      node-key="id"
-      :expand-on-click-node="false"
-      default-expand-all
-      :accordion="true"
-      @node-click="handleNodeClick"
-    >
-      <template #default="scope">
-        <div class="custom-tree-node">
-          <span>
-            <el-image
-              v-show="scope.data.level == 3"
-              :src="scope.data.iconUrl"
-              style="
-                width: 20px;
-                height: 20px;
-                vertical-align: middle;
-                margin-top: -5px;
-              "
-            >
-              <template #error>
-                <div class="image-slot">
-                  <Picture style="width: 20px; height: 20px" />
-                </div>
-              </template>
-            </el-image>
-            {{ scope.data.name }}
-          </span>
-          <span>
-            <el-button
-              v-show="scope.data.level != 3"
-              type="success"
-              :icon="Plus"
-              circle
-              plain
-              @click.stop="handleAdd(scope.data)"
-            />
-            <el-button
-              v-show="scope.data.id !== 0"
-              type="warning"
-              :icon="Edit"
-              circle
-              plain
-              @click.stop="handleUpdate(scope.data)"
-            />
-            <el-button
-              v-show="
-                scope.data.id &&
-                (!scope.data.children || scope.data.children.length <= 0)
-              "
-              type="danger"
-              :icon="Delete"
-              circle
-              plain
-              @click.stop="handleDelete(scope.data)"
-            />
-          </span>
-        </div>
-      </template>
-    </el-tree>
-
-    <el-dialog :title="dialog.title" v-model="dialog.visible" width="750px">
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-      >
-        <el-form-item label="上级分类" prop="parentId">
-          <el-input v-model="parent.name" readonly />
-        </el-form-item>
-
-        <el-form-item label="分类名称" prop="name">
-          <el-input v-model="formData.name" />
-        </el-form-item>
-
-        <el-form-item label="分类图标" prop="iconUrl">
-          <single-upload v-model="formData.iconUrl" />
-        </el-form-item>
-
-        <el-form-item label="显示状态" prop="visible">
-          <el-radio-group v-model="formData.visible">
-            <el-radio :label="1">显示</el-radio>
-            <el-radio :label="0">隐藏</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="formData.sort"></el-input>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
-  </div>
-</template>
-
 <script setup lang="ts">
 import {
   listCategories,
@@ -268,6 +160,114 @@ onMounted(() => {
 });
 </script>
 
+<!-- 商品分类层级最多为三层，level字段标识 -->
+<template>
+  <div class="component-container">
+    <el-tree
+      v-loading="loading"
+      ref="categoryTreeRef"
+      :data="categoryOptions"
+      :props="{ label: 'name', children: 'children', disabled: '' }"
+      node-key="id"
+      :expand-on-click-node="false"
+      default-expand-all
+      :accordion="true"
+      @node-click="handleNodeClick"
+    >
+      <template #default="scope">
+        <div class="custom-tree-node">
+          <span>
+            <el-image
+              v-show="scope.data.level == 3"
+              :src="scope.data.iconUrl"
+              style="
+                width: 20px;
+                height: 20px;
+                vertical-align: middle;
+                margin-top: -5px;
+              "
+            >
+              <template #error>
+                <div class="image-slot">
+                  <Picture style="width: 20px; height: 20px" />
+                </div>
+              </template>
+            </el-image>
+            {{ scope.data.name }}
+          </span>
+          <span>
+            <el-button
+              v-show="scope.data.level != 3"
+              type="success"
+              :icon="Plus"
+              circle
+              plain
+              @click.stop="handleAdd(scope.data)"
+            />
+            <el-button
+              v-show="scope.data.id !== 0"
+              type="warning"
+              :icon="Edit"
+              circle
+              plain
+              @click.stop="handleUpdate(scope.data)"
+            />
+            <el-button
+              v-show="
+                scope.data.id &&
+                (!scope.data.children || scope.data.children.length <= 0)
+              "
+              type="danger"
+              :icon="Delete"
+              circle
+              plain
+              @click.stop="handleDelete(scope.data)"
+            />
+          </span>
+        </div>
+      </template>
+    </el-tree>
+
+    <el-dialog :title="dialog.title" v-model="dialog.visible" width="750px">
+      <el-form
+        ref="dataFormRef"
+        :model="formData"
+        :rules="rules"
+        label-width="100px"
+      >
+        <el-form-item label="上级分类" prop="parentId">
+          <el-input v-model="parent.name" readonly />
+        </el-form-item>
+
+        <el-form-item label="分类名称" prop="name">
+          <el-input v-model="formData.name" />
+        </el-form-item>
+
+        <el-form-item label="分类图标" prop="iconUrl">
+          <single-upload v-model="formData.iconUrl" />
+        </el-form-item>
+
+        <el-form-item label="显示状态" prop="visible">
+          <el-radio-group v-model="formData.visible">
+            <el-radio :label="1">显示</el-radio>
+            <el-radio :label="0">隐藏</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="formData.sort"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
+</template>
+
 <style>
 .component-container {
   height: 100%;
@@ -280,13 +280,10 @@ onMounted(() => {
   justify-content: space-between;
   font-size: 14px;
   padding-right: 8px;
+  line-height: 40px0;
 }
 
 .el-tree-node__content {
   height: 40px;
-}
-
-.el-divider--horizontal {
-  margin: 30px 0 15px;
 }
 </style>

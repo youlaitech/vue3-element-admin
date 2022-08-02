@@ -1,7 +1,7 @@
 <!--优惠券-->
 <script lang="ts">
 export default {
-  name: 'coupon'
+  name: 'coupon',
 };
 </script>
 
@@ -14,7 +14,7 @@ import {
   getCouponFormData,
   updateCoupon,
   addCoupon,
-  deleteCoupons
+  deleteCoupons,
 } from '@/api/sms/coupon';
 
 import { listCategoryOptions } from '@/api/pms/category';
@@ -23,7 +23,7 @@ import { Dialog, Option } from '@/types/common';
 import {
   CouponItem,
   CouponQueryParam,
-  CouponFormData
+  CouponFormData,
 } from '@/types/api/sms/coupon';
 import { GoodsItem, GoodsQueryParam } from '@/types/api/pms/goods';
 
@@ -40,38 +40,38 @@ const state = reactive({
   couponList: [] as CouponItem[],
   total: 0,
   dialog: {
-    visible: false
+    visible: false,
   } as Dialog,
   //指定商品分类选择Dialog
   spuCategoryChooseDialog: {
-    visible: false
+    visible: false,
   } as Dialog,
   // 指定商品选择ialog
   spuChooseDialog: {
-    visible: false
+    visible: false,
   } as Dialog,
   formData: {
     type: 1,
     platform: 0,
     validityPeriodType: 1,
     perLimit: 1,
-    applicationScope: 0
+    applicationScope: 0,
   } as CouponFormData,
   rules: {
     type: [{ required: true, message: '请输入优惠券名称', trigger: 'blur' }],
-    name: [{ required: true, message: '请选择优惠券类型', trigger: 'blur' }]
+    name: [{ required: true, message: '请选择优惠券类型', trigger: 'blur' }],
   },
   validityPeriod: '' as any,
   perLimitChecked: false,
   spuCategoryOptions: [] as Option[],
   spuCategoryProps: {
     multiple: true,
-    emitPath: false
+    emitPath: false,
   },
   spuList: [] as GoodsItem[],
   spuTotal: 0,
   spuQueryParams: { pageNum: 1, pageSize: 10 } as GoodsQueryParam,
-  checkedSpuIds: []
+  checkedSpuIds: [],
 });
 
 const {
@@ -89,7 +89,7 @@ const {
   spuCategoryProps,
   spuList,
   spuTotal,
-  checkedSpuIds
+  checkedSpuIds,
 } = toRefs(state);
 
 /**
@@ -136,7 +136,7 @@ async function loadSpuList() {
 function handleAdd() {
   dialog.value = {
     title: '新增优惠券',
-    visible: true
+    visible: true,
   };
 
   loadSpuCategoryOptions();
@@ -146,7 +146,7 @@ function handleAdd() {
 async function handleUpdate(row: any) {
   dialog.value = {
     title: '编辑优惠券',
-    visible: true
+    visible: true,
   };
   const id = row.id;
 
@@ -230,7 +230,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteCoupons(ids).then(() => {
@@ -492,7 +492,7 @@ onMounted(() => {
               :titles="['商品列表', '已选择商品']"
               :props="{
                 key: 'id',
-                label: 'name'
+                label: 'name',
               }"
             >
               <template #left-footer>

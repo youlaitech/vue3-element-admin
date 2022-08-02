@@ -15,14 +15,14 @@
           <template #header>
             <svg-icon icon-class="perm" />
             <span style="margin: 0 5px">权限列表</span>
-            <el-tag type="success" v-if="menuId" size="small">{{
-              menuName
+            <el-tag type="success" v-if="menu.id" size="small">{{
+              menu.name
             }}</el-tag>
-            <el-tag type="warning" v-else size="small"
-              >请点击左侧菜单列表选择</el-tag
+            <el-link :underline="false" type="warning" v-else size="small"
+              ><el-icon><WarningFilled /></el-icon>请选中左侧菜单</el-link
             >
           </template>
-          <perm-table :menuId="menuId" :menuName="menuName" />
+          <perm-table :menu="menu" />
         </el-card>
       </el-col>
     </el-row>
@@ -35,21 +35,23 @@ import MenuTable from './components/Menu.vue';
 import PermTable from './components/Perm.vue';
 
 import { reactive, toRefs } from 'vue';
-
+import { WarningFilled } from '@element-plus/icons-vue';
+import { MenuItem } from '@/types/api/system/menu';
 const state = reactive({
-  menuId: undefined,
-  menuName: '',
+  menu: {} as MenuItem,
 });
 
-const { menuId, menuName } = toRefs(state);
+const { menu } = toRefs(state);
 
-function handleMenuClick(menuRow: any) {
+function handleMenuClick(menuRow: MenuItem) {
   if (menuRow) {
-    state.menuId = menuRow.id;
-    state.menuName = menuRow.name;
+    menu.value.id = menuRow.id;
+    menu.value.type = menuRow.type;
+    menu.value.name = menuRow.name;
   } else {
-    state.menuId = undefined;
-    state.menuName = '';
+    menu.value.id = undefined;
+    menu.value.type = undefined;
+    menu.value.name = '';
   }
 }
 </script>
