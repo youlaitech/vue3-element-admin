@@ -1,7 +1,7 @@
 <!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'goods'
+  name: 'goods',
 };
 </script>
 
@@ -16,7 +16,7 @@ import {
   Edit,
   Refresh,
   Delete,
-  View
+  View,
 } from '@element-plus/icons-vue';
 import { listSpuPages, deleteSpu } from '@/api/pms/goods';
 import { listCategoryOptions } from '@/api/pms/category';
@@ -39,12 +39,12 @@ const state = reactive({
   total: 0,
   queryParams: {
     pageNum: 1,
-    pageSize: 10
+    pageSize: 10,
   } as GoodsQueryParam,
   goodsList: [] as GoodsItem[],
   categoryOptions: [] as Option[],
   goodDetail: undefined,
-  dialogVisible: false
+  dialogVisible: false,
 });
 
 const {
@@ -55,7 +55,7 @@ const {
   categoryOptions,
   goodDetail,
   total,
-  dialogVisible
+  dialogVisible,
 } = toRefs(state);
 
 function handleQuery() {
@@ -72,7 +72,7 @@ function resetQuery() {
     pageNum: 1,
     pageSize: 10,
     name: undefined,
-    categoryId: undefined
+    categoryId: undefined,
   };
   handleQuery();
 }
@@ -89,7 +89,7 @@ function handleAdd() {
 function handleUpdate(row: any) {
   router.push({
     path: 'goods-detail',
-    query: { goodsId: row.id, categoryId: row.categoryId }
+    query: { goodsId: row.id, categoryId: row.categoryId },
   });
 }
 
@@ -98,7 +98,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('是否确认删除选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(function () {
       return deleteSpu(ids);

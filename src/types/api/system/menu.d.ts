@@ -10,8 +10,9 @@ export interface MenuQueryParam {
  */
 
 export interface MenuItem {
-  id: number;
+  id?: number;
   parentId: number;
+  type?: string | 'CATEGORY' | 'MENU' | 'EXTLINK';
   createTime: string;
   updateTime: string;
   name: string;
@@ -64,4 +65,40 @@ export interface MenuFormData {
    * 菜单类型(1:菜单；2：目录；3：外链)
    */
   type: string;
+}
+
+/**
+ * 资源(菜单+权限)类型
+ */
+export interface Resource {
+  /**
+   * 菜单值
+   */
+  value: string;
+  /**
+   * 菜单文本
+   */
+  label: string;
+  /**
+   * 子菜单
+   */
+  children: Resource[];
+  /**
+   * 权限集合
+   */
+  perms: Permission[];
+}
+
+/**
+ * 权限类型
+ */
+export interface Permission {
+  /**
+   * 权限值
+   */
+  value: string;
+  /**
+   * 权限文本
+   */
+  label: string;
 }

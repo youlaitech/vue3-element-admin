@@ -44,6 +44,16 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="菜单类型" align="center" width="100">
+        <template #default="scope">
+          <el-tag v-if="scope.row.type === 'MENU'" type="success">菜单</el-tag>
+          <el-tag v-if="scope.row.type === 'CATALOG'" type="warning"
+            >目录</el-tag
+          >
+          <el-tag v-if="scope.row.type === 'EXTLINK'" type="info">外链</el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column label="状态" align="center" width="100">
         <template #default="scope">
           <el-tag v-if="scope.row.visible === 1" type="success">显示</el-tag>
@@ -261,7 +271,7 @@ const state = reactive({
     name: '',
     visible: 1,
     sort: 1,
-    component: 'Layout',
+    component: undefined,
     type: 'MENU',
   } as MenuFormData,
   rules: {
@@ -333,8 +343,12 @@ function handleRowClick(row: any) {
   emit('menuClick', row);
 }
 
+/**
+ * 新增菜单
+ * @param row
+ */
 async function handleAdd(row: any) {
-  state.formData.id = undefined;
+  formData.value.id = undefined;
   await loadMenuData();
   state.dialog = {
     title: '添加菜单',
@@ -342,7 +356,6 @@ async function handleAdd(row: any) {
   };
   if (row.id) {
     // 行点击新增
-
     state.formData.parentId = row.id;
     if (row.id == '0') {
       state.formData.type = 'CATALOG';
@@ -362,15 +375,15 @@ async function handleAdd(row: any) {
 }
 
 /**
- * 修改弹窗
+ * 编辑菜单
  */
-async function handleUpdate(row: any) {
+async function handleUpdate(row: MenuFormData) {
   await loadMenuData();
   state.dialog = {
-    title: '修改菜单',
+    title: '编辑菜单',
     visible: true,
   };
-  const id = row.id || state.ids;
+  const id = row.id as string;
   getMenuDetail(id).then(({ data }) => {
     state.formData = data;
     cacheData.value.menuType = data.type;
@@ -379,10 +392,10 @@ async function handleUpdate(row: any) {
 }
 
 /**
- * 菜单类型change事件
+ * 菜单类型 change
  */
-function handleMenuTypeChange(val: any) {
-  if (val !== cacheData.value.menuType) {
+function handleMenuTypeChange(menuType: any) {
+  if (menuType !== cacheData.value.menuType) {
     formData.value.path = '';
   } else {
     formData.value.path = cacheData.value.menuPath;
@@ -412,6 +425,11 @@ function submitForm() {
   });
 }
 
+/**
+ * 删除菜单
+ *
+ * @param row
+ */
 function handleDelete(row: any) {
   const ids = [row.id || state.ids].join(',');
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {

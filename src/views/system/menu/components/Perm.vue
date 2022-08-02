@@ -25,6 +25,7 @@ import {
   PermItem,
   PermQueryParam,
 } from '@/types/api/system/perm';
+import { MenuItem } from '@/types/api/system/menu';
 
 const { proxy }: any = getCurrentInstance();
 
@@ -32,19 +33,23 @@ const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
 
 const props = defineProps({
-  menuId: {
-    type: String,
+  menu: {
+    type: Object,
     default: () => {
-      return '';
+      return {} as MenuItem;
     },
   },
 });
 
 watch(
-  () => props.menuId,
+  () => props.menu,
   (value) => {
-    state.queryParams.menuId = value;
+    queryParams.value.menuId = value.id;
+    console.log('menu', value);
     handleQuery();
+  },
+  {
+    deep: true,
   }
 );
 
@@ -193,7 +198,7 @@ function submitForm() {
           state.urlPerm.requestPath;
       }
 
-      state.formData.menuId = props.menuId;
+      formData.value.menuId = props.menu.id;
       if (state.formData.id) {
         updatePerm(state.formData.id, state.formData).then(() => {
           ElMessage.success('修改成功');
@@ -258,7 +263,7 @@ onMounted(() => {
         <el-button
           type="success"
           :icon="Plus"
-          :disabled="!menuId"
+          v-if="menu.id && menu.type == 'MENU'"
           @click="handleAdd"
           >新增</el-button
         >
@@ -267,6 +272,7 @@ onMounted(() => {
           :icon="Delete"
           :disabled="multiple"
           @click="handleDelete"
+          v-if="menu.id && menu.type == 'MENU'"
           >删除</el-button
         >
       </el-form-item>

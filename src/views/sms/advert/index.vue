@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'advert'
+  name: 'advert',
 };
 </script>
 
@@ -14,17 +14,17 @@ import {
   getAdvertFormDetail,
   updateAdvert,
   addAdvert,
-  deleteAdverts
+  deleteAdverts,
 } from '@/api/sms/advert';
 import { Dialog } from '@/types/common';
 import {
   AdvertFormData,
   AdvertItem,
-  AdvertQueryParam
+  AdvertQueryParam,
 } from '@/types/api/sms/advert';
 
-const queryFormRef = ref(ElForm);
-const dataFormRef = ref(ElForm);
+const queryFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
+const dataFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
 
 const state = reactive({
   loading: true,
@@ -40,13 +40,13 @@ const state = reactive({
   dialog: { title: '', visible: false } as Dialog,
   formData: {
     status: 1,
-    sort: 100
+    sort: 100,
   } as AdvertFormData,
   rules: {
     title: [{ required: true, message: '请输入广告名称', trigger: 'blur' }],
-    picUrl: [{ required: true, message: '请上传广告图片', trigger: 'blur' }]
+    picUrl: [{ required: true, message: '请上传广告图片', trigger: 'blur' }],
   },
-  validityPeriod: '' as any
+  validityPeriod: '' as any,
 });
 
 const {
@@ -58,7 +58,7 @@ const {
   dialog,
   formData,
   rules,
-  validityPeriod
+  validityPeriod,
 } = toRefs(state);
 
 function handleQuery() {
@@ -84,14 +84,14 @@ function handleSelectionChange(selection: any) {
 function handleAdd() {
   state.dialog = {
     title: '添加广告',
-    visible: true
+    visible: true,
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改广告',
-    visible: true
+    visible: true,
   };
   const advertId = row.id || state.ids;
   getAdvertFormDetail(advertId).then(({ data }) => {
@@ -138,7 +138,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteAdverts(ids).then(() => {

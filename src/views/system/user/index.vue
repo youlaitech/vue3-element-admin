@@ -348,9 +348,10 @@ function handleDelete(row: { [key: string]: any }) {
  * 取消
  */
 function cancel() {
-  state.dialog.visible = false;
-  state.formData.id = undefined;
+  dialog.value.visible = false;
+  formData.value.id = undefined;
   dataFormRef.value.resetFields();
+  dataFormRef.value.clearValidate();
 }
 
 /**

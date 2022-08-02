@@ -142,14 +142,10 @@ function submitForm() {
   });
 }
 
-function resetForm() {
+function cancel() {
+  state.dialog.visible = false;
   dataFormRef.value.resetFields();
   state.checkedAuthorizedGrantTypes = [];
-}
-
-function cancel() {
-  resetForm();
-  state.dialog.visible = false;
 }
 
 function handleDelete(row: any) {
