@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'user',
+  name: 'user'
 };
 </script>
 
@@ -12,7 +12,7 @@ import {
   watchEffect,
   onMounted,
   getCurrentInstance,
-  toRefs,
+  toRefs
 } from 'vue';
 
 // 导入API
@@ -22,10 +22,11 @@ import {
   deleteUsers,
   addUser,
   updateUser,
-  updateUserPart,
+  updateUserStatus,
+  updateUserPassword,
   downloadTemplate,
   exportUser,
-  importUser,
+  importUser
 } from '@/api/system/user';
 import { listSelectDepartments } from '@/api/system/dept';
 import { listRoleOptions } from '@/api/system/role';
@@ -36,7 +37,7 @@ import {
   ElMessageBox,
   ElTree,
   ElForm,
-  UploadFile,
+  UploadFile
 } from 'element-plus';
 import {
   Search,
@@ -47,13 +48,13 @@ import {
   Lock,
   Download,
   Top,
-  UploadFilled,
+  UploadFilled
 } from '@element-plus/icons-vue';
 import {
   UserItem,
   UserQueryParam,
   UserFormData,
-  UserImportFormData,
+  UserImportFormData
 } from '@/types/api/system/user';
 
 import { Option, Dialog } from '@/types/common';
@@ -81,7 +82,7 @@ const state = reactive({
   userList: [] as UserItem[],
   // 弹窗属性
   dialog: {
-    visible: false,
+    visible: false
   } as Dialog,
   deptName: undefined,
   // 部门树选项
@@ -93,18 +94,18 @@ const state = reactive({
   roleOptions: [] as Option[],
   // 表单参数
   formData: {
-    status: 1,
+    status: 1
   } as UserFormData,
   // 查询参数
   queryParams: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 10
   } as UserQueryParam,
   // 表单校验
   rules: {
     username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
     nickname: [
-      { required: true, message: '用户昵称不能为空', trigger: 'blur' },
+      { required: true, message: '用户昵称不能为空', trigger: 'blur' }
     ],
     deptId: [{ required: true, message: '所属部门不能为空', trigger: 'blur' }],
     roleIds: [{ required: true, message: '用户角色不能为空', trigger: 'blur' }],
@@ -112,25 +113,25 @@ const state = reactive({
       {
         pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
         message: '请输入正确的邮箱地址',
-        trigger: 'blur',
-      },
+        trigger: 'blur'
+      }
     ],
     mobile: [
       {
         pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
         message: '请输入正确的手机号码',
-        trigger: 'blur',
-      },
-    ],
+        trigger: 'blur'
+      }
+    ]
   },
 
   importDialog: {
-    title: '用户导出',
-    visible: false,
+    title: '用户搭配',
+    visible: false
   } as Dialog,
   importFormData: {} as UserImportFormData,
   excelFile: undefined as any,
-  excelFilelist: [] as File[],
+  excelFilelist: [] as File[]
 });
 
 const {
@@ -147,7 +148,7 @@ const {
   roleOptions,
   importDialog,
   importFormData,
-  excelFilelist,
+  excelFilelist
 } = toRefs(state);
 
 /**
@@ -158,7 +159,7 @@ watchEffect(
     deptTreeRef.value.filter(state.deptName);
   },
   {
-    flush: 'post', // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
+    flush: 'post' // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
   }
 );
 
@@ -173,7 +174,7 @@ function filterDeptNode(value: string, data: any) {
 }
 
 /**
- * 部门树节点点击事件
+ * 部门树节点click
  */
 function handleDeptNodeClick(data: { [key: string]: any }) {
   state.queryParams.deptId = data.value;
@@ -181,10 +182,10 @@ function handleDeptNodeClick(data: { [key: string]: any }) {
 }
 
 /**
- * 加载角色数据
+ * 加载角色下拉列表
  */
 async function loadRoleOptions() {
-  listRoleOptions().then((response) => {
+  listRoleOptions().then(response => {
     state.roleOptions = response.data;
   });
 }
@@ -200,11 +201,11 @@ function handleStatusChange(row: { [key: string]: any }) {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
+      type: 'warning'
     }
   )
     .then(() => {
-      return updateUserPart(row.id, { status: row.status });
+      return updateUserStatus(row.id, row.status);
     })
     .then(() => {
       ElMessage.success(text + '成功');
@@ -252,7 +253,7 @@ function resetPassword(row: { [key: string]: any }) {
     '重置密码',
     {
       confirmButtonText: '确定',
-      cancelButtonText: '取消',
+      cancelButtonText: '取消'
     }
   )
     .then(({ value }) => {
@@ -260,10 +261,8 @@ function resetPassword(row: { [key: string]: any }) {
         ElMessage.warning('请输入新密码');
         return false;
       }
-      updateUserPart(row.id, {
-        password: value,
-      }).then(() => {
-        ElMessage.success('修改成功，新密码是：' + value);
+      updateUserPassword(row.id, value).then(() => {
+        ElMessage.success('密码重置成功，新密码是：' + value);
       });
     })
     .catch(() => {});
@@ -277,7 +276,7 @@ async function handleAdd() {
   await loadRoleOptions();
   state.dialog = {
     title: '添加用户',
-    visible: true,
+    visible: true
   };
 }
 
@@ -290,7 +289,7 @@ async function handleUpdate(row: { [key: string]: any }) {
   await loadRoleOptions();
   state.dialog = {
     title: '修改用户',
-    visible: true,
+    visible: true
   };
   getUserFormData(userId).then(({ data }) => {
     state.formData = data;
@@ -332,7 +331,7 @@ function handleDelete(row: { [key: string]: any }) {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
+      type: 'warning'
     }
   )
     .then(function () {
@@ -358,7 +357,7 @@ function cancel() {
  * 加载部门
  */
 async function loadDeptOptions() {
-  listSelectDepartments().then((response) => {
+  listSelectDepartments().then(response => {
     state.deptOptions = response.data;
   });
 }
@@ -378,7 +377,7 @@ function loadGenderOptions() {
 function handleDownloadTemplate() {
   downloadTemplate().then((response: any) => {
     const blob = new Blob([response.data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
     });
     const a = document.createElement('a');
     const href = window.URL.createObjectURL(blob); // 下载链接
@@ -430,7 +429,7 @@ function submitImportForm() {
 
       const deptId = state.importFormData.deptId;
       const roleIds = state.importFormData.roleIds.join(',');
-      importUser(deptId, roleIds, state.excelFile).then((response) => {
+      importUser(deptId, roleIds, state.excelFile).then(response => {
         ElMessage.success(response.data);
         closeImportDialog();
         handleQuery();
@@ -455,7 +454,7 @@ function closeImportDialog() {
 function handleExport() {
   exportUser(queryParams.value).then((response: any) => {
     const blob = new Blob([response.data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
     });
     const a = document.createElement('a');
     const href = window.URL.createObjectURL(blob); // 下载的链接
@@ -768,6 +767,7 @@ onMounted(() => {
       </template>
     </el-dialog>
 
+    <!--用户导入弹窗-->
     <el-dialog
       :title="importDialog.title"
       v-model="importDialog.visible"
@@ -783,7 +783,7 @@ onMounted(() => {
       >
         <el-form-item label="部门" prop="deptId">
           <el-tree-select
-            v-model="formData.deptId"
+            v-model="importFormData.deptId"
             placeholder="请选择部门"
             :data="deptOptions"
             filterable
