@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'role',
+  name: 'role'
 };
 </script>
 
@@ -13,7 +13,7 @@ import {
   addRole,
   deleteRoles,
   getRoleResources,
-  updateRoleResource,
+  updateRoleResource
 } from '@/api/system/role';
 import { listResources } from '@/api/system/menu';
 
@@ -22,7 +22,7 @@ import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import {
   RoleFormData,
   RoleItem,
-  RoleQueryParam,
+  RoleQueryParam
 } from '@/types/api/system/role';
 import { Resource } from '@/types/api/system/menu';
 import SvgIcon from '@/components/SvgIcon/index.vue';
@@ -42,18 +42,18 @@ const state = reactive({
   multiple: true,
   queryParams: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 10
   } as RoleQueryParam,
   roleList: [] as RoleItem[],
   total: 0,
   dialog: {
     title: '',
-    visible: false,
+    visible: false
   },
   formData: {} as RoleFormData,
   rules: {
     name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-    code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
+    code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }]
   },
   resourceDialogVisible: false,
   resourceOptions: [] as Resource[],
@@ -63,8 +63,8 @@ const state = reactive({
   allPermIds: [] as string[],
   checkedRole: {
     id: '',
-    name: '',
-  }, // 选中的角色
+    name: ''
+  } // 选中的角色
 });
 
 const {
@@ -79,7 +79,7 @@ const {
   resourceDialogVisible,
   checkedRole,
   resourceOptions,
-  btnPerms,
+  btnPerms
 } = toRefs(state);
 
 function handleQuery() {
@@ -112,14 +112,14 @@ function handleRowClick(row: any) {
 function handleAdd() {
   state.dialog = {
     title: '添加角色',
-    visible: true,
+    visible: true
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改角色',
-    visible: true,
+    visible: true
   };
   const roleId = row.id || state.ids;
   getRoleFormDetail(roleId).then(({ data }) => {
@@ -168,7 +168,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'warning'
   })
     .then(() => {
       deleteRoles(ids).then(() => {
@@ -187,7 +187,7 @@ const handleResourceCheckChange = (
   console.log('data', data);
   console.log('isCheck', isCheck);
   if (data.perms) {
-    data.perms.forEach((item) => {
+    data.perms.forEach(item => {
       btnPerms.value[item.value] = isCheck;
     });
   }
@@ -203,11 +203,11 @@ function openRoleResourceDialog(row: RoleItem) {
   const roleId: any = row.id;
   checkedRole.value = {
     id: roleId,
-    name: row.name,
+    name: row.name
   };
 
   // 获取所有的资源
-  listResources().then((response) => {
+  listResources().then(response => {
     resourceOptions.value = response.data;
 
     // 获取角色拥有的资源
@@ -222,7 +222,7 @@ function openRoleResourceDialog(row: RoleItem) {
 
         state.allPermIds = filterResourcePermIds(response.data, []);
         if (state.allPermIds) {
-          state.allPermIds.forEach((permId) => {
+          state.allPermIds.forEach(permId => {
             if (rolePermIds.indexOf(permId) > -1) {
               btnPerms.value[permId] = true;
             } else {
@@ -237,9 +237,9 @@ function openRoleResourceDialog(row: RoleItem) {
 }
 
 const filterResourcePermIds = (resources: Resource[], permIds: string[]) => {
-  resources.forEach((resource) => {
+  resources.forEach(resource => {
     if (resource.perms) {
-      resource.perms.forEach((perm) => {
+      resource.perms.forEach(perm => {
         permIds.push(perm.value);
       });
     }
@@ -259,7 +259,7 @@ function handleRoleResourceSubmit() {
 
   const checkedPermIds = [] as string[];
   if (state.allPermIds) {
-    state.allPermIds.forEach((permId) => {
+    state.allPermIds.forEach(permId => {
       if (btnPerms.value[permId]) {
         checkedPermIds.push(permId);
       }
@@ -268,17 +268,19 @@ function handleRoleResourceSubmit() {
 
   const RoleResource = {
     menuIds: checkedMenuIds,
-    permIds: checkedPermIds,
+    permIds: checkedPermIds
   };
 
-  updateRoleResource(checkedRole.value.id, RoleResource).then((res) => {
+  updateRoleResource(checkedRole.value.id, RoleResource).then(res => {
     ElMessage.success('分配权限成功');
     state.resourceDialogVisible = false;
     handleQuery();
   });
 }
 
-// 取消资源分配
+/**
+ * 取消资源分配
+ */
 function cancelResourceAssign() {
   state.resourceDialogVisible = false;
 }
