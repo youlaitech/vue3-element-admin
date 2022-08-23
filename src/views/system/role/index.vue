@@ -61,10 +61,11 @@ const state = reactive({
   // 勾选的菜单ID
   checkedMenuIds: new Set([]),
   allPermIds: [] as string[],
+  // 选中的角色
   checkedRole: {
     id: '',
     name: ''
-  } // 选中的角色
+  }
 });
 
 const {
