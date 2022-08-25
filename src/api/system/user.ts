@@ -37,7 +37,7 @@ export function listUserPages(
  *
  * @param userId
  */
-export function getUserFormData(userId: number): AxiosPromise<UserFormData> {
+export function getUserDetail(userId: number): AxiosPromise<UserFormData> {
   return request({
     url: '/youlai-admin/api/v1/users/' + userId + '/form_data',
     method: 'get'
