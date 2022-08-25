@@ -18,7 +18,7 @@ import {
 // 导入API
 import {
   listUserPages,
-  getUserFormData,
+  getUserDetail,
   deleteUsers,
   addUser,
   updateUser,
@@ -272,27 +272,28 @@ function resetPassword(row: { [key: string]: any }) {
  * 添加用户
  **/
 async function handleAdd() {
-  await loadDeptOptions();
-  await loadRoleOptions();
   state.dialog = {
     title: '添加用户',
     visible: true
   };
+  await loadDeptOptions();
+  await loadRoleOptions();
 }
 
 /**
  * 修改用户
  **/
 async function handleUpdate(row: { [key: string]: any }) {
-  const userId = row.id || state.ids;
-  await loadDeptOptions();
-  await loadRoleOptions();
   state.dialog = {
     title: '修改用户',
     visible: true
   };
-  getUserFormData(userId).then(({ data }) => {
-    state.formData = data;
+
+  const userId = row.id || state.ids;
+  await loadDeptOptions();
+  await loadRoleOptions();
+  getUserDetail(userId).then(({ data }) => {
+    formData.value = data;
   });
 }
 
@@ -398,7 +399,7 @@ function handleDownloadTemplate() {
 async function showImportDialog() {
   await loadDeptOptions();
   await loadRoleOptions();
-  state.importDialog.visible = true;
+  importDialog.value.visible = true;
 }
 
 /**
@@ -714,6 +715,7 @@ onMounted(() => {
             :data="deptOptions"
             filterable
             check-strictly
+            :render-after-expand="false"
           />
         </el-form-item>
 
