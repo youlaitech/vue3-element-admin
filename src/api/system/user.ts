@@ -39,7 +39,7 @@ export function listUserPages(
  */
 export function getUserDetail(userId: number): AxiosPromise<UserFormData> {
   return request({
-    url: '/youlai-admin/api/v1/users/' + userId + '/form_data',
+    url: '/youlai-admin/api/v1/users/' + userId,
     method: 'get'
   });
 }
