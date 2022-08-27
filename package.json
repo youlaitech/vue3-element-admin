@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^1.0.0",
+    "@vueuse/core": "^9.1.1",
     "@wangeditor/editor": "^5.0.0",
     "@wangeditor/editor-for-vue": "^5.1.10",
     "axios": "^0.24.0",
