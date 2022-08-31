@@ -12,7 +12,8 @@ export default {
     login: '登 录',
     code: '请输入验证码',
     copyright: '',
-    icp: ''
+    icp: '',
+    thirdPartyLogin: '第三方登录'
   },
   navbar: {
     dashboard: '首页',
