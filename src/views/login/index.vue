@@ -89,11 +89,22 @@
         >{{ $t('login.login') }}
       </el-button>
 
+      <!-- 账号密码提示 -->
       <div class="tips">
-        <span style="margin-right: 20px"
-          >{{ $t('login.username') }}: admin</span
+        <div style="position: relative">
+          <span style="margin-right: 20px"
+            >{{ $t('login.username') }}: admin</span
+          >
+          <span> {{ $t('login.password') }}: 123456</span>
+        </div>
+
+        <el-button
+          class="thirdparty-button"
+          type="primary"
+          @click="showDialog = true"
         >
-        <span> {{ $t('login.password') }}: 123456</span>
+          Or connect with
+        </el-button>
       </div>
     </el-form>
 
@@ -101,6 +112,15 @@
       <p>{{ $t('login.copyright') }}</p>
       <p>{{ $t('login.icp') }}</p>
     </div>
+
+    <el-dialog title="Or connect with" v-model="showDialog">
+      Can not be simulated on local, so please combine you own business
+      simulation! ! !
+      <br />
+      <br />
+      <br />
+      <SocialSignin />
+    </el-dialog>
   </div>
 </template>
 
@@ -112,6 +132,7 @@ import { ElForm, ElInput } from 'element-plus';
 import router from '@/router';
 import LangSelect from '@/components/LangSelect/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
+import SocialSignin from './components/SocialSignin.vue';
 
 // 状态管理依赖
 import useStore from '@/store';
@@ -133,13 +154,11 @@ const state = reactive({
     username: 'admin',
     password: '123456',
     code: '',
-    uuid: '',
+    uuid: ''
   } as LoginFormData,
   loginRules: {
     username: [{ required: true, trigger: 'blur' }],
-    password: [
-      { required: true, trigger: 'blur', validator: validatePassword },
-    ],
+    password: [{ required: true, trigger: 'blur', validator: validatePassword }]
   },
   loading: false,
   passwordType: 'password',
@@ -149,6 +168,7 @@ const state = reactive({
   otherQuery: {},
   clientHeight: document.documentElement.clientHeight,
   showCopyright: true,
+  showDialog: false
 });
 
 function validatePassword(rule: any, value: any, callback: any) {
@@ -167,6 +187,7 @@ const {
   captchaBase64,
   capslockTooltipDisabled,
   showCopyright,
+  showDialog
 } = toRefs(state);
 
 function checkCapslock(e: any) {
@@ -225,7 +246,7 @@ watch(
     }
   },
   {
-    immediate: true,
+    immediate: true
   }
 );
 
@@ -405,6 +426,18 @@ $light_gray: #eee;
       cursor: pointer;
       vertical-align: middle;
     }
+  }
+}
+
+.thirdparty-button {
+  position: absolute;
+  right: 40px;
+  bottom: 6px;
+}
+
+@media only screen and (max-width: 470px) {
+  .thirdparty-button {
+    display: none;
   }
 }
 </style>
