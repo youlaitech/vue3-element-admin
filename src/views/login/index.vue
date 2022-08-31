@@ -103,7 +103,7 @@
           type="primary"
           @click="showDialog = true"
         >
-          Or connect with
+          {{ $t('login.thirdPartyLogin') }}
         </el-button>
       </div>
     </el-form>
@@ -113,7 +113,7 @@
       <p>{{ $t('login.icp') }}</p>
     </div>
 
-    <el-dialog title="Or connect with" v-model="showDialog">
+    <el-dialog :title="$t('login.thirdPartyLogin')" v-model="showDialog">
       Can not be simulated on local, so please combine you own business
       simulation! ! !
       <br />

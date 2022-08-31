@@ -12,7 +12,8 @@ export default {
     login: 'Login',
     code: 'Verification Code',
     copyright: '',
-    icp: ''
+    icp: '',
+    thirdPartyLogin: 'third-party login'
   },
   // 导航栏国际化
   navbar: {
