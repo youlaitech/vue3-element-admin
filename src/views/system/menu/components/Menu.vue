@@ -180,7 +180,7 @@
                 @click="iconSelectVisible = true"
               >
                 <template #prefix>
-                  <svg-icon :icon-class="formData.icon" />
+                  <svg-icon :icon-class="formData.icon" color="999" />
                 </template>
               </el-input>
             </template>
@@ -235,7 +235,7 @@ import { Dialog, Option } from '@/types/common';
 import {
   MenuFormData,
   MenuItem,
-  MenuQueryParam,
+  MenuQueryParam
 } from '@/types/api/system/menu';
 // API 依赖
 import {
@@ -244,7 +244,7 @@ import {
   listMenuOptions,
   addMenu,
   deleteMenus,
-  updateMenu,
+  updateMenu
 } from '@/api/system/menu';
 
 import SvgIcon from '@/components/SvgIcon/index.vue';
@@ -272,7 +272,7 @@ const state = reactive({
     visible: 1,
     sort: 1,
     component: undefined,
-    type: 'MENU',
+    type: 'MENU'
   } as MenuFormData,
   rules: {
     parentId: [{ required: true, message: '请选择顶级菜单', trigger: 'blur' }],
@@ -280,8 +280,8 @@ const state = reactive({
     type: [{ required: true, message: '请选择菜单类型', trigger: 'blur' }],
     path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
     component: [
-      { required: true, message: '请输入组件完整路径', trigger: 'blur' },
-    ],
+      { required: true, message: '请输入组件完整路径', trigger: 'blur' }
+    ]
   },
   menuOptions: [] as Option[],
   currentRow: undefined,
@@ -289,8 +289,8 @@ const state = reactive({
   iconSelectVisible: false,
   cacheData: {
     menuType: '',
-    menuPath: '',
-  },
+    menuPath: ''
+  }
 });
 
 const {
@@ -302,7 +302,7 @@ const {
   rules,
   menuOptions,
   iconSelectVisible,
-  cacheData,
+  cacheData
 } = toRefs(state);
 
 /**
@@ -352,7 +352,7 @@ async function handleAdd(row: any) {
   await loadMenuData();
   state.dialog = {
     title: '添加菜单',
-    visible: true,
+    visible: true
   };
   if (row.id) {
     // 行点击新增
@@ -381,7 +381,7 @@ async function handleUpdate(row: MenuFormData) {
   await loadMenuData();
   state.dialog = {
     title: '编辑菜单',
-    visible: true,
+    visible: true
   };
   const id = row.id as string;
   getMenuDetail(id).then(({ data }) => {
@@ -435,7 +435,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'warning'
   })
     .then(() => {
       deleteMenus(ids).then(() => {
