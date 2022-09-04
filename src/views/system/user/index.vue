@@ -28,7 +28,7 @@ import {
   exportUser,
   importUser
 } from '@/api/system/user';
-import { listSelectDepartments } from '@/api/system/dept';
+import { listDeptOptions } from '@/api/system/dept';
 import { listRoleOptions } from '@/api/system/role';
 
 // 组件依赖
@@ -358,7 +358,7 @@ function cancel() {
  * 加载部门
  */
 async function loadDeptOptions() {
-  listSelectDepartments().then(response => {
+  listDeptOptions().then(response => {
     state.deptOptions = response.data;
   });
 }
