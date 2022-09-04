@@ -2,7 +2,7 @@
   <div class="social-signup-container">
     <div class="sign-btn" @click="wechatHandleClick('wechat')">
       <span class="wx-svg-container">
-        <svg-icon icon-class="wechat" class="icon" />
+        <svg-icon icon-class="wechat" class="icon" size="1.5em" />
       </span>
       WeChat
     </div>
@@ -16,6 +16,8 @@
 </template>
 
 <script setup lang="ts">
+import SvgIcon from '@/components/SvgIcon/index.vue';
+
 /**
  * 微信授权
  */
@@ -54,6 +56,7 @@ function tencentHandleClick(thirdpart: string) {
     color: #fff;
     font-size: 24px;
     margin-top: 8px;
+    vertical-align: middle;
   }
 
   .wx-svg-container,
@@ -69,12 +72,7 @@ function tencentHandleClick(thirdpart: string) {
     margin-right: 5px;
   }
 
-  .wx-svg-container {
-    background-color: #24da70;
-  }
-
   .qq-svg-container {
-    background-color: #6ba2d6;
     margin-left: 50px;
   }
 }

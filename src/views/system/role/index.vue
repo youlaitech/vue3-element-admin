@@ -347,7 +347,7 @@ onMounted(() => {
               plain
               @click.stop="openRoleResourceDialog(scope.row)"
             >
-              <svg-icon icon-class="perm" />
+              <svg-icon icon-class="perm" color="#67C23A" />
             </el-button>
           </el-tooltip>
 
