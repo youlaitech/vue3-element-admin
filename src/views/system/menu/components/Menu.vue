@@ -111,6 +111,7 @@
             :data="menuOptions"
             filterable
             check-strictly
+            :render-after-expand="false"
           />
         </el-form-item>
 
