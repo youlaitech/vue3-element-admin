@@ -227,7 +227,9 @@ function handleLogin() {
   });
 }
 
-// 获取验证码
+/**
+ * 获取验证码
+ */
 function handleCaptchaGenerate() {
   getCaptcha().then(({ data }) => {
     const { img, uuid } = data;

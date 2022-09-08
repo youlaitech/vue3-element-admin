@@ -1,5 +1,11 @@
 <template>
   <div class="social-signup-container">
+    <div class="sign-btn" @click="youlaiHandleClick('youlai')">
+      <span class="wx-svg-container">
+        <svg-icon icon-class="wechat" class="icon" size="1.5em" />
+      </span>
+      有来认证
+    </div>
     <div class="sign-btn" @click="wechatHandleClick('wechat')">
       <span class="wx-svg-container">
         <svg-icon icon-class="wechat" class="icon" size="1.5em" />
@@ -17,6 +23,19 @@
 
 <script setup lang="ts">
 import SvgIcon from '@/components/SvgIcon/index.vue';
+
+/**
+ * 有来授权
+ */
+function youlaiHandleClick(thirdpart: string) {
+  alert('ok');
+  // this.$store.commit('SET_AUTH_TYPE', thirdpart)
+  // const appid = 'xxxxx'
+  // const redirect_uri = encodeURIComponent('xxx/redirect?redirect=' + window.location.origin + '/auth-redirect')
+  const url =
+    'http://localhost:9999/oauth2/authorization/gateway-client-authorization-code?redirect_uri=http://localhost:3000/dashboard';
+  window.open(url, thirdpart);
+}
 
 /**
  * 微信授权
