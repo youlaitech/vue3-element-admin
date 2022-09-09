@@ -33,7 +33,7 @@ function youlaiHandleClick(thirdpart: string) {
   // const appid = 'xxxxx'
   // const redirect_uri = encodeURIComponent('xxx/redirect?redirect=' + window.location.origin + '/auth-redirect')
   const url =
-    'http://localhost:9999/oauth2/authorization/gateway-client-authorization-code?redirect_uri=http://localhost:3000/dashboard';
+    'http://localhost:9999/oauth2/authorization/gateway-client-authorization-code?redirect_uri=http://localhost:3000/#/dashboard';
   window.open(url, thirdpart);
 }
 
