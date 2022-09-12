@@ -1,6 +1,7 @@
 import router from '@/router';
 import { ElMessage } from 'element-plus';
 import useStore from '@/store';
+import { hasLogin } from '@/utils/auth';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 NProgress.configure({ showSpinner: false }); // 进度环显示/隐藏
@@ -11,8 +12,8 @@ const whiteList = ['/login'];
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
   const { user, permission } = useStore();
-  const hasToken = user.token;
-  if (hasToken) {
+
+  if (hasLogin()) {
     // 登录成功，跳转到首页
     if (to.path === '/login') {
       next({ path: '/' });

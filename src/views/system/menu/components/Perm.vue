@@ -5,7 +5,7 @@ import {
   reactive,
   ref,
   getCurrentInstance,
-  toRefs,
+  toRefs
 } from 'vue';
 
 import {
@@ -13,19 +13,15 @@ import {
   getPermFormDetail,
   addPerm,
   updatePerm,
-  deletePerms,
-} from '@/api/system/perm';
+  deletePerms
+} from '@/api/perm';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import { Dialog, Option } from '@/types/common';
 
-import {
-  PermFormData,
-  PermItem,
-  PermQueryParam,
-} from '@/types/api/system/perm';
-import { MenuItem } from '@/types/api/system/menu';
+import { PermFormData, PermItem, PermQueryParam } from '@/types/api/perm';
+import { MenuItem } from '@/types/api/menu';
 
 const { proxy }: any = getCurrentInstance();
 
@@ -37,19 +33,19 @@ const props = defineProps({
     type: Object,
     default: () => {
       return {} as MenuItem;
-    },
-  },
+    }
+  }
 });
 
 watch(
   () => props.menu,
-  (value) => {
+  value => {
     queryParams.value.menuId = value.id;
     console.log('menu', value);
     handleQuery();
   },
   {
-    deep: true,
+    deep: true
   }
 );
 
@@ -63,26 +59,26 @@ const state = reactive({
   multiple: true,
   queryParams: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 10
   } as PermQueryParam,
   permList: [] as PermItem[],
   total: 0,
   dialog: {
-    visible: false,
+    visible: false
   } as Dialog,
   formData: {} as PermFormData,
   rules: {
     name: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
     perm: [{ required: true, message: '请输入权限标识', trigger: 'blur' }],
-    method: [{ required: true, message: '请选择请求方式', trigger: 'blur' }],
+    method: [{ required: true, message: '请选择请求方式', trigger: 'blur' }]
   },
   microServiceOptions: [] as Option[],
   requestMethodOptions: [] as Option[],
   urlPerm: {
     requestMethod: '',
     serviceName: '',
-    requestPath: '',
-  },
+    requestPath: ''
+  }
 });
 
 const {
@@ -96,7 +92,7 @@ const {
   microServiceOptions,
   requestMethodOptions,
   urlPerm,
-  queryParams,
+  queryParams
 } = toRefs(state);
 
 function handleQuery() {
@@ -143,7 +139,7 @@ function handleAdd() {
   loadDictOptions();
   state.dialog = {
     title: '添加权限',
-    visible: true,
+    visible: true
   };
 }
 
@@ -151,14 +147,14 @@ function handleUpdate(row: any) {
   loadDictOptions();
   state.dialog = {
     title: '修改权限',
-    visible: true,
+    visible: true
   };
   const id = row.id || state.ids;
-  getPermFormDetail(id).then((response) => {
+  getPermFormDetail(id).then(response => {
     const { data } = response;
     state.formData = data;
     if (data && data.urlPerm) {
-      // GET:/youlai-admin/api/v1/users
+      // GET:/youlai-system/api/v1/users
       const urlPermArr = data.urlPerm.split(':');
       state.urlPerm.requestMethod = urlPermArr[0];
       state.urlPerm.serviceName = urlPermArr[1].substring(
@@ -225,7 +221,7 @@ function resetForm() {
   state.urlPerm = {
     requestMethod: '',
     serviceName: '',
-    requestPath: '',
+    requestPath: ''
   };
 }
 
@@ -239,7 +235,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'warning'
   })
     .then(() => {
       deletePerms(ids).then(() => {

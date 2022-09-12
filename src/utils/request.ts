@@ -53,7 +53,7 @@ service.interceptors.response.use(
     if (code === 'A0230') {
       // token 过期
       localStorage.clear(); // 清除浏览器全部缓存
-      window.location.href = '/'; // 跳转登录页
+      //window.location.href = '/'; // 跳转登录页
       ElMessageBox.alert('当前页面已失效，请重新登录', '提示', {});
     } else {
       ElMessage({

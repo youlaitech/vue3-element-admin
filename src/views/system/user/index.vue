@@ -27,9 +27,9 @@ import {
   downloadTemplate,
   exportUser,
   importUser
-} from '@/api/system/user';
-import { listDeptOptions } from '@/api/system/dept';
-import { listRoleOptions } from '@/api/system/role';
+} from '@/api/user';
+import { listDeptOptions } from '@/api/dept';
+import { listRoleOptions } from '@/api/role';
 
 // 组件依赖
 import {
@@ -55,7 +55,7 @@ import {
   UserQueryParam,
   UserFormData,
   UserImportFormData
-} from '@/types/api/system/user';
+} from '@/types/api/user';
 
 import { Option, Dialog } from '@/types/common';
 

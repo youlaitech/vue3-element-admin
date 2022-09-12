@@ -9,12 +9,12 @@ export function uploadFile(file: File) {
   const formData = new FormData();
   formData.append('file', file);
   return request({
-    url: '/youlai-admin/api/v1/files',
+    url: '/youlai-system/api/v1/files',
     method: 'post',
     data: formData,
     headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+      'Content-Type': 'multipart/form-data'
+    }
   });
 }
 
@@ -25,8 +25,8 @@ export function uploadFile(file: File) {
  */
 export function deleteFile(path?: string) {
   return request({
-    url: '/youlai-admin/api/v1/files',
+    url: '/youlai-system/api/v1/files',
     method: 'delete',
-    params: { path: path },
+    params: { path: path }
   });
 }

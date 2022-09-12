@@ -1,5 +1,4 @@
-import { StringMap } from 'i18next';
-import { PageQueryParam, PageResult } from '../base';
+import { PageQueryParam, PageResult } from './base';
 
 /**
  * 角色查询参数类型

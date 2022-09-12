@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'dictItem',
+  name: 'dictItem'
 };
 </script>
 
@@ -10,8 +10,8 @@ import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import {
   DictItem,
   DictItemFormData,
-  DictItemQueryParam,
-} from '@/types/api/system/dict';
+  DictItemQueryParam
+} from '@/types/api/dict';
 
 import { Dialog } from '@/types/common';
 import {
@@ -19,8 +19,8 @@ import {
   getDictItemData,
   addDictItem,
   updateDictItem,
-  deleteDictItems,
-} from '@/api/system/dict';
+  deleteDictItems
+} from '@/api/dict';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 
 const props = defineProps({
@@ -28,19 +28,19 @@ const props = defineProps({
     type: String,
     default: () => {
       return '';
-    },
+    }
   },
   typeName: {
     type: String,
     default: () => {
       return '';
-    },
-  },
+    }
+  }
 });
 
 watch(
   () => props.typeCode,
-  (value) => {
+  value => {
     state.queryParams.typeCode = value;
     state.formData.typeCode = value;
     handleQuery();
@@ -66,14 +66,14 @@ const state = reactive({
     typeCode: props.typeCode,
     typeName: props.typeName,
     status: 1,
-    sort: 1,
+    sort: 1
   } as DictItemFormData,
   rules: {
     name: [{ required: true, message: '请输入字典项名称', trigger: 'blur' }],
-    value: [{ required: true, message: '请输入字典项值', trigger: 'blur' }],
+    value: [{ required: true, message: '请输入字典项值', trigger: 'blur' }]
   },
   localDictCode: props.typeCode,
-  localDictName: props.typeName,
+  localDictName: props.typeName
 });
 
 const {
@@ -84,7 +84,7 @@ const {
   dialog,
   formData,
   rules,
-  total,
+  total
 } = toRefs(state);
 
 function handleQuery() {
@@ -121,14 +121,14 @@ function handleAdd() {
   }
   state.dialog = {
     title: '添加字典数据项',
-    visible: true,
+    visible: true
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改字典数据项',
-    visible: true,
+    visible: true
   };
   const id = row.id || state.ids;
   getDictItemData(id).then(({ data }) => {
@@ -167,7 +167,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'warning'
   })
     .then(() => {
       deleteDictItems(ids).then(() => {

@@ -1,4 +1,4 @@
-import { PageQueryParam, PageResult } from '../base';
+import { PageQueryParam, PageResult } from './base';
 
 /**
  * 登录用户类型声明

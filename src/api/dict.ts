@@ -5,8 +5,8 @@ import {
   DictItemPageResult,
   DictItemQueryParam,
   DictPageResult,
-  DictQueryParam,
-} from '@/types/api/system/dict';
+  DictQueryParam
+} from '@/types/api/dict';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -19,9 +19,9 @@ export function listPageDictTypes(
   queryParams: DictQueryParam
 ): AxiosPromise<DictPageResult> {
   return request({
-    url: '/youlai-admin/api/v1/dict-types',
+    url: '/youlai-system/api/v1/dict-types',
     method: 'get',
-    params: queryParams,
+    params: queryParams
   });
 }
 
@@ -32,8 +32,8 @@ export function listPageDictTypes(
  */
 export function getDictFormData(id: number): AxiosPromise<DictFormTypeData> {
   return request({
-    url: '/youlai-admin/api/v1/dict-types/' + id + '/form_data',
-    method: 'get',
+    url: '/youlai-system/api/v1/dict-types/' + id + '/form_data',
+    method: 'get'
   });
 }
 
@@ -44,9 +44,9 @@ export function getDictFormData(id: number): AxiosPromise<DictFormTypeData> {
  */
 export function addDictType(data: DictFormTypeData) {
   return request({
-    url: '/youlai-admin/api/v1/dict-types',
+    url: '/youlai-system/api/v1/dict-types',
     method: 'post',
-    data: data,
+    data: data
   });
 }
 
@@ -58,9 +58,9 @@ export function addDictType(data: DictFormTypeData) {
  */
 export function updateDictType(id: number, data: DictFormTypeData) {
   return request({
-    url: '/youlai-admin/api/v1/dict-types/' + id,
+    url: '/youlai-system/api/v1/dict-types/' + id,
     method: 'put',
-    data: data,
+    data: data
   });
 }
 
@@ -71,8 +71,8 @@ export function updateDictType(id: number, data: DictFormTypeData) {
  */
 export function deleteDictTypes(ids: string) {
   return request({
-    url: '/youlai-admin/api/v1/dict-types/' + ids,
-    method: 'delete',
+    url: '/youlai-system/api/v1/dict-types/' + ids,
+    method: 'delete'
   });
 }
 
@@ -85,9 +85,9 @@ export function listPageDictItems(
   queryParams: DictItemQueryParam
 ): AxiosPromise<DictItemPageResult> {
   return request({
-    url: '/youlai-admin/api/v1/dict-items',
+    url: '/youlai-system/api/v1/dict-items',
     method: 'get',
-    params: queryParams,
+    params: queryParams
   });
 }
 
@@ -100,9 +100,9 @@ export function getDictItemsByTypeCode(
   typeCode: string
 ): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-admin/api/v1/dict-items/select_list',
+    url: '/youlai-system/api/v1/dict-items/select_list',
     method: 'get',
-    params: { typeCode: typeCode },
+    params: { typeCode: typeCode }
   });
 }
 
@@ -113,8 +113,8 @@ export function getDictItemsByTypeCode(
  */
 export function getDictItemData(id: number): AxiosPromise<DictItemFormData> {
   return request({
-    url: '/youlai-admin/api/v1/dict-items/' + id + '/form_data',
-    method: 'get',
+    url: '/youlai-system/api/v1/dict-items/' + id + '/form_data',
+    method: 'get'
   });
 }
 
@@ -125,9 +125,9 @@ export function getDictItemData(id: number): AxiosPromise<DictItemFormData> {
  */
 export function addDictItem(data: DictItemFormData) {
   return request({
-    url: '/youlai-admin/api/v1/dict-items',
+    url: '/youlai-system/api/v1/dict-items',
     method: 'post',
-    data: data,
+    data: data
   });
 }
 
@@ -139,9 +139,9 @@ export function addDictItem(data: DictItemFormData) {
  */
 export function updateDictItem(id: number, data: DictItemFormData) {
   return request({
-    url: '/youlai-admin/api/v1/dict-items/' + id,
+    url: '/youlai-system/api/v1/dict-items/' + id,
     method: 'put',
-    data: data,
+    data: data
   });
 }
 
@@ -152,7 +152,7 @@ export function updateDictItem(id: number, data: DictItemFormData) {
  */
 export function deleteDictItems(ids: string) {
   return request({
-    url: '/youlai-admin/api/v1/dict-items/' + ids,
-    method: 'delete',
+    url: '/youlai-system/api/v1/dict-items/' + ids,
+    method: 'delete'
   });
 }

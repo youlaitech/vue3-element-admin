@@ -140,7 +140,7 @@ import useStore from '@/store';
 // API依赖
 import { getCaptcha } from '@/api/login';
 import { useRoute } from 'vue-router';
-import { LoginFormData } from '@/types/api/system/login';
+import { LoginFormData } from '@/types/api/login';
 
 const { user } = useStore();
 const route = useRoute();
@@ -207,6 +207,9 @@ function showPwd() {
   });
 }
 
+/**
+ *  login
+ */
 function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
     if (valid) {
@@ -219,6 +222,8 @@ function handleLogin() {
         })
         .catch(() => {
           state.loading = false;
+
+          // 生成验证码
           handleCaptchaGenerate();
         });
     } else {

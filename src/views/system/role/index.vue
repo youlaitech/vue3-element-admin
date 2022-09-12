@@ -14,17 +14,13 @@ import {
   deleteRoles,
   getRoleResources,
   updateRoleResource
-} from '@/api/system/role';
-import { listResources } from '@/api/system/menu';
+} from '@/api/role';
+import { listResources } from '@/api/menu';
 
 import { ElForm, ElMessage, ElMessageBox, ElTree } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
-import {
-  RoleFormData,
-  RoleItem,
-  RoleQueryParam
-} from '@/types/api/system/role';
-import { Resource } from '@/types/api/system/menu';
+import { RoleFormData, RoleItem, RoleQueryParam } from '@/types/api/role';
+import { Resource } from '@/types/api/menu';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
 const emit = defineEmits(['roleClick']);

@@ -16,16 +16,12 @@ import {
   addDept,
   listDeptOptions,
   listDepartments
-} from '@/api/system/dept';
+} from '@/api/dept';
 
 // 组件依赖
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-import {
-  DeptFormData,
-  DeptItem,
-  DeptQueryParam
-} from '@/types/api/system/dept';
+import { DeptFormData, DeptItem, DeptQueryParam } from '@/types/api/dept';
 import { Dialog, Option } from '@/types/common';
 
 // DOM元素的引用声明定义
