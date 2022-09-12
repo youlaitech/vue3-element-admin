@@ -21,14 +21,14 @@ import i18n from '@/lang/index';
 import '@/styles/index.scss';
 
 // 根据字典编码获取字典列表全局方法
-import { getDictItemsByTypeCode } from '@/api/system/dict';
+import { getDictItemsByTypeCode } from '@/api/dict';
 
 const app = createApp(App);
 
 // 自定义指令
 import * as directive from '@/directive';
 
-Object.keys(directive).forEach((key) => {
+Object.keys(directive).forEach(key => {
   app.directive(key, (directive as { [key: string]: Directive })[key]);
 });
 

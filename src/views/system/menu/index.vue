@@ -36,9 +36,9 @@ import PermTable from './components/Perm.vue';
 
 import { reactive, toRefs } from 'vue';
 import { WarningFilled } from '@element-plus/icons-vue';
-import { MenuItem } from '@/types/api/system/menu';
+import { MenuItem } from '@/types/api/menu';
 const state = reactive({
-  menu: {} as MenuItem,
+  menu: {} as MenuItem
 });
 
 const { menu } = toRefs(state);

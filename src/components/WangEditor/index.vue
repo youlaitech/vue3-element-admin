@@ -24,7 +24,7 @@ import { onBeforeUnmount, shallowRef, reactive, toRefs } from 'vue';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
 
 // API 引用
-import { uploadFile } from '@/api/system/file';
+import { uploadFile } from '@/api/file';
 
 const props = defineProps({
   modelValue: {

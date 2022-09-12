@@ -233,11 +233,7 @@ import { ElForm, ElMessage, ElMessageBox, ElPopover } from 'element-plus';
 
 import { Dialog, Option } from '@/types/common';
 
-import {
-  MenuFormData,
-  MenuItem,
-  MenuQueryParam
-} from '@/types/api/system/menu';
+import { MenuFormData, MenuItem, MenuQueryParam } from '@/types/api/menu';
 // API 依赖
 import {
   listMenus,
@@ -246,7 +242,7 @@ import {
   addMenu,
   deleteMenus,
   updateMenu
-} from '@/api/system/menu';
+} from '@/api/menu';
 
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';

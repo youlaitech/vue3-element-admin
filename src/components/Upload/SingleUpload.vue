@@ -36,7 +36,7 @@ import {
   UploadRawFile,
   UploadRequestOptions
 } from 'element-plus';
-import { uploadFile, deleteFile } from '@/api/system/file';
+import { uploadFile, deleteFile } from '@/api/file';
 
 const emit = defineEmits(['update:modelValue']);
 
