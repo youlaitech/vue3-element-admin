@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 
-const SESSION_ID_KEY = 'SCG_SESSION_ID';
+const SESSION_ID_KEY = 'GATEWAY_SESSION_ID';
 
 export const hasLogin = () => {
   const sessionId = Cookies.get(SESSION_ID_KEY);
