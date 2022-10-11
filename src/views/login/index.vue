@@ -97,14 +97,6 @@
           >
           <span> {{ $t('login.password') }}: 123456</span>
         </div>
-
-        <el-button
-          class="thirdparty-button"
-          type="primary"
-          @click="showDialog = true"
-        >
-          {{ $t('login.thirdPartyLogin') }}
-        </el-button>
       </div>
     </el-form>
 
@@ -112,15 +104,6 @@
       <p>{{ $t('login.copyright') }}</p>
       <p>{{ $t('login.icp') }}</p>
     </div>
-
-    <el-dialog :title="$t('login.thirdPartyLogin')" v-model="showDialog">
-      Can not be simulated on local, so please combine you own business
-      simulation! ! !
-      <br />
-      <br />
-      <br />
-      <SocialSignin />
-    </el-dialog>
   </div>
 </template>
 
@@ -132,7 +115,6 @@ import { ElForm, ElInput } from 'element-plus';
 import router from '@/router';
 import LangSelect from '@/components/LangSelect/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
-import SocialSignin from './components/SocialSignin.vue';
 
 // 状态管理依赖
 import useStore from '@/store';
