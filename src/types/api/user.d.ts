@@ -1,7 +1,24 @@
 import { PageQueryParam, PageResult } from './base';
 
 /**
- * 登录用户类型声明
+ * 登录表单
+ */
+export interface LoginFormData {
+  username: string;
+  password: string;
+  grant_type: string;
+}
+
+/**
+ * 登录响应
+ */
+export interface LoginResponseData {
+  access_token: string;
+  token_type: string;
+}
+
+/**
+ * 登录用户信息
  */
 export interface UserInfo {
   nickname: string;
@@ -11,7 +28,7 @@ export interface UserInfo {
 }
 
 /**
- * 用户查询参数类型声明
+ * 用户查询参数
  */
 export interface UserQueryParam extends PageQueryParam {
   keywords: string;

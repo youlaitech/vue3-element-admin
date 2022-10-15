@@ -4,8 +4,33 @@ import {
   UserFormData,
   UserInfo,
   UserPageResult,
-  UserQueryParam
+  UserQueryParam,
+  LoginFormData
 } from '@/types/api/user';
+
+/**
+ * 登录
+ */
+export function login(data: LoginFormData): AxiosPromise {
+  return request({
+    url: '/youlai-auth/oauth2/token',
+    method: 'post',
+    params: data,
+    headers: {
+      Authorization: 'Basic dnVlMy1lbGVtZW50LWFkbWluOnNlY3JldA==' // 客户端信息Base64明文：vue3-element-admin:secret
+    }
+  });
+}
+
+/**
+ * 注销
+ */
+export function logout() {
+  return request({
+    url: '/youlai-auth/oauth/logout',
+    method: 'delete'
+  });
+}
 
 /**
  * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）

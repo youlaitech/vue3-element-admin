@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia';
-import { LoginFormData } from '@/types/api/login';
+import { LoginFormData } from '@/types/api/user';
 import { UserState } from '@/types/store/user';
 
 import { localStorage } from '@/utils/storage';
-import { login, logout } from '@/api/login';
-import { getUserInfo } from '@/api/user';
+import { getUserInfo, login, logout } from '@/api/user';
 import { resetRouter } from '@/router';
 
 const useUserStore = defineStore({
@@ -21,19 +20,18 @@ const useUserStore = defineStore({
       this.$reset();
     },
     /**
-     * 登录
+     * 登录 login
      */
     login(loginData: LoginFormData) {
-      const { username, password, code, uuid } = loginData;
+      const { username, password } = loginData;
       return new Promise((resolve, reject) => {
         login({
+          grant_type: 'password',
           username: username.trim(),
-          password: password,
-          grant_type: 'captcha',
-          code: code,
-          uuid: uuid
+          password: password
         })
           .then(response => {
+            console.log('response.data', response.data);
             const { access_token, token_type } = response.data;
             const accessToken = token_type + ' ' + access_token;
             localStorage.set('token', accessToken);
