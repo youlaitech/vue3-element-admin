@@ -58,28 +58,6 @@
         </el-form-item>
       </el-tooltip>
 
-      <!-- 验证码 -->
-      <el-form-item prop="code">
-        <span class="svg-container">
-          <svg-icon icon-class="valid_code" />
-        </span>
-        <el-input
-          v-model="loginForm.code"
-          auto-complete="off"
-          :placeholder="$t('login.code')"
-          style="width: 65%"
-          @keyup.enter="handleLogin"
-        />
-
-        <div class="captcha">
-          <img
-            :src="captchaBase64"
-            @click="handleCaptchaGenerate"
-            height="38px"
-          />
-        </div>
-      </el-form-item>
-
       <el-button
         size="default"
         :loading="loading"
@@ -120,9 +98,8 @@ import SvgIcon from '@/components/SvgIcon/index.vue';
 import useStore from '@/store';
 
 // API依赖
-import { getCaptcha } from '@/api/login';
 import { useRoute } from 'vue-router';
-import { LoginFormData } from '@/types/api/login';
+import { LoginFormData } from '@/types/api/user';
 
 const { user } = useStore();
 const route = useRoute();
@@ -134,9 +111,7 @@ const state = reactive({
   redirect: '',
   loginForm: {
     username: 'admin',
-    password: '123456',
-    code: '',
-    uuid: ''
+    password: '123456'
   } as LoginFormData,
   loginRules: {
     username: [{ required: true, trigger: 'blur' }],
@@ -144,7 +119,6 @@ const state = reactive({
   },
   loading: false,
   passwordType: 'password',
-  captchaBase64: '',
   // 大写提示禁用
   capslockTooltipDisabled: true,
   otherQuery: {},
@@ -166,10 +140,8 @@ const {
   loginRules,
   loading,
   passwordType,
-  captchaBase64,
   capslockTooltipDisabled,
-  showCopyright,
-  showDialog
+  showCopyright
 } = toRefs(state);
 
 function checkCapslock(e: any) {
@@ -179,10 +151,10 @@ function checkCapslock(e: any) {
 }
 
 function showPwd() {
-  if (state.passwordType === 'password') {
-    state.passwordType = '';
+  if (passwordType.value === 'password') {
+    passwordType.value = '';
   } else {
-    state.passwordType = 'password';
+    passwordType.value = 'password';
   }
   nextTick(() => {
     passwordRef.value.focus();
@@ -190,7 +162,7 @@ function showPwd() {
 }
 
 /**
- *  login
+ *  登录处理
  */
 function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
@@ -204,24 +176,10 @@ function handleLogin() {
         })
         .catch(() => {
           state.loading = false;
-
-          // 生成验证码
-          handleCaptchaGenerate();
         });
     } else {
       return false;
     }
-  });
-}
-
-/**
- * 获取验证码
- */
-function handleCaptchaGenerate() {
-  getCaptcha().then(({ data }) => {
-    const { img, uuid } = data;
-    state.captchaBase64 = img;
-    state.loginForm.uuid = uuid;
   });
 }
 
@@ -249,7 +207,6 @@ function getOtherQuery(query: any) {
 }
 
 onMounted(() => {
-  handleCaptchaGenerate();
   window.onresize = () => {
     if (state.clientHeight > document.documentElement.clientHeight) {
       state.showCopyright = false;
@@ -261,9 +218,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
 $bg: #283443;
 $light_gray: #fff;
 $cursor: #fff;
