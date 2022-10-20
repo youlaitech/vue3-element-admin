@@ -12,7 +12,7 @@ export function listDepartments(
   queryParams?: DeptQueryParam
 ): AxiosPromise<DeptItem[]> {
   return request({
-    url: '/youlai-system/api/v1/depts',
+    url: '/youlai-system/api/v1/dept',
     method: 'get',
     params: queryParams
   });
@@ -23,7 +23,7 @@ export function listDepartments(
  */
 export function listDeptOptions(): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-system/api/v1/depts/options',
+    url: '/youlai-system/api/v1/dept/options',
     method: 'get'
   });
 }
@@ -33,9 +33,9 @@ export function listDeptOptions(): AxiosPromise<Option[]> {
  *
  * @param id
  */
-export function getDeptDetail(id: string): AxiosPromise<DeptFormData> {
+export function getDeptForm(id: string): AxiosPromise<DeptFormData> {
   return request({
-    url: '/youlai-system/api/v1/depts/' + id,
+    url: '/youlai-system/api/v1/dept/' + id + '/form',
     method: 'get'
   });
 }
@@ -47,7 +47,7 @@ export function getDeptDetail(id: string): AxiosPromise<DeptFormData> {
  */
 export function addDept(data: DeptFormData) {
   return request({
-    url: '/youlai-system/api/v1/depts',
+    url: '/youlai-system/api/v1/dept',
     method: 'post',
     data: data
   });
@@ -61,7 +61,7 @@ export function addDept(data: DeptFormData) {
  */
 export function updateDept(id: string, data: DeptFormData) {
   return request({
-    url: '/youlai-system/api/v1/depts/' + id,
+    url: '/youlai-system/api/v1/dept/' + id,
     method: 'put',
     data: data
   });
@@ -74,7 +74,7 @@ export function updateDept(id: string, data: DeptFormData) {
  */
 export function deleteDept(ids: string) {
   return request({
-    url: '/youlai-system/api/v1/depts/' + ids,
+    url: '/youlai-system/api/v1/dept/' + ids,
     method: 'delete'
   });
 }

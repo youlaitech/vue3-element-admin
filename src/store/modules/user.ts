@@ -74,7 +74,10 @@ const useUserStore = defineStore({
      *  注销
      */
     logout() {
-      return new Promise((resolve, reject) => {
+      localStorage.remove('token');
+      this.RESET_STATE();
+
+      /*       return new Promise((resolve, reject) => {
         logout()
           .then(() => {
             localStorage.remove('token');
@@ -85,7 +88,7 @@ const useUserStore = defineStore({
           .catch(error => {
             reject(error);
           });
-      });
+      }); */
     },
 
     /**

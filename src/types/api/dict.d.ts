@@ -29,7 +29,7 @@ export type DictPageResult = PageResult<Dict[]>;
 /**
  * 字典表单类型声明
  */
-export interface DictFormTypeData {
+export interface DictTypeFormData {
   id: number | undefined;
   name: string;
   code: string;

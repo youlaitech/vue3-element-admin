@@ -367,7 +367,7 @@ async function loadDeptOptions() {
  * 加载性别字典
  */
 function loadGenderOptions() {
-  proxy.$getDictItemsByTypeCode('gender').then((response: any) => {
+  proxy.$listDictItemsByTypeCode('gender').then((response: any) => {
     state.genderOptions = response?.data;
   });
 }
@@ -607,6 +607,7 @@ onMounted(() => {
               label="用户编号"
               align="center"
               prop="id"
+              width="100"
             />
             <el-table-column
               key="username"

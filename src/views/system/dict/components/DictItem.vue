@@ -15,9 +15,9 @@ import {
 
 import { Dialog } from '@/types/common';
 import {
-  listPageDictItems,
+  listDictItemPages,
   getDictItemData,
-  addDictItem,
+  saveDictItem,
   updateDictItem,
   deleteDictItems
 } from '@/api/dict';
@@ -90,7 +90,7 @@ const {
 function handleQuery() {
   if (state.queryParams.typeCode) {
     state.loading = true;
-    listPageDictItems(state.queryParams).then(({ data }) => {
+    listDictItemPages(state.queryParams).then(({ data }) => {
       state.dictItemList = data.list;
       state.total = data.total;
       state.loading = false;
@@ -146,7 +146,7 @@ function submitForm() {
           handleQuery();
         });
       } else {
-        addDictItem(state.formData).then(() => {
+        saveDictItem(state.formData).then(() => {
           ElMessage.success('新增成功');
           cancel();
           handleQuery();
