@@ -332,8 +332,20 @@ onMounted(() => {
       border
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="角色名称" prop="name" />
-      <el-table-column label="角色编码" prop="code" />
+      <el-table-column label="角色名称" prop="name" min-width="300" />
+      <el-table-column label="角色编码" prop="code" width="200" />
+
+      <el-table-column label="状态" align="center" width="150">
+        <template #default="scope">
+          <el-tag v-if="scope.row.status === 1" type="success">正常</el-tag>
+          <el-tag v-else type="info">禁用</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="排序" align="center" width="100" prop="sort" />
+      <el-table-column prop="createTime" label="创建时间" width="250" />
+      <el-table-column prop="updateTime" label="修改时间" width="250" />
+
       <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
           <el-tooltip content="分配资源" effect="light">

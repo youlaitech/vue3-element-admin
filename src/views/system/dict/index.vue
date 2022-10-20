@@ -7,7 +7,7 @@ import { reactive, toRefs } from 'vue';
 
 const state = reactive({
   typeCode: '',
-  typeName: '',
+  typeName: ''
 });
 
 const { typeCode, typeName } = toRefs(state);
@@ -26,7 +26,7 @@ const handleDictTypeClick = (row: any) => {
 <template>
   <div class="app-container">
     <el-row :gutter="10">
-      <el-col :span="12" :xs="24">
+      <el-col :span="8" :xs="24">
         <el-card class="box-card">
           <template #header>
             <svg-icon icon-class="dict" />
@@ -36,7 +36,7 @@ const handleDictTypeClick = (row: any) => {
         </el-card>
       </el-col>
 
-      <el-col :span="12" :xs="24">
+      <el-col :span="16" :xs="24">
         <el-card class="box-card">
           <template #header>
             <svg-icon icon-class="dict_item" />

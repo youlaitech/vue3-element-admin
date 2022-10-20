@@ -2,7 +2,7 @@
  * 部门查询参数类型声明
  */
 export interface DeptQueryParam {
-  name: string | undefined;
+  keywords: string | undefined;
   status: number | undefined;
 }
 

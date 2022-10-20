@@ -10,7 +10,7 @@ import { onMounted, reactive, ref, toRefs } from 'vue';
 
 // API依赖
 import {
-  getDeptDetail,
+  getDeptForm,
   deleteDept,
   updateDept,
   addDept,
@@ -131,7 +131,7 @@ async function handleUpdate(row: any) {
     title: '修改部门',
     visible: true
   };
-  getDeptDetail(deptId).then((response: any) => {
+  getDeptForm(deptId).then((response: any) => {
     state.formData = response.data;
   });
 }
@@ -214,9 +214,9 @@ onMounted(() => {
         </el-button>
       </el-form-item>
 
-      <el-form-item prop="name">
+      <el-form-item prop="keywords">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.keywords"
           placeholder="请输入部门名称"
           @keyup.enter="handleQuery"
         />
@@ -254,15 +254,18 @@ onMounted(() => {
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column prop="name" label="部门名称" />
-      <el-table-column prop="status" label="状态" width="100">
+      <el-table-column prop="name" label="部门名称" min-width="300" />
+      <el-table-column prop="status" label="状态" width="200">
         <template #default="scope">
           <el-tag v-if="scope.row.status == 1" type="success">正常</el-tag>
           <el-tag v-else type="info">禁用</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column prop="sort" label="显示排序" width="200" />
+      <el-table-column prop="sort" label="排序" width="200" />
+
+      <el-table-column prop="createTime" label="创建时间" width="250" />
+      <el-table-column prop="updateTime" label="修改时间" width="250" />
 
       <el-table-column label="操作" align="center" width="150">
         <template #default="scope">

@@ -21,7 +21,7 @@ import i18n from '@/lang/index';
 import '@/styles/index.scss';
 
 // 根据字典编码获取字典列表全局方法
-import { getDictItemsByTypeCode } from '@/api/dict';
+import { listDictItemsByTypeCode } from '@/api/dict';
 
 const app = createApp(App);
 
@@ -33,7 +33,7 @@ Object.keys(directive).forEach(key => {
 });
 
 // 全局方法
-app.config.globalProperties.$getDictItemsByTypeCode = getDictItemsByTypeCode;
+app.config.globalProperties.$listDictItemsByTypeCode = listDictItemsByTypeCode;
 
 // 注册全局组件
 app
