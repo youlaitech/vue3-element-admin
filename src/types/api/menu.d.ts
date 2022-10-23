@@ -62,9 +62,14 @@ export interface MenuFormData {
   redirect?: string;
 
   /**
-   * 菜单类型(1:菜单；2：目录；3：外链)
+   * 菜单类型
    */
   type: string;
+
+  /**
+   * 权限标识
+   */
+  perm?: string;
 }
 
 /**
