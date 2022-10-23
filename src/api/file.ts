@@ -9,7 +9,7 @@ export function uploadFile(file: File) {
   const formData = new FormData();
   formData.append('file', file);
   return request({
-    url: '/youlai-system/api/v1/files',
+    url: '/api/v1/files',
     method: 'post',
     data: formData,
     headers: {
@@ -25,7 +25,7 @@ export function uploadFile(file: File) {
  */
 export function deleteFile(path?: string) {
   return request({
-    url: '/youlai-system/api/v1/files',
+    url: '/api/v1/files',
     method: 'delete',
     params: { path: path }
   });

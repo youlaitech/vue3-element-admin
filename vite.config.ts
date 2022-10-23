@@ -25,7 +25,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       open: true, // 运行自动打开浏览器
       proxy: {
         [env.VITE_APP_BASE_API]: {
-          target: 'http://localhost:9999',
+          target: 'http://localhost:8989',
           changeOrigin: true,
           rewrite: path =>
             path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')

@@ -18,7 +18,7 @@ export function listRolePages(
   queryParams?: RoleQueryParam
 ): AxiosPromise<RolePageResult> {
   return request({
-    url: '/youlai-system/api/v1/roles/pages',
+    url: '/api/v1/roles/pages',
     method: 'get',
     params: queryParams
   });
@@ -33,7 +33,7 @@ export function listRoleOptions(
   queryParams?: RoleQueryParam
 ): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-system/api/v1/roles/options',
+    url: '/api/v1/roles/options',
     method: 'get',
     params: queryParams
   });
@@ -46,7 +46,7 @@ export function listRoleOptions(
  */
 export function getRoleResources(roleId: string): AxiosPromise<RoleResource> {
   return request({
-    url: '/youlai-system/api/v1/roles/' + roleId + '/resources',
+    url: '/api/v1/roles/' + roleId + '/resources',
     method: 'get'
   });
 }
@@ -61,7 +61,7 @@ export function updateRoleResource(
   data: RoleResource
 ): AxiosPromise<any> {
   return request({
-    url: '/youlai-system/api/v1/roles/' + roleId + '/resources',
+    url: '/api/v1/roles/' + roleId + '/resources',
     method: 'put',
     data: data
   });
@@ -74,7 +74,7 @@ export function updateRoleResource(
  */
 export function getRoleFormDetail(id: number): AxiosPromise<RoleFormData> {
   return request({
-    url: '/youlai-system/api/v1/roles/' + id,
+    url: '/api/v1/roles/' + id,
     method: 'get'
   });
 }
@@ -86,7 +86,7 @@ export function getRoleFormDetail(id: number): AxiosPromise<RoleFormData> {
  */
 export function addRole(data: RoleFormData) {
   return request({
-    url: '/youlai-system/api/v1/roles',
+    url: '/api/v1/roles',
     method: 'post',
     data: data
   });
@@ -100,7 +100,7 @@ export function addRole(data: RoleFormData) {
  */
 export function updateRole(id: number, data: RoleFormData) {
   return request({
-    url: '/youlai-system/api/v1/roles/' + id,
+    url: '/api/v1/roles/' + id,
     method: 'put',
     data: data
   });
@@ -113,7 +113,7 @@ export function updateRole(id: number, data: RoleFormData) {
  */
 export function deleteRoles(ids: string) {
   return request({
-    url: '/youlai-system/api/v1/roles/' + ids,
+    url: '/api/v1/roles/' + ids,
     method: 'delete'
   });
 }
