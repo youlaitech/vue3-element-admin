@@ -18,7 +18,7 @@ import {
 // 导入API
 import {
   listUserPages,
-  getUserDetail,
+  getUserFormData,
   deleteUsers,
   addUser,
   updateUser,
@@ -292,7 +292,7 @@ async function handleUpdate(row: { [key: string]: any }) {
   const userId = row.id || state.ids;
   await loadDeptOptions();
   await loadRoleOptions();
-  getUserDetail(userId).then(({ data }) => {
+  getUserFormData(userId).then(({ data }) => {
     formData.value = data;
   });
 }

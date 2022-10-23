@@ -26,7 +26,7 @@ const handleDictTypeClick = (row: any) => {
 <template>
   <div class="app-container">
     <el-row :gutter="10">
-      <el-col :span="8" :xs="24">
+      <el-col :span="10" :xs="24">
         <el-card class="box-card">
           <template #header>
             <svg-icon icon-class="dict" />
@@ -36,7 +36,7 @@ const handleDictTypeClick = (row: any) => {
         </el-card>
       </el-col>
 
-      <el-col :span="16" :xs="24">
+      <el-col :span="14" :xs="24">
         <el-card class="box-card">
           <template #header>
             <svg-icon icon-class="dict_item" />
@@ -44,7 +44,7 @@ const handleDictTypeClick = (row: any) => {
             <el-tag type="success" v-if="typeCode" size="small">{{
               typeName
             }}</el-tag>
-            <el-tag type="warning" v-else size="small">未选择字典</el-tag>
+            <el-tag type="danger" v-else size="small">未选择字典类型</el-tag>
           </template>
           <!-- 字典项组件 -->
           <dict-item :typeName="typeName" :typeCode="typeCode" />

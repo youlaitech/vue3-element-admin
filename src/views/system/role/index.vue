@@ -191,7 +191,7 @@ const handleResourceCheckChange = (
 };
 
 /**
- * 分配资源(菜单+权限)弹窗
+ * 资源分配
  */
 function openRoleResourceDialog(row: RoleItem) {
   resourceDialogVisible.value = true;
@@ -434,7 +434,7 @@ onMounted(() => {
 
     <!--分配资源弹窗-->
     <el-dialog
-      :title="'角色【' + checkedRole.name + '】资源分配'"
+      :title="'【' + checkedRole.name + '】资源分配'"
       v-model="resourceDialogVisible"
       width="800px"
     >

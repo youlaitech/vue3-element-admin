@@ -13,7 +13,7 @@ import { AxiosPromise } from 'axios';
  */
 export function listRoutes() {
   return request({
-    url: '/youlai-system/api/v1/menus/routes',
+    url: '/api/v1/menus/routes',
     method: 'get'
   });
 }
@@ -27,7 +27,7 @@ export function listMenus(
   queryParams: MenuQueryParam
 ): AxiosPromise<MenuItem[]> {
   return request({
-    url: '/youlai-system/api/v1/menus',
+    url: '/api/v1/menus',
     method: 'get',
     params: queryParams
   });
@@ -38,7 +38,7 @@ export function listMenus(
  */
 export function listMenuOptions(): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-system/api/v1/menus/options',
+    url: '/api/v1/menus/options',
     method: 'get'
   });
 }
@@ -48,7 +48,7 @@ export function listMenuOptions(): AxiosPromise<Option[]> {
  */
 export function listResources(): AxiosPromise<Resource[]> {
   return request({
-    url: '/youlai-system/api/v1/menus/resources',
+    url: '/api/v1/menus/resources',
     method: 'get'
   });
 }
@@ -59,7 +59,7 @@ export function listResources(): AxiosPromise<Resource[]> {
  */
 export function getMenuDetail(id: string): AxiosPromise<MenuFormData> {
   return request({
-    url: '/youlai-system/api/v1/menus/' + id,
+    url: '/api/v1/menus/' + id,
     method: 'get'
   });
 }
@@ -71,7 +71,7 @@ export function getMenuDetail(id: string): AxiosPromise<MenuFormData> {
  */
 export function addMenu(data: MenuFormData) {
   return request({
-    url: '/youlai-system/api/v1/menus',
+    url: '/api/v1/menus',
     method: 'post',
     data: data
   });
@@ -85,7 +85,7 @@ export function addMenu(data: MenuFormData) {
  */
 export function updateMenu(id: string, data: MenuFormData) {
   return request({
-    url: '/youlai-system/api/v1/menus/' + id,
+    url: '/api/v1/menus/' + id,
     method: 'put',
     data: data
   });
@@ -98,7 +98,7 @@ export function updateMenu(id: string, data: MenuFormData) {
  */
 export function deleteMenus(ids: string) {
   return request({
-    url: '/youlai-system/api/v1/menus/' + ids,
+    url: '/api/v1/menus/' + ids,
     method: 'delete'
   });
 }

@@ -3,7 +3,9 @@ import { LoginFormData } from '@/types/api/user';
 import { UserState } from '@/types/store/user';
 
 import { localStorage } from '@/utils/storage';
-import { getUserInfo, login, logout } from '@/api/user';
+import { login, logout } from '@/api/auth';
+import { getUserInfo } from '@/api/user';
+
 import { resetRouter } from '@/router';
 
 const useUserStore = defineStore({
@@ -32,11 +34,10 @@ const useUserStore = defineStore({
         })
           .then(response => {
             console.log('response.data', response.data);
-            const { access_token, token_type } = response.data;
-            const accessToken = token_type + ' ' + access_token;
+            const accessToken = response.data;
             localStorage.set('token', accessToken);
             this.token = accessToken;
-            resolve(access_token);
+            resolve(accessToken);
           })
           .catch(error => {
             reject(error);
@@ -74,10 +75,7 @@ const useUserStore = defineStore({
      *  注销
      */
     logout() {
-      localStorage.remove('token');
-      this.RESET_STATE();
-
-      /*       return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         logout()
           .then(() => {
             localStorage.remove('token');
@@ -88,7 +86,7 @@ const useUserStore = defineStore({
           .catch(error => {
             reject(error);
           });
-      }); */
+      });
     },
 
     /**
