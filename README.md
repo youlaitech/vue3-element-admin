@@ -56,6 +56,7 @@
 |  | Gitee | Github |
 | --- | --- | --- |
 | vue3-element-admin | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |
+| 后端工程(非必要) | [youlai_boot](https://gitee.com/youlaiorg/youlai-boot) |  |
 
 ## 启动部署
 
@@ -112,9 +113,9 @@
   }
 
   ```
-## 本地接口环境搭建
+## 本地接口
 
-> 如果你是懂一些Java后端SpringBoot的开发人员，可以轻松在本地搭建接口环境.
+> 如果你了解一些Java后端SpringBoot，可以轻松在本地搭建接口环境.
 
 1. 访问后端项目仓库地址：https://gitee.com/youlaiorg/youlai-boot.git
 
