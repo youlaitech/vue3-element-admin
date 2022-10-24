@@ -25,7 +25,10 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       open: true, // 运行自动打开浏览器
       proxy: {
         [env.VITE_APP_BASE_API]: {
+          // 线上API地址
           target: 'http://sapi.youlai.tech',
+          // 本地API地址
+          // target: 'http://localhost:8989',
           changeOrigin: true,
           rewrite: path =>
             path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
