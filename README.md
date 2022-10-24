@@ -30,7 +30,6 @@
 - TypeScript 全面支持，包括组件和 API 调用层面；
 - 主流 Vue3 生态和前端技术栈，常用组件极简封装；
 - 从 0 到 1 的项目文档支持；
-- 全栈技术支持: 微服务接口、Vue3 管理前端、uni-app 移动端和 K8S 持续集成交付；
 
 ## 技术栈
 
@@ -90,6 +89,10 @@
 
   生成的静态文件位于项目根目录 dist 文件夹下
 
+- 上传文件
+
+  创建 `/usr/local/nginx/html/vue3` 目录，将打包生成 dist 的所有文件拷贝至此工作目录下
+
 - nginx.cofig 配置
 
   ```
@@ -98,23 +101,31 @@
       server_name  localhost;
 
       location / {
-          root /usr/share/nginx/html/web;
+          root /usr/local/nginx/html/vue3;
           index index.html index.htm;
       }
 
       # 代理转发请求至网关，prod-api标识解决跨域问题
       location /prod-api/ {
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_pass http://api.youlai.tech/;
+          proxy_pass http://sapi.youlai.tech/;
       }
   }
 
   ```
+## 本地接口环境搭建
+
+> 如果你是懂一些Java后端SpringBoot的开发人员，可以轻松在本地搭建接口环境.
+
+1. 访问后端项目仓库地址：https://gitee.com/youlaiorg/youlai-boot.git
+
+2. 根据项目说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 的描述完成数据库的创建和后端工程的启动；
+3. 进入 [vite.config.ts](vite.config.ts) 文件修改代理地址 http://sapi.youlai.tech 为 http://localhost:8989 ，启动前端工程即可。
+
+
 
 ## 联系信息
 
-> 欢迎添加开发者微信，备注「有来」进群
+> 欢迎添加开发者微信，备注「有来」进群，备注「无回」参与开发
 
 | ![郝先瑞](https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg) | ![张川](https://s2.loli.net/2022/04/06/cQihGv9uPsTjXk1.jpg) |
 | --- | --- |
