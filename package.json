@@ -39,7 +39,7 @@
     "@types/path-browserify": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
-    "@vitejs/plugin-vue": "^1.10.2",
+    "@vitejs/plugin-vue": "^3.1.2",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -49,7 +49,7 @@
     "prettier": "^2.6.2",
     "sass": "^1.53.0",
     "typescript": "^4.7.4",
-    "vite": "^3.1.8",
+    "vite": "^3.2.0",
     "vite-plugin-svg-icons": "^2.0.1",
     "vue-tsc": "^0.35.0"
   },
