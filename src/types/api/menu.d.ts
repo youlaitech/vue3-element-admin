@@ -88,10 +88,6 @@ export interface Resource {
    * 子菜单
    */
   children: Resource[];
-  /**
-   * 权限集合
-   */
-  perms: Permission[];
 }
 
 /**
