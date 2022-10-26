@@ -1,6 +1,4 @@
 @import 'src/styles/variables.module';
-@import './mixin.scss';
-@import './transition.scss';
 @import 'src/styles/element-plus';
 @import './sidebar.scss';
 
@@ -66,3 +64,12 @@ div:focus {
 .app-container {
   padding: 20px;
 }
+
+.search{
+  padding:18px  0 0  10px;
+  margin-bottom: 10px;
+  box-shadow: var(--el-box-shadow-light);
+  border-radius: var(--el-card-border-radius);
+  border: 1px solid var(--el-card-border-color);
+}
+

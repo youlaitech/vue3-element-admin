@@ -78,7 +78,7 @@ export interface UserFormData {
 /**
  * 用户导入表单类型声明
  */
-export interface UserImportFormData {
+export interface UserImportData {
   deptId: number;
   roleIds: number[];
 }
