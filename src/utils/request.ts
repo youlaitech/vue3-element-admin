@@ -61,8 +61,8 @@ service.interceptors.response.use(
         message: msg || '系统出错',
         type: 'error'
       });
+      return Promise.reject(new Error(msg || 'Error'));
     }
-    return Promise.reject(new Error(msg || 'Error'));
   }
 );
 
