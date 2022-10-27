@@ -121,7 +121,7 @@
 1. 访问后端项目仓库地址：https://gitee.com/youlaiorg/youlai-boot.git
 
 2. 根据项目说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 的描述完成数据库的创建和后端工程的启动；
-3. 进入 [vite.config.ts](vite.config.ts) 文件修改代理线上接口地址地址 http://sapi.youlai.tech 为本地接口地址 http://localhost:8989 即可。
+3. 进入 [vite.config.ts](vite.config.ts) 文件修改代理线上接口地址 http://sapi.youlai.tech 为本地接口地址 http://localhost:8989 即可。
 
 
 

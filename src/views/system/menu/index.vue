@@ -1,120 +1,128 @@
 <template>
   <div class="app-container">
-    <!-- 搜索表单 -->
-    <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-      <el-form-item>
+    <div class="search">
+      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+        <el-form-item label="关键字" prop="keywords">
+          <el-input
+            v-model="queryParams.keywords"
+            placeholder="菜单名称"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" :icon="Search" @click="handleQuery"
+            >搜索</el-button
+          >
+          <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <!-- 数据表格 -->
+    <el-card>
+      <template #header>
         <el-button type="success" :icon="Plus" @click="handleAdd"
           >新增</el-button
         >
-      </el-form-item>
+      </template>
 
-      <el-form-item prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="菜单名称"
-          clearable
-          @keyup.enter="handleQuery"
+      <el-table
+        v-loading="loading"
+        :data="menuList"
+        highlight-current-row
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        @row-click="handleRowClick"
+        row-key="id"
+        border
+        default-expand-all
+      >
+        <el-table-column label="菜单名称">
+          <template #default="scope">
+            <svg-icon
+              :icon-class="
+                scope.row.type === 'BUTTON' ? 'button' : scope.row.icon
+              "
+            />
+            {{ scope.row.name }}
+          </template>
+        </el-table-column>
+
+        <el-table-column label="菜单类型" align="center" width="150">
+          <template #default="scope">
+            <el-tag v-if="scope.row.type === 'CATALOG'" type="warning"
+              >目录</el-tag
+            >
+            <el-tag v-if="scope.row.type === 'MENU'" type="success"
+              >菜单</el-tag
+            >
+            <el-tag v-if="scope.row.type === 'BUTTON'" type="danger"
+              >按钮</el-tag
+            >
+            <el-tag v-if="scope.row.type === 'EXTLINK'" type="info"
+              >外链</el-tag
+            >
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="权限标识"
+          align="center"
+          width="200"
+          prop="perm"
         />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery"
-          >搜索</el-button
+
+        <el-table-column label="状态" align="center" width="150">
+          <template #default="scope">
+            <el-tag v-if="scope.row.visible === 1" type="success">显示</el-tag>
+            <el-tag v-else type="info">隐藏</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="排序" align="center" width="100" prop="sort" />
+
+        <el-table-column
+          label="创建时间"
+          align="center"
+          width="200"
+          prop="createTime"
         >
-        <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-table-column>
 
-    <!-- 数据表格 -->
-    <el-table
-      v-loading="loading"
-      :data="menuList"
-      highlight-current-row
-      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-      @row-click="handleRowClick"
-      row-key="id"
-      border
-      default-expand-all
-    >
-      <el-table-column label="菜单名称">
-        <template #default="scope">
-          <svg-icon
-            :icon-class="
-              scope.row.type === 'BUTTON' ? 'button' : scope.row.icon
-            "
-          />
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
+        <el-table-column
+          label="修改时间"
+          align="center"
+          width="200"
+          prop="updateTime"
+        >
+        </el-table-column>
 
-      <el-table-column label="菜单类型" align="center" width="150">
-        <template #default="scope">
-          <el-tag v-if="scope.row.type === 'CATALOG'" type="warning"
-            >目录</el-tag
-          >
-          <el-tag v-if="scope.row.type === 'MENU'" type="success">菜单</el-tag>
-          <el-tag v-if="scope.row.type === 'BUTTON'" type="danger">按钮</el-tag>
-          <el-tag v-if="scope.row.type === 'EXTLINK'" type="info">外链</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="权限标识"
-        align="center"
-        width="200"
-        prop="perm"
-      />
-
-      <el-table-column label="状态" align="center" width="150">
-        <template #default="scope">
-          <el-tag v-if="scope.row.visible === 1" type="success">显示</el-tag>
-          <el-tag v-else type="info">隐藏</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="排序" align="center" width="100" prop="sort" />
-
-      <el-table-column
-        label="创建时间"
-        align="center"
-        width="200"
-        prop="createTime"
-      >
-      </el-table-column>
-
-      <el-table-column
-        label="修改时间"
-        align="center"
-        width="200"
-        prop="updateTime"
-      >
-      </el-table-column>
-
-      <el-table-column label="操作" align="center" width="200">
-        <template #default="scope">
-          <el-button
-            type="success"
-            :icon="Plus"
-            circle
-            plain
-            @click.stop="handleAdd(scope.row)"
-          />
-          <el-button
-            type="primary"
-            :icon="Edit"
-            circle
-            plain
-            @click.stop="handleUpdate(scope.row)"
-          />
-          <el-button
-            type="danger"
-            :icon="Delete"
-            circle
-            plain
-            @click.stop="handleDelete(scope.row)"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
-
+        <el-table-column label="操作" align="center" width="200">
+          <template #default="scope">
+            <el-button
+              type="success"
+              :icon="Plus"
+              circle
+              plain
+              @click.stop="handleAdd(scope.row)"
+            />
+            <el-button
+              type="primary"
+              :icon="Edit"
+              circle
+              plain
+              @click.stop="handleUpdate(scope.row)"
+            />
+            <el-button
+              type="danger"
+              :icon="Delete"
+              circle
+              plain
+              @click.stop="handleDelete(scope.row)"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
     <!-- dialog -->
     <el-dialog
       :title="dialog.title"
