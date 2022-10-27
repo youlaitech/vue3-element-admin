@@ -20,7 +20,7 @@
 
 ## 项目介绍
 
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本后台管理前端解决方案；使用前端主流技术栈 Vue3 + Vite2 + TypeScript + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等；基于此模板开发了有来商城管理系统，也是有来开源组织的另一项开源力作。
+[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本后台管理前端解决方案；使用前端主流技术栈 Vue3 + Vite3 + TypeScript + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等；基于此模板开发了有来商城管理系统，也是有来开源组织的另一项开源力作。
 
 ## 项目优势
 
@@ -37,7 +37,7 @@
 | --- | --- | --- |
 | Vue3 | 渐进式 JavaScript 框架 | https://v3.cn.vuejs.org/ |
 | TypeScript | JavaScript 的一个超集 | https://www.tslang.cn/ |
-| Vite2 | 前端开发与构建工具 | https://cn.vitejs.dev/ |
+| Vite | 前端开发与构建工具 | https://cn.vitejs.dev/ |
 | Element Plus | 基于 Vue 3，面向设计师和开发者的组件库 | https://element-plus.gitee.io/zh-CN/ |
 | Pinia | 新一代状态管理工具 | https://pinia.vuejs.org/ |
 | Vue Router | Vue.js 的官方路由 | https://router.vuejs.org/zh/ |
@@ -107,8 +107,9 @@
       }
 
       # 代理转发请求至网关，prod-api标识解决跨域问题
+      # vapi.youlai.tech 线上接口地址
       location /prod-api/ {
-          proxy_pass http://sapi.youlai.tech/;
+          proxy_pass http://vapi.youlai.tech/;
       }
   }
 
@@ -120,7 +121,7 @@
 1. 访问后端项目仓库地址：https://gitee.com/youlaiorg/youlai-boot.git
 
 2. 根据项目说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 的描述完成数据库的创建和后端工程的启动；
-3. 进入 [vite.config.ts](vite.config.ts) 文件修改代理地址 http://sapi.youlai.tech 为 http://localhost:8989 ，启动前端工程即可。
+3. 进入 [vite.config.ts](vite.config.ts) 文件修改代理线上接口地址地址 http://sapi.youlai.tech 为本地接口地址 http://localhost:8989 即可。
 
 
 
