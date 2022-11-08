@@ -1,6 +1,6 @@
 {
   "name": "vue3-element-admin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "dev": "vite serve --mode development",
     "build:prod": "vue-tsc --noEmit && vite build --mode production",
