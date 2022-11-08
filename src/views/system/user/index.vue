@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'user',
+  name: 'user'
 };
 </script>
 
@@ -11,7 +11,7 @@ import {
   watchEffect,
   onMounted,
   getCurrentInstance,
-  toRefs,
+  toRefs
 } from 'vue';
 
 // api
@@ -25,7 +25,7 @@ import {
   updateUserPassword,
   downloadTemplate,
   exportUser,
-  importUser,
+  importUser
 } from '@/api/user';
 import { listDeptOptions } from '@/api/dept';
 import { listRoleOptions } from '@/api/role';
@@ -35,7 +35,7 @@ import {
   ElForm,
   ElMessageBox,
   ElMessage,
-  UploadFile,
+  UploadFile
 } from 'element-plus';
 import {
   Search,
@@ -44,13 +44,13 @@ import {
   Delete,
   Download,
   Top,
-  UploadFilled,
+  UploadFilled
 } from '@element-plus/icons-vue';
 import {
   UserForm,
   UserImportData,
   UserQuery,
-  UserType,
+  UserType
 } from '@/api/user/types';
 
 const deptTreeRef = ref(ElTree); // 部门树
@@ -69,7 +69,7 @@ const state = reactive({
   total: 0,
   userList: [] as UserType[],
   dialog: {
-    visible: false,
+    visible: false
   } as DialogType,
   deptName: undefined,
   // 部门下拉项
@@ -79,16 +79,16 @@ const state = reactive({
   // 角色下拉项
   roleOptions: [] as OptionType[],
   formData: {
-    status: 1,
+    status: 1
   } as UserForm,
   queryParams: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 10
   } as UserQuery,
   rules: {
     username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
     nickname: [
-      { required: true, message: '用户昵称不能为空', trigger: 'blur' },
+      { required: true, message: '用户昵称不能为空', trigger: 'blur' }
     ],
     deptId: [{ required: true, message: '所属部门不能为空', trigger: 'blur' }],
     roleIds: [{ required: true, message: '用户角色不能为空', trigger: 'blur' }],
@@ -96,25 +96,25 @@ const state = reactive({
       {
         pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
         message: '请输入正确的邮箱地址',
-        trigger: 'blur',
-      },
+        trigger: 'blur'
+      }
     ],
     mobile: [
       {
         pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
         message: '请输入正确的手机号码',
-        trigger: 'blur',
-      },
-    ],
+        trigger: 'blur'
+      }
+    ]
   },
 
   importDialog: {
-    title: '用户搭配',
-    visible: false,
+    title: '用户导入',
+    visible: false
   } as DialogType,
   importFormData: {} as UserImportData,
   excelFile: undefined as any,
-  excelFilelist: [] as File[],
+  excelFilelist: [] as File[]
 });
 
 const {
@@ -131,7 +131,7 @@ const {
   roleOptions,
   importDialog,
   importFormData,
-  excelFilelist,
+  excelFilelist
 } = toRefs(state);
 
 watchEffect(
@@ -139,7 +139,7 @@ watchEffect(
     deptTreeRef.value.filter(state.deptName);
   },
   {
-    flush: 'post', // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
+    flush: 'post' // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
   }
 );
 
@@ -165,7 +165,7 @@ function handleDeptNodeClick(data: { [key: string]: any }) {
  * 获取角色下拉项
  */
 async function getRoleOptions() {
-  listRoleOptions().then((response) => {
+  listRoleOptions().then(response => {
     state.roleOptions = response.data;
   });
 }
@@ -181,7 +181,7 @@ function handleStatusChange(row: { [key: string]: any }) {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
+      type: 'warning'
     }
   )
     .then(() => {
@@ -231,7 +231,7 @@ function resetPassword(row: { [key: string]: any }) {
     '重置密码',
     {
       confirmButtonText: '确定',
-      cancelButtonText: '取消',
+      cancelButtonText: '取消'
     }
   )
     .then(({ value }) => {
@@ -252,7 +252,7 @@ function resetPassword(row: { [key: string]: any }) {
 async function handleAdd() {
   state.dialog = {
     title: '添加用户',
-    visible: true,
+    visible: true
   };
   await getDeptOptions();
   await getRoleOptions();
@@ -264,7 +264,7 @@ async function handleAdd() {
 async function handleUpdate(row: { [key: string]: any }) {
   dialog.value = {
     title: '修改用户',
-    visible: true,
+    visible: true
   };
 
   const userId = row.id || state.ids;
@@ -310,7 +310,7 @@ function handleDelete(row: { [key: string]: any }) {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
+      type: 'warning'
     }
   )
     .then(function () {
@@ -335,7 +335,7 @@ function closeDialog() {
  * 获取部门下拉项
  */
 async function getDeptOptions() {
-  listDeptOptions().then((response) => {
+  listDeptOptions().then(response => {
     state.deptOptions = response.data;
   });
 }
@@ -355,7 +355,7 @@ function getGenderOptions() {
 function handleDownloadTemplate() {
   downloadTemplate().then((response: any) => {
     const blob = new Blob([response.data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
     });
     const a = document.createElement('a');
     const href = window.URL.createObjectURL(blob); // 下载链接
@@ -407,7 +407,7 @@ function submitImportForm() {
 
       const deptId = state.importFormData.deptId;
       const roleIds = state.importFormData.roleIds.join(',');
-      importUser(deptId, roleIds, state.excelFile).then((response) => {
+      importUser(deptId, roleIds, state.excelFile).then(response => {
         ElMessage.success(response.data);
         closeImportDialog();
         handleQuery();
@@ -432,7 +432,7 @@ function closeImportDialog() {
 function handleExport() {
   exportUser(queryParams.value).then((response: any) => {
     const blob = new Blob([response.data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
     });
     const a = document.createElement('a');
     const href = window.URL.createObjectURL(blob); // 下载的链接
@@ -580,11 +580,26 @@ onMounted(() => {
               align="center"
               prop="username"
             />
-            <el-table-column label="用户昵称" width="120" align="center" prop="nickname" />
+            <el-table-column
+              label="用户昵称"
+              width="120"
+              align="center"
+              prop="nickname"
+            />
 
-            <el-table-column label="性别" width="100" align="center" prop="genderLabel" />
+            <el-table-column
+              label="性别"
+              width="100"
+              align="center"
+              prop="genderLabel"
+            />
 
-            <el-table-column label="部门" width="120" align="center" prop="deptName" />
+            <el-table-column
+              label="部门"
+              width="120"
+              align="center"
+              prop="deptName"
+            />
             <el-table-column
               label="手机号码"
               align="center"
@@ -618,7 +633,7 @@ onMounted(() => {
                   link
                   @click="handleUpdate(scope.row)"
                   v-hasPerm="['sys:user:edit']"
-                  >修改</el-button
+                  >编辑</el-button
                 >
                 <el-button
                   type="danger"
