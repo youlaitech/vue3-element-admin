@@ -71,13 +71,13 @@ import {
 
 import path from 'path-browserify';
 
-import { RouteRecordRaw, useRoute, useRouter } from 'vue-router';
-import { TagView } from '@/types/store/tagsview';
+import {  useRoute, useRouter } from 'vue-router';
 
 import ScrollPane from './ScrollPane.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import { generateTitle } from '@/utils/i18n';
 import useStore from '@/store';
+import { TagView } from '@/store/modules/types';
 
 const { tagsView, permission } = useStore();
 
