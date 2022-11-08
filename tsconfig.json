@@ -10,13 +10,20 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
-    "baseUrl": "./",
+    "baseUrl": ".",
+    "allowJs": true,
     "paths": {
       "@/*": ["src/*"]
     },
-    "allowSyntheticDefaultImports": true, // 默认导入
-    "skipLibCheck": true, // 不对第三方依赖类型检查 ，element-plus 生产打包报错
-    "types": ["element-plus/global"]
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "allowSyntheticDefaultImports": true /* 允许默认导入 */,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+    "types": ["element-plus/global"],
+    "typeRoots": [
+      "./node_modules/@types/",
+      "./types"
+    ] /* 指定多个文件夹，这些文件夹的作用类似于 './node_modules/@types'. */
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.vue", "types/**/*.d.ts"],
+  "exclude": ["node_modules", "dist", "**/*.js"]
 }
