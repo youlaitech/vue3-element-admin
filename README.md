@@ -1,7 +1,7 @@
 <p align="center">
-    <img src="https://img.shields.io/badge/Vue-3.2.25-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-2.9.7-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.1.8-blue.svg"/>
+    <img src="https://img.shields.io/badge/Vue-3.2.40-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vite-3.2.0-green.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.2.17-blue.svg"/>
     <a src="https://github.com/hxrui" target="_blank">
         <img src="https://img.shields.io/github/stars/youlaitech/youlai-mall.svg?style=social&label=Stars"/>
     </a>
@@ -64,7 +64,7 @@
 
 - 安装 Node
 
-  版本：v14 或 v16
+  版本：≥v14.0.0
 
 - 开发工具
 
@@ -72,13 +72,14 @@
 
 - 必装插件
 
-  VSCode 插件市场搜索并安装 Volar, 且一定要禁用 Vetur，不然代码会出现组件使用了但编译器还报组件未使用的警告信息，另外尤大也在 Vue3 生态话题说过 Volar 将会替代 Vetur 作为 Vue 的官方插件。
+  - Vue Language Features (Volar) 
+  - TypeScript Vue Plugin (Volar)
 
 ### 项目启动
 
 1. npm install
 2. npm run dev
-3. 浏览器访问 http://localhost:3000
+3. 访问 http://localhost:3000
 
 ### 项目部署
 
