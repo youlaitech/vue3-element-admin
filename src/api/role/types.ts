@@ -1,16 +1,14 @@
-import { PageQueryParam, PageResult } from './base';
-
 /**
  * 角色查询参数类型
  */
-export interface RoleQueryParam extends PageQueryParam {
+export interface RoleQuery extends PageQuery {
   keywords?: string;
 }
 
 /**
  * 角色分页列表项
  */
-export interface RoleItem {
+export interface Role {
   id: string;
   name: string;
   code: string;
@@ -24,23 +22,19 @@ export interface RoleItem {
 /**
  * 角色分页项类型
  */
-export type RolePageResult = PageResult<RoleItem[]>;
+export type RolePageResult = PageResult<Role[]>;
 
 /**
  * 角色表单类型
  */
-export interface RoleFormData {
-  id: string | undefined;
+export interface RoleForm {
+  id?: string;
   name: string;
   code: string;
   sort: number;
   status: number;
-}
-
-/**
- *
- */
-export interface RoleResource {
-  menuIds: string[];
-  permIds: string[];
+  /**
+   * 数据权限
+   */
+  dataScope: number;
 }

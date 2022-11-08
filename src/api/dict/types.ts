@@ -1,17 +1,15 @@
-import { PageQueryParam, PageResult } from './base';
-
 /**
- * 字典查询参数类型声明
+ * 字典查询参数
  */
-export interface DictQueryParam extends PageQueryParam {
+export interface DictQuery extends PageQuery {
   /**
    * 字典名称
    */
-  name: string | undefined;
+  name?: string;
 }
 
 /**
- * 字典分页列表项声明
+ * 字典类型
  */
 export interface Dict {
   id: number;
@@ -29,7 +27,7 @@ export type DictPageResult = PageResult<Dict[]>;
 /**
  * 字典表单类型声明
  */
-export interface DictTypeFormData {
+export interface DictTypeForm {
   id: number | undefined;
   name: string;
   code: string;
@@ -40,7 +38,7 @@ export interface DictTypeFormData {
 /**
  * 字典项查询参数类型声明
  */
-export interface DictItemQueryParam extends PageQueryParam {
+export interface DictItemQuery extends PageQuery {
   /**
    * 字典项名称
    */
@@ -52,13 +50,13 @@ export interface DictItemQueryParam extends PageQueryParam {
 }
 
 /**
- * 字典分页列表项声明
+ * 字典数据项类型
  */
 export interface DictItem {
   id: number;
   name: string;
   value: string;
-  dictCode: string;
+  typeCode: string;
   sort: number;
   status: number;
   defaulted: number;
@@ -73,7 +71,7 @@ export type DictItemPageResult = PageResult<DictItem[]>;
 /**
  * 字典表单类型声明
  */
-export interface DictItemFormData {
+export interface DictItemForm {
   id?: number;
   typeCode?: string;
   typeName?: string;

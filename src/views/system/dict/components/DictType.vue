@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'dictType'
+  name: 'dictType',
 };
 </script>
 
@@ -135,13 +135,11 @@ import {
   getDictTypeForm,
   addDictType,
   updateDictType,
-  deleteDictTypes
+  deleteDictTypes,
 } from '@/api/dict';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-
-import { Dialog } from '@/types/common';
-import { Dict, DictTypeFormData, DictQueryParam } from '@/types/api/dict';
+import { Dict, DictQuery, DictTypeForm } from '@/api/dict/types';
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -158,18 +156,18 @@ const state = reactive({
   multiple: true,
   queryParams: {
     pageNum: 1,
-    pageSize: 10
-  } as DictQueryParam,
+    pageSize: 10,
+  } as DictQuery,
   dictList: [] as Dict[],
   total: 0,
-  dialog: { visible: false } as Dialog,
+  dialog: { visible: false } as DialogType,
   formData: {
-    status: 1
-  } as DictTypeFormData,
+    status: 1,
+  } as DictTypeForm,
   rules: {
     name: [{ required: true, message: '请输入字典名称', trigger: 'blur' }],
-    code: [{ required: true, message: '请输入字典编码', trigger: 'blur' }]
-  }
+    code: [{ required: true, message: '请输入字典编码', trigger: 'blur' }],
+  },
 });
 
 const { total, dialog, loading, dictList, formData, rules, queryParams } =
@@ -199,14 +197,14 @@ function handleSelectionChange(selection: any) {
 function handleAdd() {
   state.dialog = {
     title: '添加字典',
-    visible: true
+    visible: true,
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改字典',
-    visible: true
+    visible: true,
   };
   const id = row.id || state.ids;
   getDictTypeForm(id).then(({ data }) => {
@@ -245,7 +243,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteDictTypes(ids).then(() => {

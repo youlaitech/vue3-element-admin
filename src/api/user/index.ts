@@ -1,11 +1,6 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
-import {
-  UserFormData,
-  UserInfo,
-  UserPageResult,
-  UserQueryParam
-} from '@/types/api/user';
+import { UserForm, UserInfo, UserPageResult, UserQuery } from './types';
 
 /**
  * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
@@ -23,7 +18,7 @@ export function getUserInfo(): AxiosPromise<UserInfo> {
  * @param queryParams
  */
 export function listUserPages(
-  queryParams: UserQueryParam
+  queryParams: UserQuery
 ): AxiosPromise<UserPageResult> {
   return request({
     url: '/api/v1/users/pages',
@@ -37,7 +32,7 @@ export function listUserPages(
  *
  * @param userId
  */
-export function getUserFormData(userId: number): AxiosPromise<UserFormData> {
+export function getUserForm(userId: number): AxiosPromise<UserForm> {
   return request({
     url: '/api/v1/users/' + userId + '/form',
     method: 'get'
@@ -63,7 +58,7 @@ export function addUser(data: any) {
  * @param id
  * @param data
  */
-export function updateUser(id: number, data: UserFormData) {
+export function updateUser(id: number, data: UserForm) {
   return request({
     url: '/api/v1/users/' + id,
     method: 'put',
@@ -130,7 +125,7 @@ export function downloadTemplate() {
  * @param queryParams
  * @returns
  */
-export function exportUser(queryParams: UserQueryParam) {
+export function exportUser(queryParams: UserQuery) {
   return request({
     url: '/api/v1/users/_export',
     method: 'get',

@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'dept'
+  name: 'dept',
 };
 </script>
 
@@ -13,13 +13,12 @@ import {
   updateDept,
   addDept,
   listDeptOptions,
-  listDepartments
+  listDepartments,
 } from '@/api/dept';
 
-import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
+import { Search, Plus, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-import { DeptFormData, DeptItem, DeptQueryParam } from '@/types/api/dept';
-import { Dialog, Option } from '@/types/common';
+import { Dept, DeptForm, DeptQuery } from '@/api/dept/types';
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -29,21 +28,21 @@ const state = reactive({
   // 选中ID数组
   ids: [] as number[],
   // 表格树数据
-  dataList: [] as DeptItem[],
-  deptOptions: [] as Option[],
-  dialog: { visible: false } as Dialog,
-  queryParams: {} as DeptQueryParam,
+  dataList: [] as Dept[],
+  deptOptions: [] as OptionType[],
+  dialog: { visible: false } as DialogType,
+  queryParams: {} as DeptQuery,
   formData: {
     sort: 1,
-    status: 1
-  } as DeptFormData,
+    status: 1,
+  } as DeptForm,
   rules: {
     parentId: [
-      { required: true, message: '上级部门不能为空', trigger: 'blur' }
+      { required: true, message: '上级部门不能为空', trigger: 'blur' },
     ],
     name: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
-    sort: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }]
-  }
+    sort: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
+  },
 });
 
 const {
@@ -54,7 +53,7 @@ const {
   queryParams,
   formData,
   rules,
-  dialog
+  dialog,
 } = toRefs(state);
 
 /**
@@ -85,11 +84,11 @@ function handleSelectionChange(selection: any) {
  */
 async function getDeptOptions() {
   const deptOptions: any[] = [];
-  listDeptOptions().then(response => {
+  listDeptOptions().then((response) => {
     const rootDeptOption = {
       value: '0',
       label: '顶级部门',
-      children: response.data
+      children: response.data,
     };
     deptOptions.push(rootDeptOption);
     state.deptOptions = deptOptions;
@@ -105,7 +104,7 @@ function handleAdd(row: any) {
   formData.value.parentId = row.id;
   dialog.value = {
     title: '添加部门',
-    visible: true
+    visible: true,
   };
 }
 
@@ -117,7 +116,7 @@ async function handleUpdate(row: any) {
   const deptId = row.id || state.ids;
   state.dialog = {
     title: '修改部门',
-    visible: true
+    visible: true,
   };
   getDeptForm(deptId).then((response: any) => {
     state.formData = response.data;
@@ -160,7 +159,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm(`确认删除已选中的数据项?`, '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteDept(ids)
@@ -266,28 +265,24 @@ onMounted(() => {
           <template #default="scope">
             <el-button
               type="primary"
-              :icon="Edit"
-              circle
-              plain
+               link
               @click.stop="handleUpdate(scope.row)"
-            >
+            >新增
             </el-button>
             <el-button
               type="success"
-              :icon="Plus"
-              circle
-              plain
+              link
               @click.stop="handleAdd(scope.row)"
             >
+            修改
             </el-button>
 
             <el-button
               type="danger"
-              :icon="Delete"
-              circle
-              plain
+              link
               @click.stop="handleDelete(scope.row)"
             >
+            删除
             </el-button>
           </template>
         </el-table-column>

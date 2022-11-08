@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { TagsViewState } from '@/types/store/tagsview';
+import { TagsViewState } from './types';
 
 const useTagsViewStore = defineStore({
   id: 'tagsView',

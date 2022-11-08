@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'role'
+  name: 'role',
 };
 </script>
 
@@ -13,15 +13,13 @@ import {
   addRole,
   deleteRoles,
   getRoleMenuIds,
-  updateRoleMenus
+  updateRoleMenus,
 } from '@/api/role';
 import { listResources } from '@/api/menu';
 
 import { ElForm, ElMessage, ElMessageBox, ElTree } from 'element-plus';
-import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
-import { RoleFormData, RoleItem, RoleQueryParam } from '@/types/api/role';
-import SvgIcon from '@/components/SvgIcon/index.vue';
-import { Option, Dialog } from '@/types/common';
+import { Search, Plus, Refresh, Delete } from '@element-plus/icons-vue';
+import { Role, RoleForm, RoleQuery } from '@/api/role/types';
 
 const emit = defineEmits(['roleClick']);
 const queryFormRef = ref(ElForm);
@@ -34,21 +32,23 @@ const state = reactive({
   ids: [] as number[],
   queryParams: {
     pageNum: 1,
-    pageSize: 10
-  } as RoleQueryParam,
-  roleList: [] as RoleItem[],
+    pageSize: 10,
+  } as RoleQuery,
+  roleList: [] as Role[],
   total: 0,
   dialog: {
     title: '',
-    visible: false
-  } as Dialog,
-  formData: {} as RoleFormData,
+    visible: false,
+  } as DialogType,
+  formData: {} as RoleForm,
   rules: {
     name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-    code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }]
+    code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
+    dataScope: [{ required: true, message: '请选择数据权限', trigger: 'blur' }],
+    status: [{ required: true, message: '请选择状态', trigger: 'blur' }],
   },
   menuDialogVisible: false,
-  resourceOptions: [] as Option[],
+  resourceOptions: [] as OptionType[],
   btnPerms: {} as any,
   // 勾选的菜单ID
   checkedMenuIds: new Set([]),
@@ -56,8 +56,8 @@ const state = reactive({
   // 选中的角色
   checkedRole: {
     id: '',
-    name: ''
-  }
+    name: '',
+  },
 });
 
 const {
@@ -71,7 +71,7 @@ const {
   rules,
   menuDialogVisible,
   checkedRole,
-  resourceOptions
+  resourceOptions,
 } = toRefs(state);
 
 /**
@@ -105,14 +105,14 @@ function handleRowClick(row: any) {
 function handleAdd() {
   dialog.value = {
     title: '添加角色',
-    visible: true
+    visible: true,
   };
 }
 
 function handleUpdate(row: any) {
   dialog.value = {
     title: '修改角色',
-    visible: true
+    visible: true,
   };
   const roleId = row.id || state.ids;
   getRoleFormDetail(roleId).then(({ data }) => {
@@ -160,7 +160,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteRoles(ids).then(() => {
@@ -174,24 +174,27 @@ function handleDelete(row: any) {
 /**
  * 资源分配
  */
-function showRoleMenuDialog(row: RoleItem) {
+function showRoleMenuDialog(row: Role) {
   menuDialogVisible.value = true;
   loading.value = true;
 
   const roleId: any = row.id;
   checkedRole.value = {
     id: roleId,
-    name: row.name
+    name: row.name,
   };
 
   // 获取所有的资源
-  listResources().then(response => {
+  listResources().then((response) => {
     resourceOptions.value = response.data;
     // 角色拥有的资源
     getRoleMenuIds(roleId).then(({ data }) => {
       // 勾选回显
       const checkedMenuIds = data;
-      resourceRef.value.setCheckedKeys(checkedMenuIds);
+      checkedMenuIds.forEach((menuId) =>
+        resourceRef.value.setChecked(menuId, true)
+      );
+
       loading.value = false;
     });
   });
@@ -204,7 +207,7 @@ function handleRoleResourceSubmit() {
     .getCheckedNodes(false, true)
     .map((node: any) => node.value);
 
-  updateRoleMenus(checkedRole.value.id, checkedMenuIds).then(res => {
+  updateRoleMenus(checkedRole.value.id, checkedMenuIds).then((res) => {
     ElMessage.success('分配权限成功');
     menuDialogVisible.value = false;
     handleQuery();
@@ -258,7 +261,7 @@ onMounted(() => {
           >删除</el-button
         >
       </template>
-      <!--table-->
+
       <el-table
         ref="dataTableRef"
         v-loading="loading"
@@ -269,8 +272,8 @@ onMounted(() => {
         border
       >
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="角色名称" prop="name" min-width="300" />
-        <el-table-column label="角色编码" prop="code" width="200" />
+        <el-table-column label="角色名称" prop="name" min-width="150" />
+        <el-table-column label="角色编码" prop="code" width="150" />
 
         <el-table-column label="状态" align="center" width="150">
           <template #default="scope">
@@ -280,36 +283,29 @@ onMounted(() => {
         </el-table-column>
 
         <el-table-column label="排序" align="center" width="100" prop="sort" />
-        <el-table-column prop="createTime" label="创建时间" width="250" />
-        <el-table-column prop="updateTime" label="修改时间" width="250" />
+        <el-table-column prop="createTime" label="创建时间" width="160" />
+        <el-table-column prop="updateTime" label="修改时间" width="160" />
 
-        <el-table-column label="操作" align="center" width="200">
+        <el-table-column label="操作" align="left" >
           <template #default="scope">
-            <el-tooltip content="分配资源" effect="light">
-              <el-button
-                type="success"
-                circle
-                plain
-                @click.stop="showRoleMenuDialog(scope.row)"
-              >
-                <svg-icon icon-class="perm" />
-              </el-button>
-            </el-tooltip>
+            <el-button
+              type="success"
+              link
+              @click.stop="showRoleMenuDialog(scope.row)"
+            >
+              资源分配
+            </el-button>
 
             <el-button
               type="primary"
-              :icon="Edit"
-              circle
-              plain
+              link
               @click.stop="handleUpdate(scope.row)"
-            />
-            <el-button
-              type="danger"
-              :icon="Delete"
-              circle
-              plain
-              @click.stop="handleDelete(scope.row)"
-            />
+            >
+              修改
+            </el-button>
+            <el-button type="danger" link @click.stop="handleDelete(scope.row)">
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -345,6 +341,22 @@ onMounted(() => {
           <el-input v-model="formData.code" placeholder="请输入角色编码" />
         </el-form-item>
 
+        <el-form-item label="数据权限" prop="dataScope">
+          <el-select v-model="formData.dataScope">
+            <el-option :key="0" label="全部数据" :value="0" />
+            <el-option :key="1" label="部门及子部门数据" :value="1" />
+            <el-option :key="2" label="本部门数据" :value="2" />
+            <el-option :key="3" label="本人数据" :value="3" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="formData.status">
+            <el-radio :label="1">正常</el-radio>
+            <el-radio :label="0">停用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
         <el-form-item label="排序" prop="sort">
           <el-input-number
             v-model="formData.sort"
@@ -352,13 +364,6 @@ onMounted(() => {
             :min="0"
             style="width: 100px"
           />
-        </el-form-item>
-
-        <el-form-item label="状态">
-          <el-radio-group v-model="formData.status">
-            <el-radio :label="1">正常</el-radio>
-            <el-radio :label="0">停用</el-radio>
-          </el-radio-group>
         </el-form-item>
       </el-form>
 
@@ -370,7 +375,7 @@ onMounted(() => {
       </template>
     </el-dialog>
 
-    <!--分配资源弹窗-->
+    <!-- assign permission dialog -->
     <el-dialog
       :title="'【' + checkedRole.name + '】资源分配'"
       v-model="menuDialogVisible"

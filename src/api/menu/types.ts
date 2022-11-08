@@ -1,7 +1,7 @@
 /**
  * 菜单查询参数类型声明
  */
-export interface MenuQueryParam {
+export interface MenuQuery {
   keywords?: string;
 }
 
@@ -9,7 +9,7 @@ export interface MenuQueryParam {
  * 菜单分页列表项声明
  */
 
-export interface MenuItem {
+export interface Menu {
   id?: number;
   parentId: number;
   type?: string | 'CATEGORY' | 'MENU' | 'EXTLINK';
@@ -20,13 +20,13 @@ export interface MenuItem {
   component: string;
   sort: number;
   visible: number;
-  children: MenuItem[];
+  children: Menu[];
 }
 
 /**
  * 菜单表单类型声明
  */
-export interface MenuFormData {
+export interface MenuForm {
   /**
    * 菜单ID
    */

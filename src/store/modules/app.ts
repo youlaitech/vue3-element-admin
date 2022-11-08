@@ -1,4 +1,4 @@
-import { AppState } from '@/types/store/app';
+import { AppState } from './types';
 import { localStorage } from '@/utils/storage';
 import { defineStore } from 'pinia';
 import { getLanguage } from '@/lang/index';

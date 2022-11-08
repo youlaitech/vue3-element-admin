@@ -1,4 +1,4 @@
-import { PermissionState } from '@/types/store/permission';
+import { PermissionState } from './types';
 import { RouteRecordRaw } from 'vue-router';
 import { defineStore } from 'pinia';
 import { constantRoutes } from '@/router';

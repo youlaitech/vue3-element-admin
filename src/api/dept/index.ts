@@ -1,16 +1,13 @@
-import { DeptFormData, DeptItem, DeptQueryParam } from '@/types/api/dept';
-import { Option } from '@/types/common';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
+import { DeptForm, DeptQuery, Dept } from './types';
 
 /**
  * 部门树形表格
  *
  * @param queryParams
  */
-export function listDepartments(
-  queryParams?: DeptQueryParam
-): AxiosPromise<DeptItem[]> {
+export function listDepartments(queryParams?: DeptQuery): AxiosPromise<Dept[]> {
   return request({
     url: '/api/v1/dept',
     method: 'get',
@@ -21,7 +18,7 @@ export function listDepartments(
 /**
  * 部门下拉列表
  */
-export function listDeptOptions(): AxiosPromise<Option[]> {
+export function listDeptOptions(): AxiosPromise<OptionType[]> {
   return request({
     url: '/api/v1/dept/options',
     method: 'get'
@@ -33,7 +30,7 @@ export function listDeptOptions(): AxiosPromise<Option[]> {
  *
  * @param id
  */
-export function getDeptForm(id: string): AxiosPromise<DeptFormData> {
+export function getDeptForm(id: string): AxiosPromise<DeptForm> {
   return request({
     url: '/api/v1/dept/' + id + '/form',
     method: 'get'
@@ -45,7 +42,7 @@ export function getDeptForm(id: string): AxiosPromise<DeptFormData> {
  *
  * @param data
  */
-export function addDept(data: DeptFormData) {
+export function addDept(data: DeptForm) {
   return request({
     url: '/api/v1/dept',
     method: 'post',
@@ -59,7 +56,7 @@ export function addDept(data: DeptFormData) {
  * @param id
  * @param data
  */
-export function updateDept(id: string, data: DeptFormData) {
+export function updateDept(id: string, data: DeptForm) {
   return request({
     url: '/api/v1/dept/' + id,
     method: 'put',

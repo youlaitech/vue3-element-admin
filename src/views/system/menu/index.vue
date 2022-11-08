@@ -100,25 +100,28 @@
           <template #default="scope">
             <el-button
               type="success"
-              :icon="Plus"
-              circle
-              plain
+              link
               @click.stop="handleAdd(scope.row)"
-            />
+
+              v-if="scope.row.type=='CATALOG' ||scope.row.type=='MENU'"
+            >
+            新增
+          </el-button>
+
             <el-button
               type="primary"
-              :icon="Edit"
-              circle
-              plain
+              link
               @click.stop="handleUpdate(scope.row)"
-            />
+            >
+          修改
+          </el-button>
             <el-button
               type="danger"
-              :icon="Delete"
-              circle
-              plain
+             link
               @click.stop="handleDelete(scope.row)"
-            />
+           >
+          删除
+          </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -276,9 +279,7 @@ import { reactive, ref, onMounted, toRefs } from 'vue';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox, ElPopover } from 'element-plus';
 
-import { Dialog, Option } from '@/types/common';
-
-import { MenuFormData, MenuItem, MenuQueryParam } from '@/types/api/menu';
+import { MenuQuery, MenuForm, Menu } from '@/api/menu/types';
 // API 依赖
 import {
   listMenus,
@@ -286,7 +287,7 @@ import {
   listMenuOptions,
   addMenu,
   deleteMenus,
-  updateMenu
+  updateMenu,
 } from '@/api/menu';
 
 import SvgIcon from '@/components/SvgIcon/index.vue';
@@ -305,34 +306,34 @@ const state = reactive({
   single: true,
   // 非多个禁用
   multiple: true,
-  queryParams: {} as MenuQueryParam,
-  menuList: [] as MenuItem[],
-  dialog: { visible: false } as Dialog,
+  queryParams: {} as MenuQuery,
+  menuList: [] as Menu[],
+  dialog: { visible: false } as DialogType,
   formData: {
     parentId: '0',
     name: '',
     visible: 1,
     sort: 1,
     component: undefined,
-    type: 'MENU'
-  } as MenuFormData,
+    type: 'MENU',
+  } as MenuForm,
   rules: {
     parentId: [{ required: true, message: '请选择顶级菜单', trigger: 'blur' }],
     name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
     type: [{ required: true, message: '请选择菜单类型', trigger: 'blur' }],
     path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
     component: [
-      { required: true, message: '请输入组件完整路径', trigger: 'blur' }
-    ]
+      { required: true, message: '请输入组件完整路径', trigger: 'blur' },
+    ],
   },
-  menuOptions: [] as Option[],
+  menuOptions: [] as OptionType[],
   currentRow: undefined,
   // Icon选择器显示状态
   iconSelectVisible: false,
   cacheData: {
     menuType: '',
-    menuPath: ''
-  }
+    menuPath: '',
+  },
 });
 
 const {
@@ -344,7 +345,7 @@ const {
   rules,
   menuOptions,
   iconSelectVisible,
-  cacheData
+  cacheData,
 } = toRefs(state);
 
 /**
@@ -393,7 +394,7 @@ async function handleAdd(row: any) {
   await loadMenuData();
   dialog.value = {
     title: '添加菜单',
-    visible: true
+    visible: true,
   };
 
   if (row.id) {
@@ -416,11 +417,11 @@ async function handleAdd(row: any) {
 /**
  * 编辑菜单
  */
-async function handleUpdate(row: MenuFormData) {
+async function handleUpdate(row: MenuForm) {
   await loadMenuData();
   state.dialog = {
     title: '编辑菜单',
-    visible: true
+    visible: true,
   };
   const id = row.id as string;
   getMenuDetail(id).then(({ data }) => {
@@ -474,7 +475,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteMenus(ids).then(() => {
