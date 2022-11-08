@@ -7,7 +7,7 @@ import useStore from '@/store';
 const service = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 50000,
-  headers: { 'Content-Type': 'application/json;charset=utf-8' },
+  headers: { 'Content-Type': 'application/json;charset=utf-8' }
 });
 
 // 请求拦截器
@@ -43,22 +43,27 @@ service.interceptors.response.use(
 
       ElMessage({
         message: msg || '系统出错',
-        type: 'error',
+        type: 'error'
       });
       return Promise.reject(new Error(msg || 'Error'));
     }
   },
   (error: any) => {
     if (error.response.data) {
-      const { code } = error.response.data;
+      const { code, msg } = error.response.data;
       // token 过期,重新登录
       if (code === 'A0230') {
         ElMessageBox.confirm('当前页面已失效，请重新登录', 'Warning', {
           confirmButtonText: 'OK',
-          type: 'warning',
+          type: 'warning'
         }).then(() => {
           localStorage.clear();
           window.location.href = '/';
+        });
+      } else {
+        ElMessage({
+          message: msg || '系统出错',
+          type: 'error'
         });
       }
     }
