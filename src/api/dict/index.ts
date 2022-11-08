@@ -1,14 +1,13 @@
-import { Option } from '@/types/common';
-import {
-  DictTypeFormData,
-  DictItemFormData,
-  DictItemPageResult,
-  DictItemQueryParam,
-  DictPageResult,
-  DictQueryParam
-} from '@/types/api/dict';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
+import {
+  DictQuery,
+  DictPageResult,
+  DictTypeForm,
+  DictItemQuery,
+  DictItemPageResult,
+  DictItemForm
+} from './types';
 
 /**
  * 获取字典类型分页列表
@@ -16,7 +15,7 @@ import { AxiosPromise } from 'axios';
  * @param queryParams
  */
 export function listDictTypePages(
-  queryParams: DictQueryParam
+  queryParams: DictQuery
 ): AxiosPromise<DictPageResult> {
   return request({
     url: '/api/v1/dict/types/pages',
@@ -30,7 +29,7 @@ export function listDictTypePages(
  *
  * @param id
  */
-export function getDictTypeForm(id: number): AxiosPromise<DictTypeFormData> {
+export function getDictTypeForm(id: number): AxiosPromise<DictTypeForm> {
   return request({
     url: '/api/v1/dict/types/' + id + '/form',
     method: 'get'
@@ -42,7 +41,7 @@ export function getDictTypeForm(id: number): AxiosPromise<DictTypeFormData> {
  *
  * @param data
  */
-export function addDictType(data: DictTypeFormData) {
+export function addDictType(data: DictTypeForm) {
   return request({
     url: '/api/v1/dict/types',
     method: 'post',
@@ -56,7 +55,7 @@ export function addDictType(data: DictTypeFormData) {
  * @param id
  * @param data
  */
-export function updateDictType(id: number, data: DictTypeFormData) {
+export function updateDictType(id: number, data: DictTypeForm) {
   return request({
     url: '/api/v1/dict/types/' + id,
     method: 'put',
@@ -81,7 +80,7 @@ export function deleteDictTypes(ids: string) {
  */
 export function listDictItemsByTypeCode(
   typeCode: string
-): AxiosPromise<Option[]> {
+): AxiosPromise<OptionType[]> {
   return request({
     url: '/api/v1/dict/types/' + typeCode + '/items',
     method: 'get'
@@ -92,7 +91,7 @@ export function listDictItemsByTypeCode(
  * 获取字典项分页列表
  */
 export function listDictItemPages(
-  queryParams: DictItemQueryParam
+  queryParams: DictItemQuery
 ): AxiosPromise<DictItemPageResult> {
   return request({
     url: '/api/v1/dict/items/pages',
@@ -106,7 +105,7 @@ export function listDictItemPages(
  *
  * @param id
  */
-export function getDictItemData(id: number): AxiosPromise<DictItemFormData> {
+export function getDictItemData(id: number): AxiosPromise<DictItemForm> {
   return request({
     url: '/api/v1/dict/items/' + id + '/form',
     method: 'get'
@@ -118,7 +117,7 @@ export function getDictItemData(id: number): AxiosPromise<DictItemFormData> {
  *
  * @param data
  */
-export function saveDictItem(data: DictItemFormData) {
+export function saveDictItem(data: DictItemForm) {
   return request({
     url: '/api/v1/dict/items',
     method: 'post',
@@ -132,7 +131,7 @@ export function saveDictItem(data: DictItemFormData) {
  * @param id
  * @param data
  */
-export function updateDictItem(id: number, data: DictItemFormData) {
+export function updateDictItem(id: number, data: DictItemForm) {
   return request({
     url: '/api/v1/dict/items/' + id,
     method: 'put',

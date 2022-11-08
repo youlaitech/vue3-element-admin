@@ -1,12 +1,6 @@
-import {
-  MenuFormData,
-  MenuItem,
-  MenuQueryParam,
-  Resource
-} from '@/types/api/menu';
-import { Option } from '@/types/common';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
+import { MenuQuery, Menu, Resource, MenuForm } from './types';
 
 /**
  * 获取路由列表
@@ -23,9 +17,7 @@ export function listRoutes() {
  *
  * @param queryParams
  */
-export function listMenus(
-  queryParams: MenuQueryParam
-): AxiosPromise<MenuItem[]> {
+export function listMenus(queryParams: MenuQuery): AxiosPromise<Menu[]> {
   return request({
     url: '/api/v1/menus',
     method: 'get',
@@ -36,7 +28,7 @@ export function listMenus(
 /**
  * 获取菜单下拉树形列表
  */
-export function listMenuOptions(): AxiosPromise<Option[]> {
+export function listMenuOptions(): AxiosPromise<OptionType[]> {
   return request({
     url: '/api/v1/menus/options',
     method: 'get'
@@ -57,7 +49,7 @@ export function listResources(): AxiosPromise<Resource[]> {
  * 获取菜单详情
  * @param id
  */
-export function getMenuDetail(id: string): AxiosPromise<MenuFormData> {
+export function getMenuDetail(id: string): AxiosPromise<MenuForm> {
   return request({
     url: '/api/v1/menus/' + id,
     method: 'get'
@@ -69,7 +61,7 @@ export function getMenuDetail(id: string): AxiosPromise<MenuFormData> {
  *
  * @param data
  */
-export function addMenu(data: MenuFormData) {
+export function addMenu(data: MenuForm) {
   return request({
     url: '/api/v1/menus',
     method: 'post',
@@ -83,7 +75,7 @@ export function addMenu(data: MenuFormData) {
  * @param id
  * @param data
  */
-export function updateMenu(id: string, data: MenuFormData) {
+export function updateMenu(id: string, data: MenuForm) {
   return request({
     url: '/api/v1/menus/' + id,
     method: 'put',

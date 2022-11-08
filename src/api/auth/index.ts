@@ -1,11 +1,13 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
-import { LoginFormData } from '@/types/api/user';
+import { LoginForm, VerifyCode } from './types';
 
 /**
- * 登录
+ *
+ * @param data {LoginForm}
+ * @returns
  */
-export function login(data: LoginFormData): AxiosPromise {
+export function loginApi(data: LoginForm): AxiosPromise<string> {
   return request({
     url: '/api/v1/auth/login',
     method: 'post',
@@ -19,9 +21,19 @@ export function login(data: LoginFormData): AxiosPromise {
 /**
  * 注销
  */
-export function logout() {
+export function logoutApi() {
   return request({
     url: '/api/v1/auth/logout',
     method: 'delete'
+  });
+}
+
+/**
+ * 获取图片验证码
+ */
+export function getCaptcha(): AxiosPromise<VerifyCode> {
+  return request({
+    url: '/captcha?t=' + new Date().getTime().toString(),
+    method: 'get'
   });
 }

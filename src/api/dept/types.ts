@@ -1,16 +1,15 @@
 /**
- * 部门查询参数类型声明
+ * 部门查询参数
  */
-export interface DeptQueryParam {
+export interface DeptQuery {
   keywords: string | undefined;
   status: number | undefined;
 }
 
 /**
- * 部门列表项声明
+ * 部门类型
  */
-
-export interface DeptItem {
+export interface Dept {
   id: string;
   name: string;
   parentId: string;
@@ -20,13 +19,13 @@ export interface DeptItem {
   leader?: string;
   mobile?: string;
   email?: string;
-  children: DeptItem[];
+  children: Dept[];
 }
 
 /**
- * 部门表单类型声明
+ * 部门表单类型
  */
-export interface DeptFormData {
+export interface DeptForm {
   id?: string;
   parentId: string;
   name: string;

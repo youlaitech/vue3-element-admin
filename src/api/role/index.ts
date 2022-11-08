@@ -1,13 +1,6 @@
-import {
-  RoleFormData,
-  RolePageResult,
-  RoleQueryParam,
-  RoleResource
-} from '@/types/api/role';
-
-import { Option } from '@/types/common';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
+import { RoleQuery, RolePageResult, RoleForm } from './types';
 
 /**
  * 获取角色分页数据
@@ -15,7 +8,7 @@ import { AxiosPromise } from 'axios';
  * @param queryParams
  */
 export function listRolePages(
-  queryParams?: RoleQueryParam
+  queryParams?: RoleQuery
 ): AxiosPromise<RolePageResult> {
   return request({
     url: '/api/v1/roles/pages',
@@ -30,8 +23,8 @@ export function listRolePages(
  * @param queryParams
  */
 export function listRoleOptions(
-  queryParams?: RoleQueryParam
-): AxiosPromise<Option[]> {
+  queryParams?: RoleQuery
+): AxiosPromise<OptionType[]> {
   return request({
     url: '/api/v1/roles/options',
     method: 'get',
@@ -72,7 +65,7 @@ export function updateRoleMenus(
  *
  * @param id
  */
-export function getRoleFormDetail(id: number): AxiosPromise<RoleFormData> {
+export function getRoleFormDetail(id: number): AxiosPromise<RoleForm> {
   return request({
     url: '/api/v1/roles/' + id,
     method: 'get'
@@ -84,7 +77,7 @@ export function getRoleFormDetail(id: number): AxiosPromise<RoleFormData> {
  *
  * @param data
  */
-export function addRole(data: RoleFormData) {
+export function addRole(data: RoleForm) {
   return request({
     url: '/api/v1/roles',
     method: 'post',
@@ -98,7 +91,7 @@ export function addRole(data: RoleFormData) {
  * @param id
  * @param data
  */
-export function updateRole(id: number, data: RoleFormData) {
+export function updateRole(id: number, data: RoleForm) {
   return request({
     url: '/api/v1/roles/' + id,
     method: 'put',

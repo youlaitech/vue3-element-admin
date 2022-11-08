@@ -99,7 +99,7 @@ import useStore from '@/store';
 
 // API依赖
 import { useRoute } from 'vue-router';
-import { LoginFormData } from '@/types/api/user';
+import { LoginForm } from '@/api/auth/types';
 
 const { user } = useStore();
 const route = useRoute();
@@ -112,7 +112,7 @@ const state = reactive({
   loginForm: {
     username: 'admin',
     password: '123456'
-  } as LoginFormData,
+  } as LoginForm,
   loginRules: {
     username: [{ required: true, trigger: 'blur' }],
     password: [{ required: true, trigger: 'blur', validator: validatePassword }]

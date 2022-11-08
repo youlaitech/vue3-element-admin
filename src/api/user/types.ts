@@ -1,22 +1,3 @@
-import { PageQueryParam, PageResult } from './base';
-
-/**
- * 登录表单
- */
-export interface LoginFormData {
-  username: string;
-  password: string;
-  grant_type: string;
-}
-
-/**
- * 登录响应
- */
-export interface LoginResponseData {
-  access_token: string;
-  token_type: string;
-}
-
 /**
  * 登录用户信息
  */
@@ -30,7 +11,7 @@ export interface UserInfo {
 /**
  * 用户查询参数
  */
-export interface UserQueryParam extends PageQueryParam {
+export interface UserQuery extends PageQuery {
   keywords: string;
   status: number;
   deptId: number;
@@ -39,7 +20,7 @@ export interface UserQueryParam extends PageQueryParam {
 /**
  * 用户分页列表项声明
  */
-export interface UserItem {
+export interface UserType {
   id: string;
   username: string;
   nickname: string;
@@ -56,12 +37,12 @@ export interface UserItem {
 /**
  * 用户分页项类型声明
  */
-export type UserPageResult = PageResult<UserItem[]>;
+export type UserPageResult = PageResult<UserType[]>;
 
 /**
  * 用户表单类型声明
  */
-export interface UserFormData {
+export interface UserForm {
   id: number | undefined;
   deptId: number;
   username: string;

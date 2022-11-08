@@ -1,46 +1,41 @@
 <script lang="ts">
 export default {
-  name: 'dictItem'
+  name: 'dictItem',
 };
 </script>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-import {
-  DictItem,
-  DictItemFormData,
-  DictItemQueryParam
-} from '@/types/api/dict';
 
-import { Dialog } from '@/types/common';
 import {
   listDictItemPages,
   getDictItemData,
   saveDictItem,
   updateDictItem,
-  deleteDictItems
+  deleteDictItems,
 } from '@/api/dict';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
+import { DictItem, DictItemForm, DictItemQuery } from '@/api/dict/types';
 
 const props = defineProps({
   typeCode: {
     type: String,
     default: () => {
       return '';
-    }
+    },
   },
   typeName: {
     type: String,
     default: () => {
       return '';
-    }
-  }
+    },
+  },
 });
 
 watch(
   () => props.typeCode,
-  value => {
+  (value) => {
     state.queryParams.typeCode = value;
     state.formData.typeCode = value;
     handleQuery();
@@ -59,21 +54,21 @@ const state = reactive({
   // 非多个禁用
   multiple: true,
   total: 0,
-  queryParams: { pageNum: 1, pageSize: 10 } as DictItemQueryParam,
+  queryParams: { pageNum: 1, pageSize: 10 } as DictItemQuery,
   dictItemList: [] as DictItem[],
-  dialog: { visible: false } as Dialog,
+  dialog: { visible: false } as DialogType,
   formData: {
     typeCode: props.typeCode,
     typeName: props.typeName,
     status: 1,
-    sort: 1
-  } as DictItemFormData,
+    sort: 1,
+  } as DictItemForm,
   rules: {
     name: [{ required: true, message: '请输入字典项名称', trigger: 'blur' }],
-    value: [{ required: true, message: '请输入字典项值', trigger: 'blur' }]
+    value: [{ required: true, message: '请输入字典项值', trigger: 'blur' }],
   },
   localDictCode: props.typeCode,
-  localDictName: props.typeName
+  localDictName: props.typeName,
 });
 
 const {
@@ -84,7 +79,7 @@ const {
   dialog,
   formData,
   rules,
-  total
+  total,
 } = toRefs(state);
 
 function handleQuery() {
@@ -121,14 +116,14 @@ function handleAdd() {
   }
   state.dialog = {
     title: '添加字典数据项',
-    visible: true
+    visible: true,
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改字典数据项',
-    visible: true
+    visible: true,
   };
   const id = row.id || state.ids;
   getDictItemData(id).then(({ data }) => {
@@ -167,7 +162,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   })
     .then(() => {
       deleteDictItems(ids).then(() => {

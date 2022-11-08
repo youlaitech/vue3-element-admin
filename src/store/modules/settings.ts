@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { SettingState } from '@/types/store/setting';
+import { SettingState } from './types';
 import defaultSettings from '../../settings';
 import { localStorage } from '@/utils/storage';
 
