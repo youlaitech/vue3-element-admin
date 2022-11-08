@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'role',
+  name: 'role'
 };
 </script>
 
@@ -13,7 +13,7 @@ import {
   addRole,
   deleteRoles,
   getRoleMenuIds,
-  updateRoleMenus,
+  updateRoleMenus
 } from '@/api/role';
 import { listResources } from '@/api/menu';
 
@@ -32,20 +32,20 @@ const state = reactive({
   ids: [] as number[],
   queryParams: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 10
   } as RoleQuery,
   roleList: [] as Role[],
   total: 0,
   dialog: {
     title: '',
-    visible: false,
+    visible: false
   } as DialogType,
   formData: {} as RoleForm,
   rules: {
     name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
     code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
     dataScope: [{ required: true, message: '请选择数据权限', trigger: 'blur' }],
-    status: [{ required: true, message: '请选择状态', trigger: 'blur' }],
+    status: [{ required: true, message: '请选择状态', trigger: 'blur' }]
   },
   menuDialogVisible: false,
   resourceOptions: [] as OptionType[],
@@ -56,8 +56,8 @@ const state = reactive({
   // 选中的角色
   checkedRole: {
     id: '',
-    name: '',
-  },
+    name: ''
+  }
 });
 
 const {
@@ -71,7 +71,7 @@ const {
   rules,
   menuDialogVisible,
   checkedRole,
-  resourceOptions,
+  resourceOptions
 } = toRefs(state);
 
 /**
@@ -105,14 +105,14 @@ function handleRowClick(row: any) {
 function handleAdd() {
   dialog.value = {
     title: '添加角色',
-    visible: true,
+    visible: true
   };
 }
 
 function handleUpdate(row: any) {
   dialog.value = {
     title: '修改角色',
-    visible: true,
+    visible: true
   };
   const roleId = row.id || state.ids;
   getRoleFormDetail(roleId).then(({ data }) => {
@@ -160,7 +160,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'warning'
   })
     .then(() => {
       deleteRoles(ids).then(() => {
@@ -181,17 +181,17 @@ function showRoleMenuDialog(row: Role) {
   const roleId: any = row.id;
   checkedRole.value = {
     id: roleId,
-    name: row.name,
+    name: row.name
   };
 
   // 获取所有的资源
-  listResources().then((response) => {
+  listResources().then(response => {
     resourceOptions.value = response.data;
     // 角色拥有的资源
     getRoleMenuIds(roleId).then(({ data }) => {
       // 勾选回显
       const checkedMenuIds = data;
-      checkedMenuIds.forEach((menuId) =>
+      checkedMenuIds.forEach(menuId =>
         resourceRef.value.setChecked(menuId, true)
       );
 
@@ -207,7 +207,7 @@ function handleRoleResourceSubmit() {
     .getCheckedNodes(false, true)
     .map((node: any) => node.value);
 
-  updateRoleMenus(checkedRole.value.id, checkedMenuIds).then((res) => {
+  updateRoleMenus(checkedRole.value.id, checkedMenuIds).then(res => {
     ElMessage.success('分配权限成功');
     menuDialogVisible.value = false;
     handleQuery();
@@ -286,7 +286,7 @@ onMounted(() => {
         <el-table-column prop="createTime" label="创建时间" width="160" />
         <el-table-column prop="updateTime" label="修改时间" width="160" />
 
-        <el-table-column label="操作" align="left" >
+        <el-table-column label="操作" align="left">
           <template #default="scope">
             <el-button
               type="success"
@@ -301,7 +301,7 @@ onMounted(() => {
               link
               @click.stop="handleUpdate(scope.row)"
             >
-              修改
+              编辑
             </el-button>
             <el-button type="danger" link @click.stop="handleDelete(scope.row)">
               删除

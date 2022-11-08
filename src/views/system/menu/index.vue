@@ -102,26 +102,21 @@
               type="success"
               link
               @click.stop="handleAdd(scope.row)"
-
-              v-if="scope.row.type=='CATALOG' ||scope.row.type=='MENU'"
+              v-if="scope.row.type == 'CATALOG' || scope.row.type == 'MENU'"
             >
-            新增
-          </el-button>
+              新增
+            </el-button>
 
             <el-button
               type="primary"
               link
               @click.stop="handleUpdate(scope.row)"
             >
-          修改
-          </el-button>
-            <el-button
-              type="danger"
-             link
-              @click.stop="handleDelete(scope.row)"
-           >
-          删除
-          </el-button>
+              编辑
+            </el-button>
+            <el-button type="danger" link @click.stop="handleDelete(scope.row)">
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -287,7 +282,7 @@ import {
   listMenuOptions,
   addMenu,
   deleteMenus,
-  updateMenu,
+  updateMenu
 } from '@/api/menu';
 
 import SvgIcon from '@/components/SvgIcon/index.vue';
@@ -315,7 +310,7 @@ const state = reactive({
     visible: 1,
     sort: 1,
     component: undefined,
-    type: 'MENU',
+    type: 'MENU'
   } as MenuForm,
   rules: {
     parentId: [{ required: true, message: '请选择顶级菜单', trigger: 'blur' }],
@@ -323,8 +318,8 @@ const state = reactive({
     type: [{ required: true, message: '请选择菜单类型', trigger: 'blur' }],
     path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
     component: [
-      { required: true, message: '请输入组件完整路径', trigger: 'blur' },
-    ],
+      { required: true, message: '请输入组件完整路径', trigger: 'blur' }
+    ]
   },
   menuOptions: [] as OptionType[],
   currentRow: undefined,
@@ -332,8 +327,8 @@ const state = reactive({
   iconSelectVisible: false,
   cacheData: {
     menuType: '',
-    menuPath: '',
-  },
+    menuPath: ''
+  }
 });
 
 const {
@@ -345,7 +340,7 @@ const {
   rules,
   menuOptions,
   iconSelectVisible,
-  cacheData,
+  cacheData
 } = toRefs(state);
 
 /**
@@ -394,7 +389,7 @@ async function handleAdd(row: any) {
   await loadMenuData();
   dialog.value = {
     title: '添加菜单',
-    visible: true,
+    visible: true
   };
 
   if (row.id) {
@@ -421,7 +416,7 @@ async function handleUpdate(row: MenuForm) {
   await loadMenuData();
   state.dialog = {
     title: '编辑菜单',
-    visible: true,
+    visible: true
   };
   const id = row.id as string;
   getMenuDetail(id).then(({ data }) => {
@@ -475,7 +470,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'warning'
   })
     .then(() => {
       deleteMenus(ids).then(() => {
