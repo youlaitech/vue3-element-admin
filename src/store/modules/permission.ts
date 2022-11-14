@@ -34,7 +34,7 @@ export const filterAsyncRoutes = (
       } else {
         const component = modules[`../../views/${tmp.component}.vue`] as any;
         if (component) {
-          tmp.component = modules[`../../views/${tmp.component}.vue`];
+          tmp.component = component;
         } else {
           tmp.component = modules[`../../views/error-page/404.vue`];
         }
