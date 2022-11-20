@@ -24,7 +24,7 @@ import { onBeforeUnmount, shallowRef, reactive, toRefs } from 'vue';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
 
 // API 引用
-import { uploadFile } from '@/api/file';
+import { uploadFileApi } from '@/api/file';
 
 const props = defineProps({
   modelValue: {
@@ -46,8 +46,8 @@ const state = reactive({
       uploadImage: {
         // 自定义图片上传
         async customUpload(file: any, insertFn: any) {
-          uploadFile(file).then(response => {
-            const url = response.data;
+          uploadFileApi(file).then(response => {
+            const url = response.data.url;
             insertFn(url);
           });
         }
