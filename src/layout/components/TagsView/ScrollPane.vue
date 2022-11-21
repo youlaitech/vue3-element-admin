@@ -15,7 +15,7 @@ import {
   computed,
   onMounted,
   onBeforeUnmount,
-  getCurrentInstance,
+  getCurrentInstance
 } from 'vue';
 import useStore from '@/store';
 import { TagView } from '@/store/modules/types';
@@ -32,7 +32,9 @@ const { tagsView } = useStore();
 
 const visitedViews = computed(() => tagsView.visitedViews);
 
-const scrollWrapper = computed(() => proxy?.$refs.scrollContainer.$refs.wrap$);
+const scrollWrapper = computed(
+  () => proxy?.$refs.scrollContainer.$refs.wrapRef
+);
 
 onMounted(() => {
   scrollWrapper.value.addEventListener('scroll', emitScroll, true);
@@ -68,7 +70,7 @@ function moveToTarget(currentTag: TagView) {
   } else {
     const tagListDom = document.getElementsByClassName('tags-view__item');
     const currentIndex = visitedViews.value.findIndex(
-      (item) => item === currentTag
+      item => item === currentTag
     );
     let prevTag = null;
     let nextTag = null;
@@ -107,7 +109,7 @@ function moveToTarget(currentTag: TagView) {
 }
 
 defineExpose({
-  moveToTarget,
+  moveToTarget
 });
 </script>
 
