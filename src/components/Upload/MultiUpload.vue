@@ -110,20 +110,10 @@ async function handleUpload(options: UploadRequestOptions): Promise<any> {
  * 删除图片
  */
 function handleRemove(removeFile: UploadFile) {
-  console.log('removeFile', removeFile);
+  const filePath = removeFile.url;
 
-  const fileUrl = removeFile.url;
-
-  if (fileUrl) {
-    let fileName = removeFile.name;
-
-    if (!fileName) {
-      // 文件名不存在，从URL得到文件名
-      // 例： https://oss.youlai.tech/default/2022/11/20/{uuid}.jpg  得到文件名 2022/11/20/{uuid}.jpg
-      fileName = fileUrl.substring(fileUrl.indexOf('/', -3) + 1);
-    }
-
-    deleteFileApi(fileName).then(() => {
+  if (filePath) {
+    deleteFileApi(filePath).then(() => {
       // 删除成功回调
       emit(
         'update:modelValue',
