@@ -1,5 +1,4 @@
 import router from '@/router';
-import { ElMessage } from 'element-plus';
 import useStore from '@/store';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
@@ -37,7 +36,6 @@ router.beforeEach(async (to, from, next) => {
         } catch (error) {
           // 移除 token 并跳转登录页
           await user.resetToken();
-          ElMessage.error((error as any) || 'Has Error');
           next(`/login?redirect=${to.path}`);
           NProgress.done();
         }
