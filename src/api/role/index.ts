@@ -65,7 +65,7 @@ export function updateRoleMenus(
  *
  * @param id
  */
-export function getRoleFormDetail(id: number): AxiosPromise<RoleForm> {
+export function getRoleDetail(id: number): AxiosPromise<RoleForm> {
   return request({
     url: '/api/v1/roles/' + id,
     method: 'get'

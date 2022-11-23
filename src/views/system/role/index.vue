@@ -9,7 +9,7 @@ import { onMounted, reactive, ref, toRefs } from 'vue';
 import {
   listRolePages,
   updateRole,
-  getRoleFormDetail,
+  getRoleDetail,
   addRole,
   deleteRoles,
   getRoleMenuIds,
@@ -49,10 +49,8 @@ const state = reactive({
   },
   menuDialogVisible: false,
   resourceOptions: [] as OptionType[],
-  btnPerms: {} as any,
   // 勾选的菜单ID
   checkedMenuIds: new Set([]),
-  allPermIds: [] as string[],
   // 选中的角色
   checkedRole: {
     id: '',
@@ -78,12 +76,11 @@ const {
  * 查询
  */
 function handleQuery() {
-  emit('roleClick', {});
-  state.loading = true;
+  loading.value = true;
   listRolePages(state.queryParams).then(({ data }) => {
-    state.roleList = data.list;
-    state.total = data.total;
-    state.loading = false;
+    roleList.value = data.list;
+    total.value = data.total;
+    loading.value = false;
   });
 }
 /**
@@ -115,8 +112,8 @@ function handleUpdate(row: any) {
     visible: true
   };
   const roleId = row.id || state.ids;
-  getRoleFormDetail(roleId).then(({ data }) => {
-    state.formData = data;
+  getRoleDetail(roleId).then(({ data }) => {
+    formData.value = data;
   });
 }
 
@@ -230,7 +227,7 @@ onMounted(() => {
   <div class="app-container">
     <div class="search">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-form-item prop="name" label="关键字">
+        <el-form-item prop="keywords" label="关键字">
           <el-input
             v-model="queryParams.keywords"
             placeholder="角色名称"
