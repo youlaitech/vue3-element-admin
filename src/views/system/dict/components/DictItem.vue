@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  name: 'dictItem',
+  name: 'dictItem'
 };
 </script>
 
@@ -13,7 +13,7 @@ import {
   getDictItemData,
   saveDictItem,
   updateDictItem,
-  deleteDictItems,
+  deleteDictItems
 } from '@/api/dict';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { DictItem, DictItemForm, DictItemQuery } from '@/api/dict/types';
@@ -23,19 +23,19 @@ const props = defineProps({
     type: String,
     default: () => {
       return '';
-    },
+    }
   },
   typeName: {
     type: String,
     default: () => {
       return '';
-    },
-  },
+    }
+  }
 });
 
 watch(
   () => props.typeCode,
-  (value) => {
+  value => {
     state.queryParams.typeCode = value;
     state.formData.typeCode = value;
     handleQuery();
@@ -49,10 +49,6 @@ const state = reactive({
   loading: true,
   // 选中ID数组
   ids: [] as number[],
-  // 非单个禁用
-  single: true,
-  // 非多个禁用
-  multiple: true,
   total: 0,
   queryParams: { pageNum: 1, pageSize: 10 } as DictItemQuery,
   dictItemList: [] as DictItem[],
@@ -61,40 +57,40 @@ const state = reactive({
     typeCode: props.typeCode,
     typeName: props.typeName,
     status: 1,
-    sort: 1,
+    sort: 1
   } as DictItemForm,
   rules: {
     name: [{ required: true, message: '请输入字典项名称', trigger: 'blur' }],
-    value: [{ required: true, message: '请输入字典项值', trigger: 'blur' }],
+    value: [{ required: true, message: '请输入字典项值', trigger: 'blur' }]
   },
   localDictCode: props.typeCode,
-  localDictName: props.typeName,
+  localDictName: props.typeName
 });
 
 const {
   loading,
-  multiple,
+  ids,
   queryParams,
   dictItemList,
   dialog,
   formData,
   rules,
-  total,
+  total
 } = toRefs(state);
 
 function handleQuery() {
-  if (state.queryParams.typeCode) {
-    state.loading = true;
+  if (queryParams.value.typeCode) {
+    loading.value = true;
     listDictItemPages(state.queryParams).then(({ data }) => {
-      state.dictItemList = data.list;
-      state.total = data.total;
-      state.loading = false;
+      dictItemList.value = data.list;
+      total.value = data.total;
+      loading.value = false;
     });
   } else {
-    state.dictItemList = [];
-    state.total = 0;
-    state.queryParams.pageNum = 1;
-    state.loading = false;
+    dictItemList.value = [];
+    total.value = 0;
+    queryParams.value.pageNum = 1;
+    loading.value = false;
   }
 }
 
@@ -105,8 +101,6 @@ function resetQuery() {
 
 function handleSelectionChange(selection: any) {
   state.ids = selection.map((item: any) => item.id);
-  state.single = selection.length !== 1;
-  state.multiple = !selection.length;
 }
 
 function handleAdd() {
@@ -116,14 +110,14 @@ function handleAdd() {
   }
   state.dialog = {
     title: '添加字典数据项',
-    visible: true,
+    visible: true
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改字典数据项',
-    visible: true,
+    visible: true
   };
   const id = row.id || state.ids;
   getDictItemData(id).then(({ data }) => {
@@ -162,7 +156,7 @@ function handleDelete(row: any) {
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'warning'
   })
     .then(() => {
       deleteDictItems(ids).then(() => {
@@ -182,24 +176,8 @@ onMounted(() => {
   <div class="app-container">
     <!-- 搜索表单 -->
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-      <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd"
-          >新增</el-button
-        >
-        <el-button
-          type="danger"
-          :icon="Delete"
-          :disabled="multiple"
-          @click="handleDelete"
-          >删除</el-button
-        >
-      </el-form-item>
-      <el-form-item prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="数据项名称"
-          clearable
-        />
+      <el-form-item label="关键字" prop="name">
+        <el-input v-model="queryParams.name" placeholder="数据标签" clearable />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" :icon="Search" @click="handleQuery"
@@ -209,49 +187,56 @@ onMounted(() => {
       </el-form-item>
     </el-form>
 
-    <!-- 数据表格 -->
-    <el-table
-      :data="dictItemList"
-      v-loading="loading"
-      border
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column type="selection" min-width="5%" />
-      <el-table-column label="数据项名称" prop="name" />
-      <el-table-column label="数据项值" prop="value" />
-      <el-table-column label="状态" align="center">
-        <template #default="scope">
-          <el-tag v-if="scope.row.status === 1" type="success">启用</el-tag>
-          <el-tag v-else type="info">禁用</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center">
-        <template #default="scope">
-          <el-button
-            type="primary"
-            :icon="Edit"
-            circle
-            plain
-            @click.stop="handleUpdate(scope.row)"
-          />
-          <el-button
-            type="danger"
-            :icon="Delete"
-            circle
-            plain
-            @click.stop="handleDelete(scope.row)"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-card shadow="false">
+      <template #header>
+        <el-button type="success" :icon="Plus" @click="handleAdd"
+          >新增</el-button
+        >
+        <el-button
+          type="danger"
+          :icon="Delete"
+          :disabled="ids.length === 0"
+          @click="handleDelete"
+          >删除</el-button
+        >
+      </template>
 
-    <pagination
-      v-if="total > 0"
-      :total="total"
-      v-model:page="queryParams.pageNum"
-      v-model:limit="queryParams.pageSize"
-      @pagination="handleQuery"
-    />
+      <!-- 数据表格 -->
+      <el-table
+        :data="dictItemList"
+        v-loading="loading"
+        border
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="50" />
+        <el-table-column label="数据标签" prop="name" />
+        <el-table-column label="数据值" prop="value" />
+        <el-table-column label="状态" align="center">
+          <template #default="scope">
+            <el-tag v-if="scope.row.status === 1" type="success">启用</el-tag>
+            <el-tag v-else type="info">禁用</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+          <template #default="scope">
+            <el-button type="primary" link @click="handleUpdate(scope.row)"
+              >编辑</el-button
+            >
+            <el-button type="danger" link @click.stop="handleDelete(scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <pagination
+        v-if="total > 0"
+        :total="total"
+        v-model:page="queryParams.pageNum"
+        v-model:limit="queryParams.pageSize"
+        @pagination="handleQuery"
+      />
+    </el-card>
 
     <!-- 表单弹窗 -->
     <el-dialog
