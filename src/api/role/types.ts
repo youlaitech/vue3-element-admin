@@ -25,10 +25,10 @@ export interface Role {
 export type RolePageResult = PageResult<Role[]>;
 
 /**
- * 角色表单类型
+ * 角色表单
  */
 export interface RoleForm {
-  id?: string;
+  id?: number;
   name: string;
   code: string;
   sort: number;

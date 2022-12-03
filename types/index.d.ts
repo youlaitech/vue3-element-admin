@@ -1,5 +1,5 @@
 declare type DialogType = {
-  title: string;
+  title?: string;
   visible: boolean;
 };
 
