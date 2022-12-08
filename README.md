@@ -20,7 +20,7 @@
 
 ## 项目介绍
 
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本后台管理前端解决方案；使用前端主流技术栈 Vue3 + Vite3 + TypeScript + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等；基于此模板开发了有来商城管理系统，也是有来开源组织的另一项开源力作。
+[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本后台管理前端解决方案；使用前端主流技术栈 Vue3 + Vite3 + TypeScript + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等；基于此模板开发了有来商城管理系统，也是有来开源组织的又一项开源力作。
 
 ## 项目优势
 
@@ -29,7 +29,7 @@
 - 功能全面：国际化、动态路由、按钮权限、主题大小切换、Echart、wangEditor；
 - TypeScript 全面支持，包括组件和 API 调用层面；
 - 主流 Vue3 生态和前端技术栈，常用组件极简封装；
-- 从 0 到 1 的项目文档支持；
+- 从 0 到 1 的项目文档支持 ([文档地址](https://www.cnblogs.com/haoxianrui/p/16090029.html))；
 
 ## 技术栈
 
@@ -44,25 +44,23 @@
 
 ## 项目预览
 
-在线预览地址: [vue3.youlai.tech](http://vue3.youlai.tech)
+在线预览: [vue3.youlai.tech](http://vue3.youlai.tech)
 
-| ![控制台](https://s2.loli.net/2022/04/07/fIEDs3GeSb8rxlt.png) | ![国际化](https://s2.loli.net/2022/04/07/lt6u2jMefpTJvkh.gif) |
+| ![控制台](https://s2.loli.net/2022/12/09/34iklzLAnsIuXDh.png) | ![国际化](https://s2.loli.net/2022/04/07/lt6u2jMefpTJvkh.gif) |
 | --- | --- |
-| ![菜单管理](https://s2.loli.net/2022/04/07/quTeB3pNIyQ4alG.png) | ![角色管理](https://s2.loli.net/2022/04/07/dmh5MYtuONGRJZn.png) |
-| ![商品管理](https://s2.loli.net/2022/04/07/5XgYfMqBxhtdcG2.png) | ![库存设置](https://s2.loli.net/2022/04/07/s9IJeP7vRxq2WSL.png) |
+| ![用户管理](https://s2.loli.net/2022/12/09/gjJibCaVP3Ysnoh.png) | ![角色管理](https://s2.loli.net/2022/12/09/xHoNctJj2hUfMO8.png) |
+| ![菜单管理](https://s2.loli.net/2022/12/09/dah34MRfqiB2cez.png) |![富文本编辑器](https://s2.loli.net/2022/12/09/QzCDIwmqydtLPYr.png) |
 
 ## 项目地址
 
 |  | Gitee | Github |
 | --- | --- | --- |
 | vue3-element-admin | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |
-| 后端工程(非必要) | [youlai_boot](https://gitee.com/youlaiorg/youlai-boot) |  |
+| 后端工程(非必要) | [youlai_boot](https://gitee.com/youlaiorg/youlai-boot) | - |
 
-## 启动部署
+## 环境要求
 
-### 环境准备
-
-- 安装 Node
+- Node 环境 
 
   版本：16+
 
@@ -75,13 +73,13 @@
   - Vue Language Features (Volar) 
   - TypeScript Vue Plugin (Volar)
 
-### 项目启动
+## 项目启动
 
 1. npm install
 2. npm run dev
-3. 访问 http://localhost:3000
+3. 访问 [http://localhost:3000](http://localhost:3000)
 
-### 项目部署
+## 项目部署
 
 - 本地打包
 
@@ -93,7 +91,7 @@
 
 - 上传文件
 
-  创建 `/usr/local/nginx/html/vue3` 目录，将打包生成 dist 的所有文件拷贝至此工作目录下
+  创建 `/mnt/nginx/html` 目录，将打包生成 dist 下的所有文件拷贝至此工作目录下
 
 - nginx.cofig 配置
 
@@ -103,12 +101,11 @@
       server_name  localhost;
 
       location / {
-          root /usr/local/nginx/html/vue3;
+          root /mnt/nginx/html;
           index index.html index.htm;
       }
 
-      # 代理转发请求至网关，prod-api标识解决跨域问题
-      # vapi.youlai.tech 线上接口地址
+      # 代理转发请求至网关，prod-api标识解决跨域,vapi.youlai.tech 线上接口地址，注意后面/
       location /prod-api/ {
           proxy_pass http://vapi.youlai.tech/;
       }
@@ -117,13 +114,12 @@
   ```
 ## 本地接口
 
-> 如果你了解一点Java后端SpringBoot，可轻松在本地搭建接口环境.
+> 默认使用线上接口，如果你了解一点Java后端SpringBoot，可轻松搭建本地接口环境：
 
 1. 访问后端项目仓库地址：https://gitee.com/youlaiorg/youlai-boot.git
 
-2. 根据项目说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 的描述完成数据库的创建和后端工程的启动；
+2. 根据项目说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成数据库的创建和后端工程的启动；
 3. 进入 [vite.config.ts](vite.config.ts) 文件修改代理线上接口地址 http://vapi.youlai.tech 为本地接口地址 http://localhost:8989 即可。
-
 
 
 ## 联系信息
