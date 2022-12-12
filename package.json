@@ -10,7 +10,11 @@
     "prettier": "prettier --write ."
   },
   "dependencies": {
+    "vue": "^3.2.40",
+    "element-plus": "^2.2.17",
     "@element-plus/icons-vue": "^1.0.0",
+    "vue-router": "^4.0.12",
+    "pinia": "^2.0.12",
     "@types/js-cookie": "^3.0.2",
     "@vueuse/core": "^9.1.1",
     "@wangeditor/editor": "^5.0.0",
@@ -19,17 +23,13 @@
     "better-scroll": "^2.4.2",
     "default-passive-events": "^2.0.0",
     "echarts": "^5.2.2",
-    "element-plus": "^2.2.17",
     "js-cookie": "^3.0.1",
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
     "path-to-regexp": "^6.2.0",
-    "pinia": "^2.0.12",
     "screenfull": "^6.0.0",
     "sortablejs": "^1.14.0",
-    "vue": "^3.2.40",
-    "vue-i18n": "^9.1.9",
-    "vue-router": "^4.0.12"
+    "vue-i18n": "^9.1.9"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.3",
