@@ -1,66 +1,5 @@
-<template>
-  <div class="tags-view__container">
-    <scroll-pane
-      ref="scrollPaneRef"
-      class="tags-view__wrapper"
-      @scroll="handleScroll"
-    >
-      <router-link
-        v-for="tag in visitedViews"
-        :key="tag.path"
-        :data-path="tag.path"
-        :class="isActive(tag) ? 'active' : ''"
-        :to="{ path: tag.path, query: tag.query }"
-        class="tags-view__item"
-        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
-        @contextmenu.prevent="openMenu(tag, $event)"
-      >
-        {{ generateTitle(tag.meta.title) }}
-        <span
-          v-if="!isAffix(tag)"
-          class="icon-close"
-          @click.prevent.stop="closeSelectedTag(tag)"
-        >
-          <svg-icon icon-class="close" />
-        </span>
-      </router-link>
-    </scroll-pane>
-    <ul
-      v-show="visible"
-      :style="{ left: left + 'px', top: top + 'px' }"
-      class="tags-view__menu"
-    >
-      <li @click="refreshSelectedTag(selectedTag)">
-        <svg-icon icon-class="refresh" />
-        刷新
-      </li>
-      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        <svg-icon icon-class="close" />
-        关闭
-      </li>
-      <li @click="closeOtherTags">
-        <svg-icon icon-class="close_other" />
-        关闭其它
-      </li>
-      <li v-if="!isFirstView()" @click="closeLeftTags">
-        <svg-icon icon-class="close_left" />
-        关闭左侧
-      </li>
-      <li v-if="!isLastView()" @click="closeRightTags">
-        <svg-icon icon-class="close_right" />
-        关闭右侧
-      </li>
-      <li @click="closeAllTags(selectedTag)">
-        <svg-icon icon-class="close_all" />
-        关闭所有
-      </li>
-    </ul>
-  </div>
-</template>
-
 <script setup lang="ts">
 import {
-  computed,
   getCurrentInstance,
   nextTick,
   ref,
@@ -71,29 +10,28 @@ import {
 
 import path from 'path-browserify';
 
-import {  useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import ScrollPane from './ScrollPane.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import { generateTitle } from '@/utils/i18n';
-import useStore from '@/store';
-import { TagView } from '@/store/modules/types';
 
-const { tagsView, permission } = useStore();
+import { usePermissionStore } from '@/store/modules/permission';
+import { useTagsViewStore, TagView } from '@/store/modules/tagsView';
+
+const permissionStore = usePermissionStore();
+const tagsViewStore = useTagsViewStore();
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const router = useRouter();
 const route = useRoute();
 
-const visitedViews = computed<any>(() => tagsView.visitedViews);
-const routes = computed<any>(() => permission.routes);
-
-const affixTags = ref([]);
 const visible = ref(false);
 const selectedTag = ref({});
 const scrollPaneRef = ref();
 const left = ref(0);
 const top = ref(0);
+const affixTags = ref<TagView[]>([]);
 
 watch(
   route,
@@ -140,30 +78,30 @@ function filterAffixTags(routes: any[], basePath = '/') {
 }
 
 function initTags() {
-  const res = filterAffixTags(routes.value) as [];
-  affixTags.value = res;
-  for (const tag of res) {
+  const tags = filterAffixTags(permissionStore.routes);
+  affixTags.value = tags;
+  for (const tag of tags) {
     // Must have tag name
     if ((tag as TagView).name) {
-      tagsView.addVisitedView(tag);
+      tagsViewStore.addVisitedView(tag);
     }
   }
 }
 
 function addTags() {
   if (route.name) {
-    tagsView.addView(route);
+    tagsViewStore.addView(route);
   }
 }
 
 function moveToCurrentTag() {
   nextTick(() => {
-    for (const r of visitedViews.value) {
+    for (const r of tagsViewStore.visitedViews) {
       if (r.path === route.path) {
         scrollPaneRef.value.moveToTarget(r);
         // when query is different then update
         if (r.fullPath !== route.fullPath) {
-          tagsView.updateVisitedView(route);
+          tagsViewStore.updateVisitedView(route);
         }
       }
     }
@@ -182,7 +120,7 @@ function isFirstView() {
   try {
     return (
       (selectedTag.value as TagView).fullPath ===
-        visitedViews.value[1].fullPath ||
+        tagsViewStore.visitedViews[1].fullPath ||
       (selectedTag.value as TagView).fullPath === '/index'
     );
   } catch (err) {
@@ -194,7 +132,7 @@ function isLastView() {
   try {
     return (
       (selectedTag.value as TagView).fullPath ===
-      visitedViews.value[visitedViews.value.length - 1].fullPath
+      tagsViewStore.visitedViews[tagsViewStore.visitedViews.length - 1].fullPath
     );
   } catch (err) {
     return false;
@@ -202,7 +140,7 @@ function isLastView() {
 }
 
 function refreshSelectedTag(view: TagView) {
-  tagsView.delCachedView(view);
+  tagsViewStore.delCachedView(view);
   const { fullPath } = view;
   nextTick(() => {
     router.replace({ path: '/redirect' + fullPath }).catch(err => {
@@ -228,7 +166,7 @@ function toLastView(visitedViews: TagView[], view?: any) {
 }
 
 function closeSelectedTag(view: TagView) {
-  tagsView.delView(view).then((res: any) => {
+  tagsViewStore.delView(view).then((res: any) => {
     if (isActive(view)) {
       toLastView(res.visitedViews, view);
     }
@@ -236,7 +174,7 @@ function closeSelectedTag(view: TagView) {
 }
 
 function closeLeftTags() {
-  tagsView.delLeftViews(selectedTag.value).then((res: any) => {
+  tagsViewStore.delLeftViews(selectedTag.value).then((res: any) => {
     if (
       !res.visitedViews.find((item: any) => item.fullPath === route.fullPath)
     ) {
@@ -245,7 +183,7 @@ function closeLeftTags() {
   });
 }
 function closeRightTags() {
-  tagsView.delRightViews(selectedTag.value).then((res: any) => {
+  tagsViewStore.delRightViews(selectedTag.value).then((res: any) => {
     if (
       !res.visitedViews.find((item: any) => item.fullPath === route.fullPath)
     ) {
@@ -256,13 +194,13 @@ function closeRightTags() {
 
 function closeOtherTags() {
   router.push(selectedTag.value);
-  tagsView.delOtherViews(selectedTag.value).then(() => {
+  tagsViewStore.delOtherViews(selectedTag.value).then(() => {
     moveToCurrentTag();
   });
 }
 
 function closeAllTags(view: TagView) {
-  tagsView.delAllViews().then((res: any) => {
+  tagsViewStore.delAllViews().then((res: any) => {
     toLastView(res.visitedViews, view);
   });
 }
@@ -297,6 +235,66 @@ onMounted(() => {
   initTags();
 });
 </script>
+
+<template>
+  <div class="tags-view__container">
+    <scroll-pane
+      ref="scrollPaneRef"
+      class="tags-view__wrapper"
+      @scroll="handleScroll"
+    >
+      <router-link
+        v-for="tag in tagsViewStore.visitedViews"
+        :key="tag.path"
+        :data-path="tag.path"
+        :class="isActive(tag) ? 'active' : ''"
+        :to="{ path: tag.path, query: tag.query }"
+        class="tags-view__item"
+        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
+        @contextmenu.prevent="openMenu(tag, $event)"
+      >
+        {{ generateTitle(tag.meta?.title) }}
+        <span
+          v-if="!isAffix(tag)"
+          class="icon-close"
+          @click.prevent.stop="closeSelectedTag(tag)"
+        >
+          <svg-icon icon-class="close" />
+        </span>
+      </router-link>
+    </scroll-pane>
+    <ul
+      v-show="visible"
+      :style="{ left: left + 'px', top: top + 'px' }"
+      class="tags-view__menu"
+    >
+      <li @click="refreshSelectedTag(selectedTag)">
+        <svg-icon icon-class="refresh" />
+        刷新
+      </li>
+      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
+        <svg-icon icon-class="close" />
+        关闭
+      </li>
+      <li @click="closeOtherTags">
+        <svg-icon icon-class="close_other" />
+        关闭其它
+      </li>
+      <li v-if="!isFirstView()" @click="closeLeftTags">
+        <svg-icon icon-class="close_left" />
+        关闭左侧
+      </li>
+      <li v-if="!isLastView()" @click="closeRightTags">
+        <svg-icon icon-class="close_right" />
+        关闭右侧
+      </li>
+      <li @click="closeAllTags(selectedTag)">
+        <svg-icon icon-class="close_all" />
+        关闭所有
+      </li>
+    </ul>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .tags-view__container {

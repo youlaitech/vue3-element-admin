@@ -1,14 +1,3 @@
-<template>
-  <el-scrollbar
-    ref="scrollContainer"
-    :vertical="false"
-    class="scroll-container"
-    @wheel.prevent="handleScroll"
-  >
-    <slot />
-  </el-scrollbar>
-</template>
-
 <script setup lang="ts">
 import {
   ref,
@@ -17,8 +6,7 @@ import {
   onBeforeUnmount,
   getCurrentInstance
 } from 'vue';
-import useStore from '@/store';
-import { TagView } from '@/store/modules/types';
+import { useTagsViewStore, TagView } from '@/store/modules/tagsView';
 
 const tagAndTagSpacing = ref(4);
 const { proxy } = getCurrentInstance() as any;
@@ -28,9 +16,7 @@ const emitScroll = () => {
   emits('scroll');
 };
 
-const { tagsView } = useStore();
-
-const visitedViews = computed(() => tagsView.visitedViews);
+const tagsViewStore = useTagsViewStore();
 
 const scrollWrapper = computed(
   () => proxy?.$refs.scrollContainer.$refs.wrapRef
@@ -58,9 +44,9 @@ function moveToTarget(currentTag: TagView) {
   let lastTag = null;
 
   // find first tag and last tag
-  if (visitedViews.value.length > 0) {
-    firstTag = visitedViews.value[0];
-    lastTag = visitedViews.value[visitedViews.value.length - 1];
+  if (tagsViewStore.visitedViews.length > 0) {
+    firstTag = tagsViewStore.visitedViews[0];
+    lastTag = tagsViewStore.visitedViews[tagsViewStore.visitedViews.length - 1];
   }
 
   if (firstTag === currentTag) {
@@ -69,7 +55,7 @@ function moveToTarget(currentTag: TagView) {
     $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth;
   } else {
     const tagListDom = document.getElementsByClassName('tags-view__item');
-    const currentIndex = visitedViews.value.findIndex(
+    const currentIndex = tagsViewStore.visitedViews.findIndex(
       item => item === currentTag
     );
     let prevTag = null;
@@ -78,13 +64,13 @@ function moveToTarget(currentTag: TagView) {
       if (k !== 'length' && Object.hasOwnProperty.call(tagListDom, k)) {
         if (
           (tagListDom[k] as any).dataset.path ===
-          visitedViews.value[currentIndex - 1].path
+          tagsViewStore.visitedViews[currentIndex - 1].path
         ) {
           prevTag = tagListDom[k];
         }
         if (
           (tagListDom[k] as any).dataset.path ===
-          visitedViews.value[currentIndex + 1].path
+          tagsViewStore.visitedViews[currentIndex + 1].path
         ) {
           nextTag = tagListDom[k];
         }
@@ -112,6 +98,17 @@ defineExpose({
   moveToTarget
 });
 </script>
+
+<template>
+  <el-scrollbar
+    ref="scrollContainer"
+    :vertical="false"
+    class="scroll-container"
+    @wheel.prevent="handleScroll"
+  >
+    <slot />
+  </el-scrollbar>
+</template>
 
 <style lang="scss" scoped>
 .scroll-container {

@@ -1,6 +1,6 @@
 <template>
   <el-color-picker
-    v-model="theme"
+    v-model="settingsStore.theme"
     :predefine="[
       '#409EFF',
       '#1890ff',
@@ -17,42 +17,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue';
-import useStore from '@/store';
-import { localStorage } from '@/utils/storage';
-
-// 参考连接:https://juejin.cn/post/7024025899813044232#heading-1
-import { mix } from '@/utils';
-// 白色混合色
-const mixWhite = '#ffffff';
-// 黑色混合色
-const mixBlack = '#000000';
-
-const node = document.documentElement;
-
-const { setting } = useStore();
-const theme = computed(() => setting.theme);
-
-watch(theme, (color: string) => {
-  node.style.setProperty('--el-color-primary', color);
-  localStorage.set('theme', color);
-
-  for (let i = 1; i < 10; i += 1) {
-    node.style.setProperty(
-      `--el-color-primary-light-${i}`,
-      mix(color, mixWhite, i * 0.1)
-    );
-  }
-  node.style.setProperty('--el-color-primary-dark', mix(color, mixBlack, 0.1));
-
-  localStorage.set('style', node.style.cssText);
-});
+import { useSettingsStore } from '@/store/modules/settings';
+const settingsStore = useSettingsStore();
 </script>
 
 <style>
 .theme-message,
 .theme-picker-dropdown {
-  z-index: 99999 !important;
+  z-index: 9999 !important;
 }
 
 .theme-picker .el-color-picker__trigger {

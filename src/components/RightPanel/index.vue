@@ -1,36 +1,16 @@
-<template>
-  <div ref="rightPanel" :class="{ show: show }">
-    <div class="right-panel-background" />
-    <div class="right-panel">
-      <div
-        class="right-panel__button"
-        :style="{ top: buttonTop + 'px', 'background-color': theme }"
-        @click="show = !show"
-      >
-        <Close class="icon" v-show="show" />
-        <Setting class="icon" v-show="!show" />
-      </div>
-      <div class="right-panel__items">
-        <slot />
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { addClass, removeClass } from '@/utils/index';
 
-import useStore from '@/store';
+import { useSettingsStore } from '@/store/modules/settings';
 
 // 图标依赖
 import { Close, Setting } from '@element-plus/icons-vue';
 import { ElColorPicker } from 'element-plus';
 
-const { setting } = useStore();
+const settingsStore = useSettingsStore();
 
-const theme = computed(() => setting.theme);
 const show = ref(false);
 
 defineProps({
@@ -86,6 +66,28 @@ onBeforeUnmount(() => {
   elx.remove();
 });
 </script>
+
+<template>
+  <div ref="rightPanel" :class="{ show: show }">
+    <div class="right-panel-background" />
+    <div class="right-panel">
+      <div
+        class="right-panel__button"
+        :style="{
+          top: buttonTop + 'px',
+          'background-color': settingsStore.theme
+        }"
+        @click="show = !show"
+      >
+        <Close class="icon" v-show="show" />
+        <Setting class="icon" v-show="!show" />
+      </div>
+      <div class="right-panel__items">
+        <slot />
+      </div>
+    </div>
+  </div>
+</template>
 
 <style>
 .showRightPanel {

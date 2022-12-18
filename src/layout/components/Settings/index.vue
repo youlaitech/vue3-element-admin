@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import { useSettingsStore } from '@/store/modules/settings';
+
+import ThemePicker from '@/components/ThemePicker/index.vue';
+
+const settingsStore = useSettingsStore();
+
+function themeChange(val: string) {
+  settingsStore.changeSetting({ key: 'theme', value: val });
+}
+</script>
+
 <template>
   <div class="drawer-container">
     <h3 class="drawer-title">系统布局配置</h3>
@@ -10,17 +22,17 @@
 
     <div class="drawer-item">
       <span>开启 Tags-View</span>
-      <el-switch v-model="tagsView" class="drawer-switch" />
+      <el-switch v-model="settingsStore.tagsView" class="drawer-switch" />
     </div>
 
     <div class="drawer-item">
       <span>固定 Header</span>
-      <el-switch v-model="fixedHeader" class="drawer-switch" />
+      <el-switch v-model="settingsStore.fixedHeader" class="drawer-switch" />
     </div>
 
     <div class="drawer-item">
       <span>侧边栏 Logo</span>
-      <el-switch v-model="sidebarLogo" class="drawer-switch" />
+      <el-switch v-model="settingsStore.sidebarLogo" class="drawer-switch" />
     </div>
 
     <el-divider>导航栏模式</el-divider>
@@ -47,49 +59,6 @@
     </ul>
   </div>
 </template>
-
-<script setup lang="ts">
-import { reactive, toRefs, watch } from 'vue';
-
-import ThemePicker from '@/components/ThemePicker/index.vue';
-
-import useStore from '@/store';
-
-const { setting } = useStore();
-
-const state = reactive({
-  fixedHeader: setting.fixedHeader,
-  tagsView: setting.tagsView,
-  sidebarLogo: setting.sidebarLogo
-});
-
-const { fixedHeader, tagsView, sidebarLogo } = toRefs(state);
-
-function themeChange(val: any) {
-  setting.changeSetting({ key: 'theme', value: val });
-}
-
-watch(
-  () => state.fixedHeader,
-  value => {
-    setting.changeSetting({ key: 'fixedHeader', value: value });
-  }
-);
-
-watch(
-  () => state.tagsView,
-  value => {
-    setting.changeSetting({ key: 'tagsView', value: value });
-  }
-);
-
-watch(
-  () => state.sidebarLogo,
-  value => {
-    setting.changeSetting({ key: 'sidebarLogo', value: value });
-  }
-);
-</script>
 
 <style lang="scss" scoped>
 .drawer-container {

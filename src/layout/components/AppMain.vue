@@ -1,23 +1,20 @@
+<script setup lang="ts">
+import { useTagsViewStore } from '@/store/modules/tagsView';
+
+const tagsViewStore = useTagsViewStore();
+</script>
+
 <template>
   <section class="app-main">
     <router-view v-slot="{ Component, route }">
       <transition name="router-fade" mode="out-in">
-        <keep-alive :include="cachedViews">
+        <keep-alive :include="tagsViewStore.cachedViews">
           <component :is="Component" :key="route.fullPath" />
         </keep-alive>
       </transition>
     </router-view>
   </section>
 </template>
-
-<script setup lang="ts">
-import { computed } from 'vue';
-import useStore from '@/store';
-
-const { tagsView } = useStore();
-
-const cachedViews = computed(() => tagsView.cachedViews);
-</script>
 
 <style lang="scss" scoped>
 .app-main {

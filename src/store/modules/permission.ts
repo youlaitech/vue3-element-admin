@@ -1,8 +1,9 @@
-import { PermissionState } from './types';
 import { RouteRecordRaw } from 'vue-router';
 import { defineStore } from 'pinia';
 import { constantRoutes } from '@/router';
+import { store } from '@/store';
 import { listRoutes } from '@/api/menu';
+import { ref } from 'vue';
 
 const modules = import.meta.glob('../../views/**/**.vue');
 export const Layout = () => import('@/layout/index.vue');
@@ -21,10 +22,7 @@ const hasPermission = (roles: string[], route: RouteRecordRaw) => {
   return false;
 };
 
-export const filterAsyncRoutes = (
-  routes: RouteRecordRaw[],
-  roles: string[]
-) => {
+const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
   const res: RouteRecordRaw[] = [];
   routes.forEach(route => {
     const tmp = { ...route } as any;
@@ -49,32 +47,36 @@ export const filterAsyncRoutes = (
   return res;
 };
 
-const usePermissionStore = defineStore({
-  id: 'permission',
-  state: (): PermissionState => ({
-    routes: [],
-    addRoutes: []
-  }),
-  actions: {
-    setRoutes(routes: RouteRecordRaw[]) {
-      this.addRoutes = routes;
-      this.routes = constantRoutes.concat(routes);
-    },
-    generateRoutes(roles: string[]) {
-      return new Promise((resolve, reject) => {
-        listRoutes()
-          .then(response => {
-            const asyncRoutes = response.data;
-            const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles);
-            this.setRoutes(accessedRoutes);
-            resolve(accessedRoutes);
-          })
-          .catch(error => {
-            reject(error);
-          });
-      });
-    }
+// setup
+export const usePermissionStore = defineStore('permission', () => {
+  // state
+  const routes = ref<RouteRecordRaw[]>([]);
+  const addRoutes = ref<RouteRecordRaw[]>([]);
+
+  // auctions
+  function setRoutes(newRoutes: RouteRecordRaw[]) {
+    addRoutes.value = newRoutes;
+    routes.value = constantRoutes.concat(newRoutes);
   }
+
+  function generateRoutes(roles: string[]) {
+    return new Promise<RouteRecordRaw[]>((resolve, reject) => {
+      listRoutes()
+        .then(response => {
+          const asyncRoutes = response.data;
+          const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles);
+          setRoutes(accessedRoutes);
+          resolve(accessedRoutes);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+  return { routes, setRoutes, generateRoutes };
 });
 
-export default usePermissionStore;
+// 非setup
+export function usePermissionStoreHook() {
+  return usePermissionStore(store);
+}

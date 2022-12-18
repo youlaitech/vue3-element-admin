@@ -1,51 +1,3 @@
-<template>
-  <div v-if="!item.meta || !item.meta.hidden">
-    <template
-      v-if="
-        hasOneShowingChild(item.children, item) &&
-        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-        (!item.meta || !item.meta.alwaysShow)
-      "
-    >
-      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item
-          :index="resolvePath(onlyOneChild.path)"
-          :class="{ 'submenu-title-noDropdown': !isNest }"
-        >
-          <svg-icon
-            v-if="onlyOneChild.meta && onlyOneChild.meta.icon"
-            :icon-class="onlyOneChild.meta.icon"
-          />
-          <template #title>
-            {{ generateTitle(onlyOneChild.meta.title) }}
-          </template>
-        </el-menu-item>
-      </app-link>
-    </template>
-    <el-sub-menu v-else :index="resolvePath(item.path)" popper-append-to-body>
-      <!-- popper-append-to-body -->
-      <template #title>
-        <svg-icon
-          v-if="item.meta && item.meta.icon"
-          :icon-class="item.meta.icon"
-        ></svg-icon>
-        <span v-if="item.meta && item.meta.title">{{
-          generateTitle(item.meta.title)
-        }}</span>
-      </template>
-
-      <sidebar-item
-        v-for="child in item.children"
-        :key="child.path"
-        :item="child"
-        :is-nest="true"
-        :base-path="resolvePath(child.path)"
-        class="nest-menu"
-      />
-    </el-sub-menu>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue';
 import path from 'path-browserify';
@@ -110,5 +62,52 @@ function resolvePath(routePath: string) {
   return path.resolve(props.basePath, routePath);
 }
 </script>
+<template>
+  <div v-if="!item.meta || !item.meta.hidden">
+    <template
+      v-if="
+        hasOneShowingChild(item.children, item) &&
+        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
+        (!item.meta || !item.meta.alwaysShow)
+      "
+    >
+      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
+        <el-menu-item
+          :index="resolvePath(onlyOneChild.path)"
+          :class="{ 'submenu-title-noDropdown': !isNest }"
+        >
+          <svg-icon
+            v-if="onlyOneChild.meta && onlyOneChild.meta.icon"
+            :icon-class="onlyOneChild.meta.icon"
+          />
+          <template #title>
+            {{ generateTitle(onlyOneChild.meta.title) }}
+          </template>
+        </el-menu-item>
+      </app-link>
+    </template>
+    <el-sub-menu v-else :index="resolvePath(item.path)" popper-append-to-body>
+      <!-- popper-append-to-body -->
+      <template #title>
+        <svg-icon
+          v-if="item.meta && item.meta.icon"
+          :icon-class="item.meta.icon"
+        ></svg-icon>
+        <span v-if="item.meta && item.meta.title">{{
+          generateTitle(item.meta.title)
+        }}</span>
+      </template>
+
+      <sidebar-item
+        v-for="child in item.children"
+        :key="child.path"
+        :item="child"
+        :is-nest="true"
+        :base-path="resolvePath(child.path)"
+        class="nest-menu"
+      />
+    </el-sub-menu>
+  </div>
+</template>
 
 <style lang="scss" scoped></style>

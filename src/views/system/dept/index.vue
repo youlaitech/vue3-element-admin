@@ -168,10 +168,10 @@ function handleDelete(row: any) {
           ElMessage.success('删除成功');
         })
         .catch(() => {
-          console.log(`删除失败`);
+          ElMessage.error('删除失败');
         });
     })
-    .catch(() => ElMessage.info('已取消删除'));
+    .catch(() => ElMessage.warning('已取消删除'));
 }
 
 /**

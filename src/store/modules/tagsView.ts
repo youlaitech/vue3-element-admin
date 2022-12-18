@@ -1,181 +1,214 @@
 import { defineStore } from 'pinia';
-import { TagsViewState } from './types';
+import { ref } from 'vue';
+import { RouteLocationNormalized } from 'vue-router';
 
-const useTagsViewStore = defineStore({
-  id: 'tagsView',
-  state: (): TagsViewState => ({
-    visitedViews: [],
-    cachedViews: [], //  keepAlive 缓存页面
-  }),
-  actions: {
-    addVisitedView(view: any) {
-      if (this.visitedViews.some((v) => v.path === view.path)) return;
-      if (view.meta && view.meta.affix) {
-        this.visitedViews.unshift(
-          Object.assign({}, view, {
-            title: view.meta?.title || 'no-name',
-          })
-        );
-      } else {
-        this.visitedViews.push(
-          Object.assign({}, view, {
-            title: view.meta?.title || 'no-name',
-          })
-        );
-      }
-    },
-    addCachedView(view: any) {
-      if (this.cachedViews.includes(view.name)) return;
-      if (view.meta.keepAlive) {
-        this.cachedViews.push(view.name);
-      }
-    },
-    delVisitedView(view: any) {
-      return new Promise((resolve) => {
-        for (const [i, v] of this.visitedViews.entries()) {
-          if (v.path === view.path) {
-            this.visitedViews.splice(i, 1);
-            break;
-          }
-        }
-        resolve([...this.visitedViews]);
-      });
-    },
-    delCachedView(view: any) {
-      return new Promise((resolve) => {
-        const index = this.cachedViews.indexOf(view.name);
-        index > -1 && this.cachedViews.splice(index, 1);
-        resolve([...this.cachedViews]);
-      });
-    },
-    delOtherVisitedViews(view: any) {
-      return new Promise((resolve) => {
-        this.visitedViews = this.visitedViews.filter((v) => {
-          return v.meta?.affix || v.path === view.path;
-        });
-        resolve([...this.visitedViews]);
-      });
-    },
-    delOtherCachedViews(view: any) {
-      return new Promise((resolve) => {
-        const index = this.cachedViews.indexOf(view.name);
-        if (index > -1) {
-          this.cachedViews = this.cachedViews.slice(index, index + 1);
-        } else {
-          // if index = -1, there is no cached tags
-          this.cachedViews = [];
-        }
-        resolve([...this.cachedViews]);
-      });
-    },
+export interface TagView extends Partial<RouteLocationNormalized> {
+  title?: string;
+}
 
-    updateVisitedView(view: any) {
-      for (let v of this.visitedViews) {
+// setup
+export const useTagsViewStore = defineStore('tagsView', () => {
+  // state
+  const visitedViews = ref<TagView[]>([]);
+  const cachedViews = ref<string[]>([]);
+
+  // auctions
+  function addVisitedView(view: TagView) {
+    if (visitedViews.value.some(v => v.path === view.path)) return;
+    if (view.meta && view.meta.affix) {
+      visitedViews.value.unshift(
+        Object.assign({}, view, {
+          title: view.meta?.title || 'no-name'
+        })
+      );
+    } else {
+      visitedViews.value.push(
+        Object.assign({}, view, {
+          title: view.meta?.title || 'no-name'
+        })
+      );
+    }
+  }
+
+  function addCachedView(view: TagView) {
+    const viewName = view.name as string;
+    if (cachedViews.value.includes(viewName)) return;
+    if (view.meta?.keepAlive) {
+      cachedViews.value.push(viewName);
+    }
+  }
+
+  function delVisitedView(view: TagView) {
+    return new Promise(resolve => {
+      for (const [i, v] of visitedViews.value.entries()) {
         if (v.path === view.path) {
-          v = Object.assign(v, view);
+          visitedViews.value.splice(i, 1);
           break;
         }
       }
-    },
-    addView(view: any) {
-      this.addVisitedView(view);
-      this.addCachedView(view);
-    },
-    delView(view: any) {
-      return new Promise((resolve) => {
-        this.delVisitedView(view);
-        this.delCachedView(view);
-        resolve({
-          visitedViews: [...this.visitedViews],
-          cachedViews: [...this.cachedViews],
-        });
-      });
-    },
-    delOtherViews(view: any) {
-      return new Promise((resolve) => {
-        this.delOtherVisitedViews(view);
-        this.delOtherCachedViews(view);
-        resolve({
-          visitedViews: [...this.visitedViews],
-          cachedViews: [...this.cachedViews],
-        });
-      });
-    },
-    delLeftViews(view: any) {
-      return new Promise((resolve) => {
-        const currIndex = this.visitedViews.findIndex(
-          (v) => v.path === view.path
-        );
-        if (currIndex === -1) {
-          return;
-        }
-        this.visitedViews = this.visitedViews.filter((item, index) => {
-          // affix:true 固定tag，例如“首页”
-          if (index >= currIndex || (item.meta && item.meta.affix)) {
-            return true;
-          }
+      resolve([...visitedViews.value]);
+    });
+  }
 
-          const cacheIndex = this.cachedViews.indexOf(item.name as string);
-          if (cacheIndex > -1) {
-            this.cachedViews.splice(cacheIndex, 1);
-          }
-          return false;
-        });
-        resolve({
-          visitedViews: [...this.visitedViews],
-        });
-      });
-    },
-    delRightViews(view: any) {
-      return new Promise((resolve) => {
-        const currIndex = this.visitedViews.findIndex(
-          (v) => v.path === view.path
-        );
-        if (currIndex === -1) {
-          return;
-        }
-        this.visitedViews = this.visitedViews.filter((item, index) => {
-          // affix:true 固定tag，例如“首页”
-          if (index <= currIndex || (item.meta && item.meta.affix)) {
-            return true;
-          }
+  function delCachedView(view: TagView) {
+    const viewName = view.name as string;
+    return new Promise(resolve => {
+      const index = cachedViews.value.indexOf(viewName);
+      index > -1 && cachedViews.value.splice(index, 1);
+      resolve([...cachedViews.value]);
+    });
+  }
 
-          const cacheIndex = this.cachedViews.indexOf(item.name as string);
-          if (cacheIndex > -1) {
-            this.cachedViews.splice(cacheIndex, 1);
-          }
-          return false;
-        });
-        resolve({
-          visitedViews: [...this.visitedViews],
-        });
+  function delOtherVisitedViews(view: TagView) {
+    return new Promise(resolve => {
+      visitedViews.value = visitedViews.value.filter(v => {
+        return v.meta?.affix || v.path === view.path;
       });
-    },
-    delAllViews() {
-      return new Promise((resolve) => {
-        const affixTags = this.visitedViews.filter((tag) => tag.meta?.affix);
-        this.visitedViews = affixTags;
-        this.cachedViews = [];
-        resolve({
-          visitedViews: [...this.visitedViews],
-          cachedViews: [...this.cachedViews],
-        });
+      resolve([...visitedViews.value]);
+    });
+  }
+
+  function delOtherCachedViews(view: TagView) {
+    const viewName = view.name as string;
+    return new Promise(resolve => {
+      const index = cachedViews.value.indexOf(viewName);
+      if (index > -1) {
+        cachedViews.value = cachedViews.value.slice(index, index + 1);
+      } else {
+        // if index = -1, there is no cached tags
+        cachedViews.value = [];
+      }
+      resolve([...cachedViews.value]);
+    });
+  }
+
+  function updateVisitedView(view: TagView) {
+    for (let v of visitedViews.value) {
+      if (v.path === view.path) {
+        v = Object.assign(v, view);
+        break;
+      }
+    }
+  }
+
+  function addView(view: TagView) {
+    addVisitedView(view);
+    addCachedView(view);
+  }
+
+  function delView(view: TagView) {
+    return new Promise(resolve => {
+      delVisitedView(view);
+      delCachedView(view);
+      resolve({
+        visitedViews: [...visitedViews.value],
+        cachedViews: [...cachedViews.value]
       });
-    },
-    delAllVisitedViews() {
-      return new Promise((resolve) => {
-        const affixTags = this.visitedViews.filter((tag) => tag.meta?.affix);
-        this.visitedViews = affixTags;
-        resolve([...this.visitedViews]);
+    });
+  }
+
+  function delOtherViews(view: TagView) {
+    return new Promise(resolve => {
+      delOtherVisitedViews(view);
+      delOtherCachedViews(view);
+      resolve({
+        visitedViews: [...visitedViews.value],
+        cachedViews: [...cachedViews.value]
       });
-    },
-    delAllCachedViews() {
-      return new Promise((resolve) => {
-        this.cachedViews = [];
-        resolve([...this.cachedViews]);
+    });
+  }
+
+  function delLeftViews(view: TagView) {
+    return new Promise(resolve => {
+      const currIndex = visitedViews.value.findIndex(v => v.path === view.path);
+      if (currIndex === -1) {
+        return;
+      }
+      visitedViews.value = visitedViews.value.filter((item, index) => {
+        // affix:true 固定tag，例如“首页”
+        if (index >= currIndex || (item.meta && item.meta.affix)) {
+          return true;
+        }
+
+        const cacheIndex = cachedViews.value.indexOf(item.name as string);
+        if (cacheIndex > -1) {
+          cachedViews.value.splice(cacheIndex, 1);
+        }
+        return false;
       });
-    },
-  },
+      resolve({
+        visitedViews: [...visitedViews.value]
+      });
+    });
+  }
+  function delRightViews(view: TagView) {
+    return new Promise(resolve => {
+      const currIndex = visitedViews.value.findIndex(v => v.path === view.path);
+      if (currIndex === -1) {
+        return;
+      }
+      visitedViews.value = visitedViews.value.filter((item, index) => {
+        // affix:true 固定tag，例如“首页”
+        if (index <= currIndex || (item.meta && item.meta.affix)) {
+          return true;
+        }
+
+        const cacheIndex = cachedViews.value.indexOf(item.name as string);
+        if (cacheIndex > -1) {
+          cachedViews.value.splice(cacheIndex, 1);
+        }
+        return false;
+      });
+      resolve({
+        visitedViews: [...visitedViews.value]
+      });
+    });
+  }
+
+  function delAllViews() {
+    return new Promise(resolve => {
+      const affixTags = visitedViews.value.filter(tag => tag.meta?.affix);
+      visitedViews.value = affixTags;
+      cachedViews.value = [];
+      resolve({
+        visitedViews: [...visitedViews.value],
+        cachedViews: [...cachedViews.value]
+      });
+    });
+  }
+
+  function delAllVisitedViews() {
+    return new Promise(resolve => {
+      const affixTags = visitedViews.value.filter(tag => tag.meta?.affix);
+      visitedViews.value = affixTags;
+      resolve([...visitedViews.value]);
+    });
+  }
+
+  function delAllCachedViews() {
+    return new Promise(resolve => {
+      cachedViews.value = [];
+      resolve([...cachedViews.value]);
+    });
+  }
+
+  return {
+    visitedViews,
+    cachedViews,
+    addVisitedView,
+    addCachedView,
+    delVisitedView,
+    delCachedView,
+    delOtherVisitedViews,
+    delOtherCachedViews,
+    updateVisitedView,
+    addView,
+    delView,
+    delOtherViews,
+    delLeftViews,
+    delRightViews,
+    delAllViews,
+    delAllVisitedViews,
+    delAllCachedViews
+  };
 });
-
-export default useTagsViewStore;

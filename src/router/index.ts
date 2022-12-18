@@ -1,11 +1,10 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import useStore from '@/store';
+import { usePermissionStoreHook } from '@/store/modules/permission';
 
 export const Layout = () => import('@/layout/index.vue');
 
-// 参数说明: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
 // 静态路由
-export const constantRoutes: Array<RouteRecordRaw> = [
+export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/redirect',
     component: Layout,
@@ -43,7 +42,7 @@ export const constantRoutes: Array<RouteRecordRaw> = [
         path: '401',
         component: () => import('@/views/error-page/401.vue'),
         meta: { hidden: true }
-      },
+      }
     ]
   }
 
@@ -110,8 +109,8 @@ const router = createRouter({
 
 // 重置路由
 export function resetRouter() {
-  const { permission } = useStore();
-  permission.routes.forEach(route => {
+  const permissionStore = usePermissionStoreHook();
+  permissionStore.routes.forEach(route => {
     const name = route.name;
     if (name && router.hasRoute(name)) {
       router.removeRoute(name);
