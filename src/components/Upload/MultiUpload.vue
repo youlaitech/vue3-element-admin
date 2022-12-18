@@ -1,8 +1,7 @@
 <!--
   多图上传组件
-  @author: haoxr
+  @author: youlaitech
   @date 2022/11/20
-  @link https://element-plus.gitee.io/zh-CN/component/upload.html
 -->
 
 <template>
@@ -63,7 +62,6 @@ const fileList = ref([] as UploadUserFile[]);
 watch(
   () => props.modelValue,
   (newVal: string[]) => {
-    console.log('newVal', newVal);
     const filePaths = fileList.value.map(file => file.url);
     // 监听modelValue文件集合值未变化时，跳过赋值
     if (
@@ -88,6 +86,7 @@ watch(
  * @param params
  */
 async function handleUpload(options: UploadRequestOptions): Promise<any> {
+  // 上传API调用
   const { data: fileInfo } = await uploadFileApi(options.file);
 
   // 上传成功需手动替换文件路径为远程URL，否则图片地址为预览地址 blob:http://
