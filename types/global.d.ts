@@ -8,7 +8,6 @@ declare global {
     list: T;
     total: number;
   }
-
   type DialogType = {
     title?: string;
     visible: boolean;
@@ -20,5 +19,5 @@ declare global {
     checked?: boolean;
     children?: OptionType[];
   };
-
 }
+export {};
