@@ -1,15 +1,12 @@
 import { createApp, Directive } from 'vue';
 import App from './App.vue';
 import router from '@/router';
-
-import { createPinia } from 'pinia';
+import { setupStore } from '@/store';
 
 import ElementPlus from 'element-plus';
 import 'element-plus/theme-chalk/index.css';
 import Pagination from '@/components/Pagination/index.vue';
 import '@/permission';
-
-import 'default-passive-events';
 
 // 引入svg注册脚本
 import 'virtual:svg-icons-register';
@@ -20,25 +17,21 @@ import i18n from '@/lang/index';
 // 自定义样式
 import '@/styles/index.scss';
 
-// 根据字典编码获取字典列表全局方法
-import { listDictItemsByTypeCode } from '@/api/dict';
-
 const app = createApp(App);
-
 // 自定义指令
 import * as directive from '@/directive';
-
 Object.keys(directive).forEach(key => {
   app.directive(key, (directive as { [key: string]: Directive })[key]);
 });
 
 // 全局方法
-app.config.globalProperties.$listDictItemsByTypeCode = listDictItemsByTypeCode;
+import { getDictionaries } from '@/api/dict';
+app.config.globalProperties.$getDictionaries = getDictionaries;
 
-// 注册全局组件
+// 全局挂载
+setupStore(app);
 app
   .component('Pagination', Pagination)
-  .use(createPinia())
   .use(router)
   .use(ElementPlus)
   .use(i18n)
