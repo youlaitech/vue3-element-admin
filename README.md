@@ -5,7 +5,6 @@
     <a href="https://gitee.com/youlaitech/youlai-mall" target="_blank">
         <img src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
     </a> 
-    <br/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
