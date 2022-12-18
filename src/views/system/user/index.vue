@@ -344,7 +344,7 @@ async function getDeptOptions() {
  * 获取性别下拉项
  */
 function getGenderOptions() {
-  proxy.$listDictItemsByTypeCode('gender').then((response: any) => {
+  proxy.$getDictionaries('gender').then((response: any) => {
     state.genderOptions = response?.data;
   });
 }

@@ -1,14 +1,35 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import { ElMessage } from 'element-plus';
+
+import { useAppStore } from '@/store/modules/app';
+import SvgIcon from '@/components/SvgIcon/index.vue';
+
+const appStore = useAppStore();
+
+const sizeOptions = ref([
+  { label: '默认', value: 'default' },
+  { label: '大型', value: 'large' },
+  { label: '小型', value: 'small' }
+]);
+
+function handleSizeChange(size: string) {
+  appStore.changeSize(size);
+  ElMessage.success('切换布局大小成功');
+}
+</script>
+
 <template>
-  <el-dropdown class="size-select" trigger="click" @command="handleSetSize">
-    <div class="size-select__icon">
-      <svg-icon class-name="size-icon" icon-class="size" />
+  <el-dropdown trigger="click" @command="handleSizeChange">
+    <div style="line-height: 50px">
+      <svg-icon icon-class="size" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item
           v-for="item of sizeOptions"
           :key="item.value"
-          :disabled="(size || 'default') == item.value"
+          :disabled="appStore.size == item.value"
           :command="item.value"
         >
           {{ item.label }}
@@ -17,31 +38,3 @@
     </template>
   </el-dropdown>
 </template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { ElMessage } from 'element-plus';
-
-import useStore from '@/store';
-import SvgIcon from '@/components/SvgIcon/index.vue';
-
-const { app } = useStore();
-const size = computed(() => app.size);
-
-const sizeOptions = ref([
-  { label: '默认', value: 'default' },
-  { label: '大型', value: 'large' },
-  { label: '小型', value: 'small' }
-]);
-
-function handleSetSize(size: string) {
-  app.setSize(size);
-  ElMessage.success('切换布局大小成功');
-}
-</script>
-
-<style lang="scss" scoped>
-.size-select__icon {
-  line-height: 50px;
-}
-</style>

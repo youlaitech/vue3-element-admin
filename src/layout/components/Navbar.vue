@@ -1,8 +1,55 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { ElMessageBox } from 'element-plus';
+
+import Breadcrumb from '@/components/Breadcrumb/index.vue';
+import Hamburger from '@/components/Hamburger/index.vue';
+import Screenfull from '@/components/Screenfull/index.vue';
+import SizeSelect from '@/components/SizeSelect/index.vue';
+import LangSelect from '@/components/LangSelect/index.vue';
+import { CaretBottom } from '@element-plus/icons-vue';
+
+import { useAppStore, DeviceType } from '@/store/modules/app';
+import { useTagsViewStore } from '@/store/modules/tagsView';
+import { useUserStore } from '@/store/modules/user';
+
+const appStore = useAppStore();
+const tagsViewStore = useTagsViewStore();
+const userStore = useUserStore();
+
+const route = useRoute();
+const router = useRouter();
+
+const device = computed(() => appStore.device);
+
+function toggleSideBar() {
+  appStore.toggleSidebar(true);
+}
+
+function logout() {
+  ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    userStore
+      .logout()
+      .then(() => {
+        tagsViewStore.delAllViews();
+      })
+      .then(() => {
+        router.push(`/login?redirect=${route.fullPath}`);
+      });
+  });
+}
+</script>
+
 <template>
   <div class="navbar">
     <hamburger
       id="hamburger-container"
-      :is-active="sidebar.opened"
+      :is-active="appStore.sidebar.opened"
       class="hamburger-container"
       @toggleClick="toggleSideBar"
     />
@@ -10,9 +57,7 @@
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
-      <template v-if="device !== 'mobile'">
-        <!--        <search id="header-search" class="right-menu-item" />
-                <error-log class="errLog-container right-menu-item hover-effect" />-->
+      <template v-if="device !== DeviceType.mobile">
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
         <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
@@ -25,7 +70,7 @@
         trigger="click"
       >
         <div class="avatar-wrapper">
-          <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar" />
+          <img :src="userStore.avatar + '?imageView2/1/w/80/h/80'" />
           <CaretBottom style="width: 0.6em; height: 0.6em; margin-left: 5px" />
         </div>
 
@@ -52,53 +97,6 @@
     </div>
   </div>
 </template>
-<script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { ElMessageBox } from 'element-plus';
-
-import useStore from '@/store';
-
-// 组件依赖
-import Breadcrumb from '@/components/Breadcrumb/index.vue';
-import Hamburger from '@/components/Hamburger/index.vue';
-import Screenfull from '@/components/Screenfull/index.vue';
-import SizeSelect from '@/components/SizeSelect/index.vue';
-import LangSelect from '@/components/LangSelect/index.vue';
-
-// 图标依赖
-import { CaretBottom } from '@element-plus/icons-vue';
-
-const { app, user, tagsView } = useStore();
-
-const route = useRoute();
-const router = useRouter();
-
-const sidebar = computed(() => app.sidebar);
-const device = computed(() => app.device);
-const avatar = computed(() => user.avatar);
-
-function toggleSideBar() {
-  app.toggleSidebar();
-}
-
-function logout() {
-  ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    user
-      .logout()
-      .then(() => {
-        tagsView.delAllViews();
-      })
-      .then(() => {
-        router.push(`/login?redirect=${route.fullPath}`);
-      });
-  });
-}
-</script>
 
 <style lang="scss" scoped>
 ul {
@@ -164,7 +162,7 @@ ul {
         margin-top: 5px;
         position: relative;
 
-        .user-avatar {
+        img {
           cursor: pointer;
           width: 40px;
           height: 40px;

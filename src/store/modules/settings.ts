@@ -1,50 +1,55 @@
 import { defineStore } from 'pinia';
-import { SettingState } from './types';
 import defaultSettings from '../../settings';
-import { localStorage } from '@/utils/storage';
+import { localStorage } from '@/utils/localStorage';
+import { ref } from 'vue';
 
-const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings;
 const el = document.documentElement;
 
-export const useSettingStore = defineStore({
-  id: 'setting',
-  state: (): SettingState => ({
-    theme:
-      localStorage.get('theme') ||
-      getComputedStyle(el).getPropertyValue(`--el-color-primary`),
-    showSettings: showSettings,
-    tagsView:
-      localStorage.get('tagsView') != null
-        ? localStorage.get('tagsView')
-        : tagsView,
-    fixedHeader: fixedHeader,
-    sidebarLogo: sidebarLogo,
-  }),
-  actions: {
-    async changeSetting(payload: { key: string; value: any }) {
-      const { key, value } = payload;
-      switch (key) {
-        case 'theme':
-          this.theme = value;
-          break;
-        case 'showSettings':
-          this.showSettings = value;
-          break;
-        case 'fixedHeader':
-          this.fixedHeader = value;
-          break;
-        case 'tagsView':
-          this.tagsView = value;
-          localStorage.set('tagsView', value);
-          break;
-        case 'sidebarLogo':
-          this.sidebarLogo = value;
-          break;
-        default:
-          break;
-      }
-    },
-  },
-});
+export const useSettingsStore = defineStore('setting', () => {
+  // state
+  const theme = ref(
+    localStorage.get('theme') ||
+      getComputedStyle(el).getPropertyValue(`--el-color-primary`)
+  );
 
-export default useSettingStore;
+  const showSettings = ref<boolean>(defaultSettings.showSettings);
+  const tagsView = ref<boolean>(
+    localStorage.get('tagsView') || defaultSettings.tagsView
+  );
+  const fixedHeader = ref<boolean>(defaultSettings.fixedHeader);
+  const sidebarLogo = ref<boolean>(defaultSettings.sidebarLogo);
+
+  // auction
+  function changeSetting(param: { key: string; value: any }) {
+    const { key, value } = param;
+    switch (key) {
+      case 'theme':
+        theme.value = value;
+        break;
+      case 'showSettings':
+        showSettings.value = value;
+        break;
+      case 'fixedHeader':
+        fixedHeader.value = value;
+        localStorage.set('tagsView', value);
+        break;
+      case 'tagsView':
+        tagsView.value = value;
+        break;
+      case 'sidevarLogo':
+        sidebarLogo.value = value;
+        break;
+      default:
+        break;
+    }
+  }
+
+  return {
+    theme,
+    showSettings,
+    tagsView,
+    fixedHeader,
+    sidebarLogo,
+    changeSetting
+  };
+});

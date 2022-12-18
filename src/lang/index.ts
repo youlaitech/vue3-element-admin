@@ -1,6 +1,6 @@
 // 自定义国际化配置
 import { createI18n } from 'vue-i18n';
-import { localStorage } from '@/utils/storage';
+import { localStorage } from '@/utils/localStorage';
 
 // 本地语言包
 import enLocale from './en';

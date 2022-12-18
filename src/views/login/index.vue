@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form
       ref="loginFormRef"
-      :model="loginForm"
+      :model="loginData"
       :rules="loginRules"
       class="login-form"
       auto-complete="on"
@@ -19,7 +19,7 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
+          v-model="loginData.username"
           :placeholder="$t('login.username')"
           name="username"
           type="text"
@@ -40,7 +40,7 @@
           <el-input
             ref="passwordRef"
             :key="passwordType"
-            v-model="loginForm.password"
+            v-model="loginData.password"
             :type="passwordType"
             placeholder="Password"
             name="password"
@@ -95,13 +95,13 @@ import LangSelect from '@/components/LangSelect/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
 // 状态管理依赖
-import useStore from '@/store';
+import { useUserStore } from '@/store/modules/user';
 
 // API依赖
 import { useRoute } from 'vue-router';
-import { LoginForm } from '@/api/auth/types';
+import { LoginData } from '@/api/auth/types';
 
-const { user } = useStore();
+const userStore = useUserStore();
 const route = useRoute();
 
 const loginFormRef = ref(ElForm);
@@ -109,10 +109,10 @@ const passwordRef = ref(ElInput);
 
 const state = reactive({
   redirect: '',
-  loginForm: {
+  loginData: {
     username: 'admin',
     password: '123456'
-  } as LoginForm,
+  } as LoginData,
   loginRules: {
     username: [{ required: true, trigger: 'blur' }],
     password: [{ required: true, trigger: 'blur', validator: validatePassword }]
@@ -136,7 +136,7 @@ function validatePassword(rule: any, value: any, callback: any) {
 }
 
 const {
-  loginForm,
+  loginData,
   loginRules,
   loading,
   passwordType,
@@ -162,14 +162,14 @@ function showPwd() {
 }
 
 /**
- *  登录处理
+ *  登录
  */
 function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
     if (valid) {
       state.loading = true;
-      user
-        .login(state.loginForm)
+      userStore
+        .login(state.loginData)
         .then(() => {
           router.push({ path: state.redirect || '/', query: state.otherQuery });
           state.loading = false;

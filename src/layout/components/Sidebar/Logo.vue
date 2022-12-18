@@ -1,3 +1,18 @@
+<script lang="ts" setup>
+import { ref } from 'vue';
+
+defineProps({
+  collapse: {
+    type: Boolean,
+    required: true
+  }
+});
+
+const logo = ref<string>(
+  new URL(`../../../assets/logo.png`, import.meta.url).href
+);
+</script>
+
 <template>
   <div class="sidebar-logo-container" :class="{ collapse: collapse }">
     <transition name="sidebarLogoFade">
@@ -17,24 +32,6 @@
     </transition>
   </div>
 </template>
-
-<script setup lang="ts">
-import { reactive, toRefs } from 'vue';
-
-const props = defineProps({
-  collapse: {
-    type: Boolean,
-    required: true
-  }
-});
-
-const state = reactive({
-  isCollapse: props.collapse,
-  logo: new URL(`../../../assets/logo.png`, import.meta.url).href
-});
-
-const { logo } = toRefs(state);
-</script>
 
 <style lang="scss" scoped>
 .sidebarLogoFade-enter-active {
