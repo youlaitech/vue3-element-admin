@@ -71,9 +71,19 @@
 
 ## 项目启动
 
-1. npm install
-2. npm run dev
-3. 访问 [http://localhost:3000](http://localhost:3000)
+1. 安装依赖
+
+    ```bash
+    npm install
+    ```
+2. 启动运行
+
+    ```bash
+    npm run dev
+    ```
+3. 访问测试
+
+   浏览器访问： [http://localhost:3000](http://localhost:3000)
 
 ## 项目部署
 
@@ -83,11 +93,11 @@
   npm run build:prod
   ```
 
-  生成的静态文件位于项目根目录 dist 文件夹下
+  生成的静态文件位于项目根目录 `dist` 文件夹下
 
 - 上传文件
 
-  创建 `/mnt/nginx/html` 目录，将打包生成 dist 下的所有文件拷贝至此工作目录下
+  创建 `/mnt/nginx/html` 目录，将打包生成 `dist` 下的所有文件拷贝至此工作目录下
 
 - nginx.cofig 配置
 
