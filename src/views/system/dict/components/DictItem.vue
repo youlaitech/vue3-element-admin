@@ -187,7 +187,7 @@ onMounted(() => {
       </el-form-item>
     </el-form>
 
-    <el-card shadow="false">
+    <el-card shadow="hover">
       <template #header>
         <el-button type="success" :icon="Plus" @click="handleAdd"
           >新增</el-button

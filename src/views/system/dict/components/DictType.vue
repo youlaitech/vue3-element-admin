@@ -23,7 +23,7 @@ export default {
         <el-button :icon="Refresh" @click="resetQuery()">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-card shadow="false">
+    <el-card shadow="hover">
       <template #header>
         <el-button type="success" :icon="Plus" @click="handleAdd"
           >新增</el-button
