@@ -1,10 +1,9 @@
 /**
- * 登录表单类型声明
+ * 登录数据类型
  */
-export interface LoginForm {
+export interface LoginData {
   username: string;
   password: string;
-  grant_type: string;
   /**
    * 验证码Code
    */
@@ -16,15 +15,16 @@ export interface LoginForm {
 }
 
 /**
- * 登录响应类型声明
+ * Token响应类型
  */
-export interface LoginResult {
-  access_token: string;
-  token_type: string;
+export interface TokenResult {
+  accessToken: string;
+  refreshToken: string;
+  expires: number;
 }
 
 /**
- * 验证码类型声明
+ * 验证码类型
  */
 export interface VerifyCode {
   verifyCodeImg: string;
