@@ -78,9 +78,7 @@ export function deleteDictTypes(ids: string) {
  *
  * @param typeCode 字典类型编码
  */
-export function listDictItemsByTypeCode(
-  typeCode: string
-): AxiosPromise<OptionType[]> {
+export function getDictionaries(typeCode: string): AxiosPromise<OptionType[]> {
   return request({
     url: '/api/v1/dict/types/' + typeCode + '/items',
     method: 'get'
