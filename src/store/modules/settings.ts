@@ -19,7 +19,7 @@ export const useSettingsStore = defineStore('setting', () => {
   const fixedHeader = ref<boolean>(defaultSettings.fixedHeader);
   const sidebarLogo = ref<boolean>(defaultSettings.sidebarLogo);
 
-  // auction
+  // actions
   function changeSetting(param: { key: string; value: any }) {
     const { key, value } = param;
     switch (key) {
