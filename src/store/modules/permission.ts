@@ -53,7 +53,7 @@ export const usePermissionStore = defineStore('permission', () => {
   const routes = ref<RouteRecordRaw[]>([]);
   const addRoutes = ref<RouteRecordRaw[]>([]);
 
-  // auctions
+  // actions
   function setRoutes(newRoutes: RouteRecordRaw[]) {
     addRoutes.value = newRoutes;
     routes.value = constantRoutes.concat(newRoutes);

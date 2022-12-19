@@ -12,7 +12,7 @@ export const useTagsViewStore = defineStore('tagsView', () => {
   const visitedViews = ref<TagView[]>([]);
   const cachedViews = ref<string[]>([]);
 
-  // auctions
+  // actions
   function addVisitedView(view: TagView) {
     if (visitedViews.value.some(v => v.path === view.path)) return;
     if (view.meta && view.meta.affix) {

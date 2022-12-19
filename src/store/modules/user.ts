@@ -17,7 +17,7 @@ export const useUserStore = defineStore('user', () => {
   const roles = ref<Array<string>>([]); // 用户角色编码集合 → 判断路由权限
   const perms = ref<Array<string>>([]); // 用户权限编码集合 → 判断按钮权限
 
-  // auctions
+  // actions
 
   // 登录
   function login(loginData: LoginData) {
