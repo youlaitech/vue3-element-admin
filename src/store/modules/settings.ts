@@ -2,15 +2,13 @@ import { defineStore } from 'pinia';
 import defaultSettings from '../../settings';
 import { localStorage } from '@/utils/localStorage';
 import { ref } from 'vue';
+import { useCssVar, useStorage } from '@vueuse/core';
 
 const el = document.documentElement;
 
 export const useSettingsStore = defineStore('setting', () => {
   // state
-  const theme = ref(
-    localStorage.get('theme') ||
-      getComputedStyle(el).getPropertyValue(`--el-color-primary`)
-  );
+  const theme = useStorage('theme', useCssVar('--el-color-primary', el))
 
   const showSettings = ref<boolean>(defaultSettings.showSettings);
   const tagsView = ref<boolean>(
