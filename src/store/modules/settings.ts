@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import defaultSettings from '../../settings';
-import { localStorage } from '@/utils/localStorage';
 import { ref } from 'vue';
 import { useCssVar, useStorage } from '@vueuse/core';
 
@@ -11,9 +10,7 @@ export const useSettingsStore = defineStore('setting', () => {
   const theme = useStorage('theme', useCssVar('--el-color-primary', el))
 
   const showSettings = ref<boolean>(defaultSettings.showSettings);
-  const tagsView = ref<boolean>(
-    localStorage.get('tagsView') || defaultSettings.tagsView
-  );
+  const tagsView = useStorage<boolean>('tagsView', defaultSettings.tagsView)
   const fixedHeader = ref<boolean>(defaultSettings.fixedHeader);
   const sidebarLogo = ref<boolean>(defaultSettings.sidebarLogo);
 
@@ -29,7 +26,6 @@ export const useSettingsStore = defineStore('setting', () => {
         break;
       case 'fixedHeader':
         fixedHeader.value = value;
-        localStorage.set('tagsView', value);
         break;
       case 'tagsView':
         tagsView.value = value;
