@@ -4,7 +4,7 @@ import router from '@/router';
 import { setupStore } from '@/store';
 
 import ElementPlus from 'element-plus';
-import 'element-plus/theme-chalk/index.css';
+
 import Pagination from '@/components/Pagination/index.vue';
 import '@/permission';
 
@@ -14,8 +14,9 @@ import 'virtual:svg-icons-register';
 // 国际化
 import i18n from '@/lang/index';
 
-// 自定义样式
 import '@/styles/index.scss';
+import 'element-plus/theme-chalk/index.css';
+import 'element-plus/theme-chalk/dark/css-vars.css';
 
 const app = createApp(App);
 // 自定义指令
