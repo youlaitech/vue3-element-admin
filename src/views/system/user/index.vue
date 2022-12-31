@@ -329,6 +329,7 @@ function closeDialog() {
   dialog.value.visible = false;
   dataFormRef.value.resetFields();
   dataFormRef.value.clearValidate();
+  formData.value.id = undefined;
 }
 
 /**
