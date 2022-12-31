@@ -20,7 +20,7 @@ service.interceptors.request.use(
     }
     const user = useUserStoreHook();
     if (user.token) {
-      config.headers.Authorization = getToken();
+      (config.headers as any).Authorization = getToken();
     }
     return config;
   },

@@ -18,7 +18,7 @@ const props = defineProps({
 
 const router = useRouter();
 function push() {
-  if (device.value === DeviceType.mobile && sidebar.value.opened == true) {
+  if (device.value === 'mobile' && sidebar.value.opened == true) {
     appStore.closeSideBar(false);
   }
   router.push(props.to).catch(err => {
