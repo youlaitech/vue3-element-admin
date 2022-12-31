@@ -1,6 +1,6 @@
 <p align="center">
     <img src="https://img.shields.io/badge/Vue-3.2.40-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-3.2.0-green.svg"/>
+    <img src="https://img.shields.io/badge/Vite-4.0.0-green.svg"/>
     <img src="https://img.shields.io/badge/Element Plus-2.2.27-blue.svg"/>
     <a href="https://gitee.com/youlaitech/youlai-mall" target="_blank">
         <img src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
