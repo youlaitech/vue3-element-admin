@@ -30,15 +30,15 @@ const classObj = computed(() => ({
   hideSidebar: !appStore.sidebar.opened,
   openSidebar: appStore.sidebar.opened,
   withoutAnimation: appStore.sidebar.withoutAnimation,
-  mobile: appStore.device === DeviceType.mobile
+  mobile: appStore.device === 'mobile'
 }));
 
 watchEffect(() => {
   if (width.value < WIDTH) {
-    appStore.toggleDevice(DeviceType.mobile);
+    appStore.toggleDevice('mobile');
     appStore.closeSideBar(true);
   } else {
-    appStore.toggleDevice(DeviceType.desktop);
+    appStore.toggleDevice('desktop');
 
     if (width.value >= 1200) {
       //大屏
@@ -59,10 +59,11 @@ function handleOutsideClick() {
     <!-- 手机设备 && 侧边栏 → 显示遮罩层 -->
     <div
       v-if="classObj.mobile && classObj.openSidebar"
-      class="drawer-bg"
       @click="handleOutsideClick"
     ></div>
+
     <Sidebar class="sidebar-container" />
+
     <div :class="{ hasTagsView: showTagsView }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
         <navbar />

@@ -5,6 +5,8 @@ interface DefaultSettings {
   fixedHeader: boolean;
   sidebarLogo: boolean;
   errorLog: string;
+  layout: string;
+  theme: string;
 }
 
 const defaultSettings: DefaultSettings = {
@@ -13,7 +15,9 @@ const defaultSettings: DefaultSettings = {
   tagsView: true,
   fixedHeader: false,
   sidebarLogo: true,
-  errorLog: 'production'
+  errorLog: 'production',
+  layout: 'left',
+  theme: 'light'
 };
 
 export default defaultSettings;

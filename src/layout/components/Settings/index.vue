@@ -1,25 +1,34 @@
 <script setup lang="ts">
+import { Sunny, Moon } from '@element-plus/icons-vue';
+
 import { useSettingsStore } from '@/store/modules/settings';
 
-import ThemePicker from '@/components/ThemePicker/index.vue';
+import { useDark, useToggle } from '@vueuse/core';
+import { ElDivider, ElSwitch, ElTooltip } from 'element-plus';
+import { onMounted } from 'vue';
 
 const settingsStore = useSettingsStore();
+const isDark = useDark();
 
-function themeChange(val: string) {
-  settingsStore.changeSetting({ key: 'theme', value: val });
+function toggleTheme() {
+  const isDark = useDark();
+  useToggle(isDark);
+}
+
+onMounted(() => {
+  window.document.body.setAttribute('layout', settingsStore.layout);
+});
+
+function changeLayout(layout: string) {
+  settingsStore.changeSetting({ key: 'layout', value: layout });
+  window.document.body.setAttribute('layout', settingsStore.layout);
 }
 </script>
 
 <template>
-  <div class="drawer-container">
-    <h3 class="drawer-title">系统布局配置</h3>
-    <div class="drawer-item">
-      <span>主题颜色</span>
-      <div style="float: right; height: 26px; margin: -3px 8px 0 0">
-        <theme-picker @change="themeChange" />
-      </div>
-    </div>
-
+  <div class="settings-container">
+    <h3 class="text-base font-bold">项目配置</h3>
+    <el-divider />
     <div class="drawer-item">
       <span>开启 Tags-View</span>
       <el-switch v-model="settingsStore.tagsView" class="drawer-switch" />
@@ -35,23 +44,53 @@ function themeChange(val: string) {
       <el-switch v-model="settingsStore.sidebarLogo" class="drawer-switch" />
     </div>
 
-    <el-divider>导航栏模式</el-divider>
+    <el-divider>主题</el-divider>
 
-    <ul class="navbar">
+    <div class="flex justify-center" @click.stop>
+      <el-switch
+        v-model="isDark"
+        inline-prompt
+        @change="toggleTheme"
+        :active-icon="Sunny"
+        :inactive-icon="Moon"
+      />
+    </div>
+
+    <el-divider>导航栏布局</el-divider>
+
+    <ul class="layout">
       <el-tooltip content="左侧模式" placement="bottom">
-        <li class="navbar__item navbar__item--left">
+        <li
+          :class="
+            'layout-item layout-left ' +
+            (settingsStore.layout == 'left' ? 'is-active' : '')
+          "
+          @click="changeLayout('left')"
+        >
           <div />
           <div />
         </li>
       </el-tooltip>
       <el-tooltip content="顶部模式" placement="bottom">
-        <li class="navbar__item navbar__item--top">
+        <li
+          :class="
+            'layout-item layout-top ' +
+            (settingsStore.layout == 'top' ? 'is-active' : '')
+          "
+          @click="changeLayout('top')"
+        >
           <div />
           <div />
         </li>
       </el-tooltip>
       <el-tooltip content="混合模式" placement="bottom">
-        <li class="navbar__item navbar__item--mix">
+        <li
+          :class="
+            'layout-item layout-mix ' +
+            (settingsStore.layout == 'mix' ? 'is-active' : '')
+          "
+          @click="changeLayout('mix')"
+        >
           <div />
           <div />
         </li>
@@ -61,11 +100,9 @@ function themeChange(val: string) {
 </template>
 
 <style lang="scss" scoped>
-.drawer-container {
-  padding: 24px;
+.settings-container {
+  padding: 16px;
   font-size: 14px;
-  line-height: 1.5;
-  word-wrap: break-word;
 
   .drawer-title {
     margin-bottom: 12px;
@@ -84,34 +121,27 @@ function themeChange(val: string) {
     float: right;
   }
 
-  .job-link {
-    display: block;
-    position: absolute;
+  .layout {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
     width: 100%;
-    left: 0;
-    bottom: 0;
-  }
-}
+    height: 50px;
+    padding: 0;
 
-.navbar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  width: 100%;
-  height: 50px;
-  padding: 0;
-
-  &__item {
-    width: 18%;
-    height: 45px;
-    background: #f0f2f5;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    border-radius: 4px;
-    box-shadow: 0 1px 2.5px 0 rgb(0 0 0 / 18%);
-
-    &--left {
+    &-item {
+      width: 18%;
+      height: 45px;
+      background: #f0f2f5;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    &-item.is-active {
+      border: 2px solid var(--el-color-primary);
+    }
+    &-left {
       div {
         &:nth-child(1) {
           width: 30%;
@@ -131,7 +161,7 @@ function themeChange(val: string) {
       }
     }
 
-    &--top {
+    &-top {
       div {
         &:nth-child(1) {
           width: 100%;
@@ -142,7 +172,7 @@ function themeChange(val: string) {
       }
     }
 
-    &--mix {
+    &-mix {
       div {
         &:nth-child(1) {
           width: 100%;
@@ -156,7 +186,7 @@ function themeChange(val: string) {
           height: 70%;
           bottom: 0;
           left: 0;
-          background: #fff;
+          background: #1b2a47;
           box-shadow: 0 0 1px #888;
           position: absolute;
         }

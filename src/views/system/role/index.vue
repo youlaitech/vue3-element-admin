@@ -245,7 +245,7 @@ onMounted(() => {
       </el-form>
     </div>
 
-    <el-card>
+    <el-card shadow="never">
       <template #header>
         <el-button type="success" :icon="Plus" @click="handleAdd"
           >新增</el-button
@@ -269,19 +269,19 @@ onMounted(() => {
         border
       >
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="角色名称" prop="name" min-width="150" />
-        <el-table-column label="角色编码" prop="code" width="150" />
+        <el-table-column label="角色名称" prop="name" min-width="120" />
+        <el-table-column label="角色编码" prop="code" width="100" />
 
-        <el-table-column label="状态" align="center" width="150">
+        <el-table-column label="状态" align="center" width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.status === 1" type="success">正常</el-tag>
             <el-tag v-else type="info">禁用</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column label="排序" align="center" width="100" prop="sort" />
-        <el-table-column prop="createTime" label="创建时间" width="160" />
-        <el-table-column prop="updateTime" label="修改时间" width="160" />
+        <el-table-column label="排序" align="center" width="80" prop="sort" />
+        <el-table-column prop="createTime" label="创建时间" width="180" />
+        <el-table-column prop="updateTime" label="修改时间" width="180" />
 
         <el-table-column label="操作" align="left">
           <template #default="scope">
