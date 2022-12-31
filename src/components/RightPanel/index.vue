@@ -74,8 +74,7 @@ onBeforeUnmount(() => {
       <div
         class="right-panel__button"
         :style="{
-          top: buttonTop + 'px',
-          'background-color': settingsStore.theme
+          top: buttonTop + 'px'
         }"
         @click="show = !show"
       >

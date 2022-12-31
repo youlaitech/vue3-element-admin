@@ -1,6 +1,5 @@
 <template>
   <el-color-picker
-    v-model="settingsStore.theme"
     :predefine="[
       '#409EFF',
       '#1890ff',
