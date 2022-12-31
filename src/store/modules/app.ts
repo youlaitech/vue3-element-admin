@@ -8,6 +8,7 @@ import {
 import { defineStore } from 'pinia';
 import { getLanguage } from '@/lang/index';
 import { computed, reactive, ref } from 'vue';
+import { useStorage } from '@vueuse/core';
 
 // Element Plus 语言包
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
@@ -27,7 +28,7 @@ export enum SizeType {
 // setup
 export const useAppStore = defineStore('app', () => {
   // state
-  const device = ref<DeviceType>(DeviceType.desktop);
+  const device = useStorage<string>('device', 'desktop');
   const size = ref(getSize() || 'default');
   const language = ref(getLanguage());
   const sidebar = reactive({
@@ -66,7 +67,7 @@ export const useAppStore = defineStore('app', () => {
     setSidebarStatus('opened');
   }
 
-  function toggleDevice(val: DeviceType) {
+  function toggleDevice(val: string) {
     device.value = val;
   }
 

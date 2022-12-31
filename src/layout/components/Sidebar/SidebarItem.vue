@@ -86,13 +86,14 @@ function resolvePath(routePath: string) {
         </el-menu-item>
       </app-link>
     </template>
+
     <el-sub-menu v-else :index="resolvePath(item.path)" popper-append-to-body>
       <!-- popper-append-to-body -->
       <template #title>
         <svg-icon
           v-if="item.meta && item.meta.icon"
           :icon-class="item.meta.icon"
-        ></svg-icon>
+        />
         <span v-if="item.meta && item.meta.title">{{
           generateTitle(item.meta.title)
         }}</span>
@@ -104,10 +105,7 @@ function resolvePath(routePath: string) {
         :item="child"
         :is-nest="true"
         :base-path="resolvePath(child.path)"
-        class="nest-menu"
       />
     </el-sub-menu>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

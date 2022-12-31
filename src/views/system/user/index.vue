@@ -462,7 +462,7 @@ onMounted(() => {
     <el-row :gutter="20">
       <!-- 部门树 -->
       <el-col :span="4" :xs="24">
-        <el-card class="box-card">
+        <el-card shadow="never">
           <el-input
             v-model="deptName"
             placeholder="部门名称"
@@ -517,7 +517,7 @@ onMounted(() => {
           </el-form>
         </div>
 
-        <el-card>
+        <el-card shadow="never">
           <template #header>
             <el-form-item style="float: left">
               <el-button

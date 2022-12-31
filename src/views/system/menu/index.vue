@@ -20,7 +20,7 @@
     </div>
 
     <!-- 数据表格 -->
-    <el-card>
+    <el-card shadow="never">
       <template #header>
         <el-button type="success" :icon="Plus" @click="handleAdd"
           >新增</el-button

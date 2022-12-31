@@ -237,10 +237,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="tags-view__container">
+  <div
+    class="h-[34px] w-full border-b-[1px] border-gray-200 shadow-lg shadow-[rgba(0, 21, 41, 0.08)]"
+  >
     <scroll-pane
       ref="scrollPaneRef"
-      class="tags-view__wrapper"
+      class="tags-container"
       @scroll="handleScroll"
     >
       <router-link
@@ -249,24 +251,26 @@ onMounted(() => {
         :data-path="tag.path"
         :class="isActive(tag) ? 'active' : ''"
         :to="{ path: tag.path, query: tag.query }"
-        class="tags-view__item"
+        class="tags-item"
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent="openMenu(tag, $event)"
       >
         {{ generateTitle(tag.meta?.title) }}
+
         <span
           v-if="!isAffix(tag)"
-          class="icon-close"
+          class="tags-item-remove"
           @click.prevent.stop="closeSelectedTag(tag)"
         >
           <svg-icon icon-class="close" />
         </span>
       </router-link>
     </scroll-pane>
+
     <ul
       v-show="visible"
       :style="{ left: left + 'px', top: top + 'px' }"
-      class="tags-view__menu"
+      class="tags-item-menu"
     >
       <li @click="refreshSelectedTag(selectedTag)">
         <svg-icon icon-class="refresh" />
@@ -297,89 +301,66 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.tags-view__container {
-  height: 34px;
-  width: 100%;
-  background: #fff;
-  border-bottom: 1px solid #d8dce5;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+.tags-container {
+  .tags-item {
+    display: inline-block;
+    cursor: pointer;
+    border: 1px solid #d8dce5;
+    padding: 3px 8px;
+    font-size: 12px;
+    margin: 4px 0 0 5px;
 
-  .tags-view__wrapper {
-    .tags-view__item {
-      display: inline-block;
-      position: relative;
-      cursor: pointer;
-      height: 26px;
-      line-height: 26px;
-      border: 1px solid #d8dce5;
-      color: #495060;
-      background: #fff;
-      padding: 0 8px;
-      font-size: 12px;
-      margin-left: 5px;
-      margin-top: 4px;
+    &:first-of-type {
+      margin-left: 15px;
+    }
 
-      &:first-of-type {
-        margin-left: 15px;
-      }
+    &:last-of-type {
+      margin-right: 15px;
+    }
 
-      &:last-of-type {
-        margin-right: 15px;
-      }
+    &:hover {
+      color: var(--el-color-primary);
+    }
 
-      &:hover {
-        color: var(--el-color-primary);
-      }
-
-      &.active {
-        background-color: var(--el-color-primary);
-        color: var(--el-color-primary-light-9);
-        border-color: var(--el-color-primary);
-        &::before {
-          content: '';
-          background: #fff;
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          position: relative;
-          margin-right: 5px;
-        }
-      }
-
-      .icon-close {
+    &.active {
+      background-color: var(--el-color-primary);
+      color: var(--el-color-primary-light-9);
+      border-color: var(--el-color-primary);
+      &::before {
+        content: '';
+        background: #fff;
+        display: inline-block;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
-        text-align: center;
+        position: relative;
+        margin-right: 5px;
+      }
+    }
 
-        &:hover {
-          background-color: #ccc;
-          color: #fff;
-        }
+    &-remove {
+      border-radius: 50%;
+      &:hover {
+        color: #fff;
+        background-color: #ccc;
       }
     }
   }
+}
 
-  .tags-view__menu {
-    margin: 0;
-    background: #fff;
-    z-index: 3000;
-    position: absolute;
-    list-style-type: none;
-    padding: 5px 0;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 400;
-    color: #333;
-    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
+.tags-item-menu {
+  background: #fff;
+  z-index: 99;
+  position: absolute;
+  border-radius: 4px;
+  font-size: 12px;
+  box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
 
-    li {
-      margin: 0;
-      padding: 7px 16px;
-      cursor: pointer;
-
-      &:hover {
-        background: #eee;
-      }
+  li {
+    padding: 8px 16px;
+    cursor: pointer;
+    &:hover {
+      background: #eee;
     }
   }
 }

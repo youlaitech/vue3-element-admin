@@ -1,12 +1,15 @@
 <template>
-  <el-breadcrumb class="app-breadcrumb" separator-class="el-icon-arrow-right">
+  <el-breadcrumb
+    separator-class="el-icon-arrow-right"
+    class="h-[50px] flex items-center"
+  >
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.path">
         <span
           v-if="
             item.redirect === 'noredirect' || index === breadcrumbs.length - 1
           "
-          class="no-redirect"
+          class="text-[#97a8be]"
           >{{ generateTitle(item.meta.title) }}</span
         >
         <a v-else @click.prevent="handleLink(item)">
@@ -88,11 +91,6 @@ onBeforeMount(() => {
 </script>
 
 <style lang="scss" scoped>
-.el-breadcrumb__inner,
-.el-breadcrumb__inner a {
-  font-weight: 400 !important;
-}
-
 .app-breadcrumb.el-breadcrumb {
   display: inline-block;
   font-size: 14px;

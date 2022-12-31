@@ -21,7 +21,7 @@ function handleSizeChange(size: string) {
 
 <template>
   <el-dropdown trigger="click" @command="handleSizeChange">
-    <div style="line-height: 50px">
+    <div class="cursor-pointerw-[40px] h-[50px] leading-[50px] text-center">
       <svg-icon icon-class="size" />
     </div>
     <template #dropdown>

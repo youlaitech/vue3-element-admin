@@ -1,34 +1,50 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { ElMessageBox } from 'element-plus';
+import { computed, onMounted } from 'vue';
+import { RouterLink, useRoute, useRouter, RouteRecordRaw } from 'vue-router';
+import {
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElMenu,
+  ElMessageBox,
+  ElTooltip
+} from 'element-plus';
 
-import Hamburger from '@/components/Hamburger/index.vue';
-import Breadcrumb from '@/components/Breadcrumb/index.vue';
 import Screenfull from '@/components/Screenfull/index.vue';
 import SizeSelect from '@/components/SizeSelect/index.vue';
 import LangSelect from '@/components/LangSelect/index.vue';
-import MixNav from './Sidebar/MixNav.vue';
 import { CaretBottom } from '@element-plus/icons-vue';
 
-import { useAppStore } from '@/store/modules/app';
+import SidebarItem from './SidebarItem.vue';
+import variables from '@/styles/variables.module.scss';
+
 import { useTagsViewStore } from '@/store/modules/tagsView';
 import { useUserStore } from '@/store/modules/user';
-import { useSettingsStore } from '@/store/modules/settings';
+import { usePermissionStore } from '@/store/modules/permission';
 
-const appStore = useAppStore();
 const tagsViewStore = useTagsViewStore();
 const userStore = useUserStore();
-const settingsStore = useSettingsStore();
+const permissionStore = usePermissionStore();
 
 const route = useRoute();
 const router = useRouter();
+const routes = [] as any[];
+onMounted(() => {
+  console.log('origin routes', permissionStore.routes);
+  permissionStore.routes.forEach(item => {
+    const { children, ...newItem } = item;
+    routes.push(newItem);
+  });
+  console.log('routes', routes);
+});
 
-const device = computed(() => appStore.device);
-
-function toggleSideBar() {
-  appStore.toggleSidebar(true);
-}
+const activeMenu = computed<string>(() => {
+  const { meta, path } = route;
+  if (meta?.activeMenu) {
+    return meta.activeMenu as string;
+  }
+  return path;
+});
 
 function logout() {
   ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
@@ -49,37 +65,34 @@ function logout() {
 </script>
 
 <template>
-  <div class="navbar">
-    <div
-      class="flex justify-start"
-      v-if="device === 'mobile' || settingsStore.layout === 'left'"
+  <div class="horizontal-header">
+    <el-menu
+      class="horizontal-header-menu"
+      :default-active="activeMenu"
+      :background-color="variables.menuBg"
+      :text-color="variables.menuText"
+      :active-text-color="variables.menuActiveText"
+      mode="horizontal"
     >
-      <hamburger
-        :is-active="appStore.sidebar.opened"
-        @toggleClick="toggleSideBar"
+      <sidebar-item
+        v-for="route in routes"
+        :item="route"
+        :key="route.path"
+        :base-path="route.path"
       />
-      <!-- 面包屑导航栏 -->
-      <breadcrumb />
-    </div>
+    </el-menu>
 
-    <mix-nav v-if="device !== 'mobile' && settingsStore.layout === 'mix'" />
+    <div class="horizontal-header-right">
+      <!--全屏 -->
+      <screenfull id="screenfull" />
 
-    <div
-      v-if="device === 'mobile' || settingsStore.layout === 'left'"
-      class="flex justify-start"
-    >
-      <div v-if="device !== 'mobile'" class="flex justify-center items-center">
-        <!--全屏 -->
-        <screenfull id="screenfull" />
+      <!-- 布局大小 -->
+      <el-tooltip content="布局大小" effect="dark" placement="bottom">
+        <size-select />
+      </el-tooltip>
 
-        <!-- 布局大小 -->
-        <el-tooltip content="布局大小" effect="dark" placement="bottom">
-          <size-select />
-        </el-tooltip>
-
-        <!--语言选择-->
-        <lang-select />
-      </div>
+      <!--语言选择-->
+      <lang-select />
 
       <el-dropdown trigger="click">
         <div class="flex justify-center items-center pr-[20px]">
@@ -115,15 +128,26 @@ function logout() {
 </template>
 
 <style lang="scss" scoped>
-.el-dropdown {
-  font-size: 18px;
-}
-
-.navbar {
-  height: 50px;
+.horizontal-header {
   display: flex;
+  width: 100%;
   align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
+  justify-content: space-around;
+  background: #001529;
+
+  &-menu {
+    height: 100%;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+  }
+
+  &-right {
+    display: flex;
+    min-width: 340px;
+    align-items: center;
+    justify-content: flex-end;
+    color: #fff;
+  }
 }
 </style>

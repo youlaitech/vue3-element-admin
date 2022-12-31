@@ -24,7 +24,7 @@ function handleLanguageChange(lang: string) {
     trigger="click"
     @command="handleLanguageChange"
   >
-    <div class="lang-select__icon">
+    <div class="cursor-pointer w-[40px] h-[50px] leading-[50px] text-center">
       <svg-icon class-name="international-icon" icon-class="language" />
     </div>
     <template #dropdown>
@@ -42,9 +42,3 @@ function handleLanguageChange(lang: string) {
     </template>
   </el-dropdown>
 </template>
-
-<style lang="scss" scoped>
-.lang-select__icon {
-  line-height: 50px;
-}
-</style>

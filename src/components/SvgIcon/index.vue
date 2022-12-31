@@ -34,7 +34,6 @@ const symbolId = computed(() => `#${props.prefix}-${props.iconClass}`);
 
 <style scoped>
 .svg-icon {
-  vertical-align: -0.15em;
   overflow: hidden;
   fill: currentColor;
 }

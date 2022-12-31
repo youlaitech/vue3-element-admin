@@ -1,26 +1,38 @@
 import { defineStore } from 'pinia';
 import defaultSettings from '../../settings';
 import { ref } from 'vue';
-import { useCssVar, useStorage } from '@vueuse/core';
+import { useStorage } from '@vueuse/core';
 
-const el = document.documentElement;
+/**
+ * 主题类型
+ */
+export enum ThemeType {
+  light,
+  dark
+}
+
+/**
+ * 布局类型
+ */
+export enum LayoutType {
+  left,
+  top,
+  mix
+}
 
 export const useSettingsStore = defineStore('setting', () => {
   // state
-  const theme = useStorage('theme', useCssVar('--el-color-primary', el))
-
   const showSettings = ref<boolean>(defaultSettings.showSettings);
-  const tagsView = useStorage<boolean>('tagsView', defaultSettings.tagsView)
+  const tagsView = useStorage<boolean>('tagsView', defaultSettings.tagsView);
   const fixedHeader = ref<boolean>(defaultSettings.fixedHeader);
   const sidebarLogo = ref<boolean>(defaultSettings.sidebarLogo);
+
+  const layout = useStorage<string>('layout', defaultSettings.layout);
 
   // actions
   function changeSetting(param: { key: string; value: any }) {
     const { key, value } = param;
     switch (key) {
-      case 'theme':
-        theme.value = value;
-        break;
       case 'showSettings':
         showSettings.value = value;
         break;
@@ -33,17 +45,20 @@ export const useSettingsStore = defineStore('setting', () => {
       case 'sidevarLogo':
         sidebarLogo.value = value;
         break;
+      case 'layout':
+        layout.value = value;
+        break;
       default:
         break;
     }
   }
 
   return {
-    theme,
     showSettings,
     tagsView,
     fixedHeader,
     sidebarLogo,
+    layout,
     changeSetting
   };
 });
