@@ -12,7 +12,6 @@
     background-color: $menuBg;
     height: 100%;
     position: fixed;
-    font-size: 0px;
     top: 0;
     bottom: 0;
     left: 0;
@@ -47,11 +46,6 @@
       display: none;
     }
 
-    a {
-      display: inline-block;
-      width: 100%;
-      overflow: hidden;
-    }
 
     .svg-icon {
       margin-right: 16px;
@@ -225,4 +219,25 @@
       border-radius: 20px;
     }
   }
+}
+body[layout="mix"] {
+
+  .horizontal-header{
+    .el-menu-item{
+      height: 50px!important;
+      line-height: 50px!important;
+    }
+
+    .el-sub-menu__title {
+      background-color: #001529!important;
+      height: 50px!important;
+    }
+  }
+  .horizontal-header-right>div {
+    color: #FFF;
+  }
+  .svg-icon{
+    margin-right: 16px;
+  }
+
 }
