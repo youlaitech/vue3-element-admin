@@ -40,7 +40,7 @@
         <el-table-column label="菜单名称">
           <template #default="scope">
             <svg-icon
-              :icon-class="
+              :icon-name="
                 scope.row.type === 'BUTTON' ? 'button' : scope.row.icon
               "
             />
@@ -121,6 +121,7 @@
         </el-table-column>
       </el-table>
     </el-card>
+
     <!-- dialog -->
     <el-dialog
       :title="dialog.title"
@@ -214,27 +215,8 @@
           prop="icon"
           v-if="formData.type !== 'BUTTON'"
         >
-          <el-popover
-            ref="popoverRef"
-            placement="bottom-start"
-            :width="570"
-            trigger="click"
-          >
-            <template #reference>
-              <el-input
-                v-model="formData.icon"
-                placeholder="点击选择图标"
-                readonly
-                @click="iconSelectVisible = true"
-              >
-                <template #prefix>
-                  <svg-icon :icon-class="formData.icon" />
-                </template>
-              </el-input>
-            </template>
-
-            <icon-select @selected="selected" />
-          </el-popover>
+          <!-- 图标选择器 -->
+          <icon-select v-model="formData.icon" />
         </el-form-item>
 
         <el-form-item label="跳转路由" v-if="formData.type == 'CATEGORY'">
@@ -271,8 +253,8 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted, toRefs } from 'vue';
 
-import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
-import { ElForm, ElMessage, ElMessageBox, ElPopover } from 'element-plus';
+import { Search, Plus, Refresh } from '@element-plus/icons-vue';
+import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
 import { MenuQuery, MenuForm, Menu } from '@/api/menu/types';
 // API 依赖
@@ -291,7 +273,6 @@ import IconSelect from '@/components/IconSelect/index.vue';
 const emit = defineEmits(['menuClick']);
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
-const popoverRef = ref(ElPopover);
 
 const state = reactive({
   loading: true,
@@ -339,7 +320,6 @@ const {
   formData,
   rules,
   menuOptions,
-  iconSelectVisible,
   cacheData
 } = toRefs(state);
 

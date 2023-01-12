@@ -4,7 +4,7 @@ import path from 'path-browserify';
 import { isExternal } from '@/utils/validate';
 import AppLink from './Link.vue';
 
-import { generateTitle } from '@/utils/i18n';
+import { translateRouteTitleI18n } from '@/utils/i18n';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
 const props = defineProps({
@@ -78,10 +78,10 @@ function resolvePath(routePath: string) {
         >
           <svg-icon
             v-if="onlyOneChild.meta && onlyOneChild.meta.icon"
-            :icon-class="onlyOneChild.meta.icon"
+            :icon-name="onlyOneChild.meta.icon"
           />
           <template #title>
-            {{ generateTitle(onlyOneChild.meta.title) }}
+            {{ translateRouteTitleI18n(onlyOneChild.meta.title) }}
           </template>
         </el-menu-item>
       </app-link>
@@ -92,10 +92,10 @@ function resolvePath(routePath: string) {
       <template #title>
         <svg-icon
           v-if="item.meta && item.meta.icon"
-          :icon-class="item.meta.icon"
+          :icon-name="item.meta.icon"
         />
         <span v-if="item.meta && item.meta.title">{{
-          generateTitle(item.meta.title)
+          translateRouteTitleI18n(item.meta.title)
         }}</span>
       </template>
 

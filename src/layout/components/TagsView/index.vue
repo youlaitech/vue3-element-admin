@@ -7,26 +7,27 @@ import {
   onMounted,
   ComponentInternalInstance
 } from 'vue';
+import { storeToRefs } from 'pinia';
 
 import path from 'path-browserify';
 
 import { useRoute, useRouter } from 'vue-router';
 
-import ScrollPane from './ScrollPane.vue';
-import SvgIcon from '@/components/SvgIcon/index.vue';
-import { generateTitle } from '@/utils/i18n';
+import { translateRouteTitleI18n } from '@/utils/i18n';
 
 import { usePermissionStore } from '@/store/modules/permission';
 import { useTagsViewStore, TagView } from '@/store/modules/tagsView';
-
-const permissionStore = usePermissionStore();
-const tagsViewStore = useTagsViewStore();
+import ScrollPane from './ScrollPane.vue';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const router = useRouter();
 const route = useRoute();
 
-const visible = ref(false);
+const permissionStore = usePermissionStore();
+const tagsViewStore = useTagsViewStore();
+
+const { visitedViews } = storeToRefs(tagsViewStore);
+
 const selectedTag = ref({});
 const scrollPaneRef = ref();
 const left = ref(0);
@@ -45,11 +46,12 @@ watch(
   }
 );
 
-watch(visible, value => {
+const tagMenuVisible = ref(false); // 标签操作菜单显示状态
+watch(tagMenuVisible, value => {
   if (value) {
-    document.body.addEventListener('click', closeMenu);
+    document.body.addEventListener('click', closeTagMenu);
   } else {
-    document.body.removeEventListener('click', closeMenu);
+    document.body.removeEventListener('click', closeTagMenu);
   }
 });
 
@@ -78,11 +80,11 @@ function filterAffixTags(routes: any[], basePath = '/') {
 }
 
 function initTags() {
-  const tags = filterAffixTags(permissionStore.routes);
+  const tags: TagView[] = filterAffixTags(permissionStore.routes);
   affixTags.value = tags;
   for (const tag of tags) {
     // Must have tag name
-    if ((tag as TagView).name) {
+    if (tag.name) {
       tagsViewStore.addVisitedView(tag);
     }
   }
@@ -205,7 +207,7 @@ function closeAllTags(view: TagView) {
   });
 }
 
-function openMenu(tag: TagView, e: MouseEvent) {
+function openTagMenu(tag: TagView, e: MouseEvent) {
   const menuMinWidth = 105;
   const offsetLeft = proxy?.$el.getBoundingClientRect().left; // container margin left
   const offsetWidth = proxy?.$el.offsetWidth; // container width
@@ -219,16 +221,16 @@ function openMenu(tag: TagView, e: MouseEvent) {
   }
 
   top.value = e.clientY;
-  visible.value = true;
+  tagMenuVisible.value = true;
   selectedTag.value = tag;
 }
 
-function closeMenu() {
-  visible.value = false;
+function closeTagMenu() {
+  tagMenuVisible.value = false;
 }
 
 function handleScroll() {
-  closeMenu();
+  closeTagMenu();
 }
 
 onMounted(() => {
@@ -237,71 +239,71 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    class="h-[34px] w-full border-b-[1px] border-gray-200 shadow-lg shadow-[rgba(0, 21, 41, 0.08)]"
+  <scroll-pane
+    class="tags-container"
+    ref="scrollPaneRef"
+    @scroll="handleScroll"
   >
-    <scroll-pane
-      ref="scrollPaneRef"
-      class="tags-container"
-      @scroll="handleScroll"
+    <router-link
+      :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
+      v-for="tag in visitedViews"
+      :key="tag.path"
+      :data-path="tag.path"
+      :to="{ path: tag.path, query: tag.query }"
+      @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
+      @contextmenu.prevent="openTagMenu(tag, $event)"
     >
-      <router-link
-        v-for="tag in tagsViewStore.visitedViews"
-        :key="tag.path"
-        :data-path="tag.path"
-        :class="isActive(tag) ? 'active' : ''"
-        :to="{ path: tag.path, query: tag.query }"
-        class="tags-item"
-        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
-        @contextmenu.prevent="openMenu(tag, $event)"
+      {{ translateRouteTitleI18n(tag.meta?.title) }}
+      <span
+        v-if="!isAffix(tag)"
+        class="rounded-[60%] hover:bg-gray-300"
+        @click.prevent.stop="closeSelectedTag(tag)"
       >
-        {{ generateTitle(tag.meta?.title) }}
+        <i-ep-close class="text-[10px]" />
+      </span>
+    </router-link>
+  </scroll-pane>
 
-        <span
-          v-if="!isAffix(tag)"
-          class="tags-item-remove"
-          @click.prevent.stop="closeSelectedTag(tag)"
-        >
-          <svg-icon icon-class="close" />
-        </span>
-      </router-link>
-    </scroll-pane>
-
-    <ul
-      v-show="visible"
-      :style="{ left: left + 'px', top: top + 'px' }"
-      class="tags-item-menu"
-    >
-      <li @click="refreshSelectedTag(selectedTag)">
-        <svg-icon icon-class="refresh" />
-        刷新
-      </li>
-      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        <svg-icon icon-class="close" />
-        关闭
-      </li>
-      <li @click="closeOtherTags">
-        <svg-icon icon-class="close_other" />
-        关闭其它
-      </li>
-      <li v-if="!isFirstView()" @click="closeLeftTags">
-        <svg-icon icon-class="close_left" />
-        关闭左侧
-      </li>
-      <li v-if="!isLastView()" @click="closeRightTags">
-        <svg-icon icon-class="close_right" />
-        关闭右侧
-      </li>
-      <li @click="closeAllTags(selectedTag)">
-        <svg-icon icon-class="close_all" />
-        关闭所有
-      </li>
-    </ul>
-  </div>
+  <!-- tag标签操作菜单 -->
+  <ul
+    v-show="tagMenuVisible"
+    class="tag-menu"
+    :style="{ left: left + 'px', top: top + 'px' }"
+  >
+    <li @click="refreshSelectedTag(selectedTag)">
+      <svg-icon icon-name="refresh" />
+      刷新
+    </li>
+    <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
+      <svg-icon icon-name="close" />
+      关闭
+    </li>
+    <li @click="closeOtherTags">
+      <svg-icon icon-name="close_other" />
+      关闭其它
+    </li>
+    <li v-if="!isFirstView()" @click="closeLeftTags">
+      <svg-icon icon-name="close_left" />
+      关闭左侧
+    </li>
+    <li v-if="!isLastView()" @click="closeRightTags">
+      <svg-icon icon-name="close_right" />
+      关闭右侧
+    </li>
+    <li @click="closeAllTags(selectedTag)">
+      <svg-icon icon-name="close_all" />
+      关闭所有
+    </li>
+  </ul>
 </template>
 
 <style lang="scss" scoped>
 .tags-container {
+  height: 34px;
+  width: 100%;
+  border: 1px solid #eee;
+  box-shadow: 0px 1px 1px #eee;
+
   .tags-item {
     display: inline-block;
     cursor: pointer;
@@ -324,7 +326,7 @@ onMounted(() => {
 
     &.active {
       background-color: var(--el-color-primary);
-      color: var(--el-color-primary-light-9);
+      color: #fff;
       border-color: var(--el-color-primary);
       &::before {
         content: '';
@@ -333,22 +335,13 @@ onMounted(() => {
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        position: relative;
         margin-right: 5px;
-      }
-    }
-
-    &-remove {
-      border-radius: 50%;
-      &:hover {
-        color: #fff;
-        background-color: #ccc;
       }
     }
   }
 }
 
-.tags-item-menu {
+.tag-menu {
   background: #fff;
   z-index: 99;
   position: absolute;

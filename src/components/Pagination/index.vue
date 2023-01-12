@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ hidden: hidden }" class="pagination-container">
+  <div :class="'pagination ' + { hidden: hidden }">
     <el-pagination
       :background="background"
       v-model:current-page="currentPage"
@@ -89,13 +89,11 @@ function handleCurrentChange(val: number) {
 }
 </script>
 
-<style scoped>
-.pagination-container {
-  background: #fff;
-  padding: 32px 16px;
-}
-
-.pagination-container.hidden {
-  display: none;
+<style lang="scss" scoped>
+.pagination {
+  padding: 12px;
+  &.hidden {
+    display: none;
+  }
 }
 </style>

@@ -15,10 +15,7 @@
   />
 </template>
 
-<script setup lang="ts">
-import { useSettingsStore } from '@/store/modules/settings';
-const settingsStore = useSettingsStore();
-</script>
+<script setup lang="ts"></script>
 
 <style>
 .theme-message,

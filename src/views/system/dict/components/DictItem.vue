@@ -15,7 +15,7 @@ import {
   updateDictItem,
   deleteDictItems
 } from '@/api/dict';
-import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
+import { Search, Plus, Refresh, Delete } from '@element-plus/icons-vue';
 import { DictItem, DictItemForm, DictItemQuery } from '@/api/dict/types';
 
 const props = defineProps({

@@ -5,7 +5,7 @@ import { AppMain, Navbar, Settings, TagsView } from './components/index';
 import Sidebar from './components/Sidebar/index.vue';
 import RightPanel from '@/components/RightPanel/index.vue';
 
-import { DeviceType, useAppStore } from '@/store/modules/app';
+import { useAppStore } from '@/store/modules/app';
 import { useSettingsStore } from '@/store/modules/settings';
 
 const { width } = useWindowSize();

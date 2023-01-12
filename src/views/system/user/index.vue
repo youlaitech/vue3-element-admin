@@ -23,7 +23,7 @@ import {
   updateUser,
   updateUserStatus,
   updateUserPassword,
-  downloadTemplate,
+  downloadTemplateApi,
   exportUser,
   importUser
 } from '@/api/user';
@@ -353,8 +353,8 @@ function getGenderOptions() {
 /**
  * 下载导入模板
  */
-function handleDownloadTemplate() {
-  downloadTemplate().then((response: any) => {
+function downloadTemplate() {
+  downloadTemplateApi().then((response: any) => {
     const blob = new Blob([response.data], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
     });
@@ -520,46 +520,43 @@ onMounted(() => {
 
         <el-card shadow="never">
           <template #header>
-            <el-form-item style="float: left">
-              <el-button
-                type="success"
-                :icon="Plus"
-                @click="handleAdd"
-                v-hasPerm="['sys:user:add']"
-                >新增</el-button
-              >
-              <el-button
-                type="danger"
-                :icon="Delete"
-                :disabled="ids.length === 0"
-                @click="handleDelete"
-                v-hasPerm="['sys:user:delete']"
-                >删除</el-button
-              >
-            </el-form-item>
-            <el-form-item style="float: right">
-              <el-dropdown split-button style="margin-left: 12px">
-                导入
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item
-                      :icon="Download"
-                      @click="handleDownloadTemplate"
-                      >下载模板</el-dropdown-item
-                    >
-                    <el-dropdown-item :icon="Top" @click="showImportDialog"
-                      >导入数据</el-dropdown-item
-                    >
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
-              <el-button
-                :icon="Download"
-                style="margin-left: 12px"
-                @click="handleExport"
-                >导出</el-button
-              >
-            </el-form-item>
+            <div class="flex justify-between">
+              <div>
+                <el-button
+                  type="success"
+                  :icon="Plus"
+                  @click="handleAdd"
+                  v-hasPerm="['sys:user:add']"
+                  >新增</el-button
+                >
+                <el-button
+                  type="danger"
+                  :icon="Delete"
+                  :disabled="ids.length === 0"
+                  @click="handleDelete"
+                  v-hasPerm="['sys:user:delete']"
+                  >删除</el-button
+                >
+              </div>
+              <div>
+                <el-dropdown split-button>
+                  导入
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item @click="downloadTemplate">
+                        <i-ep-download />下载模板</el-dropdown-item
+                      >
+                      <el-dropdown-item @click="showImportDialog">
+                        <i-ep-top />导入数据</el-dropdown-item
+                      >
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+                <el-button class="ml-3" @click="handleExport"
+                  ><template #icon><i-ep-download /></template>导出</el-button
+                >
+              </div>
+            </div>
           </template>
 
           <el-table

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
-import { RouterLink, useRoute, useRouter, RouteRecordRaw } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 import {
   ElDropdown,
   ElDropdownItem,

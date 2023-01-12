@@ -29,7 +29,7 @@ const handleDictTypeClick = (row: any) => {
       <el-col :span="10" :xs="24">
         <el-card class="box-card">
           <template #header>
-            <svg-icon icon-class="dict" />
+            <svg-icon icon-name="dict" />
             字典类型
           </template>
           <dict-type @dictClick="handleDictTypeClick" />
@@ -39,7 +39,7 @@ const handleDictTypeClick = (row: any) => {
       <el-col :span="14" :xs="24">
         <el-card class="box-card">
           <template #header>
-            <svg-icon icon-class="dict_item" />
+            <svg-icon icon-name="dict_item" />
             <span style="margin: 0 5px">字典数据项</span>
             <el-tag type="success" v-if="typeCode" size="small">{{
               typeName

@@ -3,13 +3,13 @@ import { defineStore } from 'pinia';
 import { constantRoutes } from '@/router';
 import { store } from '@/store';
 import { listRoutes } from '@/api/menu';
-import { ref } from 'vue';
 
 const modules = import.meta.glob('../../views/**/**.vue');
 export const Layout = () => import('@/layout/index.vue');
 
 const hasPermission = (roles: string[], route: RouteRecordRaw) => {
   if (route.meta && route.meta.roles) {
+    // 默认超级管理员角色拥有所有权限，忽略校验
     if (roles.includes('ROOT')) {
       return true;
     }
@@ -51,11 +51,9 @@ const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
 export const usePermissionStore = defineStore('permission', () => {
   // state
   const routes = ref<RouteRecordRaw[]>([]);
-  const addRoutes = ref<RouteRecordRaw[]>([]);
 
   // actions
   function setRoutes(newRoutes: RouteRecordRaw[]) {
-    addRoutes.value = newRoutes;
     routes.value = constantRoutes.concat(newRoutes);
   }
 
