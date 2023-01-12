@@ -10,10 +10,10 @@
             item.redirect === 'noredirect' || index === breadcrumbs.length - 1
           "
           class="text-[#97a8be]"
-          >{{ generateTitle(item.meta.title) }}</span
+          >{{ translateRouteTitleI18n(item.meta.title) }}</span
         >
         <a v-else @click.prevent="handleLink(item)">
-          {{ generateTitle(item.meta.title) }}
+          {{ translateRouteTitleI18n(item.meta.title) }}
         </a>
       </el-breadcrumb-item>
     </transition-group>
@@ -25,7 +25,7 @@ import { onBeforeMount, ref, watch } from 'vue';
 import { useRoute, RouteLocationMatched } from 'vue-router';
 import { compile } from 'path-to-regexp';
 import router from '@/router';
-import { generateTitle } from '@/utils/i18n';
+import { translateRouteTitleI18n } from '@/utils/i18n';
 
 const currentRoute = useRoute();
 const pathCompile = (path: string) => {

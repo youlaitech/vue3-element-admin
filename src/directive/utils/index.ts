@@ -1,15 +1,15 @@
-import { Directive, DirectiveBinding } from 'vue';
+import { Directive } from 'vue';
 
 /**
  * 按钮防抖
  */
-export const deBounce:Directive = {
-  mounted(el:HTMLElement) {
+export const deBounce: Directive = {
+  mounted(el: HTMLElement) {
     el.addEventListener('click', e => {
-      el.classList.add('is-disabled')
+      el.classList.add('is-disabled');
       setTimeout(() => {
-        el.classList.remove('is-disabled')
-      }, 2000)
-    })
+        el.classList.remove('is-disabled');
+      }, 2000);
+    });
   }
-}
+};

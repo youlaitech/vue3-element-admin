@@ -11,20 +11,18 @@
     :before-upload="handleBeforeUpload"
     :http-request="handleUpload"
     :on-remove="handleRemove"
-    :on-preview="handlePreview"
+    :on-preview="previewImg"
     :limit="props.limit"
   >
-    <el-icon><Plus /></el-icon>
+    <i-ep-plus />
   </el-upload>
 
   <el-dialog v-model="dialogVisible">
-    <img w-full :src="dialogImageUrl" alt="Preview Image" />
+    <img w-full :src="previewImgUrl" alt="Preview Image" />
   </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { Plus } from '@element-plus/icons-vue';
 import {
   ElMessage,
   ElUpload,
@@ -55,7 +53,7 @@ const props = defineProps({
   }
 });
 
-const dialogImageUrl = ref('');
+const previewImgUrl = ref('');
 const dialogVisible = ref(false);
 
 const fileList = ref([] as UploadUserFile[]);
@@ -134,10 +132,10 @@ function handleBeforeUpload(file: UploadRawFile) {
 }
 
 /**
- * 图片预览
+ * 预览图片
  */
-const handlePreview: UploadProps['onPreview'] = uploadFile => {
-  dialogImageUrl.value = uploadFile.url!;
+const previewImg: UploadProps['onPreview'] = uploadFile => {
+  previewImgUrl.value = uploadFile.url!;
   dialogVisible.value = true;
 };
 </script>

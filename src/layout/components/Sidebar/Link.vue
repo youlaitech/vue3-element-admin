@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { isExternal } from '@/utils/validate';
 import { useRouter } from 'vue-router';
 
-import { DeviceType, useAppStore } from '@/store/modules/app';
+import { useAppStore } from '@/store/modules/app';
 const appStore = useAppStore();
 
 const sidebar = computed(() => appStore.sidebar);

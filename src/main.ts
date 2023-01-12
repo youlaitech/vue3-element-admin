@@ -5,10 +5,9 @@ import { setupStore } from '@/store';
 
 import ElementPlus from 'element-plus';
 
-import Pagination from '@/components/Pagination/index.vue';
 import '@/permission';
 
-// 引入svg注册脚本
+// 本地SVG图标
 import 'virtual:svg-icons-register';
 
 // 国际化
@@ -31,9 +30,4 @@ app.config.globalProperties.$getDictionaries = getDictionaries;
 
 // 全局挂载
 setupStore(app);
-app
-  .component('Pagination', Pagination)
-  .use(router)
-  .use(ElementPlus)
-  .use(i18n)
-  .mount('#app');
+app.use(router).use(ElementPlus).use(i18n).mount('#app');

@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import {
-  ref,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-  getCurrentInstance
-} from 'vue';
 import { useTagsViewStore, TagView } from '@/store/modules/tagsView';
 
 const tagAndTagSpacing = ref(4);
@@ -102,8 +95,8 @@ defineExpose({
 <template>
   <el-scrollbar
     ref="scrollContainer"
-    :vertical="false"
     class="scroll-container"
+    :vertical="false"
     @wheel.prevent="handleScroll"
   >
     <slot />

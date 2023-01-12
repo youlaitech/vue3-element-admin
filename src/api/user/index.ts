@@ -111,7 +111,7 @@ export function deleteUsers(ids: string) {
  *
  * @returns
  */
-export function downloadTemplate() {
+export function downloadTemplateApi() {
   return request({
     url: '/api/v1/users/template',
     method: 'get',

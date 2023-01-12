@@ -1,92 +1,84 @@
-<template>
-  <div class="icon-select">
-    <el-input
-      v-model="iconName"
-      clearable
-      placeholder="请输入图标名称"
-      @clear="filterIcons"
-      @input="filterIcons"
-    >
-      <template #suffix><i class="el-icon-search el-input__icon" /></template>
-    </el-input>
-    <div class="icon-select__list">
-      <div
-        v-for="(item, index) in iconList"
-        :key="index"
-        @click="selectedIcon(item)"
-      >
-        <svg-icon
-          color="#999"
-          :icon-class="item"
-          style="height: 30px; width: 16px; margin-right: 5px"
-        />
-        <span>{{ item }}</span>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref } from 'vue';
-import SvgIcon from '@/components/SvgIcon/index.vue';
+const props = defineProps({
+  modelValue: {
+    type: String,
+    require: false
+  }
+});
 
-const icons = [] as string[];
-const modules = import.meta.glob('../../assets/icons/*.svg');
-for (const path in modules) {
-  const p = path.split('assets/icons/')[1].split('.svg')[0];
-  icons.push(p);
-}
-const iconList = ref(icons);
+const emit = defineEmits(['update:modelValue']);
+const visible = ref(false);
+const inputValue = toRef(props, 'modelValue');
+const iconList = ref<string[]>([]);
 
-const iconName = ref('');
+const filterValue = ref('');
 
-const emit = defineEmits(['selected']);
+const icon = ref('perm');
 
-function filterIcons() {
-  iconList.value = icons;
-  if (iconName.value) {
-    iconList.value = icons.filter(item => item.indexOf(iconName.value) !== -1);
+function loadIcons() {
+  const modules = import.meta.glob('../../assets/icons/*.svg');
+  for (const path in modules) {
+    const icon = path.split('assets/icons/')[1].split('.svg')[0];
+    iconList.value.push(icon);
   }
 }
 
-function selectedIcon(name: string) {
-  emit('selected', name);
-  document.body.click();
-}
-
-function reset() {
-  iconName.value = '';
-  iconList.value = icons;
-}
-
-defineExpose({
-  reset
+onMounted(() => {
+  loadIcons();
 });
 </script>
 
-<style lang="scss" scoped>
-.icon-select {
-  width: 100%;
-  padding: 10px;
+<template>
+  <div class="w-[400px] relative">
+    <el-input v-model="inputValue" readonly>
+      <template #prepend> <svg-icon :iconName="icon"></svg-icon> </template>
+    </el-input>
 
-  &__list {
-    height: 200px;
-    overflow-y: scroll;
+    <el-popover
+      shadow="none"
+      :visible="visible"
+      placement="bottom-end"
+      trigger="click"
+    >
+      <template #reference>
+        <div
+          @click="visible = !visible"
+          class="cursor-pointer text-[#999] absolute right-[10px] top-0"
+        >
+          <i-ep-caret-top v-show="visible"></i-ep-caret-top>
+          <i-ep-caret-bottom v-show="!visible"></i-ep-caret-bottom>
+        </div>
+      </template>
 
-    div {
-      height: 30px;
-      line-height: 30px;
-      margin-bottom: -5px;
-      cursor: pointer;
-      width: 33%;
-      float: left;
-    }
+      <!-- 下拉选择弹窗 -->
+      <el-input
+        class="p-2"
+        v-model="filterValue"
+        placeholder="搜索图标"
+        clearable
+      />
+      <el-divider border-style="dashed" />
 
-    span {
-      display: inline-block;
-      vertical-align: -0.15em;
-      fill: currentColor;
-      overflow: hidden;
+      <el-scrollbar height="300px">
+        <ul class="icon-list">
+          <li class="icon-item" v-for="(item, index) in iconList" :key="index">
+            <svg-icon color="#999" :icon-name="item" />
+            <span>{{ item }}</span>
+          </li>
+        </ul>
+      </el-scrollbar>
+    </el-popover>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.icon-list {
+  .icon-item {
+    &:hover {
+      border-color: var(--el-color-primary);
+      color: var(--el-color-primary);
+      transition: all 0.4s;
+      transform: scaleX(1.05);
     }
   }
 }

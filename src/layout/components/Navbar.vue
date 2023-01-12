@@ -1,16 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
-import { ElMessageBox } from 'element-plus';
-
-import Hamburger from '@/components/Hamburger/index.vue';
-import Breadcrumb from '@/components/Breadcrumb/index.vue';
-import Screenfull from '@/components/Screenfull/index.vue';
-import SizeSelect from '@/components/SizeSelect/index.vue';
-import LangSelect from '@/components/LangSelect/index.vue';
-import MixNav from './Sidebar/MixNav.vue';
-import { CaretBottom } from '@element-plus/icons-vue';
-
 import { useAppStore } from '@/store/modules/app';
 import { useTagsViewStore } from '@/store/modules/tagsView';
 import { useUserStore } from '@/store/modules/user';
@@ -24,12 +14,14 @@ const settingsStore = useSettingsStore();
 const route = useRoute();
 const router = useRouter();
 
-const device = computed(() => appStore.device);
+const { device } = storeToRefs(appStore); // 设备类型：desktop-宽屏设备 || mobile-窄屏设备
+const { layout } = storeToRefs(settingsStore); // 布局模式：left-左侧模式||top-顶部模式||mix-混合模式
 
 function toggleSideBar() {
   appStore.toggleSidebar(true);
 }
 
+// 注销
 function logout() {
   ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
     confirmButtonText: '确定',
@@ -52,7 +44,7 @@ function logout() {
   <div class="navbar">
     <div
       class="flex justify-start"
-      v-if="device === 'mobile' || settingsStore.layout === 'left'"
+      v-if="device === 'mobile' || layout === 'left'"
     >
       <hamburger
         :is-active="appStore.sidebar.opened"
@@ -62,13 +54,24 @@ function logout() {
       <breadcrumb />
     </div>
 
-    <mix-nav v-if="device !== 'mobile' && settingsStore.layout === 'mix'" />
+    <mix-nav v-if="device !== 'mobile' && layout === 'mix'" />
 
+    <!-- 宽屏或左侧模式显示 -->
     <div
-      v-if="device === 'mobile' || settingsStore.layout === 'left'"
+      v-if="device === 'desktop' || layout === 'left'"
       class="flex justify-start"
     >
+      <!-- 左侧窄屏不显示 -->
       <div v-if="device !== 'mobile'" class="flex justify-center items-center">
+        <i-ep-add-location />
+        <i-ep-aim />
+        <div i-ep-check />
+
+        <el-button>
+          <template #icon><i-ep-circle-check-filled /></template>
+          Hello world
+        </el-button>
+
         <!--全屏 -->
         <screenfull id="screenfull" />
 
@@ -80,14 +83,14 @@ function logout() {
         <!--语言选择-->
         <lang-select />
       </div>
-
+      <!-- 头像 -->
       <el-dropdown trigger="click">
         <div class="flex justify-center items-center pr-[20px]">
           <img
             :src="userStore.avatar + '?imageView2/1/w/80/h/80'"
             class="w-[40px] h-[40px] rounded-lg"
           />
-          <CaretBottom class="w-3 h-3" />
+          <i-ep-caret-bottom class="w-3 h-3" />
         </div>
 
         <template #dropdown>
@@ -115,15 +118,12 @@ function logout() {
 </template>
 
 <style lang="scss" scoped>
-.el-dropdown {
-  font-size: 18px;
-}
-
 .navbar {
+  background-color: #fff;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 1px #0003;
 }
 </style>
