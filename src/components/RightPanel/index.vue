@@ -3,13 +3,9 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { addClass, removeClass } from '@/utils/index';
 
-import { useSettingsStore } from '@/store/modules/settings';
-
 // 图标依赖
 import { Close, Setting } from '@element-plus/icons-vue';
 import { ElColorPicker } from 'element-plus';
-
-const settingsStore = useSettingsStore();
 
 const show = ref(false);
 

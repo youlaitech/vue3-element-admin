@@ -42,8 +42,6 @@ import {
   Plus,
   Refresh,
   Delete,
-  Download,
-  Top,
   UploadFilled
 } from '@element-plus/icons-vue';
 import {

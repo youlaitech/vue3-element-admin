@@ -16,6 +16,8 @@ module.exports = {
     watch: "readonly",
     ref:"readonly",
     toRef:"readonly",
+    reactive:"readonly",
+    toRefs:"readonly",
     onMounted:"readonly",
     onBeforeUnmount:"readonly",
     getCurrentInstance:"readonly",
