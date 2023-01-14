@@ -127,6 +127,7 @@
       :title="dialog.title"
       v-model="dialog.visible"
       @close="cancel"
+      destroy-on-close
       width="750px"
     >
       <el-form
@@ -467,14 +468,6 @@ function handleDelete(row: any) {
 function cancel() {
   dataFormRef.value.resetFields();
   state.dialog.visible = false;
-}
-
-/**
- * 选择图标后事件
- */
-function selected(name: string) {
-  state.formData.icon = name;
-  state.iconSelectVisible = false;
 }
 
 onMounted(() => {

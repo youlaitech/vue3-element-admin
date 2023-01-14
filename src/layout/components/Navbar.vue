@@ -54,24 +54,10 @@ function logout() {
       <breadcrumb />
     </div>
 
-    <mix-nav v-if="device !== 'mobile' && layout === 'mix'" />
-
-    <!-- 宽屏或左侧模式显示 -->
-    <div
-      v-if="device === 'desktop' || layout === 'left'"
-      class="flex justify-start"
-    >
-      <!-- 左侧窄屏不显示 -->
+    <!-- 宽屏显示 -->
+    <div class="flex justify-start">
+      <!-- 窄屏不显示 -->
       <div v-if="device !== 'mobile'" class="flex justify-center items-center">
-        <i-ep-add-location />
-        <i-ep-aim />
-        <div i-ep-check />
-
-        <el-button>
-          <template #icon><i-ep-circle-check-filled /></template>
-          Hello world
-        </el-button>
-
         <!--全屏 -->
         <screenfull id="screenfull" />
 
