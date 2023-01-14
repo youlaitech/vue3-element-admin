@@ -5,7 +5,7 @@ const props = defineProps({
     require: false
   },
   /**
-   * 选择器宽度
+   * 图标选择器宽度
    */
   width: {
     type: String,
@@ -36,9 +36,8 @@ function loadIcons() {
  * 筛选图标
  */
 function handleIconFilter() {
-  console.log('筛选关键字', filterValue.value);
   if (filterValue.value) {
-    filterIconNames.value = filterIconNames.value.filter(iconName =>
+    filterIconNames.value = iconNames.filter(iconName =>
       iconName.includes(filterValue.value)
     );
   } else {

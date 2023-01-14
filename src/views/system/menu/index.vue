@@ -252,8 +252,6 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted, toRefs } from 'vue';
-
 import { Search, Plus, Refresh } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
@@ -279,10 +277,6 @@ const state = reactive({
   loading: true,
   // 选中ID数组
   ids: [],
-  // 非单个禁用
-  single: true,
-  // 非多个禁用
-  multiple: true,
   queryParams: {} as MenuQuery,
   menuList: [] as Menu[],
   dialog: { visible: false } as DialogType,
@@ -305,8 +299,6 @@ const state = reactive({
   },
   menuOptions: [] as OptionType[],
   currentRow: undefined,
-  // Icon选择器显示状态
-  iconSelectVisible: false,
   cacheData: {
     menuType: '',
     menuPath: ''
@@ -330,27 +322,24 @@ const {
 function handleQuery() {
   // 重置父组件
   emit('menuClick', null);
-  state.loading = true;
+  loading.value = true;
   listMenus(state.queryParams).then(({ data }) => {
-    state.menuList = data;
-    state.loading = false;
+    menuList.value = data;
+    loading.value = false;
   });
 }
 
 /**
- * 加载菜单下拉树
+ * 下拉菜单
  */
 async function loadMenuData() {
-  const menuOptions: any[] = [];
   await listMenuOptions().then(({ data }) => {
-    const menuOption = { value: '0', label: '顶级菜单', children: data };
-    menuOptions.push(menuOption);
-    state.menuOptions = menuOptions;
+    menuOptions.value = [{ value: '0', label: '顶级菜单', children: data }];
   });
 }
 
 /**
- * 重置查询
+ * 查询重置
  */
 function resetQuery() {
   queryFormRef.value.resetFields();
@@ -363,7 +352,7 @@ function handleRowClick(row: any) {
 }
 
 /**
- * 新增菜单打开
+ * 新增菜单
  */
 async function handleAdd(row: any) {
   formData.value.id = undefined;
@@ -375,11 +364,9 @@ async function handleAdd(row: any) {
 
   if (row.id) {
     // 行点击新增
-
     formData.value.parentId = row.id;
   } else {
     // 工具栏新增
-
     if (state.currentRow) {
       // 选择行
       formData.value.parentId = (state.currentRow as any).id;
@@ -395,7 +382,7 @@ async function handleAdd(row: any) {
  */
 async function handleUpdate(row: MenuForm) {
   await loadMenuData();
-  state.dialog = {
+  dialog.value = {
     title: '编辑菜单',
     visible: true
   };
