@@ -5,7 +5,7 @@ import { Directive } from 'vue';
  */
 export const deBounce: Directive = {
   mounted(el: HTMLElement) {
-    el.addEventListener('click', e => {
+    el.addEventListener('click', () => {
       el.classList.add('is-disabled');
       setTimeout(() => {
         el.classList.remove('is-disabled');
