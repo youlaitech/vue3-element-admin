@@ -109,7 +109,7 @@ onMounted(() => {
             @click="onIconSelect(iconName)"
           >
             <el-tooltip :content="iconName" placement="bottom" effect="light">
-              <svg-icon color="#999" :icon-name="iconName" />
+              <svg-icon color="#999" :icon-class="iconName" />
             </el-tooltip>
           </li>
         </ul>

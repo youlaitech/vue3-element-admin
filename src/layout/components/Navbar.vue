@@ -65,7 +65,7 @@ function logout() {
       </div>
       <!-- 头像 -->
       <el-dropdown trigger="click">
-        <div class="flex justify-center items-center pr-[20px]">
+        <div class="flex justify-center items-center mx-2">
           <img
             :src="userStore.avatar + '?imageView2/1/w/80/h/80'"
             class="w-[40px] h-[40px] rounded-lg"

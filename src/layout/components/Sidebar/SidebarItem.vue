@@ -78,7 +78,7 @@ function resolvePath(routePath: string) {
         >
           <svg-icon
             v-if="onlyOneChild.meta && onlyOneChild.meta.icon"
-            :icon-name="onlyOneChild.meta.icon"
+            :icon-class="onlyOneChild.meta.icon"
           />
           <template #title>
             {{ translateRouteTitleI18n(onlyOneChild.meta.title) }}
@@ -92,7 +92,7 @@ function resolvePath(routePath: string) {
       <template #title>
         <svg-icon
           v-if="item.meta && item.meta.icon"
-          :icon-name="item.meta.icon"
+          :icon-class="item.meta.icon"
         />
         <span v-if="item.meta && item.meta.title">{{
           translateRouteTitleI18n(item.meta.title)

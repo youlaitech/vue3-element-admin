@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
 import { useAppStore } from '@/store/modules/app';
-import SvgIcon from '@/components/SvgIcon/index.vue';
 
 const appStore = useAppStore();
 
@@ -20,8 +17,10 @@ function handleSizeChange(size: string) {
 
 <template>
   <el-dropdown trigger="click" @command="handleSizeChange">
-    <div class="cursor-pointerw-[40px] h-[50px] leading-[50px] text-center">
-      <svg-icon icon-name="size" />
+    <div
+      class="cursor-pointer h-[50px] leading-[50px] text-center text-[#5a5e66] px-2.5 hover:bg-gray-50"
+    >
+      <svg-icon icon-class="size" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>

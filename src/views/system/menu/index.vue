@@ -40,7 +40,7 @@
         <el-table-column label="菜单名称">
           <template #default="scope">
             <svg-icon
-              :icon-name="
+              :icon-class="
                 scope.row.type === 'BUTTON' ? 'button' : scope.row.icon
               "
             />

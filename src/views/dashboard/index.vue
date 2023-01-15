@@ -23,7 +23,7 @@ import Team from './components/Team/index.vue';
       <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-user">
-            <svg-icon icon-name="uv" size="4em" />
+            <svg-icon icon-class="uv" size="4em" />
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">访问数</div>
@@ -35,7 +35,7 @@ import Team from './components/Team/index.vue';
       <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-message">
-            <svg-icon icon-name="message" size="4em" />
+            <svg-icon icon-class="message" size="4em" />
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">消息数</div>
@@ -47,7 +47,7 @@ import Team from './components/Team/index.vue';
       <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-money">
-            <svg-icon icon-name="money" size="4em" />
+            <svg-icon icon-class="money" size="4em" />
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">收入金额</div>
@@ -58,7 +58,7 @@ import Team from './components/Team/index.vue';
       <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-shopping">
-            <svg-icon icon-name="shopping" size="4em" />
+            <svg-icon icon-class="shopping" size="4em" />
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">订单数</div>
