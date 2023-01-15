@@ -271,27 +271,27 @@ onMounted(() => {
     :style="{ left: left + 'px', top: top + 'px' }"
   >
     <li @click="refreshSelectedTag(selectedTag)">
-      <svg-icon icon-name="refresh" />
+      <svg-icon icon-class="refresh" />
       刷新
     </li>
     <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-      <svg-icon icon-name="close" />
+      <svg-icon icon-class="close" />
       关闭
     </li>
     <li @click="closeOtherTags">
-      <svg-icon icon-name="close_other" />
+      <svg-icon icon-class="close_other" />
       关闭其它
     </li>
     <li v-if="!isFirstView()" @click="closeLeftTags">
-      <svg-icon icon-name="close_left" />
+      <svg-icon icon-class="close_left" />
       关闭左侧
     </li>
     <li v-if="!isLastView()" @click="closeRightTags">
-      <svg-icon icon-name="close_right" />
+      <svg-icon icon-class="close_right" />
       关闭右侧
     </li>
     <li @click="closeAllTags(selectedTag)">
-      <svg-icon icon-name="close_all" />
+      <svg-icon icon-class="close_all" />
       关闭所有
     </li>
   </ul>

@@ -1,15 +1,14 @@
 <template>
-  <div class="cursor-pointer w-[40px] h-[50px] leading-[50px] text-center">
+  <div
+    class="cursor-pointer h-[50px] leading-[50px] text-center text-[#5a5e66] px-2.5 hover:bg-gray-50"
+  >
     <svg-icon
-      :icon-name="isFullscreen ? 'exit-fullscreen' : 'fullscreen'"
+      :icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'"
       @click="toggle"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useFullscreen } from '@vueuse/core';
-import SvgIcon from '@/components/SvgIcon/index.vue';
-
 const { isFullscreen, toggle } = useFullscreen();
 </script>

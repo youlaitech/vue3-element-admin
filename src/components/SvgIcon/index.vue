@@ -14,7 +14,7 @@ const props = defineProps({
     type: String,
     default: 'icon'
   },
-  iconName: {
+  iconClass: {
     type: String,
     required: false
   },
@@ -27,7 +27,7 @@ const props = defineProps({
   }
 });
 
-const symbolId = computed(() => `#${props.prefix}-${props.iconName}`);
+const symbolId = computed(() => `#${props.prefix}-${props.iconClass}`);
 </script>
 
 <style scoped>

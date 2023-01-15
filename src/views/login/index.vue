@@ -15,7 +15,7 @@
 
       <el-form-item prop="username">
         <span class="svg-container">
-          <svg-icon icon-name="user" />
+          <svg-icon icon-class="user" />
         </span>
         <el-input
           ref="username"
@@ -35,7 +35,7 @@
       >
         <el-form-item prop="password">
           <span class="svg-container">
-            <svg-icon icon-name="password" />
+            <svg-icon icon-class="password" />
           </span>
           <el-input
             ref="passwordRef"
@@ -52,7 +52,7 @@
           />
           <span class="show-pwd" @click="showPwd">
             <svg-icon
-              :icon-name="passwordType === 'password' ? 'eye' : 'eye-open'"
+              :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
             />
           </span>
         </el-form-item>

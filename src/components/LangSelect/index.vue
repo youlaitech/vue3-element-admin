@@ -23,8 +23,10 @@ function handleLanguageChange(lang: string) {
     trigger="click"
     @command="handleLanguageChange"
   >
-    <div class="cursor-pointer w-[40px] h-[50px] leading-[50px] text-center">
-      <svg-icon icon-name="language" />
+    <div
+      class="cursor-pointer h-[50px] leading-[50px] text-center px-2.5 hover:bg-gray-50"
+    >
+      <svg-icon icon-class="language" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
