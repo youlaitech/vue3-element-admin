@@ -2,10 +2,8 @@
 @import 'src/styles/element-plus';
 @import './sidebar.scss';
 @import './tailwind.scss';
+@import './reset.scss';
 
-html,body,#app{
-  height: 100%;
-}
 
 // main-container global css
 .app-container {
@@ -20,6 +18,3 @@ html,body,#app{
   box-shadow: 1px 1px 1px #eee;
 }
 
-svg{
-  display: inline-block;
-}

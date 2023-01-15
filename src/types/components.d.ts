@@ -55,6 +55,8 @@ declare module '@vue/runtime-core' {
     IEpClose: typeof import('~icons/ep/close')['default']
     IEpDownload: typeof import('~icons/ep/download')['default']
     IEpPlus: typeof import('~icons/ep/plus')['default']
+    IEpRefresh: typeof import('~icons/ep/refresh')['default']
+    IEpSearch: typeof import('~icons/ep/search')['default']
     IEpTop: typeof import('~icons/ep/top')['default']
     LangSelect: typeof import('./../components/LangSelect/index.vue')['default']
     MultiUpload: typeof import('./../components/Upload/MultiUpload.vue')['default']
