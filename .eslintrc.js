@@ -10,23 +10,13 @@ module.exports = {
     defineExpose: 'readonly',
     DialogType: "readonly",
     OptionType: "readonly",
-    ElMessageBox: "readonly",
-    ElMessage: "readonly",
-    computed: "readonly",
-    watch: "readonly",
-    ref:"readonly",
-    toRef:"readonly",
-    reactive:"readonly",
-    toRefs:"readonly",
-    onMounted:"readonly",
-    onBeforeUnmount:"readonly",
-    getCurrentInstance:"readonly",
   },
   parser: 'vue-eslint-parser',
   extends: [
     'eslint:recommended',
     'plugin:vue/vue3-essential',
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
+    "./.eslintrc-auto-import.json"
   ],
   parserOptions: {
     ecmaVersion: 'latest',

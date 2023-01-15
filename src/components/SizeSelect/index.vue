@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { ElMessage } from 'element-plus';
 
 import { useAppStore } from '@/store/modules/app';
 import SvgIcon from '@/components/SvgIcon/index.vue';

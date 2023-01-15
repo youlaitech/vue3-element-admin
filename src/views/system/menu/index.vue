@@ -128,6 +128,7 @@
       v-model="dialog.visible"
       @close="cancel"
       destroy-on-close
+      appendToBody
       width="750px"
     >
       <el-form
