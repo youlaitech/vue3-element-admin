@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { ElMessage } from 'element-plus';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import { useAppStore } from '@/store/modules/app';
 
@@ -25,7 +24,7 @@ function handleLanguageChange(lang: string) {
     @command="handleLanguageChange"
   >
     <div class="cursor-pointer w-[40px] h-[50px] leading-[50px] text-center">
-      <svg-icon class-name="international-icon" icon-class="language" />
+      <svg-icon icon-name="language" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
