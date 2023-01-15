@@ -32,13 +32,13 @@ function toggleClick() {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .hamburger {
+  display: inline-block;
   width: 20px;
   height: 20px;
-}
-
-.hamburger.is-active {
-  transform: rotate(180deg);
+  &.is-active {
+    transform: rotate(180deg);
+  }
 }
 </style>

@@ -32,6 +32,7 @@ const symbolId = computed(() => `#${props.prefix}-${props.iconClass}`);
 
 <style scoped>
 .svg-icon {
+  display: inline-block;
   outline: none;
   width: 1em;
   height: 1em;

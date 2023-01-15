@@ -4,25 +4,24 @@ import { Sunny, Moon } from '@element-plus/icons-vue';
 import { useSettingsStore } from '@/store/modules/settings';
 
 import { useDark, useToggle } from '@vueuse/core';
-import { ElDivider, ElSwitch, ElTooltip } from 'element-plus';
-import { onMounted } from 'vue';
-
+/**
+ * 暗黑模式
+ */
 const settingsStore = useSettingsStore();
 const isDark = useDark();
+const toggleDark = useToggle(isDark);
 
-function toggleTheme() {
-  const isDark = useDark();
-  useToggle(isDark);
+/**
+ * 切换布局
+ */
+function changeLayout(layout: string) {
+  settingsStore.changeSetting({ key: 'layout', value: layout });
+  window.document.body.setAttribute('layout', settingsStore.layout);
 }
 
 onMounted(() => {
   window.document.body.setAttribute('layout', settingsStore.layout);
 });
-
-function changeLayout(layout: string) {
-  settingsStore.changeSetting({ key: 'layout', value: layout });
-  window.document.body.setAttribute('layout', settingsStore.layout);
-}
 </script>
 
 <template>
@@ -46,11 +45,12 @@ function changeLayout(layout: string) {
 
     <el-divider>主题</el-divider>
 
-    <div class="flex justify-center" @click.stop>
+    <button @click="toggleDark()">当前状态是: {{ isDark }}</button>
+
+    <div class="flex justify-center" @click="toggleDark()">
       <el-switch
         v-model="isDark"
         inline-prompt
-        @change="toggleTheme"
         :active-icon="Sunny"
         :inactive-icon="Moon"
       />

@@ -1,3 +1,215 @@
+<script lang="ts">
+export default {
+  name: 'cmenu'
+};
+</script>
+
+<script setup lang="ts">
+import { MenuQuery, MenuForm, Menu } from '@/api/menu/types';
+// API 依赖
+import {
+  listMenus,
+  getMenuDetail,
+  listMenuOptions,
+  addMenu,
+  deleteMenus,
+  updateMenu
+} from '@/api/menu';
+
+import SvgIcon from '@/components/SvgIcon/index.vue';
+import IconSelect from '@/components/IconSelect/index.vue';
+
+const emit = defineEmits(['menuClick']);
+const queryFormRef = ref(ElForm);
+const dataFormRef = ref(ElForm);
+
+const state = reactive({
+  loading: true,
+  // 选中ID数组
+  ids: [],
+  queryParams: {} as MenuQuery,
+  menuList: [] as Menu[],
+  dialog: { visible: false } as DialogType,
+  formData: {
+    parentId: '0',
+    name: '',
+    visible: 1,
+    sort: 1,
+    component: undefined,
+    type: 'MENU'
+  } as MenuForm,
+  rules: {
+    parentId: [{ required: true, message: '请选择顶级菜单', trigger: 'blur' }],
+    name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
+    type: [{ required: true, message: '请选择菜单类型', trigger: 'blur' }],
+    path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
+    component: [
+      { required: true, message: '请输入组件完整路径', trigger: 'blur' }
+    ]
+  },
+  menuOptions: [] as OptionType[],
+  currentRow: undefined,
+  cacheData: {
+    menuType: '',
+    menuPath: ''
+  }
+});
+
+const {
+  loading,
+  queryParams,
+  menuList,
+  dialog,
+  formData,
+  rules,
+  menuOptions,
+  cacheData
+} = toRefs(state);
+
+/**
+ * 查询
+ */
+function handleQuery() {
+  // 重置父组件
+  emit('menuClick', null);
+  loading.value = true;
+  listMenus(state.queryParams).then(({ data }) => {
+    menuList.value = data;
+    loading.value = false;
+  });
+}
+
+/**
+ * 下拉菜单
+ */
+async function loadMenuData() {
+  listMenuOptions().then(({ data }) => {
+    menuOptions.value = [{ value: '0', label: '顶级菜单', children: data }];
+  });
+}
+
+/**
+ * 查询重置
+ */
+function resetQuery() {
+  queryFormRef.value.resetFields();
+  handleQuery();
+}
+
+function handleRowClick(row: any) {
+  state.currentRow = JSON.parse(JSON.stringify(row));
+  emit('menuClick', row);
+}
+
+/**
+ * 新增菜单
+ */
+async function handleAdd(row: any) {
+  dialog.value = {
+    title: '添加菜单',
+    visible: true
+  };
+  await loadMenuData();
+  if (row.id) {
+    // 行点击新增
+    formData.value.parentId = row.id;
+  } else {
+    // 工具栏新增
+    if (state.currentRow) {
+      // 选择行
+      formData.value.parentId = (state.currentRow as any).id;
+    } else {
+      // 未选择行
+      formData.value.parentId = '0';
+    }
+  }
+}
+
+/**
+ * 编辑菜单
+ */
+async function handleUpdate(row: MenuForm) {
+  await loadMenuData();
+  dialog.value = {
+    title: '编辑菜单',
+    visible: true
+  };
+  const id = row.id as string;
+  getMenuDetail(id).then(({ data }) => {
+    state.formData = data;
+    cacheData.value.menuType = data.type;
+    cacheData.value.menuPath = data.path;
+  });
+}
+
+/**
+ * 菜单类型 change
+ */
+function handleMenuTypeChange(menuType: any) {
+  if (menuType !== cacheData.value.menuType) {
+    formData.value.path = '';
+  } else {
+    formData.value.path = cacheData.value.menuPath;
+  }
+}
+
+/**
+ * 菜单提交
+ */
+function submitForm() {
+  dataFormRef.value.validate((isValid: boolean) => {
+    if (isValid) {
+      if (state.formData.id) {
+        updateMenu(state.formData.id, state.formData).then(() => {
+          ElMessage.success('修改成功');
+          cancel();
+          handleQuery();
+        });
+      } else {
+        addMenu(state.formData).then(() => {
+          ElMessage.success('新增成功');
+          cancel();
+          handleQuery();
+        });
+      }
+    }
+  });
+}
+
+/**
+ * 删除菜单
+ *
+ */
+function handleDelete(row: any) {
+  const ids = [row.id || state.ids].join(',');
+  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
+    .then(() => {
+      deleteMenus(ids).then(() => {
+        ElMessage.success('删除成功');
+        handleQuery();
+      });
+    })
+    .catch(() => ElMessage.info('已取消删除'));
+}
+
+/**
+ * 取消关闭弹窗
+ */
+function cancel() {
+  formData.value.id = undefined;
+  dataFormRef.value.resetFields();
+  dialog.value.visible = false;
+}
+
+onMounted(() => {
+  handleQuery();
+});
+</script>
+
 <template>
   <div class="app-container">
     <div class="search">
@@ -11,10 +223,13 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" :icon="Search" @click="handleQuery"
-            >搜索</el-button
+          <el-button type="primary" @click="handleQuery"
+            ><template #icon><i-ep-search /></template>搜索</el-button
           >
-          <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
+          <el-button @click="resetQuery">
+            <template #icon><i-ep-refresh /></template>
+            重置</el-button
+          >
         </el-form-item>
       </el-form>
     </div>
@@ -22,8 +237,9 @@
     <!-- 数据表格 -->
     <el-card shadow="never">
       <template #header>
-        <el-button type="success" :icon="Plus" @click="handleAdd"
-          >新增</el-button
+        <el-button type="success" @click="handleAdd">
+          <template #icon><i-ep-plus /></template>
+          新增</el-button
         >
       </template>
 
@@ -122,7 +338,6 @@
       </el-table>
     </el-card>
 
-    <!-- dialog -->
     <el-dialog
       :title="dialog.title"
       v-model="dialog.visible"
@@ -251,214 +466,3 @@
     </el-dialog>
   </div>
 </template>
-
-<script setup lang="ts">
-import { Search, Plus, Refresh } from '@element-plus/icons-vue';
-import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-
-import { MenuQuery, MenuForm, Menu } from '@/api/menu/types';
-// API 依赖
-import {
-  listMenus,
-  getMenuDetail,
-  listMenuOptions,
-  addMenu,
-  deleteMenus,
-  updateMenu
-} from '@/api/menu';
-
-import SvgIcon from '@/components/SvgIcon/index.vue';
-import IconSelect from '@/components/IconSelect/index.vue';
-
-const emit = defineEmits(['menuClick']);
-const queryFormRef = ref(ElForm);
-const dataFormRef = ref(ElForm);
-
-const state = reactive({
-  loading: true,
-  // 选中ID数组
-  ids: [],
-  queryParams: {} as MenuQuery,
-  menuList: [] as Menu[],
-  dialog: { visible: false } as DialogType,
-  formData: {
-    parentId: '0',
-    name: '',
-    visible: 1,
-    sort: 1,
-    component: undefined,
-    type: 'MENU'
-  } as MenuForm,
-  rules: {
-    parentId: [{ required: true, message: '请选择顶级菜单', trigger: 'blur' }],
-    name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-    type: [{ required: true, message: '请选择菜单类型', trigger: 'blur' }],
-    path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
-    component: [
-      { required: true, message: '请输入组件完整路径', trigger: 'blur' }
-    ]
-  },
-  menuOptions: [] as OptionType[],
-  currentRow: undefined,
-  cacheData: {
-    menuType: '',
-    menuPath: ''
-  }
-});
-
-const {
-  loading,
-  queryParams,
-  menuList,
-  dialog,
-  formData,
-  rules,
-  menuOptions,
-  cacheData
-} = toRefs(state);
-
-/**
- * 查询
- */
-function handleQuery() {
-  // 重置父组件
-  emit('menuClick', null);
-  loading.value = true;
-  listMenus(state.queryParams).then(({ data }) => {
-    menuList.value = data;
-    loading.value = false;
-  });
-}
-
-/**
- * 下拉菜单
- */
-async function loadMenuData() {
-  await listMenuOptions().then(({ data }) => {
-    menuOptions.value = [{ value: '0', label: '顶级菜单', children: data }];
-  });
-}
-
-/**
- * 查询重置
- */
-function resetQuery() {
-  queryFormRef.value.resetFields();
-  handleQuery();
-}
-
-function handleRowClick(row: any) {
-  state.currentRow = JSON.parse(JSON.stringify(row));
-  emit('menuClick', row);
-}
-
-/**
- * 新增菜单
- */
-async function handleAdd(row: any) {
-  formData.value.id = undefined;
-  await loadMenuData();
-  dialog.value = {
-    title: '添加菜单',
-    visible: true
-  };
-
-  if (row.id) {
-    // 行点击新增
-    formData.value.parentId = row.id;
-  } else {
-    // 工具栏新增
-    if (state.currentRow) {
-      // 选择行
-      formData.value.parentId = (state.currentRow as any).id;
-    } else {
-      // 未选择行
-      formData.value.parentId = '0';
-    }
-  }
-}
-
-/**
- * 编辑菜单
- */
-async function handleUpdate(row: MenuForm) {
-  await loadMenuData();
-  dialog.value = {
-    title: '编辑菜单',
-    visible: true
-  };
-  const id = row.id as string;
-  getMenuDetail(id).then(({ data }) => {
-    state.formData = data;
-    cacheData.value.menuType = data.type;
-    cacheData.value.menuPath = data.path;
-  });
-}
-
-/**
- * 菜单类型 change
- */
-function handleMenuTypeChange(menuType: any) {
-  if (menuType !== cacheData.value.menuType) {
-    formData.value.path = '';
-  } else {
-    formData.value.path = cacheData.value.menuPath;
-  }
-}
-
-/**
- * 菜单提交
- */
-function submitForm() {
-  dataFormRef.value.validate((isValid: boolean) => {
-    if (isValid) {
-      if (state.formData.id) {
-        updateMenu(state.formData.id, state.formData).then(() => {
-          ElMessage.success('修改成功');
-          cancel();
-          handleQuery();
-        });
-      } else {
-        addMenu(state.formData).then(() => {
-          ElMessage.success('新增成功');
-          cancel();
-          handleQuery();
-        });
-      }
-    }
-  });
-}
-
-/**
- * 删除菜单
- *
- * @param row
- */
-function handleDelete(row: any) {
-  const ids = [row.id || state.ids].join(',');
-  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  })
-    .then(() => {
-      deleteMenus(ids).then(() => {
-        ElMessage.success('删除成功');
-        handleQuery();
-      });
-    })
-    .catch(() => ElMessage.info('已取消删除'));
-}
-
-/**
- * 取消关闭弹窗
- */
-function cancel() {
-  dataFormRef.value.resetFields();
-  state.dialog.visible = false;
-}
-
-onMounted(() => {
-  handleQuery();
-});
-</script>

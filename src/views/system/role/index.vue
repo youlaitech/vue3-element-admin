@@ -40,14 +40,17 @@ const state = reactive({
     title: '',
     visible: false
   } as DialogType,
-  formData: {} as RoleForm,
+  formData: {
+    sort: 1,
+    status: 1
+  } as RoleForm,
   rules: {
     name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
     code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
     dataScope: [{ required: true, message: '请选择数据权限', trigger: 'blur' }],
     status: [{ required: true, message: '请选择状态', trigger: 'blur' }]
   },
-  allocationDialogVisible: false,
+  resourceDialogVisible: false,
   resourceOptions: [] as OptionType[],
   // 勾选的菜单ID
   checkedMenuIds: new Set([]),
@@ -67,7 +70,7 @@ const {
   dialog,
   formData,
   rules,
-  allocationDialogVisible,
+  resourceDialogVisible,
   checkedRole,
   resourceOptions
 } = toRefs(state);
@@ -171,8 +174,8 @@ function handleDelete(row: any) {
 /**
  * 资源分配弹窗
  */
-function showAllocationDialog(row: Role) {
-  allocationDialogVisible.value = true;
+function openResourceDialog(row: Role) {
+  resourceDialogVisible.value = true;
   loading.value = true;
 
   const roleId: any = row.id;
@@ -206,7 +209,7 @@ function handleAllocationSubmit() {
 
   updateRoleMenus(checkedRole.value.id, checkedMenuIds).then(res => {
     ElMessage.success('分配权限成功');
-    allocationDialogVisible.value = false;
+    resourceDialogVisible.value = false;
     handleQuery();
   });
 }
@@ -214,8 +217,8 @@ function handleAllocationSubmit() {
 /**
  * 关闭资源弹窗
  */
-function closeAllocationDialog() {
-  allocationDialogVisible.value = false;
+function closeResourceDailog() {
+  resourceDialogVisible.value = false;
 }
 
 onMounted(() => {
@@ -288,7 +291,7 @@ onMounted(() => {
             <el-button
               type="success"
               link
-              @click.stop="showAllocationDialog(scope.row)"
+              @click.stop="openResourceDialog(scope.row)"
             >
               资源分配
             </el-button>
@@ -306,12 +309,12 @@ onMounted(() => {
         </el-table-column>
       </el-table>
 
-      <!-- pagination -->
+      <!-- 分页 -->
       <pagination
         v-if="total > 0"
         :total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
+        :page="queryParams.pageNum"
+        :limit="queryParams.pageSize"
         @pagination="handleQuery"
       />
     </el-card>
@@ -374,7 +377,7 @@ onMounted(() => {
     <!-- assign permission dialog -->
     <el-dialog
       :title="'【' + checkedRole.name + '】资源分配'"
-      v-model="allocationDialogVisible"
+      v-model="resourceDialogVisible"
       width="800px"
     >
       <el-scrollbar max-height="600px" v-loading="loading">
@@ -396,7 +399,7 @@ onMounted(() => {
           <el-button type="primary" @click="handleAllocationSubmit"
             >确 定</el-button
           >
-          <el-button @click="closeAllocationDialog">取 消</el-button>
+          <el-button @click="closeResourceDailog">取 消</el-button>
         </div>
       </template>
     </el-dialog>
