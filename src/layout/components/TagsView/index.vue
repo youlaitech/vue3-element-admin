@@ -210,7 +210,7 @@ function closeAllTags(view: TagView) {
 function openTagMenu(tag: TagView, e: MouseEvent) {
   const menuMinWidth = 105;
 
-  console.log("test",proxy?.$el)
+  console.log('test', proxy?.$el);
 
   const offsetLeft = proxy?.$el.getBoundingClientRect().left; // container margin left
   const offsetWidth = proxy?.$el.offsetWidth; // container width
@@ -242,62 +242,59 @@ onMounted(() => {
 </script>
 
 <template>
-<div  class="tags-container">
-  <scroll-pane
-    ref="scrollPaneRef"
-    @scroll="handleScroll"
-  >
-    <router-link
-      :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
-      v-for="tag in visitedViews"
-      :key="tag.path"
-      :data-path="tag.path"
-      :to="{ path: tag.path, query: tag.query }"
-      @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
-      @contextmenu.prevent="openTagMenu(tag, $event)"
-    >
-      {{ translateRouteTitleI18n(tag.meta?.title) }}
-      <span
-        v-if="!isAffix(tag)"
-        class="tags-item-close"
-        @click.prevent.stop="closeSelectedTag(tag)"
+  <div class="tags-container">
+    <scroll-pane ref="scrollPaneRef" @scroll="handleScroll">
+      <router-link
+        :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
+        v-for="tag in visitedViews"
+        :key="tag.path"
+        :data-path="tag.path"
+        :to="{ path: tag.path, query: tag.query }"
+        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
+        @contextmenu.prevent="openTagMenu(tag, $event)"
       >
-        <i-ep-close class="text-[10px]" />
-      </span>
-    </router-link>
-  </scroll-pane>
+        {{ translateRouteTitleI18n(tag.meta?.title) }}
+        <span
+          v-if="!isAffix(tag)"
+          class="tags-item-close"
+          @click.prevent.stop="closeSelectedTag(tag)"
+        >
+          <i-ep-close class="text-[10px]" />
+        </span>
+      </router-link>
+    </scroll-pane>
 
-  <!-- tag标签操作菜单 -->
-  <ul
-    v-show="tagMenuVisible"
-    class="tag-menu"
-    :style="{ left: left + 'px', top: top + 'px' }"
-  >
-    <li @click="refreshSelectedTag(selectedTag)">
-      <svg-icon icon-class="refresh" />
-      刷新
-    </li>
-    <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-      <svg-icon icon-class="close" />
-      关闭
-    </li>
-    <li @click="closeOtherTags">
-      <svg-icon icon-class="close_other" />
-      关闭其它
-    </li>
-    <li v-if="!isFirstView()" @click="closeLeftTags">
-      <svg-icon icon-class="close_left" />
-      关闭左侧
-    </li>
-    <li v-if="!isLastView()" @click="closeRightTags">
-      <svg-icon icon-class="close_right" />
-      关闭右侧
-    </li>
-    <li @click="closeAllTags(selectedTag)">
-      <svg-icon icon-class="close_all" />
-      关闭所有
-    </li>
-  </ul>
+    <!-- tag标签操作菜单 -->
+    <ul
+      v-show="tagMenuVisible"
+      class="tag-menu"
+      :style="{ left: left + 'px', top: top + 'px' }"
+    >
+      <li @click="refreshSelectedTag(selectedTag)">
+        <svg-icon icon-class="refresh" />
+        刷新
+      </li>
+      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
+        <svg-icon icon-class="close" />
+        关闭
+      </li>
+      <li @click="closeOtherTags">
+        <svg-icon icon-class="close_other" />
+        关闭其它
+      </li>
+      <li v-if="!isFirstView()" @click="closeLeftTags">
+        <svg-icon icon-class="close_left" />
+        关闭左侧
+      </li>
+      <li v-if="!isLastView()" @click="closeRightTags">
+        <svg-icon icon-class="close_right" />
+        关闭右侧
+      </li>
+      <li @click="closeAllTags(selectedTag)">
+        <svg-icon icon-class="close_all" />
+        关闭所有
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -331,7 +328,7 @@ onMounted(() => {
       background-color: var(--el-color-primary);
       color: #fff;
       border-color: var(--el-color-primary);
-        &::before {
+      &::before {
         content: '';
         background: #fff;
         display: inline-block;
@@ -340,37 +337,36 @@ onMounted(() => {
         border-radius: 50%;
         margin-right: 5px;
       }
-       .tags-item-close{
-          &:hover{
-            background:rgb(0 0 0 / 0.16)
-          }
+      .tags-item-close {
+        &:hover {
+          background: rgb(0 0 0 / 0.16);
         }
-    }
-
-    &-close{
-      border-radius:100%;
-      &:hover{
-        color:#FFF;
-       background:rgb(0 0 0 / 0.16)
       }
     }
 
+    &-close {
+      border-radius: 100%;
+      &:hover {
+        color: #fff;
+        background: rgb(0 0 0 / 0.16);
+      }
+    }
   }
 }
 
 .tag-menu {
-  background: #fff;
+  background: var(--el-bg-color-overlay);
   z-index: 99;
   position: absolute;
   border-radius: 4px;
   font-size: 12px;
-  box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: var(--el-box-shadow-light);
 
   li {
     padding: 8px 16px;
     cursor: pointer;
     &:hover {
-      background: #eee;
+      background: var(--el-fill-color-light);
     }
   }
 }

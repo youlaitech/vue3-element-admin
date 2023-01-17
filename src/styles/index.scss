@@ -3,3 +3,27 @@
 @import './tailwind.scss';
 @import './global.scss';
 @import './dark.scss';
+
+// 自定义全局CSS变量
+:root{
+  --menuBg:#304156;
+  --menuText:#bfcbd9;
+  --menuActiveText:#409eff;
+  --menuHover:#263445;
+
+  --subMenuBg: #1f2d3d;
+  --subMenuActiveText: #f4f4f5;
+  --subMenuHover: #001528;
+
+}
+
+html.dark{
+  --menuBg:var(--el-menu-bg-color);
+  --menuText:var(----el-menu-text-color);
+  --menuActiveText:var(--el-menu-active-color);
+  --menuHover:var(--el-menu-hover-bg-color);
+
+  --subMenuBg: var(--el-menu-bg-color);
+  --subMenuActiveText:var(--el-menu-active-color);
+  --subMenuHover: var(--el-menu-hover-bg-color);
+}
