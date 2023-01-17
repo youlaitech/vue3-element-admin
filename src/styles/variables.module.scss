@@ -1,11 +1,11 @@
 // 全局SCSS变量
-$menuText: #bfcbd9;
-$menuActiveText: #409eff;
-$menuBg: #304156;
-$menuHover: #263445;
+$menuBg: var(--menuBg);
+$menuText: var(--menuText);
+$menuActiveText: var(--menuActiveText);
+$menuHover: var(--menuHover);
 
-$subMenuBg: #1f2d3d;
-$subMenuActiveText: #f4f4f5;
-$subMenuHover: #001528;
+$subMenuBg:var(--subMenuBg);
+$subMenuActiveText:var(--subMenuActiveText);
+$subMenuHover:var(--subMenuHover);
 
 $sideBarWidth: 210px;
