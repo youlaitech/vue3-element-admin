@@ -70,11 +70,11 @@
       }
     }
 
-    .is-active > .el-sub-menu__title {
+    .is-active>.el-sub-menu__title {
       color: $subMenuActiveText !important;
     }
 
-    & .nest-menu .el-sub-menu > .el-sub-menu__title,
+    & .nest-menu .el-sub-menu>.el-sub-menu__title,
     & .el-sub-menu .el-menu-item {
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
@@ -88,6 +88,7 @@
   .hideSidebar {
     .sidebar-container {
       width: 54px !important;
+
       .svg-icon {
         margin-right: 0px;
       }
@@ -117,7 +118,7 @@
     .el-sub-menu {
       overflow: hidden;
 
-      & > .el-sub-menu__title {
+      &>.el-sub-menu__title {
         padding: 0 !important;
 
         .svg-icon {
@@ -136,8 +137,8 @@
 
     .el-menu--collapse {
       .el-sub-menu {
-        & > .el-sub-menu__title {
-          & > span {
+        &>.el-sub-menu__title {
+          &>span {
             height: 0;
             width: 0;
             overflow: hidden;
@@ -174,6 +175,7 @@
   }
 
   .withoutAnimation {
+
     .main-container,
     .sidebar-container {
       transition: none;
@@ -183,17 +185,18 @@
 
 // when menu collapsed
 .el-menu--vertical {
-  & > .el-menu {
+  &>.el-menu {
     .svg-icon {
       margin-right: 16px;
     }
+
     .sub-el-icon {
       margin-right: 12px;
       margin-left: -2px;
     }
   }
 
-  .nest-menu .el-sub-menu > .el-sub-menu__title,
+  .nest-menu .el-sub-menu>.el-sub-menu__title,
   .el-menu-item {
     &:hover {
       // you can use $subMenuHover
@@ -202,7 +205,7 @@
   }
 
   // the scroll bar appears when the subMenu is too long
-  > .el-menu--popup {
+  >.el-menu--popup {
     max-height: 100vh;
     overflow-y: auto;
 
@@ -219,25 +222,4 @@
       border-radius: 20px;
     }
   }
-}
-body[layout="mix"] {
-
-  .horizontal-header{
-    .el-menu-item{
-      height: 50px!important;
-      line-height: 50px!important;
-    }
-
-    .el-sub-menu__title {
-      background-color: #001529!important;
-      height: 50px!important;
-    }
-  }
-  .horizontal-header-right>div {
-    color: #FFF;
-  }
-  .svg-icon{
-    margin-right: 16px;
-  }
-
 }

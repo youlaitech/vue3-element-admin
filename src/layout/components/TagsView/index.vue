@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { ComponentInternalInstance } from 'vue';
+import {
+  getCurrentInstance,
+  nextTick,
+  ref,
+  watch,
+  onMounted,
+  ComponentInternalInstance
+} from 'vue';
 import { storeToRefs } from 'pinia';
 
 import path from 'path-browserify';
@@ -202,6 +209,9 @@ function closeAllTags(view: TagView) {
 
 function openTagMenu(tag: TagView, e: MouseEvent) {
   const menuMinWidth = 105;
+
+  console.log("test",proxy?.$el)
+
   const offsetLeft = proxy?.$el.getBoundingClientRect().left; // container margin left
   const offsetWidth = proxy?.$el.offsetWidth; // container width
   const maxLeft = offsetWidth - menuMinWidth; // left boundary
@@ -232,8 +242,8 @@ onMounted(() => {
 </script>
 
 <template>
+<div  class="tags-container">
   <scroll-pane
-    class="tags-container"
     ref="scrollPaneRef"
     @scroll="handleScroll"
   >
@@ -249,7 +259,7 @@ onMounted(() => {
       {{ translateRouteTitleI18n(tag.meta?.title) }}
       <span
         v-if="!isAffix(tag)"
-        class="rounded-[60%] hover:bg-gray-300"
+        class="tags-item-close"
         @click.prevent.stop="closeSelectedTag(tag)"
       >
         <i-ep-close class="text-[10px]" />
@@ -288,19 +298,19 @@ onMounted(() => {
       关闭所有
     </li>
   </ul>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .tags-container {
   height: 34px;
   width: 100%;
-  border: 1px solid #eee;
-  box-shadow: 0px 1px 1px #eee;
-
+  border: 1px solid var(--el-border-color-light);
+  box-shadow: 0px 1px 1px var(--el-box-shadow-light);
   .tags-item {
     display: inline-block;
     cursor: pointer;
-    border: 1px solid #d8dce5;
+    border: 1px solid var(--el-border-color-light);
     padding: 3px 8px;
     font-size: 12px;
     margin: 4px 0 0 5px;
@@ -321,7 +331,7 @@ onMounted(() => {
       background-color: var(--el-color-primary);
       color: #fff;
       border-color: var(--el-color-primary);
-      &::before {
+        &::before {
         content: '';
         background: #fff;
         display: inline-block;
@@ -330,7 +340,21 @@ onMounted(() => {
         border-radius: 50%;
         margin-right: 5px;
       }
+       .tags-item-close{
+          &:hover{
+            background:rgb(0 0 0 / 0.16)
+          }
+        }
     }
+
+    &-close{
+      border-radius:100%;
+      &:hover{
+        color:#FFF;
+       background:rgb(0 0 0 / 0.16)
+      }
+    }
+
   }
 }
 

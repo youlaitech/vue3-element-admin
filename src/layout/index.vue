@@ -10,6 +10,7 @@ import { useSettingsStore } from '@/store/modules/settings';
 
 const { width } = useWindowSize();
 
+
 /**
  * 响应式布局容器固定宽度
  *
@@ -82,11 +83,13 @@ function handleOutsideClick() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixin.scss';
-@import '@/styles/variables.module.scss';
-
 .app-wrapper {
-  @include clearfix;
+   &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
   position: relative;
   height: 100%;
   width: 100%;
