@@ -23,6 +23,18 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         '@': pathSrc
       }
     },
+    css: {
+      // CSS 预处理器
+      preprocessorOptions: {
+        //define global scss variable
+        scss: {
+          javascriptEnabled: true,
+          additionalData: `
+            @use "@/styles/variables.module.scss" as *; 
+          `
+        }
+      }
+    },
     // 本地反向代理解决浏览器跨域限制
     server: {
       host: '0.0.0.0',
@@ -63,6 +75,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts')
       }),
 
+
       Components({
         resolvers: [
           // 自动注册图标组件
@@ -86,7 +99,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         iconDirs: [path.resolve(pathSrc, 'assets/icons')],
         // 指定symbolId格式
         symbolId: 'icon-[dir]-[name]'
-      })
+      }),
+
+
     ]
   };
 });

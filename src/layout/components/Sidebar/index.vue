@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 import SidebarItem from './SidebarItem.vue';
 import Logo from './Logo.vue';
-import variables from '@/styles/variables.module.scss';
 
 import { useSettingsStore } from '@/store/modules/settings';
 import { usePermissionStore } from '@/store/modules/permission';
 import { useAppStore } from '@/store/modules/app';
 import { storeToRefs } from 'pinia';
+import variables from '@/styles/ts-variables.module.scss'
 
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
@@ -23,7 +22,7 @@ const isCollapse = computed(() => !appStore.sidebar.opened);
 const activeMenu = computed<string>(() => {
   const { meta, path } = route;
   if (meta?.activeMenu) {
-    return meta.activeMenu as string;
+    return meta.activeMenu;
   }
   return path;
 });

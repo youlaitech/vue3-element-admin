@@ -1,11 +1,19 @@
 // only scss variables
 
 $--colors: (
-  "primary": (
-    "base": #589ef8,
-  ),
+  "primary": ("base": red),
 );
 
-@forward "element-plus/theme-chalk/src/dark/var.scss" with (
-  $colors: $--colors
-);
+@forward "element-plus/theme-chalk/src/dark/var.scss" with ($colors: $--colors);
+
+
+html.dark {
+  .navbar {
+    background-color: var(--el-bg-color);
+    color: var(--el-text-color-regular);
+  }
+
+  .hamburger {
+    fill: var(--el-text-color-regular);
+  }
+}

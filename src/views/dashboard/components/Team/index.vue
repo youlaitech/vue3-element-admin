@@ -1,76 +1,3 @@
-<!-- 团队介绍 -->
-<template>
-  <div class="component-container">
-    <el-card class="team-card">
-      <template #header>
-        <span class="fw-b">有来开源组织 & 技术团队</span>
-      </template>
-      <el-tabs v-model="teamActiveName">
-        <el-tab-pane label="开发者" name="1">
-          <div class="developer" ref="dev_wrapper">
-            <ul class="developer__container">
-              <li
-                class="developer__item"
-                v-for="(item, index) in developers"
-                :key="index"
-              >
-                <div class="developer__inner">
-                  <el-image
-                    class="developer__img"
-                    :src="item.imgUrl"
-                    :preview-src-list="[item.imgUrl]"
-                  ></el-image>
-                  <div class="developer__info">
-                    <span class="developer__nickname">{{ item.nickname }}</span>
-                    <div class="developer__position">
-                      <el-tag
-                        v-for="(position, i) in item.positions"
-                        :type="(colors[i % colors.length] as any)"
-                        :class="i !== 0 ? 'f-ml' : ''"
-                        size="small"
-                        :key="i"
-                        >{{ position }}</el-tag
-                      >
-                    </div>
-                    <div class="developer__homepage">
-                      <a :href="item.homepage" target="_blank">个人主页</a>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            </ul>
-            <el-image class="developer__indicator" :src="indicatorImgUrl" />
-          </div>
-        </el-tab-pane>
-
-        <el-tab-pane label="交流群" name="2">
-          <div class="group">
-            <el-image
-              class="group-img"
-              src="https://www.youlai.tech/files/blog/youlaiqun.png"
-              :preview-src-list="[
-                'https://www.youlai.tech/files/blog/youlaiqun.png'
-              ]"
-            />
-            <div class="group-tip">
-              群二维码过期可添加开发者微信由其拉入群，备注「有来」即可。
-            </div>
-          </div>
-        </el-tab-pane>
-
-        <el-tab-pane label="加入我们" name="3">
-          <div class="join">
-            <p>1. 人品良好、善于思考、执行力强；</p>
-            <p>2. 熟悉项目，且至少给项目提交(过)一个PR；</p>
-            <p>3. Git代码库活跃，个人主页或博客完善者优先；</p>
-            <p>4. 过分优秀者我们会主动联系您...</p>
-            <div class="join__desc">申请加入方式: 添加开发者微信申请即可。</div>
-          </div>
-        </el-tab-pane>
-      </el-tabs>
-    </el-card>
-  </div>
-</template>
 
 <script setup lang="ts">
 import { nextTick, onMounted, reactive, ref, toRefs, watchEffect } from 'vue';
@@ -109,10 +36,10 @@ const { teamActiveName, developers, colors, indicatorImgUrl } = toRefs(state);
 
 let bScroll = reactive({});
 
-const dev_wrapper = ref<HTMLElement | any>(null);
+const developer_container = ref<HTMLElement | any>(null);
 
 onMounted(() => {
-  bScroll = new BScroll(dev_wrapper.value, {
+  bScroll = new BScroll(developer_container.value, {
     mouseWheel: true, //开启鼠标滚轮
     disableMouse: false, //启用鼠标拖动
     scrollX: true //X轴滚动启用
@@ -126,8 +53,80 @@ watchEffect(() => {
 });
 </script>
 
+
+<template>
+    <el-card class="team-card">
+      <template #header>
+        <span class="fw-b">有来开源组织 & 技术团队</span>
+      </template>
+      <el-tabs v-model="teamActiveName">
+        <el-tab-pane label="开发者" name="1">
+          <div class="developer-container" ref="developer_container">
+            <ul class="developer-list">
+              <li
+                class="developer-item"
+                v-for="(item, index) in developers"
+                :key="index"
+              >
+                <div class="developer-item-wrapper">
+                  <el-image
+                    class="developer-img"
+                    :src="item.imgUrl"
+                    :preview-src-list="[item.imgUrl]"
+                  ></el-image>
+                  <div class="developer-info">
+                    <span class="developer-info-nickname">{{ item.nickname }}</span>
+                    <div class="developer-info-position">
+                      <el-tag
+                        v-for="(position, i) in item.positions"
+                        :type="(colors[i % colors.length] as any)"
+                        :class="i !== 0 ? 'f-ml' : ''"
+                        size="small"
+                        :key="i"
+                        >{{ position }}</el-tag
+                      >
+                    </div>
+                    <div class="developer-info-homepage">
+                      <a :href="item.homepage" target="_blank">个人主页</a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <el-image class="developer-indicator" :src="indicatorImgUrl" />
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane label="交流群" name="2">
+          <div class="group">
+            <el-image
+              class="group-img"
+              src="https://www.youlai.tech/files/blog/youlaiqun.png"
+              :preview-src-list="[
+                'https://www.youlai.tech/files/blog/youlaiqun.png'
+              ]"
+            />
+            <div class="group-tip">
+              群二维码过期可添加开发者微信由其拉入群，备注「有来」即可。
+            </div>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane label="加入我们" name="3">
+          <div class="join">
+            <p>1. 人品良好、善于思考、执行力强；</p>
+            <p>2. 熟悉项目，且至少给项目提交(过)一个PR；</p>
+            <p>3. Git代码库活跃，个人主页或博客完善者优先；</p>
+            <p>4. 过分优秀者我们会主动联系您...</p>
+            <div class="join-way">申请加入方式: 添加开发者微信申请即可。</div>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
+</template>
+
+
 <style lang="scss" scoped>
-.component-container {
   .team-card {
     font-size: 14px;
 
@@ -137,17 +136,17 @@ watchEffect(() => {
       }
     }
 
-    .developer {
+    .developer-container {
       width: 100%;
       overflow: hidden;
 
-      &__container {
+      .developer-list {
         display: inline-flex;
         overflow: hidden;
         justify-content: flex-start;
         padding: 10px;
 
-        .developer__item {
+        .developer-item {
           &:not(:first-child) {
             margin-left: 20px;
           }
@@ -157,40 +156,39 @@ watchEffect(() => {
           width: 180px;
           min-width: 180px;
 
-          .developer__inner {
-            border: 1px solid #cccccc;
+          .developer-item-wrapper {
+            border: 1px solid var(--el-border-color-light);
             border-radius: 5px;
-            box-shadow: 6px 6px 6px #aaa;
+            box-shadow: var(--el-box-shadow-lighter);
             padding: 8px;
             text-align: center;
 
-            .developer__img {
+            .developer-img {
               height: 100px;
               width: 100px;
             }
 
-            .developer__info {
+            .developer-info {
               padding: 6px;
               font-size: 14px;
 
-              .developer__position {
+              .developer-info-position {
                 margin-top: 10px;
               }
 
-              .developer__homepage {
+              .developer-info-homepage {
                 margin-top: 16px;
 
                 a {
                   display: inline-block;
                   padding: 4px 10px;
-                  color: #409eff;
-                  border: 1px solid #409eff;
+                  color: var(--el-color-primary);
+                  border: 1px solid var(--el-color-primary);
                   border-radius: 5px;
-                  background: #ecf5ff;
-
+                  background: var(--el-color-primary-light-9);
                   &:hover {
-                    background: #409eff;
-                    color: #ffffff;
+                    background: var(--el-color-primary);
+                    color: var(--el-color-white);
                   }
                 }
               }
@@ -199,7 +197,7 @@ watchEffect(() => {
         }
       }
 
-      &__indicator {
+      .developer-indicator {
         position: absolute;
         right: 0;
         bottom: 0;
@@ -214,7 +212,7 @@ watchEffect(() => {
         font-weight: bold;
       }
 
-      &__desc {
+      &-way {
         margin-top: 20px;
         color: #409eff;
         font-weight: bold;
@@ -229,12 +227,11 @@ watchEffect(() => {
     }
   }
 
-  .fw-b {
+ .fw-b {
     font-weight: bold;
   }
 
   .f-ml {
     margin-left: 5px;
   }
-}
 </style>

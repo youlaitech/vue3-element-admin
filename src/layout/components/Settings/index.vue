@@ -45,11 +45,10 @@ onMounted(() => {
 
     <el-divider>主题</el-divider>
 
-    <button @click="toggleDark()">当前状态是: {{ isDark }}</button>
-
-    <div class="flex justify-center" @click="toggleDark()">
-      <el-switch
+    <div class="flex justify-center" @click.stop>
+     <el-switch
         v-model="isDark"
+        @change="toggleDark"
         inline-prompt
         :active-icon="Sunny"
         :inactive-icon="Moon"

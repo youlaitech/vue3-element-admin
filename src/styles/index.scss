@@ -1,20 +1,5 @@
-@import 'src/styles/variables.module';
-@import 'src/styles/element-plus';
+@import './element.scss';
 @import './sidebar.scss';
 @import './tailwind.scss';
-@import './reset.scss';
-
-
-// main-container global css
-.app-container {
-  padding: 20px;
-}
-
-.search{
-  padding: 18px 0 0 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: 1px solid #eee;
-  box-shadow: 1px 1px 1px #eee;
-}
-
+@import './global.scss';
+@import './dark.scss';

@@ -19,8 +19,8 @@ import Team from './components/Team/index.vue';
     <github-corner class="github-corner" />
 
     <!-- 数据 -->
-    <el-row :gutter="40" class="card-panel__col">
-      <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
+    <el-row :gutter="40" class="mb-[12px]">
+      <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-user">
             <svg-icon icon-class="uv" size="4em" />
@@ -32,7 +32,7 @@ import Team from './components/Team/index.vue';
         </div>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
+      <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-message">
             <svg-icon icon-class="message" size="4em" />
@@ -44,7 +44,7 @@ import Team from './components/Team/index.vue';
         </div>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
+      <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-money">
             <svg-icon icon-class="money" size="4em" />
@@ -55,7 +55,7 @@ import Team from './components/Team/index.vue';
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
+      <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-shopping">
             <svg-icon icon-class="shopping" size="4em" />
@@ -71,19 +71,19 @@ import Team from './components/Team/index.vue';
     <!-- 项目 + 团队成员介绍 -->
     <el-row :gutter="40">
       <!-- 项目介绍 -->
-      <el-col :md="12" :lg="12" class="card-panel__col">
+      <el-col :md="12" :lg="12" class="mb-[12px]">
         <Project />
       </el-col>
 
       <!-- 团队介绍 -->
-      <el-col :md="12" :lg="12" class="card-panel__col">
+      <el-col :md="12" :lg="12" class="mb-[12px]">
         <Team />
       </el-col>
     </el-row>
 
     <!-- Echarts 图表 -->
     <el-row :gutter="40" style="margin-top: 20px">
-      <el-col :sm="24" :lg="8" class="card-panel__col">
+      <el-col :sm="24" :lg="8" class="mb-[12px]">
         <BarChart
           id="barChart"
           height="400px"
@@ -92,7 +92,7 @@ import Team from './components/Team/index.vue';
         />
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="8" class="card-panel__col">
+      <el-col :xs="24" :sm="12" :lg="8" class="mb-[12px]">
         <PieChart
           id="pieChart"
           height="400px"
@@ -101,7 +101,7 @@ import Team from './components/Team/index.vue';
         />
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="8" class="card-panel__col">
+      <el-col :xs="24" :sm="12" :lg="8" class="mb-[12px]">
         <RadarChart
           id="radarChart"
           height="400px"
@@ -116,7 +116,7 @@ import Team from './components/Team/index.vue';
 <style lang="scss" scoped>
 .dashboard-container {
   padding: 24px;
-  background-color: rgb(240, 242, 245);
+  background-color:var(--el-bg-color-page);
   position: relative;
 
   .github-corner {
@@ -147,7 +147,7 @@ import Team from './components/Team/index.vue';
       padding-top: 30px;
 
       .el-table {
-        border-top: 1px solid #dfe6ec;
+        border-top: 1px solid var(--el-border-color-light);
       }
     }
 
@@ -156,9 +156,6 @@ import Team from './components/Team/index.vue';
     }
   }
 
-  .card-panel__col {
-    margin-bottom: 12px;
-  }
 
   .card-panel {
     height: 108px;
@@ -166,10 +163,10 @@ import Team from './components/Team/index.vue';
     font-size: 12px;
     position: relative;
     overflow: hidden;
-    color: #666;
-    background: #fff;
-    box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
-    border-color: rgba(0, 0, 0, 0.05);
+    color: var(--el-text-color-regular);
+    background: var(--el-bg-color-overlay);
+    box-shadow:var(--el-box-shadow-dark);
+    border-color:var(--el-border-color);
 
     .icon-message {
       color: #36a3f7;
@@ -224,7 +221,7 @@ import Team from './components/Team/index.vue';
 
       .card-panel-text {
         line-height: 18px;
-        color: rgba(0, 0, 0, 0.45);
+        color: var(--el-text-color-secondary);
         font-size: 16px;
         margin-bottom: 12px;
       }
@@ -237,7 +234,7 @@ import Team from './components/Team/index.vue';
   }
 
   .chart-container {
-    background: #ffffff;
+    background: var(--el-bg-color-overlay);
   }
 }
 </style>
