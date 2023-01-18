@@ -104,6 +104,7 @@ onBeforeUnmount(() => {
 }
 
 .right-panel {
+  background-color: var(--el-bg-color);
   width: 100%;
   max-width: 300px;
   height: 100vh;
@@ -113,7 +114,6 @@ onBeforeUnmount(() => {
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
   transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
   transform: translate(100%);
-  background: #fff;
   z-index: 199;
 
   .icon {
@@ -125,7 +125,6 @@ onBeforeUnmount(() => {
 
 .show {
   transition: all 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
-
   .right-panel-background {
     z-index: 99;
     opacity: 1;
@@ -139,22 +138,18 @@ onBeforeUnmount(() => {
 }
 
 .right-panel__button {
+  background-color: var(--el-color-primary);
+  color: var(--el-color-white);
   width: 48px;
   height: 48px;
-  position: absolute;
   left: -48px;
+  line-height: 48px;
+  position: absolute;
   text-align: center;
   font-size: 24px;
-  border-radius: 6px 0 0 6px !important;
+  border-radius: 6px 0 0 6px;
   z-index: 0;
   pointer-events: auto;
   cursor: pointer;
-  color: #fff;
-  line-height: 48px;
-
-  i {
-    font-size: 24px;
-    line-height: 48px;
-  }
 }
 </style>

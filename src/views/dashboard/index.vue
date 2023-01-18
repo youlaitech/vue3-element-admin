@@ -116,7 +116,6 @@ import Team from './components/Team/index.vue';
 <style lang="scss" scoped>
 .dashboard-container {
   padding: 24px;
-  background-color:var(--el-bg-color-page);
   position: relative;
 
   .github-corner {
@@ -156,7 +155,6 @@ import Team from './components/Team/index.vue';
     }
   }
 
-
   .card-panel {
     height: 108px;
     cursor: pointer;
@@ -165,8 +163,8 @@ import Team from './components/Team/index.vue';
     overflow: hidden;
     color: var(--el-text-color-regular);
     background: var(--el-bg-color-overlay);
-    box-shadow:var(--el-box-shadow-dark);
-    border-color:var(--el-border-color);
+    box-shadow: var(--el-box-shadow-dark);
+    border-color: var(--el-border-color);
 
     .icon-message {
       color: #36a3f7;

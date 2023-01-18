@@ -9,7 +9,7 @@ import { useDark, useToggle } from '@vueuse/core';
  */
 const settingsStore = useSettingsStore();
 const isDark = useDark();
-const toggleDark = useToggle(isDark);
+const toggleDark = () => useToggle(isDark);
 
 /**
  * 切换布局
@@ -28,30 +28,32 @@ onMounted(() => {
   <div class="settings-container">
     <h3 class="text-base font-bold">项目配置</h3>
     <el-divider />
-    <div class="drawer-item">
-      <span>开启 Tags-View</span>
-      <el-switch v-model="settingsStore.tagsView" class="drawer-switch" />
+    <div class="py-[8px] flex justify-between">
+      <span class="text-xs">开启 Tags-View</span>
+      <el-switch v-model="settingsStore.tagsView" />
     </div>
 
-    <div class="drawer-item">
-      <span>固定 Header</span>
-      <el-switch v-model="settingsStore.fixedHeader" class="drawer-switch" />
+    <div class="py-[8px] flex justify-between">
+      <span class="text-xs">固定 Header</span>
+      <el-switch v-model="settingsStore.fixedHeader" />
     </div>
 
-    <div class="drawer-item">
-      <span>侧边栏 Logo</span>
-      <el-switch v-model="settingsStore.sidebarLogo" class="drawer-switch" />
+    <div class="py-[8px] flex justify-between">
+      <span class="text-xs">侧边栏 Logo</span>
+      <el-switch v-model="settingsStore.sidebarLogo" />
     </div>
 
     <el-divider>主题</el-divider>
 
     <div class="flex justify-center" @click.stop>
-     <el-switch
+      <el-switch
         v-model="isDark"
         @change="toggleDark"
         inline-prompt
-        :active-icon="Sunny"
-        :inactive-icon="Moon"
+        :active-icon="Moon"
+        :inactive-icon="Sunny"
+        active-color="var(--el-fill-color-dark)"
+        inactive-color="var(--el-color-primary)"
       />
     </div>
 
@@ -101,25 +103,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .settings-container {
   padding: 16px;
-  font-size: 14px;
-
-  .drawer-title {
-    margin-bottom: 12px;
-    color: rgba(0, 0, 0, 0.85);
-    font-size: 14px;
-    line-height: 22px;
-  }
-
-  .drawer-item {
-    color: rgba(0, 0, 0, 0.65);
-    font-size: 14px;
-    padding: 12px 0;
-  }
-
-  .drawer-switch {
-    float: right;
-  }
-
   .layout {
     display: flex;
     flex-wrap: wrap;

@@ -17,7 +17,7 @@ const logo = ref<string>(
 </script>
 
 <template>
-  <transition class="bg-gray-800">
+  <transition class="bg-gray-800 dark:bg-[var(--el-bg-color-overlay)]">
     <router-link
       v-if="collapse"
       key="collapse"

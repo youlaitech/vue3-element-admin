@@ -8,7 +8,7 @@ import { useSettingsStore } from '@/store/modules/settings';
 import { usePermissionStore } from '@/store/modules/permission';
 import { useAppStore } from '@/store/modules/app';
 import { storeToRefs } from 'pinia';
-import variables from '@/styles/ts-variables.module.scss'
+import variables from '@/styles/ts-variables.module.scss';
 
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
@@ -16,25 +16,15 @@ const appStore = useAppStore();
 
 const { sidebarLogo } = storeToRefs(settingsStore);
 const route = useRoute();
-
-const isCollapse = computed(() => !appStore.sidebar.opened);
-
-const activeMenu = computed<string>(() => {
-  const { meta, path } = route;
-  if (meta?.activeMenu) {
-    return meta.activeMenu;
-  }
-  return path;
-});
 </script>
 
 <template>
   <div :class="{ 'has-logo': sidebarLogo }">
-    <logo v-if="sidebarLogo" :collapse="isCollapse" />
+    <logo v-if="sidebarLogo" :collapse="!appStore.sidebar.opened" />
     <el-scrollbar>
       <el-menu
-        :default-active="activeMenu"
-        :collapse="isCollapse"
+        :default-active="route.path"
+        :collapse="!appStore.sidebar.opened"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
         :active-text-color="variables.menuActiveText"
@@ -47,7 +37,7 @@ const activeMenu = computed<string>(() => {
           :item="route"
           :key="route.path"
           :base-path="route.path"
-          :is-collapse="isCollapse"
+          :is-collapse="!appStore.sidebar.opened"
         />
       </el-menu>
     </el-scrollbar>
