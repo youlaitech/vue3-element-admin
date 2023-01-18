@@ -304,6 +304,7 @@ onMounted(() => {
   width: 100%;
   border: 1px solid var(--el-border-color-light);
   box-shadow: 0px 1px 1px var(--el-box-shadow-light);
+  background-color: var(--el-bg-color);
   .tags-item {
     display: inline-block;
     cursor: pointer;
