@@ -1,15 +1,12 @@
 <template>
-  <el-breadcrumb
-    separator-class="el-icon-arrow-right"
-    class="h-[50px] flex items-center"
-  >
+  <el-breadcrumb class="h-[50px] flex items-center">
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.path">
         <span
           v-if="
             item.redirect === 'noredirect' || index === breadcrumbs.length - 1
           "
-          class="text-[#97a8be]"
+          class="text-[var(--el-disabled-text-color)]"
           >{{ translateRouteTitleI18n(item.meta.title) }}</span
         >
         <a v-else @click.prevent="handleLink(item)">
@@ -96,10 +93,11 @@ onBeforeMount(() => {
   font-size: 14px;
   line-height: 50px;
   margin-left: 8px;
+}
 
-  .no-redirect {
-    color: #97a8be;
-    cursor: text;
-  }
+// 覆盖 element-plus 的样式
+.el-breadcrumb__inner,
+.el-breadcrumb__inner a {
+  font-weight: 400 !important;
 }
 </style>
