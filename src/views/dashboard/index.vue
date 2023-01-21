@@ -6,78 +6,83 @@ export default { name: 'Dashboard' };
 // 组件引用
 import GithubCorner from '@/components/GithubCorner/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
-import BarChart from './components/Chart/BarChart.vue';
-import PieChart from './components/Chart/PieChart.vue';
-import RadarChart from './components/Chart/RadarChart.vue';
+import BarChart from './components/BarChart.vue';
+import PieChart from './components/PieChart.vue';
+import RadarChart from './components/RadarChart.vue';
 
-import Project from './components/Project/index.vue';
-import Team from './components/Team/index.vue';
+import CountUp from 'vue-countup-v3';
 </script>
 
 <template>
   <div class="dashboard-container">
+    <!--github-->
     <github-corner class="github-corner" />
 
     <!-- 数据 -->
     <el-row :gutter="40" class="mb-[12px]">
+      <!--访问数-->
       <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
-        <div class="card-panel">
-          <div class="card-panel-icon-wrapper icon-user">
-            <svg-icon icon-class="uv" size="4em" />
+        <div class="data-box">
+          <div
+            class="text-[#40c9c6] hover:!text-white hover:bg-[#40c9c6] p-3 rounded"
+          >
+            <svg-icon icon-class="uv" size="3em" />
           </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">访问数</div>
-            <div class="card-panel-num">1000</div>
+          <div class="flex flex-col space-y-3">
+            <div class="text-[var(--el-text-color-secondary)]">访问数</div>
+            <div class="text-lg">
+              <count-up :end-val="2000"></count-up>
+            </div>
+          </div>
+        </div>
+      </el-col>
+
+      <!--消息数-->
+      <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
+        <div class="data-box">
+          <div
+            class="text-[#36a3f7] hover:!text-white hover:bg-[#36a3f7] p-3 rounded"
+          >
+            <svg-icon icon-class="message" size="3em" />
+          </div>
+          <div class="flex flex-col space-y-3">
+            <div class="text-[var(--el-text-color-secondary)]">消息数</div>
+            <div class="text-lg">
+              <count-up :end-val="2000"></count-up>
+            </div>
           </div>
         </div>
       </el-col>
 
       <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
-        <div class="card-panel">
-          <div class="card-panel-icon-wrapper icon-message">
-            <svg-icon icon-class="message" size="4em" />
+        <div class="data-box">
+          <div
+            class="text-[#f4516c] hover:!text-white hover:bg-[#f4516c] p-3 rounded"
+          >
+            <svg-icon icon-class="money" size="3em" />
           </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">消息数</div>
-            <div class="card-panel-num">1000</div>
-          </div>
-        </div>
-      </el-col>
-
-      <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
-        <div class="card-panel">
-          <div class="card-panel-icon-wrapper icon-money">
-            <svg-icon icon-class="money" size="4em" />
-          </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">收入金额</div>
-            <div class="card-panel-num">1000</div>
+          <div class="flex flex-col space-y-3">
+            <div class="text-[var(--el-text-color-secondary)]">收入金额</div>
+            <div class="text-lg">
+              <count-up :end-val="2000"></count-up>
+            </div>
           </div>
         </div>
       </el-col>
       <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
-        <div class="card-panel">
-          <div class="card-panel-icon-wrapper icon-shopping">
-            <svg-icon icon-class="shopping" size="4em" />
+        <div class="data-box">
+          <div
+            class="text-[#34bfa3] hover:!text-white hover:bg-[#34bfa3] p-3 rounded"
+          >
+            <svg-icon icon-class="shopping" size="3em" />
           </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">订单数</div>
-            <div class="card-panel-num">1000</div>
+          <div class="flex flex-col space-y-3">
+            <div class="text-[var(--el-text-color-secondary)]">订单数</div>
+            <div class="text-lg">
+              <count-up :end-val="2000"></count-up>
+            </div>
           </div>
         </div>
-      </el-col>
-    </el-row>
-
-    <!-- 项目 + 团队成员介绍 -->
-    <el-row :gutter="40">
-      <!-- 项目介绍 -->
-      <el-col :md="12" :lg="12" class="mb-[12px]">
-        <Project />
-      </el-col>
-
-      <!-- 团队介绍 -->
-      <el-col :md="12" :lg="12" class="mb-[12px]">
-        <Team />
       </el-col>
     </el-row>
 
@@ -88,7 +93,7 @@ import Team from './components/Team/index.vue';
           id="barChart"
           height="400px"
           width="100%"
-          class="chart-container"
+          class="bg-[var(--el-bg-color-overlay)]"
         />
       </el-col>
 
@@ -97,7 +102,7 @@ import Team from './components/Team/index.vue';
           id="pieChart"
           height="400px"
           width="100%"
-          class="chart-container"
+          class="bg-[var(--el-bg-color-overlay)]"
         />
       </el-col>
 
@@ -106,7 +111,7 @@ import Team from './components/Team/index.vue';
           id="radarChart"
           height="400px"
           width="100%"
-          class="chart-container"
+          class="bg-[var(--el-bg-color-overlay)]"
         />
       </el-col>
     </el-row>
@@ -126,113 +131,16 @@ import Team from './components/Team/index.vue';
     z-index: 99;
   }
 
-  .box-center {
-    margin: 0 auto;
-    display: table;
-  }
-
-  .user-profile {
-    .box-center {
-      padding-top: 10px;
-    }
-
-    .user-role {
-      padding-top: 10px;
-      font-weight: 400;
-      font-size: 14px;
-    }
-
-    .box-social {
-      padding-top: 30px;
-
-      .el-table {
-        border-top: 1px solid var(--el-border-color-light);
-      }
-    }
-
-    .user-follow {
-      padding-top: 20px;
-    }
-  }
-
-  .card-panel {
-    height: 108px;
+  .data-box {
+    font-weight: bold;
+    padding: 20px;
     cursor: pointer;
-    font-size: 12px;
-    position: relative;
-    overflow: hidden;
     color: var(--el-text-color-regular);
     background: var(--el-bg-color-overlay);
     box-shadow: var(--el-box-shadow-dark);
     border-color: var(--el-border-color);
-
-    .icon-message {
-      color: #36a3f7;
-    }
-
-    .icon-user {
-      color: #40c9c6;
-    }
-
-    .icon-money {
-      color: #f4516c;
-    }
-
-    .icon-shopping {
-      color: #34bfa3;
-    }
-
-    &:hover {
-      .card-panel-icon-wrapper {
-        color: #fff;
-      }
-
-      .icon-user {
-        background: #40c9c6;
-      }
-
-      .icon-message {
-        background: #36a3f7;
-      }
-
-      .icon-money {
-        background: #f4516c;
-      }
-
-      .icon-shopping {
-        background: #34bfa3;
-      }
-    }
-
-    .card-panel-icon-wrapper {
-      float: left;
-      margin: 14px 0 0 14px;
-      padding: 16px;
-      transition: all 0.38s ease-out;
-      border-radius: 6px;
-    }
-
-    .card-panel-description {
-      float: right;
-      font-weight: bold;
-      margin: 26px 20px 0;
-
-      .card-panel-text {
-        line-height: 18px;
-        color: var(--el-text-color-secondary);
-        font-size: 16px;
-        margin-bottom: 12px;
-      }
-
-      .card-panel-num {
-        font-size: 20px;
-        text-align: right;
-      }
-    }
-  }
-
-  .chart-container {
-    background: var(--el-bg-color-overlay);
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>
