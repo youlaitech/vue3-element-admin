@@ -3,10 +3,6 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { addClass, removeClass } from '@/utils/index';
 
-// 图标依赖
-import { Close, Setting } from '@element-plus/icons-vue';
-import { ElColorPicker } from 'element-plus';
-
 const show = ref(false);
 
 defineProps({
@@ -33,24 +29,18 @@ function addEventClick() {
 
 function closeSidebar(evt: any) {
   // 主题选择点击不关闭
-  let parent = evt.target.closest('.theme-picker-dropdown');
-  if (parent) {
-    return;
-  }
-
-  parent = evt.target.closest('.right-panel');
+  let parent = evt.target.closest('.right-panel-container');
   if (!parent) {
     show.value = false;
     window.removeEventListener('click', closeSidebar);
   }
 }
 
-const rightPanel = ref(ElColorPicker);
+const rightPanel = ref();
 
 function insertToBody() {
-  const elx = rightPanel.value as any;
   const body = document.querySelector('body') as any;
-  body.insertBefore(elx, body.firstChild);
+  body.insertBefore(rightPanel.value, body.firstChild);
 }
 
 onMounted(() => {
@@ -58,53 +48,46 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  const elx = rightPanel.value as any;
-  elx.remove();
+  rightPanel.value.remove();
 });
 </script>
 
 <template>
-  <div ref="rightPanel" :class="{ show: show }">
-    <div class="right-panel-background" />
-    <div class="right-panel">
+  <div :class="{ show: show }" ref="rightPanel">
+    <div class="right-panel-overlay" />
+    <div class="right-panel-container">
       <div
-        class="right-panel__button"
+        class="right-panel-btn"
         :style="{
           top: buttonTop + 'px'
         }"
         @click="show = !show"
       >
-        <Close class="icon" v-show="show" />
-        <Setting class="icon" v-show="!show" />
+        <i-ep-close v-show="show" />
+        <i-ep-setting v-show="!show" />
       </div>
-      <div class="right-panel__items">
+      <div>
         <slot />
       </div>
     </div>
   </div>
 </template>
 
-<style>
+<style lang="scss" scoped>
 .showRightPanel {
   overflow: hidden;
   position: relative;
   width: calc(100% - 15px);
 }
-</style>
-
-<style lang="scss" scoped>
-.right-panel-background {
+.right-panel-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  opacity: 0;
-  transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
   background: rgba(0, 0, 0, 0.2);
-  z-index: -1;
 }
 
-.right-panel {
-  background-color: var(--el-bg-color);
+.right-panel-container {
+  background-color: var(--el-bg-color-overlay);
   width: 100%;
   max-width: 300px;
   height: 100vh;
@@ -114,42 +97,37 @@ onBeforeUnmount(() => {
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
   transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
   transform: translate(100%);
-  z-index: 199;
-
-  .icon {
-    width: 1em;
-    height: 1em;
-    vertical-align: middle;
-  }
+  z-index: 999;
 }
 
 .show {
   transition: all 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
-  .right-panel-background {
+  .right-panel-overlay {
     z-index: 99;
     opacity: 1;
     width: 100%;
     height: 100%;
   }
 
-  .right-panel {
+  .right-panel-container {
     transform: translate(0);
   }
 }
 
-.right-panel__button {
+.right-panel-btn {
   background-color: var(--el-color-primary);
   color: var(--el-color-white);
-  width: 48px;
-  height: 48px;
-  left: -48px;
-  line-height: 48px;
+  width: 36px;
+  height: 36px;
+  left: -36px;
   position: absolute;
   text-align: center;
-  font-size: 24px;
   border-radius: 6px 0 0 6px;
-  z-index: 0;
-  pointer-events: auto;
   cursor: pointer;
+  svg {
+    vertical-align: -10px;
+    width: 20px;
+    height: 20px;
+  }
 }
 </style>
