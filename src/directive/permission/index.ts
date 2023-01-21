@@ -2,7 +2,7 @@ import { useUserStoreHook } from '@/store/modules/user';
 import { Directive, DirectiveBinding } from 'vue';
 
 /**
- * 按钮权限校验
+ * 按钮权限
  */
 export const hasPerm: Directive = {
   mounted(el: HTMLElement, binding: DirectiveBinding) {
@@ -32,7 +32,7 @@ export const hasPerm: Directive = {
 };
 
 /**
- * 角色权限校验
+ * 角色权限
  */
 export const hasRole: Directive = {
   mounted(el: HTMLElement, binding: DirectiveBinding) {

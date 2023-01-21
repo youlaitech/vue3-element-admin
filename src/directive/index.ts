@@ -1,2 +1,3 @@
 export { hasPerm, hasRole } from './permission';
-export { deBounce } from './utils';
+export { clickOutside } from './ClickOutside';
+export { deBounce } from './Debounce';
