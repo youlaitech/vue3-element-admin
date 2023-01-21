@@ -38,6 +38,7 @@ const tagsViewStore = useTagsViewStore();
 
   .fixed-header + .app-main {
     padding-top: 84px;
+    min-height: 100vh;
   }
 }
 </style>
