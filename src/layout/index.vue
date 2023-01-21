@@ -10,7 +10,6 @@ import { useSettingsStore } from '@/store/modules/settings';
 
 const { width } = useWindowSize();
 
-
 /**
  * 响应式布局容器固定宽度
  *
@@ -60,6 +59,7 @@ function handleOutsideClick() {
     <!-- 手机设备 && 侧边栏 → 显示遮罩层 -->
     <div
       v-if="classObj.mobile && classObj.openSidebar"
+      class="drawer-bg"
       @click="handleOutsideClick"
     ></div>
 
@@ -84,7 +84,7 @@ function handleOutsideClick() {
 
 <style lang="scss" scoped>
 .app-wrapper {
-   &:after {
+  &:after {
     content: '';
     display: table;
     clear: both;
@@ -98,15 +98,6 @@ function handleOutsideClick() {
     position: fixed;
     top: 0;
   }
-}
-.drawer-bg {
-  background: #000;
-  opacity: 0.3;
-  width: 100%;
-  top: 0;
-  height: 100%;
-  position: absolute;
-  z-index: 999;
 }
 
 .fixed-header {
@@ -122,5 +113,15 @@ function handleOutsideClick() {
 }
 .mobile .fixed-header {
   width: 100%;
+}
+
+.drawer-bg {
+  background: #000;
+  opacity: 0.3;
+  width: 100%;
+  top: 0;
+  height: 100%;
+  position: absolute;
+  z-index: 999;
 }
 </style>
