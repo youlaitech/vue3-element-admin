@@ -19,6 +19,21 @@ function changeLayout(layout: string) {
   window.document.body.setAttribute('layout', settingsStore.layout);
 }
 
+// 主题颜色
+const themeColors = ref<string[]>([
+  '#409EFF',
+  '#304156',
+  '#11a983',
+  '#13c2c2',
+  '#6959CD',
+  '#f5222d'
+]);
+
+function changeThemeColor(color: string) {
+  document.documentElement.style.setProperty('--el-color-primary', color);
+  settingsStore.changeSetting({ key: 'layout', value: color });
+}
+
 onMounted(() => {
   window.document.body.setAttribute('layout', settingsStore.layout);
 });
@@ -27,7 +42,21 @@ onMounted(() => {
 <template>
   <div class="settings-container">
     <h3 class="text-base font-bold">项目配置</h3>
-    <el-divider />
+    <el-divider>主题</el-divider>
+
+    <div class="flex justify-center" @click.stop>
+      <el-switch
+        v-model="isDark"
+        @change="toggleDark"
+        inline-prompt
+        :active-icon="Moon"
+        :inactive-icon="Sunny"
+        active-color="var(--el-fill-color-dark)"
+        inactive-color="var(--el-color-primary)"
+      />
+    </div>
+
+    <el-divider>界面设置</el-divider>
     <div class="py-[8px] flex justify-between">
       <span class="text-xs">开启 Tags-View</span>
       <el-switch v-model="settingsStore.tagsView" />
@@ -43,21 +72,19 @@ onMounted(() => {
       <el-switch v-model="settingsStore.sidebarLogo" />
     </div>
 
-    <el-divider>主题</el-divider>
+    <el-divider>主题颜色</el-divider>
 
-    <div class="flex justify-center" @click.stop>
-      <el-switch
-        v-model="isDark"
-        @change="toggleDark"
-        inline-prompt
-        :active-icon="Moon"
-        :inactive-icon="Sunny"
-        active-color="var(--el-fill-color-dark)"
-        inactive-color="var(--el-color-primary)"
-      />
-    </div>
+    <ul class="w-full space-x-2 flex justify-center py-2">
+      <li
+        class="inline-block w-[30px] h-[30px] cursor-pointer"
+        v-for="(color, index) in themeColors"
+        :key="index"
+        :style="{ background: color }"
+        @click="changeThemeColor(color)"
+      ></li>
+    </ul>
 
-    <el-divider>导航栏布局</el-divider>
+    <el-divider>导航设置</el-divider>
 
     <ul class="layout">
       <el-tooltip content="左侧模式" placement="bottom">
@@ -109,7 +136,6 @@ onMounted(() => {
     justify-content: space-around;
     width: 100%;
     height: 50px;
-    padding: 0;
 
     &-item {
       width: 18%;
