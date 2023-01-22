@@ -1,6 +1,9 @@
 <!-- 饼图 -->
 <template>
-  <div :id="id" :class="className" :style="{ height, width }" />
+  <el-card>
+    <template #header> 产品分类饼图 </template>
+    <div :id="id" :class="className" :style="{ height, width }" />
+  </el-card>
 </template>
 
 <script setup lang="ts">
@@ -41,18 +44,6 @@ function initChart() {
   const pieChart = init(document.getElementById(props.id) as HTMLDivElement);
 
   pieChart.setOption({
-    title: {
-      show: true,
-      text: '产品分类总览',
-      x: 'center',
-      padding: 15,
-      textStyle: {
-        fontSize: 18,
-        fontStyle: 'normal',
-        fontWeight: 'bold',
-        color: '#337ecc'
-      }
-    },
     grid: {
       left: '2%',
       right: '2%',
@@ -60,7 +51,10 @@ function initChart() {
       containLabel: true
     },
     legend: {
-      top: 'bottom'
+      top: 'bottom',
+      textStyle: {
+        color: '#999'
+      }
     },
     series: [
       {
