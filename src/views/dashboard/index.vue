@@ -11,17 +11,77 @@ import PieChart from './components/PieChart.vue';
 import RadarChart from './components/RadarChart.vue';
 
 import CountUp from 'vue-countup-v3';
+import { useUserStore } from '@/store/modules/user';
+
+const userStore = useUserStore();
+
+const date: Date = new Date();
+
+const greetings = computed(() => {
+  if (date.getHours() >= 6 && date.getHours() < 12) {
+    return '晨起披衣出草堂，轩窗已自喜微凉🌞！';
+  } else if (date.getHours() >= 12 && date.getHours() < 18) {
+    return '下午好☕！';
+  } else if (date.getHours() >= 18 && date.getHours() < 24) {
+    return '晚上好🌃！';
+  } else if (date.getHours() >= 0 && date.getHours() < 6) {
+    return '偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！';
+  }
+});
 </script>
 
 <template>
   <div class="dashboard-container">
-    <!--github-->
+    <!-- github角标 -->
     <github-corner class="github-corner" />
 
-    <!-- 数据 -->
-    <el-row :gutter="40" class="mb-[12px]">
-      <!--访问数-->
-      <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
+    <!-- 用户信息 -->
+    <el-row class="mb-[24px]">
+      <el-card class="w-full">
+        <div class="flex justify-between flex-wrap">
+          <div>
+            <img
+              class="user-avatar"
+              :src="userStore.avatar + '?imageView2/1/w/80/h/80'"
+            />
+            <span class="ml-[5px] text-[14px]">
+              {{ userStore.nickname }}
+            </span>
+          </div>
+
+          <div class="leading-[40px]">
+            {{ greetings }}
+          </div>
+
+          <div class="space-x-2 pt-[5px]">
+            <el-link
+              target="_blank"
+              type="danger"
+              href="https://www.cnblogs.com/haoxianrui/p/16090029.html"
+              >官方0到1教程</el-link
+            >
+            <el-divider direction="vertical" />
+            <el-link
+              target="_blank"
+              type="success"
+              href="https://gitee.com/youlaiorg/vue3-element-admin"
+              >Gitee源码</el-link
+            >
+            <el-divider direction="vertical" />
+            <el-link
+              target="_blank"
+              type="primary"
+              href="https://github.com/youlaitech/vue3-element-admin"
+              >GitHub源码
+            </el-link>
+          </div>
+        </div>
+      </el-card>
+    </el-row>
+
+    <!-- 数据卡片 -->
+    <el-row :gutter="40" class="mb-[24px]">
+      <el-col :xs="24" :sm="12" :lg="6">
         <div class="data-box">
           <div
             class="text-[#40c9c6] hover:!text-white hover:bg-[#40c9c6] p-3 rounded"
@@ -38,7 +98,7 @@ import CountUp from 'vue-countup-v3';
       </el-col>
 
       <!--消息数-->
-      <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
+      <el-col :xs="24" :sm="12" :lg="6">
         <div class="data-box">
           <div
             class="text-[#36a3f7] hover:!text-white hover:bg-[#36a3f7] p-3 rounded"
@@ -54,7 +114,7 @@ import CountUp from 'vue-countup-v3';
         </div>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
+      <el-col :xs="24" :sm="12" :lg="6">
         <div class="data-box">
           <div
             class="text-[#f4516c] hover:!text-white hover:bg-[#f4516c] p-3 rounded"
@@ -69,7 +129,7 @@ import CountUp from 'vue-countup-v3';
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6" class="mb-[12px]">
+      <el-col :xs="24" :sm="12" :lg="6">
         <div class="data-box">
           <div
             class="text-[#34bfa3] hover:!text-white hover:bg-[#34bfa3] p-3 rounded"
@@ -87,7 +147,7 @@ import CountUp from 'vue-countup-v3';
     </el-row>
 
     <!-- Echarts 图表 -->
-    <el-row :gutter="40" style="margin-top: 20px">
+    <el-row :gutter="40">
       <el-col :sm="24" :lg="8" class="mb-[12px]">
         <BarChart
           id="barChart"
@@ -122,6 +182,11 @@ import CountUp from 'vue-countup-v3';
 .dashboard-container {
   padding: 24px;
   position: relative;
+  .user-avatar {
+    height: 40px;
+    widows: 40px;
+    border-radius: 50%;
+  }
 
   .github-corner {
     position: absolute;

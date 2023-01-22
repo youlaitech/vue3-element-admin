@@ -1,6 +1,9 @@
 <!-- 雷达图 -->
 <template>
-  <div :id="id" :class="className" :style="{ height, width }" />
+  <el-card>
+    <template #header> 订单状态雷达图 </template>
+    <div :id="id" :class="className" :style="{ height, width }" />
+  </el-card>
 </template>
 
 <script setup lang="ts">
@@ -41,18 +44,6 @@ function initChart() {
   const radarChart = init(document.getElementById(props.id) as HTMLDivElement);
 
   radarChart.setOption({
-    title: {
-      show: true,
-      text: '订单状态统计',
-      x: 'center',
-      padding: 15,
-      textStyle: {
-        fontSize: 18,
-        fontStyle: 'normal',
-        fontWeight: 'bold',
-        color: '#337ecc'
-      }
-    },
     grid: {
       left: '2%',
       right: '2%',
@@ -62,7 +53,10 @@ function initChart() {
     legend: {
       x: 'center',
       y: 'bottom',
-      data: ['预定数量', '下单数量', '发货数量']
+      data: ['预定数量', '下单数量', '发货数量'],
+      textStyle: {
+        color: '#999'
+      }
     },
     radar: {
       // shape: 'circle',

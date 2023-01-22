@@ -1,6 +1,9 @@
 <!--  线 + 柱混合图 -->
 <template>
-  <div :id="id" :class="className" :style="{ height, width }" />
+  <el-card>
+    <template #header> 业绩柱状图 </template>
+    <div :id="id" :class="className" :style="{ height, width }" />
+  </el-card>
 </template>
 
 <script setup lang="ts">
@@ -42,18 +45,6 @@ function initChart() {
   const barChart = init(document.getElementById(props.id) as HTMLDivElement);
 
   barChart.setOption({
-    title: {
-      show: true,
-      text: '业绩总览',
-      x: 'center',
-      padding: 15,
-      textStyle: {
-        fontSize: 18,
-        fontStyle: 'normal',
-        fontWeight: 'bold',
-        color: '#337ecc'
-      }
-    },
     grid: {
       left: '2%',
       right: '2%',
@@ -72,7 +63,10 @@ function initChart() {
     legend: {
       x: 'center',
       y: 'bottom',
-      data: ['收入', '毛利润', '收入增长率', '利润增长率']
+      data: ['收入', '毛利润', '收入增长率', '利润增长率'],
+      textStyle: {
+        color: '#999'
+      }
     },
     xAxis: [
       {
