@@ -18,8 +18,10 @@ const userStore = useUserStore();
 const date: Date = new Date();
 
 const greetings = computed(() => {
-  if (date.getHours() >= 6 && date.getHours() < 12) {
-    return '晨起披衣出草堂，轩窗已自喜微凉🌞！';
+  if (date.getHours() >= 6 && date.getHours() < 8) {
+    return '晨起披衣出草堂，轩窗已自喜微凉🌅！';
+  } else if (date.getHours() >= 8 && date.getHours() < 18) {
+    return '上午好🌞！';
   } else if (date.getHours() >= 12 && date.getHours() < 18) {
     return '下午好☕！';
   } else if (date.getHours() >= 18 && date.getHours() < 24) {
