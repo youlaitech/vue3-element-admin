@@ -460,7 +460,7 @@ onMounted(() => {
   <div class="app-container">
     <el-row :gutter="20">
       <!-- 部门树 -->
-      <el-col :span="4" :xs="24" :sm="6" class="mb-[12px]">
+      <el-col :lg="4" :xs="24" class="mb-[12px]">
         <el-card shadow="never">
           <el-input
             v-model="deptName"
@@ -482,7 +482,7 @@ onMounted(() => {
       </el-col>
 
       <!-- 用户数据 -->
-      <el-col :span="20" :xs="24" :sm="18">
+      <el-col :lg="20" :xs="24">
         <div class="search">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true">
             <el-form-item label="关键字" prop="keywords">
