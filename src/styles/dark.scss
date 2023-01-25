@@ -4,14 +4,10 @@ html.dark {
     color: var(--el-text-color-regular);
   }
 
-  .hamburger {
-    fill: var(--el-text-color-regular);
-  }
-
   .right-panel-btn{
     background-color: var(--el-color-primary-dark);
   }
-  .svg-icon{
+  .svg-icon,svg{
     fill: var(--el-text-color-regular);
   }
 }
