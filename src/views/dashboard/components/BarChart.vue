@@ -7,16 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  nextTick,
-  onActivated,
-  onBeforeUnmount,
-  onDeactivated,
-  onMounted
-} from 'vue';
-import { init, EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
-import resize from '@/utils/resize';
 
 const props = defineProps({
   id: {
@@ -39,130 +30,115 @@ const props = defineProps({
   }
 });
 
-const { mounted, chart, beforeDestroy, activated, deactivated } = resize();
-
-function initChart() {
-  const barChart = init(document.getElementById(props.id) as HTMLDivElement);
-
-  barChart.setOption({
-    grid: {
-      left: '2%',
-      right: '2%',
-      bottom: '10%',
-      containLabel: true
-    },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
-        crossStyle: {
-          color: '#999'
-        }
-      }
-    },
-    legend: {
-      x: 'center',
-      y: 'bottom',
-      data: ['收入', '毛利润', '收入增长率', '利润增长率'],
-      textStyle: {
+const options = {
+  grid: {
+    left: '2%',
+    right: '2%',
+    bottom: '10%',
+    containLabel: true
+  },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'cross',
+      crossStyle: {
         color: '#999'
       }
+    }
+  },
+  legend: {
+    x: 'center',
+    y: 'bottom',
+    data: ['收入', '毛利润', '收入增长率', '利润增长率'],
+    textStyle: {
+      color: '#999'
+    }
+  },
+  xAxis: [
+    {
+      type: 'category',
+      data: ['浙江', '北京', '上海', '广东', '深圳'],
+      axisPointer: {
+        type: 'shadow'
+      }
+    }
+  ],
+  yAxis: [
+    {
+      type: 'value',
+      min: 0,
+      max: 10000,
+      interval: 2000,
+      axisLabel: {
+        formatter: '{value} '
+      }
     },
-    xAxis: [
-      {
-        type: 'category',
-        data: ['浙江', '北京', '上海', '广东', '深圳'],
-        axisPointer: {
-          type: 'shadow'
-        }
+    {
+      type: 'value',
+      min: 0,
+      max: 100,
+      interval: 20,
+      axisLabel: {
+        formatter: '{value}%'
       }
-    ],
-    yAxis: [
-      {
-        type: 'value',
-        min: 0,
-        max: 10000,
-        interval: 2000,
-        axisLabel: {
-          formatter: '{value} '
-        }
-      },
-      {
-        type: 'value',
-        min: 0,
-        max: 100,
-        interval: 20,
-        axisLabel: {
-          formatter: '{value}%'
-        }
+    }
+  ],
+  series: [
+    {
+      name: '收入',
+      type: 'bar',
+      data: [7000, 7100, 7200, 7300, 7400],
+      barWidth: 20,
+      itemStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: '#83bff6' },
+          { offset: 0.5, color: '#188df0' },
+          { offset: 1, color: '#188df0' }
+        ])
       }
-    ],
-    series: [
-      {
-        name: '收入',
-        type: 'bar',
-        data: [7000, 7100, 7200, 7300, 7400],
-        barWidth: 20,
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#83bff6' },
-            { offset: 0.5, color: '#188df0' },
-            { offset: 1, color: '#188df0' }
-          ])
-        }
-      },
-      {
-        name: '毛利润',
-        type: 'bar',
-        data: [8000, 8200, 8400, 8600, 8800],
-        barWidth: 20,
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#25d73c' },
-            { offset: 0.5, color: '#1bc23d' },
-            { offset: 1, color: '#179e61' }
-          ])
-        }
-      },
-      {
-        name: '收入增长率',
-        type: 'line',
-        yAxisIndex: 1,
-        data: [60, 65, 70, 75, 80],
-        itemStyle: {
-          color: '#67C23A'
-        }
-      },
-      {
-        name: '利润增长率',
-        type: 'line',
-        yAxisIndex: 1,
-        data: [70, 75, 80, 85, 90],
-        itemStyle: {
-          color: '#409EFF'
-        }
+    },
+    {
+      name: '毛利润',
+      type: 'bar',
+      data: [8000, 8200, 8400, 8600, 8800],
+      barWidth: 20,
+      itemStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: '#25d73c' },
+          { offset: 0.5, color: '#1bc23d' },
+          { offset: 1, color: '#179e61' }
+        ])
       }
-    ]
-  } as EChartsOption);
-  chart.value = barChart;
-}
-
-onBeforeUnmount(() => {
-  beforeDestroy();
-});
-
-onActivated(() => {
-  activated();
-});
-
-onDeactivated(() => {
-  deactivated();
-});
+    },
+    {
+      name: '收入增长率',
+      type: 'line',
+      yAxisIndex: 1,
+      data: [60, 65, 70, 75, 80],
+      itemStyle: {
+        color: '#67C23A'
+      }
+    },
+    {
+      name: '利润增长率',
+      type: 'line',
+      yAxisIndex: 1,
+      data: [70, 75, 80, 85, 90],
+      itemStyle: {
+        color: '#409EFF'
+      }
+    }
+  ]
+};
 
 onMounted(() => {
-  mounted();
-  nextTick(() => {
-    initChart();
+  const chart = echarts.init(
+    document.getElementById(props.id) as HTMLDivElement
+  );
+  chart.setOption(options);
+
+  window.addEventListener('resize', () => {
+    chart.resize();
   });
 });
 </script>
