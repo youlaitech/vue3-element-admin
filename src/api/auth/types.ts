@@ -1,7 +1,7 @@
 /**
  * 登录数据类型
  */
-export interface LoginData {
+export type LoginType = {
   username: string;
   password: string;
   /**
@@ -12,7 +12,7 @@ export interface LoginData {
    * 验证码Code服务端缓存key(UUID)
    */
   // verifyCodeKey: string;
-}
+};
 
 /**
  * Token响应类型
