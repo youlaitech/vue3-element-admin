@@ -5,7 +5,11 @@ const appStore = useAppStore();
 </script>
 
 <template>
-  <el-config-provider :locale="appStore.locale" :size="appStore.size">
+  <el-config-provider
+    :locale="appStore.locale"
+    :size="appStore.size"
+    theme="dark"
+  >
     <router-view />
   </el-config-provider>
 </template>
