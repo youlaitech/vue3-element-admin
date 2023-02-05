@@ -18,14 +18,8 @@ function handleLanguageChange(lang: string) {
 </script>
 
 <template>
-  <el-dropdown
-    class="lang-select"
-    trigger="click"
-    @command="handleLanguageChange"
-  >
-    <div
-      class="cursor-pointer text-[#5a5e66] h-[50px] leading-[50px] text-center px-2.5 hover:bg-gray-50 dark:hover:bg-[var(--el-fill-color-light)]"
-    >
+  <el-dropdown trigger="click" @command="handleLanguageChange">
+    <div>
       <svg-icon icon-class="language" />
     </div>
     <template #dropdown>
