@@ -38,32 +38,39 @@ function logout() {
 </script>
 
 <template>
+  <!-- 顶部导航栏 -->
   <div class="navbar">
-    <div class="flex justify-start">
+    <!-- 左侧面包屑 -->
+    <div class="flex">
       <hamburger
         :is-active="appStore.sidebar.opened"
         @toggleClick="toggleSideBar"
       />
-      <!-- 面包屑导航栏 -->
       <breadcrumb />
     </div>
 
-    <!-- 宽屏显示 -->
-    <div class="flex justify-start">
-      <!-- 窄屏不显示 -->
-      <div v-if="device !== 'mobile'" class="flex justify-center items-center">
+    <!-- 右侧导航 -->
+    <div class="navbar-right">
+      <!-- 导航栏设置(窄屏隐藏)-->
+      <div v-if="device !== 'mobile'" class="navbar-setting-wrapper">
         <!--全屏 -->
-        <screenfull id="screenfull" />
-
+        <screenfull
+          class="navbar-setting-item hover:bg-gray-50 dark:hover:bg-[var(--el-fill-color-light)]"
+          id="screenfull"
+        />
         <!-- 布局大小 -->
         <el-tooltip content="布局大小" effect="dark" placement="bottom">
-          <size-select />
+          <size-select
+            class="navbar-setting-item hover:bg-gray-50 dark:hover:bg-[var(--el-fill-color-light)]"
+          />
         </el-tooltip>
-
         <!--语言选择-->
-        <lang-select />
+        <lang-select
+          class="navbar-setting-item hover:bg-gray-50 dark:hover:bg-[var(--el-fill-color-light)]"
+        />
       </div>
-      <!-- 头像 -->
+
+      <!-- 用户头像 -->
       <el-dropdown trigger="click">
         <div class="flex justify-center items-center mx-2">
           <img
@@ -72,7 +79,6 @@ function logout() {
           />
           <i-ep-caret-bottom class="w-3 h-3" />
         </div>
-
         <template #dropdown>
           <el-dropdown-menu>
             <router-link to="/">
@@ -105,5 +111,21 @@ function logout() {
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 0 1px #0003;
+
+  .navbar-right {
+    display: flex;
+    .navbar-setting-wrapper {
+      display: flex;
+      align-items: center;
+      .navbar-setting-item {
+        height: 50px;
+        line-height: 50px;
+        padding: 0 8px;
+        display: inline-block;
+        cursor: pointer;
+        color: #5a5e66;
+      }
+    }
+  }
 }
 </style>
