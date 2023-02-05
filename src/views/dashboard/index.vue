@@ -38,7 +38,7 @@ const greetings = computed(() => {
     <github-corner class="github-corner" />
 
     <!-- 用户信息 -->
-    <el-row class="mb-[24px]">
+    <el-row class="mb-8">
       <el-card class="w-full">
         <div class="flex justify-between flex-wrap">
           <div>
@@ -82,7 +82,7 @@ const greetings = computed(() => {
     </el-row>
 
     <!-- 数据卡片 -->
-    <el-row :gutter="40" class="mb-[24px]">
+    <el-row :gutter="40" class="mb-8">
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="data-box">
           <div
@@ -150,7 +150,7 @@ const greetings = computed(() => {
 
     <!-- Echarts 图表 -->
     <el-row :gutter="40">
-      <el-col :sm="24" :lg="8" class="mb-[12px]">
+      <el-col :sm="24" :lg="8" class="mb-4">
         <BarChart
           id="barChart"
           height="400px"
@@ -159,7 +159,7 @@ const greetings = computed(() => {
         />
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="8" class="mb-[12px]">
+      <el-col :xs="24" :sm="12" :lg="8" class="mb-4">
         <PieChart
           id="pieChart"
           height="400px"
@@ -168,7 +168,7 @@ const greetings = computed(() => {
         />
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="8" class="mb-[12px]">
+      <el-col :xs="24" :sm="12" :lg="8" class="mb-4">
         <RadarChart
           id="radarChart"
           height="400px"
