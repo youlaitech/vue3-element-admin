@@ -58,7 +58,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ['vue', '@vueuse/core'],
         eslintrc: {
-          enabled: false,
+          enabled: false, // 没有此json文件，开启生成后关闭
           filepath: './.eslintrc-auto-import.json',
           globalsPropValue: true
         },
@@ -98,6 +98,19 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 指定symbolId格式
         symbolId: 'icon-[dir]-[name]'
       })
-    ]
+    ],
+    optimizeDeps: {
+      include: [
+        'vue',
+        'vue-router',
+        'element-plus/es/locale/lang/zh-cn',
+        'element-plus/es/locale/lang/en',
+        '@vueuse/core',
+        'axios',
+        'echarts',
+        '@wangeditor/editor',
+        '@wangeditor/editor-for-vue'
+      ]
+    }
   };
 });
