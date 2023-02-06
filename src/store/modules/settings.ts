@@ -26,6 +26,7 @@ export const useSettingsStore = defineStore('setting', () => {
   const tagsView = useStorage<boolean>('tagsView', defaultSettings.tagsView);
   const fixedHeader = ref<boolean>(defaultSettings.fixedHeader);
   const sidebarLogo = ref<boolean>(defaultSettings.sidebarLogo);
+  const theme = useStorage('vueuse-color-scheme', defaultSettings.theme);
 
   const layout = useStorage<string>('layout', defaultSettings.layout);
 
