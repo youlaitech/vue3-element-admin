@@ -37,7 +37,7 @@
           <el-input
             class="flex-1"
             v-model="loginData.password"
-            placeholder="Password"
+            placeholder="密码"
             :type="passwordVisible === false ? 'password' : 'input'"
             size="large"
             name="password"
@@ -162,22 +162,37 @@ function handleLogin() {
   overflow: hidden;
 }
 .el-form-item {
-  border: 1px solid #ffffff1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
-
 .el-input {
   background: transparent;
-  // 子组件 scoped 无效使用 :deep
-  :deep .el-input__wrapper {
+  // 子组件 scoped 无效，使用 :deep
+  :deep(.el-input__wrapper) {
     padding: 0;
     background: transparent;
     box-shadow: none;
     .el-input__inner {
-      color: #fff;
       background: transparent;
+      border: 0px;
+      border-radius: 0px;
+      color: #fff;
       caret-color: #fff;
+      &:-webkit-autofill {
+        box-shadow: 0 0 0 1000px transparent inset !important;
+        -webkit-text-fill-color: #fff !important;
+      }
+
+      // 设置输入框自动填充的延迟属性
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        -webkit-transition-delay: 99999s;
+        -webkit-transition: color 99999s ease-out,
+          background-color 99999s ease-out;
+      }
     }
   }
 }
