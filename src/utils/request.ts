@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { getToken } from '@/utils/auth';
 import { useUserStoreHook } from '@/store/modules/user';
@@ -12,7 +12,7 @@ const service = axios.create({
 
 // 请求拦截器
 service.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig) => {
     if (!config.headers) {
       throw new Error(
         `Expected 'config' and 'config.headers' not to be undefined`
@@ -20,7 +20,7 @@ service.interceptors.request.use(
     }
     const user = useUserStoreHook();
     if (user.token) {
-      (config.headers as any).Authorization = getToken();
+      config.headers.Authorization = getToken();
     }
     return config;
   },
