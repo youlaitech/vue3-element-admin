@@ -17,7 +17,7 @@ const defaultSettings: DefaultSettings = {
   sidebarLogo: true,
   errorLog: 'production',
   layout: 'left',
-  theme: 'light'
+  theme: 'dark'
 };
 
 export default defaultSettings;
