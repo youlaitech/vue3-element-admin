@@ -20,9 +20,9 @@ html.dark{
   --menuBg:var(--el-bg-color-overlay);
   --menuText:var(----el-menu-text-color);
   --menuActiveText:var(--el-menu-active-color);
-  --menuHover:var(--el-menu-hover-bg-color);
+  --subMenuHover: rgba(0,0,0,.3);
 
   --subMenuBg: var(--el-menu-bg-color);
   --subMenuActiveText:var(--el-menu-active-color);
-  --subMenuHover: var(--el-menu-hover-bg-color);
+  --subMenuHover: rgba(0,0,0,.2);
 }
