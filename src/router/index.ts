@@ -16,14 +16,10 @@ export const constantRoutes: RouteRecordRaw[] = [
       }
     ]
   },
+
   {
     path: '/login',
     component: () => import('@/views/login/index.vue'),
-    meta: { hidden: true }
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/error-page/404.vue'),
     meta: { hidden: true }
   },
 
@@ -44,7 +40,12 @@ export const constantRoutes: RouteRecordRaw[] = [
         meta: { hidden: true }
       },
       {
-        path: 'apidoc',
+        path: '/404',
+        component: () => import('@/views/error-page/404.vue'),
+        meta: { hidden: true }
+      },
+      {
+        path: '/apidoc',
         component: () => import('@/views/demo/apidoc.vue'),
         meta: { hidden: true }
       }
@@ -104,7 +105,9 @@ export const constantRoutes: RouteRecordRaw[] = [
      }*/
 ];
 
-// 创建路由
+/**
+ * 创建路由
+ */
 const router = createRouter({
   history: createWebHashHistory(),
   routes: constantRoutes as RouteRecordRaw[],
@@ -112,15 +115,12 @@ const router = createRouter({
   scrollBehavior: () => ({ left: 0, top: 0 })
 });
 
-// 重置路由
+/**
+ * 重置路由
+ */
 export function resetRouter() {
-  const permissionStore = usePermissionStoreHook();
-  permissionStore.routes.forEach(route => {
-    const name = route.name;
-    if (name && router.hasRoute(name)) {
-      router.removeRoute(name);
-    }
-  });
+  router.replace({ path: '/login' });
+  location.reload();
 }
 
 export default router;
