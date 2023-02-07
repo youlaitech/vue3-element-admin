@@ -1,5 +1,5 @@
 import router from '@/router';
-import { RouteRecordRaw } from 'vue-router';
+import { getToken } from '@/utils/auth';
 import { useUserStoreHook } from '@/store/modules/user';
 import { usePermissionStoreHook } from '@/store/modules/permission';
 
@@ -15,25 +15,26 @@ const whiteList = ['/login'];
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
   const userStore = useUserStoreHook();
-  if (userStore.token) {
-    // 登录成功，跳转到首页
+
+  const hasToken = getToken();
+  if (hasToken) {
     if (to.path === '/login') {
+      // if is logged in, redirect to the home page
       next({ path: '/' });
-      NProgress.done();
     } else {
-      const hasGetUserInfo = userStore.roles.length > 0;
-      if (hasGetUserInfo) {
+      const hasRoles = userStore.roles && userStore.roles.length > 0;
+      if (hasRoles) {
+        // 路由未匹配，跳转404
         if (to.matched.length === 0) {
-          from.name ? next({ name: from.name as any }) : next('/401');
+          from.name ? next({ name: from.name }) : next('/404');
         } else {
           next();
         }
       } else {
         try {
           const { roles } = await userStore.getInfo();
-          const accessRoutes: RouteRecordRaw[] =
-            await permissionStore.generateRoutes(roles);
-          accessRoutes.forEach((route: any) => {
+          const accessRoutes = await permissionStore.generateRoutes(roles);
+          accessRoutes.forEach(route => {
             router.addRoute(route);
           });
           next({ ...to, replace: true });
