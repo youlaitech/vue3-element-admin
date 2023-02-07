@@ -74,12 +74,13 @@
 1. 安装依赖
 
     ```bash
-    npm install
+    npm install pnpm -g
+    pnpm install
     ```
 2. 启动运行
 
     ```bash
-    npm run dev
+    pnpm run dev
     ```
 3. 访问测试
 
@@ -87,10 +88,10 @@
 
 ## 项目部署
 
-- 本地打包
+- 打包项目
 
   ```
-  npm run build:prod
+  pnpm run build:prod
   ```
 
   生成的静态文件位于项目根目录 `dist` 文件夹下
