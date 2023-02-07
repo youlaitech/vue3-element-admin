@@ -5,11 +5,18 @@ import { store } from '@/store';
 import { listRoutes } from '@/api/menu';
 
 const modules = import.meta.glob('../../views/**/**.vue');
-export const Layout = () => import('@/layout/index.vue');
+const Layout = () => import('@/layout/index.vue');
 
+/**
+ * Use meta.role to determine if the current user has permission
+ *
+ * @param roles 用户角色集合
+ * @param route 路由
+ * @returns
+ */
 const hasPermission = (roles: string[], route: RouteRecordRaw) => {
   if (route.meta && route.meta.roles) {
-    // 默认超级管理员角色拥有所有权限，忽略校验
+    // 角色【超级管理员】拥有所有权限，忽略校验
     if (roles.includes('ROOT')) {
       return true;
     }
@@ -22,29 +29,41 @@ const hasPermission = (roles: string[], route: RouteRecordRaw) => {
   return false;
 };
 
+/**
+ * 递归过滤有权限的异步(动态)路由
+ *
+ * @param routes 接口返回的异步(动态)路由
+ * @param roles 用户角色集合
+ * @returns 返回用户有权限的异步(动态)路由
+ */
 const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
-  const res: RouteRecordRaw[] = [];
+  const asyncRoutes: RouteRecordRaw[] = [];
+
   routes.forEach(route => {
-    const tmp = { ...route } as any;
-    if (hasPermission(roles, tmp)) {
-      if (tmp.component == 'Layout') {
-        tmp.component = Layout;
+    const tmpRoute = { ...route }; // ES6扩展运算符复制新对象
+
+    // 判断用户(角色)是否有该路由的访问权限
+    if (hasPermission(roles, tmpRoute)) {
+      if (tmpRoute.component?.toString() == 'Layout') {
+        tmpRoute.component = Layout;
       } else {
-        const component = modules[`../../views/${tmp.component}.vue`] as any;
+        const component = modules[`../../views/${tmpRoute.component}.vue`];
         if (component) {
-          tmp.component = component;
+          tmpRoute.component = component;
         } else {
-          tmp.component = modules[`../../views/error-page/404.vue`];
+          tmpRoute.component = modules[`../../views/error-page/404.vue`];
         }
       }
-      res.push(tmp);
 
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles);
+      if (tmpRoute.children) {
+        tmpRoute.children = filterAsyncRoutes(tmpRoute.children, roles);
       }
+
+      asyncRoutes.push(tmpRoute);
     }
   });
-  return res;
+
+  return asyncRoutes;
 };
 
 // setup
@@ -60,8 +79,7 @@ export const usePermissionStore = defineStore('permission', () => {
   function generateRoutes(roles: string[]) {
     return new Promise<RouteRecordRaw[]>((resolve, reject) => {
       listRoutes()
-        .then(response => {
-          const asyncRoutes = response.data;
+        .then(({ data: asyncRoutes }) => {
           const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles);
           setRoutes(accessedRoutes);
           resolve(accessedRoutes);

@@ -19,7 +19,12 @@ export const useUserStore = defineStore('user', () => {
 
   // actions
 
-  // 登录
+  /**
+   * 登录
+   *
+   * @param loginData
+   * @returns
+   */
   function login(loginData: LoginType) {
     return new Promise<void>((resolve, reject) => {
       loginApi(loginData)
