@@ -14,17 +14,17 @@ const whiteList = ['/login'];
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
-  const userStore = useUserStoreHook();
 
   const hasToken = getToken();
   if (hasToken) {
     if (to.path === '/login') {
-      // if is logged in, redirect to the home page
+      //
       next({ path: '/' });
     } else {
+      const userStore = useUserStoreHook();
       const hasRoles = userStore.roles && userStore.roles.length > 0;
       if (hasRoles) {
-        // 路由未匹配，跳转404
+        // 未匹配到任何路由，跳转404
         if (to.matched.length === 0) {
           from.name ? next({ name: from.name }) : next('/404');
         } else {
