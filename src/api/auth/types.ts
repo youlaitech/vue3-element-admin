@@ -1,7 +1,7 @@
 /**
  * 登录数据类型
  */
-export type LoginType = {
+export interface ILoginData  {
   username: string;
   password: string;
   /**
