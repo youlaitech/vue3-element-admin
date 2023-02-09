@@ -1,13 +1,13 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
-import { LoginType, TokenResult, VerifyCode } from './types';
+import { ILoginData, TokenResult, VerifyCode } from './types';
 
 /**
  *
  * @param data {LoginForm}
  * @returns
  */
-export function loginApi(data: LoginType): AxiosPromise<TokenResult> {
+export function loginApi(data: ILoginData): AxiosPromise<TokenResult> {
   return request({
     url: '/api/v1/auth/login',
     method: 'post',

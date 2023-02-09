@@ -5,7 +5,7 @@ import { loginApi, logoutApi } from '@/api/auth';
 import { getUserInfo } from '@/api/user';
 import { resetRouter } from '@/router';
 import { store } from '@/store';
-import { LoginType } from '@/api/auth/types';
+import { ILoginData } from '@/api/auth/types';
 import { ref } from 'vue';
 import { UserInfo } from '@/api/user/types';
 
@@ -25,7 +25,7 @@ export const useUserStore = defineStore('user', () => {
    * @param loginData
    * @returns
    */
-  function login(loginData: LoginType) {
+  function login(loginData: ILoginData) {
     return new Promise<void>((resolve, reject) => {
       loginApi(loginData)
         .then(response => {
