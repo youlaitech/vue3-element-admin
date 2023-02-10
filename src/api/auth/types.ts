@@ -12,7 +12,7 @@ export interface ILoginData  {
    * 验证码Code服务端缓存key(UUID)
    */
   // verifyCodeKey: string;
-};
+}
 
 /**
  * Token响应类型
