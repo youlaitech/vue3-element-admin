@@ -43,11 +43,6 @@ export const constantRoutes: RouteRecordRaw[] = [
         path: '/404',
         component: () => import('@/views/error-page/404.vue'),
         meta: { hidden: true }
-      },
-      {
-        path: '/apidoc',
-        component: () => import('@/views/demo/apidoc.vue'),
-        meta: { hidden: true }
       }
     ]
   }
