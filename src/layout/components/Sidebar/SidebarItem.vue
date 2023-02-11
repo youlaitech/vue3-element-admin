@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import path from 'path-browserify';
 import { isExternal } from '@/utils/validate';
 import AppLink from './Link.vue';
@@ -8,50 +7,65 @@ import { translateRouteTitleI18n } from '@/utils/i18n';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
 const props = defineProps({
+  /**
+   * 路由(eg:level_3_1)
+   */
   item: {
     type: Object,
     required: true
   },
-  isNest: {
-    type: Boolean,
-    required: false
-  },
+
+  /**
+   * 父层级完整路由路径(eg:/level/level_3/level_3_1)
+   */
   basePath: {
     type: String,
     required: true
   }
 });
 
-const onlyOneChild = ref();
+const onlyOneChild = ref(); // 临时变量，记录仅显示的一个子路由的信息
 
-function hasOneShowingChild(children = [] as any, parent: any) {
-  if (!children) {
-    children = [];
-  }
+/**
+ * 判断当前路由是否只有一个子路由需要显示
+ *
+ * 1：如果只有一个子路由，当前路由直接显示子路由
+ * 2：如果无子路由，显示当前路由
+ *
+ * @param children  子路由数组
+ * @param parent 当前路由
+ */
+function hasOneShowingChild(children = [], parent: any) {
+  // 需要显示的子路由数组
   const showingChildren = children.filter((item: any) => {
-    if (item.meta && item.meta.hidden) {
+    if (item.meta?.hidden) {
+      // 过滤不显示的子路由
       return false;
     } else {
-      // Temp set(will be used if only has one showing child)
+      // 仅有一个子路由生效，其他情况设置无效
       onlyOneChild.value = item;
       return true;
     }
   });
 
-  // When there is only one child router, the child router is displayed by default
+  // 1：如果只有一个子路由，当前路由直接显示子路由
   if (showingChildren.length === 1) {
     return true;
   }
 
-  // Show parent if there are no child router to display
+  // 2：如果无子路由，显示当前路由
   if (showingChildren.length === 0) {
     onlyOneChild.value = { ...parent, path: '', noShowingChildren: true };
     return true;
   }
-
   return false;
 }
 
+/**
+ * 解析路径
+ *
+ * @param routePath 路由路径
+ */
 function resolvePath(routePath: string) {
   if (isExternal(routePath)) {
     return routePath;
@@ -59,23 +73,22 @@ function resolvePath(routePath: string) {
   if (isExternal(props.basePath)) {
     return props.basePath;
   }
-  return path.resolve(props.basePath, routePath);
+  // 完整路径 = 父级路径(/level/level_3) + 路由路径
+  const fullPath = path.resolve(props.basePath, routePath);
+  return fullPath;
 }
 </script>
 <template>
   <div v-if="!item.meta || !item.meta.hidden">
+    <!-- 当前路由不包含子路由显示 -->
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
-        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-        (!item.meta || !item.meta.alwaysShow)
+        (!onlyOneChild.children || onlyOneChild.noShowingChildren)
       "
     >
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item
-          :index="resolvePath(onlyOneChild.path)"
-          :class="{ 'submenu-title-noDropdown': !isNest }"
-        >
+        <el-menu-item :index="resolvePath(onlyOneChild.path)">
           <svg-icon
             v-if="onlyOneChild.meta && onlyOneChild.meta.icon"
             :icon-class="onlyOneChild.meta.icon"
@@ -87,8 +100,8 @@ function resolvePath(routePath: string) {
       </app-link>
     </template>
 
+    <!-- 当前路由包含子路显示  -->
     <el-sub-menu v-else :index="resolvePath(item.path)" popper-append-to-body>
-      <!-- popper-append-to-body -->
       <template #title>
         <svg-icon
           v-if="item.meta && item.meta.icon"
@@ -103,7 +116,6 @@ function resolvePath(routePath: string) {
         v-for="child in item.children"
         :key="child.path"
         :item="child"
-        :is-nest="true"
         :base-path="resolvePath(child.path)"
       />
     </el-sub-menu>
