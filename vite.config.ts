@@ -58,7 +58,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ['vue', '@vueuse/core'],
         eslintrc: {
-          enabled: false, // 没有此json文件，开启生成后关闭
+          enabled: false, // 没有此json文件，开启生成后关闭避免重复生成
           filepath: './.eslintrc-auto-import.json',
           globalsPropValue: true
         },
