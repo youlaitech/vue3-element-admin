@@ -70,6 +70,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
             prefix: 'Icon'
           })
         ],
+
+        // 是否在vue模板中自动导入
         vueTemplate: true,
         dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts')
       }),
