@@ -3,8 +3,6 @@ import App from './App.vue';
 import router from '@/router';
 import { setupStore } from '@/store';
 
-import ElementPlus from 'element-plus';
-
 import '@/permission';
 
 // 本地SVG图标
@@ -14,7 +12,6 @@ import 'virtual:svg-icons-register';
 import i18n from '@/lang/index';
 
 import '@/styles/index.scss';
-import 'element-plus/theme-chalk/index.css';
 import 'element-plus/theme-chalk/dark/css-vars.css';
 
 const app = createApp(App);
@@ -30,4 +27,4 @@ app.config.globalProperties.$getDictionaries = getDictionaries;
 
 // 全局挂载
 setupStore(app);
-app.use(router).use(ElementPlus).use(i18n).mount('#app');
+app.use(router).use(i18n).mount('#app');
