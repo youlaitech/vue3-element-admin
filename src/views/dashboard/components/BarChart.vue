@@ -132,11 +132,13 @@ const options = {
 };
 
 onMounted(() => {
+  // 图表初始化
   const chart = echarts.init(
     document.getElementById(props.id) as HTMLDivElement
   );
   chart.setOption(options);
 
+  // 大小自适应
   window.addEventListener('resize', () => {
     chart.resize();
   });
