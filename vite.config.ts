@@ -58,7 +58,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ['vue', '@vueuse/core'],
         eslintrc: {
-          enabled: false, // 没有此json文件，开启生成后关闭避免重复生成
+          enabled: false, // 改为true用于生成eslint配置,生成后改回false，避免重复生成消耗
           filepath: './.eslintrc-auto-import.json',
           globalsPropValue: true
         },
@@ -73,20 +73,19 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 
         // 是否在vue模板中自动导入
         vueTemplate: true,
-        dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts')
+        dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts') // 配置文件生成位置，默认是根目录 /auto-imports.d.ts
       }),
 
       Components({
         resolvers: [
           // 自动注册图标组件
           IconsResolver({
-            // element-plus图标库，其他图标库 https://icon-sets.iconify.design/
-            enabledCollections: ['ep']
+            enabledCollections: ['ep'] //@iconify-json/ep 是 Element Plus 的图标库
           }),
           // 自动导入 Element Plus 组件
           ElementPlusResolver()
         ],
-        dts: path.resolve(pathSrc, 'types', 'components.d.ts')
+        dts: path.resolve(pathSrc, 'types', 'components.d.ts') // 配置文件生成位置，默认是根目录 /components.d.ts
       }),
 
       Icons({
