@@ -3,7 +3,6 @@ export default { name: 'Dashboard' };
 </script>
 
 <script setup lang="ts">
-// 组件引用
 import GithubCorner from '@/components/GithubCorner/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import BarChart from './components/BarChart.vue';
