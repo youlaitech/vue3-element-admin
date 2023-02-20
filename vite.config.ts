@@ -58,7 +58,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ['vue', '@vueuse/core'],
         eslintrc: {
-          enabled: false, // 改为true用于生成eslint配置,生成后改回false，避免重复生成消耗
+          enabled: false, // true用于生成eslint配置,生成后改回false，避免重复生成消耗
           filepath: './.eslintrc-auto-import.json',
           globalsPropValue: true
         },
