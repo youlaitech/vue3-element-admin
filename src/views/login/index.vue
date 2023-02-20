@@ -11,10 +11,10 @@
         <lang-select style="color: #fff" />
       </div>
 
-      <el-form-item prop="username" class="flex">
-        <span class="p-2 text-white">
+      <el-form-item prop="username">
+        <div class="p-2 text-white">
           <svg-icon icon-class="user" />
-        </span>
+        </div>
         <el-input
           class="flex-1"
           ref="username"
@@ -30,7 +30,7 @@
         content="Caps lock is On"
         placement="right"
       >
-        <el-form-item class="flex" prop="password">
+        <el-form-item prop="password">
           <span class="p-2 text-white">
             <svg-icon icon-class="password" />
           </span>
@@ -166,6 +166,7 @@ function handleLogin() {
   background: rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
+
 .el-input {
   background: transparent;
   // 子组件 scoped 无效，使用 :deep
