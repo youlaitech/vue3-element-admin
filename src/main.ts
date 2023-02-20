@@ -12,6 +12,7 @@ import 'virtual:svg-icons-register';
 import i18n from '@/lang/index';
 
 import '@/styles/index.scss';
+import 'element-plus/theme-chalk/index.css';
 import 'element-plus/theme-chalk/dark/css-vars.css';
 
 const app = createApp(App);
