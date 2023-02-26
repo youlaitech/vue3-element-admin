@@ -1,11 +1,6 @@
-// 全局SCSS变量
-$menuBg: var(--menuBg);
-$menuText: var(--menuText);
-$menuActiveText: var(--menuActiveText);
-$menuHover: var(--menuHover);
-
-$subMenuBg:var(--subMenuBg);
-$subMenuActiveText:var(--subMenuActiveText);
-$subMenuHover:var(--subMenuHover);
-
-$sideBarWidth: 210px;
+// 导出 variables.module.scss 变量提供给TypeScript使用
+:export {
+    menuBg: $menuBg;
+    menuText: $menuText;
+    menuActiveText: $menuActiveText
+}

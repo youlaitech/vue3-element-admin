@@ -1,5 +1,4 @@
 @import './sidebar.scss';
-@import './tailwind.scss';
 @import './global.scss';
 @import './dark.scss';
 
@@ -18,7 +17,7 @@
 
 html.dark{
   --menuBg:var(--el-bg-color-overlay);
-  --menuText:var(----el-menu-text-color);
+  --menuText:#fff;
   --menuActiveText:var(--el-menu-active-color);
   --menuHover:rgba(0,0,0,.2);
 

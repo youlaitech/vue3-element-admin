@@ -8,7 +8,7 @@ import { useSettingsStore } from '@/store/modules/settings';
 import { usePermissionStore } from '@/store/modules/permission';
 import { useAppStore } from '@/store/modules/app';
 import { storeToRefs } from 'pinia';
-import variables from '@/styles/ts-variables.module.scss';
+import variables from '@/styles/variables.module.scss';
 
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
