@@ -18,10 +18,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "allowSyntheticDefaultImports": true /* 允许默认导入 */,
     "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
-    "typeRoots": [
-      "./node_modules/@types/",
-      "src/types"
-    ] /* 指定多个文件夹，这些文件夹的作用类似于 './node_modules/@types'. */
+
   },
   "include": ["src/**/*.ts", "src/**/*.vue", "src/types/**/*.d.ts"],
   "exclude": ["node_modules", "dist", "**/*.js"]
