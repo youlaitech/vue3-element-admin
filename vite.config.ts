@@ -11,6 +11,8 @@ import IconsResolver from 'unplugin-icons/resolver';
 
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 
+import UnoCSS from 'unocss/vite';
+
 import path from 'path';
 const pathSrc = path.resolve(__dirname, 'src');
 
@@ -30,7 +32,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         scss: {
           javascriptEnabled: true,
           additionalData: `
-            @use "@/styles/variables.module.scss" as *;
+            @use "@/styles/variables.scss" as *;
           `
         }
       }
@@ -54,6 +56,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     plugins: [
       vue(),
+      UnoCSS({
+        /* options */
+      }),
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ['vue', '@vueuse/core'],

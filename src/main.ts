@@ -15,6 +15,8 @@ import '@/styles/index.scss';
 import 'element-plus/theme-chalk/index.css';
 import 'element-plus/theme-chalk/dark/css-vars.css';
 
+import 'uno.css';
+
 const app = createApp(App);
 // 自定义指令
 import * as directive from '@/directive';
