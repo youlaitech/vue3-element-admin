@@ -24,36 +24,34 @@ const props = defineProps({
   }
 });
 
-const onlyOneChild = ref(); // 临时变量，记录仅显示的一个子路由的信息
+const onlyOneChild = ref(); // 临时变量，唯一子路由
 
 /**
- * 判断当前路由是否只有一个子路由需要显示
+ * 判断当前路由是否只有一个子路由
  *
- * 1：如果只有一个子路由，当前路由直接显示子路由
- * 2：如果无子路由，显示当前路由
+ * 1：如果只有一个子路由： 返回 true
+ * 2：如果无子路由 ：返回 true
  *
- * @param children  子路由数组
+ * @param children 子路由数组
  * @param parent 当前路由
  */
 function hasOneShowingChild(children = [], parent: any) {
   // 需要显示的子路由数组
   const showingChildren = children.filter((item: any) => {
     if (item.meta?.hidden) {
-      // 过滤不显示的子路由
-      return false;
+      return false; // 过滤不显示的子路由
     } else {
-      // 仅有一个子路由生效，其他情况设置无效
-      onlyOneChild.value = item;
+      onlyOneChild.value = item; // 唯一子路由赋值（多个子路由情况 onlyOneChild 变量是用不上的）
       return true;
     }
   });
 
-  // 1：如果只有一个子路由，当前路由直接显示子路由
+  // 1：如果只有一个子路由, 返回 true
   if (showingChildren.length === 1) {
     return true;
   }
 
-  // 2：如果无子路由，显示当前路由
+  // 2：如果无子路由, 复制当前路由信息作为其子路由，满足只拥有一个子路由的条件，所以返回 true
   if (showingChildren.length === 0) {
     onlyOneChild.value = { ...parent, path: '', noShowingChildren: true };
     return true;
@@ -74,13 +72,13 @@ function resolvePath(routePath: string) {
     return props.basePath;
   }
   // 完整路径 = 父级路径(/level/level_3) + 路由路径
-  const fullPath = path.resolve(props.basePath, routePath);
+  const fullPath = path.resolve(props.basePath, routePath); // 相对路径 → 绝对路径
   return fullPath;
 }
 </script>
 <template>
   <div v-if="!item.meta || !item.meta.hidden">
-    <!-- 当前路由不包含子路由显示 -->
+    <!-- 只包含一个子路由节点的路由，显示其【唯一子路由】 -->
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
@@ -100,7 +98,7 @@ function resolvePath(routePath: string) {
       </app-link>
     </template>
 
-    <!-- 当前路由包含子路显示  -->
+    <!-- 包含多个子路由  -->
     <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
       <template #title>
         <svg-icon
