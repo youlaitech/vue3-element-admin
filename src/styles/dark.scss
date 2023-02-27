@@ -1,4 +1,14 @@
-html.dark {
+html.dark{
+  --menuBg:var(--el-bg-color-overlay);
+  --menuText:#fff;
+  --menuActiveText:var(--el-menu-active-color);
+  --menuHover:rgba(0,0,0,.2);
+
+  --subMenuBg: var(--el-menu-bg-color);
+  --subMenuActiveText:var(--el-menu-active-color);
+  --subMenuHover: rgba(0,0,0,.2);
+
+
   .navbar {
     background-color: var(--el-bg-color);
     color: var(--el-text-color-regular);

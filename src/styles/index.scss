@@ -1,27 +1,20 @@
 @import './sidebar.scss';
-@import './global.scss';
+@import './reset.scss';
 @import './dark.scss';
 
-// 自定义全局CSS变量
-:root{
-  --menuBg:#304156;
-  --menuText:#bfcbd9;
-  --menuActiveText:#409eff;
-  --menuHover:#263445;
 
-  --subMenuBg: #1f2d3d;
-  --subMenuActiveText: #f4f4f5;
-  --subMenuHover: #001528;
 
+
+// main-container global css
+.app-container {
+    padding: 20px;
 }
 
-html.dark{
-  --menuBg:var(--el-bg-color-overlay);
-  --menuText:#fff;
-  --menuActiveText:var(--el-menu-active-color);
-  --menuHover:rgba(0,0,0,.2);
-
-  --subMenuBg: var(--el-menu-bg-color);
-  --subMenuActiveText:var(--el-menu-active-color);
-  --subMenuHover: rgba(0,0,0,.2);
+.search {
+    padding: 18px 0 0 10px;
+    margin-bottom: 10px;
+    border-radius: var(--el-card-border-radius);
+    border: 1px solid var(--el-border-color-light);
+    box-shadow: var(--el-box-shadow-light);
+    background-color: var(--el-bg-color-overlay);
 }
