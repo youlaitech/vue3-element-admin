@@ -312,9 +312,9 @@ onMounted(() => {
       <!-- 分页 -->
       <pagination
         v-if="total > 0"
-        :total="total"
-        :page="queryParams.pageNum"
-        :limit="queryParams.pageSize"
+        v-model:total="total"
+        v-model:page="queryParams.pageNum"
+        v-model:limit="queryParams.pageSize"
         @pagination="handleQuery"
       />
     </el-card>
