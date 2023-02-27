@@ -56,7 +56,7 @@ function handleOutsideClick() {
 
 <template>
   <div :class="classObj" class="app-wrapper">
-    <!-- 手机设备 && 侧边栏 → 显示遮罩层 -->
+    <!-- 手机设备侧边栏打开遮罩层 -->
     <div
       v-if="classObj.mobile && classObj.openSidebar"
       class="drawer-bg"
