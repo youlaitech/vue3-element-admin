@@ -40,12 +40,12 @@ const greetings = computed(() => {
     <el-row class="mb-8">
       <el-card class="w-full">
         <div class="flex justify-between flex-wrap">
-          <div>
+          <div class="flex items-center">
             <img
               class="user-avatar"
               :src="userStore.avatar + '?imageView2/1/w/80/h/80'"
             />
-            <span class="ml-[5px] text-[14px]">
+            <span class="ml-[10px] text-[16px]">
               {{ userStore.nickname }}
             </span>
           </div>
@@ -54,7 +54,7 @@ const greetings = computed(() => {
             {{ greetings }}
           </div>
 
-          <div class="space-x-2 pt-[5px]">
+          <div class="space-x-2 flex items-center">
             <el-link
               target="_blank"
               type="danger"
@@ -185,7 +185,7 @@ const greetings = computed(() => {
   position: relative;
   .user-avatar {
     height: 40px;
-    widows: 40px;
+    width: 40px;
     border-radius: 50%;
   }
 
