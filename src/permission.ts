@@ -1,5 +1,4 @@
 import router from '@/router';
-import { getToken } from '@/utils/auth';
 import { useUserStoreHook } from '@/store/modules/user';
 import { usePermissionStoreHook } from '@/store/modules/permission';
 
@@ -14,11 +13,10 @@ const whiteList = ['/login'];
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
-
-  const hasToken = getToken();
+  const hasToken = localStorage.getItem('accessToken');
   if (hasToken) {
     if (to.path === '/login') {
-      //
+      // 登录成功，跳转到首页
       next({ path: '/' });
     } else {
       const userStore = useUserStoreHook();

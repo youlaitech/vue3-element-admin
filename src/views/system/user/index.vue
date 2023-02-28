@@ -46,9 +46,9 @@ import {
 } from '@element-plus/icons-vue';
 import {
   UserForm,
-  UserImportData,
+  UserImportVO,
   UserQuery,
-  UserType
+  UserPageVO
 } from '@/api/user/types';
 
 const deptTreeRef = ref(ElTree); // 部门树
@@ -65,7 +65,7 @@ const state = reactive({
   ids: [] as number[],
   // 总条数
   total: 0,
-  userList: [] as UserType[],
+  userList: [] as UserPageVO[],
   dialog: {
     visible: false
   } as DialogType,
@@ -110,7 +110,7 @@ const state = reactive({
     title: '用户导入',
     visible: false
   } as DialogType,
-  importFormData: {} as UserImportData,
+  importFormData: {} as UserImportVO,
   excelFile: undefined as any,
   excelFilelist: [] as File[]
 });
@@ -396,7 +396,7 @@ function handleExcelChange(file: UploadFile) {
 /**
  * Excel文件上传
  */
-function submitImportForm() {
+function uploadUser() {
   importFormRef.value.validate((valid: any) => {
     if (valid) {
       if (!state.excelFile) {
@@ -805,7 +805,7 @@ onMounted(() => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="submitImportForm">确 定</el-button>
+          <el-button type="primary" @click="uploadUser">确 定</el-button>
           <el-button @click="closeImportDialog">取 消</el-button>
         </div>
       </template>

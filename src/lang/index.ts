@@ -1,6 +1,5 @@
 // 自定义国际化配置
 import { createI18n } from 'vue-i18n';
-import { localStorage } from '@/utils/localStorage';
 
 // 本地语言包
 import enLocale from './en';
@@ -22,7 +21,7 @@ const messages = {
  */
 export const getLanguage = () => {
   // 本地缓存获取
-  let language = localStorage.get('language');
+  let language = localStorage.getItem('language');
   if (language) {
     return language;
   }

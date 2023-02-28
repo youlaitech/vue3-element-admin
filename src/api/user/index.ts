@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
-import { UserForm, UserInfo, UserPageResult, UserQuery } from './types';
+import { UserForm, UserInfo, UserPageVO, UserQuery } from './types';
 
 /**
  * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
@@ -19,7 +19,7 @@ export function getUserInfo(): AxiosPromise<UserInfo> {
  */
 export function listUserPages(
   queryParams: UserQuery
-): AxiosPromise<UserPageResult> {
+): AxiosPromise<PageResult<UserPageVO[]>> {
   return request({
     url: '/api/v1/users/pages',
     method: 'get',

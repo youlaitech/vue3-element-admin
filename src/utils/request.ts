@@ -1,6 +1,4 @@
 import axios, { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { getToken } from '@/utils/auth';
 import { useUserStoreHook } from '@/store/modules/user';
 
 // 创建 axios 实例
@@ -20,7 +18,7 @@ service.interceptors.request.use(
     }
     const user = useUserStoreHook();
     if (user.token) {
-      config.headers.Authorization = getToken();
+      config.headers.Authorization = localStorage.getItem('accessToken');
     }
     return config;
   },

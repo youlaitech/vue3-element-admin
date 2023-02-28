@@ -1,38 +1,21 @@
-import {
-  getSidebarStatus,
-  setSidebarStatus,
-  getSize,
-  setSize,
-  setLanguage
-} from '@/utils/localStorage';
 import { defineStore } from 'pinia';
-import { getLanguage } from '@/lang/index';
-import { computed, reactive, ref } from 'vue';
 import { useStorage } from '@vueuse/core';
+import defaultSettings from '@/settings';
 
 // Element Plus 语言包
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import en from 'element-plus/es/locale/lang/en';
 
-export enum DeviceType {
-  mobile,
-  desktop
-}
-
-export enum SizeType {
-  default,
-  large,
-  small
-}
-
 // setup
 export const useAppStore = defineStore('app', () => {
   // state
-  const device = useStorage<string>('device', 'desktop');
-  const size = ref(getSize() || 'default');
-  const language = ref(getLanguage());
+  const device = useStorage('device', 'desktop');
+  const size = useStorage('size', defaultSettings.size);
+  const language = useStorage('language', defaultSettings.language);
+
+  const sidebarStatus = useStorage('sidebarStatus', 'closed');
   const sidebar = reactive({
-    opened: getSidebarStatus() !== 'closed',
+    opened: sidebarStatus.value !== 'closed',
     withoutAnimation: false
   });
 
@@ -49,22 +32,22 @@ export const useAppStore = defineStore('app', () => {
     sidebar.opened = !sidebar.opened;
     sidebar.withoutAnimation = withoutAnimation;
     if (sidebar.opened) {
-      setSidebarStatus('opened');
+      sidebarStatus.value = 'opened';
     } else {
-      setSidebarStatus('closed');
+      sidebarStatus.value = 'closed';
     }
   }
 
   function closeSideBar(withoutAnimation: boolean) {
     sidebar.opened = false;
     sidebar.withoutAnimation = withoutAnimation;
-    setSidebarStatus('closed');
+    sidebarStatus.value = 'closed';
   }
 
   function openSideBar(withoutAnimation: boolean) {
     sidebar.opened = true;
     sidebar.withoutAnimation = withoutAnimation;
-    setSidebarStatus('opened');
+    sidebarStatus.value = 'opened';
   }
 
   function toggleDevice(val: string) {
@@ -73,12 +56,10 @@ export const useAppStore = defineStore('app', () => {
 
   function changeSize(val: string) {
     size.value = val;
-    setSize(val);
   }
 
   function changeLanguage(val: string) {
     language.value = val;
-    setLanguage(val);
   }
 
   return {

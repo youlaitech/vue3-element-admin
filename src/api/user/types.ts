@@ -9,7 +9,7 @@ export interface UserInfo {
 }
 
 /**
- * 用户查询参数
+ * 用户查询对象类型
  */
 export interface UserQuery extends PageQuery {
   keywords: string;
@@ -18,48 +18,102 @@ export interface UserQuery extends PageQuery {
 }
 
 /**
- * 用户分页列表项声明
+ * 用户分页对象
  */
-export interface UserType {
-  id: string;
-  username: string;
-  nickname: string;
-  mobile: string;
-  gender: number;
-  avatar: string;
-  email: string;
-  status: number;
-  deptName: string;
-  roleNames: string;
-  createTime: string;
+export interface UserPageVO {
+  /**
+   * 用户头像地址
+   */
+  avatar?: string;
+  /**
+   * 创建时间
+   */
+  createTime?: Date;
+  /**
+   * 部门名称
+   */
+  deptName?: string;
+  /**
+   * 用户邮箱
+   */
+  email?: string;
+  /**
+   * 性别
+   */
+  genderLabel?: string;
+  /**
+   * 用户ID
+   */
+  id?: number;
+  /**
+   * 手机号
+   */
+  mobile?: string;
+  /**
+   * 用户昵称
+   */
+  nickname?: string;
+  /**
+   * 角色名称，多个使用英文逗号(,)分割
+   */
+  roleNames?: string;
+  /**
+   * 用户状态(1:启用;0:禁用)
+   */
+  status?: number;
+  /**
+   * 用户名
+   */
+  username?: string;
 }
 
 /**
- * 用户分页项类型声明
- */
-export type UserPageResult = PageResult<UserType[]>;
-
-/**
- * 用户表单类型声明
+ * 用户表单类型
  */
 export interface UserForm {
-  id: number | undefined;
-  deptId: number;
-  username: string;
-  nickname: string;
-  password: string;
-  mobile: string;
-  email: string;
-  gender: number;
-  status: number;
-  remark: string;
-  roleIds: number[];
+  /**
+   * 用户头像
+   */
+  avatar?: string;
+  /**
+   * 部门ID
+   */
+  deptId?: number;
+  /**
+   * 邮箱
+   */
+  email?: string;
+  /**
+   * 性别
+   */
+  gender?: number;
+  /**
+   * 用户ID
+   */
+  id?: number;
+  mobile?: string;
+  /**
+   * 昵称
+   */
+  nickname?: string;
+  /**
+   * 角色ID集合
+   */
+  roleIds?: number[];
+  /**
+   * 用户状态(1:正常;0:禁用)
+   */
+  status?: number;
+  /**
+   * 用户名
+   */
+  username?: string;
 }
 
 /**
- * 用户导入表单类型声明
+ * 用户导入视图对象类型
  */
-export interface UserImportData {
+export interface UserImportVO {
   deptId: number;
   roleIds: number[];
 }

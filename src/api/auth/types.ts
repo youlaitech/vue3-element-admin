@@ -1,23 +1,15 @@
 /**
- * 登录数据类型
+ * 登录请求
  */
-export interface ILoginData  {
+export interface LoginData {
   username: string;
   password: string;
-  /**
-   * 验证码Code
-   */
-  //verifyCode: string;
-  /**
-   * 验证码Code服务端缓存key(UUID)
-   */
-  // verifyCodeKey: string;
 }
 
 /**
- * Token响应类型
+ * 登录详情
  */
-export interface TokenResult {
+export interface LoginResult {
   accessToken: string;
   refreshToken: string;
   expires: number;
