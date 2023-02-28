@@ -83,14 +83,14 @@ import { useUserStore } from '@/store/modules/user';
 
 // API依赖
 import { LocationQuery, LocationQueryValue, useRoute } from 'vue-router';
-import { ILoginData } from '@/api/auth/types';
+import { LoginData } from '@/api/auth/types';
 
 const userStore = useUserStore();
 const route = useRoute();
 
 const loginFormRef = ref(ElForm);
 
-const loginData = ref<ILoginData>({
+const loginData = ref<LoginData>({
   username: 'admin',
   password: '123456'
 });
