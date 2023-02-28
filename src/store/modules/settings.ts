@@ -1,32 +1,14 @@
 import { defineStore } from 'pinia';
-import defaultSettings from '../../settings';
-import { ref } from 'vue';
+import defaultSettings from '@/settings';
 import { useStorage } from '@vueuse/core';
-
-/**
- * 主题类型
- */
-export enum ThemeType {
-  light,
-  dark
-}
-
-/**
- * 布局类型
- */
-export enum LayoutType {
-  left,
-  top,
-  mix
-}
 
 export const useSettingsStore = defineStore('setting', () => {
   // state
-  const showSettings = ref<boolean>(defaultSettings.showSettings);
   const tagsView = useStorage<boolean>('tagsView', defaultSettings.tagsView);
+
+  const showSettings = ref<boolean>(defaultSettings.showSettings);
   const fixedHeader = ref<boolean>(defaultSettings.fixedHeader);
   const sidebarLogo = ref<boolean>(defaultSettings.sidebarLogo);
-  const theme = useStorage('vueuse-color-scheme', defaultSettings.theme);
 
   const layout = useStorage<string>('layout', defaultSettings.layout);
 

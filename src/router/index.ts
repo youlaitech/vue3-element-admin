@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import { usePermissionStoreHook } from '@/store/modules/permission';
 
 export const Layout = () => import('@/layout/index.vue');
 

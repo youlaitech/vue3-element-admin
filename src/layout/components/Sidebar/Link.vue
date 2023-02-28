@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { isExternal } from '@/utils/validate';
+import { isExternal } from '@/utils/index';
 import { useRouter } from 'vue-router';
 
 import { useAppStore } from '@/store/modules/app';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import path from 'path-browserify';
-import { isExternal } from '@/utils/validate';
+import { isExternal } from '@/utils/index';
 import AppLink from './Link.vue';
 
 import { translateRouteTitleI18n } from '@/utils/i18n';

@@ -1,23 +1,22 @@
 import { defineStore } from 'pinia';
 
-import { getToken, setToken, removeToken } from '@/utils/auth';
 import { loginApi, logoutApi } from '@/api/auth';
 import { getUserInfo } from '@/api/user';
 import { resetRouter } from '@/router';
 import { store } from '@/store';
-import { ILoginData } from '@/api/auth/types';
-import { ref } from 'vue';
+
+import { LoginData } from '@/api/auth/types';
 import { UserInfo } from '@/api/user/types';
+
+import { useStorage } from '@vueuse/core';
 
 export const useUserStore = defineStore('user', () => {
   // state
-  const token = ref<string>(getToken() || '');
+  const token = useStorage('accessToken', '');
   const nickname = ref<string>('');
   const avatar = ref<string>('');
   const roles = ref<Array<string>>([]); // 用户角色编码集合 → 判断路由权限
   const perms = ref<Array<string>>([]); // 用户权限编码集合 → 判断按钮权限
-
-  // actions
 
   /**
    * 登录
@@ -25,13 +24,12 @@ export const useUserStore = defineStore('user', () => {
    * @param loginData
    * @returns
    */
-  function login(loginData: ILoginData) {
+  function login(loginData: LoginData) {
     return new Promise<void>((resolve, reject) => {
       loginApi(loginData)
         .then(response => {
           const { accessToken } = response.data;
           token.value = accessToken;
-          setToken(accessToken);
           resolve();
         })
         .catch(error => {
@@ -80,7 +78,6 @@ export const useUserStore = defineStore('user', () => {
 
   // 重置
   function resetToken() {
-    removeToken();
     token.value = '';
     nickname.value = '';
     avatar.value = '';
