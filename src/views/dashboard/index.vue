@@ -3,14 +3,14 @@ export default { name: 'Dashboard' };
 </script>
 
 <script setup lang="ts">
+import { useUserStore } from '@/store/modules/user';
+import { useTransition, TransitionPresets } from '@vueuse/core';
+
 import GithubCorner from '@/components/GithubCorner/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import BarChart from './components/BarChart.vue';
 import PieChart from './components/PieChart.vue';
 import RadarChart from './components/RadarChart.vue';
-
-import CountUp from 'vue-countup-v3';
-import { useUserStore } from '@/store/modules/user';
 
 const userStore = useUserStore();
 
@@ -29,6 +29,40 @@ const greetings = computed(() => {
     return '偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！';
   }
 });
+
+const duration = 5000;
+
+// 收入金额
+const amount = ref(0);
+const amountOutput = useTransition(amount, {
+  duration: duration,
+  transition: TransitionPresets.easeOutExpo
+});
+amount.value = 2000;
+
+// 访问数
+const visitCount = ref(0);
+const visitCountOutput = useTransition(visitCount, {
+  duration: duration,
+  transition: TransitionPresets.easeOutExpo
+});
+visitCount.value = 2000;
+
+//消息数
+const messageCount = ref(0);
+const messageCountOutput = useTransition(messageCount, {
+  duration: duration,
+  transition: TransitionPresets.easeOutExpo
+});
+messageCount.value = 2000;
+
+// 订单数
+const orderCount = ref(0);
+const orderCountOutput = useTransition(orderCount, {
+  duration: duration,
+  transition: TransitionPresets.easeOutExpo
+});
+orderCount.value = 2000;
 </script>
 
 <template>
@@ -92,7 +126,7 @@ const greetings = computed(() => {
           <div class="flex flex-col space-y-3">
             <div class="text-[var(--el-text-color-secondary)]">访问数</div>
             <div class="text-lg">
-              <count-up :end-val="2000"></count-up>
+              {{ Math.round(visitCountOutput) }}
             </div>
           </div>
         </div>
@@ -109,7 +143,7 @@ const greetings = computed(() => {
           <div class="flex flex-col space-y-3">
             <div class="text-[var(--el-text-color-secondary)]">消息数</div>
             <div class="text-lg">
-              <count-up :end-val="2000"></count-up>
+              {{ Math.round(messageCountOutput) }}
             </div>
           </div>
         </div>
@@ -125,7 +159,7 @@ const greetings = computed(() => {
           <div class="flex flex-col space-y-3">
             <div class="text-[var(--el-text-color-secondary)]">收入金额</div>
             <div class="text-lg">
-              <count-up :end-val="2000"></count-up>
+              {{ Math.round(amountOutput) }}
             </div>
           </div>
         </div>
@@ -140,7 +174,7 @@ const greetings = computed(() => {
           <div class="flex flex-col space-y-3">
             <div class="text-[var(--el-text-color-secondary)]">订单数</div>
             <div class="text-lg">
-              <count-up :end-val="2000"></count-up>
+              {{ Math.round(orderCountOutput) }}
             </div>
           </div>
         </div>
