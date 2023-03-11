@@ -52,7 +52,7 @@
 |  | Gitee | Github |
 | --- | --- | --- |
 | vue3-element-admin | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |
-| 后端 | [youlai_boot](https://gitee.com/youlaiorg/youlai-boot) | - |
+| 后端 | [youlai_boot](https://gitee.com/youlaiorg/youlai-boot) | [https://github.com/hxrui/youlai-boot.git](https://github.com/hxrui/youlai-boot.git) |
 
 ## 环境要求
 
@@ -136,4 +136,4 @@ pnpm run dev
 
 | 加微信备注 `有来` 进微信群 | 微信公众号 |
 | --- | --- |
-| <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg" class="no-zoom" style="width:120px;margin: 10px;"  alt="有来商城微信交流群"> | <img src="https://www.youlai.tech/files/blog/gongzhonghao.jpg" class="no-zoom" style="width:120px;margin: 10px;" alt="有来技术公众号"> |
+| <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg" class="no-zoom" style="width:120px;height: 120px;"  alt="有来商城微信交流群"> | <img src="https://www.youlai.tech/files/blog/gongzhonghao.jpg" class="no-zoom" style="width:120px;height: 120px;" alt="有来技术公众号"> |
