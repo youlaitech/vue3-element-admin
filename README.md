@@ -118,15 +118,22 @@ pnpm run dev
 
 ## 接口文档
 
-> 默认使用线上接口，如果你了解一点 Java 后端 SpringBoot，可轻松搭建本地接口环境：
+**线上接口**
 
-1. 访问后端项目仓库地址：https://gitee.com/youlaiorg/youlai-boot.git
+- 接口地址：[vapi.youlai.tech](http://vapi.youlai.tech)
+- 接口文档：[vue3-element-admin 在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5/api-65851240)
 
-2. 根据项目说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成数据库的创建和后端工程的启动；
-3. 进入 [vite.config.ts](vite.config.ts) 文件修改代理线上接口地址 http://vapi.youlai.tech 为本地接口地址 http://localhost:8989 即可。
+**本地接口**
 
-## 联系信息
+> 默认使用线上接口，你可以通过以下步骤完成本地接口环境搭建：
 
-| 备注`有来`进微信群 | 微信公众号 |
+1.  获取基于 `Java 、SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码 ;
+2.  根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动;
+
+3.  替换前端项目 [vite.config.ts](vite.config.ts) 的线上接口地址 [vapi.youlai.tech](vapi.youlai.tech) 为本地的 [localhost:8989](localhost:8989) 即可。
+
+## 联系我们
+
+| 加微信备注 `有来` 进微信群 | 微信公众号 |
 | --- | --- |
 | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg" class="no-zoom" style="width:120px;margin: 10px;"  alt="有来商城微信交流群"> | <img src="https://www.youlai.tech/files/blog/gongzhonghao.jpg" class="no-zoom" style="width:120px;margin: 10px;" alt="有来技术公众号"> |
