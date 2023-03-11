@@ -1,31 +1,31 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 import {
-  DictQuery,
-  DictPageResult,
+  DictTypeQuery,
+  DictTypePageResult,
   DictTypeForm,
-  DictItemQuery,
-  DictItemPageResult,
-  DictItemForm
+  DictQuery,
+  DictForm,
+  DictPageResult
 } from './types';
 
 /**
- * 获取字典类型分页列表
+ * 字典类型分页列表
  *
  * @param queryParams
  */
-export function listDictTypePages(
-  queryParams: DictQuery
-): AxiosPromise<DictPageResult> {
+export function getDictTypePage(
+  queryParams: DictTypeQuery
+): AxiosPromise<DictTypePageResult> {
   return request({
-    url: '/api/v1/dict/types/pages',
+    url: '/api/v1/dict/types/page',
     method: 'get',
     params: queryParams
   });
 }
 
 /**
- * 获取字典类型表单数据
+ * 字典类型表单数据
  *
  * @param id
  */
@@ -78,7 +78,7 @@ export function deleteDictTypes(ids: string) {
  *
  * @param typeCode 字典类型编码
  */
-export function getDictionaries(typeCode: string): AxiosPromise<OptionType[]> {
+export function getDictOptions(typeCode: string): AxiosPromise<OptionType[]> {
   return request({
     url: '/api/v1/dict/types/' + typeCode + '/items',
     method: 'get'
@@ -86,36 +86,36 @@ export function getDictionaries(typeCode: string): AxiosPromise<OptionType[]> {
 }
 
 /**
- * 获取字典项分页列表
+ * 字典分页列表
  */
-export function listDictItemPages(
-  queryParams: DictItemQuery
-): AxiosPromise<DictItemPageResult> {
+export function getDictPage(
+  queryParams: DictQuery
+): AxiosPromise<DictPageResult> {
   return request({
-    url: '/api/v1/dict/items/pages',
+    url: '/api/v1/dict/page',
     method: 'get',
     params: queryParams
   });
 }
 
 /**
- * 获取字典数据项表单数据
+ * 获取字典表单数据
  *
  * @param id
  */
-export function getDictItemData(id: number): AxiosPromise<DictItemForm> {
+export function getDictFormData(id: number): AxiosPromise<DictForm> {
   return request({
-    url: '/api/v1/dict/items/' + id + '/form',
+    url: '/api/v1/dict/' + id + '/form',
     method: 'get'
   });
 }
 
 /**
- * 新增字典项
+ * 新增字典
  *
  * @param data
  */
-export function saveDictItem(data: DictItemForm) {
+export function addDict(data: DictForm) {
   return request({
     url: '/api/v1/dict/items',
     method: 'post',
@@ -129,22 +129,22 @@ export function saveDictItem(data: DictItemForm) {
  * @param id
  * @param data
  */
-export function updateDictItem(id: number, data: DictItemForm) {
+export function updateDict(id: number, data: DictForm) {
   return request({
-    url: '/api/v1/dict/items/' + id,
+    url: '/api/v1/dict/' + id,
     method: 'put',
     data: data
   });
 }
 
 /**
- * 批量删除字典数据项
+ * 删除字典
  *
  * @param ids 字典项ID，多个以英文逗号(,)分割
  */
-export function deleteDictItems(ids: string) {
+export function deleteDict(ids: string) {
   return request({
-    url: '/api/v1/dict/items/' + ids,
+    url: '/api/v1/dict/' + ids,
     method: 'delete'
   });
 }

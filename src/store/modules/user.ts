@@ -13,8 +13,8 @@ import { useStorage } from '@vueuse/core';
 export const useUserStore = defineStore('user', () => {
   // state
   const token = useStorage('accessToken', '');
-  const nickname = ref<string>('');
-  const avatar = ref<string>('');
+  const nickname = ref('');
+  const avatar = ref('');
   const roles = ref<Array<string>>([]); // 用户角色编码集合 → 判断路由权限
   const perms = ref<Array<string>>([]); // 用户权限编码集合 → 判断按钮权限
 
@@ -28,8 +28,8 @@ export const useUserStore = defineStore('user', () => {
     return new Promise<void>((resolve, reject) => {
       loginApi(loginData)
         .then(response => {
-          const { accessToken } = response.data;
-          token.value = accessToken;
+          const { tokenType, accessToken } = response.data;
+          token.value = tokenType + ' ' + accessToken;
           resolve();
         })
         .catch(error => {

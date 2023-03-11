@@ -7,11 +7,11 @@ import { RoleQuery, RolePageResult, RoleForm } from './types';
  *
  * @param queryParams
  */
-export function listRolePages(
+export function getRolePage(
   queryParams?: RoleQuery
 ): AxiosPromise<RolePageResult> {
   return request({
-    url: '/api/v1/roles/pages',
+    url: '/api/v1/roles/page',
     method: 'get',
     params: queryParams
   });
@@ -33,11 +33,11 @@ export function listRoleOptions(
 }
 
 /**
- * 获取角色拥有的资源ID集合
+ * 获取角色的菜单ID集合
  *
  * @param queryParams
  */
-export function getRoleMenuIds(roleId: string): AxiosPromise<number[]> {
+export function getRoleMenuIds(roleId: number): AxiosPromise<number[]> {
   return request({
     url: '/api/v1/roles/' + roleId + '/menuIds',
     method: 'get'
@@ -45,12 +45,12 @@ export function getRoleMenuIds(roleId: string): AxiosPromise<number[]> {
 }
 
 /**
- * 修改角色资源权限
+ * 分配菜单权限给角色
  *
  * @param queryParams
  */
 export function updateRoleMenus(
-  roleId: string,
+  roleId: number,
   data: number[]
 ): AxiosPromise<any> {
   return request({
@@ -65,9 +65,9 @@ export function updateRoleMenus(
  *
  * @param id
  */
-export function getRoleDetail(id: number): AxiosPromise<RoleForm> {
+export function getRoleForm(id: number): AxiosPromise<RoleForm> {
   return request({
-    url: '/api/v1/roles/' + id,
+    url: '/api/v1/roles/' + id + '/form',
     method: 'get'
   });
 }

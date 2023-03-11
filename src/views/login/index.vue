@@ -72,8 +72,6 @@
 </template>
 
 <script setup lang="ts">
-// 组件依赖
-import { ElForm, ElInput } from 'element-plus';
 import router from '@/router';
 import LangSelect from '@/components/LangSelect/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
