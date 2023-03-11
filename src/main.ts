@@ -12,7 +12,6 @@ import 'virtual:svg-icons-register';
 import i18n from '@/lang/index';
 
 import '@/styles/index.scss';
-import 'element-plus/theme-chalk/index.css';
 import 'element-plus/theme-chalk/dark/css-vars.css';
 
 import 'uno.css';
@@ -23,10 +22,6 @@ import * as directive from '@/directive';
 Object.keys(directive).forEach(key => {
   app.directive(key, (directive as { [key: string]: Directive })[key]);
 });
-
-// 全局方法
-import { getDictionaries } from '@/api/dict';
-app.config.globalProperties.$getDictionaries = getDictionaries;
 
 // 全局挂载
 setupStore(app);
