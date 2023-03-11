@@ -24,8 +24,6 @@
 
 <script setup lang="ts">
 import {
-  ElMessage,
-  ElUpload,
   UploadRawFile,
   UploadRequestOptions,
   UploadUserFile,
