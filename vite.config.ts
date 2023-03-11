@@ -47,7 +47,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           // 线上API地址
           target: 'http://vapi.youlai.tech',
           // 本地API地址
-          //target: 'http://localhost:8989',
+          // target: 'http://localhost:8989',
           changeOrigin: true,
           rewrite: path =>
             path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
@@ -63,7 +63,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ['vue', '@vueuse/core'],
         eslintrc: {
-          enabled: true, // true用于生成eslint配置,生成后改回false，避免重复生成消耗
+          enabled: false, // true用于生成eslint配置,生成后改回false，避免重复生成消耗
           filepath: './.eslintrc-auto-import.json',
           globalsPropValue: true
         },
