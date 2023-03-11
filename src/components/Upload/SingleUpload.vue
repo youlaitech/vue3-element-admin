@@ -16,12 +16,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
-import {
-  ElMessage,
-  ElUpload,
-  UploadRawFile,
-  UploadRequestOptions
-} from 'element-plus';
+import { UploadRawFile, UploadRequestOptions } from 'element-plus';
 import { uploadFileApi } from '@/api/file';
 
 const emit = defineEmits(['update:modelValue']);
