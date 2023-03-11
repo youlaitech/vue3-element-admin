@@ -11,12 +11,12 @@
     </a>
 </p>
 <p align="center">
-<a target="_blank" href="http://vue3.youlai.tech">在线预览</a> |  <a target="_blank" href="https://www.youlai.tech/pages/5d571c/">官方文档</a> 
+<a target="_blank" href="http://vue3.youlai.tech">在线预览</a> |  <a target="_blank" href="https://www.youlai.tech/page/5d571c/">官方文档</a> 
 </p>
 
 ## 项目介绍
 
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本后台管理前端解决方案；使用前端主流技术栈 Vue3 + Vite3 + TypeScript + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等；基于此模板开发了有来商城管理系统，也是有来开源组织的又一项开源力作。
+[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本后台管理前端解决方案；技术栈 Vue3、Vite4、TypeScript 、Vue Router 、Pinia、Volar 、Element Plus、UnoCSS 等；功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等；基于此模板开发了有来商城管理系统，也是有来开源组织的又一项开源力作。
 
 ## 项目优势
 
@@ -45,7 +45,7 @@
 | ![控制台](https://s2.loli.net/2022/12/09/34iklzLAnsIuXDh.png) | ![国际化](https://s2.loli.net/2022/04/07/lt6u2jMefpTJvkh.gif) |
 | --- | --- |
 | ![用户管理](https://s2.loli.net/2022/12/09/gjJibCaVP3Ysnoh.png) | ![角色管理](https://s2.loli.net/2022/12/09/xHoNctJj2hUfMO8.png) |
-| ![菜单管理](https://s2.loli.net/2022/12/09/dah34MRfqiB2cez.png) |![富文本编辑器](https://s2.loli.net/2022/12/09/QzCDIwmqydtLPYr.png) |
+| ![菜单管理](https://s2.loli.net/2022/12/09/dah34MRfqiB2cez.png) | ![富文本编辑器](https://s2.loli.net/2022/12/09/QzCDIwmqydtLPYr.png) |
 
 ## 项目地址
 
@@ -56,7 +56,7 @@
 
 ## 环境要求
 
-- Node 环境 
+- Node 环境
 
   版本：16+
 
@@ -66,22 +66,24 @@
 
 - 必装插件
 
-  - Vue Language Features (Volar) 
+  - Vue Language Features (Volar)
   - TypeScript Vue Plugin (Volar)
 
 ## 项目启动
 
 1. 安装依赖
 
-    ```bash
-    npm install pnpm -g
-    pnpm install
-    ```
+   ```bash
+   npm install pnpm -g
+   pnpm install
+   ```
+
 2. 启动运行
 
-    ```bash
-    pnpm run dev
-    ```
+   ```bash
+   pnpm run dev
+   ```
+
 3. 访问测试
 
    浏览器访问： [http://localhost:3000](http://localhost:3000)
@@ -119,15 +121,15 @@
   }
 
   ```
+
 ## 后端接口
 
-> 默认使用线上接口，如果你了解一点Java后端SpringBoot，可轻松搭建本地接口环境：
+> 默认使用线上接口，如果你了解一点 Java 后端 SpringBoot，可轻松搭建本地接口环境：
 
 1. 访问后端项目仓库地址：https://gitee.com/youlaiorg/youlai-boot.git
 
 2. 根据项目说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成数据库的创建和后端工程的启动；
 3. 进入 [vite.config.ts](vite.config.ts) 文件修改代理线上接口地址 http://vapi.youlai.tech 为本地接口地址 http://localhost:8989 即可。
-
 
 ## 联系信息
 
