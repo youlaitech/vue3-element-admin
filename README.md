@@ -52,7 +52,7 @@
 |  | Gitee | Github |
 | --- | --- | --- |
 | vue3-element-admin | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |
-| 后端工程(非必要) | [youlai_boot](https://gitee.com/youlaiorg/youlai-boot) | - |
+| 后端 | [youlai_boot](https://gitee.com/youlaiorg/youlai-boot) | - |
 
 ## 环境要求
 
@@ -71,22 +71,16 @@
 
 ## 项目启动
 
-1. 安装依赖
+```bash
+# 安装 pnpm
+npm install pnpm -g
 
-   ```bash
-   npm install pnpm -g
-   pnpm install
-   ```
+# 安装依赖
+pnpm install
 
-2. 启动运行
-
-   ```bash
-   pnpm run dev
-   ```
-
-3. 访问测试
-
-   浏览器访问： [http://localhost:3000](http://localhost:3000)
+# 项目运行
+pnpm run dev
+```
 
 ## 项目部署
 
@@ -114,7 +108,7 @@
           index index.html index.htm;
       }
 
-      # 代理转发请求至网关，prod-api标识解决跨域,vapi.youlai.tech 线上接口地址，注意后面/
+      # 代理转发 prod-api 请求至 vapi.youlai.tech
       location /prod-api/ {
           proxy_pass http://vapi.youlai.tech/;
       }
@@ -122,7 +116,7 @@
 
   ```
 
-## 后端接口
+## 接口文档
 
 > 默认使用线上接口，如果你了解一点 Java 后端 SpringBoot，可轻松搭建本地接口环境：
 
@@ -133,7 +127,6 @@
 
 ## 联系信息
 
-> 欢迎添加开发者微信，备注「有来」进群，备注「无回」参与开发
-
-| ![郝先瑞](https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg) | ![张川](https://s2.loli.net/2022/04/06/cQihGv9uPsTjXk1.jpg) |
+| 备注`有来`进微信群 | 微信公众号 |
 | --- | --- |
+| <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg" class="no-zoom" style="width:120px;margin: 10px;"  alt="有来商城微信交流群"> | <img src="https://www.youlai.tech/files/blog/gongzhonghao.jpg" class="no-zoom" style="width:120px;margin: 10px;" alt="有来技术公众号"> |
