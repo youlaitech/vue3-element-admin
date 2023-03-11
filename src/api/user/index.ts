@@ -17,11 +17,11 @@ export function getUserInfo(): AxiosPromise<UserInfo> {
  *
  * @param queryParams
  */
-export function listUserPages(
+export function getUserPage(
   queryParams: UserQuery
 ): AxiosPromise<PageResult<UserPageVO[]>> {
   return request({
-    url: '/api/v1/users/pages',
+    url: '/api/v1/users/page',
     method: 'get',
     params: queryParams
   });
@@ -139,14 +139,13 @@ export function exportUser(queryParams: UserQuery) {
  *
  * @param file
  */
-export function importUser(deptId: number, roleIds: string, file: File) {
+export function importUser(deptId: number, file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('deptId', deptId.toString());
-  formData.append('roleIds', roleIds);
   return request({
     url: '/api/v1/users/_import',
     method: 'post',
+    params: { deptId: deptId },
     data: formData,
     headers: {
       'Content-Type': 'multipart/form-data'

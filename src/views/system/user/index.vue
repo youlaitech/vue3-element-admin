@@ -5,18 +5,9 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { UploadFile } from 'element-plus';
 import {
-  reactive,
-  ref,
-  watchEffect,
-  onMounted,
-  getCurrentInstance,
-  toRefs
-} from 'vue';
-
-// api
-import {
-  listUserPages,
+  getUserPage,
   getUserForm,
   deleteUsers,
   addUser,
@@ -30,111 +21,64 @@ import {
 import { listDeptOptions } from '@/api/dept';
 import { listRoleOptions } from '@/api/role';
 
-import {
-  ElTree,
-  ElForm,
-  ElMessageBox,
-  ElMessage,
-  UploadFile
-} from 'element-plus';
-import {
-  Search,
-  Plus,
-  Refresh,
-  Delete,
-  UploadFilled
-} from '@element-plus/icons-vue';
-import {
-  UserForm,
-  UserImportVO,
-  UserQuery,
-  UserPageVO
-} from '@/api/user/types';
+import { UserForm, UserQuery, UserPageVO } from '@/api/user/types';
 
 const deptTreeRef = ref(ElTree); // 部门树
 const queryFormRef = ref(ElForm); // 查询表单
-const dataFormRef = ref(ElForm); // 用户表单
-const importFormRef = ref(ElForm); // 导入表单
+const userFormRef = ref(ElForm); // 用户表单
 
-const { proxy }: any = getCurrentInstance();
-
-const state = reactive({
-  // 遮罩层
-  loading: true,
-  // 选中数组
-  ids: [] as number[],
-  // 总条数
-  total: 0,
-  userList: [] as UserPageVO[],
-  dialog: {
-    visible: false
-  } as DialogType,
-  deptName: undefined,
-  // 部门下拉项
-  deptOptions: [] as OptionType[],
-  // 性别下拉项
-  genderOptions: [] as OptionType[],
-  // 角色下拉项
-  roleOptions: [] as OptionType[],
-  formData: {
-    status: 1
-  } as UserForm,
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10
-  } as UserQuery,
-  rules: {
-    username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-    nickname: [
-      { required: true, message: '用户昵称不能为空', trigger: 'blur' }
-    ],
-    deptId: [{ required: true, message: '所属部门不能为空', trigger: 'blur' }],
-    roleIds: [{ required: true, message: '用户角色不能为空', trigger: 'blur' }],
-    email: [
-      {
-        pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
-        message: '请输入正确的邮箱地址',
-        trigger: 'blur'
-      }
-    ],
-    mobile: [
-      {
-        pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-        message: '请输入正确的手机号码',
-        trigger: 'blur'
-      }
-    ]
-  },
-
-  importDialog: {
-    title: '用户导入',
-    visible: false
-  } as DialogType,
-  importFormData: {} as UserImportVO,
-  excelFile: undefined as any,
-  excelFilelist: [] as File[]
+const loading = ref(false);
+const ids = ref([]);
+const total = ref(0);
+const dialog = reactive<DialogOption>({
+  visible: false
 });
 
-const {
-  ids,
-  loading,
-  queryParams,
-  userList,
-  total,
-  dialog,
-  formData,
-  rules,
-  deptName,
-  deptOptions,
-  roleOptions,
-  importDialog,
-  importFormData,
-  excelFilelist
-} = toRefs(state);
+const queryParams = reactive<UserQuery>({
+  pageNum: 1,
+  pageSize: 10
+});
+const userList = ref<UserPageVO[]>();
+
+const formData = reactive<UserForm>({
+  status: 1
+});
+
+const rules = reactive({
+  username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
+  nickname: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
+  deptId: [{ required: true, message: '所属部门不能为空', trigger: 'blur' }],
+  roleIds: [{ required: true, message: '用户角色不能为空', trigger: 'blur' }],
+  email: [
+    {
+      pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
+      message: '请输入正确的邮箱地址',
+      trigger: 'blur'
+    }
+  ],
+  mobile: [
+    {
+      pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+      message: '请输入正确的手机号码',
+      trigger: 'blur'
+    }
+  ]
+});
+
+const searchDeptName = ref();
+const deptList = ref<OptionType[]>();
+const roleList = ref<OptionType[]>();
+const importDialog = reactive<DialogOption>({
+  title: '用户导入',
+  visible: false
+});
+const importDeptId = ref<number>(0);
+const excelFile = ref<File>();
+const excelFilelist = ref<File[]>([]);
 
 watchEffect(
   () => {
-    deptTreeRef.value.filter(state.deptName);
+    deptTreeRef.value.filter(searchDeptName.value);
   },
   {
     flush: 'post' // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
@@ -144,7 +88,7 @@ watchEffect(
 /**
  * 部门筛选
  */
-function filterDeptNode(value: string, data: any) {
+function handleDeptFilter(value: string, data: any) {
   if (!value) {
     return true;
   }
@@ -152,36 +96,32 @@ function filterDeptNode(value: string, data: any) {
 }
 
 /**
- * 部门树节点click
+ * 部门树节点
  */
 function handleDeptNodeClick(data: { [key: string]: any }) {
-  state.queryParams.deptId = data.value;
+  queryParams.deptId = data.value;
   handleQuery();
 }
 
 /**
- * 获取角色下拉项
+ * 获取角色下拉列表
  */
 async function getRoleOptions() {
   listRoleOptions().then(response => {
-    state.roleOptions = response.data;
+    roleList.value = response.data;
   });
 }
 
 /**
- * 用户状态change
+ * 修改用户状态
  */
 function handleStatusChange(row: { [key: string]: any }) {
   const text = row.status === 1 ? '启用' : '停用';
-  ElMessageBox.confirm(
-    '确认要' + text + '' + row.username + '用户吗?',
-    '警告',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  )
+  ElMessageBox.confirm('确认要' + text + row.username + '用户吗?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
     .then(() => {
       return updateUserStatus(row.id, row.status);
     })
@@ -197,27 +137,31 @@ function handleStatusChange(row: { [key: string]: any }) {
  * 查询
  */
 function handleQuery() {
-  state.loading = true;
-  listUserPages(state.queryParams).then(({ data }) => {
-    state.userList = data.list;
-    state.total = data.total;
-    state.loading = false;
-  });
+  loading.value = true;
+  getUserPage(queryParams)
+    .then(({ data }) => {
+      userList.value = data.list;
+      total.value = data.total;
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 }
 
 /**
- * 重置
+ * 重置查询
  */
 function resetQuery() {
   queryFormRef.value.resetFields();
+  queryParams.pageNum = 1;
   handleQuery();
 }
 
 /**
- * 行选中
+ * 行checkbox change事件
  */
 function handleSelectionChange(selection: any) {
-  state.ids = selection.map((item: any) => item.id);
+  ids.value = selection.map((item: any) => item.id);
 }
 
 /**
@@ -245,53 +189,67 @@ function resetPassword(row: { [key: string]: any }) {
 }
 
 /**
- * 添加用户
- **/
-async function handleAdd() {
-  state.dialog = {
-    title: '添加用户',
-    visible: true
-  };
+ * 打开弹窗
+ *
+ * @param userId 用户ID
+ */
+async function openDialog(userId?: number) {
   await getDeptOptions();
   await getRoleOptions();
+  dialog.visible = true;
+  if (userId) {
+    dialog.title = '修改用户';
+    getUserForm(userId).then(({ data }) => {
+      Object.assign(formData, data);
+    });
+  } else {
+    dialog.title = '新增用户';
+  }
 }
 
 /**
- * 修改用户
- **/
-async function handleUpdate(row: { [key: string]: any }) {
-  dialog.value = {
-    title: '修改用户',
-    visible: true
-  };
+ * 关闭用户弹窗
+ */
+function closeDialog() {
+  dialog.visible = false;
+  resetForm();
+}
 
-  const userId = row.id || state.ids;
-  await getDeptOptions();
-  await getRoleOptions();
-  getUserForm(userId).then(({ data }) => {
-    formData.value = data;
-  });
+/**
+ * 重置表单
+ */
+function resetForm() {
+  userFormRef.value.resetFields();
+  userFormRef.value.clearValidate();
+
+  formData.id = undefined;
+  formData.status = 1;
 }
 
 /**
  * 表单提交
  */
-function submitForm() {
-  dataFormRef.value.validate((valid: any) => {
+function handleSubmit() {
+  userFormRef.value.validate((valid: any) => {
     if (valid) {
-      const userId = state.formData.id;
+      const userId = formData.id;
+      loading.value = true;
       if (userId) {
-        updateUser(userId, state.formData).then(() => {
-          ElMessage.success('修改用户成功');
-          closeDialog();
-          handleQuery();
-        });
+        updateUser(userId, formData)
+          .then(() => {
+            ElMessage.success('修改用户成功');
+            closeDialog();
+            resetQuery();
+          })
+          .finally(() => (loading.value = false));
       } else {
-        addUser(state.formData).then(() => {
-          ElMessage.success('新增用户成功');
-          closeDialog();
-          handleQuery();
-        });
+        addUser(formData)
+          .then(() => {
+            ElMessage.success('新增用户成功');
+            closeDialog();
+            resetQuery();
+          })
+          .finally(() => (loading.value = false));
       }
     }
   });
@@ -300,34 +258,23 @@ function submitForm() {
 /**
  * 删除用户
  */
-function handleDelete(row: { [key: string]: any }) {
-  const userIds = row.id || state.ids.join(',');
-  ElMessageBox.confirm(
-    '是否确认删除用户编号为「' + userIds + '」的数据项?',
-    '警告',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  )
-    .then(function () {
-      deleteUsers(userIds).then(() => {
-        ElMessage.success('删除成功');
-        handleQuery();
-      });
-    })
-    .catch(() => ElMessage.info('已取消删除'));
-}
+function handleDelete(id: number) {
+  const userIds = ([id] || ids.value).join(',');
+  if (!userIds) {
+    ElMessage.warning('请勾选删除项');
+    return;
+  }
 
-/**
- * 关闭用户弹窗
- */
-function closeDialog() {
-  dialog.value.visible = false;
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
-  formData.value.id = undefined;
+  ElMessageBox.confirm('确认删除用户?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(function () {
+    deleteUsers(userIds).then(() => {
+      ElMessage.success('删除成功');
+      resetQuery();
+    });
+  });
 }
 
 /**
@@ -335,16 +282,7 @@ function closeDialog() {
  */
 async function getDeptOptions() {
   listDeptOptions().then(response => {
-    state.deptOptions = response.data;
-  });
-}
-
-/**
- * 获取性别下拉项
- */
-function getGenderOptions() {
-  proxy.$getDictionaries('gender').then((response: any) => {
-    state.genderOptions = response?.data;
+    deptList.value = response.data;
   });
 }
 
@@ -372,10 +310,10 @@ function downloadTemplate() {
 /**
  * 导入弹窗
  */
-async function showImportDialog() {
+async function openImportDialog() {
   await getDeptOptions();
   await getRoleOptions();
-  importDialog.value.visible = true;
+  importDialog.visible = true;
 }
 
 /**
@@ -386,50 +324,44 @@ async function showImportDialog() {
 function handleExcelChange(file: UploadFile) {
   if (!/\.(xlsx|xls|XLSX|XLS)$/.test(file.name)) {
     ElMessage.warning('上传Excel只能为xlsx、xls格式');
-    state.excelFile = undefined;
-    state.excelFilelist = [];
+    excelFile.value = undefined;
+    excelFilelist.value = [];
     return false;
   }
-  state.excelFile = file.raw;
+  excelFile.value = file.raw;
 }
 
 /**
- * Excel文件上传
+ * 导入用户
  */
-function uploadUser() {
-  importFormRef.value.validate((valid: any) => {
-    if (valid) {
-      if (!state.excelFile) {
-        ElMessage.warning('上传Excel文件不能为空');
-        return false;
-      }
-
-      const deptId = state.importFormData.deptId;
-      const roleIds = state.importFormData.roleIds.join(',');
-      importUser(deptId, roleIds, state.excelFile).then(response => {
-        ElMessage.success(response.data);
-        closeImportDialog();
-        handleQuery();
-      });
+function handleUserImport() {
+  if (importDeptId.value) {
+    if (!excelFile.value) {
+      ElMessage.warning('上传Excel文件不能为空');
+      return false;
     }
-  });
+    importUser(importDeptId.value, excelFile.value).then(response => {
+      ElMessage.success(response.data);
+      closeImportDialog();
+      resetQuery();
+    });
+  }
 }
 
 /**
  * 关闭导入弹窗
  */
 function closeImportDialog() {
-  state.importDialog.visible = false;
-  state.excelFile = undefined;
-  state.excelFilelist = [];
-  importFormRef.value.resetFields();
+  importDialog.visible = false;
+  excelFile.value = undefined;
+  excelFilelist.value = [];
 }
 
 /**
  * 导出用户
  */
-function handleExport() {
-  exportUser(queryParams.value).then((response: any) => {
+function handleUserExport() {
+  exportUser(queryParams).then((response: any) => {
     const blob = new Blob([response.data], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
     });
@@ -447,12 +379,8 @@ function handleExport() {
 }
 
 onMounted(() => {
-  // 初始化性别字典
-  getGenderOptions();
-  // 初始化部门
-  getDeptOptions();
-  // 初始化用户列表数据
-  handleQuery();
+  getDeptOptions(); // 初始化部门
+  handleQuery(); // 初始化用户列表数据
 });
 </script>
 
@@ -462,26 +390,25 @@ onMounted(() => {
       <!-- 部门树 -->
       <el-col :lg="4" :xs="24" class="mb-[12px]">
         <el-card shadow="never">
-          <el-input
-            v-model="deptName"
-            placeholder="部门名称"
-            clearable
-            :prefix-icon="Search"
-            style="margin-bottom: 20px"
-          />
+          <el-input v-model="searchDeptName" placeholder="部门名称" clearable>
+            <template #prefix>
+              <i-ep-search />
+            </template>
+          </el-input>
+
           <el-tree
+            class="mt-2"
             ref="deptTreeRef"
-            :data="deptOptions"
+            :data="deptList"
             :props="{ children: 'children', label: 'label', disabled: '' }"
             :expand-on-click-node="false"
-            :filter-node-method="filterDeptNode"
+            :filter-node-method="handleDeptFilter"
             default-expand-all
             @node-click="handleDeptNodeClick"
           ></el-tree>
         </el-card>
       </el-col>
 
-      <!-- 用户数据 -->
       <el-col :lg="20" :xs="24">
         <div class="search">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true">
@@ -508,10 +435,13 @@ onMounted(() => {
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" :icon="Search" @click="handleQuery"
-                >搜索</el-button
+              <el-button type="primary" @click="handleQuery"
+                ><i-ep-search />搜索</el-button
               >
-              <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
+              <el-button @click="resetQuery">
+                <i-ep-refresh />
+                重置</el-button
+              >
             </el-form-item>
           </el-form>
         </div>
@@ -522,18 +452,16 @@ onMounted(() => {
               <div>
                 <el-button
                   type="success"
-                  :icon="Plus"
-                  @click="handleAdd"
+                  @click="openDialog()"
                   v-hasPerm="['sys:user:add']"
-                  >新增</el-button
+                  ><i-ep-plus />新增</el-button
                 >
                 <el-button
                   type="danger"
-                  :icon="Delete"
                   :disabled="ids.length === 0"
                   @click="handleDelete"
                   v-hasPerm="['sys:user:delete']"
-                  >删除</el-button
+                  ><i-ep-delete />删除</el-button
                 >
               </div>
               <div>
@@ -544,13 +472,13 @@ onMounted(() => {
                       <el-dropdown-item @click="downloadTemplate">
                         <i-ep-download />下载模板</el-dropdown-item
                       >
-                      <el-dropdown-item @click="showImportDialog">
+                      <el-dropdown-item @click="openImportDialog">
                         <i-ep-top />导入数据</el-dropdown-item
                       >
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>
-                <el-button class="ml-3" @click="handleExport"
+                <el-button class="ml-3" @click="handleUserExport"
                   ><template #icon><i-ep-download /></template>导出</el-button
                 >
               </div>
@@ -619,24 +547,30 @@ onMounted(() => {
               prop="createTime"
               width="180"
             ></el-table-column>
-            <el-table-column label="操作" align="left" width="200">
+            <el-table-column label="操作" fixed="right" width="220">
               <template #default="scope">
-                <el-button type="success" link @click="resetPassword(scope.row)"
-                  >重置密码</el-button
+                <el-button
+                  type="primary"
+                  size="small"
+                  link
+                  @click="resetPassword(scope.row)"
+                  ><i-ep-refresh-left />重置密码</el-button
                 >
                 <el-button
                   type="primary"
                   link
-                  @click="handleUpdate(scope.row)"
+                  size="small"
+                  @click="openDialog(scope.row.id)"
                   v-hasPerm="['sys:user:edit']"
-                  >编辑</el-button
+                  ><i-ep-edit />编辑</el-button
                 >
                 <el-button
-                  type="danger"
+                  type="primary"
                   link
-                  @click="handleDelete(scope.row)"
-                  v-hasPerm="['sys:user:del']"
-                  >删除</el-button
+                  size="small"
+                  @click="handleDelete(scope.row.id)"
+                  v-hasPerm="['sys:user:delete']"
+                  ><i-ep-delete />删除</el-button
                 >
               </template>
             </el-table-column>
@@ -653,7 +587,7 @@ onMounted(() => {
       </el-col>
     </el-row>
 
-    <!-- 用户表单 -->
+    <!-- 表单弹窗 -->
     <el-dialog
       :title="dialog.title"
       v-model="dialog.visible"
@@ -662,7 +596,7 @@ onMounted(() => {
       @close="closeDialog"
     >
       <el-form
-        ref="dataFormRef"
+        ref="userFormRef"
         :model="formData"
         :rules="rules"
         label-width="80px"
@@ -683,11 +617,30 @@ onMounted(() => {
           <el-tree-select
             v-model="formData.deptId"
             placeholder="请选择所属部门"
-            :data="deptOptions"
+            :data="deptList"
             filterable
             check-strictly
             :render-after-expand="false"
           />
+        </el-form-item>
+
+        <el-form-item label="性别" prop="gender">
+          <el-select v-model="formData.gender" placeholder="请选择">
+            <el-option label="未知" :value="0" />
+            <el-option label="男" :value="1" />
+            <el-option label="女" :value="2" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="角色" prop="roleIds">
+          <el-select v-model="formData.roleIds" multiple placeholder="请选择">
+            <el-option
+              v-for="item in roleList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
 
         <el-form-item label="手机号码" prop="mobile">
@@ -712,35 +665,16 @@ onMounted(() => {
             <el-radio :label="0">禁用</el-radio>
           </el-radio-group>
         </el-form-item>
-
-        <el-form-item label="用户性别" prop="gender">
-          <el-select v-model="formData.gender" placeholder="请选择">
-            <el-option label="未知" :value="0" />
-            <el-option label="男" :value="1" />
-            <el-option label="女" :value="2" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="角色" prop="roleIds">
-          <el-select v-model="formData.roleIds" multiple placeholder="请选择">
-            <el-option
-              v-for="item in roleOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button type="primary" @click="handleSubmit">确 定</el-button>
           <el-button @click="closeDialog">取 消</el-button>
         </div>
       </template>
     </el-dialog>
 
-    <!-- import dialog -->
+    <!-- 导入弹窗 -->
     <el-dialog
       :title="importDialog.title"
       v-model="importDialog.visible"
@@ -748,35 +682,15 @@ onMounted(() => {
       append-to-body
       @close="closeImportDialog"
     >
-      <el-form
-        ref="importFormRef"
-        :model="importFormData"
-        :rules="rules"
-        label-width="80px"
-      >
-        <el-form-item label="部门" prop="deptId">
+      <el-form label-width="80px">
+        <el-form-item label="部门">
           <el-tree-select
-            v-model="importFormData.deptId"
+            v-model="importDeptId"
             placeholder="请选择部门"
-            :data="deptOptions"
+            :data="deptList"
             filterable
             check-strictly
           />
-        </el-form-item>
-
-        <el-form-item label="角色" prop="roleIds">
-          <el-select
-            v-model="importFormData.roleIds"
-            multiple
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in roleOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
         </el-form-item>
 
         <el-form-item label="Excel">
@@ -791,7 +705,7 @@ onMounted(() => {
             :limit="1"
           >
             <el-icon class="el-icon--upload">
-              <upload-filled />
+              <i-ep-upload-filled />
             </el-icon>
             <div class="el-upload__text">
               将文件拖到此处，或
@@ -805,7 +719,7 @@ onMounted(() => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="uploadUser">确 定</el-button>
+          <el-button type="primary" @click="handleUserImport">确 定</el-button>
           <el-button @click="closeImportDialog">取 消</el-button>
         </div>
       </template>

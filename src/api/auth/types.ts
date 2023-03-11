@@ -7,10 +7,11 @@ export interface LoginData {
 }
 
 /**
- * 登录详情
+ * 登录响应
  */
 export interface LoginResult {
   accessToken: string;
+  tokenType: string;
   refreshToken: string;
   expires: number;
 }

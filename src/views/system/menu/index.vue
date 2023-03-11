@@ -5,87 +5,72 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { MenuQuery, MenuForm, Menu } from '@/api/menu/types';
-// API 依赖
+import { MenuQuery, MenuForm, MenuVO } from '@/api/menu/types';
 import {
   listMenus,
-  getMenuDetail,
+  getMenuForm,
   listMenuOptions,
   addMenu,
-  deleteMenus,
+  deleteMenu,
   updateMenu
 } from '@/api/menu';
+
+import { MenuTypeEnum } from '@/enums/MenuTypeEnum';
 
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';
 
-const emit = defineEmits(['menuClick']);
 const queryFormRef = ref(ElForm);
-const dataFormRef = ref(ElForm);
+const menuFormRef = ref(ElForm);
 
-const state = reactive({
-  loading: true,
-  // 选中ID数组
-  ids: [],
-  queryParams: {} as MenuQuery,
-  menuList: [] as Menu[],
-  dialog: { visible: false } as DialogType,
-  formData: {
-    parentId: '0',
-    name: '',
-    visible: 1,
-    sort: 1,
-    component: undefined,
-    type: 'MENU'
-  } as MenuForm,
-  rules: {
-    parentId: [{ required: true, message: '请选择顶级菜单', trigger: 'blur' }],
-    name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-    type: [{ required: true, message: '请选择菜单类型', trigger: 'blur' }],
-    path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
-    component: [
-      { required: true, message: '请输入组件完整路径', trigger: 'blur' }
-    ]
-  },
-  menuOptions: [] as OptionType[],
-  currentRow: undefined,
-  cacheData: {
-    menuType: '',
-    menuPath: ''
-  }
+const loading = ref(false);
+const dialog = reactive<DialogOption>({
+  visible: false
 });
 
-const {
-  loading,
-  queryParams,
-  menuList,
-  dialog,
-  formData,
-  rules,
-  menuOptions,
-  cacheData
-} = toRefs(state);
+const queryParams = reactive<MenuQuery>({});
+const menuList = ref<MenuVO[]>([]);
+
+const menuOptions = ref<OptionType[]>([]);
+
+const formData = reactive<MenuForm>({
+  parentId: 0,
+  visible: 1,
+  sort: 1,
+  type: MenuTypeEnum.MENU
+});
+
+const rules = reactive({
+  parentId: [{ required: true, message: '请选择顶级菜单', trigger: 'blur' }],
+  name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
+  type: [{ required: true, message: '请选择菜单类型', trigger: 'blur' }],
+  path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
+  component: [
+    { required: true, message: '请输入组件完整路径', trigger: 'blur' }
+  ]
+});
+
+// 选择表格的行菜单ID
+const selectedRowMenuId = ref<number | undefined>();
+
+const menuCacheData = reactive({
+  type: '',
+  path: ''
+});
 
 /**
  * 查询
  */
 function handleQuery() {
   // 重置父组件
-  emit('menuClick', null);
   loading.value = true;
-  listMenus(state.queryParams).then(({ data }) => {
-    menuList.value = data;
-    loading.value = false;
-  });
-}
-
-/**
- * 下拉菜单
- */
-async function loadMenuData() {
-  listMenuOptions().then(({ data }) => {
-    menuOptions.value = [{ value: '0', label: '顶级菜单', children: data }];
-  });
+  listMenus(queryParams)
+    .then(({ data }) => {
+      menuList.value = data;
+    })
+    .then(() => {
+      loading.value = false;
+    });
 }
 
 /**
@@ -96,60 +81,53 @@ function resetQuery() {
   handleQuery();
 }
 
-function handleRowClick(row: any) {
-  state.currentRow = JSON.parse(JSON.stringify(row));
-  emit('menuClick', row);
+/**
+ * 行点击事件
+ *
+ * @param row
+ */
+function onRowClick(row: MenuVO) {
+  selectedRowMenuId.value = row.id;
 }
 
 /**
- * 新增菜单
+ * 打开表单弹窗
+ *
+ * @param parentId 父菜单ID
+ * @param menuId 菜单ID
  */
-async function handleAdd(row: any) {
-  dialog.value = {
-    title: '添加菜单',
-    visible: true
-  };
-  await loadMenuData();
-  if (row.id) {
-    // 行点击新增
-    formData.value.parentId = row.id;
-  } else {
-    // 工具栏新增
-    if (state.currentRow) {
-      // 选择行
-      formData.value.parentId = (state.currentRow as any).id;
-    } else {
-      // 未选择行
-      formData.value.parentId = '0';
-    }
-  }
-}
-
-/**
- * 编辑菜单
- */
-async function handleUpdate(row: MenuForm) {
-  await loadMenuData();
-  dialog.value = {
-    title: '编辑菜单',
-    visible: true
-  };
-  const id = row.id as string;
-  getMenuDetail(id).then(({ data }) => {
-    state.formData = data;
-    cacheData.value.menuType = data.type;
-    cacheData.value.menuPath = data.path;
-  });
+function openDialog(parentId?: number, menuId?: number) {
+  listMenuOptions()
+    .then(({ data }) => {
+      menuOptions.value = [{ value: 0, label: '顶级菜单', children: data }];
+    })
+    .then(() => {
+      dialog.visible = true;
+      if (menuId) {
+        // 编辑
+        dialog.title = '编辑菜单';
+        getMenuForm(menuId).then(({ data }) => {
+          Object.assign(formData, data);
+          menuCacheData.type = data.type;
+          menuCacheData.path = data.path ?? '';
+        });
+      } else {
+        // 新增
+        dialog.title = '新增菜单';
+        formData.parentId = parentId;
+      }
+    });
 }
 
 /**
  * 菜单类型 change
  */
-function handleMenuTypeChange(menuType: any) {
-  if (menuType !== cacheData.value.menuType) {
-    formData.value.path = '';
+function onMenuTypeChange() {
+  // 如果菜单类型改变，清空路由路径；未改变在切换后还原路由路径
+  if (formData.type !== menuCacheData.type) {
+    formData.path = '';
   } else {
-    formData.value.path = cacheData.value.menuPath;
+    formData.path = menuCacheData.path;
   }
 }
 
@@ -157,18 +135,19 @@ function handleMenuTypeChange(menuType: any) {
  * 菜单提交
  */
 function submitForm() {
-  dataFormRef.value.validate((isValid: boolean) => {
+  menuFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
-      if (state.formData.id) {
-        updateMenu(state.formData.id, state.formData).then(() => {
+      const menuId = formData.id;
+      if (menuId) {
+        updateMenu(menuId, formData).then(() => {
           ElMessage.success('修改成功');
-          cancel();
+          closeDialog();
           handleQuery();
         });
       } else {
-        addMenu(state.formData).then(() => {
+        addMenu(formData).then(() => {
           ElMessage.success('新增成功');
-          cancel();
+          closeDialog();
           handleQuery();
         });
       }
@@ -178,17 +157,19 @@ function submitForm() {
 
 /**
  * 删除菜单
- *
  */
-function handleDelete(row: any) {
-  const ids = [row.id || state.ids].join(',');
+function handleDelete(menuId: number) {
+  if (!menuId) {
+    return false;
+  }
+
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   })
     .then(() => {
-      deleteMenus(ids).then(() => {
+      deleteMenu(menuId).then(() => {
         ElMessage.success('删除成功');
         handleQuery();
       });
@@ -197,12 +178,24 @@ function handleDelete(row: any) {
 }
 
 /**
- * 取消关闭弹窗
+ * 闭弹窗
  */
-function cancel() {
-  formData.value.id = undefined;
-  dataFormRef.value.resetFields();
-  dialog.value.visible = false;
+function closeDialog() {
+  dialog.visible = false;
+  resetForm();
+}
+
+/**
+ * 重置表单
+ */
+function resetForm() {
+  menuFormRef.value.resetFields();
+  menuFormRef.value.clearValidate();
+
+  formData.id = undefined;
+  formData.parentId = 0;
+  formData.visible = 1;
+  formData.sort = 1;
 }
 
 onMounted(() => {
@@ -234,10 +227,9 @@ onMounted(() => {
       </el-form>
     </div>
 
-    <!-- 数据表格 -->
     <el-card shadow="never">
       <template #header>
-        <el-button type="success" @click="handleAdd">
+        <el-button type="success" @click="openDialog(0)">
           <template #icon><i-ep-plus /></template>
           新增</el-button
         >
@@ -248,10 +240,10 @@ onMounted(() => {
         :data="menuList"
         highlight-current-row
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-        @row-click="handleRowClick"
+        @row-click="onRowClick"
         row-key="id"
-        border
         default-expand-all
+        border
       >
         <el-table-column label="菜单名称">
           <template #default="scope">
@@ -266,16 +258,18 @@ onMounted(() => {
 
         <el-table-column label="菜单类型" align="center" width="150">
           <template #default="scope">
-            <el-tag v-if="scope.row.type === 'CATALOG'" type="warning"
+            <el-tag
+              v-if="scope.row.type === MenuTypeEnum.CATALOG"
+              type="warning"
               >目录</el-tag
             >
-            <el-tag v-if="scope.row.type === 'MENU'" type="success"
+            <el-tag v-if="scope.row.type === MenuTypeEnum.MENU" type="success"
               >菜单</el-tag
             >
-            <el-tag v-if="scope.row.type === 'BUTTON'" type="danger"
+            <el-tag v-if="scope.row.type === MenuTypeEnum.BUTTON" type="danger"
               >按钮</el-tag
             >
-            <el-tag v-if="scope.row.type === 'EXTLINK'" type="info"
+            <el-tag v-if="scope.row.type === MenuTypeEnum.EXTLINK" type="info"
               >外链</el-tag
             >
           </template>
@@ -312,25 +306,32 @@ onMounted(() => {
         >
         </el-table-column>
 
-        <el-table-column label="操作" align="center" width="200">
+        <el-table-column fixed="right" align="center" label="操作" width="220">
           <template #default="scope">
             <el-button
-              type="success"
+              type="primary"
               link
-              @click.stop="handleAdd(scope.row)"
+              size="small"
+              @click.stop="openDialog(scope.row.id)"
               v-if="scope.row.type == 'CATALOG' || scope.row.type == 'MENU'"
             >
-              新增
+              <i-ep-plus />新增
             </el-button>
 
             <el-button
               type="primary"
               link
-              @click.stop="handleUpdate(scope.row)"
+              size="small"
+              @click.stop="openDialog(undefined, scope.row.id)"
             >
-              编辑
+              <i-ep-edit />编辑
             </el-button>
-            <el-button type="danger" link @click.stop="handleDelete(scope.row)">
+            <el-button
+              type="primary"
+              link
+              size="small"
+              @click.stop="handleDelete(scope.row.id)"
+              ><i-ep-delete />
               删除
             </el-button>
           </template>
@@ -341,13 +342,13 @@ onMounted(() => {
     <el-dialog
       :title="dialog.title"
       v-model="dialog.visible"
-      @close="cancel"
+      @close="closeDialog"
       destroy-on-close
       appendToBody
       width="750px"
     >
       <el-form
-        ref="dataFormRef"
+        ref="menuFormRef"
         :model="formData"
         :rules="rules"
         label-width="100px"
@@ -368,10 +369,7 @@ onMounted(() => {
         </el-form-item>
 
         <el-form-item label="菜单类型" prop="type">
-          <el-radio-group
-            v-model="formData.type"
-            @change="handleMenuTypeChange"
-          >
+          <el-radio-group v-model="formData.type" @change="onMenuTypeChange">
             <el-radio label="CATALOG">目录</el-radio>
             <el-radio label="MENU">菜单</el-radio>
             <el-radio label="BUTTON">按钮</el-radio>
@@ -402,7 +400,7 @@ onMounted(() => {
 
         <!-- 组件页面完整路径 -->
         <el-form-item
-          v-if="formData.type == 'MENU'"
+          v-if="formData.type == MenuTypeEnum.MENU"
           label="页面路径"
           prop="component"
         >
@@ -411,10 +409,10 @@ onMounted(() => {
             placeholder="system/user/index"
             style="width: 95%"
           >
-            <template v-if="formData.parentId != '0'" #prepend
+            <template v-if="formData.parentId != 0" #prepend
               >src/views/</template
             >
-            <template v-if="formData.parentId != '0'" #append>.vue</template>
+            <template v-if="formData.parentId != 0" #append>.vue</template>
           </el-input>
         </el-form-item>
 
@@ -436,7 +434,10 @@ onMounted(() => {
           <icon-select v-model="formData.icon" />
         </el-form-item>
 
-        <el-form-item label="跳转路由" v-if="formData.type == 'CATEGORY'">
+        <el-form-item
+          label="跳转路由"
+          v-if="formData.type == MenuTypeEnum.CATALOG"
+        >
           <el-input v-model="formData.redirect" placeholder="跳转路由" />
         </el-form-item>
 
@@ -460,7 +461,7 @@ onMounted(() => {
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
+          <el-button @click="closeDialog">取 消</el-button>
         </div>
       </template>
     </el-dialog>

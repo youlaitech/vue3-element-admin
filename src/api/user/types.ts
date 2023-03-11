@@ -12,9 +12,9 @@ export interface UserInfo {
  * 用户查询对象类型
  */
 export interface UserQuery extends PageQuery {
-  keywords: string;
-  status: number;
-  deptId: number;
+  keywords?: string;
+  status?: number;
+  deptId?: number;
 }
 
 /**
@@ -108,12 +108,4 @@ export interface UserForm {
    * 用户名
    */
   username?: string;
-}
-
-/**
- * 用户导入视图对象类型
- */
-export interface UserImportVO {
-  deptId: number;
-  roleIds: number[];
 }

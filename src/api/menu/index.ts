@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
-import { MenuQuery, Menu, Resource, MenuForm } from './types';
+import { MenuQuery, MenuVO, MenuForm } from './types';
 
 /**
  * 获取路由列表
@@ -13,11 +13,11 @@ export function listRoutes() {
 }
 
 /**
- * 获取菜单表格列表
+ * 获取菜单树形列表
  *
  * @param queryParams
  */
-export function listMenus(queryParams: MenuQuery): AxiosPromise<Menu[]> {
+export function listMenus(queryParams: MenuQuery): AxiosPromise<MenuVO[]> {
   return request({
     url: '/api/v1/menus',
     method: 'get',
@@ -36,22 +36,13 @@ export function listMenuOptions(): AxiosPromise<OptionType[]> {
 }
 
 /**
- * 获取资源(菜单+权限)树形列表
- */
-export function listResources(): AxiosPromise<Resource[]> {
-  return request({
-    url: '/api/v1/menus/resources',
-    method: 'get'
-  });
-}
-
-/**
- * 获取菜单详情
+ * 获取菜单表单数据
+ *
  * @param id
  */
-export function getMenuDetail(id: string): AxiosPromise<MenuForm> {
+export function getMenuForm(id: number): AxiosPromise<MenuForm> {
   return request({
-    url: '/api/v1/menus/' + id,
+    url: '/api/v1/menus/' + id + '/form',
     method: 'get'
   });
 }
@@ -84,13 +75,13 @@ export function updateMenu(id: string, data: MenuForm) {
 }
 
 /**
- * 批量删除菜单
+ * 删除菜单
  *
- * @param ids 菜单ID，多个以英文逗号(,)分割
+ * @param id 菜单ID
  */
-export function deleteMenus(ids: string) {
+export function deleteMenu(id: number) {
   return request({
-    url: '/api/v1/menus/' + ids,
+    url: '/api/v1/menus/' + id,
     method: 'delete'
   });
 }

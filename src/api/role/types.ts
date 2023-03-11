@@ -1,40 +1,78 @@
 /**
- * 角色查询参数类型
+ * 角色查询参数
  */
 export interface RoleQuery extends PageQuery {
   keywords?: string;
 }
 
 /**
- * 角色分页列表项
+ * 角色分页对象
  */
-export interface Role {
-  id: string;
-  name: string;
-  code: string;
-  sort: number;
-  status: number;
-  deleted: number;
-  menuIds?: any;
-  permissionIds?: any;
+export interface RolePageVO {
+  /**
+   * 角色编码
+   */
+  code?: string;
+
+  /**
+   * 角色ID
+   */
+  id?: number;
+  /**
+   * 角色名称
+   */
+  name?: string;
+  /**
+   * 排序
+   */
+  sort?: number;
+  /**
+   * 角色状态
+   */
+  status?: number;
+  /**
+   * 创建时间
+   */
+  createTime?: Date;
+  /**
+   * 修改时间
+   */
+  updateTime?: Date;
 }
 
 /**
- * 角色分页项类型
+ * 角色分页
  */
-export type RolePageResult = PageResult<Role[]>;
+export type RolePageResult = PageResult<RolePageVO[]>;
 
 /**
- * 角色表单
+ * 角色表单对象
  */
 export interface RoleForm {
+  /**
+   * 角色ID
+   */
   id?: number;
-  name: string;
+
+  /**
+   * 角色编码
+   */
   code: string;
-  sort: number;
-  status: number;
   /**
    * 数据权限
    */
-  dataScope: number;
+  dataScope?: number;
+
+  /**
+   * 角色名称
+   */
+  name: string;
+  /**
+   * 排序
+   */
+  sort?: number;
+  /**
+   * 角色状态(1-正常；0-停用)
+   */
+  status?: number;
 }
