@@ -64,9 +64,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ['vue', '@vueuse/core'],
         eslintrc: {
-          enabled: false, // true用于生成eslint配置,生成后改回false，避免重复生成消耗
-          filepath: './.eslintrc-auto-import.json',
-          globalsPropValue: true
+          enabled: false, //  Default `false`
+          filepath: './.eslintrc-auto-import.json', // Default `./.eslintrc-auto-import.json`
+          globalsPropValue: true // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
         },
         resolvers: [
           // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
@@ -76,10 +76,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
             prefix: 'Icon'
           })
         ],
-
-        // 是否在vue模板中自动导入
-        vueTemplate: true,
-        dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts') // 配置文件生成位置，默认是根目录 /auto-imports.d.ts
+        vueTemplate: true, // 是否在 vue 模板中自动导入
+        dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts') // (false) 配置文件生成位置，默认是根目录 /auto-imports.d.ts
       }),
 
       Components({
@@ -91,7 +89,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           // 自动导入 Element Plus 组件
           ElementPlusResolver()
         ],
-        dts: path.resolve(pathSrc, 'types', 'components.d.ts') // 配置文件生成位置，默认是根目录 /components.d.ts
+        dts: path.resolve(pathSrc, 'types', 'components.d.ts') // (false) 配置文件生成位置，默认是根目录 /components.d.ts
       }),
 
       Icons({
