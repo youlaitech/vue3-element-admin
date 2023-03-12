@@ -20,9 +20,10 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
   return {
     resolve: {
-      // 别名配置 @替代src
       alias: {
-        '@': pathSrc
+        '@': pathSrc,
+        // https://github.com/intlify/vue-i18n-next/issues/789
+        'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js'
       }
     },
     css: {
@@ -109,14 +110,52 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       include: [
         'vue',
         'vue-router',
-        'element-plus/es/locale/lang/zh-cn',
-        'element-plus/es/locale/lang/en',
         'pinia',
-        '@vueuse/core',
         'axios',
+        'element-plus/es/components/form/style/css',
+        'element-plus/es/components/form-item/style/css',
+        'element-plus/es/components/button/style/css',
+        'element-plus/es/components/input/style/css',
+        'element-plus/es/components/input-number/style/css',
+        'element-plus/es/components/switch/style/css',
+        'element-plus/es/components/upload/style/css',
+        'element-plus/es/components/menu/style/css',
+        'element-plus/es/components/col/style/css',
+        'element-plus/es/components/icon/style/css',
+        'element-plus/es/components/row/style/css',
+        'element-plus/es/components/tag/style/css',
+        'element-plus/es/components/dialog/style/css',
+        'element-plus/es/components/loading/style/css',
+        'element-plus/es/components/radio/style/css',
+        'element-plus/es/components/radio-group/style/css',
+        'element-plus/es/components/popover/style/css',
+        'element-plus/es/components/scrollbar/style/css',
+        'element-plus/es/components/tooltip/style/css',
+        'element-plus/es/components/dropdown/style/css',
+        'element-plus/es/components/dropdown-menu/style/css',
+        'element-plus/es/components/dropdown-item/style/css',
+        'element-plus/es/components/sub-menu/style/css',
+        'element-plus/es/components/menu-item/style/css',
+        'element-plus/es/components/divider/style/css',
+        'element-plus/es/components/card/style/css',
+        'element-plus/es/components/link/style/css',
+        'element-plus/es/components/breadcrumb/style/css',
+        'element-plus/es/components/breadcrumb-item/style/css',
+        'element-plus/es/components/table/style/css',
+        'element-plus/es/components/tree-select/style/css',
+        'element-plus/es/components/table-column/style/css',
+        'element-plus/es/components/select/style/css',
+        'element-plus/es/components/option/style/css',
+        'element-plus/es/components/pagination/style/css',
+        'element-plus/es/components/tree/style/css',
+        'element-plus/es/components/alert/style/css',
+        '@vueuse/core',
+
+        'path-to-regexp',
         'echarts',
         '@wangeditor/editor',
-        '@wangeditor/editor-for-vue'
+        '@wangeditor/editor-for-vue',
+        'vue-i18n'
       ]
     }
   };
