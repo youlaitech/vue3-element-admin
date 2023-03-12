@@ -16,16 +16,15 @@
 
 ## 项目介绍
 
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本后台管理前端解决方案；技术栈 Vue3、Vite4、TypeScript 、Vue Router 、Pinia、Volar 、Element Plus、UnoCSS 等；功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等；基于此模板开发了有来商城管理系统，也是有来开源组织的又一项开源力作。
+[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 `Vue3` 版本后台管理框架，使用 Vue3、Vite4、TypeScript、Pinia、Element Plus 当前主流技术栈开发。
 
-## 项目优势
+## 项目特色
 
-- 基于 vue-element-admin 升级的 Vue3 版本 ，极易上手，减少学习成本；
-- 一套完整适配的微服务权限系统线上接口，企业级真实前后端接入场景，非 Mock 数据；
-- 功能全面：国际化、动态路由、按钮权限、主题大小切换、Echart、wangEditor；
-- TypeScript 全面支持，包括组件和 API 调用层面；
-- 主流 Vue3 生态和前端技术栈，常用组件极简封装；
-- 从 0 到 1 的项目文档支持 ([文档地址](https://www.cnblogs.com/haoxianrui/p/16090029.html))；
+- 基于 `vue-element-admin` 升级的 `Vue3` 版本，主流前端技术栈应用，无过度自定义封装，极易上手，减少学习成本；
+- 配套 `Java` 后台接口，非 `Mock` 数据，[在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5/api-65851240)；
+- 从 `0` 到 `1` 的项目文档支持，[官方文档](https://www.cnblogs.com/haoxianrui/p/16090029.html)。
+- 系统功能：用户、角色、菜单、字典管和部门管理等；
+- 基础设施：动态路由，按钮权限，常用组件封装。
 
 ## 技术栈
 
@@ -120,8 +119,8 @@ pnpm run dev
 
 **线上接口**
 
-- 接口地址：[vapi.youlai.tech](http://vapi.youlai.tech)
-- 接口文档：[vue3-element-admin 在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5/api-65851240)
+- 接口调用地址：[vapi.youlai.tech](http://vapi.youlai.tech)
+- 接口文档地址：[vue3-element-admin 在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5/api-65851240)
 
 **本地接口**
 
@@ -132,8 +131,10 @@ pnpm run dev
 
 3.  替换前端项目 [vite.config.ts](vite.config.ts) 的线上接口地址 [vapi.youlai.tech](vapi.youlai.tech) 为本地的 [localhost:8989](localhost:8989) 即可。
 
-## 联系我们
+## 关于我
 
-| 加微信备注 `有来` 进微信群 | 微信公众号 |
+> 欢迎加我的微信，备注 `前端`、`后端`、`运维`、`全栈` 进对应技术交流群
+
+| 开发者 | 微信公众号 |
 | --- | --- |
 | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg"   width="120px" height="120" /> | <img src="https://www.youlai.tech/files/blog/gongzhonghao.jpg"  width="120px" height="120" > |
