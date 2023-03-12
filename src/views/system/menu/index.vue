@@ -245,11 +245,13 @@ onMounted(() => {
         default-expand-all
         border
       >
-        <el-table-column label="菜单名称">
+        <el-table-column label="菜单名称" width="200">
           <template #default="scope">
             <svg-icon
               :icon-class="
-                scope.row.type === 'BUTTON' ? 'button' : scope.row.icon
+                scope.row.type === MenuTypeEnum.BUTTON
+                  ? 'button'
+                  : scope.row.icon
               "
             />
             {{ scope.row.name }}
