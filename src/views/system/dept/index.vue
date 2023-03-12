@@ -32,7 +32,8 @@ const deptOptions = ref<OptionType[]>();
 
 const formData = reactive<DeptForm>({
   status: 1,
-  parentId: 0
+  parentId: 0,
+  sort: 1
 });
 
 const rules = reactive({
@@ -177,6 +178,7 @@ function resetForm() {
   formData.id = undefined;
   formData.parentId = 0;
   formData.status = 1;
+  formData.sort = 1;
 }
 
 onMounted(() => {
