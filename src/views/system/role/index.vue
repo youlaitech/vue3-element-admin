@@ -281,8 +281,8 @@ onMounted(() => {
         border
       >
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="角色名称" prop="name" />
-        <el-table-column label="角色编码" prop="code" width="100" />
+        <el-table-column label="角色名称" prop="name" min-width="100" />
+        <el-table-column label="角色编码" prop="code" width="150" />
 
         <el-table-column label="状态" align="center" width="100">
           <template #default="scope">
@@ -292,8 +292,6 @@ onMounted(() => {
         </el-table-column>
 
         <el-table-column label="排序" align="center" width="80" prop="sort" />
-        <el-table-column prop="createTime" label="创建时间" width="180" />
-        <el-table-column prop="updateTime" label="修改时间" width="180" />
 
         <el-table-column fixed="right" label="操作" width="220">
           <template #default="scope">
