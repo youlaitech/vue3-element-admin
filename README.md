@@ -20,7 +20,7 @@
 
 ## 项目特色
 
-- 基于 `vue-element-admin` 升级的 `Vue3` 版本，主流前端技术栈应用，无过度自定义封装，极易上手，减少学习成本；
+- 基于 `vue-element-admin` 升级的 `Vue3` 版本，主流技术栈，无过度自定义封装，极易上手，减少学习成本；
 - 配套 `Java` 后台接口，非 `Mock` 数据，[在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5/api-65851240)；
 - 从 `0` 到 `1` 的项目文档支持，[官方文档](https://www.cnblogs.com/haoxianrui/p/16090029.html)。
 - 系统功能：用户、角色、菜单、字典管和部门管理等；
