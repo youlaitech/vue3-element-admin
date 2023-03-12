@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "scripts": {
     "dev": "vite serve --mode development",
-    "build:prod": "vue-tsc --noEmit && vite build --mode production",
+    "build:prod": "vite build --mode production &&vue-tsc --noEmit",
     "serve": "vite preview",
     "lint": "eslint src/**/*.{ts,js,vue} --fix",
     "prepare": "husky install",
