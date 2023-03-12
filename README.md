@@ -39,12 +39,21 @@
 
 ## 项目预览
 
-在线预览: [vue3.youlai.tech](http://vue3.youlai.tech)
+**在线预览地址**： [http://vue3.youlai.tech/](http://vue3.youlai.tech/)
 
-| ![控制台](https://s2.loli.net/2022/12/09/34iklzLAnsIuXDh.png) | ![国际化](https://s2.loli.net/2022/04/07/lt6u2jMefpTJvkh.gif) |
+**首页控制台**
+
+![暗黑模式](https://s2.loli.net/2023/03/13/QvjY4zf3VCGteNF.png)
+
+**接口文档**
+
+![接口文档](https://s2.loli.net/2023/03/13/bH4J3O6WRgCUpwt.png)
+
+**权限管理系统**
+
+| ![用户管理](https://s2.loli.net/2023/03/13/L9xgT5sSMVZukQj.png) | ![image-20230313003008012](https://s2.loli.net/2023/03/13/nQg6HmrtFUkPDYv.png) |
 | --- | --- |
-| ![用户管理](https://s2.loli.net/2022/12/09/gjJibCaVP3Ysnoh.png) | ![角色管理](https://s2.loli.net/2022/12/09/xHoNctJj2hUfMO8.png) |
-| ![菜单管理](https://s2.loli.net/2022/12/09/dah34MRfqiB2cez.png) | ![富文本编辑器](https://s2.loli.net/2022/12/09/QzCDIwmqydtLPYr.png) |
+| ![image-20230313003028425](https://s2.loli.net/2023/03/13/C4fDRJeTuUO7gPI.png) | ![字典管理](https://s2.loli.net/2023/03/13/BzqjHpa64wfeWhE.png) |
 
 ## 项目地址
 
@@ -129,7 +138,7 @@ pnpm run dev
 1.  获取基于 `Java 、SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码 ;
 2.  根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动;
 
-3.  替换前端项目 [vite.config.ts](vite.config.ts) 的线上接口地址 [vapi.youlai.tech](vapi.youlai.tech) 为本地的 [localhost:8989](localhost:8989) 即可。
+3.  替换 [vite.config.ts](vite.config.ts) 的代理目标地址 [vapi.youlai.tech](vapi.youlai.tech) 为本地的 [localhost:8989](localhost:8989) 。
 
 ## 关于我
 
