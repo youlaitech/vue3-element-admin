@@ -250,9 +250,6 @@ onMounted(() => {
 
         <el-table-column prop="sort" label="排序" width="100" />
 
-        <el-table-column prop="createTime" label="创建时间" width="200" />
-        <el-table-column prop="updateTime" label="修改时间" width="200" />
-
         <el-table-column label="操作" fixed="right" align="left" width="200">
           <template #default="scope">
             <el-button

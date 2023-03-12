@@ -178,7 +178,7 @@ function handleDelete(menuId: number) {
 }
 
 /**
- * 闭弹窗
+ * 关闭弹窗
  */
 function closeDialog() {
   dialog.visible = false;
@@ -245,7 +245,7 @@ onMounted(() => {
         default-expand-all
         border
       >
-        <el-table-column label="菜单名称" width="200">
+        <el-table-column label="菜单名称" min-width="200">
           <template #default="scope">
             <svg-icon
               :icon-class="
@@ -291,22 +291,6 @@ onMounted(() => {
         </el-table-column>
 
         <el-table-column label="排序" align="center" width="100" prop="sort" />
-
-        <el-table-column
-          label="创建时间"
-          align="center"
-          width="200"
-          prop="createTime"
-        >
-        </el-table-column>
-
-        <el-table-column
-          label="修改时间"
-          align="center"
-          width="200"
-          prop="updateTime"
-        >
-        </el-table-column>
 
         <el-table-column fixed="right" align="center" label="操作" width="220">
           <template #default="scope">
