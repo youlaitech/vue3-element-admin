@@ -41,13 +41,9 @@
 
 **在线预览地址**： [http://vue3.youlai.tech/](http://vue3.youlai.tech/)
 
-**首页控制台**
-
-![暗黑模式](https://s2.loli.net/2023/03/13/QvjY4zf3VCGteNF.png)
-
-**接口文档**
-
-![接口文档](https://s2.loli.net/2023/03/13/bH4J3O6WRgCUpwt.png)
+| ![暗黑模式](https://s2.loli.net/2023/03/13/QvjY4zf3VCGteNF.png) |
+| --------------------------------------------------------------- |
+| ![接口文档](https://s2.loli.net/2023/03/13/bH4J3O6WRgCUpwt.png) |
 
 **权限管理系统**
 
