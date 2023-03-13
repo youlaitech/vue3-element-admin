@@ -272,7 +272,7 @@ onMounted(() => {
         <el-button
           type="danger"
           :disabled="ids.length === 0"
-          @click="handleDelete"
+          @click="handleDelete()"
           ><i-ep-delete />删除</el-button
         >
       </template>
