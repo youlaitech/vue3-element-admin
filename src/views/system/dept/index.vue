@@ -20,7 +20,7 @@ const queryFormRef = ref(ElForm);
 const deptFormRef = ref(ElForm);
 
 const loading = ref(false);
-let ids = reactive([]);
+const ids = ref<number[]>([]);
 const dialog = reactive<DialogOption>({
   visible: false
 });
@@ -65,7 +65,7 @@ function resetQuery() {
  * 行复选框选中记录选中ID集合
  */
 function handleSelectionChange(selection: any) {
-  ids = selection.map((item: any) => item.id);
+  ids.value = selection.map((item: any) => item.id);
 }
 
 /**
@@ -133,10 +133,11 @@ function handleSubmit() {
 }
 
 /**
- * 删除
+ * 删除部门
  */
-function handleDelete(row: any) {
-  const deptIds = [row.id || ids].join(',');
+function handleDelete(deptId?: number) {
+  const deptIds = [deptId || ids.value].join(',');
+
   if (!deptIds) {
     ElMessage.warning('请勾选删除项');
     return;
@@ -146,18 +147,12 @@ function handleDelete(row: any) {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
-  })
-    .then(() => {
-      deleteDept(deptIds)
-        .then(() => {
-          handleQuery();
-          ElMessage.success('删除成功');
-        })
-        .catch(() => {
-          ElMessage.error('删除失败');
-        });
-    })
-    .catch(() => ElMessage.warning('已取消删除'));
+  }).then(() => {
+    deleteDept(deptIds).then(() => {
+      ElMessage.success('删除成功');
+      resetQuery();
+    });
+  });
 }
 
 /**
@@ -218,14 +213,13 @@ onMounted(() => {
     </div>
 
     <el-card>
-      <!--toolbar-->
       <template #header>
         <el-button type="success" @click="openDialog(0, undefined)"
           ><i-ep-plus />新增</el-button
         >
         <el-button
           type="danger"
-          @click="handleDelete"
+          @click="handleDelete()"
           :disabled="ids.length === 0"
           ><i-ep-delete />删除
         </el-button>

@@ -160,13 +160,18 @@ function resetForm() {
 /**
  * 删除
  */
-function handleDelete(roleId: number) {
+function handleDelete(roleId?: number) {
+  const roleIds = [roleId || ids.value].join(',');
+  if (!roleIds) {
+    ElMessage.warning('请勾选删除项');
+    return;
+  }
+
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    const roleIds = [roleId || ids.value].join(',');
     loading.value = true;
     deleteRoles(roleIds)
       .then(() => {

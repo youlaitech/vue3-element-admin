@@ -162,13 +162,18 @@ function resetForm() {
 /**
  * 删除字典
  */
-function handleDelete(dictId: number) {
+function handleDelete(dictId?: number) {
+  const dictIds = [dictId || ids.value].join(',');
+  if (!dictIds) {
+    ElMessage.warning('请勾选删除项');
+    return;
+  }
+
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    const dictIds = [dictId || ids.value].join(',');
     deleteDict(dictIds).then(() => {
       ElMessage.success('删除成功');
       resetQuery();
@@ -209,7 +214,7 @@ onMounted(() => {
         <el-button
           type="danger"
           :disabled="ids.length === 0"
-          @click="handleDelete"
+          @click="handleDelete()"
           ><i-ep-delete />删除</el-button
         >
       </template>

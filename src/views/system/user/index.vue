@@ -258,8 +258,8 @@ function handleSubmit() {
 /**
  * 删除用户
  */
-function handleDelete(id: number) {
-  const userIds = ([id] || ids.value).join(',');
+function handleDelete(id?: number) {
+  const userIds = [id || ids.value].join(',');
   if (!userIds) {
     ElMessage.warning('请勾选删除项');
     return;
@@ -459,7 +459,7 @@ onMounted(() => {
                 <el-button
                   type="danger"
                   :disabled="ids.length === 0"
-                  @click="handleDelete"
+                  @click="handleDelete()"
                   v-hasPerm="['sys:user:delete']"
                   ><i-ep-delete />删除</el-button
                 >
