@@ -104,7 +104,6 @@ function openDialog(parentId?: number, menuId?: number) {
     .then(() => {
       dialog.visible = true;
       if (menuId) {
-        // 编辑
         dialog.title = '编辑菜单';
         getMenuForm(menuId).then(({ data }) => {
           Object.assign(formData, data);
@@ -112,7 +111,6 @@ function openDialog(parentId?: number, menuId?: number) {
           menuCacheData.path = data.path ?? '';
         });
       } else {
-        // 新增
         dialog.title = '新增菜单';
         formData.parentId = parentId;
       }
@@ -160,6 +158,7 @@ function submitForm() {
  */
 function handleDelete(menuId: number) {
   if (!menuId) {
+    ElMessage.warning('请勾选删除项');
     return false;
   }
 

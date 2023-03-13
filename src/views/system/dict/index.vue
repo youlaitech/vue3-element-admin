@@ -71,8 +71,6 @@ function resetQuery() {
 
 /**
  * 行checkbox change事件
- *
- * @param selection
  */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
@@ -146,13 +144,18 @@ function resetForm() {
 /**
  * 删除字典类型
  */
-function handleDelete(dictTypeId: number) {
+function handleDelete(dictTypeId?: number) {
+  const dictTypeIds = [dictTypeId || ids.value].join(',');
+  if (!dictTypeIds) {
+    ElMessage.warning('请勾选删除项');
+    return;
+  }
+
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    const dictTypeIds = [dictTypeId || ids.value].join(',');
     deleteDictTypes(dictTypeIds).then(() => {
       ElMessage.success('删除成功');
       resetQuery();
@@ -219,7 +222,7 @@ onMounted(() => {
         <el-button
           type="danger"
           :disabled="ids.length === 0"
-          @click="handleDelete"
+          @click="handleDelete()"
           ><i-ep-delete />删除</el-button
         >
       </template>
