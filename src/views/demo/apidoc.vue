@@ -1,14 +1,23 @@
 <!-- 接口文档 -->
-<script setup lang="ts"></script>
-
 <template>
-  <div class="app-container h-full">
+  <div class="app-container">
     <iframe
-      id="iframe"
+      id="apidocIframe"
       src="https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5"
-      style="height: calc(100vh - 97px)"
       width="100%"
       frameborder="0"
     ></iframe>
   </div>
 </template>
+
+<style lang="scss" scoped>
+#apidocIframe {
+  height: calc(100vh - 100px);
+}
+
+.hasTagsView {
+  #apidocIframe {
+    height: calc(100vh - 140px);
+  }
+}
+</style>
