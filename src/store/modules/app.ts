@@ -9,8 +9,9 @@ import en from 'element-plus/es/locale/lang/en';
 // setup
 export const useAppStore = defineStore('app', () => {
   // state
+
   const device = useStorage('device', 'desktop');
-  const size = useStorage('size', defaultSettings.size);
+  const size = useStorage<any>('size', defaultSettings.size);
   const language = useStorage('language', defaultSettings.language);
 
   const sidebarStatus = useStorage('sidebarStatus', 'closed');
