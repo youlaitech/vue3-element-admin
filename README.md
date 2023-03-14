@@ -40,9 +40,9 @@
 
 **控制台 & 接口文档**
 
-| ![暗黑模式](https://img-blog.csdnimg.cn/img_convert/14288e012e5275a547305bef789b8216.png) |
-| --- |
-| ![接口文档](https://img-blog.csdnimg.cn/img_convert/30d5c50c706fd1dd5b22d478766efc1c.png) |
+| ![暗黑模式](https://s2.loli.net/2023/03/13/QvjY4zf3VCGteNF.png) |
+| --------------------------------------------------------------- |
+| ![接口文档](https://s2.loli.net/2023/03/13/bH4J3O6WRgCUpwt.png) |
 
 **权限管理系统**
 
@@ -128,10 +128,10 @@ pnpm run build:prod
 2.  根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动;
 3.  替换 [vite.config.ts](vite.config.ts) 的代理目标地址 [vapi.youlai.tech](vapi.youlai.tech) 为本地的 [localhost:8989](localhost:8989) 。
 
-## 交流群
+## 技术群
 
 > 欢迎加我的微信，备注 `前端`、`后端`、`运维`、`全栈` 进对应技术交流群
 
 | 微信交流群 | 我的微信 | 微信公众号 |
 | --- | --- | --- |
-| <img  src="https://img-blog.csdnimg.cn/10db82a0219b402aafee17ed1159aa46.jpeg"   width="200px" height="200px" /> | <img  src="https://img-blog.csdnimg.cn/img_convert/ff80e72efe015e07f1bb0d092fbfc64f.jpeg"   width="200px" height="200px" /> | <img src="https://www.youlai.tech/files/blog/gongzhonghao.jpg"  width="200px" height="200px" > |
+| <img  src="https://s2.loli.net/2023/03/14/mZGy9djvPYsaoHn.png"   width="200px" height="200px" /> | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg"   width="200px" height="200px" /> | <img src="https://www.youlai.tech/files/blog/gongzhonghao.jpg"  width="200px" height="200px" > |
