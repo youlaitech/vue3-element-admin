@@ -30,6 +30,14 @@ const props = defineProps({
   }
 });
 
+watch(
+  () => props.typeCode,
+  (newVal: string) => {
+    queryParams.typeCode = newVal;
+    resetQuery();
+  }
+);
+
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
 
@@ -80,6 +88,7 @@ function handleQuery() {
  */
 function resetQuery() {
   queryFormRef.value.resetFields();
+  queryParams.pageNum = 1;
   handleQuery();
 }
 
