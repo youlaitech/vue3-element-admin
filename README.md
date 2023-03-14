@@ -128,7 +128,7 @@ pnpm run build:prod
 2.  根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动;
 3.  替换 [vite.config.ts](vite.config.ts) 的代理目标地址 [vapi.youlai.tech](vapi.youlai.tech) 为本地的 [localhost:8989](localhost:8989) 。
 
-## 关于我
+## 我的微信
 
 > 欢迎加我的微信，备注 `前端`、`后端`、`运维`、`全栈` 进对应技术交流群
 
