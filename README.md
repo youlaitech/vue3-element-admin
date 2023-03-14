@@ -1,10 +1,7 @@
 <p align="center">
-    <img src="https://img.shields.io/badge/Vue-3.2.40-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-4.0.0-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.2.27-blue.svg"/>
-    <a href="https://gitee.com/youlaitech/youlai-mall" target="_blank">
-        <img src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
-    </a> 
+    <img src="https://img.shields.io/badge/Vue-3.2.45-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vite-4.1.4-green.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.2.32-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -86,21 +83,17 @@ pnpm install
 
 # 项目运行
 pnpm run dev
+
+# 项目打包
+pnpm run build:prod
+
 ```
 
 ## 项目部署
 
-- 打包项目
-
-  ```
-  pnpm run build:prod
-  ```
-
-  生成的静态文件位于项目根目录 `dist` 文件夹下
-
 - 上传文件
 
-  创建 `/mnt/nginx/html` 目录，将打包生成 `dist` 下的所有文件拷贝至此工作目录下
+  将打包生成在 `dist` 目录下的文件拷贝至 `/usr/share/nginx/html` 目录
 
 - nginx.cofig 配置
 
@@ -110,11 +103,11 @@ pnpm run dev
       server_name  localhost;
 
       location / {
-          root /mnt/nginx/html;
+          root /usr/share/nginx/html;
           index index.html index.htm;
       }
 
-      # 代理转发 prod-api 请求至 vapi.youlai.tech
+      # 代理转发 prod-api 标识至 vapi.youlai.tech
       location /prod-api/ {
           proxy_pass http://vapi.youlai.tech/;
       }
@@ -124,18 +117,15 @@ pnpm run dev
 
 ## 接口文档
 
-**线上接口**
-
 - 接口调用地址：[vapi.youlai.tech](http://vapi.youlai.tech)
 - 接口文档地址：[vue3-element-admin 在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5/api-65851240)
 
-**本地接口**
+## 本地接口
 
 > 默认使用线上接口，你可以通过以下步骤完成本地接口环境搭建：
 
 1.  获取基于 `Java 、SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码 ;
 2.  根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动;
-
 3.  替换 [vite.config.ts](vite.config.ts) 的代理目标地址 [vapi.youlai.tech](vapi.youlai.tech) 为本地的 [localhost:8989](localhost:8989) 。
 
 ## 关于我
