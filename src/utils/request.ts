@@ -33,18 +33,14 @@ service.interceptors.response.use(
     const { code, msg } = response.data;
     if (code === '00000') {
       return response.data;
-    } else {
-      // 响应数据为二进制流处理(Excel导出)
-      if (response.data instanceof ArrayBuffer) {
-        return response;
-      }
-
-      ElMessage({
-        message: msg || '系统出错',
-        type: 'error'
-      });
-      return Promise.reject(new Error(msg || 'Error'));
     }
+    // 响应数据为二进制流处理(Excel导出)
+    if (response.data instanceof ArrayBuffer) {
+      return response;
+    }
+
+    ElMessage.error(msg || '系统出错');
+    return Promise.reject(new Error(msg || 'Error'));
   },
   (error: any) => {
     if (error.response.data) {
@@ -52,18 +48,15 @@ service.interceptors.response.use(
       // token 过期,重新登录
       if (code === 'A0230') {
         ElMessageBox.confirm('当前页面已失效，请重新登录', '提示', {
-          confirmButtonText: 'OK',
+          confirmButtonText: '确定',
           type: 'warning'
         }).then(() => {
           localStorage.clear();
           window.location.href = '/';
         });
-      } else {
-        ElMessage({
-          message: msg || '系统出错',
-          type: 'error'
-        });
       }
+
+      ElMessage.error(msg || '系统出错');
     }
     return Promise.reject(error.message);
   }
