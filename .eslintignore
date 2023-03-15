@@ -14,3 +14,6 @@ dist
 .eslintrc.js
 prettier.config.js
 src/assets
+
+auto-imports.d.ts
+components.d.ts
