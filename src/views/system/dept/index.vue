@@ -257,14 +257,14 @@ onMounted(() => {
               type="primary"
               link
               size="small"
-              @click.stop="openDialog(scope.row.id, scope.row.parentId)"
+              @click.stop="openDialog(scope.row.parentId, scope.row.id)"
               ><i-ep-edit />编辑
             </el-button>
             <el-button
               type="primary"
               link
               size="small"
-              @click.stop="openDialog(scope.row.id, scope.row.parentId)"
+              @click.stop="handleDelete(scope.row.id)"
             >
               <i-ep-delete />删除
             </el-button>
