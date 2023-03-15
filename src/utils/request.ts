@@ -11,14 +11,9 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    if (!config.headers) {
-      throw new Error(
-        `Expected 'config' and 'config.headers' not to be undefined`
-      );
-    }
-    const user = useUserStoreHook();
-    if (user.token) {
-      config.headers.Authorization = localStorage.getItem('accessToken');
+    const userStore = useUserStoreHook();
+    if (userStore.token) {
+      config.headers.Authorization = userStore.token;
     }
     return config;
   },
