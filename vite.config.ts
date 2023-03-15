@@ -72,9 +72,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
           ElementPlusResolver(),
           // 自动导入图标组件
-          IconsResolver({
-            prefix: 'Icon'
-          })
+          IconsResolver({})
         ],
         vueTemplate: true, // 是否在 vue 模板中自动导入
         dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts') // (false) 配置文件生成位置，默认是根目录 /auto-imports.d.ts
