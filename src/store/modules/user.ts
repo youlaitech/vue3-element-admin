@@ -19,9 +19,9 @@ export const useUserStore = defineStore('user', () => {
   const perms = ref<Array<string>>([]); // 用户权限编码集合 → 判断按钮权限
 
   /**
-   * 登录
+   * 登录调用
    *
-   * @param loginData
+   * @param {LoginData}
    * @returns
    */
   function login(loginData: LoginData) {
@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', () => {
       loginApi(loginData)
         .then(response => {
           const { tokenType, accessToken } = response.data;
-          token.value = tokenType + ' ' + accessToken;
+          token.value = tokenType + ' ' + accessToken; // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
           resolve();
         })
         .catch(error => {

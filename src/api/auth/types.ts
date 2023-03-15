@@ -1,8 +1,14 @@
 /**
- * 登录请求
+ * 登录请求参数
  */
 export interface LoginData {
+  /**
+   * 用户名
+   */
   username: string;
+  /**
+   * 密码
+   */
   password: string;
 }
 
@@ -10,16 +16,20 @@ export interface LoginData {
  * 登录响应
  */
 export interface LoginResult {
-  accessToken: string;
-  tokenType: string;
-  refreshToken: string;
-  expires: number;
-}
-
-/**
- * 验证码类型
- */
-export interface VerifyCode {
-  verifyCodeImg: string;
-  verifyCodeKey: string;
+  /**
+   * 访问token
+   */
+  accessToken?: string;
+  /**
+   * 过期时间(单位：毫秒)
+   */
+  expires?: number;
+  /**
+   * 刷新token
+   */
+  refreshToken?: string;
+  /**
+   * token 类型
+   */
+  tokenType?: string;
 }
