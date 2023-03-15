@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Sunny, Moon } from '@element-plus/icons-vue';
-
 import { useSettingsStore } from '@/store/modules/settings';
 
-import { useDark, useToggle } from '@vueuse/core';
+import IconEpSunny from '~icons/ep/sunny';
+import IconEpMoon from '~icons/ep/moon';
+
 /**
  * 暗黑模式
  */
@@ -49,8 +49,8 @@ onMounted(() => {
         v-model="isDark"
         @change="toggleDark"
         inline-prompt
-        :active-icon="Moon"
-        :inactive-icon="Sunny"
+        :active-icon="IconEpMoon"
+        :inactive-icon="IconEpSunny"
         active-color="var(--el-fill-color-dark)"
         inactive-color="var(--el-color-primary)"
       />

@@ -69,7 +69,7 @@ onMounted(() => {
       placeholder="点击选择图标"
     >
       <template #prepend>
-        <svg-icon :icon-class="inputValue"></svg-icon>
+        <svg-icon :icon-class="inputValue" />
       </template>
     </el-input>
 

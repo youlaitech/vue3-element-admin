@@ -9,13 +9,11 @@
     :http-request="uploadFile"
   >
     <img v-if="imgUrl" :src="imgUrl" class="single" />
-    <el-icon v-else class="single-uploader-icon"><Plus /></el-icon>
+    <el-icon v-else class="single-uploader-icon"><i-ep-plus /></el-icon>
   </el-upload>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Plus } from '@element-plus/icons-vue';
 import { UploadRawFile, UploadRequestOptions } from 'element-plus';
 import { uploadFileApi } from '@/api/file';
 
