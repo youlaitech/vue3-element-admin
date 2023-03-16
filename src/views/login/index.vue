@@ -4,7 +4,7 @@
       ref="loginFormRef"
       :model="loginData"
       :rules="loginRules"
-      class="w-[520px] mx-auto mt-[150px]"
+      class="login-form"
     >
       <div class="flex text-white items-center py-4">
         <span class="text-2xl flex-1 text-center">{{ $t('login.title') }}</span>
@@ -158,6 +158,13 @@ function handleLogin() {
   width: 100%;
   background-color: #2d3a4b;
   overflow: hidden;
+
+  .login-form {
+    width: 520px;
+    max-width: 100%;
+    padding: 160px 35px 0;
+    overflow: hidden;
+  }
 }
 .el-form-item {
   border: 1px solid rgba(255, 255, 255, 0.1);
