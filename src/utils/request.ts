@@ -49,9 +49,9 @@ service.interceptors.response.use(
           localStorage.clear();
           window.location.href = '/';
         });
+      } else {
+        ElMessage.error(msg || '系统出错');
       }
-
-      ElMessage.error(msg || '系统出错');
     }
     return Promise.reject(error.message);
   }
