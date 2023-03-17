@@ -115,8 +115,8 @@ orderCount.value = 2000;
     </el-row>
 
     <!-- 数据卡片 -->
-    <el-row :gutter="40" class="mb-8">
-      <el-col :xs="24" :sm="12" :lg="6">
+    <el-row :gutter="40" class="mb-4">
+      <el-col :xs="24" :sm="12" :lg="6" class="mb-4">
         <div class="data-box">
           <div
             class="text-[#40c9c6] hover:!text-white hover:bg-[#40c9c6] p-3 rounded"
@@ -133,7 +133,7 @@ orderCount.value = 2000;
       </el-col>
 
       <!--消息数-->
-      <el-col :xs="24" :sm="12" :lg="6">
+      <el-col :xs="24" :sm="12" :lg="6" class="mb-4">
         <div class="data-box">
           <div
             class="text-[#36a3f7] hover:!text-white hover:bg-[#36a3f7] p-3 rounded"
@@ -149,7 +149,7 @@ orderCount.value = 2000;
         </div>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="6">
+      <el-col :xs="24" :sm="12" :lg="6" class="mb-4">
         <div class="data-box">
           <div
             class="text-[#f4516c] hover:!text-white hover:bg-[#f4516c] p-3 rounded"
@@ -164,7 +164,7 @@ orderCount.value = 2000;
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6">
+      <el-col :xs="24" :sm="12" :lg="6" class="mb-2">
         <div class="data-box">
           <div
             class="text-[#34bfa3] hover:!text-white hover:bg-[#34bfa3] p-3 rounded"
@@ -234,7 +234,6 @@ orderCount.value = 2000;
   .data-box {
     font-weight: bold;
     padding: 20px;
-    cursor: pointer;
     color: var(--el-text-color-regular);
     background: var(--el-bg-color-overlay);
     box-shadow: var(--el-box-shadow-dark);
