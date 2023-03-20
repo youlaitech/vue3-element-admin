@@ -2,7 +2,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { defineStore } from 'pinia';
 import { constantRoutes } from '@/router';
 import { store } from '@/store';
-import { listRoutes } from '@/api/menu';
+import { getRoutesApi } from '@/api/menu';
 
 const modules = import.meta.glob('../../views/**/**.vue');
 const Layout = () => import('@/layout/index.vue');
@@ -76,11 +76,18 @@ export const usePermissionStore = defineStore('permission', () => {
   function setRoutes(newRoutes: RouteRecordRaw[]) {
     routes.value = constantRoutes.concat(newRoutes);
   }
-
+  /**
+   * 生成动态路由
+   *
+   * @param roles 用户角色集合
+   * @returns
+   */
   function generateRoutes(roles: string[]) {
     return new Promise<RouteRecordRaw[]>((resolve, reject) => {
-      listRoutes()
+      // 接口获取所有路由
+      getRoutesApi()
         .then(({ data: asyncRoutes }) => {
+          // 根据角色获取有访问权限的路由
           const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles);
           setRoutes(accessedRoutes);
           resolve(accessedRoutes);
