@@ -16,8 +16,9 @@ router.beforeEach(async (to, from, next) => {
   const hasToken = localStorage.getItem('accessToken');
   if (hasToken) {
     if (to.path === '/login') {
-      // 登录成功，跳转到首页
+      // 如果已登录，跳转首页
       next({ path: '/' });
+      NProgress.done();
     } else {
       const userStore = useUserStoreHook();
       const hasRoles = userStore.roles && userStore.roles.length > 0;
