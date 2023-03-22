@@ -39,7 +39,7 @@ export const constantRoutes: RouteRecordRaw[] = [
         meta: { hidden: true }
       },
       {
-        path: '/404',
+        path: '404',
         component: () => import('@/views/error-page/404.vue'),
         meta: { hidden: true }
       }
