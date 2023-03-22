@@ -1,7 +1,8 @@
-import { createApp, Directive } from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
 import router from '@/router';
 import { setupStore } from '@/store';
+import { setupDirective } from '@/directive';
 
 import '@/permission';
 
@@ -11,18 +12,15 @@ import 'virtual:svg-icons-register';
 // 国际化
 import i18n from '@/lang/index';
 
+// 样式
 import '@/styles/index.scss';
 import 'element-plus/theme-chalk/dark/css-vars.css';
-
 import 'uno.css';
 
 const app = createApp(App);
-// 自定义指令
-import * as directive from '@/directive';
-Object.keys(directive).forEach(key => {
-  app.directive(key, (directive as { [key: string]: Directive })[key]);
-});
-
-// 全局挂载
+// 全局注册 自定义指令(directive)
+setupDirective(app);
+// 全局注册 状态管理(store)
 setupStore(app);
+
 app.use(router).use(i18n).mount('#app');

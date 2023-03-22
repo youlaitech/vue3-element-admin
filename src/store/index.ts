@@ -3,7 +3,7 @@ import { createPinia } from 'pinia';
 
 const store = createPinia();
 
-// 全局挂载store
+// 全局注册 store
 export function setupStore(app: App<Element>) {
   app.use(store);
 }
