@@ -8,7 +8,7 @@
     </a>
 </p>
 <p align="center">
-<a target="_blank" href="http://vue3.youlai.tech">在线预览</a> |  <a target="_blank" href="https://www.youlai.tech/page/5d571c/">官方文档</a> 
+<a target="_blank" href="http://vue3.youlai.tech">在线预览</a> |  <a target="_blank" href="https://blog.csdn.net/u013737132/article/details/124522947">官方文档</a> 
 </p>
 
 ## 项目介绍
@@ -134,4 +134,4 @@ pnpm run build:prod
 
 | 微信交流群 | 我的微信 | 微信公众号 |
 | --- | --- | --- |
-| <img  src="https://s2.loli.net/2023/03/14/mZGy9djvPYsaoHn.png"   width="200px" height="200px" /> | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg"   width="200px" height="200px" /> | <img src="https://www.youlai.tech/files/blog/gongzhonghao.jpg"  width="200px" height="200px" > |
+| <img  src="https://s2.loli.net/2023/03/22/xSE2mlf1oWtH3rg.png"   width="258px" height="258px" /> | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg"   width="258px" height="258px" /> | <img src="https://www.youlai.tech/files/blog/gongzhonghao.jpg"  width="258px" height="258px" > |
