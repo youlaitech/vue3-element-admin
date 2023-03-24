@@ -1,6 +1,11 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginFormRef" :model="loginData" :rules="loginRules" class="login-form">
+    <el-form
+      ref="loginFormRef"
+      :model="loginData"
+      :rules="loginRules"
+      class="login-form"
+    >
       <div class="flex text-white items-center py-4">
         <span class="text-2xl flex-1 text-center">{{ $t('login.title') }}</span>
         <lang-select style="color: #fff" />
@@ -10,20 +15,40 @@
         <div class="p-2 text-white">
           <svg-icon icon-class="user" />
         </div>
-        <el-input class="flex-1" ref="username" size="large" v-model="loginData.username"
-          :placeholder="$t('login.username')" name="username" />
+        <el-input
+          class="flex-1"
+          ref="username"
+          size="large"
+          v-model="loginData.username"
+          :placeholder="$t('login.username')"
+          name="username"
+        />
       </el-form-item>
 
-      <el-tooltip :disabled="isCapslock === false" content="Caps lock is On" placement="right">
+      <el-tooltip
+        :disabled="isCapslock === false"
+        content="Caps lock is On"
+        placement="right"
+      >
         <el-form-item prop="password">
           <span class="p-2 text-white">
             <svg-icon icon-class="password" />
           </span>
-          <el-input class="flex-1" v-model="loginData.password" placeholder="密码"
-            :type="passwordVisible === false ? 'password' : 'input'" size="large" name="password" @keyup="checkCapslock"
-            @keyup.enter="handleLogin" />
+          <el-input
+            class="flex-1"
+            v-model="loginData.password"
+            placeholder="密码"
+            :type="passwordVisible === false ? 'password' : 'input'"
+            size="large"
+            name="password"
+            @keyup="checkCapslock"
+            @keyup.enter="handleLogin"
+          />
           <span class="mr-2" @click="passwordVisible = !passwordVisible">
-            <svg-icon :icon-class="passwordVisible === false ? 'eye' : 'eye-open'" class="text-white cursor-pointer" />
+            <svg-icon
+              :icon-class="passwordVisible === false ? 'eye' : 'eye-open'"
+              class="text-white cursor-pointer"
+            />
           </span>
         </el-form-item>
       </el-tooltip>
@@ -33,17 +58,26 @@
         <span class="p-2 text-white">
           <svg-icon icon-class="verify_code" />
         </span>
-        <el-input v-model="loginData.verifyCode" auto-complete="off" :placeholder="$t('login.verifyCode')" class="w-[60%]"
-          @keyup.enter="handleLogin" />
+        <el-input
+          v-model="loginData.verifyCode"
+          auto-complete="off"
+          :placeholder="$t('login.verifyCode')"
+          class="w-[60%]"
+          @keyup.enter="handleLogin"
+        />
 
         <div class="captcha">
           <img :src="captchaBase64" @click="getCaptcha" />
         </div>
       </el-form-item>
 
-
-      <el-button size="default" :loading="loading" type="primary" class="w-full" @click.prevent="handleLogin">{{
-        $t('login.login') }}
+      <el-button
+        size="default"
+        :loading="loading"
+        type="primary"
+        class="w-full"
+        @click.prevent="handleLogin"
+        >{{ $t('login.login') }}
       </el-button>
 
       <!-- 账号密码提示 -->
@@ -75,17 +109,17 @@ const loginFormRef = ref(ElForm);
 
 const loginData = ref<LoginData>({
   username: 'admin',
-  password: '123456',
+  password: '123456'
 });
 
 const loginRules = {
   username: [{ required: true, trigger: 'blur' }],
   password: [{ required: true, trigger: 'blur', validator: validatePassword }],
-  // verifyCode: [{ required: true, trigger: 'blur' }],
+  verifyCode: [{ required: true, trigger: 'blur' }]
 };
 
 const passwordVisible = ref(false);
-const captchaBase64 = ref()
+const captchaBase64 = ref();
 
 const loading = ref(false);
 
@@ -144,6 +178,7 @@ function handleLogin() {
         })
         .finally(() => {
           loading.value = false;
+          getCaptcha();
         });
     }
   });
@@ -152,7 +187,6 @@ function handleLogin() {
 onMounted(() => {
   getCaptcha();
 });
-
 </script>
 
 <style lang="scss" scoped>
@@ -221,6 +255,5 @@ onMounted(() => {
       }
     }
   }
-
 }
 </style>
