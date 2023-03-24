@@ -10,10 +10,7 @@ export default {
     username: 'Username',
     password: 'Password',
     login: 'Login',
-    code: 'Verification Code',
-    copyright: '',
-    icp: '',
-    thirdPartyLogin: 'third-party login'
+    verifyCode: 'Verify Code',
   },
   // 导航栏国际化
   navbar: {

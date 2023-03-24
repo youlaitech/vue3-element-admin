@@ -1,11 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form
-      ref="loginFormRef"
-      :model="loginData"
-      :rules="loginRules"
-      class="login-form"
-    >
+    <el-form ref="loginFormRef" :model="loginData" :rules="loginRules" class="login-form">
       <div class="flex text-white items-center py-4">
         <span class="text-2xl flex-1 text-center">{{ $t('login.title') }}</span>
         <lang-select style="color: #fff" />
@@ -15,51 +10,40 @@
         <div class="p-2 text-white">
           <svg-icon icon-class="user" />
         </div>
-        <el-input
-          class="flex-1"
-          ref="username"
-          size="large"
-          v-model="loginData.username"
-          :placeholder="$t('login.username')"
-          name="username"
-        />
+        <el-input class="flex-1" ref="username" size="large" v-model="loginData.username"
+          :placeholder="$t('login.username')" name="username" />
       </el-form-item>
 
-      <el-tooltip
-        :disabled="isCapslock === false"
-        content="Caps lock is On"
-        placement="right"
-      >
+      <el-tooltip :disabled="isCapslock === false" content="Caps lock is On" placement="right">
         <el-form-item prop="password">
           <span class="p-2 text-white">
             <svg-icon icon-class="password" />
           </span>
-          <el-input
-            class="flex-1"
-            v-model="loginData.password"
-            placeholder="密码"
-            :type="passwordVisible === false ? 'password' : 'input'"
-            size="large"
-            name="password"
-            @keyup="checkCapslock"
-            @keyup.enter="handleLogin"
-          />
+          <el-input class="flex-1" v-model="loginData.password" placeholder="密码"
+            :type="passwordVisible === false ? 'password' : 'input'" size="large" name="password" @keyup="checkCapslock"
+            @keyup.enter="handleLogin" />
           <span class="mr-2" @click="passwordVisible = !passwordVisible">
-            <svg-icon
-              :icon-class="passwordVisible === false ? 'eye' : 'eye-open'"
-              class="text-white cursor-pointer"
-            />
+            <svg-icon :icon-class="passwordVisible === false ? 'eye' : 'eye-open'" class="text-white cursor-pointer" />
           </span>
         </el-form-item>
       </el-tooltip>
 
-      <el-button
-        size="default"
-        :loading="loading"
-        type="primary"
-        class="w-full"
-        @click.prevent="handleLogin"
-        >{{ $t('login.login') }}
+      <!-- 验证码 -->
+      <el-form-item prop="verifyCode">
+        <span class="p-2 text-white">
+          <svg-icon icon-class="verify_code" />
+        </span>
+        <el-input v-model="loginData.verifyCode" auto-complete="off" :placeholder="$t('login.verifyCode')" class="w-[60%]"
+          @keyup.enter="handleLogin" />
+
+        <div class="captcha">
+          <img :src="captchaBase64" @click="getCaptcha" />
+        </div>
+      </el-form-item>
+
+
+      <el-button size="default" :loading="loading" type="primary" class="w-full" @click.prevent="handleLogin">{{
+        $t('login.login') }}
       </el-button>
 
       <!-- 账号密码提示 -->
@@ -81,6 +65,7 @@ import { useUserStore } from '@/store/modules/user';
 
 // API依赖
 import { LocationQuery, LocationQueryValue, useRoute } from 'vue-router';
+import { getCaptchaApi } from '@/api/auth';
 import { LoginData } from '@/api/auth/types';
 
 const userStore = useUserStore();
@@ -90,15 +75,17 @@ const loginFormRef = ref(ElForm);
 
 const loginData = ref<LoginData>({
   username: 'admin',
-  password: '123456'
+  password: '123456',
 });
 
 const loginRules = {
   username: [{ required: true, trigger: 'blur' }],
-  password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+  password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+  // verifyCode: [{ required: true, trigger: 'blur' }],
 };
 
 const passwordVisible = ref(false);
+const captchaBase64 = ref()
 
 const loading = ref(false);
 
@@ -119,7 +106,18 @@ function checkCapslock(e: any) {
 }
 
 /**
- *  登录
+ * 验证码
+ */
+function getCaptcha() {
+  getCaptchaApi().then(({ data }) => {
+    const { verifyCodeBase64, verifyCodeKey } = data;
+    loginData.value.verifyCodeKey = verifyCodeKey;
+    captchaBase64.value = verifyCodeBase64;
+  });
+}
+
+/**
+ * 登录
  */
 function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
@@ -150,9 +148,26 @@ function handleLogin() {
     }
   });
 }
+
+onMounted(() => {
+  getCaptcha();
+});
+
 </script>
 
 <style lang="scss" scoped>
+.captcha {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  img {
+    height: 48px;
+    width: 120px;
+    cursor: pointer;
+  }
+}
+
 .login-container {
   min-height: 100%;
   width: 100%;
@@ -167,6 +182,7 @@ function handleLogin() {
     overflow: hidden;
   }
 }
+
 .el-form-item {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.1);
@@ -175,17 +191,20 @@ function handleLogin() {
 
 .el-input {
   background: transparent;
+
   // 子组件 scoped 无效，使用 :deep
   :deep(.el-input__wrapper) {
     padding: 0;
     background: transparent;
     box-shadow: none;
+
     .el-input__inner {
       background: transparent;
       border: 0px;
       border-radius: 0px;
       color: #fff;
       caret-color: #fff;
+
       &:-webkit-autofill {
         box-shadow: 0 0 0 1000px transparent inset !important;
         -webkit-text-fill-color: #fff !important;
@@ -202,5 +221,6 @@ function handleLogin() {
       }
     }
   }
+
 }
 </style>

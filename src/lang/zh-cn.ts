@@ -10,10 +10,7 @@ export default {
     username: '用户名',
     password: '密码',
     login: '登 录',
-    code: '请输入验证码',
-    copyright: '',
-    icp: '',
-    thirdPartyLogin: '第三方登录'
+    verifyCode: '验证码'
   },
   navbar: {
     dashboard: '首页',
