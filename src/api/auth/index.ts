@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
-import { LoginData, LoginResult } from './types';
+import { CaptchaResult, LoginData, LoginResult } from './types';
 
 /**
  * 登录API
@@ -23,5 +23,17 @@ export function logoutApi() {
   return request({
     url: '/api/v1/auth/logout',
     method: 'delete'
+  });
+}
+
+
+
+/**
+ * 获取验证码
+ */
+export function getCaptchaApi(): AxiosPromise<CaptchaResult> {
+  return request({
+    url: '/api/v1/auth/captcha',
+    method: 'get'
   });
 }
