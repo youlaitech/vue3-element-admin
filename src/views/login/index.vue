@@ -105,6 +105,26 @@ import { LoginData } from '@/api/auth/types';
 const userStore = useUserStore();
 const route = useRoute();
 
+/**
+ * 按钮loading
+ */
+const loading = ref(false);
+/**
+ * 是否大写锁定
+ */
+const isCapslock = ref(false);
+/**
+ * 密码是否可见
+ */
+const passwordVisible = ref(false);
+/**
+ * 验证码图片Base64字符串
+ */
+const captchaBase64 = ref();
+
+/**
+ * 登录表单引用
+ */
 const loginFormRef = ref(ElForm);
 
 const loginData = ref<LoginData>({
@@ -114,16 +134,14 @@ const loginData = ref<LoginData>({
 
 const loginRules = {
   username: [{ required: true, trigger: 'blur' }],
-  password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+  password: [{ required: true, trigger: 'blur', validator: passwordValidator }],
   verifyCode: [{ required: true, trigger: 'blur' }]
 };
 
-const passwordVisible = ref(false);
-const captchaBase64 = ref();
-
-const loading = ref(false);
-
-function validatePassword(rule: any, value: any, callback: any) {
+/**
+ * 密码校验器
+ */
+function passwordValidator(rule: any, value: any, callback: any) {
   if (value.length < 6) {
     callback(new Error('The password can not be less than 6 digits'));
   } else {
@@ -131,16 +149,16 @@ function validatePassword(rule: any, value: any, callback: any) {
   }
 }
 
-// 是否大写锁定
-const isCapslock = ref(false);
-
+/**
+ * 检查输入大小写状态
+ */
 function checkCapslock(e: any) {
   const { key } = e;
   isCapslock.value = key && key.length === 1 && key >= 'A' && key <= 'Z';
 }
 
 /**
- * 验证码
+ * 获取验证码
  */
 function getCaptcha() {
   getCaptchaApi().then(({ data }) => {
@@ -176,9 +194,12 @@ function handleLogin() {
 
           router.push({ path: redirect, query: otherQueryParams });
         })
+        .catch(() => {
+          // 验证失败，重新生成验证码
+          getCaptcha();
+        })
         .finally(() => {
           loading.value = false;
-          getCaptcha();
         });
     }
   });
@@ -190,18 +211,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.captcha {
-  position: absolute;
-  right: 0;
-  top: 0;
-
-  img {
-    height: 48px;
-    width: 120px;
-    cursor: pointer;
-  }
-}
-
 .login-container {
   min-height: 100%;
   width: 100%;
@@ -214,6 +223,18 @@ onMounted(() => {
     padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
+
+    .captcha {
+      position: absolute;
+      right: 0;
+      top: 0;
+
+      img {
+        height: 48px;
+        width: 120px;
+        cursor: pointer;
+      }
+    }
   }
 }
 
