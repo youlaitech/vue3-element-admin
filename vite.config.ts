@@ -76,7 +76,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           IconsResolver({})
         ],
         vueTemplate: true, // 是否在 vue 模板中自动导入
-        dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts') // (false) 配置文件生成位置，默认是根目录 /auto-imports.d.ts
+        dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts') //  自动导入组件类型声明文件位置，默认根目录; false 关闭自动生成
       }),
 
       Components({
@@ -88,7 +88,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           // 自动导入 Element Plus 组件
           ElementPlusResolver()
         ],
-        dts: path.resolve(pathSrc, 'types', 'components.d.ts') // (false) 配置文件生成位置，默认是根目录 /components.d.ts
+        dts: path.resolve(pathSrc, 'types', 'components.d.ts') //  自动导入组件类型声明文件位置，默认根目录; false 关闭自动生成
       }),
 
       Icons({
