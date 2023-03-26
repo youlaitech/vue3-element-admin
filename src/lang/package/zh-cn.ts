@@ -12,6 +12,7 @@ export default {
     login: '登 录',
     verifyCode: '验证码'
   },
+  // 导航栏国际化
   navbar: {
     dashboard: '首页',
     logout: '注销',
