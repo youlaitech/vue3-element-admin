@@ -3,26 +3,23 @@ const props = defineProps({
   modelValue: {
     type: String,
     require: false
-  },
-  /**
-   * 图标选择器宽度
-   */
-  width: {
-    type: String,
-    require: false,
-    default: '400px'
   }
 });
 
 const emit = defineEmits(['update:modelValue']);
-const visible = ref(false);
 const inputValue = toRef(props, 'modelValue');
-const width = toRef(props, 'width');
-const iconNames: string[] = [];
-const filterIconNames = ref<string[]>([]);
 
-const filterValue = ref('');
+const visible = ref(false); // 弹窗显示状态
 
+const iconNames: string[] = []; // 所有的图标名称集合
+
+const filterValue = ref(''); // 筛选的值
+const filterIconNames = ref<string[]>([]); // 过滤后的图标名称集合
+
+const iconSelectorRef = ref(null);
+/**
+ * icon 加载
+ */
 function loadIcons() {
   const icons = import.meta.glob('../../assets/icons/*.svg');
   for (const icon in icons) {
@@ -33,9 +30,9 @@ function loadIcons() {
 }
 
 /**
- * 筛选图标
+ * icon 筛选
  */
-function handleIconFilter() {
+function handleFilter() {
   if (filterValue.value) {
     filterIconNames.value = iconNames.filter(iconName =>
       iconName.includes(filterValue.value)
@@ -46,14 +43,17 @@ function handleIconFilter() {
 }
 
 /**
- * 选择图标
- *
- * @param iconName 选择的图标名称
+ * icon 选择
  */
-function onIconSelect(iconName: string) {
+function handleSelect(iconName: string) {
   emit('update:modelValue', iconName);
   visible.value = false;
 }
+
+/**
+ * 点击容器外的区域关闭弹窗 VueUse onClickOutside
+ */
+onClickOutside(iconSelectorRef, () => (visible.value = false));
 
 onMounted(() => {
   loadIcons();
@@ -61,7 +61,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative" :style="{ width: width }">
+  <div class="iconselect-container" ref="iconSelectorRef">
     <el-input
       v-model="inputValue"
       readonly
@@ -78,7 +78,7 @@ onMounted(() => {
       :visible="visible"
       placement="bottom-end"
       trigger="click"
-      :width="400"
+      width="400"
     >
       <template #reference>
         <div
@@ -96,7 +96,7 @@ onMounted(() => {
         v-model="filterValue"
         placeholder="搜索图标"
         clearable
-        @input="handleIconFilter"
+        @input="handleFilter"
       />
       <el-divider border-style="dashed" />
 
@@ -106,7 +106,7 @@ onMounted(() => {
             class="icon-item"
             v-for="(iconName, index) in filterIconNames"
             :key="index"
-            @click="onIconSelect(iconName)"
+            @click="handleSelect(iconName)"
           >
             <el-tooltip :content="iconName" placement="bottom" effect="light">
               <svg-icon
@@ -125,6 +125,11 @@ onMounted(() => {
 .el-divider--horizontal {
   margin: 10px auto !important;
 }
+.iconselect-container {
+  position: relative;
+  width: 400px;
+}
+
 .icon-list {
   display: flex;
   flex-wrap: wrap;
