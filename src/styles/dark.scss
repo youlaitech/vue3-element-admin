@@ -12,6 +12,9 @@ html.dark{
   .navbar {
     background-color: var(--el-bg-color);
     color: var(--el-text-color-regular);
+    .navbar-setting-item:hover{
+      background: var(--el-fill-color-light);
+    }
   }
 
   .right-panel-btn{
