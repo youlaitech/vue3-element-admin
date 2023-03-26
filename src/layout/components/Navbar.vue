@@ -49,25 +49,19 @@ function logout() {
       <breadcrumb />
     </div>
 
-    <!-- 右侧导航 -->
-    <div class="navbar-right">
+    <!-- 右侧导航设置 -->
+    <div class="flex">
       <!-- 导航栏设置(窄屏隐藏)-->
-      <div v-if="device !== 'mobile'" class="navbar-setting-wrapper">
+
+      <div v-if="device !== 'mobile'" class="flex items-center">
         <!--全屏 -->
-        <screenfull
-          class="navbar-setting-item hover:bg-gray-50 dark:hover:bg-[var(--el-fill-color-light)]"
-          id="screenfull"
-        />
+        <screenfull class="navbar-setting-item" />
         <!-- 布局大小 -->
         <el-tooltip content="布局大小" effect="dark" placement="bottom">
-          <size-select
-            class="navbar-setting-item hover:bg-gray-50 dark:hover:bg-[var(--el-fill-color-light)]"
-          />
+          <size-select class="navbar-setting-item" />
         </el-tooltip>
         <!--语言选择-->
-        <lang-select
-          class="navbar-setting-item hover:bg-gray-50 dark:hover:bg-[var(--el-fill-color-light)]"
-        />
+        <lang-select class="navbar-setting-item" />
       </div>
 
       <!-- 用户头像 -->
@@ -112,19 +106,16 @@ function logout() {
   justify-content: space-between;
   box-shadow: 0 0 1px #0003;
 
-  .navbar-right {
-    display: flex;
-    .navbar-setting-wrapper {
-      display: flex;
-      align-items: center;
-      .navbar-setting-item {
-        height: 50px;
-        line-height: 50px;
-        padding: 0 8px;
-        display: inline-block;
-        cursor: pointer;
-        color: #5a5e66;
-      }
+  .navbar-setting-item {
+    height: 50px;
+    line-height: 50px;
+    width: 30px;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    color: #5a5e66;
+    &:hover {
+      background: rgba(249, 250, 251, 1);
     }
   }
 }
