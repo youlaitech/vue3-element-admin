@@ -23,4 +23,11 @@ html.dark{
   .svg-icon,svg{
     fill: var(--el-text-color-regular);
   }
+
+
+  .sidebar-container{
+    .el-menu-item.is-active .svg-icon {
+      fill:  var(--el-color-primary);
+    }
+  }
 }
