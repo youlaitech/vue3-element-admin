@@ -21,9 +21,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   return {
     resolve: {
       alias: {
-        '@': pathSrc,
-        // https://github.com/intlify/vue-i18n-next/issues/789
-        'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js'
+        '@': pathSrc
       }
     },
     css: {
@@ -48,7 +46,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           // 线上接口API地址
           target: 'http://vapi.youlai.tech',
           // 本地接口API地址
-          //target: 'http://localhost:8989',
+          // target: 'http://localhost:8989',
           changeOrigin: true,
           rewrite: path =>
             // localhost:3000/dev-api/users/me → http://vapi.youlai.tech/users/me
