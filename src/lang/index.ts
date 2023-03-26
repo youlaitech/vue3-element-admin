@@ -1,9 +1,10 @@
-// 自定义国际化配置
 import { createI18n } from 'vue-i18n';
+import { useAppStore } from '@/store/modules/app';
 
+const appStore = useAppStore();
 // 本地语言包
-import enLocale from './en';
-import zhCnLocale from './zh-cn';
+import enLocale from './package/en';
+import zhCnLocale from './package/zh-cn';
 
 const messages = {
   'zh-cn': {
@@ -14,31 +15,9 @@ const messages = {
   }
 };
 
-/**
- * 获取当前系统使用语言字符串
- *
- * @returns zh-cn|en ...
- */
-export const getLanguage = () => {
-  // 本地缓存获取
-  let language = localStorage.getItem('language');
-  if (language) {
-    return language;
-  }
-  // 浏览器使用语言
-  language = navigator.language.toLowerCase();
-  const locales = Object.keys(messages);
-  for (const locale of locales) {
-    if (language.indexOf(locale) > -1) {
-      return locale;
-    }
-  }
-  return 'zh-cn';
-};
-
 const i18n = createI18n({
   legacy: false,
-  locale: getLanguage(),
+  locale: appStore.language,
   messages: messages
 });
 

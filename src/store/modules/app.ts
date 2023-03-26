@@ -2,14 +2,13 @@ import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
 import defaultSettings from '@/settings';
 
-// Element Plus 语言包
+// 导入 Element Plus 中英文语言包
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import en from 'element-plus/es/locale/lang/en';
 
 // setup
 export const useAppStore = defineStore('app', () => {
   // state
-
   const device = useStorage('device', 'desktop');
   const size = useStorage<any>('size', defaultSettings.size);
   const language = useStorage('language', defaultSettings.language);
@@ -20,6 +19,9 @@ export const useAppStore = defineStore('app', () => {
     withoutAnimation: false
   });
 
+  /**
+   * 根据语言标识读取对应的语言包
+   */
   const locale = computed(() => {
     if (language?.value == 'en') {
       return en;
@@ -58,7 +60,11 @@ export const useAppStore = defineStore('app', () => {
   function changeSize(val: string) {
     size.value = val;
   }
-
+  /**
+   * 切换语言
+   *
+   * @param val
+   */
   function changeLanguage(val: string) {
     language.value = val;
   }

@@ -29,6 +29,9 @@ const themeColors = ref<string[]>([
   '#f5222d'
 ]);
 
+/**
+ * 切换主题颜色
+ */
 function changeThemeColor(color: string) {
   document.documentElement.style.setProperty('--el-color-primary', color);
   settingsStore.changeSetting({ key: 'layout', value: color });

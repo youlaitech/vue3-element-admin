@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const { isFullscreen, toggle } = useFullscreen();
+</script>
+
 <template>
   <div>
     <svg-icon
@@ -6,7 +10,3 @@
     />
   </div>
 </template>
-
-<script setup lang="ts">
-const { isFullscreen, toggle } = useFullscreen();
-</script>
