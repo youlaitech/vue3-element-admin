@@ -134,6 +134,6 @@ pnpm run build:prod
 
 | 微信交流群 | 我的微信 |
 | --- | --- |
-| <img  src="https://s2.loli.net/2023/03/22/xSE2mlf1oWtH3rg.png"   width="300px" height="290px" /> | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg"   width="300px" height="300px" /> |
+| <img  src="https://s2.loli.net/2023/04/01/O1GKHqUaZA39Lp8.jpg"   width="300px" height="290px" /> | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg"   width="300px" height="300px" /> |
 
 ![](https://s2.loli.net/2022/11/19/OGjum9wr8f6idLX.png)
