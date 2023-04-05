@@ -18,7 +18,8 @@ const messages = {
 const i18n = createI18n({
   legacy: false,
   locale: appStore.language,
-  messages: messages
+  messages: messages,
+  globalInjection: true
 });
 
 export default i18n;
