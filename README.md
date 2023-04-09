@@ -130,10 +130,10 @@ pnpm run build:prod
 
 ## 关于我们
 
-> 欢迎加我的微信，备注 `前端`、`后端`、`DevOps`、`全栈` 进对应技术交流群
+> 欢迎加我的微信，备注 `前端`、`后端`、`全栈` 进对应技术交流群
 
 | 微信交流群 | 我的微信 |
 | --- | --- |
-| <img  src="https://s2.loli.net/2023/04/01/O1GKHqUaZA39Lp8.jpg"   width="300px" height="290px" /> | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg"   width="300px" height="300px" /> |
+| <img  src="https://s2.loli.net/2023/04/10/LKB5fpH3V2rouCI.jpg"   width="300px" height="290px" /> | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg"   width="300px" height="300px" /> |
 
 ![](https://s2.loli.net/2022/11/19/OGjum9wr8f6idLX.png)
