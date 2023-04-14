@@ -3,9 +3,9 @@
  */
 export interface DictTypeQuery extends PageQuery {
   /**
-   * 字典类型名称
+   * 关键字(字典类型名称/编码)
    */
-  name?: string;
+  keywords?: string;
 }
 
 /**

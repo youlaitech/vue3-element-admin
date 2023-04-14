@@ -117,7 +117,7 @@ export function getDictFormData(id: number): AxiosPromise<DictForm> {
  */
 export function addDict(data: DictForm) {
   return request({
-    url: '/api/v1/dict/items',
+    url: '/api/v1/dict',
     method: 'post',
     data: data
   });

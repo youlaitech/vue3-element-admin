@@ -199,7 +199,7 @@ onMounted(() => {
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="name">
           <el-input
-            v-model="queryParams.name"
+            v-model="queryParams.keywords"
             placeholder="字典类型名称/编码"
             clearable
             @keyup.enter="handleQuery"
