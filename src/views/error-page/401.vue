@@ -1,20 +1,20 @@
 <!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'Page401'
+  name: "Page401",
 };
 </script>
 
 <script setup lang="ts">
-import { reactive, toRefs } from 'vue';
-import { useRouter } from 'vue-router';
+import { reactive, toRefs } from "vue";
+import { useRouter } from "vue-router";
 
 const state = reactive({
   errGif: new URL(`../../assets/401_images/401.gif`, import.meta.url).href,
 
   ewizardClap:
-    'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646',
-  dialogVisible: false
+    "https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646",
+  dialogVisible: false,
 });
 
 const { errGif, ewizardClap, dialogVisible } = toRefs(state);
@@ -72,20 +72,20 @@ function back() {
   margin: 100px auto;
 
   .pan-back-btn {
-    background: #008489;
     color: #fff;
+    background: #008489;
     border: none !important;
   }
 
   .pan-gif {
-    margin: 0 auto;
     display: block;
+    margin: 0 auto;
   }
 
   .pan-img {
     display: block;
-    margin: 0 auto;
     width: 100%;
+    margin: 0 auto;
   }
 
   .text-jumbo {

@@ -7,7 +7,7 @@
       class="login-form"
     >
       <div class="flex text-white items-center py-4">
-        <span class="text-2xl flex-1 text-center">{{ $t('login.title') }}</span>
+        <span class="text-2xl flex-1 text-center">{{ $t("login.title") }}</span>
         <lang-select style="color: #fff" />
       </div>
 
@@ -77,30 +77,30 @@
         type="primary"
         class="w-full"
         @click.prevent="handleLogin"
-        >{{ $t('login.login') }}
+        >{{ $t("login.login") }}
       </el-button>
 
       <!-- 账号密码提示 -->
       <div class="mt-4 text-white text-sm">
-        <span>{{ $t('login.username') }}: admin</span>
-        <span class="ml-4"> {{ $t('login.password') }}: 123456</span>
+        <span>{{ $t("login.username") }}: admin</span>
+        <span class="ml-4"> {{ $t("login.password") }}: 123456</span>
       </div>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import router from '@/router';
-import LangSelect from '@/components/LangSelect/index.vue';
-import SvgIcon from '@/components/SvgIcon/index.vue';
+import router from "@/router";
+import LangSelect from "@/components/LangSelect/index.vue";
+import SvgIcon from "@/components/SvgIcon/index.vue";
 
 // 状态管理依赖
-import { useUserStore } from '@/store/modules/user';
+import { useUserStore } from "@/store/modules/user";
 
 // API依赖
-import { LocationQuery, LocationQueryValue, useRoute } from 'vue-router';
-import { getCaptchaApi } from '@/api/auth';
-import { LoginData } from '@/api/auth/types';
+import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
+import { getCaptchaApi } from "@/api/auth";
+import { LoginData } from "@/api/auth/types";
 
 const userStore = useUserStore();
 const route = useRoute();
@@ -128,14 +128,14 @@ const captchaBase64 = ref();
 const loginFormRef = ref(ElForm);
 
 const loginData = ref<LoginData>({
-  username: 'admin',
-  password: '123456'
+  username: "admin",
+  password: "123456",
 });
 
 const loginRules = {
-  username: [{ required: true, trigger: 'blur' }],
-  password: [{ required: true, trigger: 'blur', validator: passwordValidator }],
-  verifyCode: [{ required: true, trigger: 'blur' }]
+  username: [{ required: true, trigger: "blur" }],
+  password: [{ required: true, trigger: "blur", validator: passwordValidator }],
+  verifyCode: [{ required: true, trigger: "blur" }],
 };
 
 /**
@@ -143,7 +143,7 @@ const loginRules = {
  */
 function passwordValidator(rule: any, value: any, callback: any) {
   if (value.length < 6) {
-    callback(new Error('The password can not be less than 6 digits'));
+    callback(new Error("The password can not be less than 6 digits"));
   } else {
     callback();
   }
@@ -154,7 +154,7 @@ function passwordValidator(rule: any, value: any, callback: any) {
  */
 function checkCapslock(e: any) {
   const { key } = e;
-  isCapslock.value = key && key.length === 1 && key >= 'A' && key <= 'Z';
+  isCapslock.value = key && key.length === 1 && key >= "A" && key <= "Z";
 }
 
 /**
@@ -180,11 +180,11 @@ function handleLogin() {
         .then(() => {
           const query: LocationQuery = route.query;
 
-          const redirect = (query.redirect as LocationQueryValue) ?? '/';
+          const redirect = (query.redirect as LocationQueryValue) ?? "/";
 
           const otherQueryParams = Object.keys(query).reduce(
             (acc: any, cur: string) => {
-              if (cur !== 'redirect') {
+              if (cur !== "redirect") {
                 acc[cur] = query[cur];
               }
               return acc;
@@ -212,10 +212,10 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .login-container {
-  min-height: 100%;
   width: 100%;
-  background-color: #2d3a4b;
+  min-height: 100%;
   overflow: hidden;
+  background-color: #2d3a4b;
 
   .login-form {
     width: 520px;
@@ -226,12 +226,12 @@ onMounted(() => {
 
     .captcha {
       position: absolute;
-      right: 0;
       top: 0;
+      right: 0;
 
       img {
-        height: 48px;
         width: 120px;
+        height: 48px;
         cursor: pointer;
       }
     }
@@ -239,8 +239,8 @@ onMounted(() => {
 }
 
 .el-form-item {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.1);
+  background: rgb(0 0 0 / 10%);
+  border: 1px solid rgb(255 255 255 / 10%);
   border-radius: 5px;
 }
 
@@ -254,10 +254,10 @@ onMounted(() => {
     box-shadow: none;
 
     .el-input__inner {
-      background: transparent;
-      border: 0px;
-      border-radius: 0px;
       color: #fff;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
       caret-color: #fff;
 
       &:-webkit-autofill {
@@ -270,9 +270,8 @@ onMounted(() => {
       &:-webkit-autofill:hover,
       &:-webkit-autofill:focus,
       &:-webkit-autofill:active {
-        -webkit-transition-delay: 99999s;
-        -webkit-transition: color 99999s ease-out,
-          background-color 99999s ease-out;
+        transition: color 99999s ease-out, background-color 99999s ease-out;
+        transition-delay: 99999s;
       }
     }
   }

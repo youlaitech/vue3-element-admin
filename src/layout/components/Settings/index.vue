@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useSettingsStore } from '@/store/modules/settings';
+import { useSettingsStore } from "@/store/modules/settings";
 
-import IconEpSunny from '~icons/ep/sunny';
-import IconEpMoon from '~icons/ep/moon';
+import IconEpSunny from "~icons/ep/sunny";
+import IconEpMoon from "~icons/ep/moon";
 
 /**
  * 暗黑模式
@@ -15,30 +15,30 @@ const toggleDark = () => useToggle(isDark);
  * 切换布局
  */
 function changeLayout(layout: string) {
-  settingsStore.changeSetting({ key: 'layout', value: layout });
-  window.document.body.setAttribute('layout', settingsStore.layout);
+  settingsStore.changeSetting({ key: "layout", value: layout });
+  window.document.body.setAttribute("layout", settingsStore.layout);
 }
 
 // 主题颜色
 const themeColors = ref<string[]>([
-  '#409EFF',
-  '#304156',
-  '#11a983',
-  '#13c2c2',
-  '#6959CD',
-  '#f5222d'
+  "#409EFF",
+  "#304156",
+  "#11a983",
+  "#13c2c2",
+  "#6959CD",
+  "#f5222d",
 ]);
 
 /**
  * 切换主题颜色
  */
 function changeThemeColor(color: string) {
-  document.documentElement.style.setProperty('--el-color-primary', color);
-  settingsStore.changeSetting({ key: 'layout', value: color });
+  document.documentElement.style.setProperty("--el-color-primary", color);
+  settingsStore.changeSetting({ key: "layout", value: color });
 }
 
 onMounted(() => {
-  window.document.body.setAttribute('layout', settingsStore.layout);
+  window.document.body.setAttribute("layout", settingsStore.layout);
 });
 </script>
 
@@ -133,6 +133,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .settings-container {
   padding: 16px;
+
   .layout {
     display: flex;
     flex-wrap: wrap;
@@ -141,67 +142,57 @@ onMounted(() => {
     height: 50px;
 
     &-item {
+      position: relative;
       width: 18%;
       height: 45px;
-      background: #f0f2f5;
-      position: relative;
       overflow: hidden;
       cursor: pointer;
+      background: #f0f2f5;
       border-radius: 4px;
     }
+
     &-item.is-active {
       border: 2px solid var(--el-color-primary);
     }
-    &-left {
-      div {
-        &:nth-child(1) {
-          width: 30%;
-          height: 100%;
-          background: #1b2a47;
-        }
 
-        &:nth-child(2) {
-          width: 70%;
-          height: 30%;
-          top: 0;
-          right: 0;
-          background: #fff;
-          box-shadow: 0 0 1px #888;
-          position: absolute;
-        }
-      }
+    &-mix div:nth-child(1) {
+      width: 100%;
+      height: 30%;
+      background: #1b2a47;
+      box-shadow: 0 0 1px #888;
     }
 
-    &-top {
-      div {
-        &:nth-child(1) {
-          width: 100%;
-          height: 30%;
-          background: #1b2a47;
-          box-shadow: 0 0 1px #888;
-        }
-      }
+    &-mix div:nth-child(2) {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 30%;
+      height: 70%;
+      background: #1b2a47;
+      box-shadow: 0 0 1px #888;
     }
 
-    &-mix {
-      div {
-        &:nth-child(1) {
-          width: 100%;
-          height: 30%;
-          background: #1b2a47;
-          box-shadow: 0 0 1px #888;
-        }
+    &-top div:nth-child(1) {
+      width: 100%;
+      height: 30%;
+      background: #1b2a47;
+      box-shadow: 0 0 1px #888;
+    }
 
-        &:nth-child(2) {
-          width: 30%;
-          height: 70%;
-          bottom: 0;
-          left: 0;
-          background: #1b2a47;
-          box-shadow: 0 0 1px #888;
-          position: absolute;
-        }
-      }
+    &-left div:nth-child(1) {
+      width: 30%;
+      height: 100%;
+      background: #1b2a47;
+    }
+
+    &-left div:nth-child(2) {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 70%;
+      height: 30%;
+      background: #fff;
+      box-shadow: 0 0 1px #888;
     }
   }
 }

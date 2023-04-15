@@ -5,19 +5,19 @@ import {
   ref,
   watch,
   onMounted,
-  ComponentInternalInstance
-} from 'vue';
-import { storeToRefs } from 'pinia';
+  ComponentInternalInstance,
+} from "vue";
+import { storeToRefs } from "pinia";
 
-import path from 'path-browserify';
+import path from "path-browserify";
 
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from "vue-router";
 
-import { translateRouteTitleI18n } from '@/utils/i18n';
+import { translateRouteTitleI18n } from "@/utils/i18n";
 
-import { usePermissionStore } from '@/store/modules/permission';
-import { useTagsViewStore, TagView } from '@/store/modules/tagsView';
-import ScrollPane from './ScrollPane.vue';
+import { usePermissionStore } from "@/store/modules/permission";
+import { useTagsViewStore, TagView } from "@/store/modules/tagsView";
+import ScrollPane from "./ScrollPane.vue";
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const router = useRouter();
@@ -42,30 +42,30 @@ watch(
   },
   {
     //初始化立即执行
-    immediate: true
+    immediate: true,
   }
 );
 
 const tagMenuVisible = ref(false); // 标签操作菜单显示状态
-watch(tagMenuVisible, value => {
+watch(tagMenuVisible, (value) => {
   if (value) {
-    document.body.addEventListener('click', closeTagMenu);
+    document.body.addEventListener("click", closeTagMenu);
   } else {
-    document.body.removeEventListener('click', closeTagMenu);
+    document.body.removeEventListener("click", closeTagMenu);
   }
 });
 
-function filterAffixTags(routes: any[], basePath = '/') {
+function filterAffixTags(routes: any[], basePath = "/") {
   let tags: TagView[] = [];
 
-  routes.forEach(route => {
+  routes.forEach((route) => {
     if (route.meta && route.meta.affix) {
       const tagPath = path.resolve(basePath, route.path);
       tags.push({
         fullPath: tagPath,
         path: tagPath,
         name: route.name,
-        meta: { ...route.meta }
+        meta: { ...route.meta },
       });
     }
 
@@ -123,7 +123,7 @@ function isFirstView() {
     return (
       (selectedTag.value as TagView).fullPath ===
         tagsViewStore.visitedViews[1].fullPath ||
-      (selectedTag.value as TagView).fullPath === '/index'
+      (selectedTag.value as TagView).fullPath === "/index"
     );
   } catch (err) {
     return false;
@@ -145,7 +145,7 @@ function refreshSelectedTag(view: TagView) {
   tagsViewStore.delCachedView(view);
   const { fullPath } = view;
   nextTick(() => {
-    router.replace({ path: '/redirect' + fullPath }).catch(err => {
+    router.replace({ path: "/redirect" + fullPath }).catch((err) => {
       console.warn(err);
     });
   });
@@ -158,11 +158,11 @@ function toLastView(visitedViews: TagView[], view?: any) {
   } else {
     // now the default is to redirect to the home page if there is no tags-view,
     // you can adjust it according to your needs.
-    if (view.name === 'Dashboard') {
+    if (view.name === "Dashboard") {
       // to reload home page
-      router.replace({ path: '/redirect' + view.fullPath });
+      router.replace({ path: "/redirect" + view.fullPath });
     } else {
-      router.push('/');
+      router.push("/");
     }
   }
 }
@@ -210,7 +210,7 @@ function closeAllTags(view: TagView) {
 function openTagMenu(tag: TagView, e: MouseEvent) {
   const menuMinWidth = 105;
 
-  console.log('test', proxy?.$el);
+  console.log("test", proxy?.$el);
 
   const offsetLeft = proxy?.$el.getBoundingClientRect().left; // container margin left
   const offsetWidth = proxy?.$el.offsetWidth; // container width
@@ -300,18 +300,19 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .tags-container {
-  height: 34px;
   width: 100%;
-  border: 1px solid var(--el-border-color-light);
-  box-shadow: 0px 1px 1px var(--el-box-shadow-light);
+  height: 34px;
   background-color: var(--el-bg-color);
+  border: 1px solid var(--el-border-color-light);
+  box-shadow: 0 1px 1px var(--el-box-shadow-light);
+
   .tags-item {
     display: inline-block;
+    padding: 3px 8px;
+    margin: 4px 0 0 5px;
+    font-size: 12px;
     cursor: pointer;
     border: 1px solid var(--el-border-color-light);
-    padding: 3px 8px;
-    font-size: 12px;
-    margin: 4px 0 0 5px;
 
     &:first-of-type {
       margin-left: 15px;
@@ -326,46 +327,44 @@ onMounted(() => {
     }
 
     &.active {
-      background-color: var(--el-color-primary);
       color: #fff;
+      background-color: var(--el-color-primary);
       border-color: var(--el-color-primary);
+
       &::before {
-        content: '';
-        background: #fff;
         display: inline-block;
         width: 8px;
         height: 8px;
-        border-radius: 50%;
         margin-right: 5px;
-      }
-      .tags-item-close {
-        &:hover {
-          background: rgb(0 0 0 / 0.16);
-        }
+        content: "";
+        background: #fff;
+        border-radius: 50%;
       }
     }
 
     &-close {
       border-radius: 100%;
+
       &:hover {
         color: #fff;
-        background: rgb(0 0 0 / 0.16);
+        background: rgb(0 0 0 / 16%);
       }
     }
   }
 }
 
 .tag-menu {
-  background: var(--el-bg-color-overlay);
-  z-index: 99;
   position: absolute;
-  border-radius: 4px;
+  z-index: 99;
   font-size: 12px;
+  background: var(--el-bg-color-overlay);
+  border-radius: 4px;
   box-shadow: var(--el-box-shadow-light);
 
   li {
     padding: 8px 16px;
     cursor: pointer;
+
     &:hover {
       background: var(--el-fill-color-light);
     }

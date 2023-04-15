@@ -9,7 +9,7 @@
       width="80"
       height="80"
       viewBox="0 0 250 250"
-      style="fill: #40c9c6; color: #fff"
+      style="color: #fff; fill: #40c9c6"
       aria-hidden="true"
     >
       <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" />
@@ -38,22 +38,25 @@
   100% {
     transform: rotate(0);
   }
+
   20%,
   60% {
     transform: rotate(-25deg);
   }
+
   40%,
   80% {
     transform: rotate(10deg);
   }
 }
 
-@media (max-width: 500px) {
-  .github-corner:hover .octo-arm {
-    animation: none;
-  }
+@media (width <= 500px) {
   .github-corner .octo-arm {
     animation: octocat-wave 560ms ease-in-out;
+  }
+
+  .github-corner:hover .octo-arm {
+    animation: none;
   }
 }
 </style>
