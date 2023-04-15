@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useTagsViewStore, TagView } from '@/store/modules/tagsView';
+import { useTagsViewStore, TagView } from "@/store/modules/tagsView";
 
 const tagAndTagSpacing = ref(4);
 const { proxy } = getCurrentInstance() as any;
 
-const emits = defineEmits(['scroll']);
+const emits = defineEmits(["scroll"]);
 const emitScroll = () => {
-  emits('scroll');
+  emits("scroll");
 };
 
 const tagsViewStore = useTagsViewStore();
@@ -16,10 +16,10 @@ const scrollWrapper = computed(
 );
 
 onMounted(() => {
-  scrollWrapper.value.addEventListener('scroll', emitScroll, true);
+  scrollWrapper.value.addEventListener("scroll", emitScroll, true);
 });
 onBeforeUnmount(() => {
-  scrollWrapper.value.removeEventListener('scroll', emitScroll);
+  scrollWrapper.value.removeEventListener("scroll", emitScroll);
 });
 
 function handleScroll(e: WheelEvent) {
@@ -47,14 +47,14 @@ function moveToTarget(currentTag: TagView) {
   } else if (lastTag === currentTag) {
     $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth;
   } else {
-    const tagListDom = document.getElementsByClassName('tags-item');
+    const tagListDom = document.getElementsByClassName("tags-item");
     const currentIndex = tagsViewStore.visitedViews.findIndex(
-      item => item === currentTag
+      (item) => item === currentTag
     );
     let prevTag = null;
     let nextTag = null;
     for (const k in tagListDom) {
-      if (k !== 'length' && Object.hasOwnProperty.call(tagListDom, k)) {
+      if (k !== "length" && Object.hasOwnProperty.call(tagListDom, k)) {
         if (
           (tagListDom[k] as any).dataset.path ===
           tagsViewStore.visitedViews[currentIndex - 1].path
@@ -88,7 +88,7 @@ function moveToTarget(currentTag: TagView) {
 }
 
 defineExpose({
-  moveToTarget
+  moveToTarget,
 });
 </script>
 
@@ -105,19 +105,17 @@ defineExpose({
 
 <style lang="scss" scoped>
 .scroll-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+
   .el-scrollbar__bar {
-    bottom: 0px;
+    bottom: 0;
   }
 
   .el-scrollbar__wrap {
     height: 49px;
   }
-}
-
-.scroll-container {
-  white-space: nowrap;
-  position: relative;
-  overflow: hidden;
-  width: 100%;
 }
 </style>

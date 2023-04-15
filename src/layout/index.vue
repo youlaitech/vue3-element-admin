@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, watchEffect } from 'vue';
-import { useWindowSize } from '@vueuse/core';
-import { AppMain, Navbar, Settings, TagsView } from './components/index';
-import Sidebar from './components/Sidebar/index.vue';
-import RightPanel from '@/components/RightPanel/index.vue';
+import { computed, watchEffect } from "vue";
+import { useWindowSize } from "@vueuse/core";
+import { AppMain, Navbar, Settings, TagsView } from "./components/index";
+import Sidebar from "./components/Sidebar/index.vue";
+import RightPanel from "@/components/RightPanel/index.vue";
 
-import { useAppStore } from '@/store/modules/app';
-import { useSettingsStore } from '@/store/modules/settings';
+import { useAppStore } from "@/store/modules/app";
+import { useSettingsStore } from "@/store/modules/settings";
 
 const { width } = useWindowSize();
 
@@ -30,15 +30,15 @@ const classObj = computed(() => ({
   hideSidebar: !appStore.sidebar.opened,
   openSidebar: appStore.sidebar.opened,
   withoutAnimation: appStore.sidebar.withoutAnimation,
-  mobile: appStore.device === 'mobile'
+  mobile: appStore.device === "mobile",
 }));
 
 watchEffect(() => {
   if (width.value < WIDTH) {
-    appStore.toggleDevice('mobile');
+    appStore.toggleDevice("mobile");
     appStore.closeSideBar(true);
   } else {
-    appStore.toggleDevice('desktop');
+    appStore.toggleDevice("desktop");
 
     if (width.value >= 1200) {
       //大屏
@@ -84,15 +84,15 @@ function handleOutsideClick() {
 
 <style lang="scss" scoped>
 .app-wrapper {
-  &:after {
-    content: '';
+  &::after {
     display: table;
     clear: both;
+    content: "";
   }
 
   position: relative;
-  height: 100%;
   width: 100%;
+  height: 100%;
 
   &.mobile.openSidebar {
     position: fixed;
@@ -108,20 +108,22 @@ function handleOutsideClick() {
   width: calc(100% - #{$sideBarWidth});
   transition: width 0.28s;
 }
+
 .hideSidebar .fixed-header {
   width: calc(100% - 54px);
 }
+
 .mobile .fixed-header {
   width: 100%;
 }
 
 .drawer-bg {
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
   background: #000;
   opacity: 0.3;
-  width: 100%;
-  top: 0;
-  height: 100%;
-  position: absolute;
-  z-index: 999;
 }
 </style>

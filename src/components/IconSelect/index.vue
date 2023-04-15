@@ -2,18 +2,18 @@
 const props = defineProps({
   modelValue: {
     type: String,
-    require: false
-  }
+    require: false,
+  },
 });
 
-const emit = defineEmits(['update:modelValue']);
-const inputValue = toRef(props, 'modelValue');
+const emit = defineEmits(["update:modelValue"]);
+const inputValue = toRef(props, "modelValue");
 
 const visible = ref(false); // 弹窗显示状态
 
 const iconNames: string[] = []; // 所有的图标名称集合
 
-const filterValue = ref(''); // 筛选的值
+const filterValue = ref(""); // 筛选的值
 const filterIconNames = ref<string[]>([]); // 过滤后的图标名称集合
 
 const iconSelectorRef = ref(null);
@@ -21,9 +21,9 @@ const iconSelectorRef = ref(null);
  * icon 加载
  */
 function loadIcons() {
-  const icons = import.meta.glob('../../assets/icons/*.svg');
+  const icons = import.meta.glob("../../assets/icons/*.svg");
   for (const icon in icons) {
-    const iconName = icon.split('assets/icons/')[1].split('.svg')[0];
+    const iconName = icon.split("assets/icons/")[1].split(".svg")[0];
     iconNames.push(iconName);
   }
   filterIconNames.value = iconNames;
@@ -34,7 +34,7 @@ function loadIcons() {
  */
 function handleFilter() {
   if (filterValue.value) {
-    filterIconNames.value = iconNames.filter(iconName =>
+    filterIconNames.value = iconNames.filter((iconName) =>
       iconName.includes(filterValue.value)
     );
   } else {
@@ -46,7 +46,7 @@ function handleFilter() {
  * icon 选择
  */
 function handleSelect(iconName: string) {
-  emit('update:modelValue', iconName);
+  emit("update:modelValue", iconName);
   visible.value = false;
 }
 
@@ -125,6 +125,7 @@ onMounted(() => {
 .el-divider--horizontal {
   margin: 10px auto !important;
 }
+
 .iconselect-container {
   position: relative;
   width: 400px;
@@ -137,18 +138,19 @@ onMounted(() => {
   margin-top: 10px;
 
   .icon-item {
-    cursor: pointer;
-    width: 10%;
-    margin: 0 10px 10px 0;
-    padding: 5px;
     display: flex;
     flex-direction: column;
-    justify-items: center;
     align-items: center;
+    justify-items: center;
+    width: 10%;
+    padding: 5px;
+    margin: 0 10px 10px 0;
+    cursor: pointer;
     border: 1px solid #ccc;
+
     &:hover {
-      border-color: var(--el-color-primary);
       color: var(--el-color-primary);
+      border-color: var(--el-color-primary);
       transition: all 0.2s;
       transform: scaleX(1.1);
     }

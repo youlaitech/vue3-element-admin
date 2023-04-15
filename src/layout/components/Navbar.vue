@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useRoute, useRouter } from 'vue-router';
-import { useAppStore } from '@/store/modules/app';
-import { useTagsViewStore } from '@/store/modules/tagsView';
-import { useUserStore } from '@/store/modules/user';
+import { storeToRefs } from "pinia";
+import { useRoute, useRouter } from "vue-router";
+import { useAppStore } from "@/store/modules/app";
+import { useTagsViewStore } from "@/store/modules/tagsView";
+import { useUserStore } from "@/store/modules/user";
 
 const appStore = useAppStore();
 const tagsViewStore = useTagsViewStore();
@@ -20,10 +20,10 @@ function toggleSideBar() {
 
 // 注销
 function logout() {
-  ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+  ElMessageBox.confirm("确定注销并退出系统吗？", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
   }).then(() => {
     userStore
       .logout()
@@ -76,19 +76,19 @@ function logout() {
         <template #dropdown>
           <el-dropdown-menu>
             <router-link to="/">
-              <el-dropdown-item>{{ $t('navbar.dashboard') }}</el-dropdown-item>
+              <el-dropdown-item>{{ $t("navbar.dashboard") }}</el-dropdown-item>
             </router-link>
             <a target="_blank" href="https://github.com/hxrui">
               <el-dropdown-item>Github</el-dropdown-item>
             </a>
             <a target="_blank" href="https://gitee.com/haoxr">
-              <el-dropdown-item>{{ $t('navbar.gitee') }}</el-dropdown-item>
+              <el-dropdown-item>{{ $t("navbar.gitee") }}</el-dropdown-item>
             </a>
             <a target="_blank" href="https://www.cnblogs.com/haoxianrui/">
-              <el-dropdown-item>{{ $t('navbar.document') }}</el-dropdown-item>
+              <el-dropdown-item>{{ $t("navbar.document") }}</el-dropdown-item>
             </a>
             <el-dropdown-item divided @click="logout">
-              {{ $t('navbar.logout') }}
+              {{ $t("navbar.logout") }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -99,23 +99,24 @@ function logout() {
 
 <style lang="scss" scoped>
 .navbar {
-  background-color: #fff;
-  height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 50px;
+  background-color: #fff;
   box-shadow: 0 0 1px #0003;
 
   .navbar-setting-item {
+    display: inline-block;
+    width: 30px;
     height: 50px;
     line-height: 50px;
-    width: 30px;
-    display: inline-block;
-    cursor: pointer;
-    text-align: center;
     color: #5a5e66;
+    text-align: center;
+    cursor: pointer;
+
     &:hover {
-      background: rgba(249, 250, 251, 1);
+      background: rgb(249 250 251 / 100%);
     }
   }
 }

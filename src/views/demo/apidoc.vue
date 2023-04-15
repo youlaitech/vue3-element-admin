@@ -2,7 +2,7 @@
 <template>
   <div class="app-container">
     <iframe
-      id="apidocIframe"
+      id="apidoc-iframe"
       src="https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5"
       width="100%"
       frameborder="0"
@@ -11,12 +11,12 @@
 </template>
 
 <style lang="scss" scoped>
-#apidocIframe {
+#apidoc-iframe {
   height: calc(100vh - 100px);
 }
 
 .hasTagsView {
-  #apidocIframe {
+  #apidoc-iframe {
     height: calc(100vh - 140px);
   }
 }

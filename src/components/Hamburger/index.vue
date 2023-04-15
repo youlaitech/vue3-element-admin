@@ -22,14 +22,14 @@ defineProps({
   isActive: {
     required: true,
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
-const emit = defineEmits(['toggleClick']);
+const emit = defineEmits(["toggleClick"]);
 
 function toggleClick() {
-  emit('toggleClick');
+  emit("toggleClick");
 }
 </script>
 
@@ -38,6 +38,7 @@ function toggleClick() {
   width: 20px;
   height: 20px;
   vertical-align: -4px;
+
   &.is-active {
     transform: rotate(180deg);
   }
