@@ -1,13 +1,43 @@
 {
   "name": "vue3-element-admin",
+  "private": true,
   "version": "2.1.0",
+  "type": "module",
   "scripts": {
     "dev": "vite serve --mode development",
     "build:prod": "vite build --mode production &&vue-tsc --noEmit",
-    "serve": "vite preview",
-    "lint": "eslint src/**/*.{ts,js,vue} --fix",
     "prepare": "husky install",
-    "prettier": "prettier --write ."
+    "lint:eslint": "eslint  --fix --ext .ts,.js,.vue ./src ",
+    "lint:prettier": "prettier --write \"**/*.{js,cjs,ts,json,tsx,css,less,scss,vue,html,md}\"",
+    "lint:stylelint": "stylelint  \"**/*.{css,scss,vue}\" --fix",
+    "lint:lint-staged": "lint-staged",
+    "commit": "git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{cjs,json}": [
+      "prettier --write"
+    ],
+    "*.{vue,html}": [
+      "eslint --fix",
+      "prettier --write",
+      "stylelint --fix"
+    ],
+    "*.{scss,css}": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.md": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@vueuse/core": "^9.1.1",
@@ -26,33 +56,44 @@
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
-    "@commitlint/cli": "^16.2.3",
-    "@commitlint/config-conventional": "^16.2.1",
+    "@commitlint/cli": "^17.5.1",
+    "@commitlint/config-conventional": "^17.4.4",
     "@iconify-json/ep": "^1.1.8",
+    "typescript": "^4.9.3",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
     "@types/nprogress": "^0.2.0",
     "@types/path-browserify": "^1.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.19.0",
-    "@typescript-eslint/parser": "^5.19.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "autoprefixer": "^10.4.13",
-    "eslint": "^8.34.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-vue": "^9.9.0",
     "fast-glob": "^3.2.11",
-    "husky": "^7.0.4",
-    "postcss": "^8.4.20",
-    "prettier": "^2.6.2",
-    "sass": "^1.53.0",
-    "typescript": "^4.7.4",
     "unocss": "^0.50.1",
     "unplugin-auto-import": "^0.13.0",
     "unplugin-icons": "^0.15.1",
     "unplugin-vue-components": "^0.23.0",
     "vite": "^4.1.4",
     "vite-plugin-svg-icons": "^2.0.1",
-    "vue-eslint-parser": "^9.1.0",
-    "vue-tsc": "^0.35.0"
+    "vue-tsc": "^0.35.0",
+    "commitizen": "^4.3.0",
+    "cz-git": "^1.6.1",
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.9.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.2.1",
+    "postcss": "^8.4.21",
+    "postcss-html": "^1.5.0",
+    "postcss-scss": "^4.0.6",
+    "prettier": "^2.8.7",
+    "sass": "^1.58.3",
+    "stylelint": "^15.4.0",
+    "stylelint-config-html": "^1.1.0",
+    "stylelint-config-recess-order": "^4.0.0",
+    "stylelint-config-recommended-scss": "^9.0.1",
+    "stylelint-config-recommended-vue": "^1.4.0",
+    "stylelint-config-standard": "^32.0.0",
+    "stylelint-config-standard-scss": "^8.0.0"
   },
   "repository": "https://gitee.com/youlaiorg/vue3-element-admin.git",
   "author": "有来开源组织",
