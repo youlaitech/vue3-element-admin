@@ -132,6 +132,8 @@ pnpm run build:prod
 
 > 欢迎加我的微信，备注 `前端`、`后端`、`全栈` 进对应技术交流群
 
-| 微信交流群 | 我的微信 |微信公众号 |
-| --- | --- |--- |
-| <img  src="https://s2.loli.net/2023/04/16/FYKL3TRAWipGbwo.jpg"   width="300px" height="290px" /> | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg"   width="300px" height="300px" /> |<img src="https://s2.loli.net/2022/11/19/OGjum9wr8f6idLX.png"  width="850px" height="300px"/> |
+| 微信交流群 | 我的微信 |
+| --- | --- |
+| <img  src="https://s2.loli.net/2023/04/16/FYKL3TRAWipGbwo.jpg"   width="300px" height="290px" /> | <img  src="https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg"   width="300px" height="300px" /> |
+
+![](https://s2.loli.net/2022/11/19/OGjum9wr8f6idLX.png)
