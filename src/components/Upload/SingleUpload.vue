@@ -17,8 +17,6 @@
 import { UploadRawFile, UploadRequestOptions } from "element-plus";
 import { uploadFileApi } from "@/api/file";
 
-const emit = defineEmits(["update:modelValue"]);
-
 const props = defineProps({
   modelValue: {
     type: String,
@@ -26,15 +24,8 @@ const props = defineProps({
   },
 });
 
-const imgUrl = computed<string | undefined>({
-  get() {
-    return props.modelValue;
-  },
-  set(val) {
-    // imgUrl改变时触发修改父组件绑定的v-model的值
-    emit("update:modelValue", val);
-  },
-});
+const emit = defineEmits(["update:modelValue"]);
+const imgUrl = useVModel(props, "modelValue", emit);
 
 /**
  * 自定义图片上传

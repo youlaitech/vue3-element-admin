@@ -55,23 +55,11 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:page", "update:limit", "pagination"]);
+const emit = defineEmits(["pagination"]);
 
-const currentPage = computed<number | undefined>({
-  get: () => props.page,
-  set: (value) => {
-    emit("update:page", value);
-  },
-});
+const currentPage = useVModel(props, "page", emit);
 
-const pageSize = computed<number | undefined>({
-  get() {
-    return props.limit;
-  },
-  set(val) {
-    emit("update:limit", val);
-  },
-});
+const pageSize = useVModel(props, "limit", emit);
 
 function handleSizeChange(val: number) {
   emit("pagination", { page: currentPage, limit: val });
