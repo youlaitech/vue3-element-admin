@@ -1,11 +1,11 @@
-import { RouteRecordRaw } from 'vue-router';
-import { defineStore } from 'pinia';
-import { constantRoutes } from '@/router';
-import { store } from '@/store';
-import { listRoutes } from '@/api/menu';
+import { RouteRecordRaw } from "vue-router";
+import { defineStore } from "pinia";
+import { constantRoutes } from "@/router";
+import { store } from "@/store";
+import { listRoutes } from "@/api/menu";
 
-const modules = import.meta.glob('../../views/**/**.vue');
-const Layout = () => import('@/layout/index.vue');
+const modules = import.meta.glob("../../views/**/**.vue");
+const Layout = () => import("@/layout/index.vue");
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -17,10 +17,10 @@ const Layout = () => import('@/layout/index.vue');
 const hasPermission = (roles: string[], route: RouteRecordRaw) => {
   if (route.meta && route.meta.roles) {
     // 角色【超级管理员】拥有所有权限，忽略校验
-    if (roles.includes('ROOT')) {
+    if (roles.includes("ROOT")) {
       return true;
     }
-    return roles.some(role => {
+    return roles.some((role) => {
       if (route.meta?.roles !== undefined) {
         return (route.meta.roles as string[]).includes(role);
       }
@@ -39,12 +39,12 @@ const hasPermission = (roles: string[], route: RouteRecordRaw) => {
 const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
   const asyncRoutes: RouteRecordRaw[] = [];
 
-  routes.forEach(route => {
+  routes.forEach((route) => {
     const tmpRoute = { ...route }; // ES6扩展运算符复制新对象
 
     // 判断用户(角色)是否有该路由的访问权限
     if (hasPermission(roles, tmpRoute)) {
-      if (tmpRoute.component?.toString() == 'Layout') {
+      if (tmpRoute.component?.toString() == "Layout") {
         tmpRoute.component = Layout;
         console.log();
       } else {
@@ -68,7 +68,7 @@ const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
 };
 
 // setup
-export const usePermissionStore = defineStore('permission', () => {
+export const usePermissionStore = defineStore("permission", () => {
   // state
   const routes = ref<RouteRecordRaw[]>([]);
 
@@ -92,7 +92,7 @@ export const usePermissionStore = defineStore('permission', () => {
           setRoutes(accessedRoutes);
           resolve(accessedRoutes);
         })
-        .catch(error => {
+        .catch((error) => {
           reject(error);
         });
     });
