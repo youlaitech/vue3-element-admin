@@ -20,7 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, shallowRef, reactive, toRefs } from "vue";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 
 // API 引用
@@ -37,11 +36,10 @@ const emit = defineEmits(["update:modelValue"]);
 
 const defaultHtml = useVModel(props, "modelValue", emit);
 
-// 编辑器实例，必须用 shallowRef
-const editorRef = shallowRef();
-
-const toolbarConfig = ref({});
-
+const editorRef = shallowRef(); // 编辑器实例，必须用 shallowRef
+const mode = ref("default"); // 编辑器模式
+const toolbarConfig = ref({}); // 工具条配置
+// 编辑器配置
 const editorConfig = ref({
   placeholder: "请输入内容...",
   MENU_CONF: {
@@ -56,8 +54,6 @@ const editorConfig = ref({
     },
   },
 });
-
-const mode = ref("default");
 
 const handleCreated = (editor: any) => {
   editorRef.value = editor; // 记录 editor 实例，重要！
