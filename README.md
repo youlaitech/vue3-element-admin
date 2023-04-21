@@ -8,7 +8,7 @@
     </a>
 </p>
 <p align="center">
-<a target="_blank" href="http://vue3.youlai.tech">在线预览</a> |  <a target="_blank" href="https://blog.csdn.net/u013737132/article/details/124522947">官方文档</a> 
+ <a target="_blank" href="https://www.cnblogs.com/haoxianrui/p/17331952.html">vue3-element-admin官方文档</a> |  <a target="_blank" href="http://vue3.youlai.tech">在线预览</a> 
 </p>
 
 ## 项目介绍
