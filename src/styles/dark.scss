@@ -11,7 +11,7 @@ html.dark {
     color: var(--el-text-color-regular);
     background-color: var(--el-bg-color);
 
-    .navbar-setting-item:hover {
+    .setting-container .setting-item:hover {
       background: var(--el-fill-color-light);
     }
   }
