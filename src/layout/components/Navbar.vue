@@ -14,11 +14,21 @@ const router = useRouter();
 
 const { device } = storeToRefs(appStore); // 设备类型：desktop-宽屏设备 || mobile-窄屏设备
 
+/**
+ * 左侧菜单栏显示/隐藏
+ */
 function toggleSideBar() {
   appStore.toggleSidebar(true);
 }
 
-// 注销
+/**
+ * vueUse 全屏
+ */
+const { isFullscreen, toggle } = useFullscreen();
+
+/**
+ * 注销
+ */
 function logout() {
   ElMessageBox.confirm("确定注销并退出系统吗？", "提示", {
     confirmButtonText: "确定",
@@ -52,25 +62,25 @@ function logout() {
     <!-- 右侧导航设置 -->
     <div class="flex">
       <!-- 导航栏设置(窄屏隐藏)-->
-
-      <div v-if="device !== 'mobile'" class="flex items-center">
+      <div class="setting-container" v-if="device !== 'mobile'">
         <!--全屏 -->
-        <screenfull class="navbar-setting-item" />
+        <div class="setting-item" @click="toggle">
+          <svg-icon
+            :icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'"
+          />
+        </div>
         <!-- 布局大小 -->
         <el-tooltip content="布局大小" effect="dark" placement="bottom">
-          <size-select class="navbar-setting-item" />
+          <size-select class="setting-item" />
         </el-tooltip>
         <!--语言选择-->
-        <lang-select class="navbar-setting-item" />
+        <lang-select class="setting-item" />
       </div>
 
       <!-- 用户头像 -->
       <el-dropdown trigger="click">
-        <div class="flex justify-center items-center mx-2">
-          <img
-            :src="userStore.avatar + '?imageView2/1/w/80/h/80'"
-            class="w-[40px] h-[40px] rounded-lg"
-          />
+        <div class="avatar-container">
+          <img :src="userStore.avatar + '?imageView2/1/w/80/h/80'" />
           <i-ep-caret-bottom class="w-3 h-3" />
         </div>
         <template #dropdown>
@@ -106,17 +116,36 @@ function logout() {
   background-color: #fff;
   box-shadow: 0 0 1px #0003;
 
-  .navbar-setting-item {
-    display: inline-block;
-    width: 30px;
-    height: 50px;
-    line-height: 50px;
-    color: #5a5e66;
-    text-align: center;
+  .setting-container {
+    display: flex;
+    align-items: center;
+
+    .setting-item {
+      display: inline-block;
+      width: 30px;
+      height: 50px;
+      line-height: 50px;
+      color: #5a5e66;
+      text-align: center;
+      cursor: pointer;
+
+      &:hover {
+        background: rgb(249 250 251 / 100%);
+      }
+    }
+  }
+
+  .avatar-container {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    margin: 0 5px;
     cursor: pointer;
 
-    &:hover {
-      background: rgb(249 250 251 / 100%);
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
     }
   }
 }
