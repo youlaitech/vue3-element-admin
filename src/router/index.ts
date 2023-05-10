@@ -114,7 +114,6 @@ const router = createRouter({
  */
 export function resetRouter() {
   router.replace({ path: "/login" });
-  location.reload();
 }
 
 export default router;
