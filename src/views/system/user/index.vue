@@ -1,11 +1,11 @@
 <script lang="ts">
 export default {
-  name: 'user'
+  name: "user",
 };
 </script>
 
 <script setup lang="ts">
-import { UploadFile } from 'element-plus';
+import { UploadFile } from "element-plus";
 import {
   getUserPage,
   getUserForm,
@@ -16,12 +16,12 @@ import {
   updateUserPassword,
   downloadTemplateApi,
   exportUser,
-  importUser
-} from '@/api/user';
-import { listDeptOptions } from '@/api/dept';
-import { listRoleOptions } from '@/api/role';
+  importUser,
+} from "@/api/user";
+import { listDeptOptions } from "@/api/dept";
+import { listRoleOptions } from "@/api/role";
 
-import { UserForm, UserQuery, UserPageVO } from '@/api/user/types';
+import { UserForm, UserQuery, UserPageVO } from "@/api/user/types";
 
 const deptTreeRef = ref(ElTree); // 部门树
 const queryFormRef = ref(ElForm); // 查询表单
@@ -31,46 +31,46 @@ const loading = ref(false);
 const ids = ref([]);
 const total = ref(0);
 const dialog = reactive<DialogOption>({
-  visible: false
+  visible: false,
 });
 
 const queryParams = reactive<UserQuery>({
   pageNum: 1,
-  pageSize: 10
+  pageSize: 10,
 });
 const userList = ref<UserPageVO[]>();
 
 const formData = reactive<UserForm>({
-  status: 1
+  status: 1,
 });
 
 const rules = reactive({
-  username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-  nickname: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
-  deptId: [{ required: true, message: '所属部门不能为空', trigger: 'blur' }],
-  roleIds: [{ required: true, message: '用户角色不能为空', trigger: 'blur' }],
+  username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
+  nickname: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
+  deptId: [{ required: true, message: "所属部门不能为空", trigger: "blur" }],
+  roleIds: [{ required: true, message: "用户角色不能为空", trigger: "blur" }],
   email: [
     {
       pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
-      message: '请输入正确的邮箱地址',
-      trigger: 'blur'
-    }
+      message: "请输入正确的邮箱地址",
+      trigger: "blur",
+    },
   ],
   mobile: [
     {
       pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-      message: '请输入正确的手机号码',
-      trigger: 'blur'
-    }
-  ]
+      message: "请输入正确的手机号码",
+      trigger: "blur",
+    },
+  ],
 });
 
 const searchDeptName = ref();
 const deptList = ref<OptionType[]>();
 const roleList = ref<OptionType[]>();
 const importDialog = reactive<DialogOption>({
-  title: '用户导入',
-  visible: false
+  title: "用户导入",
+  visible: false,
 });
 const importDeptId = ref<number>(0);
 const excelFile = ref<File>();
@@ -81,7 +81,7 @@ watchEffect(
     deptTreeRef.value.filter(searchDeptName.value);
   },
   {
-    flush: 'post' // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
+    flush: "post", // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
   }
 );
 
@@ -107,7 +107,7 @@ function handleDeptNodeClick(data: { [key: string]: any }) {
  * 获取角色下拉列表
  */
 async function getRoleOptions() {
-  listRoleOptions().then(response => {
+  listRoleOptions().then((response) => {
     roleList.value = response.data;
   });
 }
@@ -116,17 +116,17 @@ async function getRoleOptions() {
  * 修改用户状态
  */
 function handleStatusChange(row: { [key: string]: any }) {
-  const text = row.status === 1 ? '启用' : '停用';
-  ElMessageBox.confirm('确认要' + text + row.username + '用户吗?', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+  const text = row.status === 1 ? "启用" : "停用";
+  ElMessageBox.confirm("确认要" + text + row.username + "用户吗?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
   })
     .then(() => {
       return updateUserStatus(row.id, row.status);
     })
     .then(() => {
-      ElMessage.success(text + '成功');
+      ElMessage.success(text + "成功");
     })
     .catch(() => {
       row.status = row.status === 1 ? 0 : 1;
@@ -170,20 +170,20 @@ function handleSelectionChange(selection: any) {
  */
 function resetPassword(row: { [key: string]: any }) {
   ElMessageBox.prompt(
-    '请输入用户「' + row.username + '」的新密码',
-    '重置密码',
+    "请输入用户「" + row.username + "」的新密码",
+    "重置密码",
     {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消'
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
     }
   )
     .then(({ value }) => {
       if (!value) {
-        ElMessage.warning('请输入新密码');
+        ElMessage.warning("请输入新密码");
         return false;
       }
       updateUserPassword(row.id, value).then(() => {
-        ElMessage.success('密码重置成功，新密码是：' + value);
+        ElMessage.success("密码重置成功，新密码是：" + value);
       });
     })
     .catch(() => {});
@@ -199,12 +199,12 @@ async function openDialog(userId?: number) {
   await getRoleOptions();
   dialog.visible = true;
   if (userId) {
-    dialog.title = '修改用户';
+    dialog.title = "修改用户";
     getUserForm(userId).then(({ data }) => {
       Object.assign(formData, data);
     });
   } else {
-    dialog.title = '新增用户';
+    dialog.title = "新增用户";
   }
 }
 
@@ -230,7 +230,7 @@ function resetForm() {
 /**
  * 表单提交
  */
-function handleSubmit() {
+const handleSubmit = useDebounceFn(() => {
   userFormRef.value.validate((valid: any) => {
     if (valid) {
       const userId = formData.id;
@@ -238,7 +238,7 @@ function handleSubmit() {
       if (userId) {
         updateUser(userId, formData)
           .then(() => {
-            ElMessage.success('修改用户成功');
+            ElMessage.success("修改用户成功");
             closeDialog();
             resetQuery();
           })
@@ -246,7 +246,7 @@ function handleSubmit() {
       } else {
         addUser(formData)
           .then(() => {
-            ElMessage.success('新增用户成功');
+            ElMessage.success("新增用户成功");
             closeDialog();
             resetQuery();
           })
@@ -254,25 +254,25 @@ function handleSubmit() {
       }
     }
   });
-}
+}, 1000);
 
 /**
  * 删除用户
  */
 function handleDelete(id?: number) {
-  const userIds = [id || ids.value].join(',');
+  const userIds = [id || ids.value].join(",");
   if (!userIds) {
-    ElMessage.warning('请勾选删除项');
+    ElMessage.warning("请勾选删除项");
     return;
   }
 
-  ElMessageBox.confirm('确认删除用户?', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+  ElMessageBox.confirm("确认删除用户?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
   }).then(function () {
     deleteUsers(userIds).then(() => {
-      ElMessage.success('删除成功');
+      ElMessage.success("删除成功");
       resetQuery();
     });
   });
@@ -282,7 +282,7 @@ function handleDelete(id?: number) {
  * 获取部门下拉项
  */
 async function getDeptOptions() {
-  listDeptOptions().then(response => {
+  listDeptOptions().then((response) => {
     deptList.value = response.data;
   });
 }
@@ -293,13 +293,13 @@ async function getDeptOptions() {
 function downloadTemplate() {
   downloadTemplateApi().then((response: any) => {
     const blob = new Blob([response.data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
     });
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     const href = window.URL.createObjectURL(blob); // 下载链接
     a.href = href;
     a.download = decodeURI(
-      response.headers['content-disposition'].split(';')[1].split('=')[1]
+      response.headers["content-disposition"].split(";")[1].split("=")[1]
     ); // 获取后台设置的文件名称
     document.body.appendChild(a);
     a.click(); // 点击下载
@@ -324,7 +324,7 @@ async function openImportDialog() {
  */
 function handleExcelChange(file: UploadFile) {
   if (!/\.(xlsx|xls|XLSX|XLS)$/.test(file.name)) {
-    ElMessage.warning('上传Excel只能为xlsx、xls格式');
+    ElMessage.warning("上传Excel只能为xlsx、xls格式");
     excelFile.value = undefined;
     excelFilelist.value = [];
     return false;
@@ -338,10 +338,10 @@ function handleExcelChange(file: UploadFile) {
 function handleUserImport() {
   if (importDeptId.value) {
     if (!excelFile.value) {
-      ElMessage.warning('上传Excel文件不能为空');
+      ElMessage.warning("上传Excel文件不能为空");
       return false;
     }
-    importUser(importDeptId.value, excelFile.value).then(response => {
+    importUser(importDeptId.value, excelFile.value).then((response) => {
       ElMessage.success(response.data);
       closeImportDialog();
       resetQuery();
@@ -364,13 +364,13 @@ function closeImportDialog() {
 function handleUserExport() {
   exportUser(queryParams).then((response: any) => {
     const blob = new Blob([response.data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
     });
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     const href = window.URL.createObjectURL(blob); // 下载的链接
     a.href = href;
     a.download = decodeURI(
-      response.headers['content-disposition'].split(';')[1].split('=')[1]
+      response.headers["content-disposition"].split(";")[1].split("=")[1]
     ); // 获取后台设置的文件名称
     document.body.appendChild(a);
     a.click(); // 点击导出
