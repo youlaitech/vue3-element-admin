@@ -1,33 +1,32 @@
 <!-- 字典数据 -->
-<script lang="ts">
-export default {
-  name: 'dictData'
-};
-</script>
-
 <script setup lang="ts">
+defineOptions({
+  name: "dictData",
+  inheritAttrs: false,
+});
+
 import {
   getDictPage,
   getDictFormData,
   addDict,
   updateDict,
-  deleteDict
-} from '@/api/dict';
-import { DictPageVO, DictForm, DictQuery } from '@/api/dict/types';
+  deleteDict,
+} from "@/api/dict";
+import { DictPageVO, DictForm, DictQuery } from "@/api/dict/types";
 
 const props = defineProps({
   typeCode: {
     type: String,
     default: () => {
-      return '';
-    }
+      return "";
+    },
   },
   typeName: {
     type: String,
     default: () => {
-      return '';
-    }
-  }
+      return "";
+    },
+  },
 });
 
 watch(
@@ -48,24 +47,24 @@ const total = ref(0);
 const queryParams = reactive<DictQuery>({
   pageNum: 1,
   pageSize: 10,
-  typeCode: props.typeCode
+  typeCode: props.typeCode,
 });
 
 const dictList = ref<DictPageVO[]>();
 
 const dialog = reactive<DialogOption>({
-  visible: false
+  visible: false,
 });
 
 const formData = reactive<DictForm>({
   status: 1,
   typeCode: props.typeCode,
-  sort: 1
+  sort: 1,
 });
 
 const rules = reactive({
-  name: [{ required: true, message: '请输入字典名称', trigger: 'blur' }],
-  value: [{ required: true, message: '请输入字典值', trigger: 'blur' }]
+  name: [{ required: true, message: "请输入字典名称", trigger: "blur" }],
+  value: [{ required: true, message: "请输入字典值", trigger: "blur" }],
 });
 
 /**
@@ -109,12 +108,12 @@ function handleSelectionChange(selection: any) {
 function openDialog(dictId?: number) {
   dialog.visible = true;
   if (dictId) {
-    dialog.title = '修改字典';
+    dialog.title = "修改字典";
     getDictFormData(dictId).then(({ data }) => {
       Object.assign(formData, data);
     });
   } else {
-    dialog.title = '新增字典';
+    dialog.title = "新增字典";
   }
 }
 
@@ -129,7 +128,7 @@ function handleSubmit() {
       if (dictId) {
         updateDict(dictId, formData)
           .then(() => {
-            ElMessage.success('修改成功');
+            ElMessage.success("修改成功");
             closeDialog();
             resetQuery();
           })
@@ -137,7 +136,7 @@ function handleSubmit() {
       } else {
         addDict(formData)
           .then(() => {
-            ElMessage.success('新增成功');
+            ElMessage.success("新增成功");
             closeDialog();
             resetQuery();
           })
@@ -172,19 +171,19 @@ function resetForm() {
  * 删除字典
  */
 function handleDelete(dictId?: number) {
-  const dictIds = [dictId || ids.value].join(',');
+  const dictIds = [dictId || ids.value].join(",");
   if (!dictIds) {
-    ElMessage.warning('请勾选删除项');
+    ElMessage.warning("请勾选删除项");
     return;
   }
 
-  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
   }).then(() => {
     deleteDict(dictIds).then(() => {
-      ElMessage.success('删除成功');
+      ElMessage.success("删除成功");
       resetQuery();
     });
   });

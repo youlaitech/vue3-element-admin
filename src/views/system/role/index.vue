@@ -1,10 +1,9 @@
-<script lang="ts">
-export default {
-  name: 'role'
-};
-</script>
-
 <script setup lang="ts">
+defineOptions({
+  name: "role",
+  inheritAttrs: false,
+});
+
 import {
   getRolePage,
   updateRole,
@@ -12,11 +11,11 @@ import {
   addRole,
   deleteRoles,
   getRoleMenuIds,
-  updateRoleMenus
-} from '@/api/role';
-import { listMenuOptions } from '@/api/menu';
+  updateRoleMenus,
+} from "@/api/role";
+import { listMenuOptions } from "@/api/menu";
 
-import { RolePageVO, RoleForm, RoleQuery } from '@/api/role/types';
+import { RolePageVO, RoleForm, RoleQuery } from "@/api/role/types";
 
 const queryFormRef = ref(ElForm);
 const roleFormRef = ref(ElForm);
@@ -28,27 +27,27 @@ const total = ref(0);
 
 const queryParams = reactive<RoleQuery>({
   pageNum: 1,
-  pageSize: 10
+  pageSize: 10,
 });
 
 const roleList = ref<RolePageVO[]>();
 
 const dialog = reactive<DialogOption>({
-  visible: false
+  visible: false,
 });
 
 const formData = reactive<RoleForm>({
   sort: 1,
   status: 1,
-  code: '',
-  name: ''
+  code: "",
+  name: "",
 });
 
 const rules = reactive({
-  name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-  code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
-  dataScope: [{ required: true, message: '请选择数据权限', trigger: 'blur' }],
-  status: [{ required: true, message: '请选择状态', trigger: 'blur' }]
+  name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
+  code: [{ required: true, message: "请输入角色编码", trigger: "blur" }],
+  dataScope: [{ required: true, message: "请选择数据权限", trigger: "blur" }],
+  status: [{ required: true, message: "请选择状态", trigger: "blur" }],
 });
 
 const menuDialogVisible = ref(false);
@@ -99,12 +98,12 @@ function handleSelectionChange(selection: any) {
 function openDialog(roleId?: number) {
   dialog.visible = true;
   if (roleId) {
-    dialog.title = '修改角色';
+    dialog.title = "修改角色";
     getRoleForm(roleId).then(({ data }) => {
       Object.assign(formData, data);
     });
   } else {
-    dialog.title = '新增角色';
+    dialog.title = "新增角色";
   }
 }
 
@@ -119,7 +118,7 @@ function handleSubmit() {
       if (roleId) {
         updateRole(roleId, formData)
           .then(() => {
-            ElMessage.success('修改成功');
+            ElMessage.success("修改成功");
             closeDialog();
             resetQuery();
           })
@@ -127,7 +126,7 @@ function handleSubmit() {
       } else {
         addRole(formData)
           .then(() => {
-            ElMessage.success('新增成功');
+            ElMessage.success("新增成功");
             closeDialog();
             resetQuery();
           })
@@ -161,21 +160,21 @@ function resetForm() {
  * 删除
  */
 function handleDelete(roleId?: number) {
-  const roleIds = [roleId || ids.value].join(',');
+  const roleIds = [roleId || ids.value].join(",");
   if (!roleIds) {
-    ElMessage.warning('请勾选删除项');
+    ElMessage.warning("请勾选删除项");
     return;
   }
 
-  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
   }).then(() => {
     loading.value = true;
     deleteRoles(roleIds)
       .then(() => {
-        ElMessage.success('删除成功');
+        ElMessage.success("删除成功");
         resetQuery();
       })
       .finally(() => (loading.value = false));
@@ -190,20 +189,20 @@ function openMenuDialog(row: RolePageVO) {
   if (roleId) {
     checkedRole = {
       id: roleId,
-      name: row.name
+      name: row.name,
     };
     menuDialogVisible.value = true;
     loading.value = true;
 
     // 获取所有的菜单
-    listMenuOptions().then(response => {
+    listMenuOptions().then((response) => {
       menuList.value = response.data;
       // 回显角色已拥有的菜单
       getRoleMenuIds(roleId)
         .then(({ data }) => {
           const checkedMenuIds = data;
-          console.log('勾选权限', checkedMenuIds);
-          checkedMenuIds.forEach(menuId =>
+          console.log("勾选权限", checkedMenuIds);
+          checkedMenuIds.forEach((menuId) =>
             menuRef.value.setChecked(menuId, true, false)
           );
         })
@@ -226,8 +225,8 @@ function handleRoleMenuSubmit() {
 
     loading.value = true;
     updateRoleMenus(roleId, checkedMenuIds)
-      .then(res => {
-        ElMessage.success('分配权限成功');
+      .then((res) => {
+        ElMessage.success("分配权限成功");
         menuDialogVisible.value = false;
         resetQuery();
       })
