@@ -29,5 +29,6 @@ module.exports = {
   globals: {
     DialogOption: "readonly",
     OptionType: "readonly",
+    defineOptions: "readonly",
   },
 };
