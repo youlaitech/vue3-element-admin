@@ -1,22 +1,21 @@
 <!--字典类型-->
-<script lang="ts">
-export default {
-  name: 'dictType'
-};
-</script>
-
 <script setup lang="ts">
+defineOptions({
+  name: "dictType",
+  inheritAttrs: false,
+});
+
 import {
   getDictTypePage,
   getDictTypeForm,
   addDictType,
   updateDictType,
-  deleteDictTypes
-} from '@/api/dict';
+  deleteDictTypes,
+} from "@/api/dict";
 
-import DictData from '@/views/system/dict/DictData.vue';
+import DictData from "@/views/system/dict/DictData.vue";
 
-import { DictTypePageVO, DictTypeQuery, DictTypeForm } from '@/api/dict/types';
+import { DictTypePageVO, DictTypeQuery, DictTypeForm } from "@/api/dict/types";
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -27,22 +26,22 @@ const total = ref(0);
 
 const queryParams = reactive<DictTypeQuery>({
   pageNum: 1,
-  pageSize: 10
+  pageSize: 10,
 });
 
 const dictTypeList = ref<DictTypePageVO[]>();
 
 const dialog = reactive<DialogOption>({
-  visible: false
+  visible: false,
 });
 
 const formData = reactive<DictTypeForm>({
-  status: 1
+  status: 1,
 });
 
 const rules = reactive({
-  name: [{ required: true, message: '请输入字典类型名称', trigger: 'blur' }],
-  code: [{ required: true, message: '请输入字典类型编码', trigger: 'blur' }]
+  name: [{ required: true, message: "请输入字典类型名称", trigger: "blur" }],
+  code: [{ required: true, message: "请输入字典类型编码", trigger: "blur" }],
 });
 
 /**
@@ -84,12 +83,12 @@ function handleSelectionChange(selection: any) {
 function openDialog(dicTypeId?: number) {
   dialog.visible = true;
   if (dicTypeId) {
-    dialog.title = '修改字典类型';
+    dialog.title = "修改字典类型";
     getDictTypeForm(dicTypeId).then(({ data }) => {
       Object.assign(formData, data);
     });
   } else {
-    dialog.title = '新增字典类型';
+    dialog.title = "新增字典类型";
   }
 }
 
@@ -104,7 +103,7 @@ function handleSubmit() {
       if (dictTypeId) {
         updateDictType(dictTypeId, formData)
           .then(() => {
-            ElMessage.success('修改成功');
+            ElMessage.success("修改成功");
             closeDialog();
             handleQuery();
           })
@@ -112,7 +111,7 @@ function handleSubmit() {
       } else {
         addDictType(formData)
           .then(() => {
-            ElMessage.success('新增成功');
+            ElMessage.success("新增成功");
             closeDialog();
             handleQuery();
           })
@@ -145,37 +144,37 @@ function resetForm() {
  * 删除字典类型
  */
 function handleDelete(dictTypeId?: number) {
-  const dictTypeIds = [dictTypeId || ids.value].join(',');
+  const dictTypeIds = [dictTypeId || ids.value].join(",");
   if (!dictTypeIds) {
-    ElMessage.warning('请勾选删除项');
+    ElMessage.warning("请勾选删除项");
     return;
   }
 
-  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
   }).then(() => {
     deleteDictTypes(dictTypeIds).then(() => {
-      ElMessage.success('删除成功');
+      ElMessage.success("删除成功");
       resetQuery();
     });
   });
 }
 
 const dictDataDialog = reactive<DialogOption>({
-  visible: false
+  visible: false,
 });
 
 // 当前选中的字典类型
-const selectedDictType = reactive({ typeCode: '', typeName: '' });
+const selectedDictType = reactive({ typeCode: "", typeName: "" });
 
 /**
  * 打开字典弹窗
  */
 function openDictDialog(row: DictTypePageVO) {
   dictDataDialog.visible = true;
-  dictDataDialog.title = '【' + row.name + '】字典数据';
+  dictDataDialog.title = "【" + row.name + "】字典数据";
 
   selectedDictType.typeCode = row.code;
   selectedDictType.typeName = row.name;

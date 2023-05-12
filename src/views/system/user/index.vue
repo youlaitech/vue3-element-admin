@@ -1,10 +1,11 @@
-<script lang="ts">
-export default {
-  name: "user",
-};
-</script>
-
 <script setup lang="ts">
+/**
+ * @see {@link https://vuejs.org/api/sfc-script-setup.html#defineoptions}
+ */
+defineOptions({
+  name: "user",
+  inheritAttrs: false,
+});
 import { UploadFile } from "element-plus";
 import {
   getUserPage,

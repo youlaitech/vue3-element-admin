@@ -1,31 +1,30 @@
-<script lang="ts">
-export default {
-  name: 'cmenu'
-};
-</script>
-
 <script setup lang="ts">
-import { MenuQuery, MenuForm, MenuVO } from '@/api/menu/types';
+defineOptions({
+  name: "cmenu",
+  inheritAttrs: false,
+});
+
+import { MenuQuery, MenuForm, MenuVO } from "@/api/menu/types";
 import {
   listMenus,
   getMenuForm,
   listMenuOptions,
   addMenu,
   deleteMenu,
-  updateMenu
-} from '@/api/menu';
+  updateMenu,
+} from "@/api/menu";
 
-import { MenuTypeEnum } from '@/enums/MenuTypeEnum';
+import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
 
-import SvgIcon from '@/components/SvgIcon/index.vue';
-import IconSelect from '@/components/IconSelect/index.vue';
+import SvgIcon from "@/components/SvgIcon/index.vue";
+import IconSelect from "@/components/IconSelect/index.vue";
 
 const queryFormRef = ref(ElForm);
 const menuFormRef = ref(ElForm);
 
 const loading = ref(false);
 const dialog = reactive<DialogOption>({
-  visible: false
+  visible: false,
 });
 
 const queryParams = reactive<MenuQuery>({});
@@ -37,25 +36,25 @@ const formData = reactive<MenuForm>({
   parentId: 0,
   visible: 1,
   sort: 1,
-  type: MenuTypeEnum.MENU
+  type: MenuTypeEnum.MENU,
 });
 
 const rules = reactive({
-  parentId: [{ required: true, message: '请选择顶级菜单', trigger: 'blur' }],
-  name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-  type: [{ required: true, message: '请选择菜单类型', trigger: 'blur' }],
-  path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
+  parentId: [{ required: true, message: "请选择顶级菜单", trigger: "blur" }],
+  name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
+  type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
+  path: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
   component: [
-    { required: true, message: '请输入组件完整路径', trigger: 'blur' }
-  ]
+    { required: true, message: "请输入组件完整路径", trigger: "blur" },
+  ],
 });
 
 // 选择表格的行菜单ID
 const selectedRowMenuId = ref<number | undefined>();
 
 const menuCacheData = reactive({
-  type: '',
-  path: ''
+  type: "",
+  path: "",
 });
 
 /**
@@ -99,19 +98,19 @@ function onRowClick(row: MenuVO) {
 function openDialog(parentId?: number, menuId?: number) {
   listMenuOptions()
     .then(({ data }) => {
-      menuOptions.value = [{ value: 0, label: '顶级菜单', children: data }];
+      menuOptions.value = [{ value: 0, label: "顶级菜单", children: data }];
     })
     .then(() => {
       dialog.visible = true;
       if (menuId) {
-        dialog.title = '编辑菜单';
+        dialog.title = "编辑菜单";
         getMenuForm(menuId).then(({ data }) => {
           Object.assign(formData, data);
           menuCacheData.type = data.type;
-          menuCacheData.path = data.path ?? '';
+          menuCacheData.path = data.path ?? "";
         });
       } else {
-        dialog.title = '新增菜单';
+        dialog.title = "新增菜单";
         formData.parentId = parentId;
       }
     });
@@ -123,7 +122,7 @@ function openDialog(parentId?: number, menuId?: number) {
 function onMenuTypeChange() {
   // 如果菜单类型改变，清空路由路径；未改变在切换后还原路由路径
   if (formData.type !== menuCacheData.type) {
-    formData.path = '';
+    formData.path = "";
   } else {
     formData.path = menuCacheData.path;
   }
@@ -138,13 +137,13 @@ function submitForm() {
       const menuId = formData.id;
       if (menuId) {
         updateMenu(menuId, formData).then(() => {
-          ElMessage.success('修改成功');
+          ElMessage.success("修改成功");
           closeDialog();
           handleQuery();
         });
       } else {
         addMenu(formData).then(() => {
-          ElMessage.success('新增成功');
+          ElMessage.success("新增成功");
           closeDialog();
           handleQuery();
         });
@@ -158,22 +157,22 @@ function submitForm() {
  */
 function handleDelete(menuId: number) {
   if (!menuId) {
-    ElMessage.warning('请勾选删除项');
+    ElMessage.warning("请勾选删除项");
     return false;
   }
 
-  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
   })
     .then(() => {
       deleteMenu(menuId).then(() => {
-        ElMessage.success('删除成功');
+        ElMessage.success("删除成功");
         handleQuery();
       });
     })
-    .catch(() => ElMessage.info('已取消删除'));
+    .catch(() => ElMessage.info("已取消删除"));
 }
 
 /**
