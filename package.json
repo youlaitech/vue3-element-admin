@@ -49,8 +49,8 @@
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
     "path-to-regexp": "^6.2.0",
-    "pinia": "^2.0.33",
     "screenfull": "^6.0.0",
+    "pinia": "^2.0.33",
     "vue": "^3.3.1",
     "vue-i18n": "9",
     "vue-router": "^4.1.6"
