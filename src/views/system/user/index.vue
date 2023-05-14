@@ -231,7 +231,7 @@ function resetForm() {
 /**
  * 表单提交
  */
-const handleSubmit = useDebounceFn(() => {
+const handleSubmit = useThrottleFn(() => {
   userFormRef.value.validate((valid: any) => {
     if (valid) {
       const userId = formData.id;
@@ -255,7 +255,7 @@ const handleSubmit = useDebounceFn(() => {
       }
     }
   });
-}, 1000);
+}, 3000);
 
 /**
  * 删除用户
