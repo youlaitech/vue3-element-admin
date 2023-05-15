@@ -5,12 +5,11 @@ module.exports = {
     node: true,
   },
   parser: "vue-eslint-parser",
-  //  https://eslint.vuejs.org/user-guide/#bundle-configurations
   extends: [
-    "eslint:recommended",
-    "plugin:vue/vue3-essential",
-    "plugin:@typescript-eslint/recommended",
+    // 参考vuejs官方的eslint配置： https://eslint.vuejs.org/user-guide/#usage
+    "plugin:vue/vue3-recommended",
     "./.eslintrc-auto-import.json",
+    "prettier",
   ],
   parserOptions: {
     ecmaVersion: "latest",
@@ -29,6 +28,5 @@ module.exports = {
   globals: {
     DialogOption: "readonly",
     OptionType: "readonly",
-    defineOptions: "readonly",
   },
 };
