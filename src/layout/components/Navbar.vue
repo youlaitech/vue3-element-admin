@@ -54,7 +54,7 @@ function logout() {
     <div class="flex">
       <hamburger
         :is-active="appStore.sidebar.opened"
-        @toggleClick="toggleSideBar"
+        @toggle-click="toggleSideBar"
       />
       <breadcrumb />
     </div>
@@ -62,7 +62,7 @@ function logout() {
     <!-- 右侧导航设置 -->
     <div class="flex">
       <!-- 导航栏设置(窄屏隐藏)-->
-      <div class="setting-container" v-if="device !== 'mobile'">
+      <div v-if="device !== 'mobile'" class="setting-container">
         <!--全屏 -->
         <div class="setting-item" @click="toggle">
           <svg-icon

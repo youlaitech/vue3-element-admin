@@ -1,8 +1,8 @@
 <template>
   <!-- 上传组件 -->
   <el-upload
-    class="single-uploader"
     v-model="imgUrl"
+    class="single-uploader"
     :show-file-list="false"
     list-type="picture-card"
     :before-upload="handleBeforeUpload"

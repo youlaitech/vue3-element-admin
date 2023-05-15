@@ -53,7 +53,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div :class="{ show: show }" ref="rightPanel">
+  <div ref="rightPanel" :class="{ show: show }">
     <div class="right-panel-overlay" />
     <div class="right-panel-container">
       <div

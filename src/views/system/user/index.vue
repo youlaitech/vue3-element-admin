@@ -399,8 +399,8 @@ onMounted(() => {
           </el-input>
 
           <el-tree
-            class="mt-2"
             ref="deptTreeRef"
+            class="mt-2"
             :data="deptList"
             :props="{ children: 'children', label: 'label', disabled: '' }"
             :expand-on-click-node="false"
@@ -453,16 +453,16 @@ onMounted(() => {
             <div class="flex justify-between">
               <div>
                 <el-button
+                  v-hasPerm="['sys:user:add']"
                   type="success"
                   @click="openDialog()"
-                  v-hasPerm="['sys:user:add']"
                   ><i-ep-plus />新增</el-button
                 >
                 <el-button
+                  v-hasPerm="['sys:user:delete']"
                   type="danger"
                   :disabled="ids.length === 0"
                   @click="handleDelete()"
-                  v-hasPerm="['sys:user:delete']"
                   ><i-ep-delete />删除</el-button
                 >
               </div>
@@ -559,19 +559,19 @@ onMounted(() => {
                   ><i-ep-refresh-left />重置密码</el-button
                 >
                 <el-button
+                  v-hasPerm="['sys:user:edit']"
                   type="primary"
                   link
                   size="small"
                   @click="openDialog(scope.row.id)"
-                  v-hasPerm="['sys:user:edit']"
                   ><i-ep-edit />编辑</el-button
                 >
                 <el-button
+                  v-hasPerm="['sys:user:delete']"
                   type="primary"
                   link
                   size="small"
                   @click="handleDelete(scope.row.id)"
-                  v-hasPerm="['sys:user:delete']"
                   ><i-ep-delete />删除</el-button
                 >
               </template>
@@ -591,8 +591,8 @@ onMounted(() => {
 
     <!-- 表单弹窗 -->
     <el-dialog
-      :title="dialog.title"
       v-model="dialog.visible"
+      :title="dialog.title"
       width="600px"
       append-to-body
       @close="closeDialog"
@@ -605,8 +605,8 @@ onMounted(() => {
       >
         <el-form-item label="用户名" prop="username">
           <el-input
-            :readonly="!!formData.id"
             v-model="formData.username"
+            :readonly="!!formData.id"
             placeholder="请输入用户名"
           />
         </el-form-item>
@@ -678,8 +678,8 @@ onMounted(() => {
 
     <!-- 导入弹窗 -->
     <el-dialog
-      :title="importDialog.title"
       v-model="importDialog.visible"
+      :title="importDialog.title"
       width="600px"
       append-to-body
       @close="closeImportDialog"

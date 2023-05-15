@@ -280,9 +280,9 @@ onMounted(() => {
         ref="dataTableRef"
         v-loading="loading"
         :data="roleList"
-        @selection-change="handleSelectionChange"
         highlight-current-row
         border
+        @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="角色名称" prop="name" min-width="100" />
@@ -338,8 +338,8 @@ onMounted(() => {
 
     <!-- 角色表单弹窗 -->
     <el-dialog
-      :title="dialog.title"
       v-model="dialog.visible"
+      :title="dialog.title"
       width="500px"
       @close="closeDialog"
     >
@@ -393,11 +393,11 @@ onMounted(() => {
 
     <!-- 分配菜单弹窗  -->
     <el-dialog
-      :title="'【' + checkedRole.name + '】权限分配'"
       v-model="menuDialogVisible"
+      :title="'【' + checkedRole.name + '】权限分配'"
       width="800px"
     >
-      <el-scrollbar max-height="600px" v-loading="loading">
+      <el-scrollbar v-loading="loading" max-height="600px">
         <el-tree
           ref="menuRef"
           node-key="value"

@@ -238,10 +238,10 @@ onMounted(() => {
         :data="menuList"
         highlight-current-row
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-        @row-click="onRowClick"
         row-key="id"
         default-expand-all
         border
+        @row-click="onRowClick"
       >
         <el-table-column label="菜单名称" min-width="200">
           <template #default="scope">
@@ -293,11 +293,11 @@ onMounted(() => {
         <el-table-column fixed="right" align="center" label="操作" width="220">
           <template #default="scope">
             <el-button
+              v-if="scope.row.type == 'CATALOG' || scope.row.type == 'MENU'"
               type="primary"
               link
               size="small"
               @click.stop="openDialog(scope.row.id)"
-              v-if="scope.row.type == 'CATALOG' || scope.row.type == 'MENU'"
             >
               <i-ep-plus />新增
             </el-button>
@@ -324,12 +324,12 @@ onMounted(() => {
     </el-card>
 
     <el-dialog
-      :title="dialog.title"
       v-model="dialog.visible"
-      @close="closeDialog"
+      :title="dialog.title"
       destroy-on-close
-      appendToBody
+      append-to-body
       width="750px"
+      @close="closeDialog"
     >
       <el-form
         ref="menuFormRef"
@@ -370,9 +370,9 @@ onMounted(() => {
         </el-form-item>
 
         <el-form-item
+          v-if="formData.type == 'CATALOG' || formData.type == 'MENU'"
           label="路由路径"
           prop="path"
-          v-if="formData.type == 'CATALOG' || formData.type == 'MENU'"
         >
           <el-input
             v-if="formData.type == 'CATALOG'"
@@ -410,22 +410,22 @@ onMounted(() => {
         </el-form-item>
 
         <el-form-item
+          v-if="formData.type !== 'BUTTON'"
           label="图标"
           prop="icon"
-          v-if="formData.type !== 'BUTTON'"
         >
           <!-- 图标选择器 -->
           <icon-select v-model="formData.icon" />
         </el-form-item>
 
         <el-form-item
-          label="跳转路由"
           v-if="formData.type == MenuTypeEnum.CATALOG"
+          label="跳转路由"
         >
           <el-input v-model="formData.redirect" placeholder="跳转路由" />
         </el-form-item>
 
-        <el-form-item label="状态" v-if="formData.type !== 'BUTTON'">
+        <el-form-item v-if="formData.type !== 'BUTTON'" label="状态">
           <el-radio-group v-model="formData.visible">
             <el-radio :label="1">显示</el-radio>
             <el-radio :label="0">隐藏</el-radio>

@@ -3,18 +3,18 @@
     <!-- 工具栏 -->
     <Toolbar
       :editor="editorRef"
-      :defaultConfig="toolbarConfig"
+      :default-config="toolbarConfig"
       style="border-bottom: 1px solid #ccc"
       :mode="mode"
     />
     <!-- 编辑器 -->
     <Editor
-      :defaultConfig="editorConfig"
       v-model="defaultHtml"
-      @onChange="handleChange"
+      :default-config="editorConfig"
       style="height: 500px; overflow-y: hidden"
       :mode="mode"
-      @onCreated="handleCreated"
+      @on-change="handleChange"
+      @on-created="handleCreated"
     />
   </div>
 </template>

@@ -218,8 +218,8 @@ onMounted(() => {
         >
         <el-button
           type="danger"
-          @click="handleDelete()"
           :disabled="ids.length === 0"
+          @click="handleDelete()"
           ><i-ep-delete />删除
         </el-button>
       </template>
@@ -273,8 +273,8 @@ onMounted(() => {
     </el-card>
 
     <el-dialog
-      :title="dialog.title"
       v-model="dialog.visible"
+      :title="dialog.title"
       width="600px"
       @closed="closeDialog"
     >
