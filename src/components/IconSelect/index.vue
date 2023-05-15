@@ -3,6 +3,7 @@ const props = defineProps({
   modelValue: {
     type: String,
     require: false,
+    default: "",
   },
 });
 
@@ -64,12 +65,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="iconselect-container" ref="iconSelectorRef">
+  <div ref="iconSelectorRef" class="iconselect-container">
     <el-input
       v-model="inputValue"
       readonly
-      @click="visible = !visible"
       placeholder="点击选择图标"
+      @click="visible = !visible"
     >
       <template #prepend>
         <svg-icon :icon-class="inputValue" />
@@ -85,8 +86,8 @@ onMounted(() => {
     >
       <template #reference>
         <div
-          @click="visible = !visible"
           class="cursor-pointer text-[#999] absolute right-[10px] top-0 height-[32px] leading-[32px]"
+          @click="visible = !visible"
         >
           <i-ep-caret-top v-show="visible"></i-ep-caret-top>
           <i-ep-caret-bottom v-show="!visible"></i-ep-caret-bottom>
@@ -96,8 +97,8 @@ onMounted(() => {
       <!-- 下拉选择弹窗 -->
       <div ref="iconSelectorDialogRef">
         <el-input
-          class="p-2"
           v-model="filterValue"
+          class="p-2"
           placeholder="搜索图标"
           clearable
           @input="handleFilter"
@@ -107,9 +108,9 @@ onMounted(() => {
         <el-scrollbar height="300px">
           <ul class="icon-list">
             <li
-              class="icon-item"
               v-for="(iconName, index) in filterIconNames"
               :key="index"
+              class="icon-item"
               @click="handleSelect(iconName)"
             >
               <el-tooltip :content="iconName" placement="bottom" effect="light">

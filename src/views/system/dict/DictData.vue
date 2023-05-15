@@ -229,8 +229,8 @@ onMounted(() => {
 
       <!-- 数据表格 -->
       <el-table
-        :data="dictList"
         v-loading="loading"
+        :data="dictList"
         border
         @selection-change="handleSelectionChange"
       >
@@ -269,8 +269,8 @@ onMounted(() => {
 
     <!-- 表单弹窗 -->
     <el-dialog
-      :title="dialog.title"
       v-model="dialog.visible"
+      :title="dialog.title"
       width="500px"
       @close="closeDialog"
     >

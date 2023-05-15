@@ -245,9 +245,9 @@ onMounted(() => {
   <div class="tags-container">
     <scroll-pane ref="scrollPaneRef" @scroll="handleScroll">
       <router-link
-        :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
         v-for="tag in visitedViews"
         :key="tag.path"
+        :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
         :data-path="tag.path"
         :to="{ path: tag.path, query: tag.query }"
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"

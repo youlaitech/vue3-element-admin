@@ -1,9 +1,9 @@
 <template>
   <div :class="'pagination ' + { hidden: hidden }">
     <el-pagination
-      :background="background"
       v-model:current-page="currentPage"
       v-model:page-size="pageSize"
+      :background="background"
       :layout="layout"
       :page-sizes="pageSizes"
       :total="total"

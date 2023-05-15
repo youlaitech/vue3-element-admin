@@ -1,7 +1,7 @@
 <template>
   <div
-    @click="toggleClick"
     class="px-[15px] hover:bg-gray-50 cursor-pointer h-[50px] leading-[50px] dark:hover:bg-[var(--el-fill-color-light)]"
+    @click="toggleClick"
   >
     <svg
       :class="{ 'is-active': isActive }"

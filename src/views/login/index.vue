@@ -16,10 +16,10 @@
           <svg-icon icon-class="user" />
         </div>
         <el-input
-          class="flex-1"
           ref="username"
-          size="large"
           v-model="loginData.username"
+          class="flex-1"
+          size="large"
           :placeholder="$t('login.username')"
           name="username"
         />
@@ -35,8 +35,8 @@
             <svg-icon icon-class="password" />
           </span>
           <el-input
-            class="flex-1"
             v-model="loginData.password"
+            class="flex-1"
             placeholder="密码"
             :type="passwordVisible === false ? 'password' : 'input'"
             size="large"

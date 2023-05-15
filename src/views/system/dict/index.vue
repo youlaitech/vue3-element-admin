@@ -226,11 +226,11 @@ onMounted(() => {
         >
       </template>
       <el-table
+        v-loading="loading"
         highlight-current-row
         :data="dictTypeList"
-        v-loading="loading"
-        @selection-change="handleSelectionChange"
         border
+        @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="字典类型名称" prop="name" width="200" />
@@ -279,8 +279,8 @@ onMounted(() => {
     </el-card>
 
     <el-dialog
-      :title="dialog.title"
       v-model="dialog.visible"
+      :title="dialog.title"
       width="500px"
       @close="closeDialog"
     >
@@ -321,8 +321,8 @@ onMounted(() => {
 
     <!--字典数据弹窗-->
     <el-dialog
-      :title="dictDataDialog.title"
       v-model="dictDataDialog.visible"
+      :title="dictDataDialog.title"
       width="1000px"
       @close="closeDictDialog"
     >

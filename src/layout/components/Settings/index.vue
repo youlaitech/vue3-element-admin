@@ -50,12 +50,12 @@ onMounted(() => {
     <div class="flex justify-center" @click.stop>
       <el-switch
         v-model="isDark"
-        @change="toggleDark"
         inline-prompt
         :active-icon="IconEpMoon"
         :inactive-icon="IconEpSunny"
         active-color="var(--el-fill-color-dark)"
         inactive-color="var(--el-color-primary)"
+        @change="toggleDark"
       />
     </div>
 
@@ -79,12 +79,12 @@ onMounted(() => {
 
     <ul class="w-full space-x-2 flex justify-center py-2">
       <li
-        class="inline-block w-[30px] h-[30px] cursor-pointer"
         v-for="(color, index) in themeColors"
         :key="index"
+        class="inline-block w-[30px] h-[30px] cursor-pointer"
         :style="{ background: color }"
         @click="changeThemeColor(color)"
-      ></li>
+      />
     </ul>
 
     <el-divider>导航设置</el-divider>
