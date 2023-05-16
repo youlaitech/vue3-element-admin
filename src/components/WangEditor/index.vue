@@ -1,17 +1,17 @@
 <template>
-  <div style="border: 1px solid #ccc">
+  <div class="editor-wrapper">
     <!-- 工具栏 -->
     <Toolbar
+      id="toolbar-container"
       :editor="editorRef"
       :default-config="toolbarConfig"
-      style="border-bottom: 1px solid #ccc"
       :mode="mode"
     />
     <!-- 编辑器 -->
     <Editor
-      v-model="defaultHtml"
+      id="editor-container"
+      v-model="modelValue"
       :default-config="editorConfig"
-      style="height: 500px; overflow-y: hidden"
       :mode="mode"
       @on-change="handleChange"
       @on-created="handleCreated"
@@ -34,7 +34,7 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 
-const defaultHtml = useVModel(props, "modelValue", emit);
+const modelValue = useVModel(props, "modelValue", emit);
 
 const editorRef = shallowRef(); // 编辑器实例，必须用 shallowRef
 const mode = ref("default"); // 编辑器模式
@@ -60,7 +60,7 @@ const handleCreated = (editor: any) => {
 };
 
 function handleChange(editor: any) {
-  emit("update:modelValue", editor.getHtml());
+  modelValue.value = editor.getHtml();
 }
 
 // 组件销毁时，也及时销毁编辑器
@@ -72,3 +72,19 @@ onBeforeUnmount(() => {
 </script>
 
 <style src="@wangeditor/editor/dist/css/style.css"></style>
+
+<style lang="scss" scoped>
+.editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+
+  #toolbar-container {
+    border-bottom: 1px solid #ccc;
+  }
+
+  #editor-container {
+    flex-grow: 1;
+  }
+}
+</style>
