@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRoute } from "vue-router";
 import SidebarItem from "./SidebarItem.vue";
 import Logo from "./Logo.vue";
 
@@ -11,7 +12,7 @@ import variables from "@/styles/variables.module.scss";
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 const appStore = useAppStore();
-
+const currRoute = useRoute();
 const { sidebarLogo } = storeToRefs(settingsStore);
 </script>
 
@@ -20,6 +21,7 @@ const { sidebarLogo } = storeToRefs(settingsStore);
     <logo v-if="sidebarLogo" :collapse="!appStore.sidebar.opened" />
     <el-scrollbar>
       <el-menu
+        :default-active="currRoute.path"
         :collapse="!appStore.sidebar.opened"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
