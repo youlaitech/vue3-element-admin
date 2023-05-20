@@ -92,7 +92,7 @@ orderCount.value = 2000;
             <el-link
               target="_blank"
               type="danger"
-              href="https://www.cnblogs.com/haoxianrui/p/16090029.html"
+              href="https://blog.csdn.net/u013737132/article/details/130191394"
               >官方0到1教程</el-link
             >
             <el-divider direction="vertical" />

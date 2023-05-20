@@ -1,6 +1,6 @@
 <!-- 图标选择器示例 -->
 <script setup lang="ts">
-const iconName = ref('edit');
+const iconName = ref("edit");
 </script>
 
 <template>
