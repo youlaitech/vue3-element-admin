@@ -1,7 +1,7 @@
 <!-- 字典数据 -->
 <script setup lang="ts">
 defineOptions({
-  name: "dictData",
+  name: "DictData",
   inheritAttrs: false,
 });
 
@@ -216,10 +216,14 @@ onMounted(() => {
     </div>
     <el-card shadow="never">
       <template #header>
-        <el-button type="success" @click="openDialog()"
+        <el-button
+          v-hasPerm="['sys:dict:add']"
+          type="success"
+          @click="openDialog()"
           ><i-ep-plus />新增</el-button
         >
         <el-button
+          v-hasPerm="['sys:dict:delete']"
           type="danger"
           :disabled="ids.length === 0"
           @click="handleDelete()"
@@ -245,10 +249,15 @@ onMounted(() => {
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center">
           <template #default="scope">
-            <el-button type="primary" link @click="openDialog(scope.row.id)"
+            <el-button
+              v-hasPerm="['sys:dict:edit']"
+              type="primary"
+              link
+              @click="openDialog(scope.row.id)"
               ><i-ep-edit />编辑</el-button
             >
             <el-button
+              v-hasPerm="['sys:dict:delete']"
               type="primary"
               link
               @click.stop="handleDelete(scope.row.id)"

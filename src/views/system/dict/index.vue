@@ -1,7 +1,7 @@
 <!--字典类型-->
 <script setup lang="ts">
 defineOptions({
-  name: "dictType",
+  name: "DictType",
   inheritAttrs: false,
 });
 
@@ -215,7 +215,10 @@ onMounted(() => {
 
     <el-card shadow="never">
       <template #header>
-        <el-button type="success" @click="openDialog()"
+        <el-button
+          v-hasPerm="['sys:dict_type:add']"
+          type="success"
+          @click="openDialog()"
           ><i-ep-plus />新增</el-button
         >
         <el-button
@@ -252,6 +255,7 @@ onMounted(() => {
               ><i-ep-Collection />字典数据</el-button
             >
             <el-button
+              v-hasPerm="['sys:dict_type:edit']"
               type="primary"
               link
               size="small"
@@ -259,6 +263,7 @@ onMounted(() => {
               ><i-ep-edit />编辑</el-button
             >
             <el-button
+              v-hasPerm="['sys:dict_type:delete']"
               type="primary"
               link
               size="small"
