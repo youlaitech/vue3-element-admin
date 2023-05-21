@@ -35,6 +35,7 @@
 
 
 - **权限管理系统**
+
 | ![用户管理](https://s2.loli.net/2023/03/13/L9xgT5sSMVZukQj.png) | ![image-20230313003008012](https://s2.loli.net/2023/03/13/nQg6HmrtFUkPDYv.png) |
 | --- | --- |
 | ![image-20230313003028425](https://s2.loli.net/2023/03/13/C4fDRJeTuUO7gPI.png) | ![字典管理](https://s2.loli.net/2023/03/13/BzqjHpa64wfeWhE.png) |
@@ -117,14 +118,14 @@ server {
 - [Husky + Lint-staged + Commitlint + Commitizen + cz-git 配置 Git 提交规范](https://blog.csdn.net/u013737132/article/details/130191363)
 
 
-## Git 提交规范
+## 提交规范
 
 执行唤起 git commit 交互，根据提示完成信息的输入和选择。
 
 ![](https://oss.youlai.tech/youlai-boot/2023/05/21/d9863c6ded9e4363824b0d8c4c1f0642.png)
 
 
-## 联系我们
+## 交流群❤️
 
 > 如果交流群的二维码已过期，请加我微信，备注「前端」或「全栈」，我将邀请您加入相应的群组。
 
