@@ -8,132 +8,126 @@
     </a>
 </p>
 <p align="center">
- <a target="_blank" href="https://www.cnblogs.com/haoxianrui/p/17331952.html">vue3-element-admin官方文档</a> |  <a target="_blank" href="http://vue3.youlai.tech">在线预览</a> 
+ <a target="_blank" href="https://juejin.cn/post/7228990409909108793">vue3-element-admin官方文档</a> |  <a target="_blank" href="http://vue3.youlai.tech">在线预览</a> 
 </p>
 
 ## 项目介绍
 
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 `Vue3` 版本后台管理框架，使用 Vue3、Vite4、TypeScript、Pinia、Element Plus 当前主流技术栈开发。
+[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite4+ TypeScript5 + Element-Plus + Pinia 等技术栈构建的后台管理前端模板（配套后端源码）。
 
 ## 项目特色
 
 - 基于 `vue-element-admin` 升级的 `Vue3` 版本，主流技术栈，无过度自定义封装，极易上手，减少学习成本；
 - 配套 `Java` 后台接口，非 `Mock` 数据，[在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5/api-65851240)；
-- 从 `0` 到 `1` 的项目文档支持，[官方文档](https://www.cnblogs.com/haoxianrui/p/16090029.html)。
 - 系统功能：用户、角色、菜单、字典管和部门管理等；
 - 基础设施：动态路由，按钮权限，常用组件封装。
 
-## 技术栈
-
-| 技术栈 | 描述 | 官网 |
-| --- | --- | --- |
-| Vue3 | 渐进式 JavaScript 框架 | https://v3.cn.vuejs.org/ |
-| TypeScript | JavaScript 的一个超集 | https://www.tslang.cn/ |
-| Vite | 前端开发与构建工具 | https://cn.vitejs.dev/ |
-| Element Plus | 基于 Vue 3，面向设计师和开发者的组件库 | https://element-plus.gitee.io/zh-CN/ |
-| Pinia | 新一代状态管理工具 | https://pinia.vuejs.org/ |
-| Vue Router | Vue.js 的官方路由 | https://router.vuejs.org/zh/ |
 
 ## 项目预览
 
-**在线预览地址**： [http://vue3.youlai.tech/](http://vue3.youlai.tech/)
+- **在线预览地址**： [https://vue3.youlai.tech/](https://vue3.youlai.tech/)
 
-**控制台 & 接口文档**
+- **控制台**
+![暗黑模式](https://s2.loli.net/2023/03/13/QvjY4zf3VCGteNF.png)
 
-| ![暗黑模式](https://s2.loli.net/2023/03/13/QvjY4zf3VCGteNF.png) |
-| --------------------------------------------------------------- |
-| ![接口文档](https://s2.loli.net/2023/03/13/bH4J3O6WRgCUpwt.png) |
+- **接口文档**
+![接口文档](https://s2.loli.net/2023/03/13/bH4J3O6WRgCUpwt.png) 
 
-**权限管理系统**
 
+- **权限管理系统**
 | ![用户管理](https://s2.loli.net/2023/03/13/L9xgT5sSMVZukQj.png) | ![image-20230313003008012](https://s2.loli.net/2023/03/13/nQg6HmrtFUkPDYv.png) |
 | --- | --- |
 | ![image-20230313003028425](https://s2.loli.net/2023/03/13/C4fDRJeTuUO7gPI.png) | ![字典管理](https://s2.loli.net/2023/03/13/BzqjHpa64wfeWhE.png) |
 
 ## 项目地址
 
-|  | Gitee | Github |
-| --- | --- | --- |
-| vue3-element-admin | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |
-| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | [youlai-boot](https://github.com/hxrui/youlai-boot.git) |
+| 项目 | Gitee | Github |GitCode |
+| --- | --- | --- | --- |
+| 前端 | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |[vue3-element-admin](https://gitcode.net/youlai/vue3-element-admin)|
+| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | [youlai-boot](https://github.com/hxrui/youlai-boot.git) |[youlai-boot](https://gitcode.net/youlai/youlai-boot)|
 
-## 环境要求
+## 环境准备
 
-- Node 环境
+|     环境     | 名称版本    | 备注            |
+| ----------- | :-------- | --------------|
+| **开发工具**         | VSCode       | [下载地址](https://code.visualstudio.com/Download)                                                            |
+| **运行环境**         | Node 16+                 |  [下载地址](http://nodejs.cn/download)   |
+| **VSCode插件(必装)** | 1. `Vue Language Features (Volar) ` <br/> 2. `TypeScript Vue Plugin (Volar) `  <br/>3. 禁用 Vetur | ![image-20230224222541797](https://s2.loli.net/2023/02/24/Qt4XDGHFOWqfsyB.png) |
 
-  版本：16+
-
-- 开发工具
-
-  VSCode
-
-- 必装插件
-
-  - Vue Language Features (Volar)
-  - TypeScript Vue Plugin (Volar)
 
 ## 项目启动
 
 ```bash
+# 克隆代码
+git clone https://gitee.com/youlaiorg/vue3-element-admin.git
+
 # 安装 pnpm
 npm install pnpm -g
 
 # 安装依赖
 pnpm install
 
-# 项目运行
+# 启动运行
 pnpm run dev
-
-# 项目打包
-pnpm run build:prod
-
 ```
 
 ## 项目部署
 
-- 上传文件
+```bash
+# 项目打包
+pnpm run build:prod
 
-  将打包生成在 `dist` 目录下的文件拷贝至 `/usr/share/nginx/html` 目录
+# 上传文件至远程服务器
+将打包生成在 `dist` 目录下的文件拷贝至 `/usr/share/nginx/html` 目录
 
-- nginx.cofig 配置
+# nginx.cofig 配置
+server {
+	listen     80;
+	server_name  localhost;
+	location / {
+			root /usr/share/nginx/html;
+			index index.html index.htm;
+	}
+	# 反向代理配置
+	location /prod-api/ {
+			proxy_pass http://vapi.youlai.tech/; # vapi.youlai.tech替换成你的后端API地址
+	}
+}
+``` 
 
-  ```
-  server {
-      listen     80;
-      server_name  localhost;
 
-      location / {
-          root /usr/share/nginx/html;
-          index index.html index.htm;
-      }
+## 接口支持
 
-      # 代理转发 prod-api 标识至 vapi.youlai.tech
-      location /prod-api/ {
-          proxy_pass http://vapi.youlai.tech/;
-      }
-  }
+- **接口调用地址**：[https://vapi.youlai.tech](https://vapi.youlai.tech)
+- **接口文档地址**：[在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)
+- **OpenAPI文档地址**：[http://vapi.youlai.tech/v3/api-docs](http://vapi.youlai.tech/v3/api-docs)
+- **本地接口**：默认使用线上接口，你可以通过以下步骤完成本地接口环境搭建：
 
-  ```
+	> 1. 获取基于 `Java 、SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码 ;
+	>	2. 根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动; 
+	> 3. 替换 [vite.config.ts](vite.config.ts) 的代理目标地址 [vapi.youlai.tech](vapi.youlai.tech) 为本地的 [localhost:8989](localhost:8989).
 
-## 接口文档
 
-- 接口调用地址：[vapi.youlai.tech](http://vapi.youlai.tech)
-- 接口文档地址：[vue3-element-admin 在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5/api-65851240)
 
-## 本地接口
+## 项目文档
 
-> 默认使用线上接口，你可以通过以下步骤完成本地接口环境搭建：
+- [基于 Vue3 + Vite4 + TypeScript + Element-Plus 从0到1搭建后台管理系统](https://blog.csdn.net/u013737132/article/details/130191394)
 
-1.  获取基于 `Java 、SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码 ;
-2.  根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动;
-3.  替换 [vite.config.ts](vite.config.ts) 的代理目标地址 [vapi.youlai.tech](vapi.youlai.tech) 为本地的 [localhost:8989](localhost:8989) 。
+- [ESLint+Prettier+Stylelint+EditorConfig 约束和统一前端代码规范](https://blog.csdn.net/u013737132/article/details/130190788)
+- [Husky + Lint-staged + Commitlint + Commitizen + cz-git 配置 Git 提交规范](https://blog.csdn.net/u013737132/article/details/130191363)
 
-## 关于我们
 
-> 欢迎加我的微信，备注 `前端`、`后端`、`全栈` 进对应技术交流群
+## Git 提交规范
 
-| 微信交流群 | 我的微信 |
-| --- | --- |
-|![有来前端微信交流群](https://s2.loli.net/2023/05/15/Q6U5dyXR8TkBvZC.png)| ![](https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg) |
+执行唤起 git commit 交互，根据提示完成信息的输入和选择。
 
-![](https://s2.loli.net/2022/11/19/OGjum9wr8f6idLX.png)
+![](https://oss.youlai.tech/youlai-boot/2023/05/21/d9863c6ded9e4363824b0d8c4c1f0642.png)
+
+
+## 联系我们
+
+> 如果交流群的二维码已过期，请加我微信，备注「前端」或「全栈」，我将邀请您加入相应的群组。
+
+![](https://oss.youlai.tech/youlai-boot/2023/05/21/dc20acb05acf4e2d875de5a786e55f51.jpg)
+
+
