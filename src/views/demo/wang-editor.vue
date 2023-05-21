@@ -6,6 +6,13 @@ const value = ref("初始内容");
 
 <template>
   <div class="app-container">
-    <editor v-model="value" style="height: calc(100vh - 124px)" />
+    <el-link
+      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/wang-editor.vue"
+      type="primary"
+      target="_blank"
+      class="mb-[20px]"
+      >示例源码 请点击>>>></el-link
+    >
+    <editor v-model="value" style="height: calc(100vh - 180px)" />
   </div>
 </template>
