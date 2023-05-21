@@ -3,7 +3,7 @@
  * @see {@link https://vuejs.org/api/sfc-script-setup.html#defineoptions}
  */
 defineOptions({
-  name: "user",
+  name: "User",
   inheritAttrs: false,
 });
 import { UploadFile } from "element-plus";
@@ -552,6 +552,7 @@ onMounted(() => {
             <el-table-column label="操作" fixed="right" width="220">
               <template #default="scope">
                 <el-button
+                  v-hasPerm="['sys:user:reset_pwd']"
                   type="primary"
                   size="small"
                   link

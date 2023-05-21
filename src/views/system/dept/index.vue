@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineOptions({
-  name: "dept",
+  name: "Dept",
   inheritAttrs: false,
 });
 
@@ -213,10 +213,14 @@ onMounted(() => {
 
     <el-card>
       <template #header>
-        <el-button type="success" @click="openDialog(0, undefined)"
+        <el-button
+          v-hasPerm="['sys:dept:add']"
+          type="success"
+          @click="openDialog(0, undefined)"
           ><i-ep-plus />新增</el-button
         >
         <el-button
+          v-hasPerm="['sys:dept:delete']"
           type="danger"
           :disabled="ids.length === 0"
           @click="handleDelete()"
@@ -246,6 +250,7 @@ onMounted(() => {
         <el-table-column label="操作" fixed="right" align="left" width="200">
           <template #default="scope">
             <el-button
+              v-hasPerm="['sys:dept:add']"
               type="primary"
               link
               size="small"
@@ -253,6 +258,7 @@ onMounted(() => {
               ><i-ep-plus />新增
             </el-button>
             <el-button
+              v-hasPerm="['sys:dept:edit']"
               type="primary"
               link
               size="small"
@@ -260,6 +266,7 @@ onMounted(() => {
               ><i-ep-edit />编辑
             </el-button>
             <el-button
+              v-hasPerm="['sys:dept:delete']"
               type="primary"
               link
               size="small"

@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
 import { RouteLocationNormalized } from "vue-router";
 
 export interface TagView extends Partial<RouteLocationNormalized> {
   title?: string;
+  name: string;
 }
 
 // setup
@@ -31,7 +31,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
   }
 
   function addCachedView(view: TagView) {
-    const viewName = view.name as string;
+    const viewName = view.name;
     if (cachedViews.value.includes(viewName)) return;
     if (view.meta?.keepAlive) {
       cachedViews.value.push(viewName);

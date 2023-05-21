@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineOptions({
-  name: "cmenu",
+  // eslint-disable-next-line vue/no-reserved-component-names
+  name: "Menu",
   inheritAttrs: false,
 });
 
@@ -194,6 +195,7 @@ function resetForm() {
   formData.parentId = 0;
   formData.visible = 1;
   formData.sort = 1;
+  formData.perm = undefined;
 }
 
 onMounted(() => {
@@ -225,9 +227,13 @@ onMounted(() => {
       </el-form>
     </div>
 
-    <el-card shadow="never">
+    <el-card shadow="never" size="small">
       <template #header>
-        <el-button type="success" @click="openDialog(0)">
+        <el-button
+          v-hasPerm="['sys:menu:add']"
+          type="success"
+          @click="openDialog(0)"
+        >
           <template #icon><i-ep-plus /></template>
           新增</el-button
         >
@@ -237,10 +243,14 @@ onMounted(() => {
         v-loading="loading"
         :data="menuList"
         highlight-current-row
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        :tree-props="{
+          children: 'children',
+          hasChildren: 'hasChildren',
+        }"
         row-key="id"
         default-expand-all
         border
+        size="small"
         @row-click="onRowClick"
       >
         <el-table-column label="菜单名称" min-width="200">
@@ -256,7 +266,7 @@ onMounted(() => {
           </template>
         </el-table-column>
 
-        <el-table-column label="菜单类型" align="center" width="150">
+        <el-table-column label="类型" align="center" width="80">
           <template #default="scope">
             <el-tag
               v-if="scope.row.type === MenuTypeEnum.CATALOG"
@@ -274,6 +284,21 @@ onMounted(() => {
             >
           </template>
         </el-table-column>
+
+        <el-table-column
+          label="路由路径"
+          align="left"
+          width="150"
+          prop="path"
+        />
+
+        <el-table-column
+          label="组件路径"
+          align="left"
+          width="250"
+          prop="component"
+        />
+
         <el-table-column
           label="权限标识"
           align="center"
@@ -281,19 +306,20 @@ onMounted(() => {
           prop="perm"
         />
 
-        <el-table-column label="状态" align="center" width="150">
+        <el-table-column label="状态" align="center" width="80">
           <template #default="scope">
             <el-tag v-if="scope.row.visible === 1" type="success">显示</el-tag>
             <el-tag v-else type="info">隐藏</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column label="排序" align="center" width="100" prop="sort" />
+        <el-table-column label="排序" align="center" width="80" prop="sort" />
 
         <el-table-column fixed="right" align="center" label="操作" width="220">
           <template #default="scope">
             <el-button
               v-if="scope.row.type == 'CATALOG' || scope.row.type == 'MENU'"
+              v-hasPerm="['sys:menu:add']"
               type="primary"
               link
               size="small"
@@ -303,6 +329,7 @@ onMounted(() => {
             </el-button>
 
             <el-button
+              v-hasPerm="['sys:menu:edit']"
               type="primary"
               link
               size="small"
@@ -311,6 +338,7 @@ onMounted(() => {
               <i-ep-edit />编辑
             </el-button>
             <el-button
+              v-hasPerm="['sys:menu:delete']"
               type="primary"
               link
               size="small"
@@ -370,14 +398,17 @@ onMounted(() => {
         </el-form-item>
 
         <el-form-item
-          v-if="formData.type == 'CATALOG' || formData.type == 'MENU'"
+          v-if="
+            formData.type == MenuTypeEnum.CATALOG ||
+            formData.type == MenuTypeEnum.MENU
+          "
           label="路由路径"
           prop="path"
         >
           <el-input
-            v-if="formData.type == 'CATALOG'"
+            v-if="formData.type == MenuTypeEnum.CATALOG"
             v-model="formData.path"
-            placeholder="/system  (目录以/开头)"
+            placeholder="system"
           />
           <el-input v-else v-model="formData.path" placeholder="user" />
         </el-form-item>
@@ -393,10 +424,12 @@ onMounted(() => {
             placeholder="system/user/index"
             style="width: 95%"
           >
-            <template v-if="formData.parentId != 0" #prepend
+            <template v-if="formData.type == MenuTypeEnum.MENU" #prepend
               >src/views/</template
             >
-            <template v-if="formData.parentId != 0" #append>.vue</template>
+            <template v-if="formData.type == MenuTypeEnum.MENU" #append
+              >.vue</template
+            >
           </el-input>
         </el-form-item>
 
