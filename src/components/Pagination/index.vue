@@ -55,7 +55,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["pagination"]);
+const emit = defineEmits(["pagination", "update:page", "update:limit"]);
 
 const currentPage = useVModel(props, "page", emit);
 
