@@ -120,7 +120,7 @@ server {
 
 ## 提交规范
 
-执行唤起 git commit 交互，根据提示完成信息的输入和选择。
+执行 `pnpm run commit` 唤起 git commit 交互，根据提示完成信息的输入和选择。
 
 ![](https://oss.youlai.tech/youlai-boot/2023/05/21/d9863c6ded9e4363824b0d8c4c1f0642.png)
 
