@@ -128,8 +128,7 @@ server {
 
 > 无广告，佛系公众号，随缘更新开源组织成员技术分享，希望大家多多关注。
 
-![](https://s2.loli.net/2023/05/28/vdq4ci58D9sntgh.png)
-
+![](https://s2.loli.net/2023/05/28/JaG4L8ZHmkIgRQC.png)
 
 ## 交流群🚀
 
