@@ -8,7 +8,7 @@
     >
       <div class="flex text-white items-center py-4">
         <span class="text-2xl flex-1 text-center">{{ $t("login.title") }}</span>
-        <lang-select class="text-white" />
+        <lang-select class="text-white! cursor-pointer" />
       </div>
 
       <el-form-item prop="username">
