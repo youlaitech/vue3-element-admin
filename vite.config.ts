@@ -149,6 +149,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "@wangeditor/editor",
         "@wangeditor/editor-for-vue",
         "vue-i18n",
+        'codemirror'
       ],
     },
   };
