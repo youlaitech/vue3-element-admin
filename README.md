@@ -111,7 +111,13 @@ server {
 
   请升级浏览器尝试，低版本浏览器内核可能不支持某些新的 JavaScript 语法，比如可选链操作符 `?.`。
 
+- **项目同步仓库更新升级**
+
+  项目同步仓库更新升级之后，建议 `pnpm install` 安装更新依赖之后启动 。
   
+- **其他问题**
+
+  如果有其他问题或者建议，建议 [ISSUE](https://gitee.com/youlaiorg/vue3-element-admin/issues/new)
 
 ## 接口支持
 
