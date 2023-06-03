@@ -45,7 +45,7 @@
 | 项目 | Gitee | Github |GitCode |
 | --- | --- | --- | --- |
 | 前端 | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |[vue3-element-admin](https://gitcode.net/youlai/vue3-element-admin)|
-| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | [youlai-boot](https://github.com/hxrui/youlai-boot.git) |[youlai-boot](https://gitcode.net/youlai/youlai-boot)|
+| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git) |[youlai-boot](https://gitcode.net/youlai/youlai-boot)|
 
 ## 环境准备
 
