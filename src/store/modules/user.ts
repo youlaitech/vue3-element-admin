@@ -12,6 +12,7 @@ import { useStorage } from "@vueuse/core";
 
 export const useUserStore = defineStore("user", () => {
   // state
+  const userId = ref();
   const token = useStorage("accessToken", "");
   const nickname = ref("");
   const avatar = ref("");
@@ -49,6 +50,7 @@ export const useUserStore = defineStore("user", () => {
           if (!data.roles || data.roles.length <= 0) {
             reject("getUserInfo: roles must be a non-null array!");
           }
+          userId.value = data.userId;
           nickname.value = data.nickname;
           avatar.value = data.avatar;
           roles.value = data.roles;
@@ -95,6 +97,10 @@ export const useUserStore = defineStore("user", () => {
     getInfo,
     logout,
     resetToken,
+    /**
+     * 当前登录用户ID
+     */
+    userId,
   };
 });
 
