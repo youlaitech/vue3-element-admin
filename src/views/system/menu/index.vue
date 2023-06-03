@@ -196,6 +196,8 @@ function resetForm() {
   formData.visible = 1;
   formData.sort = 1;
   formData.perm = undefined;
+  formData.component = undefined;
+  formData.path = undefined;
 }
 
 onMounted(() => {
