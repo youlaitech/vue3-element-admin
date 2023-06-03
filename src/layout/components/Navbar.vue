@@ -88,7 +88,10 @@ function logout() {
             <router-link to="/">
               <el-dropdown-item>{{ $t("navbar.dashboard") }}</el-dropdown-item>
             </router-link>
-            <a target="_blank" href="https://github.com/hxrui">
+            <a
+              target="_blank"
+              href="https://github.com/youlaitech/vue3-element-admin"
+            >
               <el-dropdown-item>Github</el-dropdown-item>
             </a>
             <a target="_blank" href="https://gitee.com/haoxr">
