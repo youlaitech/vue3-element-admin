@@ -1,8 +1,10 @@
-<script lang="ts">
-export default { name: "Dashboard" };
-</script>
-
 <script setup lang="ts">
+defineOptions({
+  // eslint-disable-next-line vue/no-reserved-component-names
+  name: "Dashboard",
+  inheritAttrs: false,
+});
+
 import { useUserStore } from "@/store/modules/user";
 import { useTransition, TransitionPresets } from "@vueuse/core";
 

@@ -88,13 +88,19 @@ function logout() {
             <router-link to="/">
               <el-dropdown-item>{{ $t("navbar.dashboard") }}</el-dropdown-item>
             </router-link>
-            <a target="_blank" href="https://github.com/hxrui">
+            <a
+              target="_blank"
+              href="https://github.com/youlaitech/vue3-element-admin"
+            >
               <el-dropdown-item>Github</el-dropdown-item>
             </a>
             <a target="_blank" href="https://gitee.com/haoxr">
               <el-dropdown-item>{{ $t("navbar.gitee") }}</el-dropdown-item>
             </a>
-            <a target="_blank" href="https://www.cnblogs.com/haoxianrui/">
+            <a
+              target="_blank"
+              href="https://juejin.cn/post/7228990409909108793"
+            >
               <el-dropdown-item>{{ $t("navbar.document") }}</el-dropdown-item>
             </a>
             <el-dropdown-item divided @click="logout">

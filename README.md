@@ -1,7 +1,7 @@
 <p align="center">
     <img src="https://img.shields.io/badge/Vue-3.3.1-brightgreen.svg"/>
     <img src="https://img.shields.io/badge/Vite-4.3.5-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.3.4-blue.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.3.6-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -10,6 +10,7 @@
 <p align="center">
  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">vue3-element-admin官方文档</a> |  <a target="_blank" href="http://vue3.youlai.tech">在线预览</a> 
 </p>
+
 
 ## 项目介绍
 
@@ -45,7 +46,7 @@
 | 项目 | Gitee | Github |GitCode |
 | --- | --- | --- | --- |
 | 前端 | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |[vue3-element-admin](https://gitcode.net/youlai/vue3-element-admin)|
-| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | [youlai-boot](https://github.com/hxrui/youlai-boot.git) |[youlai-boot](https://gitcode.net/youlai/youlai-boot)|
+| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git) |[youlai-boot](https://gitcode.net/youlai/youlai-boot)|
 
 ## 环境准备
 
@@ -94,8 +95,29 @@ server {
 			proxy_pass http://vapi.youlai.tech/; # vapi.youlai.tech替换成你的后端API地址
 	}
 }
-``` 
+```
 
+
+
+## 注意事项
+
+- **自动导入插件自动生成默认关闭**
+
+  模板项目的组件类型声明已自动生成。如果添加和使用新的组件，请按照图示方法开启自动生成。在自动生成完成后，记得将其设置为 `false`，避免重复执行引发冲突。
+
+  ![](https://s2.loli.net/2023/06/03/lrcsHzInYV6wWqo.png)
+
+- **项目启动浏览器访问空白**
+
+  请升级浏览器尝试，低版本浏览器内核可能不支持某些新的 JavaScript 语法，比如可选链操作符 `?.`。
+
+- **项目同步仓库更新升级**
+
+  项目同步仓库更新升级之后，建议 `pnpm install` 安装更新依赖之后启动 。
+  
+- **其他问题**
+
+  如果有其他问题或者建议，建议 [ISSUE](https://gitee.com/youlaiorg/vue3-element-admin/issues/new)
 
 ## 接口支持
 
@@ -105,8 +127,8 @@ server {
 - **本地接口**：默认使用线上接口，你可以通过以下步骤完成本地接口环境搭建：
 
 	> 1. 获取基于 `Java 、SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码 ;
-	>	2. 根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动; 
-	> 3. 替换 [vite.config.ts](vite.config.ts) 的代理目标地址 [vapi.youlai.tech](vapi.youlai.tech) 为本地的 [localhost:8989](localhost:8989).
+	>2. 根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动; 
+	> 3. 替换 [vite.config.ts](vite.config.ts) 的代理目标地址 `vapi.youlai.tech` 为本地的 `localhost:8989`
 
 
 
@@ -116,6 +138,8 @@ server {
 
 - [ESLint+Prettier+Stylelint+EditorConfig 约束和统一前端代码规范](https://blog.csdn.net/u013737132/article/details/130190788)
 - [Husky + Lint-staged + Commitlint + Commitizen + cz-git 配置 Git 提交规范](https://blog.csdn.net/u013737132/article/details/130191363)
+
+
 
 
 ## 提交规范
@@ -135,5 +159,4 @@ server {
 > 如果交流群的二维码过期，请加我微信，备注「前端」、「后端」或「全栈」即可，我将邀请您加入对应的微信群。
 
 ![](https://s2.loli.net/2023/05/28/7vNjHTotb2h9zBD.png)
-
 
