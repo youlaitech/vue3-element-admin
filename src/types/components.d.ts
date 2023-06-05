@@ -70,7 +70,6 @@ declare module '@vue/runtime-core' {
     RightPanel: typeof import('./../components/RightPanel/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Screenfull: typeof import('./../components/Screenfull/index.vue')['default']
     SingleUpload: typeof import('./../components/Upload/SingleUpload.vue')['default']
     SizeSelect: typeof import('./../components/SizeSelect/index.vue')['default']
     SvgIcon: typeof import('./../components/SvgIcon/index.vue')['default']
