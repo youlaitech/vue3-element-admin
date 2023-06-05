@@ -16,7 +16,7 @@ const renderTag = (id: any, options: any) => {
   //创建tag元素
   const ele = document.createElement("div");
   ele.classList.add("tag-demo-con");
-  ele.innerHTML = `<div class="tag-demo">${tagName}</div>`;
+  ele.innerHTML = `<div class="tag-wrap"><div class="tag">${tagName}</div></div>`;
   return ele;
 };
 
@@ -73,13 +73,25 @@ const onBlur = (): void => {
   margin: 10px;
   :deep {
     .tag-demo-con {
-      .tag-demo {
-        padding: 4px;
-        margin: 4px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        line-height: 1em;
-        min-width: 25px;
+      .tag-wrap {
+        height: 25px;
+        line-height: 25px;
+        .tag {
+          display: inline-block;
+          padding: 2px 8px;
+          box-sizing: border-box;
+          border-radius: 16px;
+          background: #d8eeff;
+          color: #174c76;
+          border: 1px solid #bbd6ea;
+          margin: 0 4px;
+        }
+        // padding: 4px;
+        // margin: 4px;
+        // border: 1px solid #ccc;
+        // border-radius: 5px;
+        // line-height: 1em;
+        // min-width: 25px;
       }
     }
   }
