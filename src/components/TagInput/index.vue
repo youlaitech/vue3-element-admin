@@ -14,7 +14,6 @@
 import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import { getRePosFromStr, MODE } from "./util";
-// import { isFunction } from "lodash-es";
 
 const props = defineProps({
   mode: {
@@ -288,14 +287,14 @@ const renderColumnTag = (id: any, options: any, cb: any) => {
   const node = document.createElement("div");
   node.classList.add("columnTagCon");
   //自定义渲染tag
-  // if (props.renderTag && isFunction(props.renderTag)) {
-  //   const tag = props.renderTag(id, options);
-  //   if (tag instanceof HTMLElement) {
-  //     node.appendChild(tag);
-  //     cb(node);
-  //     return;
-  //   }
-  // }
+  if (props.renderTag) {
+    const tag = props.renderTag(id, options);
+    if (tag instanceof HTMLElement) {
+      node.appendChild(tag);
+      cb(node);
+      return;
+    }
+  }
   node.append(id);
   cb(node);
   return;
@@ -413,13 +412,13 @@ defineExpose({
       .columnTagCon {
         position: relative;
         display: inline-flex;
-        box-sizing: border-box;
-        padding: 2px 4px;
-        max-width: 100%;
-        background: #d8eeff;
-        color: #174c76;
-        border: 1px solid #bbd6ea;
-        border-radius: 5px;
+        // box-sizing: border-box;
+        // padding: 2px 4px;
+        // max-width: 100%;
+        // background: #d8eeff;
+        // color: #174c76;
+        // border: 1px solid #bbd6ea;
+        // border-radius: 5px;
       }
       .columnTag {
         position: relative;
