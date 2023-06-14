@@ -4,6 +4,7 @@
   "version": "2.3.1",
   "type": "module",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "vite serve --mode development",
     "build:prod": "vite build --mode production &&vue-tsc --noEmit",
     "prepare": "husky install",
@@ -101,5 +102,8 @@
   },
   "repository": "https://gitee.com/youlaiorg/vue3-element-admin.git",
   "author": "有来开源组织",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
 }
