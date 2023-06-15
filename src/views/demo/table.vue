@@ -12,7 +12,14 @@
         >
           <template #header>
             <div class="table-head">
-              <div>{{ oneCol.label }}</div>
+              <div class="label-wrap" @click="handleClickHead(oneCol)">
+                <div>{{ oneCol.label }}</div>
+                <template v-if="oneCol.order">
+                  <i-ep-sort-up v-if="oneCol.order === 'asc'"></i-ep-sort-up>
+                  <i-ep-sort-down v-else></i-ep-sort-down>
+                </template>
+              </div>
+
               <el-dropdown
                 trigger="click"
                 @command="(command: string) => handleCommand(command, oneCol)"
@@ -20,10 +27,16 @@
                 <i-ep-arrow-down class="action-more"></i-ep-arrow-down>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <!-- <el-dropdown-item>升序</el-dropdown-item>
-                    <el-dropdown-item>降序</el-dropdown-item> -->
+                    <template v-if="oneCol.prop === 'id'">
+                      <el-dropdown-item :command="TableCommand.ASC">
+                        升序
+                      </el-dropdown-item>
+                      <el-dropdown-item :command="TableCommand.DESC">
+                        降序
+                      </el-dropdown-item>
+                    </template>
                     <el-dropdown-item :command="TableCommand.FIXED">
-                      冻结
+                      {{ oneCol.fixed ? "解冻" : "冻结" }}
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
@@ -36,7 +49,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { TableColumn } from "element-plus/es/components/table/src/table-column/defaults";
+import { cloneDeep } from "lodash-es";
 
 enum TableCommand {
   // 冻结
@@ -46,7 +59,9 @@ enum TableCommand {
   // 降序
   DESC = "desc",
 }
-const tableData = [
+
+let tableData = ref<any[]>([]);
+const orginData = [
   {
     date: "2016-05-03",
     name: "admin",
@@ -61,7 +76,7 @@ const tableData = [
     date: "2016-05-02",
     name: "admin",
     address: "江西",
-    id: 2,
+    id: 3,
     gender: "男",
     height: 167,
     school: "清华大学",
@@ -71,7 +86,7 @@ const tableData = [
     date: "2016-05-04",
     name: "admin",
     address: "湖南",
-    id: 3,
+    id: 4,
     gender: "男",
     height: 173,
     school: "清华大学",
@@ -81,18 +96,20 @@ const tableData = [
     date: "2016-05-01",
     name: "admin",
     address: "重庆",
-    id: 4,
+    id: 2,
     gender: "女",
     height: 178,
     school: "清华大学",
     hobby: "游泳",
   },
 ];
-
+onMounted(() => {
+  tableData.value = orginData.map((item) => item);
+});
 interface ColumnProp {
   label: string;
   prop: string;
-  order: null | boolean;
+  order: null | string;
   fixed: null | string;
 }
 const tableColList = ref<ColumnProp[]>([
@@ -149,9 +166,64 @@ const handleCommand = (command: string, tableCol: ColumnProp) => {
   if (command === TableCommand.FIXED) {
     tableColList.value.forEach((item) => {
       if (item.prop === tableCol.prop) {
-        item.fixed = "left";
+        // 冻结/解冻
+        item.fixed = item.fixed ? null : "left";
       }
     });
+  }
+  // 升序
+  if (command === TableCommand.ASC) {
+    tableColList.value.forEach((item) => {
+      if (item.prop === tableCol.prop) {
+        item.order = "asc";
+        sortTableData(item);
+      }
+    });
+  }
+  // 降序
+  if (command === TableCommand.DESC) {
+    tableColList.value.forEach((item) => {
+      if (item.prop === tableCol.prop) {
+        item.order = "desc";
+        sortTableData(item);
+      }
+    });
+  }
+};
+// 点击表头循环排序
+const handleClickHead = (oneCol: ColumnProp) => {
+  // 排序顺序
+  const sortArr = [null, "asc", "desc"];
+  const { order } = oneCol;
+  const findIndex = sortArr.findIndex((el) => el === order);
+  let currentIndex = findIndex + 1;
+  if (currentIndex > 2) {
+    currentIndex = 0;
+  }
+  // 排序只能排一列
+  tableColList.value.forEach((item) => {
+    if (item.prop === oneCol.prop) {
+      item.order = sortArr[currentIndex];
+    } else {
+      item.order = null;
+    }
+  });
+  sortTableData(oneCol);
+};
+const sortTableData = (sortCol: ColumnProp) => {
+  // 升序
+  if (sortCol.order === TableCommand.ASC) {
+    const compare = (p: string) => (m: any, n: any) => m[p] - n[p];
+    tableData.value = cloneDeep(orginData).sort(compare(sortCol.prop));
+  }
+  // 降序
+  if (sortCol.order === TableCommand.DESC) {
+    const compare = (p: string) => (m: any, n: any) => n[p] - m[p];
+    tableData.value = cloneDeep(orginData).sort(compare(sortCol.prop));
+  }
+  // 不排序
+  if (!sortCol.order) {
+    tableData.value = cloneDeep(orginData).map((item: any) => item);
   }
 };
 </script>
@@ -160,18 +232,34 @@ const handleCommand = (command: string, tableCol: ColumnProp) => {
   width: 100%;
   height: calc(100vh - 84px);
   padding: 10px;
+
   .table-wrap {
-    background-color: #fff;
     height: 100%;
     padding: 20px;
+    background-color: #fff;
+
     .el-table {
       width: 800px;
+
       .table-head {
         display: flex;
         align-items: center;
         justify-content: space-between;
+
+        .label-wrap {
+          display: flex;
+          flex: 1;
+          align-items: center;
+          cursor: pointer;
+
+          svg {
+            margin-left: 5px;
+          }
+        }
+
         .action-more {
           cursor: pointer;
+
           &:hover {
             color: #409eff;
           }
