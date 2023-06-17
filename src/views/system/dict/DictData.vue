@@ -196,7 +196,7 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <div class="search">
+    <div class="search-container">
       <!-- 搜索表单 -->
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="name">
