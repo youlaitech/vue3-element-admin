@@ -8,12 +8,6 @@ defineOptions({
 import { useUserStore } from "@/store/modules/user";
 import { useTransition, TransitionPresets } from "@vueuse/core";
 
-import GithubCorner from "@/components/GithubCorner/index.vue";
-import SvgIcon from "@/components/SvgIcon/index.vue";
-import BarChart from "./components/BarChart.vue";
-import PieChart from "./components/PieChart.vue";
-import RadarChart from "./components/RadarChart.vue";
-
 const userStore = useUserStore();
 
 const date: Date = new Date();
@@ -90,26 +84,26 @@ orderCount.value = 2000;
             {{ greetings }}
           </div>
 
-          <div class="space-x-2 flex items-center">
+          <div class="space-x-2 flex items-center justify-end">
             <el-link
               target="_blank"
               type="danger"
               href="https://blog.csdn.net/u013737132/article/details/130191394"
-              >官方0到1教程</el-link
+              >💥官方从零到一文档</el-link
             >
             <el-divider direction="vertical" />
             <el-link
               target="_blank"
               type="success"
-              href="https://gitee.com/youlaiorg/vue3-element-admin"
-              >Gitee源码</el-link
+              href="https://gitee.com/youlaiorg"
+              >Gitee</el-link
             >
             <el-divider direction="vertical" />
             <el-link
               target="_blank"
               type="primary"
-              href="https://github.com/youlaitech/vue3-element-admin"
-              >GitHub源码
+              href="https://github.com/youlaitech"
+              >GitHub
             </el-link>
           </div>
         </div>
@@ -160,7 +154,7 @@ orderCount.value = 2000;
           </div>
           <div class="flex flex-col space-y-3">
             <div class="text-[var(--el-text-color-secondary)]">收入金额</div>
-            <div class="text-lg">
+            <div class="text-lg text-right">
               {{ Math.round(amountOutput) }}
             </div>
           </div>
