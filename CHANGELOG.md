@@ -1,6 +1,25 @@
+# 2.4.0 (2023/6/17)
+
+### ✨ feat
+- 新增组件标签输入框（author by [april-tong](https://april-tong.com/)）
+- 新增组件签名（author by [april-tong](https://april-tong.com/)）
+- 新增组件表格（author by [april-tong](https://april-tong.com/)）
+- Echarts 图表添加下载功能 author by [april-tong](https://april-tong.com/)）
+
+### 🔄 refactor
+- 限制包管理器为 pnpm 和 node 版本16+
+- 自定义组件自动导入配置
+- 搜索框样式写法优化
+
+### 🐛 fix
+- 用户导入的部门回显成数字问题修复
+
+### ⬆️ chore
+- element-plus 版本升级 2.3.5 → 2.3.6
+
 # 2.3.1 (2023/5/21)
 
-### ✂️ refactor
+### 🔄 refactor
 - 组件示例文件名称优化
 
 # 2.2.2 (2023/5/11)
@@ -16,7 +35,7 @@
 - vue 版本升级 3.2.45 → 3.3.1 ([CHANGELOG](https://github.com/vuejs/core/blob/main/CHANGELOG.md))
 - vite 版本升级 4.3.1 → 4.3.5
 
-### ✂️ refactor
+### 🔄 refactor
 - 使用 vue 3.3 版本新特性 `defineOptions` 在 `setup` 定义组件名称，移除重复的 `script` 标签
 
 # 2.2.2 (2023/5/11)
