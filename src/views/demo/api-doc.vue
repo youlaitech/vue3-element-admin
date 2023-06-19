@@ -14,6 +14,14 @@
 .app-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 124px);
+
+  /* 84 = navbar + tags-view = 50 + 34 */
+  height: calc(100vh - 50px);
+}
+
+.hasTagsView {
+  .app-container {
+    height: calc(100vh - 84px);
+  }
 }
 </style>

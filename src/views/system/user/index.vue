@@ -73,7 +73,11 @@ const importDialog = reactive<DialogOption>({
   title: "用户导入",
   visible: false,
 });
-const importDeptId = ref<number>(0);
+
+/**
+ * 导入选择的部门ID
+ */
+const importDeptId = ref<number>();
 const excelFile = ref<File>();
 const excelFilelist = ref<File[]>([]);
 
@@ -191,9 +195,7 @@ function resetPassword(row: { [key: string]: any }) {
 }
 
 /**
- * 打开弹窗
- *
- * @param userId 用户ID
+ * 打开用户弹窗
  */
 async function openDialog(userId?: number) {
   await getDeptOptions();
@@ -210,7 +212,7 @@ async function openDialog(userId?: number) {
 }
 
 /**
- * 关闭用户弹窗
+ * 关闭弹窗
  */
 function closeDialog() {
   dialog.visible = false;
@@ -310,11 +312,11 @@ function downloadTemplate() {
 }
 
 /**
- * 导入弹窗
+ * 打开导入弹窗
  */
 async function openImportDialog() {
   await getDeptOptions();
-  await getRoleOptions();
+  importDeptId.value = undefined;
   importDialog.visible = true;
 }
 
@@ -334,7 +336,7 @@ function handleExcelChange(file: UploadFile) {
 }
 
 /**
- * 导入用户
+ * 导入用户提交
  */
 function handleUserImport() {
   if (importDeptId.value) {
@@ -412,7 +414,7 @@ onMounted(() => {
       </el-col>
 
       <el-col :lg="20" :xs="24">
-        <div class="search">
+        <div class="search-container">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true">
             <el-form-item label="关键字" prop="keywords">
               <el-input
