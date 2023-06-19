@@ -3,14 +3,14 @@
 @import "./dark";
 
 .app-container {
-  margin: 20px;
+  padding: 10px;
+}
 
-  .search {
-    padding: 18px 0 0 10px;
-    margin-bottom: 10px;
-    background-color: var(--el-bg-color-overlay);
-    border: 1px solid var(--el-border-color-light);
-    border-radius: 4px;
-    box-shadow: var(--el-box-shadow-light);
-  }
+.search-container {
+  padding: 18px 0 0 10px;
+  margin-bottom: 10px;
+  background-color: var(--el-bg-color-overlay);
+  border: 1px solid var(--el-border-color-light);
+  border-radius: 4px;
+  box-shadow: var(--el-box-shadow-light);
 }

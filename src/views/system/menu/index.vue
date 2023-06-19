@@ -83,8 +83,6 @@ function resetQuery() {
 
 /**
  * 行点击事件
- *
- * @param row
  */
 function onRowClick(row: MenuVO) {
   selectedRowMenuId.value = row.id;
@@ -130,7 +128,7 @@ function onMenuTypeChange() {
 }
 
 /**
- * 菜单提交
+ * 菜单保存提交
  */
 function submitForm() {
   menuFormRef.value.validate((isValid: boolean) => {
@@ -155,6 +153,7 @@ function submitForm() {
 
 /**
  * 删除菜单
+ * @param menuId 菜单ID
  */
 function handleDelete(menuId: number) {
   if (!menuId) {
@@ -198,6 +197,7 @@ function resetForm() {
   formData.perm = undefined;
   formData.component = undefined;
   formData.path = undefined;
+  formData.redirect = undefined;
 }
 
 onMounted(() => {
@@ -207,7 +207,7 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <div class="search">
+    <div class="search-container">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input

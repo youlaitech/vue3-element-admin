@@ -53,39 +53,41 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     plugins: [
       vue(),
-      UnoCSS({
-        /* options */
-      }),
+      UnoCSS({}),
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ["vue", "@vueuse/core"],
         eslintrc: {
-          enabled: false, //  Default `false`
-          filepath: "./.eslintrc-auto-import.json", // Default `./.eslintrc-auto-import.json`
-          globalsPropValue: true, // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
+          enabled: false,
+          filepath: "./.eslintrc-auto-import.json",
+          globalsPropValue: true,
         },
         resolvers: [
           // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
           ElementPlusResolver(),
-          // 自动导入图标组件
           IconsResolver({}),
         ],
-        vueTemplate: true, // 是否在 vue 模板中自动导入
-        dts: false, // 关闭自动生成
-        //dts: path.resolve(pathSrc, "types", "auto-imports.d.ts"), //  自动导入组件类型声明文件位置，默认根目录
+        vueTemplate: true,
+        // 配置文件生成位置(false:关闭自动生成)
+        dts: false,
+        // dts: "src/types/auto-imports.d.ts",
       }),
 
       Components({
         resolvers: [
-          // 自动注册图标组件
-          IconsResolver({
-            enabledCollections: ["ep"], //@iconify-json/ep 是 Element Plus 的图标库
-          }),
           // 自动导入 Element Plus 组件
           ElementPlusResolver(),
+          // 自动导入图标组件
+          IconsResolver({
+            // @iconify-json/ep 是 Element Plus 的图标库
+            enabledCollections: ["ep"],
+          }),
         ],
-        dts: false, // 关闭自动生成
-        // dts: path.resolve(pathSrc, "types", "components.d.ts"), //  自动导入组件类型声明文件位置，默认根目录
+        // 指定自定义组件位置(默认:src/components)
+        dirs: ["src/**/components"],
+        // 配置文件位置(false:关闭自动生成)
+        dts: false,
+        // dts: "src/types/components.d.ts",
       }),
 
       Icons({
@@ -100,7 +102,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         symbolId: "icon-[dir]-[name]",
       }),
     ],
-
+    // 预加载项目必需的组件
     optimizeDeps: {
       include: [
         "vue",

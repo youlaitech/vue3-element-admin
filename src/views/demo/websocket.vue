@@ -86,7 +86,7 @@ onMounted(() => {});
     >
 
     <div>
-      <div class="search">
+      <div class="search-container">
         <el-form :inline="true">
           <el-form-item> <el-input v-model="inputVal" /></el-form-item>
           <el-form-item
