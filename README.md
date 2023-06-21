@@ -148,15 +148,13 @@ server {
 
 ![](https://oss.youlai.tech/youlai-boot/2023/05/21/d9863c6ded9e4363824b0d8c4c1f0642.png)
 
-## 公众号🎉 
+## 交流群🚀
 
 > 无广告，佛系公众号，随缘更新开源组织成员技术分享，期待您的关注！
 
-![](https://s2.loli.net/2023/05/28/JaG4L8ZHmkIgRQC.png)
+如果交流群的二维码过期，请加我微信，备注「前端」、「后端」或「全栈」即可，我将邀请您加入对应的微信群。
 
-## 交流群🚀
 
-> 如果交流群的二维码过期，请加我微信，备注「前端」、「后端」或「全栈」即可，我将邀请您加入对应的微信群。
-
-![](https://s2.loli.net/2023/05/28/7vNjHTotb2h9zBD.png)
-
+|公众号|交流群|
+|-|-|
+|<img src="https://s2.loli.net/2023/05/28/JaG4L8ZHmkIgRQC.png"/>|<img src="https://s2.loli.net/2023/06/21/oikXZGOEDJMHpn5.png"/>|
