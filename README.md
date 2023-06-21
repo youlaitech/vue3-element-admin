@@ -150,11 +150,13 @@ server {
 
 ## 交流群🚀
 
-> 无广告，佛系公众号，随缘更新开源组织成员技术分享，期待您的关注！
-
-如果交流群的二维码过期，请加我微信，备注「前端」、「后端」或「全栈」即可，我将邀请您加入对应的微信群。
+> 关注「有来技术」公众号，获取交流群二维码。
+>
+> 如果交流群的二维码过期，加我微信，备注「前端」、「后端」或「全栈」即可。
+>
+> 为了避免营销广告人群混入，此举无奈，望理解！
 
 
 |公众号|交流群|
 |-|-|
-|<img src="https://s2.loli.net/2023/05/28/JaG4L8ZHmkIgRQC.png"/>|<img src="https://s2.loli.net/2023/06/21/oikXZGOEDJMHpn5.png"/>|
+|<img src="https://s2.loli.net/2023/05/28/JaG4L8ZHmkIgRQC.png" height="180px"/>|<img src="https://s2.loli.net/2023/06/21/oikXZGOEDJMHpn5.png" height="180px"/>|
