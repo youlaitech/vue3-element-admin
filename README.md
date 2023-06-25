@@ -12,6 +12,7 @@
 </p>
 
 
+
 ## 项目介绍
 
 [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite4+ TypeScript5 + Element-Plus + Pinia 等最新主流技术栈构建的后台管理前端模板（配套后端源码）。
@@ -22,39 +23,40 @@
 - 提供了配套的 Java 后端接口，真实的接口数据，而非使用 Mock 数据。您可以访问在[线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)查看接口详情。
 - 权限系统功能齐全，包括用户管理、角色管理、菜单管理、字典管理和部门管理等，以满足您对权限管理的需求。
 - 项目还提供了基础设施支持，包括动态路由、按钮级别的权限控制、国际化支持、代码规范、Git 提交规范以及常用组件的封装，以便开发人员更高效地开发和维护项目。
+
 ## 项目预览
 
 - **在线预览**： [https://vue3.youlai.tech/](https://vue3.youlai.tech/)
 
 - **控制台**
 
-	![暗黑模式](https://s2.loli.net/2023/03/13/QvjY4zf3VCGteNF.png)
+  ![暗黑模式](https://oss.youlai.tech/blog/vue-dark-mode.png)
 
 - **接口文档**
 
-	![接口文档](https://s2.loli.net/2023/03/13/bH4J3O6WRgCUpwt.png) 
+  ![接口文档](https://oss.youlai.tech/blog/vue-api-doc.png) 
 
 
 - **权限管理系统**
 
-	| ![用户管理](https://s2.loli.net/2023/03/13/L9xgT5sSMVZukQj.png) | ![image-20230313003008012](https://s2.loli.net/2023/03/13/nQg6HmrtFUkPDYv.png) |
-	| --- | --- |
-	| ![image-20230313003028425](https://s2.loli.net/2023/03/13/C4fDRJeTuUO7gPI.png) | ![字典管理](https://s2.loli.net/2023/03/13/BzqjHpa64wfeWhE.png) |
+  | ![用户管理](https://oss.youlai.tech/blog/vue-user.png) | ![角色管理](https://oss.youlai.tech/blog/vue-role.png) |
+  | ------------------------------------------------------ | ------------------------------------------------------ |
+  | ![菜单管理](https://oss.youlai.tech/blog/vue-menu.png) | ![字典管理](https://oss.youlai.tech/blog/vue-dict.png) |
 
 ## 项目地址
 
-| 项目 | Gitee | Github |GitCode |
-| --- | --- | --- | --- |
-| 前端 | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |[vue3-element-admin](https://gitcode.net/youlai/vue3-element-admin)|
-| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git) |[youlai-boot](https://gitcode.net/youlai/youlai-boot)|
+| 项目 | Gitee                                                        | Github                                                       | GitCode                                                      |
+| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 前端 | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) | [vue3-element-admin](https://gitcode.net/youlai/vue3-element-admin) |
+| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)       | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git) | [youlai-boot](https://gitcode.net/youlai/youlai-boot)        |
 
 ## 环境准备
 
-|     环境     | 名称版本    | 备注            |
-| ----------- | :-------- | --------------|
-| **开发工具**         | VSCode       | [下载地址](https://code.visualstudio.com/Download)                                                            |
-| **运行环境**         | Node 16+                 |  [下载地址](http://nodejs.cn/download)   |
-| **VSCode插件(必装)** | 1. `Vue Language Features (Volar) ` <br/> 2. `TypeScript Vue Plugin (Volar) `  <br/>3. 禁用 Vetur | ![image-20230224222541797](https://s2.loli.net/2023/02/24/Qt4XDGHFOWqfsyB.png) |
+| 环境                 | 名称版本                                                     | 备注                                                         |
+| -------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
+| **开发工具**         | VSCode                                                       | [下载地址](https://code.visualstudio.com/Download)           |
+| **运行环境**         | Node 16+                                                     | [下载地址](http://nodejs.cn/download)                        |
+| **VSCode插件(必装)** | 1. `Vue Language Features (Volar) ` <br/> 2. `TypeScript Vue Plugin (Volar) `  <br/>3. 禁用 Vetur | ![vscode-plugin](https://oss.youlai.tech/blog/vscode-plugin.png) |
 
 
 ## 项目启动
@@ -105,7 +107,7 @@ server {
 
   模板项目的组件类型声明已自动生成。如果添加和使用新的组件，请按照图示方法开启自动生成。在自动生成完成后，记得将其设置为 `false`，避免重复执行引发冲突。
 
-  ![](https://s2.loli.net/2023/06/03/lrcsHzInYV6wWqo.png)
+  ![](https://oss.youlai.tech/blog/vue-unplugin.png)
 
 - **项目启动浏览器访问空白**
 
@@ -114,7 +116,7 @@ server {
 - **项目同步仓库更新升级**
 
   项目同步仓库更新升级之后，建议 `pnpm install` 安装更新依赖之后启动 。
-  
+
 - **其他问题**
 
   如果有其他问题或者建议，建议 [ISSUE](https://gitee.com/youlaiorg/vue3-element-admin/issues/new)
@@ -122,13 +124,16 @@ server {
 ## 接口支持
 
 - **接口调用地址**：[https://vapi.youlai.tech](https://vapi.youlai.tech)
+
 - **接口文档地址**：[在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)
+
 - **OpenAPI文档地址**：[http://vapi.youlai.tech/v3/api-docs](http://vapi.youlai.tech/v3/api-docs)
+
 - **本地接口**：默认使用线上接口，你可以通过以下步骤完成本地接口环境搭建：
 
-	> 1. 获取基于 `Java 、SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码 ;
-	>2. 根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动; 
-	> 3. 替换 [vite.config.ts](vite.config.ts) 的代理目标地址 `vapi.youlai.tech` 为本地的 `localhost:8989`
+  > 1. 获取基于 `Java 、SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码 ;
+  > 2. 根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动; 
+  > 3. 替换 [vite.config.ts](vite.config.ts) 的代理目标地址 `vapi.youlai.tech` 为本地的 `localhost:8989`
 
 
 
@@ -157,6 +162,7 @@ server {
 > 为了避免营销广告人群混入，此举无奈，望理解！
 
 
-|公众号|交流群|
-|-|-|
-|<img src="https://s2.loli.net/2023/05/28/JaG4L8ZHmkIgRQC.png" height="180px"/>|<img src="https://s2.loli.net/2023/06/21/oikXZGOEDJMHpn5.png" height="180px"/>|
+| 公众号                                                       | 交流群                                                       |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="https://oss.youlai.tech/blog/youlaigzh.png" height="180px"/> | <img src="https://oss.youlai.tech/blog/youlaijlq.png" height="180px"/> |
+
