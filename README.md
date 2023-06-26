@@ -12,7 +12,6 @@
 </p>
 
 
-
 ## 项目介绍
 
 [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite4+ TypeScript5 + Element-Plus + Pinia 等最新主流技术栈构建的后台管理前端模板（配套后端源码）。
@@ -30,18 +29,19 @@
 
 - **控制台**
 
-  ![暗黑模式](https://oss.youlai.tech/blog/vue-dark-mode.png)
+  ![暗黑模式](https://img-blog.csdnimg.cn/img_convert/91d571bf1b7a7d64357030a8b29d76b6.png)
 
 - **接口文档**
 
-  ![接口文档](https://oss.youlai.tech/blog/vue-api-doc.png) 
+  ![接口文档](https://img-blog.csdnimg.cn/02e77660017e4444a711cb4b639e1f00.png#pic_center)
+ 
 
 
 - **权限管理系统**
 
-  | ![用户管理](https://oss.youlai.tech/blog/vue-user.png) | ![角色管理](https://oss.youlai.tech/blog/vue-role.png) |
+  |![在这里插入图片描述](https://img-blog.csdnimg.cn/0d82e1e1feee4b648994fe5977e796a0.png#pic_center) | ![角色管理](https://img-blog.csdnimg.cn/img_convert/50af023406ff3d7402589bc2679d6251.png) |
   | ------------------------------------------------------ | ------------------------------------------------------ |
-  | ![菜单管理](https://oss.youlai.tech/blog/vue-menu.png) | ![字典管理](https://oss.youlai.tech/blog/vue-dict.png) |
+  | ![菜单管理](https://img-blog.csdnimg.cn/img_convert/27b2cd312a828c7843abd94249686ef5.png) | ![在这里插入图片描述](https://img-blog.csdnimg.cn/3863aaaa92e1443e84d91fa49b6fa933.png#pic_center)
 
 ## 项目地址
 
@@ -56,7 +56,7 @@
 | -------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
 | **开发工具**         | VSCode                                                       | [下载地址](https://code.visualstudio.com/Download)           |
 | **运行环境**         | Node 16+                                                     | [下载地址](http://nodejs.cn/download)                        |
-| **VSCode插件(必装)** | 1. `Vue Language Features (Volar) ` <br/> 2. `TypeScript Vue Plugin (Volar) `  <br/>3. 禁用 Vetur | ![vscode-plugin](https://oss.youlai.tech/blog/vscode-plugin.png) |
+| **VSCode插件(必装)** | 1. `Vue Language Features (Volar) ` <br/> 2. `TypeScript Vue Plugin (Volar) `  <br/>3. 禁用 Vetur | ![vscode-plugin](https://img-blog.csdnimg.cn/img_convert/e1e3d289f6117ba0639fc5d0c188568d.png) |
 
 
 ## 项目启动
@@ -107,7 +107,7 @@ server {
 
   模板项目的组件类型声明已自动生成。如果添加和使用新的组件，请按照图示方法开启自动生成。在自动生成完成后，记得将其设置为 `false`，避免重复执行引发冲突。
 
-  ![](https://oss.youlai.tech/blog/vue-unplugin.png)
+  ![](https://img-blog.csdnimg.cn/img_convert/6484b14dc4f11a52c33a828a1df998fa.png)
 
 - **项目启动浏览器访问空白**
 
@@ -151,7 +151,9 @@ server {
 
 执行 `pnpm run commit` 唤起 git commit 交互，根据提示完成信息的输入和选择。
 
-![](https://oss.youlai.tech/youlai-boot/2023/05/21/d9863c6ded9e4363824b0d8c4c1f0642.png)
+![](https://img-blog.csdnimg.cn/img_convert/bc410821b4c2d4b76dbbb9ac8473b559.png)
+
+
 
 ## 交流群🚀
 
@@ -164,5 +166,5 @@ server {
 
 | 公众号                                                       | 交流群                                                       |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <img src="https://oss.youlai.tech/blog/youlaigzh.png" height="180px"/> | <img src="https://oss.youlai.tech/blog/youlaijlq.png" height="180px"/> |
+| <img src="https://foruda.gitee.com/images/1687689212187063809/3c69eaee_716974.png" height="180px"/> | <img src="https://foruda.gitee.com/images/1687689212139273561/6a65ef69_716974.png" height="180px"/> |
 
