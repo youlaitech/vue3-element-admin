@@ -65,6 +65,9 @@
 # 克隆代码
 git clone https://gitee.com/youlaiorg/vue3-element-admin.git
 
+# 切换目录
+cd vue3-element-admin
+
 # 安装 pnpm
 npm install pnpm -g
 
