@@ -121,9 +121,9 @@ function openDialog(dictId?: number) {
  * 字典表单提交
  */
 function handleSubmit() {
-  loading.value = false;
   dataFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
+      loading.value = false;
       const dictId = formData.id;
       if (dictId) {
         updateDict(dictId, formData)
