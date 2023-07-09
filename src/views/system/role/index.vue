@@ -111,9 +111,9 @@ function openDialog(roleId?: number) {
  * 角色表单提交
  */
 function handleSubmit() {
-  loading.value = true;
   roleFormRef.value.validate((valid: any) => {
     if (valid) {
+      loading.value = true;
       const roleId = formData.id;
       if (roleId) {
         updateRole(roleId, formData)
