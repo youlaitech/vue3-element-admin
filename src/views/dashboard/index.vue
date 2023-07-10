@@ -121,7 +121,7 @@ orderCount.value = 2000;
           </div>
           <div class="flex flex-col space-y-3">
             <div class="text-[var(--el-text-color-secondary)]">访问数</div>
-            <div class="text-lg">
+            <div class="text-lg text-right">
               {{ Math.round(visitCountOutput) }}
             </div>
           </div>
@@ -138,7 +138,7 @@ orderCount.value = 2000;
           </div>
           <div class="flex flex-col space-y-3">
             <div class="text-[var(--el-text-color-secondary)]">消息数</div>
-            <div class="text-lg">
+            <div class="text-lg text-right">
               {{ Math.round(messageCountOutput) }}
             </div>
           </div>
@@ -169,7 +169,7 @@ orderCount.value = 2000;
           </div>
           <div class="flex flex-col space-y-3">
             <div class="text-[var(--el-text-color-secondary)]">订单数</div>
-            <div class="text-lg">
+            <div class="text-lg text-right">
               {{ Math.round(orderCountOutput) }}
             </div>
           </div>
