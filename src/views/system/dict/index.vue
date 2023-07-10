@@ -166,11 +166,10 @@ const dictDataDialog = reactive<DialogOption>({
   visible: false,
 });
 
-// 当前选中的字典类型
-const selectedDictType = reactive({ typeCode: "", typeName: "" });
+const selectedDictType = reactive({ typeCode: "", typeName: "" }); // 当前选中的字典类型
 
 /**
- * 打开字典弹窗
+ * 打开字典数据弹窗
  */
 function openDictDialog(row: DictTypePageVO) {
   dictDataDialog.visible = true;
@@ -181,7 +180,7 @@ function openDictDialog(row: DictTypePageVO) {
 }
 
 /**
- * 关闭字典弹窗
+ * 关闭字典数据弹窗
  */
 function closeDictDialog() {
   dictDataDialog.visible = false;
