@@ -33,6 +33,7 @@ watch(
   () => props.typeCode,
   (newVal: string) => {
     queryParams.typeCode = newVal;
+    formData.typeCode = newVal;
     resetQuery();
   }
 );
