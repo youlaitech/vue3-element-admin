@@ -57,7 +57,8 @@
     "screenfull": "^6.0.0",
     "vue": "^3.3.1",
     "vue-i18n": "9.2.2",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",
@@ -67,6 +68,7 @@
     "@types/lodash": "^4.14.195",
     "@types/nprogress": "^0.2.0",
     "@types/path-browserify": "^1.0.0",
+    "@types/xlsx": "^0.0.36",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
     "autoprefixer": "^10.4.14",
