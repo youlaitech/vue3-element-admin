@@ -5,11 +5,11 @@ export interface LoginData {
   /**
    * 用户名
    */
-  username?: string;
+  username: string;
   /**
    * 密码
    */
-  password?: string;
+  password: string;
 
   /**
    * 验证码缓存key
@@ -57,4 +57,3 @@ export interface CaptchaResult {
    */
   verifyCodeBase64: string;
 }
-
