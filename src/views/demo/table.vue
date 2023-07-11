@@ -46,9 +46,46 @@
         </el-table-column>
       </el-table>
     </div>
+    <h3>解析excel</h3>
+    <el-upload
+      :disabled="state.fileList.length !== 0"
+      class="upload"
+      drag
+      accept=".xls,.xlsx"
+      :show-file-list="false"
+      action=""
+      :http-request="handleUploadFile"
+    >
+      <i-ep-upload-filled class="icon"></i-ep-upload-filled>
+      <!-- <el-icon class="el-icon--upload"><upload-filled /></el-icon> -->
+      <div class="el-upload__text">拖拽excel到这里</div>
+    </el-upload>
+    <div v-loading="loading" class="excel-table-wrap">
+      <el-table
+        v-if="state.tableExcelHead.length && state.excelTableData.length"
+        :data="state.excelTableData"
+        stripe
+        border
+        style="width: 100%"
+        size="small"
+      >
+        <el-table-column
+          v-for="(item, index) in state.tableExcelHead"
+          :key="index"
+          :prop="item"
+          :label="item"
+          width="150"
+        >
+          <template #default="scope">
+            <span class="overflow-ellipsis">{{ scope.row[item] }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
+import * as XLSX from "xlsx/xlsx.mjs";
 import { cloneDeep } from "lodash-es";
 
 enum TableCommand {
@@ -61,6 +98,7 @@ enum TableCommand {
 }
 
 let tableData = ref<any[]>([]);
+const loading = ref(false);
 const orginData = [
   {
     date: "2016-05-03",
@@ -103,6 +141,17 @@ const orginData = [
     hobby: "游泳",
   },
 ];
+const state = reactive({
+  fileList: [],
+  excelData: [],
+  tableHead: [],
+  sheetList: [] as any[],
+  allSheetObj: {} as any,
+  tableExcelHead: [] as string[],
+  activeSheet: "",
+  fileName: "",
+  excelTableData: [],
+});
 onMounted(() => {
   tableData.value = orginData.map((item) => item);
 });
@@ -226,6 +275,100 @@ const sortTableData = (sortCol: ColumnProp) => {
     tableData.value = cloneDeep(orginData).map((item: any) => item);
   }
 };
+const handleUploadFile = (data: any) => {
+  const { file } = data;
+  const { size, name } = file;
+  state.fileName = name;
+  // 获取最后一个.的位置
+  const index = name.lastIndexOf(".");
+  // 获取文件类型
+  const ext = name.substring(index + 1);
+  const accept = ["xlsx", "xls"];
+  if (!accept.includes(ext)) {
+    ElMessage({
+      type: "error",
+      message: "请选择xls或者xlsx文件",
+    });
+    return;
+  }
+
+  loading.value = true;
+  readFile(file, "");
+};
+const currentSheetName = computed(() => {
+  const find = state.sheetList.find(
+    (item) => item.sheetId === state.activeSheet
+  );
+  return find?.name || "";
+});
+
+const getFile = () => {
+  const sheetName = `${currentSheetName.value}`;
+  let workbook = XLSX.utils.book_new();
+
+  workbook = {
+    ...workbook,
+    SheetNames: [sheetName],
+    Sheets: {},
+  };
+  workbook.Sheets[sheetName] = state.allSheetObj[sheetName];
+  const wopts = {
+    bookType: "xlsx", // 要生成的文件类型
+    bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
+    type: "binary", // 二进制格式
+  };
+  const wbout = XLSX.write(workbook, wopts);
+  const transform = (s: any) => {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+
+    // eslint-disable-next-line no-bitwise
+    for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xff;
+    return buf;
+  };
+  // 字符串转ArrayBuffer
+  const blob = new Blob([transform(wbout)], {
+    type: "application/octet-stream",
+  });
+  const file = new window.File([blob], state.fileName, { type: "xlsx" });
+};
+const readFile = (file: any, callback: any) => {
+  const rABS = true; // true: readAsBinaryString ; false: readAsArrayBuffer
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    let data = e.target?.result as any;
+    if (!rABS) data = new Uint8Array(data);
+    const readData = XLSX.read(data, {
+      type: rABS ? "binary" : "array",
+      cellText: false,
+      cellDates: true,
+    });
+    const { Sheets, Workbook } = readData;
+    state.sheetList = Workbook.Sheets;
+    state.activeSheet = state.sheetList[0].sheetId;
+    state.allSheetObj = Sheets;
+    const result = XLSX.utils.sheet_to_json(
+      state.allSheetObj[currentSheetName.value],
+      { raw: false, dateNF: "YYYY-MM-DD HH:mm:ss" }
+    );
+    const allData = XLSX.utils.sheet_to_json(
+      state.allSheetObj[currentSheetName.value],
+      { header: 1 }
+    );
+    state.tableExcelHead = allData.length > 0 ? allData[0] : Array(10).fill("");
+    state.excelTableData = result;
+
+    // getFile();
+    // 获取表头key
+    if (callback) callback(readData);
+  };
+  if (rABS) {
+    reader.readAsBinaryString(file);
+  } else {
+    reader.readAsArrayBuffer(file);
+  }
+  loading.value = false;
+};
 </script>
 <style lang="scss" scoped>
 .table-page {
@@ -234,7 +377,7 @@ const sortTableData = (sortCol: ColumnProp) => {
   padding: 10px;
 
   .table-wrap {
-    height: 100%;
+    // height: 100%;
     padding: 20px;
     background-color: #fff;
 
@@ -266,6 +409,28 @@ const sortTableData = (sortCol: ColumnProp) => {
         }
       }
     }
+  }
+  .upload {
+    margin-top: 16px;
+    border: 2px dashed #90caf9;
+    border-radius: 2px;
+    box-sizing: border-box;
+    height: 230px;
+    margin-bottom: 20px;
+    background-color: #e3f2fd;
+    :deep(.el-upload-dragger) {
+      background-color: #e3f2fd;
+      border: none;
+      padding: 0px;
+      .icon {
+        font-size: 110px;
+        color: #90caf9;
+      }
+    }
+  }
+  .excel-table-wrap {
+    width: 100%;
+    min-height: 300px;
   }
 }
 </style>
