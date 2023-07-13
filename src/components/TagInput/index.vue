@@ -358,11 +358,12 @@ defineExpose({
 <style lang="scss" scoped>
 .tagInputarea {
   min-width: 0;
+
   :deep {
     .tagInputareaIuput {
-      border-radius: 3px;
-      border: 1px solid #409eff;
       overflow: auto;
+      border: 1px solid #409eff;
+      border-radius: 3px;
 
       &:not(.active) {
         border-color: #ccc !important;
@@ -388,9 +389,9 @@ defineExpose({
     //   border-radius: 0 3px 3px 0;
     // }
     .CodeMirror {
-      font-family: inherit !important;
       box-sizing: border-box;
       height: auto !important;
+      font-family: inherit !important;
 
       .CodeMirror-vscrollbar {
         display: none !important;
@@ -403,12 +404,14 @@ defineExpose({
       // }
 
       .CodeMirror-lines {
-        padding: 6px 0;
         min-height: 35px;
+        padding: 6px 0;
       }
+
       .CodeMirror-line {
         padding: 0 10px;
       }
+
       .columnTagCon {
         position: relative;
         display: inline-flex;
@@ -420,69 +423,84 @@ defineExpose({
         // border: 1px solid #bbd6ea;
         // border-radius: 5px;
       }
+
       .columnTag {
         position: relative;
-        display: inline-flex;
         box-sizing: border-box;
-        cursor: pointer;
+        display: inline-flex;
         height: 24px;
         font-size: 12px;
+        cursor: pointer;
         border: 1px solid #90caf9;
         border-radius: 24px;
+
         .columnName,
         .columnValue {
           display: inline-block;
           height: 22px;
-          line-height: 22px;
           padding: 0 10px;
           overflow: hidden;
+          line-height: 22px;
         }
+
         .columnName {
           color: #2196f3;
-          background-color: rgba(33, 150, 243, 0.06);
+          background-color: rgb(33 150 243 / 6%);
         }
+
         .columnValue {
           color: #fff;
-          border-radius: 0 22px 22px 0;
           background-color: #249eff;
+          border-radius: 0 22px 22px 0;
+
           .ellipsis {
             max-width: 9em;
           }
         }
+
         &.onlytag {
           margin-right: 6px;
-          &:after {
-            content: ",";
+
+          &::after {
             position: absolute;
-            right: -6px;
             top: 6px;
+            right: -6px;
+            content: ",";
           }
         }
+
         &.deleted {
           border-color: #f44336;
+
           .columnName {
             color: #f44336;
-            background-color: rgba(244, 67, 54, 0.06);
+            background-color: rgb(244 67 54 / 6%);
           }
+
           &:hover {
             border-color: #f44336;
+
             .columnName {
               color: #f44336;
-              background-color: rgba(244, 67, 54, 0.12);
+              background-color: rgb(244 67 54 / 12%);
             }
           }
         }
+
         &:hover {
           border-color: #ddd;
+
           .columnName {
             color: #9e9e9e;
-            background-color: rgba(158, 158, 158, 0.06);
+            background-color: rgb(158 158 158 / 6%);
           }
+
           .columnValue {
             background-color: #bdbdbd;
           }
         }
       }
+
       .operator {
         margin: 0 4px;
       }

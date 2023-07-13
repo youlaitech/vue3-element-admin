@@ -66,6 +66,7 @@ const handleToFile = async () => {
     return;
   }
   const file = dataURLtoFile(canvas.value.toDataURL(), "签名.png");
+
   if (!file) return;
   const { data } = await uploadFileApi(file);
   handleClearSign();
@@ -104,14 +105,14 @@ const dataURLtoFile = (dataurl: string, filename: string) => {
   if (!arr.length) return;
 
   const mime = arr[0].match(/:(.*?);/);
-  if (mime && !mime.length) {
+  if (mime) {
     const bstr = atob(arr[1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }
-    return new File([u8arr], filename, { type: mime[0] });
+    return new File([u8arr], filename, { type: mime[1] });
   }
 };
 // canvas 画图
@@ -188,18 +189,19 @@ function eraser(
 .canvas-dom {
   width: 100%;
   height: 100%;
-  padding: 0px 20px;
+  padding: 0 20px;
   background-color: #fff;
+
   canvas {
     border: 1px solid #e6e6e6;
   }
 
   header {
-    width: 100%;
-    margin: 8px;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+    width: 100%;
+    margin: 8px;
 
     .eraser-option {
       display: flex;

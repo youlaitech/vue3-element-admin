@@ -71,20 +71,22 @@ const onBlur = (): void => {
   width: 500px;
   height: auto;
   margin: 10px;
+
   :deep {
     .tag-demo-con {
       .tag-wrap {
         height: 25px;
         line-height: 25px;
+
         .tag {
+          box-sizing: border-box;
           display: inline-block;
           padding: 2px 8px;
-          box-sizing: border-box;
-          border-radius: 16px;
-          background: #d8eeff;
-          color: #174c76;
-          border: 1px solid #bbd6ea;
           margin: 0 4px;
+          color: #174c76;
+          background: #d8eeff;
+          border: 1px solid #bbd6ea;
+          border-radius: 16px;
         }
         // padding: 4px;
         // margin: 4px;
@@ -95,6 +97,7 @@ const onBlur = (): void => {
       }
     }
   }
+
   .tag-wrap {
     margin-top: 10px;
   }
