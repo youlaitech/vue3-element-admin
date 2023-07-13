@@ -57,7 +57,6 @@
       :http-request="handleUploadFile"
     >
       <i-ep-upload-filled class="icon"></i-ep-upload-filled>
-      <!-- <el-icon class="el-icon--upload"><upload-filled /></el-icon> -->
       <div class="el-upload__text">拖拽excel到这里</div>
     </el-upload>
     <div v-loading="loading" class="excel-table-wrap">
@@ -126,7 +125,7 @@ const orginData = [
     address: "湖南",
     id: 4,
     gender: "男",
-    height: 173,
+    height: 176,
     school: "清华大学",
     hobby: "游泳",
   },
@@ -410,24 +409,28 @@ const readFile = (file: any, callback: any) => {
       }
     }
   }
+
   .upload {
-    margin-top: 16px;
-    border: 2px dashed #90caf9;
-    border-radius: 2px;
     box-sizing: border-box;
     height: 230px;
+    margin-top: 16px;
     margin-bottom: 20px;
     background-color: #e3f2fd;
+    border: 2px dashed #90caf9;
+    border-radius: 2px;
+
     :deep(.el-upload-dragger) {
+      padding: 0;
       background-color: #e3f2fd;
       border: none;
-      padding: 0px;
+
       .icon {
         font-size: 110px;
         color: #90caf9;
       }
     }
   }
+
   .excel-table-wrap {
     width: 100%;
     min-height: 300px;

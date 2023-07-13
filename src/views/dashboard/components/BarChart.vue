@@ -185,8 +185,10 @@ const downloadEchart = () => {
 .title {
   display: flex;
   justify-content: space-between;
+
   .download {
     cursor: pointer;
+
     &:hover {
       color: #409eff;
     }
