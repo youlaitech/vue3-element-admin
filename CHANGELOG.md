@@ -1,3 +1,9 @@
+# 2.4.1 (2023/7/20)
+
+### ✨ feat
+- 整合 vite-plugin-compression 插件打包优化(3.66MB → 1.58MB) （author by [april-tong](https://april-tong.com/)）
+- 字典组件封装（author by [haoxr](https://juejin.cn/user/4187394044331261/posts)）
+
 # 2.4.0 (2023/6/17)
 
 ### ✨ feat
