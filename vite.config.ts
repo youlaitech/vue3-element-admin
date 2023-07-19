@@ -12,8 +12,10 @@ import IconsResolver from "unplugin-icons/resolver";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 
 import UnoCSS from "unocss/vite";
-
 import path from "path";
+
+import viteCompression from "vite-plugin-compression";
+
 const pathSrc = path.resolve(__dirname, "src");
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
@@ -100,6 +102,15 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         iconDirs: [path.resolve(pathSrc, "assets/icons")],
         // 指定symbolId格式
         symbolId: "icon-[dir]-[name]",
+      }),
+      // 代码压缩
+      viteCompression({
+        verbose: true, // 默认即可
+        disable: true, // 是否禁用压缩，默认禁用，true为禁用,false为开启，打开压缩需配置nginx支持
+        deleteOriginFile: true, // 删除源文件
+        threshold: 10240, // 压缩前最小文件大小
+        algorithm: "gzip", // 压缩算法
+        ext: ".gz", // 文件类型
       }),
     ],
     // 预加载项目必需的组件
