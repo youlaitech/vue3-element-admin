@@ -18,6 +18,9 @@ html.dark {
   // wang-editor textarea
   --w-e-textarea-bg-color: var(--el-bg-color-overlay);
   --w-e-textarea-color: var(--el-text-color-regulary);
+  --w-e-textarea-slight-border-color: var(--el-color-primary);
+  --w-e-textarea-slight-bg-color: rgba(var(--el-color-primary-rgb), .1);
+  --w-e-textarea-selected-border-color: var(--el-color-primary);
   --w-e-textarea-border-color: var(--el-color-info-light-5);
 
   // // wang-editor modal
