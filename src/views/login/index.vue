@@ -6,8 +6,10 @@
       :rules="loginRules"
       class="login-form"
     >
-      <div class="flex text-white items-center py-4">
-        <span class="text-2xl flex-1 text-center">{{ $t("login.title") }}</span>
+      <div class="flex text-white items-center py-4 title-wrap">
+        <span class="text-2xl flex-1 text-center title">
+          {{ $t("login.title") }}
+        </span>
         <lang-select class="text-white! cursor-pointer" />
       </div>
 
@@ -216,6 +218,25 @@ onMounted(() => {
   min-height: 100%;
   overflow: hidden;
   background-color: #2d3a4b;
+
+  .title-wrap {
+    filter: contrast(30);
+
+    .title {
+      letter-spacing: 8px;
+      animation: showup 3s forwards;
+    }
+
+    @keyframes showup {
+      0% {
+        letter-spacing: -20px;
+      }
+
+      100% {
+        letter-spacing: 8px;
+      }
+    }
+  }
 
   .login-form {
     width: 520px;
