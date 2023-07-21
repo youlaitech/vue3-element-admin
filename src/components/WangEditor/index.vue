@@ -72,19 +72,3 @@ onBeforeUnmount(() => {
 </script>
 
 <style src="@wangeditor/editor/dist/css/style.css"></style>
-
-<style lang="scss" scoped>
-.editor-wrapper {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #ccc;
-
-  #toolbar-container {
-    border-bottom: 1px solid #ccc;
-  }
-
-  #editor-container {
-    flex-grow: 1;
-  }
-}
-</style>
