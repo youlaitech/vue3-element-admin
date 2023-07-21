@@ -7,6 +7,23 @@ html.dark {
   --subMenuActiveText: var(--el-menu-active-color);
   --subMenuHover: rgb(0 0 0 / 20%);
 
+  // wang-editor toolbar
+  --w-e-toolbar-bg-color: var(--el-bg-color-overlay);
+  --w-e-toolbar-color: var(--el-text-color-regulary);
+  --w-e-toolbar-active-bg-color: var(--el-bg-color-page);
+  --w-e-toolbar-active-color: var(--el-color-info-dark-2);
+  --w-e-toolbar-disabled-color: var(--el-disabled-text-color);
+  --w-e-toolbar-border-color: var(--el-color-info-light-8);
+
+  // wang-editor textarea
+  --w-e-textarea-bg-color: var(--el-bg-color-overlay);
+  --w-e-textarea-color: var(--el-text-color-regulary);
+  --w-e-textarea-border-color: var(--el-color-info-light-5);
+
+  // // wang-editor modal
+  --w-e-modal-button-bg-color: var(--el-button-bg-color);
+  --w-e-modal-button-border-color: var(--el-color-info-light-3);
+
   .navbar {
     background-color: var(--el-bg-color);
 
