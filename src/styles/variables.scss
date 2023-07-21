@@ -8,6 +8,11 @@
   --subMenuBg: #1f2d3d;
   --subMenuActiveText: #f4f4f5;
   --subMenuHover: #001528;
+
+  // wang-editor textarea
+  --w-e-textarea-slight-border-color: var(--el-color-primary);
+  --w-e-textarea-slight-bg-color: rgba(var(--el-color-primary-rgb), .1);
+  --w-e-textarea-selected-border-color: var(--el-color-primary);
 }
 
 $menuBg: var(--menuBg);
