@@ -120,6 +120,10 @@ server {
 
   项目同步仓库更新升级之后，建议 `pnpm install` 安装更新依赖之后启动 。
 
+- **项目组件、函数和引用爆红**
+
+	重启 VSCode 尝试
+
 - **其他问题**
 
   如果有其他问题或者建议，建议 [ISSUE](https://gitee.com/youlaiorg/vue3-element-admin/issues/new)

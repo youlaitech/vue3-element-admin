@@ -91,6 +91,7 @@ declare module "@vue/runtime-core" {
     TagInput: typeof import("./../components/TagInput/index.vue")["default"];
     TagsView: typeof import("./../layout/components/TagsView/index.vue")["default"];
     WangEditor: typeof import("./../components/WangEditor/index.vue")["default"];
+    Dictionary: typeof import("./../components/Dictionary/index.vue")["default"];
   }
   export interface ComponentCustomProperties {
     vLoading: typeof import("element-plus/es")["ElLoadingDirective"];
