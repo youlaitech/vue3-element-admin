@@ -223,7 +223,7 @@ onMounted(() => {
     filter: contrast(30);
 
     .title {
-      letter-spacing: 8px;
+      letter-spacing: 4px;
       animation: showup 3s forwards;
     }
 
@@ -233,7 +233,7 @@ onMounted(() => {
       }
 
       100% {
-        letter-spacing: 8px;
+        letter-spacing: 4px;
       }
     }
   }
