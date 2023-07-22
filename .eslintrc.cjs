@@ -24,6 +24,13 @@ module.exports = {
     "vue/no-v-model-argument": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
   },
+  // eslint不能对html文件生效
+  overrides: [
+    {
+      files: ["*.html"],
+      processor: "vue/.vue",
+    },
+  ],
   // https://eslint.org/docs/latest/use/configure/language-options#specifying-globals
   globals: {
     DialogOption: "readonly",
