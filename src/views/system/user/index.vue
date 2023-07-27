@@ -153,9 +153,7 @@ function handleQuery() {
     });
 }
 
-/**
- * 重置查询
- */
+/** 重置查询 */
 function resetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
@@ -163,16 +161,12 @@ function resetQuery() {
   handleQuery();
 }
 
-/**
- * 行checkbox change事件
- */
+/** 行选中事件 */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
 
-/**
- * 重置密码
- */
+/**重置密码 */
 function resetPassword(row: { [key: string]: any }) {
   ElMessageBox.prompt(
     "请输入用户「" + row.username + "」的新密码",
@@ -194,9 +188,7 @@ function resetPassword(row: { [key: string]: any }) {
     .catch(() => {});
 }
 
-/**
- * 打开用户弹窗
- */
+/** 打开表单弹窗 */
 async function openDialog(userId?: number) {
   await getDeptOptions();
   await getRoleOptions();
@@ -211,17 +203,13 @@ async function openDialog(userId?: number) {
   }
 }
 
-/**
- * 关闭弹窗
- */
+/** 关闭表单弹窗 */
 function closeDialog() {
   dialog.visible = false;
   resetForm();
 }
 
-/**
- * 重置表单
- */
+/** 重置表单 */
 function resetForm() {
   userFormRef.value.resetFields();
   userFormRef.value.clearValidate();
@@ -230,9 +218,7 @@ function resetForm() {
   formData.status = 1;
 }
 
-/**
- * 表单提交
- */
+/** 表单提交 */
 const handleSubmit = useThrottleFn(() => {
   userFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -259,9 +245,7 @@ const handleSubmit = useThrottleFn(() => {
   });
 }, 3000);
 
-/**
- * 删除用户
- */
+/** 删除用户 */
 function handleDelete(id?: number) {
   const userIds = [id || ids.value].join(",");
   if (!userIds) {
@@ -290,9 +274,7 @@ async function getDeptOptions() {
   });
 }
 
-/**
- * 下载导入模板
- */
+/** 下载导入模板 */
 function downloadTemplate() {
   downloadTemplateApi().then((response: any) => {
     const blob = new Blob([response.data], {
@@ -311,9 +293,7 @@ function downloadTemplate() {
   });
 }
 
-/**
- * 打开导入弹窗
- */
+/** 打开导入弹窗 */
 async function openImportDialog() {
   await getDeptOptions();
   importDeptId.value = undefined;
@@ -335,9 +315,7 @@ function handleExcelChange(file: UploadFile) {
   excelFile.value = file.raw;
 }
 
-/**
- * 导入用户提交
- */
+/** 导入用户提交 */
 function handleUserImport() {
   if (importDeptId.value) {
     if (!excelFile.value) {
@@ -352,18 +330,14 @@ function handleUserImport() {
   }
 }
 
-/**
- * 关闭导入弹窗
- */
+/**  关闭导入弹窗 */
 function closeImportDialog() {
   importDialog.visible = false;
   excelFile.value = undefined;
   excelFilelist.value = [];
 }
 
-/**
- * 导出用户
- */
+/** 导出用户 */
 function handleUserExport() {
   exportUser(queryParams).then((response: any) => {
     const blob = new Blob([response.data], {
@@ -630,11 +604,7 @@ onMounted(() => {
         </el-form-item>
 
         <el-form-item label="性别" prop="gender">
-          <el-select v-model="formData.gender" placeholder="请选择">
-            <el-option label="未知" :value="0" />
-            <el-option label="男" :value="1" />
-            <el-option label="女" :value="2" />
-          </el-select>
+          <dictionary v-model="formData.gender" type-code="gender" />
         </el-form-item>
 
         <el-form-item label="角色" prop="roleIds">
