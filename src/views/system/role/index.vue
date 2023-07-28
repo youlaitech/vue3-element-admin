@@ -60,9 +60,7 @@ interface CheckedRole {
 }
 let checkedRole: CheckedRole = reactive({});
 
-/**
- * 查询
- */
+/** 查询 */
 function handleQuery() {
   loading.value = true;
   getRolePage(queryParams)
@@ -74,27 +72,19 @@ function handleQuery() {
       loading.value = false;
     });
 }
-/**
- * 重置查询
- */
+/** 重置查询 */
 function resetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
   handleQuery();
 }
 
-/**
- * 行checkbox change事件
- */
+/** 行checkbox 选中事件 */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
 
-/**
- * 打开角色表单弹窗
- *
- * @param roleId
- */
+/** 打开角色表单弹窗 */
 function openDialog(roleId?: number) {
   dialog.visible = true;
   if (roleId) {
@@ -107,9 +97,7 @@ function openDialog(roleId?: number) {
   }
 }
 
-/**
- * 角色表单提交
- */
+/** 角色保存提交 */
 function handleSubmit() {
   roleFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -136,17 +124,13 @@ function handleSubmit() {
   });
 }
 
-/**
- * 关闭弹窗
- */
+/** 关闭表单弹窗 */
 function closeDialog() {
   dialog.visible = false;
   resetForm();
 }
 
-/**
- * 重置表单
- */
+/** 重置表单 */
 function resetForm() {
   roleFormRef.value.resetFields();
   roleFormRef.value.clearValidate();
@@ -156,9 +140,7 @@ function resetForm() {
   formData.status = 1;
 }
 
-/**
- * 删除
- */
+/** 删除角色 */
 function handleDelete(roleId?: number) {
   const roleIds = [roleId || ids.value].join(",");
   if (!roleIds) {
@@ -181,9 +163,7 @@ function handleDelete(roleId?: number) {
   });
 }
 
-/**
- * 打开分配菜单弹窗
- */
+/** 打开分配菜单弹窗 */
 function openMenuDialog(row: RolePageVO) {
   const roleId = row.id;
   if (roleId) {
@@ -213,9 +193,7 @@ function openMenuDialog(row: RolePageVO) {
   }
 }
 
-/**
- * 角色分配菜单提交
- */
+/** 角色分配菜单保存提交 */
 function handleRoleMenuSubmit() {
   const roleId = checkedRole.id;
   if (roleId) {
