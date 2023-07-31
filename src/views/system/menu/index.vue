@@ -73,17 +73,13 @@ function handleQuery() {
     });
 }
 
-/**
- * 查询重置
- */
+/** 重置查询 */
 function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
 }
 
-/**
- * 行点击事件
- */
+/**行点击事件 */
 function onRowClick(row: MenuVO) {
   selectedRowMenuId.value = row.id;
 }
@@ -115,9 +111,7 @@ function openDialog(parentId?: number, menuId?: number) {
     });
 }
 
-/**
- * 菜单类型 change
- */
+/** 菜单类型切换事件处理 */
 function onMenuTypeChange() {
   // 如果菜单类型改变，清空路由路径；未改变在切换后还原路由路径
   if (formData.type !== menuCacheData.type) {
@@ -127,9 +121,7 @@ function onMenuTypeChange() {
   }
 }
 
-/**
- * 菜单保存提交
- */
+/** 菜单保存提交 */
 function submitForm() {
   menuFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
@@ -151,10 +143,7 @@ function submitForm() {
   });
 }
 
-/**
- * 删除菜单
- * @param menuId 菜单ID
- */
+/** 删除菜单 */
 function handleDelete(menuId: number) {
   if (!menuId) {
     ElMessage.warning("请勾选删除项");
@@ -175,17 +164,13 @@ function handleDelete(menuId: number) {
     .catch(() => ElMessage.info("已取消删除"));
 }
 
-/**
- * 关闭弹窗
- */
+/** 关闭弹窗 */
 function closeDialog() {
   dialog.visible = false;
   resetForm();
 }
 
-/**
- * 重置表单
- */
+/** 重置表单 */
 function resetForm() {
   menuFormRef.value.resetFields();
   menuFormRef.value.clearValidate();
