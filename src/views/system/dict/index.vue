@@ -44,9 +44,7 @@ const rules = reactive({
   code: [{ required: true, message: "请输入字典类型编码", trigger: "blur" }],
 });
 
-/**
- * 查询
- */
+/** 查询 */
 function handleQuery() {
   loading.value = true;
   getDictTypePage(queryParams)
@@ -68,9 +66,7 @@ function resetQuery() {
   handleQuery();
 }
 
-/**
- * 行checkbox change事件
- */
+/** 行复选框选中  */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
@@ -92,9 +88,7 @@ function openDialog(dicTypeId?: number) {
   }
 }
 
-/**
- * 字典类型表单提交
- */
+/** 字典类型表单提交 */
 function handleSubmit() {
   dataFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
@@ -121,17 +115,13 @@ function handleSubmit() {
   });
 }
 
-/**
- * 关闭弹窗
- */
+/** 关闭字典类型弹窗 */
 function closeDialog() {
   dialog.visible = false;
   resetForm();
 }
 
-/**
- * 重置表单
- */
+/**  重置字典类型表单 */
 function resetForm() {
   dataFormRef.value.resetFields();
   dataFormRef.value.clearValidate();
@@ -140,9 +130,7 @@ function resetForm() {
   formData.status = 1;
 }
 
-/**
- * 删除字典类型
- */
+/** 删除字典类型 */
 function handleDelete(dictTypeId?: number) {
   const dictTypeIds = [dictTypeId || ids.value].join(",");
   if (!dictTypeIds) {
@@ -168,9 +156,7 @@ const dictDataDialog = reactive<DialogOption>({
 
 const selectedDictType = reactive({ typeCode: "", typeName: "" }); // 当前选中的字典类型
 
-/**
- * 打开字典数据弹窗
- */
+/** 打开字典数据弹窗 */
 function openDictDialog(row: DictTypePageVO) {
   dictDataDialog.visible = true;
   dictDataDialog.title = "【" + row.name + "】字典数据";
@@ -179,9 +165,7 @@ function openDictDialog(row: DictTypePageVO) {
   selectedDictType.typeName = row.name;
 }
 
-/**
- * 关闭字典数据弹窗
- */
+/**  关闭字典数据弹窗 */
 function closeDictDialog() {
   dictDataDialog.visible = false;
 }
