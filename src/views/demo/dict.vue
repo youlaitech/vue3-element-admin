@@ -1,6 +1,7 @@
 <!-- 字典组件示例 -->
 <script setup lang="ts">
-const genderDefaultValue = ref("1"); // 性别默认
+const stringValue = ref("1"); // 性别(值为String)
+const nmberValue = ref(1); // 性别(值为Number)
 </script>
 
 <template>
@@ -14,7 +15,17 @@ const genderDefaultValue = ref("1"); // 性别默认
     >
     <el-form>
       <el-form-item label="性别">
-        <dictionary v-model="genderDefaultValue" type-code="gender" />
+        <dictionary v-model="stringValue" type-code="gender" />
+        <el-link :underline="false" type="primary" class="ml-5"
+          >值为String: const value = ref("1");
+        </el-link>
+      </el-form-item>
+
+      <el-form-item label="性别">
+        <dictionary v-model="nmberValue" type-code="gender" />
+        <el-link :underline="false" type="success" class="ml-5"
+          >值为Number: const value = ref(1);
+        </el-link>
       </el-form-item>
     </el-form>
   </div>
