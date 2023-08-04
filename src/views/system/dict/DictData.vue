@@ -1,10 +1,5 @@
 <!-- 字典数据 -->
 <script setup lang="ts">
-defineOptions({
-  name: "DictData",
-  inheritAttrs: false,
-});
-
 import {
   getDictPage,
   getDictFormData,
@@ -13,6 +8,11 @@ import {
   deleteDict,
 } from "@/api/dict";
 import { DictPageVO, DictForm, DictQuery } from "@/api/dict/types";
+
+defineOptions({
+  name: "DictData",
+  inheritAttrs: false,
+});
 
 const props = defineProps({
   typeCode: {
@@ -311,7 +311,7 @@ onMounted(() => {
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="formData.remark" type="textarea"></el-input>
+          <el-input v-model="formData.remark" type="textarea" />
         </el-form-item>
       </el-form>
       <template #footer>

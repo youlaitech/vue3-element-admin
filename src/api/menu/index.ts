@@ -1,14 +1,14 @@
-import request from '@/utils/request';
-import { AxiosPromise } from 'axios';
-import { MenuQuery, MenuVO, MenuForm } from './types';
+import request from "@/utils/request";
+import { AxiosPromise } from "axios";
+import { MenuQuery, MenuVO, MenuForm } from "./types";
 
 /**
  * 获取路由列表
  */
 export function listRoutes() {
   return request({
-    url: '/api/v1/menus/routes',
-    method: 'get'
+    url: "/api/v1/menus/routes",
+    method: "get",
   });
 }
 
@@ -19,9 +19,9 @@ export function listRoutes() {
  */
 export function listMenus(queryParams: MenuQuery): AxiosPromise<MenuVO[]> {
   return request({
-    url: '/api/v1/menus',
-    method: 'get',
-    params: queryParams
+    url: "/api/v1/menus",
+    method: "get",
+    params: queryParams,
   });
 }
 
@@ -30,8 +30,8 @@ export function listMenus(queryParams: MenuQuery): AxiosPromise<MenuVO[]> {
  */
 export function listMenuOptions(): AxiosPromise<OptionType[]> {
   return request({
-    url: '/api/v1/menus/options',
-    method: 'get'
+    url: "/api/v1/menus/options",
+    method: "get",
   });
 }
 
@@ -42,8 +42,8 @@ export function listMenuOptions(): AxiosPromise<OptionType[]> {
  */
 export function getMenuForm(id: number): AxiosPromise<MenuForm> {
   return request({
-    url: '/api/v1/menus/' + id + '/form',
-    method: 'get'
+    url: "/api/v1/menus/" + id + "/form",
+    method: "get",
   });
 }
 
@@ -54,9 +54,9 @@ export function getMenuForm(id: number): AxiosPromise<MenuForm> {
  */
 export function addMenu(data: MenuForm) {
   return request({
-    url: '/api/v1/menus',
-    method: 'post',
-    data: data
+    url: "/api/v1/menus",
+    method: "post",
+    data: data,
   });
 }
 
@@ -68,9 +68,9 @@ export function addMenu(data: MenuForm) {
  */
 export function updateMenu(id: string, data: MenuForm) {
   return request({
-    url: '/api/v1/menus/' + id,
-    method: 'put',
-    data: data
+    url: "/api/v1/menus/" + id,
+    method: "put",
+    data: data,
   });
 }
 
@@ -81,7 +81,7 @@ export function updateMenu(id: string, data: MenuForm) {
  */
 export function deleteMenu(id: number) {
   return request({
-    url: '/api/v1/menus/' + id,
-    method: 'delete'
+    url: "/api/v1/menus/" + id,
+    method: "delete",
   });
 }

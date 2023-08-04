@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { useUserStore } from "@/store/modules/user";
+import { useTransition, TransitionPresets } from "@vueuse/core";
+
 defineOptions({
   // eslint-disable-next-line vue/no-reserved-component-names
   name: "Dashboard",
   inheritAttrs: false,
 });
-
-import { useUserStore } from "@/store/modules/user";
-import { useTransition, TransitionPresets } from "@vueuse/core";
 
 const userStore = useUserStore();
 

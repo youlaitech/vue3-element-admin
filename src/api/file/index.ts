@@ -1,6 +1,6 @@
-import request from '@/utils/request';
-import { AxiosPromise } from 'axios';
-import { FileInfo } from './types';
+import request from "@/utils/request";
+import { AxiosPromise } from "axios";
+import { FileInfo } from "./types";
 
 /**
  * 上传文件
@@ -9,14 +9,14 @@ import { FileInfo } from './types';
  */
 export function uploadFileApi(file: File): AxiosPromise<FileInfo> {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
   return request({
-    url: '/api/v1/files',
-    method: 'post',
+    url: "/api/v1/files",
+    method: "post",
     data: formData,
     headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 }
 
@@ -27,8 +27,8 @@ export function uploadFileApi(file: File): AxiosPromise<FileInfo> {
  */
 export function deleteFileApi(filePath?: string) {
   return request({
-    url: '/api/v1/files',
-    method: 'delete',
-    params: { filePath: filePath }
+    url: "/api/v1/files",
+    method: "delete",
+    params: { filePath: filePath },
   });
 }

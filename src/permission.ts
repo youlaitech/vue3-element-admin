@@ -4,6 +4,7 @@ import { usePermissionStoreHook } from "@/store/modules/permission";
 
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+
 NProgress.configure({ showSpinner: false }); // 进度条
 
 const permissionStore = usePermissionStoreHook();
