@@ -5,15 +5,12 @@
       <div class="title">
         业绩柱状图
         <el-tooltip effect="dark" content="点击试试下载" placement="bottom">
-          <i-ep-download
-            class="download"
-            @click="downloadEchart"
-          ></i-ep-download>
+          <i-ep-download class="download" @click="downloadEchart" />
         </el-tooltip>
       </div>
     </template>
 
-    <div :id="id" :class="className" :style="{ height, width }" />
+    <div :id="id" :class="className" :style="{ height, width }"></div>
   </el-card>
 </template>
 

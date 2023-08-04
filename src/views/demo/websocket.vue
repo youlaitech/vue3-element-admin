@@ -1,17 +1,17 @@
 <!-- websocket 示例 -->
 <script setup lang="ts">
-import { sendToAll, sendToUser } from "@/api/websocket";
+import { sendToAll, sendToUser } from "@/api/websocket"; // 点对点消息列表
+
+import { useUserStore } from "@/store/modules/user";
+
+import { useWebSocket } from "@vueuse/core";
 
 const inputVal = ref("初始内容");
 
 const topicMsgs = ref<string[]>(["接收到一条主题消息"]); // 主题消息列表
-const p2pMsgs = ref<string[]>(["接收到一条点对线消息"]); // 点对点消息列表
-
-import { useUserStore } from "@/store/modules/user";
+const p2pMsgs = ref<string[]>(["接收到一条点对线消息"]);
 
 const userId = useUserStore().userId;
-
-import { useWebSocket } from "@vueuse/core";
 
 const { data, status, close, send, open } = useWebSocket(
   "ws://localhost:8989/ws",

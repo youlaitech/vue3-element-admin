@@ -99,7 +99,7 @@ defineExpose({
     :vertical="false"
     @wheel.prevent="handleScroll"
   >
-    <slot />
+    <slot></slot>
   </el-scrollbar>
 </template>
 

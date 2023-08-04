@@ -46,17 +46,35 @@ export const constantRoutes: RouteRecordRaw[] = [
     ],
   },
 
+  {
+    path: "/ext",
+    component: Layout,
+    children: [
+      {
+        path: "google",
+        component: import("@/views/demo/google.vue"),
+        name: "google",
+        meta: {
+          title: "Google",
+          icon: "client",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+    ],
+  },
   // 外部链接
-  /*{
-        path: '/external-link',
-        component: Layout,
-        children: [
-            {
-                path: 'https://www.cnblogs.com/haoxianrui/',
-                meta: { title: '外部链接', icon: 'link' }
-            }
-        ]
-    }*/
+  // {
+  //   path: "/external-link",
+  //   component: Layout,
+  //   children: [ {
+  //       component: () => import("@/views/external-link/index.vue"),
+  //       path: "https://www.cnblogs.com/haoxianrui/",
+  //       meta: { title: "外部链接", icon: "link" },
+  //     },
+  //   ],
+  // },
   // 多级嵌套路由
   /* {
          path: '/nested',

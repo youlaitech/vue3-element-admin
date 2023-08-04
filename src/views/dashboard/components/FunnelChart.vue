@@ -1,96 +1,96 @@
 <!-- 漏斗图 -->
 <template>
-  <div :id="id" :class="className" :style="{ height, width }" />
+  <div :id="id" :class="className" :style="{ height, width }"></div>
 </template>
 
 <script setup lang="ts">
-import * as echarts from 'echarts';
+import * as echarts from "echarts";
 
 const props = defineProps({
   id: {
     type: String,
-    default: 'funnelChart'
+    default: "funnelChart",
   },
   className: {
     type: String,
-    default: ''
+    default: "",
   },
   width: {
     type: String,
-    default: '200px',
-    required: true
+    default: "200px",
+    required: true,
   },
   height: {
     type: String,
-    default: '200px',
-    required: true
-  }
+    default: "200px",
+    required: true,
+  },
 });
 
 const options = {
   title: {
     show: true,
-    text: '订单线索转化漏斗图',
-    x: 'center',
+    text: "订单线索转化漏斗图",
+    x: "center",
     padding: 15,
     textStyle: {
       fontSize: 18,
-      fontStyle: 'normal',
-      fontWeight: 'bold',
-      color: '#337ecc'
-    }
+      fontStyle: "normal",
+      fontWeight: "bold",
+      color: "#337ecc",
+    },
   },
   grid: {
-    left: '2%',
-    right: '2%',
-    bottom: '10%',
-    containLabel: true
+    left: "2%",
+    right: "2%",
+    bottom: "10%",
+    containLabel: true,
   },
   legend: {
-    x: 'center',
-    y: 'bottom',
-    data: ['Show', 'Click', 'Visit', 'Inquiry', 'Order']
+    x: "center",
+    y: "bottom",
+    data: ["Show", "Click", "Visit", "Inquiry", "Order"],
   },
 
   series: [
     {
-      name: 'Funnel',
-      type: 'funnel',
-      left: '20%',
+      name: "Funnel",
+      type: "funnel",
+      left: "20%",
       top: 60,
       bottom: 60,
-      width: '60%',
-      sort: 'descending',
+      width: "60%",
+      sort: "descending",
       gap: 2,
       label: {
         show: true,
-        position: 'inside'
+        position: "inside",
       },
       labelLine: {
         length: 10,
         lineStyle: {
           width: 1,
-          type: 'solid'
-        }
+          type: "solid",
+        },
       },
       itemStyle: {
-        borderColor: '#fff',
-        borderWidth: 1
+        borderColor: "#fff",
+        borderWidth: 1,
       },
       emphasis: {
         label: {
-          fontSize: 20
-        }
+          fontSize: 20,
+        },
       },
       data: [
-        { value: 60, name: 'Visit' },
-        { value: 40, name: 'Inquiry' },
-        { value: 20, name: 'Order' },
-        { value: 80, name: 'Click' },
-        { value: 100, name: 'Show' }
-      ]
-    }
-  ]
+        { value: 60, name: "Visit" },
+        { value: 40, name: "Inquiry" },
+        { value: 20, name: "Order" },
+        { value: 80, name: "Click" },
+        { value: 100, name: "Show" },
+      ],
+    },
+  ],
 };
 
 onMounted(() => {
@@ -99,7 +99,7 @@ onMounted(() => {
   );
   chart.setOption(options);
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     chart.resize();
   });
 });

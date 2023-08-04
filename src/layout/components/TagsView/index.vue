@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  getCurrentInstance,
-  nextTick,
-  ref,
-  watch,
-  onMounted,
-  ComponentInternalInstance,
-} from "vue";
+import { getCurrentInstance, ComponentInternalInstance } from "vue";
 import { storeToRefs } from "pinia";
 
 import path from "path-browserify";
