@@ -41,9 +41,7 @@ const rules = reactive({
   sort: [{ required: true, message: "显示排序不能为空", trigger: "blur" }],
 });
 
-/**
- * 查询
- */
+/** 查询 */
 function handleQuery() {
   loading.value = true;
   listDepts(queryParams).then(({ data }) => {
@@ -52,24 +50,18 @@ function handleQuery() {
   });
 }
 
-/**
- * 重置查询
- */
+/**重置查询 */
 function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
 }
 
-/**
- * 行复选框选中记录选中ID集合
- */
+/** 行复选框选中记录选中ID集合 */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
 
-/**
- * 获取部门下拉数据
- */
+/** 获取部门下拉数据  */
 async function getDeptOptions() {
   listDeptOptions().then((response) => {
     deptOptions.value = [
@@ -102,9 +94,7 @@ async function openDialog(parentId?: number, deptId?: number) {
   }
 }
 
-/**
- * 表单提交
- */
+/** 表单提交 */
 function handleSubmit() {
   deptFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -131,9 +121,7 @@ function handleSubmit() {
   });
 }
 
-/**
- * 删除部门
- */
+/** 删除部门 */
 function handleDelete(deptId?: number) {
   const deptIds = [deptId || ids.value].join(",");
 
@@ -154,17 +142,13 @@ function handleDelete(deptId?: number) {
   });
 }
 
-/**
- * 关闭弹窗
- */
+/** 关闭弹窗 */
 function closeDialog() {
   dialog.visible = false;
   resetForm();
 }
 
-/**
- * 重置表单
- */
+/** 重置表单  */
 function resetForm() {
   deptFormRef.value.resetFields();
   deptFormRef.value.clearValidate();
