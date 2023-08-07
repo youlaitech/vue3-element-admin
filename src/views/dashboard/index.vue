@@ -3,7 +3,7 @@ import { useUserStore } from "@/store/modules/user";
 import { useTransition, TransitionPresets } from "@vueuse/core";
 
 defineOptions({
-  // eslint-disable-next-line vue/no-reserved-component-names
+  // eslint-disable-next-line
   name: "Dashboard",
   inheritAttrs: false,
 });
@@ -13,15 +13,16 @@ const userStore = useUserStore();
 const date: Date = new Date();
 
 const greetings = computed(() => {
-  if (date.getHours() >= 6 && date.getHours() < 8) {
+  const hours = date.getHours();
+  if (hours >= 6 && hours < 8) {
     return "晨起披衣出草堂，轩窗已自喜微凉🌅！";
-  } else if (date.getHours() >= 8 && date.getHours() < 12) {
+  } else if (hours >= 8 && hours < 12) {
     return "上午好🌞！";
-  } else if (date.getHours() >= 12 && date.getHours() < 18) {
+  } else if (hours >= 12 && hours < 18) {
     return "下午好☕！";
-  } else if (date.getHours() >= 18 && date.getHours() < 24) {
+  } else if (hours >= 18 && hours < 24) {
     return "晚上好🌃！";
-  } else if (date.getHours() >= 0 && date.getHours() < 6) {
+  } else if (hours >= 0 && hours < 6) {
     return "偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！";
   }
 });

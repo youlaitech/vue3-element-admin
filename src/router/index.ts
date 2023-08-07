@@ -30,8 +30,14 @@ export const constantRoutes: RouteRecordRaw[] = [
       {
         path: "dashboard",
         component: () => import("@/views/dashboard/index.vue"),
-        name: "Dashboard",
-        meta: { title: "dashboard", icon: "homepage", affix: true },
+        name: "Dashboard", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
+        // https://cn.vuejs.org/guide/built-ins/keep-alive.html#include-exclude
+        meta: {
+          title: "dashboard",
+          icon: "homepage",
+          affix: true,
+          keepAlive: true,
+        },
       },
       {
         path: "401",
@@ -46,24 +52,6 @@ export const constantRoutes: RouteRecordRaw[] = [
     ],
   },
 
-  {
-    path: "/ext",
-    component: Layout,
-    children: [
-      {
-        path: "google",
-        component: import("@/views/demo/google.vue"),
-        name: "google",
-        meta: {
-          title: "Google",
-          icon: "client",
-          hidden: false,
-          roles: ["ADMIN"],
-          keepAlive: true,
-        },
-      },
-    ],
-  },
   // 外部链接
   // {
   //   path: "/external-link",
