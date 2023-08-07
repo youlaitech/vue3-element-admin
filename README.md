@@ -1,7 +1,7 @@
 <p align="center">
-    <img src="https://img.shields.io/badge/Vue-3.3.1-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-4.3.5-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.3.6-blue.svg"/>
+    <img src="https://img.shields.io/badge/Vue-3.3.4-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vite-4.4.2-green.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.3.9-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -102,8 +102,6 @@ server {
 }
 ```
 
-
-
 ## 注意事项
 
 - **自动导入插件自动生成默认关闭**
@@ -124,6 +122,10 @@ server {
 
 	重启 VSCode 尝试
 
+- **接口切换 Mock**
+
+	v2.5.0 版本支持 Mock , 修改 `.env.development` 的 `VITE_APP_TARGET_URL` 值为 `http://localhost:3000` 即可 。
+
 - **其他问题**
 
   如果有其他问题或者建议，建议 [ISSUE](https://gitee.com/youlaiorg/vue3-element-admin/issues/new)
@@ -140,7 +142,7 @@ server {
 
   > 1. 获取基于 `Java 、SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码 ;
   > 2. 根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动; 
-  > 3. 替换 [vite.config.ts](vite.config.ts) 的代理目标地址 `vapi.youlai.tech` 为本地的 `localhost:8989`
+  > 3. 替换 [.env.development](.env.development) 的代理目标地址 `VITE_APP_TARGET_URL` 的值  `vapi.youlai.tech` 为本地的 `localhost:8989`
 
 
 
