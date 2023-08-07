@@ -374,6 +374,7 @@ const readFile = (file: any, callback: any) => {
   width: 100%;
   height: calc(100vh - 84px);
   padding: 10px;
+  overflow-y: auto;
 
   .table-wrap {
     // height: 100%;
