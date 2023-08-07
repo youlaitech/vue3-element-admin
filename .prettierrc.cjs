@@ -33,4 +33,6 @@ module.exports = {
   useTabs: false,
   // vue 文件中是否缩进 <style> 和 <script> 标签，默认 false
   vueIndentScriptAndStyle: false,
+
+  endOfLine: "auto",
 };
