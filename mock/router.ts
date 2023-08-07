@@ -78,32 +78,7 @@ const data = {
         },
       ],
     },
-    {
-      path: "/icon",
-      component: "Layout",
-      redirect: "/icon/index",
-      meta: {
-        title: "系统管理",
-        icon: "system",
-        hidden: false,
-        roles: ["ADMIN"],
-        keepAlive: true,
-      },
-      children: [
-        {
-          path: "index",
-          component: "demo/icons",
-          name: "Icons",
-          meta: {
-            title: "图标",
-            icon: "icon",
-            hidden: false,
-            roles: ["ADMIN"],
-            keepAlive: true,
-          },
-        },
-      ],
-    },
+
     {
       path: "/api",
       component: "Layout",
@@ -327,6 +302,30 @@ const data = {
         keepAlive: true,
       },
       children: [
+        {
+          path: "permission",
+          component: "permission/page",
+          name: "Permission",
+          meta: {
+            title: "Permission",
+            icon: "",
+            hidden: false,
+            roles: ["ADMIN"],
+            keepAlive: true,
+          },
+        },
+        {
+          path: "icon-demo",
+          component: "demo/icons",
+          name: "Icons",
+          meta: {
+            title: "图标",
+            icon: "",
+            hidden: false,
+            roles: ["ADMIN"],
+            keepAlive: true,
+          },
+        },
         {
           path: "websocket",
           component: "demo/websocket",
