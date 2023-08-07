@@ -122,15 +122,15 @@ const icons = ref(ElementPlusIconsVue);
 
 const { text, isSupported, copy } = useClipboard();
 
-function generateIconCode(symbol) {
+function generateIconCode(symbol: any) {
   return `<svg-icon icon-class="${symbol}" />`;
 }
 
-function generateElementIconCode(symbol) {
+function generateElementIconCode(symbol: any) {
   return `<el-icon><${symbol} /></el-icon>`;
 }
 
-function handleClipboard(text, event) {
+function handleClipboard(text: any, event: any) {
   // clipboard(text, event);
   copy(text)
     .then(() => {
