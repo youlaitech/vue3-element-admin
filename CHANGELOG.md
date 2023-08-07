@@ -1,3 +1,12 @@
+# 2.5.0 (2023/8/8)
+
+### ✨ feat
+- 新增 Mock（author by [ygcaicn](https://github.com/ygcaicn)）
+- 图标 DEMO（author by [ygcaicn](https://github.com/ygcaicn)）
+
+### 🐛 fix
+- 字典支持 Number 类型
+
 # 2.4.1 (2023/7/20)
 
 ### ✨ feat
