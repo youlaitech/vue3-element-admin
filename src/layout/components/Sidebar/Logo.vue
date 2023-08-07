@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { useSettingsStore } from '@/store/modules/settings';
+import { useSettingsStore } from "@/store/modules/settings";
 
 const settingsStore = useSettingsStore();
 
 defineProps({
   collapse: {
     type: Boolean,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const logo = ref(new URL(`../../../assets/logo.png`, import.meta.url).href);

@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { useAppStore } from '@/store/modules/app';
+import { useAppStore } from "@/store/modules/app";
 
 const appStore = useAppStore();
 
 const sizeOptions = ref([
-  { label: '默认', value: 'default' },
-  { label: '大型', value: 'large' },
-  { label: '小型', value: 'small' }
+  { label: "默认", value: "default" },
+  { label: "大型", value: "large" },
+  { label: "小型", value: "small" },
 ]);
 
 function handleSizeChange(size: string) {
   appStore.changeSize(size);
-  ElMessage.success('切换布局大小成功');
+  ElMessage.success("切换布局大小成功");
 }
 </script>
 

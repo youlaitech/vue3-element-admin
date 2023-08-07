@@ -1,10 +1,5 @@
 <!--字典类型-->
 <script setup lang="ts">
-defineOptions({
-  name: "DictType",
-  inheritAttrs: false,
-});
-
 import {
   getDictTypePage,
   getDictTypeForm,
@@ -16,6 +11,11 @@ import {
 import DictData from "@/views/system/dict/DictData.vue";
 
 import { DictTypePageVO, DictTypeQuery, DictTypeForm } from "@/api/dict/types";
+
+defineOptions({
+  name: "DictType",
+  inheritAttrs: false,
+});
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);

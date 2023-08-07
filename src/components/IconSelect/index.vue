@@ -89,8 +89,8 @@ onMounted(() => {
           class="cursor-pointer text-[#999] absolute right-[10px] top-0 height-[32px] leading-[32px]"
           @click="visible = !visible"
         >
-          <i-ep-caret-top v-show="visible"></i-ep-caret-top>
-          <i-ep-caret-bottom v-show="!visible"></i-ep-caret-bottom>
+          <i-ep-caret-top v-show="visible" />
+          <i-ep-caret-bottom v-show="!visible" />
         </div>
       </template>
 

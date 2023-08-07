@@ -30,8 +30,14 @@ export const constantRoutes: RouteRecordRaw[] = [
       {
         path: "dashboard",
         component: () => import("@/views/dashboard/index.vue"),
-        name: "Dashboard",
-        meta: { title: "dashboard", icon: "homepage", affix: true },
+        name: "Dashboard", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
+        // https://cn.vuejs.org/guide/built-ins/keep-alive.html#include-exclude
+        meta: {
+          title: "dashboard",
+          icon: "homepage",
+          affix: true,
+          keepAlive: true,
+        },
       },
       {
         path: "401",
@@ -46,17 +52,35 @@ export const constantRoutes: RouteRecordRaw[] = [
     ],
   },
 
+  {
+    path: "/permission",
+    component: Layout,
+    redirect: "/permission/page",
+    children: [
+      {
+        path: "page",
+        component: () => import("@/views/permission/page.vue"),
+        name: "PermissionPage",
+        meta: {
+          title: "Permission",
+          icon: "password",
+          keepAlive: true,
+        },
+      },
+    ],
+  },
+
   // 外部链接
-  /*{
-        path: '/external-link',
-        component: Layout,
-        children: [
-            {
-                path: 'https://www.cnblogs.com/haoxianrui/',
-                meta: { title: '外部链接', icon: 'link' }
-            }
-        ]
-    }*/
+  // {
+  //   path: "/external-link",
+  //   component: Layout,
+  //   children: [ {
+  //       component: () => import("@/views/external-link/index.vue"),
+  //       path: "https://www.cnblogs.com/haoxianrui/",
+  //       meta: { title: "外部链接", icon: "link" },
+  //     },
+  //   ],
+  // },
   // 多级嵌套路由
   /* {
          path: '/nested',

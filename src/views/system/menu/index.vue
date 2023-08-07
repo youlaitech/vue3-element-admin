@@ -1,10 +1,4 @@
 <script setup lang="ts">
-defineOptions({
-  // eslint-disable-next-line vue/no-reserved-component-names
-  name: "Menu",
-  inheritAttrs: false,
-});
-
 import { MenuQuery, MenuForm, MenuVO } from "@/api/menu/types";
 import {
   listMenus,
@@ -19,6 +13,12 @@ import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
 
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import IconSelect from "@/components/IconSelect/index.vue";
+
+defineOptions({
+  // eslint-disable-next-line vue/no-reserved-component-names
+  name: "Menu",
+  inheritAttrs: false,
+});
 
 const queryFormRef = ref(ElForm);
 const menuFormRef = ref(ElForm);

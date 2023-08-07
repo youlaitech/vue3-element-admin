@@ -1,9 +1,4 @@
 <script setup lang="ts">
-defineOptions({
-  name: "Role",
-  inheritAttrs: false,
-});
-
 import {
   getRolePage,
   updateRole,
@@ -16,6 +11,11 @@ import {
 import { listMenuOptions } from "@/api/menu";
 
 import { RolePageVO, RoleForm, RoleQuery } from "@/api/role/types";
+
+defineOptions({
+  name: "Role",
+  inheritAttrs: false,
+});
 
 const queryFormRef = ref(ElForm);
 const roleFormRef = ref(ElForm);

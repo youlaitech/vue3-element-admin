@@ -1,6 +1,6 @@
-import request from '@/utils/request';
-import { AxiosPromise } from 'axios';
-import { DeptForm, DeptQuery, DeptVO } from './types';
+import request from "@/utils/request";
+import { AxiosPromise } from "axios";
+import { DeptForm, DeptQuery, DeptVO } from "./types";
 
 /**
  * 部门树形表格
@@ -9,9 +9,9 @@ import { DeptForm, DeptQuery, DeptVO } from './types';
  */
 export function listDepts(queryParams?: DeptQuery): AxiosPromise<DeptVO[]> {
   return request({
-    url: '/api/v1/dept',
-    method: 'get',
-    params: queryParams
+    url: "/api/v1/dept",
+    method: "get",
+    params: queryParams,
   });
 }
 
@@ -20,8 +20,8 @@ export function listDepts(queryParams?: DeptQuery): AxiosPromise<DeptVO[]> {
  */
 export function listDeptOptions(): AxiosPromise<[]> {
   return request({
-    url: '/api/v1/dept/options',
-    method: 'get'
+    url: "/api/v1/dept/options",
+    method: "get",
   });
 }
 
@@ -32,8 +32,8 @@ export function listDeptOptions(): AxiosPromise<[]> {
  */
 export function getDeptForm(id: number): AxiosPromise<DeptForm> {
   return request({
-    url: '/api/v1/dept/' + id + '/form',
-    method: 'get'
+    url: "/api/v1/dept/" + id + "/form",
+    method: "get",
   });
 }
 
@@ -44,9 +44,9 @@ export function getDeptForm(id: number): AxiosPromise<DeptForm> {
  */
 export function addDept(data: DeptForm) {
   return request({
-    url: '/api/v1/dept',
-    method: 'post',
-    data: data
+    url: "/api/v1/dept",
+    method: "post",
+    data: data,
   });
 }
 
@@ -58,9 +58,9 @@ export function addDept(data: DeptForm) {
  */
 export function updateDept(id: number, data: DeptForm) {
   return request({
-    url: '/api/v1/dept/' + id,
-    method: 'put',
-    data: data
+    url: "/api/v1/dept/" + id,
+    method: "put",
+    data: data,
   });
 }
 
@@ -71,7 +71,7 @@ export function updateDept(id: number, data: DeptForm) {
  */
 export function deleteDept(ids: string) {
   return request({
-    url: '/api/v1/dept/' + ids,
-    method: 'delete'
+    url: "/api/v1/dept/" + ids,
+    method: "delete",
   });
 }
