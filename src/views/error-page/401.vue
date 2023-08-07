@@ -1,13 +1,12 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
-<script lang="ts">
-export default {
-  name: "Page401",
-};
-</script>
-
 <script setup lang="ts">
 import { reactive, toRefs } from "vue";
 import { useRouter } from "vue-router";
+
+import { defineComponent } from "vue";
+
+defineComponent({
+  name: "Page401",
+});
 
 const state = reactive({
   errGif: new URL(`../../assets/401_images/401.gif`, import.meta.url).href,

@@ -2,10 +2,6 @@
 /**
  * @see {@link https://vuejs.org/api/sfc-script-setup.html#defineoptions}
  */
-defineOptions({
-  name: "User",
-  inheritAttrs: false,
-});
 import { UploadFile } from "element-plus";
 import {
   getUserPage,
@@ -23,6 +19,11 @@ import { listDeptOptions } from "@/api/dept";
 import { listRoleOptions } from "@/api/role";
 
 import { UserForm, UserQuery, UserPageVO } from "@/api/user/types";
+
+defineOptions({
+  name: "User",
+  inheritAttrs: false,
+});
 
 const deptTreeRef = ref(ElTree); // 部门树
 const queryFormRef = ref(ElForm); // 查询表单
@@ -383,7 +384,7 @@ onMounted(() => {
             :filter-node-method="handleDeptFilter"
             default-expand-all
             @node-click="handleDeptNodeClick"
-          ></el-tree>
+          />
         </el-card>
       </el-col>
 
@@ -524,7 +525,7 @@ onMounted(() => {
               align="center"
               prop="createTime"
               width="180"
-            ></el-table-column>
+            />
             <el-table-column label="操作" fixed="right" width="220">
               <template #default="scope">
                 <el-button
