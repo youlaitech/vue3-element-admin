@@ -79,6 +79,32 @@ const data = {
       ],
     },
     {
+      path: "/icon",
+      component: "Layout",
+      redirect: "/icon/index",
+      meta: {
+        title: "系统管理",
+        icon: "system",
+        hidden: false,
+        roles: ["ADMIN"],
+        keepAlive: true,
+      },
+      children: [
+        {
+          path: "index",
+          component: "demo/icons",
+          name: "Icons",
+          meta: {
+            title: "图标",
+            icon: "icon",
+            hidden: false,
+            roles: ["ADMIN"],
+            keepAlive: true,
+          },
+        },
+      ],
+    },
+    {
       path: "/api",
       component: "Layout",
       meta: {

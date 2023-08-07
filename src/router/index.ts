@@ -52,6 +52,24 @@ export const constantRoutes: RouteRecordRaw[] = [
     ],
   },
 
+  {
+    path: "/permission",
+    component: Layout,
+    redirect: "/permission/page",
+    children: [
+      {
+        path: "page",
+        component: () => import("@/views/permission/page.vue"),
+        name: "PermissionPage",
+        meta: {
+          title: "Permission",
+          icon: "password",
+          keepAlive: true,
+        },
+      },
+    ],
+  },
+
   // 外部链接
   // {
   //   path: "/external-link",
