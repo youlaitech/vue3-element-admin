@@ -84,7 +84,7 @@ onMounted(() => {
         class="inline-block w-[30px] h-[30px] cursor-pointer"
         :style="{ background: color }"
         @click="changeThemeColor(color)"
-      />
+      ></li>
     </ul>
 
     <el-divider>导航设置</el-divider>
@@ -98,8 +98,8 @@ onMounted(() => {
           "
           @click="changeLayout('left')"
         >
-          <div />
-          <div />
+          <div></div>
+          <div></div>
         </li>
       </el-tooltip>
       <el-tooltip content="顶部模式" placement="bottom">
@@ -110,8 +110,8 @@ onMounted(() => {
           "
           @click="changeLayout('top')"
         >
-          <div />
-          <div />
+          <div></div>
+          <div></div>
         </li>
       </el-tooltip>
       <el-tooltip content="混合模式" placement="bottom">
@@ -122,8 +122,8 @@ onMounted(() => {
           "
           @click="changeLayout('mix')"
         >
-          <div />
-          <div />
+          <div></div>
+          <div></div>
         </li>
       </el-tooltip>
     </ul>

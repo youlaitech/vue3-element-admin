@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ElConfigProvider } from 'element-plus';
-import { useAppStore } from '@/store/modules/app';
+import { ElConfigProvider } from "element-plus";
+import { useAppStore } from "@/store/modules/app";
+
 const appStore = useAppStore();
 </script>
 

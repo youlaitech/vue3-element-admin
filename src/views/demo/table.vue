@@ -15,8 +15,8 @@
               <div class="label-wrap" @click="handleClickHead(oneCol)">
                 <div>{{ oneCol.label }}</div>
                 <template v-if="oneCol.order">
-                  <i-ep-sort-up v-if="oneCol.order === 'asc'"></i-ep-sort-up>
-                  <i-ep-sort-down v-else></i-ep-sort-down>
+                  <i-ep-sort-up v-if="oneCol.order === 'asc'" />
+                  <i-ep-sort-down v-else />
                 </template>
               </div>
 
@@ -24,7 +24,7 @@
                 trigger="click"
                 @command="(command: string) => handleCommand(command, oneCol)"
               >
-                <i-ep-arrow-down class="action-more"></i-ep-arrow-down>
+                <i-ep-arrow-down class="action-more" />
                 <template #dropdown>
                   <el-dropdown-menu>
                     <template v-if="oneCol.prop === 'id'">
@@ -56,7 +56,7 @@
       action=""
       :http-request="handleUploadFile"
     >
-      <i-ep-upload-filled class="icon"></i-ep-upload-filled>
+      <i-ep-upload-filled class="icon" />
       <div class="el-upload__text">拖拽excel到这里</div>
     </el-upload>
     <div v-loading="loading" class="excel-table-wrap">

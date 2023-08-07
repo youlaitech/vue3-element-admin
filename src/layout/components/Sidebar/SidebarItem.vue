@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import path from 'path-browserify';
-import { isExternal } from '@/utils/index';
-import AppLink from './Link.vue';
+import path from "path-browserify";
+import { isExternal } from "@/utils/index";
+import AppLink from "./Link.vue";
 
-import { translateRouteTitleI18n } from '@/utils/i18n';
-import SvgIcon from '@/components/SvgIcon/index.vue';
+import { translateRouteTitleI18n } from "@/utils/i18n";
+import SvgIcon from "@/components/SvgIcon/index.vue";
 
 const props = defineProps({
   /**
@@ -12,7 +12,7 @@ const props = defineProps({
    */
   item: {
     type: Object,
-    required: true
+    required: true,
   },
 
   /**
@@ -20,8 +20,8 @@ const props = defineProps({
    */
   basePath: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const onlyOneChild = ref(); // 临时变量，唯一子路由
@@ -53,7 +53,7 @@ function hasOneShowingChild(children = [], parent: any) {
 
   // 2：如果无子路由, 复制当前路由信息作为其子路由，满足只拥有一个子路由的条件，所以返回 true
   if (showingChildren.length === 0) {
-    onlyOneChild.value = { ...parent, path: '', noShowingChildren: true };
+    onlyOneChild.value = { ...parent, path: "", noShowingChildren: true };
     return true;
   }
   return false;

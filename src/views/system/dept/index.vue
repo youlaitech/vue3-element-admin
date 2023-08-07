@@ -1,9 +1,4 @@
 <script setup lang="ts">
-defineOptions({
-  name: "Dept",
-  inheritAttrs: false,
-});
-
 import {
   getDeptForm,
   deleteDept,
@@ -14,6 +9,11 @@ import {
 } from "@/api/dept";
 
 import { DeptVO, DeptForm, DeptQuery } from "@/api/dept/types";
+
+defineOptions({
+  name: "Dept",
+  inheritAttrs: false,
+});
 
 const queryFormRef = ref(ElForm);
 const deptFormRef = ref(ElForm);
