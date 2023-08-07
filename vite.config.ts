@@ -11,6 +11,9 @@ import IconsResolver from "unplugin-icons/resolver";
 
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 
+import { viteMockServe } from "vite-plugin-mock";
+import visualizer from "rollup-plugin-visualizer";
+
 import UnoCSS from "unocss/vite";
 import path from "path";
 
@@ -20,6 +23,7 @@ const pathSrc = path.resolve(__dirname, "src");
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
+
   return {
     resolve: {
       alias: {
@@ -45,11 +49,15 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       proxy: {
         // 反向代理解决跨域
         [env.VITE_APP_BASE_API]: {
-          target: "http://vapi.youlai.tech", // 线上接口地址
-          // target: 'http://localhost:8989',  // 本地接口地址 , 后端工程仓库地址：https://gitee.com/youlaiorg/youlai-boot
+          // target: "http://vapi.youlai.tech", // 线上接口地址
+          // target: 'http://localhost:3001',  // 本地接口地址 , 后端工程仓库地址：https://gitee.com/youlaiorg/youlai-boot
+          target: env.VITE_APP_TARGET_URL,
           changeOrigin: true,
           rewrite: (path) =>
-            path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""), // 替换 /dev-api 为 target 接口地址
+            path.replace(
+              new RegExp("^" + env.VITE_APP_BASE_API),
+              env.VITE_APP_TARGET_BASE_API
+            ), // 替换 /dev-api 为 target 接口地址
         },
       },
     },
@@ -111,6 +119,20 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         threshold: 10240, // 压缩前最小文件大小
         algorithm: "gzip", // 压缩算法
         ext: ".gz", // 文件类型
+      }),
+
+      viteMockServe({
+        ignore: /^\_/,
+        mockPath: "mock",
+        enable: mode === "development",
+        // https://github.com/anncwb/vite-plugin-mock/issues/9
+      }),
+
+      visualizer({
+        filename: "./stats.html",
+        open: false,
+        gzipSize: true,
+        brotliSize: true,
       }),
     ],
     // 预加载项目必需的组件
