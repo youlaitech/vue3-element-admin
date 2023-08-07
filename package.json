@@ -1,7 +1,7 @@
 {
   "name": "vue3-element-admin",
   "private": true,
-  "version": "2.4.1",
+  "version": "2.5.0",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "vite serve --mode development",
@@ -48,7 +48,7 @@
     "axios": "^1.4.0",
     "codemirror": "^5.65.13",
     "echarts": "^5.2.2",
-    "element-plus": "^2.3.7",
+    "element-plus": "^2.3.9",
     "lodash-es": "^4.17.21",
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
