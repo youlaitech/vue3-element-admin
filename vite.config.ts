@@ -49,8 +49,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       proxy: {
         // 反向代理解决跨域
         [env.VITE_APP_BASE_API]: {
-          // target: "http://vapi.youlai.tech", // 线上接口地址
-          // target: 'http://localhost:3001',  // 本地接口地址 , 后端工程仓库地址：https://gitee.com/youlaiorg/youlai-boot
           target: env.VITE_APP_TARGET_URL,
           changeOrigin: true,
           rewrite: (path) =>
