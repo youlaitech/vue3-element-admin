@@ -67,7 +67,7 @@ const data = {
         {
           path: "dict",
           component: "system/dict/index",
-          name: "Dict",
+          name: "DictType",
           meta: {
             title: "字典管理",
             icon: "dict",
@@ -98,7 +98,7 @@ const data = {
             icon: "api",
             hidden: false,
             roles: ["ADMIN"],
-            keepAlive: true,
+            keepAlive: false,
           },
         },
       ],
@@ -207,7 +207,7 @@ const data = {
         {
           path: "wang-editor",
           component: "demo/wang-editor",
-          name: "WangEditor",
+          name: "wang-editor",
           meta: {
             title: "富文本编辑器",
             icon: "",
@@ -219,7 +219,7 @@ const data = {
         {
           path: "upload",
           component: "demo/upload",
-          name: "Upload",
+          name: "upload",
           meta: {
             title: "图片上传",
             icon: "",
@@ -231,7 +231,7 @@ const data = {
         {
           path: "icon-selector",
           component: "demo/icon-selector",
-          name: "IconSelector",
+          name: "icon-selector",
           meta: {
             title: "图标选择器",
             icon: "",
@@ -255,7 +255,7 @@ const data = {
         {
           path: "taginput",
           component: "demo/taginput",
-          name: "Taginput",
+          name: "taginput",
           meta: {
             title: "标签输入框",
             icon: "",
@@ -267,7 +267,7 @@ const data = {
         {
           path: "signature",
           component: "demo/signature",
-          name: "Signature",
+          name: "signature",
           meta: {
             title: "签名",
             icon: "",
