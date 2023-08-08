@@ -203,8 +203,6 @@ function closeAllTags(view: TagView) {
 function openTagMenu(tag: TagView, e: MouseEvent) {
   const menuMinWidth = 105;
 
-  console.log("test", proxy?.$el);
-
   const offsetLeft = proxy?.$el.getBoundingClientRect().left; // container margin left
   const offsetWidth = proxy?.$el.offsetWidth; // container width
   const maxLeft = offsetWidth - menuMinWidth; // left boundary
