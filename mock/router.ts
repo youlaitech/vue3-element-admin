@@ -292,6 +292,52 @@ const data = {
       ],
     },
     {
+      path: "/table",
+      component: "Layout",
+      meta: {
+        title: "Table",
+        icon: "table",
+        hidden: false,
+        roles: ["ADMIN"],
+        keepAlive: true,
+      },
+      children: [
+        {
+          path: "dynamic-table",
+          component: "table/dynamic-table/index",
+          name: "DynamicTable",
+          meta: {
+            title: "动态Table",
+            hidden: false,
+            roles: ["ADMIN"],
+            keepAlive: true,
+          },
+        },
+        {
+          path: "drag-table",
+          component: "table/drag-table",
+          name: "DragTable",
+          meta: {
+            title: "拖拽Table",
+            hidden: false,
+            roles: ["ADMIN"],
+            keepAlive: true,
+          },
+        },
+        {
+          path: "complex-table",
+          component: "table/complex-table",
+          name: "ComplexTable",
+          meta: {
+            title: "综合Table",
+            hidden: false,
+            roles: ["ADMIN"],
+            keepAlive: true,
+          },
+        },
+      ],
+    },
+    {
       path: "/function",
       component: "Layout",
       meta: {
