@@ -5,9 +5,10 @@
 export {}
 declare global {
   const EffectScope: typeof import("vue")["EffectScope"];
+  const ElForm: typeof import("element-plus/es")["ElForm"];
   const ElMessage: typeof import("element-plus/es")["ElMessage"];
   const ElMessageBox: typeof import("element-plus/es")["ElMessageBox"];
-  const ElNotification: typeof import("element-plus/es")["ElNotification"];
+  const ElTree: typeof import("element-plus/es")["ElTree"];
   const asyncComputed: typeof import("@vueuse/core")["asyncComputed"];
   const autoResetRef: typeof import("@vueuse/core")["autoResetRef"];
   const computed: typeof import("vue")["computed"];
@@ -296,15 +297,14 @@ import { UnwrapRef } from "vue";
 declare module "vue" {
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import("vue")["EffectScope"]>;
+    readonly ElForm: UnwrapRef<typeof import("element-plus/es")["ElForm"]>;
     readonly ElMessage: UnwrapRef<
       typeof import("element-plus/es")["ElMessage"]
     >;
     readonly ElMessageBox: UnwrapRef<
       typeof import("element-plus/es")["ElMessageBox"]
     >;
-    readonly ElNotification: UnwrapRef<
-      typeof import("element-plus/es")["ElNotification"]
-    >;
+    readonly ElTree: UnwrapRef<typeof import("element-plus/es")["ElTree"]>;
     readonly asyncComputed: UnwrapRef<
       typeof import("@vueuse/core")["asyncComputed"]
     >;
@@ -943,15 +943,14 @@ declare module "vue" {
 declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import("vue")["EffectScope"]>;
+    readonly ElForm: UnwrapRef<typeof import("element-plus/es")["ElForm"]>;
     readonly ElMessage: UnwrapRef<
       typeof import("element-plus/es")["ElMessage"]
     >;
     readonly ElMessageBox: UnwrapRef<
       typeof import("element-plus/es")["ElMessageBox"]
     >;
-    readonly ElNotification: UnwrapRef<
-      typeof import("element-plus/es")["ElNotification"]
-    >;
+    readonly ElTree: UnwrapRef<typeof import("element-plus/es")["ElTree"]>;
     readonly asyncComputed: UnwrapRef<
       typeof import("@vueuse/core")["asyncComputed"]
     >;
