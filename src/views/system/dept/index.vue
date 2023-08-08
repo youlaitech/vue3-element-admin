@@ -66,7 +66,7 @@ async function getDeptOptions() {
   listDeptOptions().then((response) => {
     deptOptions.value = [
       {
-        value: "0",
+        value: 0,
         label: "顶级部门",
         children: response.data,
       },
