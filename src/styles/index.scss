@@ -14,3 +14,13 @@
   border-radius: 4px;
   box-shadow: var(--el-box-shadow-light);
 }
+
+.link-type,
+.link-type:focus {
+  color: #337ab7;
+  cursor: pointer;
+
+  &:hover {
+    color: rgb(32 160 255);
+  }
+}
