@@ -186,6 +186,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/date-picker/style/css",
         "element-plus/es/components/notification/style/css",
         "@vueuse/core",
+        "sortablejs",
 
         "path-to-regexp",
         "echarts",
