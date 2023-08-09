@@ -304,7 +304,7 @@ const data = {
       children: [
         {
           path: "dynamic-table",
-          component: "table/dynamic-table/index",
+          component: "demo/table/dynamic-table/index",
           name: "DynamicTable",
           meta: {
             title: "动态Table",
@@ -315,7 +315,7 @@ const data = {
         },
         {
           path: "drag-table",
-          component: "table/drag-table",
+          component: "demo/table/drag-table",
           name: "DragTable",
           meta: {
             title: "拖拽Table",
@@ -326,7 +326,7 @@ const data = {
         },
         {
           path: "complex-table",
-          component: "table/complex-table",
+          component: "demo/table/complex-table",
           name: "ComplexTable",
           meta: {
             title: "综合Table",
@@ -350,7 +350,7 @@ const data = {
       children: [
         {
           path: "permission",
-          component: "permission/page",
+          component: "demo/permission/page",
           name: "Permission",
           meta: {
             title: "Permission",

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin-bottom: 15px">Your roles: {{ roles }}</div>
+    <div class="mb-[15px]">Your roles: {{ roles }}</div>
     Switch roles:
     <el-radio-group v-model="switchRoles">
       <el-radio-button label="EDITOR" />

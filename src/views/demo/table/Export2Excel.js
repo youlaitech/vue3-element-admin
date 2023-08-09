@@ -216,7 +216,7 @@ export function export_json_to_excel({
             wch: 10,
           };
         } else if (val.toString().charCodeAt(0) > 255) {
-        /*再判断是否为中文*/
+          /*再判断是否为中文*/
           return {
             wch: val.toString().length * 2,
           };
