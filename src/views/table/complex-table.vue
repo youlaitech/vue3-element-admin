@@ -394,8 +394,8 @@ const rules = {
   ],
   title: [{ required: true, message: "title is required", trigger: "blur" }],
 };
-const dialogStatus = ref("");
-const textMap = {
+const dialogStatus = ref<any>();
+const textMap: any = {
   update: "Edit",
   create: "Create",
 };
