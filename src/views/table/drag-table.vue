@@ -69,7 +69,8 @@
     </el-table>
     <div class="show-d"><el-tag>The default order :</el-tag> {{ oldList }}</div>
     <div class="show-d">
-      <el-tag>The after dragging order :</el-tag> {{ list.map((v) => v.id) }}
+      <el-tag>The after dragging order :</el-tag>
+      {{ list.map((v: any) => v.id) }}
     </div>
   </div>
 </template>
@@ -96,7 +97,7 @@ const listLoading = ref<boolean>(true);
 const list: Ref = ref<List[]>([]);
 const oldList = ref<List[]>([]);
 
-const formatDate = (timestamp) => {
+const formatDate = (timestamp: any) => {
   const date = new Date(timestamp);
   return date
     .toLocaleString("zh-CN", {
@@ -129,7 +130,7 @@ const rowDrag = function () {
   Sortable.create(tbody, {
     //  可被拖拽的子元素
     draggable: ".draggable .el-table__row",
-    onEnd({ newIndex, oldIndex }) {
+    onEnd({ newIndex, oldIndex }: { newIndex: number; oldIndex: number }) {
       const currRow = list.value.splice(oldIndex, 1)[0];
       list.value.splice(newIndex, 0, currRow);
     },
@@ -140,7 +141,7 @@ onMounted(() => {
   fetchList({}).then((res) => {
     listLoading.value = false;
     list.value = res.data.items;
-    oldList.value = list.value.map((v) => v.id);
+    oldList.value = list.value.map((v: any) => v.id);
     rowDrag();
   });
 });

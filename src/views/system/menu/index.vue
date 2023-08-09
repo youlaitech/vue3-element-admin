@@ -93,7 +93,7 @@ function onRowClick(row: MenuVO) {
 function openDialog(parentId?: number, menuId?: number) {
   listMenuOptions()
     .then(({ data }) => {
-      menuOptions.value = [{ value: "0", label: "顶级菜单", children: data }];
+      menuOptions.value = [{ value: 0, label: "顶级菜单", children: data }];
     })
     .then(() => {
       dialog.visible = true;
