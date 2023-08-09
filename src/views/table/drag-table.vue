@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-//import Sortable from "sortablejs";
+import { default as Sortable, SortableEvent } from "sortablejs";
 import { fetchList } from "@/api/article";
 
 defineOptions({
@@ -127,14 +127,17 @@ const rowDrag = function () {
   const tbody = document.querySelector(
     ".draggable .el-table__body-wrapper tbody"
   );
-  /*   Sortable.create(tbody, {
+  if (!tbody) return;
+  Sortable.create(tbody as HTMLElement, {
     //  可被拖拽的子元素
     draggable: ".draggable .el-table__row",
-    onEnd({ newIndex, oldIndex }: { newIndex: number; oldIndex: number }) {
-      const currRow = list.value.splice(oldIndex, 1)[0];
-      list.value.splice(newIndex, 0, currRow);
+    onEnd(event: SortableEvent) {
+      if (event.oldIndex !== undefined && event.newIndex !== undefined) {
+        const currRow = list.value.splice(event.oldIndex, 1)[0];
+        list.value.splice(event.newIndex, 0, currRow);
+      }
     },
-  }); */
+  });
 };
 
 onMounted(() => {
