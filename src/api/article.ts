@@ -83,6 +83,6 @@ export function deleteArticle(id: number) {
   return request({
     url: "/api/v1/article/delete",
     method: "post",
-    params: { id },
+    data: { id },
   });
 }
