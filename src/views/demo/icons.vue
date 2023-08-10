@@ -115,7 +115,6 @@ const svg_icons: string[] = [
   "tree",
   "user",
   "uv",
-  "valid_code",
   "verify_code",
 ];
 const icons = ref(ElementPlusIconsVue);
@@ -159,7 +158,7 @@ function handleClipboard(text: any, event: any) {
     height: 85px;
     margin: 20px;
     font-size: 30px;
-    color: #24292e;
+    color: var(--el-text-color-regular);
     text-align: center;
     cursor: pointer;
   }
