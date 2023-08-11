@@ -14,21 +14,32 @@ const permissionStore = usePermissionStore();
 const appStore = useAppStore();
 const currRoute = useRoute();
 const { sidebarLogo } = storeToRefs(settingsStore);
+const layout = computed(() => settingsStore.layout);
+const showContent = ref(true);
+watch(
+  () => layout.value,
+  () => {
+    showContent.value = false;
+    nextTick(() => {
+      showContent.value = true;
+    });
+  }
+);
 </script>
 
 <template>
-  <div :class="{ 'has-logo': sidebarLogo }">
+  <div :class="{ 'has-logo': sidebarLogo }" class="menu-wrap">
     <logo v-if="sidebarLogo" :collapse="!appStore.sidebar.opened" />
-    <el-scrollbar>
+    <el-scrollbar v-if="showContent">
       <el-menu
-        :default-active="currRoute.path"
+        :default-active="layout === 'top' ? '-' : currRoute.path"
         :collapse="!appStore.sidebar.opened"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
         :active-text-color="variables.menuActiveText"
         :unique-opened="false"
         :collapse-transition="false"
-        mode="vertical"
+        :mode="layout === 'top' ? 'horizontal' : 'vertical'"
       >
         <sidebar-item
           v-for="route in permissionStore.routes"
@@ -39,5 +50,19 @@ const { sidebarLogo } = storeToRefs(settingsStore);
         />
       </el-menu>
     </el-scrollbar>
+    <NavRight v-if="layout === 'top'" />
   </div>
 </template>
+<style lang="scss" scoped>
+:deep(.setting-container) {
+  .setting-item {
+    color: #fff;
+    .svg-icon {
+      margin-right: 0px;
+    }
+    &:hover {
+      color: var(--el-color-primary);
+    }
+  }
+}
+</style>

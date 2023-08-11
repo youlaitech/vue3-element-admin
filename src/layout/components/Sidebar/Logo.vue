@@ -14,7 +14,9 @@ const logo = ref(new URL(`../../../assets/logo.png`, import.meta.url).href);
 </script>
 
 <template>
-  <div class="w-full h-[50px] bg-gray-800 dark:bg-[var(--el-bg-color-overlay)]">
+  <div
+    class="w-full h-[50px] bg-gray-800 dark:bg-[var(--el-bg-color-overlay)] logo-wrap"
+  >
     <transition name="sidebarLogoFade">
       <router-link
         v-if="collapse"

@@ -34,7 +34,7 @@ const themeColors = ref<string[]>([
  */
 function changeThemeColor(color: string) {
   document.documentElement.style.setProperty("--el-color-primary", color);
-  settingsStore.changeSetting({ key: "layout", value: color });
+  // settingsStore.changeSetting({ key: "layout", value: color });
 }
 
 onMounted(() => {
@@ -94,7 +94,7 @@ onMounted(() => {
         <li
           :class="
             'layout-item layout-left ' +
-            (settingsStore.layout == 'left' ? 'is-active' : '')
+            (settingsStore.layout === 'left' ? 'is-active' : '')
           "
           @click="changeLayout('left')"
         >
@@ -106,7 +106,7 @@ onMounted(() => {
         <li
           :class="
             'layout-item layout-top ' +
-            (settingsStore.layout == 'top' ? 'is-active' : '')
+            (settingsStore.layout === 'top' ? 'is-active' : '')
           "
           @click="changeLayout('top')"
         >
@@ -118,7 +118,7 @@ onMounted(() => {
         <li
           :class="
             'layout-item layout-mix ' +
-            (settingsStore.layout == 'mix' ? 'is-active' : '')
+            (settingsStore.layout === 'mix' ? 'is-active' : '')
           "
           @click="changeLayout('mix')"
         >

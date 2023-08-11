@@ -25,12 +25,14 @@ const settingsStore = useSettingsStore();
 const fixedHeader = computed(() => settingsStore.fixedHeader);
 const showTagsView = computed(() => settingsStore.tagsView);
 const showSettings = computed(() => settingsStore.showSettings);
+const layout = computed(() => settingsStore.layout);
 
 const classObj = computed(() => ({
   hideSidebar: !appStore.sidebar.opened,
   openSidebar: appStore.sidebar.opened,
   withoutAnimation: appStore.sidebar.withoutAnimation,
   mobile: appStore.device === "mobile",
+  isTop: layout.value === "top",
 }));
 
 watchEffect(() => {
@@ -67,7 +69,7 @@ function handleOutsideClick() {
 
     <div :class="{ hasTagsView: showTagsView }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
-        <navbar />
+        <navbar v-if="layout !== 'top'" />
         <tags-view v-if="showTagsView" />
       </div>
 
@@ -125,5 +127,26 @@ function handleOutsideClick() {
   height: 100%;
   background: #000;
   opacity: 0.3;
+}
+// 导航栏顶部显示
+.isTop {
+  .sidebar-container {
+    width: 100% !important;
+    height: 50px;
+    display: flex;
+    z-index: 800;
+    :deep(.logo-wrap) {
+      width: 210px;
+    }
+    :deep(.el-scrollbar) {
+      flex: 1;
+      min-width: 0px;
+      height: 50px;
+    }
+  }
+  .main-container {
+    margin-left: 0px;
+    padding-top: 50px;
+  }
 }
 </style>
