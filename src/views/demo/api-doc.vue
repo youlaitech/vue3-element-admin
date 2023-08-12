@@ -13,14 +13,14 @@
 <style lang="scss" scoped>
 /** 关闭tag标签  */
 .app-container {
-  /* 84 = navbar = 50 */
+  /* 50px = navbar = 50px */
   height: calc(100vh - 50px);
 }
 
 /** 开启tag标签  */
 .hasTagsView {
   .app-container {
-    /* 84 = navbar + tags-view = 50 + 34 */
+    /* 84px = navbar + tags-view = 50px + 34px */
     height: calc(100vh - 84px);
   }
 }
