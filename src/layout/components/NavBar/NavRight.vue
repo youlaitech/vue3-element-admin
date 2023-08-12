@@ -43,7 +43,7 @@
     </template>
   </el-dropdown>
 </template>
-<script setup lang="ts" name="navRight">
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import { useAppStore } from "@/store/modules/app";
