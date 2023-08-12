@@ -11,16 +11,16 @@
 </template>
 
 <style lang="scss" scoped>
+/** 关闭tag标签  */
 .app-container {
-  display: flex;
-  flex-direction: column;
-
-  /* 84 = navbar + tags-view = 50 + 34 */
+  /* 84 = navbar = 50 */
   height: calc(100vh - 50px);
 }
 
+/** 开启tag标签  */
 .hasTagsView {
   .app-container {
+    /* 84 = navbar + tags-view = 50 + 34 */
     height: calc(100vh - 84px);
   }
 }
