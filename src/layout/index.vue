@@ -131,22 +131,28 @@ function handleOutsideClick() {
 // 导航栏顶部显示
 .isTop {
   .sidebar-container {
+    z-index: 800;
+    display: flex;
     width: 100% !important;
     height: 50px;
-    display: flex;
-    z-index: 800;
+
     :deep(.logo-wrap) {
       width: 210px;
     }
+
     :deep(.el-scrollbar) {
       flex: 1;
-      min-width: 0px;
+      min-width: 0;
       height: 50px;
     }
   }
+
   .main-container {
-    margin-left: 0px;
     padding-top: 50px;
+    margin-left: 0;
   }
+
+  // 顶部模式全局变量修改
+  --el-menu-item-height: 50px;
 }
 </style>

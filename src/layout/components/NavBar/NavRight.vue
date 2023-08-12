@@ -94,12 +94,12 @@ function logout() {
     width: 30px;
     height: 50px;
     line-height: 50px;
-    color: #5a5e66;
+    color: var(--el-text-color-regular);
     text-align: center;
     cursor: pointer;
 
     &:hover {
-      background: rgb(249 250 251 / 100%);
+      background: var(--el-color-info-light-3);
     }
   }
 }
