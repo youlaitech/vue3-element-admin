@@ -38,12 +38,11 @@ watch(
         mixLeftMenu.value = item.children || [];
       }
     });
-    console.log(" mixLeftMenu.value ", mixLeftMenu.value);
-    // if (mixLeftMenu.value.length) {
-    //   router.push({
-    //     path: mixLeftMenu.value[0].path,
-    //   });
-    // }
+    if (mixLeftMenu.value) {
+      router.push({
+        path: mixLeftMenu.value[0].path,
+      });
+    }
   },
   {
     deep: true,
@@ -94,7 +93,8 @@ function handleOutsideClick() {
     <template v-if="layout === 'mix'">
       <div class="mix-wrap">
         <!-- :menu-list="mixLeftMenu -->
-        <LeftMenu :menu-list="permissionStore.routes" />
+        <!-- :menu-list="permissionStore.routes -->
+        <LeftMenu :menu-list="mixLeftMenu" :base-path="activeTopMenu" />
         <Main />
       </div>
     </template>

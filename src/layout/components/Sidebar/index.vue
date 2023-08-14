@@ -32,7 +32,7 @@ watch(
   >
     <logo v-if="sidebarLogo" :collapse="!appStore.sidebar.opened" />
     <el-scrollbar v-if="showContent">
-      <LeftMenu :menu-list="permissionStore.routes" />
+      <LeftMenu :menu-list="permissionStore.routes" base-path="" />
     </el-scrollbar>
     <NavRight v-if="layout === 'top'" />
   </div>
