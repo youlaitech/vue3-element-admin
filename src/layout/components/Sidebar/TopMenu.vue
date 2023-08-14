@@ -18,7 +18,6 @@ onMounted(() => {
   <el-scrollbar>
     <el-menu
       mode="horizontal"
-      class="el-menu-demo"
       :default-active="tPath"
       :background-color="variables.menuBg"
       :text-color="variables.menuText"
@@ -50,3 +49,8 @@ onMounted(() => {
     </el-menu>
   </el-scrollbar>
 </template>
+<style lang="scss" scoped>
+.el-menu {
+  height: 50px !important;
+}
+</style>
