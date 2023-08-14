@@ -14,11 +14,12 @@ export const useAppStore = defineStore("app", () => {
   const language = useStorage("language", defaultSettings.language);
 
   const sidebarStatus = useStorage("sidebarStatus", "closed");
+
   const sidebar = reactive({
     opened: sidebarStatus.value !== "closed",
     withoutAnimation: false,
   });
-
+  const activeTopMenu = useStorage("activeTop", "");
   /**
    * 根据语言标识读取对应的语言包
    */
@@ -68,18 +69,25 @@ export const useAppStore = defineStore("app", () => {
   function changeLanguage(val: string) {
     language.value = val;
   }
-
+  /**
+   * 混合模式顶部切换
+   */
+  function changeTopActive(val: string) {
+    activeTopMenu.value = val;
+  }
   return {
     device,
     sidebar,
     language,
     locale,
     size,
+    activeTopMenu,
     toggleDevice,
     changeSize,
     changeLanguage,
     toggleSidebar,
     closeSideBar,
     openSideBar,
+    changeTopActive,
   };
 });

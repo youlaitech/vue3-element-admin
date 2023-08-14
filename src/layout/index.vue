@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import Main from "./main.vue";
 import { computed, watchEffect } from "vue";
 import { useWindowSize } from "@vueuse/core";
-import { AppMain, Navbar, Settings, TagsView } from "./components/index";
 import Sidebar from "./components/Sidebar/index.vue";
-import RightPanel from "@/components/RightPanel/index.vue";
+import LeftMenu from "./components/Sidebar/LeftMenu.vue";
 
 import { useAppStore } from "@/store/modules/app";
 import { useSettingsStore } from "@/store/modules/settings";
-
+import { usePermissionStore } from "@/store/modules/permission";
+import { useRouter } from "vue-router";
+const permissionStore = usePermissionStore();
 const { width } = useWindowSize();
 
 /**
@@ -22,9 +24,31 @@ const WIDTH = 992;
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 
-const fixedHeader = computed(() => settingsStore.fixedHeader);
-const showTagsView = computed(() => settingsStore.tagsView);
-const showSettings = computed(() => settingsStore.showSettings);
+const activeTopMenu = computed(() => {
+  return appStore.activeTopMenu;
+});
+// 混合模式左侧菜单
+const mixLeftMenu = ref<any[]>([]);
+const router = useRouter();
+watch(
+  () => activeTopMenu.value,
+  (newVal) => {
+    permissionStore.routes.forEach((item) => {
+      if (item.path === newVal) {
+        mixLeftMenu.value = item.children || [];
+      }
+    });
+    console.log(" mixLeftMenu.value ", mixLeftMenu.value);
+    // if (mixLeftMenu.value.length) {
+    //   router.push({
+    //     path: mixLeftMenu.value[0].path,
+    //   });
+    // }
+  },
+  {
+    deep: true,
+  }
+);
 const layout = computed(() => settingsStore.layout);
 
 const classObj = computed(() => ({
@@ -33,6 +57,7 @@ const classObj = computed(() => ({
   withoutAnimation: appStore.sidebar.withoutAnimation,
   mobile: appStore.device === "mobile",
   isTop: layout.value === "top",
+  isMix: layout.value === "mix",
 }));
 
 watchEffect(() => {
@@ -66,21 +91,14 @@ function handleOutsideClick() {
     ></div>
 
     <Sidebar class="sidebar-container" />
-
-    <div :class="{ hasTagsView: showTagsView }" class="main-container">
-      <div :class="{ 'fixed-header': fixedHeader }">
-        <navbar v-if="layout !== 'top'" />
-        <tags-view v-if="showTagsView" />
+    <template v-if="layout === 'mix'">
+      <div class="mix-wrap">
+        <!-- :menu-list="mixLeftMenu -->
+        <LeftMenu :menu-list="permissionStore.routes" />
+        <Main />
       </div>
-
-      <!--主页面-->
-      <app-main />
-
-      <!-- 设置面板 -->
-      <RightPanel v-if="showSettings">
-        <settings />
-      </RightPanel>
-    </div>
+    </template>
+    <Main v-else />
   </div>
 </template>
 
@@ -154,5 +172,27 @@ function handleOutsideClick() {
 
   // 顶部模式全局变量修改
   --el-menu-item-height: 50px;
+}
+
+.isMix {
+  :deep(.main-container) {
+    display: inline-block;
+    width: calc(100% - 210px);
+    margin-left: 0;
+  }
+
+  .mix-wrap {
+    display: flex;
+    padding-top: 50px;
+
+    .el-menu {
+      width: 210px;
+    }
+
+    .main-container {
+      flex: 1;
+      min-width: 0;
+    }
+  }
 }
 </style>
