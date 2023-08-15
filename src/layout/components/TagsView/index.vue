@@ -254,7 +254,7 @@ function findOutermostParent(tree: any[], findName: string) {
     if (!parentMap[currentNode.name]) {
       return currentNode;
     }
-    currentNode = parentMap[currentNode.id];
+    currentNode = parentMap[currentNode.name];
   }
 
   return null;
