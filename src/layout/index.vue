@@ -11,7 +11,6 @@ import { usePermissionStore } from "@/store/modules/permission";
 import { useRouter } from "vue-router";
 const permissionStore = usePermissionStore();
 const { width } = useWindowSize();
-
 /**
  * 响应式布局容器固定宽度
  *
@@ -30,9 +29,11 @@ const activeTopMenu = computed(() => {
 // 混合模式左侧菜单
 const mixLeftMenu = ref<any[]>([]);
 const router = useRouter();
+const layout = computed(() => settingsStore.layout);
 watch(
   () => activeTopMenu.value,
   (newVal) => {
+    if (layout.value !== "mix") return;
     permissionStore.routes.forEach((item) => {
       if (item.path === newVal) {
         mixLeftMenu.value = item.children || [];
@@ -49,7 +50,6 @@ watch(
     immediate: true,
   }
 );
-const layout = computed(() => settingsStore.layout);
 
 const classObj = computed(() => ({
   hideSidebar: !appStore.sidebar.opened,
