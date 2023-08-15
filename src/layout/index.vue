@@ -40,12 +40,13 @@ watch(
     });
     if (mixLeftMenu.value) {
       router.push({
-        path: mixLeftMenu.value[0].path,
+        name: mixLeftMenu.value[0].name,
       });
     }
   },
   {
     deep: true,
+    immediate: true,
   }
 );
 const layout = computed(() => settingsStore.layout);

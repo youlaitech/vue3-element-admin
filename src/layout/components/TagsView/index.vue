@@ -10,6 +10,9 @@ import { translateRouteTitleI18n } from "@/utils/i18n";
 
 import { usePermissionStore } from "@/store/modules/permission";
 import { useTagsViewStore, TagView } from "@/store/modules/tagsView";
+import { useSettingsStore } from "@/store/modules/settings";
+import { useAppStore } from "@/store/modules/app";
+
 import ScrollPane from "./ScrollPane.vue";
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
@@ -18,8 +21,11 @@ const route = useRoute();
 
 const permissionStore = usePermissionStore();
 const tagsViewStore = useTagsViewStore();
+const appStore = useAppStore();
 
 const { visitedViews } = storeToRefs(tagsViewStore);
+const settingsStore = useSettingsStore();
+const layout = computed(() => settingsStore.layout);
 
 const selectedTag = ref({});
 const scrollPaneRef = ref();
@@ -226,7 +232,52 @@ function closeTagMenu() {
 function handleScroll() {
   closeTagMenu();
 }
+function findOutermostParent(tree: any[], findName: string) {
+  let parentMap: any = {};
 
+  function buildParentMap(node: any, parent: any) {
+    parentMap[node.name] = parent;
+
+    if (node.children) {
+      for (let i = 0; i < node.children.length; i++) {
+        buildParentMap(node.children[i], node);
+      }
+    }
+  }
+
+  for (let i = 0; i < tree.length; i++) {
+    buildParentMap(tree[i], null);
+  }
+
+  let currentNode = parentMap[findName];
+  while (currentNode) {
+    if (!parentMap[currentNode.name]) {
+      return currentNode;
+    }
+    currentNode = parentMap[currentNode.id];
+  }
+
+  return null;
+}
+const againActiveTop = (newVal: string) => {
+  if (layout.value !== "mix") return;
+  const parent = findOutermostParent(permissionStore.routes, newVal);
+  if (appStore.activeTopMenu !== parent.path) {
+    appStore.changeTopActive(parent.path);
+  }
+};
+// 如果是混合模式，更改selectedTag，需要对应高亮的activeTop
+watch(
+  () => route.name,
+  (newVal) => {
+    if (newVal) {
+      againActiveTop(newVal as string);
+    }
+  },
+  {
+    deep: true,
+  }
+);
 onMounted(() => {
   initTags();
 });

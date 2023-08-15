@@ -4,7 +4,7 @@ import variables from "@/styles/variables.module.scss";
 import { useAppStore } from "@/store/modules/app";
 import { translateRouteTitleI18n } from "@/utils/i18n";
 const appStore = useAppStore();
-const tPath = ref();
+const activePath = computed(() => appStore.activeTopMenu);
 const selectMenu = (index: string) => {
   appStore.changeTopActive(index);
 };
@@ -18,7 +18,7 @@ onMounted(() => {
   <el-scrollbar>
     <el-menu
       mode="horizontal"
-      :default-active="tPath"
+      :default-active="activePath"
       :background-color="variables.menuBg"
       :text-color="variables.menuText"
       :active-text-color="variables.menuActiveText"

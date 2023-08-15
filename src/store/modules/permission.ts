@@ -41,7 +41,9 @@ const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
 
   routes.forEach((route) => {
     const tmpRoute = { ...route }; // ES6扩展运算符复制新对象
-
+    if (!route.name) {
+      tmpRoute.name = route.path;
+    }
     // 判断用户(角色)是否有该路由的访问权限
     if (hasPermission(roles, tmpRoute)) {
       if (tmpRoute.component?.toString() == "Layout") {
