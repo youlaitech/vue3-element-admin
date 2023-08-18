@@ -8,7 +8,6 @@ import LeftMenu from "./components/Sidebar/LeftMenu.vue";
 import { useAppStore } from "@/store/modules/app";
 import { useSettingsStore } from "@/store/modules/settings";
 import { usePermissionStore } from "@/store/modules/permission";
-import { useRouter } from "vue-router";
 const permissionStore = usePermissionStore();
 const { width } = useWindowSize();
 /**
@@ -27,23 +26,15 @@ const activeTopMenu = computed(() => {
   return appStore.activeTopMenu;
 });
 // 混合模式左侧菜单
-const mixLeftMenu = ref<any[]>([]);
-const router = useRouter();
+const mixLeftMenu = computed(() => {
+  return permissionStore.mixLeftMenu;
+});
 const layout = computed(() => settingsStore.layout);
 watch(
   () => activeTopMenu.value,
   (newVal) => {
     if (layout.value !== "mix") return;
-    permissionStore.routes.forEach((item) => {
-      if (item.path === newVal) {
-        mixLeftMenu.value = item.children || [];
-      }
-    });
-    if (mixLeftMenu.value) {
-      router.push({
-        name: mixLeftMenu.value[0].name,
-      });
-    }
+    permissionStore.getMixLeftMenu(newVal);
   },
   {
     deep: true,
@@ -156,7 +147,7 @@ function handleOutsideClick() {
     height: 50px;
 
     :deep(.logo-wrap) {
-      width: 210px;
+      width: $sideBarWidth;
     }
 
     :deep(.el-scrollbar) {
@@ -178,7 +169,7 @@ function handleOutsideClick() {
 .isMix {
   :deep(.main-container) {
     display: inline-block;
-    width: calc(100% - 210px);
+    width: calc(100% - #{$sideBarWidth});
     margin-left: 0;
   }
 
@@ -186,13 +177,17 @@ function handleOutsideClick() {
     display: flex;
     padding-top: 50px;
 
-    .el-menu {
-      width: 210px;
-    }
-
     .main-container {
       flex: 1;
       min-width: 0;
+    }
+  }
+}
+
+.openSidebar {
+  .mix-wrap {
+    .el-menu {
+      width: $sideBarWidth;
     }
   }
 }

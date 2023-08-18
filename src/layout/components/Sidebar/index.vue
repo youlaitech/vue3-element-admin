@@ -74,7 +74,7 @@ watch(
       --el-menu-item-height: 50px;
 
       .logo-wrap {
-        width: 210px;
+        width: $sideBarWidth;
       }
 
       .el-menu {
@@ -95,7 +95,7 @@ watch(
 
   .left-menu {
     display: inline-block;
-    width: 210px;
+    width: $sideBarWidth;
     background-color: $menuBg;
 
     :deep(.el-menu) {
