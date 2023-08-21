@@ -64,6 +64,12 @@ module.exports = {
       },
     ],
     "vue/multi-word-component-names": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        useTabs: false, // 不使用制表符
+      },
+    ],
   },
   // eslint不能对html文件生效
   overrides: [

@@ -144,13 +144,44 @@
     .sidebar-container {
       width: $sideBarWidth !important;
       transition: transform 0.28s;
+
+      .header {
+        .logo-wrap {
+          width: 63px !important;
+          transition: transform 0.28s;
+        }
+      }
     }
 
-    &.hideSidebar {
+    &.hideSidebar:not(.isMix) {
       .sidebar-container {
         pointer-events: none;
         transition-duration: 0.3s;
         transform: translate3d(-$sideBarWidth, 0, 0);
+      }
+    }
+
+    &.hideSidebar {
+      .isMix {
+        :deep(.sidebar-container) {
+          .header {
+            .logo-wrap {
+              width: 64px;
+            }
+          }
+        }
+      }
+    }
+
+    &.openSidebar {
+      .isMix {
+        :deep(.sidebar-container) {
+          .header {
+            .logo-wrap {
+              width: 210px;
+            }
+          }
+        }
       }
     }
   }

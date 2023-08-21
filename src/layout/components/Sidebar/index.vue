@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
-import SidebarItem from "./SidebarItem.vue";
+import TopMenu from "./TopMenu.vue";
+import LeftMenu from "./LeftMenu.vue";
 import Logo from "./Logo.vue";
-
 import { useSettingsStore } from "@/store/modules/settings";
 import { usePermissionStore } from "@/store/modules/permission";
 import { useAppStore } from "@/store/modules/app";
 import { storeToRefs } from "pinia";
-import variables from "@/styles/variables.module.scss";
 
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 const appStore = useAppStore();
-const currRoute = useRoute();
 const { sidebarLogo } = storeToRefs(settingsStore);
 const layout = computed(() => settingsStore.layout);
 const showContent = ref(true);
@@ -28,40 +25,85 @@ watch(
 </script>
 
 <template>
-  <div :class="{ 'has-logo': sidebarLogo }" class="menu-wrap">
+  <div
+    :class="{ 'has-logo': sidebarLogo }"
+    class="menu-wrap"
+    v-if="layout !== 'mix'"
+  >
     <logo v-if="sidebarLogo" :collapse="!appStore.sidebar.opened" />
     <el-scrollbar v-if="showContent">
-      <el-menu
-        :default-active="layout === 'top' ? '-' : currRoute.path"
-        :collapse="!appStore.sidebar.opened"
-        :background-color="variables.menuBg"
-        :text-color="variables.menuText"
-        :active-text-color="variables.menuActiveText"
-        :unique-opened="false"
-        :collapse-transition="false"
-        :mode="layout === 'top' ? 'horizontal' : 'vertical'"
-      >
-        <sidebar-item
-          v-for="route in permissionStore.routes"
-          :key="route.path"
-          :item="route"
-          :base-path="route.path"
-          :is-collapse="!appStore.sidebar.opened"
-        />
-      </el-menu>
+      <LeftMenu :menu-list="permissionStore.routes" base-path="" />
     </el-scrollbar>
     <NavRight v-if="layout === 'top'" />
   </div>
+  <template v-else>
+    <div :class="{ 'has-logo': sidebarLogo }" class="menu-wrap">
+      <div class="header">
+        <logo v-if="sidebarLogo" :collapse="!appStore.sidebar.opened" />
+        <TopMenu />
+        <NavRight />
+      </div>
+    </div>
+  </template>
 </template>
 <style lang="scss" scoped>
 :deep(.setting-container) {
   .setting-item {
     color: #fff;
+
     .svg-icon {
-      margin-right: 0px;
+      margin-right: 0;
     }
+
     &:hover {
       color: var(--el-color-primary);
+    }
+  }
+}
+
+.isMix {
+  .menu-wrap {
+    width: 100% !important;
+    height: 50px;
+    background-color: $menuBg;
+
+    :deep(.header) {
+      display: flex;
+      width: 100%;
+      // 顶部模式全局变量修改
+      --el-menu-item-height: 50px;
+
+      .logo-wrap {
+        width: $sideBarWidth;
+      }
+
+      .el-menu {
+        background-color: $menuBg;
+
+        .el-menu-item {
+          color: $menuText;
+        }
+      }
+
+      .el-scrollbar {
+        flex: 1;
+        min-width: 0;
+        height: 50px;
+      }
+    }
+  }
+
+  .left-menu {
+    display: inline-block;
+    width: $sideBarWidth;
+    background-color: $menuBg;
+
+    :deep(.el-menu) {
+      background-color: $menuBg;
+
+      .el-menu-item {
+        color: $menuText;
+      }
     }
   }
 }
