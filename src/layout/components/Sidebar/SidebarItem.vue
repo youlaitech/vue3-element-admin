@@ -121,3 +121,9 @@ function resolvePath(routePath: string) {
     </el-sub-menu>
   </div>
 </template>
+
+<style lang="scss" scoped>
+:deep(.el-menu-item .el-menu-tooltip__trigger) {
+  width: auto !important;
+}
+</style>
