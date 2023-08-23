@@ -178,6 +178,12 @@ function toggleSideBar() {
   --el-menu-item-height: 50px;
 }
 
+.mobile.isTop {
+  :deep(.logo-wrap) {
+    width: 63px;
+  }
+}
+
 .isMix {
   :deep(.main-container) {
     display: inline-block;
