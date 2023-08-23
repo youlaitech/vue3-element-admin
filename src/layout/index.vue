@@ -70,6 +70,10 @@ watchEffect(() => {
 function handleOutsideClick() {
   appStore.closeSideBar(false);
 }
+
+function toggleSideBar() {
+  appStore.toggleSidebar(true);
+}
 </script>
 
 <template>
@@ -86,7 +90,15 @@ function handleOutsideClick() {
       <div class="mix-wrap">
         <!-- :menu-list="mixLeftMenu -->
         <!-- :menu-list="permissionStore.routes -->
-        <LeftMenu :menu-list="mixLeftMenu" :base-path="activeTopMenu" />
+        <div class="left-wrap">
+          <LeftMenu :menu-list="mixLeftMenu" :base-path="activeTopMenu" />
+          <div class="menu-action">
+            <hamburger
+              :is-active="appStore.sidebar.opened"
+              @toggle-click="toggleSideBar"
+            />
+          </div>
+        </div>
         <Main />
       </div>
     </template>
@@ -166,6 +178,12 @@ function handleOutsideClick() {
   --el-menu-item-height: 50px;
 }
 
+.mobile.isTop {
+  :deep(.logo-wrap) {
+    width: 63px;
+  }
+}
+
 .isMix {
   :deep(.main-container) {
     display: inline-block;
@@ -175,7 +193,34 @@ function handleOutsideClick() {
 
   .mix-wrap {
     display: flex;
+    height: 100%;
     padding-top: 50px;
+
+    .left-wrap {
+      position: relative;
+      height: 100%;
+
+      .el-menu {
+        height: 100%;
+      }
+
+      .menu-action {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        box-shadow: 0 0 6px -2px var(--el-color-primary);
+
+        div:hover {
+          background-color: var(--menuBg);
+        }
+
+        :deep(svg) {
+          color: #409eff !important;
+        }
+      }
+    }
 
     .main-container {
       flex: 1;
