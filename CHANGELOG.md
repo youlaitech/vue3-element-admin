@@ -1,3 +1,9 @@
+# 2.6.0 (2023/8/24)💥💥💥
+
+### ✨ feat
+- 导航顶部模式、混合模式支持（author by [april-tong](https://april-tong.com/)）
+- 平台文档(内嵌)（author by [april-tong](https://april-tong.com/)）
+
 # 2.5.0 (2023/8/8)
 
 ### ✨ feat
