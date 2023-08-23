@@ -233,6 +233,7 @@ function toggleSideBar() {
   .mix-wrap {
     .el-menu {
       width: $sideBarWidth;
+      border: none;
     }
   }
 }
