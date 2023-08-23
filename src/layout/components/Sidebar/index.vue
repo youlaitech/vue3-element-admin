@@ -63,6 +63,7 @@ watch(
 
 .isMix {
   .menu-wrap {
+    z-index: 99;
     width: 100% !important;
     height: 50px;
     background-color: $menuBg;

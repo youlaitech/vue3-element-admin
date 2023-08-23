@@ -90,6 +90,13 @@
       .svg-icon {
         margin-right: 0;
       }
+
+      .header {
+        .logo-wrap {
+          width: 63px !important;
+          transition: transform 0.28s;
+        }
+      }
     }
 
     .main-container {
@@ -144,13 +151,6 @@
     .sidebar-container {
       width: $sideBarWidth !important;
       transition: transform 0.28s;
-
-      .header {
-        .logo-wrap {
-          width: 63px !important;
-          transition: transform 0.28s;
-        }
-      }
     }
 
     &.hideSidebar:not(.isMix) {
