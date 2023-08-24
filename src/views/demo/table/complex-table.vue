@@ -382,7 +382,7 @@ interface Form {
 }
 
 const formData = ref<Form>({});
-const rules = {
+const rules = reactive<FormRules>({
   type: [{ required: true, message: "type is required", trigger: "change" }],
   timestamp: [
     {
@@ -393,7 +393,7 @@ const rules = {
     },
   ],
   title: [{ required: true, message: "title is required", trigger: "blur" }],
-};
+});
 const dialogStatus = ref<any>();
 const textMap: any = {
   update: "Edit",
