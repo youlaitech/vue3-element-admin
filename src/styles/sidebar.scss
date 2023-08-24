@@ -47,7 +47,7 @@
     }
 
     .svg-icon {
-      margin-right: 16px;
+      margin-right: 12px;
     }
 
     .sub-el-icon {
@@ -80,6 +80,13 @@
       &:hover {
         background-color: $subMenuHover !important;
       }
+    }
+  }
+
+  .left-wrap {
+    .svg-icon {
+      margin-top: -2px;
+      margin-right: 12px;
     }
   }
 
@@ -174,7 +181,7 @@
 .el-menu--vertical {
   & > .el-menu {
     .svg-icon {
-      margin-right: 16px;
+      margin-right: 12px;
     }
 
     .sub-el-icon {

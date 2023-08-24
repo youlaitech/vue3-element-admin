@@ -180,7 +180,7 @@ orderCount.value = 2000;
 
     <!-- Echarts 图表 -->
     <el-row :gutter="40">
-      <el-col :sm="24" :lg="8" class="mb-4">
+      <el-col :sm="24" :lg="8" class="mb-2">
         <BarChart
           id="barChart"
           height="400px"
@@ -189,7 +189,7 @@ orderCount.value = 2000;
         />
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="8" class="mb-4">
+      <el-col :xs="24" :sm="12" :lg="8" class="mb-2">
         <PieChart
           id="pieChart"
           height="400px"
@@ -198,7 +198,7 @@ orderCount.value = 2000;
         />
       </el-col>
 
-      <el-col :xs="24" :sm="12" :lg="8" class="mb-4">
+      <el-col :xs="24" :sm="12" :lg="8" class="mb-2">
         <RadarChart
           id="radarChart"
           height="400px"

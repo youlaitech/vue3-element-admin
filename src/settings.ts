@@ -47,7 +47,7 @@ const defaultSettings: DefaultSettings = {
   tagsView: true,
   fixedHeader: false,
   sidebarLogo: true,
-  layout: "left",
+  layout: "mix",
   /**
    *  主题模式
    *

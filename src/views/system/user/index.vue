@@ -294,13 +294,6 @@ function downloadTemplate() {
   });
 }
 
-/** 打开导入弹窗 */
-async function openImportDialog() {
-  await getDeptOptions();
-  importDeptId.value = undefined;
-  importDialog.visible = true;
-}
-
 /**
  * Excel文件change事件
  *
@@ -316,8 +309,22 @@ function handleExcelChange(file: UploadFile) {
   excelFile.value = file.raw;
 }
 
+/** 打开导入弹窗 */
+async function openImportDialog() {
+  await getDeptOptions();
+  importDeptId.value = undefined;
+  importDialog.visible = true;
+}
+
+/** 关闭导入弹窗 */
+function closeImportDialog() {
+  importDialog.visible = false;
+  excelFile.value = undefined;
+  excelFilelist.value = [];
+}
+
 /** 导入用户提交 */
-function handleUserImport() {
+function handleImport() {
   if (importDeptId.value) {
     if (!excelFile.value) {
       ElMessage.warning("上传Excel文件不能为空");
@@ -331,15 +338,8 @@ function handleUserImport() {
   }
 }
 
-/**  关闭导入弹窗 */
-function closeImportDialog() {
-  importDialog.visible = false;
-  excelFile.value = undefined;
-  excelFilelist.value = [];
-}
-
 /** 导出用户 */
-function handleUserExport() {
+function handleExport() {
   exportUser(queryParams).then((response: any) => {
     const blob = new Blob([response.data], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
@@ -457,7 +457,7 @@ onMounted(() => {
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>
-                <el-button class="ml-3" @click="handleUserExport"
+                <el-button class="ml-3" @click="handleExport"
                   ><template #icon><i-ep-download /></template>导出</el-button
                 >
               </div>
@@ -695,7 +695,7 @@ onMounted(() => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleUserImport">确 定</el-button>
+          <el-button type="primary" @click="handleImport">确 定</el-button>
           <el-button @click="closeImportDialog">取 消</el-button>
         </div>
       </template>
