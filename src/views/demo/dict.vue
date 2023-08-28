@@ -1,7 +1,7 @@
 <!-- 字典组件示例 -->
 <script setup lang="ts">
 const stringValue = ref("1"); // 性别(值为String)
-const nmberValue = ref(1); // 性别(值为Number)
+const numberValue = ref(1); // 性别(值为Number)
 </script>
 
 <template>
@@ -22,7 +22,7 @@ const nmberValue = ref(1); // 性别(值为Number)
       </el-form-item>
 
       <el-form-item label="性别">
-        <dictionary v-model="nmberValue" type-code="gender" />
+        <dictionary v-model="numberValue" type-code="gender" />
         <el-link :underline="false" type="success" class="ml-5"
           >值为Number: const value = ref(1);
         </el-link>
