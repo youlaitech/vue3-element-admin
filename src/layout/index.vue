@@ -72,7 +72,7 @@ function handleOutsideClick() {
 }
 
 function toggleSideBar() {
-  appStore.toggleSidebar(true);
+  appStore.toggleSidebar();
 }
 </script>
 

@@ -7,7 +7,7 @@ const appStore = useAppStore();
  * 左侧菜单栏显示/隐藏
  */
 function toggleSideBar() {
-  appStore.toggleSidebar(true);
+  appStore.toggleSidebar();
 }
 </script>
 
