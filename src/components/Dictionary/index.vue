@@ -1,20 +1,18 @@
 <template>
-  <div>
-    <el-select
-      v-model="selectedValue"
-      :placeholder="placeholder"
-      :disabled="disabled"
-      clearable
-      @change="handleChange"
-    >
-      <el-option
-        v-for="option in options"
-        :key="option.value"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-  </div>
+  <el-select
+    v-model="selectedValue"
+    :placeholder="placeholder"
+    :disabled="disabled"
+    clearable
+    @change="handleChange"
+  >
+    <el-option
+      v-for="option in options"
+      :key="option.value"
+      :label="option.label"
+      :value="option.value"
+    />
+  </el-select>
 </template>
 
 <script setup lang="ts">
@@ -29,8 +27,7 @@ const props = defineProps({
     required: true,
   },
   modelValue: {
-    type: String,
-    default: "",
+    type: [String, Number],
   },
   placeholder: {
     type: String,
@@ -46,9 +43,24 @@ const emits = defineEmits(["update:modelValue"]); // 父组件监听事件，同
 
 const options: Ref<OptionType[]> = ref([]); // 字典下拉数据源
 
-const selectedValue = computed(() => props.modelValue.toString()); // 将父组件的值统一转化String和下拉数据源进行比较，避免值的类型不一致导致回显失败
+const selectedValue = ref<string | number | undefined>();
 
-function handleChange(val?: string) {
+watch([options, () => props.modelValue], ([newOptions, newModelValue]) => {
+  if (newOptions.length === 0) return; // 下拉数据源加载未完成不回显
+  if (newModelValue == undefined) {
+    selectedValue.value = undefined;
+    return;
+  }
+  if (typeof newOptions[0].value === "number") {
+    selectedValue.value = Number(newModelValue);
+  } else if (typeof newOptions[0].value === "string") {
+    selectedValue.value = String(newModelValue);
+  } else {
+    selectedValue.value = newModelValue;
+  }
+});
+
+function handleChange(val?: string | number | undefined) {
   emits("update:modelValue", val);
 }
 

@@ -8,8 +8,8 @@
     :before-upload="handleBeforeUpload"
     :http-request="uploadFile"
   >
-    <img v-if="imgUrl" :src="imgUrl" class="single" />
-    <el-icon v-else class="single-uploader-icon"><i-ep-plus /></el-icon>
+    <img v-if="imgUrl" :src="imgUrl" class="single-uploader__image" />
+    <el-icon v-else class="single-uploader__icon"><i-ep-plus /></el-icon>
   </el-upload>
 </template>
 
@@ -49,33 +49,29 @@ function handleBeforeUpload(file: UploadRawFile) {
 }
 </script>
 
-<style scoped>
-.single-uploader .single {
-  display: block;
-  width: 178px;
-  height: 178px;
-}
-</style>
-
-<style>
-.single-uploader .el-upload {
-  position: relative;
+<style scoped lang="scss">
+.single-uploader {
   overflow: hidden;
   cursor: pointer;
-  border: 1px dashed var(--el-border-color);
+  border: 1px var(--el-border-color) solid;
   border-radius: 6px;
-  transition: var(--el-transition-duration-fast);
-}
 
-.single-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
+  &:hover {
+    border-color: var(--el-color-primary);
+  }
 
-.el-icon.single-uploader-icon {
-  width: 178px;
-  height: 178px;
-  font-size: 28px;
-  color: #8c939d;
-  text-align: center;
+  &__image {
+    display: block;
+    width: 178px;
+    height: 178px;
+  }
+
+  &___icon {
+    width: 178px;
+    height: 178px;
+    font-size: 28px;
+    color: #8c939d;
+    text-align: center;
+  }
 }
 </style>
