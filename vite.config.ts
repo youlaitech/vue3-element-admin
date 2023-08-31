@@ -187,7 +187,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/notification/style/css",
         "@vueuse/core",
         "sortablejs",
-
         "path-to-regexp",
         "echarts",
         "@wangeditor/editor",
@@ -195,6 +194,21 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "vue-i18n",
         "codemirror",
       ],
+    },
+    // 构建
+    build: {
+      chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告
+      minify: "terser", // Vite 2.6.x 以上需要配置 minify: "terser", terserOptions 才能生效
+      terserOptions: {
+        compress: {
+          keep_infinity: true, // 防止 Infinity 被压缩成 1/0，这可能会导致 Chrome 上的性能问题
+          drop_console: true, // 生产环境去除 console
+          drop_debugger: true, // 生产环境去除 debugger
+        },
+        format: {
+          comments: false, // 删除注释
+        },
+      },
     },
   };
 });
