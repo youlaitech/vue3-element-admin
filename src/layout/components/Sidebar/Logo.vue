@@ -10,6 +10,8 @@ defineProps({
   },
 });
 
+const layout = computed(() => settingsStore.layout);
+
 const logo = ref(new URL(`../../../assets/logo.png`, import.meta.url).href);
 </script>
 
@@ -25,7 +27,7 @@ const logo = ref(new URL(`../../../assets/logo.png`, import.meta.url).href);
         to="/"
       >
         <img v-if="settingsStore.sidebarLogo" :src="logo" class="w-5 h-5" />
-        <span v-else class="ml-3 text-white text-sm font-bold"
+        <span v-if="layout == 'top'" class="ml-3 text-white text-sm font-bold"
           >vue3-element-admin</span
         >
       </router-link>

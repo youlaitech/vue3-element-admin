@@ -1,14 +1,17 @@
 import { defineStore } from "pinia";
 import defaultSettings from "@/settings";
-import { useStorage } from "@vueuse/core";
 
 export const useSettingsStore = defineStore("setting", () => {
   // state
   const tagsView = useStorage<boolean>("tagsView", defaultSettings.tagsView);
 
   const showSettings = ref<boolean>(defaultSettings.showSettings);
-  const fixedHeader = ref<boolean>(defaultSettings.fixedHeader);
   const sidebarLogo = ref<boolean>(defaultSettings.sidebarLogo);
+
+  const fixedHeader = useStorage<boolean>(
+    "fixedHeader",
+    defaultSettings.fixedHeader
+  );
 
   const layout = useStorage<string>("layout", defaultSettings.layout);
 
@@ -30,8 +33,6 @@ export const useSettingsStore = defineStore("setting", () => {
         break;
       case "layout":
         layout.value = value;
-        break;
-      default:
         break;
     }
   }

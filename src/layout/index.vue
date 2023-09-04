@@ -124,23 +124,6 @@ function toggleSideBar() {
   }
 }
 
-.fixed-header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 9;
-  width: calc(100% - #{$sideBarWidth});
-  transition: width 0.28s;
-}
-
-.hideSidebar .fixed-header {
-  width: calc(100% - 54px);
-}
-
-.mobile .fixed-header {
-  width: 100%;
-}
-
 .drawer-bg {
   position: absolute;
   top: 0;
@@ -231,8 +214,11 @@ function toggleSideBar() {
 
 .openSidebar {
   .mix-wrap {
-    .el-menu {
+    .left-wrap {
       width: $sideBarWidth;
+    }
+
+    .el-menu {
       border: none;
     }
   }
