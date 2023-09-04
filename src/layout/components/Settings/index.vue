@@ -6,31 +6,14 @@ import IconEpSunny from "~icons/ep/sunny";
 import IconEpMoon from "~icons/ep/moon";
 import { useRoute } from "vue-router";
 import defaultSettings from "@/settings";
-/**
- * 暗黑模式
- */
+
+const route = useRoute();
+
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 const appStore = useAppStore();
 
 const isDark = useDark();
-console.log("isDark1", isDark.value);
-
-watch(
-  () => defaultSettings.theme,
-  (newVal: string) => {
-    if (
-      (newVal == "dark" && isDark.value == false) ||
-      (newVal == "light" && isDark.value == true)
-    ) {
-      toggleDark();
-      console.log("isDark2", isDark.value);
-    }
-  }
-);
-
-computed(() => {});
-
 const toggleDark = () => useToggle(isDark);
 
 function findOutermostParent(tree: any[], findName: string) {
@@ -66,7 +49,7 @@ const againActiveTop = (newVal: string) => {
     appStore.changeTopActive(parent.path);
   }
 };
-const route = useRoute();
+
 /**
  * 切换布局
  */
@@ -98,6 +81,9 @@ function changeThemeColor(color: string) {
 
 onMounted(() => {
   window.document.body.setAttribute("layout", settingsStore.layout);
+  const theme =
+    localStorage.getItem("vueuse-color-scheme") || defaultSettings.theme;
+  localStorage.setItem("vueuse-color-scheme", theme);
 });
 </script>
 

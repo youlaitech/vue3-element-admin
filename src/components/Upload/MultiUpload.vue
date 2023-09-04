@@ -40,7 +40,7 @@ const props = defineProps({
    */
   modelValue: {
     type: Array<string>,
-    default: [] as Array<string>,
+    default: () => [],
   },
   /**
    * 文件上传数量限制

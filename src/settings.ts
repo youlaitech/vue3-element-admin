@@ -48,8 +48,8 @@ const defaultSettings: DefaultSettings = {
   tagsView: true,
   fixedHeader: false,
   sidebarLogo: true,
-  layout: "mix", // 默认混合模式
-  theme: "dark", // 默认暗黑模式
+  layout: "left", // 默认左侧模式
+  theme: "light", // 默认暗黑模式
   size: "default",
   language: "zh-cn",
 };

@@ -57,6 +57,7 @@
     "screenfull": "^6.0.0",
     "sockjs-client": "1.6.1",
     "sortablejs": "^1.15.0",
+    "terser": "^5.19.3",
     "stompjs": "^2.3.3",
     "vue": "^3.3.4",
     "vue-i18n": "9.2.2",
