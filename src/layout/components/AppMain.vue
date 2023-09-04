@@ -28,7 +28,7 @@ const tagsViewStore = useTagsViewStore();
 }
 
 .fixed-header + .app-main {
-  padding-top: 50px;
+  padding-top: 34px;
 }
 
 .hasTagsView {
@@ -40,6 +40,33 @@ const tagsViewStore = useTagsViewStore();
   .fixed-header + .app-main {
     min-height: 100vh;
     padding-top: 84px;
+  }
+}
+
+.isMix {
+  .app-main {
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+  }
+
+  .hasTagsView {
+    .app-main {
+      /* 84 = navbar + tags-view = 50 + 34 */
+      height: calc(100vh - 84px);
+    }
+
+    .fixed-header + .app-main {
+      min-height: calc(100vh - 50px);
+      padding-top: 34px;
+    }
+  }
+}
+
+.isTop {
+  .hasTagsView {
+    .fixed-header + .app-main {
+      padding-top: 34px;
+    }
   }
 }
 </style>

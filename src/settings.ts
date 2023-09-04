@@ -1,10 +1,11 @@
-// 系统设置
+/**
+ * 系统设置
+ */
 interface DefaultSettings {
   /**
    * 系统title
    */
   title: string;
-
   /**
    * 是否显示设置
    */
@@ -22,21 +23,21 @@ interface DefaultSettings {
    */
   sidebarLogo: boolean;
   /**
-   * 导航栏布局
+   * 导航栏布局(left|top|mix)
    */
   layout: string;
   /**
-   * 主题模式
+   * 主题模式(dark|light)
    */
   theme: string;
 
   /**
-   * 布局大小
+   * 布局大小(default |large |small)
    */
   size: string;
 
   /**
-   * 语言
+   * 语言( zh-cn| en)
    */
   language: string;
 }
@@ -47,16 +48,10 @@ const defaultSettings: DefaultSettings = {
   tagsView: true,
   fixedHeader: false,
   sidebarLogo: true,
-  layout: "mix",
-  /**
-   *  主题模式
-   *
-   * dark:暗黑模式
-   * light: 明亮模式
-   */
-  theme: "dark",
-  size: "default", // default |large |small
-  language: "zh-cn", // zh-cn| en
+  layout: "mix", // 默认混合模式
+  theme: "dark", // 默认暗黑模式
+  size: "default",
+  language: "zh-cn",
 };
 
 export default defaultSettings;

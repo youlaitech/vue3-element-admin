@@ -5,14 +5,32 @@ import { useAppStore } from "@/store/modules/app";
 import IconEpSunny from "~icons/ep/sunny";
 import IconEpMoon from "~icons/ep/moon";
 import { useRoute } from "vue-router";
-
+import defaultSettings from "@/settings";
 /**
  * 暗黑模式
  */
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 const appStore = useAppStore();
+
 const isDark = useDark();
+console.log("isDark1", isDark.value);
+
+watch(
+  () => defaultSettings.theme,
+  (newVal: string) => {
+    if (
+      (newVal == "dark" && isDark.value == false) ||
+      (newVal == "light" && isDark.value == true)
+    ) {
+      toggleDark();
+      console.log("isDark2", isDark.value);
+    }
+  }
+);
+
+computed(() => {});
+
 const toggleDark = () => useToggle(isDark);
 
 function findOutermostParent(tree: any[], findName: string) {

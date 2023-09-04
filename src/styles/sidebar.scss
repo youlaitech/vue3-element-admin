@@ -83,14 +83,11 @@
     }
   }
 
-  .left-wrap {
-    .svg-icon {
-      margin-top: -2px;
-      margin-right: 12px;
-    }
-  }
-
   .hideSidebar {
+    .left-wrap {
+      width: 54px;
+    }
+
     .sidebar-container {
       width: 54px !important;
 
@@ -100,7 +97,7 @@
 
       .header {
         .logo-wrap {
-          width: 63px !important;
+          width: 54px !important;
           transition: transform 0.28s;
         }
       }

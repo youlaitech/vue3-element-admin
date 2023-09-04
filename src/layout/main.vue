@@ -55,3 +55,33 @@ watchEffect(() => {
     </RightPanel>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.fixed-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9;
+  width: calc(100% - #{$sideBarWidth});
+  transition: width 0.28s;
+}
+
+.hideSidebar .fixed-header {
+  width: calc(100% - 54px);
+}
+
+.isTop .fixed-header {
+  width: 100% !important;
+}
+
+.mobile .fixed-header {
+  width: 100%;
+}
+
+.isMix,
+.isTop {
+  .fixed-header {
+    top: 50px;
+  }
+}
+</style>

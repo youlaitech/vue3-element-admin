@@ -12,15 +12,12 @@ import IconsResolver from "unplugin-icons/resolver";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 
 import { viteMockServe } from "vite-plugin-mock";
-import visualizer from "rollup-plugin-visualizer";
 
 import UnoCSS from "unocss/vite";
 import path from "path";
 
-import viteCompression from "vite-plugin-compression";
-
 const pathSrc = path.resolve(__dirname, "src");
-
+/** 参考Vite官方配置: https://cn.vitejs.dev/config */
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
 
@@ -102,35 +99,17 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 自动安装图标库
         autoInstall: true,
       }),
-
       createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹
         iconDirs: [path.resolve(pathSrc, "assets/icons")],
         // 指定symbolId格式
         symbolId: "icon-[dir]-[name]",
       }),
-      // 代码压缩
-      viteCompression({
-        verbose: true, // 默认即可
-        disable: true, // 是否禁用压缩，默认禁用，true为禁用,false为开启，打开压缩需配置nginx支持
-        deleteOriginFile: true, // 删除源文件
-        threshold: 10240, // 压缩前最小文件大小
-        algorithm: "gzip", // 压缩算法
-        ext: ".gz", // 文件类型
-      }),
-
+      // https://github.com/anncwb/vite-plugin-mock/issues/9
       viteMockServe({
         ignore: /^\_/,
         mockPath: "mock",
         enable: mode === "development",
-        // https://github.com/anncwb/vite-plugin-mock/issues/9
-      }),
-
-      visualizer({
-        filename: "./stats.html",
-        open: false,
-        gzipSize: true,
-        brotliSize: true,
       }),
     ],
     // 预加载项目必需的组件
@@ -192,7 +171,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "@wangeditor/editor",
         "@wangeditor/editor-for-vue",
         "vue-i18n",
-        "codemirror",
       ],
     },
     // 构建
