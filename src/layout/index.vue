@@ -219,7 +219,7 @@ function toggleSideBar() {
     }
 
     :deep(.svg-icon) {
-      margin-top: -2px;
+      margin-top: -1px;
       margin-right: 5px;
     }
 
