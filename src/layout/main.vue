@@ -74,10 +74,6 @@ watchEffect(() => {
   width: 100% !important;
 }
 
-.mobile .fixed-header {
-  width: 100%;
-}
-
 .isMix,
 .isTop {
   .fixed-header {

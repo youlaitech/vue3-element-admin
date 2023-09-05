@@ -218,6 +218,11 @@ function toggleSideBar() {
       width: $sideBarWidth;
     }
 
+    :deep(.svg-icon) {
+      margin-top: -2px;
+      margin-right: 5px;
+    }
+
     .el-menu {
       border: none;
     }
