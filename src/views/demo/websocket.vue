@@ -4,8 +4,8 @@ import { sendToAll, sendToUser } from "@/api/websocket"; // 点对点消息列�
 
 import { useUserStore } from "@/store/modules/user";
 
-import SockJS from "sockjs-client"; // 报错 global is not defined 换成下面的引入
-//   import SockJS from "sockjs-client/dist/sockjs.min.js";
+//  import SockJS from "sockjs-client"; // 报错 global is not defined 换成下面的引入
+import SockJS from "sockjs-client/dist/sockjs.min.js";
 import Stomp from "stompjs";
 
 const inputVal = ref("初始内容");
@@ -17,6 +17,8 @@ const userId = useUserStore().userId;
 
 function handleSendToAll() {
   sendToAll(inputVal.value);
+
+  stompClient.send("/app/sendToAll", {}, inputVal.value);
 }
 
 function handleSendToUser() {
@@ -26,7 +28,9 @@ function handleSendToUser() {
 let stompClient: Stomp.Client;
 
 function initWebSocket() {
-  stompClient = Stomp.overWS("ws://localhost:8989/ws");
+  let socket = new SockJS("http://localhost:8989/ws");
+
+  stompClient = Stomp.over(socket);
 
   stompClient.connect({}, () => {
     console.log("连接成功");
