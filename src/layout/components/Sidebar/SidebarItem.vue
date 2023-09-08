@@ -90,9 +90,13 @@ function resolvePath(routePath: string) {
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)">
           <svg-icon
-            v-if="onlyOneChild.meta && onlyOneChild.meta.icon"
-            :icon-class="onlyOneChild.meta.icon"
+            :icon-class="
+              onlyOneChild.meta && onlyOneChild.meta.icon
+                ? onlyOneChild.meta.icon
+                : 'menu'
+            "
           />
+
           <template #title>
             {{ translateRouteTitleI18n(onlyOneChild.meta.title) }}
           </template>
