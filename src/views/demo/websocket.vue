@@ -1,7 +1,5 @@
 <!-- websocket 示例 -->
 <script setup lang="ts">
-import { sendToAll, sendToUser } from "@/api/websocket"; // 点对点消息列表
-
 import { useUserStore } from "@/store/modules/user";
 
 //  import SockJS from "sockjs-client"; // 报错 global is not defined 换成下面的引入
@@ -16,13 +14,11 @@ const p2pMsgs = ref<string[]>(["接收到一条点对线消息"]);
 const userId = useUserStore().userId;
 
 function handleSendToAll() {
-  sendToAll(inputVal.value);
-
   stompClient.send("/app/sendToAll", {}, inputVal.value);
 }
 
 function handleSendToUser() {
-  sendToUser(userId, inputVal.value);
+  stompClient.send("/app/sendToUser/" + userId, {}, inputVal.value);
 }
 
 let stompClient: Stomp.Client;
@@ -33,10 +29,14 @@ function initWebSocket() {
   stompClient = Stomp.over(socket);
 
   stompClient.connect({}, () => {
-    console.log("连接成功");
+    console.log("连接就绪，订阅主题：", "/topic/all");
 
     stompClient.subscribe("/topic/all", (res) => {
-      console.log("订阅响应");
+      console.log("广播消息接收", res);
+    });
+
+    stompClient.subscribe("/queue/user", (res) => {
+      console.log("点对点消息接收", res);
     });
   });
 }
