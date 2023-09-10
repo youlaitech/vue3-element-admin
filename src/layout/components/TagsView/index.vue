@@ -121,7 +121,7 @@ function isFirstView() {
   try {
     return (
       (selectedTag.value as TagView).fullPath === "/dashboard" ||
-      (selectedTag.value as TagView).fullPath === tagsViewStore.visitedViews[1]
+      (selectedTag.value as TagView).fullPath === tagsViewStore.visitedViews[1].fullPath
     );
   } catch (err) {
     return false;
