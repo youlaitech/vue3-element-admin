@@ -1,4 +1,4 @@
-import { RouteRecordRaw, useRouter } from "vue-router";
+import { RouteRecordRaw } from "vue-router";
 import { defineStore } from "pinia";
 import { constantRoutes } from "@/router";
 import { store } from "@/store";

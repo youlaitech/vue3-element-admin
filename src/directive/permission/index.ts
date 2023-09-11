@@ -7,7 +7,7 @@ import { Directive, DirectiveBinding } from "vue";
 export const hasPerm: Directive = {
   mounted(el: HTMLElement, binding: DirectiveBinding) {
     // 「超级管理员」拥有所有的按钮权限
-    const { roles, perms } = useUserStoreHook();
+    const { roles, perms } = useUserStoreHook().user;
     if (roles.includes("ROOT")) {
       return true;
     }
@@ -40,7 +40,7 @@ export const hasRole: Directive = {
 
     if (value) {
       const requiredRoles = value; // DOM绑定需要的角色编码
-      const { roles } = useUserStoreHook();
+      const { roles } = useUserStoreHook().user;
       const hasRole = roles.some((perm) => {
         return requiredRoles.includes(perm);
       });

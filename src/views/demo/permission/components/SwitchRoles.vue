@@ -15,12 +15,12 @@ import { storeToRefs } from "pinia";
 
 const emit = defineEmits(["change"]);
 const store = storeToRefs(useUserStoreHook());
-const { roles } = store;
+const { roles } = store.user.value;
 
 const switchRoles = computed({
-  get: () => roles.value[0],
+  get: () => roles[0],
   set: (val) => {
-    roles.value = [val];
+    Object.assign(roles, [val]);
     emit("change");
   },
 });

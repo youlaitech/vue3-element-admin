@@ -74,10 +74,10 @@ orderCount.value = 2000;
           <div class="flex items-center">
             <img
               class="user-avatar"
-              :src="userStore.avatar + '?imageView2/1/w/80/h/80'"
+              :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'"
             />
             <span class="ml-[10px] text-[16px]">
-              {{ userStore.nickname }}
+              {{ userStore.user.nickname }}
             </span>
           </div>
 
