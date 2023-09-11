@@ -40,19 +40,19 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       },
     },
     server: {
-      host: "0.0.0.0",
-      port: Number(env.VITE_APP_PORT),
+      host: "0.0.0.0", // 允许IP访问
+      port: Number(env.VITE_APP_PORT), // 应用端口
       open: true, // 运行是否自动打开浏览器
       proxy: {
-        // 反向代理解决跨域
+        /** 接口代理解决跨域 */
         [env.VITE_APP_BASE_API]: {
-          target: env.VITE_APP_TARGET_URL,
           changeOrigin: true,
+          target: env.VITE_APP_TARGET_URL, // https://api.xxx.com
           rewrite: (path) =>
             path.replace(
-              new RegExp("^" + env.VITE_APP_BASE_API),
-              env.VITE_APP_TARGET_BASE_API
-            ), // 替换 /dev-api 为 target 接口地址
+              new RegExp("^" + env.VITE_APP_BASE_API), // ^/dev-api
+              env.VITE_APP_TARGET_BASE_API // ""
+            ), // 以 /dev-api 开头的请求转发至 target，示例： http://localhost:3000/dev-api/v1/users (F12可见) 代理转发 https://api.xxx.com/v1/users (真实接口地址)
         },
       },
     },
@@ -60,38 +60,31 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       vue(),
       UnoCSS({}),
       AutoImport({
-        // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
-        imports: ["vue", "@vueuse/core"],
+        imports: ["vue", "@vueuse/core"], // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         eslintrc: {
           enabled: false,
           filepath: "./.eslintrc-auto-import.json",
           globalsPropValue: true,
         },
         resolvers: [
-          // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
-          ElementPlusResolver(),
+          ElementPlusResolver(), // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
           IconsResolver({}),
         ],
         vueTemplate: true,
-        // 配置文件生成位置(false:关闭自动生成)
-        dts: false,
+        dts: false, // 配置文件生成位置(false:关闭自动生成)
         // dts: "src/types/auto-imports.d.ts",
       }),
 
       Components({
         resolvers: [
-          // 自动导入 Element Plus 组件
-          ElementPlusResolver(),
-          // 自动导入图标组件
+          ElementPlusResolver(), // 自动导入 Element Plus 组件
+          // 自动导入 Icon 组件
           IconsResolver({
-            // @iconify-json/ep 是 Element Plus 的图标库
-            enabledCollections: ["ep"],
+            enabledCollections: ["ep"], // @iconify-json/ep 是 Element Plus 的图标库
           }),
         ],
-        // 指定自定义组件位置(默认:src/components)
-        dirs: ["src/**/components"],
-        // 配置文件位置(false:关闭自动生成)
-        dts: false,
+        dirs: ["src/**/components"], // 指定自定义组件位置(默认:src/components)
+        dts: false, // 配置文件位置(false:关闭自动生成)
         // dts: "src/types/components.d.ts",
       }),
 
