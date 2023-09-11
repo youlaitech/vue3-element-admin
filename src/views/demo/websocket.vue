@@ -1,9 +1,7 @@
 <!-- websocket 示例 -->
 <script setup lang="ts">
-import { useUserStore } from "@/store/modules/user";
-
-//  import SockJS from "sockjs-client"; // 报错 global is not defined 换成下面的引入
-import SockJS from "sockjs-client/dist/sockjs.min.js";
+// https://github.com/sockjs/sockjs-client/issues/547  报错 global is not defined 换成下面的引入
+import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
 const inputVal = ref("初始内容");
@@ -11,14 +9,12 @@ const inputVal = ref("初始内容");
 const topicMsgs = ref<string[]>(["接收到一条主题消息"]); // 主题消息列表
 const p2pMsgs = ref<string[]>(["接收到一条点对线消息"]);
 
-const userId = useUserStore().userId;
-
 function handleSendToAll() {
   stompClient.send("/app/sendToAll", {}, inputVal.value);
 }
 
 function handleSendToUser() {
-  stompClient.send("/app/sendToUser/" + userId, {}, inputVal.value);
+  stompClient.send("/app/sendToUser", {}, inputVal.value);
 }
 
 let stompClient: Stomp.Client;
@@ -35,7 +31,7 @@ function initWebSocket() {
       console.log("广播消息接收", res);
     });
 
-    stompClient.subscribe("/queue/user", (res) => {
+    stompClient.subscribe("/user/queue/reply", (res) => {
       console.log("点对点消息接收", res);
     });
   });
