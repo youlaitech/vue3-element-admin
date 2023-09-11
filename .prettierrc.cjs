@@ -35,4 +35,12 @@ module.exports = {
   vueIndentScriptAndStyle: false,
 
   endOfLine: "auto",
+  overrides: [
+    {
+      files: "*.html",
+      options: {
+        parser: "html",
+      },
+    },
+  ],
 };
