@@ -120,9 +120,8 @@ function isAffix(tag: TagView) {
 function isFirstView() {
   try {
     return (
-      (selectedTag.value as TagView).fullPath ===
-        tagsViewStore.visitedViews[1].fullPath ||
-      (selectedTag.value as TagView).fullPath === "/index"
+      (selectedTag.value as TagView).fullPath === "/dashboard" ||
+      (selectedTag.value as TagView).fullPath === tagsViewStore.visitedViews[1].fullPath
     );
   } catch (err) {
     return false;
