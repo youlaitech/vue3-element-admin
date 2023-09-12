@@ -4,6 +4,10 @@
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
+import { useUserStoreHook } from "@/store/modules/user";
+
+const userStore = useUserStoreHook();
+
 const inputVal = ref("初始内容");
 
 const topicMsgs = ref<string[]>(["接收到一条主题消息"]); // 主题消息列表
@@ -14,7 +18,7 @@ function handleSendToAll() {
 }
 
 function handleSendToUser() {
-  stompClient.send("/app/sendToUser", {}, inputVal.value);
+  stompClient.send("/app/sendToUser/root", {}, inputVal.value);
 }
 
 let stompClient: Stomp.Client;
@@ -24,14 +28,14 @@ function initWebSocket() {
 
   stompClient = Stomp.over(socket);
 
-  stompClient.connect({}, () => {
+  stompClient.connect({ Authorization: userStore.token }, () => {
     console.log("连接就绪，订阅主题：", "/topic/all");
 
-    stompClient.subscribe("/topic/all", (res) => {
+    stompClient.subscribe("/topic/notice", (res) => {
       console.log("广播消息接收", res);
     });
 
-    stompClient.subscribe("/user/queue/reply", (res) => {
+    stompClient.subscribe("/user/queue/greeting", (res) => {
       console.log("点对点消息接收", res);
     });
   });
