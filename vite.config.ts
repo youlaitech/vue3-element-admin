@@ -58,7 +58,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     plugins: [
       vue(),
-      UnoCSS({}),
+      UnoCSS({
+        hmrTopLevelAwait: false,
+      }),
       AutoImport({
         imports: ["vue", "@vueuse/core"], // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         eslintrc: {
