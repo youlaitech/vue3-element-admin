@@ -105,6 +105,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         ignore: /^\_/,
         mockPath: "mock",
         enable: mode === "development",
+        watchFiles: false,
       }),
     ],
     // 预加载项目必需的组件
