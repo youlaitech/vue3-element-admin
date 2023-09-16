@@ -9,28 +9,30 @@ import { useUserStoreHook } from "@/store/modules/user";
 const userStore = useUserStoreHook();
 
 const isConnected = ref(false);
-const socketEndpoint = ref("http://localhost:8989/ws");
+const socketEndpoint = ref("http://47.117.115.107:8989/ws");
 
 const receiverUsername = ref("root");
 
-const topicMessages = ref<string[]>([]); // 广播消息集合
-const queneMessages = ref<string[]>([]); // 点对点消息集合
+const systemMessages = ref<string[]>([]); // 系统消息集合
 
 const topicMessage = ref(
   "亲爱的大冤种们，由于一只史诗级的BUG，系统版本已经被迫回退到了0.0.1。"
 ); // 广播消息
-const queneMessage = computed(() => {
-  return (
-    "hi , " +
+
+const queneMessage = ref(
+  "hi , " +
     receiverUsername.value +
     " , 我是" +
     userStore.user.username +
     " , 想和你交个朋友 ! "
-  );
-});
+);
 
-function sendNotice() {
+function sendToAll() {
   stompClient.send("/app/sendToAll", {}, topicMessage.value);
+  messages.value.push({
+    sender: userStore.user.username,
+    content: topicMessage.value,
+  });
 }
 
 function sendToUser() {
@@ -39,7 +41,10 @@ function sendToUser() {
     {},
     queneMessage.value
   );
-  topicMessages.value.push(queneMessage.value);
+  messages.value.push({
+    sender: userStore.user.username,
+    content: queneMessage.value,
+  });
 }
 
 let stompClient: Stomp.Client;
@@ -53,19 +58,24 @@ function connectWebSocket() {
     { Authorization: userStore.token },
     () => {
       isConnected.value = true;
-      stompClient.subscribe("/topic/notice", (res) => {
-        console.log("广播消息接收", res);
+      systemMessages.value.push("Websocket 已连接");
+      stompClient.subscribe("/topic/notice", (res: any) => {
+        console.log("接收到订阅主题消息", res);
+        messages.value.push({ sender: "Server", content: res.body });
       });
 
       stompClient.subscribe("/user/queue/greeting", (res) => {
-        console.log("点对点消息接收", res);
+        const messageData = JSON.parse(res.body) as MessageType;
+
+        messages.value.push({
+          sender: messageData.sender,
+          content: messageData.content,
+        });
       });
     },
     (error) => {
-      // 连接断开时触发此回调函数
-      console.error("WebSocket 连接断开", error);
-      // 在此可以执行一些处理断开连接的逻辑
       isConnected.value = false; // 更新连接状态
+      systemMessages.value.push("Websocket 已断开");
     }
   );
 }
@@ -73,24 +83,18 @@ function connectWebSocket() {
 function disconnectWebSocket() {
   if (stompClient && stompClient.connected) {
     stompClient.disconnect(() => {
-      // 在这里执行断开连接后的操作
       isConnected.value = false; // 更新连接状态
+      systemMessages.value.push("Websocket 已断开");
     });
   }
 }
 
-const messages = ref([
-  { id: 1, sender: "me", text: "你好，这是我发送的消息。" },
-  { id: 2, sender: "Server", text: "嗨，我收到了你的消息。" },
-  { id: 3, sender: "me", text: "很高兴和你聊天！" },
-  { id: 4, sender: "Server", text: "我也很高兴和你聊天！" },
-  { id: 5, sender: "me", text: "😅💤" },
-  {
-    id: 6,
-    sender: "Server",
-    text: "亲爱的大冤种们，由于一只史诗级的BUG，系统版本已经被迫回退到了0.0.1。",
-  },
-]);
+interface MessageType {
+  sender?: string;
+  content: any;
+}
+
+const messages = ref<MessageType[]>([]);
 
 onMounted(() => {
   connectWebSocket();
@@ -112,11 +116,18 @@ onMounted(() => {
         <el-card>
           <el-row>
             <el-col :span="16">
-              <el-input v-model="socketEndpoint" class="w-200px" />
-              <el-button type="primary" class="ml-5" @click="connectWebSocket"
+              <el-input v-model="socketEndpoint" class="w-220px" />
+              <el-button
+                type="primary"
+                class="ml-5"
+                @click="connectWebSocket"
+                :disabled="isConnected"
                 >连接</el-button
               >
-              <el-button type="danger" @click="disconnectWebSocket"
+              <el-button
+                type="danger"
+                @click="disconnectWebSocket"
+                :disabled="!isConnected"
                 >断开</el-button
               >
             </el-col>
@@ -138,7 +149,7 @@ onMounted(() => {
             </el-form-item>
 
             <el-form-item>
-              <el-button @click="sendNotice" type="primary">发送广播</el-button>
+              <el-button @click="sendToAll" type="primary">发送广播</el-button>
             </el-form-item>
           </el-form>
         </el-card>
@@ -163,27 +174,37 @@ onMounted(() => {
       <el-col :span="12">
         <el-card>
           <div class="message-container">
-            <div class="system-notification">dafsdfads</div>
+            <div
+              class="system-message"
+              v-for="(message, index) in systemMessages"
+              :key="index"
+            >
+              {{ message }}
+            </div>
 
             <div
-              v-for="message in messages"
-              :key="message.id"
+              v-for="(message, index) in messages"
+              :key="index"
               class="message-item"
               :class="{
-                'message-item--sent': message.sender === 'me',
-                'message-item--received': message.sender !== 'me',
+                'message-item--sent':
+                  message.sender === userStore.user.username,
+                'message-item--received':
+                  message.sender !== userStore.user.username,
               }"
             >
               <div class="message-content">
                 <div
                   :class="{
-                    'message-sender': message.sender === 'me',
-                    'message-receiver': message.sender !== 'me',
+                    'message-sender':
+                      message.sender === userStore.user.username,
+                    'message-receiver':
+                      message.sender !== userStore.user.username,
                   }"
                 >
                   {{ message.sender }}
                 </div>
-                <div class="message-text">{{ message.text }}</div>
+                <div class="message-text">{{ message.content }}</div>
               </div>
             </div>
           </div>
@@ -236,8 +257,10 @@ onMounted(() => {
   color: #333;
 }
 
-.system-notification {
-  padding: 5px;
+.system-message {
+  align-self: center;
+  padding: 5px 10px;
+  margin-bottom: 5px;
   font-style: italic;
   text-align: center;
   background-color: #f0f0f0;
