@@ -52,7 +52,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
             path.replace(
               new RegExp("^" + env.VITE_APP_BASE_API), // ^/dev-api
               env.VITE_APP_TARGET_BASE_API // ""
-            ), // 以 /dev-api 开头的请求转发至 target，示例： http://localhost:3000/dev-api/v1/users (F12可见) 代理转发 https://api.xxx.com/v1/users (真实接口地址)
+            ), // 将 /dev-api 开头的请求转发至 target
         },
       },
     },
@@ -62,7 +62,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         hmrTopLevelAwait: false,
       }),
       AutoImport({
-        imports: ["vue", "@vueuse/core"], // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
+        imports: ["vue", "@vueuse/core"],
         eslintrc: {
           enabled: false,
           filepath: "./.eslintrc-auto-import.json",
@@ -80,7 +80,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       Components({
         resolvers: [
           ElementPlusResolver(), // 自动导入 Element Plus 组件
-          // 自动导入 Icon 组件
           IconsResolver({
             enabledCollections: ["ep"], // @iconify-json/ep 是 Element Plus 的图标库
           }),
@@ -91,24 +90,19 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       }),
 
       Icons({
-        // 自动安装图标库
         autoInstall: true,
       }),
       createSvgIconsPlugin({
-        // 指定需要缓存的图标文件夹
-        iconDirs: [path.resolve(pathSrc, "assets/icons")],
-        // 指定symbolId格式
-        symbolId: "icon-[dir]-[name]",
+        iconDirs: [path.resolve(pathSrc, "assets/icons")], // 指定需要缓存的图标文件夹
+        symbolId: "icon-[dir]-[name]", // 指定symbolId格式
       }),
-      // https://github.com/anncwb/vite-plugin-mock/issues/9
       viteMockServe({
         ignore: /^\_/,
         mockPath: "mock",
         enable: mode === "development",
-        watchFiles: false,
       }),
     ],
-    // 预加载项目必需的组件
+    /** 预加载项目必需的组件 */
     optimizeDeps: {
       include: [
         "vue",
