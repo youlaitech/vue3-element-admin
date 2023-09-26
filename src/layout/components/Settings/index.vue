@@ -76,14 +76,21 @@ const themeColors = ref<string[]>([
  */
 function changeThemeColor(color: string) {
   document.documentElement.style.setProperty("--el-color-primary", color);
-  // settingsStore.changeSetting({ key: "layout", value: color });
+  settingsStore.changeSetting({ key: "themeColor", value: color });
 }
 
+const currentThemeColor = computed(() => {
+  return settingsStore.themeColor;
+});
 onMounted(() => {
   window.document.body.setAttribute("layout", settingsStore.layout);
   const theme =
     localStorage.getItem("vueuse-color-scheme") || defaultSettings.theme;
   localStorage.setItem("vueuse-color-scheme", theme);
+  document.documentElement.style.setProperty(
+    "--el-color-primary",
+    settingsStore.themeColor
+  );
 });
 </script>
 
@@ -126,10 +133,12 @@ onMounted(() => {
       <li
         v-for="(color, index) in themeColors"
         :key="index"
-        class="inline-block w-[30px] h-[30px] cursor-pointer"
+        class="inline-block w-[30px] h-[30px] cursor-pointer theme-wrap"
         :style="{ background: color }"
         @click="changeThemeColor(color)"
-      ></li>
+      >
+        <i-ep-check v-show="color === currentThemeColor" />
+      </li>
     </ul>
 
     <el-divider>导航设置</el-divider>
@@ -239,6 +248,13 @@ onMounted(() => {
       background: #fff;
       box-shadow: 0 0 1px #888;
     }
+  }
+
+  .theme-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
   }
 }
 </style>

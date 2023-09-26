@@ -40,6 +40,11 @@ interface DefaultSettings {
    * 语言( zh-cn| en)
    */
   language: string;
+
+  /**
+   * 主题颜色
+   */
+  themeColor: string;
 }
 
 const defaultSettings: DefaultSettings = {
@@ -52,6 +57,7 @@ const defaultSettings: DefaultSettings = {
   theme: "light", // 默认暗黑模式
   size: "default",
   language: "zh-cn",
+  themeColor: "#409EFF",
 };
 
 export default defaultSettings;

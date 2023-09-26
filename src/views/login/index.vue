@@ -39,7 +39,7 @@
           <el-input
             v-model="loginData.password"
             class="flex-1"
-            placeholder="密码"
+            :placeholder="$t('login.password')"
             :type="passwordVisible === false ? 'password' : 'input'"
             size="large"
             name="password"
@@ -92,18 +92,21 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import router from "@/router";
 import LangSelect from "@/components/LangSelect/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 
 // 状态管理依赖
 import { useUserStore } from "@/store/modules/user";
+import { useAppStore } from "@/store/modules/app";
 
 // API依赖
 import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
 import { getCaptchaApi } from "@/api/auth";
 import { LoginData } from "@/api/auth/types";
 
+const appStore = useAppStore();
 const userStore = useUserStore();
 const route = useRoute();
 
@@ -134,11 +137,59 @@ const loginData = ref<LoginData>({
   password: "123456",
 });
 
-const loginRules = {
-  username: [{ required: true, trigger: "blur" }],
-  password: [{ required: true, trigger: "blur", validator: passwordValidator }],
-  verifyCode: [{ required: true, trigger: "blur" }],
-};
+const { t } = useI18n();
+
+const loginRules = computed(() => {
+  const prefix = appStore.language === "en" ? "Please enter " : "请输入";
+  return {
+    username: [
+      {
+        required: true,
+        trigger: "blur",
+        message: `${prefix}${t("login.username")}`,
+      },
+    ],
+    password: [
+      {
+        required: true,
+        trigger: "blur",
+        validator: passwordValidator,
+        message: `${prefix}${t("login.password")}`,
+      },
+    ],
+    verifyCode: [
+      {
+        required: true,
+        trigger: "blur",
+        message: `${prefix}${t("login.verifyCode")}`,
+      },
+    ],
+  };
+});
+// const loginRules = reactive({
+//   username: [
+//     {
+//       required: true,
+//       trigger: "blur",
+//       message: `请输入${t("login.username")}`,
+//     },
+//   ],
+//   password: [
+//     {
+//       required: true,
+//       trigger: "blur",
+//       validator: passwordValidator,
+//       message: `请输入${t("login.password")}`,
+//     },
+//   ],
+//   verifyCode: [
+//     {
+//       required: true,
+//       trigger: "blur",
+//       message: `请输入${t("login.verifyCode")}`,
+//     },
+//   ],
+// });
 
 /**
  * 密码校验器
