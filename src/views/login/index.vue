@@ -39,7 +39,7 @@
           <el-input
             v-model="loginData.password"
             class="flex-1"
-            placeholder="密码"
+            :placeholder="$t('login.password')"
             :type="passwordVisible === false ? 'password' : 'input'"
             size="large"
             name="password"
