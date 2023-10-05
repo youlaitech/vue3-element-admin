@@ -9,7 +9,7 @@ const { locale } = useI18n();
 function handleLanguageChange(lang: string) {
   locale.value = lang;
   appStore.changeLanguage(lang);
-  if (lang == "en") {
+  if (lang === "en") {
     ElMessage.success("Switch Language Successful!");
   } else {
     ElMessage.success("切换语言成功！");
