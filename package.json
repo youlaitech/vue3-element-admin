@@ -106,7 +106,7 @@
     "unplugin-icons": "^0.16.1",
     "unplugin-vue-components": "^0.24.1",
     "vite": "^4.4.9",
-    "vite-plugin-mock": "^2.9.6",
+    "vite-plugin-mock": "^3.0.0",
     "vite-plugin-svg-icons": "^2.0.1",
     "vue-tsc": "^1.7.0 "
   },
