@@ -220,7 +220,13 @@ function openTagMenu(tag: TagView, e: MouseEvent) {
     left.value = l;
   }
 
-  top.value = e.clientY;
+  // 混合模式下，需要减去顶部菜单(fixed)的高度
+  if (layout.value === "mix") {
+    top.value = e.clientY - 50;
+  } else {
+    top.value = e.clientY;
+  }
+
   tagMenuVisible.value = true;
   selectedTag.value = tag;
 }
