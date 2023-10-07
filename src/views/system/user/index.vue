@@ -1,3 +1,4 @@
+<!-- 用户管理 -->
 <script setup lang="ts">
 defineOptions({
   name: "User",
@@ -27,31 +28,45 @@ const queryFormRef = ref(ElForm); // 查询表单
 const userFormRef = ref(ElForm); // 用户表单
 const uploadRef = ref<UploadInstance>(); // 上传组件
 
-const loading = ref(false);
-const ids = ref([]);
-const total = ref(0);
-
+const loading = ref(false); //  加载状态 用于分页
+const removeIds = ref([]); // 删除用户ID集合 用于批量删除
 const queryParams = reactive<UserQuery>({
   pageNum: 1,
   pageSize: 10,
 });
-const userList = ref<UserPageVO[]>();
+const total = ref(0); // 数据总数
+const pageData = ref<UserPageVO[]>(); // 用户分页数据
+const deptList = ref<OptionType[]>(); // 部门下拉数据源
+const roleList = ref<OptionType[]>(); // 角色下拉数据源
 
+// 弹窗对象
+const dialog = reactive({
+  visible: false,
+  type: "user-form",
+  width: 1200,
+  title: "",
+});
+
+// 用户表单数据
 const formData = reactive<UserForm>({
   status: 1,
 });
 
+// 用户导入数据
 const importData = reactive({
   deptId: undefined,
   file: undefined,
   fileList: [],
 });
 
+// 校验规则
 const rules = reactive({
   username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
   nickname: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
   deptId: [{ required: true, message: "所属部门不能为空", trigger: "blur" }],
-  roleIds: [{ required: true, message: "用户角色不能为空", trigger: "blur" }],
+  roleremoveIds: [
+    { required: true, message: "用户角色不能为空", trigger: "blur" },
+  ],
   email: [
     {
       pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
@@ -68,22 +83,12 @@ const rules = reactive({
   ],
 });
 
-const deptList = ref<OptionType[]>();
-const roleList = ref<OptionType[]>();
-
-const dialog = reactive({
-  visible: false,
-  type: "user-form",
-  width: 1200,
-  title: "",
-});
-
 /** 查询 */
 function handleQuery() {
   loading.value = true;
   getUserPage(queryParams)
     .then(({ data }) => {
-      userList.value = data.list;
+      pageData.value = data.list;
       total.value = data.total;
     })
     .finally(() => {
@@ -101,7 +106,7 @@ function resetQuery() {
 
 /** 行选中事件 */
 function handleSelectionChange(selection: any) {
-  ids.value = selection.map((item: any) => item.id);
+  removeIds.value = selection.map((item: any) => item.id);
 }
 
 /** 用户状态 Change*/
@@ -252,8 +257,8 @@ const handleSubmit = useThrottleFn(() => {
 
 /** 删除用户 */
 function handleDelete(id?: number) {
-  const userIds = [id || ids.value].join(",");
-  if (!userIds) {
+  const userremoveIds = [id || removeIds.value].join(",");
+  if (!userremoveIds) {
     ElMessage.warning("请勾选删除项");
     return;
   }
@@ -263,7 +268,7 @@ function handleDelete(id?: number) {
     cancelButtonText: "取消",
     type: "warning",
   }).then(function () {
-    deleteUsers(userIds).then(() => {
+    deleteUsers(userremoveIds).then(() => {
       ElMessage.success("删除成功");
       resetQuery();
     });
@@ -399,7 +404,7 @@ onMounted(() => {
                 <el-button
                   v-hasPerm="['sys:user:delete']"
                   type="danger"
-                  :disabled="ids.length === 0"
+                  :disabled="removeIds.length === 0"
                   @click="handleDelete()"
                   ><i-ep-delete />删除</el-button
                 >
@@ -427,7 +432,7 @@ onMounted(() => {
 
           <el-table
             v-loading="loading"
-            :data="userList"
+            :data="pageData"
             @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="50" align="center" />
@@ -571,8 +576,12 @@ onMounted(() => {
           <dictionary v-model="formData.gender" type-code="gender" />
         </el-form-item>
 
-        <el-form-item label="角色" prop="roleIds">
-          <el-select v-model="formData.roleIds" multiple placeholder="请选择">
+        <el-form-item label="角色" prop="roleremoveIds">
+          <el-select
+            v-model="formData.roleremoveIds"
+            multiple
+            placeholder="请选择"
+          >
             <el-option
               v-for="item in roleList"
               :key="item.value"
