@@ -64,7 +64,7 @@ const rules = reactive({
   username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
   nickname: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
   deptId: [{ required: true, message: "所属部门不能为空", trigger: "blur" }],
-  roleremoveIds: [
+  roleIds: [
     { required: true, message: "用户角色不能为空", trigger: "blur" },
   ],
   email: [
@@ -257,8 +257,8 @@ const handleSubmit = useThrottleFn(() => {
 
 /** 删除用户 */
 function handleDelete(id?: number) {
-  const userremoveIds = [id || removeIds.value].join(",");
-  if (!userremoveIds) {
+  const userIds = [id || removeIds.value].join(",");
+  if (!userIds) {
     ElMessage.warning("请勾选删除项");
     return;
   }
@@ -268,7 +268,7 @@ function handleDelete(id?: number) {
     cancelButtonText: "取消",
     type: "warning",
   }).then(function () {
-    deleteUsers(userremoveIds).then(() => {
+    deleteUsers(userIds).then(() => {
       ElMessage.success("删除成功");
       resetQuery();
     });
@@ -576,9 +576,9 @@ onMounted(() => {
           <dictionary v-model="formData.gender" type-code="gender" />
         </el-form-item>
 
-        <el-form-item label="角色" prop="roleremoveIds">
+        <el-form-item label="角色" prop="roleIds">
           <el-select
-            v-model="formData.roleremoveIds"
+            v-model="formData.roleIds"
             multiple
             placeholder="请选择"
           >
