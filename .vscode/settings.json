@@ -1,5 +1,4 @@
 {
-  "unocss.root": "packages/client",
   "typescript.tsdk": "./node_modules/typescript/lib",
   "npm.packageManager": "pnpm",
   "editor.tabSize": 2,
