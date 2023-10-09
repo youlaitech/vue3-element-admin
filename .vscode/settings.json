@@ -4,7 +4,11 @@
   "editor.tabSize": 2,
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
-
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  },
 	"editor.codeActionsOnSave": {
 	  "source.fixAll": true,
 	  "source.fixAll.eslint": true,
