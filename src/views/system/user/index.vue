@@ -28,7 +28,7 @@ const queryFormRef = ref(ElForm); // 查询表单
 const userFormRef = ref(ElForm); // 用户表单
 const uploadRef = ref<UploadInstance>(); // 上传组件
 
-const loading = ref(false); //  加载状态 用于分页
+const loading = ref(false); //  加载状态
 const removeIds = ref([]); // 删除用户ID集合 用于批量删除
 const queryParams = reactive<UserQuery>({
   pageNum: 1,
@@ -64,9 +64,7 @@ const rules = reactive({
   username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
   nickname: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
   deptId: [{ required: true, message: "所属部门不能为空", trigger: "blur" }],
-  roleIds: [
-    { required: true, message: "用户角色不能为空", trigger: "blur" },
-  ],
+  roleIds: [{ required: true, message: "用户角色不能为空", trigger: "blur" }],
   email: [
     {
       pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
@@ -577,11 +575,7 @@ onMounted(() => {
         </el-form-item>
 
         <el-form-item label="角色" prop="roleIds">
-          <el-select
-            v-model="formData.roleIds"
-            multiple
-            placeholder="请选择"
-          >
+          <el-select v-model="formData.roleIds" multiple placeholder="请选择">
             <el-option
               v-for="item in roleList"
               :key="item.value"
