@@ -17,10 +17,9 @@ import UnoCSS from "unocss/vite";
 import path from "path";
 
 const pathSrc = path.resolve(__dirname, "src");
-/** 参考Vite官方配置: https://cn.vitejs.dev/config */
+// 参考Vite官方： https://cn.vitejs.dev/config
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
-
   return {
     resolve: {
       alias: {
@@ -30,7 +29,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     css: {
       // CSS 预处理器
       preprocessorOptions: {
-        //define global scss variable
+        // 定义全局 SCSS 变量
         scss: {
           javascriptEnabled: true,
           additionalData: `
@@ -40,19 +39,29 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       },
     },
     server: {
-      host: "0.0.0.0", // 允许IP访问
-      port: Number(env.VITE_APP_PORT), // 应用端口
-      open: true, // 运行是否自动打开浏览器
+      // 允许IP访问
+      host: "0.0.0.0",
+      // 应用端口 (默认:3000)
+      port: Number(env.VITE_APP_PORT),
+      // 运行是否自动打开浏览器
+      open: true,
       proxy: {
-        /** 接口代理解决跨域 */
+        /**
+         * 反向代理解决跨域配置
+         * http://localhost:3000/dev-api/users (F12可见请求路径) => http://localhost:8989/users (实际请求后端 API 路径)
+         *
+         * env.VITE_APP_BASE_API: /dev-api
+         * env.VITE_APP_TARGET_URL: http://localhost:8989
+         * env.VITE_APP_TARGET_BASE_API: ""
+         */
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
-          target: env.VITE_APP_TARGET_URL, // https://api.xxx.com
+          target: env.VITE_APP_TARGET_URL,
           rewrite: (path) =>
             path.replace(
-              new RegExp("^" + env.VITE_APP_BASE_API), // ^/dev-api
-              env.VITE_APP_TARGET_BASE_API // ""
-            ), // 将 /dev-api 开头的请求转发至 target
+              new RegExp("^" + env.VITE_APP_BASE_API),
+              env.VITE_APP_TARGET_BASE_API
+            ),
         },
       },
     },
@@ -61,31 +70,34 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       UnoCSS({
         hmrTopLevelAwait: false,
       }),
+      // 自动导入参考： https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts
       AutoImport({
+        // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ["vue", "@vueuse/core"],
+        // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
+        resolvers: [ElementPlusResolver(), IconsResolver({})],
         eslintrc: {
           enabled: false,
           filepath: "./.eslintrc-auto-import.json",
           globalsPropValue: true,
         },
-        resolvers: [
-          ElementPlusResolver(), // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
-          IconsResolver({}),
-        ],
         vueTemplate: true,
-        dts: false, // 配置文件生成位置(false:关闭自动生成)
+        // 配置文件生成位置(false:关闭自动生成)
+        dts: false,
         // dts: "src/types/auto-imports.d.ts",
       }),
 
       Components({
         resolvers: [
-          ElementPlusResolver(), // 自动导入 Element Plus 组件
-          IconsResolver({
-            enabledCollections: ["ep"], // @iconify-json/ep 是 Element Plus 的图标库
-          }),
+          // 自动导入 Element Plus 组件
+          ElementPlusResolver(),
+          // 自动注册图标组件
+          IconsResolver({ enabledCollections: ["ep"] }),
         ],
-        dirs: ["src/**/components"], // 指定自定义组件位置(默认:src/components)
-        dts: false, // 配置文件位置(false:关闭自动生成)
+        // 指定自定义组件位置(默认:src/components)
+        dirs: ["src/**/components"],
+        // 配置文件位置 (false:关闭自动生成)
+        dts: false,
         // dts: "src/types/components.d.ts",
       }),
 
@@ -93,8 +105,10 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         autoInstall: true,
       }),
       createSvgIconsPlugin({
-        iconDirs: [path.resolve(pathSrc, "assets/icons")], // 指定需要缓存的图标文件夹
-        symbolId: "icon-[dir]-[name]", // 指定symbolId格式
+        // 指定需要缓存的图标文件夹
+        iconDirs: [path.resolve(pathSrc, "assets/icons")],
+        // 指定symbolId格式
+        symbolId: "icon-[dir]-[name]",
       }),
       viteMockServe({
         ignore: /^\_/,
@@ -102,7 +116,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         enable: mode === "development",
       }),
     ],
-    /** 预加载项目必需的组件 */
+    // 预加载项目必需的组件
     optimizeDeps: {
       include: [
         "vue",
@@ -163,7 +177,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "vue-i18n",
       ],
     },
-    // 构建
+    // 构建配置
     build: {
       chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告
       minify: "terser", // Vite 2.6.x 以上需要配置 minify: "terser", terserOptions 才能生效
