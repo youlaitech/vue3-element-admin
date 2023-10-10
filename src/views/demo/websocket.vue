@@ -1,6 +1,5 @@
 <!-- websocket 示例 -->
 <script setup lang="ts">
-// https://github.com/sockjs/sockjs-client/issues/547  报错 global is not defined 换成下面的引入
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
@@ -9,11 +8,18 @@ import { useUserStoreHook } from "@/store/modules/user";
 const userStore = useUserStoreHook();
 
 const isConnected = ref(false);
-const socketEndpoint = ref("http://47.117.115.107:8989/ws");
+const socketEndpoint = ref("http://47.117.115.107:8989/ws"); // 线上
+// const socketEndpoint = ref("http://localhost:8989/ws"); // 本地
 
-const receiverUsername = ref("root");
+const receiver = ref("root");
 
-const systemMessages = ref<string[]>([]); // 系统消息集合
+interface MessageType {
+  type?: string; // 消息类型： tip-提示消息
+  sender?: string;
+  content: string;
+}
+
+const messages = ref<MessageType[]>([]);
 
 const topicMessage = ref(
   "亲爱的大冤种们，由于一只史诗级的BUG，系统版本已经被迫回退到了0.0.1。"
@@ -21,7 +27,7 @@ const topicMessage = ref(
 
 const queneMessage = ref(
   "hi , " +
-    receiverUsername.value +
+    receiver.value +
     " , 我是" +
     userStore.user.username +
     " , 想和你交个朋友 ! "
@@ -36,11 +42,7 @@ function sendToAll() {
 }
 
 function sendToUser() {
-  stompClient.send(
-    "/app/sendToUser/" + receiverUsername.value,
-    {},
-    queneMessage.value
-  );
+  stompClient.send("/app/sendToUser/" + receiver.value, {}, queneMessage.value);
   messages.value.push({
     sender: userStore.user.username,
     content: queneMessage.value,
@@ -58,15 +60,21 @@ function connectWebSocket() {
     { Authorization: userStore.token },
     () => {
       isConnected.value = true;
-      systemMessages.value.push("Websocket 已连接");
+      messages.value.push({
+        sender: "Server",
+        content: "Websocket 已连接",
+        type: "tip",
+      });
+
       stompClient.subscribe("/topic/notice", (res: any) => {
-        console.log("接收到订阅主题消息", res);
-        messages.value.push({ sender: "Server", content: res.body });
+        messages.value.push({
+          sender: "Server",
+          content: res.body,
+        });
       });
 
       stompClient.subscribe("/user/queue/greeting", (res) => {
         const messageData = JSON.parse(res.body) as MessageType;
-
         messages.value.push({
           sender: messageData.sender,
           content: messageData.content,
@@ -74,8 +82,13 @@ function connectWebSocket() {
       });
     },
     (error) => {
+      console.log("连接失败: " + error);
       isConnected.value = false; // 更新连接状态
-      systemMessages.value.push("Websocket 已断开");
+      messages.value.push({
+        sender: "Server",
+        content: "Websocket 已断开",
+        type: "tip",
+      });
     }
   );
 }
@@ -84,17 +97,14 @@ function disconnectWebSocket() {
   if (stompClient && stompClient.connected) {
     stompClient.disconnect(() => {
       isConnected.value = false; // 更新连接状态
-      systemMessages.value.push("Websocket 已断开");
+      messages.value.push({
+        sender: "Server",
+        content: "Websocket 已断开",
+        type: "tip",
+      });
     });
   }
 }
-
-interface MessageType {
-  sender?: string;
-  content: any;
-}
-
-const messages = ref<MessageType[]>([]);
 
 onMounted(() => {
   connectWebSocket();
@@ -110,7 +120,6 @@ onMounted(() => {
       class="mb-[20px]"
       >示例源码 请点击>>>></el-link
     >
-
     <el-row :gutter="10">
       <el-col :span="12">
         <el-card>
@@ -160,7 +169,7 @@ onMounted(() => {
               <el-input type="textarea" v-model="queneMessage" />
             </el-form-item>
             <el-form-item label="消息接收人">
-              <el-input v-model="receiverUsername" />
+              <el-input v-model="receiver" />
             </el-form-item>
             <el-form-item>
               <el-button @click="sendToUser" type="primary"
@@ -175,25 +184,16 @@ onMounted(() => {
         <el-card>
           <div class="message-container">
             <div
-              class="system-message"
-              v-for="(message, index) in systemMessages"
-              :key="index"
-            >
-              {{ message }}
-            </div>
-
-            <div
               v-for="(message, index) in messages"
               :key="index"
-              class="message-item"
               :class="{
-                'message-item--sent':
-                  message.sender === userStore.user.username,
-                'message-item--received':
-                  message.sender !== userStore.user.username,
+                'tip-message': message.type === 'tip',
+                message: message.type !== 'tip',
+                'message--sent': message.sender === userStore.user.username,
+                'message--received': message.sender !== userStore.user.username,
               }"
             >
-              <div class="message-content">
+              <div v-if="message.type != 'tip'" class="message-content">
                 <div
                   :class="{
                     'message-sender':
@@ -204,8 +204,9 @@ onMounted(() => {
                 >
                   {{ message.sender }}
                 </div>
-                <div class="message-text">{{ message.content }}</div>
+                <div class="color-#333">{{ message.content }}</div>
               </div>
+              <div v-else>{{ message.content }}</div>
             </div>
           </div>
         </el-card>
@@ -220,18 +221,18 @@ onMounted(() => {
   flex-direction: column;
 }
 
-.message-item {
+.message {
   padding: 10px;
   margin: 10px;
   border-radius: 5px;
 }
 
-.message-item--sent {
+.message--sent {
   align-self: flex-end;
   background-color: #dcf8c6;
 }
 
-.message-item--received {
+.message--received {
   align-self: flex-start;
   background-color: #e8e8e8;
 }
@@ -253,11 +254,7 @@ onMounted(() => {
   text-align: left;
 }
 
-.message-text {
-  color: #333;
-}
-
-.system-message {
+.tip-message {
   align-self: center;
   padding: 5px 10px;
   margin-bottom: 5px;
