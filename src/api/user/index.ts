@@ -67,20 +67,6 @@ export function updateUser(id: number, data: UserForm) {
 }
 
 /**
- * 修改用户状态
- *
- * @param id
- * @param status
- */
-export function updateUserStatus(id: number, status: number) {
-  return request({
-    url: "/api/v1/users/" + id + "/status",
-    method: "patch",
-    params: { status: status },
-  });
-}
-
-/**
  * 修改用户密码
  *
  * @param id

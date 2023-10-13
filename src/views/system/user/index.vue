@@ -11,7 +11,6 @@ import {
   deleteUsers,
   addUser,
   updateUser,
-  updateUserStatus,
   updateUserPassword,
   downloadTemplateApi,
   exportUser,
@@ -102,30 +101,12 @@ function resetQuery() {
   handleQuery();
 }
 
-/** 行选中事件 */
+/** 行选中 */
 function handleSelectionChange(selection: any) {
   removeIds.value = selection.map((item: any) => item.id);
 }
 
-/** 用户状态 Change*/
-function changeUserStatus(row: { [key: string]: any }) {
-  const text = row.status === 1 ? "启用" : "停用";
-  ElMessageBox.confirm("确认要" + text + row.username + "用户吗?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  }).then(() => {
-    updateUserStatus(row.id, row.status)
-      .then(() => {
-        ElMessage.success(text + "成功");
-      })
-      .catch(() => {
-        row.status = row.status === 1 ? 0 : 1;
-      });
-  });
-}
-
-/**重置密码 */
+/** 重置密码 */
 function resetPassword(row: { [key: string]: any }) {
   ElMessageBox.prompt(
     "请输入用户「" + row.username + "」的新密码",
@@ -134,17 +115,15 @@ function resetPassword(row: { [key: string]: any }) {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
     }
-  )
-    .then(({ value }) => {
-      if (!value) {
-        ElMessage.warning("请输入新密码");
-        return false;
-      }
-      updateUserPassword(row.id, value).then(() => {
-        ElMessage.success("密码重置成功，新密码是：" + value);
-      });
-    })
-    .catch(() => {});
+  ).then(({ value }) => {
+    if (!value) {
+      ElMessage.warning("请输入新密码");
+      return false;
+    }
+    updateUserPassword(row.id, value).then(() => {
+      ElMessage.success("密码重置成功，新密码是：" + value);
+    });
+  });
 }
 
 /** 加载角色下拉数据源 */
@@ -476,12 +455,9 @@ onMounted(() => {
 
             <el-table-column label="状态" align="center" prop="status">
               <template #default="scope">
-                <el-switch
-                  v-model="scope.row.status"
-                  :inactive-value="0"
-                  :active-value="1"
-                  @change="changeUserStatus(scope.row)"
-                />
+                <el-tag :type="scope.row.status == 1 ? 'success' : 'info'">{{
+                  scope.row.status == 1 ? "启用" : "禁用"
+                }}</el-tag>
               </template>
             </el-table-column>
             <el-table-column
