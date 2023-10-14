@@ -3,7 +3,7 @@ import { MenuQuery, MenuForm, MenuVO } from "@/api/menu/types";
 import {
   listMenus,
   getMenuForm,
-  listMenuOptions,
+  getMenuOptions,
   addMenu,
   deleteMenu,
   updateMenu,
@@ -91,7 +91,7 @@ function onRowClick(row: MenuVO) {
  * @param menuId 菜单ID
  */
 function openDialog(parentId?: number, menuId?: number) {
-  listMenuOptions()
+  getMenuOptions()
     .then(({ data }) => {
       menuOptions.value = [{ value: 0, label: "顶级菜单", children: data }];
     })

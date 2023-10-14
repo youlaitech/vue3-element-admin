@@ -8,7 +8,7 @@ import {
   getRoleMenuIds,
   updateRoleMenus,
 } from "@/api/role";
-import { listMenuOptions } from "@/api/menu";
+import { getMenuOptions } from "@/api/menu";
 
 import { RolePageVO, RoleForm, RoleQuery } from "@/api/role/types";
 
@@ -175,7 +175,7 @@ function openMenuDialog(row: RolePageVO) {
     loading.value = true;
 
     // 获取所有的菜单
-    listMenuOptions().then((response) => {
+    getMenuOptions().then((response) => {
       menuList.value = response.data;
       // 回显角色已拥有的菜单
       getRoleMenuIds(roleId)
