@@ -33,10 +33,16 @@ const queryParams = reactive<UserQuery>({
   pageNum: 1,
   pageSize: 10,
 });
+const dateTimeRange = ref("");
 const total = ref(0); // 数据总数
 const pageData = ref<UserPageVO[]>(); // 用户分页数据
 const deptList = ref<OptionType[]>(); // 部门下拉数据源
 const roleList = ref<OptionType[]>(); // 角色下拉数据源
+
+watch(dateTimeRange, (newVal) => {
+  queryParams.startTime = newVal[0];
+  queryParams.endTime = newVal[1];
+});
 
 // 弹窗对象
 const dialog = reactive({
@@ -96,6 +102,7 @@ function handleQuery() {
 /** 重置查询 */
 function resetQuery() {
   queryFormRef.value.resetFields();
+  dateTimeRange.value = "";
   queryParams.pageNum = 1;
   queryParams.deptId = undefined;
   handleQuery();
@@ -354,6 +361,17 @@ onMounted(() => {
                 <el-option label="启用" value="1" />
                 <el-option label="禁用" value="0" />
               </el-select>
+            </el-form-item>
+
+            <el-form-item label="创建时间">
+              <el-date-picker
+                v-model="dateTimeRange"
+                type="daterange"
+                range-separator="~"
+                start-placeholder="开始时间"
+                end-placeholder="截止时间"
+                value-format="YYYY-MM-DD"
+              />
             </el-form-item>
 
             <el-form-item>

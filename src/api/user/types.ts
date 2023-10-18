@@ -17,6 +17,8 @@ export interface UserQuery extends PageQuery {
   keywords?: string;
   status?: number;
   deptId?: number;
+  startTime?: string;
+  endTime?: string;
 }
 
 /**
