@@ -99,7 +99,7 @@ function logout() {
     cursor: pointer;
 
     &:hover {
-      background: var(--el-color-info-light-3);
+      background: var(--el-disabled-bg-color);
     }
   }
 }

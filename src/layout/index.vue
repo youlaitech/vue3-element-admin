@@ -190,6 +190,9 @@ function toggleSideBar() {
       .menu-action {
         position: absolute;
         bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 100%;
         height: 50px;
         line-height: 50px;

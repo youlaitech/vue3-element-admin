@@ -1,13 +1,15 @@
 <template>
-  <div class="menu-toggle-button" @click="toggleClick">
+  <div
+    class="px-[15px] flex items-center justify-center color-[var(--el-text-color-regular)]"
+    @click="toggleClick"
+  >
     <svg-icon
-      class="menu-toggle-button__icon"
+      class="hamburger"
       :class="{ 'is-active': isActive }"
       icon-class="shrink"
     />
   </div>
 </template>
-
 <script setup lang="ts">
 defineProps({
   isActive: {
@@ -25,26 +27,12 @@ function toggleClick() {
 </script>
 
 <style scoped lang="scss">
-.menu-toggle-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 15px;
+.hamburger {
+  vertical-align: middle;
   cursor: pointer;
-  transition: background-color 0.3s;
+}
 
-  :hover {
-    background-color: var(--el-fill-color);
-  }
-
-  &--active {
-    background-color: var(--el-fill-color-light);
-  }
-
-  &__icon {
-    &.is-active {
-      transform: rotate(180deg);
-    }
-  }
+.hamburger.is-active {
+  transform: rotate(180deg);
 }
 </style>

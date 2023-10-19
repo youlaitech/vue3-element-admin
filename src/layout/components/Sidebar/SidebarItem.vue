@@ -90,6 +90,7 @@ function resolvePath(routePath: string) {
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)">
           <svg-icon
+            class="mr-1"
             :icon-class="
               onlyOneChild.meta && onlyOneChild.meta.icon
                 ? onlyOneChild.meta.icon
