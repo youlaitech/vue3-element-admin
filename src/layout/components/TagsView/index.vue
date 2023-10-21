@@ -6,7 +6,7 @@ import path from "path-browserify";
 
 import { useRoute, useRouter } from "vue-router";
 
-import { translateRouteTitleI18n } from "@/utils/i18n";
+import { translateRouteTitle } from "@/utils/i18n";
 
 import { usePermissionStore } from "@/store/modules/permission";
 import { useTagsViewStore, TagView } from "@/store/modules/tagsView";
@@ -301,7 +301,7 @@ onMounted(() => {
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent="openTagMenu(tag, $event)"
       >
-        {{ translateRouteTitleI18n(tag.meta?.title) }}
+        {{ translateRouteTitle(tag.meta?.title) }}
         <span
           v-if="!isAffix(tag)"
           class="tags-item-close"
