@@ -13,6 +13,8 @@ import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 
 import { viteMockServe } from "vite-plugin-mock";
 
+import vueJsx from "@vitejs/plugin-vue-jsx";
+
 import UnoCSS from "unocss/vite";
 import path from "path";
 
@@ -67,6 +69,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     plugins: [
       vue(),
+      vueJsx(),
       UnoCSS({
         hmrTopLevelAwait: false,
       }),
