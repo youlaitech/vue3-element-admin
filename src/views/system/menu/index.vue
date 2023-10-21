@@ -1,4 +1,10 @@
 <script setup lang="ts">
+defineOptions({
+  // eslint-disable-next-line vue/no-reserved-component-names
+  name: "Menu",
+  inheritAttrs: false,
+});
+
 import { MenuQuery, MenuForm, MenuVO } from "@/api/menu/types";
 import {
   listMenus,
@@ -13,12 +19,6 @@ import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
 
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import IconSelect from "@/components/IconSelect/index.vue";
-
-defineOptions({
-  // eslint-disable-next-line vue/no-reserved-component-names
-  name: "Menu",
-  inheritAttrs: false,
-});
 
 const queryFormRef = ref(ElForm);
 const menuFormRef = ref(ElForm);
@@ -38,6 +38,8 @@ const formData = reactive<MenuForm>({
   visible: 1,
   sort: 1,
   type: MenuTypeEnum.MENU,
+  alwaysShow: 0,
+  keepAlive: 0,
 });
 
 const rules = reactive({
@@ -45,9 +47,9 @@ const rules = reactive({
   name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
   type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
   path: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
-  component: [
-    { required: true, message: "请输入组件完整路径", trigger: "blur" },
-  ],
+
+  component: [{ required: true, message: "请输入组件路径", trigger: "blur" }],
+  visible: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
 });
 
 // 选择表格的行菜单ID
@@ -183,6 +185,8 @@ function resetForm() {
   formData.component = undefined;
   formData.path = undefined;
   formData.redirect = undefined;
+  formData.alwaysShow = undefined;
+  formData.keepAlive = undefined;
 }
 
 onMounted(() => {
@@ -214,7 +218,7 @@ onMounted(() => {
       </el-form>
     </div>
 
-    <el-card shadow="never" size="small">
+    <el-card shadow="never" class="table-container">
       <template #header>
         <el-button
           v-hasPerm="['sys:menu:add']"
@@ -230,25 +234,17 @@ onMounted(() => {
         v-loading="loading"
         :data="menuList"
         highlight-current-row
+        row-key="id"
+        :expand-row-keys="['1']"
+        @row-click="onRowClick"
         :tree-props="{
           children: 'children',
           hasChildren: 'hasChildren',
         }"
-        row-key="id"
-        default-expand-all
-        border
-        size="small"
-        @row-click="onRowClick"
       >
         <el-table-column label="菜单名称" min-width="200">
           <template #default="scope">
-            <svg-icon
-              :icon-class="
-                scope.row.type === MenuTypeEnum.BUTTON
-                  ? 'button'
-                  : scope.row.icon
-              "
-            />
+            <svg-icon :icon-class="scope.row.icon" />
             {{ scope.row.name }}
           </template>
         </el-table-column>
@@ -343,14 +339,15 @@ onMounted(() => {
       :title="dialog.title"
       destroy-on-close
       append-to-body
-      width="750px"
+      width="1000px"
       @close="closeDialog"
+      top="5vh"
     >
       <el-form
         ref="menuFormRef"
         :model="formData"
         :rules="rules"
-        label-width="100px"
+        label-width="160px"
       >
         <el-form-item label="父级菜单" prop="parentId">
           <el-tree-select
@@ -420,9 +417,62 @@ onMounted(() => {
           </el-input>
         </el-form-item>
 
+        <el-form-item
+          v-if="formData.type !== MenuTypeEnum.BUTTON"
+          prop="visible"
+          label="显示状态"
+        >
+          <el-radio-group v-model="formData.visible">
+            <el-radio :label="1">显示</el-radio>
+            <el-radio :label="0">隐藏</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item
+          v-if="formData.type === MenuTypeEnum.CATALOG"
+          label="根目录始终显示"
+        >
+          <template #label>
+            <div>
+              根目录始终显示
+              <el-tooltip placement="bottom" effect="light">
+                <template #content
+                  >是：根目录只有一个子路由显示目录
+                  <br />否：根目录只有一个子路由不显示目录，只显示子路由
+                </template>
+                <i-ep-QuestionFilled class="inline-block" />
+              </el-tooltip>
+            </div>
+          </template>
+
+          <el-radio-group v-model="formData.alwaysShow">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item
+          v-if="formData.type === MenuTypeEnum.MENU"
+          label="是否缓存"
+        >
+          <el-radio-group v-model="formData.keepAlive">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="排序" prop="sort">
+          <el-input-number
+            v-model="formData.sort"
+            style="width: 100px"
+            controls-position="right"
+            :min="0"
+          />
+        </el-form-item>
+
         <!-- 权限标识 -->
         <el-form-item
-          v-if="formData.type == 'BUTTON'"
+          v-if="formData.type == MenuTypeEnum.BUTTON"
           label="权限标识"
           prop="perm"
         >
@@ -430,7 +480,7 @@ onMounted(() => {
         </el-form-item>
 
         <el-form-item
-          v-if="formData.type !== 'BUTTON'"
+          v-if="formData.type !== MenuTypeEnum.BUTTON"
           label="图标"
           prop="icon"
         >
@@ -443,22 +493,6 @@ onMounted(() => {
           label="跳转路由"
         >
           <el-input v-model="formData.redirect" placeholder="跳转路由" />
-        </el-form-item>
-
-        <el-form-item v-if="formData.type !== 'BUTTON'" label="状态">
-          <el-radio-group v-model="formData.visible">
-            <el-radio :label="1">显示</el-radio>
-            <el-radio :label="0">隐藏</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="排序" prop="sort">
-          <el-input-number
-            v-model="formData.sort"
-            style="width: 100px"
-            controls-position="right"
-            :min="0"
-          />
         </el-form-item>
       </el-form>
 
