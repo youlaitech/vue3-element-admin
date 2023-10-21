@@ -40,15 +40,17 @@ const deptList = ref<OptionType[]>(); // 部门下拉数据源
 const roleList = ref<OptionType[]>(); // 角色下拉数据源
 
 watch(dateTimeRange, (newVal) => {
-  queryParams.startTime = newVal[0];
-  queryParams.endTime = newVal[1];
+  if (newVal) {
+    queryParams.startTime = newVal[0];
+    queryParams.endTime = newVal[1];
+  }
 });
 
 // 弹窗对象
 const dialog = reactive({
   visible: false,
   type: "user-form",
-  width: 1200,
+  width: 800,
   title: "",
 });
 
@@ -105,6 +107,8 @@ function resetQuery() {
   dateTimeRange.value = "";
   queryParams.pageNum = 1;
   queryParams.deptId = undefined;
+  queryParams.startTime = undefined;
+  queryParams.endTime = undefined;
   handleQuery();
 }
 
@@ -356,7 +360,7 @@ onMounted(() => {
                 v-model="queryParams.status"
                 placeholder="全部"
                 clearable
-                style="width: 200px"
+                class="!w-[100px]"
               >
                 <el-option label="启用" value="1" />
                 <el-option label="禁用" value="0" />
@@ -365,6 +369,7 @@ onMounted(() => {
 
             <el-form-item label="创建时间">
               <el-date-picker
+                class="!w-[240px]"
                 v-model="dateTimeRange"
                 type="daterange"
                 range-separator="~"
@@ -386,7 +391,7 @@ onMounted(() => {
           </el-form>
         </div>
 
-        <el-card shadow="never">
+        <el-card shadow="never" class="table-container">
           <template #header>
             <div class="flex justify-between">
               <div>
