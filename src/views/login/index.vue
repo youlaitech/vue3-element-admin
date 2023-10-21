@@ -58,7 +58,7 @@
       <!-- 验证码 -->
       <el-form-item prop="verifyCode">
         <span class="p-2 text-white">
-          <svg-icon icon-class="verify_code" />
+          <svg-icon icon-class="verify-code" />
         </span>
         <el-input
           v-model="loginData.verifyCode"
