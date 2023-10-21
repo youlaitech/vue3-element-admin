@@ -195,7 +195,7 @@ onMounted(() => {
       </el-form>
     </div>
 
-    <el-card>
+    <el-card shadow="never" class="table-container">
       <template #header>
         <el-button
           v-hasPerm="['sys:dept:add']"

@@ -1,19 +1,42 @@
-<!--字典类型-->
+<!-- 字典数据 -->
 <script setup lang="ts">
 import {
-  getDictTypePage,
-  getDictTypeForm,
-  addDictType,
-  updateDictType,
-  deleteDictTypes,
+  getDictPage,
+  getDictFormData,
+  addDict,
+  updateDict,
+  deleteDict,
 } from "@/api/dict";
-
-import { DictTypePageVO, DictTypeQuery, DictTypeForm } from "@/api/dict/types";
+import { DictPageVO, DictForm, DictQuery } from "@/api/dict/types";
 
 defineOptions({
-  name: "DictType",
+  name: "DictData",
   inheritAttrs: false,
 });
+
+const props = defineProps({
+  typeCode: {
+    type: String,
+    default: () => {
+      return "";
+    },
+  },
+  typeName: {
+    type: String,
+    default: () => {
+      return "";
+    },
+  },
+});
+
+watch(
+  () => props.typeCode,
+  (newVal: string) => {
+    queryParams.typeCode = newVal;
+    formData.typeCode = newVal;
+    resetQuery();
+  }
+);
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -22,37 +45,42 @@ const loading = ref(false);
 const ids = ref<number[]>([]);
 const total = ref(0);
 
-const queryParams = reactive<DictTypeQuery>({
+const queryParams = reactive<DictQuery>({
   pageNum: 1,
   pageSize: 10,
+  typeCode: props.typeCode,
 });
 
-const dictTypeList = ref<DictTypePageVO[]>();
+const dictList = ref<DictPageVO[]>();
 
 const dialog = reactive<DialogOption>({
   visible: false,
 });
 
-const formData = reactive<DictTypeForm>({
+const formData = reactive<DictForm>({
   status: 1,
+  typeCode: props.typeCode,
+  sort: 1,
 });
 
 const rules = reactive({
-  name: [{ required: true, message: "请输入字典类型名称", trigger: "blur" }],
-  code: [{ required: true, message: "请输入字典类型编码", trigger: "blur" }],
+  name: [{ required: true, message: "请输入字典名称", trigger: "blur" }],
+  value: [{ required: true, message: "请输入字典值", trigger: "blur" }],
 });
 
-/** 查询 */
+/**
+ * 查询
+ */
 function handleQuery() {
-  loading.value = true;
-  getDictTypePage(queryParams)
-    .then(({ data }) => {
-      dictTypeList.value = data.list;
-      total.value = data.total;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+  if (queryParams.typeCode) {
+    loading.value = true;
+    getDictPage(queryParams)
+      .then(({ data }) => {
+        dictList.value = data.list;
+        total.value = data.total;
+      })
+      .finally(() => (loading.value = false));
+  }
 }
 
 /**
@@ -64,48 +92,54 @@ function resetQuery() {
   handleQuery();
 }
 
-/** 行复选框选中  */
+/**
+ * 行checkbox change事件
+ *
+ * @param selection
+ */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
 
 /**
- * 打开字典类型表单弹窗
+ * 打开字典表单弹窗
  *
- * @param dicTypeId 字典类型ID
+ * @param dictId 字典ID
  */
-function openDialog(dicTypeId?: number) {
+function openDialog(dictId?: number) {
   dialog.visible = true;
-  if (dicTypeId) {
-    dialog.title = "修改字典类型";
-    getDictTypeForm(dicTypeId).then(({ data }) => {
+  if (dictId) {
+    dialog.title = "修改字典";
+    getDictFormData(dictId).then(({ data }) => {
       Object.assign(formData, data);
     });
   } else {
-    dialog.title = "新增字典类型";
+    dialog.title = "新增字典";
   }
 }
 
-/** 字典类型表单提交 */
+/**
+ * 字典表单提交
+ */
 function handleSubmit() {
   dataFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
       loading.value = false;
-      const dictTypeId = formData.id;
-      if (dictTypeId) {
-        updateDictType(dictTypeId, formData)
+      const dictId = formData.id;
+      if (dictId) {
+        updateDict(dictId, formData)
           .then(() => {
             ElMessage.success("修改成功");
             closeDialog();
-            handleQuery();
+            resetQuery();
           })
           .finally(() => (loading.value = false));
       } else {
-        addDictType(formData)
+        addDict(formData)
           .then(() => {
             ElMessage.success("新增成功");
             closeDialog();
-            handleQuery();
+            resetQuery();
           })
           .finally(() => (loading.value = false));
       }
@@ -113,25 +147,33 @@ function handleSubmit() {
   });
 }
 
-/** 关闭字典类型弹窗 */
+/**
+ * 关闭弹窗
+ */
 function closeDialog() {
   dialog.visible = false;
   resetForm();
 }
 
-/**  重置字典类型表单 */
+/**
+ * 重置表单
+ */
 function resetForm() {
   dataFormRef.value.resetFields();
   dataFormRef.value.clearValidate();
 
   formData.id = undefined;
   formData.status = 1;
+  formData.sort = 1;
+  formData.typeCode = props.typeCode;
 }
 
-/** 删除字典类型 */
-function handleDelete(dictTypeId?: number) {
-  const dictTypeIds = [dictTypeId || ids.value].join(",");
-  if (!dictTypeIds) {
+/**
+ * 删除字典
+ */
+function handleDelete(dictId?: number) {
+  const dictIds = [dictId || ids.value].join(",");
+  if (!dictIds) {
     ElMessage.warning("请勾选删除项");
     return;
   }
@@ -141,31 +183,11 @@ function handleDelete(dictTypeId?: number) {
     cancelButtonText: "取消",
     type: "warning",
   }).then(() => {
-    deleteDictTypes(dictTypeIds).then(() => {
+    deleteDict(dictIds).then(() => {
       ElMessage.success("删除成功");
       resetQuery();
     });
   });
-}
-
-const dictDataDialog = reactive<DialogOption>({
-  visible: false,
-});
-
-const selectedDictType = reactive({ typeCode: "", typeName: "" }); // 当前选中的字典类型
-
-/** 打开字典数据弹窗 */
-function openDictDialog(row: DictTypePageVO) {
-  dictDataDialog.visible = true;
-  dictDataDialog.title = "【" + row.name + "】字典数据";
-
-  selectedDictType.typeCode = row.code;
-  selectedDictType.typeName = row.name;
-}
-
-/**  关闭字典数据弹窗 */
-function closeDictDialog() {
-  dictDataDialog.visible = false;
 }
 
 onMounted(() => {
@@ -176,78 +198,69 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <div class="search-container">
+      <!-- 搜索表单 -->
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="name">
           <el-input
-            v-model="queryParams.keywords"
-            placeholder="字典类型名称/编码"
+            v-model="queryParams.name"
+            placeholder="字典名称"
             clearable
-            @keyup.enter="handleQuery"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery()"
+          <el-button type="primary" @click="handleQuery"
             ><i-ep-search />搜索</el-button
           >
-          <el-button @click="resetQuery()"><i-ep-refresh />重置</el-button>
+          <el-button @click="resetQuery"> <i-ep-refresh />重置</el-button>
         </el-form-item>
       </el-form>
     </div>
-
-    <el-card shadow="never" class="table-container">
+    <el-card shadow="never">
       <template #header>
         <el-button
-          v-hasPerm="['sys:dict_type:add']"
+          v-hasPerm="['sys:dict:add']"
           type="success"
           @click="openDialog()"
           ><i-ep-plus />新增</el-button
         >
         <el-button
+          v-hasPerm="['sys:dict:delete']"
           type="danger"
           :disabled="ids.length === 0"
           @click="handleDelete()"
           ><i-ep-delete />删除</el-button
         >
       </template>
+
+      <!-- 数据表格 -->
       <el-table
         v-loading="loading"
-        highlight-current-row
-        :data="dictTypeList"
+        :data="dictList"
         border
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="字典类型名称" prop="name" width="200" />
-        <el-table-column label="字典类型编码" prop="code" width="200" />
-        <el-table-column label="状态" align="center" width="100">
+        <el-table-column type="selection" width="50" />
+        <el-table-column label="字典名称" prop="name" />
+        <el-table-column label="字典值" prop="value" />
+        <el-table-column label="状态" align="center">
           <template #default="scope">
             <el-tag v-if="scope.row.status === 1" type="success">启用</el-tag>
             <el-tag v-else type="info">禁用</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="备注" prop="remark" align="center" />
-        <el-table-column fixed="right" label="操作" align="center" width="220">
+        <el-table-column fixed="right" label="操作" align="center">
           <template #default="scope">
             <el-button
+              v-hasPerm="['sys:dict:edit']"
               type="primary"
               link
-              size="small"
-              @click.stop="openDictDialog(scope.row)"
-              ><i-ep-Collection />字典数据</el-button
-            >
-            <el-button
-              v-hasPerm="['sys:dict_type:edit']"
-              type="primary"
-              link
-              size="small"
-              @click.stop="openDialog(scope.row.id)"
+              @click="openDialog(scope.row.id)"
               ><i-ep-edit />编辑</el-button
             >
             <el-button
-              v-hasPerm="['sys:dict_type:delete']"
+              v-hasPerm="['sys:dict:delete']"
               type="primary"
               link
-              size="small"
               @click.stop="handleDelete(scope.row.id)"
               ><i-ep-delete />删除</el-button
             >
@@ -264,6 +277,7 @@ onMounted(() => {
       />
     </el-card>
 
+    <!-- 表单弹窗 -->
     <el-dialog
       v-model="dialog.visible"
       :title="dialog.title"
@@ -274,13 +288,21 @@ onMounted(() => {
         ref="dataFormRef"
         :model="formData"
         :rules="rules"
-        label-width="80px"
+        label-width="100px"
       >
+        <el-form-item label="字典名称">{{ typeName }}</el-form-item>
         <el-form-item label="字典名称" prop="name">
           <el-input v-model="formData.name" placeholder="请输入字典名称" />
         </el-form-item>
-        <el-form-item label="字典编码" prop="code">
-          <el-input v-model="formData.code" placeholder="请输入字典编码" />
+        <el-form-item label="字典值" prop="value">
+          <el-input v-model="formData.value" placeholder="字典值" />
+        </el-form-item>
+        <el-form-item label="排序" prop="sort">
+          <el-input-number
+            v-model="formData.sort"
+            controls-position="right"
+            :min="0"
+          />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="formData.status">
@@ -289,12 +311,7 @@ onMounted(() => {
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input
-            v-model="formData.remark"
-            type="textarea"
-            placeholder="字典类型备注"
-            :autosize="{ minRows: 2, maxRows: 4 }"
-          />
+          <el-input v-model="formData.remark" type="textarea" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -303,19 +320,6 @@ onMounted(() => {
           <el-button @click="closeDialog">取 消</el-button>
         </div>
       </template>
-    </el-dialog>
-
-    <!--字典数据弹窗-->
-    <el-dialog
-      v-model="dictDataDialog.visible"
-      :title="dictDataDialog.title"
-      width="1000px"
-      @close="closeDictDialog"
-    >
-      <dict-item
-        v-model:typeCode="selectedDictType.typeCode"
-        v-model:typeName="selectedDictType.typeName"
-      />
     </el-dialog>
   </div>
 </template>

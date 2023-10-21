@@ -62,6 +62,7 @@
     }
 
     // menu hover
+    .submenu-title-noDropdown,
     .el-sub-menu__title {
       &:hover {
         background-color: $menuHover !important;
@@ -101,6 +102,23 @@
 
     .main-container {
       margin-left: 54px;
+    }
+
+    .submenu-title-noDropdown {
+      position: relative;
+      padding: 0 !important;
+
+      .el-tooltip {
+        padding: 0 !important;
+
+        .svg-icon {
+          margin-left: 20px;
+        }
+
+        .sub-el-icon {
+          margin-left: 19px;
+        }
+      }
     }
 
     .el-sub-menu {

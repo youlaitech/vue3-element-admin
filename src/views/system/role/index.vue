@@ -203,7 +203,7 @@ function handleRoleMenuSubmit() {
 
     loading.value = true;
     updateRoleMenus(roleId, checkedMenuIds)
-      .then((res) => {
+      .then(() => {
         ElMessage.success("分配权限成功");
         menuDialogVisible.value = false;
         resetQuery();
@@ -241,7 +241,7 @@ onMounted(() => {
       </el-form>
     </div>
 
-    <el-card shadow="never">
+    <el-card shadow="never" class="table-container">
       <template #header>
         <el-button type="success" @click="openDialog()"
           ><i-ep-plus />新增</el-button
