@@ -30,9 +30,10 @@ function toggleClick() {
 .hamburger {
   vertical-align: middle;
   cursor: pointer;
+  transform: scaleX(-1);
 }
 
 .hamburger.is-active {
-  transform: rotate(180deg);
+  transform: scaleX(1);
 }
 </style>

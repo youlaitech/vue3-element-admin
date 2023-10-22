@@ -119,6 +119,19 @@
           margin-left: 19px;
         }
       }
+
+      // TODO
+      & > .svg-icon {
+        margin: 0 auto;
+      }
+
+      & > span {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        visibility: hidden;
+      }
     }
 
     .el-sub-menu {

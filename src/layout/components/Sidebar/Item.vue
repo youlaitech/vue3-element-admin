@@ -1,3 +1,13 @@
+<template>
+  <i
+    v-if="icon && icon.includes('el-icon')"
+    :class="icon"
+    class="sub-el-icon"
+  ></i>
+  <SvgIcon v-else-if="icon" :icon-class="icon" />
+  <span v-if="title">{{ translateRouteTitle(title) }}</span>
+</template>
+
 <script setup lang="ts">
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import { translateRouteTitle } from "@/utils/i18n";
@@ -12,25 +22,7 @@ const props = defineProps({
     default: "",
   },
 });
-
-const vnodes: any[] = [];
-if (props.icon) {
-  if (props.icon.includes("el-icon")) {
-    vnodes.push(h("i", { class: [props.icon, "sub-el-icon"] }));
-  } else {
-    vnodes.push(h(SvgIcon, { "icon-class": props.icon }));
-  }
-}
-
-if (props.title) {
-  vnodes.push(h("span", { slot: "title" }, translateRouteTitle(props.title)));
-}
-const render = h("div", vnodes);
 </script>
-
-<template>
-  <render />
-</template>
 
 <style scoped>
 .sub-el-icon {

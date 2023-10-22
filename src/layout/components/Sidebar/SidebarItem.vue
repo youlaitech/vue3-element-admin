@@ -84,7 +84,7 @@ function resolvePath(routePath: string) {
 </script>
 <template>
   <div v-if="!item.meta || !item.meta.hidden">
-    <!-- 无子路由 || 一个子路由（始终显示 alwaysShow = false 情况） -->
+    <!-- 无子路由 || 目录只有一个子路由并配置始终显示为否(alwaysShow=false) -->
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
