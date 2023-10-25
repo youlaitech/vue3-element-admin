@@ -54,7 +54,7 @@ const defaultSettings: DefaultSettings = {
   fixedHeader: false,
   sidebarLogo: true,
   layout: "left", // 默认左侧模式
-  theme: "light", // 默认暗黑模式
+  theme: "light", // 暗黑模式-dark 明亮模式-light
   size: "default",
   language: "zh-cn",
   themeColor: "#409EFF",

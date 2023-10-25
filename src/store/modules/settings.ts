@@ -18,6 +18,11 @@ export const useSettingsStore = defineStore("setting", () => {
     "themeColor",
     defaultSettings.themeColor
   );
+
+  const theme = useStorage<string>("theme", defaultSettings.theme);
+  if (theme.value == "light") {
+    document.body.classList.remove("dark");
+  }
   // actions
   function changeSetting(param: { key: string; value: any }) {
     const { key, value } = param;
