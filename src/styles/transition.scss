@@ -1,0 +1,85 @@
+// global transition css
+
+/* fade */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.28s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
+/* fade-transform */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  transition: all 0.5s;
+}
+
+.fade-transform-enter {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.fade-transform-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* breadcrumb transition */
+.breadcrumb-enter-active,
+.breadcrumb-leave-active {
+  transition: all 0.5s;
+}
+
+.breadcrumb-enter,
+.breadcrumb-leave-active {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.breadcrumb-move {
+  transition: all 0.5s;
+}
+
+.breadcrumb-leave-active {
+  position: absolute;
+}
+
+/* 缩放过渡 */
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: transform 0.3s ease-in-out;
+}
+
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+  transform: scale(0);
+}
+
+.fade-slide-leave-active,
+.fade-slide-enter-active {
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* 旋转过渡 */
+.fade-rotate-enter-active,
+.fade-rotate-leave-active {
+  transition: transform 0.3s ease-in-out;
+}
+
+.fade-rotate-enter-from,
+.fade-rotate-leave-to {
+  transform: rotate(90deg);
+}
