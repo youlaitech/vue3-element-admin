@@ -11,12 +11,13 @@ import {
 } from "unocss";
 
 export default defineConfig({
-  shortcuts: [
-    // ...
-  ],
+  shortcuts: {
+    "flex-center": "flex justify-center items-center",
+  },
   theme: {
     colors: {
-      // ...
+      primary: "var(--el-color-primary)",
+      primary_dark: "var(--el-color-primary-light-5)",
     },
   },
   presets: [

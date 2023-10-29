@@ -86,6 +86,7 @@ onMounted(() => {
     "--el-color-primary",
     settingsStore.themeColor
   );
+  document.documentElement.classList.add(theme);
 });
 </script>
 
