@@ -2,8 +2,6 @@
 import { useSettingsStore } from "@/store/modules/settings";
 import { usePermissionStore } from "@/store/modules/permission";
 import { useAppStore } from "@/store/modules/app";
-import IconEpSunny from "~icons/ep/sunny";
-import IconEpMoon from "~icons/ep/moon";
 import { useRoute } from "vue-router";
 import defaultSettings from "@/settings";
 
@@ -12,9 +10,6 @@ const route = useRoute();
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 const appStore = useAppStore();
-
-const isDark = useDark();
-const toggleDark = () => useToggle(isDark);
 
 function findOutermostParent(tree: any[], findName: string) {
   let parentMap: any = {};
@@ -97,19 +92,6 @@ onMounted(() => {
 <template>
   <div class="settings-container">
     <h3 class="text-base font-bold">项目配置</h3>
-    <el-divider>主题</el-divider>
-
-    <div class="flex justify-center" @click.stop>
-      <el-switch
-        v-model="isDark"
-        inline-prompt
-        :active-icon="IconEpMoon"
-        :inactive-icon="IconEpSunny"
-        active-color="var(--el-fill-color-dark)"
-        inactive-color="var(--el-color-primary)"
-        @change="toggleDark"
-      />
-    </div>
 
     <el-divider>界面设置</el-divider>
     <div class="py-[8px] flex justify-between">
