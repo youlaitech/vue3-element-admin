@@ -11,7 +11,7 @@
         inactive-color="var(--el-color-primary)"
         @change="toggleDark"
       />
-      <lang-select class="ml-4" />
+      <lang-select class="ml-4 cursor-pointer" />
     </div>
     <!-- 登录表单 -->
     <el-card
@@ -102,6 +102,15 @@
         </div>
       </el-form>
     </el-card>
+
+    <!-- ICP备案 -->
+    <div class="absolute bottom-1 text-[6px] text-center">
+      <p>
+        Copyright © 2021 - 2023 youlai.tech All Rights Reserved. 有来技术
+        版权所有
+      </p>
+      <p>ICP备案号:皖ICP备20006496号-3</p>
+    </div>
   </div>
 </template>
 
@@ -259,8 +268,14 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.dark .login-container {
+  background: url("@/assets/images/login-bg-dark.jpg") no-repeat center right;
+}
+
 .login-container {
-  @apply w-full h-full flex-center dark:bg-#101628 bg-no-repeat bg-center-top;
+  @apply w-full h-full flex-center;
+
+  background: url("@/assets/images/login-bg.jpg") no-repeat center right;
 
   .login-form {
     padding: 30px 10px;
@@ -288,6 +303,7 @@ onMounted(() => {
 :deep(.el-input) {
   .el-input__wrapper {
     padding: 0;
+    background-color: transparent;
     box-shadow: none;
 
     input:-webkit-autofill {
