@@ -81,7 +81,12 @@ onMounted(() => {
   window.document.body.setAttribute("layout", settingsStore.layout);
   const theme =
     localStorage.getItem("vueuse-color-scheme") || defaultSettings.theme;
-  localStorage.setItem("vueuse-color-scheme", theme);
+  settingsStore.changeSetting({ key: "theme", value: theme });
+
+  if (theme != "light") {
+    document.documentElement.classList.add("dark");
+  }
+
   document.documentElement.style.setProperty(
     "--el-color-primary",
     settingsStore.themeColor

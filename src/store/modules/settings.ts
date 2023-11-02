@@ -45,6 +45,9 @@ export const useSettingsStore = defineStore("setting", () => {
       case "themeColor":
         themeColor.value = value;
         break;
+      case "theme":
+        theme.value = value;
+        break;
     }
   }
 
@@ -56,5 +59,6 @@ export const useSettingsStore = defineStore("setting", () => {
     layout,
     themeColor,
     changeSetting,
+    theme,
   };
 });
