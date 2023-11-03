@@ -83,7 +83,17 @@
           />
 
           <div class="captcha">
-            <img :src="captchaBase64" @click="getCaptcha" />
+            <el-image
+              :src="captchaBase64"
+              @click="getCaptcha"
+              class="w-[120px] h-[48px] cursor-pointer"
+            >
+              <template #error>
+                <div class="image-slot">
+                  <i-ep-picture />
+                </div>
+              </template>
+            </el-image>
           </div>
         </el-form-item>
 
@@ -305,10 +315,19 @@ onMounted(() => {
       top: 0;
       right: 0;
 
-      img {
-        width: 120px;
-        height: 48px;
-        cursor: pointer;
+      .image-slot {
+        display: flex;
+        align-items: center;
+        justify-content: right;
+        width: 100%;
+        height: 100%;
+        font-size: 18px;
+        color: var(--el-text-color-secondary);
+        background: var(--el-fill-color-light);
+
+        svg {
+          margin-right: 10px;
+        }
       }
     }
   }
