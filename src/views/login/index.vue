@@ -9,7 +9,7 @@
         :inactive-icon="IconEpSunny"
         active-color="var(--el-fill-color-dark)"
         inactive-color="var(--el-color-primary)"
-        @change="toggleDark"
+        @change="handleThemeChange"
       />
       <lang-select class="ml-4 cursor-pointer" />
     </div>
@@ -104,7 +104,7 @@
     </el-card>
 
     <!-- ICP备案 -->
-    <div class="absolute bottom-1 text-[6px] text-center">
+    <div class="absolute bottom-1 text-[10px] text-center">
       <p>
         Copyright © 2021 - 2023 youlai.tech All Rights Reserved. 有来技术
         版权所有
@@ -121,6 +121,7 @@ import LangSelect from "@/components/LangSelect/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import IconEpSunny from "~icons/ep/sunny";
 import IconEpMoon from "~icons/ep/moon";
+import { useSettingsStore } from "@/store/modules/settings";
 
 // 状态管理依赖
 import { useUserStore } from "@/store/modules/user";
@@ -137,6 +138,14 @@ const route = useRoute();
 
 const isDark = useDark();
 const toggleDark = () => useToggle(isDark);
+
+function handleThemeChange() {
+  toggleDark();
+  useSettingsStore().changeSetting({
+    key: "theme",
+    value: isDark.value ? "dark" : "light",
+  });
+}
 
 /**
  * 按钮loading
@@ -264,6 +273,16 @@ function handleLogin() {
 
 onMounted(() => {
   getCaptcha();
+
+  // 主题初始化
+  const theme = useSettingsStore().theme;
+  console.log("登录页面主题", theme);
+  useSettingsStore().changeSetting({ key: "theme", value: theme });
+  if (theme == "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
 });
 </script>
 
@@ -275,6 +294,7 @@ onMounted(() => {
 .login-container {
   @apply w-full h-full flex-center;
 
+  overflow-y: auto;
   background: url("@/assets/images/login-bg.jpg") no-repeat center right;
 
   .login-form {
