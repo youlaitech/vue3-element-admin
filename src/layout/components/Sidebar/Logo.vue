@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import defaultSettings from "@/settings";
 import { useSettingsStore } from "@/store/modules/settings";
 
 const settingsStore = useSettingsStore();
@@ -35,7 +36,7 @@ const logo = ref(new URL(`../../../assets/logo.png`, import.meta.url).href);
       >
         <img v-if="settingsStore.sidebarLogo" :src="logo" class="w-5 h-5" />
         <span class="ml-3 text-white text-sm font-bold">
-          {{ $t("login.title") }}</span
+          {{ defaultSettings.title }}</span
         >
       </router-link>
     </transition>

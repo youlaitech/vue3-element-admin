@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <!-- 顶部 -->
-    <div class="absolute top-0 flex items-center justify-end px-25 h-20 w-full">
+    <div class="absolute top-0 flex items-center justify-end px-5 h-20 w-full">
       <el-switch
         v-model="isDark"
         inline-prompt
@@ -11,16 +11,18 @@
         inactive-color="var(--el-color-primary)"
         @change="handleThemeChange"
       />
-      <lang-select class="ml-4 cursor-pointer" />
+      <lang-select class="ml-2 cursor-pointer" />
     </div>
     <!-- 登录表单 -->
     <el-card
       class="z-1 !border-none w-100 !bg-transparent !rounded-4% <sm:w-83"
     >
-      <h2 class="text-center">
-        {{ defaultSettings.title }}
-        <el-tag class="ml-2">{{ defaultSettings.version }}</el-tag>
-      </h2>
+      <div class="text-center relative">
+        <h2>{{ defaultSettings.title }}</h2>
+        <el-tag class="ml-2 absolute top-0 right-0">{{
+          defaultSettings.version
+        }}</el-tag>
+      </div>
       <el-form
         ref="loginFormRef"
         :model="loginData"
@@ -145,17 +147,18 @@ import { LoginData } from "@/api/auth/types";
 import defaultSettings from "@/settings";
 
 const appStore = useAppStore();
+const settingsStore = useSettingsStore();
 const userStore = useUserStore();
 const route = useRoute();
 
-const isDark = useDark();
-const toggleDark = () => useToggle(isDark);
+const isDark = ref<boolean>(settingsStore.theme === "dark");
 
-function handleThemeChange() {
-  toggleDark();
-  useSettingsStore().changeSetting({
+function handleThemeChange(isDark: boolean) {
+  console.log("登录页面主题切换", isDark);
+  useToggle(isDark);
+  settingsStore.changeSetting({
     key: "theme",
-    value: isDark.value ? "dark" : "light",
+    value: isDark ? "dark" : "light",
   });
 }
 
