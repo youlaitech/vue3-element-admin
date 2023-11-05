@@ -3,9 +3,13 @@
  */
 interface DefaultSettings {
   /**
-   * 系统title
+   * 系统标题
    */
   title: string;
+  /**
+   * 系统版本
+   */
+  version: string;
   /**
    * 是否显示设置
    */
@@ -49,6 +53,7 @@ interface DefaultSettings {
 
 const defaultSettings: DefaultSettings = {
   title: "vue3-element-admin",
+  version: "v.2.6.5",
   showSettings: true,
   tagsView: true,
   fixedHeader: false,

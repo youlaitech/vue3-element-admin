@@ -9,7 +9,7 @@
         :inactive-icon="IconEpSunny"
         active-color="var(--el-fill-color-dark)"
         inactive-color="var(--el-color-primary)"
-        @change="toggleDark"
+        @change="handleThemeChange"
       />
       <lang-select class="ml-4 cursor-pointer" />
     </div>
@@ -18,7 +18,8 @@
       class="z-1 !border-none w-100 !bg-transparent !rounded-4% <sm:w-83"
     >
       <h2 class="text-center">
-        {{ $t("login.title") }}
+        {{ defaultSettings.title }}
+        <el-tag class="ml-2">{{ defaultSettings.version }}</el-tag>
       </h2>
       <el-form
         ref="loginFormRef"
@@ -104,7 +105,7 @@
     </el-card>
 
     <!-- ICP备案 -->
-    <div class="absolute bottom-1 text-[6px] text-center">
+    <div class="absolute bottom-1 text-[10px] text-center">
       <p>
         Copyright © 2021 - 2023 youlai.tech All Rights Reserved. 有来技术
         版权所有
@@ -121,6 +122,7 @@ import LangSelect from "@/components/LangSelect/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import IconEpSunny from "~icons/ep/sunny";
 import IconEpMoon from "~icons/ep/moon";
+import { useSettingsStore } from "@/store/modules/settings";
 
 // 状态管理依赖
 import { useUserStore } from "@/store/modules/user";
@@ -130,6 +132,7 @@ import { useAppStore } from "@/store/modules/app";
 import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
 import { getCaptchaApi } from "@/api/auth";
 import { LoginData } from "@/api/auth/types";
+import defaultSettings from "@/settings";
 
 const appStore = useAppStore();
 const userStore = useUserStore();
@@ -137,6 +140,14 @@ const route = useRoute();
 
 const isDark = useDark();
 const toggleDark = () => useToggle(isDark);
+
+function handleThemeChange() {
+  toggleDark();
+  useSettingsStore().changeSetting({
+    key: "theme",
+    value: isDark.value ? "dark" : "light",
+  });
+}
 
 /**
  * 按钮loading
@@ -219,9 +230,9 @@ function checkCapslock(e: any) {
  */
 function getCaptcha() {
   getCaptchaApi().then(({ data }) => {
-    const { verifyCodeBase64, verifyCodeKey } = data;
+    const { captchaImgBase64, verifyCodeKey } = data;
     loginData.value.verifyCodeKey = verifyCodeKey;
-    captchaBase64.value = verifyCodeBase64;
+    captchaBase64.value = captchaImgBase64;
   });
 }
 
@@ -305,6 +316,11 @@ onMounted(() => {
     padding: 0;
     background-color: transparent;
     box-shadow: none;
+
+    &.is-focus,
+    &:hover {
+      box-shadow: none !important;
+    }
 
     input:-webkit-autofill {
       transition: background-color 5000s ease-in-out 0s; /* 通过延时渲染背景色变相去除背景颜色 */

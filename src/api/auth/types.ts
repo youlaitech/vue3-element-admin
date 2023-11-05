@@ -55,5 +55,5 @@ export interface CaptchaResult {
   /**
    * 验证码图片Base64字符串
    */
-  verifyCodeBase64: string;
+  captchaImgBase64: string;
 }
