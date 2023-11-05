@@ -79,11 +79,8 @@ const currentThemeColor = computed(() => {
 });
 onMounted(() => {
   window.document.body.setAttribute("layout", settingsStore.layout);
-  const theme =
-    localStorage.getItem("vueuse-color-scheme") || defaultSettings.theme;
-  settingsStore.changeSetting({ key: "theme", value: theme });
-
-  if (theme != "light") {
+  const theme = settingsStore.theme;
+  if (theme == "dark") {
     document.documentElement.classList.add("dark");
   }
 
