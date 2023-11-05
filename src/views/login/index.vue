@@ -84,7 +84,17 @@
           />
 
           <div class="captcha">
-            <img :src="captchaBase64" @click="getCaptcha" />
+            <el-image
+              :src="captchaBase64"
+              @click="getCaptcha"
+              class="w-[120px] h-[48px] cursor-pointer"
+            >
+              <template #error>
+                <div class="image-slot">
+                  <i-ep-picture />
+                </div>
+              </template>
+            </el-image>
           </div>
         </el-form-item>
 
@@ -275,6 +285,16 @@ function handleLogin() {
 
 onMounted(() => {
   getCaptcha();
+
+  // 主题初始化
+  const theme = useSettingsStore().theme;
+  console.log("登录页面主题", theme);
+  useSettingsStore().changeSetting({ key: "theme", value: theme });
+  if (theme == "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
 });
 </script>
 
@@ -286,6 +306,7 @@ onMounted(() => {
 .login-container {
   @apply w-full h-full flex-center;
 
+  overflow-y: auto;
   background: url("@/assets/images/login-bg.jpg") no-repeat center right;
 
   .login-form {
@@ -296,10 +317,19 @@ onMounted(() => {
       top: 0;
       right: 0;
 
-      img {
-        width: 120px;
-        height: 48px;
-        cursor: pointer;
+      .image-slot {
+        display: flex;
+        align-items: center;
+        justify-content: right;
+        width: 100%;
+        height: 100%;
+        font-size: 18px;
+        color: var(--el-text-color-secondary);
+        background: var(--el-fill-color-light);
+
+        svg {
+          margin-right: 10px;
+        }
       }
     }
   }
