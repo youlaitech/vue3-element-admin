@@ -291,7 +291,6 @@ onMounted(() => {
 
   // 主题初始化
   const theme = useSettingsStore().theme;
-  console.log("登录页面主题", theme);
   useSettingsStore().changeSetting({ key: "theme", value: theme });
   if (theme == "dark") {
     document.documentElement.classList.add("dark");
