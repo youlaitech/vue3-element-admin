@@ -6,7 +6,6 @@ export default {
   },
   // 登录页面国际化
   login: {
-    title: "vue3-element-admin",
     username: "Username",
     password: "Password",
     login: "Login",
