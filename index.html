@@ -15,7 +15,16 @@
   <body>
     <div id="app" class="app">
       <!--加载动画-->
-      <div class="cm-spinner"></div>
+      <div class="mesh-loader">
+        <div class="set-one">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="set-two">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+      </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
     <script>
@@ -32,62 +41,98 @@
         justify-content: center;
         width: 100%;
         height: 100%;
+      }
+
+      .mesh-loader {
+        width: 100%;
+        height: 100%;
         overflow: hidden;
       }
 
-      .cm-spinner {
-        position: relative;
-        width: 150px;
-        height: 150px;
-        border: 3px solid transparent;
-        border-top: 4px solid #f15e41;
-        border-radius: 50%;
-        animation: spin 4s linear infinite;
-        animation: spin 4s linear infinite;
-      }
-
-      .cm-spinner::before,
-      .cm-spinner::after {
+      .mesh-loader .circle {
         position: absolute;
-        inset: 6px;
-        content: "";
-        border: 4px solid transparent;
+        width: 25px;
+        height: 25px;
+        margin: -12.5px;
+        background: #03a9f4;
         border-radius: 50%;
+        animation: mesh 3s ease-in-out infinite;
+        animation: mesh 3s ease-in-out infinite -1.5s;
       }
 
-      .cm-spinner::before {
-        border-top-color: #bad375;
-        animation: 3s spin linear infinite;
-        animation: 3s spin linear infinite;
+      .mesh-loader > div .circle:last-child {
+        animation-delay: 0s;
+        animation-delay: 0s;
       }
 
-      .cm-spinner::after {
-        border-top-color: #26a9e0;
-        animation: spin 1.5s linear infinite;
-        animation: spin 1.5s linear infinite;
+      .mesh-loader > div {
+        position: absolute;
+        top: 50%;
+        left: 50%;
       }
 
-      @keyframes spin {
-        from {
-          transform: rotate(0deg);
-          transform: rotate(0deg);
+      .mesh-loader > div:last-child {
+        transform: rotate(90deg);
+        transform: rotate(90deg);
+      }
+
+      @keyframes mesh {
+        0% {
+          transform: rotate(0);
+          transform: rotate(0);
+          transform-origin: 50% -100%;
+          transform-origin: 50% -100%;
         }
 
-        to {
+        50% {
           transform: rotate(360deg);
           transform: rotate(360deg);
+          transform-origin: 50% -100%;
+          transform-origin: 50% -100%;
+        }
+
+        50.00001% {
+          transform: rotate(0deg);
+          transform: rotate(0deg);
+          transform-origin: 50% 200%;
+          transform-origin: 50% 200%;
+        }
+
+        100% {
+          transform: rotate(360deg);
+          transform: rotate(360deg);
+          transform-origin: 50% 200%;
+          transform-origin: 50% 200%;
         }
       }
 
-      @keyframes spin {
-        from {
-          transform: rotate(0deg);
-          transform: rotate(0deg);
+      @keyframes mesh {
+        0% {
+          transform: rotate(0);
+          transform: rotate(0);
+          transform-origin: 50% -100%;
+          transform-origin: 50% -100%;
         }
 
-        to {
+        50% {
           transform: rotate(360deg);
           transform: rotate(360deg);
+          transform-origin: 50% -100%;
+          transform-origin: 50% -100%;
+        }
+
+        50.00001% {
+          transform: rotate(0deg);
+          transform: rotate(0deg);
+          transform-origin: 50% 200%;
+          transform-origin: 50% 200%;
+        }
+
+        100% {
+          transform: rotate(360deg);
+          transform: rotate(360deg);
+          transform-origin: 50% 200%;
+          transform-origin: 50% 200%;
         }
       }
     </style>
