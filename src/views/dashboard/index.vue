@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import { useUserStore } from "@/store/modules/user";
-import { useTransition, TransitionPresets } from "@vueuse/core";
-
 defineOptions({
-  // eslint-disable-next-line
   name: "Dashboard",
   inheritAttrs: false,
 });
 
-const userStore = useUserStore();
+import { useUserStore } from "@/store/modules/user";
+import { useTransition, TransitionPresets } from "@vueuse/core";
 
+const userStore = useUserStore();
 const date: Date = new Date();
 
 const greetings = computed(() => {
@@ -114,59 +112,109 @@ orderCount.value = 2000;
     <!-- 数据卡片 -->
     <el-row :gutter="40" class="mb-4">
       <el-col :xs="24" :sm="12" :lg="6" class="mb-4">
-        <div class="data-box">
-          <div class="p-3 rounded">
-            <svg-icon icon-class="visit" size="3em" />
-          </div>
-          <div class="flex flex-col space-y-3">
-            <div class="text-[var(--el-text-color-secondary)]">访问数</div>
+        <el-card shadow="never">
+          <template #header>
+            <div class="flex items-center justify-between">
+              <span class="text-[var(--el-text-color-secondary)]">访问数</span>
+              <el-tag type="success">日</el-tag>
+            </div>
+          </template>
+
+          <div class="flex items-center justify-between mt-5">
             <div class="text-lg text-right">
               {{ Math.round(visitCountOutput) }}
             </div>
+            <svg-icon icon-class="visit" size="2em" />
           </div>
-        </div>
+
+          <div
+            class="flex items-center justify-between mt-5 text-sm text-[var(--el-text-color-secondary)]"
+          >
+            <span> 总访问数 </span>
+            <span> {{ Math.round(visitCountOutput) }} </span>
+          </div>
+        </el-card>
       </el-col>
 
       <!--消息数-->
       <el-col :xs="24" :sm="12" :lg="6" class="mb-4">
-        <div class="data-box">
-          <div class="p-3 rounded">
-            <svg-icon icon-class="message" size="3em" />
-          </div>
-          <div class="flex flex-col space-y-3">
-            <div class="text-[var(--el-text-color-secondary)]">消息数</div>
+        <el-card shadow="never">
+          <template #header>
+            <div class="flex items-center justify-between">
+              <span class="text-[var(--el-text-color-secondary)]">消息数</span>
+              <el-tag>周</el-tag>
+            </div>
+          </template>
+
+          <div class="flex items-center justify-between mt-5">
             <div class="text-lg text-right">
               {{ Math.round(messageCountOutput) }}
             </div>
+            <svg-icon icon-class="message" size="2em" />
           </div>
-        </div>
+
+          <div
+            class="flex items-center justify-between mt-5 text-sm text-[var(--el-text-color-secondary)]"
+          >
+            <span> 总消息数 </span>
+            <span> {{ Math.round(messageCountOutput) }} </span>
+          </div>
+        </el-card>
       </el-col>
 
+      <!--收入金额-->
       <el-col :xs="24" :sm="12" :lg="6" class="mb-4">
-        <div class="data-box">
-          <div class="p-3 rounded">
-            <svg-icon icon-class="money" size="3em" />
-          </div>
-          <div class="flex flex-col space-y-3">
-            <div class="text-[var(--el-text-color-secondary)]">收入金额</div>
+        <el-card shadow="never">
+          <template #header>
+            <div class="flex items-center justify-between">
+              <span class="text-[var(--el-text-color-secondary)]"
+                >收入金额</span
+              >
+              <el-tag type="warning">月</el-tag>
+            </div>
+          </template>
+
+          <div class="flex items-center justify-between mt-5">
             <div class="text-lg text-right">
               {{ Math.round(amountOutput) }}
             </div>
+            <svg-icon icon-class="money" size="2em" />
           </div>
-        </div>
+
+          <div
+            class="flex items-center justify-between mt-5 text-sm text-[var(--el-text-color-secondary)]"
+          >
+            <span> 总收入金额 </span>
+            <span> {{ Math.round(amountOutput) }} </span>
+          </div>
+        </el-card>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6" class="mb-2">
-        <div class="data-box">
-          <div class="p-3 rounded">
-            <svg-icon icon-class="cart" size="3em" />
-          </div>
-          <div class="flex flex-col space-y-3">
-            <div class="text-[var(--el-text-color-secondary)]">订单数</div>
+
+      <!--订单数-->
+
+      <el-col :xs="24" :sm="12" :lg="6" class="mb-4">
+        <el-card shadow="never">
+          <template #header>
+            <div class="flex items-center justify-between">
+              <span class="text-[var(--el-text-color-secondary)]">订单数</span>
+              <el-tag type="danger">年</el-tag>
+            </div>
+          </template>
+
+          <div class="flex items-center justify-between mt-5">
             <div class="text-lg text-right">
               {{ Math.round(orderCountOutput) }}
             </div>
+            <svg-icon icon-class="cart" size="2em" />
           </div>
-        </div>
+
+          <div
+            class="flex items-center justify-between mt-5 text-sm text-[var(--el-text-color-secondary)]"
+          >
+            <span> 总订单数 </span>
+            <span> {{ Math.round(orderCountOutput) }} </span>
+          </div>
+        </el-card>
       </el-col>
     </el-row>
 
