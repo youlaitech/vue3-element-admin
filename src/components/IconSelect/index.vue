@@ -146,8 +146,7 @@ onMounted(() => {
   .icon-item {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-items: center;
+    place-items: center center;
     width: 10%;
     padding: 5px;
     margin: 0 10px 10px 0;

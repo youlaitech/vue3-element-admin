@@ -99,7 +99,7 @@ const svg_icons: string[] = [
 ];
 const icons = ref(ElementPlusIconsVue);
 
-const { text, isSupported, copy } = useClipboard();
+const { copy } = useClipboard();
 
 function generateIconCode(symbol: any) {
   return `<svg-icon icon-class="${symbol}" />`;

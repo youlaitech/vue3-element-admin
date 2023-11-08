@@ -153,14 +153,14 @@ const route = useRoute();
 
 const isDark = ref<boolean>(settingsStore.theme === "dark");
 
-function handleThemeChange(isDark: boolean) {
+const handleThemeChange = (isDark?: string | number | boolean) => {
   console.log("登录页面主题切换", isDark);
   useToggle(isDark);
   settingsStore.changeSetting({
     key: "theme",
     value: isDark ? "dark" : "light",
   });
-}
+};
 
 /**
  * 按钮loading

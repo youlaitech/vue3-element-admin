@@ -3,7 +3,6 @@ import { useSettingsStore } from "@/store/modules/settings";
 import { usePermissionStore } from "@/store/modules/permission";
 import { useAppStore } from "@/store/modules/app";
 import { useRoute } from "vue-router";
-import defaultSettings from "@/settings";
 
 const route = useRoute();
 

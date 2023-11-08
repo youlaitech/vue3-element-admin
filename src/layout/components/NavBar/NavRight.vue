@@ -104,8 +104,7 @@ function logout() {
 
 .avatar-container {
   display: flex;
-  align-items: center;
-  justify-items: center;
+  place-items: center center;
   margin: 0 5px;
   cursor: pointer;
 

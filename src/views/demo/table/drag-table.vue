@@ -112,7 +112,7 @@ const formatDate = (timestamp: any) => {
     .replace(/\//g, "-");
 };
 
-const statusType = (status: string) => {
+const statusType = (status: string): any => {
   const statusMap = {
     published: "success",
     draft: "info",

@@ -1,9 +1,5 @@
 <template>
-  <i
-    v-if="icon && icon.includes('el-icon')"
-    :class="icon"
-    class="sub-el-icon"
-  ></i>
+  <el-icon v-if="icon && icon.includes('el-icon')" class="sub-el-icon" />
   <SvgIcon v-else-if="icon" :icon-class="icon" />
   <span v-if="title">{{ translateRouteTitle(title) }}</span>
 </template>
@@ -12,7 +8,7 @@
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import { translateRouteTitle } from "@/utils/i18n";
 
-const props = defineProps({
+defineProps({
   icon: {
     type: String,
     default: "",

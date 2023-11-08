@@ -132,35 +132,6 @@ function paint(
   ctx.closePath();
   ctx.stroke();
 }
-
-// 橡皮
-function eraser(
-  startX: number,
-  startY: number,
-  endX: number,
-  endY: number,
-  ctx: CanvasRenderingContext2D,
-  size: number,
-  shape: "rect" | "circle"
-) {
-  ctx.beginPath();
-  ctx.globalAlpha = 1;
-  switch (shape) {
-    case "rect":
-      ctx.lineWidth = size;
-      ctx.strokeStyle = "#fff";
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, endY);
-      ctx.closePath();
-      ctx.stroke();
-      break;
-    case "circle":
-      ctx.fillStyle = "#fff";
-      ctx.arc(startX, startY, size, 0, 2 * Math.PI);
-      ctx.fill();
-      break;
-  }
-}
 </script>
 <template>
   <div class="canvas-dom">

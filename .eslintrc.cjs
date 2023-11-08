@@ -7,7 +7,7 @@ module.exports = {
   },
   parser: "vue-eslint-parser",
   extends: [
-    // 参考vuejs官方的eslint配置： https://eslint.vuejs.org/user-guide/#usage
+    // https://eslint.vuejs.org/user-guide/#usage
     "plugin:vue/vue3-recommended",
     "./.eslintrc-auto-import.json",
     "prettier",
@@ -24,21 +24,9 @@ module.exports = {
   },
   plugins: ["vue", "@typescript-eslint"],
   rules: {
-    "vue/multi-word-component-names": "off", // 关闭组件名必须多字： https://eslint.vuejs.org/rules/multi-word-component-names.html
-    "@typescript-eslint/no-empty-function": "off", // 关闭空方法检查
-    "@typescript-eslint/no-explicit-any": "off", // 关闭any类型的警告
+    // https://eslint.vuejs.org/rules/#priority-a-essential-error-prevention
+    "vue/multi-word-component-names": "off",
     "vue/no-v-model-argument": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/ban-ts-ignore": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/ban-types": "off",
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-var-requires": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/no-use-before-define": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
     "vue/script-setup-uses-vars": "error",
     "vue/no-reserved-component-names": "off",
     "vue/custom-event-name-casing": "off",
@@ -63,7 +51,22 @@ module.exports = {
         math: "always",
       },
     ],
-    "vue/multi-word-component-names": "off",
+
+    "@typescript-eslint/no-empty-function": "off", // 关闭空方法检查
+    "@typescript-eslint/no-explicit-any": "off", // 关闭any类型的警告
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+
     "prettier/prettier": [
       "error",
       {
