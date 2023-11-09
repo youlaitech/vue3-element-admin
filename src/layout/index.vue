@@ -88,8 +88,6 @@ function toggleSideBar() {
     <Sidebar class="sidebar-container" />
     <template v-if="layout === 'mix'">
       <div class="mix-wrap">
-        <!-- :menu-list="mixLeftMenu -->
-        <!-- :menu-list="permissionStore.routes -->
         <div class="left-wrap">
           <LeftMenu :menu-list="mixLeftMenu" :base-path="activeTopMenu" />
           <div class="menu-action">
@@ -155,6 +153,7 @@ function toggleSideBar() {
   .main-container {
     padding-top: 50px;
     margin-left: 0;
+    overflow: hidden;
   }
 
   // 顶部模式全局变量修改
