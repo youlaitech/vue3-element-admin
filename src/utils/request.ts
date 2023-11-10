@@ -46,8 +46,10 @@ service.interceptors.response.use(
           confirmButtonText: "确定",
           type: "warning",
         }).then(() => {
-          localStorage.clear();
-          window.location.href = "/";
+          const userStore = useUserStoreHook();
+          userStore.resetToken().then(() => {
+            location.reload();
+          });
         });
       } else {
         ElMessage.error(msg || "系统出错");

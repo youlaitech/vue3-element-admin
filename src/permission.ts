@@ -32,7 +32,7 @@ router.beforeEach(async (to, from, next) => {
         }
       } else {
         try {
-          const { roles } = await userStore.getInfo();
+          const { roles } = await userStore.getUserInfo();
           const accessRoutes = await permissionStore.generateRoutes(roles);
           accessRoutes.forEach((route) => {
             router.addRoute(route);
@@ -40,7 +40,7 @@ router.beforeEach(async (to, from, next) => {
           next({ ...to, replace: true });
         } catch (error) {
           // 移除 token 并跳转登录页
-          await userStore.resetStore();
+          await userStore.resetToken();
           next(`/login?redirect=${to.path}`);
           NProgress.done();
         }

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 import { loginApi, logoutApi } from "@/api/auth";
-import { getUserInfo } from "@/api/user";
+import { getUserInfoApi } from "@/api/user";
 import { resetRouter } from "@/router";
 import { store } from "@/store";
 
@@ -39,9 +39,9 @@ export const useUserStore = defineStore("user", () => {
   }
 
   // 获取信息(用户昵称、头像、角色集合、权限集合)
-  function getInfo() {
+  function getUserInfo() {
     return new Promise<UserInfo>((resolve, reject) => {
-      getUserInfo()
+      getUserInfoApi()
         .then(({ data }) => {
           if (!data) {
             reject("Verification failed, please Login again.");
@@ -60,12 +60,12 @@ export const useUserStore = defineStore("user", () => {
     });
   }
 
-  // 注销
+  // user logout
   function logout() {
     return new Promise<void>((resolve, reject) => {
       logoutApi()
         .then(() => {
-          resetStore();
+          token.value = "";
           location.reload(); // 清空路由
           resolve();
         })
@@ -75,19 +75,22 @@ export const useUserStore = defineStore("user", () => {
     });
   }
 
-  /** 清空缓存 */
-  function resetStore() {
-    resetRouter();
-    token.value = "";
-    Object.assign(user, { roles: [], perms: [] });
+  // remove token
+  function resetToken() {
+    return new Promise<void>((resolve) => {
+      token.value = "";
+      resetRouter();
+      resolve();
+    });
   }
+
   return {
     token,
     user,
     login,
-    getInfo,
+    getUserInfo,
     logout,
-    resetStore,
+    resetToken,
   };
 });
 
