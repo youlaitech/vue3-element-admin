@@ -117,12 +117,15 @@
     </el-card>
 
     <!-- ICP备案 -->
-    <div class="absolute bottom-1 text-[10px] text-center">
+    <div
+      class="absolute bottom-1 text-[10px] text-center"
+      v-show="useAppStore().device == 'desktop'"
+    >
       <p>
         Copyright © 2021 - 2023 youlai.tech All Rights Reserved. 有来技术
         版权所有
       </p>
-      <p>ICP备案号:皖ICP备20006496号-3</p>
+      <p>皖ICP备20006496号-3</p>
     </div>
   </div>
 </template>
@@ -146,15 +149,12 @@ import { getCaptchaApi } from "@/api/auth";
 import { LoginData } from "@/api/auth/types";
 import defaultSettings from "@/settings";
 
-const appStore = useAppStore();
+/**
+ * 明亮/暗黑主题切换
+ */
 const settingsStore = useSettingsStore();
-const userStore = useUserStore();
-const route = useRoute();
-
 const isDark = ref<boolean>(settingsStore.theme === "dark");
-
-const handleThemeChange = (isDark?: string | number | boolean) => {
-  console.log("登录页面主题切换", isDark);
+const handleThemeChange = (isDark: any) => {
   useToggle(isDark);
   settingsStore.changeSetting({
     key: "theme",
@@ -163,26 +163,24 @@ const handleThemeChange = (isDark?: string | number | boolean) => {
 };
 
 /**
- * 按钮loading
+ * 根据屏幕宽度切换设备模式
  */
-const loading = ref(false);
-/**
- * 是否大写锁定
- */
-const isCapslock = ref(false);
-/**
- * 密码是否可见
- */
-const passwordVisible = ref(false);
-/**
- * 验证码图片Base64字符串
- */
-const captchaBase64 = ref();
+const appStore = useAppStore();
+const WIDTH = 992; // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
+const { width } = useWindowSize();
+watchEffect(() => {
+  if (width.value < WIDTH) {
+    appStore.toggleDevice("mobile");
+  } else {
+    appStore.toggleDevice("desktop");
+  }
+});
 
-/**
- * 登录表单引用
- */
-const loginFormRef = ref(ElForm);
+const loading = ref(false); // 按钮loading
+const isCapslock = ref(false); // 是否大写锁定
+const passwordVisible = ref(false); // 密码是否可见
+const captchaBase64 = ref(); // 验证码图片Base64字符串
+const loginFormRef = ref(ElForm); // 登录表单ref
 
 const loginData = ref<LoginData>({
   username: "admin",
@@ -190,7 +188,6 @@ const loginData = ref<LoginData>({
 });
 
 const { t } = useI18n();
-
 const loginRules = computed(() => {
   const prefix = appStore.language === "en" ? "Please enter " : "请输入";
   return {
@@ -205,7 +202,13 @@ const loginRules = computed(() => {
       {
         required: true,
         trigger: "blur",
-        validator: passwordValidator,
+        validator: (rule: any, value: any, callback: any) => {
+          if (value.length < 6) {
+            callback(new Error("The password can not be less than 6 digits"));
+          } else {
+            callback();
+          }
+        },
         message: `${prefix}${t("login.password")}`,
       },
     ],
@@ -218,17 +221,6 @@ const loginRules = computed(() => {
     ],
   };
 });
-
-/**
- * 密码校验器
- */
-function passwordValidator(rule: any, value: any, callback: any) {
-  if (value.length < 6) {
-    callback(new Error("The password can not be less than 6 digits"));
-  } else {
-    callback();
-  }
-}
 
 /**
  * 检查输入大小写状态
@@ -252,6 +244,8 @@ function getCaptcha() {
 /**
  * 登录
  */
+const route = useRoute();
+const userStore = useUserStore();
 function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
     if (valid) {
@@ -355,7 +349,7 @@ onMounted(() => {
     }
 
     input:-webkit-autofill {
-      transition: background-color 5000s ease-in-out 0s; /* 通过延时渲染背景色变相去除背景颜色 */
+      transition: background-color 1000s ease-in-out 0s; /* 通过延时渲染背景色变相去除背景颜色 */
     }
   }
 }

@@ -35,7 +35,7 @@ const amountOutput = useTransition(amount, {
 });
 amount.value = 2000;
 
-// 访问量
+// 访客数
 const visitCount = ref(0);
 const visitCountOutput = useTransition(visitCount, {
   duration: duration,
@@ -43,7 +43,7 @@ const visitCountOutput = useTransition(visitCount, {
 });
 visitCount.value = 2000;
 
-// 留资数
+// IP数
 const dauCount = ref(0);
 const dauCountOutput = useTransition(dauCount, {
   duration: duration,
@@ -87,7 +87,7 @@ orderCount.value = 2000;
             <el-statistic :value="99">
               <template #title>
                 <div class="flex items-center">
-                  <svg-icon icon-class="message" :size="16" />
+                  <svg-icon icon-class="message" :size="20" />
                   <span class="text-[16px] ml-1">消息</span>
                 </div>
               </template>
@@ -96,7 +96,7 @@ orderCount.value = 2000;
             <el-statistic :value="50">
               <template #title>
                 <div class="flex items-center">
-                  <svg-icon icon-class="todolist" :size="16" />
+                  <svg-icon icon-class="todolist" :size="20" />
                   <span class="text-[16px] ml-1">待办</span>
                 </div>
               </template>
@@ -106,7 +106,7 @@ orderCount.value = 2000;
             <el-statistic :value="10">
               <template #title>
                 <div class="flex items-center">
-                  <svg-icon icon-class="project" :size="16" />
+                  <svg-icon icon-class="project" :size="20" />
                   <span class="text-[16px] ml-1">项目</span>
                 </div>
               </template>
@@ -117,12 +117,12 @@ orderCount.value = 2000;
     </el-card>
 
     <!-- 数据卡片 -->
-    <el-row :gutter="40" class="mt-3">
+    <el-row :gutter="10" class="mt-3">
       <el-col :xs="24" :sm="12" :lg="6">
         <el-card shadow="never">
           <template #header>
             <div class="flex items-center justify-between">
-              <span class="text-[var(--el-text-color-secondary)]">访问量</span>
+              <span class="text-[var(--el-text-color-secondary)]">访客数</span>
               <el-tag type="success">日</el-tag>
             </div>
           </template>
@@ -137,7 +137,7 @@ orderCount.value = 2000;
           <div
             class="flex items-center justify-between mt-5 text-sm text-[var(--el-text-color-secondary)]"
           >
-            <span> 总访问数 </span>
+            <span> 总访客数 </span>
             <span> {{ Math.round(visitCountOutput * 15) }} </span>
           </div>
         </el-card>
@@ -148,7 +148,7 @@ orderCount.value = 2000;
         <el-card shadow="never">
           <template #header>
             <div class="flex items-center justify-between">
-              <span class="text-[var(--el-text-color-secondary)]">留资数</span>
+              <span class="text-[var(--el-text-color-secondary)]">IP数</span>
               <el-tag type="success">日</el-tag>
             </div>
           </template>
@@ -157,13 +157,13 @@ orderCount.value = 2000;
             <div class="text-lg text-right">
               {{ Math.round(dauCountOutput) }}
             </div>
-            <svg-icon icon-class="message" size="2em" />
+            <svg-icon icon-class="ip" size="2em" />
           </div>
 
           <div
             class="flex items-center justify-between mt-5 text-sm text-[var(--el-text-color-secondary)]"
           >
-            <span> 总留资数 </span>
+            <span> 总IP数 </span>
             <span> {{ Math.round(dauCountOutput) }} </span>
           </div>
         </el-card>
@@ -223,7 +223,7 @@ orderCount.value = 2000;
     </el-row>
 
     <!-- Echarts 图表 -->
-    <el-row :gutter="40" class="mt-3">
+    <el-row :gutter="10" class="mt-3">
       <el-col :sm="24" :lg="8" class="mb-2">
         <BarChart
           id="barChart"

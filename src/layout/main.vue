@@ -24,6 +24,7 @@ const fixedHeader = computed(() => settingsStore.fixedHeader);
 const showTagsView = computed(() => settingsStore.tagsView);
 const showSettings = computed(() => settingsStore.showSettings);
 const layout = computed(() => settingsStore.layout);
+const device = computed(() => appStore.device);
 
 watchEffect(() => {
   if (width.value < WIDTH) {
@@ -43,7 +44,7 @@ watchEffect(() => {
 </script>
 <template>
   <div :class="{ hasTagsView: showTagsView }" class="main-container">
-    <div :class="{ 'fixed-header': fixedHeader }">
+    <div :class="{ 'fixed-header': fixedHeader, device: device }">
       <navbar v-if="layout === 'left'" />
       <tags-view v-if="showTagsView" />
     </div>
@@ -68,6 +69,10 @@ watchEffect(() => {
 
 .hideSidebar .fixed-header {
   width: calc(100% - 54px);
+}
+
+.hideSidebar.mobile .fixed-header {
+  width: 100%;
 }
 
 .isTop .fixed-header {
