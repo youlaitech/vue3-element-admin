@@ -53,7 +53,7 @@ interface DefaultSettings {
 
 const defaultSettings: DefaultSettings = {
   title: "vue3-element-admin",
-  version: "v2.6.6",
+  version: "v2.6.7",
   showSettings: true,
   tagsView: true,
   fixedHeader: false,
