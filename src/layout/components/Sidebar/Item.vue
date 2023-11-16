@@ -5,7 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import SvgIcon from "@/components/SvgIcon/index.vue";
 import { translateRouteTitle } from "@/utils/i18n";
 
 defineProps({

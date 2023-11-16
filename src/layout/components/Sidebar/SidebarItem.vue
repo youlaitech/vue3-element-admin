@@ -2,6 +2,7 @@
 import path from "path-browserify";
 import { isExternal } from "@/utils/index";
 import AppLink from "./Link.vue";
+import { RouteRecordRaw } from "vue-router";
 
 import Item from "./Item.vue";
 
@@ -38,15 +39,19 @@ const onlyOneChild = ref(); // 临时变量，唯一子路由
  * @param children 子路由数组
  * @param parent 当前路由
  */
-function hasOneShowingChild(children = [], parent: any) {
+function hasOneShowingChild(
+  children: RouteRecordRaw[] = [],
+  parent: RouteRecordRaw
+) {
   // 子路由集合
-  const showingChildren = children.filter((item: any) => {
-    if (item.meta?.hidden) {
+  const showingChildren = children.filter((route: RouteRecordRaw) => {
+    if (route.meta?.hidden) {
       // 过滤不显示的子路由
       return false;
     } else {
+      route.meta!.hidden = false;
       // 临时变量（多个子路由 onlyOneChild 变量是用不上的）
-      onlyOneChild.value = item;
+      onlyOneChild.value = route;
       return true;
     }
   });
@@ -87,7 +92,7 @@ function resolvePath(routePath: string) {
     <!-- 无子路由 || 目录只有一个子路由并配置始终显示为否(alwaysShow=false) -->
     <template
       v-if="
-        hasOneShowingChild(item.children, item) &&
+        hasOneShowingChild(item.children, item as RouteRecordRaw) &&
         (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
         !item.meta?.alwaysShow
       "

@@ -18,10 +18,8 @@
       class="z-1 !border-none w-100 !bg-transparent !rounded-4% <sm:w-83"
     >
       <div class="text-center relative">
-        <h2>{{ defaultSettings.title }}</h2>
-        <el-tag class="ml-2 absolute top-0 right-0">{{
-          defaultSettings.version
-        }}</el-tag>
+        <h2>{{ title }}</h2>
+        <el-tag class="ml-2 absolute top-0 right-0">{{ version }}</el-tag>
       </div>
       <el-form
         ref="loginFormRef"
@@ -147,12 +145,13 @@ import { useAppStore } from "@/store/modules/app";
 import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
 import { getCaptchaApi } from "@/api/auth";
 import { LoginData } from "@/api/auth/types";
-import defaultSettings from "@/settings";
 
+const settingsStore = useSettingsStore();
+
+const { title, version } = settingsStore;
 /**
  * 明亮/暗黑主题切换
  */
-const settingsStore = useSettingsStore();
 const isDark = ref<boolean>(settingsStore.theme === "dark");
 const handleThemeChange = (isDark: any) => {
   useToggle(isDark);

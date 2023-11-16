@@ -29,9 +29,10 @@ const queryParams = reactive<DictTypeQuery>({
 
 const dictTypeList = ref<DictTypePageVO[]>();
 
-const dialog = reactive<DialogOption>({
+const dialog = {
+  title: "",
   visible: false,
-});
+};
 
 const formData = reactive<DictTypeForm>({
   status: 1,
@@ -148,9 +149,10 @@ function handleDelete(dictTypeId?: number) {
   });
 }
 
-const dictDataDialog = reactive<DialogOption>({
+const dictDataDialog = {
+  title: "",
   visible: false,
-});
+};
 
 const selectedDictType = reactive({ typeCode: "", typeName: "" }); // 当前选中的字典类型
 

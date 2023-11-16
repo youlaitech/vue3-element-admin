@@ -7,7 +7,9 @@ declare global {
   const EffectScope: typeof import("vue")["EffectScope"];
   const ElForm: typeof import("element-plus/es")["ElForm"];
   const ElMessage: typeof import("element-plus/es")["ElMessage"];
+  const ElNotification: typeof import("element-plus/es")["ElNotification"];
   const ElMessageBox: typeof import("element-plus/es")["ElMessageBox"];
+  const ElTree: typeof import("element-plus/es")["ElTree"];
   const asyncComputed: typeof import("@vueuse/core")["asyncComputed"];
   const autoResetRef: typeof import("@vueuse/core")["autoResetRef"];
   const computed: typeof import("vue")["computed"];
@@ -39,7 +41,6 @@ declare global {
   const h: typeof import("vue")["h"];
   const ignorableWatch: typeof import("@vueuse/core")["ignorableWatch"];
   const inject: typeof import("vue")["inject"];
-  const injectLocal: typeof import("@vueuse/core")["injectLocal"];
   const isDefined: typeof import("@vueuse/core")["isDefined"];
   const isProxy: typeof import("vue")["isProxy"];
   const isReactive: typeof import("vue")["isReactive"];
@@ -67,7 +68,6 @@ declare global {
   const onUpdated: typeof import("vue")["onUpdated"];
   const pausableWatch: typeof import("@vueuse/core")["pausableWatch"];
   const provide: typeof import("vue")["provide"];
-  const provideLocal: typeof import("@vueuse/core")["provideLocal"];
   const reactify: typeof import("@vueuse/core")["reactify"];
   const reactifyObject: typeof import("@vueuse/core")["reactifyObject"];
   const reactive: typeof import("vue")["reactive"];
@@ -287,14 +287,10 @@ declare global {
     Component,
     ComponentPublicInstance,
     ComputedRef,
-    ExtractDefaultPropTypes,
-    ExtractPropTypes,
-    ExtractPublicPropTypes,
     InjectionKey,
     PropType,
     Ref,
     VNode,
-    WritableComputedRef,
   } from "vue";
 }
 // for vue template auto import
@@ -309,6 +305,7 @@ declare module "vue" {
     readonly ElMessageBox: UnwrapRef<
       typeof import("element-plus/es")["ElMessageBox"]
     >;
+    readonly ElTree: UnwrapRef<typeof import("element-plus/es")["ElTree"]>;
     readonly asyncComputed: UnwrapRef<
       typeof import("@vueuse/core")["asyncComputed"]
     >;
@@ -388,9 +385,6 @@ declare module "vue" {
       typeof import("@vueuse/core")["ignorableWatch"]
     >;
     readonly inject: UnwrapRef<typeof import("vue")["inject"]>;
-    readonly injectLocal: UnwrapRef<
-      typeof import("@vueuse/core")["injectLocal"]
-    >;
     readonly isDefined: UnwrapRef<typeof import("@vueuse/core")["isDefined"]>;
     readonly isProxy: UnwrapRef<typeof import("vue")["isProxy"]>;
     readonly isReactive: UnwrapRef<typeof import("vue")["isReactive"]>;
@@ -440,9 +434,6 @@ declare module "vue" {
       typeof import("@vueuse/core")["pausableWatch"]
     >;
     readonly provide: UnwrapRef<typeof import("vue")["provide"]>;
-    readonly provideLocal: UnwrapRef<
-      typeof import("@vueuse/core")["provideLocal"]
-    >;
     readonly reactify: UnwrapRef<typeof import("@vueuse/core")["reactify"]>;
     readonly reactifyObject: UnwrapRef<
       typeof import("@vueuse/core")["reactifyObject"]
@@ -960,6 +951,7 @@ declare module "@vue/runtime-core" {
     readonly ElMessageBox: UnwrapRef<
       typeof import("element-plus/es")["ElMessageBox"]
     >;
+    readonly ElTree: UnwrapRef<typeof import("element-plus/es")["ElTree"]>;
     readonly asyncComputed: UnwrapRef<
       typeof import("@vueuse/core")["asyncComputed"]
     >;
@@ -1039,9 +1031,6 @@ declare module "@vue/runtime-core" {
       typeof import("@vueuse/core")["ignorableWatch"]
     >;
     readonly inject: UnwrapRef<typeof import("vue")["inject"]>;
-    readonly injectLocal: UnwrapRef<
-      typeof import("@vueuse/core")["injectLocal"]
-    >;
     readonly isDefined: UnwrapRef<typeof import("@vueuse/core")["isDefined"]>;
     readonly isProxy: UnwrapRef<typeof import("vue")["isProxy"]>;
     readonly isReactive: UnwrapRef<typeof import("vue")["isReactive"]>;
@@ -1091,9 +1080,6 @@ declare module "@vue/runtime-core" {
       typeof import("@vueuse/core")["pausableWatch"]
     >;
     readonly provide: UnwrapRef<typeof import("vue")["provide"]>;
-    readonly provideLocal: UnwrapRef<
-      typeof import("@vueuse/core")["provideLocal"]
-    >;
     readonly reactify: UnwrapRef<typeof import("@vueuse/core")["reactify"]>;
     readonly reactifyObject: UnwrapRef<
       typeof import("@vueuse/core")["reactifyObject"]

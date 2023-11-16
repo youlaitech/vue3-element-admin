@@ -61,13 +61,6 @@ onMounted(() => {
           </template>
         </template>
       </el-menu-item>
-      <!-- <sidebar-item
-        v-for="route in topMenu"
-        :key="route.path"
-        :item="route"
-        :base-path="route.path"
-        :is-collapse="false"
-      /> -->
     </el-menu>
   </el-scrollbar>
 </template>

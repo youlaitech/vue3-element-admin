@@ -1,7 +1,7 @@
 {
   "name": "vue3-element-admin",
-  "private": true,
   "version": "2.6.7",
+  "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "vite serve --mode development",
@@ -63,7 +63,8 @@
     "vue": "^3.3.8",
     "vue-i18n": "9.2.2",
     "vue-router": "^4.2.5",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "dayjs": "^1.11.10"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",

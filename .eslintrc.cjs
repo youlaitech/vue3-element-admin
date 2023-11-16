@@ -83,7 +83,6 @@ module.exports = {
   ],
   // https://eslint.org/docs/latest/use/configure/language-options#specifying-globals
   globals: {
-    DialogOption: "readonly",
     OptionType: "readonly",
   },
 };

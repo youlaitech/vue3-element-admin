@@ -20,9 +20,10 @@ const deptFormRef = ref(ElForm);
 
 const loading = ref(false);
 const ids = ref<number[]>([]);
-const dialog = reactive<DialogOption>({
+const dialog = {
+  title: "",
   visible: false,
-});
+};
 
 const queryParams = reactive<DeptQuery>({});
 const deptList = ref<DeptVO[]>();

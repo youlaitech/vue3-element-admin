@@ -30,6 +30,8 @@ const mixLeftMenu = computed(() => {
   return permissionStore.mixLeftMenu;
 });
 const layout = computed(() => settingsStore.layout);
+const watermarkEnabled = computed(() => settingsStore.watermark.enabled);
+
 watch(
   () => activeTopMenu.value,
   (newVal) => {
@@ -78,29 +80,31 @@ function toggleSideBar() {
 
 <template>
   <div :class="classObj" class="app-wrapper">
-    <!-- 手机设备侧边栏打开遮罩层 -->
-    <div
-      v-if="classObj.mobile && classObj.openSidebar"
-      class="drawer-bg"
-      @click="handleOutsideClick"
-    ></div>
+    <el-watermark content="vue3-element-admin">
+      <!-- 手机设备侧边栏打开遮罩层 -->
+      <div
+        v-if="classObj.mobile && classObj.openSidebar"
+        class="drawer-bg"
+        @click="handleOutsideClick"
+      ></div>
 
-    <Sidebar class="sidebar-container" />
-    <template v-if="layout === 'mix'">
-      <div class="mix-wrap">
-        <div class="left-wrap">
-          <LeftMenu :menu-list="mixLeftMenu" :base-path="activeTopMenu" />
-          <div class="menu-action">
-            <hamburger
-              :is-active="appStore.sidebar.opened"
-              @toggle-click="toggleSideBar"
-            />
+      <Sidebar class="sidebar-container" />
+      <template v-if="layout === 'mix'">
+        <div class="mix-wrap">
+          <div class="left-wrap">
+            <LeftMenu :menu-list="mixLeftMenu" :base-path="activeTopMenu" />
+            <div class="menu-action">
+              <hamburger
+                :is-active="appStore.sidebar.opened"
+                @toggle-click="toggleSideBar"
+              />
+            </div>
           </div>
+          <Main />
         </div>
-        <Main />
-      </div>
-    </template>
-    <Main v-else />
+      </template>
+      <Main v-else />
+    </el-watermark>
   </div>
 </template>
 

@@ -32,9 +32,10 @@ const queryParams = reactive<RoleQuery>({
 
 const roleList = ref<RolePageVO[]>();
 
-const dialog = reactive<DialogOption>({
+const dialog = {
+  title: "",
   visible: false,
-});
+};
 
 const formData = reactive<RoleForm>({
   sort: 1,

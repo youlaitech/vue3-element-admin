@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTagsViewStore, TagView } from "@/store/modules/tagsView";
+import { useTagsViewStore } from "@/store/modules/tagsView";
 
 const tagAndTagSpacing = ref(4);
 const { proxy } = getCurrentInstance() as any;

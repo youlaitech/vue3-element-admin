@@ -7,15 +7,14 @@ declare module "*.vue" {
   export default component;
 }
 
-// 环境变量 TypeScript的智能提示
 interface ImportMetaEnv {
-  VITE_APP_TITLE: string;
+  /** 应用端口 */
   VITE_APP_PORT: string;
+  /** API 基础路径 */
   VITE_APP_BASE_API: string;
+  VITE_APP_API_URL: string;
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
-
-declare module "lodash-es";

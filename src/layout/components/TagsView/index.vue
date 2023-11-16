@@ -1,21 +1,76 @@
+<template>
+  <div class="tags-container">
+    <scroll-pane ref="scrollPaneRef" @scroll="handleScroll">
+      <router-link
+        ref="tagRef"
+        v-for="tag in visitedViews"
+        :key="tag.path"
+        :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
+        :data-path="tag.path"
+        :to="{ path: tag.path, query: tag.query }"
+        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
+        @contextmenu.prevent="openTagMenu(tag, $event)"
+      >
+        {{ translateRouteTitle(tag.title) }}
+        <span
+          v-if="!isAffix(tag)"
+          class="tags-item-close"
+          @click.prevent.stop="closeSelectedTag(tag)"
+        >
+          <i-ep-close size="10px" />
+        </span>
+      </router-link>
+    </scroll-pane>
+
+    <!-- tag标签操作菜单 -->
+    <ul
+      v-show="tagMenuVisible"
+      class="tag-menu"
+      :style="{ left: left + 'px', top: top + 'px' }"
+    >
+      <li @click="refreshSelectedTag(selectedTag)">
+        <svg-icon icon-class="refresh" />
+        刷新
+      </li>
+      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
+        <svg-icon icon-class="close" />
+        关闭
+      </li>
+      <li @click="closeOtherTags">
+        <svg-icon icon-class="close_other" />
+        关闭其它
+      </li>
+      <li v-if="!isFirstView()" @click="closeLeftTags">
+        <svg-icon icon-class="close_left" />
+        关闭左侧
+      </li>
+      <li v-if="!isLastView()" @click="closeRightTags">
+        <svg-icon icon-class="close_right" />
+        关闭右侧
+      </li>
+      <li @click="closeAllTags(selectedTag)">
+        <svg-icon icon-class="close_all" />
+        关闭所有
+      </li>
+    </ul>
+  </div>
+</template>
+
 <script setup lang="ts">
-import { getCurrentInstance, ComponentInternalInstance } from "vue";
 import { storeToRefs } from "pinia";
-
-import path from "path-browserify";
-
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, RouteRecordRaw } from "vue-router";
+import { resolve } from "path-browserify";
 
 import { translateRouteTitle } from "@/utils/i18n";
 
 import { usePermissionStore } from "@/store/modules/permission";
-import { useTagsViewStore, TagView } from "@/store/modules/tagsView";
+import { useTagsViewStore } from "@/store/modules/tagsView";
 import { useSettingsStore } from "@/store/modules/settings";
 import { useAppStore } from "@/store/modules/app";
 
 import ScrollPane from "./ScrollPane.vue";
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance;
+const { proxy } = getCurrentInstance()!;
 const router = useRouter();
 const route = useRoute();
 
@@ -27,11 +82,19 @@ const { visitedViews } = storeToRefs(tagsViewStore);
 const settingsStore = useSettingsStore();
 const layout = computed(() => settingsStore.layout);
 
-const selectedTag = ref({});
+const selectedTag = ref<TagView>({
+  path: "",
+  fullPath: "",
+  name: "",
+  title: "",
+  affix: false,
+  keepAlive: false,
+});
+
+const affixTags = ref<TagView[]>([]);
 const scrollPaneRef = ref();
 const left = ref(0);
 const top = ref(0);
-const affixTags = ref<TagView[]>([]);
 
 watch(
   route,
@@ -40,8 +103,7 @@ watch(
     moveToCurrentTag();
   },
   {
-    //初始化立即执行
-    immediate: true,
+    immediate: true, //初始化立即执行
   }
 );
 
@@ -54,27 +116,31 @@ watch(tagMenuVisible, (value) => {
   }
 });
 
-function filterAffixTags(routes: any[], basePath = "/") {
-  let tags: TagView[] = [];
+function filterAffixTags(routes: RouteRecordRaw[], basePath = "/") {
+  const processRoute = (route: RouteRecordRaw) => {
+    const fullPath = resolve(basePath, route.path);
 
-  routes.forEach((route) => {
-    if (route.meta && route.meta.affix) {
-      const tagPath = path.resolve(basePath, route.path);
-      tags.push({
-        fullPath: tagPath,
-        path: tagPath,
-        name: route.name,
-        meta: { ...route.meta },
-      });
+    const tag: TagView = {
+      path: route.path,
+      fullPath,
+      name: String(route.name),
+      title: route.meta?.title || "no-name",
+      affix: route.meta?.affix,
+      keepAlive: route.meta?.keepAlive,
+    };
+
+    if (tag.affix) {
+      tags.push(tag);
     }
 
     if (route.children) {
-      const childTags = filterAffixTags(route.children, route.path);
-      if (childTags.length >= 1) {
-        tags = tags.concat(childTags);
-      }
+      route.children.forEach(processRoute);
     }
-  });
+  };
+
+  let tags: TagView[] = [];
+  routes.forEach(processRoute);
+
   return tags;
 }
 
@@ -90,19 +156,35 @@ function initTags() {
 }
 
 function addTags() {
-  if (route.name) {
-    tagsViewStore.addView(route);
+  if (route.meta.title) {
+    tagsViewStore.addView({
+      name: route.name as string,
+      title: route.meta.title,
+      path: route.path,
+      fullPath: route.fullPath,
+      affix: route.meta?.affix,
+      keepAlive: route.meta?.keepAlive,
+    });
   }
 }
 
 function moveToCurrentTag() {
+  // 使用 nextTick() 的目的是确保在更新 tagsView 组件之前，scrollPaneRef 对象已经滚动到了正确的位置。
   nextTick(() => {
-    for (const r of tagsViewStore.visitedViews) {
-      if (r.path === route.path) {
-        scrollPaneRef.value.moveToTarget(r);
+    for (const tag of visitedViews.value) {
+      if (tag.path === route.path) {
+        scrollPaneRef.value.moveToTarget(tag);
         // when query is different then update
-        if (r.fullPath !== route.fullPath) {
-          tagsViewStore.updateVisitedView(route);
+        route.query = { ...route.query, ...tag.query };
+        if (tag.fullPath !== route.fullPath) {
+          tagsViewStore.updateVisitedView({
+            name: route.name as string,
+            title: route.meta.title,
+            path: route.path,
+            fullPath: route.fullPath,
+            affix: route.meta?.affix,
+            keepAlive: route.meta?.keepAlive,
+          });
         }
       }
     }
@@ -110,19 +192,18 @@ function moveToCurrentTag() {
 }
 
 function isActive(tag: TagView) {
-  return tag.path === route.path;
+  return tag.fullPath === route.fullPath;
 }
 
 function isAffix(tag: TagView) {
-  return tag.meta && tag.meta.affix;
+  return tag?.affix;
 }
 
 function isFirstView() {
   try {
     return (
-      (selectedTag.value as TagView).fullPath === "/dashboard" ||
-      (selectedTag.value as TagView).fullPath ===
-        tagsViewStore.visitedViews[1].fullPath
+      selectedTag.value.fullPath === "/dashboard" ||
+      selectedTag.value.fullPath === tagsViewStore.visitedViews[1].fullPath
     );
   } catch (err) {
     return false;
@@ -132,7 +213,7 @@ function isFirstView() {
 function isLastView() {
   try {
     return (
-      (selectedTag.value as TagView).fullPath ===
+      selectedTag.value.fullPath ===
       tagsViewStore.visitedViews[tagsViewStore.visitedViews.length - 1].fullPath
     );
   } catch (err) {
@@ -144,20 +225,18 @@ function refreshSelectedTag(view: TagView) {
   tagsViewStore.delCachedView(view);
   const { fullPath } = view;
   nextTick(() => {
-    router.replace({ path: "/redirect" + fullPath }).catch((err) => {
-      console.warn(err);
-    });
+    router.replace({ path: "/redirect" + fullPath });
   });
 }
 
-function toLastView(visitedViews: TagView[], view?: any) {
+function toLastView(visitedViews: TagView[], view?: TagView) {
   const latestView = visitedViews.slice(-1)[0];
   if (latestView && latestView.fullPath) {
     router.push(latestView.fullPath);
   } else {
     // now the default is to redirect to the home page if there is no tags-view,
     // you can adjust it according to your needs.
-    if (view.name === "Dashboard") {
+    if (view?.name === "Dashboard") {
       // to reload home page
       router.replace({ path: "/redirect" + view.fullPath });
     } else {
@@ -288,63 +367,6 @@ onMounted(() => {
   initTags();
 });
 </script>
-
-<template>
-  <div class="tags-container">
-    <scroll-pane ref="scrollPaneRef" @scroll="handleScroll">
-      <router-link
-        v-for="tag in visitedViews"
-        :key="tag.path"
-        :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
-        :data-path="tag.path"
-        :to="{ path: tag.path, query: tag.query }"
-        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
-        @contextmenu.prevent="openTagMenu(tag, $event)"
-      >
-        {{ translateRouteTitle(tag.meta?.title) }}
-        <span
-          v-if="!isAffix(tag)"
-          class="tags-item-close"
-          @click.prevent.stop="closeSelectedTag(tag)"
-        >
-          <i-ep-close class="text-[10px]" />
-        </span>
-      </router-link>
-    </scroll-pane>
-
-    <!-- tag标签操作菜单 -->
-    <ul
-      v-show="tagMenuVisible"
-      class="tag-menu"
-      :style="{ left: left + 'px', top: top + 'px' }"
-    >
-      <li @click="refreshSelectedTag(selectedTag)">
-        <svg-icon icon-class="refresh" />
-        刷新
-      </li>
-      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        <svg-icon icon-class="close" />
-        关闭
-      </li>
-      <li @click="closeOtherTags">
-        <svg-icon icon-class="close_other" />
-        关闭其它
-      </li>
-      <li v-if="!isFirstView()" @click="closeLeftTags">
-        <svg-icon icon-class="close_left" />
-        关闭左侧
-      </li>
-      <li v-if="!isLastView()" @click="closeRightTags">
-        <svg-icon icon-class="close_right" />
-        关闭右侧
-      </li>
-      <li @click="closeAllTags(selectedTag)">
-        <svg-icon icon-class="close_all" />
-        关闭所有
-      </li>
-    </ul>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .tags-container {
