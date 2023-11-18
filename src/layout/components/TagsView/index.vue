@@ -185,7 +185,7 @@ function moveToCurrentTag() {
         if (tag.fullPath !== route.fullPath) {
           tagsViewStore.updateVisitedView({
             name: route.name as string,
-            title: route.meta.title,
+            title: route.meta.title || "",
             path: route.path,
             fullPath: route.fullPath,
             affix: route.meta?.affix,

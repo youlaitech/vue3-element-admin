@@ -5,7 +5,7 @@ declare module "vue-router" {
   // 可以通过扩展 RouteMeta 接口来输入 meta 字段
   interface RouteMeta {
     /** 菜单名称 */
-    title: string;
+    title?: string;
     /** 菜单图标  */
     icon?: string;
     /** 菜单是否隐藏 */
