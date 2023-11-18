@@ -29,10 +29,10 @@ const queryParams = reactive<DictTypeQuery>({
 
 const dictTypeList = ref<DictTypePageVO[]>();
 
-const dialog = {
+const dialog = reactive({
   title: "",
   visible: false,
-};
+});
 
 const formData = reactive<DictTypeForm>({
   status: 1,

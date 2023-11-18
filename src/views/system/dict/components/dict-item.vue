@@ -53,10 +53,10 @@ const queryParams = reactive<DictQuery>({
 
 const dictList = ref<DictPageVO[]>();
 
-const dialog = {
+const dialog = reactive({
   title: "",
   visible: false,
-};
+});
 
 const formData = reactive<DictForm>({
   status: 1,

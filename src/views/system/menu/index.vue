@@ -24,10 +24,10 @@ const queryFormRef = ref(ElForm);
 const menuFormRef = ref(ElForm);
 
 const loading = ref(false);
-const dialog = {
+const dialog = reactive({
   title: "",
   visible: false,
-};
+});
 
 const queryParams = reactive<MenuQuery>({});
 const menuList = ref<MenuVO[]>([]);
