@@ -9,7 +9,7 @@ export default {
     username: "Username",
     password: "Password",
     login: "Login",
-    verifyCode: "Verify Code",
+    captchaCode: "Verify Code",
   },
   // 导航栏国际化
   navbar: {

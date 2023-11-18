@@ -14,12 +14,12 @@ export interface LoginData {
   /**
    * 验证码缓存key
    */
-  verifyCodeKey?: string;
+  captchaKey?: string;
 
   /**
    * 验证码
    */
-  verifyCode?: string;
+  captchaCode?: string;
 }
 
 /**
@@ -51,9 +51,9 @@ export interface CaptchaResult {
   /**
    * 验证码缓存key
    */
-  verifyCodeKey: string;
+  captchaKey: string;
   /**
    * 验证码图片Base64字符串
    */
-  captchaImgBase64: string;
+  captchaBase64: string;
 }

@@ -70,15 +70,15 @@
         </el-tooltip>
 
         <!-- 验证码 -->
-        <el-form-item prop="verifyCode">
+        <el-form-item prop="captchaCode">
           <span class="p-2">
-            <svg-icon icon-class="verify-code" />
+            <svg-icon icon-class="captcha" />
           </span>
 
           <el-input
-            v-model="loginData.verifyCode"
+            v-model="loginData.captchaCode"
             auto-complete="off"
-            :placeholder="$t('login.verifyCode')"
+            :placeholder="$t('login.captchaCode')"
             class="w-[60%]"
             @keyup.enter="handleLogin"
           />
@@ -211,11 +211,11 @@ const loginRules = computed(() => {
         message: `${prefix}${t("login.password")}`,
       },
     ],
-    verifyCode: [
+    captchaCode: [
       {
         required: true,
         trigger: "blur",
-        message: `${prefix}${t("login.verifyCode")}`,
+        message: `${prefix}${t("login.captchaCode")}`,
       },
     ],
   };
@@ -234,9 +234,8 @@ function checkCapslock(e: any) {
  */
 function getCaptcha() {
   getCaptchaApi().then(({ data }) => {
-    const { captchaImgBase64, verifyCodeKey } = data;
-    loginData.value.verifyCodeKey = verifyCodeKey;
-    captchaBase64.value = captchaImgBase64;
+    loginData.value.captchaKey = data.captchaKey;
+    captchaBase64.value = data.captchaBase64;
   });
 }
 

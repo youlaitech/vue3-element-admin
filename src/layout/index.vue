@@ -80,31 +80,30 @@ function toggleSideBar() {
 
 <template>
   <div :class="classObj" class="app-wrapper">
-    <el-watermark content="vue3-element-admin">
-      <!-- 手机设备侧边栏打开遮罩层 -->
-      <div
-        v-if="classObj.mobile && classObj.openSidebar"
-        class="drawer-bg"
-        @click="handleOutsideClick"
-      ></div>
+    <!-- 手机设备侧边栏打开遮罩层 -->
+    <div
+      v-if="classObj.mobile && classObj.openSidebar"
+      class="drawer__background"
+      @click="handleOutsideClick"
+    ></div>
 
-      <Sidebar class="sidebar-container" />
-      <template v-if="layout === 'mix'">
-        <div class="mix-wrap">
-          <div class="left-wrap">
-            <LeftMenu :menu-list="mixLeftMenu" :base-path="activeTopMenu" />
-            <div class="menu-action">
-              <hamburger
-                :is-active="appStore.sidebar.opened"
-                @toggle-click="toggleSideBar"
-              />
-            </div>
-          </div>
-          <Main />
+    <Sidebar class="sidebar-container" />
+
+    <div v-if="layout === 'mix'" class="mix-wrapper">
+      <div class="mix-wrapper__left">
+        <LeftMenu :menu-list="mixLeftMenu" :base-path="activeTopMenu" />
+        <!-- 展开/收缩侧边栏菜单 -->
+        <div class="toggle-sidebar">
+          <hamburger
+            :is-active="appStore.sidebar.opened"
+            @toggle-click="toggleSideBar"
+          />
         </div>
-      </template>
-      <Main v-else />
-    </el-watermark>
+      </div>
+      <Main />
+    </div>
+
+    <Main v-else />
   </div>
 </template>
 
@@ -126,7 +125,7 @@ function toggleSideBar() {
   }
 }
 
-.drawer-bg {
+.drawer__background {
   position: absolute;
   top: 0;
   z-index: 999;
@@ -177,12 +176,12 @@ function toggleSideBar() {
     margin-left: 0;
   }
 
-  .mix-wrap {
+  .mix-wrapper {
     display: flex;
     height: 100%;
     padding-top: 50px;
 
-    .left-wrap {
+    .mix-wrapper__left {
       position: relative;
       height: 100%;
 
@@ -190,7 +189,7 @@ function toggleSideBar() {
         height: 100%;
       }
 
-      .menu-action {
+      .toggle-sidebar {
         position: absolute;
         bottom: 0;
         display: flex;
@@ -219,8 +218,8 @@ function toggleSideBar() {
 }
 
 .openSidebar {
-  .mix-wrap {
-    .left-wrap {
+  .mix-wrapper {
+    .mix-wrapper__left {
       width: $sideBarWidth;
     }
 
