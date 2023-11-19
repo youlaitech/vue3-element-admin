@@ -1,18 +1,5 @@
 declare global {
   /**
-   * 系统名称、版本、依赖、构建时间的类型提示
-   */
-  const __APP_INFO__: {
-    pkg: {
-      name: string;
-      version: string;
-      dependencies: Recordable<string>;
-      devDependencies: Recordable<string>;
-    };
-    lastBuildTime: string;
-  };
-
-  /**
    * 分页查询参数
    */
   interface PageQuery {
