@@ -168,6 +168,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/image/style/css",
         "element-plus/es/components/statistic/style/css",
         "element-plus/es/components/watermark/style/css",
+        "element-plus/es/components/config-provider/style/css",
         "@vueuse/core",
         "sortablejs",
         "path-to-regexp",
