@@ -81,7 +81,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         vueTemplate: true,
         // 配置文件生成位置(false:关闭自动生成)
         dts: false,
-        // dts: "types/auto-imports.d.ts",
+        // dts: "src/typings/auto-imports.d.ts",
       }),
 
       Components({
@@ -95,7 +95,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         dirs: ["src/components", "src/**/components"],
         // 配置文件位置 (false:关闭自动生成)
         dts: false,
-        // dts: "types/components.d.ts",
+        // dts: "src/typings/components.d.ts",
       }),
 
       Icons({
