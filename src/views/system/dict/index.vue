@@ -149,10 +149,10 @@ function handleDelete(dictTypeId?: number) {
   });
 }
 
-const dictDataDialog = {
+const dictDataDialog = reactive({
   title: "",
   visible: false,
-};
+});
 
 const selectedDictType = reactive({ typeCode: "", typeName: "" }); // 当前选中的字典类型
 
