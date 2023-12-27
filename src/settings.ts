@@ -1,6 +1,6 @@
 const defaultSettings: AppSettings = {
   title: "vue3-element-admin",
-  version: "v2.7.2",
+  version: "v2.8.0",
   showSettings: true,
   tagsView: true,
   fixedHeader: false,

@@ -1,7 +1,7 @@
 <p align="center">
-    <img src="https://img.shields.io/badge/Vue-3.3.4-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-4.4.11-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.3.14-blue.svg"/>
+    <img src="https://img.shields.io/badge/Vue-3.3.13-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vite-5.0.10-green.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.4.4-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -55,7 +55,7 @@
 | 环境                 | 名称版本                                                     | 备注                                                         |
 | -------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
 | **开发工具**         | VSCode                                                       | [下载地址](https://code.visualstudio.com/Download)           |
-| **运行环境**         | Node 16+                                                     | [下载地址](http://nodejs.cn/download)                        |
+| **运行环境**         | Node 18+                                                     | [下载地址](http://nodejs.cn/download)                        |
 | **VSCode插件(必装)** | 1. `Vue Language Features (Volar) ` <br/> 2. `TypeScript Vue Plugin (Volar) `  <br/>3. 禁用 Vetur | ![vscode-plugin](https://foruda.gitee.com/images/1687755823108948048/d0198b2d_716974.png) |
 
 
