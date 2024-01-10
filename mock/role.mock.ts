@@ -164,4 +164,47 @@ export default defineMock([
       msg: "一切ok",
     },
   },
+
+  {
+    url: "/api/v1/roles/:id/form",
+    method: ["GET"],
+    body: ({ params }) => {
+      const id = params.id;
+      let formData = null;
+      if (id == 2) {
+        formData = {
+          id: 2,
+          name: "系统管理员",
+          code: "ADMIN",
+          sort: 2,
+          status: 1,
+          dataScope: 1,
+        };
+      } else if (id == 3) {
+        formData = {
+          id: 3,
+          name: "访问游客",
+          code: "GUEST",
+          sort: 3,
+          status: 1,
+          dataScope: 2,
+        };
+      } else {
+        formData = {
+          id: 4,
+          name: "系统管理员1",
+          code: "ADMIN1",
+          sort: 2,
+          status: 1,
+          dataScope: 1,
+        };
+      }
+
+      return {
+        code: "00000",
+        data: formData,
+        msg: "一切ok",
+      };
+    },
+  },
 ]);
