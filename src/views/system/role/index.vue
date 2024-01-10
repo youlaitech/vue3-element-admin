@@ -182,7 +182,6 @@ function openMenuDialog(row: RolePageVO) {
       getRoleMenuIds(roleId)
         .then(({ data }) => {
           const checkedMenuIds = data;
-          console.log("勾选权限", checkedMenuIds);
           checkedMenuIds.forEach((menuId) =>
             menuRef.value.setChecked(menuId, true, false)
           );

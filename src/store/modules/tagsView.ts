@@ -4,13 +4,10 @@ export const useTagsViewStore = defineStore("tagsView", () => {
   const visitedViews = ref<TagView[]>([]);
   const cachedViews = ref<string[]>([]);
 
-  console.log("first visitedViews", visitedViews, "cachedViews", cachedViews);
-
   /**
    * 添加已访问视图到已访问视图列表中
    */
   function addVisitedView(view: TagView) {
-    console.log("addVisitedView", visitedViews, view);
     // 如果已经存在于已访问的视图列表中，则不再添加
     if (visitedViews.value.some((v) => v.fullPath === view.fullPath)) {
       return;
@@ -28,7 +25,6 @@ export const useTagsViewStore = defineStore("tagsView", () => {
    * 添加缓存视图到缓存视图列表中
    */
   function addCachedView(view: TagView) {
-    console.log("addCachedView", visitedViews, view);
     const viewName = view.name;
     // 如果缓存视图名称已经存在于缓存视图列表中，则不再添加
     if (cachedViews.value.includes(viewName)) {
@@ -90,7 +86,6 @@ export const useTagsViewStore = defineStore("tagsView", () => {
   }
 
   function updateVisitedView(view: TagView) {
-    console.log("updateVisitedView", visitedViews, view);
     for (let v of visitedViews.value) {
       if (v.path === view.path) {
         v = Object.assign(v, view);
@@ -100,7 +95,6 @@ export const useTagsViewStore = defineStore("tagsView", () => {
   }
 
   function addView(view: TagView) {
-    console.log("addView", visitedViews, view);
     addVisitedView(view);
     addCachedView(view);
   }
