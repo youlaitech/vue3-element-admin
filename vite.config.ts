@@ -9,8 +9,8 @@ import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
 
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
+import mockDevServerPlugin from "vite-plugin-mock-dev-server";
 
-import { viteMockServe } from "vite-plugin-mock";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 
 import UnoCSS from "unocss/vite";
@@ -47,15 +47,14 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       open: true,
       proxy: {
         /**
-         * 反向代理解决跨域配置
-         * http://localhost:3000/dev-api/users (F12可见请求路径) => http://localhost:8989/users (实际请求后端 API 路径)
-         *
          * env.VITE_APP_BASE_API: /dev-api
-         * env.VITE_APP_API_URL: http://localhost:8989
          */
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
-          target: env.VITE_APP_API_URL,
+          // 线上接口地址
+          target: "http://vapi.youlai.tech",
+          // 开发接口地址
+          // target: http://localhost:8989
           rewrite: (path) =>
             path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
@@ -107,11 +106,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 指定symbolId格式
         symbolId: "icon-[dir]-[name]",
       }),
-      viteMockServe({
-        ignore: /^\_/,
-        mockPath: "mock",
-        enable: mode === "development",
-      }),
+      // 开启 mock
+      mockDevServerPlugin(),
     ],
     // 预加载项目必需的组件
     optimizeDeps: {
