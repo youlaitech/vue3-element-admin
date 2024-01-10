@@ -62,12 +62,12 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     plugins: [
       vue(),
+      // MOCK 服务，开启 MOCK 放开注释即可
+      // mockDevServerPlugin(),
       vueJsx(),
       UnoCSS({
         hmrTopLevelAwait: false,
       }),
-      // MOCK 服务
-      mockDevServerPlugin(),
       // 自动导入参考： https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
