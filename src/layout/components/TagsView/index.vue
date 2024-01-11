@@ -4,20 +4,20 @@
       <router-link
         ref="tagRef"
         v-for="tag in visitedViews"
-        :key="tag.path"
+        :key="tag.fullPath"
         :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
-        :data-path="tag.path"
-        :to="{ path: tag.path, query: tag.query }"
+        :to="{ path: tag.fullPath, query: tag.query }"
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent="openTagMenu(tag, $event)"
       >
         {{ translateRouteTitle(tag.title) }}
-        <span
-          v-if="!isAffix(tag)"
-          class="tags-item-close"
-          @click.prevent.stop="closeSelectedTag(tag)"
-        >
-          <i-ep-close size="10px" />
+
+        <span class="inline-block hover:color-white rounded-full">
+          <i-ep-close
+            size="12px"
+            v-if="!isAffix(tag)"
+            @click.prevent.stop="closeSelectedTag(tag)"
+          />
         </span>
       </router-link>
     </scroll-pane>
@@ -409,15 +409,6 @@ onMounted(() => {
         content: "";
         background: #fff;
         border-radius: 50%;
-      }
-    }
-
-    &-close {
-      border-radius: 100%;
-
-      &:hover {
-        color: #fff;
-        background: rgb(0 0 0 / 16%);
       }
     }
   }
