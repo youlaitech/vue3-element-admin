@@ -12,7 +12,7 @@
       >
         {{ translateRouteTitle(tag.title) }}
 
-        <span class="inline-block hover:color-white rounded-full">
+        <span class="inline-block rounded-full">
           <i-ep-close
             size="12px"
             v-if="!isAffix(tag)"
