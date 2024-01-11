@@ -14,7 +14,7 @@
 
 ## 项目介绍
 
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite4+ TypeScript5 + Element-Plus + Pinia 等最新主流技术栈构建的后台管理前端模板（配套后端源码）。
+[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等最新主流技术栈构建的后台管理前端模板（配套[后端源码(]https://gitee.com/youlaiorg/youlai-boot)）。
 
 项目有以下特性：
 
@@ -80,7 +80,7 @@ pnpm run dev
 
 ## 开启Mock
 
-默认使用线上接口，要使用 Mock 接口，只需在 vite.config.ts 文件的 plugins 配置中取消对 mockDevServerPlugin() 的注释**即可**。
+项目同时支持在线和 Mock 接口，默认使用线上接口，如需替换为 Mock 接口，只需在 `vite.config.ts` 文件的 `plugins` 配置中取消对 `mockDevServerPlugin()` 的注释**即可**。
 
 ## 项目部署
 
