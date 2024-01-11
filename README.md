@@ -14,7 +14,7 @@
 
 ## 项目介绍
 
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等最新主流技术栈构建的后台管理前端模板（配套[后端源码(]https://gitee.com/youlaiorg/youlai-boot)）。
+[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等最新主流技术栈构建的后台管理前端模板（配套[后端源码](https://gitee.com/youlaiorg/youlai-boot)）。
 
 项目有以下特性：
 
