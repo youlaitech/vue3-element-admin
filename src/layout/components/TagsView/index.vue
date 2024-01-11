@@ -12,13 +12,11 @@
       >
         {{ translateRouteTitle(tag.title) }}
 
-        <span class="inline-block rounded-full">
-          <i-ep-close
-            size="12px"
-            v-if="!isAffix(tag)"
-            @click.prevent.stop="closeSelectedTag(tag)"
-          />
-        </span>
+        <i-ep-close
+          size="12px"
+          v-if="!isAffix(tag)"
+          @click.prevent.stop="closeSelectedTag(tag)"
+        />
       </router-link>
     </scroll-pane>
 
