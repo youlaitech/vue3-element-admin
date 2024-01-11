@@ -1,7 +1,7 @@
 <p align="center">
-    <img src="https://img.shields.io/badge/Vue-3.3.13-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-5.0.10-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.4.4-blue.svg"/>
+    <img src="https://img.shields.io/badge/Vue-3.4.8-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vite-5.0.11-green.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.5.0-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -78,6 +78,10 @@ pnpm install
 pnpm run dev
 ```
 
+## 开启Mock
+
+默认使用线上接口，要使用 Mock 接口，只需在 vite.config.ts 文件的 plugins 配置中取消对 mockDevServerPlugin() 的注释**即可**。
+
 ## 项目部署
 
 ```bash
@@ -122,27 +126,23 @@ server {
 
 	重启 VSCode 尝试
 
-- **接口切换 Mock**
-
-	v2.5.0 版本支持 Mock , 修改 `.env.development` 的 `VITE_APP_API_URL` 值为 `http://localhost:3000` 即可 。
-
 - **其他问题**
 
   如果有其他问题或者建议，建议 [ISSUE](https://gitee.com/youlaiorg/vue3-element-admin/issues/new)
 
-## 接口支持
+## 后端接口
 
-- **接口调用地址**：[https://vapi.youlai.tech](https://vapi.youlai.tech)
+- **后端接口地址**：[https://vapi.youlai.tech](https://vapi.youlai.tech)
 
 - **接口文档地址**：[在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)
 
-- **OpenAPI文档地址**：[http://vapi.youlai.tech/v3/api-docs](http://vapi.youlai.tech/v3/api-docs)
+- **OpenAPI地址**：[http://vapi.youlai.tech/v3/api-docs](http://vapi.youlai.tech/v3/api-docs)
 
-- **本地接口**：默认使用线上接口，你可以通过以下步骤完成本地接口环境搭建：
+- **本地接口环境搭建**：
+   - 首先，获取基于 `Java` 和 `SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码。
+   - 其次，根据后端工程的说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动。
+   - 最后，修改 `vite.config.ts` 文件中的 `server.proxy` 配置项，将 target 的值从 `http://vapi.youlai.tech` 更改为 `http://localhost:8989`。
 
-  > 1. 获取基于 `Java 、SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码 ;
-  > 2. 根据后端工程说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动; 
-  > 3. 替换 [.env.development](.env.development) 的代理目标地址 `VITE_APP_API_URL` 的值  `vapi.youlai.tech` 为本地的 `localhost:8989`
 
 
 
