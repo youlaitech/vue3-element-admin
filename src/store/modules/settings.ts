@@ -38,10 +38,12 @@ export const useSettingsStore = defineStore("setting", () => {
     const setting = settingsMap[key];
     if (setting !== undefined) {
       setting.value = value;
-      if (key === "theme" && value === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
+      if (key === "theme") {
+        if (value === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
       }
     }
   }
