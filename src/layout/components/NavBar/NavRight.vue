@@ -70,16 +70,19 @@ function logout() {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(() => {
-    userStore
-      .logout()
-      .then(() => {
-        tagsViewStore.delAllViews();
-      })
-      .then(() => {
-        router.push(`/login?redirect=${route.fullPath}`);
-      });
-  });
+    lockScroll: false,
+  })
+    .then(() => {
+      userStore
+        .logout()
+        .then(() => {
+          tagsViewStore.delAllViews();
+        })
+        .then(() => {
+          router.push(`/login?redirect=${route.fullPath}`);
+        });
+    })
+    .catch(() => {});
 }
 </script>
 <style lang="scss" scoped>
