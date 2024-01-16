@@ -87,6 +87,7 @@
             <el-image
               :src="captchaBase64"
               @click="getCaptcha"
+              :style="{ height: captchaHeight }"
               class="w-[120px] h-[48px] cursor-pointer"
             >
               <template #error>
@@ -238,6 +239,17 @@ function getCaptcha() {
     captchaBase64.value = data.captchaBase64;
   });
 }
+/**
+ * 根据组件大小调整验证码图片高度
+ */
+const captchaHeight = computed(() => {
+  if (appStore.size === "large") {
+    return "56px";
+  } else if (appStore.size === "small") {
+    return "40px";
+  }
+  return "48px";
+});
 
 /**
  * 登录
