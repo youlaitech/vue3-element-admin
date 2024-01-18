@@ -1,3 +1,18 @@
+<template>
+  <div :class="{ hasTagsView: showTagsView }" class="main-container">
+    <div :class="{ 'fixed-header': fixedHeader, device: device }">
+      <navbar v-if="layout === 'left'" />
+      <tags-view v-if="showTagsView" />
+    </div>
+    <!--主页面-->
+    <app-main />
+    <!-- 设置面板 -->
+    <RightPanel v-if="showSettings">
+      <settings />
+    </RightPanel>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { computed, watchEffect } from "vue";
 import { useWindowSize } from "@vueuse/core";
@@ -42,20 +57,6 @@ watchEffect(() => {
   }
 });
 </script>
-<template>
-  <div :class="{ hasTagsView: showTagsView }" class="main-container">
-    <div :class="{ 'fixed-header': fixedHeader, device: device }">
-      <navbar v-if="layout === 'left'" />
-      <tags-view v-if="showTagsView" />
-    </div>
-    <!--主页面-->
-    <app-main />
-    <!-- 设置面板 -->
-    <RightPanel v-if="showSettings">
-      <settings />
-    </RightPanel>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .fixed-header {
@@ -75,14 +76,12 @@ watchEffect(() => {
   width: 100%;
 }
 
-.isTop .fixed-header {
+body[layout="top"] .fixed-header {
+  top: 50px;
   width: 100% !important;
 }
 
-.isMix,
-.isTop {
-  .fixed-header {
-    top: 50px;
-  }
+body[layout="mix"] .fixed-header {
+  top: 50px;
 }
 </style>

@@ -132,8 +132,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import router from "@/router";
-import LangSelect from "@/components/LangSelect/index.vue";
-import SvgIcon from "@/components/SvgIcon/index.vue";
 import IconEpSunny from "~icons/ep/sunny";
 import IconEpMoon from "~icons/ep/moon";
 import { useSettingsStore } from "@/store/modules/settings";

@@ -46,7 +46,7 @@ function resolvePath(routePath: string) {
 </script>
 <template>
   <el-menu
-    :default-active="layout === 'top' ? '-' : currRoute.path"
+    :default-active="currRoute.path"
     :collapse="!appStore.sidebar.opened"
     :background-color="variables.menuBg"
     :text-color="variables.menuText"

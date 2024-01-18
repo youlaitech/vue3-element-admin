@@ -54,7 +54,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           // 线上接口地址
           target: "http://vapi.youlai.tech",
           // 开发接口地址
-          // target: http://localhost:8989
+          //target: "http://localhost:8989",
           rewrite: (path) =>
             path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
@@ -71,7 +71,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       // 自动导入参考： https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
-        imports: ["vue", "@vueuse/core"],
+        imports: ["vue", "@vueuse/core", "pinia", "vue-router"],
         // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
         resolvers: [ElementPlusResolver(), IconsResolver({})],
         eslintrc: {
@@ -81,8 +81,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         },
         vueTemplate: true,
         // 配置文件生成位置(false:关闭自动生成)
-        dts: false,
-        // dts: "src/typings/auto-imports.d.ts",
+        // dts: false,
+        dts: "src/typings/auto-imports.d.ts",
       }),
 
       Components({

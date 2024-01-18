@@ -1,8 +1,97 @@
+<template>
+  <div class="settings-container">
+    <h3 class="text-base font-bold">项目配置</h3>
+    <el-divider>主题设置</el-divider>
+
+    <div class="flex-center">
+      <el-switch
+        v-model="isDark"
+        :active-icon="IconEpMoon"
+        :inactive-icon="IconEpSunny"
+        @change="handleThemeChange"
+      />
+    </div>
+
+    <el-divider>界面设置</el-divider>
+    <div class="py-[8px] flex justify-between">
+      <el-text>开启 Tags-View</el-text>
+      <el-switch v-model="settingsStore.tagsView" />
+    </div>
+
+    <div class="py-[8px] flex justify-between">
+      <span class="text-xs">固定 Header</span>
+      <el-switch v-model="settingsStore.fixedHeader" />
+    </div>
+
+    <div class="py-[8px] flex justify-between">
+      <span class="text-xs">侧边栏 Logo</span>
+      <el-switch v-model="settingsStore.sidebarLogo" />
+    </div>
+
+    <el-divider>主题颜色</el-divider>
+
+    <ul class="w-full space-x-2 flex justify-center py-2">
+      <li
+        v-for="(color, index) in themeColors"
+        :key="index"
+        class="inline-block w-[30px] h-[30px] cursor-pointer theme-wrap"
+        :style="{ background: color }"
+        @click="changeThemeColor(color)"
+      >
+        <i-ep-check v-show="color === currentThemeColor" />
+      </li>
+    </ul>
+
+    <el-divider>导航设置</el-divider>
+
+    <ul class="layout">
+      <el-tooltip content="左侧模式" placement="bottom">
+        <li
+          :class="
+            'layout-item layout-left ' +
+            (settingsStore.layout === 'left' ? 'is-active' : '')
+          "
+          @click="changeLayout('left')"
+        >
+          <div></div>
+          <div></div>
+        </li>
+      </el-tooltip>
+      <el-tooltip content="顶部模式" placement="bottom">
+        <li
+          :class="
+            'layout-item layout-top ' +
+            (settingsStore.layout === 'top' ? 'is-active' : '')
+          "
+          @click="changeLayout('top')"
+        >
+          <div></div>
+          <div></div>
+        </li>
+      </el-tooltip>
+      <el-tooltip content="混合模式" placement="bottom">
+        <li
+          :class="
+            'layout-item layout-mix ' +
+            (settingsStore.layout === 'mix' ? 'is-active' : '')
+          "
+          @click="changeLayout('mix')"
+        >
+          <div></div>
+          <div></div>
+        </li>
+      </el-tooltip>
+    </ul>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { useSettingsStore } from "@/store/modules/settings";
 import { usePermissionStore } from "@/store/modules/permission";
 import { useAppStore } from "@/store/modules/app";
 import { useRoute } from "vue-router";
+import IconEpSunny from "~icons/ep/sunny";
+import IconEpMoon from "~icons/ep/moon";
 
 const route = useRoute();
 
@@ -76,6 +165,19 @@ function changeThemeColor(color: string) {
 const currentThemeColor = computed(() => {
   return settingsStore.themeColor;
 });
+
+/**
+ * 切换主题
+ */
+const isDark = ref<boolean>(settingsStore.theme === "dark");
+const handleThemeChange = (isDark: any) => {
+  useToggle(isDark);
+  settingsStore.changeSetting({
+    key: "theme",
+    value: isDark ? "dark" : "light",
+  });
+};
+
 onMounted(() => {
   window.document.body.setAttribute("layout", settingsStore.layout);
   const theme = settingsStore.theme;
@@ -89,83 +191,6 @@ onMounted(() => {
   );
 });
 </script>
-
-<template>
-  <div class="settings-container">
-    <h3 class="text-base font-bold">项目配置</h3>
-
-    <el-divider>界面设置</el-divider>
-    <div class="py-[8px] flex justify-between">
-      <span class="text-xs">开启 Tags-View</span>
-      <el-switch v-model="settingsStore.tagsView" />
-    </div>
-
-    <div class="py-[8px] flex justify-between">
-      <span class="text-xs">固定 Header</span>
-      <el-switch v-model="settingsStore.fixedHeader" />
-    </div>
-
-    <div class="py-[8px] flex justify-between">
-      <span class="text-xs">侧边栏 Logo</span>
-      <el-switch v-model="settingsStore.sidebarLogo" />
-    </div>
-
-    <el-divider>主题颜色</el-divider>
-
-    <ul class="w-full space-x-2 flex justify-center py-2">
-      <li
-        v-for="(color, index) in themeColors"
-        :key="index"
-        class="inline-block w-[30px] h-[30px] cursor-pointer theme-wrap"
-        :style="{ background: color }"
-        @click="changeThemeColor(color)"
-      >
-        <i-ep-check v-show="color === currentThemeColor" />
-      </li>
-    </ul>
-
-    <el-divider>导航设置</el-divider>
-
-    <ul class="layout">
-      <el-tooltip content="左侧模式" placement="bottom">
-        <li
-          :class="
-            'layout-item layout-left ' +
-            (settingsStore.layout === 'left' ? 'is-active' : '')
-          "
-          @click="changeLayout('left')"
-        >
-          <div></div>
-          <div></div>
-        </li>
-      </el-tooltip>
-      <el-tooltip content="顶部模式" placement="bottom">
-        <li
-          :class="
-            'layout-item layout-top ' +
-            (settingsStore.layout === 'top' ? 'is-active' : '')
-          "
-          @click="changeLayout('top')"
-        >
-          <div></div>
-          <div></div>
-        </li>
-      </el-tooltip>
-      <el-tooltip content="混合模式" placement="bottom">
-        <li
-          :class="
-            'layout-item layout-mix ' +
-            (settingsStore.layout === 'mix' ? 'is-active' : '')
-          "
-          @click="changeLayout('mix')"
-        >
-          <div></div>
-          <div></div>
-        </li>
-      </el-tooltip>
-    </ul>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .settings-container {
