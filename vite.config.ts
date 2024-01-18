@@ -81,8 +81,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         },
         vueTemplate: true,
         // 配置文件生成位置(false:关闭自动生成)
-        // dts: false,
-        dts: "src/typings/auto-imports.d.ts",
+        dts: false,
+        // dts: "src/typings/auto-imports.d.ts",
       }),
 
       Components({
