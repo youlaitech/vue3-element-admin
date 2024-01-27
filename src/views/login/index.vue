@@ -55,7 +55,6 @@
               class="flex-1"
               :placeholder="$t('login.password')"
               :type="passwordVisible === false ? 'password' : 'input'"
-              size="large"
               name="password"
               @keyup="checkCapslock"
               @keyup.enter="handleLogin"
@@ -70,25 +69,27 @@
         </el-tooltip>
 
         <!-- 验证码 -->
-        <el-form-item prop="captchaCode">
-          <span class="p-2">
-            <svg-icon icon-class="captcha" />
-          </span>
+        <el-form-item prop="captchaCode" class="captcha-container">
+          <div class="input-and-icon">
+            <span class="p-2">
+              <svg-icon icon-class="captcha" />
+            </span>
 
-          <el-input
-            v-model="loginData.captchaCode"
-            auto-complete="off"
-            :placeholder="$t('login.captchaCode')"
-            class="w-[60%]"
-            @keyup.enter="handleLogin"
-          />
+            <el-input
+              v-model="loginData.captchaCode"
+              auto-complete="off"
+              :placeholder="$t('login.captchaCode')"
+              class="flex-1"
+              @keyup.enter="handleLogin"
+            />
+          </div>
 
           <div class="captcha">
             <el-image
               :src="captchaBase64"
               @click="getCaptcha"
               :style="{ height: captchaHeight }"
-              class="w-[120px] h-[48px] cursor-pointer"
+              class="captcha-image"
             >
               <template #error>
                 <div class="image-slot">
@@ -134,11 +135,7 @@ import { useI18n } from "vue-i18n";
 import router from "@/router";
 import IconEpSunny from "~icons/ep/sunny";
 import IconEpMoon from "~icons/ep/moon";
-import { useSettingsStore } from "@/store/modules/settings";
-
-// 状态管理依赖
-import { useUserStore } from "@/store/modules/user";
-import { useAppStore } from "@/store/modules/app";
+import { useSettingsStore, useUserStore, useAppStore } from "@/store";
 
 // API依赖
 import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
@@ -316,23 +313,41 @@ onMounted(() => {
   .login-form {
     padding: 30px 10px;
 
-    .captcha {
-      position: absolute;
-      top: 0;
-      right: 0;
+    .captcha-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
-      .image-slot {
+      .input-and-icon {
         display: flex;
+        flex-grow: 1;
         align-items: center;
-        justify-content: right;
-        width: 100%;
-        height: 100%;
-        font-size: 18px;
-        color: var(--el-text-color-secondary);
-        background: var(--el-fill-color-light);
+        margin-right: 10px; /* 调整间距 */
+      }
 
-        svg {
-          margin-right: 10px;
+      .captcha {
+        /* 移除绝对定位 */
+        flex-shrink: 0; /* 防止图片压缩 */
+
+        .captcha-image {
+          width: 120px; /* 固定图片宽度 */
+          height: 30px; /* 固定图片高度 */
+          cursor: pointer;
+        }
+
+        .image-slot {
+          display: flex;
+          align-items: center;
+          justify-content: right;
+          width: 100%;
+          height: 100%;
+          font-size: 18px;
+          color: var(--el-text-color-secondary);
+          background: var(--el-fill-color-light);
+
+          svg {
+            margin-right: 10px;
+          }
         }
       }
     }
