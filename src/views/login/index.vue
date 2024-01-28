@@ -5,8 +5,8 @@
       <el-switch
         v-model="isDark"
         inline-prompt
-        :active-icon="IconEpMoon"
-        :inactive-icon="IconEpSunny"
+        :active-icon="Moon"
+        :inactive-icon="Sunny"
         active-color="var(--el-fill-color-dark)"
         inactive-color="var(--el-color-primary)"
         @change="handleThemeChange"
@@ -14,19 +14,19 @@
       <lang-select class="ml-2 cursor-pointer" />
     </div>
     <!-- 登录表单 -->
-    <el-card
-      class="z-1 !border-none w-100 !bg-transparent !rounded-4% <sm:w-83"
-    >
+    <el-card class="!border-none w-100 !bg-transparent !rounded-4% <sm:w-83">
       <div class="text-center relative">
         <h2>{{ title }}</h2>
         <el-tag class="ml-2 absolute top-0 right-0">{{ version }}</el-tag>
       </div>
+
       <el-form
         ref="loginFormRef"
         :model="loginData"
         :rules="loginRules"
         class="login-form"
       >
+        <!-- 用户名 -->
         <el-form-item prop="username">
           <div class="p-2">
             <svg-icon icon-class="user" />
@@ -41,6 +41,7 @@
           />
         </el-form-item>
 
+        <!-- 密码 -->
         <el-tooltip
           :disabled="isCapslock === false"
           content="Caps lock is On"
@@ -48,11 +49,12 @@
         >
           <el-form-item prop="password">
             <span class="p-2">
-              <svg-icon icon-class="password" />
+              <el-icon><Lock /></el-icon>
             </span>
             <el-input
               v-model="loginData.password"
               class="flex-1"
+              size="large"
               :placeholder="$t('login.password')"
               :type="passwordVisible === false ? 'password' : 'input'"
               name="password"
@@ -60,17 +62,15 @@
               @keyup.enter="handleLogin"
             />
             <span class="mr-2" @click="passwordVisible = !passwordVisible">
-              <svg-icon
-                :icon-class="passwordVisible === false ? 'eye' : 'eye-open'"
-                class="cursor-pointer"
-              />
+              <el-icon v-if="passwordVisible === false"><View /></el-icon>
+              <el-icon v-else><Hide /></el-icon>
             </span>
           </el-form-item>
         </el-tooltip>
 
         <!-- 验证码 -->
-        <el-form-item prop="captchaCode" class="captcha-container">
-          <div class="input-and-icon">
+        <el-form-item prop="captchaCode" class="flex justify-between">
+          <div class="flex">
             <span class="p-2">
               <svg-icon icon-class="captcha" />
             </span>
@@ -78,23 +78,24 @@
             <el-input
               v-model="loginData.captchaCode"
               auto-complete="off"
+              size="large"
               :placeholder="$t('login.captchaCode')"
-              class="flex-1"
+              class="mr-[10px]"
               @keyup.enter="handleLogin"
             />
           </div>
 
-          <div class="captcha">
+          <div
+            class="flex justify-end h-full items-center !w-[128px] cursor-pointer"
+            @click="getCaptcha"
+          >
             <el-image
               :src="captchaBase64"
-              @click="getCaptcha"
-              :style="{ height: captchaHeight }"
-              class="captcha-image"
+              height="48px"
+              class="rounded-tr-md rounded-br-md"
             >
               <template #error>
-                <div class="image-slot">
-                  <i-ep-picture />
-                </div>
+                <el-icon><Picture /></el-icon>
               </template>
             </el-image>
           </div>
@@ -131,10 +132,9 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
 import router from "@/router";
-import IconEpSunny from "~icons/ep/sunny";
-import IconEpMoon from "~icons/ep/moon";
+
+import { Sunny, Moon } from "@element-plus/icons-vue";
 import { useSettingsStore, useUserStore, useAppStore } from "@/store";
 
 // API依赖
@@ -142,6 +142,8 @@ import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
 import { getCaptchaApi } from "@/api/auth";
 import { LoginData } from "@/api/auth/types";
 
+const route = useRoute();
+const userStore = useUserStore();
 const settingsStore = useSettingsStore();
 
 const { title, version } = settingsStore;
@@ -234,23 +236,10 @@ function getCaptcha() {
     captchaBase64.value = data.captchaBase64;
   });
 }
-/**
- * 根据组件大小调整验证码图片高度
- */
-const captchaHeight = computed(() => {
-  if (appStore.size === "large") {
-    return "56px";
-  } else if (appStore.size === "small") {
-    return "40px";
-  }
-  return "48px";
-});
 
 /**
  * 登录
  */
-const route = useRoute();
-const userStore = useUserStore();
 function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
     if (valid) {
@@ -305,52 +294,13 @@ onMounted(() => {
 }
 
 .login-container {
-  @apply w-full h-full flex-center;
-
   overflow-y: auto;
   background: url("@/assets/images/login-bg.jpg") no-repeat center right;
 
+  @apply wh-full flex-center;
+
   .login-form {
     padding: 30px 10px;
-
-    .captcha-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      .input-and-icon {
-        display: flex;
-        flex-grow: 1;
-        align-items: center;
-        margin-right: 10px; /* 调整间距 */
-      }
-
-      .captcha {
-        /* 移除绝对定位 */
-        flex-shrink: 0; /* 防止图片压缩 */
-
-        .captcha-image {
-          width: 120px; /* 固定图片宽度 */
-          height: 30px; /* 固定图片高度 */
-          cursor: pointer;
-        }
-
-        .image-slot {
-          display: flex;
-          align-items: center;
-          justify-content: right;
-          width: 100%;
-          height: 100%;
-          font-size: 18px;
-          color: var(--el-text-color-secondary);
-          background: var(--el-fill-color-light);
-
-          svg {
-            margin-right: 10px;
-          }
-        }
-      }
-    }
   }
 }
 
