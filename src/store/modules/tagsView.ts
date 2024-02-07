@@ -1,5 +1,3 @@
-import { defineStore } from "pinia";
-
 export const useTagsViewStore = defineStore("tagsView", () => {
   const visitedViews = ref<TagView[]>([]);
   const cachedViews = ref<string[]>([]);
@@ -9,7 +7,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
    */
   function addVisitedView(view: TagView) {
     // 如果已经存在于已访问的视图列表中，则不再添加
-    if (visitedViews.value.some((v) => v.fullPath === view.fullPath)) {
+    if (visitedViews.value.some((v) => v.path === view.path)) {
       return;
     }
     // 如果视图是固定的（affix），则在已访问的视图列表的开头添加

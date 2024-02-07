@@ -1,5 +1,3 @@
-import { defineStore } from "pinia";
-
 import { loginApi, logoutApi } from "@/api/auth";
 import { getUserInfoApi } from "@/api/user";
 import { resetRouter } from "@/router";
@@ -8,15 +6,11 @@ import { store } from "@/store";
 import { LoginData } from "@/api/auth/types";
 import { UserInfo } from "@/api/user/types";
 
-import { useStorage } from "@vueuse/core";
-
 export const useUserStore = defineStore("user", () => {
   const user: UserInfo = {
     roles: [],
     perms: [],
   };
-
-  const token = useStorage("accessToken", "");
 
   /**
    * 登录
@@ -29,7 +23,7 @@ export const useUserStore = defineStore("user", () => {
       loginApi(loginData)
         .then((response) => {
           const { tokenType, accessToken } = response.data;
-          token.value = tokenType + " " + accessToken; // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
+          localStorage.setItem("token", tokenType + " " + accessToken); // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
           resolve();
         })
         .catch((error) => {
@@ -65,7 +59,7 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve, reject) => {
       logoutApi()
         .then(() => {
-          token.value = "";
+          localStorage.setItem("token", "");
           location.reload(); // 清空路由
           resolve();
         })
@@ -77,15 +71,15 @@ export const useUserStore = defineStore("user", () => {
 
   // remove token
   function resetToken() {
+    console.log("resetToken");
     return new Promise<void>((resolve) => {
-      token.value = "";
+      localStorage.setItem("token", "");
       resetRouter();
       resolve();
     });
   }
 
   return {
-    token,
     user,
     login,
     getUserInfo,

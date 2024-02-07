@@ -14,7 +14,7 @@ const whiteList = ["/login"];
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
-  const hasToken = localStorage.getItem("accessToken");
+  const hasToken = localStorage.getItem("token");
   if (hasToken) {
     if (to.path === "/login") {
       // 如果已登录，跳转首页

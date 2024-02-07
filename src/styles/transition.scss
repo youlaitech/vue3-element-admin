@@ -1,53 +1,29 @@
-// global transition css
+/* 简化和统一后的命名示例 */
 
-/* fade */
+/* 淡入淡出 */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.28s;
 }
 
-.fade-enter,
-.fade-leave-active {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 
-/* fade-transform */
-.fade-transform-leave-active,
-.fade-transform-enter-active {
-  transition: all 0.5s;
+/* 平移和淡入淡出 */
+.fade-translate-enter-active,
+.fade-translate-leave-active {
+  transition: opacity 0.3s, transform 0.3s;
 }
 
-.fade-transform-enter {
+.fade-translate-enter-from,
+.fade-translate-leave-to {
   opacity: 0;
   transform: translateX(-30px);
 }
 
-.fade-transform-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-
-/* breadcrumb transition */
-.breadcrumb-enter-active,
-.breadcrumb-leave-active {
-  transition: all 0.5s;
-}
-
-.breadcrumb-enter,
-.breadcrumb-leave-active {
-  opacity: 0;
-  transform: translateX(20px);
-}
-
-.breadcrumb-move {
-  transition: all 0.5s;
-}
-
-.breadcrumb-leave-active {
-  position: absolute;
-}
-
-/* 缩放过渡 */
+/* 缩放 */
 .fade-scale-enter-active,
 .fade-scale-leave-active {
   transition: transform 0.3s ease-in-out;
@@ -58,22 +34,7 @@
   transform: scale(0);
 }
 
-.fade-slide-leave-active,
-.fade-slide-enter-active {
-  transition: opacity 0.3s, transform 0.3s;
-}
-
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: translateX(-30px);
-}
-
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-
-/* 旋转过渡 */
+/* 旋转 */
 .fade-rotate-enter-active,
 .fade-rotate-leave-active {
   transition: transform 0.3s ease-in-out;
@@ -82,4 +43,29 @@
 .fade-rotate-enter-from,
 .fade-rotate-leave-to {
   transform: rotate(90deg);
+}
+
+/* 面包屑 */
+.breadcrumb-transition-enter-active,
+.breadcrumb-transition-leave-active {
+  transition: all 0.5s;
+}
+
+.breadcrumb-transition-enter-from,
+.breadcrumb-transition-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+/* Logo动画 */
+
+// 进入动画，2s内过渡到完全不透明(opacity默认值为1，不需要显示声明)
+.logo-transition-enter-active {
+  transition: opacity 2s;
+}
+
+// 进入动画开始时和离开动画的样式状态(opacity)
+.logo-transition-enter-from,
+.logo-transition-leave-to {
+  opacity: 0;
 }

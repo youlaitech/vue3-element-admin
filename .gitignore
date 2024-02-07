@@ -3,6 +3,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.history
 
 # Editor directories and files
 .idea

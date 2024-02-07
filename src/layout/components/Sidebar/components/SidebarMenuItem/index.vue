@@ -1,10 +1,55 @@
+<template>
+  <div v-if="!item.meta || !item.meta.hidden">
+    <!-- 显示具有单个子路由的菜单项或没有子路由的父路由 -->
+    <template
+      v-if="
+        hasOneShowingChild(item.children, item as RouteRecordRaw) &&
+        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
+        !item.meta?.alwaysShow
+      "
+    >
+      <AppLink v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
+        <el-menu-item
+          :index="resolvePath(onlyOneChild.path)"
+          :class="{ 'submenu-title-noDropdown': !isNest }"
+        >
+          <MenuIconTitle
+            :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
+            :title="onlyOneChild.meta.title"
+          />
+        </el-menu-item>
+      </AppLink>
+    </template>
+
+    <!-- 显示具有多个子路由的父菜单项 -->
+    <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
+      <template #title>
+        <MenuIconTitle
+          v-if="item.meta"
+          :icon="item.meta && item.meta.icon"
+          :title="item.meta.title"
+        />
+      </template>
+
+      <SidebarMenuItem
+        v-for="child in item.children"
+        :key="child.path"
+        :is-nest="true"
+        :item="child"
+        :base-path="resolvePath(child.path)"
+      />
+    </el-sub-menu>
+  </div>
+</template>
 <script setup lang="ts">
+defineOptions({
+  name: "SidebarMenuItem",
+  inheritAttrs: false,
+});
+
 import path from "path-browserify";
 import { isExternal } from "@/utils/index";
-import AppLink from "./Link.vue";
 import { RouteRecordRaw } from "vue-router";
-
-import Item from "./Item.vue";
 
 const props = defineProps({
   /**
@@ -87,52 +132,25 @@ function resolvePath(routePath: string) {
   return fullPath;
 }
 </script>
-<template>
-  <div v-if="!item.meta || !item.meta.hidden">
-    <!-- 无子路由 || 目录只有一个子路由并配置始终显示为否(alwaysShow=false) -->
-    <template
-      v-if="
-        hasOneShowingChild(item.children, item as RouteRecordRaw) &&
-        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-        !item.meta?.alwaysShow
-      "
-    >
-      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item
-          :index="resolvePath(onlyOneChild.path)"
-          :class="{ 'submenu-title-noDropdown': !isNest }"
-        >
-          <item
-            :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
-            :title="onlyOneChild.meta.title"
-          />
-        </el-menu-item>
-      </app-link>
-    </template>
-
-    <!-- 有子路由  -->
-    <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
-      <template #title>
-        <item
-          v-if="item.meta"
-          :icon="item.meta && item.meta.icon"
-          :title="item.meta.title"
-        />
-      </template>
-
-      <sidebar-item
-        v-for="child in item.children"
-        :key="child.path"
-        :is-nest="true"
-        :item="child"
-        :base-path="resolvePath(child.path)"
-      />
-    </el-sub-menu>
-  </div>
-</template>
 
 <style lang="scss" scoped>
-:deep(.el-menu-item .el-menu-tooltip__trigger) {
-  width: auto !important;
+.submenu-title-noDropdown {
+  position: relative;
+
+  .el-tooltip {
+    padding: 0 !important;
+
+    .sub-el-icon {
+      margin-left: 19px;
+    }
+  }
+
+  & > span {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
 }
 </style>

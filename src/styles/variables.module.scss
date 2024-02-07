@@ -1,6 +1,13 @@
-// 导出 variables.module.scss 变量提供给TypeScript使用
+/* stylelint-disable property-no-unknown */
 :export {
-  menuBg: $menuBg;
-  menuText: $menuText;
-  menuActiveText: $menuActiveText;
+  sidebar-width: $sidebar-width;
+  navbar-height: $navbar-height;
+  menu-background: $menu-background;
+  menu-text: $menu-text;
+  menu-active-text: $menu-active-text;
+  menu-hover: $menu-hover;
+  sub-menu-background: $sub-menu-background;
+  sub-menu-active-text: $sub-menu-active-text;
+  sub-menu-hover: $sub-menu-hover;
 }
+/* stylelint-enable property-no-unknown */

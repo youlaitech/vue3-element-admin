@@ -9,9 +9,11 @@ export {};
 
 declare module "@vue/runtime-core" {
   export interface GlobalComponents {
-    AppMain: typeof import("./../layout/components/AppMain.vue")["default"];
+    AppLink: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/components/AppLink.vue")["default"];
+    AppMain: typeof import("./../layout/components/AppMain/index.vue")["default"];
     BarChart: typeof import("./../views/dashboard/components/BarChart.vue")["default"];
     Breadcrumb: typeof import("./../components/Breadcrumb/index.vue")["default"];
+    Components: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/components/index.vue")["default"];
     DeptTree: typeof import("./../views/system/user/components/dept-tree.vue")["default"];
     Dictionary: typeof import("./../components/Dictionary/index.vue")["default"];
     DictItem: typeof import("./../views/system/dict/components/dict-item.vue")["default"];
@@ -23,6 +25,7 @@ declare module "@vue/runtime-core" {
     ElCheckbox: typeof import("element-plus/es")["ElCheckbox"];
     ElCheckboxGroup: typeof import("element-plus/es")["ElCheckboxGroup"];
     ElCol: typeof import("element-plus/es")["ElCol"];
+    ElConfigProvider: typeof import("element-plus/es")["ElConfigProvider"];
     ElDatePicker: typeof import("element-plus/es")["ElDatePicker"];
     ElDialog: typeof import("element-plus/es")["ElDialog"];
     ElDivider: typeof import("element-plus/es")["ElDivider"];
@@ -48,6 +51,7 @@ declare module "@vue/runtime-core" {
     ElRow: typeof import("element-plus/es")["ElRow"];
     ElScrollbar: typeof import("element-plus/es")["ElScrollbar"];
     ElSelect: typeof import("element-plus/es")["ElSelect"];
+    ElStatistic: typeof import("element-plus/es")["ElStatistic"];
     ElSubMenu: typeof import("element-plus/es")["ElSubMenu"];
     ElSwitch: typeof import("element-plus/es")["ElSwitch"];
     ElTable: typeof import("element-plus/es")["ElTable"];
@@ -55,6 +59,7 @@ declare module "@vue/runtime-core" {
     ElTabPane: typeof import("element-plus/es")["ElTabPane"];
     ElTabs: typeof import("element-plus/es")["ElTabs"];
     ElTag: typeof import("element-plus/es")["ElTag"];
+    ElText: typeof import("element-plus/es")["ElText"];
     ElTooltip: typeof import("element-plus/es")["ElTooltip"];
     ElTree: typeof import("element-plus/es")["ElTree"];
     ElTreeSelect: typeof import("element-plus/es")["ElTreeSelect"];
@@ -64,9 +69,11 @@ declare module "@vue/runtime-core" {
     GithubCorner: typeof import("./../components/GithubCorner/index.vue")["default"];
     Hamburger: typeof import("./../components/Hamburger/index.vue")["default"];
     IconSelect: typeof import("./../components/IconSelect/index.vue")["default"];
+    IconTitle: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/components/IconTitle.vue")["default"];
     IEpArrowDown: typeof import("~icons/ep/arrow-down")["default"];
     IEpCaretBottom: typeof import("~icons/ep/caret-bottom")["default"];
     IEpCaretTop: typeof import("~icons/ep/caret-top")["default"];
+    IEpCheck: typeof import("~icons/ep/check")["default"];
     IEpClose: typeof import("~icons/ep/close")["default"];
     IEpCollection: typeof import("~icons/ep/collection")["default"];
     IEpDelete: typeof import("~icons/ep/delete")["default"];
@@ -75,6 +82,7 @@ declare module "@vue/runtime-core" {
     IEpPicture: typeof import("~icons/ep/picture")["default"];
     IEpPlus: typeof import("~icons/ep/plus")["default"];
     IEpPosition: typeof import("~icons/ep/position")["default"];
+    IEpQuestionFilled: typeof import("~icons/ep/question-filled")["default"];
     IEpRefresh: typeof import("~icons/ep/refresh")["default"];
     IEpRefreshLeft: typeof import("~icons/ep/refresh-left")["default"];
     IEpSearch: typeof import("~icons/ep/search")["default"];
@@ -83,14 +91,25 @@ declare module "@vue/runtime-core" {
     IEpSortUp: typeof import("~icons/ep/sort-up")["default"];
     IEpTop: typeof import("~icons/ep/top")["default"];
     IEpUploadFilled: typeof import("~icons/ep/upload-filled")["default"];
-    Item: typeof import("./../layout/components/Sidebar/Item.vue")["default"];
+    Item: typeof import("./../layout/components/Sidebar/components/Item.vue")["default"];
     LangSelect: typeof import("./../components/LangSelect/index.vue")["default"];
-    LeftMenu: typeof import("./../layout/components/Sidebar/LeftMenu.vue")["default"];
+    LeftMenu: typeof import("./../layout/components/Sidebar/components/LeftMenu.vue")["default"];
     Link: typeof import("./../layout/components/Sidebar/Link.vue")["default"];
-    Logo: typeof import("./../layout/components/Sidebar/Logo.vue")["default"];
+    Logo: typeof import("./../layout/components/Sidebar/components/Logo.vue")["default"];
+    Menu: typeof import("./../layout/components/Sidebar/components/Menu/index.vue")["default"];
+    MenuIconTitle: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/components/MenuIconTitle.vue")["default"];
+    MenuItem: typeof import("./../layout/components/Sidebar/components/MenuItem/index.vue")["default"];
+    MenuItemContent: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/components/MenuItemContent.vue")["default"];
+    MenuItemLink: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/components/MenuItemLink.vue")["default"];
+    MenuItemTitle: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/components/MenuItemTitle.vue")["default"];
+    MenuLink: typeof import("./../components/AppLink/MenuLink.vue")["default"];
+    MenuTitle: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/components/MenuTitle.vue")["default"];
+    MixLayoutTopMenu: typeof import("./../layout/components/Sidebar/components/MixLayoutTopMenu.vue")["default"];
     MultiUpload: typeof import("./../components/Upload/MultiUpload.vue")["default"];
+    Navbar: typeof import("./../layout/components/Navbar/index.vue")["default"];
     NavBar: typeof import("./../layout/components/NavBar/index.vue")["default"];
-    NavRight: typeof import("./../layout/components/NavBar/NavRight.vue")["default"];
+    NavbarLeft: typeof import("./../layout/components/Navbar/components/NavbarLeft.vue")["default"];
+    NavbarRight: typeof import("./../layout/components/Navbar/components/NavbarRight.vue")["default"];
     Pagination: typeof import("./../components/Pagination/index.vue")["default"];
     PieChart: typeof import("./../views/dashboard/components/PieChart.vue")["default"];
     RadarChart: typeof import("./../views/dashboard/components/RadarChart.vue")["default"];
@@ -98,16 +117,27 @@ declare module "@vue/runtime-core" {
     RouterLink: typeof import("vue-router")["RouterLink"];
     RouterView: typeof import("vue-router")["RouterView"];
     ScrollPane: typeof import("./../layout/components/TagsView/ScrollPane.vue")["default"];
+    Setting: typeof import("./../layout/components/Setting/index.vue")["default"];
     Settings: typeof import("./../layout/components/Settings/index.vue")["default"];
     Sidebar: typeof import("./../layout/components/Sidebar/index.vue")["default"];
-    SidebarItem: typeof import("./../layout/components/Sidebar/SidebarItem.vue")["default"];
+    SidebarItem: typeof import("./../layout/components/Sidebar/components/SidebarItem/index.vue")["default"];
+    SidebarLeft: typeof import("./../layout/components/Sidebar/components/SidebarLeft.vue")["default"];
+    SidebarLeftMenu: typeof import("./../layout/components/Sidebar/components/SidebarLeftMenu.vue")["default"];
+    SidebarLogo: typeof import("./../layout/components/Sidebar/components/SidebarLogo.vue")["default"];
+    SidebarMenu: typeof import("./../layout/components/Sidebar/components/SidebarMenu.vue")["default"];
+    SidebarMenuItem: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/index.vue")["default"];
+    SidebarMenuItemLink: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/SidebarMenuItemLink.vue")["default"];
+    SidebarMenuItemTitle: typeof import("./../layout/components/Sidebar/components/SidebarMenuItem/SidebarMenuItemTitle.vue")["default"];
+    SidebarMixTopMenu: typeof import("./../layout/components/Sidebar/components/SidebarMixTopMenu.vue")["default"];
+    SidebarTop: typeof import("./../layout/components/Sidebar/components/SidebarTop.vue")["default"];
+    SidebarTopMenu: typeof import("./../layout/components/Sidebar/components/SidebarTopMenu.vue")["default"];
     SingleUpload: typeof import("./../components/Upload/SingleUpload.vue")["default"];
     SizeSelect: typeof import("./../components/SizeSelect/index.vue")["default"];
     SvgIcon: typeof import("./../components/SvgIcon/index.vue")["default"];
     SwitchRoles: typeof import("./../views/demo/permission/components/SwitchRoles.vue")["default"];
     TagInput: typeof import("./../components/TagInput/index.vue")["default"];
     TagsView: typeof import("./../layout/components/TagsView/index.vue")["default"];
-    TopMenu: typeof import("./../layout/components/Sidebar/TopMenu.vue")["default"];
+    TopMenu: typeof import("./../layout/components/Sidebar/components/TopMenu.vue")["default"];
     UnfixedThead: typeof import("./../views/demo/table/dynamic-table/components/UnfixedThead.vue")["default"];
     WangEditor: typeof import("./../components/WangEditor/index.vue")["default"];
   }

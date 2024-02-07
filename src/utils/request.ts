@@ -11,9 +11,9 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const userStore = useUserStoreHook();
-    if (userStore.token) {
-      config.headers.Authorization = userStore.token;
+    const accessToken = localStorage.getItem("token");
+    if (accessToken) {
+      config.headers.Authorization = accessToken;
     }
     return config;
   },
@@ -44,6 +44,7 @@ service.interceptors.response.use(
       if (code === "A0230") {
         ElMessageBox.confirm("当前页面已失效，请重新登录", "提示", {
           confirmButtonText: "确定",
+          cancelButtonText: "取消",
           type: "warning",
         }).then(() => {
           const userStore = useUserStoreHook();

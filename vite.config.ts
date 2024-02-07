@@ -52,9 +52,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
           // 线上接口地址
-          target: "http://vapi.youlai.tech",
+          // target: "http://vapi.youlai.tech",
           // 开发接口地址
-          //target: "http://localhost:8989",
+          target: "http://localhost:8989",
           rewrite: (path) =>
             path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
@@ -71,7 +71,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       // 自动导入参考： https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
-        imports: ["vue", "@vueuse/core", "pinia", "vue-router"],
+        imports: ["vue", "@vueuse/core", "pinia", "vue-router", "vue-i18n"],
         // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
         resolvers: [ElementPlusResolver(), IconsResolver({})],
         eslintrc: {
@@ -81,8 +81,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         },
         vueTemplate: true,
         // 配置文件生成位置(false:关闭自动生成)
-        dts: false,
-        // dts: "src/typings/auto-imports.d.ts",
+        //dts: false,
+        dts: "src/typings/auto-imports.d.ts",
       }),
 
       Components({
@@ -95,8 +95,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 指定自定义组件位置(默认:src/components)
         dirs: ["src/components", "src/**/components"],
         // 配置文件位置 (false:关闭自动生成)
-        dts: false,
-        // dts: "src/typings/components.d.ts",
+        //dts: false,
+        dts: "src/typings/components.d.ts",
       }),
 
       Icons({
@@ -172,6 +172,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "@wangeditor/editor",
         "@wangeditor/editor-for-vue",
         "vue-i18n",
+        "element-plus/es/components/text/style/css",
+        "path-browserify",
       ],
     },
     // 构建配置

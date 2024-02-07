@@ -36,7 +36,14 @@ module.exports = {
     "property-no-unknown": [
       true,
       {
-        ignoreProperties: ["menuBg", "menuText", "menuActiveText"],
+        ignoreProperties: [],
+      },
+    ],
+    // 允许未知规则
+    "at-rule-no-unknown": [
+      true,
+      {
+        ignoreAtRules: ["apply"],
       },
     ],
   },

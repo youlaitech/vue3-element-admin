@@ -1,19 +1,19 @@
 <template>
-  <div class="settings-container">
+  <div class="setting-container">
     <h3 class="text-base font-bold">项目配置</h3>
     <el-divider>主题设置</el-divider>
 
     <div class="flex-center">
       <el-switch
         v-model="isDark"
-        :active-icon="IconEpMoon"
-        :inactive-icon="IconEpSunny"
+        :active-icon="Moon"
+        :inactive-icon="Sunny"
         @change="handleThemeChange"
       />
     </div>
 
     <el-divider>界面设置</el-divider>
-    <div class="py-[8px] flex justify-between">
+    <div class="py-[8px] flex-x-between">
       <el-text>开启 Tags-View</el-text>
       <el-switch v-model="settingsStore.tagsView" />
     </div>
@@ -34,7 +34,7 @@
       <li
         v-for="(color, index) in themeColors"
         :key="index"
-        class="inline-block w-[30px] h-[30px] cursor-pointer theme-wrap"
+        class="w-[30px] h-[30px] cursor-pointer flex-center color-white"
         :style="{ background: color }"
         @click="changeThemeColor(color)"
       >
@@ -86,12 +86,8 @@
 </template>
 
 <script setup lang="ts">
-import { useSettingsStore } from "@/store/modules/settings";
-import { usePermissionStore } from "@/store/modules/permission";
-import { useAppStore } from "@/store/modules/app";
-import { useRoute } from "vue-router";
-import IconEpSunny from "~icons/ep/sunny";
-import IconEpMoon from "~icons/ep/moon";
+import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
+import { Sunny, Moon } from "@element-plus/icons-vue";
 
 const route = useRoute();
 
@@ -129,7 +125,7 @@ function findOutermostParent(tree: any[], findName: string) {
 const againActiveTop = (newVal: string) => {
   const parent = findOutermostParent(permissionStore.routes, newVal);
   if (appStore.activeTopMenu !== parent.path) {
-    appStore.changeTopActive(parent.path);
+    appStore.activeTopMenu(parent.path);
   }
 };
 
@@ -138,7 +134,6 @@ const againActiveTop = (newVal: string) => {
  */
 function changeLayout(layout: string) {
   settingsStore.changeSetting({ key: "layout", value: layout });
-  window.document.body.setAttribute("layout", settingsStore.layout);
   if (layout === "mix") {
     route.name && againActiveTop(route.name as string);
   }
@@ -193,7 +188,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.settings-container {
+.setting-container {
   padding: 16px;
 
   .layout {
@@ -256,13 +251,6 @@ onMounted(() => {
       background: #fff;
       box-shadow: 0 0 1px #888;
     }
-  }
-
-  .theme-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
   }
 }
 </style>

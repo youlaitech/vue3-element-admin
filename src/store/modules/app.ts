@@ -1,5 +1,3 @@
-import { defineStore } from "pinia";
-import { useStorage } from "@vueuse/core";
 import defaultSettings from "@/settings";
 
 // 导入 Element Plus 中英文语言包
@@ -19,7 +17,7 @@ export const useAppStore = defineStore("app", () => {
     opened: sidebarStatus.value !== "closed",
     withoutAnimation: false,
   });
-  const activeTopMenu = useStorage("activeTop", "");
+  const activeTopMenuPath = useStorage("activeTopMenuPath", "");
   /**
    * 根据语言标识读取对应的语言包
    */
@@ -72,8 +70,8 @@ export const useAppStore = defineStore("app", () => {
   /**
    * 混合模式顶部切换
    */
-  function changeTopActive(val: string) {
-    activeTopMenu.value = val;
+  function activeTopMenu(val: string) {
+    activeTopMenuPath.value = val;
   }
   return {
     device,
@@ -88,6 +86,6 @@ export const useAppStore = defineStore("app", () => {
     toggleSidebar,
     closeSideBar,
     openSideBar,
-    changeTopActive,
+    activeTopMenuPath,
   };
 });

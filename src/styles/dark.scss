@@ -1,9 +1,9 @@
 html.dark {
-  --menuBg: var(--el-bg-color-overlay);
-  --menuText: #fff;
+  --menu-background: var(--el-bg-color-overlay);
+  --menu-text: #fff;
   --menuActiveText: var(--el-menu-active-color);
   --menuHover: rgb(0 0 0 / 20%);
-  --subMenuBg: var(--el-menu-bg-color);
+  --sub-menu-background: var(--el-menu-bg-color);
   --subMenuActiveText: var(--el-menu-active-color);
   --subMenuHover: rgb(0 0 0 / 20%);
 
@@ -37,11 +37,5 @@ html.dark {
 
   .right-panel-btn {
     background-color: var(--el-color-primary-dark);
-  }
-
-  .sidebar-container {
-    .el-menu-item.is-active .svg-icon {
-      fill: var(--el-color-primary);
-    }
   }
 }

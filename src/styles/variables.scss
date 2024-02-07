@@ -1,27 +1,37 @@
-// 全局SCSS变量
+/* 全局SCSS变量 */
 
 :root {
-  --menuBg: #304156;
-  --menuText: #bfcbd9;
-  --menuActiveText: #409eff;
-  --menuHover: #263445;
-  --subMenuBg: #1f2d3d;
-  --subMenuActiveText: #f4f4f5;
-  --subMenuHover: #001528;
-
-  // wang-editor textarea
-  --w-e-textarea-slight-border-color: var(--el-color-primary);
-  --w-e-textarea-slight-bg-color: rgb(var(--el-color-primary-rgb) 0.1);
-  --w-e-textarea-selected-border-color: var(--el-color-primary);
+  --menu-background: #304156;
+  --menu-text: #bfcbd9;
+  --menu-active-text: #409eff;
+  --menu-hover: #263445;
+  --sub-menu-background: #1f2d3d;
+  --sub-menu-active-text: #f4f4f5;
+  --sub-menu-hover: #001528;
+  --sidebar-logo-background: #2d3748;
 }
 
-$menuBg: var(--menuBg);
-$menuText: var(--menuText);
-$menuActiveText: var(--menuActiveText);
-$menuHover: var(--menuHover);
+html.dark {
+  --menu-background: var(--el-bg-color-overlay);
+  --menu-text: #fff;
+  --menu-active-text: var(--el-menu-active-color);
+  --menu-hover: rgb(0 0 0 / 20%);
+  --sub-menu-background: var(--el-menu-bg-color);
+  --sub-menu-active-text: var(--el-menu-active-color);
+  --sub-menu-hover: rgb(0 0 0 / 20%);
+  --sidebar-logo-background: rgb(0 0 0 / 20%);
+}
 
-$subMenuBg: var(--subMenuBg);
-$subMenuActiveText: var(--subMenuActiveText);
-$subMenuHover: var(--subMenuHover);
+$menu-background: var(--menu-background);
+$menu-text: var(--menu-text);
+$menu-active-text: var(--menu-active-text);
+$menu-hover: var(--menu-hover);
+$sub-menu-background: var(--sub-menu-background);
+$sub-menu-active-text: var(--sub-menu-active-text);
+$sub-menu-hover: var(--sub-menu-hover);
+$sidebar-logo-background: var(--sidebar-logo-background); // 侧边栏 Logo 背景色
 
-$sideBarWidth: 210px;
+$sidebar-width: 210px; // 侧边栏宽度
+$sidebar-width-collapsed: 54px; // 侧边栏收缩宽度
+$navbar-height: 50px; // 导航栏高度
+$tags-view-height: 34px; // TagsView 高度

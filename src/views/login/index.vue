@@ -69,7 +69,7 @@
         </el-tooltip>
 
         <!-- 验证码 -->
-        <el-form-item prop="captchaCode" class="flex justify-between">
+        <el-form-item prop="captchaCode" class="flex-x-between">
           <div class="flex">
             <span class="p-2">
               <svg-icon icon-class="captcha" />
@@ -85,14 +85,10 @@
             />
           </div>
 
-          <div
-            class="flex justify-end h-full items-center !w-[128px] cursor-pointer"
-            @click="getCaptcha"
-          >
+          <div class="flex-x-end w-[120px] cursor-pointer" @click="getCaptcha">
             <el-image
               :src="captchaBase64"
-              height="48px"
-              class="rounded-tr-md rounded-br-md"
+              class="rounded-tr-md rounded-br-md h-[48px]"
             >
               <template #error>
                 <el-icon><Picture /></el-icon>

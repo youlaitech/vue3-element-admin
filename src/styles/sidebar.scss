@@ -1,89 +1,4 @@
 .app {
-  .main-container {
-    position: relative;
-    min-height: 100%;
-    margin-left: $sideBarWidth;
-    transition: margin-left 0.28s;
-  }
-
-  .sidebar-container {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1001;
-    width: $sideBarWidth !important;
-    height: 100%;
-    overflow: hidden;
-    background-color: $menuBg;
-    transition: width 0.28s;
-
-    // reset element-ui css
-    .horizontal-collapse-transition {
-      transition: 0s width ease-in-out, 0s padding-left ease-in-out,
-        0s padding-right ease-in-out;
-    }
-
-    .scrollbar-wrapper {
-      overflow-x: hidden !important;
-    }
-
-    .el-scrollbar__bar.is-vertical {
-      right: 0;
-    }
-
-    .el-scrollbar {
-      height: 100%;
-    }
-
-    &.has-logo {
-      .el-scrollbar {
-        height: calc(100% - 50px);
-      }
-    }
-
-    .is-horizontal {
-      display: none;
-    }
-
-    .svg-icon {
-      margin-right: 12px;
-    }
-
-    .sub-el-icon {
-      margin-right: 12px;
-      margin-left: -2px;
-    }
-
-    .el-menu {
-      width: 100% !important;
-      height: 100%;
-      border: none;
-    }
-
-    // menu hover
-    .submenu-title-noDropdown,
-    .el-sub-menu__title {
-      &:hover {
-        background-color: $menuHover !important;
-      }
-    }
-
-    .is-active > .el-sub-menu__title {
-      color: $subMenuActiveText !important;
-    }
-
-    & .nest-menu .el-sub-menu > .el-sub-menu__title,
-    & .el-sub-menu .el-menu-item {
-      min-width: $sideBarWidth !important;
-      background-color: $subMenuBg !important;
-
-      &:hover {
-        background-color: $subMenuHover !important;
-      }
-    }
-  }
-
   .hideSidebar {
     .mix-wrapper__left {
       width: 54px;
@@ -111,18 +26,9 @@
       .el-tooltip {
         padding: 0 !important;
 
-        .svg-icon {
-          margin-left: 20px;
-        }
-
         .sub-el-icon {
           margin-left: 19px;
         }
-      }
-
-      // TODO
-      & > .svg-icon {
-        margin-left: 20px;
       }
 
       & > span {
@@ -139,10 +45,6 @@
 
       & > .el-sub-menu__title {
         padding: 0 !important;
-
-        .svg-icon {
-          margin-left: 20px;
-        }
 
         .sub-el-icon {
           margin-left: 19px;
@@ -170,7 +72,7 @@
   }
 
   .el-menu--collapse .el-menu .el-sub-menu {
-    min-width: $sideBarWidth !important;
+    min-width: $sidebar-width !important;
   }
 
   // mobile responsive
@@ -180,15 +82,15 @@
     }
 
     .sidebar-container {
-      width: $sideBarWidth !important;
+      width: $sidebar-width !important;
       transition: transform 0.28s;
     }
 
-    &.hideSidebar:not(.isMix, .isTop) {
+    &.hideSidebar:not(.layout-mix, .layout-top) {
       .sidebar-container {
         pointer-events: none;
         transition-duration: 0.3s;
-        transform: translate3d(-$sideBarWidth, 0, 0);
+        transform: translate3d(-$sidebar-width, 0, 0);
       }
     }
   }
@@ -204,10 +106,6 @@
 // when menu collapsed
 .el-menu--vertical {
   & > .el-menu {
-    .svg-icon {
-      margin-right: 12px;
-    }
-
     .sub-el-icon {
       margin-right: 12px;
       margin-left: -2px;
@@ -218,7 +116,7 @@
   .el-menu-item {
     &:hover {
       // you can use $subMenuHover
-      background-color: $menuHover !important;
+      background-color: $menu-hover !important;
     }
   }
 
