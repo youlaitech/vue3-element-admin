@@ -1,5 +1,4 @@
 import { RouteRecordRaw } from "vue-router";
-import { defineStore } from "pinia";
 import { constantRoutes } from "@/router";
 import { store } from "@/store";
 import { listRoutes } from "@/api/menu";
@@ -98,15 +97,12 @@ export const usePermissionStore = defineStore("permission", () => {
         });
     });
   }
-
   /**
    * 获取与激活的顶部菜单项相关的混合模式左侧菜单集合
    */
   const mixLeftMenus = ref<RouteRecordRaw[]>([]);
-  function setMixLeftMenus(activeTopMenu: string) {
-    const matchedItem = routes.value.find(
-      (item) => item.path === activeTopMenu
-    );
+  function setMixLeftMenus(topMenuPath: string) {
+    const matchedItem = routes.value.find((item) => item.path === topMenuPath);
     if (matchedItem && matchedItem.children) {
       mixLeftMenus.value = matchedItem.children;
     }

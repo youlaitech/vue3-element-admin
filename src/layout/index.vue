@@ -12,7 +12,7 @@
     <!-- 混合布局 -->
     <div v-if="layout === 'mix'" class="mix-container">
       <div class="mix-container__left">
-        <SidebarMenu :menu-list="mixLeftMenus" :base-path="activeTopMenu" />
+        <SidebarMenu :menu-list="mixLeftMenus" :base-path="activeTopMenuPath" />
         <div class="sidebar-toggle">
           <hamburger
             :is-active="appStore.sidebar.opened"
@@ -35,7 +35,7 @@
     <!-- 左侧布局|| 顶部布局 -->
     <div v-else :class="{ hasTagsView: showTagsView }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
-        <Navbar v-if="layout === 'left'" />
+        <NavBar v-if="layout === 'left'" />
         <TagsView v-if="showTagsView" />
       </div>
       <AppMain />
@@ -61,8 +61,8 @@ const showTagsView = computed(() => settingsStore.tagsView);
 const showSettings = computed(() => settingsStore.showSettings);
 const layout = computed(() => settingsStore.layout);
 
-const activeTopMenu = computed(() => {
-  return appStore.activeTopMenu;
+const activeTopMenuPath = computed(() => {
+  return appStore.activeTopMenuPath;
 });
 // 混合模式左侧菜单
 const mixLeftMenus = computed(() => {
@@ -70,7 +70,7 @@ const mixLeftMenus = computed(() => {
 });
 
 watch(
-  () => activeTopMenu.value,
+  () => activeTopMenuPath.value,
   (newVal) => {
     if (layout.value !== "mix") return;
     permissionStore.setMixLeftMenus(newVal);

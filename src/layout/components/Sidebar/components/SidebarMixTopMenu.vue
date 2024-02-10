@@ -32,16 +32,16 @@
 </template>
 
 <script lang="ts" setup>
-import { RouteRecordRaw } from "vue-router";
 import { usePermissionStore, useAppStore } from "@/store";
 import { translateRouteTitle } from "@/utils/i18n";
 import variables from "@/styles/variables.module.scss";
+import { RouteRecordRaw } from "vue-router";
 
 const appStore = useAppStore();
 const permissionStore = usePermissionStore();
 const router = useRouter();
 
-const activePath = computed(() => appStore.activeTopMenu);
+const activePath = computed(() => appStore.activeTopMenuPath);
 
 // 顶部菜单集合
 const mixTopMenus = ref<RouteRecordRaw[]>([]);
@@ -49,10 +49,10 @@ const mixTopMenus = ref<RouteRecordRaw[]>([]);
 /**
  * 菜单选择事件
  */
-const handleMenuSelect = (selectedRoutePath: string) => {
-  appStore.activeTopMenu(selectedRoutePath);
-  permissionStore.setMixLeftMenus(selectedRoutePath);
-  // 获取左侧菜单集合，并跳转到第一个菜单
+const handleMenuSelect = (routePath: string) => {
+  appStore.activeTopMenu(routePath);
+  permissionStore.setMixLeftMenus(routePath);
+  // 获取左侧菜单集合，默认跳转到第一个菜单
   const mixLeftMenus = permissionStore.mixLeftMenus;
   goToFirstMenu(mixLeftMenus);
 };
