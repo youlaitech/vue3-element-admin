@@ -32,7 +32,6 @@ export const useAppStore = defineStore("app", () => {
   // actions
   function toggleSidebar() {
     sidebar.opened = !sidebar.opened;
-    sidebar.withoutAnimation = false;
     if (sidebar.opened) {
       sidebarStatus.value = "opened";
     } else {
@@ -40,15 +39,13 @@ export const useAppStore = defineStore("app", () => {
     }
   }
 
-  function closeSideBar(withoutAnimation: boolean) {
+  function closeSideBar() {
     sidebar.opened = false;
-    sidebar.withoutAnimation = withoutAnimation;
     sidebarStatus.value = "closed";
   }
 
-  function openSideBar(withoutAnimation: boolean) {
+  function openSideBar() {
     sidebar.opened = true;
-    sidebar.withoutAnimation = withoutAnimation;
     sidebarStatus.value = "opened";
   }
 

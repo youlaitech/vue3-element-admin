@@ -84,8 +84,8 @@ watch(
 const classObj = computed(() => ({
   hideSidebar: !appStore.sidebar.opened,
   openSidebar: appStore.sidebar.opened,
-  withoutAnimation: appStore.sidebar.withoutAnimation,
   mobile: appStore.device === "mobile",
+  "layout-left": layout.value === "left",
   "layout-top": layout.value === "top",
   "layout-mix": layout.value === "mix",
 }));
@@ -93,20 +93,20 @@ const classObj = computed(() => ({
 watchEffect(() => {
   if (width.value < WIDTH) {
     appStore.toggleDevice("mobile");
-    appStore.closeSideBar(true);
+    appStore.closeSideBar();
   } else {
     appStore.toggleDevice("desktop");
 
     if (width.value >= 1200) {
-      appStore.openSideBar(true);
+      appStore.openSideBar();
     } else {
-      appStore.closeSideBar(true);
+      appStore.closeSideBar();
     }
   }
 });
 
 function handleOutsideClick() {
-  appStore.closeSideBar(false);
+  appStore.closeSideBar();
 }
 
 function toggleSidebar() {
@@ -249,6 +249,14 @@ function toggleSidebar() {
 }
 
 .hideSidebar {
+  .sidebar-container {
+    width: $sidebar-width-collapsed !important;
+  }
+
+  .main-container {
+    margin-left: $sidebar-width-collapsed;
+  }
+
   .mix-container__left {
     width: $sidebar-width-collapsed;
   }
@@ -262,7 +270,19 @@ function toggleSidebar() {
       width: 100%;
     }
 
-    .layout-top {
+    &.layout-left {
+      .main-container {
+        margin-left: 0;
+      }
+
+      .sidebar-container {
+        pointer-events: none;
+        transition-duration: 0.3s;
+        transform: translate3d(-$sidebar-width, 0, 0);
+      }
+    }
+
+    &.layout-top {
       .sidebar-container {
         z-index: 999;
         display: flex;

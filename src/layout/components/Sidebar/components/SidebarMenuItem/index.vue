@@ -133,24 +133,57 @@ function resolvePath(routePath: string) {
 }
 </script>
 
-<style lang="scss" scoped>
-.submenu-title-noDropdown {
-  position: relative;
-
-  .el-tooltip {
+<style lang="scss">
+.hideSidebar {
+  .submenu-title-noDropdown {
+    position: relative;
     padding: 0 !important;
 
-    .sub-el-icon {
-      margin-left: 19px;
+    .el-tooltip {
+      padding: 0 !important;
+
+      .sub-el-icon {
+        margin-left: 19px;
+      }
+    }
+
+    & > span {
+      display: inline-block;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+      visibility: hidden;
     }
   }
 
-  & > span {
-    display: inline-block;
-    width: 0;
-    height: 0;
+  .el-sub-menu {
     overflow: hidden;
-    visibility: hidden;
+
+    & > .el-sub-menu__title {
+      padding: 0 !important;
+
+      .sub-el-icon {
+        margin-left: 19px;
+      }
+
+      .el-sub-menu__icon-arrow {
+        display: none;
+      }
+    }
+  }
+
+  .el-menu--collapse {
+    .el-sub-menu {
+      & > .el-sub-menu__title {
+        & > span {
+          display: inline-block;
+          width: 0;
+          height: 0;
+          overflow: hidden;
+          visibility: hidden;
+        }
+      }
+    }
   }
 }
 </style>

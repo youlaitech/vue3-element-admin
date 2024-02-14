@@ -54,8 +54,4 @@ const logo = ref(new URL(`../../../../assets/logo.png`, import.meta.url).href);
     width: $sidebar-width;
   }
 }
-
-.mobile .logo-container {
-  width: $sidebar-width-collapsed;
-}
 </style>
