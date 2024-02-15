@@ -87,14 +87,23 @@ const options = {
   ],
 };
 
+const chart = ref<any>("");
+
 onMounted(() => {
-  const chart = echarts.init(
-    document.getElementById(props.id) as HTMLDivElement
+  chart.value = markRaw(
+    echarts.init(document.getElementById(props.id) as HTMLDivElement)
   );
-  chart.setOption(options);
+
+  chart.value.setOption(options);
 
   window.addEventListener("resize", () => {
-    chart.resize();
+    chart.value.resize();
   });
+});
+
+onActivated(() => {
+  if (chart.value) {
+    chart.value.resize();
+  }
 });
 </script>

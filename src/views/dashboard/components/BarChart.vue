@@ -138,20 +138,7 @@ const options = {
     },
   ],
 };
-const chart = ref<any>("");
-onMounted(() => {
-  // 图表初始化
-  chart.value = markRaw(
-    echarts.init(document.getElementById(props.id) as HTMLDivElement)
-  );
 
-  chart.value.setOption(options);
-
-  // 大小自适应
-  window.addEventListener("resize", () => {
-    chart.value.resize();
-  });
-});
 const downloadEchart = () => {
   // 获取画布图表地址信息
   const img = new Image();
@@ -177,6 +164,28 @@ const downloadEchart = () => {
     }
   };
 };
+
+const chart = ref<any>("");
+onMounted(() => {
+  // 图表初始化
+  chart.value = markRaw(
+    echarts.init(document.getElementById(props.id) as HTMLDivElement)
+  );
+
+  chart.value.setOption(options);
+
+  // 大小自适应
+  window.addEventListener("resize", () => {
+    console.log("自适应事件触发");
+    chart.value.resize();
+  });
+});
+
+onActivated(() => {
+  if (chart.value) {
+    chart.value.resize();
+  }
+});
 </script>
 <style lang="scss" scoped>
 .title {
