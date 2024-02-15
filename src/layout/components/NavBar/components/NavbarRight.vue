@@ -11,6 +11,8 @@
       <el-tooltip content="布局大小" effect="dark" placement="bottom">
         <size-select class="navbar-item" />
       </el-tooltip>
+
+      <lang-select class="navbar-item" />
     </div>
 
     <!-- 用户头像 -->
