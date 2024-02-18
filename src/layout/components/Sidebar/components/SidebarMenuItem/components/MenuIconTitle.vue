@@ -1,6 +1,7 @@
 <template>
   <el-icon v-if="icon && icon.includes('el-icon')" class="sub-el-icon" />
   <SvgIcon v-else-if="icon" :icon-class="icon" />
+  <SvgIcon v-else icon-class="menu" />
   <span v-if="title" class="ml-1">{{ translateRouteTitle(title) }}</span>
 </template>
 
