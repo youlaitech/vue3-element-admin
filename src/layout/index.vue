@@ -69,7 +69,6 @@ const mixLeftMenus = computed(() => {
 watch(
   () => activeTopMenuPath.value,
   (newVal) => {
-    if (layout.value !== "mix") return;
     permissionStore.setMixLeftMenus(newVal);
   },
   {
