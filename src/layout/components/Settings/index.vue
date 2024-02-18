@@ -91,9 +91,9 @@ import { Sunny, Moon } from "@element-plus/icons-vue";
 
 const route = useRoute();
 
+const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
-const appStore = useAppStore();
 
 function findOutermostParent(tree: any[], findName: string) {
   let parentMap: any = {};
@@ -122,12 +122,6 @@ function findOutermostParent(tree: any[], findName: string) {
 
   return null;
 }
-const againActiveTop = (newVal: string) => {
-  const parent = findOutermostParent(permissionStore.routes, newVal);
-  if (appStore.activeTopMenu !== parent.path) {
-    appStore.activeTopMenu(parent.path);
-  }
-};
 
 /**
  * 切换布局
@@ -136,6 +130,15 @@ function changeLayout(layout: string) {
   settingsStore.changeSetting({ key: "layout", value: layout });
   if (layout === "mix") {
     route.name && againActiveTop(route.name as string);
+  } else if (layout === "top") {
+    appStore.openSideBar();
+  }
+}
+
+function againActiveTop(newVal: string) {
+  const parent = findOutermostParent(permissionStore.routes, newVal);
+  if (appStore.activeTopMenu !== parent.path) {
+    appStore.activeTopMenu(parent.path);
   }
 }
 

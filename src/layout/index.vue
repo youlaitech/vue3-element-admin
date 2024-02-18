@@ -48,13 +48,10 @@
 
 <script setup lang="ts">
 import { useAppStore, useSettingsStore, usePermissionStore } from "@/store";
-const permissionStore = usePermissionStore();
-const { width } = useWindowSize();
-
-const WIDTH = 992; // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
+const permissionStore = usePermissionStore();
 
 const fixedHeader = computed(() => settingsStore.fixedHeader);
 const showTagsView = computed(() => settingsStore.tagsView);
@@ -89,6 +86,9 @@ const classObj = computed(() => ({
   "layout-top": layout.value === "top",
   "layout-mix": layout.value === "mix",
 }));
+
+const width = useWindowSize().width;
+const WIDTH = 992; // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
 
 watchEffect(() => {
   if (width.value < WIDTH) {
@@ -166,13 +166,19 @@ function toggleSidebar() {
     }
 
     :deep(.el-menu-item),
-    :deep(.el-sub-menu__title) {
+    :deep(.el-sub-menu__title),
+    :deep(.el-menu--horizontal) {
       height: $navbar-height;
       line-height: $navbar-height;
+    }
+
+    :deep(.el-menu--collapse) {
+      width: 100%;
     }
   }
 
   .main-container {
+    margin-top: $navbar-height;
     margin-left: 0;
   }
 }
@@ -199,9 +205,10 @@ function toggleSidebar() {
     }
   }
 
-  .fixed-header {
-    top: $navbar-height;
-    width: calc(100% - $sidebar-width);
+  &.hideSidebar {
+    .sidebar-container {
+      width: 100% !important;
+    }
   }
 
   .mix-container {
@@ -244,6 +251,10 @@ function toggleSidebar() {
       flex: 1;
       min-width: 0;
       margin-left: 0;
+
+      .fixed-header {
+        top: $navbar-height;
+      }
     }
   }
 }
@@ -262,6 +273,7 @@ function toggleSidebar() {
   }
 
   .fixed-header {
+    left: $sidebar-width-collapsed;
     width: calc(100% - $sidebar-width-collapsed);
   }
 

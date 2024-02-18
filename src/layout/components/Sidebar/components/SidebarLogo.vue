@@ -53,5 +53,11 @@ const logo = ref(new URL(`../../../../assets/logo.png`, import.meta.url).href);
   .logo-container {
     width: $sidebar-width;
   }
+
+  &.hideSidebar {
+    .logo-container {
+      width: $sidebar-width-collapsed;
+    }
+  }
 }
 </style>
