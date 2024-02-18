@@ -1,5 +1,5 @@
-@import "./transition";
-@import "./reset";
+@use "./transition";
+@use "./reset";
 
 .app-container {
   padding: 10px;
