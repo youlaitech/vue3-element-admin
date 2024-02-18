@@ -16,6 +16,7 @@
       >
         {{ translateRouteTitle(tag.title) }}
         <i-ep-close
+          class="close-icon"
           size="12px"
           v-if="!isAffix(tag)"
           @click.prevent.stop="closeSelectedTag(tag)"
@@ -387,6 +388,10 @@ onMounted(() => {
     cursor: pointer;
     border: 1px solid var(--el-border-color-light);
 
+    &:hover {
+      color: var(--el-color-primary);
+    }
+
     &:first-of-type {
       margin-left: 15px;
     }
@@ -395,14 +400,18 @@ onMounted(() => {
       margin-right: 15px;
     }
 
-    &:hover {
-      color: var(--el-color-primary);
+    .close-icon {
+      border-radius: 50%;
+
+      &:hover {
+        color: #fff;
+        background-color: var(--el-color-primary);
+      }
     }
 
     &.active {
       color: #fff;
       background-color: var(--el-color-primary);
-      border-color: var(--el-color-primary);
 
       &::before {
         display: inline-block;
@@ -412,6 +421,11 @@ onMounted(() => {
         content: "";
         background: #fff;
         border-radius: 50%;
+      }
+
+      .close-icon:hover {
+        color: var(--el-color-primary);
+        background-color: var(--el-fill-color-light);
       }
     }
   }
