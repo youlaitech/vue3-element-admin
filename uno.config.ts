@@ -18,6 +18,8 @@ export default defineConfig({
     "wh-full": "w-full h-full",
     "flex-x-between": "flex items-center justify-between",
     "flex-x-end": "flex items-center justify-end",
+    "absolute-tl": "absolute top-0 left-0",
+    "absolute-tr": "absolute top-0 right-0",
   },
   theme: {
     colors: {

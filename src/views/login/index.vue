@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <!-- 顶部 -->
-    <div class="absolute top-0 flex items-center justify-end px-5 h-20 w-full">
+    <div class="absolute-tl flex-x-end px-5 h-20 w-full">
       <el-switch
         v-model="isDark"
         inline-prompt
@@ -14,10 +14,10 @@
       <lang-select class="ml-2 cursor-pointer" />
     </div>
     <!-- 登录表单 -->
-    <el-card class="!border-none w-100 !bg-transparent !rounded-4% <sm:w-83">
+    <el-card class="!border-none !bg-transparent !rounded-4% w-100 <sm:w-80">
       <div class="text-center relative">
         <h2>{{ title }}</h2>
-        <el-tag class="ml-2 absolute top-0 right-0">{{ version }}</el-tag>
+        <el-tag class="ml-2 absolute-tr">{{ version }}</el-tag>
       </div>
 
       <el-form
@@ -28,17 +28,17 @@
       >
         <!-- 用户名 -->
         <el-form-item prop="username">
-          <div class="p-2">
-            <svg-icon icon-class="user" />
+          <div class="flex-y-center w-full">
+            <svg-icon icon-class="user" class="mx-2" />
+            <el-input
+              ref="username"
+              v-model="loginData.username"
+              :placeholder="$t('login.username')"
+              name="username"
+              size="large"
+              class="h-[48px]"
+            />
           </div>
-          <el-input
-            ref="username"
-            v-model="loginData.username"
-            class="flex-1"
-            size="large"
-            :placeholder="$t('login.username')"
-            name="username"
-          />
         </el-form-item>
 
         <!-- 密码 -->
@@ -48,58 +48,55 @@
           placement="right"
         >
           <el-form-item prop="password">
-            <span class="p-2">
-              <el-icon><Lock /></el-icon>
-            </span>
-            <el-input
-              v-model="loginData.password"
-              class="flex-1"
-              size="large"
-              :placeholder="$t('login.password')"
-              :type="passwordVisible === false ? 'password' : 'input'"
-              name="password"
-              @keyup="checkCapslock"
-              @keyup.enter="handleLogin"
-            />
-            <span class="mr-2" @click="passwordVisible = !passwordVisible">
-              <el-icon v-if="passwordVisible === false"><View /></el-icon>
-              <el-icon v-else><Hide /></el-icon>
-            </span>
+            <div class="flex-y-center w-full">
+              <el-icon class="mx-2"><Lock /></el-icon>
+              <el-input
+                v-model="loginData.password"
+                :placeholder="$t('login.password')"
+                :type="passwordVisible === false ? 'password' : 'input'"
+                name="password"
+                @keyup="checkCapslock"
+                @keyup.enter="handleLogin"
+                size="large"
+                class="flex-1 h-[48px]"
+              />
+              <span
+                class="mr-2 cursor-pointer"
+                @click="passwordVisible = !passwordVisible"
+              >
+                <el-icon v-if="passwordVisible === false"><View /></el-icon>
+                <el-icon v-else><Hide /></el-icon>
+              </span>
+            </div>
           </el-form-item>
         </el-tooltip>
 
         <!-- 验证码 -->
-        <el-form-item prop="captchaCode" class="flex-x-between">
-          <div class="flex">
-            <span class="p-2">
-              <svg-icon icon-class="captcha" />
-            </span>
-
+        <el-form-item prop="captchaCode">
+          <div class="flex-y-center w-full">
+            <svg-icon icon-class="captcha" class="mx-2" />
             <el-input
               v-model="loginData.captchaCode"
               auto-complete="off"
               size="large"
+              class="flex-1"
               :placeholder="$t('login.captchaCode')"
-              class="mr-[10px]"
               @keyup.enter="handleLogin"
             />
-          </div>
 
-          <div class="flex-x-end w-[120px] cursor-pointer" @click="getCaptcha">
             <el-image
+              @click="getCaptcha"
               :src="captchaBase64"
-              class="rounded-tr-md rounded-br-md h-[48px]"
-            >
-              <template #error>
-                <el-icon><Picture /></el-icon>
-              </template>
-            </el-image>
+              class="rounded-tr-md rounded-br-md cursor-pointer h-[48px]"
+            />
           </div>
         </el-form-item>
 
+        <!-- 登录按钮 -->
         <el-button
           :loading="loading"
           type="primary"
+          size="large"
           class="w-full"
           @click.prevent="handleLogin"
           >{{ $t("login.login") }}
@@ -114,10 +111,7 @@
     </el-card>
 
     <!-- ICP备案 -->
-    <div
-      class="absolute bottom-1 text-[10px] text-center"
-      v-show="useAppStore().device == 'desktop'"
-    >
+    <div class="absolute bottom-1 text-[10px] text-center" v-show="icpVisible">
       <p>
         Copyright © 2021 - 2024 youlai.tech All Rights Reserved. 有来技术
         版权所有
@@ -128,12 +122,9 @@
 </template>
 
 <script setup lang="ts">
-import router from "@/router";
-
-import { Sunny, Moon } from "@element-plus/icons-vue";
 import { useSettingsStore, useUserStore, useAppStore } from "@/store";
-
-// API依赖
+import { Sunny, Moon } from "@element-plus/icons-vue";
+import router from "@/router";
 import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
 import { getCaptchaApi } from "@/api/auth";
 import { LoginData } from "@/api/auth/types";
@@ -159,13 +150,21 @@ const handleThemeChange = (isDark: any) => {
  * 根据屏幕宽度切换设备模式
  */
 const appStore = useAppStore();
-const WIDTH = 992; // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
-const { width } = useWindowSize();
+const { width, height } = useWindowSize();
+const icpVisible = ref(true);
+
 watchEffect(() => {
-  if (width.value < WIDTH) {
+  // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
+  if (width.value < 992) {
     appStore.toggleDevice("mobile");
   } else {
     appStore.toggleDevice("desktop");
+  }
+
+  if (height.value < 600) {
+    icpVisible.value = false;
+  } else {
+    icpVisible.value = true;
   }
 });
 
@@ -285,7 +284,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.dark .login-container {
+html.dark .login-container {
   background: url("@/assets/images/login-bg-dark.jpg") no-repeat center right;
 }
 
@@ -318,7 +317,8 @@ onMounted(() => {
     }
 
     input:-webkit-autofill {
-      transition: background-color 1000s ease-in-out 0s; /* 通过延时渲染背景色变相去除背景颜色 */
+      /* 通过延时渲染背景色变相去除背景颜色 */
+      transition: background-color 1000s ease-in-out 0s;
     }
   }
 }
