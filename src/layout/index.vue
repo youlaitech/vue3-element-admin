@@ -176,7 +176,7 @@ function toggleSidebar() {
   }
 
   .main-container {
-    min-height: (100vh - $navbar-height);
+    min-height: calc(100vh - $navbar-height);
     padding-top: $navbar-height;
     margin-left: 0;
   }
