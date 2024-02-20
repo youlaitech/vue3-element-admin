@@ -1,18 +1,25 @@
 <template>
   <div ref="iconSelectRef" :style="'width:' + width" class="relative">
     <el-input
-      v-model="inputValue"
+      v-model="selectedIcon"
       readonly
       placeholder="点击选择图标"
-      @click="visible = !visible"
+      @click="popoverVisible = !popoverVisible"
     >
       <template #prepend>
-        <svg-icon :icon-class="inputValue" />
+        <template v-if="selectedIcon && selectedIcon.startsWith('el-icon-')">
+          <el-icon>
+            <component :is="renderIcon(selectedIcon.replace('el-icon-', ''))" />
+          </el-icon>
+        </template>
+        <template v-else>
+          <svg-icon :icon-class="selectedIcon" />
+        </template>
       </template>
     </el-input>
 
     <el-popover
-      :visible="visible"
+      :popoverVisible="popoverVisible"
       placement="bottom-end"
       trigger="click"
       :width="width"
@@ -20,43 +27,64 @@
       <template #reference>
         <div
           class="cursor-pointer text-[#999] absolute-tr height-[32px] leading-[32px] px-1"
-          @click="visible = !visible"
+          @click="popoverVisible = !popoverVisible"
         >
-          <i-ep-caret-top v-show="visible" />
-          <i-ep-caret-bottom v-show="!visible" />
+          <i-ep-caret-top v-show="popoverVisible" />
+          <i-ep-caret-bottom v-show="!popoverVisible" />
         </div>
       </template>
 
       <!-- 下拉选择弹窗 -->
-      <div ref="iconSelectDialogRef">
+      <div ref="popoverContentRef">
         <el-input
-          v-model="filterValue"
+          v-model="searchText"
           placeholder="搜索图标"
           clearable
-          @input="handleFilter"
+          @input="filterIcons"
         />
-        <el-divider border-style="dashed" />
-
-        <el-scrollbar height="300px">
-          <ul class="flex flex-wrap">
-            <li
-              v-for="(iconName, index) in filterIconNames"
-              :key="index"
-              class="p-2 border border-solid border-gray-300 cursor-pointer hover:border-color-[var(--el-color-primary)] hover:text-[var(--el-color-primary)] hover:scale-110 hover:transition-all mt-1 ml-1"
-              @click="handleSelect(iconName)"
-            >
-              <el-tooltip :content="iconName" placement="bottom" effect="light">
-                <svg-icon :icon-class="iconName" />
-              </el-tooltip>
-            </li>
-          </ul>
-        </el-scrollbar>
+        <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+          <el-tab-pane label="SVG 图标" name="svg">
+            <el-scrollbar height="300px">
+              <ul class="flex flex-wrap">
+                <li
+                  v-for="(icon, index) in filteredSvgIcons"
+                  :key="'svg-' + index"
+                  class="icon-item"
+                  @click="selectIcon(icon)"
+                >
+                  <el-tooltip :content="icon" placement="bottom" effect="light">
+                    <svg-icon :icon-class="icon" />
+                  </el-tooltip>
+                </li>
+              </ul>
+            </el-scrollbar>
+          </el-tab-pane>
+          <el-tab-pane label="Element 图标" name="element">
+            <el-scrollbar height="300px">
+              <ul class="flex flex-wrap">
+                <li
+                  v-for="(icon, name) in elementIcons"
+                  :key="name"
+                  class="icon-item"
+                  @click="selectIcon(name)"
+                >
+                  <el-icon>
+                    <component :is="icon" />
+                  </el-icon>
+                </li>
+              </ul>
+            </el-scrollbar>
+          </el-tab-pane>
+        </el-tabs>
       </div>
     </el-popover>
   </div>
 </template>
 
 <script setup lang="ts">
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import { ElTabPane } from "element-plus";
+
 const props = defineProps({
   modelValue: {
     type: String,
@@ -71,45 +99,56 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:modelValue"]);
-const inputValue = toRef(props, "modelValue");
+const selectedIcon = toRef(props, "modelValue");
 const width = toRef(props, "width");
 
-const visible = ref(false); // 弹窗显示状态
-
-const allIconNames: string[] = []; // 所有的图标名称集合
-
-const filterValue = ref(""); // 筛选的值
-const filterIconNames = ref<string[]>([]); // 过滤后的图标名称集合
-
 const iconSelectRef = ref();
-const iconSelectDialogRef = ref();
+const popoverContentRef = ref();
+
+const activeTab = ref("svg"); // 默认激活的Tab
+const searchText = ref(""); // 筛选的值
+const popoverVisible = ref(false); // 弹窗显示状态
+
+const svgIcons: string[] = []; //  SVG图标集合
+const filteredSvgIcons = ref<string[]>([]); // 过滤后的SVG图标名称集合
+
+const elementIcons = ref(ElementPlusIconsVue); // Element Plus图标集合
+
+function handleTabClick(tabPane: any) {
+  activeTab.value = tabPane.name;
+  filterIcons();
+}
 
 /**
  * icon 筛选
  */
-function handleFilter() {
-  if (filterValue.value) {
-    filterIconNames.value = allIconNames.filter((iconName) =>
-      iconName.includes(filterValue.value)
-    );
+function filterIcons() {
+  if (activeTab.value === "svg") {
+    // 过滤SVG图标逻辑
+    filteredSvgIcons.value = searchText.value
+      ? svgIcons.filter((iconName) => iconName.includes(searchText.value))
+      : svgIcons;
   } else {
-    filterIconNames.value = allIconNames;
+    // 过滤Element Plus图标逻辑 TODO
   }
 }
 
 /**
- * icon 选择
+ * 选择图标
  */
-function handleSelect(iconName: string) {
+function selectIcon(iconName: string) {
+  if (activeTab.value === "element") {
+    iconName = "el-icon-" + iconName;
+  }
   emit("update:modelValue", iconName);
-  visible.value = false;
+  popoverVisible.value = false;
 }
 
 /**
  * 点击容器外的区域关闭弹窗 VueUse onClickOutside
  */
-onClickOutside(iconSelectRef, () => (visible.value = false), {
-  ignore: [iconSelectDialogRef],
+onClickOutside(iconSelectRef, () => (popoverVisible.value = false), {
+  ignore: [popoverContentRef],
 });
 
 /**
@@ -117,16 +156,45 @@ onClickOutside(iconSelectRef, () => (visible.value = false), {
  */
 function loadIcons() {
   const icons = import.meta.glob("../../assets/icons/*.svg");
-  for (const icon in icons) {
-    const iconName = icon.split("assets/icons/")[1].split(".svg")[0];
-    allIconNames.push(iconName);
+  for (const path in icons) {
+    const iconName = path.replace(/.*\/(.*)\.svg$/, "$1");
+    svgIcons.push(iconName);
   }
-  filterIconNames.value = allIconNames;
+  filteredSvgIcons.value = svgIcons;
 }
+
+/**
+ * 渲染图标组件
+ */
+type IconNames = keyof typeof ElementPlusIconsVue;
+const renderIcon = (iconName: string) => {
+  const iconComponent = ElementPlusIconsVue[iconName as IconNames];
+  if (iconComponent) {
+    return h(resolveComponent(iconComponent.name));
+  }
+  return null;
+};
 
 onMounted(() => {
   loadIcons();
 });
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.icon-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  margin: 4px;
+  cursor: pointer;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.icon-item:hover {
+  border-color: #409eff;
+  scale: 1.2;
+}
+</style>
