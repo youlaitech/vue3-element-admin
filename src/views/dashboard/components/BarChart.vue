@@ -176,7 +176,6 @@ onMounted(() => {
 
   // 大小自适应
   window.addEventListener("resize", () => {
-    console.log("自适应事件触发");
     chart.value.resize();
   });
 });
