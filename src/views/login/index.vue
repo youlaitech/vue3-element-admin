@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <!-- 顶部 -->
-    <div class="absolute-tl flex-x-end px-5 h-20 w-full">
+    <div class="absolute-tl flex-x-end p-3 w-full">
       <el-switch
         v-model="isDark"
         inline-prompt
@@ -14,10 +14,10 @@
       <lang-select class="ml-2 cursor-pointer" />
     </div>
     <!-- 登录表单 -->
-    <el-card class="!border-none !bg-transparent !rounded-4% w-100 <sm:w-80">
+    <el-card class="!border-none !bg-transparent !rounded-4% w-100 <sm:w-85">
       <div class="text-center relative">
-        <h2>{{ title }}</h2>
-        <el-tag class="ml-2 absolute-tr">{{ version }}</el-tag>
+        <h2>{{ defaultSettings.title }}</h2>
+        <el-tag class="ml-2 absolute-tr">{{ defaultSettings.version }}</el-tag>
       </div>
 
       <el-form
@@ -133,7 +133,7 @@ const route = useRoute();
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
 
-const { title, version } = settingsStore;
+import defaultSettings from "@/settings";
 /**
  * 明亮/暗黑主题切换
  */
