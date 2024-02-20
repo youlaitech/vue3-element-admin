@@ -24,6 +24,14 @@ const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 
-const sidebarLogo = settingsStore.sidebarLogo;
+const sidebarLogo = computed(() => settingsStore.sidebarLogo);
 const layout = computed(() => settingsStore.layout);
 </script>
+
+<style lang="scss" scoped>
+.has-logo {
+  .el-scrollbar {
+    height: calc(100vh - $navbar-height);
+  }
+}
+</style>
