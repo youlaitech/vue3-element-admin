@@ -13,7 +13,7 @@
           :index="resolvePath(onlyOneChild.path)"
           :class="{ 'submenu-title-noDropdown': !isNest }"
         >
-          <MenuIconTitle
+          <SidebarMenuItemTitle
             :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
             :title="onlyOneChild.meta.title"
           />
@@ -24,7 +24,7 @@
     <!-- 显示具有多个子路由的父菜单项 -->
     <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
       <template #title>
-        <MenuIconTitle
+        <SidebarMenuItemTitle
           v-if="item.meta"
           :icon="item.meta && item.meta.icon"
           :title="item.meta.title"
