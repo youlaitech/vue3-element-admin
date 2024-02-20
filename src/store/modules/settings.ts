@@ -20,7 +20,6 @@ export const useSettingsStore = defineStore("setting", () => {
   );
   const theme = useStorage<string>("theme", defaultSettings.theme);
 
-  // Whether to enable watermark
   const watermark = useStorage<any>("watermark", defaultSettings.watermark);
 
   const settingsMap: Record<string, Ref<any>> = {

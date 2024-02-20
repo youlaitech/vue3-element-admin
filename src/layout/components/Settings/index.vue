@@ -18,19 +18,24 @@
       <el-switch v-model="settingsStore.tagsView" />
     </div>
 
-    <div class="py-[8px] flex justify-between">
+    <div class="py-[8px] flex-x-between">
       <span class="text-xs">固定 Header</span>
       <el-switch v-model="settingsStore.fixedHeader" />
     </div>
 
-    <div class="py-[8px] flex justify-between">
+    <div class="py-[8px] flex-x-between">
       <span class="text-xs">侧边栏 Logo</span>
+      <el-switch v-model="settingsStore.sidebarLogo" />
+    </div>
+
+    <div class="py-[8px] flex-x-between">
+      <span class="text-xs">开启水印</span>
       <el-switch v-model="settingsStore.sidebarLogo" />
     </div>
 
     <el-divider>主题颜色</el-divider>
 
-    <ul class="w-full space-x-2 flex justify-center py-2">
+    <ul class="w-full space-x-2 flex-x-center py-2">
       <li
         v-for="(color, index) in themeColors"
         :key="index"
@@ -165,7 +170,7 @@ const currentThemeColor = computed(() => {
 });
 
 /**
- * 切换主题
+ * 切换暗黑模式
  */
 const isDark = ref<boolean>(settingsStore.theme === "dark");
 const handleThemeChange = (isDark: any) => {

@@ -6,7 +6,6 @@
       class="fixed z-1000 bg-black bg-opacity-20"
       @click="handleOutsideClick"
     ></div>
-
     <Sidebar class="sidebar-container" />
 
     <!-- 混合布局 -->
