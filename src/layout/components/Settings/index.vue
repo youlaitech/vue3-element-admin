@@ -30,7 +30,7 @@
 
     <div class="py-[8px] flex-x-between">
       <span class="text-xs">开启水印</span>
-      <el-switch v-model="settingsStore.sidebarLogo" />
+      <el-switch v-model="settingsStore.watermarkEnabled" />
     </div>
 
     <el-divider>主题颜色</el-divider>

@@ -25,7 +25,7 @@
           <TagsView v-if="showTagsView" />
         </div>
         <AppMain />
-        <RightPanel v-if="showSettings">
+        <RightPanel v-if="defaultSettings.showSettings">
           <Settings />
         </RightPanel>
       </div>
@@ -38,7 +38,7 @@
         <TagsView v-if="showTagsView" />
       </div>
       <AppMain />
-      <RightPanel v-if="showSettings">
+      <RightPanel v-if="defaultSettings.showSettings">
         <Settings />
       </RightPanel>
     </div>
@@ -47,6 +47,7 @@
 
 <script setup lang="ts">
 import { useAppStore, useSettingsStore, usePermissionStore } from "@/store";
+import defaultSettings from "@/settings";
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
@@ -54,7 +55,6 @@ const permissionStore = usePermissionStore();
 
 const fixedHeader = computed(() => settingsStore.fixedHeader);
 const showTagsView = computed(() => settingsStore.tagsView);
-const showSettings = computed(() => settingsStore.showSettings);
 const layout = computed(() => settingsStore.layout);
 
 const activeTopMenuPath = computed(() => {
@@ -176,7 +176,8 @@ function toggleSidebar() {
   }
 
   .main-container {
-    margin-top: $navbar-height;
+    min-height: (100vh - $navbar-height);
+    padding-top: $navbar-height;
     margin-left: 0;
   }
 }

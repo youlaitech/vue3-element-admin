@@ -1,13 +1,27 @@
 <template>
-  <el-config-provider :locale="appStore.locale" :size="appStore.size">
-    <el-watermark content="vue3-element-admin" class="wh-full">
+  <el-config-provider :locale="locale" :size="size">
+    <!-- 开启水印 -->
+    <el-watermark
+      v-if="watermarkEnabled"
+      :content="watermarkContent"
+      class="wh-full"
+    >
       <router-view />
     </el-watermark>
+    <!-- 关闭水印 -->
+    <router-view v-else />
   </el-config-provider>
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/modules/app";
+import { useAppStore, useSettingsStore } from "@/store";
+import defaultSettings from "@/settings";
 
 const appStore = useAppStore();
+const locale = computed(() => appStore.locale);
+const size = computed(() => appStore.size);
+
+const watermarkContent = defaultSettings.watermarkContent;
+const settingsStore = useSettingsStore();
+const watermarkEnabled = computed(() => settingsStore.watermarkEnabled);
 </script>

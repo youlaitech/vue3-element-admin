@@ -10,7 +10,8 @@ const defaultSettings: AppSettings = {
   size: "default",
   language: "zh-cn",
   themeColor: "#409EFF",
-  watermark: { enabled: false, content: "vue3-element-admin" },
+  watermarkEnabled: false,
+  watermarkContent: "vue3-element-admin",
 };
 
 export default defaultSettings;

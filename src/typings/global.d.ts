@@ -65,13 +65,10 @@ declare global {
     size: string;
     /** 语言( zh-cn| en) */
     language: string;
-    /** 水印配置 */
-    watermark: {
-      /** 是否开启水印 */
-      enabled: boolean;
-      /** 水印内容 */
-      content: string;
-    };
+    /** 是否开启水印 */
+    watermarkEnabled: boolean;
+    /** 水印内容 */
+    watermarkContent: string;
   }
 
   /**

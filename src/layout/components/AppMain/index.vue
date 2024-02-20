@@ -73,7 +73,13 @@ const cachedViews = computed(() => tagsViewStore.cachedViews); // 缓存页面�
 
 .layout-top {
   .fixed-header + .app-main {
-    padding-top: $tags-view-height;
+    padding-top: 0;
+  }
+
+  .hasTagsView {
+    .fixed-header + .app-main {
+      padding-top: $tags-view-height;
+    }
   }
 }
 </style>
