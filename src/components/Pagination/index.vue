@@ -14,9 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from "vue";
-import { scrollTo } from "@/utils/scroll-to";
-
 const props = defineProps({
   total: {
     required: true,
@@ -63,17 +60,11 @@ const pageSize = useVModel(props, "limit", emit);
 
 function handleSizeChange(val: number) {
   emit("pagination", { page: currentPage, limit: val });
-  if (props.autoScroll) {
-    scrollTo(0, 800);
-  }
 }
 
 function handleCurrentChange(val: number) {
   currentPage.value = val;
   emit("pagination", { page: val, limit: props.limit });
-  if (props.autoScroll) {
-    scrollTo(0, 800);
-  }
 }
 </script>
 
