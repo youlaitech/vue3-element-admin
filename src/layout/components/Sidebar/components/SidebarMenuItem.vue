@@ -173,6 +173,8 @@ function resolvePath(routePath: string) {
   }
 
   .el-menu--collapse {
+    width: $sidebar-width-collapsed;
+
     .el-sub-menu {
       & > .el-sub-menu__title {
         & > span {
