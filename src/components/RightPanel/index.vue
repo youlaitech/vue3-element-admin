@@ -1,14 +1,8 @@
 <template>
-  <div ref="rightPanel" :class="{ show: show }">
-    <div class="right-panel-overlay"></div>
-    <div class="right-panel-container">
-      <div
-        class="right-panel-btn"
-        :style="{
-          top: buttonTop + 'px',
-        }"
-        @click="show = !show"
-      >
+  <div ref="rightPanelRef" :class="{ show: show }">
+    <div class="rightPanel-background"></div>
+    <div class="rightPanel">
+      <div class="handle-button" @click="show = !show">
         <i-ep-close v-show="show" />
         <i-ep-setting v-show="!show" />
       </div>
@@ -23,43 +17,32 @@
 import { addClass, removeClass } from "@/utils/index";
 
 const show = ref(false);
-
-defineProps({
-  buttonTop: {
-    default: 250,
-    type: Number,
-  },
-});
+const rightPanelRef = ref<HTMLElement | null>(null);
 
 watch(show, (value) => {
   if (value) {
-    addEventClick();
-  }
-  if (value) {
+    window.addEventListener("click", closeSidebar, { passive: true });
     addClass(document.body, "showRightPanel");
   } else {
     removeClass(document.body, "showRightPanel");
   }
 });
 
-function addEventClick() {
-  window.addEventListener("click", closeSidebar, { passive: true });
-}
-
-function closeSidebar(evt: any) {
-  // 主题选择点击不关闭
-  let parent = evt.target.closest(".right-panel-container");
-  if (!parent) {
+function closeSidebar(evt: MouseEvent) {
+  const target = evt.target as HTMLElement;
+  console.log("target", target);
+  console.log("closest", target.closest(".rightPanel"));
+  if (show.value && target && !target.closest(".rightPanel")) {
     show.value = false;
     window.removeEventListener("click", closeSidebar);
   }
 }
 
-const rightPanel = ref();
-
 function insertToBody() {
-  const body = document.querySelector("body") as any;
-  body.insertBefore(rightPanel.value, body.firstChild);
+  const body = document.querySelector("body");
+  if (body && rightPanelRef.value instanceof Node) {
+    body.insertBefore(rightPanelRef.value, body.firstChild);
+  }
 }
 
 onMounted(() => {
@@ -67,25 +50,29 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  rightPanel.value.remove();
+  if (rightPanelRef.value) {
+    rightPanelRef.value.remove();
+  }
 });
 </script>
 
-<style lang="scss" scoped>
+<style>
 .showRightPanel {
   position: relative;
-  width: calc(100% - 15px);
+  width: 100%;
   overflow: hidden;
 }
+</style>
 
-.right-panel-overlay {
+<style lang="scss" scoped>
+.rightPanel-background {
   position: fixed;
   top: 0;
   left: 0;
   background: rgb(0 0 0 / 20%);
 }
 
-.right-panel-container {
+.rightPanel {
   position: fixed;
   top: 0;
   right: 0;
@@ -102,33 +89,29 @@ onBeforeUnmount(() => {
 .show {
   transition: all 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
-  .right-panel-overlay {
+  .rightPanel-background {
     z-index: 99;
     width: 100%;
     height: 100%;
     opacity: 1;
   }
 
-  .right-panel-container {
+  .rightPanel {
     transform: translate(0);
   }
 }
 
-.right-panel-btn {
+.handle-button {
   position: absolute;
+  top: 250px;
   left: -36px;
   width: 36px;
   height: 36px;
+  line-height: 36px;
   color: var(--el-color-white);
   text-align: center;
   cursor: pointer;
   background-color: var(--el-color-primary);
   border-radius: 6px 0 0 6px;
-
-  svg {
-    width: 20px;
-    height: 20px;
-    vertical-align: -10px;
-  }
 }
 </style>
