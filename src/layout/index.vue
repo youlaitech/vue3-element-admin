@@ -306,6 +306,10 @@ function toggleSidebar() {
       transition-duration: 0.3s;
       transform: translate3d(-210px, 0, 0);
     }
+
+    .main-container {
+      margin-left: 0;
+    }
   }
 }
 
