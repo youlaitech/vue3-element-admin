@@ -2,7 +2,7 @@
   <section class="app-main">
     <router-view>
       <template #default="{ Component, route }">
-        <transition name="fade-translate" mode="out-in">
+        <transition mode="out-in">
           <keep-alive :include="cachedViews">
             <component :is="Component" :key="route.path" />
           </keep-alive>

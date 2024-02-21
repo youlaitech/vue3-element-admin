@@ -46,6 +46,7 @@
     "@vueuse/core": "^10.7.2",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "5.1.10",
+    "animate.css": "^4.1.1",
     "axios": "^1.6.7",
     "echarts": "^5.5.0",
     "element-plus": "^2.5.6",

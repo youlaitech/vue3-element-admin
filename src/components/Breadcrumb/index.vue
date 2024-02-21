@@ -1,12 +1,14 @@
 <template>
-  <el-breadcrumb class="h-[50px] flex items-center">
-    <transition-group name="breadcrumb-transition">
+  <el-breadcrumb class="flex-y-center">
+    <transition-group
+      enter-active-class="animate__animated animate__fadeInRight"
+    >
       <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.path">
         <span
           v-if="
             item.redirect === 'noredirect' || index === breadcrumbs.length - 1
           "
-          class="text-[var(--el-disabled-text-color)]"
+          class="color-gray-400"
           >{{ translateRouteTitle(item.meta.title) }}</span
         >
         <a v-else @click.prevent="handleLink(item)">
@@ -18,8 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from "vue";
-import { useRoute, RouteLocationMatched } from "vue-router";
+import { RouteLocationMatched } from "vue-router";
 import { compile } from "path-to-regexp";
 import router from "@/router";
 import { translateRouteTitle } from "@/utils/i18n";
@@ -88,13 +89,6 @@ onBeforeMount(() => {
 </script>
 
 <style lang="scss" scoped>
-.app-breadcrumb.el-breadcrumb {
-  display: inline-block;
-  margin-left: 8px;
-  font-size: 14px;
-  line-height: 50px;
-}
-
 // 覆盖 element-plus 的样式
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {

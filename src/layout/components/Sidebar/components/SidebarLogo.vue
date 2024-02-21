@@ -1,6 +1,6 @@
 <template>
   <div class="logo-container">
-    <transition name="logo-transition">
+    <transition enter-active-class="animate__animated animate__fadeInLeft">
       <router-link v-if="collapse" class="wh-full flex-center" to="/">
         <img v-if="settingsStore.sidebarLogo" :src="logo" class="logo-image" />
       </router-link>
@@ -41,6 +41,7 @@ const logo = ref(new URL(`../../../../assets/logo.png`, import.meta.url).href);
   }
 
   .logo-title {
+    flex-shrink: 0; /* 防止容器在空间不足时缩小 */
     margin-left: 10px;
     font-size: 14px;
     font-weight: bold;
