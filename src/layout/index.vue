@@ -3,7 +3,7 @@
     <!-- 遮罩层 -->
     <div
       v-if="classObj.mobile && classObj.openSidebar"
-      class="fixed z-999 bg-black bg-opacity-30 wh-full top-0"
+      class="fixed-tl z-999 bg-black bg-opacity-30 wh-full"
       @click="handleOutsideClick"
     ></div>
     <Sidebar class="sidebar-container" />
@@ -258,22 +258,45 @@ function toggleSidebar() {
     width: calc(100% - $sidebar-width-collapsed);
   }
 
-  .sidebar-container {
-    width: $sidebar-width-collapsed !important;
-  }
-
   .main-container {
     margin-left: $sidebar-width-collapsed;
   }
 
-  .sidebar-container__left {
-    width: $sidebar-width-collapsed;
+  &.layout-top {
+    .fixed-header {
+      left: 0;
+      width: 100%;
+    }
+
+    .main-container {
+      margin-left: 0;
+    }
   }
 
   &.layout-mix {
+    .fixed-header {
+      left: $sidebar-width-collapsed;
+      width: calc(100% - $sidebar-width-collapsed);
+    }
+
     .sidebar-container {
       width: 100% !important;
     }
+
+    .mix-container {
+      .sidebar-container__left {
+        width: $sidebar-width-collapsed;
+      }
+    }
+  }
+}
+
+.layout-left.hideSidebar {
+  .sidebar-container {
+    width: $sidebar-width-collapsed !important;
+    pointer-events: none;
+    transition-duration: 0.3s;
+    transform: translate3d(-210px, 0, 0);
   }
 }
 
@@ -285,14 +308,6 @@ function toggleSidebar() {
 
   .main-container {
     margin-left: 0;
-  }
-
-  &.hideSidebar {
-    .sidebar-container {
-      pointer-events: none;
-      transition-duration: 0.3s;
-      transform: translate3d(-210px, 0, 0);
-    }
   }
 
   &.layout-top {
