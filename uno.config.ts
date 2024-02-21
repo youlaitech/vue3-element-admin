@@ -20,6 +20,7 @@ export default defineConfig({
     "flex-x-end": "flex items-center justify-end",
     "absolute-tl": "absolute top-0 left-0",
     "absolute-tr": "absolute top-0 right-0",
+    "fixed-tl": "fixed top-0 left-0",
   },
   theme: {
     colors: {
