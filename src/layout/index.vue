@@ -294,9 +294,18 @@ function toggleSidebar() {
 .layout-left.hideSidebar {
   .sidebar-container {
     width: $sidebar-width-collapsed !important;
-    pointer-events: none;
-    transition-duration: 0.3s;
-    transform: translate3d(-210px, 0, 0);
+  }
+
+  .main-container {
+    margin-left: $sidebar-width-collapsed;
+  }
+
+  &.mobile {
+    .sidebar-container {
+      pointer-events: none;
+      transition-duration: 0.3s;
+      transform: translate3d(-210px, 0, 0);
+    }
   }
 }
 

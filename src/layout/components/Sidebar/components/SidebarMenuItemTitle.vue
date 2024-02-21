@@ -47,7 +47,8 @@ const renderIcon = (iconName: string) => {
 .hideSidebar {
   .el-sub-menu,
   .el-menu-item {
-    .svg-icon {
+    .svg-icon,
+    .sub-el-icon {
       margin-left: 20px;
     }
   }
