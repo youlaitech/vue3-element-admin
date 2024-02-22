@@ -1,7 +1,7 @@
-<!-- 侧边菜单：包括左侧布局(all)、顶部布局(all)、混合布局(left) -->
+<!-- 左侧边菜单：包括左侧布局(left)、顶部布局(all)、混合布局(left) -->
 <template>
   <el-menu
-    :default-active="currRoute.path"
+    :default-active="currentRoute.path"
     :collapse="!appStore.sidebar.opened"
     :background-color="variables['menu-background']"
     :text-color="variables['menu-text']"
@@ -28,7 +28,7 @@ import variables from "@/styles/variables.module.scss";
 
 const settingsStore = useSettingsStore();
 const appStore = useAppStore();
-const currRoute = useRoute();
+const currentRoute = useRoute();
 const layout = computed(() => settingsStore.layout);
 const props = defineProps({
   menuList: {
@@ -47,7 +47,7 @@ const props = defineProps({
 /**
  * 解析路径
  *
- * @param routePath 路由路径
+ * @param routePath 路由路径 /user
  */
 function resolvePath(routePath: string) {
   if (isExternal(routePath)) {
@@ -57,8 +57,8 @@ function resolvePath(routePath: string) {
     return props.basePath;
   }
 
-  // 完整路径 = 父级路径(/level/level_3) + 路由路径
-  const fullPath = path.resolve(props.basePath, routePath); // 相对路径 → 绝对路径
+  // 完整绝对路径 = 父级路径(/system) + 路由路径(/user)
+  const fullPath = path.resolve(props.basePath, routePath);
   return fullPath;
 }
 </script>
