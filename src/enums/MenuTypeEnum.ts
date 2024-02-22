@@ -1,3 +1,6 @@
+/**
+ * 菜单类型枚举
+ */
 export enum MenuTypeEnum {
   /**
    * 目录
