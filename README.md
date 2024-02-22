@@ -7,16 +7,18 @@
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
     </a>
 </p>
-<p align="center">
- <a target="_blank" href="https://juejin.cn/post/7228990409909108793">vue3-element-admin官方文档</a> |  <a target="_blank" href="http://vue3.youlai.tech">在线预览</a> 
-</p>
 
-
-## 项目介绍
 
 [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等最新主流技术栈构建的后台管理前端模板（配套[后端源码](https://gitee.com/youlaiorg/youlai-boot)）。
 
-项目有以下特性：
+![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
+
+<p align="center">
+ <a target="_blank" href="http://vue3.youlai.tech">👀 在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📖 阅读文档</a>  
+</p>
+
+## 项目特性
+
 
 - 基于 vue-element-admin 升级到 vue3 版本，无自定义封装，易上手，减少学习成本。
 - 提供了配套的 Java 后端接口，真实的接口数据，而非使用 Mock 数据。您可以访问在[线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)查看接口详情。
