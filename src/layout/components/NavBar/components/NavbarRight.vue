@@ -5,14 +5,15 @@
       <div class="navbar-item" @click="toggle">
         <svg-icon
           :icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'"
+          size="12px"
         />
       </div>
       <!-- 布局大小 -->
       <el-tooltip content="布局大小" effect="dark" placement="bottom">
-        <size-select class="navbar-item" />
+        <size-select class="navbar-item" size="12px" />
       </el-tooltip>
 
-      <lang-select class="navbar-item" />
+      <lang-select class="navbar-item" size="12px" />
     </div>
 
     <!-- 用户头像 -->
@@ -31,23 +32,17 @@
       </div>
       <template #dropdown>
         <el-dropdown-menu>
-          <router-link to="/">
-            <el-dropdown-item>{{ $t("navbar.dashboard") }}</el-dropdown-item>
-          </router-link>
           <a
             target="_blank"
-            href="https://github.com/youlaitech/vue3-element-admin"
+            href="https://gitee.com/youlaiorg/vue3-element-admin"
           >
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://gitee.com/haoxr">
-            <el-dropdown-item>{{ $t("navbar.gitee") }}</el-dropdown-item>
+            <el-dropdown-item>项目地址</el-dropdown-item>
           </a>
           <a target="_blank" href="https://juejin.cn/post/7228990409909108793">
-            <el-dropdown-item>{{ $t("navbar.document") }}</el-dropdown-item>
+            <el-dropdown-item>项目文档</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click="logout">
-            {{ $t("navbar.logout") }}
+            注销登出
           </el-dropdown-item>
         </el-dropdown-menu>
       </template>
@@ -102,6 +97,12 @@ function logout() {
 
   &:hover {
     background: rgb(0 0 0 / 10%);
+  }
+
+  .svg-icon,
+  svg,
+  .el-icon {
+    vertical-align: -0.15em;
   }
 }
 

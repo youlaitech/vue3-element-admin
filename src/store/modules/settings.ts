@@ -35,8 +35,6 @@ export const useSettingsStore = defineStore("setting", () => {
     tagsView,
     sidebarLogo,
     layout,
-    themeColor,
-    theme,
     watermarkEnabled,
   };
 
@@ -50,11 +48,28 @@ export const useSettingsStore = defineStore("setting", () => {
     const setting = settingsMap[key];
     if (setting) {
       setting.value = value;
-      // Special handling for theme changes
-      if (key === "theme") {
-        document.documentElement.classList.toggle("dark", value === "dark");
-      }
     }
+  }
+
+  /**
+   * 切换主题
+   */
+  function changeTheme(val: string) {
+    theme.value = val;
+  }
+
+  /**
+   * 切换主题颜色
+   */
+  function changeThemeColor(val: string) {
+    themeColor.value = val;
+  }
+
+  /**
+   * 切换布局
+   */
+  function changeLayout(val: string) {
+    layout.value = val;
   }
 
   return {
@@ -63,8 +78,11 @@ export const useSettingsStore = defineStore("setting", () => {
     sidebarLogo,
     layout,
     themeColor,
-    changeSetting,
     theme,
     watermarkEnabled,
+    changeSetting,
+    changeTheme,
+    changeThemeColor,
+    changeLayout,
   };
 });

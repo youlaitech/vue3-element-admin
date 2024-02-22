@@ -3,14 +3,16 @@
     <!-- 遮罩层 -->
     <div
       v-if="classObj.mobile && classObj.openSidebar"
-      class="fixed-tl z-999 bg-black bg-opacity-30 wh-full"
+      class="wh-full fixed-lt z-999 bg-black bg-opacity-30"
       @click="handleOutsideClick"
     ></div>
+
+    <!-- 公用侧边栏 -->
     <Sidebar class="sidebar-container" />
 
     <!-- 混合布局 -->
     <div v-if="layout === 'mix'" class="mix-container">
-      <div class="sidebar-container__left">
+      <div class="mix-container__left">
         <SidebarMenu :menu-list="mixLeftMenus" :base-path="activeTopMenuPath" />
         <div class="sidebar-toggle">
           <hamburger
@@ -25,22 +27,18 @@
           <TagsView v-if="showTagsView" />
         </div>
         <AppMain />
-        <RightPanel v-if="defaultSettings.showSettings">
-          <Settings />
-        </RightPanel>
+        <Settings v-if="defaultSettings.showSettings" />
       </div>
     </div>
 
-    <!-- 左侧布局|| 顶部布局 -->
+    <!-- 左侧和顶部布局 -->
     <div v-else :class="{ hasTagsView: showTagsView }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
         <NavBar v-if="layout === 'left'" />
         <TagsView v-if="showTagsView" />
       </div>
       <AppMain />
-      <RightPanel v-if="defaultSettings.showSettings">
-        <Settings />
-      </RightPanel>
+      <Settings v-if="defaultSettings.showSettings" />
     </div>
   </div>
 </template>
@@ -53,17 +51,11 @@ const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 
-const fixedHeader = computed(() => settingsStore.fixedHeader);
-const showTagsView = computed(() => settingsStore.tagsView);
-const layout = computed(() => settingsStore.layout);
-
-const activeTopMenuPath = computed(() => {
-  return appStore.activeTopMenuPath;
-});
-// 混合模式左侧菜单
-const mixLeftMenus = computed(() => {
-  return permissionStore.mixLeftMenus;
-});
+const fixedHeader = computed(() => settingsStore.fixedHeader); // 是否固定header
+const showTagsView = computed(() => settingsStore.tagsView); // 是否显示tagsView
+const layout = computed(() => settingsStore.layout); // 布局模式 left top mix
+const activeTopMenuPath = computed(() => appStore.activeTopMenuPath); // 顶部菜单激活path
+const mixLeftMenus = computed(() => permissionStore.mixLeftMenus); // 混合布局左侧菜单
 
 watch(
   () => activeTopMenuPath.value,
@@ -209,7 +201,7 @@ function toggleSidebar() {
     height: 100%;
     padding-top: $navbar-height;
 
-    .sidebar-container__left {
+    .mix-container__left {
       position: relative;
       width: $sidebar-width;
       height: 100%;
@@ -284,7 +276,7 @@ function toggleSidebar() {
     }
 
     .mix-container {
-      .sidebar-container__left {
+      .mix-container__left {
         width: $sidebar-width-collapsed;
       }
     }
