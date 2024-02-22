@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <!-- 顶部 -->
-    <div class="absolute-tl flex-x-end p-3 w-full">
+    <div class="absolute-lt flex-x-end p-3 w-full">
       <el-switch
         v-model="isDark"
         inline-prompt
@@ -17,7 +17,7 @@
     <el-card class="!border-none !bg-transparent !rounded-4% w-100 <sm:w-85">
       <div class="text-center relative">
         <h2>{{ defaultSettings.title }}</h2>
-        <el-tag class="ml-2 absolute-tr">{{ defaultSettings.version }}</el-tag>
+        <el-tag class="ml-2 absolute-rt">{{ defaultSettings.version }}</el-tag>
       </div>
 
       <el-form
