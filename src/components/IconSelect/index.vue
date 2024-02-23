@@ -26,7 +26,7 @@
     >
       <template #reference>
         <div
-          class="cursor-pointer text-[#999] absolute-tr height-[32px] leading-[32px] px-1"
+          class="cursor-pointer text-[#999] absolute-rt height-[32px] leading-[32px] px-1"
           @click="popoverVisible = !popoverVisible"
         >
           <i-ep-caret-top v-show="popoverVisible" />

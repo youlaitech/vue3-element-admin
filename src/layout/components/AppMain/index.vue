@@ -35,15 +35,8 @@ const cachedViews = computed(() => useTagsViewStore().cachedViews); // 缓存页
   padding-top: $navbar-height;
 }
 
-.hasTagsView {
-  .app-main,
-  .fixed-header + .app-main {
-    min-height: calc(100vh - $navbar-height - $tags-view-height);
-  }
-
-  .fixed-header + .app-main {
-    padding-top: $navbar-height + $tags-view-height;
-  }
+.hasTagsView .fixed-header + .app-main {
+  padding-top: $navbar-height + $tags-view-height;
 }
 
 .layout-mix,
@@ -60,10 +53,15 @@ const cachedViews = computed(() => useTagsViewStore().cachedViews); // 缓存页
     overflow-y: auto;
   }
 
-  .hasTagsView .app-main,
-  .hasTagsView .fixed-header + .app-main {
+  .hasTagsView .app-main {
     height: calc(100vh - $navbar-height - $tags-view-height);
-    padding-top: $tags-view-height;
+    min-height: calc(100vh - $navbar-height - $tags-view-height);
+  }
+
+  .hasTagsView .fixed-header + .app-main {
+    height: calc(100vh - $navbar-height);
+    min-height: calc(100vh - $navbar-height);
+    padding-top: 34px;
   }
 }
 
