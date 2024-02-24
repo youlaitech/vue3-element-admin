@@ -3,11 +3,8 @@
 :root {
   --menu-background: #304156;
   --menu-text: #bfcbd9;
-  --menu-active-text: #409eff;
+  --menu-active-text: var(--el-menu-active-color);
   --menu-hover: #263445;
-  --sub-menu-background: #1f2d3d;
-  --sub-menu-active-text: #f4f4f5;
-  --sub-menu-hover: #001528;
   --sidebar-logo-background: #2d3748;
 }
 
@@ -17,9 +14,6 @@ html.dark {
   --menu-text: #fff;
   --menu-active-text: var(--el-menu-active-color);
   --menu-hover: rgb(0 0 0 / 20%);
-  --sub-menu-background: var(--el-menu-bg-color);
-  --sub-menu-active-text: var(--el-menu-active-color);
-  --sub-menu-hover: rgb(0 0 0 / 20%);
   --sidebar-logo-background: rgb(0 0 0 / 20%);
 }
 
@@ -27,9 +21,6 @@ $menu-background: var(--menu-background); // 菜单背景色
 $menu-text: var(--menu-text); // 菜单文字颜色
 $menu-active-text: var(--menu-active-text); // 菜单激活文字颜色
 $menu-hover: var(--menu-hover); // 菜单悬停背景色
-$sub-menu-background: var(--sub-menu-background); // 子菜单背景色
-$sub-menu-active-text: var(--sub-menu-active-text); // 子菜单激活文字颜色
-$sub-menu-hover: var(--sub-menu-hover); // 子菜单悬停背景色
 $sidebar-logo-background: var(--sidebar-logo-background); // 侧边栏 Logo 背景色
 
 $sidebar-width: 210px; // 侧边栏宽度
