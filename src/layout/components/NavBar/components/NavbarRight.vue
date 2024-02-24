@@ -98,12 +98,6 @@ function logout() {
   &:hover {
     background: rgb(0 0 0 / 10%);
   }
-
-  .svg-icon,
-  svg,
-  .el-icon {
-    vertical-align: -0.15em;
-  }
 }
 
 .layout-top,
