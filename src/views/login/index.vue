@@ -134,16 +134,15 @@ const userStore = useUserStore();
 const settingsStore = useSettingsStore();
 
 import defaultSettings from "@/settings";
+import { ThemeEnum } from "@/enums/ThemeEnum";
 /**
  * 明亮/暗黑主题切换
  */
-const isDark = ref<boolean>(settingsStore.theme === "dark");
+const isDark = ref<boolean>(settingsStore.theme === ThemeEnum.DARK);
 const handleThemeChange = (isDark: any) => {
-  useToggle(isDark);
-  settingsStore.changeSetting({
-    key: "theme",
-    value: isDark ? "dark" : "light",
-  });
+  const theme = isDark ? ThemeEnum.DARK : ThemeEnum.LIGHT;
+  settingsStore.changeTheme(theme);
+  document.documentElement.classList.toggle("dark", theme === ThemeEnum.DARK);
 };
 
 /**
