@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <div v-if="device !== 'mobile'" class="flex-center">
+    <template v-if="device !== 'mobile'">
       <!--全屏 -->
       <div class="navbar-item" @click="toggle">
         <svg-icon
@@ -12,23 +12,18 @@
       <el-tooltip content="布局大小" effect="dark" placement="bottom">
         <size-select class="navbar-item" size="12px" />
       </el-tooltip>
-
+      <!-- 语言选择 -->
       <lang-select class="navbar-item" size="12px" />
-    </div>
+    </template>
 
     <!-- 用户头像 -->
-    <el-dropdown trigger="click">
-      <div class="flex-center ml-1">
+    <el-dropdown class="navbar-item" trigger="click">
+      <div class="flex-center h100% p10px">
         <img
           :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'"
-          width="40px"
-          height="40px"
-          class="rounded-md cursor-pointer"
+          class="rounded-full mr-10px w24px w24px"
         />
-
-        <el-icon class="cursor-pointer">
-          <CaretBottom />
-        </el-icon>
+        <span>{{ userStore.user.username }}</span>
       </div>
       <template #dropdown>
         <el-dropdown-menu>
@@ -47,14 +42,32 @@
         </el-dropdown-menu>
       </template>
     </el-dropdown>
+
+    <!-- 设置 -->
+    <template v-if="defaultSettings.showSettings">
+      <el-icon
+        class="navbar-item"
+        size="12px"
+        @click="settingStore.settingsVisible = true"
+      >
+        <Setting />
+      </el-icon>
+    </template>
   </div>
 </template>
 <script setup lang="ts">
-import { useAppStore, useTagsViewStore, useUserStore } from "@/store";
+import {
+  useAppStore,
+  useTagsViewStore,
+  useUserStore,
+  useSettingsStore,
+} from "@/store";
+import defaultSettings from "@/settings";
 
 const appStore = useAppStore();
 const tagsViewStore = useTagsViewStore();
 const userStore = useUserStore();
+const settingStore = useSettingsStore();
 
 const route = useRoute();
 const router = useRouter();
@@ -88,7 +101,7 @@ function logout() {
 <style lang="scss" scoped>
 .navbar-item {
   display: inline-block;
-  width: 30px;
+  min-width: 40px;
   height: $navbar-height;
   line-height: $navbar-height;
   color: var(--el-text-color);
