@@ -7,10 +7,10 @@ import { LoginData } from "@/api/auth/types";
 import { UserInfo } from "@/api/user/types";
 
 export const useUserStore = defineStore("user", () => {
-  const user: UserInfo = {
+  const user = ref<UserInfo>({
     roles: [],
     perms: [],
-  };
+  });
 
   /**
    * 登录
@@ -45,7 +45,7 @@ export const useUserStore = defineStore("user", () => {
             reject("getUserInfo: roles must be a non-null array!");
             return;
           }
-          Object.assign(user, { ...data });
+          Object.assign(user.value, { ...data });
           resolve(data);
         })
         .catch((error) => {
