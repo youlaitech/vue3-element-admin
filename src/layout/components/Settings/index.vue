@@ -1,12 +1,4 @@
 <template>
-  <div
-    :class="['settings-button', { show: settingsVisible }]"
-    @click="settingsVisible = !settingsVisible"
-  >
-    <i-ep-close v-show="settingsVisible" />
-    <i-ep-setting v-show="!settingsVisible" />
-  </div>
-
   <el-drawer v-model="settingsVisible" size="300" title="项目配置">
     <el-divider>主题设置</el-divider>
 
@@ -70,7 +62,14 @@ const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 
-const settingsVisible = ref(false);
+const settingsVisible = computed({
+  get() {
+    return settingsStore.settingsVisible;
+  },
+  set() {
+    settingsStore.settingsVisible = false;
+  },
+});
 
 /**
  * 切换主题颜色
@@ -157,26 +156,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.settings-button {
-  position: fixed;
-  top: 250px;
-  right: 0;
-  z-index: 2001;
-  width: 40px;
-  height: 40px;
-  color: var(--el-color-white);
-  cursor: pointer;
-  background-color: var(--el-color-primary);
-  border-radius: 6px 0 0 6px;
-
-  @apply flex-center;
-
-  &.show {
-    right: 300px;
-    transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
-  }
-}
-
 .settings-option {
   @apply py-1 flex-x-between;
 }

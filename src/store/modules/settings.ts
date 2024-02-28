@@ -3,6 +3,8 @@ import defaultSettings from "@/settings";
 type SettingsValue = boolean | string;
 
 export const useSettingsStore = defineStore("setting", () => {
+  // 是否显示设置
+  const settingsVisible = ref(false);
   // 是否显示标签视图
   const tagsView = useStorage<boolean>("tagsView", defaultSettings.tagsView);
   // 是否显示侧边栏logo
@@ -73,6 +75,7 @@ export const useSettingsStore = defineStore("setting", () => {
   }
 
   return {
+    settingsVisible,
     tagsView,
     fixedHeader,
     sidebarLogo,
