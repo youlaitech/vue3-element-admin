@@ -1,7 +1,7 @@
 <template>
   <el-dropdown trigger="click" @command="handleSizeChange">
     <div>
-      <svg-icon icon-class="size" :size="size" />
+      <svg-icon icon-class="size" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
@@ -20,14 +20,6 @@
 
 <script setup lang="ts">
 import { useAppStore } from "@/store/modules/app";
-
-defineProps({
-  size: {
-    type: String,
-    required: false,
-  },
-});
-
 const sizeOptions = ref([
   { label: "默认", value: "default" },
   { label: "大型", value: "large" },

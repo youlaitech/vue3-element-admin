@@ -2,22 +2,23 @@
   <div class="flex">
     <template v-if="device !== 'mobile'">
       <!--全屏 -->
-      <div class="navbar-item" @click="toggle">
+      <div class="setting-item" @click="toggle">
         <svg-icon
-          :icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'"
-          size="12px"
+          :icon-class="isFullscreen ? 'fullscreen-exit' : 'fullscreen'"
         />
       </div>
+
       <!-- 布局大小 -->
       <el-tooltip content="布局大小" effect="dark" placement="bottom">
-        <size-select class="navbar-item" size="12px" />
+        <size-select class="setting-item" />
       </el-tooltip>
+
       <!-- 语言选择 -->
-      <lang-select class="navbar-item" size="12px" />
+      <lang-select class="setting-item" />
     </template>
 
     <!-- 用户头像 -->
-    <el-dropdown class="navbar-item" trigger="click">
+    <el-dropdown class="setting-item" trigger="click">
       <div class="flex-center h100% p10px">
         <img
           :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'"
@@ -45,13 +46,9 @@
 
     <!-- 设置 -->
     <template v-if="defaultSettings.showSettings">
-      <el-icon
-        class="navbar-item"
-        size="12px"
-        @click="settingStore.settingsVisible = true"
-      >
-        <Setting />
-      </el-icon>
+      <div class="setting-item" @click="settingStore.settingsVisible = true">
+        <svg-icon icon-class="setting" />
+      </div>
     </template>
   </div>
 </template>
@@ -99,7 +96,7 @@ function logout() {
 }
 </script>
 <style lang="scss" scoped>
-.navbar-item {
+.setting-item {
   display: inline-block;
   min-width: 40px;
   height: $navbar-height;
@@ -115,13 +112,13 @@ function logout() {
 
 .layout-top,
 .layout-mix {
-  .navbar-item,
+  .setting-item,
   .el-icon {
     color: var(--el-color-white);
   }
 }
 
-.dark .navbar-item:hover {
+.dark .setting-item:hover {
   background: rgb(255 255 255 / 20%);
 }
 </style>

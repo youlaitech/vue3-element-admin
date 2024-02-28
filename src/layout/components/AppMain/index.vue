@@ -3,7 +3,7 @@
     <router-view>
       <template #default="{ Component, route }">
         <transition
-          enter-active-class="animate__animated animate__slideInLeft"
+          enter-active-class="animate__animated animate__fadeInLeft"
           mode="out-in"
         >
           <keep-alive :include="cachedViews">
