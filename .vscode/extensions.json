@@ -1,3 +1,12 @@
 {
-  "recommendations": ["Vue.volar", "lokalise.i18n-ally","esbenp.prettier-vscode"]
+  "recommendations": [
+    "vue.volar",
+    "vue.vscode-typescript-vue-plugin",
+    "antfu.unocss",
+    "lokalise.i18n-ally",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "stylelint.vscode-stylelint",
+    "editorconfig.editorconfig"
+  ]
 }
