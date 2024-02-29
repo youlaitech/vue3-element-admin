@@ -43,7 +43,7 @@
 
         <!-- 密码 -->
         <el-tooltip
-          :disabled="isCapslock === false"
+          :visible="isCapslock"
           content="Caps lock is On"
           placement="right"
         >
@@ -53,20 +53,14 @@
               <el-input
                 v-model="loginData.password"
                 :placeholder="$t('login.password')"
-                :type="passwordVisible === false ? 'password' : 'input'"
+                type="password"
                 name="password"
                 @keyup="checkCapslock"
                 @keyup.enter="handleLogin"
                 size="large"
-                class="flex-1 h-[48px]"
+                class="h-[48px] pr-2"
+                show-password
               />
-              <span
-                class="mr-2 cursor-pointer"
-                @click="passwordVisible = !passwordVisible"
-              >
-                <el-icon v-if="passwordVisible === false"><View /></el-icon>
-                <el-icon v-else><Hide /></el-icon>
-              </span>
             </div>
           </el-form-item>
         </el-tooltip>
@@ -169,7 +163,6 @@ watchEffect(() => {
 
 const loading = ref(false); // 按钮loading
 const isCapslock = ref(false); // 是否大写锁定
-const passwordVisible = ref(false); // 密码是否可见
 const captchaBase64 = ref(); // 验证码图片Base64字符串
 const loginFormRef = ref(ElForm); // 登录表单ref
 
@@ -217,8 +210,7 @@ const loginRules = computed(() => {
  * 检查输入大小写状态
  */
 function checkCapslock(e: any) {
-  const { key } = e;
-  isCapslock.value = key && key.length === 1 && key >= "A" && key <= "Z";
+  isCapslock.value = e.getModifierState("CapsLock");
 }
 
 /**
