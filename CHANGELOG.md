@@ -1,4 +1,4 @@
-# 2.9.1 (2023/02/28)
+# 2.9.1 (2024/02/28)
 ### ♻️ refactor
 - 项目配置按钮移入navbar（author by [cshaptx4869](https://github.com/cshaptx4869)）
 - 优化user数据定义（author by [cshaptx4869](https://github.com/cshaptx4869)）
@@ -9,7 +9,7 @@
 - 修复登录页主题切换问题 （author by [cshaptx4869](https://github.com/cshaptx4869)）
 
 
-# 2.9.0 (2023/02/25)
+# 2.9.0 (2024/02/25)
 
 ### ✨ feat
 - 引入 animate.css 动画库
@@ -25,7 +25,7 @@
 - 主题颜色设置按钮 hover 等未变化问题修复
 
 
-# 2.8.1 (2023/01/10)
+# 2.8.1 (2024/01/10)
 
 ### ✨ feat
 - 替换 Mock 解决方案 vite-plugin-mock 为 vite-plugin-mock-dev-server 适配 Vite5 
