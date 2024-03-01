@@ -3,16 +3,10 @@ import App from "./App.vue";
 import router from "@/router";
 import { setupStore } from "@/store";
 import { setupDirective } from "@/directive";
-
-import "@/permission";
-
-import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import { setupElIcons, setupI18n, setupPermission } from "@/plugins";
 
 // 本地SVG图标
 import "virtual:svg-icons-register";
-
-// 国际化
-import i18n from "@/lang/index";
 
 // 样式
 import "element-plus/theme-chalk/dark/css-vars.css";
@@ -25,9 +19,10 @@ const app = createApp(App);
 setupDirective(app);
 // 全局注册 状态管理(store)
 setupStore(app);
-
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component);
-}
-
-app.use(router).use(i18n).mount("#app");
+// 全局注册Element-plus图标
+setupElIcons(app);
+// 国际化
+setupI18n(app);
+// 注册动态路由
+setupPermission();
+app.use(router).mount("#app");

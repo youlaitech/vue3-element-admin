@@ -1,10 +1,10 @@
 import { createI18n } from "vue-i18n";
-import { useAppStore } from "@/store/modules/app";
+import { useAppStoreHook } from "@/store/modules/app";
 // 本地语言包
 import enLocale from "./package/en";
 import zhCnLocale from "./package/zh-cn";
 
-const appStore = useAppStore();
+const appStore = useAppStoreHook();
 
 const messages = {
   "zh-cn": {
