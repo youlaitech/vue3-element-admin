@@ -3,6 +3,7 @@ import defaultSettings from "@/settings";
 // 导入 Element Plus 中英文语言包
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import en from "element-plus/es/locale/lang/en";
+import { store } from "@/store";
 
 // setup
 export const useAppStore = defineStore("app", () => {
@@ -86,3 +87,9 @@ export const useAppStore = defineStore("app", () => {
     activeTopMenuPath,
   };
 });
+
+// 手动提供给 useStore() 函数 pinia 实例
+// https://pinia.vuejs.org/zh/core-concepts/outside-component-usage.html#using-a-store-outside-of-a-component
+export function useAppStoreHook() {
+  return useAppStore(store);
+}
