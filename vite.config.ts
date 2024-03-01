@@ -51,10 +51,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
          */
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
-          // 线上接口地址
-          target: "http://vapi.youlai.tech",
-          // 开发接口地址
-          // target: "http://localhost:8989",
+          // 接口地址
+          target: env.VITE_APP_API_URL,
           rewrite: (path) =>
             path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
