@@ -1,17 +1,15 @@
 import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
 import { UserConfig, ConfigEnv, loadEnv, defineConfig } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-
 import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
 
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import mockDevServerPlugin from "vite-plugin-mock-dev-server";
-
-import vueJsx from "@vitejs/plugin-vue-jsx";
 
 import UnoCSS from "unocss/vite";
 import { resolve } from "path";
@@ -60,9 +58,10 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     plugins: [
       vue(),
-      // MOCK 服务，开启 MOCK 放开注释即可
-      // mockDevServerPlugin(),
+      // jsx、tsx语法支持
       vueJsx(),
+      // MOCK 服务
+      env.VITE_MOCK_DEV_SERVER === "true" ? mockDevServerPlugin() : null,
       UnoCSS({
         hmrTopLevelAwait: false,
       }),
