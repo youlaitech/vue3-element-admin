@@ -1,13 +1,8 @@
-import path from "path";
-import { createDefineMock } from "vite-plugin-mock-dev-server";
-
-const defineMock = createDefineMock((mock) => {
-  mock.url = path.join(import.meta.env.VITE_APP_BASE_API, mock.url); // 路径会拼接为: /dev-api + url
-});
+import { defineMock } from "./base";
 
 export default defineMock([
   {
-    url: "/api/v1/users/me",
+    url: "users/me",
     method: ["GET"],
     body: {
       code: "00000",
@@ -45,7 +40,7 @@ export default defineMock([
   },
 
   {
-    url: "/api/v1/users/page",
+    url: "users/page",
     method: ["GET"],
     body: {
       code: "00000",
@@ -87,7 +82,7 @@ export default defineMock([
   },
 
   {
-    url: "/api/v1/users/:userId/form",
+    url: "users/:userId/form",
     method: ["GET"],
     body: ({ params }) => {
       const userId = params.userId;
