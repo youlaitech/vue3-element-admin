@@ -45,7 +45,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       open: true,
       proxy: {
         /**
-         * env.VITE_APP_BASE_API: /dev-api
+         * 代理前缀为 /dev-api 的请求
          */
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
