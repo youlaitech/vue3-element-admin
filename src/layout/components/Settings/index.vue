@@ -55,7 +55,6 @@ import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
 import { Sunny, Moon } from "@element-plus/icons-vue";
 import { LayoutEnum } from "@/enums/LayoutEnum";
 import { ThemeEnum } from "@/enums/ThemeEnum";
-import { genMixColor } from "@/utils/color";
 
 const route = useRoute();
 const appStore = useAppStore();
@@ -76,30 +75,15 @@ const settingsVisible = computed({
  */
 function changeThemeColor(color: string) {
   settingsStore.changeThemeColor(color);
-
-  const { DEFAULT, dark, light } = genMixColor(color);
-  setStyleProperty(`--el-color-primary`, DEFAULT);
-  setStyleProperty(`--el-color-primary-dark-2`, dark[2]);
-  setStyleProperty(`--el-color-primary-light-3`, light[3]);
-  setStyleProperty(`--el-color-primary-light-5`, light[5]);
-  setStyleProperty(`--el-color-primary-light-7`, light[7]);
-  setStyleProperty(`--el-color-primary-light-8`, light[8]);
-  setStyleProperty(`--el-color-primary-light-9`, light[9]);
-}
-
-function setStyleProperty(propName: string, value: string) {
-  document.documentElement.style.setProperty(propName, value);
 }
 
 /**
  * 切换主题
  */
 const isDark = ref<boolean>(settingsStore.theme === ThemeEnum.DARK);
-const changeTheme = (isDark: any) => {
-  useToggle(isDark);
-  const theme = isDark ? ThemeEnum.DARK : ThemeEnum.LIGHT;
-  settingsStore.changeTheme(theme);
-  document.documentElement.classList.toggle("dark", theme === ThemeEnum.DARK);
+const changeTheme = (val: any) => {
+  isDark.value = val;
+  settingsStore.changeTheme(isDark.value ? ThemeEnum.DARK : ThemeEnum.LIGHT);
 };
 
 /**
@@ -148,11 +132,6 @@ function findOutermostParent(tree: any[], findName: string) {
 
   return null;
 }
-
-onMounted(() => {
-  changeTheme(settingsStore.theme == ThemeEnum.DARK); // 初始化主题
-  changeThemeColor(settingsStore.themeColor); // 初始化主题颜色
-});
 </script>
 
 <style lang="scss" scoped>
@@ -160,4 +139,3 @@ onMounted(() => {
   @apply py-1 flex-x-between;
 }
 </style>
-@/utils/color

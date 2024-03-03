@@ -7,9 +7,7 @@
         inline-prompt
         :active-icon="Moon"
         :inactive-icon="Sunny"
-        active-color="var(--el-fill-color-dark)"
-        inactive-color="var(--el-color-primary)"
-        @change="handleThemeChange"
+        @change="toggleTheme"
       />
       <lang-select class="ml-2 cursor-pointer" />
     </div>
@@ -117,61 +115,36 @@
 
 <script setup lang="ts">
 import { useSettingsStore, useUserStore, useAppStore } from "@/store";
-import { Sunny, Moon } from "@element-plus/icons-vue";
-import router from "@/router";
-import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
 import { getCaptchaApi } from "@/api/auth";
 import { LoginData } from "@/api/auth/types";
-
-const route = useRoute();
-const userStore = useUserStore();
-const settingsStore = useSettingsStore();
-
+import { Sunny, Moon } from "@element-plus/icons-vue";
+import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
+import router from "@/router";
 import defaultSettings from "@/settings";
 import { ThemeEnum } from "@/enums/ThemeEnum";
-/**
- * 明亮/暗黑主题切换
- */
-const isDark = ref<boolean>(settingsStore.theme === ThemeEnum.DARK);
-const handleThemeChange = (isDark: any) => {
-  const theme = isDark ? ThemeEnum.DARK : ThemeEnum.LIGHT;
-  settingsStore.changeTheme(theme);
-  document.documentElement.classList.toggle("dark", theme === ThemeEnum.DARK);
-};
 
-/**
- * 根据屏幕宽度切换设备模式
- */
+// Stores
+const userStore = useUserStore();
+const settingsStore = useSettingsStore();
 const appStore = useAppStore();
-const { width, height } = useWindowSize();
+
+// Internationalization
+const { t } = useI18n();
+
+// Reactive states
+const isDark = ref(settingsStore.theme === ThemeEnum.DARK);
 const icpVisible = ref(true);
-
-watchEffect(() => {
-  // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
-  if (width.value < 992) {
-    appStore.toggleDevice("mobile");
-  } else {
-    appStore.toggleDevice("desktop");
-  }
-
-  if (height.value < 600) {
-    icpVisible.value = false;
-  } else {
-    icpVisible.value = true;
-  }
-});
-
 const loading = ref(false); // 按钮loading
 const isCapslock = ref(false); // 是否大写锁定
 const captchaBase64 = ref(); // 验证码图片Base64字符串
 const loginFormRef = ref(ElForm); // 登录表单ref
+const { height } = useWindowSize();
 
 const loginData = ref<LoginData>({
   username: "admin",
   password: "123456",
 });
 
-const { t } = useI18n();
 const loginRules = computed(() => {
   const prefix = appStore.language === "en" ? "Please enter " : "请输入";
   return {
@@ -207,13 +180,6 @@ const loginRules = computed(() => {
 });
 
 /**
- * 检查输入大小写状态
- */
-function checkCapslock(e: any) {
-  isCapslock.value = e.getModifierState("CapsLock");
-}
-
-/**
  * 获取验证码
  */
 function getCaptcha() {
@@ -226,6 +192,7 @@ function getCaptcha() {
 /**
  * 登录
  */
+const route = useRoute();
 function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
     if (valid) {
@@ -234,9 +201,7 @@ function handleLogin() {
         .login(loginData.value)
         .then(() => {
           const query: LocationQuery = route.query;
-
           const redirect = (query.redirect as LocationQueryValue) ?? "/";
-
           const otherQueryParams = Object.keys(query).reduce(
             (acc: any, cur: string) => {
               if (cur !== "redirect") {
@@ -250,7 +215,6 @@ function handleLogin() {
           router.push({ path: redirect, query: otherQueryParams });
         })
         .catch(() => {
-          // 验证失败，重新生成验证码
           getCaptcha();
         })
         .finally(() => {
@@ -260,17 +224,36 @@ function handleLogin() {
   });
 }
 
+/**
+ * 主题切换
+ */
+
+const toggleTheme = () => {
+  const newTheme =
+    settingsStore.theme === ThemeEnum.DARK ? ThemeEnum.LIGHT : ThemeEnum.DARK;
+  settingsStore.changeTheme(newTheme);
+};
+/**
+ * 根据屏幕宽度切换设备模式
+ */
+
+watchEffect(() => {
+  if (height.value < 600) {
+    icpVisible.value = false;
+  } else {
+    icpVisible.value = true;
+  }
+});
+
+/**
+ * 检查输入大小写
+ */
+function checkCapslock(e: any) {
+  isCapslock.value = e.getModifierState("CapsLock");
+}
+
 onMounted(() => {
   getCaptcha();
-
-  // 主题初始化
-  const theme = useSettingsStore().theme;
-  useSettingsStore().changeSetting({ key: "theme", value: theme });
-  if (theme == "dark") {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
 });
 </script>
 
