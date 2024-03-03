@@ -6,116 +6,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Vue3 + Vite4 + TypeScript5 + Element-Plus 的后台管理模板，配套接口文档和后端源码，vue-element-admin 的 Vue3 版本"
+      content="Vue3 + Vite5 + TypeScript5 + Element-Plus 的后台管理模板，配套接口文档和后端源码，vue-element-admin 的 Vue3 版本"
     />
-    <meta name="keywords" content="vue-element-admin,vue3-element-admin" />
+    <meta
+      name="keywords"
+      content="vue,element-plus,typescript,vue-element-admin,vue3-element-admin"
+    />
     <title>vue3-element-admin</title>
   </head>
 
   <body>
-    <div id="app" class="app">
-      <!--加载动画-->
-      <div class="mesh-loader">
-        <div class="set-one">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="set-two">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-      </div>
+    <div id="app">
+      <div class="loader"></div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
-    <script>
-      global = globalThis;
-    </script>
-
-    <style>
-      html,
-      body,
-      #app {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-      }
-
-      .mesh-loader {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      }
-
-      .mesh-loader .circle {
-        position: absolute;
-        width: 25px;
-        height: 25px;
-        margin: -12.5px;
-        background: #03a9f4;
-        border-radius: 50%;
-        animation: mesh 3s ease-in-out infinite -1.5s;
-      }
-
-      .mesh-loader > div .circle:last-child {
-        animation-delay: 0s;
-      }
-
-      .mesh-loader > div {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-      }
-
-      .mesh-loader > div:last-child {
-        transform: rotate(90deg);
-      }
-
-      @keyframes mesh {
-        0% {
-          transform: rotate(0);
-          transform-origin: 50% -100%;
-        }
-
-        50% {
-          transform: rotate(360deg);
-          transform-origin: 50% -100%;
-        }
-
-        50.00001% {
-          transform: rotate(0deg);
-          transform-origin: 50% 200%;
-        }
-
-        100% {
-          transform: rotate(360deg);
-          transform-origin: 50% 200%;
-        }
-      }
-
-      @keyframes mesh {
-        0% {
-          transform: rotate(0);
-          transform-origin: 50% -100%;
-        }
-
-        50% {
-          transform: rotate(360deg);
-          transform-origin: 50% -100%;
-        }
-
-        50.00001% {
-          transform: rotate(0deg);
-          transform-origin: 50% 200%;
-        }
-
-        100% {
-          transform: rotate(360deg);
-          transform-origin: 50% 200%;
-        }
-      }
-    </style>
   </body>
+  <script type="module" src="/src/main.ts"></script>
+
+  <style>
+    html,
+    body,
+    #app {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .loader {
+      position: relative;
+      width: 50px;
+      aspect-ratio: 1.154;
+      background: conic-gradient(
+        from 120deg at 50% 64%,
+        #0000,
+        #25b09b 1deg 120deg,
+        #0000 121deg
+      );
+      animation: l27-0 1.5s infinite cubic-bezier(0.3, 1, 0, 1);
+    }
+
+    .loader::before,
+    .loader::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: inherit;
+      transform-origin: 50% 66%;
+      animation: l27-1 1.5s infinite;
+    }
+
+    .loader::after {
+      --s: -1;
+    }
+
+    @keyframes l27-0 {
+      0%,
+      30% {
+        transform: rotate(0);
+      }
+
+      70% {
+        transform: rotate(120deg);
+      }
+
+      70.01%,
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes l27-1 {
+      0% {
+        transform: rotate(calc(var(--s, 1) * 120deg)) translate(0);
+      }
+
+      30%,
+      70% {
+        transform: rotate(calc(var(--s, 1) * 120deg))
+          translate(calc(var(--s, 1) * -5px), 10px);
+      }
+
+      100% {
+        transform: rotate(calc(var(--s, 1) * 120deg)) translate(0);
+      }
+    }
+  </style>
 </html>
