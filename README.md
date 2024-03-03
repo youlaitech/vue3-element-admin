@@ -82,7 +82,7 @@ pnpm run dev
 
 ## 开启Mock
 
-项目同时支持在线和 Mock 接口，默认使用线上接口，如需替换为 Mock 接口，只需在 `vite.config.ts` 文件的 `plugins` 配置中取消对 `mockDevServerPlugin()` 的注释**即可**。
+项目同时支持在线和 Mock 接口，默认使用线上接口，如需替换为 Mock 接口，修改文件 `.env.development` 的 `VITE_MOCK_DEV_SERVER` 为  `true` **即可**。
 
 ## 项目部署
 
