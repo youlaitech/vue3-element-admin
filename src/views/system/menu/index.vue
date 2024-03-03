@@ -1,200 +1,3 @@
-<script setup lang="ts">
-defineOptions({
-  // eslint-disable-next-line vue/no-reserved-component-names
-  name: "Menu",
-  inheritAttrs: false,
-});
-
-import { MenuQuery, MenuForm, MenuVO } from "@/api/menu/types";
-import {
-  listMenus,
-  getMenuForm,
-  getMenuOptions,
-  addMenu,
-  deleteMenu,
-  updateMenu,
-} from "@/api/menu";
-
-import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
-
-import SvgIcon from "@/components/SvgIcon/index.vue";
-import IconSelect from "@/components/IconSelect/index.vue";
-
-const queryFormRef = ref(ElForm);
-const menuFormRef = ref(ElForm);
-
-const loading = ref(false);
-const dialog = reactive({
-  title: "",
-  visible: false,
-});
-
-const queryParams = reactive<MenuQuery>({});
-const menuList = ref<MenuVO[]>([]);
-
-const menuOptions = ref<OptionType[]>([]);
-
-const formData = reactive<MenuForm>({
-  parentId: 0,
-  visible: 1,
-  sort: 1,
-  type: MenuTypeEnum.MENU,
-  alwaysShow: 0,
-  keepAlive: 0,
-});
-
-const rules = reactive({
-  parentId: [{ required: true, message: "请选择顶级菜单", trigger: "blur" }],
-  name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
-  type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
-  path: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
-
-  component: [{ required: true, message: "请输入组件路径", trigger: "blur" }],
-  visible: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
-});
-
-// 选择表格的行菜单ID
-const selectedRowMenuId = ref<number | undefined>();
-
-const menuCacheData = reactive({
-  type: "",
-  path: "",
-});
-
-/**
- * 查询
- */
-function handleQuery() {
-  // 重置父组件
-  loading.value = true;
-  listMenus(queryParams)
-    .then(({ data }) => {
-      menuList.value = data;
-    })
-    .then(() => {
-      loading.value = false;
-    });
-}
-
-/** 重置查询 */
-function resetQuery() {
-  queryFormRef.value.resetFields();
-  handleQuery();
-}
-
-/**行点击事件 */
-function onRowClick(row: MenuVO) {
-  selectedRowMenuId.value = row.id;
-}
-
-/**
- * 打开表单弹窗
- *
- * @param parentId 父菜单ID
- * @param menuId 菜单ID
- */
-function openDialog(parentId?: number, menuId?: number) {
-  getMenuOptions()
-    .then(({ data }) => {
-      menuOptions.value = [{ value: 0, label: "顶级菜单", children: data }];
-    })
-    .then(() => {
-      dialog.visible = true;
-      if (menuId) {
-        dialog.title = "编辑菜单";
-        getMenuForm(menuId).then(({ data }) => {
-          Object.assign(formData, data);
-          menuCacheData.type = data.type;
-          menuCacheData.path = data.path ?? "";
-        });
-      } else {
-        dialog.title = "新增菜单";
-        formData.parentId = parentId;
-      }
-    });
-}
-
-/** 菜单类型切换事件处理 */
-function onMenuTypeChange() {
-  // 如果菜单类型改变，清空路由路径；未改变在切换后还原路由路径
-  if (formData.type !== menuCacheData.type) {
-    formData.path = "";
-  } else {
-    formData.path = menuCacheData.path;
-  }
-}
-
-/** 菜单保存提交 */
-function submitForm() {
-  menuFormRef.value.validate((isValid: boolean) => {
-    if (isValid) {
-      const menuId = formData.id;
-      if (menuId) {
-        updateMenu(menuId, formData).then(() => {
-          ElMessage.success("修改成功");
-          closeDialog();
-          handleQuery();
-        });
-      } else {
-        addMenu(formData).then(() => {
-          ElMessage.success("新增成功");
-          closeDialog();
-          handleQuery();
-        });
-      }
-    }
-  });
-}
-
-/** 删除菜单 */
-function handleDelete(menuId: number) {
-  if (!menuId) {
-    ElMessage.warning("请勾选删除项");
-    return false;
-  }
-
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  })
-    .then(() => {
-      deleteMenu(menuId).then(() => {
-        ElMessage.success("删除成功");
-        handleQuery();
-      });
-    })
-    .catch(() => ElMessage.info("已取消删除"));
-}
-
-/** 关闭弹窗 */
-function closeDialog() {
-  dialog.visible = false;
-  resetForm();
-}
-
-/** 重置表单 */
-function resetForm() {
-  menuFormRef.value.resetFields();
-  menuFormRef.value.clearValidate();
-
-  formData.id = undefined;
-  formData.parentId = 0;
-  formData.visible = 1;
-  formData.sort = 1;
-  formData.perm = undefined;
-  formData.component = undefined;
-  formData.path = undefined;
-  formData.redirect = undefined;
-  formData.alwaysShow = undefined;
-  formData.keepAlive = undefined;
-}
-
-onMounted(() => {
-  handleQuery();
-});
-</script>
-
 <template>
   <div class="app-container">
     <div class="search-container">
@@ -506,3 +309,197 @@ onMounted(() => {
     </el-dialog>
   </div>
 </template>
+
+<script setup lang="ts">
+defineOptions({
+  // eslint-disable-next-line vue/no-reserved-component-names
+  name: "Menu",
+  inheritAttrs: false,
+});
+
+import { MenuQuery, MenuForm, MenuVO } from "@/api/menu/types";
+import {
+  listMenus,
+  getMenuForm,
+  getMenuOptions,
+  addMenu,
+  deleteMenu,
+  updateMenu,
+} from "@/api/menu";
+
+import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
+
+const queryFormRef = ref(ElForm);
+const menuFormRef = ref(ElForm);
+
+const loading = ref(false);
+const dialog = reactive({
+  title: "",
+  visible: false,
+});
+
+const queryParams = reactive<MenuQuery>({});
+const menuList = ref<MenuVO[]>([]);
+
+const menuOptions = ref<OptionType[]>([]);
+
+const formData = reactive<MenuForm>({
+  parentId: 0,
+  visible: 1,
+  sort: 1,
+  type: MenuTypeEnum.MENU,
+  alwaysShow: 0,
+  keepAlive: 0,
+});
+
+const rules = reactive({
+  parentId: [{ required: true, message: "请选择顶级菜单", trigger: "blur" }],
+  name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
+  type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
+  path: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
+
+  component: [{ required: true, message: "请输入组件路径", trigger: "blur" }],
+  visible: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
+});
+
+// 选择表格的行菜单ID
+const selectedRowMenuId = ref<number | undefined>();
+
+const menuCacheData = reactive({
+  type: "",
+  path: "",
+});
+
+/**
+ * 查询
+ */
+function handleQuery() {
+  // 重置父组件
+  loading.value = true;
+  listMenus(queryParams)
+    .then(({ data }) => {
+      menuList.value = data;
+    })
+    .then(() => {
+      loading.value = false;
+    });
+}
+
+/** 重置查询 */
+function resetQuery() {
+  queryFormRef.value.resetFields();
+  handleQuery();
+}
+
+/**行点击事件 */
+function onRowClick(row: MenuVO) {
+  selectedRowMenuId.value = row.id;
+}
+
+/**
+ * 打开表单弹窗
+ *
+ * @param parentId 父菜单ID
+ * @param menuId 菜单ID
+ */
+function openDialog(parentId?: number, menuId?: number) {
+  getMenuOptions()
+    .then(({ data }) => {
+      menuOptions.value = [{ value: 0, label: "顶级菜单", children: data }];
+    })
+    .then(() => {
+      dialog.visible = true;
+      if (menuId) {
+        dialog.title = "编辑菜单";
+        getMenuForm(menuId).then(({ data }) => {
+          Object.assign(formData, data);
+          menuCacheData.type = data.type;
+          menuCacheData.path = data.path ?? "";
+        });
+      } else {
+        dialog.title = "新增菜单";
+        formData.parentId = parentId;
+      }
+    });
+}
+
+/** 菜单类型切换事件处理 */
+function onMenuTypeChange() {
+  // 如果菜单类型改变，清空路由路径；未改变在切换后还原路由路径
+  if (formData.type !== menuCacheData.type) {
+    formData.path = "";
+  } else {
+    formData.path = menuCacheData.path;
+  }
+}
+
+/** 菜单保存提交 */
+function submitForm() {
+  menuFormRef.value.validate((isValid: boolean) => {
+    if (isValid) {
+      const menuId = formData.id;
+      if (menuId) {
+        updateMenu(menuId, formData).then(() => {
+          ElMessage.success("修改成功");
+          closeDialog();
+          handleQuery();
+        });
+      } else {
+        addMenu(formData).then(() => {
+          ElMessage.success("新增成功");
+          closeDialog();
+          handleQuery();
+        });
+      }
+    }
+  });
+}
+
+/** 删除菜单 */
+function handleDelete(menuId: number) {
+  if (!menuId) {
+    ElMessage.warning("请勾选删除项");
+    return false;
+  }
+
+  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(() => {
+      deleteMenu(menuId).then(() => {
+        ElMessage.success("删除成功");
+        handleQuery();
+      });
+    })
+    .catch(() => ElMessage.info("已取消删除"));
+}
+
+/** 关闭弹窗 */
+function closeDialog() {
+  dialog.visible = false;
+  resetForm();
+}
+
+/** 重置表单 */
+function resetForm() {
+  menuFormRef.value.resetFields();
+  menuFormRef.value.clearValidate();
+
+  formData.id = undefined;
+  formData.parentId = 0;
+  formData.visible = 1;
+  formData.sort = 1;
+  formData.perm = undefined;
+  formData.component = undefined;
+  formData.path = undefined;
+  formData.redirect = undefined;
+  formData.alwaysShow = undefined;
+  formData.keepAlive = undefined;
+}
+
+onMounted(() => {
+  handleQuery();
+});
+</script>
