@@ -36,60 +36,30 @@
 
     .loader {
       position: relative;
-      width: 50px;
-      aspect-ratio: 1.154;
-      background: conic-gradient(
-        from 120deg at 50% 64%,
-        #0000,
-        #25b09b 1deg 120deg,
-        #0000 121deg
-      );
-      animation: l27-0 1.5s infinite cubic-bezier(0.3, 1, 0, 1);
+      width: 40px;
+      aspect-ratio: 0.577;
+      overflow: hidden;
+      clip-path: polygon(0 0, 100% 100%, 0 100%, 100% 0);
+      animation: l19 2s infinite linear;
     }
 
-    .loader::before,
-    .loader::after {
+    .loader::before {
       position: absolute;
-      inset: 0;
+      inset: -150%;
       content: "";
-      background: inherit;
-      transform-origin: 50% 66%;
-      animation: l27-1 1.5s infinite;
+      background: repeating-conic-gradient(
+        from 30deg,
+        #ffabab 0 60deg,
+        #abe4ff 0 120deg,
+        #ff7373 0 180deg
+      );
+      animation: inherit;
+      animation-direction: reverse;
     }
 
-    .loader::after {
-      --s: -1;
-    }
-
-    @keyframes l27-0 {
-      0%,
-      30% {
-        transform: rotate(0);
-      }
-
-      70% {
-        transform: rotate(120deg);
-      }
-
-      70.01%,
+    @keyframes l19 {
       100% {
         transform: rotate(360deg);
-      }
-    }
-
-    @keyframes l27-1 {
-      0% {
-        transform: rotate(calc(var(--s, 1) * 120deg)) translate(0);
-      }
-
-      30%,
-      70% {
-        transform: rotate(calc(var(--s, 1) * 120deg))
-          translate(calc(var(--s, 1) * -5px), 10px);
-      }
-
-      100% {
-        transform: rotate(calc(var(--s, 1) * 120deg)) translate(0);
       }
     }
   </style>
