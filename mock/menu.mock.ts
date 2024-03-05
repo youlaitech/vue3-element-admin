@@ -1066,4 +1066,379 @@ export default defineMock([
       msg: "一切ok",
     },
   },
+
+  {
+    url: "menus/options",
+    method: ["GET"],
+    body: {
+      code: "00000",
+      data: [
+        {
+          value: 1,
+          label: "系统管理",
+          children: [
+            {
+              value: 2,
+              label: "用户管理",
+              children: [
+                {
+                  value: 31,
+                  label: "用户新增",
+                },
+                {
+                  value: 32,
+                  label: "用户编辑",
+                },
+                {
+                  value: 33,
+                  label: "用户删除",
+                },
+                {
+                  value: 88,
+                  label: "重置密码",
+                },
+              ],
+            },
+            {
+              value: 3,
+              label: "角色管理",
+              children: [
+                {
+                  value: 70,
+                  label: "角色新增",
+                },
+                {
+                  value: 71,
+                  label: "角色编辑",
+                },
+                {
+                  value: 72,
+                  label: "角色删除",
+                },
+              ],
+            },
+            {
+              value: 4,
+              label: "菜单管理",
+              children: [
+                {
+                  value: 73,
+                  label: "菜单新增",
+                },
+                {
+                  value: 74,
+                  label: "菜单编辑",
+                },
+                {
+                  value: 75,
+                  label: "菜单删除",
+                },
+              ],
+            },
+            {
+              value: 5,
+              label: "部门管理",
+              children: [
+                {
+                  value: 76,
+                  label: "部门新增",
+                },
+                {
+                  value: 77,
+                  label: "部门编辑",
+                },
+                {
+                  value: 78,
+                  label: "部门删除",
+                },
+              ],
+            },
+            {
+              value: 6,
+              label: "字典管理",
+              children: [
+                {
+                  value: 79,
+                  label: "字典类型新增",
+                },
+                {
+                  value: 81,
+                  label: "字典类型编辑",
+                },
+                {
+                  value: 84,
+                  label: "字典类型删除",
+                },
+                {
+                  value: 85,
+                  label: "字典数据新增",
+                },
+                {
+                  value: 86,
+                  label: "字典数据编辑",
+                },
+                {
+                  value: 87,
+                  label: "字典数据删除",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          value: 40,
+          label: "接口文档",
+          children: [
+            {
+              value: 41,
+              label: "Apifox",
+            },
+            {
+              value: 103,
+              label: "Swagger",
+            },
+            {
+              value: 104,
+              label: "Knife4j",
+            },
+          ],
+        },
+        {
+          value: 26,
+          label: "平台文档",
+          children: [
+            {
+              value: 102,
+              label: "平台文档(内嵌)",
+            },
+            {
+              value: 30,
+              label: "平台文档(外链)",
+            },
+          ],
+        },
+        {
+          value: 20,
+          label: "多级菜单",
+          children: [
+            {
+              value: 21,
+              label: "菜单一级",
+              children: [
+                {
+                  value: 22,
+                  label: "菜单二级",
+                  children: [
+                    {
+                      value: 23,
+                      label: "菜单三级-1",
+                    },
+                    {
+                      value: 24,
+                      label: "菜单三级-2",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          value: 36,
+          label: "组件封装",
+          children: [
+            {
+              value: 37,
+              label: "富文本编辑器",
+            },
+            {
+              value: 38,
+              label: "图片上传",
+            },
+            {
+              value: 39,
+              label: "图标选择器",
+            },
+            {
+              value: 95,
+              label: "字典组件",
+            },
+            {
+              value: 93,
+              label: "签名",
+            },
+            {
+              value: 94,
+              label: "表格",
+            },
+          ],
+        },
+        {
+          value: 89,
+          label: "功能演示",
+          children: [
+            {
+              value: 97,
+              label: "Icons",
+            },
+            {
+              value: 90,
+              label: "Websocket",
+            },
+            {
+              value: 91,
+              label: "敬请期待...",
+            },
+          ],
+        },
+      ],
+      msg: "一切ok",
+    },
+  },
+
+  // 新增菜单
+  {
+    url: "menus",
+    method: ["POST"],
+    body({ body }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "新增菜单" + body.name + "成功",
+      };
+    },
+  },
+
+  // 获取菜单表单数据
+  {
+    url: "menus/:id/form",
+    method: ["GET"],
+    body: ({ params }) => {
+      return {
+        code: "00000",
+        data: menuMap[params.id],
+        msg: "一切ok",
+      };
+    },
+  },
+
+  // 修改菜单
+  {
+    url: "menus/:id",
+    method: ["PUT"],
+    body({ body }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "修改菜单" + body.name + "成功",
+      };
+    },
+  },
+
+  // 删除菜单
+  {
+    url: "menus/:id",
+    method: ["DELETE"],
+    body({ params }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "删除菜单" + params.id + "成功",
+      };
+    },
+  },
 ]);
+
+// 菜单映射表数据
+const menuMap: Record<string, any> = {
+  1: {
+    id: 1,
+    parentId: 0,
+    name: "系统管理",
+    type: "CATALOG",
+    path: "/system",
+    component: "Layout",
+    perm: null,
+    visible: 1,
+    sort: 1,
+    icon: "system",
+    redirect: "/system/user",
+    keepAlive: null,
+    alwaysShow: null,
+  },
+  2: {
+    id: 2,
+    parentId: 1,
+    name: "用户管理",
+    type: "MENU",
+    path: "user",
+    component: "system/user/index",
+    perm: null,
+    visible: 1,
+    sort: 1,
+    icon: "user",
+    redirect: null,
+    keepAlive: 1,
+    alwaysShow: null,
+  },
+  3: {
+    id: 3,
+    parentId: 1,
+    name: "角色管理",
+    type: "MENU",
+    path: "role",
+    component: "system/role/index",
+    perm: null,
+    visible: 1,
+    sort: 2,
+    icon: "role",
+    redirect: null,
+    keepAlive: 1,
+    alwaysShow: null,
+  },
+  4: {
+    id: 4,
+    parentId: 1,
+    name: "菜单管理",
+    type: "MENU",
+    path: "menu",
+    component: "system/menu/index",
+    perm: null,
+    visible: 1,
+    sort: 3,
+    icon: "menu",
+    redirect: null,
+    keepAlive: 1,
+    alwaysShow: null,
+  },
+  5: {
+    id: 5,
+    parentId: 1,
+    name: "部门管理",
+    type: "MENU",
+    path: "dept",
+    component: "system/dept/index",
+    perm: null,
+    visible: 1,
+    sort: 4,
+    icon: "tree",
+    redirect: null,
+    keepAlive: 1,
+    alwaysShow: null,
+  },
+  6: {
+    id: 6,
+    parentId: 1,
+    name: "字典管理",
+    type: "MENU",
+    path: "dict",
+    component: "system/dict/index",
+    perm: null,
+    visible: 1,
+    sort: 5,
+    icon: "dict",
+    redirect: null,
+    keepAlive: 1,
+    alwaysShow: null,
+  },
+};

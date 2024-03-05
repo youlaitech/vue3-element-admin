@@ -51,28 +51,26 @@ export default defineMock([
             username: "admin",
             nickname: "系统管理员",
             mobile: "17621210366",
-            genderLabel: "男",
+            gender: 1,
             avatar:
               "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-            email: null,
+            email: "",
             status: 1,
-            deptName: "有来技术",
-            roleNames: "系统管理员",
-            createTime: "2019-10-10",
+            deptId: 1,
+            roleIds: [2],
           },
           {
             id: 3,
             username: "test",
             nickname: "测试小用户",
             mobile: "17621210366",
-            genderLabel: "男",
+            gender: 1,
             avatar:
               "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-            email: null,
+            email: "youlaitech@163.com",
             status: 1,
-            deptName: "测试部门",
-            roleNames: "访问游客",
-            createTime: "2021-06-04",
+            deptId: 3,
+            roleIds: [3],
           },
         ],
         total: 2,
@@ -81,47 +79,97 @@ export default defineMock([
     },
   },
 
+  // 新增用户
+  {
+    url: "users",
+    method: ["POST"],
+    body({ body }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "新增用户" + body.nickname + "成功",
+      };
+    },
+  },
+
+  // 获取用户表单数据
   {
     url: "users/:userId/form",
     method: ["GET"],
     body: ({ params }) => {
-      const userId = params.userId;
-      let formData = null;
-      if (userId == 2) {
-        formData = {
-          id: 2,
-          username: "admin",
-          nickname: "系统管理员",
-          mobile: "17621210366",
-          gender: 1,
-          avatar:
-            "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-          email: "",
-          status: 1,
-          deptId: 1,
-          roleIds: [2],
-        };
-      } else if (userId == 3) {
-        formData = {
-          id: 3,
-          username: "test",
-          nickname: "测试小用户",
-          mobile: "17621210366",
-          gender: 1,
-          avatar:
-            "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-          email: "youlaitech@163.com",
-          status: 1,
-          deptId: 3,
-          roleIds: [3],
-        };
-      }
-
       return {
         code: "00000",
-        data: formData,
+        data: userMap[params.userId],
         msg: "一切ok",
       };
     },
   },
+  // 修改用户
+  {
+    url: "users/:userId",
+    method: ["PUT"],
+    body({ body }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "修改用户" + body.nickname + "成功",
+      };
+    },
+  },
+
+  // 删除用户
+  {
+    url: "users/:userId",
+    method: ["DELETE"],
+    body({ params }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "删除用户" + params.id + "成功",
+      };
+    },
+  },
+
+  // 重置密码
+  {
+    url: "users/:userId/password",
+    method: ["PATCH"],
+    body({ query }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "重置密码成功，新密码为：" + query.password,
+      };
+    },
+  },
 ]);
+
+// 用户映射表数据
+const userMap: Record<string, any> = {
+  2: {
+    id: 2,
+    username: "admin",
+    nickname: "系统管理员",
+    mobile: "17621210366",
+    gender: 1,
+    avatar:
+      "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+    email: "",
+    status: 1,
+    deptId: 1,
+    roleIds: [2],
+  },
+  3: {
+    id: 3,
+    username: "test",
+    nickname: "测试小用户",
+    mobile: "17621210366",
+    gender: 1,
+    avatar:
+      "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+    email: "youlaitech@163.com",
+    status: 1,
+    deptId: 3,
+    roleIds: [3],
+  },
+};
