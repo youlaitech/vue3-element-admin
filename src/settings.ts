@@ -1,6 +1,8 @@
+const { pkg } = __APP_INFO__;
+
 const defaultSettings: AppSettings = {
-  title: "vue3-element-admin",
-  version: "v2.9.2",
+  title: pkg.name,
+  version: pkg.version,
   showSettings: true,
   tagsView: true,
   fixedHeader: false,
@@ -11,7 +13,7 @@ const defaultSettings: AppSettings = {
   language: "zh-cn",
   themeColor: "#409EFF",
   watermarkEnabled: false,
-  watermarkContent: "vue3-element-admin",
+  watermarkContent: pkg.name,
 };
 
 export default defaultSettings;
