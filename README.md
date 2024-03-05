@@ -1,7 +1,7 @@
 <p align="center">
-    <img src="https://img.shields.io/badge/Vue-3.4.19-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-5.1.3-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.5.6-blue.svg"/>
+    <img src="https://img.shields.io/badge/Vue-3.4.21-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vite-5.1.5-green.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.6.0-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -9,7 +9,7 @@
 </p>
 
 
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等最新主流技术栈构建的后台管理前端模板（配套[后端源码](https://gitee.com/youlaiorg/youlai-boot)）。
+[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等主流技术栈构建的免费开源的后台管理前端模板（配套[后端源码](https://gitee.com/youlaiorg/youlai-boot)）。
 
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
 
@@ -17,33 +17,28 @@
  <a target="_blank" href="http://vue3.youlai.tech">👀 在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📖 阅读文档</a>  
 </p>
 
-## 项目特性
+## 项目特色
+
+- **简洁易用**：基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本，无过渡封装，拥有 [0到1文档](https://juejin.cn/post/7228990409909108793) ，易上手。
+
+- **数据交互**：同时支持本地 `Mock` 和线上接口，配套 [Java 后端源码](https://gitee.com/youlaiorg/youlai-boot)，[在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)。
+
+- **权限管理**：用户、角色、菜单、字典、部门等完善的权限系统功能。
+
+- **基础设施**：动态路由、按钮权限、国际化、代码规范、Git 提交规范、常用组件封装。
+
+- **持续更新**：2021年至今持续更新3年，及时跟进最新的技术和工具。 
 
 
-- 基于 vue-element-admin 升级到 vue3 版本，无自定义封装，易上手，减少学习成本。
-- 提供了配套的 Java 后端接口，真实的接口数据，而非使用 Mock 数据。您可以访问在[线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)查看接口详情。
-- 权限系统功能齐全，包括用户管理、角色管理、菜单管理、字典管理和部门管理等，以满足您对权限管理的需求。
-- 项目还提供了基础设施支持，包括动态路由、按钮级别的权限控制、国际化支持、代码规范、Git 提交规范以及常用组件的封装，以便开发人员更高效地开发和维护项目。
 
 ## 项目预览
 
-- **在线预览**： [https://vue3.youlai.tech/](https://vue3.youlai.tech/)
+![明亮模式](https://foruda.gitee.com/images/1709651876583793739/0ba1ee1c_716974.png)
 
-- **控制台**
+![暗黑模式](https://foruda.gitee.com/images/1709651875494206224/2a2b0b53_716974.png)
 
-  ![暗黑模式](https://foruda.gitee.com/images/1687755822903300961/a4d63e22_716974.png)
-
-- **接口文档**
-
-  ![接口文档](https://foruda.gitee.com/images/1687755822857820115/96054330_716974.png)
+![接口文档](https://foruda.gitee.com/images/1687755822857820115/96054330_716974.png)
  
-
-
-- **权限管理系统**
-
-  |![在这里插入图片描述](https://foruda.gitee.com/images/1687755822816437081/b7620905_716974.png) | ![角色管理](https://foruda.gitee.com/images/1687755822852085747/c13a4d19_716974.png) |
-  | ------------------------------------------------------ | ------------------------------------------------------ |
-  | ![菜单管理](https://foruda.gitee.com/images/1687755822966247550/4d4f8118_716974.png) | ![在这里插入图片描述](https://foruda.gitee.com/images/1687755822828758939/8035a91f_716974.png)
 
 ## 项目地址
 
@@ -54,11 +49,10 @@
 
 ## 环境准备
 
-| 环境                 | 名称版本                                                     | 备注                                                         |
+| 环境                 | 名称版本                                                     | 下载地址                                                     |
 | -------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
-| **开发工具**         | VSCode                                                       | [下载地址](https://code.visualstudio.com/Download)           |
-| **运行环境**         | Node 18+                                                     | [下载地址](http://nodejs.cn/download)                        |
-| **VSCode插件(必装)** | 1. `Vue Language Features (Volar) ` <br/> 2. `TypeScript Vue Plugin (Volar) `  <br/>3. 禁用 Vetur | ![vscode-plugin](https://foruda.gitee.com/images/1687755823108948048/d0198b2d_716974.png) |
+| **开发工具**         | VSCode                                                       | [下载](https://code.visualstudio.com/Download)           |
+| **运行环境**         | Node ≥18                                                    | [下载](http://nodejs.cn/download)                        |
 
 
 ## 项目启动
@@ -80,9 +74,7 @@ pnpm install
 pnpm run dev
 ```
 
-## 开启Mock
 
-项目同时支持在线和 Mock 接口，默认使用线上接口，如需替换为 Mock 接口，修改文件 `.env.development` 的 `VITE_MOCK_DEV_SERVER` 为  `true` **即可**。
 
 ## 项目部署
 
@@ -108,6 +100,17 @@ server {
 }
 ```
 
+## 本地Mock
+
+项目同时支持在线和 Mock 接口，默认使用线上接口，如需替换为 Mock 接口，修改文件 `.env.development` 的 `VITE_MOCK_DEV_SERVER` 为  `true` **即可**。
+
+## 后端接口
+
+   1. 获取基于 `Java` 和 `SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码。
+   2. 根据后端工程的说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动。
+   3. 修改 `.env.development` 文件中的 `VITE_APP_API_URL` 的值，将其从 http://vapi.youlai.tech 更改为 http://localhost:8989。
+
+
 ## 注意事项
 
 - **自动导入插件自动生成默认关闭**
@@ -131,20 +134,6 @@ server {
 - **其他问题**
 
   如果有其他问题或者建议，建议 [ISSUE](https://gitee.com/youlaiorg/vue3-element-admin/issues/new)
-
-## 后端接口
-
-- **后端接口地址**：[https://vapi.youlai.tech](https://vapi.youlai.tech)
-
-- **接口文档地址**：[在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)
-
-- **OpenAPI地址**：[http://vapi.youlai.tech/v3/api-docs](http://vapi.youlai.tech/v3/api-docs)
-
-- **本地接口环境搭建**：
-   - 首先，获取基于 `Java` 和 `SpringBoot` 开发的后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git) 源码。
-   - 其次，根据后端工程的说明文档 [README.md](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C) 完成本地启动。
-   - 最后，修改 `vite.config.ts` 文件中的 `server.proxy` 配置项，将 target 的值从 `http://vapi.youlai.tech` 更改为 `http://localhost:8989`。
-
 
 
 
