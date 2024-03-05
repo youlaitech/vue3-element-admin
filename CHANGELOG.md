@@ -1,3 +1,25 @@
+# 2.9.2 (2024/03/05)
+### ✨ feat
+- vscode开发扩展推荐 （author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 完善基础增删改查Mock接口 （author by [haoxianrui](https://github.com/haoxianrui)）
+
+### ♻️ refactor
+- 修改login密码框功能实现（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 弱化页面进入动画效果（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 取消推荐TypeScript Vue Plugin （author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 网站加载动画替换 （author by [haoxianrui](https://github.com/haoxianrui)）
+- 优化主题和主题色监听，避免多个页面重复初始化 （author by [haoxianrui](https://github.com/haoxianrui)）
+
+### 🐛 fix
+- AppMain 高度在非固定头部不正确导致出现滚动条问题修复 （author by [haoxianrui](https://github.com/haoxianrui)）
+- 修复混合模式开启固定Head时的样式问题 （author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 设置面板统一字体大小 （author by [cshaptx4869](https://github.com/cshaptx4869)）
+
+### 📦️build
+- 通过env配置控制mock服务 （author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 升级依赖包至最新版本 （author by [haoxianrui](https://github.com/haoxianrui)）
+- 定义vite全局常量替换项目标题和版本 （author by [cshaptx4869](https://github.com/cshaptx4869)）
+
 # 2.9.1 (2024/02/28)
 ### ♻️ refactor
 - 项目配置按钮移入navbar（author by [cshaptx4869](https://github.com/cshaptx4869)）
@@ -7,6 +29,10 @@
 ### 🐛 fix
 - 规整一些开发依赖 （author by [cshaptx4869](https://github.com/cshaptx4869)）
 - 修复登录页主题切换问题 （author by [cshaptx4869](https://github.com/cshaptx4869)）
+
+### 🚀 pref
+
+- 压缩图片资源  （author by [cshaptx4869](https://github.com/cshaptx4869)）
 
 
 # 2.9.0 (2024/02/25)
