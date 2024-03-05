@@ -27,17 +27,17 @@
     </div>
 
     <div class="settings-option">
-      <span class="text-xs">固定 Header</span>
+      <el-text>固定 Header</el-text>
       <el-switch v-model="settingsStore.fixedHeader" />
     </div>
 
     <div class="settings-option">
-      <span class="text-xs">侧边栏 Logo</span>
+      <el-text>侧边栏 Logo</el-text>
       <el-switch v-model="settingsStore.sidebarLogo" />
     </div>
 
     <div class="settings-option">
-      <span class="text-xs">开启水印</span>
+      <el-text>开启水印</el-text>
       <el-switch v-model="settingsStore.watermarkEnabled" />
     </div>
 
