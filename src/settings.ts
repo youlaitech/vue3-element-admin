@@ -5,7 +5,7 @@ const defaultSettings: AppSettings = {
   version: pkg.version,
   showSettings: true,
   tagsView: true,
-  fixedHeader: false,
+  fixedHeader: true,
   sidebarLogo: true,
   layout: "left",
   theme: "light",
