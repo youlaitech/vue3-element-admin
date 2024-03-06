@@ -8,6 +8,8 @@
     </a>
 </p>
 
+<p align="center"> 中文 | <a href="./README.en-US.md">English</a></p>
+
 
 [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等主流技术栈构建的免费开源的后台管理前端模板（配套[后端源码](https://gitee.com/youlaiorg/youlai-boot)）。
 
