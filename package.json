@@ -7,7 +7,7 @@
     "preinstall": "npx only-allow pnpm",
     "dev": "vite serve --mode development",
     "build:prod": "vite build --mode production && vue-tsc --noEmit",
-    "prepare": "husky install",
+    "prepare": "husky",
     "lint:eslint": "eslint  --fix --ext .ts,.js,.vue ./src ",
     "lint:prettier": "prettier --write \"**/*.{js,cjs,ts,json,tsx,css,less,scss,vue,html,md}\"",
     "lint:stylelint": "stylelint  \"**/*.{css,scss,vue}\" --fix",
