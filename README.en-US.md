@@ -6,9 +6,10 @@
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-Youlai Open Source Organization-orange.svg"/>
     </a>
+    <div align="center"> <a href="./README.md">中文</a>| English</div>
 </p>
 
-<p align="center"> <a href="./README.md">中文</a> | English</p>
+
 
 
 [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) is a free and open-source admin template for backend management frontend, built with popular technologies such as Vue3, Vite5, TypeScript, Element-Plus, and Pinia (with accompanying [backend source code](https://gitee.com/youlaiorg/youlai-boot)).
@@ -33,11 +34,7 @@
 
 ## Project Preview
 
-![Light Mode](https://foruda.gitee.com/images/1709651876583793739/0ba1ee1c_716974.png)
 
-![Dark Mode](https://foruda.gitee.com/images/1709651875494206224/2a2b0b53_716974.png)
-
-![API Documentation](https://foruda.gitee.com/images/1687755822857820115/96054330_716974.png)
 
 ## Project Links
 
