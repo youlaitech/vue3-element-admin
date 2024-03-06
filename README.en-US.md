@@ -1,4 +1,4 @@
-<p align="center">
+<div align="center">
     <img src="https://img.shields.io/badge/Vue-3.4.21-brightgreen.svg"/>
     <img src="https://img.shields.io/badge/Vite-5.1.5-green.svg"/>
     <img src="https://img.shields.io/badge/Element Plus-2.6.0-blue.svg"/>
@@ -6,19 +6,26 @@
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-Youlai Open Source Organization-orange.svg"/>
     </a>
-    <div align="center"> <a href="./README.md">中文</a>| English</div>
-</p>
+ 
+
+</div>
 
 
-
-
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) is a free and open-source admin template for backend management frontend, built with popular technologies such as Vue3, Vite5, TypeScript, Element-Plus, and Pinia (with accompanying [backend source code](https://gitee.com/youlaiorg/youlai-boot)).
+<div align="center"> <a href="./README.md">中文</a>| English</div>
 
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
 
-<p align="center">
+<div align="center">
  <a target="_blank" href="http://vue3.youlai.tech">👀 Live Preview</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📖 Read Documentation</a>  
-</p>
+</div>
+
+
+## Introduction
+
+[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) is a free and open-source admin template for backend management frontend, built with popular technologies such as Vue3, Vite5, TypeScript, Element-Plus, and Pinia (with accompanying [backend source code](https://gitee.com/youlaiorg/youlai-boot)).
+
+
+
 
 ## Project Features
 
@@ -34,7 +41,11 @@
 
 ## Project Preview
 
+![Light Mode](https://foruda.gitee.com/images/1709651876583793739/0ba1ee1c_716974.png)
 
+![Dark Mode](https://foruda.gitee.com/images/1709651875494206224/2a2b0b53_716974.png)
+
+![API Documentation](https://foruda.gitee.com/images/1687755822857820115/96054330_716974.png)
 
 ## Project Links
 
