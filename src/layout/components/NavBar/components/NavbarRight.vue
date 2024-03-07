@@ -9,7 +9,11 @@
       </div>
 
       <!-- 布局大小 -->
-      <el-tooltip content="布局大小" effect="dark" placement="bottom">
+      <el-tooltip
+        :content="$t('sizeSelect.tooltip')"
+        effect="dark"
+        placement="bottom"
+      >
         <size-select class="setting-item" />
       </el-tooltip>
 
@@ -32,13 +36,13 @@
             target="_blank"
             href="https://gitee.com/youlaiorg/vue3-element-admin"
           >
-            <el-dropdown-item>项目地址</el-dropdown-item>
+            <el-dropdown-item>{{ $t("navbar.gitee") }}</el-dropdown-item>
           </a>
           <a target="_blank" href="https://juejin.cn/post/7228990409909108793">
-            <el-dropdown-item>项目文档</el-dropdown-item>
+            <el-dropdown-item>{{ $t("navbar.document") }}</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click="logout">
-            注销登出
+            {{ $t("navbar.logout") }}
           </el-dropdown-item>
         </el-dropdown-menu>
       </template>

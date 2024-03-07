@@ -32,7 +32,7 @@ const pathCompile = (path: string) => {
   return toPath(params);
 };
 
-const breadcrumbs = ref([] as Array<RouteLocationMatched>);
+const breadcrumbs = ref<Array<RouteLocationMatched>>([]);
 
 function getBreadcrumb() {
   let matched = currentRoute.matched.filter(
