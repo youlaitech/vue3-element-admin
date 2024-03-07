@@ -6,13 +6,12 @@
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item
-          :disabled="appStore.language === 'zh-cn'"
-          command="zh-cn"
+          v-for="item in langOptions"
+          :key="item.value"
+          :disabled="appStore.language === item.value"
+          :command="item.value"
         >
-          中文
-        </el-dropdown-item>
-        <el-dropdown-item :disabled="appStore.language === 'en'" command="en">
-          English
+          {{ item.label }}
         </el-dropdown-item>
       </el-dropdown-menu>
     </template>
@@ -30,16 +29,18 @@ defineProps({
   },
 });
 
+const langOptions = [
+  { label: "中文", value: "zh-cn" },
+  { label: "English", value: "en" },
+];
+
 const appStore = useAppStore();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 function handleLanguageChange(lang: string) {
   locale.value = lang;
   appStore.changeLanguage(lang);
-  if (lang === "en") {
-    ElMessage.success("Switch Language Successful!");
-  } else {
-    ElMessage.success("切换语言成功！");
-  }
+
+  ElMessage.success(t("langSelect.message.success"));
 }
 </script>

@@ -47,7 +47,7 @@
         >
           <el-form-item prop="password">
             <div class="flex-y-center w-full">
-              <el-icon class="mx-2"><Lock /></el-icon>
+              <svg-icon icon-class="lock" class="mx-2" />
               <el-input
                 v-model="loginData.password"
                 :placeholder="$t('login.password')"
@@ -114,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { useSettingsStore, useUserStore, useAppStore } from "@/store";
+import { useSettingsStore, useUserStore } from "@/store";
 import { getCaptchaApi } from "@/api/auth";
 import { LoginData } from "@/api/auth/types";
 import { Sunny, Moon } from "@element-plus/icons-vue";
@@ -126,7 +126,6 @@ import { ThemeEnum } from "@/enums/ThemeEnum";
 // Stores
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
-const appStore = useAppStore();
 
 // Internationalization
 const { t } = useI18n();
@@ -146,34 +145,31 @@ const loginData = ref<LoginData>({
 });
 
 const loginRules = computed(() => {
-  const prefix = appStore.language === "en" ? "Please enter " : "请输入";
   return {
     username: [
       {
         required: true,
         trigger: "blur",
-        message: `${prefix}${t("login.username")}`,
+        message: t("login.message.username.required"),
       },
     ],
     password: [
       {
         required: true,
         trigger: "blur",
-        validator: (rule: any, value: any, callback: any) => {
-          if (value.length < 6) {
-            callback(new Error("The password can not be less than 6 digits"));
-          } else {
-            callback();
-          }
-        },
-        message: `${prefix}${t("login.password")}`,
+        message: t("login.message.password.required"),
+      },
+      {
+        min: 6,
+        message: t("login.message.password.min"),
+        trigger: "blur",
       },
     ],
     captchaCode: [
       {
         required: true,
         trigger: "blur",
-        message: `${prefix}${t("login.captchaCode")}`,
+        message: t("login.message.captchaCode.required"),
       },
     ],
   };

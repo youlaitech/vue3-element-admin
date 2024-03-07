@@ -26,15 +26,8 @@ const type = computed(() => {
 });
 
 const linkProps = (to: string) => {
-  if (isExternalLink.value) {
-    return {
-      href: to,
-      target: "_blank",
-      rel: "noopener noreferrer",
-    };
-  }
-  return {
-    to: to,
-  };
+  return isExternalLink.value
+    ? { href: to, target: "_blank", rel: "noopener noreferrer" }
+    : { to };
 };
 </script>

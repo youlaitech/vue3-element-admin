@@ -20,15 +20,19 @@
 
 <script setup lang="ts">
 import { useAppStore } from "@/store/modules/app";
-const sizeOptions = ref([
-  { label: "默认", value: "default" },
-  { label: "大型", value: "large" },
-  { label: "小型", value: "small" },
-]);
+
+const { t } = useI18n();
+const sizeOptions = computed(() => {
+  return [
+    { label: t("sizeSelect.default"), value: "default" },
+    { label: t("sizeSelect.large"), value: "large" },
+    { label: t("sizeSelect.small"), value: "small" },
+  ];
+});
 
 const appStore = useAppStore();
 function handleSizeChange(size: string) {
   appStore.changeSize(size);
-  ElMessage.success("切换布局大小成功");
+  ElMessage.success(t("sizeSelect.message.success"));
 }
 </script>

@@ -1,6 +1,10 @@
 <template>
-  <el-drawer v-model="settingsVisible" size="300" title="项目配置">
-    <el-divider>主题设置</el-divider>
+  <el-drawer
+    v-model="settingsVisible"
+    size="300"
+    :title="$t('settings.project')"
+  >
+    <el-divider>{{ $t("settings.theme") }}</el-divider>
 
     <div class="flex-center">
       <el-switch
@@ -11,10 +15,10 @@
       />
     </div>
 
-    <el-divider>界面设置</el-divider>
+    <el-divider>{{ $t("settings.interface") }}</el-divider>
 
     <div class="settings-option">
-      <el-text>主题颜色</el-text>
+      <span class="text-xs">{{ $t("settings.themeColor") }}</span>
       <ThemeColorPicker
         v-model="settingsStore.themeColor"
         @update:model-value="changeThemeColor"
@@ -22,26 +26,26 @@
     </div>
 
     <div class="settings-option">
-      <el-text>开启 Tags-View</el-text>
+      <span class="text-xs">{{ $t("settings.tagsView") }}</span>
       <el-switch v-model="settingsStore.tagsView" />
     </div>
 
     <div class="settings-option">
-      <el-text>固定 Header</el-text>
+      <span class="text-xs">{{ $t("settings.fixedHeader") }}</span>
       <el-switch v-model="settingsStore.fixedHeader" />
     </div>
 
     <div class="settings-option">
-      <el-text>侧边栏 Logo</el-text>
+      <span class="text-xs">{{ $t("settings.sidebarLogo") }}</span>
       <el-switch v-model="settingsStore.sidebarLogo" />
     </div>
 
     <div class="settings-option">
-      <el-text>开启水印</el-text>
+      <span class="text-xs">{{ $t("settings.watermark") }}</span>
       <el-switch v-model="settingsStore.watermarkEnabled" />
     </div>
 
-    <el-divider>导航设置</el-divider>
+    <el-divider>{{ $t("settings.navigation") }}</el-divider>
 
     <LayoutSelect
       v-model="settingsStore.layout"
