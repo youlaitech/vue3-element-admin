@@ -1,7 +1,7 @@
 /**
  * 菜单布局枚举
  */
-export enum LayoutEnum {
+export const enum LayoutEnum {
   /**
    * 左侧菜单布局
    */
