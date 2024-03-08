@@ -10,6 +10,7 @@ export default {
     password: "Password",
     login: "Login",
     captchaCode: "Verify Code",
+    capsLock: "Caps Lock is On",
     message: {
       username: {
         required: "Please enter Username",

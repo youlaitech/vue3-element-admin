@@ -42,7 +42,7 @@
         <!-- 密码 -->
         <el-tooltip
           :visible="isCapslock"
-          content="Caps lock is On"
+          :content="$t('login.capsLock')"
           placement="right"
         >
           <el-form-item prop="password">

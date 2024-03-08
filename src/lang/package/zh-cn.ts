@@ -10,6 +10,7 @@ export default {
     password: "密码",
     login: "登 录",
     captchaCode: "验证码",
+    capsLock: "大写锁定已打开",
     message: {
       username: {
         required: "请输入用户名",
