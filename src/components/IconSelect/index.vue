@@ -169,7 +169,7 @@ function loadIcons() {
 type IconNames = keyof typeof ElementPlusIconsVue;
 const renderIcon = (iconName: string) => {
   const iconComponent = ElementPlusIconsVue[iconName as IconNames];
-  if (iconComponent) {
+  if (iconComponent && iconComponent.name) {
     return h(resolveComponent(iconComponent.name));
   }
   return null;
