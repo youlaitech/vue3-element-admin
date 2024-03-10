@@ -57,9 +57,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       // 运行是否自动打开浏览器
       open: true,
       proxy: {
-        /**
-         * 代理前缀为 /dev-api 的请求
-         */
+        /** 代理前缀为 /dev-api 的请求  */
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
           // 接口地址
