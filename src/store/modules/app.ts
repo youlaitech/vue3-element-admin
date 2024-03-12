@@ -5,18 +5,18 @@ import zhCn from "element-plus/es/locale/lang/zh-cn";
 import en from "element-plus/es/locale/lang/en";
 import { store } from "@/store";
 import { DeviceEnum } from "@/enums/DeviceEnum";
+import { SidebarStatusEnum } from "@/enums/SidebarStatusEnum";
 
 // setup
 export const useAppStore = defineStore("app", () => {
   // state
   const device = useStorage("device", DeviceEnum.DESKTOP);
-  const size = useStorage<any>("size", defaultSettings.size);
+  const size = useStorage("size", defaultSettings.size);
   const language = useStorage("language", defaultSettings.language);
-
-  const sidebarStatus = useStorage("sidebarStatus", "closed");
+  const sidebarStatus = useStorage("sidebarStatus", SidebarStatusEnum.CLOSED);
 
   const sidebar = reactive({
-    opened: sidebarStatus.value !== "closed",
+    opened: sidebarStatus.value === SidebarStatusEnum.OPENED,
     withoutAnimation: false,
   });
   const activeTopMenuPath = useStorage("activeTopMenuPath", "");
@@ -34,21 +34,19 @@ export const useAppStore = defineStore("app", () => {
   // actions
   function toggleSidebar() {
     sidebar.opened = !sidebar.opened;
-    if (sidebar.opened) {
-      sidebarStatus.value = "opened";
-    } else {
-      sidebarStatus.value = "closed";
-    }
+    sidebarStatus.value = sidebar.opened
+      ? SidebarStatusEnum.OPENED
+      : SidebarStatusEnum.CLOSED;
   }
 
   function closeSideBar() {
     sidebar.opened = false;
-    sidebarStatus.value = "closed";
+    sidebarStatus.value = SidebarStatusEnum.CLOSED;
   }
 
   function openSideBar() {
     sidebar.opened = true;
-    sidebarStatus.value = "opened";
+    sidebarStatus.value = SidebarStatusEnum.OPENED;
   }
 
   function toggleDevice(val: string) {
