@@ -46,6 +46,7 @@
 <script setup lang="ts">
 import { useAppStore, useSettingsStore, usePermissionStore } from "@/store";
 import defaultSettings from "@/settings";
+import { DeviceEnum } from "@/enums/DeviceEnum";
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
@@ -71,7 +72,7 @@ watch(
 const classObj = computed(() => ({
   hideSidebar: !appStore.sidebar.opened,
   openSidebar: appStore.sidebar.opened,
-  mobile: appStore.device === "mobile",
+  mobile: appStore.device === DeviceEnum.MOBILE,
   "layout-left": layout.value === "left",
   "layout-top": layout.value === "top",
   "layout-mix": layout.value === "mix",
@@ -82,10 +83,10 @@ const WIDTH = 992; // 响应式布局容器固定宽度  大屏（>=1200px） �
 
 watchEffect(() => {
   if (width.value < WIDTH) {
-    appStore.toggleDevice("mobile");
+    appStore.toggleDevice(DeviceEnum.MOBILE);
     appStore.closeSideBar();
   } else {
-    appStore.toggleDevice("desktop");
+    appStore.toggleDevice(DeviceEnum.DESKTOP);
 
     if (width.value >= 1200) {
       appStore.openSideBar();

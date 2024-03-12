@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <template v-if="device !== 'mobile'">
+    <template v-if="!isMobile">
       <!--全屏 -->
       <div class="setting-item" @click="toggle">
         <svg-icon
@@ -64,6 +64,7 @@ import {
   useSettingsStore,
 } from "@/store";
 import defaultSettings from "@/settings";
+import { DeviceEnum } from "@/enums/DeviceEnum";
 
 const appStore = useAppStore();
 const tagsViewStore = useTagsViewStore();
@@ -73,8 +74,7 @@ const settingStore = useSettingsStore();
 const route = useRoute();
 const router = useRouter();
 
-// 设备类型：desktop-宽屏设备 || mobile-窄屏设备
-const device = computed(() => appStore.device);
+const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE);
 
 const { isFullscreen, toggle } = useFullscreen();
 
