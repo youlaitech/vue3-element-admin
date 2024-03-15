@@ -21,6 +21,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { useAppStore } from "@/store/modules/app";
+import { LanguageEnum } from "@/enums/LanguageEnum";
 
 defineProps({
   size: {
@@ -30,8 +31,8 @@ defineProps({
 });
 
 const langOptions = [
-  { label: "中文", value: "zh-cn" },
-  { label: "English", value: "en" },
+  { label: "中文", value: LanguageEnum.ZH_CN },
+  { label: "English", value: LanguageEnum.EN },
 ];
 
 const appStore = useAppStore();
