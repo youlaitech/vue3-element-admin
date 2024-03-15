@@ -244,8 +244,11 @@ watchEffect(() => {
 /**
  * 检查输入大小写
  */
-function checkCapslock(e: any) {
-  isCapslock.value = e.getModifierState("CapsLock");
+function checkCapslock(event: KeyboardEvent) {
+  // 防止浏览器密码自动填充时报错
+  if (event instanceof KeyboardEvent) {
+    isCapslock.value = event.getModifierState("CapsLock");
+  }
 }
 
 onMounted(() => {
