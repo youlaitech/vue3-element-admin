@@ -18,14 +18,13 @@
 import { useAppStore, useSettingsStore } from "@/store";
 import defaultSettings from "@/settings";
 import { ThemeEnum } from "@/enums/ThemeEnum";
+import { SizeEnum } from "@/enums/SizeEnum";
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 
 const locale = computed(() => appStore.locale);
-const size = computed(
-  () => appStore.size as "default" | "small" | "large" | undefined
-);
+const size = computed(() => appStore.size as SizeEnum);
 const watermarkEnabled = computed(() => settingsStore.watermarkEnabled);
 
 // 明亮/暗黑主题水印字体颜色适配
