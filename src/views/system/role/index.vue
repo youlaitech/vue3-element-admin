@@ -213,6 +213,39 @@ function handleRoleMenuSubmit() {
       });
   }
 }
+/** 选框父子不关联 */
+function handleCheck(data: any, { checkedKeys }: { checkedKeys: Array<any> }) {
+  if (checkedKeys.includes(data.value)) {
+    let node = menuRef.value.getNode(data.value);
+    selectChildren(data, true);
+    parentNodesChange(node);
+  } else {
+    selectChildren(data, false);
+  }
+}
+function selectChildren(data: { children: any[] }, checked: boolean) {
+  data &&
+    data.children &&
+    data.children.map((item) => {
+      menuRef.value.setChecked(item.value, checked);
+      if (data.children) {
+        selectChildren(item, checked);
+      }
+    });
+}
+// 父级递归
+function parentNodesChange(node: any) {
+  if (node.parent) {
+    for (let key in node) {
+      if (key == "id") {
+        menuRef.value.setChecked(node, true);
+      }
+    }
+    if (node.parent && node.id !== 0) {
+      parentNodesChange(node.parent);
+    }
+  }
+}
 
 onMounted(() => {
   handleQuery();
@@ -382,6 +415,8 @@ onMounted(() => {
           show-checkbox
           :data="menuList"
           :default-expand-all="true"
+          check-strictly
+          @check="handleCheck"
         >
           <template #default="{ data }">
             {{ data.label }}
