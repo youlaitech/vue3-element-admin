@@ -1,7 +1,7 @@
 import router from "@/router";
-import { useUserStore } from "@/store/modules/user";
-import { usePermissionStore } from "@/store/modules/permission";
+import { useUserStore, usePermissionStore } from "@/store";
 import NProgress from "@/utils/nprogress";
+import { RouteRecordRaw } from "vue-router";
 
 export function setupPermission() {
   // 白名单路由
@@ -9,7 +9,7 @@ export function setupPermission() {
 
   router.beforeEach(async (to, from, next) => {
     NProgress.start();
-    const hasToken = localStorage.getItem("token");
+    const hasToken = localStorage.getItem("accessToken");
     if (hasToken) {
       if (to.path === "/login") {
         // 如果已登录，跳转首页
@@ -31,7 +31,7 @@ export function setupPermission() {
           try {
             const { roles } = await userStore.getUserInfo();
             const accessRoutes = await permissionStore.generateRoutes(roles);
-            accessRoutes.forEach((route) => {
+            accessRoutes.forEach((route: RouteRecordRaw) => {
               router.addRoute(route);
             });
             next({ ...to, replace: true });

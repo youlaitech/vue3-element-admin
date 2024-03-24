@@ -11,7 +11,7 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const accessToken = localStorage.getItem("token");
+    const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       config.headers.Authorization = accessToken;
     }

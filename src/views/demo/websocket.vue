@@ -57,7 +57,7 @@ function connectWebSocket() {
   stompClient = Stomp.over(socket);
 
   stompClient.connect(
-    { Authorization: localStorage.getItem("token") },
+    { Authorization: localStorage.getItem("accessToken") },
     () => {
       isConnected.value = true;
       messages.value.push({
