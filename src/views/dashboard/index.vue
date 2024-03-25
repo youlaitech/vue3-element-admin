@@ -214,7 +214,7 @@ const greetings = computed(() => {
     return "下午好，" + userStore.user.nickname + "！";
   } else if (hours >= 18 && hours < 24) {
     return "晚上好，" + userStore.user.nickname + "！";
-  } else if (hours >= 0 && hours < 6) {
+  } else {
     return "偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！";
   }
 });
