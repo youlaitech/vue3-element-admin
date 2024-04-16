@@ -188,4 +188,8 @@ function resolvePath(routePath: string) {
     }
   }
 }
+
+.el-menu-item:hover {
+  background-color: $menu-hover;
+}
 </style>
