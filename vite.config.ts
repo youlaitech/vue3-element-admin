@@ -21,6 +21,9 @@ import {
   devDependencies,
 } from "./package.json";
 
+// https://devtools-next.vuejs.org/
+import VueDevTools from "vite-plugin-vue-devtools";
+
 /** 平台的名称、版本、运行所需的`node`版本、依赖、构建时间的类型提示 */
 const __APP_INFO__ = {
   pkg: { name, version, engines, dependencies, devDependencies },
@@ -124,6 +127,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         iconDirs: [resolve(pathSrc, "assets/icons")],
         // 指定symbolId格式
         symbolId: "icon-[dir]-[name]",
+      }),
+      VueDevTools({
+        openInEditorHost: `http://localhost:${env.VITE_APP_PORT}`,
       }),
     ],
     // 预加载项目必需的组件
