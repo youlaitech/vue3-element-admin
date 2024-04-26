@@ -54,6 +54,23 @@ export const constantRoutes: RouteRecordRaw[] = [
     ],
   },
 
+  {
+    path: "/curd",
+    component: Layout,
+    meta: {
+      alwaysShow: false,
+    },
+    children: [
+      {
+        path: "index",
+        component: () => import("@/views/demo/curd/index.vue"),
+        meta: {
+          title: "增删改查",
+        },
+      },
+    ],
+  },
+
   // 外部链接
   // {
   //   path: "/external-link",
