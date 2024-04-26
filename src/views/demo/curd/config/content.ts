@@ -5,37 +5,41 @@ const contentConfig = {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve({
-          total: 2,
-          list: [
-            {
-              id: 2,
-              username: "admin",
-              nickname: "系统管理员",
-              mobile: "17621210366",
-              genderLabel: "男",
-              avatar:
-                "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-              email: null,
-              status: 1,
-              deptName: "有来技术",
-              roleNames: "系统管理员",
-              createTime: "2019-10-10",
-            },
-            {
-              id: 3,
-              username: "test",
-              nickname: "测试小用户",
-              mobile: "17621210366",
-              genderLabel: "男",
-              avatar:
-                "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-              email: null,
-              status: 1,
-              deptName: "测试部门",
-              roleNames: "访问游客",
-              createTime: "2021-06-05",
-            },
-          ],
+          code: "00000",
+          data: {
+            list: [
+              {
+                id: 2,
+                username: "admin",
+                nickname: "系统管理员",
+                mobile: "17621210366",
+                genderLabel: "男",
+                avatar:
+                  "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+                email: null,
+                status: 1,
+                deptName: "有来技术",
+                roleNames: "系统管理员",
+                createTime: "2019-10-10",
+              },
+              {
+                id: 3,
+                username: "test",
+                nickname: "测试小用户",
+                mobile: "17621210366",
+                genderLabel: "男",
+                avatar:
+                  "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+                email: null,
+                status: 1,
+                deptName: "测试部门",
+                roleNames: "访问游客",
+                createTime: "2021-06-05",
+              },
+            ],
+            total: 2,
+          },
+          msg: "一切ok",
         });
       }, 800);
     });
@@ -43,7 +47,11 @@ const contentConfig = {
   deleteAction: function (id: string) {
     console.log("delete", id);
     return new Promise((resolve, reject) => {
-      resolve("删除成功");
+      resolve({
+        code: "00000",
+        data: null,
+        msg: "删除成功",
+      });
     });
   },
   pk: "id",

@@ -42,21 +42,30 @@
 import { ref, reactive } from "vue";
 import type { ElForm } from "element-plus";
 
-// 定义接收的属性/自定义事件
+// 定义接收的属性
 interface IProps {
   searchConfig: {
+    // 页面名称(参与组成权限标识,如sys:user:xxx)
     pageName: string;
+    // 表单项
     formItems: Array<{
+      // 组件类型(如input,select等)
       type: string;
+      // 标签文本
       label: string;
+      // 键名
       prop: string;
+      // 组件属性
       attrs?: any;
+      // 初始值
       initialValue?: any;
+      // 可选项(适用于select组件)
       options?: { label: string; value: any }[];
     }>;
   };
 }
 const props = defineProps<IProps>();
+// 自定义事件
 const emit = defineEmits<{
   queryClick: [queryParams: any];
   resetClick: [queryParams: any];
@@ -65,7 +74,7 @@ const emit = defineEmits<{
 defineExpose({ getQueryParams });
 
 const queryFormRef = ref<InstanceType<typeof ElForm>>();
-// 定义form的数据
+// 搜索表单数据
 const queryParams = reactive<any>({});
 for (const item of props.searchConfig.formItems) {
   queryParams[item.prop] = item.initialValue ?? "";
