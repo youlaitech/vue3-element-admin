@@ -109,6 +109,7 @@
     "vite": "^5.2.8",
     "vite-plugin-mock-dev-server": "^1.5.0",
     "vite-plugin-svg-icons": "^2.0.1",
+    "vite-plugin-vue-devtools": "^7.1.2",
     "vue-tsc": "^2.0.13"
   },
   "repository": "https://gitee.com/youlaiorg/vue3-element-admin.git",
