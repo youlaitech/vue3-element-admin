@@ -3,9 +3,9 @@ const contentConfig = {
   indexAction: function (data: any) {
     console.log("index", data);
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve({
-          total: 2,
+      resolve({
+        code: "00000",
+        data: {
           list: [
             {
               id: 2,
@@ -36,14 +36,20 @@ const contentConfig = {
               createTime: "2021-06-05",
             },
           ],
-        });
-      }, 800);
+          total: 2,
+        },
+        msg: "一切ok",
+      });
     });
   },
   deleteAction: function (id: string) {
     console.log("delete", id);
     return new Promise((resolve, reject) => {
-      resolve("删除成功");
+      resolve({
+        code: "00000",
+        data: null,
+        msg: "删除成功",
+      });
     });
   },
   pk: "id",

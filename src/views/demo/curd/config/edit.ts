@@ -8,7 +8,11 @@ const modalConfig = {
   formAction: function (data: any) {
     console.log("edit", data);
     return new Promise((resolve, reject) => {
-      resolve("编辑成功");
+      resolve({
+        code: "00000",
+        data: null,
+        msg: "修改成功",
+      });
     });
   },
   formItems: [

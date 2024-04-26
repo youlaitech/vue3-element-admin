@@ -192,11 +192,17 @@ interface IOperatData {
 }
 const props = defineProps<{
   contentConfig: {
+    // 页面名称(参与组成权限标识,如sys:user:xxx)
     pageName: string;
+    // 列表的网络请求函数(需返回promise)
     indexAction: (data: any) => Promise<any>;
+    // 删除的网络请求函数(需返回promise)
     deleteAction: (data: any) => Promise<any>;
+    // 主键名(默认为id)
     pk?: string;
+    // 表格工具栏(默认支持refresh,add,delete,export,也可自定义)
     toolbar: any[];
+    // table组件列属性(额外的属性templet,operat)
     cols: any[];
   };
 }>();
@@ -205,7 +211,7 @@ const emit = defineEmits<{
   addClick: [];
   exportClick: [];
   toolbarClick: [name: string];
-  editClick: [id: number];
+  editClick: [row: any];
   operatClick: [data: IOperatData];
 }>();
 // 暴露的属性和方法
@@ -222,7 +228,7 @@ const total = ref(0);
 // 列表数据
 const pageData = ref([]);
 // 每页条数
-const pageSize = 1;
+const pageSize = 10;
 // 搜索参数
 const queryParams = reactive<any>({
   pageNum: 1,
@@ -240,9 +246,9 @@ function fetchPageData(formData: any = {}, isRestart = false) {
   }
   props.contentConfig
     .indexAction({ ...queryParams, ...formData })
-    .then((res: any) => {
-      total.value = res.total;
-      pageData.value = res.list;
+    .then(({ data }) => {
+      total.value = data.total;
+      pageData.value = data.list;
     })
     .finally(() => {
       loading.value = false;

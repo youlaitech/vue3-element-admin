@@ -67,27 +67,42 @@ import { ref, reactive } from "vue";
 import { useThrottleFn } from "@vueuse/core";
 import type { FormRules, ElForm } from "element-plus";
 
-// 定义接收的属性/自定义事件
+// 定义接收的属性
 const props = defineProps<{
   modalConfig: {
+    // dialog组件属性
     dialog: any;
+    // 页面名称
     pageName?: string;
+    // 提交的网络请求函数(需返回promise)
     formAction: (data: any) => Promise<any>;
+    // 表单项
     formItems: Array<{
+      // 组件类型(如input,select,radio等)
       type: string;
+      // 标签文本
       label: string;
+      // 键名
       prop: string;
+      // 组件属性
       attrs?: any;
+      // 初始值
       initialValue?: any;
+      // 可选项(适用于select,radio组件)
       options?: { label: string; value: any }[];
+      // 插槽名(适用于组件类型为custom)
       slotName?: string;
     }>;
+    // 表单验证规则
     formRules: FormRules;
   };
 }>();
+// 自定义事件
 const emit = defineEmits<{
   submitClick: [];
 }>();
+// 暴露的属性和方法
+defineExpose({ setModalVisible });
 
 const dialogVisible = ref(false);
 const formRef = ref<InstanceType<typeof ElForm>>();
@@ -121,8 +136,6 @@ function closeDialog() {
   formRef.value?.resetFields();
   formRef.value?.clearValidate();
 }
-// 暴露的属性和方法
-defineExpose({ setModalVisible });
 </script>
 
 <style lang="scss" scoped></style>

@@ -64,13 +64,14 @@ function handleResetClick() {
 }
 // 新增
 function handleAddClick() {
-  console.log("add");
   //显示添加表单
   addModalRef.value?.setModalVisible();
 }
 // 导出
 function handleExportClick() {
-  console.log("export", searchRef.value?.getQueryParams());
+  console.log("export");
+  // 可以根据检索条件去导出数据
+  console.log(searchRef.value?.getQueryParams());
 }
 // 其他工具栏
 function handleToolbarClick(name: string) {
@@ -78,30 +79,63 @@ function handleToolbarClick(name: string) {
 }
 // 编辑
 const editModalRef = ref<InstanceType<typeof PageModal>>();
-function handleEditClick() {
-  //显示编辑表单或者根据id获取数据进行填充
-  editModalRef.value?.setModalVisible({
-    id: 2,
-    username: "admin",
-    nickname: "系统管理员",
-    mobile: "17621210366",
-    gender: 1,
-    avatar:
-      "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-    email: "",
-    status: 1,
-    deptId: 1,
-    roleIds: [2],
-  });
+function handleEditClick(row: any) {
+  //显示编辑表单 根据id获取的数据进行填充
+  const idMap: Record<string, any> = {
+    2: {
+      id: 2,
+      username: "admin",
+      nickname: "系统管理员",
+      mobile: "17621210366",
+      gender: 1,
+      avatar:
+        "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+      email: "",
+      status: 1,
+      deptId: 1,
+      roleIds: [2],
+    },
+    3: {
+      id: 3,
+      username: "test",
+      nickname: "测试小用户",
+      mobile: "17621210366",
+      gender: 1,
+      avatar:
+        "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+      email: "youlaitech@163.com",
+      status: 1,
+      deptId: 3,
+      roleIds: [3],
+    },
+  };
+  editModalRef.value?.setModalVisible(idMap[row.id]);
 }
 // 其他操作列
 function handleOperatClick(data: any) {
-  console.log(data.name, data.row);
+  console.log(data);
+  // 重置密码
+  if (data.name === "reset_pwd") {
+    ElMessageBox.prompt(
+      "请输入用户「" + data.row.username + "」的新密码",
+      "重置密码",
+      {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      }
+    ).then(({ value }) => {
+      if (!value) {
+        ElMessage.warning("请输入新密码");
+        return false;
+      }
+      // 发送网络请求
+      ElMessage.success("密码重置成功，新密码是：" + value);
+    });
+  }
 }
 // 表单提交
 function handleSubmitClick() {
   //刷新别表数据
-  console.log("submit");
   contentRef.value?.fetchPageData({}, true);
 }
 </script>
