@@ -102,7 +102,7 @@ const contentConfig: IContentConfig = {
       operat: [
         {
           name: "reset_pwd",
-          auth: "reset_pwd",
+          auth: "password:reset",
           icon: "refresh-left",
           text: "重置密码",
         },
