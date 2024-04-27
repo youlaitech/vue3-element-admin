@@ -65,37 +65,40 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { useThrottleFn } from "@vueuse/core";
-import type { FormRules, ElForm } from "element-plus";
+import type { FormRules, DialogProps } from "element-plus";
 
+// 对象类型
+type IObject = Record<string, any>;
 // 定义接收的属性
+export interface IModalConfig {
+  // dialog组件属性
+  dialog: Partial<Omit<DialogProps, "modelValue">>;
+  // 页面名称
+  pageName?: string;
+  // 提交的网络请求函数(需返回promise)
+  formAction: (data: IObject) => Promise<any>;
+  // 表单项
+  formItems: Array<{
+    // 组件类型(如input,select,radio等)
+    type: string;
+    // 标签文本
+    label: string;
+    // 键名
+    prop: string;
+    // 组件属性
+    attrs?: IObject;
+    // 初始值
+    initialValue?: any;
+    // 可选项(适用于select,radio组件)
+    options?: { label: string; value: any }[];
+    // 插槽名(适用于组件类型为custom)
+    slotName?: string;
+  }>;
+  // 表单验证规则
+  formRules: FormRules;
+}
 const props = defineProps<{
-  modalConfig: {
-    // dialog组件属性
-    dialog: any;
-    // 页面名称
-    pageName?: string;
-    // 提交的网络请求函数(需返回promise)
-    formAction: (data: any) => Promise<any>;
-    // 表单项
-    formItems: Array<{
-      // 组件类型(如input,select,radio等)
-      type: string;
-      // 标签文本
-      label: string;
-      // 键名
-      prop: string;
-      // 组件属性
-      attrs?: any;
-      // 初始值
-      initialValue?: any;
-      // 可选项(适用于select,radio组件)
-      options?: { label: string; value: any }[];
-      // 插槽名(适用于组件类型为custom)
-      slotName?: string;
-    }>;
-    // 表单验证规则
-    formRules: FormRules;
-  };
+  modalConfig: IModalConfig;
 }>();
 // 自定义事件
 const emit = defineEmits<{
@@ -106,9 +109,9 @@ defineExpose({ setModalVisible });
 
 const dialogVisible = ref(false);
 const formRef = ref<InstanceType<typeof ElForm>>();
-const formData = reactive<any>({});
+const formData = reactive<IObject>({});
 // 初始化
-function setModalVisible(initData: any = {}) {
+function setModalVisible(initData: IObject = {}) {
   dialogVisible.value = true;
   for (const item of props.modalConfig.formItems) {
     formData[item.prop] = initData[item.prop] ?? item.initialValue ?? "";
@@ -116,7 +119,7 @@ function setModalVisible(initData: any = {}) {
 }
 // 表单提交
 const handleSubmit = useThrottleFn(() => {
-  formRef.value?.validate((valid: any) => {
+  formRef.value?.validate((valid: boolean) => {
     if (valid) {
       props.modalConfig.formAction(formData).then(() => {
         ElMessage.success(

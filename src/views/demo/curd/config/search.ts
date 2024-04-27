@@ -1,4 +1,6 @@
-const searchConfig = {
+import type { ISearchConfig } from "@/components/PageSearch/index.vue";
+
+const searchConfig: ISearchConfig = {
   pageName: "sys:user",
   formItems: [
     {
@@ -10,6 +12,37 @@ const searchConfig = {
         clearable: true,
         style: {
           width: "200px",
+        },
+      },
+    },
+    {
+      type: "tree-select",
+      label: "部门",
+      prop: "deptId",
+      attrs: {
+        placeholder: "请选择",
+        data: [
+          {
+            value: 1,
+            label: "有来技术",
+            children: [
+              {
+                value: 2,
+                label: "研发部门",
+              },
+              {
+                value: 3,
+                label: "测试部门",
+              },
+            ],
+          },
+        ],
+        filterable: true,
+        "check-strictly": true,
+        "render-after-expand": false,
+        clearable: true,
+        style: {
+          width: "150px",
         },
       },
     },
