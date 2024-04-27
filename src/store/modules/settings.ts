@@ -1,7 +1,6 @@
 import defaultSettings from "@/settings";
-import { genMixColor } from "@/utils/color";
-import { setStyleProperty } from "@/utils";
 import { ThemeEnum } from "@/enums/ThemeEnum";
+import Color from "color";
 
 type SettingsValue = boolean | string;
 
@@ -47,14 +46,16 @@ export const useSettingsStore = defineStore("setting", () => {
       }
 
       if (newThemeColor !== oldThemeColor) {
-        const { DEFAULT, dark, light } = genMixColor(newThemeColor);
-        setStyleProperty(`--el-color-primary`, DEFAULT);
-        setStyleProperty(`--el-color-primary-dark-2`, dark[2]);
-        setStyleProperty(`--el-color-primary-light-3`, light[3]);
-        setStyleProperty(`--el-color-primary-light-5`, light[5]);
-        setStyleProperty(`--el-color-primary-light-7`, light[7]);
-        setStyleProperty(`--el-color-primary-light-8`, light[8]);
-        setStyleProperty(`--el-color-primary-light-9`, light[9]);
+        const rootStyle = document.documentElement.style;
+        rootStyle.setProperty(`--el-color-primary`, newThemeColor);
+        rootStyle.setProperty(`--el-color-primary-dark-2`, newThemeColor);
+
+        for (let i = 1; i < 10; i++) {
+          rootStyle.setProperty(
+            `--el-color-primary-light-${i}`,
+            `${Color(newThemeColor).alpha(1 - i * 0.1)}`
+          );
+        }
       }
     },
     {

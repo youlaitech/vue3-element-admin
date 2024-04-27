@@ -39,13 +39,3 @@ export function isExternal(path: string) {
   const isExternal = /^(https?:|http?:|mailto:|tel:)/.test(path);
   return isExternal;
 }
-
-/**
- * 设置Style属性
- *
- * @param propName
- * @param value
- */
-export function setStyleProperty(propName: string, value: string) {
-  document.documentElement.style.setProperty(propName, value);
-}
