@@ -185,7 +185,7 @@ import Pagination from "@/components/Pagination/index.vue";
 import type { TableProps } from "element-plus";
 
 // 对象类型
-type IObject = Record<string, any>;
+export type IObject = Record<string, any>;
 // 定义接收的属性
 export interface IOperatData {
   name: string;
@@ -201,7 +201,9 @@ export interface IContentConfig {
   // 列表的网络请求函数(需返回promise)
   indexAction: (data: IObject) => Promise<IObject>;
   // 删除的网络请求函数(需返回promise)
-  deleteAction: (id: string) => Promise<any>;
+  deleteAction?: (id: string) => Promise<any>;
+  // 导出的网络请求函数(需返回promise)
+  exportAction?: (queryParams: IObject) => Promise<any>;
   // 主键名(默认为id)
   pk?: string;
   // 表格工具栏(默认支持refresh,add,delete,export,也可自定义)
@@ -232,7 +234,7 @@ const emit = defineEmits<{
   operatClick: [data: IOperatData];
 }>();
 // 暴露的属性和方法
-defineExpose({ fetchPageData });
+defineExpose({ fetchPageData, exportPageData });
 
 // 主键
 const pk = props.contentConfig.pk ?? "id";
@@ -294,10 +296,14 @@ function handleDelete(id?: number | string) {
     cancelButtonText: "取消",
     type: "warning",
   }).then(function () {
-    props.contentConfig.deleteAction(ids).then(() => {
-      ElMessage.success("删除成功");
-      handleRefresh();
-    });
+    if (props.contentConfig.deleteAction) {
+      props.contentConfig.deleteAction(ids).then(() => {
+        ElMessage.success("删除成功");
+        handleRefresh();
+      });
+    } else {
+      ElMessage.error("未配置deleteAction");
+    }
   });
 }
 // 分页
@@ -336,6 +342,31 @@ function handleOperat(data: IOperatData) {
     default:
       emit("operatClick", data);
       break;
+  }
+}
+// 导出Excel
+function exportPageData(queryParams: IObject = {}) {
+  if (props.contentConfig.exportAction) {
+    props.contentConfig.exportAction(queryParams).then((response) => {
+      const fileData = response.data;
+      const fileName = decodeURI(
+        response.headers["content-disposition"].split(";")[1].split("=")[1]
+      );
+      const fileType =
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+
+      const blob = new Blob([fileData], { type: fileType });
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = downloadUrl;
+      downloadLink.download = fileName;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      window.URL.revokeObjectURL(downloadUrl);
+    });
+  } else {
+    ElMessage.error("未配置exportAction");
   }
 }
 </script>

@@ -144,6 +144,18 @@ export default defineMock([
       };
     },
   },
+
+  // 导出Excel
+  {
+    url: "users/_export",
+    method: ["GET"],
+    headers: {
+      "Content-Disposition":
+        "attachment; filename=%E7%94%A8%E6%88%B7%E5%88%97%E8%A1%A8.xlsx",
+      "Content-Type":
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    },
+  },
 ]);
 
 // 用户映射表数据
