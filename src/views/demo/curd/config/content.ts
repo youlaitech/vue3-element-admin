@@ -1,6 +1,12 @@
-const contentConfig = {
+import type { IContentConfig } from "@/components/PageContent/index.vue";
+
+const contentConfig: IContentConfig = {
   pageName: "sys:user",
-  indexAction: function (data: any) {
+  table: {
+    border: true,
+    highlightCurrentRow: true,
+  },
+  indexAction: function (data) {
     console.log("index", data);
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -44,7 +50,7 @@ const contentConfig = {
       }, 800);
     });
   },
-  deleteAction: function (id: string) {
+  deleteAction: function (id) {
     console.log("delete", id);
     return new Promise((resolve, reject) => {
       resolve({
@@ -64,6 +70,7 @@ const contentConfig = {
       name: "upload",
       icon: "upload",
       text: "导入",
+      auth: "upload",
     },
   ],
   cols: [
@@ -79,6 +86,7 @@ const contentConfig = {
       align: "center",
       prop: "status",
       templet: "custom",
+      slotName: "status",
     },
     { label: "创建时间", align: "center", prop: "createTime", width: 180 },
     {

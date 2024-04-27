@@ -74,9 +74,8 @@
     <!-- 列表 -->
     <el-table
       v-loading="loading"
+      v-bind="contentConfig.table"
       :data="pageData"
-      :border="true"
-      :highlight-current-row="true"
       @selection-change="handleSelectionChange"
     >
       <template v-for="col in contentConfig.cols" :key="col.prop">
@@ -182,36 +181,54 @@
 
 <script setup lang="ts">
 import { ref, reactive } from "vue";
+import Pagination from "@/components/Pagination/index.vue";
+import type { TableProps } from "element-plus";
 
+// 对象类型
+type IObject = Record<string, any>;
 // 定义接收的属性
-interface IOperatData {
+export interface IOperatData {
   name: string;
   row: any;
   column: any;
   $index: number;
 }
+export interface IContentConfig {
+  // 页面名称(参与组成权限标识,如sys:user:xxx)
+  pageName: string;
+  // table组件属性
+  table?: Omit<TableProps<any>, "data">;
+  // 列表的网络请求函数(需返回promise)
+  indexAction: (data: IObject) => Promise<IObject>;
+  // 删除的网络请求函数(需返回promise)
+  deleteAction: (id: string) => Promise<any>;
+  // 主键名(默认为id)
+  pk?: string;
+  // 表格工具栏(默认支持refresh,add,delete,export,也可自定义)
+  toolbar: (
+    | "refresh"
+    | "add"
+    | "delete"
+    | "export"
+    | {
+        auth?: string;
+        icon?: string;
+        name: string;
+        text: string;
+      }
+  )[];
+  // table组件列属性(额外的属性templet,operat,slotName)
+  cols: IObject[];
+}
 const props = defineProps<{
-  contentConfig: {
-    // 页面名称(参与组成权限标识,如sys:user:xxx)
-    pageName: string;
-    // 列表的网络请求函数(需返回promise)
-    indexAction: (data: any) => Promise<any>;
-    // 删除的网络请求函数(需返回promise)
-    deleteAction: (data: any) => Promise<any>;
-    // 主键名(默认为id)
-    pk?: string;
-    // 表格工具栏(默认支持refresh,add,delete,export,也可自定义)
-    toolbar: any[];
-    // table组件列属性(额外的属性templet,operat)
-    cols: any[];
-  };
+  contentConfig: IContentConfig;
 }>();
 // 定义自定义事件
 const emit = defineEmits<{
   addClick: [];
   exportClick: [];
   toolbarClick: [name: string];
-  editClick: [row: any];
+  editClick: [row: IObject];
   operatClick: [data: IOperatData];
 }>();
 // 暴露的属性和方法
@@ -222,22 +239,22 @@ const pk = props.contentConfig.pk ?? "id";
 // 加载状态
 const loading = ref(false);
 // 删除ID集合 用于批量删除
-const removeIds = ref([]);
+const removeIds = ref<(number | string)[]>([]);
 // 数据总数
 const total = ref(0);
 // 列表数据
-const pageData = ref([]);
+const pageData = ref<IObject[]>([]);
 // 每页条数
 const pageSize = 10;
 // 搜索参数
-const queryParams = reactive<any>({
+const queryParams = reactive<IObject>({
   pageNum: 1,
   pageSize: pageSize,
 });
 // 上一次搜索条件
 let lastFormData = {};
 // 获取分页数据
-function fetchPageData(formData: any = {}, isRestart = false) {
+function fetchPageData(formData: IObject = {}, isRestart = false) {
   loading.value = true;
   lastFormData = formData;
   if (isRestart) {
@@ -257,8 +274,8 @@ function fetchPageData(formData: any = {}, isRestart = false) {
 fetchPageData();
 
 // 行选中
-function handleSelectionChange(selection: any) {
-  removeIds.value = selection.map((item: any) => item[pk]);
+function handleSelectionChange(selection: any[]) {
+  removeIds.value = selection.map((item) => item[pk]);
 }
 // 刷新
 function handleRefresh() {

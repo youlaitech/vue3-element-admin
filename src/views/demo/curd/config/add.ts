@@ -1,11 +1,14 @@
-const modalConfig = {
+import type { IModalConfig } from "@/components/PageModal/index.vue";
+
+const modalConfig: IModalConfig = {
   pageName: "sys:user",
   dialog: {
     title: "新增用户",
     width: 800,
-    "append-to-body": true,
+    appendToBody: true,
+    draggable: true,
   },
-  formAction: function (data: any) {
+  formAction: function (data) {
     console.log("add", data);
     return new Promise((resolve, reject) => {
       resolve({

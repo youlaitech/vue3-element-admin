@@ -48,6 +48,7 @@ import addModalConfig from "./config/add";
 import editModalConfig from "./config/edit";
 import type PageSearch from "@/components/PageSearch/index.vue";
 import type PageContent from "@/components/PageContent/index.vue";
+import type { IOperatData } from "@/components/PageContent/index.vue";
 import type PageModal from "@/components/PageModal/index.vue";
 
 const searchRef = ref<InstanceType<typeof PageSearch>>();
@@ -112,7 +113,7 @@ function handleEditClick(row: any) {
   editModalRef.value?.setModalVisible(idMap[row.id]);
 }
 // 其他操作列
-function handleOperatClick(data: any) {
+function handleOperatClick(data: IOperatData) {
   console.log(data);
   // 重置密码
   if (data.name === "reset_pwd") {
@@ -135,7 +136,7 @@ function handleOperatClick(data: any) {
 }
 // 表单提交
 function handleSubmitClick() {
-  //刷新别表数据
+  //刷新列表数据
   contentRef.value?.fetchPageData({}, true);
 }
 </script>

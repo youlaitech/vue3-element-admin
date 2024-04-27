@@ -11,6 +11,13 @@
               </template>
             </el-select>
           </template>
+          <!-- TreeSelect 树形选择 -->
+          <template v-else-if="item.type === 'tree-select'">
+            <el-tree-select
+              v-model="queryParams[item.prop]"
+              v-bind="item.attrs"
+            />
+          </template>
           <!-- DatePicker 日期选择器 -->
           <template v-else-if="item.type === 'date-picker'">
             <el-date-picker
@@ -29,10 +36,10 @@
         </el-form-item>
       </template>
       <el-form-item>
-        <el-button type="primary" @click="handleQuery">
-          <i-ep-search />搜索
+        <el-button type="primary" icon="search" @click="handleQuery">
+          搜索
         </el-button>
-        <el-button @click="handleReset"><i-ep-refresh />重置</el-button>
+        <el-button icon="refresh" @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -42,40 +49,43 @@
 import { ref, reactive } from "vue";
 import type { ElForm } from "element-plus";
 
+// 对象类型
+type IObject = Record<string, any>;
 // 定义接收的属性
+export interface ISearchConfig {
+  // 页面名称(参与组成权限标识,如sys:user:xxx)
+  pageName: string;
+  // 表单项
+  formItems: Array<{
+    // 组件类型(如input,select等)
+    type: string;
+    // 标签文本
+    label: string;
+    // 键名
+    prop: string;
+    // 组件属性
+    attrs?: IObject;
+    // 初始值
+    initialValue?: any;
+    // 可选项(适用于select组件)
+    options?: { label: string; value: any }[];
+  }>;
+}
 interface IProps {
-  searchConfig: {
-    // 页面名称(参与组成权限标识,如sys:user:xxx)
-    pageName: string;
-    // 表单项
-    formItems: Array<{
-      // 组件类型(如input,select等)
-      type: string;
-      // 标签文本
-      label: string;
-      // 键名
-      prop: string;
-      // 组件属性
-      attrs?: any;
-      // 初始值
-      initialValue?: any;
-      // 可选项(适用于select组件)
-      options?: { label: string; value: any }[];
-    }>;
-  };
+  searchConfig: ISearchConfig;
 }
 const props = defineProps<IProps>();
 // 自定义事件
 const emit = defineEmits<{
-  queryClick: [queryParams: any];
-  resetClick: [queryParams: any];
+  queryClick: [queryParams: IObject];
+  resetClick: [queryParams: IObject];
 }>();
 // 暴露的属性和方法
 defineExpose({ getQueryParams });
 
 const queryFormRef = ref<InstanceType<typeof ElForm>>();
 // 搜索表单数据
-const queryParams = reactive<any>({});
+const queryParams = reactive<IObject>({});
 for (const item of props.searchConfig.formItems) {
   queryParams[item.prop] = item.initialValue ?? "";
 }
