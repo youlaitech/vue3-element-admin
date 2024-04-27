@@ -72,10 +72,10 @@ const contentConfig: IContentConfig = {
     "delete",
     "export",
     {
-      name: "upload",
+      name: "import",
       icon: "upload",
       text: "导入",
-      auth: "upload",
+      auth: "import",
     },
   ],
   cols: [

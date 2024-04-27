@@ -97,7 +97,7 @@ function handleEditClick(row: IObject) {
 // 其他工具栏
 function handleToolbarClick(name: string) {
   console.log(name);
-  if (name === "upload") {
+  if (name === "import") {
     ElMessage.success("点击了导入按钮");
   }
 }
