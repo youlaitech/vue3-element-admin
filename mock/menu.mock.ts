@@ -456,7 +456,7 @@ export default defineMock([
                   visible: 1,
                   icon: "",
                   redirect: null,
-                  perm: "sys:user:reset_pwd",
+                  perm: "sys:user:password:reset",
                   children: [],
                 },
               ],

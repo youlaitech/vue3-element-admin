@@ -26,7 +26,7 @@ export default defineMock([
           "sys:dept:delete",
           "sys:user:edit",
           "sys:user:delete",
-          "sys:user:reset_pwd",
+          "sys:user:password:reset",
           "sys:dept:add",
           "sys:role:delete",
           "sys:dict_type:delete",

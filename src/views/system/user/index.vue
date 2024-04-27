@@ -158,7 +158,7 @@
             <el-table-column label="操作" fixed="right" width="220">
               <template #default="scope">
                 <el-button
-                  v-hasPerm="['sys:user:reset_pwd']"
+                  v-hasPerm="['sys:user:password:reset']"
                   type="primary"
                   size="small"
                   link
