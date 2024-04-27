@@ -1,4 +1,5 @@
 import type { IContentConfig } from "@/components/PageContent/index.vue";
+import { exportUser } from "@/api/user";
 
 const contentConfig: IContentConfig = {
   pageName: "sys:user",
@@ -59,6 +60,10 @@ const contentConfig: IContentConfig = {
         msg: "删除成功",
       });
     });
+  },
+  exportAction: function (queryParams) {
+    // 导出Excel文件
+    return exportUser(queryParams as any);
   },
   pk: "id",
   toolbar: [
