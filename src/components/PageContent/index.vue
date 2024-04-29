@@ -193,17 +193,17 @@ export interface IOperatData {
   column: any;
   $index: number;
 }
-export interface IContentConfig {
+export interface IContentConfig<T = any> {
   // 页面名称(参与组成权限标识,如sys:user:xxx)
   pageName: string;
   // table组件属性
   table?: Omit<TableProps<any>, "data">;
   // 列表的网络请求函数(需返回promise)
-  indexAction: (data: IObject) => Promise<IObject>;
+  indexAction: (queryParams: T) => Promise<any>;
   // 删除的网络请求函数(需返回promise)
-  deleteAction?: (id: string) => Promise<any>;
+  deleteAction?: (ids: string) => Promise<any>;
   // 导出的网络请求函数(需返回promise)
-  exportAction?: (queryParams: IObject) => Promise<any>;
+  exportAction?: (queryParams: T) => Promise<any>;
   // 主键名(默认为id)
   pk?: string;
   // 表格工具栏(默认支持refresh,add,delete,export,也可自定义)
