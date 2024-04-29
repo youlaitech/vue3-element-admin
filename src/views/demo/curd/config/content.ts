@@ -1,70 +1,24 @@
+import { deleteUsers, exportUser, getUserPage } from "@/api/user";
+import type { UserQuery } from "@/api/user/types";
 import type { IContentConfig } from "@/components/PageContent/index.vue";
-import { exportUser } from "@/api/user";
 
-const contentConfig: IContentConfig = {
+const contentConfig: IContentConfig<UserQuery> = {
   pageName: "sys:user",
   table: {
     border: true,
     highlightCurrentRow: true,
   },
-  indexAction: function (data) {
-    console.log("index", data);
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve({
-          code: "00000",
-          data: {
-            list: [
-              {
-                id: 2,
-                username: "admin",
-                nickname: "系统管理员",
-                mobile: "17621210366",
-                genderLabel: "男",
-                avatar:
-                  "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-                email: null,
-                status: 1,
-                deptName: "有来技术",
-                roleNames: "系统管理员",
-                createTime: "2019-10-10",
-              },
-              {
-                id: 3,
-                username: "test",
-                nickname: "测试小用户",
-                mobile: "17621210366",
-                genderLabel: "男",
-                avatar:
-                  "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-                email: null,
-                status: 1,
-                deptName: "测试部门",
-                roleNames: "访问游客",
-                createTime: "2021-06-05",
-              },
-            ],
-            total: 2,
-          },
-          msg: "一切ok",
-        });
-      }, 800);
-    });
+  indexAction: function (params) {
+    if ("createAt" in params) {
+      const createAt = params.createAt as string[];
+      params.startTime = createAt[0];
+      params.endTime = createAt[1];
+      delete params.createAt;
+    }
+    return getUserPage(params);
   },
-  deleteAction: function (id) {
-    console.log("delete", id);
-    return new Promise((resolve, reject) => {
-      resolve({
-        code: "00000",
-        data: null,
-        msg: "删除成功",
-      });
-    });
-  },
-  exportAction: function (queryParams) {
-    // 导出Excel文件
-    return exportUser(queryParams as any);
-  },
+  deleteAction: deleteUsers,
+  exportAction: exportUser,
   pk: "id",
   toolbar: [
     "refresh",

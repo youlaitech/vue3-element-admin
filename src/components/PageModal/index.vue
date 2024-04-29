@@ -7,9 +7,10 @@
     <!-- 表单 -->
     <el-form
       ref="formRef"
-      :model="formData"
-      :rules="modalConfig.formRules"
       label-width="80px"
+      v-bind="modalConfig.form"
+      :model="formData"
+      :rules="formRules"
     >
       <template v-for="item in modalConfig.formItems" :key="item.prop">
         <el-form-item :label="item.label" :prop="item.prop">
@@ -65,37 +66,48 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { useThrottleFn } from "@vueuse/core";
-import type { FormRules, DialogProps } from "element-plus";
+import type {
+  DialogProps,
+  FormProps,
+  FormRules,
+  FormItemRule,
+} from "element-plus";
 
 // 对象类型
 type IObject = Record<string, any>;
 // 定义接收的属性
-export interface IModalConfig {
-  // dialog组件属性
-  dialog: Partial<Omit<DialogProps, "modelValue">>;
+export interface IModalConfig<T = any> {
   // 页面名称
   pageName?: string;
+  // 主键名(主要用于编辑数据,默认为id)
+  pk?: string;
+  // dialog组件属性
+  dialog?: Partial<Omit<DialogProps, "modelValue">>;
+  // form组件属性
+  form?: Partial<Omit<FormProps, "model" | "rules">>;
   // 提交的网络请求函数(需返回promise)
-  formAction: (data: IObject) => Promise<any>;
+  formAction: (data: T) => Promise<any>;
+  // 提交之前处理
+  beforeSubmit?: (data: T) => void;
   // 表单项
   formItems: Array<{
-    // 组件类型(如input,select,radio等)
-    type: string;
+    // 组件类型(如input,select,radio,custom等，默认input)
+    type?: string;
+    // 组件属性
+    attrs?: IObject;
+    // 组件可选项(适用于select,radio组件)
+    options?: { label: string; value: any }[];
+    // 插槽名(适用于组件类型为custom)
+    slotName?: string;
     // 标签文本
     label: string;
     // 键名
     prop: string;
-    // 组件属性
-    attrs?: IObject;
+    // 验证规则
+    rules?: FormItemRule[];
     // 初始值
     initialValue?: any;
-    // 可选项(适用于select,radio组件)
-    options?: { label: string; value: any }[];
-    // 插槽名(适用于组件类型为custom)
-    slotName?: string;
   }>;
-  // 表单验证规则
-  formRules: FormRules;
 }
 const props = defineProps<{
   modalConfig: IModalConfig;
@@ -107,23 +119,32 @@ const emit = defineEmits<{
 // 暴露的属性和方法
 defineExpose({ setModalVisible });
 
+const pk = props.modalConfig.pk ?? "id";
 const dialogVisible = ref(false);
 const formRef = ref<InstanceType<typeof ElForm>>();
 const formData = reactive<IObject>({});
+const formRules: FormRules = {};
 // 初始化
 function setModalVisible(initData: IObject = {}) {
   dialogVisible.value = true;
   for (const item of props.modalConfig.formItems) {
     formData[item.prop] = initData[item.prop] ?? item.initialValue ?? "";
+    formRules[item.prop] = item.rules ?? [];
+  }
+  if (initData[pk]) {
+    formData[pk] = initData[pk];
   }
 }
 // 表单提交
 const handleSubmit = useThrottleFn(() => {
   formRef.value?.validate((valid: boolean) => {
     if (valid) {
+      if (typeof props.modalConfig.beforeSubmit === "function") {
+        props.modalConfig.beforeSubmit(formData);
+      }
       props.modalConfig.formAction(formData).then(() => {
         ElMessage.success(
-          props.modalConfig.dialog.title
+          props.modalConfig.dialog?.title
             ? `${props.modalConfig.dialog.title}成功`
             : "操作成功"
         );

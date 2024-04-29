@@ -42,12 +42,13 @@
 </template>
 
 <script setup lang="ts">
-import searchConfig from "./config/search";
-import contentConfig from "./config/content";
-import addModalConfig from "./config/add";
-import editModalConfig from "./config/edit";
+import { getUserForm } from "@/api/user";
+import type { IObject, IOperatData } from "@/hooks/usePage";
 import usePage from "@/hooks/usePage";
-import type { IOperatData, IObject } from "@/hooks/usePage";
+import addModalConfig from "./config/add";
+import contentConfig from "./config/content";
+import editModalConfig from "./config/edit";
+import searchConfig from "./config/search";
 
 const {
   searchRef,
@@ -62,37 +63,10 @@ const {
   handleExportClick,
 } = usePage();
 // 编辑
-function handleEditClick(row: IObject) {
-  // 模拟根据id获取数据进行填充
-  const idMap: IObject = {
-    2: {
-      id: 2,
-      username: "admin",
-      nickname: "系统管理员",
-      mobile: "17621210366",
-      gender: 1,
-      avatar:
-        "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-      email: "",
-      status: 1,
-      deptId: 1,
-      roleIds: [2],
-    },
-    3: {
-      id: 3,
-      username: "test",
-      nickname: "测试小用户",
-      mobile: "17621210366",
-      gender: 1,
-      avatar:
-        "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
-      email: "youlaitech@163.com",
-      status: 1,
-      deptId: 3,
-      roleIds: [3],
-    },
-  };
-  editModalRef.value?.setModalVisible(idMap[row.id]);
+async function handleEditClick(row: IObject) {
+  // 根据id获取数据进行填充
+  const response = await getUserForm(row.id);
+  editModalRef.value?.setModalVisible(response.data);
 }
 // 其他工具栏
 function handleToolbarClick(name: string) {
