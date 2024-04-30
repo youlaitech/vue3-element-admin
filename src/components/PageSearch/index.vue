@@ -5,11 +5,20 @@
         <el-form-item :label="item.label" :prop="item.prop">
           <!-- Input 输入框 -->
           <template v-if="item.type === 'input'">
-            <el-input
-              v-model="queryParams[item.prop]"
-              v-bind="item.attrs"
-              @keyup.enter="handleQuery"
-            />
+            <template v-if="item.attrs?.type === 'number'">
+              <el-input
+                v-model.number="queryParams[item.prop]"
+                v-bind="item.attrs"
+                @keyup.enter="handleQuery"
+              />
+            </template>
+            <template v-else>
+              <el-input
+                v-model="queryParams[item.prop]"
+                v-bind="item.attrs"
+                @keyup.enter="handleQuery"
+              />
+            </template>
           </template>
           <!-- Select 选择器 -->
           <template v-else-if="item.type === 'select'">
@@ -35,11 +44,20 @@
           </template>
           <!-- Input 输入框 -->
           <template v-else>
-            <el-input
-              v-model="queryParams[item.prop]"
-              v-bind="item.attrs"
-              @keyup.enter="handleQuery"
-            />
+            <template v-if="item.attrs?.type === 'number'">
+              <el-input
+                v-model.number="queryParams[item.prop]"
+                v-bind="item.attrs"
+                @keyup.enter="handleQuery"
+              />
+            </template>
+            <template v-else>
+              <el-input
+                v-model="queryParams[item.prop]"
+                v-bind="item.attrs"
+                @keyup.enter="handleQuery"
+              />
+            </template>
           </template>
         </el-form-item>
       </template>

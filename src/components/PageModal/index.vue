@@ -16,7 +16,15 @@
         <el-form-item :label="item.label" :prop="item.prop">
           <!-- Input 输入框 -->
           <template v-if="item.type === 'input'">
-            <el-input v-model="formData[item.prop]" v-bind="item.attrs" />
+            <template v-if="item.attrs?.type === 'number'">
+              <el-input
+                v-model.number="formData[item.prop]"
+                v-bind="item.attrs"
+              />
+            </template>
+            <template v-else>
+              <el-input v-model="formData[item.prop]" v-bind="item.attrs" />
+            </template>
           </template>
           <!-- Select 选择器 -->
           <template v-else-if="item.type === 'select'">
@@ -59,7 +67,15 @@
           </template>
           <!-- Input 输入框 -->
           <template v-else>
-            <el-input v-model="formData[item.prop]" v-bind="item.attrs" />
+            <template v-if="item.attrs?.type === 'number'">
+              <el-input
+                v-model.number="formData[item.prop]"
+                v-bind="item.attrs"
+              />
+            </template>
+            <template v-else>
+              <el-input v-model="formData[item.prop]" v-bind="item.attrs" />
+            </template>
           </template>
         </el-form-item>
       </template>
