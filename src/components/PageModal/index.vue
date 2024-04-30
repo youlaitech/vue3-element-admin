@@ -14,8 +14,12 @@
     >
       <template v-for="item in modalConfig.formItems" :key="item.prop">
         <el-form-item :label="item.label" :prop="item.prop">
+          <!-- Input 输入框 -->
+          <template v-if="item.type === 'input'">
+            <el-input v-model="formData[item.prop]" v-bind="item.attrs" />
+          </template>
           <!-- Select 选择器 -->
-          <template v-if="item.type === 'select'">
+          <template v-else-if="item.type === 'select'">
             <el-select v-model="formData[item.prop]" v-bind="item.attrs">
               <template v-for="option in item.options" :key="option.value">
                 <el-option :label="option.label" :value="option.value" />
@@ -29,6 +33,13 @@
                 <el-radio :label="option.label" :value="option.value" />
               </template>
             </el-radio-group>
+          </template>
+          <!-- Input Number 数字输入框 -->
+          <template v-else-if="item.type === 'input-number'">
+            <el-input-number
+              v-model="formData[item.prop]"
+              v-bind="item.attrs"
+            />
           </template>
           <!-- TreeSelect 树形选择 -->
           <template v-else-if="item.type === 'tree-select'">
@@ -64,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
 import { useThrottleFn } from "@vueuse/core";
 import type {
   DialogProps,
@@ -92,7 +103,14 @@ export interface IModalConfig<T = any> {
   // 表单项
   formItems: Array<{
     // 组件类型(如input,select,radio,custom等，默认input)
-    type?: string;
+    type?:
+      | "input"
+      | "select"
+      | "radio"
+      | "tree-select"
+      | "date-picker"
+      | "input-number"
+      | "custom";
     // 组件属性
     attrs?: IObject;
     // 组件可选项(适用于select,radio组件)
@@ -107,6 +125,8 @@ export interface IModalConfig<T = any> {
     rules?: FormItemRule[];
     // 初始值
     initialValue?: any;
+    // 监听函数
+    watch?: (newValue: any, oldValue: any, data: T) => void;
   }>;
 }
 const props = defineProps<{
@@ -125,13 +145,27 @@ const formRef = ref<InstanceType<typeof ElForm>>();
 const formData = reactive<IObject>({});
 const formRules: FormRules = {};
 // 初始化
+for (const item of props.modalConfig.formItems) {
+  formData[item.prop] = item.initialValue ?? "";
+  formRules[item.prop] = item.rules ?? [];
+  if (item.watch !== undefined) {
+    watch(
+      () => formData[item.prop],
+      (newValue, oldValue) => {
+        item.watch?.(newValue, oldValue, formData);
+      }
+    );
+  }
+}
+// 显示dialog
 function setModalVisible(initData: IObject = {}) {
   dialogVisible.value = true;
-  for (const item of props.modalConfig.formItems) {
-    formData[item.prop] = initData[item.prop] ?? item.initialValue ?? "";
-    formRules[item.prop] = item.rules ?? [];
+  for (const key in formData) {
+    if (Object.hasOwn(formData, key) && key in initData) {
+      formData[key] = initData[key];
+    }
   }
-  if (initData[pk]) {
+  if (Object.hasOwn(initData, pk)) {
     formData[pk] = initData[pk];
   }
 }

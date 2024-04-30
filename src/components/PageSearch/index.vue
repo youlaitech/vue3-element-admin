@@ -3,8 +3,16 @@
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <template v-for="item in searchConfig.formItems" :key="item.prop">
         <el-form-item :label="item.label" :prop="item.prop">
+          <!-- Input 输入框 -->
+          <template v-if="item.type === 'input'">
+            <el-input
+              v-model="queryParams[item.prop]"
+              v-bind="item.attrs"
+              @keyup.enter="handleQuery"
+            />
+          </template>
           <!-- Select 选择器 -->
-          <template v-if="item.type === 'select'">
+          <template v-else-if="item.type === 'select'">
             <el-select v-model="queryParams[item.prop]" v-bind="item.attrs">
               <template v-for="option in item.options" :key="option.value">
                 <el-option :label="option.label" :value="option.value" />
@@ -58,7 +66,7 @@ export interface ISearchConfig {
   // 表单项
   formItems: Array<{
     // 组件类型(如input,select等)
-    type: string;
+    type?: "input" | "select" | "tree-select" | "date-picker";
     // 标签文本
     label: string;
     // 键名
