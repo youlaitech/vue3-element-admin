@@ -1,5 +1,4 @@
 import request from "@/utils/request";
-import { AxiosPromise } from "axios";
 import { CaptchaResult, LoginData, LoginResult } from "./types";
 
 /**
@@ -8,13 +7,13 @@ import { CaptchaResult, LoginData, LoginResult } from "./types";
  * @param data {LoginData}
  * @returns
  */
-export function loginApi(data: LoginData): AxiosPromise<LoginResult> {
+export function loginApi(data: LoginData) {
   const formData = new FormData();
   formData.append("username", data.username);
   formData.append("password", data.password);
   formData.append("captchaKey", data.captchaKey || "");
   formData.append("captchaCode", data.captchaCode || "");
-  return request({
+  return request<any, ResponseData<LoginResult>>({
     url: "/api/v1/auth/login",
     method: "post",
     data: formData,
@@ -37,8 +36,8 @@ export function logoutApi() {
 /**
  * 获取验证码
  */
-export function getCaptchaApi(): AxiosPromise<CaptchaResult> {
-  return request({
+export function getCaptchaApi() {
+  return request<any, ResponseData<CaptchaResult>>({
     url: "/api/v1/auth/captcha",
     method: "get",
   });

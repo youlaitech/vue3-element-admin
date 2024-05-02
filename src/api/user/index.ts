@@ -1,12 +1,11 @@
 import request from "@/utils/request";
-import { AxiosPromise } from "axios";
 import { UserForm, UserInfo, UserPageVO, UserQuery } from "./types";
 
 /**
  * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
  */
-export function getUserInfoApi(): AxiosPromise<UserInfo> {
-  return request({
+export function getUserInfoApi() {
+  return request<any, ResponseData<UserInfo>>({
     url: "/api/v1/users/me",
     method: "get",
   });
@@ -17,10 +16,8 @@ export function getUserInfoApi(): AxiosPromise<UserInfo> {
  *
  * @param queryParams
  */
-export function getUserPage(
-  queryParams: UserQuery
-): AxiosPromise<PageResult<UserPageVO[]>> {
-  return request({
+export function getUserPage(queryParams: UserQuery) {
+  return request<any, ResponseData<PageResult<UserPageVO[]>>>({
     url: "/api/v1/users/page",
     method: "get",
     params: queryParams,
@@ -32,8 +29,8 @@ export function getUserPage(
  *
  * @param userId
  */
-export function getUserForm(userId: number): AxiosPromise<UserForm> {
-  return request({
+export function getUserForm(userId: number) {
+  return request<any, ResponseData<UserForm>>({
     url: "/api/v1/users/" + userId + "/form",
     method: "get",
   });

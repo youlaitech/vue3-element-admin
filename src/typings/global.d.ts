@@ -1,5 +1,14 @@
 declare global {
   /**
+   * 响应数据
+   */
+  interface ResponseData<T = any> {
+    code: string;
+    data: T;
+    msg: string;
+  }
+
+  /**
    * 分页查询参数
    */
   interface PageQuery {

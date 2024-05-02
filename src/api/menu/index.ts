@@ -1,12 +1,12 @@
 import request from "@/utils/request";
-import { AxiosPromise } from "axios";
+import type { RouteRecordRaw } from "vue-router";
 import { MenuQuery, MenuVO, MenuForm } from "./types";
 
 /**
  * 获取路由列表
  */
 export function listRoutes() {
-  return request({
+  return request<any, ResponseData<RouteRecordRaw[]>>({
     url: "/api/v1/menus/routes",
     method: "get",
   });
@@ -17,8 +17,8 @@ export function listRoutes() {
  *
  * @param queryParams
  */
-export function listMenus(queryParams: MenuQuery): AxiosPromise<MenuVO[]> {
-  return request({
+export function listMenus(queryParams: MenuQuery) {
+  return request<any, ResponseData<MenuVO[]>>({
     url: "/api/v1/menus",
     method: "get",
     params: queryParams,
@@ -28,8 +28,8 @@ export function listMenus(queryParams: MenuQuery): AxiosPromise<MenuVO[]> {
 /**
  * 获取菜单下拉树形列表
  */
-export function getMenuOptions(): AxiosPromise<OptionType[]> {
-  return request({
+export function getMenuOptions() {
+  return request<any, ResponseData<OptionType[]>>({
     url: "/api/v1/menus/options",
     method: "get",
   });
@@ -40,8 +40,8 @@ export function getMenuOptions(): AxiosPromise<OptionType[]> {
  *
  * @param id
  */
-export function getMenuForm(id: number): AxiosPromise<MenuForm> {
-  return request({
+export function getMenuForm(id: number) {
+  return request<any, ResponseData<MenuForm>>({
     url: "/api/v1/menus/" + id + "/form",
     method: "get",
   });
