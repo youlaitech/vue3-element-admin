@@ -1,5 +1,4 @@
 import request from "@/utils/request";
-import { AxiosPromise } from "axios";
 import { FileInfo } from "./types";
 
 /**
@@ -7,10 +6,10 @@ import { FileInfo } from "./types";
  *
  * @param file
  */
-export function uploadFileApi(file: File): AxiosPromise<FileInfo> {
+export function uploadFileApi(file: File) {
   const formData = new FormData();
   formData.append("file", file);
-  return request({
+  return request<any, ResponseData<FileInfo>>({
     url: "/api/v1/files",
     method: "post",
     data: formData,

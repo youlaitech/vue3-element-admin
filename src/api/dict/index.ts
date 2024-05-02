@@ -1,5 +1,4 @@
 import request from "@/utils/request";
-import { AxiosPromise } from "axios";
 import {
   DictTypeQuery,
   DictTypePageResult,
@@ -14,10 +13,8 @@ import {
  *
  * @param queryParams
  */
-export function getDictTypePage(
-  queryParams: DictTypeQuery
-): AxiosPromise<DictTypePageResult> {
-  return request({
+export function getDictTypePage(queryParams: DictTypeQuery) {
+  return request<any, ResponseData<DictTypePageResult>>({
     url: "/api/v1/dict/types/page",
     method: "get",
     params: queryParams,
@@ -29,8 +26,8 @@ export function getDictTypePage(
  *
  * @param id
  */
-export function getDictTypeForm(id: number): AxiosPromise<DictTypeForm> {
-  return request({
+export function getDictTypeForm(id: number) {
+  return request<any, ResponseData<DictTypeForm>>({
     url: "/api/v1/dict/types/" + id + "/form",
     method: "get",
   });
@@ -78,8 +75,8 @@ export function deleteDictTypes(ids: string) {
  *
  * @param typeCode 字典类型编码
  */
-export function getDictOptions(typeCode: string): AxiosPromise<OptionType[]> {
-  return request({
+export function getDictOptions(typeCode: string) {
+  return request<any, ResponseData<OptionType[]>>({
     url: "/api/v1/dict/" + typeCode + "/options",
     method: "get",
   });
@@ -88,10 +85,8 @@ export function getDictOptions(typeCode: string): AxiosPromise<OptionType[]> {
 /**
  * 字典分页列表
  */
-export function getDictPage(
-  queryParams: DictQuery
-): AxiosPromise<DictPageResult> {
-  return request({
+export function getDictPage(queryParams: DictQuery) {
+  return request<any, ResponseData<DictPageResult>>({
     url: "/api/v1/dict/page",
     method: "get",
     params: queryParams,
@@ -103,8 +98,8 @@ export function getDictPage(
  *
  * @param id
  */
-export function getDictFormData(id: number): AxiosPromise<DictForm> {
-  return request({
+export function getDictFormData(id: number) {
+  return request<any, ResponseData<DictForm>>({
     url: "/api/v1/dict/" + id + "/form",
     method: "get",
   });

@@ -1,5 +1,4 @@
 import request from "@/utils/request";
-import { AxiosPromise } from "axios";
 import { RoleQuery, RolePageResult, RoleForm } from "./types";
 
 /**
@@ -7,10 +6,8 @@ import { RoleQuery, RolePageResult, RoleForm } from "./types";
  *
  * @param queryParams
  */
-export function getRolePage(
-  queryParams?: RoleQuery
-): AxiosPromise<RolePageResult> {
-  return request({
+export function getRolePage(queryParams?: RoleQuery) {
+  return request<any, ResponseData<RolePageResult>>({
     url: "/api/v1/roles/page",
     method: "get",
     params: queryParams,
@@ -22,10 +19,8 @@ export function getRolePage(
  *
  * @param queryParams
  */
-export function getRoleOptions(
-  queryParams?: RoleQuery
-): AxiosPromise<OptionType[]> {
-  return request({
+export function getRoleOptions(queryParams?: RoleQuery) {
+  return request<any, ResponseData<OptionType[]>>({
     url: "/api/v1/roles/options",
     method: "get",
     params: queryParams,
@@ -37,8 +32,8 @@ export function getRoleOptions(
  *
  * @param queryParams
  */
-export function getRoleMenuIds(roleId: number): AxiosPromise<number[]> {
-  return request({
+export function getRoleMenuIds(roleId: number) {
+  return request<any, ResponseData<number[]>>({
     url: "/api/v1/roles/" + roleId + "/menuIds",
     method: "get",
   });
@@ -49,10 +44,7 @@ export function getRoleMenuIds(roleId: number): AxiosPromise<number[]> {
  *
  * @param queryParams
  */
-export function updateRoleMenus(
-  roleId: number,
-  data: number[]
-): AxiosPromise<any> {
+export function updateRoleMenus(roleId: number, data: number[]) {
   return request({
     url: "/api/v1/roles/" + roleId + "/menus",
     method: "put",
@@ -65,8 +57,8 @@ export function updateRoleMenus(
  *
  * @param id
  */
-export function getRoleForm(id: number): AxiosPromise<RoleForm> {
-  return request({
+export function getRoleForm(id: number) {
+  return request<any, ResponseData<RoleForm>>({
     url: "/api/v1/roles/" + id + "/form",
     method: "get",
   });
