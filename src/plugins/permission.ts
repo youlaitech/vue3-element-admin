@@ -8,6 +8,9 @@ export function setupPermission() {
   const whiteList = ["/login"];
 
   router.beforeEach(async (to, from, next) => {
+    console.log("to = ", to);
+    console.log("from = ", from);
+    console.log("next = ", next);
     NProgress.start();
     const hasToken = localStorage.getItem("accessToken");
     if (hasToken) {
@@ -33,6 +36,7 @@ export function setupPermission() {
             const accessRoutes = await permissionStore.generateRoutes(roles);
             accessRoutes.forEach((route: RouteRecordRaw) => {
               router.addRoute(route);
+              console.log(route);
             });
             next({ ...to, replace: true });
           } catch (error) {

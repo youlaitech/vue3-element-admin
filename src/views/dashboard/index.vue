@@ -1,8 +1,5 @@
 <template>
   <div class="dashboard-container">
-    <!-- github角标 -->
-    <github-corner class="github-corner" />
-
     <el-card shadow="never">
       <el-row justify="space-between">
         <el-col :span="18" :xs="24">
@@ -13,9 +10,6 @@
             />
             <div>
               <p>{{ greetings }}</p>
-              <p class="text-sm text-gray">
-                今日天气晴朗，气温在15℃至25℃之间，东南风。
-              </p>
             </div>
           </div>
         </el-col>

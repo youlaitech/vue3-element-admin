@@ -27,6 +27,8 @@ const permissionStore = usePermissionStore();
 
 const sidebarLogo = computed(() => settingsStore.sidebarLogo);
 const layout = computed(() => settingsStore.layout);
+console.log("Layout: ", layout);
+console.log("permissionStore : ", permissionStore);
 </script>
 
 <style lang="scss" scoped>

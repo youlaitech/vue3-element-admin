@@ -1,12 +1,7 @@
 <!-- 接口文档 -->
 <template>
   <div class="app-container">
-    <iframe
-      src="http://vapi.youlai.tech/doc.html"
-      width="100%"
-      height="100%"
-      frameborder="0"
-    ></iframe>
+    <iframe src="doc.html" width="100%" height="100%" frameborder="0"></iframe>
   </div>
 </template>
 
