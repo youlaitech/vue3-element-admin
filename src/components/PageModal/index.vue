@@ -74,7 +74,7 @@
               :name="item.slotName ?? item.prop"
               :prop="item.prop"
               :formData="formData"
-              v-bind="item.attrs"
+              :attrs="item.attrs"
             ></slot>
           </template>
           <!-- Input 输入框 -->
