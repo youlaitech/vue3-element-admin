@@ -30,7 +30,7 @@
           <template v-else-if="item.type === 'select'">
             <el-select v-model="formData[item.prop]" v-bind="item.attrs">
               <template v-for="option in item.options" :key="option.value">
-                <el-option :label="option.label" :value="option.value" />
+                <el-option v-bind="option" />
               </template>
             </el-select>
           </template>
@@ -38,9 +38,20 @@
           <template v-else-if="item.type === 'radio'">
             <el-radio-group v-model="formData[item.prop]" v-bind="item.attrs">
               <template v-for="option in item.options" :key="option.value">
-                <el-radio :label="option.label" :value="option.value" />
+                <el-radio v-bind="option" />
               </template>
             </el-radio-group>
+          </template>
+          <!-- Checkbox 多选框 -->
+          <template v-else-if="item.type === 'checkbox'">
+            <el-checkbox-group
+              v-model="formData[item.prop]"
+              v-bind="item.attrs"
+            >
+              <template v-for="option in item.options" :key="option.value">
+                <el-checkbox v-bind="option" />
+              </template>
+            </el-checkbox-group>
           </template>
           <!-- Input Number 数字输入框 -->
           <template v-else-if="item.type === 'input-number'">
@@ -62,7 +73,8 @@
             <slot
               :name="item.slotName ?? item.prop"
               :prop="item.prop"
-              v-bind="item.attrs"
+              :formData="formData"
+              :attrs="item.attrs"
             ></slot>
           </template>
           <!-- Input 输入框 -->
@@ -123,14 +135,20 @@ export interface IModalConfig<T = any> {
       | "input"
       | "select"
       | "radio"
+      | "checkbox"
       | "tree-select"
       | "date-picker"
       | "input-number"
       | "custom";
     // 组件属性
     attrs?: IObject;
-    // 组件可选项(适用于select,radio组件)
-    options?: { label: string; value: any }[];
+    // 组件可选项(适用于select,radio,checkbox组件)
+    options?: Array<{
+      label: string;
+      value: any;
+      disabled?: boolean;
+      [key: string]: any;
+    }>;
     // 插槽名(适用于组件类型为custom)
     slotName?: string;
     // 标签文本
