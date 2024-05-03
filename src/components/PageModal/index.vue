@@ -73,6 +73,7 @@
             <slot
               :name="item.slotName ?? item.prop"
               :prop="item.prop"
+              :formData="formData"
               v-bind="item.attrs"
             ></slot>
           </template>
