@@ -1,37 +1,38 @@
 <template>
-  <div ref="iconSelectRef" :style="'width:' + width" class="relative">
-    <el-input
-      v-model="selectedIcon"
-      readonly
-      placeholder="点击选择图标"
-      @click="popoverVisible = !popoverVisible"
-    >
-      <template #prepend>
-        <template v-if="selectedIcon && selectedIcon.startsWith('el-icon-')">
-          <el-icon>
-            <component :is="renderIcon(selectedIcon.replace('el-icon-', ''))" />
-          </el-icon>
-        </template>
-        <template v-else>
-          <svg-icon :icon-class="selectedIcon" />
-        </template>
-      </template>
-    </el-input>
-
-    <el-popover
-      :popoverVisible="popoverVisible"
-      placement="bottom-end"
-      trigger="click"
-      :width="width"
-    >
+  <div ref="iconSelectRef" :style="'width:' + width">
+    <el-popover :visible="popoverVisible" :width="width" placement="bottom-end">
       <template #reference>
-        <div
-          class="cursor-pointer text-[#999] absolute-rt height-[32px] leading-[32px] px-1"
+        <el-input
+          class="reference"
+          v-model="selectedIcon"
+          readonly
+          placeholder="点击选择图标"
           @click="popoverVisible = !popoverVisible"
         >
-          <i-ep-caret-top v-show="popoverVisible" />
-          <i-ep-caret-bottom v-show="!popoverVisible" />
-        </div>
+          <template #prepend>
+            <template
+              v-if="selectedIcon && selectedIcon.startsWith('el-icon-')"
+            >
+              <el-icon>
+                <component :is="selectedIcon.replace('el-icon-', '')" />
+              </el-icon>
+            </template>
+            <template v-else>
+              <svg-icon :icon-class="selectedIcon" />
+            </template>
+          </template>
+          <template #suffix>
+            <el-icon
+              :style="{
+                transform: popoverVisible ? 'rotate(180deg)' : 'rotate(0)',
+                transition: 'transform .5s',
+              }"
+              @click="popoverVisible = !popoverVisible"
+            >
+              <ArrowDown />
+            </el-icon>
+          </template>
+        </el-input>
       </template>
 
       <!-- 下拉选择弹窗 -->
@@ -45,10 +46,10 @@
         <el-tabs v-model="activeTab" @tab-click="handleTabClick">
           <el-tab-pane label="SVG 图标" name="svg">
             <el-scrollbar height="300px">
-              <ul class="flex flex-wrap">
+              <ul class="icon-container">
                 <li
-                  v-for="(icon, index) in filteredSvgIcons"
-                  :key="'svg-' + index"
+                  v-for="icon in filteredSvgIcons"
+                  :key="'svg-' + icon"
                   class="icon-item"
                   @click="selectIcon(icon)"
                 >
@@ -61,12 +62,12 @@
           </el-tab-pane>
           <el-tab-pane label="Element 图标" name="element">
             <el-scrollbar height="300px">
-              <ul class="flex flex-wrap">
+              <ul class="icon-container">
                 <li
-                  v-for="(icon, name) in elementIcons"
-                  :key="name"
+                  v-for="icon in filteredEpIcons"
+                  :key="icon"
                   class="icon-item"
-                  @click="selectIcon(name)"
+                  @click="selectIcon(icon)"
                 >
                   <el-icon>
                     <component :is="icon" />
@@ -83,7 +84,6 @@
 
 <script setup lang="ts">
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
-import { ElTabPane } from "element-plus";
 
 const props = defineProps({
   modelValue: {
@@ -100,7 +100,6 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 const selectedIcon = toRef(props, "modelValue");
-const width = toRef(props, "width");
 
 const iconSelectRef = ref();
 const popoverContentRef = ref();
@@ -112,8 +111,28 @@ const popoverVisible = ref(false); // 弹窗显示状态
 const svgIcons: string[] = []; //  SVG图标集合
 const filteredSvgIcons = ref<string[]>([]); // 过滤后的SVG图标名称集合
 
-const elementIcons = ref(ElementPlusIconsVue); // Element Plus图标集合
+const epIcons: string[] = Object.keys(ElementPlusIconsVue); // Element Plus图标集合
+const filteredEpIcons = ref<string[]>([]); // 过滤后的Element Plus图标名称集合
 
+onMounted(() => {
+  loadIcons();
+});
+
+/**
+ * icon 加载
+ */
+function loadIcons() {
+  const icons = import.meta.glob("../../assets/icons/*.svg");
+  for (const path in icons) {
+    const iconName = path.replace(/.*\/(.*)\.svg$/, "$1");
+    svgIcons.push(iconName);
+  }
+  filteredSvgIcons.value = svgIcons;
+}
+
+/**
+ * 选项卡切换
+ */
 function handleTabClick(tabPane: any) {
   activeTab.value = tabPane.name;
   filterIcons();
@@ -126,10 +145,17 @@ function filterIcons() {
   if (activeTab.value === "svg") {
     // 过滤SVG图标逻辑
     filteredSvgIcons.value = searchText.value
-      ? svgIcons.filter((iconName) => iconName.includes(searchText.value))
+      ? svgIcons.filter((iconName) =>
+          iconName.toLowerCase().includes(searchText.value.toLowerCase())
+        )
       : svgIcons;
   } else {
     // 过滤Element Plus图标逻辑 TODO
+    filteredEpIcons.value = searchText.value
+      ? epIcons.filter((iconName) =>
+          iconName.toLowerCase().includes(searchText.value.toLowerCase())
+        )
+      : epIcons;
   }
 }
 
@@ -150,51 +176,33 @@ function selectIcon(iconName: string) {
 onClickOutside(iconSelectRef, () => (popoverVisible.value = false), {
   ignore: [popoverContentRef],
 });
-
-/**
- * icon 加载
- */
-function loadIcons() {
-  const icons = import.meta.glob("../../assets/icons/*.svg");
-  for (const path in icons) {
-    const iconName = path.replace(/.*\/(.*)\.svg$/, "$1");
-    svgIcons.push(iconName);
-  }
-  filteredSvgIcons.value = svgIcons;
-}
-
-/**
- * 渲染图标组件
- */
-type IconNames = keyof typeof ElementPlusIconsVue;
-const renderIcon = (iconName: string) => {
-  const iconComponent = ElementPlusIconsVue[iconName as IconNames];
-  if (iconComponent && iconComponent.name) {
-    return h(resolveComponent(iconComponent.name));
-  }
-  return null;
-};
-
-onMounted(() => {
-  loadIcons();
-});
 </script>
 
 <style scoped lang="scss">
-.icon-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  margin: 4px;
+.reference :deep(.el-input__wrapper),
+.reference :deep(.el-input__inner) {
   cursor: pointer;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  transition: all 0.3s;
 }
 
-.icon-item:hover {
-  border-color: #409eff;
-  scale: 1.2;
+.icon-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  .icon-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    margin: 4px;
+    cursor: pointer;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+
+  .icon-item:hover {
+    border-color: #409eff;
+    scale: 1.2;
+  }
 }
 </style>
