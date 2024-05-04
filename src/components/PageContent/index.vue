@@ -265,7 +265,7 @@ function fetchPageData(formData: IObject = {}, isRestart = false) {
   }
   props.contentConfig
     .indexAction({ ...queryParams, ...formData })
-    .then(({ data }) => {
+    .then((data) => {
       total.value = data.total;
       pageData.value = data.list;
     })

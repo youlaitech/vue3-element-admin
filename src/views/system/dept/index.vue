@@ -151,21 +151,13 @@
 </template>
 
 <script setup lang="ts">
-import {
-  getDeptForm,
-  deleteDept,
-  updateDept,
-  addDept,
-  getDeptOptions,
-  listDepts,
-} from "@/api/dept";
-
-import { DeptVO, DeptForm, DeptQuery } from "@/api/dept/types";
-
 defineOptions({
   name: "Dept",
   inheritAttrs: false,
 });
+
+import DeptAPI from "@/api/dept";
+import { DeptVO, DeptForm, DeptQuery } from "@/api/dept/model";
 
 const queryFormRef = ref(ElForm);
 const deptFormRef = ref(ElForm);
@@ -197,7 +189,7 @@ const rules = reactive({
 /** 查询 */
 function handleQuery() {
   loading.value = true;
-  listDepts(queryParams).then(({ data }) => {
+  DeptAPI.getList(queryParams).then((data) => {
     deptList.value = data;
     loading.value = false;
   });
@@ -216,12 +208,12 @@ function handleSelectionChange(selection: any) {
 
 /** 获取部门下拉数据  */
 async function loadDeptOptions() {
-  getDeptOptions().then((response) => {
+  DeptAPI.getOptions().then((data) => {
     deptOptions.value = [
       {
         value: 0,
         label: "顶级部门",
-        children: response.data,
+        children: data,
       },
     ];
   });
@@ -238,7 +230,7 @@ async function openDialog(parentId?: number, deptId?: number) {
   dialog.visible = true;
   if (deptId) {
     dialog.title = "修改部门";
-    getDeptForm(deptId).then(({ data }) => {
+    DeptAPI.getFormData(deptId).then((data) => {
       Object.assign(formData, data);
     });
   } else {
@@ -254,7 +246,7 @@ function handleSubmit() {
       const deptId = formData.id;
       loading.value = true;
       if (deptId) {
-        updateDept(deptId, formData)
+        DeptAPI.update(deptId, formData)
           .then(() => {
             ElMessage.success("修改成功");
             closeDialog();
@@ -262,7 +254,7 @@ function handleSubmit() {
           })
           .finally(() => (loading.value = false));
       } else {
-        addDept(formData)
+        DeptAPI.update(formData)
           .then(() => {
             ElMessage.success("新增成功");
             closeDialog();
@@ -288,7 +280,7 @@ function handleDelete(deptId?: number) {
     cancelButtonText: "取消",
     type: "warning",
   }).then(() => {
-    deleteDept(deptIds).then(() => {
+    DeptAPI.deleteByIds(deptIds).then(() => {
       ElMessage.success("删除成功");
       resetQuery();
     });
@@ -316,3 +308,4 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+@/api/dept/model

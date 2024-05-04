@@ -148,20 +148,14 @@
 </template>
 
 <script setup lang="ts">
-import {
-  getDictTypePage,
-  getDictTypeForm,
-  addDictType,
-  updateDictType,
-  deleteDictTypes,
-} from "@/api/dict";
-
-import { DictTypePageVO, DictTypeQuery, DictTypeForm } from "@/api/dict/types";
-
 defineOptions({
   name: "DictType",
   inheritAttrs: false,
 });
+
+import DictAPI from "@/api/dict";
+
+import { DictTypePageVO, DictTypeQuery, DictTypeForm } from "@/api/dict/model";
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -194,8 +188,8 @@ const rules = reactive({
 /** 查询 */
 function handleQuery() {
   loading.value = true;
-  getDictTypePage(queryParams)
-    .then(({ data }) => {
+  DictAPI.getDictTypePage(queryParams)
+    .then((data) => {
       dictTypeList.value = data.list;
       total.value = data.total;
     })
@@ -227,7 +221,7 @@ function openDialog(dicTypeId?: number) {
   dialog.visible = true;
   if (dicTypeId) {
     dialog.title = "修改字典类型";
-    getDictTypeForm(dicTypeId).then(({ data }) => {
+    DictAPI.getDictTypeForm(dicTypeId).then((data) => {
       Object.assign(formData, data);
     });
   } else {
@@ -242,7 +236,7 @@ function handleSubmit() {
       loading.value = false;
       const dictTypeId = formData.id;
       if (dictTypeId) {
-        updateDictType(dictTypeId, formData)
+        DictAPI.updateDictType(dictTypeId, formData)
           .then(() => {
             ElMessage.success("修改成功");
             closeDialog();
@@ -250,7 +244,7 @@ function handleSubmit() {
           })
           .finally(() => (loading.value = false));
       } else {
-        addDictType(formData)
+        DictAPI.addDictType(formData)
           .then(() => {
             ElMessage.success("新增成功");
             closeDialog();
@@ -290,7 +284,7 @@ function handleDelete(dictTypeId?: number) {
     cancelButtonText: "取消",
     type: "warning",
   }).then(() => {
-    deleteDictTypes(dictTypeIds).then(() => {
+    DictAPI.deleteDictTypes(dictTypeIds).then(() => {
       ElMessage.success("删除成功");
       resetQuery();
     });
@@ -322,3 +316,4 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+@/api/dict/model

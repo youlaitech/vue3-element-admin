@@ -1,9 +1,4 @@
-<!--
-  多图上传组件
-  @author: youlaitech
-  @date 2022/11/20
--->
-
+<!-- 多图上传组件 -->
 <template>
   <el-upload
     v-model:file-list="fileList"
@@ -30,7 +25,7 @@ import {
   UploadFile,
   UploadProps,
 } from "element-plus";
-import { uploadFileApi, deleteFileApi } from "@/api/file";
+import FileAPI from "@/api/file";
 
 const emit = defineEmits(["update:modelValue"]);
 
@@ -83,7 +78,7 @@ watch(
  */
 async function handleUpload(options: UploadRequestOptions): Promise<any> {
   // 上传API调用
-  const { data: fileInfo } = await uploadFileApi(options.file);
+  const { data: fileInfo } = await FileAPI.upload(options.file);
 
   // 上传成功需手动替换文件路径为远程URL，否则图片地址为预览地址 blob:http://
   const fileIndex = fileList.value.findIndex(
@@ -108,7 +103,7 @@ function handleRemove(removeFile: UploadFile) {
   const filePath = removeFile.url;
 
   if (filePath) {
-    deleteFileApi(filePath).then(() => {
+    FileAPI.deleteByPath(filePath).then(() => {
       // 删除成功回调
       emit(
         "update:modelValue",

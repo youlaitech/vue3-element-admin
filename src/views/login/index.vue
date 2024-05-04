@@ -115,8 +115,8 @@
 
 <script setup lang="ts">
 import { useSettingsStore, useUserStore } from "@/store";
-import { getCaptchaApi } from "@/api/auth";
-import { LoginData } from "@/api/auth/types";
+import AuthAPI from "@/api/auth";
+import { LoginData } from "@/api/auth/model";
 import { Sunny, Moon } from "@element-plus/icons-vue";
 import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
 import router from "@/router";
@@ -175,19 +175,15 @@ const loginRules = computed(() => {
   };
 });
 
-/**
- * 获取验证码
- */
+/** 获取验证码 */
 function getCaptcha() {
-  getCaptchaApi().then(({ data }) => {
+  AuthAPI.getCaptcha().then((data) => {
     loginData.value.captchaKey = data.captchaKey;
     captchaBase64.value = data.captchaBase64;
   });
 }
 
-/**
- * 登录
- */
+/** 登录 */
 const route = useRoute();
 function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
@@ -220,19 +216,14 @@ function handleLogin() {
   });
 }
 
-/**
- * 主题切换
- */
-
+/** 主题切换 */
 const toggleTheme = () => {
   const newTheme =
     settingsStore.theme === ThemeEnum.DARK ? ThemeEnum.LIGHT : ThemeEnum.DARK;
   settingsStore.changeTheme(newTheme);
 };
-/**
- * 根据屏幕宽度切换设备模式
- */
 
+/** 根据屏幕宽度切换设备模式 */
 watchEffect(() => {
   if (height.value < 600) {
     icpVisible.value = false;
@@ -241,9 +232,7 @@ watchEffect(() => {
   }
 });
 
-/**
- * 检查输入大小写
- */
+/** 检查输入大小写 */
 function checkCapslock(event: KeyboardEvent) {
   // 防止浏览器密码自动填充时报错
   if (event instanceof KeyboardEvent) {
@@ -296,3 +285,4 @@ html.dark .login-container {
   }
 }
 </style>
+@/api/auth/model

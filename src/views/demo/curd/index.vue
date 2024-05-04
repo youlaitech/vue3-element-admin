@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { getUserForm } from "@/api/user";
+import UserAPI from "@/api/user";
 import type { IObject, IOperatData } from "@/hooks/usePage";
 import usePage from "@/hooks/usePage";
 import addModalConfig from "./config/add";
@@ -65,7 +65,7 @@ const {
 // 编辑
 async function handleEditClick(row: IObject) {
   // 根据id获取数据进行填充
-  const response = await getUserForm(row.id);
+  const response = await UserAPI.getFormData(row.id);
   editModalRef.value?.setModalVisible(response.data);
 }
 // 其他工具栏

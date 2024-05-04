@@ -1,5 +1,5 @@
-import { deleteUsers, exportUser, getUserPage } from "@/api/user";
-import type { UserQuery } from "@/api/user/types";
+import UserAPI from "@/api/user";
+import type { UserQuery } from "@/api/user/model";
 import type { IContentConfig } from "@/components/PageContent/index.vue";
 
 const contentConfig: IContentConfig<UserQuery> = {
@@ -15,10 +15,10 @@ const contentConfig: IContentConfig<UserQuery> = {
       params.endTime = createAt[1];
       delete params.createAt;
     }
-    return getUserPage(params);
+    return UserAPI.getPage(params);
   },
-  deleteAction: deleteUsers,
-  exportAction: exportUser,
+  deleteAction: UserAPI.deleteByIds,
+  exportAction: UserAPI.export,
   pk: "id",
   toolbar: [
     "refresh",
