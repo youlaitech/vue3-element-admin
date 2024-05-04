@@ -65,8 +65,8 @@ const {
 // 编辑
 async function handleEditClick(row: IObject) {
   // 根据id获取数据进行填充
-  const response = await UserAPI.getFormData(row.id);
-  editModalRef.value?.setModalVisible(response.data);
+  const data = await UserAPI.getFormData(row.id);
+  editModalRef.value?.setModalVisible(data);
 }
 // 其他工具栏
 function handleToolbarClick(name: string) {
