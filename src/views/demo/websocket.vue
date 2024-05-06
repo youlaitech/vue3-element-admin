@@ -4,6 +4,7 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
 import { useUserStoreHook } from "@/store/modules/user";
+import { TOKEN_KEY } from "@/enums/CacheEnum";
 
 const userStore = useUserStoreHook();
 
@@ -57,7 +58,7 @@ function connectWebSocket() {
   stompClient = Stomp.over(socket);
 
   stompClient.connect(
-    { Authorization: localStorage.getItem("accessToken") },
+    { Authorization: localStorage.getItem(TOKEN_KEY) },
     () => {
       isConnected.value = true;
       messages.value.push({

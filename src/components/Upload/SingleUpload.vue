@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { UploadRawFile, UploadRequestOptions } from "element-plus";
-import { uploadFileApi } from "@/api/file";
+import FileAPI from "@/api/file";
 
 const props = defineProps({
   modelValue: {
@@ -33,8 +33,8 @@ const imgUrl = useVModel(props, "modelValue", emit);
  * @param options
  */
 async function uploadFile(options: UploadRequestOptions): Promise<any> {
-  const { data: fileInfo } = await uploadFileApi(options.file);
-  imgUrl.value = fileInfo.url;
+  const data = await FileAPI.upload(options.file);
+  imgUrl.value = data.url;
 }
 
 /**

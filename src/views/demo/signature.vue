@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { uploadFileApi } from "@/api/file";
+import FileAPI from "@/api/file";
 
 const imgUrl = ref("");
 const canvas = ref();
@@ -68,7 +68,7 @@ const handleToFile = async () => {
   const file = dataURLtoFile(canvas.value.toDataURL(), "签名.png");
 
   if (!file) return;
-  const { data } = await uploadFileApi(file);
+  const data = await FileAPI.upload(file);
   handleClearSign();
   imgUrl.value = data.url;
 };

@@ -312,21 +312,12 @@
 
 <script setup lang="ts">
 defineOptions({
-  // eslint-disable-next-line vue/no-reserved-component-names
   name: "Menu",
   inheritAttrs: false,
 });
 
-import { MenuQuery, MenuForm, MenuVO } from "@/api/menu/types";
-import {
-  listMenus,
-  getMenuForm,
-  getMenuOptions,
-  addMenu,
-  deleteMenu,
-  updateMenu,
-} from "@/api/menu";
-
+import MenuAPI from "@/api/menu";
+import { MenuQuery, MenuForm, MenuVO } from "@/api/menu/model";
 import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
 
 const queryFormRef = ref(ElForm);
@@ -376,8 +367,8 @@ const menuCacheData = reactive({
 function handleQuery() {
   // 重置父组件
   loading.value = true;
-  listMenus(queryParams)
-    .then(({ data }) => {
+  MenuAPI.getList(queryParams)
+    .then((data) => {
       menuList.value = data;
     })
     .then(() => {
@@ -403,15 +394,15 @@ function onRowClick(row: MenuVO) {
  * @param menuId 菜单ID
  */
 function openDialog(parentId?: number, menuId?: number) {
-  getMenuOptions()
-    .then(({ data }) => {
+  MenuAPI.getOptions()
+    .then((data) => {
       menuOptions.value = [{ value: 0, label: "顶级菜单", children: data }];
     })
     .then(() => {
       dialog.visible = true;
       if (menuId) {
         dialog.title = "编辑菜单";
-        getMenuForm(menuId).then(({ data }) => {
+        MenuAPI.getFormData(menuId).then((data) => {
           Object.assign(formData, data);
           menuCacheData.type = data.type;
           menuCacheData.path = data.path ?? "";
@@ -439,13 +430,13 @@ function submitForm() {
     if (isValid) {
       const menuId = formData.id;
       if (menuId) {
-        updateMenu(menuId, formData).then(() => {
+        MenuAPI.update(menuId, formData).then(() => {
           ElMessage.success("修改成功");
           closeDialog();
           handleQuery();
         });
       } else {
-        addMenu(formData).then(() => {
+        MenuAPI.add(formData).then(() => {
           ElMessage.success("新增成功");
           closeDialog();
           handleQuery();
@@ -468,7 +459,7 @@ function handleDelete(menuId: number) {
     type: "warning",
   })
     .then(() => {
-      deleteMenu(menuId).then(() => {
+      MenuAPI.deleteById(menuId).then(() => {
         ElMessage.success("删除成功");
         handleQuery();
       });
@@ -503,3 +494,4 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+@/api/menu/model

@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { getDictOptions } from "@/api/dict";
+import DictAPI from "@/api/dict";
 
 const props = defineProps({
   /**
@@ -66,8 +66,8 @@ function handleChange(val?: string | number | undefined) {
 
 onBeforeMount(() => {
   // 根据字典类型编码(typeCode)获取字典选项
-  getDictOptions(props.typeCode).then((response) => {
-    options.value = response.data;
+  DictAPI.getDictOptions(props.typeCode).then((data) => {
+    options.value = data;
   });
 });
 </script>

@@ -1,5 +1,5 @@
-import { updateUser } from "@/api/user";
-import type { UserForm } from "@/api/user/types";
+import UserAPI from "@/api/user";
+import type { UserForm } from "@/api/user/model";
 import type { IModalConfig } from "@/components/PageModal/index.vue";
 
 const modalConfig: IModalConfig<UserForm> = {
@@ -11,7 +11,7 @@ const modalConfig: IModalConfig<UserForm> = {
     appendToBody: true,
   },
   formAction: function (data) {
-    return updateUser(data.id as number, data);
+    return UserAPI.update(data.id as number, data);
   },
   beforeSubmit(data) {
     console.log("提交之前处理", data);

@@ -129,19 +129,13 @@
 </template>
 
 <script setup lang="ts">
-import {
-  getDictPage,
-  getDictFormData,
-  addDict,
-  updateDict,
-  deleteDict,
-} from "@/api/dict";
-import { DictPageVO, DictForm, DictQuery } from "@/api/dict/types";
-
 defineOptions({
   name: "DictData",
   inheritAttrs: false,
 });
+
+import DictAPI from "@/api/dict";
+import { DictPageVO, DictForm, DictQuery } from "@/api/dict/model";
 
 const props = defineProps({
   typeCode: {
@@ -198,14 +192,12 @@ const rules = reactive({
   value: [{ required: true, message: "请输入字典值", trigger: "blur" }],
 });
 
-/**
- * 查询
- */
+/** 查询 */
 function handleQuery() {
   if (queryParams.typeCode) {
     loading.value = true;
-    getDictPage(queryParams)
-      .then(({ data }) => {
+    DictAPI.getDictPage(queryParams)
+      .then((data) => {
         dictList.value = data.list;
         total.value = data.total;
       })
@@ -213,9 +205,7 @@ function handleQuery() {
   }
 }
 
-/**
- * 重置查询
- */
+/** 重置查询 */
 function resetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
@@ -240,7 +230,7 @@ function openDialog(dictId?: number) {
   dialog.visible = true;
   if (dictId) {
     dialog.title = "修改字典";
-    getDictFormData(dictId).then(({ data }) => {
+    DictAPI.getDictFormData(dictId).then((data) => {
       Object.assign(formData, data);
     });
   } else {
@@ -248,16 +238,14 @@ function openDialog(dictId?: number) {
   }
 }
 
-/**
- * 字典表单提交
- */
+/** 字典表单提交 */
 function handleSubmit() {
   dataFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
       loading.value = false;
       const dictId = formData.id;
       if (dictId) {
-        updateDict(dictId, formData)
+        DictAPI.updateDict(dictId, formData)
           .then(() => {
             ElMessage.success("修改成功");
             closeDialog();
@@ -265,7 +253,7 @@ function handleSubmit() {
           })
           .finally(() => (loading.value = false));
       } else {
-        addDict(formData)
+        DictAPI.addDict(formData)
           .then(() => {
             ElMessage.success("新增成功");
             closeDialog();
@@ -277,17 +265,13 @@ function handleSubmit() {
   });
 }
 
-/**
- * 关闭弹窗
- */
+/** 关闭弹窗 */
 function closeDialog() {
   dialog.visible = false;
   resetForm();
 }
 
-/**
- * 重置表单
- */
+/** 重置表单 */
 function resetForm() {
   dataFormRef.value.resetFields();
   dataFormRef.value.clearValidate();
@@ -298,9 +282,7 @@ function resetForm() {
   formData.typeCode = props.typeCode;
 }
 
-/**
- * 删除字典
- */
+/** 删除字典 */
 function handleDelete(dictId?: number) {
   const dictIds = [dictId || ids.value].join(",");
   if (!dictIds) {
@@ -313,7 +295,7 @@ function handleDelete(dictId?: number) {
     cancelButtonText: "取消",
     type: "warning",
   }).then(() => {
-    deleteDict(dictIds).then(() => {
+    DictAPI.deleteDictByIds(dictIds).then(() => {
       ElMessage.success("删除成功");
       resetQuery();
     });
@@ -324,3 +306,4 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+@/api/dict/model

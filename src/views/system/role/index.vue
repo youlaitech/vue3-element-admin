@@ -181,18 +181,10 @@
 </template>
 
 <script setup lang="ts">
-import {
-  getRolePage,
-  updateRole,
-  getRoleForm,
-  addRole,
-  deleteRoles,
-  getRoleMenuIds,
-  updateRoleMenus,
-} from "@/api/role";
-import { getMenuOptions } from "@/api/menu";
+import RoleAPI from "@/api/role";
+import MenuAPI from "@/api/menu";
 
-import { RolePageVO, RoleForm, RoleQuery } from "@/api/role/types";
+import { RolePageVO, RoleForm, RoleQuery } from "@/api/role/model";
 
 defineOptions({
   name: "Role",
@@ -246,8 +238,8 @@ let checkedRole: CheckedRole = reactive({});
 /** 查询 */
 function handleQuery() {
   loading.value = true;
-  getRolePage(queryParams)
-    .then(({ data }) => {
+  RoleAPI.getPage(queryParams)
+    .then((data) => {
       roleList.value = data.list;
       total.value = data.total;
     })
@@ -272,7 +264,7 @@ function openDialog(roleId?: number) {
   dialog.visible = true;
   if (roleId) {
     dialog.title = "修改角色";
-    getRoleForm(roleId).then(({ data }) => {
+    RoleAPI.getFormData(roleId).then((data) => {
       Object.assign(formData, data);
     });
   } else {
@@ -287,7 +279,7 @@ function handleSubmit() {
       loading.value = true;
       const roleId = formData.id;
       if (roleId) {
-        updateRole(roleId, formData)
+        RoleAPI.update(roleId, formData)
           .then(() => {
             ElMessage.success("修改成功");
             closeDialog();
@@ -295,7 +287,7 @@ function handleSubmit() {
           })
           .finally(() => (loading.value = false));
       } else {
-        addRole(formData)
+        RoleAPI.add(formData)
           .then(() => {
             ElMessage.success("新增成功");
             closeDialog();
@@ -337,7 +329,7 @@ function handleDelete(roleId?: number) {
     type: "warning",
   }).then(() => {
     loading.value = true;
-    deleteRoles(roleIds)
+    RoleAPI.deleteByIds(roleIds)
       .then(() => {
         ElMessage.success("删除成功");
         resetQuery();
@@ -347,7 +339,7 @@ function handleDelete(roleId?: number) {
 }
 
 /** 打开分配菜单弹窗 */
-function openMenuDialog(row: RolePageVO) {
+async function openMenuDialog(row: RolePageVO) {
   const roleId = row.id;
   if (roleId) {
     checkedRole = {
@@ -358,20 +350,19 @@ function openMenuDialog(row: RolePageVO) {
     loading.value = true;
 
     // 获取所有的菜单
-    getMenuOptions().then((response) => {
-      menuList.value = response.data;
-      // 回显角色已拥有的菜单
-      getRoleMenuIds(roleId)
-        .then(({ data }) => {
-          const checkedMenuIds = data;
-          checkedMenuIds.forEach((menuId) =>
-            menuRef.value.setChecked(menuId, true, false)
-          );
-        })
-        .finally(() => {
-          loading.value = false;
-        });
-    });
+    menuList.value = await MenuAPI.getOptions();
+
+    // 回显角色已拥有的菜单
+    RoleAPI.getRoleMenuIds(roleId)
+      .then((data) => {
+        const checkedMenuIds = data;
+        checkedMenuIds.forEach((menuId) =>
+          menuRef.value.setChecked(menuId, true, false)
+        );
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   }
 }
 
@@ -384,7 +375,7 @@ function handleRoleMenuSubmit() {
       .map((node: any) => node.value);
 
     loading.value = true;
-    updateRoleMenus(roleId, checkedMenuIds)
+    RoleAPI.updateRoleMenus(roleId, checkedMenuIds)
       .then(() => {
         ElMessage.success("分配权限成功");
         menuDialogVisible.value = false;
@@ -400,3 +391,4 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+@/api/role/model

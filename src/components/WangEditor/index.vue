@@ -23,7 +23,7 @@
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 
 // API 引用
-import { uploadFileApi } from "@/api/file";
+import FileAPI from "@/api/file";
 
 const props = defineProps({
   modelValue: {
@@ -46,9 +46,8 @@ const editorConfig = ref({
     uploadImage: {
       // 自定义图片上传
       async customUpload(file: any, insertFn: any) {
-        uploadFileApi(file).then((response) => {
-          const url = response.data.url;
-          insertFn(url);
+        FileAPI.upload(file).then((data) => {
+          insertFn(data.url);
         });
       },
     },

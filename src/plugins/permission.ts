@@ -2,6 +2,7 @@ import router from "@/router";
 import { useUserStore, usePermissionStore } from "@/store";
 import NProgress from "@/utils/nprogress";
 import { RouteRecordRaw } from "vue-router";
+import { TOKEN_KEY } from "@/enums/CacheEnum";
 
 export function setupPermission() {
   // 白名单路由
@@ -12,7 +13,7 @@ export function setupPermission() {
     console.log("from = ", from);
     console.log("next = ", next);
     NProgress.start();
-    const hasToken = localStorage.getItem("accessToken");
+    const hasToken = localStorage.getItem(TOKEN_KEY);
     if (hasToken) {
       if (to.path === "/login") {
         // 如果已登录，跳转首页

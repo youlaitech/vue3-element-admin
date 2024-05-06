@@ -1,5 +1,5 @@
-import { addUser } from "@/api/user";
-import type { UserForm } from "@/api/user/types";
+import UserAPI from "@/api/user";
+import type { UserForm } from "@/api/user/model";
 import type { IModalConfig } from "@/components/PageModal/index.vue";
 
 const modalConfig: IModalConfig<UserForm> = {
@@ -13,7 +13,7 @@ const modalConfig: IModalConfig<UserForm> = {
   form: {
     labelWidth: 100,
   },
-  formAction: addUser,
+  formAction: UserAPI.add,
   beforeSubmit(data) {
     console.log("提交之前处理", data);
   },

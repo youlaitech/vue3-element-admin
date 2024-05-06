@@ -332,21 +332,11 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import {
-  getUserPage,
-  getUserForm,
-  deleteUsers,
-  addUser,
-  updateUser,
-  updateUserPassword,
-  downloadTemplateApi,
-  exportUser,
-  importUser,
-} from "@/api/user";
-import { getDeptOptions } from "@/api/dept";
-import { getRoleOptions } from "@/api/role";
+import UserAPI from "@/api/user";
+import DeptAPI from "@/api/dept";
+import RoleAPI from "@/api/role";
 
-import { UserForm, UserQuery, UserPageVO } from "@/api/user/types";
+import { UserForm, UserQuery, UserPageVO } from "@/api/user/model";
 import type { UploadInstance } from "element-plus";
 import { genFileId } from "element-plus";
 
@@ -418,8 +408,9 @@ const rules = reactive({
 /** 查询 */
 function handleQuery() {
   loading.value = true;
-  getUserPage(queryParams)
-    .then(({ data }) => {
+  UserAPI.getPage(queryParams)
+    .then((data) => {
+      console.log("handleQuery", data);
       pageData.value = data.list;
       total.value = data.total;
     })
@@ -458,7 +449,7 @@ function resetPassword(row: { [key: string]: any }) {
       ElMessage.warning("请输入新密码");
       return false;
     }
-    updateUserPassword(row.id, value).then(() => {
+    UserAPI.updatePassword(row.id, value).then(() => {
       ElMessage.success("密码重置成功，新密码是：" + value);
     });
   });
@@ -466,15 +457,15 @@ function resetPassword(row: { [key: string]: any }) {
 
 /** 加载角色下拉数据源 */
 async function loadRoleOptions() {
-  getRoleOptions().then((response) => {
-    roleList.value = response.data;
+  RoleAPI.getOptions().then((data) => {
+    roleList.value = data;
   });
 }
 
 /** 加载部门下拉数据源 */
 async function loadDeptOptions() {
-  getDeptOptions().then((response) => {
-    deptList.value = response.data;
+  DeptAPI.getOptions().then((data) => {
+    deptList.value = data;
   });
 }
 
@@ -494,7 +485,7 @@ async function openDialog(type: string, id?: number) {
     await loadRoleOptions();
     if (id) {
       dialog.title = "修改用户";
-      getUserForm(id).then(({ data }) => {
+      UserAPI.getFormData(id).then((data) => {
         Object.assign(formData, { ...data });
       });
     } else {
@@ -535,7 +526,7 @@ const handleSubmit = useThrottleFn(() => {
         const userId = formData.id;
         loading.value = true;
         if (userId) {
-          updateUser(userId, formData)
+          UserAPI.update(userId, formData)
             .then(() => {
               ElMessage.success("修改用户成功");
               closeDialog();
@@ -543,7 +534,7 @@ const handleSubmit = useThrottleFn(() => {
             })
             .finally(() => (loading.value = false));
         } else {
-          addUser(formData)
+          UserAPI.add(formData)
             .then(() => {
               ElMessage.success("新增用户成功");
               closeDialog();
@@ -562,8 +553,8 @@ const handleSubmit = useThrottleFn(() => {
       ElMessage.warning("上传Excel文件不能为空");
       return false;
     }
-    importUser(importData?.deptId, importData?.file).then((response) => {
-      ElMessage.success(response.data);
+    UserAPI.import(importData?.deptId, importData?.file).then((data) => {
+      ElMessage.success("导入用户成功");
       closeDialog();
       resetQuery();
     });
@@ -583,7 +574,7 @@ function handleDelete(id?: number) {
     cancelButtonText: "取消",
     type: "warning",
   }).then(function () {
-    deleteUsers(userIds).then(() => {
+    UserAPI.deleteByIds(userIds).then(() => {
       ElMessage.success("删除成功");
       resetQuery();
     });
@@ -592,7 +583,7 @@ function handleDelete(id?: number) {
 
 /** 下载导入模板 */
 function downloadTemplate() {
-  downloadTemplateApi().then((response: any) => {
+  UserAPI.downloadTemplate().then((response: any) => {
     const fileData = response.data;
     const fileName = decodeURI(
       response.headers["content-disposition"].split(";")[1].split("=")[1]
@@ -631,7 +622,7 @@ function handleFileExceed(files: any) {
 
 /** 导出用户 */
 function handleExport() {
-  exportUser(queryParams).then((response: any) => {
+  UserAPI.export(queryParams).then((response: any) => {
     const fileData = response.data;
     const fileName = decodeURI(
       response.headers["content-disposition"].split(";")[1].split("=")[1]
