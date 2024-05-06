@@ -39,6 +39,7 @@ declare module "vue" {
     ElMenuItem: (typeof import("element-plus/es"))["ElMenuItem"];
     ElOption: (typeof import("element-plus/es"))["ElOption"];
     ElPagination: (typeof import("element-plus/es"))["ElPagination"];
+    ElPopover: (typeof import("element-plus/es"))["ElPopover"];
     ElRadio: (typeof import("element-plus/es"))["ElRadio"];
     ElRadioGroup: (typeof import("element-plus/es"))["ElRadioGroup"];
     ElRow: (typeof import("element-plus/es"))["ElRow"];
@@ -93,6 +94,7 @@ declare module "vue" {
     SingleUpload: (typeof import("./../components/Upload/SingleUpload.vue"))["default"];
     SizeSelect: (typeof import("./../components/SizeSelect/index.vue"))["default"];
     SvgIcon: (typeof import("./../components/SvgIcon/index.vue"))["default"];
+    TableSelect: (typeof import("./../components/TableSelect/index.vue"))["default"];
     TagsView: (typeof import("./../layout/components/TagsView/index.vue"))["default"];
     ThemeColorPicker: (typeof import("./../layout/components/Settings/components/ThemeColorPicker.vue"))["default"];
     WangEditor: (typeof import("./../components/WangEditor/index.vue"))["default"];
