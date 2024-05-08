@@ -8,7 +8,7 @@ const modalConfig: IModalConfig<UserForm> = {
   dialog: {
     title: "修改用户",
     width: 800,
-    appendToBody: true,
+    draggable: true,
   },
   formAction: function (data) {
     return UserAPI.update(data.id as number, data);
