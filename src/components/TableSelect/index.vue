@@ -91,8 +91,9 @@
           :border="true"
           :max-height="315"
           :row-key="pk"
-          :class="{ radio: !selectConfig.multiple }"
+          :class="{ radio: !isMultiple }"
           @select="handleSelect"
+          @select-all="handleSelectAll"
         >
           <template v-for="col in selectConfig.tableColumns" :key="col.prop">
             <!-- 自定义 -->
@@ -123,9 +124,10 @@
         />
         <div class="feedback">
           <el-button type="primary" size="small" @click="handleConfirm">
-            确 定
+            {{ confirmText }}
           </el-button>
           <el-button size="small" @click="handleClear"> 清 空 </el-button>
+          <el-button size="small" @click="handleClose"> 关 闭 </el-button>
         </div>
       </div>
     </el-popover>
@@ -182,6 +184,8 @@ const emit = defineEmits<{
 
 // 主键
 const pk = props.selectConfig.pk ?? "id";
+// 是否多选
+const isMultiple = props.selectConfig.multiple === true;
 // 是否显示弹出框
 const popoverVisible = ref(false);
 // 加载状态
@@ -246,16 +250,26 @@ for (const item of props.selectConfig.tableColumns) {
   }
 }
 // 选择
-let selectedItems: IObject[] = [];
+const selectedItems = ref<IObject[]>([]);
+const confirmText = computed(() => {
+  return selectedItems.value.length > 0
+    ? `已选(${selectedItems.value.length})`
+    : "确 定";
+});
 function handleSelect(selection: any[], row: any) {
-  if (props.selectConfig.multiple || selection.length === 0) {
+  if (isMultiple || selection.length === 0) {
     // 多选
-    selectedItems = selection;
+    selectedItems.value = selection;
   } else {
     // 单选
-    selectedItems = [selection[selection.length - 1]];
+    selectedItems.value = [selection[selection.length - 1]];
     tableRef.value?.clearSelection();
-    tableRef.value?.toggleRowSelection(selectedItems[0], true);
+    tableRef.value?.toggleRowSelection(selectedItems.value[0], true);
+  }
+}
+function handleSelectAll(selection: any[]) {
+  if (isMultiple) {
+    selectedItems.value = selection;
   }
 }
 // 分页
@@ -274,15 +288,22 @@ function handleShow() {
 }
 // 确定
 function handleConfirm() {
+  if (selectedItems.value.length === 0) {
+    ElMessage.error("请选择数据");
+    return;
+  }
   popoverVisible.value = false;
-  emit("confirmClick", selectedItems);
+  emit("confirmClick", selectedItems.value);
 }
 // 清空
 function handleClear() {
   tableRef.value?.clearSelection();
-  selectedItems = [];
+  selectedItems.value = [];
 }
 // 关闭
+function handleClose() {
+  popoverVisible.value = false;
+}
 const tableSelectRef = ref();
 const popoverContentRef = ref();
 /* onClickOutside(tableSelectRef, () => (popoverVisible.value = false), {

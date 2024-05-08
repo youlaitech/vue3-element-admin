@@ -7,7 +7,6 @@ const modalConfig: IModalConfig<UserForm> = {
   dialog: {
     title: "新增用户",
     width: 800,
-    appendToBody: true,
     draggable: true,
   },
   form: {
