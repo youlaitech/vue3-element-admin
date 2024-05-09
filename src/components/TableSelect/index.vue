@@ -1,16 +1,34 @@
 <template>
-  <div ref="tableSelectRef">
+  <div ref="tableSelectRef" :style="'width:' + width">
     <el-popover
       :visible="popoverVisible"
-      width="75%"
+      :width="popoverWidth"
       placement="bottom-end"
       v-bind="selectConfig.popover"
       @show="handleShow"
     >
       <template #reference>
-        <el-button @click="popoverVisible = !popoverVisible">
-          <slot>选择列表</slot>
-        </el-button>
+        <div @click="popoverVisible = !popoverVisible">
+          <slot>
+            <el-input
+              class="reference"
+              :model-value="text"
+              :readonly="true"
+              :placeholder="placeholder"
+            >
+              <template #suffix>
+                <el-icon
+                  :style="{
+                    transform: popoverVisible ? 'rotate(180deg)' : 'rotate(0)',
+                    transition: 'transform .5s',
+                  }"
+                >
+                  <ArrowDown />
+                </el-icon>
+              </template>
+            </el-input>
+          </slot>
+        </div>
       </template>
       <!-- 弹出框内容 -->
       <div ref="popoverContentRef">
@@ -89,8 +107,9 @@
           v-loading="loading"
           :data="pageData"
           :border="true"
-          :max-height="315"
+          :max-height="250"
           :row-key="pk"
+          :highlight-current-row="true"
           :class="{ radio: !isMultiple }"
           @select="handleSelect"
           @select-all="handleSelectAll"
@@ -135,12 +154,18 @@
 </template>
 
 <script lang="ts" setup>
-import type { TableInstance, FormInstance, PopoverProps } from "element-plus";
+import { ref, reactive, computed } from "vue";
+import { onClickOutside, useResizeObserver } from "@vueuse/core";
+import type { FormInstance, PopoverProps, TableInstance } from "element-plus";
 
 // 对象类型
 export type IObject = Record<string, any>;
 // 定义接收的属性
 export interface ISelectConfig<T = any> {
+  // 宽度
+  width?: string;
+  // 占位符
+  placeholder?: string;
   // popover组件属性
   popover?: Partial<Omit<PopoverProps, "visible" | "v-model:visible">>;
   // 列表的网络请求函数(需返回promise)
@@ -173,9 +198,15 @@ export interface ISelectConfig<T = any> {
     [key: string]: any;
   }>;
 }
-const props = defineProps<{
-  selectConfig: ISelectConfig;
-}>();
+const props = withDefaults(
+  defineProps<{
+    selectConfig: ISelectConfig;
+    text?: string;
+  }>(),
+  {
+    text: "",
+  }
+);
 
 // 自定义事件
 const emit = defineEmits<{
@@ -186,6 +217,10 @@ const emit = defineEmits<{
 const pk = props.selectConfig.pk ?? "id";
 // 是否多选
 const isMultiple = props.selectConfig.multiple === true;
+// 宽度
+const width = props.selectConfig.width ?? "100%";
+// 占位符
+const placeholder = props.selectConfig.placeholder ?? "请选择";
 // 是否显示弹出框
 const popoverVisible = ref(false);
 // 加载状态
@@ -204,6 +239,13 @@ const queryParams = reactive<{
 }>({
   pageNum: 1,
   pageSize: pageSize,
+});
+
+// 计算popover的宽度
+const tableSelectRef = ref();
+const popoverWidth = ref(width);
+useResizeObserver(tableSelectRef, (entries) => {
+  popoverWidth.value = `${entries[0].contentRect.width}px`;
 });
 
 // 表单操作
@@ -265,6 +307,7 @@ function handleSelect(selection: any[], row: any) {
     selectedItems.value = [selection[selection.length - 1]];
     tableRef.value?.clearSelection();
     tableRef.value?.toggleRowSelection(selectedItems.value[0], true);
+    tableRef.value?.setCurrentRow(selectedItems.value[0]);
   }
 }
 function handleSelectAll(selection: any[]) {
@@ -304,7 +347,6 @@ function handleClear() {
 function handleClose() {
   popoverVisible.value = false;
 }
-const tableSelectRef = ref();
 const popoverContentRef = ref();
 /* onClickOutside(tableSelectRef, () => (popoverVisible.value = false), {
   ignore: [popoverContentRef],
@@ -312,6 +354,11 @@ const popoverContentRef = ref();
 </script>
 
 <style scoped lang="scss">
+.reference :deep(.el-input__wrapper),
+.reference :deep(.el-input__inner) {
+  cursor: pointer;
+}
+
 .feedback {
   display: flex;
   justify-content: flex-end;
