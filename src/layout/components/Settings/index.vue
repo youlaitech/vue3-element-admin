@@ -3,6 +3,7 @@
     v-model="settingsVisible"
     size="300"
     :title="$t('settings.project')"
+    :lockScroll="false"
   >
     <el-divider>{{ $t("settings.theme") }}</el-divider>
 
