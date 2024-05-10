@@ -79,8 +79,37 @@
       @selection-change="handleSelectionChange"
     >
       <template v-for="col in contentConfig.cols" :key="col.prop">
+        <!-- 显示图片 -->
+        <template v-if="col.templet === 'image'">
+          <el-table-column v-bind="col">
+            <template #default="scope">
+              <template v-if="Array.isArray(scope.row[col.prop])">
+                <template
+                  v-for="(item, index) in scope.row[col.prop]"
+                  :key="item"
+                >
+                  <el-image
+                    :src="item"
+                    :preview-src-list="scope.row[col.prop]"
+                    :initial-index="index"
+                    :preview-teleported="true"
+                    :style="`width: ${col.imageWidth ?? 40}px; height: ${col.imageHeight ?? 40}px`"
+                  />
+                </template>
+              </template>
+              <template v-else>
+                <el-image
+                  :src="scope.row[col.prop]"
+                  :preview-src-list="[scope.row[col.prop]]"
+                  :preview-teleported="true"
+                  :style="`width: ${col.imageWidth ?? 40}px; height: ${col.imageHeight ?? 40}px`"
+                />
+              </template>
+            </template>
+          </el-table-column>
+        </template>
         <!-- 列操作栏 -->
-        <template v-if="col.templet === 'tool'">
+        <template v-else-if="col.templet === 'tool'">
           <el-table-column v-bind="col">
             <template #default="scope">
               <template v-for="item in col.operat" :key="item">
