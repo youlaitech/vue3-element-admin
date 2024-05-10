@@ -233,16 +233,18 @@
         </el-form-item>
 
         <el-form-item
-          v-if="formData.type === MenuTypeEnum.CATALOG"
-          label="根目录始终显示"
+          v-if="
+            formData.type === MenuTypeEnum.CATALOG ||
+            formData.type === MenuTypeEnum.MENU
+          "
+          label="是否始终显示"
         >
           <template #label>
             <div>
-              根目录始终显示
+              是否始终显示
               <el-tooltip placement="bottom" effect="light">
-                <template #content
-                  >是：根目录只有一个子路由显示目录
-                  <br />否：根目录只有一个子路由不显示目录，只显示子路由
+                <template #content>
+                  当设置为始终显示时，即使只有一个子菜单也会显示
                 </template>
                 <i-ep-QuestionFilled class="inline-block" />
               </el-tooltip>
