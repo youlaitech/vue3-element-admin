@@ -1,5 +1,14 @@
 <template>
   <div class="app-container">
+    <el-link
+      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/curd/index.vue"
+      type="primary"
+      target="_blank"
+      class="mb-10"
+    >
+      示例源码 请点击>>>>
+    </el-link>
+
     <!-- 搜索 -->
     <page-search
       ref="searchRef"
