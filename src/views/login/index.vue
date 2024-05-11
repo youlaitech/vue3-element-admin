@@ -5,8 +5,8 @@
       <el-switch
         v-model="isDark"
         inline-prompt
-        :active-icon="Moon"
-        :inactive-icon="Sunny"
+        active-icon="Moon"
+        inactive-icon="Sunny"
         @change="toggleTheme"
       />
       <lang-select class="ml-2 cursor-pointer" />
@@ -117,7 +117,7 @@
 import { useSettingsStore, useUserStore } from "@/store";
 import AuthAPI from "@/api/auth";
 import { LoginData } from "@/api/auth/model";
-import { Sunny, Moon } from "@element-plus/icons-vue";
+import type { FormInstance } from "element-plus";
 import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
 import router from "@/router";
 import defaultSettings from "@/settings";
@@ -136,7 +136,7 @@ const icpVisible = ref(true);
 const loading = ref(false); // 按钮loading
 const isCapslock = ref(false); // 是否大写锁定
 const captchaBase64 = ref(); // 验证码图片Base64字符串
-const loginFormRef = ref(ElForm); // 登录表单ref
+const loginFormRef = ref<FormInstance>(); // 登录表单ref
 const { height } = useWindowSize();
 
 const loginData = ref<LoginData>({
@@ -186,7 +186,7 @@ function getCaptcha() {
 /** 登录 */
 const route = useRoute();
 function handleLogin() {
-  loginFormRef.value.validate((valid: boolean) => {
+  loginFormRef.value?.validate((valid: boolean) => {
     if (valid) {
       loading.value = true;
       userStore
@@ -285,4 +285,3 @@ html.dark .login-container {
   }
 }
 </style>
-@/api/auth/model
