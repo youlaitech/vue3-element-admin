@@ -445,8 +445,9 @@ function resetPassword(row: { [key: string]: any }) {
       cancelButtonText: "取消",
     }
   ).then(({ value }) => {
-    if (!value) {
-      ElMessage.warning("请输入新密码");
+    if (!value || value.length < 6) {
+      // 检查密码是否为空或少于6位
+      ElMessage.warning("密码至少需要6位字符，请重新输入");
       return false;
     }
     UserAPI.updatePassword(row.id, value).then(() => {
