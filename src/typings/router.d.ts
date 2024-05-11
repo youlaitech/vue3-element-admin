@@ -10,6 +10,8 @@ declare module "vue-router" {
     icon?: string;
     /** 菜单是否隐藏 */
     hidden?: boolean;
+    /** 只有一个子路由是否始终显示 */
+    alwaysShow?: boolean;
     /** 是否固定页签 */
     affix?: boolean;
     /** 是否缓存页面 */
