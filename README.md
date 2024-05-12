@@ -1,7 +1,7 @@
 <div align="center">
     <img src="https://img.shields.io/badge/Vue-3.4.26-brightgreen.svg"/>
     <img src="https://img.shields.io/badge/Vite-5.2.11-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.7.0-blue.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.7.2-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -30,7 +30,7 @@
 
 - **基础设施**：动态路由、按钮权限、国际化、代码规范、Git 提交规范、常用组件封装。
 
-- **持续更新**：2021年至今持续更新3年，及时跟进最新的技术和工具。 
+- **持续更新**：自2021年起，该项目持续开源更新，实时更新工具和依赖，积累了广泛的用户群体。
 
 
 
@@ -82,7 +82,7 @@ pnpm run dev
 
 ```bash
 # 项目打包
-pnpm run build:prod
+pnpm run build
 
 # 上传文件至远程服务器
 将打包生成在 `dist` 目录下的文件拷贝至 `/usr/share/nginx/html` 目录
