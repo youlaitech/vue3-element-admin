@@ -21,7 +21,6 @@ const contentConfig: IContentConfig<UserQuery> = {
   exportAction: UserAPI.export,
   pk: "id",
   toolbar: [
-    "refresh",
     "add",
     "delete",
     "export",
