@@ -1,7 +1,7 @@
 <div align="center">
-    <img src="https://img.shields.io/badge/Vue-3.4.21-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-5.1.5-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.6.0-blue.svg"/>
+    <img src="https://img.shields.io/badge/Vue-3.4.26-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vite-5.2.11-green.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.7.2-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-Youlai Open Source Organization-orange.svg"/>
@@ -37,7 +37,7 @@
 
 - **Essential Infrastructure**: Dynamic routing, button permissions, internationalization, code style, Git commit conventions, and common component encapsulation.
 
-- **Continuous Updates**: Continuously updated for 3 years since 2021, keeping up with the latest technologies and tools.
+- **Continuous Updates**: Since 2021, the project has maintained an open-source status with continuous updates, integrating new tools and dependencies in real time, and has accumulated a broad user base.
 
 ## Project Preview
 
@@ -85,7 +85,7 @@ pnpm run dev
 
 ```bash
 # Build the project
-pnpm run build:prod
+pnpm run build
 
 # Upload files to the remote server
 Copy the files generated in the `dist` directory to the `/usr/share/nginx/html` directory.

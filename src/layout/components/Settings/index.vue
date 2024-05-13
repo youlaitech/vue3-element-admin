@@ -3,14 +3,15 @@
     v-model="settingsVisible"
     size="300"
     :title="$t('settings.project')"
+    :lockScroll="false"
   >
     <el-divider>{{ $t("settings.theme") }}</el-divider>
 
     <div class="flex-center">
       <el-switch
         v-model="isDark"
-        :active-icon="Moon"
-        :inactive-icon="Sunny"
+        active-icon="Moon"
+        inactive-icon="Sunny"
         @change="changeTheme"
       />
     </div>
@@ -56,7 +57,6 @@
 
 <script setup lang="ts">
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
-import { Sunny, Moon } from "@element-plus/icons-vue";
 import { LayoutEnum } from "@/enums/LayoutEnum";
 import { ThemeEnum } from "@/enums/ThemeEnum";
 

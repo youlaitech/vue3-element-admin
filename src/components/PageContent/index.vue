@@ -1,76 +1,107 @@
 <template>
   <el-card shadow="never" class="table-container">
-    <template #header>
-      <!-- 表格左上方工具栏 -->
-      <template v-for="item in contentConfig.toolbar" :key="item">
-        <template v-if="typeof item === 'string'">
-          <!-- 刷新 -->
-          <template v-if="item === 'refresh'">
-            <el-button
-              type="info"
-              icon="refresh"
-              @click="handleToolbar(item)"
-            />
+    <div class="flex-x-between mb-[10px]">
+      <div>
+        <!-- 表格左上方工具栏 -->
+        <template v-for="item in contentConfig.toolbar" :key="item">
+          <template v-if="typeof item === 'string'">
+            <!-- 新增 -->
+            <template v-if="item === 'add'">
+              <el-button
+                v-hasPerm="[`${contentConfig.pageName}:${item}`]"
+                type="success"
+                icon="plus"
+                @click="handleToolbar(item)"
+              >
+                新增
+              </el-button>
+            </template>
+            <!-- 删除 -->
+            <template v-else-if="item === 'delete'">
+              <el-button
+                v-hasPerm="[`${contentConfig.pageName}:${item}`]"
+                type="danger"
+                icon="delete"
+                :disabled="removeIds.length === 0"
+                @click="handleToolbar(item)"
+              >
+                删除
+              </el-button>
+            </template>
+            <!-- 导出 -->
+            <template v-else-if="item === 'export'">
+              <el-button
+                v-hasPerm="[`${contentConfig.pageName}:${item}`]"
+                type="primary"
+                icon="download"
+                @click="handleToolbar(item)"
+              >
+                导出
+              </el-button>
+            </template>
           </template>
-          <!-- 新增 -->
-          <template v-else-if="item === 'add'">
-            <el-button
-              v-hasPerm="[`${contentConfig.pageName}:${item}`]"
-              type="success"
-              icon="plus"
-              @click="handleToolbar(item)"
-            >
-              新增
-            </el-button>
-          </template>
-          <!-- 删除 -->
-          <template v-else-if="item === 'delete'">
-            <el-button
-              v-hasPerm="[`${contentConfig.pageName}:${item}`]"
-              type="danger"
-              icon="delete"
-              :disabled="removeIds.length === 0"
-              @click="handleToolbar(item)"
-            >
-              删除
-            </el-button>
-          </template>
-          <!-- 导出 -->
-          <template v-else-if="item === 'export'">
-            <el-button
-              v-hasPerm="[`${contentConfig.pageName}:${item}`]"
-              type="primary"
-              icon="download"
-              @click="handleToolbar(item)"
-            >
-              导出
-            </el-button>
-          </template>
-        </template>
-        <!-- 其他 -->
-        <template v-else-if="typeof item === 'object'">
-          <template v-if="item.auth">
-            <el-button
-              v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
-              :icon="item.icon"
-              type="default"
-              @click="handleToolbar(item.name)"
-            >
-              {{ item.text }}
-            </el-button>
-          </template>
-          <template v-else>
-            <el-button
-              :icon="item.icon"
-              type="default"
-              @click="handleToolbar(item.name)"
-            >
-              {{ item.text }}
-            </el-button>
+          <!-- 其他 -->
+          <template v-else-if="typeof item === 'object'">
+            <template v-if="item.auth">
+              <el-button
+                v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
+                :icon="item.icon"
+                type="default"
+                @click="handleToolbar(item.name)"
+              >
+                {{ item.text }}
+              </el-button>
+            </template>
+            <template v-else>
+              <el-button
+                :icon="item.icon"
+                type="default"
+                @click="handleToolbar(item.name)"
+              >
+                {{ item.text }}
+              </el-button>
+            </template>
           </template>
         </template>
-      </template>
-    </template>
+      </div>
+
+      <!-- 表格右上方工具栏 -->
+      <div>
+        <el-icon class="cursor-pointer" @click="handleToolbar('refresh')">
+          <i-ep-refresh />
+        </el-icon>
+
+        <!-- 列设置 -->
+        <el-popover placement="bottom" trigger="click">
+          <template #reference>
+            <el-icon class="cursor-pointer ml-2">
+              <i-ep-setting />
+            </el-icon>
+          </template>
+
+          <el-checkbox
+            v-model="columnSetting.checkAll"
+            :indeterminate="columnSetting.isIndeterminate"
+            @change="handleCheckAllChange"
+          >
+            全选
+          </el-checkbox>
+
+          <el-checkbox-group
+            v-model="columnSetting.checkedCols"
+            @change="handleCheckedColumnsChange"
+          >
+            <div v-for="col in contentConfig.cols" :key="col.label">
+              <el-checkbox
+                v-if="col.label"
+                :value="col.label"
+                :label="col.label"
+              />
+            </div>
+          </el-checkbox-group>
+        </el-popover>
+      </div>
+    </div>
     <!-- 列表 -->
     <el-table
       v-loading="loading"
@@ -78,9 +109,38 @@
       :data="pageData"
       @selection-change="handleSelectionChange"
     >
-      <template v-for="col in contentConfig.cols" :key="col.prop">
+      <template v-for="col in displayedColumns" :key="col.prop">
+        <!-- 显示图片 -->
+        <template v-if="col.show && col.templet === 'image'">
+          <el-table-column v-bind="col">
+            <template #default="scope">
+              <template v-if="Array.isArray(scope.row[col.prop])">
+                <template
+                  v-for="(item, index) in scope.row[col.prop]"
+                  :key="item"
+                >
+                  <el-image
+                    :src="item"
+                    :preview-src-list="scope.row[col.prop]"
+                    :initial-index="index"
+                    :preview-teleported="true"
+                    :style="`width: ${col.imageWidth ?? 40}px; height: ${col.imageHeight ?? 40}px`"
+                  />
+                </template>
+              </template>
+              <template v-else>
+                <el-image
+                  :src="scope.row[col.prop]"
+                  :preview-src-list="[scope.row[col.prop]]"
+                  :preview-teleported="true"
+                  :style="`width: ${col.imageWidth ?? 40}px; height: ${col.imageHeight ?? 40}px`"
+                />
+              </template>
+            </template>
+          </el-table-column>
+        </template>
         <!-- 列操作栏 -->
-        <template v-if="col.templet === 'tool'">
+        <template v-else-if="col.show && col.templet === 'tool'">
           <el-table-column v-bind="col">
             <template #default="scope">
               <template v-for="item in col.operat" :key="item">
@@ -151,7 +211,7 @@
           </el-table-column>
         </template>
         <!-- 自定义 -->
-        <template v-else-if="col.templet === 'custom'">
+        <template v-else-if="col.show && col.templet === 'custom'">
           <el-table-column v-bind="col">
             <template #default="scope">
               <slot
@@ -164,7 +224,7 @@
         </template>
         <!-- 其他 -->
         <template v-else>
-          <el-table-column v-bind="col" />
+          <el-table-column v-bind="col" v-if="col.show" />
         </template>
       </template>
     </el-table>
@@ -182,7 +242,7 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import Pagination from "@/components/Pagination/index.vue";
-import type { TableProps } from "element-plus";
+import type { TableProps, CheckboxValueType } from "element-plus";
 
 // 对象类型
 export type IObject = Record<string, any>;
@@ -369,6 +429,53 @@ function exportPageData(queryParams: IObject = {}) {
     ElMessage.error("未配置exportAction");
   }
 }
+
+// 列设置类型声明
+interface IColumnSetting {
+  checkAll: boolean;
+  isIndeterminate: boolean;
+  checkedCols: string[];
+}
+
+// 列设置
+const columnSetting = ref<IColumnSetting>({
+  checkAll: true,
+  isIndeterminate: false,
+  checkedCols: [],
+});
+// 创建一个响应式副本，用于存储最后显示的列配置
+const displayedColumns = ref<IObject>(props.contentConfig.cols);
+
+// 全选/取消全选
+const handleCheckAllChange = (checkAll: CheckboxValueType) => {
+  columnSetting.value.checkedCols = checkAll
+    ? props.contentConfig.cols.map((col) => col.label)
+    : [];
+  columnSetting.value.isIndeterminate = false;
+
+  displayedColumns.value = displayedColumns.value.map((col: IObject) => ({
+    ...col,
+    show: checkAll,
+  }));
+};
+
+// 选中列变化
+const handleCheckedColumnsChange = (values: CheckboxValueType[]) => {
+  const showColumnsLength = props.contentConfig.cols.length;
+
+  const checkedCount = values.length;
+  columnSetting.value.checkAll = checkedCount === showColumnsLength;
+  columnSetting.value.isIndeterminate =
+    checkedCount > 0 && checkedCount < showColumnsLength;
+
+  displayedColumns.value = displayedColumns.value.map((col: IObject) => ({
+    ...col,
+    show: values.includes(col.label),
+  }));
+};
+
+// 初始化全选状态
+handleCheckAllChange(columnSetting.value.checkAll);
 </script>
 
 <style lang="scss" scoped></style>

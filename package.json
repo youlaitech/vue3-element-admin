@@ -4,14 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "dev": "vite serve --mode development",
-    "build:prod": "vite build --mode production && vue-tsc --noEmit",
-    "prepare": "husky",
+    "dev": "vite",
+    "build": "vue-tsc --noEmit & vite build",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --noEmit",
     "lint:eslint": "eslint  --fix --ext .ts,.js,.vue ./src ",
     "lint:prettier": "prettier --write \"**/*.{js,cjs,ts,json,tsx,css,less,scss,vue,html,md}\"",
     "lint:stylelint": "stylelint  \"**/*.{css,scss,vue}\" --fix",
     "lint:lint-staged": "lint-staged",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "husky",
     "commit": "git-cz"
   },
   "config": {
