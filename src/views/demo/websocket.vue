@@ -1,117 +1,3 @@
-<!-- websocket 示例 -->
-<script setup lang="ts">
-import SockJS from "sockjs-client";
-import Stomp from "stompjs";
-
-import { useUserStoreHook } from "@/store/modules/user";
-import { TOKEN_KEY } from "@/enums/CacheEnum";
-
-const userStore = useUserStoreHook();
-
-const isConnected = ref(false);
-const socketEndpoint = ref("http://47.117.115.107:8989/ws"); // 线上
-// const socketEndpoint = ref("http://localhost:8989/ws"); // 本地
-
-const receiver = ref("root");
-
-interface MessageType {
-  type?: string; // 消息类型： tip-提示消息
-  sender?: string;
-  content: string;
-}
-
-const messages = ref<MessageType[]>([]);
-
-const topicMessage = ref(
-  "亲爱的大冤种们，由于一只史诗级的BUG，系统版本已经被迫回退到了0.0.1。"
-); // 广播消息
-
-const queneMessage = ref(
-  "hi , " +
-    receiver.value +
-    " , 我是" +
-    userStore.user.username +
-    " , 想和你交个朋友 ! "
-);
-
-function sendToAll() {
-  stompClient.send("/app/sendToAll", {}, topicMessage.value);
-  messages.value.push({
-    sender: userStore.user.username,
-    content: topicMessage.value,
-  });
-}
-
-function sendToUser() {
-  stompClient.send("/app/sendToUser/" + receiver.value, {}, queneMessage.value);
-  messages.value.push({
-    sender: userStore.user.username,
-    content: queneMessage.value,
-  });
-}
-
-let stompClient: Stomp.Client;
-
-function connectWebSocket() {
-  let socket = new SockJS(socketEndpoint.value);
-
-  stompClient = Stomp.over(socket);
-
-  stompClient.connect(
-    { Authorization: localStorage.getItem(TOKEN_KEY) },
-    () => {
-      isConnected.value = true;
-      messages.value.push({
-        sender: "Server",
-        content: "Websocket 已连接",
-        type: "tip",
-      });
-
-      stompClient.subscribe("/topic/notice", (res: any) => {
-        messages.value.push({
-          sender: "Server",
-          content: res.body,
-        });
-      });
-
-      stompClient.subscribe("/user/queue/greeting", (res) => {
-        const messageData = JSON.parse(res.body) as MessageType;
-        messages.value.push({
-          sender: messageData.sender,
-          content: messageData.content,
-        });
-      });
-    },
-    (error) => {
-      console.log("连接失败: " + error);
-      isConnected.value = false; // 更新连接状态
-      messages.value.push({
-        sender: "Server",
-        content: "Websocket 已断开",
-        type: "tip",
-      });
-    }
-  );
-}
-
-function disconnectWebSocket() {
-  if (stompClient && stompClient.connected) {
-    stompClient.disconnect(() => {
-      isConnected.value = false; // 更新连接状态
-      messages.value.push({
-        sender: "Server",
-        content: "Websocket 已断开",
-        type: "tip",
-      });
-    });
-  }
-}
-
-onMounted(() => {
-  connectWebSocket();
-});
-</script>
-
 <template>
   <div class="app-container">
     <el-link
@@ -215,6 +101,121 @@ onMounted(() => {
     </el-row>
   </div>
 </template>
+
+<!-- websocket 示例 -->
+<script setup lang="ts">
+import SockJS from "sockjs-client/dist/sockjs.min.js";
+//import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+
+import { useUserStoreHook } from "@/store/modules/user";
+import { TOKEN_KEY } from "@/enums/CacheEnum";
+
+const userStore = useUserStoreHook();
+
+const isConnected = ref(false);
+// const socketEndpoint = ref("http://47.117.115.107:8989/ws"); // 线上
+const socketEndpoint = ref("http://localhost:8989/ws"); // 本地
+
+const receiver = ref("root");
+
+interface MessageType {
+  type?: string; // 消息类型： tip-提示消息
+  sender?: string;
+  content: string;
+}
+
+const messages = ref<MessageType[]>([]);
+
+const topicMessage = ref(
+  "亲爱的大冤种们，由于一只史诗级的BUG，系统版本已经被迫回退到了0.0.1。"
+); // 广播消息
+
+const queneMessage = ref(
+  "hi , " +
+    receiver.value +
+    " , 我是" +
+    userStore.user.username +
+    " , 想和你交个朋友 ! "
+);
+
+function sendToAll() {
+  stompClient.send("/app/sendToAll", {}, topicMessage.value);
+  messages.value.push({
+    sender: userStore.user.username,
+    content: topicMessage.value,
+  });
+}
+
+function sendToUser() {
+  stompClient.send("/app/sendToUser/" + receiver.value, {}, queneMessage.value);
+  messages.value.push({
+    sender: userStore.user.username,
+    content: queneMessage.value,
+  });
+}
+
+let stompClient: Stomp.Client;
+
+function connectWebSocket() {
+  let socket = new SockJS(socketEndpoint.value);
+
+  stompClient = Stomp.over(socket);
+
+  stompClient.connect(
+    { Authorization: localStorage.getItem(TOKEN_KEY) },
+    () => {
+      isConnected.value = true;
+      messages.value.push({
+        sender: "Server",
+        content: "Websocket 已连接",
+        type: "tip",
+      });
+
+      stompClient.subscribe("/topic/notice", (res: any) => {
+        messages.value.push({
+          sender: "Server",
+          content: res.body,
+        });
+      });
+
+      stompClient.subscribe("/user/queue/greeting", (res) => {
+        const messageData = JSON.parse(res.body) as MessageType;
+        messages.value.push({
+          sender: messageData.sender,
+          content: messageData.content,
+        });
+      });
+    },
+    (error) => {
+      console.log("连接失败: " + error);
+      isConnected.value = false; // 更新连接状态
+      messages.value.push({
+        sender: "Server",
+        content: "Websocket 已断开",
+        type: "tip",
+      });
+    }
+  );
+}
+
+function disconnectWebSocket() {
+  if (stompClient && stompClient.connected) {
+    stompClient.disconnect(() => {
+      isConnected.value = false; // 更新连接状态
+      messages.value.push({
+        sender: "Server",
+        content: "Websocket 已断开",
+        type: "tip",
+      });
+    });
+  }
+}
+
+onMounted(() => {
+  connectWebSocket();
+});
+</script>
 
 <style scoped>
 .message-container {
