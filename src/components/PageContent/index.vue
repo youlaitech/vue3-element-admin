@@ -1,8 +1,9 @@
 <template>
   <el-card shadow="never" class="table-container">
+    <!-- 表格工具栏 -->
     <div class="flex-x-between mb-[10px]">
+      <!-- 左侧工具栏 -->
       <div>
-        <!-- 表格左上方工具栏 -->
         <template v-for="item in contentConfig.toolbar" :key="item">
           <template v-if="typeof item === 'string'">
             <!-- 新增 -->
@@ -64,42 +65,47 @@
           </template>
         </template>
       </div>
-
-      <!-- 表格右上方工具栏 -->
+      <!-- 右侧工具栏 -->
       <div>
-        <el-icon class="cursor-pointer" @click="handleToolbar('refresh')">
-          <i-ep-refresh />
-        </el-icon>
-
-        <!-- 列设置 -->
-        <el-popover placement="bottom" trigger="click">
-          <template #reference>
-            <el-icon class="cursor-pointer ml-2">
-              <i-ep-setting />
+        <template v-for="item in defaultToolbar" :key="item">
+          <template v-if="item === 'refresh'">
+            <el-icon class="cursor-pointer ml-2" @click="handleToolbar(item)">
+              <i-ep-refresh />
             </el-icon>
           </template>
 
-          <el-checkbox
-            v-model="columnSetting.checkAll"
-            :indeterminate="columnSetting.isIndeterminate"
-            @change="handleCheckAllChange"
-          >
-            全选
-          </el-checkbox>
+          <template v-else-if="item === 'filter'">
+            <!-- 列设置 -->
+            <el-popover placement="bottom" trigger="click">
+              <template #reference>
+                <el-icon class="cursor-pointer ml-2">
+                  <i-ep-setting />
+                </el-icon>
+              </template>
 
-          <el-checkbox-group
-            v-model="columnSetting.checkedCols"
-            @change="handleCheckedColumnsChange"
-          >
-            <div v-for="col in contentConfig.cols" :key="col.label">
               <el-checkbox
-                v-if="col.label"
-                :value="col.label"
-                :label="col.label"
-              />
-            </div>
-          </el-checkbox-group>
-        </el-popover>
+                v-model="columnSetting.checkAll"
+                :indeterminate="columnSetting.isIndeterminate"
+                @change="handleCheckAllChange"
+              >
+                全选
+              </el-checkbox>
+
+              <el-checkbox-group
+                v-model="columnSetting.checkedCols"
+                @change="handleCheckedColumnsChange"
+              >
+                <div v-for="col in contentConfig.cols" :key="col.label">
+                  <el-checkbox
+                    v-if="col.label"
+                    :value="col.label"
+                    :label="col.label"
+                  />
+                </div>
+              </el-checkbox-group>
+            </el-popover>
+          </template>
+        </template>
       </div>
     </div>
     <!-- 列表 -->
@@ -266,9 +272,8 @@ export interface IContentConfig<T = any> {
   exportAction?: (queryParams: T) => Promise<any>;
   // 主键名(默认为id)
   pk?: string;
-  // 表格工具栏(默认支持refresh,add,delete,export,也可自定义)
+  // 表格工具栏(默认支持add,delete,export,也可自定义)
   toolbar: (
-    | "refresh"
     | "add"
     | "delete"
     | "export"
@@ -279,6 +284,8 @@ export interface IContentConfig<T = any> {
         text: string;
       }
   )[];
+  // 表格工具栏右侧图标
+  defaultToolbar?: ("refresh" | "filter")[];
   // table组件列属性(额外的属性templet,operat,slotName)
   cols: IObject[];
 }
@@ -298,6 +305,11 @@ defineExpose({ fetchPageData, exportPageData });
 
 // 主键
 const pk = props.contentConfig.pk ?? "id";
+// 表格工具栏右侧图标
+const defaultToolbar = props.contentConfig.defaultToolbar ?? [
+  "refresh",
+  "filter",
+];
 // 加载状态
 const loading = ref(false);
 // 删除ID集合 用于批量删除
