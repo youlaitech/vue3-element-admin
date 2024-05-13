@@ -36,6 +36,7 @@ declare module "vue" {
     ElImage: (typeof import("element-plus/es"))["ElImage"];
     ElInput: (typeof import("element-plus/es"))["ElInput"];
     ElInputNumber: (typeof import("element-plus/es"))["ElInputNumber"];
+    ElLink: (typeof import("element-plus/es"))["ElLink"];
     ElMenu: (typeof import("element-plus/es"))["ElMenu"];
     ElMenuItem: (typeof import("element-plus/es"))["ElMenuItem"];
     ElOption: (typeof import("element-plus/es"))["ElOption"];
@@ -61,6 +62,8 @@ declare module "vue" {
     GithubCorner: (typeof import("./../components/GithubCorner/index.vue"))["default"];
     Hamburger: (typeof import("./../components/Hamburger/index.vue"))["default"];
     IconSelect: (typeof import("./../components/IconSelect/index.vue"))["default"];
+    IEpArrowDown: (typeof import("~icons/ep/arrow-down"))["default"];
+    IEpArrowUp: (typeof import("~icons/ep/arrow-up"))["default"];
     IEpClose: (typeof import("~icons/ep/close"))["default"];
     IEpDelete: (typeof import("~icons/ep/delete"))["default"];
     IEpDownload: (typeof import("~icons/ep/download"))["default"];
@@ -69,6 +72,7 @@ declare module "vue" {
     IEpRefresh: (typeof import("~icons/ep/refresh"))["default"];
     IEpRefreshLeft: (typeof import("~icons/ep/refresh-left"))["default"];
     IEpSearch: (typeof import("~icons/ep/search"))["default"];
+    IEpSetting: (typeof import("~icons/ep/setting"))["default"];
     IEpTop: (typeof import("~icons/ep/top"))["default"];
     IEpUploadFilled: (typeof import("~icons/ep/upload-filled"))["default"];
     LangSelect: (typeof import("./../components/LangSelect/index.vue"))["default"];

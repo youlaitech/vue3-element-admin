@@ -145,6 +145,72 @@
             </template>
           </el-table-column>
         </template>
+        <!-- 根据行的selectList属性返回对应列表值 -->
+        <template v-else-if="col.show && col.templet === 'list'">
+          <el-table-column v-bind="col">
+            <template #default="scope">
+              {{ (col.selectList ?? {})[scope.row[col.prop]] }}
+            </template>
+          </el-table-column>
+        </template>
+        <!-- 格式化显示链接 -->
+        <template v-else-if="col.show && col.templet === 'url'">
+          <el-table-column v-bind="col">
+            <template #default="scope">
+              <el-link
+                type="primary"
+                :href="scope.row[col.prop]"
+                target="_blank"
+              >
+                {{ scope.row[col.prop] }}
+              </el-link>
+            </template>
+          </el-table-column>
+        </template>
+        <!-- 格式化为价格 -->
+        <template v-else-if="col.show && col.templet === 'price'">
+          <el-table-column v-bind="col">
+            <template #default="scope">
+              {{ `${col.priceFormat ?? "￥"}${scope.row[col.prop]}` }}
+            </template>
+          </el-table-column>
+        </template>
+        <!-- 格式化为百分比 -->
+        <template v-else-if="col.show && col.templet === 'percent'">
+          <el-table-column v-bind="col">
+            <template #default="scope"> {{ scope.row[col.prop] }}% </template>
+          </el-table-column>
+        </template>
+        <!-- 显示图标 -->
+        <template v-else-if="col.show && col.templet === 'icon'">
+          <el-table-column v-bind="col">
+            <template #default="scope">
+              <template v-if="scope.row[col.prop].startsWith('el-icon-')">
+                <el-icon>
+                  <component
+                    :is="scope.row[col.prop].replace('el-icon-', '')"
+                  />
+                </el-icon>
+              </template>
+              <template v-else>
+                <svg-icon :icon-class="scope.row[col.prop]" />
+              </template>
+            </template>
+          </el-table-column>
+        </template>
+        <!-- 格式化时间 -->
+        <template v-else-if="col.show && col.templet === 'date'">
+          <el-table-column v-bind="col">
+            <template #default="scope">
+              {{
+                useDateFormat(
+                  scope.row[col.prop],
+                  col.dateFormat ?? "YYYY-MM-DD HH:mm:ss"
+                ).value
+              }}
+            </template>
+          </el-table-column>
+        </template>
         <!-- 列操作栏 -->
         <template v-else-if="col.show && col.templet === 'tool'">
           <el-table-column v-bind="col">
@@ -247,7 +313,9 @@
 
 <script setup lang="ts">
 import { ref, reactive } from "vue";
+import { useDateFormat } from "@vueuse/core";
 import Pagination from "@/components/Pagination/index.vue";
+import SvgIcon from "@/components/SvgIcon/index.vue";
 import type { TableProps, CheckboxValueType } from "element-plus";
 
 // 对象类型
@@ -273,21 +341,53 @@ export interface IContentConfig<T = any> {
   // 主键名(默认为id)
   pk?: string;
   // 表格工具栏(默认支持add,delete,export,也可自定义)
-  toolbar: (
+  toolbar: Array<
     | "add"
     | "delete"
     | "export"
     | {
-        auth?: string;
+        auth: string;
         icon?: string;
         name: string;
         text: string;
       }
-  )[];
+  >;
   // 表格工具栏右侧图标
   defaultToolbar?: ("refresh" | "filter")[];
   // table组件列属性(额外的属性templet,operat,slotName)
-  cols: IObject[];
+  cols: Array<{
+    type?: "default" | "selection" | "index" | "expand";
+    label?: string;
+    prop?: string;
+    width?: string | number;
+    align?: "left" | "center" | "right";
+    templet?:
+      | "image"
+      | "list"
+      | "url"
+      | "price"
+      | "percent"
+      | "icon"
+      | "date"
+      | "tool"
+      | "custom";
+    imageWidth?: number;
+    imageHeight?: number;
+    selectList?: Record<string, any>;
+    priceFormat?: string;
+    dateFormat?: string;
+    operat?: Array<
+      | "edit"
+      | "delete"
+      | {
+          auth: string;
+          icon?: string;
+          name: string;
+          text: string;
+        }
+    >;
+    [key: string]: any;
+  }>;
 }
 const props = defineProps<{
   contentConfig: IContentConfig;
@@ -461,7 +561,7 @@ const displayedColumns = ref<IObject>(props.contentConfig.cols);
 // 全选/取消全选
 const handleCheckAllChange = (checkAll: CheckboxValueType) => {
   columnSetting.value.checkedCols = checkAll
-    ? props.contentConfig.cols.map((col) => col.label)
+    ? props.contentConfig.cols.map((col) => col.label ?? "")
     : [];
   columnSetting.value.isIndeterminate = false;
 
