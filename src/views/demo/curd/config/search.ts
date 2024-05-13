@@ -11,7 +11,7 @@ const searchConfig: ISearchConfig = {
         placeholder: "用户名/昵称/手机号",
         clearable: true,
         style: {
-          width: "80%",
+          width: "200px",
         },
       },
     },
@@ -42,7 +42,7 @@ const searchConfig: ISearchConfig = {
         "render-after-expand": false,
         clearable: true,
         style: {
-          width: "80%",
+          width: "150px",
         },
       },
     },
@@ -54,7 +54,7 @@ const searchConfig: ISearchConfig = {
         placeholder: "全部",
         clearable: true,
         style: {
-          width: "60%",
+          width: "100px",
         },
       },
       options: [
@@ -73,12 +73,11 @@ const searchConfig: ISearchConfig = {
         "end-placeholder": "截止时间",
         "value-format": "YYYY-MM-DD",
         style: {
-          width: "60%",
+          width: "240px",
         },
       },
     },
   ],
-  isExpandable: true,
 };
 
 export default searchConfig;
