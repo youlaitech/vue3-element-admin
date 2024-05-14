@@ -1,0 +1,44 @@
+name: Build app and deploy to aliyun
+on:
+  #监听push操作
+  push:
+    branches:
+      # master分支，你也可以改成其他分支
+      - master
+jobs:
+  build:
+    # runs-on 指定job任务运行所需要的虚拟机环境(必填字段)
+    runs-on: ubuntu-latest
+    steps:
+      # 获取源码
+      - name: Checkout
+        # 使用action库  actions/checkout获取源码
+        uses: actions/checkout@master
+      # 安装Node13
+      - name: use Node.js 18.20.0
+        # 使用action库  actions/setup-node安装node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.20.0
+      # 安装依赖
+      - name: npm install -g pnpm
+        run: npm install -g pnpm
+      # 打包
+      - name: pnpm build
+        run: pnpm run build:prod
+      # 部署到阿里云
+      - name: Deploy to 1P-Local
+        uses: easingthemes/ssh-deploy@v2.1.1
+        env:
+          # 私钥
+          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          # scp参数
+          ARGS: "-avzr --delete"
+          # 源目录，编译后生成的文件目录
+          SOURCE: "./dist"
+          # 服务器ip：换成你的服务器IP
+          REMOTE_HOST: "a.t99.cn:50000"
+          # 用户
+          REMOTE_USER: "v3ea"
+          # 目标地址 你在服务器上部署代码的地方
+          TARGET: "/opt/1panel/apps/openresty/openresty/www/sites/v3ea.skpay.com/index"
