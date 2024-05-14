@@ -5,10 +5,10 @@ import type { IModalConfig } from "@/components/PageModal/index.vue";
 const modalConfig: IModalConfig<UserForm> = {
   pageName: "sys:user",
   pk: "id",
-  dialog: {
+  component: "drawer",
+  drawer: {
     title: "修改用户",
-    width: 800,
-    draggable: true,
+    size: 300,
   },
   formAction: function (data) {
     return UserAPI.update(data.id as number, data);
