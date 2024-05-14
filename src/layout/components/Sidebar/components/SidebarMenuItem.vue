@@ -53,7 +53,7 @@ import { RouteRecordRaw } from "vue-router";
 
 const props = defineProps({
   /**
-   * 路由(eg:user)
+   * 路由(eg:user)123
    */
   item: {
     type: Object,

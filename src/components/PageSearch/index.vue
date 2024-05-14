@@ -1,24 +1,22 @@
 <template>
   <div class="search-container" v-hasPerm="[`${searchConfig.pageName}:query`]">
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-      <template v-for="item in searchConfig.formItems" :key="item.prop">
-        <el-form-item :label="item.label" :prop="item.prop">
+      <template
+        v-for="(item, index) in searchConfig.formItems"
+        :key="item.prop"
+      >
+        <el-form-item
+          v-show="isExpand ? true : index < showNumber"
+          :label="item.label"
+          :prop="item.prop"
+        >
           <!-- Input 输入框 -->
-          <template v-if="item.type === 'input'">
-            <template v-if="item.attrs?.type === 'number'">
-              <el-input
-                v-model.number="queryParams[item.prop]"
-                v-bind="item.attrs"
-                @keyup.enter="handleQuery"
-              />
-            </template>
-            <template v-else>
-              <el-input
-                v-model="queryParams[item.prop]"
-                v-bind="item.attrs"
-                @keyup.enter="handleQuery"
-              />
-            </template>
+          <template v-if="item.type === 'input' || item.type === undefined">
+            <el-input
+              v-model="queryParams[item.prop]"
+              v-bind="item.attrs"
+              @keyup.enter="handleQuery"
+            />
           </template>
           <!-- Select 选择器 -->
           <template v-else-if="item.type === 'select'">
@@ -42,23 +40,6 @@
               v-bind="item.attrs"
             />
           </template>
-          <!-- Input 输入框 -->
-          <template v-else>
-            <template v-if="item.attrs?.type === 'number'">
-              <el-input
-                v-model.number="queryParams[item.prop]"
-                v-bind="item.attrs"
-                @keyup.enter="handleQuery"
-              />
-            </template>
-            <template v-else>
-              <el-input
-                v-model="queryParams[item.prop]"
-                v-bind="item.attrs"
-                @keyup.enter="handleQuery"
-              />
-            </template>
-          </template>
         </el-form-item>
       </template>
       <el-form-item>
@@ -66,14 +47,25 @@
           搜索
         </el-button>
         <el-button icon="refresh" @click="handleReset">重置</el-button>
+        <!-- 展开/收起 -->
+        <el-link
+          v-if="isExpandable && searchConfig.formItems.length > showNumber"
+          class="ml-2"
+          type="primary"
+          :underline="false"
+          @click="isExpand = !isExpand"
+        >
+          <template v-if="isExpand"> 收起<i-ep-arrow-up /> </template>
+          <template v-else> 展开<i-ep-arrow-down /> </template>
+        </el-link>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import type { ElForm } from "element-plus";
+import type { FormInstance } from "element-plus";
+import { reactive, ref } from "vue";
 
 // 对象类型
 type IObject = Record<string, any>;
@@ -96,6 +88,10 @@ export interface ISearchConfig {
     // 可选项(适用于select组件)
     options?: { label: string; value: any }[];
   }>;
+  // 是否开启展开和收缩
+  isExpandable?: boolean;
+  // 默认展示的表单项数量
+  showNumber?: number;
 }
 interface IProps {
   searchConfig: ISearchConfig;
@@ -109,7 +105,20 @@ const emit = defineEmits<{
 // 暴露的属性和方法
 defineExpose({ getQueryParams });
 
-const queryFormRef = ref<InstanceType<typeof ElForm>>();
+// 是否可展开/收缩
+const isExpandable = ref(props.searchConfig.isExpandable ?? true);
+// 是否已展开
+const isExpand = ref(false);
+// 表单项展示数量，若可展开，超出展示数量的表单项隐藏
+const showNumber = computed(() => {
+  if (isExpandable.value === true) {
+    return props.searchConfig.showNumber ?? 3;
+  } else {
+    return props.searchConfig.formItems.length;
+  }
+});
+
+const queryFormRef = ref<FormInstance>();
 // 搜索表单数据
 const queryParams = reactive<IObject>({});
 for (const item of props.searchConfig.formItems) {
