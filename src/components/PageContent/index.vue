@@ -499,7 +499,7 @@ const displayedColumns = ref<IObject>(props.contentConfig.cols);
 // 全选/取消全选
 const handleCheckAllChange = (checkAll: CheckboxValueType) => {
   columnSetting.value.checkedCols = checkAll
-    ? props.contentConfig.cols.map((col) => col.label ?? "")
+    ? (props.contentConfig.cols.map((col) => col.label) as any[])
     : [];
   columnSetting.value.isIndeterminate = false;
 
