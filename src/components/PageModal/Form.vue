@@ -88,7 +88,7 @@
 
 <script setup lang="ts">
 import type { FormInstance, FormRules } from "element-plus";
-import { reactive, ref, watch } from "vue";
+import { reactive, ref, watch, computed, watchEffect } from "vue";
 import { IForm, IFormItems, IObject } from "./types";
 
 // 定义接收的属性
@@ -109,19 +109,45 @@ const props = withDefaults(
 const formRef = ref<FormInstance>();
 const formData = reactive<IObject>({});
 const formRules: FormRules = {};
+const watchArr = [];
+const computedArr = [];
+const watchEffectArr = [];
 // 初始化
 for (const item of props.formItems) {
   formData[item.prop] = item.initialValue ?? "";
   formRules[item.prop] = item.rules ?? [];
   if (item.watch !== undefined) {
-    watch(
-      () => formData[item.prop],
-      (newValue, oldValue) => {
-        item.watch?.(newValue, oldValue, formData);
-      }
-    );
+    watchArr.push({ field: item.prop, func: item.watch });
+  }
+  if (item.computed !== undefined) {
+    computedArr.push({ field: item.prop, func: item.computed });
+  }
+  if (item.watchEffect !== undefined) {
+    watchEffectArr.push(item.watchEffect);
   }
 }
+watchArr.forEach(({ field, func }) => {
+  watch(
+    () => formData[field],
+    (newValue, oldValue) => {
+      func(newValue, oldValue, formData);
+    }
+  );
+});
+computedArr.forEach(({ field, func }) => {
+  formData[field] = computed({
+    get() {
+      return func(formData);
+    },
+    // TODO
+    set() {},
+  });
+});
+watchEffectArr.forEach((func) => {
+  watchEffect(() => {
+    func(formData);
+  });
+});
 // 获取表单数据
 function getFormData(key?: string) {
   return key === undefined ? formData : formData[key] ?? undefined;

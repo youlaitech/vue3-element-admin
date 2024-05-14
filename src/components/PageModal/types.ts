@@ -54,4 +54,8 @@ export type IFormItems<T = any> = Array<{
   hidden?: boolean;
   // 监听函数
   watch?: (newValue: any, oldValue: any, data: T) => void;
+  // 计算属性函数
+  computed?: (data: T) => any;
+  // 监听收集函数
+  watchEffect?: (data: T) => void;
 }>;
