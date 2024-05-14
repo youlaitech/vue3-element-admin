@@ -25,7 +25,7 @@ jobs:
         run: npm install -g pnpm
       # 打包
       - name: pnpm build
-        run: pnpm run build:prod
+        run: pnpm run build
       # 部署到阿里云
       - name: Deploy to 1P-Local
         uses: easingthemes/ssh-deploy@v2.1.1
