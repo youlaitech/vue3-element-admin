@@ -1,6 +1,6 @@
 <template>
   <!-- drawer -->
-  <template v-if="props.modalConfig.component === 'drawer'">
+  <template v-if="modalConfig.component === 'drawer'">
     <el-drawer
       v-model="modalVisible"
       :append-to-body="true"
