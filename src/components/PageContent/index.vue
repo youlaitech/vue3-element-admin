@@ -4,7 +4,7 @@
     <div class="flex-x-between mb-[10px]">
       <!-- 左侧工具栏 -->
       <div>
-        <template v-for="item in contentConfig.toolbar" :key="item">
+        <template v-for="item in toolbar" :key="item">
           <template v-if="typeof item === 'string'">
             <!-- 新增 -->
             <template v-if="item === 'add'">
@@ -43,46 +43,34 @@
           </template>
           <!-- 其他 -->
           <template v-else-if="typeof item === 'object'">
-            <template v-if="item.auth">
-              <el-button
-                v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
-                :icon="item.icon"
-                type="default"
-                @click="handleToolbar(item.name)"
-              >
-                {{ item.text }}
-              </el-button>
-            </template>
-            <template v-else>
-              <el-button
-                :icon="item.icon"
-                type="default"
-                @click="handleToolbar(item.name)"
-              >
-                {{ item.text }}
-              </el-button>
-            </template>
+            <el-button
+              v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
+              :icon="item.icon"
+              type="default"
+              @click="handleToolbar(item.name)"
+            >
+              {{ item.text }}
+            </el-button>
           </template>
         </template>
       </div>
       <!-- 右侧工具栏 -->
       <div>
         <template v-for="item in defaultToolbar" :key="item">
+          <!-- 刷新 -->
           <template v-if="item === 'refresh'">
             <el-icon class="cursor-pointer ml-2" @click="handleToolbar(item)">
               <i-ep-refresh />
             </el-icon>
           </template>
-
+          <!-- 列设置 -->
           <template v-else-if="item === 'filter'">
-            <!-- 列设置 -->
             <el-popover placement="bottom" trigger="click">
               <template #reference>
                 <el-icon class="cursor-pointer ml-2">
                   <i-ep-setting />
                 </el-icon>
               </template>
-
               <el-checkbox
                 v-model="columnSetting.checkAll"
                 :indeterminate="columnSetting.isIndeterminate"
@@ -90,7 +78,6 @@
               >
                 全选
               </el-checkbox>
-
               <el-checkbox-group
                 v-model="columnSetting.checkedCols"
                 @change="handleCheckedColumnsChange"
@@ -116,10 +103,10 @@
       @selection-change="handleSelectionChange"
     >
       <template v-for="col in displayedColumns" :key="col.prop">
-        <!-- 显示图片 -->
-        <template v-if="col.show && col.templet === 'image'">
-          <el-table-column v-bind="col">
-            <template #default="scope">
+        <el-table-column v-if="col.show" v-bind="col">
+          <template #default="scope">
+            <!-- 显示图片 -->
+            <template v-if="col.templet === 'image'">
               <template v-if="Array.isArray(scope.row[col.prop])">
                 <template
                   v-for="(item, index) in scope.row[col.prop]"
@@ -143,20 +130,12 @@
                 />
               </template>
             </template>
-          </el-table-column>
-        </template>
-        <!-- 根据行的selectList属性返回对应列表值 -->
-        <template v-else-if="col.show && col.templet === 'list'">
-          <el-table-column v-bind="col">
-            <template #default="scope">
+            <!-- 根据行的selectList属性返回对应列表值 -->
+            <template v-else-if="col.templet === 'list'">
               {{ (col.selectList ?? {})[scope.row[col.prop]] }}
             </template>
-          </el-table-column>
-        </template>
-        <!-- 格式化显示链接 -->
-        <template v-else-if="col.show && col.templet === 'url'">
-          <el-table-column v-bind="col">
-            <template #default="scope">
+            <!-- 格式化显示链接 -->
+            <template v-else-if="col.templet === 'url'">
               <el-link
                 type="primary"
                 :href="scope.row[col.prop]"
@@ -165,26 +144,16 @@
                 {{ scope.row[col.prop] }}
               </el-link>
             </template>
-          </el-table-column>
-        </template>
-        <!-- 格式化为价格 -->
-        <template v-else-if="col.show && col.templet === 'price'">
-          <el-table-column v-bind="col">
-            <template #default="scope">
+            <!-- 格式化为价格 -->
+            <template v-else-if="col.templet === 'price'">
               {{ `${col.priceFormat ?? "￥"}${scope.row[col.prop]}` }}
             </template>
-          </el-table-column>
-        </template>
-        <!-- 格式化为百分比 -->
-        <template v-else-if="col.show && col.templet === 'percent'">
-          <el-table-column v-bind="col">
-            <template #default="scope"> {{ scope.row[col.prop] }}% </template>
-          </el-table-column>
-        </template>
-        <!-- 显示图标 -->
-        <template v-else-if="col.show && col.templet === 'icon'">
-          <el-table-column v-bind="col">
-            <template #default="scope">
+            <!-- 格式化为百分比 -->
+            <template v-else-if="col.templet === 'percent'">
+              {{ scope.row[col.prop] }}%
+            </template>
+            <!-- 显示图标 -->
+            <template v-else-if="col.templet === 'icon'">
               <template v-if="scope.row[col.prop].startsWith('el-icon-')">
                 <el-icon>
                   <component
@@ -196,12 +165,8 @@
                 <svg-icon :icon-class="scope.row[col.prop]" />
               </template>
             </template>
-          </el-table-column>
-        </template>
-        <!-- 格式化时间 -->
-        <template v-else-if="col.show && col.templet === 'date'">
-          <el-table-column v-bind="col">
-            <template #default="scope">
+            <!-- 格式化时间 -->
+            <template v-else-if="col.templet === 'date'">
               {{
                 useDateFormat(
                   scope.row[col.prop],
@@ -209,13 +174,12 @@
                 ).value
               }}
             </template>
-          </el-table-column>
-        </template>
-        <!-- 列操作栏 -->
-        <template v-else-if="col.show && col.templet === 'tool'">
-          <el-table-column v-bind="col">
-            <template #default="scope">
-              <template v-for="item in col.operat" :key="item">
+            <!-- 列操作栏 -->
+            <template v-else-if="col.templet === 'tool'">
+              <template
+                v-for="item in col.operat ?? ['edit', 'delete']"
+                :key="item"
+              >
                 <template v-if="typeof item === 'string'">
                   <!-- 编辑/删除 -->
                   <template v-if="item === 'edit' || item === 'delete'">
@@ -240,64 +204,36 @@
                 </template>
                 <!-- 其他 -->
                 <template v-else-if="typeof item === 'object'">
-                  <template v-if="item.auth">
-                    <el-button
-                      v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
-                      :icon="item.icon"
-                      type="primary"
-                      size="small"
-                      link
-                      @click="
-                        handleOperat({
-                          name: item.name,
-                          row: scope.row,
-                          column: scope.column,
-                          $index: scope.$index,
-                        })
-                      "
-                    >
-                      {{ item.text }}
-                    </el-button>
-                  </template>
-                  <template v-else>
-                    <el-button
-                      :icon="item.icon"
-                      type="primary"
-                      size="small"
-                      link
-                      @click="
-                        handleOperat({
-                          name: item.name,
-                          row: scope.row,
-                          column: scope.column,
-                          $index: scope.$index,
-                        })
-                      "
-                    >
-                      {{ item.text }}
-                    </el-button>
-                  </template>
+                  <el-button
+                    v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
+                    :icon="item.icon"
+                    type="primary"
+                    size="small"
+                    link
+                    @click="
+                      handleOperat({
+                        name: item.name,
+                        row: scope.row,
+                        column: scope.column,
+                        $index: scope.$index,
+                      })
+                    "
+                  >
+                    {{ item.text }}
+                  </el-button>
                 </template>
               </template>
             </template>
-          </el-table-column>
-        </template>
-        <!-- 自定义 -->
-        <template v-else-if="col.show && col.templet === 'custom'">
-          <el-table-column v-bind="col">
-            <template #default="scope">
+            <!-- 自定义 -->
+            <template v-else-if="col.templet === 'custom'">
               <slot
                 :name="col.slotName ?? col.prop"
                 :prop="col.prop"
                 v-bind="scope"
               ></slot>
             </template>
-          </el-table-column>
-        </template>
-        <!-- 其他 -->
-        <template v-else>
-          <el-table-column v-bind="col" v-if="col.show" />
-        </template>
+          </template>
+        </el-table-column>
       </template>
     </el-table>
     <!-- 分页 -->
@@ -341,7 +277,7 @@ export interface IContentConfig<T = any> {
   // 主键名(默认为id)
   pk?: string;
   // 表格工具栏(默认支持add,delete,export,也可自定义)
-  toolbar: Array<
+  toolbar?: Array<
     | "add"
     | "delete"
     | "export"
@@ -405,7 +341,9 @@ defineExpose({ fetchPageData, exportPageData });
 
 // 主键
 const pk = props.contentConfig.pk ?? "id";
-// 表格工具栏右侧图标
+// 表格左侧工具栏
+const toolbar = props.contentConfig.toolbar ?? ["add", "delete"];
+// 表格右侧工具栏
 const defaultToolbar = props.contentConfig.defaultToolbar ?? [
   "refresh",
   "filter",
