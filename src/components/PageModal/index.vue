@@ -11,6 +11,7 @@
       <!-- 表单 -->
       <page-form
         ref="pageFormRef"
+        :pk="modalConfig.pk"
         :form="modalConfig.form"
         :form-items="modalConfig.formItems"
       />
@@ -40,6 +41,7 @@
         <!-- 表单 -->
         <page-form
           ref="pageFormRef"
+          :pk="modalConfig.pk"
           :form="modalConfig.form"
           :form-items="modalConfig.formItems"
           style="padding-right: var(--el-dialog-padding-primary)"
@@ -94,7 +96,7 @@ const emit = defineEmits<{
 const modalVisible = ref(false);
 const pageFormRef = ref<InstanceType<typeof PageForm>>();
 let initialFormData = {};
-// 显示dialog
+// 显示modal
 function setModalVisible(data: IObject = {}) {
   modalVisible.value = true;
   initialFormData = data;
