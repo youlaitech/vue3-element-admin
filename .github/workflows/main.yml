@@ -32,6 +32,8 @@ jobs:
       # 部署到阿里云
       - name: Deploy to 1P-Local
         uses: easingthemes/ssh-deploy@v2.1.1
+        with:
+          REMOTE_PORT: 50000
         env:
           # 私钥
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
