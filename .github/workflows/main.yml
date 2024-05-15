@@ -24,11 +24,11 @@ jobs:
       - name: npm install -g pnpm
         run: npm install -g pnpm
       # 安装依赖
-      #- name: pnpm install
-      #  run: pnpm install
+      - name: pnpm install
+        run: pnpm install
       # 打包
-      #- name: pnpm build
-      #  run: pnpm run build
+      - name: pnpm build
+        run: pnpm run build
       # 部署到阿里云
       - name: Deploy to 1P-Local
         uses: easingthemes/ssh-deploy@v2.1.1
