@@ -40,7 +40,7 @@ jobs:
           # scp参数
           ARGS: "-avzr --delete"
           # 源目录，编译后生成的文件目录
-          SOURCE: "./dist"
+          SOURCE: "./dist/"
           # 服务器ip：换成你的服务器IP
           REMOTE_HOST: "a.t99.cn"
           # 服务器port：换成你的服务器port
