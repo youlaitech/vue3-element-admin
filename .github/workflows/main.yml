@@ -32,8 +32,8 @@ jobs:
       # 部署到阿里云
       - name: Deploy to 1P-Local
         uses: easingthemes/ssh-deploy@v2.1.1
-        with:
-          REMOTE_PORT: 50000
+        #with:
+        #  REMOTE_PORT: 50000
         env:
           # 私钥
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
@@ -43,8 +43,8 @@ jobs:
           SOURCE: "./dist"
           # 服务器ip：换成你的服务器IP
           REMOTE_HOST: "a.t99.cn"
-          # 服务器ip：换成你的服务器IP
-          # REMOTE_PORT: 50000
+          # 服务器port：换成你的服务器port
+          REMOTE_PORT: 50000
           # 用户
           REMOTE_USER: "v3ea"
           # 目标地址 你在服务器上部署代码的地方
