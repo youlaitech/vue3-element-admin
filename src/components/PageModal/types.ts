@@ -28,6 +28,7 @@ export type IFormItems<T = any> = Array<{
     | "tree-select"
     | "date-picker"
     | "input-number"
+    | "text"
     | "custom";
   // 组件属性
   attrs?: IObject;

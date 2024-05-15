@@ -26,15 +26,7 @@
         </template>
         <!-- Input 输入框 -->
         <template v-if="item.type === 'input' || item.type === undefined">
-          <template v-if="item.attrs?.type === 'number'">
-            <el-input
-              v-model.number="formData[item.prop]"
-              v-bind="item.attrs"
-            />
-          </template>
-          <template v-else>
-            <el-input v-model="formData[item.prop]" v-bind="item.attrs" />
-          </template>
+          <el-input v-model="formData[item.prop]" v-bind="item.attrs" />
         </template>
         <!-- Select 选择器 -->
         <template v-else-if="item.type === 'select'">
@@ -71,6 +63,10 @@
         <!-- DatePicker 日期选择器 -->
         <template v-else-if="item.type === 'date-picker'">
           <el-date-picker v-model="formData[item.prop]" v-bind="item.attrs" />
+        </template>
+        <!-- Text 文本 -->
+        <template v-else-if="item.type === 'text'">
+          <el-text v-bind="item.attrs">{{ formData[item.prop] }}</el-text>
         </template>
         <!-- 自定义 -->
         <template v-else-if="item.type === 'custom'">
