@@ -24,11 +24,11 @@ jobs:
       - name: npm install -g pnpm
         run: npm install -g pnpm
       # 安装依赖
-      - name: pnpm install
-        run: pnpm install
+      #- name: pnpm install
+      #  run: pnpm install
       # 打包
-      - name: pnpm build
-        run: pnpm run build
+      #- name: pnpm build
+      #  run: pnpm run build
       # 部署到阿里云
       - name: Deploy to 1P-Local
         uses: easingthemes/ssh-deploy@v2.1.1
@@ -44,8 +44,9 @@ jobs:
           # 服务器ip：换成你的服务器IP
           REMOTE_HOST: "a.t99.cn"
           # 服务器ip：换成你的服务器IP
-          REMOTE_PORT: 50000
+          # REMOTE_PORT: 50000
           # 用户
           REMOTE_USER: "v3ea"
           # 目标地址 你在服务器上部署代码的地方
           TARGET: "/opt/1panel/apps/openresty/openresty/www/sites/v3ea.skpay.com/index"
+          SCRIPT_BEFORE: ls
