@@ -46,7 +46,7 @@ jobs:
           # 服务器port：换成你的服务器port
           REMOTE_PORT: 50000
           # 用户
-          REMOTE_USER: "v3ea"
+          REMOTE_USER: "root"
           # 目标地址 你在服务器上部署代码的地方
           TARGET: "/opt/1panel/apps/openresty/openresty/www/sites/v3ea.skpay.com/index"
           SCRIPT_BEFORE: ls
