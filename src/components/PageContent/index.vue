@@ -144,6 +144,23 @@
                 {{ scope.row[col.prop] }}
               </el-link>
             </template>
+            <!-- 生成开关组件 -->
+            <template v-else-if="col.templet === 'switch'">
+              <!-- pageData.length>0: 解决el-switch组件会在表格初始化的时候触发一次change事件 -->
+              <el-switch
+                v-model="scope.row[col.prop]"
+                :active-value="col.activeValue ?? 1"
+                :inactive-value="col.inactiveValue ?? 0"
+                :inline-prompt="true"
+                :active-text="col.activeText ?? ''"
+                :inactive-text="col.inactiveText ?? ''"
+                :validate-event="false"
+                @change="
+                  pageData.length > 0 &&
+                    handleSwitchChange(col.prop, scope.row[col.prop], scope.row)
+                "
+              />
+            </template>
             <!-- 格式化为价格 -->
             <template v-else-if="col.templet === 'price'">
               {{ `${col.priceFormat ?? "￥"}${scope.row[col.prop]}` }}
@@ -274,6 +291,12 @@ export interface IContentConfig<T = any> {
   deleteAction?: (ids: string) => Promise<any>;
   // 导出的网络请求函数(需返回promise)
   exportAction?: (queryParams: T) => Promise<any>;
+  // 修改属性的网络请求函数(需返回promise)
+  modifyAction?: (data: {
+    [key: string]: any;
+    field: string;
+    value: boolean | string | number;
+  }) => Promise<any>;
   // 主键名(默认为id)
   pk?: string;
   // 表格工具栏(默认支持add,delete,export,也可自定义)
@@ -301,6 +324,7 @@ export interface IContentConfig<T = any> {
       | "image"
       | "list"
       | "url"
+      | "switch"
       | "price"
       | "percent"
       | "icon"
@@ -310,6 +334,10 @@ export interface IContentConfig<T = any> {
     imageWidth?: number;
     imageHeight?: number;
     selectList?: Record<string, any>;
+    activeValue?: boolean | string | number;
+    inactiveValue?: boolean | string | number;
+    activeText?: string;
+    inactiveText?: string;
     priceFormat?: string;
     dateFormat?: string;
     operat?: Array<
@@ -477,6 +505,22 @@ function exportPageData(queryParams: IObject = {}) {
     });
   } else {
     ElMessage.error("未配置exportAction");
+  }
+}
+// 属性修改
+function handleSwitchChange(
+  field: string,
+  value: boolean | string | number,
+  row: Record<string, any>
+) {
+  if (props.contentConfig.modifyAction) {
+    props.contentConfig.modifyAction({
+      [pk]: row[pk],
+      field: field,
+      value: value,
+    });
+  } else {
+    ElMessage.error("未配置modifyAction");
   }
 }
 
