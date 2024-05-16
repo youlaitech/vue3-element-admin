@@ -3,6 +3,7 @@ import type { IContentConfig } from "@/components/PageContent/index.vue";
 const contentConfig: IContentConfig = {
   pageName: "sys:user",
   indexAction: function (params) {
+    // console.log("indexAction:", params);
     return Promise.resolve({
       total: 2,
       list: [
@@ -17,6 +18,7 @@ const contentConfig: IContentConfig = {
           icon: "el-icon-setting",
           gender: 1,
           status: 1,
+          status2: 1,
           createTime: 1715647982437,
         },
         {
@@ -30,10 +32,15 @@ const contentConfig: IContentConfig = {
           icon: "el-icon-user",
           gender: 0,
           status: 0,
+          status2: 0,
           createTime: 1715648977426,
         },
       ],
     });
+  },
+  modifyAction(data) {
+    // console.log("modifyAction:", data);
+    return Promise.resolve(null);
   },
   cols: [
     { type: "selection", width: 50, align: "center" },
@@ -68,6 +75,16 @@ const contentConfig: IContentConfig = {
       prop: "status",
       templet: "custom",
       slotName: "status",
+    },
+    {
+      label: "状态",
+      align: "center",
+      prop: "status2",
+      templet: "switch",
+      activeValue: 1,
+      inactiveValue: 0,
+      activeText: "启用",
+      inactiveText: "禁用",
     },
     {
       label: "创建时间",
