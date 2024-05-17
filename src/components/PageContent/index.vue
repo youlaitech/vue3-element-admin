@@ -155,6 +155,7 @@
                 :active-text="col.activeText ?? ''"
                 :inactive-text="col.inactiveText ?? ''"
                 :validate-event="false"
+                :disabled="!hasAuth(`${contentConfig.pageName}:modify`)"
                 @change="
                   pageData.length > 0 &&
                     handleSwitchChange(col.prop, scope.row[col.prop], scope.row)
@@ -267,6 +268,7 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { useDateFormat } from "@vueuse/core";
+import { hasAuth } from "@/plugins/permission";
 import Pagination from "@/components/Pagination/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import type { TableProps, CheckboxValueType } from "element-plus";
