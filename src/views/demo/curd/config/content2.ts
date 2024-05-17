@@ -2,6 +2,9 @@ import type { IContentConfig } from "@/components/PageContent/index.vue";
 
 const contentConfig: IContentConfig = {
   pageName: "sys:user",
+  table: {
+    showOverflowTooltip: true,
+  },
   indexAction: function (params) {
     // console.log("indexAction:", params);
     return Promise.resolve({
@@ -44,7 +47,7 @@ const contentConfig: IContentConfig = {
   },
   cols: [
     { type: "selection", width: 50, align: "center" },
-    { label: "ID", align: "center", prop: "id" },
+    { label: "ID", align: "center", prop: "id", show: false },
     { label: "用户名", align: "center", prop: "username" },
     { label: "图片", align: "center", prop: "avatar", templet: "image" },
     {

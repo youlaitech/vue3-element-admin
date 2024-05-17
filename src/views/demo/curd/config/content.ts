@@ -33,7 +33,7 @@ const contentConfig: IContentConfig<UserQuery> = {
   ],
   cols: [
     { type: "selection", width: 50, align: "center" },
-    { label: "编号", align: "center", prop: "id", width: 100 },
+    { label: "编号", align: "center", prop: "id", width: 100, show: false },
     { label: "用户名", align: "center", prop: "username" },
     { label: "头像", align: "center", prop: "avatar", templet: "image" },
     { label: "用户昵称", align: "center", prop: "nickname", width: 120 },
