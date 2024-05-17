@@ -496,4 +496,3 @@ onMounted(() => {
   handleQuery();
 });
 </script>
-@/api/menu/model

@@ -308,4 +308,3 @@ onMounted(() => {
   handleQuery();
 });
 </script>
-@/api/dept/model
