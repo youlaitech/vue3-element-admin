@@ -316,4 +316,3 @@ onMounted(() => {
   handleQuery();
 });
 </script>
-@/api/dict/model

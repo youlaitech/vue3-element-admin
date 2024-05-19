@@ -59,37 +59,21 @@
         <template v-for="item in defaultToolbar" :key="item">
           <!-- 刷新 -->
           <template v-if="item === 'refresh'">
-            <el-icon class="cursor-pointer ml-2" @click="handleToolbar(item)">
-              <i-ep-refresh />
-            </el-icon>
+            <el-button icon="refresh" circle @click="handleToolbar(item)" />
           </template>
           <!-- 列设置 -->
           <template v-else-if="item === 'filter'">
             <el-popover placement="bottom" trigger="click">
               <template #reference>
-                <el-icon class="cursor-pointer ml-2">
-                  <i-ep-setting />
-                </el-icon>
+                <el-button icon="Operation" circle />
               </template>
-              <el-checkbox
-                v-model="columnSetting.checkAll"
-                :indeterminate="columnSetting.isIndeterminate"
-                @change="handleCheckAllChange"
-              >
-                全选
-              </el-checkbox>
-              <el-checkbox-group
-                v-model="columnSetting.checkedCols"
-                @change="handleCheckedColumnsChange"
-              >
-                <div v-for="col in contentConfig.cols" :key="col.label">
-                  <el-checkbox
-                    v-if="col.label"
-                    :value="col.label"
-                    :label="col.label"
-                  />
-                </div>
-              </el-checkbox-group>
+              <template v-for="col in cols" :key="col">
+                <el-checkbox
+                  v-if="col.prop"
+                  v-model="col.show"
+                  :label="col.label"
+                />
+              </template>
             </el-popover>
           </template>
         </template>
@@ -102,94 +86,113 @@
       :data="pageData"
       @selection-change="handleSelectionChange"
     >
-      <template v-for="col in displayedColumns" :key="col.prop">
+      <template v-for="col in cols" :key="col">
         <el-table-column v-if="col.show" v-bind="col">
           <template #default="scope">
             <!-- 显示图片 -->
             <template v-if="col.templet === 'image'">
-              <template v-if="Array.isArray(scope.row[col.prop])">
-                <template
-                  v-for="(item, index) in scope.row[col.prop]"
-                  :key="item"
-                >
+              <template v-if="col.prop">
+                <template v-if="Array.isArray(scope.row[col.prop])">
+                  <template
+                    v-for="(item, index) in scope.row[col.prop]"
+                    :key="item"
+                  >
+                    <el-image
+                      :src="item"
+                      :preview-src-list="scope.row[col.prop]"
+                      :initial-index="index"
+                      :preview-teleported="true"
+                      :style="`width: ${col.imageWidth ?? 40}px; height: ${col.imageHeight ?? 40}px`"
+                    />
+                  </template>
+                </template>
+                <template v-else>
                   <el-image
-                    :src="item"
-                    :preview-src-list="scope.row[col.prop]"
-                    :initial-index="index"
+                    :src="scope.row[col.prop]"
+                    :preview-src-list="[scope.row[col.prop]]"
                     :preview-teleported="true"
                     :style="`width: ${col.imageWidth ?? 40}px; height: ${col.imageHeight ?? 40}px`"
                   />
                 </template>
               </template>
-              <template v-else>
-                <el-image
-                  :src="scope.row[col.prop]"
-                  :preview-src-list="[scope.row[col.prop]]"
-                  :preview-teleported="true"
-                  :style="`width: ${col.imageWidth ?? 40}px; height: ${col.imageHeight ?? 40}px`"
-                />
-              </template>
             </template>
             <!-- 根据行的selectList属性返回对应列表值 -->
             <template v-else-if="col.templet === 'list'">
-              {{ (col.selectList ?? {})[scope.row[col.prop]] }}
+              <template v-if="col.prop">
+                {{ (col.selectList ?? {})[scope.row[col.prop]] }}
+              </template>
             </template>
             <!-- 格式化显示链接 -->
             <template v-else-if="col.templet === 'url'">
-              <el-link
-                type="primary"
-                :href="scope.row[col.prop]"
-                target="_blank"
-              >
-                {{ scope.row[col.prop] }}
-              </el-link>
+              <template v-if="col.prop">
+                <el-link
+                  type="primary"
+                  :href="scope.row[col.prop]"
+                  target="_blank"
+                >
+                  {{ scope.row[col.prop] }}
+                </el-link>
+              </template>
             </template>
             <!-- 生成开关组件 -->
             <template v-else-if="col.templet === 'switch'">
-              <!-- pageData.length>0: 解决el-switch组件会在表格初始化的时候触发一次change事件 -->
-              <el-switch
-                v-model="scope.row[col.prop]"
-                :active-value="col.activeValue ?? 1"
-                :inactive-value="col.inactiveValue ?? 0"
-                :inline-prompt="true"
-                :active-text="col.activeText ?? ''"
-                :inactive-text="col.inactiveText ?? ''"
-                :validate-event="false"
-                @change="
-                  pageData.length > 0 &&
-                    handleSwitchChange(col.prop, scope.row[col.prop], scope.row)
-                "
-              />
+              <template v-if="col.prop">
+                <!-- pageData.length>0: 解决el-switch组件会在表格初始化的时候触发一次change事件 -->
+                <el-switch
+                  v-model="scope.row[col.prop]"
+                  :active-value="col.activeValue ?? 1"
+                  :inactive-value="col.inactiveValue ?? 0"
+                  :inline-prompt="true"
+                  :active-text="col.activeText ?? ''"
+                  :inactive-text="col.inactiveText ?? ''"
+                  :validate-event="false"
+                  :disabled="!hasAuth(`${contentConfig.pageName}:modify`)"
+                  @change="
+                    pageData.length > 0 &&
+                      handleSwitchChange(
+                        col.prop,
+                        scope.row[col.prop],
+                        scope.row
+                      )
+                  "
+                />
+              </template>
             </template>
             <!-- 格式化为价格 -->
             <template v-else-if="col.templet === 'price'">
-              {{ `${col.priceFormat ?? "￥"}${scope.row[col.prop]}` }}
+              <template v-if="col.prop">
+                {{ `${col.priceFormat ?? "￥"}${scope.row[col.prop]}` }}
+              </template>
             </template>
             <!-- 格式化为百分比 -->
             <template v-else-if="col.templet === 'percent'">
-              {{ scope.row[col.prop] }}%
+              <template v-if="col.prop"> {{ scope.row[col.prop] }}% </template>
             </template>
             <!-- 显示图标 -->
             <template v-else-if="col.templet === 'icon'">
-              <template v-if="scope.row[col.prop].startsWith('el-icon-')">
-                <el-icon>
-                  <component
-                    :is="scope.row[col.prop].replace('el-icon-', '')"
-                  />
-                </el-icon>
-              </template>
-              <template v-else>
-                <svg-icon :icon-class="scope.row[col.prop]" />
+              <template v-if="col.prop">
+                <template v-if="scope.row[col.prop].startsWith('el-icon-')">
+                  <el-icon>
+                    <component
+                      :is="scope.row[col.prop].replace('el-icon-', '')"
+                    />
+                  </el-icon>
+                </template>
+                <template v-else>
+                  <svg-icon :icon-class="scope.row[col.prop]" />
+                </template>
               </template>
             </template>
             <!-- 格式化时间 -->
             <template v-else-if="col.templet === 'date'">
-              {{
-                useDateFormat(
-                  scope.row[col.prop],
-                  col.dateFormat ?? "YYYY-MM-DD HH:mm:ss"
-                ).value
-              }}
+              <template v-if="col.prop">
+                {{
+                  useDateFormat(
+                    scope.row[col.prop],
+                    col.dateFormat ?? "YYYY-MM-DD HH:mm:ss"
+                  ).value
+                }}
+              </template>
             </template>
             <!-- 列操作栏 -->
             <template v-else-if="col.templet === 'tool'">
@@ -267,9 +270,10 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { useDateFormat } from "@vueuse/core";
+import { hasAuth } from "@/plugins/permission";
 import Pagination from "@/components/Pagination/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
-import type { TableProps, CheckboxValueType } from "element-plus";
+import type { TableProps } from "element-plus";
 
 // 对象类型
 export type IObject = Record<string, any>;
@@ -320,6 +324,7 @@ export interface IContentConfig<T = any> {
     prop?: string;
     width?: string | number;
     align?: "left" | "center" | "right";
+    show?: boolean;
     templet?:
       | "image"
       | "list"
@@ -376,6 +381,15 @@ const defaultToolbar = props.contentConfig.defaultToolbar ?? [
   "refresh",
   "filter",
 ];
+// 表格列
+const cols = ref(
+  props.contentConfig.cols.map((col) => {
+    if (col.show === undefined) {
+      col.show = true;
+    }
+    return col;
+  })
+);
 // 加载状态
 const loading = ref(false);
 // 删除ID集合 用于批量删除
@@ -523,53 +537,6 @@ function handleSwitchChange(
     ElMessage.error("未配置modifyAction");
   }
 }
-
-// 列设置类型声明
-interface IColumnSetting {
-  checkAll: boolean;
-  isIndeterminate: boolean;
-  checkedCols: string[];
-}
-
-// 列设置
-const columnSetting = ref<IColumnSetting>({
-  checkAll: true,
-  isIndeterminate: false,
-  checkedCols: [],
-});
-// 创建一个响应式副本，用于存储最后显示的列配置
-const displayedColumns = ref<IObject>(props.contentConfig.cols);
-
-// 全选/取消全选
-const handleCheckAllChange = (checkAll: CheckboxValueType) => {
-  columnSetting.value.checkedCols = checkAll
-    ? (props.contentConfig.cols.map((col) => col.label) as any[])
-    : [];
-  columnSetting.value.isIndeterminate = false;
-
-  displayedColumns.value = displayedColumns.value.map((col: IObject) => ({
-    ...col,
-    show: checkAll,
-  }));
-};
-
-// 选中列变化
-const handleCheckedColumnsChange = (values: CheckboxValueType[]) => {
-  const showColumnsLength = props.contentConfig.cols.length;
-
-  const checkedCount = values.length;
-  columnSetting.value.checkAll = checkedCount === showColumnsLength;
-  columnSetting.value.isIndeterminate =
-    checkedCount > 0 && checkedCount < showColumnsLength;
-
-  displayedColumns.value = displayedColumns.value.map((col: IObject) => ({
-    ...col,
-    show: values.includes(col.label),
-  }));
-};
-
-// 初始化全选状态
-handleCheckAllChange(columnSetting.value.checkAll);
 </script>
 
 <style lang="scss" scoped></style>
