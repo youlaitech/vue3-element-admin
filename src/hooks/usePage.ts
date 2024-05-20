@@ -41,7 +41,7 @@ function usePage() {
     contentRef.value?.exportPageData(queryParams);
   }
   // 搜索显隐
-  function handelSearchClick() {
+  function handleSearchClick() {
     searchRef.value?.toggleVisible();
   }
 
@@ -56,7 +56,7 @@ function usePage() {
     handleEditClick,
     handleSubmitClick,
     handleExportClick,
-    handelSearchClick,
+    handleSearchClick,
   };
 }
 
