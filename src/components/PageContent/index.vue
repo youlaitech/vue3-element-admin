@@ -67,13 +67,15 @@
               <template #reference>
                 <el-button icon="Operation" circle />
               </template>
-              <template v-for="col in cols" :key="col">
-                <el-checkbox
-                  v-if="col.prop"
-                  v-model="col.show"
-                  :label="col.label"
-                />
-              </template>
+              <el-scrollbar max-height="350px">
+                <template v-for="col in cols" :key="col">
+                  <el-checkbox
+                    v-if="col.prop"
+                    v-model="col.show"
+                    :label="col.label"
+                  />
+                </template>
+              </el-scrollbar>
             </el-popover>
           </template>
           <!-- 搜索 -->
