@@ -1,5 +1,9 @@
 <template>
-  <div class="search-container" v-hasPerm="[`${searchConfig.pageName}:query`]">
+  <div
+    class="search-container"
+    v-show="visible"
+    v-hasPerm="[`${searchConfig.pageName}:query`]"
+  >
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <template
         v-for="(item, index) in searchConfig.formItems"
@@ -102,9 +106,9 @@ const emit = defineEmits<{
   queryClick: [queryParams: IObject];
   resetClick: [queryParams: IObject];
 }>();
-// 暴露的属性和方法
-defineExpose({ getQueryParams });
 
+// 是否显示
+const visible = ref(true);
 // 是否可展开/收缩
 const isExpandable = ref(props.searchConfig.isExpandable ?? true);
 // 是否已展开
@@ -137,6 +141,13 @@ function handleQuery() {
 function getQueryParams() {
   return queryParams;
 }
+// 显示/隐藏 SearchForm
+function toggleVisible() {
+  visible.value = !visible.value;
+}
+
+// 暴露的属性和方法
+defineExpose({ getQueryParams, toggleVisible });
 </script>
 
 <style lang="scss" scoped>
@@ -146,6 +157,6 @@ function getQueryParams() {
   background-color: var(--el-bg-color-overlay);
   border: 1px solid var(--el-border-color-light);
   border-radius: 4px;
-  box-shadow: var(--el-box-shadow-light);
+  box-shadow: none;
 }
 </style>

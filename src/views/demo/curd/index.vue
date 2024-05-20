@@ -24,6 +24,7 @@
       @add-click="handleAddClick"
       @edit-click="handleEditClick"
       @export-click="handleExportClick"
+      @search-click="handelSearchClick"
       @toolbar-click="handleToolbarClick"
       @operat-click="handleOperatClick"
     >
@@ -70,6 +71,7 @@ const {
   // handleEditClick,
   handleSubmitClick,
   handleExportClick,
+  handelSearchClick,
 } = usePage();
 // 编辑
 async function handleEditClick(row: IObject) {
