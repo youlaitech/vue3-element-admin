@@ -433,7 +433,7 @@ function handleSelectionChange(selection: any[]) {
 }
 // 刷新
 function handleRefresh() {
-  fetchPageData({}, true);
+  fetchPageData(lastFormData);
 }
 // 删除
 function handleDelete(id?: number | string) {
@@ -451,7 +451,7 @@ function handleDelete(id?: number | string) {
     if (props.contentConfig.deleteAction) {
       props.contentConfig.deleteAction(ids).then(() => {
         ElMessage.success("删除成功");
-        handleRefresh();
+        fetchPageData({}, true);
       });
     } else {
       ElMessage.error("未配置deleteAction");
