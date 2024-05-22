@@ -160,6 +160,17 @@
                 />
               </template>
             </template>
+            <!-- 生成输入框组件 -->
+            <template v-else-if="col.templet === 'input'">
+              <template v-if="col.prop">
+                <el-input
+                  v-model="scope.row[col.prop]"
+                  :type="col.inputType ?? 'text'"
+                  :disabled="!hasAuth(`${contentConfig.pageName}:modify`)"
+                  @blur="handleModify(col.prop, scope.row[col.prop], scope.row)"
+                />
+              </template>
+            </template>
             <!-- 格式化为价格 -->
             <template v-else-if="col.templet === 'price'">
               <template v-if="col.prop">
@@ -332,6 +343,7 @@ export interface IContentConfig<T = any> {
       | "list"
       | "url"
       | "switch"
+      | "input"
       | "price"
       | "percent"
       | "icon"
@@ -345,6 +357,7 @@ export interface IContentConfig<T = any> {
     inactiveValue?: boolean | string | number;
     activeText?: string;
     inactiveText?: string;
+    inputType?: string;
     priceFormat?: string;
     dateFormat?: string;
     operat?: Array<

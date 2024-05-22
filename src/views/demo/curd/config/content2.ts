@@ -22,6 +22,7 @@ const contentConfig: IContentConfig = {
           gender: 1,
           status: 1,
           status2: 1,
+          sort: 99,
           createTime: 1715647982437,
         },
         {
@@ -36,13 +37,14 @@ const contentConfig: IContentConfig = {
           gender: 0,
           status: 0,
           status2: 0,
+          sort: 0,
           createTime: 1715648977426,
         },
       ],
     });
   },
   modifyAction(data) {
-    // console.log("modifyAction:", data);
+    console.log("modifyAction:", data);
     return Promise.resolve(null);
   },
   cols: [
@@ -88,6 +90,13 @@ const contentConfig: IContentConfig = {
       inactiveValue: 0,
       activeText: "启用",
       inactiveText: "禁用",
+    },
+    {
+      label: "排序",
+      align: "center",
+      prop: "sort",
+      templet: "input",
+      inputType: "number",
     },
     {
       label: "创建时间",
