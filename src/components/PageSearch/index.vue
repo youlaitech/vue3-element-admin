@@ -69,7 +69,7 @@
 
 <script setup lang="ts">
 import type { FormInstance } from "element-plus";
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 
 // 对象类型
 type IObject = Record<string, any>;
@@ -91,6 +91,8 @@ export interface ISearchConfig {
     initialValue?: any;
     // 可选项(适用于select组件)
     options?: { label: string; value: any }[];
+    // 初始化数据函数扩展（适用初始化options）
+    initFn?: Function;
   }>;
   // 是否开启展开和收缩
   isExpandable?: boolean;
@@ -145,6 +147,12 @@ function getQueryParams() {
 function toggleVisible() {
   visible.value = !visible.value;
 }
+
+onMounted(() => {
+  props.searchConfig.formItems.forEach((item) => {
+    item.initFn && item.initFn();
+  });
+});
 
 // 暴露的属性和方法
 defineExpose({ getQueryParams, toggleVisible });
