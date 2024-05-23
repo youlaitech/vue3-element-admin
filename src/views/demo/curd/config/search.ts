@@ -57,10 +57,15 @@ const searchConfig: ISearchConfig = {
           width: "100px",
         },
       },
-      options: [
-        { label: "启用", value: 1 },
-        { label: "禁用", value: 0 },
-      ],
+      options: [],
+      initFn() {
+        setTimeout(() => {
+          this.options = [
+            { label: "启用", value: 1 },
+            { label: "禁用", value: 0 },
+          ];
+        }, 300);
+      },
     },
     {
       type: "date-picker",
