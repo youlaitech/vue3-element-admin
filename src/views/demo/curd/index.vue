@@ -24,6 +24,7 @@
       @add-click="handleAddClick"
       @edit-click="handleEditClick"
       @export-click="handleExportClick"
+      @search-click="handleSearchClick"
       @toolbar-click="handleToolbarClick"
       @operat-click="handleOperatClick"
     >
@@ -56,6 +57,7 @@ import type { IObject, IOperatData } from "@/hooks/usePage";
 import usePage from "@/hooks/usePage";
 import addModalConfig from "./config/add";
 import contentConfig from "./config/content";
+// import contentConfig from "./config/content2";
 import editModalConfig from "./config/edit";
 import searchConfig from "./config/search";
 
@@ -70,6 +72,7 @@ const {
   // handleEditClick,
   handleSubmitClick,
   handleExportClick,
+  handleSearchClick,
 } = usePage();
 // 编辑
 async function handleEditClick(row: IObject) {

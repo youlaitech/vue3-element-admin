@@ -1,10 +1,11 @@
 <template>
-  <div class="search-container" v-hasPerm="[`${searchConfig.pageName}:query`]">
+  <div
+    class="search-container"
+    v-show="visible"
+    v-hasPerm="[`${searchConfig.pageName}:query`]"
+  >
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-      <template
-        v-for="(item, index) in searchConfig.formItems"
-        :key="item.prop"
-      >
+      <template v-for="(item, index) in formItems" :key="item.prop">
         <el-form-item
           v-show="isExpand ? true : index < showNumber"
           :label="item.label"
@@ -49,7 +50,7 @@
         <el-button icon="refresh" @click="handleReset">重置</el-button>
         <!-- 展开/收起 -->
         <el-link
-          v-if="isExpandable && searchConfig.formItems.length > showNumber"
+          v-if="isExpandable && formItems.length > showNumber"
           class="ml-2"
           type="primary"
           :underline="false"
@@ -87,12 +88,15 @@ export interface ISearchConfig {
     initialValue?: any;
     // 可选项(适用于select组件)
     options?: { label: string; value: any }[];
+    // 初始化数据函数扩展
+    initFn?: (formItem: IObject) => void;
   }>;
   // 是否开启展开和收缩
   isExpandable?: boolean;
   // 默认展示的表单项数量
   showNumber?: number;
 }
+
 interface IProps {
   searchConfig: ISearchConfig;
 }
@@ -102,9 +106,12 @@ const emit = defineEmits<{
   queryClick: [queryParams: IObject];
   resetClick: [queryParams: IObject];
 }>();
-// 暴露的属性和方法
-defineExpose({ getQueryParams });
 
+const queryFormRef = ref<FormInstance>();
+// 是否显示
+const visible = ref(true);
+// 响应式的formItems
+const formItems = reactive(props.searchConfig.formItems);
 // 是否可展开/收缩
 const isExpandable = ref(props.searchConfig.isExpandable ?? true);
 // 是否已展开
@@ -114,14 +121,13 @@ const showNumber = computed(() => {
   if (isExpandable.value === true) {
     return props.searchConfig.showNumber ?? 3;
   } else {
-    return props.searchConfig.formItems.length;
+    return formItems.length;
   }
 });
-
-const queryFormRef = ref<FormInstance>();
 // 搜索表单数据
 const queryParams = reactive<IObject>({});
-for (const item of props.searchConfig.formItems) {
+for (const item of formItems) {
+  item.initFn && item.initFn(item);
   queryParams[item.prop] = item.initialValue ?? "";
 }
 // 重置操作
@@ -137,6 +143,13 @@ function handleQuery() {
 function getQueryParams() {
   return queryParams;
 }
+// 显示/隐藏 SearchForm
+function toggleVisible() {
+  visible.value = !visible.value;
+}
+
+// 暴露的属性和方法
+defineExpose({ getQueryParams, toggleVisible });
 </script>
 
 <style lang="scss" scoped>
@@ -146,6 +159,6 @@ function getQueryParams() {
   background-color: var(--el-bg-color-overlay);
   border: 1px solid var(--el-border-color-light);
   border-radius: 4px;
-  box-shadow: var(--el-box-shadow-light);
+  box-shadow: none;
 }
 </style>

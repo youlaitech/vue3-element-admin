@@ -40,6 +40,10 @@ function usePage() {
     const queryParams = searchRef.value?.getQueryParams();
     contentRef.value?.exportPageData(queryParams);
   }
+  // 搜索显隐
+  function handleSearchClick() {
+    searchRef.value?.toggleVisible();
+  }
 
   return {
     searchRef,
@@ -52,6 +56,7 @@ function usePage() {
     handleEditClick,
     handleSubmitClick,
     handleExportClick,
+    handleSearchClick,
   };
 }
 

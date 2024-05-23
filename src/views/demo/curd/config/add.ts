@@ -1,3 +1,6 @@
+import DeptAPI from "@/api/dept";
+import DictAPI from "@/api/dict";
+import RoleAPI from "@/api/role";
 import UserAPI from "@/api/user";
 import type { UserForm } from "@/api/user/model";
 import type { IModalConfig } from "@/components/PageModal/index.vue";
@@ -42,25 +45,13 @@ const modalConfig: IModalConfig<UserForm> = {
       type: "tree-select",
       attrs: {
         placeholder: "请选择所属部门",
-        data: [
-          {
-            value: 1,
-            label: "有来技术",
-            children: [
-              {
-                value: 2,
-                label: "研发部门",
-              },
-              {
-                value: 3,
-                label: "测试部门",
-              },
-            ],
-          },
-        ],
+        data: [],
         filterable: true,
         "check-strictly": true,
         "render-after-expand": false,
+      },
+      async initFn(formItem) {
+        formItem.attrs.data = await DeptAPI.getOptions();
       },
     },
     {
@@ -70,11 +61,10 @@ const modalConfig: IModalConfig<UserForm> = {
       attrs: {
         placeholder: "请选择",
       },
-      options: [
-        { label: "男", value: 1 },
-        { label: "女", value: 2 },
-        { label: "未知", value: 0 },
-      ],
+      options: [],
+      async initFn(formItem) {
+        formItem.options = await DictAPI.getDictOptions("gender");
+      },
     },
     {
       label: "角色",
@@ -85,18 +75,10 @@ const modalConfig: IModalConfig<UserForm> = {
         placeholder: "请选择",
         multiple: true,
       },
-      options: [
-        { label: "系统管理员", value: 2 },
-        { label: "系统管理员1", value: 4 },
-        { label: "系统管理员2", value: 5 },
-        { label: "系统管理员3", value: 6 },
-        { label: "系统管理员4", value: 7 },
-        { label: "系统管理员5", value: 8 },
-        { label: "系统管理员6", value: 9 },
-        { label: "系统管理员7", value: 10 },
-        { label: "系统管理员8", value: 11 },
-        { label: "访问游客", value: 3 },
-      ],
+      options: [],
+      async initFn(formItem) {
+        this.options = await RoleAPI.getOptions();
+      },
     },
     {
       type: "input",

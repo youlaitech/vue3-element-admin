@@ -67,14 +67,20 @@
               <template #reference>
                 <el-button icon="Operation" circle />
               </template>
-              <template v-for="col in cols" :key="col">
-                <el-checkbox
-                  v-if="col.prop"
-                  v-model="col.show"
-                  :label="col.label"
-                />
-              </template>
+              <el-scrollbar max-height="350px">
+                <template v-for="col in cols" :key="col">
+                  <el-checkbox
+                    v-if="col.prop"
+                    v-model="col.show"
+                    :label="col.label"
+                  />
+                </template>
+              </el-scrollbar>
             </el-popover>
+          </template>
+          <!-- 搜索 -->
+          <template v-else-if="item === 'search'">
+            <el-button icon="search" circle @click="handleToolbar(item)" />
           </template>
         </template>
       </div>
@@ -149,12 +155,19 @@
                   :disabled="!hasAuth(`${contentConfig.pageName}:modify`)"
                   @change="
                     pageData.length > 0 &&
-                      handleSwitchChange(
-                        col.prop,
-                        scope.row[col.prop],
-                        scope.row
-                      )
+                      handleModify(col.prop, scope.row[col.prop], scope.row)
                   "
+                />
+              </template>
+            </template>
+            <!-- 生成输入框组件 -->
+            <template v-else-if="col.templet === 'input'">
+              <template v-if="col.prop">
+                <el-input
+                  v-model="scope.row[col.prop]"
+                  :type="col.inputType ?? 'text'"
+                  :disabled="!hasAuth(`${contentConfig.pageName}:modify`)"
+                  @blur="handleModify(col.prop, scope.row[col.prop], scope.row)"
                 />
               </template>
             </template>
@@ -316,7 +329,7 @@ export interface IContentConfig<T = any> {
       }
   >;
   // 表格工具栏右侧图标
-  defaultToolbar?: ("refresh" | "filter")[];
+  defaultToolbar?: ("refresh" | "filter" | "search")[];
   // table组件列属性(额外的属性templet,operat,slotName)
   cols: Array<{
     type?: "default" | "selection" | "index" | "expand";
@@ -330,6 +343,7 @@ export interface IContentConfig<T = any> {
       | "list"
       | "url"
       | "switch"
+      | "input"
       | "price"
       | "percent"
       | "icon"
@@ -343,6 +357,7 @@ export interface IContentConfig<T = any> {
     inactiveValue?: boolean | string | number;
     activeText?: string;
     inactiveText?: string;
+    inputType?: string;
     priceFormat?: string;
     dateFormat?: string;
     operat?: Array<
@@ -365,12 +380,11 @@ const props = defineProps<{
 const emit = defineEmits<{
   addClick: [];
   exportClick: [];
+  searchClick: [];
   toolbarClick: [name: string];
   editClick: [row: IObject];
   operatClick: [data: IOperatData];
 }>();
-// 暴露的属性和方法
-defineExpose({ fetchPageData, exportPageData });
 
 // 主键
 const pk = props.contentConfig.pk ?? "id";
@@ -380,6 +394,7 @@ const toolbar = props.contentConfig.toolbar ?? ["add", "delete"];
 const defaultToolbar = props.contentConfig.defaultToolbar ?? [
   "refresh",
   "filter",
+  "search",
 ];
 // 表格列
 const cols = ref(
@@ -433,7 +448,7 @@ function handleSelectionChange(selection: any[]) {
 }
 // 刷新
 function handleRefresh() {
-  fetchPageData({}, true);
+  fetchPageData(lastFormData);
 }
 // 删除
 function handleDelete(id?: number | string) {
@@ -451,7 +466,7 @@ function handleDelete(id?: number | string) {
     if (props.contentConfig.deleteAction) {
       props.contentConfig.deleteAction(ids).then(() => {
         ElMessage.success("删除成功");
-        handleRefresh();
+        fetchPageData({}, true);
       });
     } else {
       ElMessage.error("未配置deleteAction");
@@ -467,6 +482,9 @@ function handleToolbar(name: string) {
   switch (name) {
     case "refresh":
       handleRefresh();
+      break;
+    case "search":
+      emit("searchClick");
       break;
     case "add":
       emit("addClick");
@@ -522,7 +540,7 @@ function exportPageData(queryParams: IObject = {}) {
   }
 }
 // 属性修改
-function handleSwitchChange(
+function handleModify(
   field: string,
   value: boolean | string | number,
   row: Record<string, any>
@@ -537,6 +555,9 @@ function handleSwitchChange(
     ElMessage.error("未配置modifyAction");
   }
 }
+
+// 暴露的属性和方法
+defineExpose({ fetchPageData, exportPageData });
 </script>
 
 <style lang="scss" scoped></style>
