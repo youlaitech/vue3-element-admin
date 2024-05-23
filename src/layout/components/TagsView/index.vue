@@ -162,6 +162,7 @@ function addTags() {
       fullPath: route.fullPath,
       affix: route.meta?.affix,
       keepAlive: route.meta?.keepAlive,
+      query: route.query,
     });
   }
 }
@@ -181,6 +182,7 @@ function moveToCurrentTag() {
             fullPath: route.fullPath,
             affix: route.meta?.affix,
             keepAlive: route.meta?.keepAlive,
+            query: route.query,
           });
         }
       }
@@ -222,7 +224,7 @@ function refreshSelectedTag(view: TagView) {
   tagsViewStore.delCachedView(view);
   const { fullPath } = view;
   nextTick(() => {
-    router.replace({ path: "/redirect" + fullPath });
+    router.replace("/redirect" + fullPath);
   });
 }
 
@@ -235,7 +237,7 @@ function toLastView(visitedViews: TagView[], view?: TagView) {
     // you can adjust it according to your needs.
     if (view?.name === "Dashboard") {
       // to reload home page
-      router.replace({ path: "/redirect" + view.fullPath });
+      router.replace("/redirect" + view.fullPath);
     } else {
       router.push("/");
     }
