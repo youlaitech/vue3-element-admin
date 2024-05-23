@@ -103,13 +103,15 @@ const props = withDefaults(
 );
 
 const formRef = ref<FormInstance>();
+const formItems = reactive(props.formItems);
 const formData = reactive<IObject>({});
 const formRules: FormRules = {};
 const watchArr = [];
 const computedArr = [];
 const watchEffectArr = [];
 // 初始化
-for (const item of props.formItems) {
+for (const item of formItems) {
+  item.initFn && item.initFn(item);
   formData[item.prop] = item.initialValue ?? "";
   formRules[item.prop] = item.rules ?? [];
   if (item.watch !== undefined) {

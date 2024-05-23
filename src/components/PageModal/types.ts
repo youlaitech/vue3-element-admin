@@ -59,4 +59,6 @@ export type IFormItems<T = any> = Array<{
   computed?: (data: T) => any;
   // 监听收集函数
   watchEffect?: (data: T) => void;
+  // 初始化数据函数扩展
+  initFn?: (formItem: IObject) => void;
 }>;
