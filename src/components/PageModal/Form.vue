@@ -118,7 +118,7 @@ for (const item of formItems) {
       watch(
         () => formData[item.prop],
         (newValue, oldValue) => {
-          item.watch && item.watch(newValue, oldValue, formData);
+          item.watch && item.watch(newValue, oldValue, formData, formItems);
         }
       );
     });
