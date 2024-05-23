@@ -106,46 +106,45 @@ const formRef = ref<FormInstance>();
 const formItems = reactive(props.formItems);
 const formData = reactive<IObject>({});
 const formRules: FormRules = {};
-const watchArr = [];
-const computedArr = [];
-const watchEffectArr = [];
+const prepareFuncs = [];
 // 初始化
 for (const item of formItems) {
   item.initFn && item.initFn(item);
   formData[item.prop] = item.initialValue ?? "";
   formRules[item.prop] = item.rules ?? [];
+
   if (item.watch !== undefined) {
-    watchArr.push({ field: item.prop, func: item.watch });
+    prepareFuncs.push(() => {
+      watch(
+        () => formData[item.prop],
+        (newValue, oldValue) => {
+          item.watch && item.watch(newValue, oldValue, formData);
+        }
+      );
+    });
   }
+
   if (item.computed !== undefined) {
-    computedArr.push({ field: item.prop, func: item.computed });
+    prepareFuncs.push(() => {
+      formData[item.prop] = computed({
+        get() {
+          return item.computed ? item.computed(formData) : undefined;
+        },
+        // TODO
+        set() {},
+      });
+    });
   }
+
   if (item.watchEffect !== undefined) {
-    watchEffectArr.push(item.watchEffect);
+    prepareFuncs.push(() => {
+      watchEffect(() => {
+        item.watchEffect && item.watchEffect(formData);
+      });
+    });
   }
 }
-watchArr.forEach(({ field, func }) => {
-  watch(
-    () => formData[field],
-    (newValue, oldValue) => {
-      func(newValue, oldValue, formData);
-    }
-  );
-});
-computedArr.forEach(({ field, func }) => {
-  formData[field] = computed({
-    get() {
-      return func(formData);
-    },
-    // TODO
-    set() {},
-  });
-});
-watchEffectArr.forEach((func) => {
-  watchEffect(() => {
-    func(formData);
-  });
-});
+prepareFuncs.forEach((func) => func());
 // 获取表单数据
 function getFormData(key?: string) {
   return key === undefined ? formData : formData[key] ?? undefined;
