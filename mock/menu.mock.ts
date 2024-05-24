@@ -362,6 +362,7 @@ export default defineMock([
                 icon: "",
                 hidden: false,
                 roles: ["ADMIN"],
+                params: { type: "1" },
               },
             },
           ],
