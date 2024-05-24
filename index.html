@@ -35,31 +35,26 @@
     }
 
     .loader {
-      position: relative;
-      width: 40px;
-      aspect-ratio: 0.577;
-      overflow: hidden;
-      clip-path: polygon(0 0, 100% 100%, 0 100%, 100% 0);
-      animation: l19 2s infinite linear;
+      --d: 22px;
+
+      width: 4px;
+      height: 4px;
+      color: #25b09b;
+      border-radius: 50%;
+      box-shadow:
+        calc(1 * var(--d)) calc(0 * var(--d)) 0 0,
+        calc(0.707 * var(--d)) calc(0.707 * var(--d)) 0 1px,
+        calc(0 * var(--d)) calc(1 * var(--d)) 0 2px,
+        calc(-0.707 * var(--d)) calc(0.707 * var(--d)) 0 3px,
+        calc(-1 * var(--d)) calc(0 * var(--d)) 0 4px,
+        calc(-0.707 * var(--d)) calc(-0.707 * var(--d)) 0 5px,
+        calc(0 * var(--d)) calc(-1 * var(--d)) 0 6px;
+      animation: l27 1s infinite steps(8);
     }
 
-    .loader::before {
-      position: absolute;
-      inset: -150%;
-      content: "";
-      background: repeating-conic-gradient(
-        from 30deg,
-        #ffabab 0 60deg,
-        #abe4ff 0 120deg,
-        #ff7373 0 180deg
-      );
-      animation: inherit;
-      animation-direction: reverse;
-    }
-
-    @keyframes l19 {
+    @keyframes l27 {
       100% {
-        transform: rotate(360deg);
+        transform: rotate(1turn);
       }
     }
   </style>
