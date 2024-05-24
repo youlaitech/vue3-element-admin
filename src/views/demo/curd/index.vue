@@ -57,6 +57,7 @@ import type { IObject, IOperatData } from "@/hooks/usePage";
 import usePage from "@/hooks/usePage";
 import addModalConfig from "./config/add";
 import contentConfig from "./config/content";
+// import contentConfig from "./config/content2";
 import editModalConfig from "./config/edit";
 import searchConfig from "./config/search";
 

@@ -113,11 +113,11 @@ const handleSubmit = useThrottleFn(() => {
         let msg = "操作成功";
         if (props.modalConfig.component === "drawer") {
           if (props.modalConfig.drawer?.title) {
-            msg = props.modalConfig.drawer?.title;
+            msg = `${props.modalConfig.drawer?.title}成功`;
           }
         } else {
           if (props.modalConfig.dialog?.title) {
-            msg = props.modalConfig.dialog?.title;
+            msg = `${props.modalConfig.dialog?.title}成功`;
           }
         }
         ElMessage.success(msg);

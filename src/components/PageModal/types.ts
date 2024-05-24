@@ -54,9 +54,11 @@ export type IFormItems<T = any> = Array<{
   // 是否隐藏
   hidden?: boolean;
   // 监听函数
-  watch?: (newValue: any, oldValue: any, data: T) => void;
+  watch?: (newValue: any, oldValue: any, data: T, items: IObject[]) => void;
   // 计算属性函数
   computed?: (data: T) => any;
   // 监听收集函数
   watchEffect?: (data: T) => void;
+  // 初始化数据函数扩展
+  initFn?: (item: IObject) => void;
 }>;

@@ -1,3 +1,4 @@
+import DeptAPI from "@/api/dept";
 import type { ISearchConfig } from "@/components/PageSearch/index.vue";
 
 const searchConfig: ISearchConfig = {
@@ -21,22 +22,7 @@ const searchConfig: ISearchConfig = {
       prop: "deptId",
       attrs: {
         placeholder: "请选择",
-        data: [
-          {
-            value: 1,
-            label: "有来技术",
-            children: [
-              {
-                value: 2,
-                label: "研发部门",
-              },
-              {
-                value: 3,
-                label: "测试部门",
-              },
-            ],
-          },
-        ],
+        data: [],
         filterable: true,
         "check-strictly": true,
         "render-after-expand": false,
@@ -44,6 +30,11 @@ const searchConfig: ISearchConfig = {
         style: {
           width: "150px",
         },
+      },
+      async initFn(formItem) {
+        formItem.attrs.data = await DeptAPI.getOptions();
+        // 注意:如果initFn函数不是箭头函数,this会指向此配置项对象,那么也就可以用this来替代形参formItem
+        // this.attrs!.data = await DeptAPI.getOptions();
       },
     },
     {
