@@ -251,7 +251,7 @@ import type {
   DrawerProps,
 } from "element-plus";
 import { useThrottleFn } from "@vueuse/core";
-import { reactive, ref, watch, computed, watchEffect } from "vue";
+import { reactive, ref, watch, watchEffect } from "vue";
 
 // 对象类型
 export type IObject = Record<string, any>;
