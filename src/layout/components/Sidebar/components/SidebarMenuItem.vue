@@ -8,7 +8,13 @@
         !item.meta?.alwaysShow
       "
     >
-      <AppLink v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
+      <AppLink
+        v-if="onlyOneChild.meta"
+        :to="{
+          path: resolvePath(onlyOneChild.path),
+          query: onlyOneChild.meta.params,
+        }"
+      >
         <el-menu-item
           :index="resolvePath(onlyOneChild.path)"
           :class="{ 'submenu-title-noDropdown': !isNest }"
