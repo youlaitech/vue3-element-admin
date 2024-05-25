@@ -1,7 +1,7 @@
 <template>
   <el-card
     shadow="never"
-    style="margin-bottom: 10px"
+    class="mb-[10px]"
     v-show="visible"
     v-hasPerm="[`${searchConfig.pageName}:query`]"
   >
