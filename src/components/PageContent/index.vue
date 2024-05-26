@@ -1,5 +1,5 @@
 <template>
-  <el-card shadow="never" class="table-container">
+  <el-card shadow="never">
     <!-- 表格工具栏 -->
     <div class="flex-x-between mb-[10px]">
       <!-- 左侧工具栏 -->

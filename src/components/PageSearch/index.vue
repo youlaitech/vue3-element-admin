@@ -1,6 +1,7 @@
 <template>
-  <div
-    class="search-container"
+  <el-card
+    shadow="never"
+    class="mb-[10px]"
     v-show="visible"
     v-hasPerm="[`${searchConfig.pageName}:query`]"
   >
@@ -61,7 +62,7 @@
         </el-link>
       </el-form-item>
     </el-form>
-  </div>
+  </el-card>
 </template>
 
 <script setup lang="ts">
@@ -152,13 +153,4 @@ function toggleVisible() {
 defineExpose({ getQueryParams, toggleVisible });
 </script>
 
-<style lang="scss" scoped>
-.search-container {
-  padding: 18px 0 0 10px;
-  margin-bottom: 10px;
-  background-color: var(--el-bg-color-overlay);
-  border: 1px solid var(--el-border-color-light);
-  border-radius: 4px;
-  box-shadow: none;
-}
-</style>
+<style lang="scss" scoped></style>
