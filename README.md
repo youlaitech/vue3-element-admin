@@ -97,7 +97,8 @@ server {
 	}
 	# 反向代理配置
 	location /prod-api/ {
-			proxy_pass http://vapi.youlai.tech/; # vapi.youlai.tech替换成你的后端API地址
+            # vapi.youlai.tech 替换后端API地址，注意保留后面的斜杠 /
+            proxy_pass http://vapi.youlai.tech/; 
 	}
 }
 ```
