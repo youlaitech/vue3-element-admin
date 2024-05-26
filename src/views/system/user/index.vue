@@ -49,7 +49,7 @@
               <el-button type="primary" @click="handleQuery"
                 ><i-ep-search />搜索</el-button
               >
-              <el-button @click="resetQuery">
+              <el-button @click="handleResetQuery">
                 <i-ep-refresh />
                 重置</el-button
               >
@@ -420,7 +420,7 @@ function handleQuery() {
 }
 
 /** 重置查询 */
-function resetQuery() {
+function handleResetQuery() {
   queryFormRef.value.resetFields();
   dateTimeRange.value = "";
   queryParams.pageNum = 1;
@@ -531,7 +531,7 @@ const handleSubmit = useThrottleFn(() => {
             .then(() => {
               ElMessage.success("修改用户成功");
               closeDialog();
-              resetQuery();
+              handleResetQuery();
             })
             .finally(() => (loading.value = false));
         } else {
@@ -539,7 +539,7 @@ const handleSubmit = useThrottleFn(() => {
             .then(() => {
               ElMessage.success("新增用户成功");
               closeDialog();
-              resetQuery();
+              handleResetQuery();
             })
             .finally(() => (loading.value = false));
         }
@@ -557,7 +557,7 @@ const handleSubmit = useThrottleFn(() => {
     UserAPI.import(importData?.deptId, importData?.file).then((data) => {
       ElMessage.success("导入用户成功");
       closeDialog();
-      resetQuery();
+      handleResetQuery();
     });
   }
 }, 3000);
@@ -577,7 +577,7 @@ function handleDelete(id?: number) {
   }).then(function () {
     UserAPI.deleteByIds(userIds).then(() => {
       ElMessage.success("删除成功");
-      resetQuery();
+      handleResetQuery();
     });
   });
 }
