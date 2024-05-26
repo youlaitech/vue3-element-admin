@@ -89,7 +89,7 @@ export interface MenuForm {
   /**
    * 排序
    */
-  sort: number;
+  sort?: number;
   /**
    * 组件路径
    */
@@ -106,7 +106,7 @@ export interface MenuForm {
   /**
    * 菜单类型
    */
-  type: MenuTypeEnum;
+  type?: MenuTypeEnum;
 
   /**
    * 权限标识
@@ -121,6 +121,13 @@ export interface MenuForm {
    * 【目录】只有一个子路由是否始终显示
    */
   alwaysShow?: number;
+
+  params?: KeyValue[];
+}
+
+interface KeyValue {
+  key: string;
+  value: string;
 }
 
 /**
