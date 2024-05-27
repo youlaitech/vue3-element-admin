@@ -1,7 +1,82 @@
-# 2.10.0 (待定)
+# 2.11.0 (2024/5/27)
+
+## ✨ feat
+- 菜单添加路由参数设置（author by [haoxianrui](https://github.com/haoxianrui)）
+- 增加列表选择组件（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 增加列表选择组件使用示例（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 增加defaultToolbar配置参数（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 表单弹窗支持drawer模式（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 表单项增加computed和watchEffect配置（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 支持switch属性修改（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 表单项增加文本类型支持（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 列表列增加show配置项（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 支持搜索表单显隐控制（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 支持input属性修改（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- search配置新增函数能力拓展（author by [xiudaozhe](https://github.com/xiudaozhe)）
+- 表格新增列设置控制（author by [haoxianrui](https://github.com/haoxianrui)）
+- 搜索添加展开和收缩（author by [haoxianrui](https://github.com/haoxianrui)）
+- watch函数增加配置项参数返回（author by [cshaptx4869](https://github.com/cshaptx4869)）
+
+## ♻️ refactor
+- 重构图标选择组件（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 重构列表选择组件默认样式 （author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 加强对话框表单组件和列表选择组件（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- routeMeta增加alwaysShow字段声明（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 分页组件增加溢出滚动效果（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 修正登录表单的Ref类型（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 点击表格刷新按钮不重置页码（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 筛选列超出一定高度滚动（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 优化加强initFn函数，表单项增加initFn函数（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 重构watch、computed、watchEffect调用（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 修改操作成功提示（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- PageSearch 改用card作为容器,样式改用unocss写法（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 优化首页 loading 动画效果author by [haoxianrui](https://github.com/haoxianrui)）
+
+
+## 🐛 fix
+- 路由是否始终显示不限制只有顶级目录才有的配置，开放至菜单 （author by [haoxianrui](https://github.com/haoxianrui)）
+- sockjs-client 报错 global is not defined 导致开发环境无法打开 WebSocket 页面问题修复 （author by [haoxianrui](https://github.com/haoxianrui)）
+- 发送用户重启密码功能，最少为6位字符（小于6位登陆时不允许的问题） （author by [dreamnyj](https://gitee.com/dreamnyj)）
+- 修复系统设置面板滚动条问题（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 修复表单插槽失效问题（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 修改tagsview刷新丢失query问题（author by [xiudaozhe](https://github.com/xiudaozhe)）
+
+## 📦️ build
+- 升级 NPM 包版本至最新 （author by [haoxianrui](https://github.com/haoxianrui)）
+
+## ⚙️ ci
+- 规整脚本执行命令
+
+
+# 2.10.1 (2024/5/4)
+
+## ♻️ refactor
+- 抽离CURD的使用部分代码为Hooks实现（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 修改CURD导入权限点标识名（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- cURD表单字段支持watch监听（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- cURD表单input支持number修饰（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- cURD表单组件支持checkbox多选框（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 优化axios响应数据TS类型提示（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 修改CURD表单组件自定义类型的attrs传值（author by [cshaptx4869](https://github.com/cshaptx4869)）
+- 同步重置密码按钮权限标识重命名（author by [haoxianrui](https://github.com/haoxianrui)）
+- 重构API为静态方法实现模块化管理，并将types.ts重命名为model.ts用于存放接口模型定义（author by [haoxianrui](https://github.com/haoxianrui)）
+
+
+## 🐛 fix
+- sockjs-client 报错 global is not defined 导致开发环境无法打开 WebSocket 页面问题修复 （author by [haoxianrui](https://github.com/haoxianrui)）
+- 主题颜色设置覆盖暗黑模式下el-table行激活的背景色问题修复 （author by [haoxianrui](https://github.com/haoxianrui)）
+- 修复因API接口调整而影响的调用页面的问题 （author by [haoxianrui](https://github.com/haoxianrui)）
+
+## 📦️ build
+- 升级 NPM 包版本至最新 （author by [haoxianrui](https://github.com/haoxianrui)）
+
+
+# 2.10.0 (2024/4/26)
 ## ✨ feat
 - 封装增删改查组件（author by [cshaptx4869](https://github.com/cshaptx4869)）
 - 集成 vite-plugin-vue-devtools 插件（author by [Tricker39](https://github.com/Tricker39)）
+- 增加CURD配置化实现（author by [cshaptx4869](https://github.com/cshaptx4869)）
+
 
 # 2.9.3 (2024/04/14)
 ## ✨ feat
