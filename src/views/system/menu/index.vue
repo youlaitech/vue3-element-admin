@@ -14,7 +14,7 @@
           <el-button type="primary" @click="handleQuery"
             ><template #icon><i-ep-search /></template>搜索</el-button
           >
-          <el-button @click="resetQuery">
+          <el-button @click="handleResetQuery">
             <template #icon><i-ep-refresh /></template>
             重置</el-button
           >
@@ -27,7 +27,7 @@
         <el-button
           v-hasPerm="['sys:menu:add']"
           type="success"
-          @click="openDialog(0)"
+          @click="handleDialogOpen(0)"
         >
           <template #icon><i-ep-plus /></template>
           新增</el-button
@@ -36,11 +36,11 @@
 
       <el-table
         v-loading="loading"
-        :data="menuList"
+        :data="menuTableData"
         highlight-current-row
         row-key="id"
         :expand-row-keys="['1']"
-        @row-click="onRowClick"
+        @row-click="handleRowClick"
         :tree-props="{
           children: 'children',
           hasChildren: 'hasChildren',
@@ -110,7 +110,7 @@
               type="primary"
               link
               size="small"
-              @click.stop="openDialog(scope.row.id)"
+              @click.stop="handleDialogOpen(scope.row.id)"
             >
               <i-ep-plus />新增
             </el-button>
@@ -120,13 +120,13 @@
               type="primary"
               link
               size="small"
-              @click.stop="openDialog(undefined, scope.row.id)"
+              @click.stop="handleDialogOpen(undefined, scope.row.id)"
             >
               <i-ep-edit />编辑
             </el-button>
             <el-button
               v-hasPerm="['sys:menu:delete']"
-              type="primary"
+              type="danger"
               link
               size="small"
               @click.stop="handleDelete(scope.row.id)"
@@ -145,7 +145,6 @@
       append-to-body
       width="1000px"
       @close="closeDialog"
-      top="5vh"
     >
       <el-form
         ref="menuFormRef"
@@ -169,11 +168,14 @@
         </el-form-item>
 
         <el-form-item label="菜单类型" prop="type">
-          <el-radio-group v-model="formData.type" @change="onMenuTypeChange">
-            <el-radio label="CATALOG">目录</el-radio>
-            <el-radio label="MENU">菜单</el-radio>
-            <el-radio label="BUTTON">按钮</el-radio>
-            <el-radio label="EXTLINK">外链</el-radio>
+          <el-radio-group
+            v-model="formData.type"
+            @change="handleMenuTypeChange"
+          >
+            <el-radio value="CATALOG">目录</el-radio>
+            <el-radio value="MENU">菜单</el-radio>
+            <el-radio value="BUTTON">按钮</el-radio>
+            <el-radio value="EXTLINK">外链</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -190,9 +192,22 @@
             formData.type == MenuTypeEnum.CATALOG ||
             formData.type == MenuTypeEnum.MENU
           "
-          label="路由路径"
+          label=""
           prop="path"
         >
+          <template #label>
+            <div>
+              路由路径
+              <el-tooltip placement="bottom" effect="light">
+                <template #content>
+                  定义应用中不同页面对应的 URL 路径，目录需以 /
+                  开头，菜单项不用。例如：系统管理目录
+                  /system，系统管理下的用户管理菜单 user。
+                </template>
+                <i-ep-QuestionFilled class="inline-block" />
+              </el-tooltip>
+            </div>
+          </template>
           <el-input
             v-if="formData.type == MenuTypeEnum.CATALOG"
             v-model="formData.path"
@@ -201,12 +216,23 @@
           <el-input v-else v-model="formData.path" placeholder="user" />
         </el-form-item>
 
-        <!-- 组件页面完整路径 -->
         <el-form-item
           v-if="formData.type == MenuTypeEnum.MENU"
-          label="页面路径"
           prop="component"
         >
+          <template #label>
+            <div>
+              组件路径
+              <el-tooltip placement="bottom" effect="light">
+                <template #content>
+                  组件页面完整路径，相对于 src/views/，如
+                  system/user/index，缺省后缀 .vue
+                </template>
+                <i-ep-QuestionFilled class="inline-block" />
+              </el-tooltip>
+            </div>
+          </template>
+
           <el-input
             v-model="formData.component"
             placeholder="system/user/index"
@@ -221,14 +247,75 @@
           </el-input>
         </el-form-item>
 
+        <el-form-item v-if="formData.type == MenuTypeEnum.MENU">
+          <template #label>
+            <div>
+              路由参数
+              <el-tooltip placement="bottom" effect="light">
+                <template #content>
+                  组件页面使用 `useRoute().query.参数名` 获取路由参数值。
+                </template>
+                <i-ep-QuestionFilled class="inline-block" />
+              </el-tooltip>
+            </div>
+          </template>
+
+          <div v-if="!formData.params || formData.params.length === 0">
+            <el-button
+              type="success"
+              plain
+              @click="formData.params = [{ key: '', value: '' }]"
+              >添加路由参数</el-button
+            >
+          </div>
+
+          <div v-else>
+            <div v-for="(item, index) in formData.params" :key="index">
+              <el-input
+                v-model="item.key"
+                placeholder="参数名"
+                class="w-[100px]"
+              />
+
+              <span class="mx-1">=</span>
+
+              <el-input
+                v-model="item.value"
+                placeholder="参数值"
+                class="w-[100px]"
+              />
+
+              <el-icon
+                class="ml-2 cursor-pointer color-[var(--el-color-success)]"
+                style="vertical-align: -0.15em"
+                v-if="
+                  formData.params.indexOf(item) === formData.params.length - 1
+                "
+                @click="formData.params.push({ key: '', value: '' })"
+              >
+                <CirclePlusFilled />
+              </el-icon>
+              <el-icon
+                class="ml-2 cursor-pointer color-[var(--el-color-danger)]"
+                style="vertical-align: -0.15em"
+                @click="
+                  formData.params.splice(formData.params.indexOf(item), 1)
+                "
+              >
+                <DeleteFilled />
+              </el-icon>
+            </div>
+          </div>
+        </el-form-item>
+
         <el-form-item
           v-if="formData.type !== MenuTypeEnum.BUTTON"
           prop="visible"
           label="显示状态"
         >
           <el-radio-group v-model="formData.visible">
-            <el-radio :label="1">显示</el-radio>
-            <el-radio :label="0">隐藏</el-radio>
+            <el-radio :value="1">显示</el-radio>
+            <el-radio :value="0">隐藏</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -237,14 +324,14 @@
             formData.type === MenuTypeEnum.CATALOG ||
             formData.type === MenuTypeEnum.MENU
           "
-          label="是否始终显示"
         >
           <template #label>
             <div>
-              是否始终显示
+              始终显示
               <el-tooltip placement="bottom" effect="light">
                 <template #content>
-                  当设置为始终显示时，即使只有一个子菜单也会显示
+                  当设置为始终显示时，即使只有一个子菜单也会显示<br />
+                  叶子节点的菜单，请选择“否”。
                 </template>
                 <i-ep-QuestionFilled class="inline-block" />
               </el-tooltip>
@@ -252,18 +339,18 @@
           </template>
 
           <el-radio-group v-model="formData.alwaysShow">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
+            <el-radio :value="1">是</el-radio>
+            <el-radio :value="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item
           v-if="formData.type === MenuTypeEnum.MENU"
-          label="是否缓存"
+          label="页面缓存"
         >
           <el-radio-group v-model="formData.keepAlive">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
+            <el-radio :value="1">开启</el-radio>
+            <el-radio :value="0">关闭</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -327,66 +414,67 @@ const menuFormRef = ref(ElForm);
 
 const loading = ref(false);
 const dialog = reactive({
-  title: "",
+  title: "新增菜单",
   visible: false,
 });
 
+// 查询参数
 const queryParams = reactive<MenuQuery>({});
-const menuList = ref<MenuVO[]>([]);
-
+// 菜单表格数据
+const menuTableData = ref<MenuVO[]>([]);
+// 顶级菜单下拉选项
 const menuOptions = ref<OptionType[]>([]);
 
-const formData = reactive<MenuForm>({
+// 初始菜单表单数据
+const initialMenuFormData = ref<MenuForm>({
+  id: undefined,
   parentId: 0,
   visible: 1,
   sort: 1,
-  type: MenuTypeEnum.MENU,
+  type: MenuTypeEnum.MENU, // 默认“菜单”
   alwaysShow: 0,
-  keepAlive: 0,
+  keepAlive: 1,
+  params: [],
 });
 
+// 菜单表单数据
+const formData = ref({ ...initialMenuFormData.value });
+
+// 表单验证规则
 const rules = reactive({
   parentId: [{ required: true, message: "请选择顶级菜单", trigger: "blur" }],
   name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
   type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
   path: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
-
   component: [{ required: true, message: "请输入组件路径", trigger: "blur" }],
   visible: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
 });
 
 // 选择表格的行菜单ID
-const selectedRowMenuId = ref<number | undefined>();
+const selectedMenuId = ref<number | undefined>();
 
-const menuCacheData = reactive({
-  type: "",
-  path: "",
-});
-
-/**
- * 查询
- */
+// 查询
 function handleQuery() {
-  // 重置父组件
   loading.value = true;
   MenuAPI.getList(queryParams)
     .then((data) => {
-      menuList.value = data;
+      menuTableData.value = data;
     })
-    .then(() => {
+    .finally(() => {
       loading.value = false;
     });
 }
 
-/** 重置查询 */
-function resetQuery() {
+// 重置查询
+function handleResetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
 }
 
-/**行点击事件 */
-function onRowClick(row: MenuVO) {
-  selectedRowMenuId.value = row.id;
+// 行点击事件
+function handleRowClick(row: MenuVO) {
+  // 记录表格选择的菜单ID，新增子菜单作为父菜单ID
+  selectedMenuId.value = row.id;
 }
 
 /**
@@ -395,7 +483,7 @@ function onRowClick(row: MenuVO) {
  * @param parentId 父菜单ID
  * @param menuId 菜单ID
  */
-function openDialog(parentId?: number, menuId?: number) {
+function handleDialogOpen(parentId?: number, menuId?: number) {
   MenuAPI.getOptions()
     .then((data) => {
       menuOptions.value = [{ value: 0, label: "顶级菜单", children: data }];
@@ -405,24 +493,30 @@ function openDialog(parentId?: number, menuId?: number) {
       if (menuId) {
         dialog.title = "编辑菜单";
         MenuAPI.getFormData(menuId).then((data) => {
-          Object.assign(formData, data);
-          menuCacheData.type = data.type;
-          menuCacheData.path = data.path ?? "";
+          initialMenuFormData.value = { ...data };
+          formData.value = data;
         });
       } else {
         dialog.title = "新增菜单";
-        formData.parentId = parentId;
+        formData.value.parentId = parentId;
       }
     });
 }
 
-/** 菜单类型切换事件处理 */
-function onMenuTypeChange() {
-  // 如果菜单类型改变，清空路由路径；未改变在切换后还原路由路径
-  if (formData.type !== menuCacheData.type) {
-    formData.path = "";
-  } else {
-    formData.path = menuCacheData.path;
+// 菜单类型切换
+function handleMenuTypeChange() {
+  // 如果菜单类型改变
+  if (formData.value.type !== initialMenuFormData.value.type) {
+    if (formData.value.type === MenuTypeEnum.MENU) {
+      // 目录切换到菜单时，清空组件路径
+      if (initialMenuFormData.value.type === MenuTypeEnum.CATALOG) {
+        formData.value.component = "";
+      } else {
+        // 其他情况，保留原有的组件路径
+        formData.value.path = initialMenuFormData.value.path;
+        formData.value.component = initialMenuFormData.value.component;
+      }
+    }
   }
 }
 
@@ -430,15 +524,15 @@ function onMenuTypeChange() {
 function submitForm() {
   menuFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
-      const menuId = formData.id;
+      const menuId = formData.value.id;
       if (menuId) {
-        MenuAPI.update(menuId, formData).then(() => {
+        MenuAPI.update(menuId, formData.value).then(() => {
           ElMessage.success("修改成功");
           closeDialog();
           handleQuery();
         });
       } else {
-        MenuAPI.add(formData).then(() => {
+        MenuAPI.add(formData.value).then(() => {
           ElMessage.success("新增成功");
           closeDialog();
           handleQuery();
@@ -448,7 +542,7 @@ function submitForm() {
   });
 }
 
-/** 删除菜单 */
+// 删除菜单
 function handleDelete(menuId: number) {
   if (!menuId) {
     ElMessage.warning("请勾选删除项");
@@ -469,27 +563,11 @@ function handleDelete(menuId: number) {
     .catch(() => ElMessage.info("已取消删除"));
 }
 
-/** 关闭弹窗 */
+// 关闭弹窗
 function closeDialog() {
   dialog.visible = false;
-  resetForm();
-}
-
-/** 重置表单 */
-function resetForm() {
   menuFormRef.value.resetFields();
   menuFormRef.value.clearValidate();
-
-  formData.id = undefined;
-  formData.parentId = 0;
-  formData.visible = 1;
-  formData.sort = 1;
-  formData.perm = undefined;
-  formData.component = undefined;
-  formData.path = undefined;
-  formData.redirect = undefined;
-  formData.alwaysShow = undefined;
-  formData.keepAlive = undefined;
 }
 
 onMounted(() => {

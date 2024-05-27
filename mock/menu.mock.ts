@@ -17,6 +17,8 @@ export default defineMock([
             icon: "system",
             hidden: false,
             roles: ["ADMIN"],
+            alwaysShow: false,
+            params: null,
           },
           children: [
             {
@@ -29,6 +31,8 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
             {
@@ -41,6 +45,8 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
             {
@@ -53,6 +59,8 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
             {
@@ -65,6 +73,8 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
             {
@@ -77,6 +87,8 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
           ],
@@ -91,6 +103,7 @@ export default defineMock([
             hidden: false,
             roles: ["ADMIN"],
             alwaysShow: true,
+            params: null,
           },
           children: [
             {
@@ -103,30 +116,8 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
-              },
-            },
-            {
-              path: "swagger",
-              component: "demo/api/swagger",
-              name: "Swagger",
-              meta: {
-                title: "Swagger",
-                icon: "api",
-                hidden: true,
-                roles: ["ADMIN"],
-                keepAlive: true,
-              },
-            },
-            {
-              path: "knife4j",
-              component: "demo/api/knife4j",
-              name: "Knife4j",
-              meta: {
-                title: "Knife4j",
-                icon: "api",
-                hidden: true,
-                roles: ["ADMIN"],
-                keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
           ],
@@ -134,12 +125,15 @@ export default defineMock([
         {
           path: "/doc",
           component: "Layout",
+          redirect: "https://juejin.cn/post/7228990409909108793",
           name: "/doc",
           meta: {
             title: "平台文档",
             icon: "document",
             hidden: false,
             roles: ["ADMIN"],
+            alwaysShow: false,
+            params: null,
           },
           children: [
             {
@@ -151,6 +145,8 @@ export default defineMock([
                 icon: "document",
                 hidden: false,
                 roles: ["ADMIN"],
+                alwaysShow: false,
+                params: null,
               },
             },
             {
@@ -161,6 +157,8 @@ export default defineMock([
                 icon: "link",
                 hidden: false,
                 roles: ["ADMIN"],
+                alwaysShow: false,
+                params: null,
               },
             },
           ],
@@ -168,39 +166,40 @@ export default defineMock([
         {
           path: "/multi-level",
           component: "Layout",
-          redirect: "/multi-level/multi-level1",
           name: "/multiLevel",
           meta: {
             title: "多级菜单",
             icon: "cascader",
             hidden: false,
             roles: ["ADMIN"],
+            alwaysShow: true,
+            params: null,
           },
           children: [
             {
               path: "multi-level1",
               component: "demo/multi-level/level1",
-              redirect: "/multi-level/multi-level2",
               name: "MultiLevel1",
               meta: {
                 title: "菜单一级",
                 icon: "",
                 hidden: false,
                 roles: ["ADMIN"],
-                keepAlive: true,
+                alwaysShow: true,
+                params: null,
               },
               children: [
                 {
                   path: "multi-level2",
                   component: "demo/multi-level/children/level2",
-                  redirect: "/multi-level/multi-level2/multi-level3-1",
                   name: "MultiLevel2",
                   meta: {
                     title: "菜单二级",
                     icon: "",
                     hidden: false,
                     roles: ["ADMIN"],
-                    keepAlive: true,
+                    alwaysShow: false,
+                    params: null,
                   },
                   children: [
                     {
@@ -213,6 +212,8 @@ export default defineMock([
                         hidden: false,
                         roles: ["ADMIN"],
                         keepAlive: true,
+                        alwaysShow: false,
+                        params: null,
                       },
                     },
                     {
@@ -225,6 +226,8 @@ export default defineMock([
                         hidden: false,
                         roles: ["ADMIN"],
                         keepAlive: true,
+                        alwaysShow: false,
+                        params: null,
                       },
                     },
                   ],
@@ -242,8 +245,38 @@ export default defineMock([
             icon: "menu",
             hidden: false,
             roles: ["ADMIN"],
+            alwaysShow: false,
+            params: null,
           },
           children: [
+            {
+              path: "curd",
+              component: "demo/curd/index",
+              name: "Curd",
+              meta: {
+                title: "增删改查",
+                icon: "",
+                hidden: false,
+                roles: ["ADMIN"],
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
+            {
+              path: "table-select",
+              component: "demo/table-select/index",
+              name: "TableSelect",
+              meta: {
+                title: "列表选择器",
+                icon: "",
+                hidden: false,
+                roles: ["ADMIN"],
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
             {
               path: "wang-editor",
               component: "demo/wang-editor",
@@ -254,6 +287,8 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
             {
@@ -266,6 +301,8 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
             {
@@ -278,6 +315,8 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
             {
@@ -290,30 +329,55 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
+          ],
+        },
+        {
+          path: "/route-param",
+          component: "Layout",
+          name: "/routeParam",
+          meta: {
+            title: "路由参数",
+            icon: "el-icon-ElementPlus",
+            hidden: false,
+            roles: ["ADMIN"],
+            alwaysShow: true,
+            params: null,
+          },
+          children: [
             {
-              path: "signature",
-              component: "demo/signature",
-              name: "Signature",
+              path: "route-param-type1",
+              component: "demo/route-param",
+              name: "RouteParamType1",
               meta: {
-                title: "签名",
-                icon: "",
+                title: "参数(type=1)",
+                icon: "el-icon-Star",
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: {
+                  type: "1",
+                },
               },
             },
             {
-              path: "table",
-              component: "demo/table",
-              name: "Table",
+              path: "route-param-type2",
+              component: "demo/route-param",
+              name: "RouteParamType2",
               meta: {
-                title: "表格",
-                icon: "",
+                title: "参数(type=2)",
+                icon: "el-icon-StarFilled",
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: {
+                  type: "2",
+                },
               },
             },
           ],
@@ -327,6 +391,8 @@ export default defineMock([
             icon: "menu",
             hidden: false,
             roles: ["ADMIN"],
+            alwaysShow: false,
+            params: null,
           },
           children: [
             {
@@ -335,10 +401,12 @@ export default defineMock([
               name: "IconDemo",
               meta: {
                 title: "Icons",
-                icon: "el-icon-edit",
+                icon: "el-icon-Notification",
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
             {
@@ -351,18 +419,21 @@ export default defineMock([
                 hidden: false,
                 roles: ["ADMIN"],
                 keepAlive: true,
+                alwaysShow: false,
+                params: null,
               },
             },
             {
-              path: "other",
+              path: "other/:id",
               component: "demo/other",
-              name: "Other",
+              name: "Other/:id",
               meta: {
                 title: "敬请期待...",
                 icon: "",
                 hidden: false,
                 roles: ["ADMIN"],
-                params: { type: "1" },
+                alwaysShow: false,
+                params: null,
               },
             },
           ],

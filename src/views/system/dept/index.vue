@@ -26,7 +26,9 @@
             <i-ep-search />
             搜索
           </el-button>
-          <el-button @click="resetQuery"> <i-ep-refresh />重置 </el-button>
+          <el-button @click="handleResetQuery">
+            <i-ep-refresh />重置
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -196,7 +198,7 @@ function handleQuery() {
 }
 
 /**重置查询 */
-function resetQuery() {
+function handleResetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
 }
@@ -282,7 +284,7 @@ function handleDelete(deptId?: number) {
   }).then(() => {
     DeptAPI.deleteByIds(deptIds).then(() => {
       ElMessage.success("删除成功");
-      resetQuery();
+      handleResetQuery();
     });
   });
 }

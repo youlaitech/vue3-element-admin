@@ -15,7 +15,7 @@
           <el-button type="primary" @click="handleQuery"
             ><i-ep-search />搜索</el-button
           >
-          <el-button @click="resetQuery"><i-ep-refresh />重置</el-button>
+          <el-button @click="handleResetQuery"><i-ep-refresh />重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -248,7 +248,7 @@ function handleQuery() {
     });
 }
 /** 重置查询 */
-function resetQuery() {
+function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
   handleQuery();
@@ -283,7 +283,7 @@ function handleSubmit() {
           .then(() => {
             ElMessage.success("修改成功");
             closeDialog();
-            resetQuery();
+            handleResetQuery();
           })
           .finally(() => (loading.value = false));
       } else {
@@ -291,7 +291,7 @@ function handleSubmit() {
           .then(() => {
             ElMessage.success("新增成功");
             closeDialog();
-            resetQuery();
+            handleResetQuery();
           })
           .finally(() => (loading.value = false));
       }
@@ -332,7 +332,7 @@ function handleDelete(roleId?: number) {
     RoleAPI.deleteByIds(roleIds)
       .then(() => {
         ElMessage.success("删除成功");
-        resetQuery();
+        handleResetQuery();
       })
       .finally(() => (loading.value = false));
   });
@@ -379,7 +379,7 @@ function handleRoleMenuSubmit() {
       .then(() => {
         ElMessage.success("分配权限成功");
         menuDialogVisible.value = false;
-        resetQuery();
+        handleResetQuery();
       })
       .finally(() => {
         loading.value = false;

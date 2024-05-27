@@ -1,7 +1,7 @@
 <div align="center">
-    <img src="https://img.shields.io/badge/Vue-3.4.26-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vue-3.4.27-brightgreen.svg"/>
     <img src="https://img.shields.io/badge/Vite-5.2.11-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.7.2-blue.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.7.3-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -97,7 +97,8 @@ server {
 	}
 	# 反向代理配置
 	location /prod-api/ {
-			proxy_pass http://vapi.youlai.tech/; # vapi.youlai.tech替换成你的后端API地址
+            # vapi.youlai.tech 替换后端API地址，注意保留后面的斜杠 /
+            proxy_pass http://vapi.youlai.tech/; 
 	}
 }
 ```
@@ -149,14 +150,21 @@ server {
 - [Husky + Lint-staged + Commitlint + Commitizen + cz-git 配置 Git 提交规范](https://blog.csdn.net/u013737132/article/details/130191363)
 
 
-
-
 ## 提交规范
 
 执行 `pnpm run commit` 唤起 git commit 交互，根据提示完成信息的输入和选择。
 
 ![](https://foruda.gitee.com/images/1687755823165218215/c1705416_716974.png)
 
+
+## 项目统计
+
+![Alt](https://repobeats.axiom.co/api/embed/aa7cca3d6fa9c308fc659fa6e09af9a1910506c3.svg "Repobeats analytics image")
+
+
+Thanks to all the contributors!
+
+[![contributors](https://contrib.rocks/image?repo=youlaitech/vue3-element-admin)](https://github.com/youlaitech/vue3-element-admin/graphs/contributors)
 
 
 ## 交流群🚀
