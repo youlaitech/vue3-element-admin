@@ -45,7 +45,7 @@
 - 升级 NPM 包版本至最新 （author by [haoxianrui](https://github.com/haoxianrui)）
 
 ## ⚙️ ci
-- 规整脚本执行命令
+- 规整脚本执行命令（author by [cshaptx4869](https://github.com/cshaptx4869)）
 
 
 # 2.10.1 (2024/5/4)
