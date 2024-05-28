@@ -1,5 +1,4 @@
 import DeptAPI from "@/api/dept";
-import DictAPI from "@/api/dict";
 import RoleAPI from "@/api/role";
 import UserAPI from "@/api/user";
 import type { UserForm } from "@/api/user/model";
@@ -56,16 +55,9 @@ const modalConfig: IModalConfig<UserForm> = {
       },
     },
     {
-      type: "select",
+      type: "custom",
       label: "性别",
       prop: "gender",
-      attrs: {
-        placeholder: "请选择",
-      },
-      options: [],
-      async initFn(formItem) {
-        formItem.options = await DictAPI.getDictOptions("gender");
-      },
     },
     {
       label: "角色",
