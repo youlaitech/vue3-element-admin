@@ -40,14 +40,22 @@
       ref="addModalRef"
       :modal-config="addModalConfig"
       @submit-click="handleSubmitClick"
-    />
+    >
+      <template #gender="scope">
+        <dictionary v-model="scope.formData[scope.prop]" type-code="gender" />
+      </template>
+    </page-modal>
 
     <!-- 编辑 -->
     <page-modal
       ref="editModalRef"
       :modal-config="editModalConfig"
       @submit-click="handleSubmitClick"
-    />
+    >
+      <template #gender="scope">
+        <dictionary v-model="scope.formData[scope.prop]" type-code="gender" />
+      </template>
+    </page-modal>
   </div>
 </template>
 
@@ -100,12 +108,13 @@ function handleOperatClick(data: IOperatData) {
         cancelButtonText: "取消",
       }
     ).then(({ value }) => {
-      if (!value) {
-        ElMessage.warning("请输入新密码");
+      if (!value || value.length < 6) {
+        ElMessage.warning("密码至少需要6位字符，请重新输入");
         return false;
       }
-      // 发送网络请求
-      ElMessage.success("密码重置成功，新密码是：" + value);
+      UserAPI.updatePassword(data.row.id, value).then(() => {
+        ElMessage.success("密码重置成功，新密码是：" + value);
+      });
     });
   }
 }
