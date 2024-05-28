@@ -109,15 +109,6 @@ watch(route, () => {
 </script>
 
 <style lang="scss" scoped>
-.fixed-header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 9;
-  width: calc(100% - $sidebar-width);
-  transition: width 0.28s;
-}
-
 .sidebar-container {
   position: fixed;
   top: 0;
@@ -125,8 +116,6 @@ watch(route, () => {
   left: 0;
   z-index: 999;
   width: $sidebar-width;
-  height: 100%;
-  overflow: hidden;
   background-color: $menu-background;
   transition: width 0.28s;
 
@@ -137,18 +126,22 @@ watch(route, () => {
 
 .main-container {
   position: relative;
-  min-height: 100%;
+  height: 100%;
   margin-left: $sidebar-width;
+  overflow-y: auto;
   transition: margin-left 0.28s;
+
+  .fixed-header {
+    position: sticky;
+    top: 0;
+    z-index: 9;
+    transition: width 0.28s;
+  }
 }
 
 .layout-top {
-  .fixed-header {
-    top: $navbar-height;
-    width: 100%;
-  }
-
   .sidebar-container {
+    position: sticky;
     z-index: 999;
     display: flex;
     width: 100% !important;
@@ -172,8 +165,7 @@ watch(route, () => {
   }
 
   .main-container {
-    min-height: calc(100vh - $navbar-height);
-    padding-top: $navbar-height;
+    height: calc(100vh - $navbar-height);
     margin-left: 0;
   }
 }
@@ -240,30 +232,16 @@ watch(route, () => {
       flex: 1;
       min-width: 0;
       margin-left: 0;
-
-      .fixed-header {
-        top: $navbar-height;
-      }
     }
   }
 }
 
 .hideSidebar {
-  .fixed-header {
-    left: $sidebar-width-collapsed;
-    width: calc(100% - $sidebar-width-collapsed);
-  }
-
   .main-container {
     margin-left: $sidebar-width-collapsed;
   }
 
   &.layout-top {
-    .fixed-header {
-      left: 0;
-      width: 100%;
-    }
-
     .main-container {
       margin-left: 0;
     }
@@ -272,7 +250,6 @@ watch(route, () => {
   &.layout-mix {
     .fixed-header {
       left: $sidebar-width-collapsed;
-      width: calc(100% - $sidebar-width-collapsed);
     }
 
     .sidebar-container {
@@ -306,41 +283,6 @@ watch(route, () => {
     .main-container {
       margin-left: 0;
     }
-  }
-}
-
-.mobile {
-  .fixed-header {
-    left: 0;
-    width: 100%;
-  }
-
-  .main-container {
-    margin-left: 0;
-  }
-
-  &.layout-top {
-    .sidebar-container {
-      z-index: 999;
-      display: flex;
-      width: 100% !important;
-      height: $navbar-height;
-
-      :deep(.el-scrollbar) {
-        flex: 1;
-        min-width: 0;
-        height: $navbar-height;
-      }
-    }
-
-    .main-container {
-      padding-top: $navbar-height;
-      margin-left: 0;
-      overflow: hidden;
-    }
-
-    // 顶部模式全局变量修改
-    --el-menu-item-height: $navbar-height;
   }
 }
 </style>
