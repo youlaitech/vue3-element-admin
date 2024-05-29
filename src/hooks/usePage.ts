@@ -16,8 +16,8 @@ function usePage() {
     contentRef.value?.fetchPageData(queryParams, true);
   }
   // 重置
-  function handleResetClick() {
-    contentRef.value?.fetchPageData({}, true);
+  function handleResetClick(queryParams: IObject) {
+    contentRef.value?.fetchPageData(queryParams, true);
   }
   // 新增
   function handleAddClick() {
@@ -31,8 +31,9 @@ function usePage() {
   }
   // 表单提交
   function handleSubmitClick() {
-    //刷新列表数据
-    contentRef.value?.fetchPageData({}, true);
+    //根据检索条件刷新列表数据
+    const queryParams = searchRef.value?.getQueryParams();
+    contentRef.value?.fetchPageData(queryParams, true);
   }
   // 导出
   function handleExportClick() {
