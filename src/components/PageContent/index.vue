@@ -440,8 +440,8 @@ const showPagination = props.contentConfig.pagination !== false;
 const defalutPagination = {
   background: true,
   layout: "total, sizes, prev, pager, next, jumper",
-  pageSize: 1,
-  pageSizes: [1, 20, 30, 50],
+  pageSize: 20,
+  pageSizes: [10, 20, 30, 50],
   total: 0,
   currentPage: 1,
 };
