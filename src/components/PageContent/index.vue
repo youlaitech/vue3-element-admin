@@ -270,13 +270,17 @@
       </template>
     </el-table>
     <!-- 分页 -->
-    <pagination
-      v-if="total > 0"
-      v-model:total="total"
-      v-model:page="queryParams.pageNum"
-      v-model:limit="queryParams.pageSize"
-      @pagination="handlePagination"
-    />
+    <template v-if="showPagination">
+      <el-scrollbar>
+        <div class="mt-[12px]">
+          <el-pagination
+            v-bind="pagination"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
+      </el-scrollbar>
+    </template>
   </el-card>
 </template>
 
@@ -284,9 +288,8 @@
 import { ref, reactive } from "vue";
 import { useDateFormat } from "@vueuse/core";
 import { hasAuth } from "@/plugins/permission";
-import Pagination from "@/components/Pagination/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
-import type { TableProps } from "element-plus";
+import type { TableProps, PaginationProps } from "element-plus";
 
 // 对象类型
 export type IObject = Record<string, any>;
@@ -302,8 +305,28 @@ export interface IContentConfig<T = any> {
   pageName: string;
   // table组件属性
   table?: Omit<TableProps<any>, "data">;
+  // pagination组件属性
+  pagination?:
+    | boolean
+    | Partial<
+        Omit<
+          PaginationProps,
+          "v-model:page-size" | "v-model:current-page" | "total" | "currentPage"
+        >
+      >;
   // 列表的网络请求函数(需返回promise)
   indexAction: (queryParams: T) => Promise<any>;
+  // 默认的分页相关的请求参数
+  request?: {
+    pageName: string;
+    limitName: string;
+  };
+  // 数据格式解析的回调函数
+  parseData?: (res: any) => {
+    total: number;
+    list: IObject[];
+    [key: string]: any;
+  };
   // 删除的网络请求函数(需返回promise)
   deleteAction?: (ids: string) => Promise<any>;
   // 导出的网络请求函数(需返回promise)
@@ -409,38 +432,29 @@ const cols = ref(
 const loading = ref(false);
 // 删除ID集合 用于批量删除
 const removeIds = ref<(number | string)[]>([]);
-// 数据总数
-const total = ref(0);
 // 列表数据
 const pageData = ref<IObject[]>([]);
-// 每页条数
-const pageSize = 10;
-// 搜索参数
-const queryParams = reactive<IObject>({
-  pageNum: 1,
-  pageSize: pageSize,
-});
-// 上一次搜索条件
-let lastFormData = {};
-// 获取分页数据
-function fetchPageData(formData: IObject = {}, isRestart = false) {
-  loading.value = true;
-  lastFormData = formData;
-  if (isRestart) {
-    queryParams.pageNum = 1;
-    queryParams.pageSize = pageSize;
-  }
-  props.contentConfig
-    .indexAction({ ...queryParams, ...formData })
-    .then((data) => {
-      total.value = data.total;
-      pageData.value = data.list;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-}
-fetchPageData();
+// 显示分页
+const showPagination = props.contentConfig.pagination !== false;
+// 分页配置
+const defalutPagination = {
+  background: true,
+  layout: "total, sizes, prev, pager, next, jumper",
+  pageSize: 1,
+  pageSizes: [1, 20, 30, 50],
+  total: 0,
+  currentPage: 1,
+};
+const pagination = reactive(
+  typeof props.contentConfig.pagination === "object"
+    ? { ...defalutPagination, ...props.contentConfig.pagination }
+    : defalutPagination
+);
+// 分页相关的请求参数
+const request = props.contentConfig.request ?? {
+  pageName: "pageNum",
+  limitName: "pageSize",
+};
 
 // 行选中
 function handleSelectionChange(selection: any[]) {
@@ -472,10 +486,6 @@ function handleDelete(id?: number | string) {
       ElMessage.error("未配置deleteAction");
     }
   });
-}
-// 分页
-function handlePagination() {
-  fetchPageData(lastFormData);
 }
 // 操作栏
 function handleToolbar(name: string) {
@@ -514,10 +524,72 @@ function handleOperat(data: IOperatData) {
       break;
   }
 }
+// 属性修改
+function handleModify(
+  field: string,
+  value: boolean | string | number,
+  row: Record<string, any>
+) {
+  if (props.contentConfig.modifyAction) {
+    props.contentConfig.modifyAction({
+      [pk]: row[pk],
+      field: field,
+      value: value,
+    });
+  } else {
+    ElMessage.error("未配置modifyAction");
+  }
+}
+// 分页切换
+function handleSizeChange(value: number) {
+  pagination.pageSize = value;
+  fetchPageData(lastFormData);
+}
+function handleCurrentChange(value: number) {
+  pagination.currentPage = value;
+  fetchPageData(lastFormData);
+}
+
+// 获取分页数据
+let lastFormData = {};
+function fetchPageData(formData: IObject = {}, isRestart = false) {
+  loading.value = true;
+  // 上一次搜索条件
+  lastFormData = formData;
+  // 重置页码
+  if (isRestart) {
+    pagination.currentPage = 1;
+  }
+  props.contentConfig
+    .indexAction(
+      showPagination
+        ? {
+            [request.pageName]: pagination.currentPage,
+            [request.limitName]: pagination.pageSize,
+            ...formData,
+          }
+        : formData
+    )
+    .then((data) => {
+      if (showPagination) {
+        if (props.contentConfig.parseData) {
+          data = props.contentConfig.parseData(data);
+        }
+        pagination.total = data.total;
+        pageData.value = data.list;
+      } else {
+        pageData.value = data;
+      }
+    })
+    .finally(() => {
+      loading.value = false;
+    });
+}
+fetchPageData();
 // 导出Excel
-function exportPageData(queryParams: IObject = {}) {
+function exportPageData(formData: IObject = {}) {
   if (props.contentConfig.exportAction) {
-    props.contentConfig.exportAction(queryParams).then((response) => {
+    props.contentConfig.exportAction(formData).then((response) => {
       const fileData = response.data;
       const fileName = decodeURI(
         response.headers["content-disposition"].split(";")[1].split("=")[1]
@@ -537,22 +609,6 @@ function exportPageData(queryParams: IObject = {}) {
     });
   } else {
     ElMessage.error("未配置exportAction");
-  }
-}
-// 属性修改
-function handleModify(
-  field: string,
-  value: boolean | string | number,
-  row: Record<string, any>
-) {
-  if (props.contentConfig.modifyAction) {
-    props.contentConfig.modifyAction({
-      [pk]: row[pk],
-      field: field,
-      value: value,
-    });
-  } else {
-    ElMessage.error("未配置modifyAction");
   }
 }
 
