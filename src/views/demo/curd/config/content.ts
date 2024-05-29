@@ -8,6 +8,12 @@ const contentConfig: IContentConfig<UserQuery> = {
     border: true,
     highlightCurrentRow: true,
   },
+  pagination: {
+    background: true,
+    layout: "prev,pager,next,jumper,total,sizes",
+    pageSize: 20,
+    pageSizes: [10, 20, 30, 50],
+  },
   indexAction: function (params) {
     if ("createAt" in params) {
       const createAt = params.createAt as string[];
