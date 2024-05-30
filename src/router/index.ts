@@ -1,3 +1,4 @@
+import type { App } from "vue";
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
 export const Layout = () => import("@/layout/index.vue");
@@ -116,6 +117,11 @@ const router = createRouter({
   // 刷新时，滚动条位置还原
   scrollBehavior: () => ({ left: 0, top: 0 }),
 });
+
+// 全局注册 router
+export function setupRouter(app: App<Element>) {
+  app.use(router);
+}
 
 /**
  * 重置路由
