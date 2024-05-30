@@ -5,6 +5,7 @@
       v-if="watermarkEnabled"
       :font="{ color: fontColor }"
       :content="defaultSettings.watermarkContent"
+      :z-index="9999"
       class="wh-full"
     >
       <router-view />
