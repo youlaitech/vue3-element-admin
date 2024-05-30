@@ -28,6 +28,10 @@
         </div>
         <AppMain />
         <Settings v-if="defaultSettings.showSettings" />
+        <!-- 返回顶部 -->
+        <el-backtop target=".main-container">
+          <svg-icon icon-class="backtop" color="#000000" size="24px" />
+        </el-backtop>
       </div>
     </div>
 
@@ -39,6 +43,10 @@
       </div>
       <AppMain />
       <Settings v-if="defaultSettings.showSettings" />
+      <!-- 返回顶部 -->
+      <el-backtop target=".main-container">
+        <svg-icon icon-class="backtop" color="#000000" size="24px" />
+      </el-backtop>
     </div>
   </div>
 </template>

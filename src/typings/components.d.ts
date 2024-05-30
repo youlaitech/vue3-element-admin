@@ -14,6 +14,7 @@ declare module "vue" {
     DeptTree: (typeof import("./../views/system/user/components/dept-tree.vue"))["default"];
     Dictionary: (typeof import("./../components/Dictionary/index.vue"))["default"];
     DictItem: (typeof import("./../views/system/dict/components/dict-item.vue"))["default"];
+    ElBacktop: (typeof import("element-plus/es"))["ElBacktop"];
     ElBreadcrumb: (typeof import("element-plus/es"))["ElBreadcrumb"];
     ElBreadcrumbItem: (typeof import("element-plus/es"))["ElBreadcrumbItem"];
     ElButton: (typeof import("element-plus/es"))["ElButton"];
@@ -52,12 +53,16 @@ declare module "vue" {
     ElSwitch: (typeof import("element-plus/es"))["ElSwitch"];
     ElTable: (typeof import("element-plus/es"))["ElTable"];
     ElTableColumn: (typeof import("element-plus/es"))["ElTableColumn"];
+    ElTabPane: (typeof import("element-plus/es"))["ElTabPane"];
+    ElTabs: (typeof import("element-plus/es"))["ElTabs"];
     ElTag: (typeof import("element-plus/es"))["ElTag"];
+    ElText: (typeof import("element-plus/es"))["ElText"];
     ElTooltip: (typeof import("element-plus/es"))["ElTooltip"];
     ElTree: (typeof import("element-plus/es"))["ElTree"];
     ElTreeSelect: (typeof import("element-plus/es"))["ElTreeSelect"];
     ElUpload: (typeof import("element-plus/es"))["ElUpload"];
     ElWatermark: (typeof import("element-plus/es"))["ElWatermark"];
+    Form: (typeof import("./../components/PageModal/Form.vue"))["default"];
     FunnelChart: (typeof import("./../views/dashboard/components/FunnelChart.vue"))["default"];
     GithubCorner: (typeof import("./../components/GithubCorner/index.vue"))["default"];
     Hamburger: (typeof import("./../components/Hamburger/index.vue"))["default"];
@@ -69,10 +74,11 @@ declare module "vue" {
     IEpDownload: (typeof import("~icons/ep/download"))["default"];
     IEpEdit: (typeof import("~icons/ep/edit"))["default"];
     IEpPlus: (typeof import("~icons/ep/plus"))["default"];
+    IEpPosition: (typeof import("~icons/ep/position"))["default"];
+    IEpQuestionFilled: (typeof import("~icons/ep/question-filled"))["default"];
     IEpRefresh: (typeof import("~icons/ep/refresh"))["default"];
     IEpRefreshLeft: (typeof import("~icons/ep/refresh-left"))["default"];
     IEpSearch: (typeof import("~icons/ep/search"))["default"];
-    IEpSetting: (typeof import("~icons/ep/setting"))["default"];
     IEpTop: (typeof import("~icons/ep/top"))["default"];
     IEpUploadFilled: (typeof import("~icons/ep/upload-filled"))["default"];
     LangSelect: (typeof import("./../components/LangSelect/index.vue"))["default"];
