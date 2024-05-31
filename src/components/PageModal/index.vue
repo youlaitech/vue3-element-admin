@@ -100,7 +100,8 @@
                 :prop="item.prop"
                 :formData="formData"
                 :attrs="item.attrs"
-              ></slot>
+              >
+              </slot>
             </template>
           </el-form-item>
         </template>
@@ -224,7 +225,8 @@
                   :prop="item.prop"
                   :formData="formData"
                   :attrs="item.attrs"
-                ></slot>
+                >
+                </slot>
               </template>
             </el-form-item>
           </template>
@@ -251,7 +253,7 @@ import type {
   DrawerProps,
 } from "element-plus";
 import { useThrottleFn } from "@vueuse/core";
-import { reactive, ref, watch, watchEffect } from "vue";
+import { reactive, ref, watch, watchEffect, nextTick } from "vue";
 
 // 对象类型
 export type IObject = Record<string, any>;
@@ -398,7 +400,9 @@ const handleSubmit = useThrottleFn(() => {
 function handleCloseModal() {
   modalVisible.value = false;
   formRef.value?.resetFields();
-  formRef.value?.clearValidate();
+  nextTick(() => {
+    formRef.value?.clearValidate();
+  });
 }
 // 显示modal
 function setModalVisible(data: IObject = {}) {
