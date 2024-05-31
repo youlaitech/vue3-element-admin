@@ -30,7 +30,7 @@
         <Settings v-if="defaultSettings.showSettings" />
         <!-- 返回顶部 -->
         <el-backtop target=".main-container">
-          <svg-icon icon-class="backtop" color="#000000" size="24px" />
+          <svg-icon icon-class="backtop" size="24px" />
         </el-backtop>
       </div>
     </div>
@@ -45,7 +45,7 @@
       <Settings v-if="defaultSettings.showSettings" />
       <!-- 返回顶部 -->
       <el-backtop target=".main-container">
-        <svg-icon icon-class="backtop" color="#000000" size="24px" />
+        <svg-icon icon-class="backtop" size="24px" />
       </el-backtop>
     </div>
   </div>
@@ -256,10 +256,6 @@ watch(route, () => {
   }
 
   &.layout-mix {
-    .fixed-header {
-      left: $sidebar-width-collapsed;
-    }
-
     .sidebar-container {
       width: 100% !important;
     }
