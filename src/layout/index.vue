@@ -256,10 +256,6 @@ watch(route, () => {
   }
 
   &.layout-mix {
-    .fixed-header {
-      left: $sidebar-width-collapsed;
-    }
-
     .sidebar-container {
       width: 100% !important;
     }
