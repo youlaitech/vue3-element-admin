@@ -59,13 +59,18 @@
         <template v-for="item in defaultToolbar" :key="item">
           <!-- 刷新 -->
           <template v-if="item === 'refresh'">
-            <el-button icon="refresh" circle @click="handleToolbar(item)" />
+            <el-button
+              icon="refresh"
+              circle
+              title="刷新"
+              @click="handleToolbar(item)"
+            />
           </template>
-          <!-- 列设置 -->
+          <!-- 筛选列 -->
           <template v-else-if="item === 'filter'">
             <el-popover placement="bottom" trigger="click">
               <template #reference>
-                <el-button icon="Operation" circle />
+                <el-button icon="Operation" circle title="筛选列" />
               </template>
               <el-scrollbar max-height="350px">
                 <template v-for="col in cols" :key="col">
@@ -78,9 +83,23 @@
               </el-scrollbar>
             </el-popover>
           </template>
+          <!-- 导出 -->
+          <template v-else-if="item === 'exports'">
+            <el-button
+              icon="FolderOpened"
+              circle
+              title="导出"
+              @click="handleToolbar(item)"
+            />
+          </template>
           <!-- 搜索 -->
           <template v-else-if="item === 'search'">
-            <el-button icon="search" circle @click="handleToolbar(item)" />
+            <el-button
+              icon="search"
+              circle
+              title="搜索"
+              @click="handleToolbar(item)"
+            />
           </template>
         </template>
       </div>
@@ -285,6 +304,7 @@
 </template>
 
 <script setup lang="ts">
+import ExcelJS from "exceljs";
 import { ref, reactive } from "vue";
 import { useDateFormat } from "@vueuse/core";
 import { hasAuth } from "@/plugins/permission";
@@ -352,7 +372,7 @@ export interface IContentConfig<T = any> {
       }
   >;
   // 表格工具栏右侧图标
-  defaultToolbar?: ("refresh" | "filter" | "search")[];
+  defaultToolbar?: ("refresh" | "filter" | "exports" | "search")[];
   // table组件列属性(额外的属性templet,operat,slotName)
   cols: Array<{
     type?: "default" | "selection" | "index" | "expand";
@@ -417,6 +437,7 @@ const toolbar = props.contentConfig.toolbar ?? ["add", "delete"];
 const defaultToolbar = props.contentConfig.defaultToolbar ?? [
   "refresh",
   "filter",
+  "exports",
   "search",
 ];
 // 表格列
@@ -487,11 +508,43 @@ function handleDelete(id?: number | string) {
     }
   });
 }
+// 导出
+function handleExports() {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("sheet");
+  const columns: Partial<ExcelJS.Column>[] = [];
+  cols.value.forEach((col) => {
+    if (col.label && col.prop) {
+      columns.push({ header: col.label, key: col.prop });
+    }
+  });
+  worksheet.columns = columns;
+  worksheet.addRows(pageData.value);
+  workbook.xlsx
+    .writeBuffer()
+    .then((buffer) => {
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = downloadUrl;
+      downloadLink.download = props.contentConfig.pageName;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      window.URL.revokeObjectURL(downloadUrl);
+    })
+    .catch((error) => console.log("Error writing excel export", error));
+}
 // 操作栏
 function handleToolbar(name: string) {
   switch (name) {
     case "refresh":
       handleRefresh();
+      break;
+    case "exports":
+      handleExports();
       break;
     case "search":
       emit("searchClick");
