@@ -3,15 +3,17 @@ import RoleAPI from "@/api/role";
 import UserAPI from "@/api/user";
 import type { UserForm } from "@/api/user/model";
 import type { IModalConfig } from "@/components/PageModal/index.vue";
+import { DeviceEnum } from "@/enums/DeviceEnum";
+import { useAppStore } from "@/store";
 
 const modalConfig: IModalConfig<UserForm> = {
   pageName: "sys:user",
-  pk: "id",
   component: "drawer",
   drawer: {
     title: "修改用户",
-    size: 300,
+    size: useAppStore().device === DeviceEnum.MOBILE ? "90%" : 600,
   },
+  pk: "id",
   formAction: function (data) {
     return UserAPI.update(data.id as number, data);
   },

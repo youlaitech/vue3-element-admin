@@ -1,3 +1,4 @@
+import type { App } from "vue";
 import { createI18n } from "vue-i18n";
 import { useAppStoreHook } from "@/store/modules/app";
 // 本地语言包
@@ -21,5 +22,10 @@ const i18n = createI18n({
   messages: messages,
   globalInjection: true,
 });
+
+// 全局注册 i18n
+export function setupI18n(app: App<Element>) {
+  app.use(i18n);
+}
 
 export default i18n;
