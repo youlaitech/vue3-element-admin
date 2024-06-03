@@ -5,6 +5,8 @@ import { LanguageEnum } from "./enums/LanguageEnum";
 
 const { pkg } = __APP_INFO__;
 
+const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+
 const defaultSettings: AppSettings = {
   title: pkg.name,
   version: pkg.version,
@@ -13,7 +15,7 @@ const defaultSettings: AppSettings = {
   fixedHeader: true,
   sidebarLogo: true,
   layout: LayoutEnum.LEFT,
-  theme: ThemeEnum.LIGHT,
+  theme: mediaQueryList.matches ? ThemeEnum.DARK : ThemeEnum.LIGHT,
   size: SizeEnum.DEFAULT,
   language: LanguageEnum.ZH_CN,
   themeColor: "#409EFF",
