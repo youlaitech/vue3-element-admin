@@ -431,7 +431,7 @@ const initialMenuFormData = ref<MenuForm>({
   parentId: 0,
   visible: 1,
   sort: 1,
-  type: MenuTypeEnum.MENU, // 默认“菜单”
+  type: MenuTypeEnum.MENU, // 默认菜单
   alwaysShow: 0,
   keepAlive: 1,
   params: [],
@@ -568,6 +568,7 @@ function closeDialog() {
   dialog.visible = false;
   menuFormRef.value.resetFields();
   menuFormRef.value.clearValidate();
+  formData.value.id = undefined;
 }
 
 onMounted(() => {
