@@ -77,4 +77,5 @@
   "i18n-ally.localesPaths": [
     "src/lang"
   ],
+  "scss.lint.unknownAtRules": "ignore"
 }
