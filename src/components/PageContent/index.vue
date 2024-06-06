@@ -110,6 +110,7 @@
       v-bind="contentConfig.table"
       :data="pageData"
       @selection-change="handleSelectionChange"
+      @filter-change="handleFilterChange"
     >
       <template v-for="col in cols" :key="col">
         <el-table-column v-if="col.show" v-bind="col">
@@ -380,7 +381,9 @@ export interface IContentConfig<T = any> {
     prop?: string;
     width?: string | number;
     align?: "left" | "center" | "right";
+    // 列是否显示
     show?: boolean;
+    // 模板
     templet?:
       | "image"
       | "list"
@@ -393,16 +396,23 @@ export interface IContentConfig<T = any> {
       | "date"
       | "tool"
       | "custom";
+    // image模板相关参数
     imageWidth?: number;
     imageHeight?: number;
+    // list模板相关参数
     selectList?: Record<string, any>;
+    // switch模板相关参数
     activeValue?: boolean | string | number;
     inactiveValue?: boolean | string | number;
     activeText?: string;
     inactiveText?: string;
+    // input模板相关参数
     inputType?: string;
+    // price模板相关参数
     priceFormat?: string;
+    // date模板相关参数
     dateFormat?: string;
+    // tool模板相关参数
     operat?: Array<
       | "edit"
       | "delete"
@@ -413,7 +423,11 @@ export interface IContentConfig<T = any> {
           text: string;
         }
     >;
+    // filter值拼接符
+    filterJoin?: string;
     [key: string]: any;
+    // 初始化数据函数
+    initFn?: (item: IObject) => void;
   }>;
 }
 const props = defineProps<{
@@ -427,6 +441,7 @@ const emit = defineEmits<{
   toolbarClick: [name: string];
   editClick: [row: IObject];
   operatClick: [data: IOperatData];
+  filterChange: [data: IObject];
 }>();
 
 // 主键
@@ -443,8 +458,16 @@ const defaultToolbar = props.contentConfig.defaultToolbar ?? [
 // 表格列
 const cols = ref(
   props.contentConfig.cols.map((col) => {
+    col.initFn && col.initFn(col);
     if (col.show === undefined) {
       col.show = true;
+    }
+    if (
+      col.prop !== undefined &&
+      col.columnKey === undefined &&
+      col["column-key"] === undefined
+    ) {
+      col.columnKey = col.prop;
     }
     return col;
   })
@@ -602,7 +625,28 @@ function handleCurrentChange(value: number) {
   pagination.currentPage = value;
   fetchPageData(lastFormData);
 }
+// 远程数据筛选
+let filterParams: IObject = {};
+function handleFilterChange(newFilters: any) {
+  const filters: IObject = {};
+  for (const key in newFilters) {
+    const col = cols.value.find((col) => {
+      return col.columnKey === key || col["column-key"] === key;
+    });
+    if (col && col.filterJoin !== undefined) {
+      filters[key] = newFilters[key].join(col.filterJoin);
+    } else {
+      filters[key] = newFilters[key];
+    }
+  }
+  filterParams = { ...filterParams, ...filters };
+  emit("filterChange", filterParams);
+}
 
+// 获取涮选条件
+function getFilterParams() {
+  return filterParams;
+}
 // 获取分页数据
 let lastFormData = {};
 function fetchPageData(formData: IObject = {}, isRestart = false) {
@@ -666,7 +710,7 @@ function exportPageData(formData: IObject = {}) {
 }
 
 // 暴露的属性和方法
-defineExpose({ fetchPageData, exportPageData });
+defineExpose({ fetchPageData, exportPageData, getFilterParams });
 </script>
 
 <style lang="scss" scoped></style>

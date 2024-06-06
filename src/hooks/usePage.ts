@@ -13,11 +13,13 @@ function usePage() {
 
   // 搜索
   function handleQueryClick(queryParams: IObject) {
-    contentRef.value?.fetchPageData(queryParams, true);
+    const filterParams = contentRef.value?.getFilterParams();
+    contentRef.value?.fetchPageData({ ...queryParams, ...filterParams }, true);
   }
   // 重置
   function handleResetClick(queryParams: IObject) {
-    contentRef.value?.fetchPageData(queryParams, true);
+    const filterParams = contentRef.value?.getFilterParams();
+    contentRef.value?.fetchPageData({ ...queryParams, ...filterParams }, true);
   }
   // 新增
   function handleAddClick() {
@@ -45,6 +47,11 @@ function usePage() {
   function handleSearchClick() {
     searchRef.value?.toggleVisible();
   }
+  // 涮选数据
+  function handleFilterChange(filterParams) {
+    const queryParams = searchRef.value?.getQueryParams();
+    contentRef.value?.fetchPageData({ ...queryParams, ...filterParams }, true);
+  }
 
   return {
     searchRef,
@@ -58,6 +65,7 @@ function usePage() {
     handleSubmitClick,
     handleExportClick,
     handleSearchClick,
+    handleFilterChange,
   };
 }
 

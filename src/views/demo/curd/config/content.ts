@@ -1,4 +1,5 @@
 import UserAPI from "@/api/user";
+import RoleAPI from "@/api/role";
 import type { UserQuery } from "@/api/user/model";
 import type { IContentConfig } from "@/components/PageContent/index.vue";
 
@@ -45,6 +46,22 @@ const contentConfig: IContentConfig<UserQuery> = {
     { label: "用户昵称", align: "center", prop: "nickname", width: 120 },
     { label: "性别", align: "center", prop: "genderLabel", width: 100 },
     { label: "部门", align: "center", prop: "deptName", width: 120 },
+    {
+      label: "角色",
+      align: "center",
+      prop: "roleNames",
+      width: 120,
+      columnKey: "roleIds",
+      filters: [],
+      filterMultiple: true,
+      filterJoin: ",",
+      async initFn(colItem) {
+        const roleOptions = await RoleAPI.getOptions();
+        colItem.filters = roleOptions.map((item) => {
+          return { text: item.label, value: item.value };
+        });
+      },
+    },
     { label: "手机号码", align: "center", prop: "mobile", width: 120 },
     {
       label: "状态",
