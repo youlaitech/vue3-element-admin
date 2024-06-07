@@ -89,6 +89,7 @@
               icon="FolderOpened"
               circle
               title="导出"
+              v-hasPerm="[`${contentConfig.pageName}:export`]"
               @click="handleToolbar(item)"
             />
           </template>
@@ -98,6 +99,7 @@
               icon="search"
               circle
               title="搜索"
+              v-hasPerm="[`${contentConfig.pageName}:query`]"
               @click="handleToolbar(item)"
             />
           </template>
