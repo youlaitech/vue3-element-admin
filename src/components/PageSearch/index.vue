@@ -20,6 +20,38 @@
               @keyup.enter="handleQuery"
             />
           </template>
+          <!-- InputTag 标签输入框 -->
+          <template v-if="item.type === 'input-tag'">
+            <div class="flex-center">
+              <el-tag
+                v-for="tag in inputTagMap[item.prop].data"
+                class="mr-2"
+                :key="tag"
+                :closable="true"
+                v-bind="inputTagMap[item.prop].tagAttrs"
+                @close="handleCloseTag(item.prop, tag)"
+              >
+                {{ tag }}
+              </el-tag>
+              <template v-if="inputTagMap[item.prop].inputVisible">
+                <el-input
+                  :ref="(el) => (inputTagMap[item.prop].inputRef = el)"
+                  v-model="inputTagMap[item.prop].inputValue"
+                  v-bind="inputTagMap[item.prop].inputAttrs"
+                  @keyup.enter="handleInputConfirm(item.prop)"
+                  @blur="handleInputConfirm(item.prop)"
+                />
+              </template>
+              <template v-else>
+                <el-button
+                  v-bind="inputTagMap[item.prop].buttonAttrs"
+                  @click="handleShowInput(item.prop)"
+                >
+                  {{ inputTagMap[item.prop].buttonAttrs.btnText }}
+                </el-button>
+              </template>
+            </div>
+          </template>
           <!-- Select 选择器 -->
           <template v-else-if="item.type === 'select'">
             <el-select v-model="queryParams[item.prop]" v-bind="item.attrs">
@@ -78,7 +110,7 @@ export interface ISearchConfig {
   // 表单项
   formItems: Array<{
     // 组件类型(如input,select等)
-    type?: "input" | "select" | "tree-select" | "date-picker";
+    type?: "input" | "select" | "tree-select" | "date-picker" | "input-tag";
     // 标签文本
     label: string;
     // 键名
@@ -127,13 +159,46 @@ const showNumber = computed(() => {
 });
 // 搜索表单数据
 const queryParams = reactive<IObject>({});
+const inputTagMap = reactive<IObject>({});
 for (const item of formItems) {
   item.initFn && item.initFn(item);
-  queryParams[item.prop] = item.initialValue ?? "";
+  if (item.type === "input-tag") {
+    inputTagMap[item.prop] = {
+      data: item.initialValue ?? [],
+      inputVisible: false,
+      inputValue: "",
+      inputRef: null,
+      buttonAttrs: {
+        size: item.attrs?.size ?? "default",
+        btnText: item.attrs?.btnText ?? "+ New Tag",
+        style: "color: #b0b2b7",
+      },
+      inputAttrs: {
+        size: item.attrs?.size ?? "default",
+        clearable: item.attrs?.clearable ?? false,
+        style: "width: 150px",
+      },
+      tagAttrs: {
+        size: item.attrs?.size ?? "default",
+      },
+    };
+    queryParams[item.prop] = computed(() => {
+      if (item.attrs?.join) {
+        return inputTagMap[item.prop].data.join(item.attrs.join);
+      } else {
+        return inputTagMap[item.prop].data;
+      }
+    });
+  } else {
+    queryParams[item.prop] = item.initialValue ?? "";
+  }
 }
 // 重置操作
 function handleReset() {
   queryFormRef.value?.resetFields();
+  for (const key in inputTagMap) {
+    inputTagMap[key].data = [];
+  }
   emit("resetClick", queryParams);
 }
 // 查询操作
@@ -147,6 +212,25 @@ function getQueryParams() {
 // 显示/隐藏 SearchForm
 function toggleVisible() {
   visible.value = !visible.value;
+}
+// 关闭标签
+function handleCloseTag(prop: string, tag: string) {
+  inputTagMap[prop].data.splice(inputTagMap[prop].data.indexOf(tag), 1);
+}
+// 添加标签
+function handleInputConfirm(prop: string) {
+  if (inputTagMap[prop].inputValue) {
+    inputTagMap[prop].data.push(inputTagMap[prop].inputValue);
+  }
+  inputTagMap[prop].inputVisible = false;
+  inputTagMap[prop].inputValue = "";
+}
+// 显示标签输入框
+function handleShowInput(prop: string) {
+  inputTagMap[prop].inputVisible = true;
+  nextTick(() => {
+    inputTagMap[prop].inputRef.focus();
+  });
 }
 
 // 暴露的属性和方法
