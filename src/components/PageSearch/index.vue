@@ -12,6 +12,22 @@
           :label="item.label"
           :prop="item.prop"
         >
+          <!-- Label -->
+          <template #label v-if="item.tips">
+            <span>
+              {{ item.label }}
+              <el-tooltip
+                placement="bottom"
+                effect="light"
+                :content="item.tips"
+                :raw-content="true"
+              >
+                <el-icon style="vertical-align: -0.15em" size="16">
+                  <QuestionFilled />
+                </el-icon>
+              </el-tooltip>
+            </span>
+          </template>
           <!-- Input 输入框 -->
           <template v-if="item.type === 'input' || item.type === undefined">
             <el-input
@@ -113,9 +129,11 @@ export interface ISearchConfig {
     type?: "input" | "select" | "tree-select" | "date-picker" | "input-tag";
     // 标签文本
     label: string;
+    // 标签提示
+    tips?: string;
     // 键名
     prop: string;
-    // 组件属性
+    // 组件属性(input-tag组件支持join,btnText,size属性)
     attrs?: IObject;
     // 初始值
     initialValue?: any;
@@ -164,7 +182,7 @@ for (const item of formItems) {
   item.initFn && item.initFn(item);
   if (item.type === "input-tag") {
     inputTagMap[item.prop] = {
-      data: item.initialValue ?? [],
+      data: Array.isArray(item.initialValue) ? item.initialValue : [],
       inputVisible: false,
       inputValue: "",
       inputRef: null,
@@ -182,12 +200,19 @@ for (const item of formItems) {
         size: item.attrs?.size ?? "default",
       },
     };
-    queryParams[item.prop] = computed(() => {
-      if (item.attrs?.join) {
-        return inputTagMap[item.prop].data.join(item.attrs.join);
-      } else {
-        return inputTagMap[item.prop].data;
-      }
+    queryParams[item.prop] = computed({
+      get() {
+        return typeof item.attrs?.join === "string"
+          ? inputTagMap[item.prop].data.join(item.attrs.join)
+          : inputTagMap[item.prop].data;
+      },
+      set(value) {
+        // resetFields时会被调用
+        inputTagMap[item.prop].data =
+          typeof item.attrs?.join === "string"
+            ? value.split(item.attrs.join).filter((item: any) => item !== "")
+            : value;
+      },
     });
   } else {
     queryParams[item.prop] = item.initialValue ?? "";
@@ -196,9 +221,6 @@ for (const item of formItems) {
 // 重置操作
 function handleReset() {
   queryFormRef.value?.resetFields();
-  for (const key in inputTagMap) {
-    inputTagMap[key].data = [];
-  }
   emit("resetClick", queryParams);
 }
 // 查询操作
