@@ -303,16 +303,79 @@
         </div>
       </el-scrollbar>
     </template>
+    <!-- 导出弹窗 -->
+    <el-dialog
+      v-model="exportsModalVisible"
+      title="导出数据"
+      style="padding-right: 0"
+      @close="handleCloseExportsModal"
+    >
+      <!-- 滚动 -->
+      <el-scrollbar max-height="60vh">
+        <!-- 表单 -->
+        <el-form
+          ref="exportsFormRef"
+          label-width="auto"
+          style="padding-right: var(--el-dialog-padding-primary)"
+          :model="exportsFormData"
+          :rules="exportsFormRules"
+        >
+          <el-form-item label="文件名" prop="filename">
+            <el-input v-model="exportsFormData.filename" clearable />
+          </el-form-item>
+          <el-form-item label="工作表名" prop="sheetname">
+            <el-input v-model="exportsFormData.sheetname" clearable />
+          </el-form-item>
+          <el-form-item label="数据源" prop="origin">
+            <el-select v-model="exportsFormData.origin">
+              <el-option
+                label="当前数据 (当前页的数据)"
+                :value="ExportsOriginEnum.CURRENT"
+              />
+              <el-option
+                label="全量数据 (包括所有分页的数据)"
+                :value="ExportsOriginEnum.REMOTE"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="字段" prop="fields">
+            <el-checkbox-group v-model="exportsFormData.fields">
+              <template v-for="col in cols" :key="col">
+                <el-checkbox
+                  v-if="col.prop"
+                  :value="col.prop"
+                  :label="col.label"
+                />
+              </template>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
+      <!-- 弹窗底部操作按钮 -->
+      <template #footer>
+        <div style="padding-right: var(--el-dialog-padding-primary)">
+          <el-button type="primary" @click="handleExportsSubmit">
+            确 定
+          </el-button>
+          <el-button @click="handleCloseExportsModal">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </el-card>
 </template>
 
 <script setup lang="ts">
 import ExcelJS from "exceljs";
 import { ref, reactive } from "vue";
-import { useDateFormat } from "@vueuse/core";
+import { useDateFormat, useThrottleFn } from "@vueuse/core";
 import { hasAuth } from "@/plugins/permission";
 import SvgIcon from "@/components/SvgIcon/index.vue";
-import type { TableProps, PaginationProps } from "element-plus";
+import type {
+  TableProps,
+  PaginationProps,
+  FormInstance,
+  FormRules,
+} from "element-plus";
 
 // 对象类型
 export type IObject = Record<string, any>;
@@ -352,8 +415,10 @@ export interface IContentConfig<T = any> {
   };
   // 删除的网络请求函数(需返回promise)
   deleteAction?: (ids: string) => Promise<any>;
-  // 导出的网络请求函数(需返回promise)
+  // 后端导出的网络请求函数(需返回promise)
   exportAction?: (queryParams: T) => Promise<any>;
+  // 前端全量导出的网络请求函数(需返回promise)
+  exportsAction?: (queryParams: T) => Promise<IObject[]>;
   // 修改属性的网络请求函数(需返回promise)
   modifyAction?: (data: {
     [key: string]: any;
@@ -533,18 +598,82 @@ function handleDelete(id?: number | string) {
     }
   });
 }
+// 导出表单
+const fields: string[] = [];
+cols.value.forEach((item) => {
+  if (item.prop !== undefined) {
+    fields.push(item.prop);
+  }
+});
+const enum ExportsOriginEnum {
+  CURRENT = "current",
+  REMOTE = "remote",
+}
+const exportsModalVisible = ref(false);
+const exportsFormRef = ref<FormInstance>();
+const exportsFormData = reactive({
+  filename: "",
+  sheetname: "",
+  fields: fields,
+  origin: ExportsOriginEnum.CURRENT,
+});
+const exportsFormRules: FormRules = {
+  fields: [{ required: true, message: "请选择字段" }],
+  origin: [{ required: true, message: "请选择数据源" }],
+};
+// 打开导出弹窗
+function handleOpenExportsModal() {
+  exportsModalVisible.value = true;
+}
+// 导出确认
+const handleExportsSubmit = useThrottleFn(() => {
+  exportsFormRef.value?.validate((valid: boolean) => {
+    if (valid) {
+      handleExports();
+      handleCloseExportsModal();
+    }
+  });
+}, 3000);
+// 关闭导出弹窗
+function handleCloseExportsModal() {
+  exportsModalVisible.value = false;
+  exportsFormRef.value?.resetFields();
+  nextTick(() => {
+    exportsFormRef.value?.clearValidate();
+  });
+}
 // 导出
 function handleExports() {
+  const filename = exportsFormData.filename
+    ? exportsFormData.filename
+    : props.contentConfig.pageName;
+  const sheetname = exportsFormData.sheetname
+    ? exportsFormData.sheetname
+    : "sheet";
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("sheet");
+  const worksheet = workbook.addWorksheet(sheetname);
   const columns: Partial<ExcelJS.Column>[] = [];
   cols.value.forEach((col) => {
-    if (col.label && col.prop) {
+    if (col.label && col.prop && exportsFormData.fields.includes(col.prop)) {
       columns.push({ header: col.label, key: col.prop });
     }
   });
   worksheet.columns = columns;
-  worksheet.addRows(pageData.value);
+  if (exportsFormData.origin === ExportsOriginEnum.REMOTE) {
+    if (props.contentConfig.exportsAction) {
+      props.contentConfig.exportsAction(lastFormData).then((res) => {
+        worksheet.addRows(res);
+        downloadXlsx(workbook, filename);
+      });
+    } else {
+      ElMessage.error("未配置exportsAction");
+    }
+  } else {
+    worksheet.addRows(pageData.value);
+    downloadXlsx(workbook, filename);
+  }
+}
+function downloadXlsx(workbook: ExcelJS.Workbook, filename: string) {
   workbook.xlsx
     .writeBuffer()
     .then((buffer) => {
@@ -554,7 +683,7 @@ function handleExports() {
       const downloadUrl = window.URL.createObjectURL(blob);
       const downloadLink = document.createElement("a");
       downloadLink.href = downloadUrl;
-      downloadLink.download = props.contentConfig.pageName;
+      downloadLink.download = filename;
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);
@@ -569,7 +698,7 @@ function handleToolbar(name: string) {
       handleRefresh();
       break;
     case "exports":
-      handleExports();
+      handleOpenExportsModal();
       break;
     case "search":
       emit("searchClick");

@@ -127,7 +127,7 @@
       @close="handleCloseModal"
     >
       <!-- 滚动 -->
-      <el-scrollbar max-height="65vh">
+      <el-scrollbar max-height="60vh">
         <!-- 表单 -->
         <el-form
           ref="formRef"
