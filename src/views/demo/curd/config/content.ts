@@ -26,6 +26,11 @@ const contentConfig: IContentConfig<UserQuery> = {
   },
   deleteAction: UserAPI.deleteByIds,
   exportAction: UserAPI.export,
+  exportsAction: async function (params) {
+    // 模拟获取全量数据
+    const res = await UserAPI.getPage(params);
+    return res.list;
+  },
   pk: "id",
   toolbar: [
     "add",
