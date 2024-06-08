@@ -57,51 +57,73 @@
       <!-- 右侧工具栏 -->
       <div>
         <template v-for="item in defaultToolbar" :key="item">
-          <!-- 刷新 -->
-          <template v-if="item === 'refresh'">
-            <el-button
-              icon="refresh"
-              circle
-              title="刷新"
-              @click="handleToolbar(item)"
-            />
-          </template>
-          <!-- 筛选列 -->
-          <template v-else-if="item === 'filter'">
-            <el-popover placement="bottom" trigger="click">
-              <template #reference>
-                <el-button icon="Operation" circle title="筛选列" />
-              </template>
-              <el-scrollbar max-height="350px">
-                <template v-for="col in cols" :key="col">
-                  <el-checkbox
-                    v-if="col.prop"
-                    v-model="col.show"
-                    :label="col.label"
-                  />
+          <template v-if="typeof item === 'string'">
+            <!-- 刷新 -->
+            <template v-if="item === 'refresh'">
+              <el-button
+                icon="refresh"
+                circle
+                title="刷新"
+                @click="handleToolbar(item)"
+              />
+            </template>
+            <!-- 筛选列 -->
+            <template v-else-if="item === 'filter'">
+              <el-popover placement="bottom" trigger="click">
+                <template #reference>
+                  <el-button icon="Operation" circle title="筛选列" />
                 </template>
-              </el-scrollbar>
-            </el-popover>
+                <el-scrollbar max-height="350px">
+                  <template v-for="col in cols" :key="col">
+                    <el-checkbox
+                      v-if="col.prop"
+                      v-model="col.show"
+                      :label="col.label"
+                    />
+                  </template>
+                </el-scrollbar>
+              </el-popover>
+            </template>
+            <!-- 导出 -->
+            <template v-else-if="item === 'exports'">
+              <el-button
+                icon="FolderOpened"
+                circle
+                title="导出"
+                v-hasPerm="[`${contentConfig.pageName}:export`]"
+                @click="handleToolbar(item)"
+              />
+            </template>
+            <!-- 搜索 -->
+            <template v-else-if="item === 'search'">
+              <el-button
+                icon="search"
+                circle
+                title="搜索"
+                v-hasPerm="[`${contentConfig.pageName}:query`]"
+                @click="handleToolbar(item)"
+              />
+            </template>
           </template>
-          <!-- 导出 -->
-          <template v-else-if="item === 'exports'">
-            <el-button
-              icon="FolderOpened"
-              circle
-              title="导出"
-              v-hasPerm="[`${contentConfig.pageName}:export`]"
-              @click="handleToolbar(item)"
-            />
-          </template>
-          <!-- 搜索 -->
-          <template v-else-if="item === 'search'">
-            <el-button
-              icon="search"
-              circle
-              title="搜索"
-              v-hasPerm="[`${contentConfig.pageName}:query`]"
-              @click="handleToolbar(item)"
-            />
+          <!-- 其他 -->
+          <template v-else-if="typeof item === 'object'">
+            <template v-if="item.auth">
+              <el-button
+                :icon="item.icon"
+                circle
+                :title="item.text"
+                v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
+                @click="handleToolbar(item.name)"
+              />
+            </template>
+            <template v-else>
+              <el-button
+                :icon="item.icon"
+                circle
+                :title="item.title"
+                @click="handleToolbar(item.name)"
+              />
+            </template>
           </template>
         </template>
       </div>
@@ -447,7 +469,18 @@ export interface IContentConfig<T = any> {
       }
   >;
   // 表格工具栏右侧图标
-  defaultToolbar?: ("refresh" | "filter" | "exports" | "search")[];
+  defaultToolbar?: Array<
+    | "refresh"
+    | "filter"
+    | "exports"
+    | "search"
+    | {
+        name: string;
+        icon: string;
+        title?: string;
+        auth?: string;
+      }
+  >;
   // table组件列属性(额外的属性templet,operat,slotName)
   cols: Array<{
     type?: "default" | "selection" | "index" | "expand";
