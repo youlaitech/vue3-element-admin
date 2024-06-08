@@ -111,6 +111,7 @@
       v-loading="loading"
       v-bind="contentConfig.table"
       :data="pageData"
+      :row-key="pk"
       @selection-change="handleSelectionChange"
       @filter-change="handleFilterChange"
     >
@@ -333,6 +334,11 @@
                 :value="ExportsOriginEnum.CURRENT"
               />
               <el-option
+                label="选中数据 (所有选中的数据)"
+                :value="ExportsOriginEnum.SELECTED"
+                :disabled="selectionData.length <= 0"
+              />
+              <el-option
                 v-if="contentConfig.exportsAction"
                 label="全量数据 (包括所有分页的数据)"
                 :value="ExportsOriginEnum.REMOTE"
@@ -449,6 +455,8 @@ export interface IContentConfig<T = any> {
     prop?: string;
     width?: string | number;
     align?: "left" | "center" | "right";
+    columnKey?: string;
+    reserveSelection?: boolean;
     // 列是否显示
     show?: boolean;
     // 模板
@@ -537,6 +545,14 @@ const cols = ref(
     ) {
       col.columnKey = col.prop;
     }
+    if (
+      col.type === "selection" &&
+      col.reserveSelection === undefined &&
+      col["reserve-selection"] === undefined
+    ) {
+      // 配合表格row-key实现跨页多选
+      col.reserveSelection = true;
+    }
     return col;
   })
 );
@@ -569,7 +585,9 @@ const request = props.contentConfig.request ?? {
 };
 
 // 行选中
+const selectionData = ref<IObject[]>([]);
 function handleSelectionChange(selection: any[]) {
+  selectionData.value = selection;
   removeIds.value = selection.map((item) => item[pk]);
 }
 // 刷新
@@ -608,6 +626,7 @@ cols.value.forEach((item) => {
 });
 const enum ExportsOriginEnum {
   CURRENT = "current",
+  SELECTED = "selected",
   REMOTE = "remote",
 }
 const exportsModalVisible = ref(false);
@@ -669,6 +688,9 @@ function handleExports() {
     } else {
       ElMessage.error("未配置exportsAction");
     }
+  } else if (exportsFormData.origin === ExportsOriginEnum.SELECTED) {
+    worksheet.addRows(selectionData.value);
+    downloadXlsx(workbook, filename);
   } else {
     worksheet.addRows(pageData.value);
     downloadXlsx(workbook, filename);
