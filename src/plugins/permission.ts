@@ -4,24 +4,6 @@ import NProgress from "@/utils/nprogress";
 import { RouteRecordRaw } from "vue-router";
 import { TOKEN_KEY } from "@/enums/CacheEnum";
 
-// 是否有权限
-export function hasAuth(
-  value: string | string[],
-  type: "button" | "role" = "button"
-) {
-  const { roles, perms } = useUserStore().user;
-  //「超级管理员」拥有所有的按钮权限
-  if (type === "button" && roles.includes("ROOT")) {
-    return true;
-  }
-  const auths = type === "button" ? perms : roles;
-  return typeof value === "string"
-    ? auths.includes(value)
-    : auths.some((perm) => {
-        return value.includes(perm);
-      });
-}
-
 export function setupPermission() {
   // 白名单路由
   const whiteList = ["/login"];
@@ -43,6 +25,13 @@ export function setupPermission() {
           if (to.matched.length === 0) {
             from.name ? next({ name: from.name }) : next("/404");
           } else {
+            // 如果路由参数中有 title，覆盖路由元信息中的 title
+            const title =
+              (to.params.title as string) || (to.query.title as string);
+            if (title) {
+              to.meta.title = title;
+            }
+
             next();
           }
         } else {
@@ -76,4 +65,22 @@ export function setupPermission() {
   router.afterEach(() => {
     NProgress.done();
   });
+}
+
+// 是否有权限
+export function hasAuth(
+  value: string | string[],
+  type: "button" | "role" = "button"
+) {
+  const { roles, perms } = useUserStore().user;
+  //「超级管理员」拥有所有的按钮权限
+  if (type === "button" && roles.includes("ROOT")) {
+    return true;
+  }
+  const auths = type === "button" ? perms : roles;
+  return typeof value === "string"
+    ? auths.includes(value)
+    : auths.some((perm) => {
+        return value.includes(perm);
+      });
 }
