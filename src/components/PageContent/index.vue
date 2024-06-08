@@ -361,9 +361,9 @@
                 :disabled="selectionData.length <= 0"
               />
               <el-option
-                v-if="contentConfig.exportsAction"
                 label="全量数据 (包括所有分页的数据)"
                 :value="ExportsOriginEnum.REMOTE"
+                :disabled="contentConfig.exportsAction === undefined"
               />
             </el-select>
           </el-form-item>
