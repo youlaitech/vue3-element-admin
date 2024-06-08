@@ -46,17 +46,30 @@ export function setupPermission() {
           } catch (error) {
             // 移除 token 并跳转登录页
             await userStore.resetToken();
-            next(`/login?redirect=${to.path}`);
+            // 重定向到登录页，并携带当前页面路由和参数，作为登录成功后跳转的页面
+            const params = new URLSearchParams(
+              to.query as Record<string, string>
+            );
+            const queryString = params.toString();
+            const redirect = queryString
+              ? `${to.path}?${queryString}`
+              : to.path;
+            next(`/login?redirect=${encodeURIComponent(redirect)}`);
             NProgress.done();
           }
         }
       }
     } else {
-      // 未登录可以访问白名单页面
+      // 未登录
       if (whiteList.indexOf(to.path) !== -1) {
+        // 在白名单，直接进入
         next();
       } else {
-        next(`/login?redirect=${to.path}`);
+        // 不在白名单，重定向到登录页
+        const params = new URLSearchParams(to.query as Record<string, string>);
+        const queryString = params.toString();
+        const redirect = queryString ? `${to.path}?${queryString}` : to.path;
+        next(`/login?redirect=${encodeURIComponent(redirect)}`);
         NProgress.done();
       }
     }
