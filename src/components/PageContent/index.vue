@@ -333,6 +333,7 @@
                 :value="ExportsOriginEnum.CURRENT"
               />
               <el-option
+                v-if="contentConfig.exportsAction"
                 label="全量数据 (包括所有分页的数据)"
                 :value="ExportsOriginEnum.REMOTE"
               />
