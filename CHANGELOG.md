@@ -1,3 +1,44 @@
+
+# 2.11.2 (2024/6/8)
+
+## ✨ feat
+
+- 支持表格远程筛选([#131](https://github.com/youlaitech/vue3-element-admin/pull/119)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 支持标签输入框([#132](https://github.com/youlaitech/vue3-element-admin/pull/132)) [@cshaptx4869](https://github.com/cshaptx4869)
+- 表单项支持tips配置([#133](https://github.com/youlaitech/vue3-element-admin/pull/133)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 前端导出支持全量数据([#134](https://github.com/youlaitech/vue3-element-admin/pull/134)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 支持选中数据导出([#135](https://github.com/youlaitech/vue3-element-admin/pull/135)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 页签title支持动态设置([#/23876a](https://github.com/youlaitech/vue3-element-admin/commit/23876aa396143bf77cb5c86af8d6023d9ff6555a)) [@haoxianrui](https://github.com/haoxianrui) 
+
+## ♻️ refactor
+- 默认工具栏支持自定义([#136](https://github.com/youlaitech/vue3-element-admin/pull/136)) [@cshaptx4869](https://github.com/cshaptx4869)
+
+## 🐛 fix
+- 修复注销登出后redirect跳转路由参数丢失([5626017](https://github.com/youlaitech/vue3-element-admin/commit/562601736731afd20bb1a5140d856f6515720159)) [@haoxianrui](https://github.com/haoxianrui)
+
+# 2.11.1 (2024/6/6)
+
+## ✨ feat
+
+- 增加pagination、request、parseData配置参数([#119](https://github.com/youlaitech/vue3-element-admin/pull/119)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 增加返回顶部功能([#120](https://github.com/youlaitech/vue3-element-admin/pull/120)) [@cshaptx4869](https://github.com/cshaptx4869)
+- 支持前端导出([#126](https://github.com/youlaitech/vue3-element-admin/pull/126)) [@cshaptx4869](https://github.com/cshaptx4869) 
+
+## ♻️ refactor
+- 重构布局样式(解决页面抖动问题)([#116](https://github.com/youlaitech/vue3-element-admin/pull/116)) [@cshaptx4869](https://github.com/cshaptx4869)
+- 修改CURD示例编辑弹窗尺寸([#121](https://github.com/youlaitech/vue3-element-admin/pull/121)) [@cshaptx4869](https://github.com/cshaptx4869)
+- 统一注册vue插件([#122](https://github.com/youlaitech/vue3-element-admin/pull/122)) [@cshaptx4869](https://github.com/cshaptx4869)
+- 默认主题跟随系统([#128](https://github.com/youlaitech/vue3-element-admin/pull/128)) [@cshaptx4869](https://github.com/cshaptx4869)
+
+## 🐛 fix
+- 修复左侧布局移动端菜单弹出样式 ([#117](https://github.com/youlaitech/vue3-element-admin/pull/117))  [@cshaptx4869](https://github.com/cshaptx4869)
+
+- 修复编辑后未清空id再新增菜单覆盖的问题([0e78eeb](https://github.com/youlaitech/vue3-element-admin/commit/0e78eeb75008fa8e9732b1b4e7d7a1ea345c7a1b)) [@haoxianrui](https://github.com/haoxianrui)
+- 修复水印层级问题([#123](https://github.com/youlaitech/vue3-element-admin/pull/123))  [@cshaptx4869](https://github.com/cshaptx4869)
+- 修复混合布局样式问题([#124](https://github.com/youlaitech/vue3-element-admin/pull/124))  [@cshaptx4869](https://github.com/cshaptx4869)
+- 修复关闭弹窗时没有clearValidate问题([#125](https://github.com/youlaitech/vue3-element-admin/pull/125))  [@xiudaozhe](https://github.com/xiudaozhe)
+
+
 # 2.11.0 (2024/5/27)
 
 ## ✨ feat
