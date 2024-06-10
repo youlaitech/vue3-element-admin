@@ -26,9 +26,16 @@ const contentConfig: IContentConfig<UserQuery> = {
   },
   deleteAction: UserAPI.deleteByIds,
   exportAction: UserAPI.export,
+  importsTemplate: UserAPI.downloadTemplate,
+  importsAction(data) {
+    // 模拟导入数据
+    console.log("importsAction", data);
+    return Promise.resolve();
+  },
   exportsAction: async function (params) {
-    // 模拟获取全量数据
+    // 模拟获取到的是全量数据
     const res = await UserAPI.getPage(params);
+    console.log("exportsAction", res.list);
     return res.list;
   },
   pk: "id",
@@ -43,6 +50,7 @@ const contentConfig: IContentConfig<UserQuery> = {
       auth: "import",
     },
   ],
+  defaultToolbar: ["refresh", "filter", "imports", "exports", "search"],
   cols: [
     { type: "selection", width: 50, align: "center" },
     { label: "编号", align: "center", prop: "id", width: 100, show: false },
