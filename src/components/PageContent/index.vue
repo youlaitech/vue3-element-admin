@@ -373,7 +373,7 @@
                 :disabled="selectionData.length <= 0"
               />
               <el-option
-                label="全量数据 (包括所有分页的数据)"
+                label="全量数据 (所有分页的数据)"
                 :value="ExportsOriginEnum.REMOTE"
                 :disabled="contentConfig.exportsAction === undefined"
               />
