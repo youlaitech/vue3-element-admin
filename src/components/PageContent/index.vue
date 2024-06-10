@@ -87,10 +87,20 @@
             <!-- 导出 -->
             <template v-else-if="item === 'exports'">
               <el-button
-                icon="FolderOpened"
+                icon="download"
                 circle
                 title="导出"
                 v-hasPerm="[`${contentConfig.pageName}:export`]"
+                @click="handleToolbar(item)"
+              />
+            </template>
+            <!-- 导入 -->
+            <template v-else-if="item === 'imports'">
+              <el-button
+                icon="upload"
+                circle
+                title="导入"
+                v-hasPerm="[`${contentConfig.pageName}:import`]"
                 @click="handleToolbar(item)"
               />
             </template>
@@ -111,7 +121,7 @@
               <el-button
                 :icon="item.icon"
                 circle
-                :title="item.text"
+                :title="item.title"
                 v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
                 @click="handleToolbar(item.name)"
               />
@@ -329,7 +339,9 @@
     <!-- 导出弹窗 -->
     <el-dialog
       v-model="exportsModalVisible"
+      :align-center="true"
       title="导出数据"
+      width="600px"
       style="padding-right: 0"
       @close="handleCloseExportsModal"
     >
@@ -390,6 +402,72 @@
         </div>
       </template>
     </el-dialog>
+    <!-- 导入弹窗 -->
+    <el-dialog
+      v-model="importsModalVisible"
+      :align-center="true"
+      title="导入数据"
+      width="600px"
+      style="padding-right: 0"
+      @close="handleCloseImportsModal"
+    >
+      <!-- 滚动 -->
+      <el-scrollbar max-height="60vh">
+        <!-- 表单 -->
+        <el-form
+          ref="importsFormRef"
+          label-width="auto"
+          style="padding-right: var(--el-dialog-padding-primary)"
+          :model="importsFormData"
+          :rules="importsFormRules"
+        >
+          <el-form-item label="文件名" prop="files">
+            <el-upload
+              class="w-full"
+              ref="uploadRef"
+              v-model:file-list="importsFormData.files"
+              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              :drag="true"
+              :limit="1"
+              :auto-upload="false"
+              :on-exceed="handleFileExceed"
+            >
+              <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+              <div class="el-upload__text">
+                将文件拖到此处，或<em>点击上传</em>
+              </div>
+              <template #tip>
+                <div class="el-upload__tip">
+                  *.xlsx / *.xls
+                  <el-link
+                    v-if="contentConfig.importsTemplate"
+                    type="primary"
+                    icon="download"
+                    :underline="false"
+                    @click="handleDownloadTemplate"
+                  >
+                    下载模板
+                  </el-link>
+                </div>
+              </template>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
+      <!-- 弹窗底部操作按钮 -->
+      <template #footer>
+        <div style="padding-right: var(--el-dialog-padding-primary)">
+          <el-button
+            type="primary"
+            :disabled="importsFormData.files.length === 0"
+            @click="handleImportsSubmit"
+          >
+            确 定
+          </el-button>
+          <el-button @click="handleCloseImportsModal">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -399,11 +477,15 @@ import { ref, reactive } from "vue";
 import { useDateFormat, useThrottleFn } from "@vueuse/core";
 import { hasAuth } from "@/plugins/permission";
 import SvgIcon from "@/components/SvgIcon/index.vue";
-import type {
-  TableProps,
-  PaginationProps,
-  FormInstance,
-  FormRules,
+import {
+  type TableProps,
+  type PaginationProps,
+  type FormInstance,
+  type FormRules,
+  type UploadInstance,
+  type UploadUserFile,
+  type UploadRawFile,
+  genFileId,
 } from "element-plus";
 
 // 对象类型
@@ -442,18 +524,22 @@ export interface IContentConfig<T = any> {
     list: IObject[];
     [key: string]: any;
   };
-  // 删除的网络请求函数(需返回promise)
-  deleteAction?: (ids: string) => Promise<any>;
-  // 后端导出的网络请求函数(需返回promise)
-  exportAction?: (queryParams: T) => Promise<any>;
-  // 前端全量导出的网络请求函数(需返回promise)
-  exportsAction?: (queryParams: T) => Promise<IObject[]>;
   // 修改属性的网络请求函数(需返回promise)
   modifyAction?: (data: {
     [key: string]: any;
     field: string;
     value: boolean | string | number;
   }) => Promise<any>;
+  // 删除的网络请求函数(需返回promise)
+  deleteAction?: (ids: string) => Promise<any>;
+  // 后端导出的网络请求函数(需返回promise)
+  exportAction?: (queryParams: T) => Promise<any>;
+  // 前端全量导出的网络请求函数(需返回promise)
+  exportsAction?: (queryParams: T) => Promise<IObject[]>;
+  // 前端导入模板
+  importsTemplate?: string | (() => Promise<any>);
+  // 前端导入的网络请求函数(需返回promise)
+  importsAction?: (data: IObject[]) => Promise<any>;
   // 主键名(默认为id)
   pk?: string;
   // 表格工具栏(默认支持add,delete,export,也可自定义)
@@ -472,6 +558,7 @@ export interface IContentConfig<T = any> {
   defaultToolbar?: Array<
     | "refresh"
     | "filter"
+    | "imports"
     | "exports"
     | "search"
     | {
@@ -561,8 +648,6 @@ const toolbar = props.contentConfig.toolbar ?? ["add", "delete"];
 const defaultToolbar = props.contentConfig.defaultToolbar ?? [
   "refresh",
   "filter",
-  "exports",
-  "search",
 ];
 // 表格列
 const cols = ref(
@@ -716,36 +801,147 @@ function handleExports() {
     if (props.contentConfig.exportsAction) {
       props.contentConfig.exportsAction(lastFormData).then((res) => {
         worksheet.addRows(res);
-        downloadXlsx(workbook, filename);
+        workbook.xlsx
+          .writeBuffer()
+          .then((buffer) => {
+            saveXlsx(buffer, filename);
+          })
+          .catch((error) => console.log(error));
       });
     } else {
       ElMessage.error("未配置exportsAction");
     }
-  } else if (exportsFormData.origin === ExportsOriginEnum.SELECTED) {
-    worksheet.addRows(selectionData.value);
-    downloadXlsx(workbook, filename);
   } else {
-    worksheet.addRows(pageData.value);
-    downloadXlsx(workbook, filename);
+    worksheet.addRows(
+      exportsFormData.origin === ExportsOriginEnum.SELECTED
+        ? selectionData.value
+        : pageData.value
+    );
+    workbook.xlsx
+      .writeBuffer()
+      .then((buffer) => {
+        saveXlsx(buffer, filename);
+      })
+      .catch((error) => console.log(error));
   }
 }
-function downloadXlsx(workbook: ExcelJS.Workbook, filename: string) {
-  workbook.xlsx
-    .writeBuffer()
-    .then((buffer) => {
-      const blob = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const downloadLink = document.createElement("a");
-      downloadLink.href = downloadUrl;
-      downloadLink.download = filename;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      window.URL.revokeObjectURL(downloadUrl);
-    })
-    .catch((error) => console.log("Error writing excel export", error));
+// 导入表单
+const uploadRef = ref<UploadInstance>();
+const importsModalVisible = ref(false);
+const importsFormRef = ref<FormInstance>();
+const importsFormData = reactive<{
+  files: UploadUserFile[];
+}>({
+  files: [],
+});
+const importsFormRules: FormRules = {
+  files: [{ required: true, message: "请选择文件" }],
+};
+// 打开导入弹窗
+function handleOpenImportsModal() {
+  importsModalVisible.value = true;
+}
+// 覆盖前一个文件
+function handleFileExceed(files: File[]) {
+  uploadRef.value!.clearFiles();
+  const file = files[0] as UploadRawFile;
+  file.uid = genFileId();
+  uploadRef.value!.handleStart(file);
+}
+// 下载导入模板
+function handleDownloadTemplate() {
+  const importsTemplate = props.contentConfig.importsTemplate;
+  if (typeof importsTemplate === "string") {
+    window.open(importsTemplate);
+  } else if (typeof importsTemplate === "function") {
+    importsTemplate().then((response) => {
+      const fileData = response.data;
+      const fileName = decodeURI(
+        response.headers["content-disposition"].split(";")[1].split("=")[1]
+      );
+      saveXlsx(fileData, fileName);
+    });
+  } else {
+    ElMessage.error("未配置importsTemplate");
+  }
+}
+// 导入确认
+const handleImportsSubmit = useThrottleFn(() => {
+  importsFormRef.value?.validate((valid: boolean) => {
+    valid && handleImports();
+  });
+}, 3000);
+// 关闭导入弹窗
+function handleCloseImportsModal() {
+  importsModalVisible.value = false;
+  importsFormRef.value?.resetFields();
+  nextTick(() => {
+    importsFormRef.value?.clearValidate();
+  });
+}
+// 导入
+function handleImports() {
+  const importsAction = props.contentConfig.importsAction;
+  if (importsAction === undefined) {
+    ElMessage.error("未配置importsAction");
+    return;
+  }
+  // 获取选择的文件
+  const file = importsFormData.files[0].raw as File;
+  // 创建Workbook实例
+  const workbook = new ExcelJS.Workbook();
+  // 使用FileReader对象来读取文件内容
+  const fileReader = new FileReader();
+  // 二进制字符串的形式加载文件
+  fileReader.readAsArrayBuffer(file);
+  fileReader.onload = (ev) => {
+    if (ev.target !== null && ev.target.result !== null) {
+      const result = ev.target.result as ArrayBuffer;
+      // 从 buffer中加载数据解析
+      workbook.xlsx
+        .load(result)
+        .then((workbook) => {
+          // 解析后的数据
+          const data = [];
+          // 获取第一个worksheet内容
+          const worksheet = workbook.getWorksheet(1);
+          if (worksheet) {
+            // 获取第一行的标题
+            const fields: any[] = [];
+            worksheet.getRow(1).eachCell((cell) => {
+              fields.push(cell.value);
+            });
+            // 遍历工作表的每一行（从第二行开始，因为第一行通常是标题行）
+            for (
+              let rowNumber = 2;
+              rowNumber <= worksheet.rowCount;
+              rowNumber++
+            ) {
+              const rowData: IObject = {};
+              const row = worksheet.getRow(rowNumber);
+              // 遍历当前行的每个单元格
+              row.eachCell((cell, colNumber) => {
+                // 获取标题对应的键，并将当前单元格的值存储到相应的属性名中
+                rowData[fields[colNumber - 1]] = cell.value;
+              });
+              // 将当前行的数据对象添加到数组中
+              data.push(rowData);
+            }
+          }
+          if (data.length === 0) {
+            ElMessage.error("未解析到数据");
+            return;
+          }
+          importsAction(data).then(() => {
+            ElMessage.success("导入数据成功");
+            handleCloseImportsModal();
+          });
+        })
+        .catch((error) => console.log(error));
+    } else {
+      ElMessage.error("读取文件失败");
+    }
+  };
 }
 // 操作栏
 function handleToolbar(name: string) {
@@ -755,6 +951,9 @@ function handleToolbar(name: string) {
       break;
     case "exports":
       handleOpenExportsModal();
+      break;
+    case "imports":
+      handleOpenImportsModal();
       break;
     case "search":
       emit("searchClick");
@@ -878,22 +1077,29 @@ function exportPageData(formData: IObject = {}) {
       const fileName = decodeURI(
         response.headers["content-disposition"].split(";")[1].split("=")[1]
       );
-      const fileType =
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
-
-      const blob = new Blob([fileData], { type: fileType });
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const downloadLink = document.createElement("a");
-      downloadLink.href = downloadUrl;
-      downloadLink.download = fileName;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      window.URL.revokeObjectURL(downloadUrl);
+      saveXlsx(fileData, fileName);
     });
   } else {
     ElMessage.error("未配置exportAction");
   }
+}
+// 浏览器保存文件
+function saveXlsx(fileData: BlobPart, fileName: string) {
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+
+  const blob = new Blob([fileData], { type: fileType });
+  const downloadUrl = window.URL.createObjectURL(blob);
+
+  const downloadLink = document.createElement("a");
+  downloadLink.href = downloadUrl;
+  downloadLink.download = fileName;
+
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+
+  document.body.removeChild(downloadLink);
+  window.URL.revokeObjectURL(downloadUrl);
 }
 
 // 暴露的属性和方法

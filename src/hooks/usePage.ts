@@ -48,7 +48,7 @@ function usePage() {
     searchRef.value?.toggleVisible();
   }
   // 涮选数据
-  function handleFilterChange(filterParams) {
+  function handleFilterChange(filterParams: IObject) {
     const queryParams = searchRef.value?.getQueryParams();
     contentRef.value?.fetchPageData({ ...queryParams, ...filterParams }, true);
   }
