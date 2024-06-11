@@ -118,14 +118,14 @@ import { useSettingsStore, useUserStore } from "@/store";
 import AuthAPI from "@/api/auth";
 import { LoginData } from "@/api/auth/model";
 import type { FormInstance } from "element-plus";
-import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
+import { LocationQuery, useRoute } from "vue-router";
 import router from "@/router";
 import defaultSettings from "@/settings";
 import { ThemeEnum } from "@/enums/ThemeEnum";
 
-// Stores
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
+const route = useRoute();
 
 // Internationalization
 const { t } = useI18n();
@@ -183,8 +183,7 @@ function getCaptcha() {
   });
 }
 
-/** 登录 */
-const route = useRoute();
+// 登录
 function handleLogin() {
   loginFormRef.value?.validate((valid: boolean) => {
     if (valid) {
@@ -192,19 +191,8 @@ function handleLogin() {
       userStore
         .login(loginData.value)
         .then(() => {
-          const query: LocationQuery = route.query;
-          const redirect = (query.redirect as LocationQueryValue) ?? "/";
-          const otherQueryParams = Object.keys(query).reduce(
-            (acc: any, cur: string) => {
-              if (cur !== "redirect") {
-                acc[cur] = query[cur];
-              }
-              return acc;
-            },
-            {}
-          );
-
-          router.push({ path: redirect, query: otherQueryParams });
+          const { path, queryParams } = parseRedirect();
+          router.push({ path: path, query: queryParams });
         })
         .catch(() => {
           getCaptcha();
@@ -214,6 +202,25 @@ function handleLogin() {
         });
     }
   });
+}
+
+// 解析 redirect 字符串 为 path 和  queryParams
+function parseRedirect(): {
+  path: string;
+  queryParams: Record<string, string>;
+} {
+  const query: LocationQuery = route.query;
+  const redirect = (query.redirect as string) ?? "/";
+
+  const url = new URL(redirect, window.location.origin);
+  const path = url.pathname;
+  const queryParams: Record<string, string> = {};
+
+  url.searchParams.forEach((value, key) => {
+    queryParams[key] = value;
+  });
+
+  return { path, queryParams };
 }
 
 /** 主题切换 */

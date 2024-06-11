@@ -27,6 +27,7 @@
       @search-click="handleSearchClick"
       @toolbar-click="handleToolbarClick"
       @operat-click="handleOperatClick"
+      @filter-change="handleFilterChange"
     >
       <template #status="scope">
         <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
@@ -81,6 +82,7 @@ const {
   handleSubmitClick,
   handleExportClick,
   handleSearchClick,
+  handleFilterChange,
 } = usePage();
 // 编辑
 async function handleEditClick(row: IObject) {

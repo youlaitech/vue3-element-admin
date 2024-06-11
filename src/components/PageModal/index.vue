@@ -127,7 +127,7 @@
       @close="handleCloseModal"
     >
       <!-- 滚动 -->
-      <el-scrollbar max-height="65vh">
+      <el-scrollbar max-height="60vh">
         <!-- 表单 -->
         <el-form
           ref="formRef"
@@ -407,7 +407,10 @@ function handleCloseModal() {
 // 显示modal
 function setModalVisible(data: IObject = {}) {
   modalVisible.value = true;
-  Object.values(data).length > 0 && setFormData(data);
+  // nextTick解决赋值后重置表单无效问题
+  nextTick(() => {
+    Object.values(data).length > 0 && setFormData(data);
+  });
 }
 // 获取表单数据
 function getFormData(key?: string) {

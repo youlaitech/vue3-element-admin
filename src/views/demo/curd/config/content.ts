@@ -1,4 +1,5 @@
 import UserAPI from "@/api/user";
+import RoleAPI from "@/api/role";
 import type { UserQuery } from "@/api/user/model";
 import type { IContentConfig } from "@/components/PageContent/index.vue";
 
@@ -25,6 +26,18 @@ const contentConfig: IContentConfig<UserQuery> = {
   },
   deleteAction: UserAPI.deleteByIds,
   exportAction: UserAPI.export,
+  importsTemplate: UserAPI.downloadTemplate,
+  importsAction(data) {
+    // 模拟导入数据
+    console.log("importsAction", data);
+    return Promise.resolve();
+  },
+  exportsAction: async function (params) {
+    // 模拟获取到的是全量数据
+    const res = await UserAPI.getPage(params);
+    console.log("exportsAction", res.list);
+    return res.list;
+  },
   pk: "id",
   toolbar: [
     "add",
@@ -37,6 +50,7 @@ const contentConfig: IContentConfig<UserQuery> = {
       auth: "import",
     },
   ],
+  defaultToolbar: ["refresh", "filter", "imports", "exports", "search"],
   cols: [
     { type: "selection", width: 50, align: "center" },
     { label: "编号", align: "center", prop: "id", width: 100, show: false },
@@ -45,6 +59,22 @@ const contentConfig: IContentConfig<UserQuery> = {
     { label: "用户昵称", align: "center", prop: "nickname", width: 120 },
     { label: "性别", align: "center", prop: "genderLabel", width: 100 },
     { label: "部门", align: "center", prop: "deptName", width: 120 },
+    {
+      label: "角色",
+      align: "center",
+      prop: "roleNames",
+      width: 120,
+      columnKey: "roleIds",
+      filters: [],
+      filterMultiple: true,
+      filterJoin: ",",
+      async initFn(colItem) {
+        const roleOptions = await RoleAPI.getOptions();
+        colItem.filters = roleOptions.map((item) => {
+          return { text: item.label, value: item.value };
+        });
+      },
+    },
     { label: "手机号码", align: "center", prop: "mobile", width: 120 },
     {
       label: "状态",

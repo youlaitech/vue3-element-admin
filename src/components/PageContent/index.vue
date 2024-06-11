@@ -57,49 +57,83 @@
       <!-- 右侧工具栏 -->
       <div>
         <template v-for="item in defaultToolbar" :key="item">
-          <!-- 刷新 -->
-          <template v-if="item === 'refresh'">
-            <el-button
-              icon="refresh"
-              circle
-              title="刷新"
-              @click="handleToolbar(item)"
-            />
-          </template>
-          <!-- 筛选列 -->
-          <template v-else-if="item === 'filter'">
-            <el-popover placement="bottom" trigger="click">
-              <template #reference>
-                <el-button icon="Operation" circle title="筛选列" />
-              </template>
-              <el-scrollbar max-height="350px">
-                <template v-for="col in cols" :key="col">
-                  <el-checkbox
-                    v-if="col.prop"
-                    v-model="col.show"
-                    :label="col.label"
-                  />
+          <template v-if="typeof item === 'string'">
+            <!-- 刷新 -->
+            <template v-if="item === 'refresh'">
+              <el-button
+                icon="refresh"
+                circle
+                title="刷新"
+                @click="handleToolbar(item)"
+              />
+            </template>
+            <!-- 筛选列 -->
+            <template v-else-if="item === 'filter'">
+              <el-popover placement="bottom" trigger="click">
+                <template #reference>
+                  <el-button icon="Operation" circle title="筛选列" />
                 </template>
-              </el-scrollbar>
-            </el-popover>
+                <el-scrollbar max-height="350px">
+                  <template v-for="col in cols" :key="col">
+                    <el-checkbox
+                      v-if="col.prop"
+                      v-model="col.show"
+                      :label="col.label"
+                    />
+                  </template>
+                </el-scrollbar>
+              </el-popover>
+            </template>
+            <!-- 导出 -->
+            <template v-else-if="item === 'exports'">
+              <el-button
+                icon="download"
+                circle
+                title="导出"
+                v-hasPerm="[`${contentConfig.pageName}:export`]"
+                @click="handleToolbar(item)"
+              />
+            </template>
+            <!-- 导入 -->
+            <template v-else-if="item === 'imports'">
+              <el-button
+                icon="upload"
+                circle
+                title="导入"
+                v-hasPerm="[`${contentConfig.pageName}:import`]"
+                @click="handleToolbar(item)"
+              />
+            </template>
+            <!-- 搜索 -->
+            <template v-else-if="item === 'search'">
+              <el-button
+                icon="search"
+                circle
+                title="搜索"
+                v-hasPerm="[`${contentConfig.pageName}:query`]"
+                @click="handleToolbar(item)"
+              />
+            </template>
           </template>
-          <!-- 导出 -->
-          <template v-else-if="item === 'exports'">
-            <el-button
-              icon="FolderOpened"
-              circle
-              title="导出"
-              @click="handleToolbar(item)"
-            />
-          </template>
-          <!-- 搜索 -->
-          <template v-else-if="item === 'search'">
-            <el-button
-              icon="search"
-              circle
-              title="搜索"
-              @click="handleToolbar(item)"
-            />
+          <!-- 其他 -->
+          <template v-else-if="typeof item === 'object'">
+            <template v-if="item.auth">
+              <el-button
+                :icon="item.icon"
+                circle
+                :title="item.title"
+                v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
+                @click="handleToolbar(item.name)"
+              />
+            </template>
+            <template v-else>
+              <el-button
+                :icon="item.icon"
+                circle
+                :title="item.title"
+                @click="handleToolbar(item.name)"
+              />
+            </template>
           </template>
         </template>
       </div>
@@ -109,7 +143,9 @@
       v-loading="loading"
       v-bind="contentConfig.table"
       :data="pageData"
+      :row-key="pk"
       @selection-change="handleSelectionChange"
+      @filter-change="handleFilterChange"
     >
       <template v-for="col in cols" :key="col">
         <el-table-column v-if="col.show" v-bind="col">
@@ -300,16 +336,157 @@
         </div>
       </el-scrollbar>
     </template>
+    <!-- 导出弹窗 -->
+    <el-dialog
+      v-model="exportsModalVisible"
+      :align-center="true"
+      title="导出数据"
+      width="600px"
+      style="padding-right: 0"
+      @close="handleCloseExportsModal"
+    >
+      <!-- 滚动 -->
+      <el-scrollbar max-height="60vh">
+        <!-- 表单 -->
+        <el-form
+          ref="exportsFormRef"
+          label-width="auto"
+          style="padding-right: var(--el-dialog-padding-primary)"
+          :model="exportsFormData"
+          :rules="exportsFormRules"
+        >
+          <el-form-item label="文件名" prop="filename">
+            <el-input v-model="exportsFormData.filename" clearable />
+          </el-form-item>
+          <el-form-item label="工作表名" prop="sheetname">
+            <el-input v-model="exportsFormData.sheetname" clearable />
+          </el-form-item>
+          <el-form-item label="数据源" prop="origin">
+            <el-select v-model="exportsFormData.origin">
+              <el-option
+                label="当前数据 (当前页的数据)"
+                :value="ExportsOriginEnum.CURRENT"
+              />
+              <el-option
+                label="选中数据 (所有选中的数据)"
+                :value="ExportsOriginEnum.SELECTED"
+                :disabled="selectionData.length <= 0"
+              />
+              <el-option
+                label="全量数据 (所有分页的数据)"
+                :value="ExportsOriginEnum.REMOTE"
+                :disabled="contentConfig.exportsAction === undefined"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="字段" prop="fields">
+            <el-checkbox-group v-model="exportsFormData.fields">
+              <template v-for="col in cols" :key="col">
+                <el-checkbox
+                  v-if="col.prop"
+                  :value="col.prop"
+                  :label="col.label"
+                />
+              </template>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
+      <!-- 弹窗底部操作按钮 -->
+      <template #footer>
+        <div style="padding-right: var(--el-dialog-padding-primary)">
+          <el-button type="primary" @click="handleExportsSubmit">
+            确 定
+          </el-button>
+          <el-button @click="handleCloseExportsModal">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
+    <!-- 导入弹窗 -->
+    <el-dialog
+      v-model="importsModalVisible"
+      :align-center="true"
+      title="导入数据"
+      width="600px"
+      style="padding-right: 0"
+      @close="handleCloseImportsModal"
+    >
+      <!-- 滚动 -->
+      <el-scrollbar max-height="60vh">
+        <!-- 表单 -->
+        <el-form
+          ref="importsFormRef"
+          label-width="auto"
+          style="padding-right: var(--el-dialog-padding-primary)"
+          :model="importsFormData"
+          :rules="importsFormRules"
+        >
+          <el-form-item label="文件名" prop="files">
+            <el-upload
+              class="w-full"
+              ref="uploadRef"
+              v-model:file-list="importsFormData.files"
+              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              :drag="true"
+              :limit="1"
+              :auto-upload="false"
+              :on-exceed="handleFileExceed"
+            >
+              <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+              <div class="el-upload__text">
+                将文件拖到此处，或<em>点击上传</em>
+              </div>
+              <template #tip>
+                <div class="el-upload__tip">
+                  *.xlsx / *.xls
+                  <el-link
+                    v-if="contentConfig.importsTemplate"
+                    type="primary"
+                    icon="download"
+                    :underline="false"
+                    @click="handleDownloadTemplate"
+                  >
+                    下载模板
+                  </el-link>
+                </div>
+              </template>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
+      <!-- 弹窗底部操作按钮 -->
+      <template #footer>
+        <div style="padding-right: var(--el-dialog-padding-primary)">
+          <el-button
+            type="primary"
+            :disabled="importsFormData.files.length === 0"
+            @click="handleImportsSubmit"
+          >
+            确 定
+          </el-button>
+          <el-button @click="handleCloseImportsModal">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </el-card>
 </template>
 
 <script setup lang="ts">
 import ExcelJS from "exceljs";
 import { ref, reactive } from "vue";
-import { useDateFormat } from "@vueuse/core";
+import { useDateFormat, useThrottleFn } from "@vueuse/core";
 import { hasAuth } from "@/plugins/permission";
 import SvgIcon from "@/components/SvgIcon/index.vue";
-import type { TableProps, PaginationProps } from "element-plus";
+import {
+  type TableProps,
+  type PaginationProps,
+  type FormInstance,
+  type FormRules,
+  type UploadInstance,
+  type UploadUserFile,
+  type UploadRawFile,
+  genFileId,
+} from "element-plus";
 
 // 对象类型
 export type IObject = Record<string, any>;
@@ -347,16 +524,22 @@ export interface IContentConfig<T = any> {
     list: IObject[];
     [key: string]: any;
   };
-  // 删除的网络请求函数(需返回promise)
-  deleteAction?: (ids: string) => Promise<any>;
-  // 导出的网络请求函数(需返回promise)
-  exportAction?: (queryParams: T) => Promise<any>;
   // 修改属性的网络请求函数(需返回promise)
   modifyAction?: (data: {
     [key: string]: any;
     field: string;
     value: boolean | string | number;
   }) => Promise<any>;
+  // 删除的网络请求函数(需返回promise)
+  deleteAction?: (ids: string) => Promise<any>;
+  // 后端导出的网络请求函数(需返回promise)
+  exportAction?: (queryParams: T) => Promise<any>;
+  // 前端全量导出的网络请求函数(需返回promise)
+  exportsAction?: (queryParams: T) => Promise<IObject[]>;
+  // 前端导入模板
+  importsTemplate?: string | (() => Promise<any>);
+  // 前端导入的网络请求函数(需返回promise)
+  importsAction?: (data: IObject[]) => Promise<any>;
   // 主键名(默认为id)
   pk?: string;
   // 表格工具栏(默认支持add,delete,export,也可自定义)
@@ -372,7 +555,19 @@ export interface IContentConfig<T = any> {
       }
   >;
   // 表格工具栏右侧图标
-  defaultToolbar?: ("refresh" | "filter" | "exports" | "search")[];
+  defaultToolbar?: Array<
+    | "refresh"
+    | "filter"
+    | "imports"
+    | "exports"
+    | "search"
+    | {
+        name: string;
+        icon: string;
+        title?: string;
+        auth?: string;
+      }
+  >;
   // table组件列属性(额外的属性templet,operat,slotName)
   cols: Array<{
     type?: "default" | "selection" | "index" | "expand";
@@ -380,7 +575,11 @@ export interface IContentConfig<T = any> {
     prop?: string;
     width?: string | number;
     align?: "left" | "center" | "right";
+    columnKey?: string;
+    reserveSelection?: boolean;
+    // 列是否显示
     show?: boolean;
+    // 模板
     templet?:
       | "image"
       | "list"
@@ -393,16 +592,23 @@ export interface IContentConfig<T = any> {
       | "date"
       | "tool"
       | "custom";
+    // image模板相关参数
     imageWidth?: number;
     imageHeight?: number;
+    // list模板相关参数
     selectList?: Record<string, any>;
+    // switch模板相关参数
     activeValue?: boolean | string | number;
     inactiveValue?: boolean | string | number;
     activeText?: string;
     inactiveText?: string;
+    // input模板相关参数
     inputType?: string;
+    // price模板相关参数
     priceFormat?: string;
+    // date模板相关参数
     dateFormat?: string;
+    // tool模板相关参数
     operat?: Array<
       | "edit"
       | "delete"
@@ -413,7 +619,11 @@ export interface IContentConfig<T = any> {
           text: string;
         }
     >;
+    // filter值拼接符
+    filterJoin?: string;
     [key: string]: any;
+    // 初始化数据函数
+    initFn?: (item: IObject) => void;
   }>;
 }
 const props = defineProps<{
@@ -427,6 +637,7 @@ const emit = defineEmits<{
   toolbarClick: [name: string];
   editClick: [row: IObject];
   operatClick: [data: IOperatData];
+  filterChange: [data: IObject];
 }>();
 
 // 主键
@@ -437,14 +648,28 @@ const toolbar = props.contentConfig.toolbar ?? ["add", "delete"];
 const defaultToolbar = props.contentConfig.defaultToolbar ?? [
   "refresh",
   "filter",
-  "exports",
-  "search",
 ];
 // 表格列
 const cols = ref(
   props.contentConfig.cols.map((col) => {
+    col.initFn && col.initFn(col);
     if (col.show === undefined) {
       col.show = true;
+    }
+    if (
+      col.prop !== undefined &&
+      col.columnKey === undefined &&
+      col["column-key"] === undefined
+    ) {
+      col.columnKey = col.prop;
+    }
+    if (
+      col.type === "selection" &&
+      col.reserveSelection === undefined &&
+      col["reserve-selection"] === undefined
+    ) {
+      // 配合表格row-key实现跨页多选
+      col.reserveSelection = true;
     }
     return col;
   })
@@ -478,7 +703,9 @@ const request = props.contentConfig.request ?? {
 };
 
 // 行选中
+const selectionData = ref<IObject[]>([]);
 function handleSelectionChange(selection: any[]) {
+  selectionData.value = selection;
   removeIds.value = selection.map((item) => item[pk]);
 }
 // 刷新
@@ -508,34 +735,213 @@ function handleDelete(id?: number | string) {
     }
   });
 }
+// 导出表单
+const fields: string[] = [];
+cols.value.forEach((item) => {
+  if (item.prop !== undefined) {
+    fields.push(item.prop);
+  }
+});
+const enum ExportsOriginEnum {
+  CURRENT = "current",
+  SELECTED = "selected",
+  REMOTE = "remote",
+}
+const exportsModalVisible = ref(false);
+const exportsFormRef = ref<FormInstance>();
+const exportsFormData = reactive({
+  filename: "",
+  sheetname: "",
+  fields: fields,
+  origin: ExportsOriginEnum.CURRENT,
+});
+const exportsFormRules: FormRules = {
+  fields: [{ required: true, message: "请选择字段" }],
+  origin: [{ required: true, message: "请选择数据源" }],
+};
+// 打开导出弹窗
+function handleOpenExportsModal() {
+  exportsModalVisible.value = true;
+}
+// 导出确认
+const handleExportsSubmit = useThrottleFn(() => {
+  exportsFormRef.value?.validate((valid: boolean) => {
+    if (valid) {
+      handleExports();
+      handleCloseExportsModal();
+    }
+  });
+}, 3000);
+// 关闭导出弹窗
+function handleCloseExportsModal() {
+  exportsModalVisible.value = false;
+  exportsFormRef.value?.resetFields();
+  nextTick(() => {
+    exportsFormRef.value?.clearValidate();
+  });
+}
 // 导出
 function handleExports() {
+  const filename = exportsFormData.filename
+    ? exportsFormData.filename
+    : props.contentConfig.pageName;
+  const sheetname = exportsFormData.sheetname
+    ? exportsFormData.sheetname
+    : "sheet";
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("sheet");
+  const worksheet = workbook.addWorksheet(sheetname);
   const columns: Partial<ExcelJS.Column>[] = [];
   cols.value.forEach((col) => {
-    if (col.label && col.prop) {
+    if (col.label && col.prop && exportsFormData.fields.includes(col.prop)) {
       columns.push({ header: col.label, key: col.prop });
     }
   });
   worksheet.columns = columns;
-  worksheet.addRows(pageData.value);
-  workbook.xlsx
-    .writeBuffer()
-    .then((buffer) => {
-      const blob = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  if (exportsFormData.origin === ExportsOriginEnum.REMOTE) {
+    if (props.contentConfig.exportsAction) {
+      props.contentConfig.exportsAction(lastFormData).then((res) => {
+        worksheet.addRows(res);
+        workbook.xlsx
+          .writeBuffer()
+          .then((buffer) => {
+            saveXlsx(buffer, filename);
+          })
+          .catch((error) => console.log(error));
       });
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const downloadLink = document.createElement("a");
-      downloadLink.href = downloadUrl;
-      downloadLink.download = props.contentConfig.pageName;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      window.URL.revokeObjectURL(downloadUrl);
-    })
-    .catch((error) => console.log("Error writing excel export", error));
+    } else {
+      ElMessage.error("未配置exportsAction");
+    }
+  } else {
+    worksheet.addRows(
+      exportsFormData.origin === ExportsOriginEnum.SELECTED
+        ? selectionData.value
+        : pageData.value
+    );
+    workbook.xlsx
+      .writeBuffer()
+      .then((buffer) => {
+        saveXlsx(buffer, filename);
+      })
+      .catch((error) => console.log(error));
+  }
+}
+// 导入表单
+const uploadRef = ref<UploadInstance>();
+const importsModalVisible = ref(false);
+const importsFormRef = ref<FormInstance>();
+const importsFormData = reactive<{
+  files: UploadUserFile[];
+}>({
+  files: [],
+});
+const importsFormRules: FormRules = {
+  files: [{ required: true, message: "请选择文件" }],
+};
+// 打开导入弹窗
+function handleOpenImportsModal() {
+  importsModalVisible.value = true;
+}
+// 覆盖前一个文件
+function handleFileExceed(files: File[]) {
+  uploadRef.value!.clearFiles();
+  const file = files[0] as UploadRawFile;
+  file.uid = genFileId();
+  uploadRef.value!.handleStart(file);
+}
+// 下载导入模板
+function handleDownloadTemplate() {
+  const importsTemplate = props.contentConfig.importsTemplate;
+  if (typeof importsTemplate === "string") {
+    window.open(importsTemplate);
+  } else if (typeof importsTemplate === "function") {
+    importsTemplate().then((response) => {
+      const fileData = response.data;
+      const fileName = decodeURI(
+        response.headers["content-disposition"].split(";")[1].split("=")[1]
+      );
+      saveXlsx(fileData, fileName);
+    });
+  } else {
+    ElMessage.error("未配置importsTemplate");
+  }
+}
+// 导入确认
+const handleImportsSubmit = useThrottleFn(() => {
+  importsFormRef.value?.validate((valid: boolean) => {
+    valid && handleImports();
+  });
+}, 3000);
+// 关闭导入弹窗
+function handleCloseImportsModal() {
+  importsModalVisible.value = false;
+  importsFormRef.value?.resetFields();
+  nextTick(() => {
+    importsFormRef.value?.clearValidate();
+  });
+}
+// 导入
+function handleImports() {
+  const importsAction = props.contentConfig.importsAction;
+  if (importsAction === undefined) {
+    ElMessage.error("未配置importsAction");
+    return;
+  }
+  // 获取选择的文件
+  const file = importsFormData.files[0].raw as File;
+  // 创建Workbook实例
+  const workbook = new ExcelJS.Workbook();
+  // 使用FileReader对象来读取文件内容
+  const fileReader = new FileReader();
+  // 二进制字符串的形式加载文件
+  fileReader.readAsArrayBuffer(file);
+  fileReader.onload = (ev) => {
+    if (ev.target !== null && ev.target.result !== null) {
+      const result = ev.target.result as ArrayBuffer;
+      // 从 buffer中加载数据解析
+      workbook.xlsx
+        .load(result)
+        .then((workbook) => {
+          // 解析后的数据
+          const data = [];
+          // 获取第一个worksheet内容
+          const worksheet = workbook.getWorksheet(1);
+          if (worksheet) {
+            // 获取第一行的标题
+            const fields: any[] = [];
+            worksheet.getRow(1).eachCell((cell) => {
+              fields.push(cell.value);
+            });
+            // 遍历工作表的每一行（从第二行开始，因为第一行通常是标题行）
+            for (
+              let rowNumber = 2;
+              rowNumber <= worksheet.rowCount;
+              rowNumber++
+            ) {
+              const rowData: IObject = {};
+              const row = worksheet.getRow(rowNumber);
+              // 遍历当前行的每个单元格
+              row.eachCell((cell, colNumber) => {
+                // 获取标题对应的键，并将当前单元格的值存储到相应的属性名中
+                rowData[fields[colNumber - 1]] = cell.value;
+              });
+              // 将当前行的数据对象添加到数组中
+              data.push(rowData);
+            }
+          }
+          if (data.length === 0) {
+            ElMessage.error("未解析到数据");
+            return;
+          }
+          importsAction(data).then(() => {
+            ElMessage.success("导入数据成功");
+            handleCloseImportsModal();
+          });
+        })
+        .catch((error) => console.log(error));
+    } else {
+      ElMessage.error("读取文件失败");
+    }
+  };
 }
 // 操作栏
 function handleToolbar(name: string) {
@@ -544,7 +950,10 @@ function handleToolbar(name: string) {
       handleRefresh();
       break;
     case "exports":
-      handleExports();
+      handleOpenExportsModal();
+      break;
+    case "imports":
+      handleOpenImportsModal();
       break;
     case "search":
       emit("searchClick");
@@ -602,7 +1011,28 @@ function handleCurrentChange(value: number) {
   pagination.currentPage = value;
   fetchPageData(lastFormData);
 }
+// 远程数据筛选
+let filterParams: IObject = {};
+function handleFilterChange(newFilters: any) {
+  const filters: IObject = {};
+  for (const key in newFilters) {
+    const col = cols.value.find((col) => {
+      return col.columnKey === key || col["column-key"] === key;
+    });
+    if (col && col.filterJoin !== undefined) {
+      filters[key] = newFilters[key].join(col.filterJoin);
+    } else {
+      filters[key] = newFilters[key];
+    }
+  }
+  filterParams = { ...filterParams, ...filters };
+  emit("filterChange", filterParams);
+}
 
+// 获取涮选条件
+function getFilterParams() {
+  return filterParams;
+}
 // 获取分页数据
 let lastFormData = {};
 function fetchPageData(formData: IObject = {}, isRestart = false) {
@@ -647,26 +1077,33 @@ function exportPageData(formData: IObject = {}) {
       const fileName = decodeURI(
         response.headers["content-disposition"].split(";")[1].split("=")[1]
       );
-      const fileType =
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
-
-      const blob = new Blob([fileData], { type: fileType });
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const downloadLink = document.createElement("a");
-      downloadLink.href = downloadUrl;
-      downloadLink.download = fileName;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      window.URL.revokeObjectURL(downloadUrl);
+      saveXlsx(fileData, fileName);
     });
   } else {
     ElMessage.error("未配置exportAction");
   }
 }
+// 浏览器保存文件
+function saveXlsx(fileData: BlobPart, fileName: string) {
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+
+  const blob = new Blob([fileData], { type: fileType });
+  const downloadUrl = window.URL.createObjectURL(blob);
+
+  const downloadLink = document.createElement("a");
+  downloadLink.href = downloadUrl;
+  downloadLink.download = fileName;
+
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+
+  document.body.removeChild(downloadLink);
+  window.URL.revokeObjectURL(downloadUrl);
+}
 
 // 暴露的属性和方法
-defineExpose({ fetchPageData, exportPageData });
+defineExpose({ fetchPageData, exportPageData, getFilterParams });
 </script>
 
 <style lang="scss" scoped></style>
