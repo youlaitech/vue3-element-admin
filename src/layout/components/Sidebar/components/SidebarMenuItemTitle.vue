@@ -1,9 +1,11 @@
 <template>
+  <!-- 根据 icon 类型决定使用的不同类型的图标组件 -->
   <el-icon v-if="icon && icon.startsWith('el-icon')" class="sub-el-icon">
     <component :is="icon.replace('el-icon-', '')" />
   </el-icon>
   <svg-icon v-else-if="icon" :icon-class="icon" />
   <svg-icon v-else icon-class="menu" />
+  <!-- 菜单标题 -->
   <span v-if="title" class="ml-1">{{ translateRouteTitle(title) }}</span>
 </template>
 
@@ -26,7 +28,6 @@ defineProps({
 .sub-el-icon {
   width: 14px !important;
   margin-right: 0 !important;
-  font-size: 14px !important;
   color: currentcolor;
 }
 
