@@ -48,7 +48,19 @@
       >
         <el-table-column label="菜单名称" min-width="200">
           <template #default="scope">
-            <svg-icon :icon-class="scope.row.icon" />
+            <template
+              v-if="scope.row.icon && scope.row.icon.startsWith('el-icon')"
+            >
+              <el-icon style="vertical-align: -0.15em">
+                <component :is="scope.row.icon.replace('el-icon-', '')" />
+              </el-icon>
+            </template>
+            <template v-else-if="scope.row.icon">
+              <svg-icon :icon-class="scope.row.icon" />
+            </template>
+            <template v-else>
+              <svg-icon icon-class="menu" />
+            </template>
             {{ scope.row.name }}
           </template>
         </el-table-column>
