@@ -2,7 +2,7 @@ import DeptAPI from "@/api/dept";
 import RoleAPI from "@/api/role";
 import UserAPI from "@/api/user";
 import type { UserForm } from "@/api/user/model";
-import type { IModalConfig } from "@/components/PageModal/index.vue";
+import type { IModalConfig } from "@/components/CURD/types";
 
 const modalConfig: IModalConfig<UserForm> = {
   pageName: "sys:user",

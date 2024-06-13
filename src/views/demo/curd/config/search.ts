@@ -1,5 +1,5 @@
 import DeptAPI from "@/api/dept";
-import type { ISearchConfig } from "@/components/PageSearch/index.vue";
+import type { ISearchConfig } from "@/components/CURD/types";
 
 const searchConfig: ISearchConfig = {
   pageName: "sys:user",

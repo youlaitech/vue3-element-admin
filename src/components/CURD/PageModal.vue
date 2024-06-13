@@ -244,83 +244,12 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  FormInstance,
-  FormRules,
-  FormItemRule,
-  FormProps,
-  DialogProps,
-  DrawerProps,
-} from "element-plus";
 import { useThrottleFn } from "@vueuse/core";
-import { reactive, ref, watch, watchEffect, nextTick } from "vue";
+import type { FormInstance, FormRules } from "element-plus";
+import { nextTick, reactive, ref, watch, watchEffect } from "vue";
+import type { IModalConfig, IObject } from "./types";
 
-// 对象类型
-export type IObject = Record<string, any>;
 // 定义接收的属性
-export interface IModalConfig<T = any> {
-  // 页面名称
-  pageName?: string;
-  // 主键名(主要用于编辑数据,默认为id)
-  pk?: string;
-  // 组件类型
-  component?: "dialog" | "drawer";
-  // dialog组件属性
-  dialog?: Partial<Omit<DialogProps, "modelValue">>;
-  // drawer组件属性
-  drawer?: Partial<Omit<DrawerProps, "modelValue">>;
-  // form组件属性
-  form?: Partial<Omit<FormProps, "model" | "rules">>;
-  // 表单项
-  formItems: Array<{
-    // 组件类型(如input,select,radio,custom等，默认input)
-    type?:
-      | "input"
-      | "select"
-      | "radio"
-      | "checkbox"
-      | "tree-select"
-      | "date-picker"
-      | "input-number"
-      | "text"
-      | "custom";
-    // 组件属性
-    attrs?: IObject;
-    // 组件可选项(适用于select,radio,checkbox组件)
-    options?: Array<{
-      label: string;
-      value: any;
-      disabled?: boolean;
-      [key: string]: any;
-    }>;
-    // 插槽名(适用于组件类型为custom)
-    slotName?: string;
-    // 标签文本
-    label: string;
-    // 标签提示
-    tips?: string;
-    // 键名
-    prop: string;
-    // 验证规则
-    rules?: FormItemRule[];
-    // 初始值
-    initialValue?: any;
-    // 是否隐藏
-    hidden?: boolean;
-    // 监听函数
-    watch?: (newValue: any, oldValue: any, data: T, items: IObject[]) => void;
-    // 计算属性函数
-    computed?: (data: T) => any;
-    // 监听收集函数
-    watchEffect?: (data: T) => void;
-    // 初始化数据函数扩展
-    initFn?: (item: IObject) => void;
-  }>;
-  // 提交之前处理
-  beforeSubmit?: (data: T) => void;
-  // 提交的网络请求函数(需返回promise)
-  formAction: (data: T) => Promise<any>;
-}
 const props = defineProps<{
   modalConfig: IModalConfig;
 }>();
@@ -336,6 +265,7 @@ const formItems = reactive(props.modalConfig.formItems);
 const formData = reactive<IObject>({});
 const formRules: FormRules = {};
 const prepareFuncs = [];
+
 // 初始化
 for (const item of formItems) {
   item.initFn && item.initFn(item);
@@ -396,6 +326,7 @@ const handleSubmit = useThrottleFn(() => {
     }
   });
 }, 3000);
+
 // 关闭弹窗
 function handleCloseModal() {
   modalVisible.value = false;
@@ -404,6 +335,7 @@ function handleCloseModal() {
     formRef.value?.clearValidate();
   });
 }
+
 // 显示modal
 function setModalVisible(data: IObject = {}) {
   modalVisible.value = true;
@@ -412,10 +344,12 @@ function setModalVisible(data: IObject = {}) {
     Object.values(data).length > 0 && setFormData(data);
   });
 }
+
 // 获取表单数据
 function getFormData(key?: string) {
   return key === undefined ? formData : formData[key] ?? undefined;
 }
+
 // 设置表单值
 function setFormData(data: IObject) {
   for (const key in formData) {
@@ -427,6 +361,7 @@ function setFormData(data: IObject) {
     formData[pk] = data[pk];
   }
 }
+
 // 设置表单项值
 function setFormItemData(key: string, value: any) {
   formData[key] = value;

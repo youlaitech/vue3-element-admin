@@ -472,160 +472,22 @@
 </template>
 
 <script setup lang="ts">
-import ExcelJS from "exceljs";
-import { ref, reactive } from "vue";
-import { useDateFormat, useThrottleFn } from "@vueuse/core";
-import { hasAuth } from "@/plugins/permission";
 import SvgIcon from "@/components/SvgIcon/index.vue";
+import { hasAuth } from "@/plugins/permission";
+import { useDateFormat, useThrottleFn } from "@vueuse/core";
 import {
-  type TableProps,
-  type PaginationProps,
+  genFileId,
   type FormInstance,
   type FormRules,
   type UploadInstance,
-  type UploadUserFile,
   type UploadRawFile,
-  genFileId,
+  type UploadUserFile,
 } from "element-plus";
+import ExcelJS from "exceljs";
+import { reactive, ref } from "vue";
+import type { IContentConfig, IObject, IOperatData } from "./types";
 
-// 对象类型
-export type IObject = Record<string, any>;
 // 定义接收的属性
-export interface IOperatData {
-  name: string;
-  row: any;
-  column: any;
-  $index: number;
-}
-export interface IContentConfig<T = any> {
-  // 页面名称(参与组成权限标识,如sys:user:xxx)
-  pageName: string;
-  // table组件属性
-  table?: Omit<TableProps<any>, "data">;
-  // pagination组件属性
-  pagination?:
-    | boolean
-    | Partial<
-        Omit<
-          PaginationProps,
-          "v-model:page-size" | "v-model:current-page" | "total" | "currentPage"
-        >
-      >;
-  // 列表的网络请求函数(需返回promise)
-  indexAction: (queryParams: T) => Promise<any>;
-  // 默认的分页相关的请求参数
-  request?: {
-    pageName: string;
-    limitName: string;
-  };
-  // 数据格式解析的回调函数
-  parseData?: (res: any) => {
-    total: number;
-    list: IObject[];
-    [key: string]: any;
-  };
-  // 修改属性的网络请求函数(需返回promise)
-  modifyAction?: (data: {
-    [key: string]: any;
-    field: string;
-    value: boolean | string | number;
-  }) => Promise<any>;
-  // 删除的网络请求函数(需返回promise)
-  deleteAction?: (ids: string) => Promise<any>;
-  // 后端导出的网络请求函数(需返回promise)
-  exportAction?: (queryParams: T) => Promise<any>;
-  // 前端全量导出的网络请求函数(需返回promise)
-  exportsAction?: (queryParams: T) => Promise<IObject[]>;
-  // 前端导入模板
-  importsTemplate?: string | (() => Promise<any>);
-  // 前端导入的网络请求函数(需返回promise)
-  importsAction?: (data: IObject[]) => Promise<any>;
-  // 主键名(默认为id)
-  pk?: string;
-  // 表格工具栏(默认支持add,delete,export,也可自定义)
-  toolbar?: Array<
-    | "add"
-    | "delete"
-    | "export"
-    | {
-        auth: string;
-        icon?: string;
-        name: string;
-        text: string;
-      }
-  >;
-  // 表格工具栏右侧图标
-  defaultToolbar?: Array<
-    | "refresh"
-    | "filter"
-    | "imports"
-    | "exports"
-    | "search"
-    | {
-        name: string;
-        icon: string;
-        title?: string;
-        auth?: string;
-      }
-  >;
-  // table组件列属性(额外的属性templet,operat,slotName)
-  cols: Array<{
-    type?: "default" | "selection" | "index" | "expand";
-    label?: string;
-    prop?: string;
-    width?: string | number;
-    align?: "left" | "center" | "right";
-    columnKey?: string;
-    reserveSelection?: boolean;
-    // 列是否显示
-    show?: boolean;
-    // 模板
-    templet?:
-      | "image"
-      | "list"
-      | "url"
-      | "switch"
-      | "input"
-      | "price"
-      | "percent"
-      | "icon"
-      | "date"
-      | "tool"
-      | "custom";
-    // image模板相关参数
-    imageWidth?: number;
-    imageHeight?: number;
-    // list模板相关参数
-    selectList?: Record<string, any>;
-    // switch模板相关参数
-    activeValue?: boolean | string | number;
-    inactiveValue?: boolean | string | number;
-    activeText?: string;
-    inactiveText?: string;
-    // input模板相关参数
-    inputType?: string;
-    // price模板相关参数
-    priceFormat?: string;
-    // date模板相关参数
-    dateFormat?: string;
-    // tool模板相关参数
-    operat?: Array<
-      | "edit"
-      | "delete"
-      | {
-          auth: string;
-          icon?: string;
-          name: string;
-          text: string;
-        }
-    >;
-    // filter值拼接符
-    filterJoin?: string;
-    [key: string]: any;
-    // 初始化数据函数
-    initFn?: (item: IObject) => void;
-  }>;
-}
 const props = defineProps<{
   contentConfig: IContentConfig;
 }>();
@@ -676,8 +538,6 @@ const cols = ref(
 );
 // 加载状态
 const loading = ref(false);
-// 删除ID集合 用于批量删除
-const removeIds = ref<(number | string)[]>([]);
 // 列表数据
 const pageData = ref<IObject[]>([]);
 // 显示分页
@@ -704,14 +564,18 @@ const request = props.contentConfig.request ?? {
 
 // 行选中
 const selectionData = ref<IObject[]>([]);
+// 删除ID集合 用于批量删除
+const removeIds = ref<(number | string)[]>([]);
 function handleSelectionChange(selection: any[]) {
   selectionData.value = selection;
   removeIds.value = selection.map((item) => item[pk]);
 }
+
 // 刷新
 function handleRefresh() {
   fetchPageData(lastFormData);
 }
+
 // 删除
 function handleDelete(id?: number | string) {
   const ids = [id || removeIds.value].join(",");
@@ -735,6 +599,7 @@ function handleDelete(id?: number | string) {
     }
   });
 }
+
 // 导出表单
 const fields: string[] = [];
 cols.value.forEach((item) => {
@@ -825,6 +690,7 @@ function handleExports() {
       .catch((error) => console.log(error));
   }
 }
+
 // 导入表单
 const uploadRef = ref<UploadInstance>();
 const importsModalVisible = ref(false);
@@ -943,6 +809,7 @@ function handleImports() {
     }
   };
 }
+
 // 操作栏
 function handleToolbar(name: string) {
   switch (name) {
@@ -972,6 +839,7 @@ function handleToolbar(name: string) {
       break;
   }
 }
+
 // 操作列
 function handleOperat(data: IOperatData) {
   switch (data.name) {
@@ -986,6 +854,7 @@ function handleOperat(data: IOperatData) {
       break;
   }
 }
+
 // 属性修改
 function handleModify(
   field: string,
@@ -1002,6 +871,7 @@ function handleModify(
     ElMessage.error("未配置modifyAction");
   }
 }
+
 // 分页切换
 function handleSizeChange(value: number) {
   pagination.pageSize = value;
@@ -1011,6 +881,7 @@ function handleCurrentChange(value: number) {
   pagination.currentPage = value;
   fetchPageData(lastFormData);
 }
+
 // 远程数据筛选
 let filterParams: IObject = {};
 function handleFilterChange(newFilters: any) {
@@ -1033,6 +904,7 @@ function handleFilterChange(newFilters: any) {
 function getFilterParams() {
   return filterParams;
 }
+
 // 获取分页数据
 let lastFormData = {};
 function fetchPageData(formData: IObject = {}, isRestart = false) {
@@ -1069,6 +941,7 @@ function fetchPageData(formData: IObject = {}, isRestart = false) {
     });
 }
 fetchPageData();
+
 // 导出Excel
 function exportPageData(formData: IObject = {}) {
   if (props.contentConfig.exportAction) {
@@ -1083,6 +956,7 @@ function exportPageData(formData: IObject = {}) {
     ElMessage.error("未配置exportAction");
   }
 }
+
 // 浏览器保存文件
 function saveXlsx(fileData: BlobPart, fileName: string) {
   const fileType =

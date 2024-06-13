@@ -1,4 +1,4 @@
-import type { IContentConfig } from "@/components/PageContent/index.vue";
+import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig = {
   pageName: "sys:user",

@@ -85,22 +85,12 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from "element-plus";
 import { reactive, ref, watch, computed, watchEffect } from "vue";
-import { IForm, IFormItems, IObject } from "./types";
+import { IPageForm, IObject } from "./types";
 
 // 定义接收的属性
-const props = withDefaults(
-  defineProps<{
-    // 主键名(主要用于编辑数据,默认为id)
-    pk?: string;
-    // form组件属性
-    form?: IForm;
-    // 表单项
-    formItems: IFormItems;
-  }>(),
-  {
-    pk: "id",
-  }
-);
+const props = withDefaults(defineProps<IPageForm>(), {
+  pk: "id",
+});
 
 const formRef = ref<FormInstance>();
 const formItems = reactive(props.formItems);

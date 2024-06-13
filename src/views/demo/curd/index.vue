@@ -62,8 +62,8 @@
 
 <script setup lang="ts">
 import UserAPI from "@/api/user";
-import type { IObject, IOperatData } from "@/hooks/usePage";
-import usePage from "@/hooks/usePage";
+import type { IObject, IOperatData } from "@/components/CURD/types";
+import usePage from "@/components/CURD/usePage";
 import addModalConfig from "./config/add";
 import contentConfig from "./config/content";
 // import contentConfig from "./config/content2";

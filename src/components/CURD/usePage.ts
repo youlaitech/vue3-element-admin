@@ -1,15 +1,16 @@
 import { ref } from "vue";
-import type PageSearch from "@/components/PageSearch/index.vue";
-import type PageContent from "@/components/PageContent/index.vue";
-import type PageModal from "@/components/PageModal/index.vue";
-import type { IOperatData, IObject } from "@/components/PageContent/index.vue";
-export type { IOperatData, IObject };
+import type {
+  IObject,
+  PageContentInstance,
+  PageModalInstance,
+  PageSearchInstance,
+} from "./types";
 
 function usePage() {
-  const searchRef = ref<InstanceType<typeof PageSearch>>();
-  const contentRef = ref<InstanceType<typeof PageContent>>();
-  const addModalRef = ref<InstanceType<typeof PageModal>>();
-  const editModalRef = ref<InstanceType<typeof PageModal>>();
+  const searchRef = ref<PageSearchInstance>();
+  const contentRef = ref<PageContentInstance>();
+  const addModalRef = ref<PageModalInstance>();
+  const editModalRef = ref<PageModalInstance>();
 
   // 搜索
   function handleQueryClick(queryParams: IObject) {
