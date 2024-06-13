@@ -265,8 +265,6 @@ const formItems = reactive(props.modalConfig.formItems);
 const formData = reactive<IObject>({});
 const formRules: FormRules = {};
 const prepareFuncs = [];
-
-// 初始化
 for (const item of formItems) {
   item.initFn && item.initFn(item);
   formData[item.prop] = item.initialValue ?? "";
@@ -301,6 +299,37 @@ for (const item of formItems) {
 }
 prepareFuncs.forEach((func) => func());
 
+// 获取表单数据
+function getFormData(key?: string) {
+  return key === undefined ? formData : formData[key] ?? undefined;
+}
+
+// 设置表单值
+function setFormData(data: IObject) {
+  for (const key in formData) {
+    if (Object.hasOwn(formData, key) && key in data) {
+      formData[key] = data[key];
+    }
+  }
+  if (Object.hasOwn(data, pk)) {
+    formData[pk] = data[pk];
+  }
+}
+
+// 设置表单项值
+function setFormItemData(key: string, value: any) {
+  formData[key] = value;
+}
+
+// 显示modal
+function setModalVisible(data: IObject = {}) {
+  modalVisible.value = true;
+  // nextTick解决赋值后重置表单无效问题
+  nextTick(() => {
+    Object.values(data).length > 0 && setFormData(data);
+  });
+}
+
 // 表单提交
 const handleSubmit = useThrottleFn(() => {
   formRef.value?.validate((valid: boolean) => {
@@ -334,37 +363,6 @@ function handleCloseModal() {
   nextTick(() => {
     formRef.value?.clearValidate();
   });
-}
-
-// 显示modal
-function setModalVisible(data: IObject = {}) {
-  modalVisible.value = true;
-  // nextTick解决赋值后重置表单无效问题
-  nextTick(() => {
-    Object.values(data).length > 0 && setFormData(data);
-  });
-}
-
-// 获取表单数据
-function getFormData(key?: string) {
-  return key === undefined ? formData : formData[key] ?? undefined;
-}
-
-// 设置表单值
-function setFormData(data: IObject) {
-  for (const key in formData) {
-    if (Object.hasOwn(formData, key) && key in data) {
-      formData[key] = data[key];
-    }
-  }
-  if (Object.hasOwn(data, pk)) {
-    formData[pk] = data[pk];
-  }
-}
-
-// 设置表单项值
-function setFormItemData(key: string, value: any) {
-  formData[key] = value;
 }
 
 // 暴露的属性和方法
