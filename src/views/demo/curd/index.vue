@@ -1,72 +1,88 @@
 <template>
   <div class="app-container">
-    <el-link
-      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/curd/index.vue"
-      type="primary"
-      target="_blank"
-      class="mb-10"
-    >
-      示例源码 请点击>>>>
-    </el-link>
-
-    <!-- 搜索 -->
-    <page-search
-      ref="searchRef"
-      :search-config="searchConfig"
-      @query-click="handleQueryClick"
-      @reset-click="handleResetClick"
-    />
+    <div class="flex-x-between mb-10">
+      <el-link
+        href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/curd/index.vue"
+        type="primary"
+        target="_blank"
+      >
+        示例源码 请点击>>>>
+      </el-link>
+      <el-button type="primary" plain round size="small" @click="isA = !isA">
+        切换示例
+      </el-button>
+    </div>
 
     <!-- 列表 -->
-    <page-content
-      ref="contentRef"
-      :content-config="contentConfig"
-      @add-click="handleAddClick"
-      @edit-click="handleEditClick"
-      @export-click="handleExportClick"
-      @search-click="handleSearchClick"
-      @toolbar-click="handleToolbarClick"
-      @operat-click="handleOperatClick"
-      @filter-change="handleFilterChange"
-    >
-      <template #status="scope">
-        <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
-          {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
-        </el-tag>
-      </template>
-    </page-content>
+    <template v-if="isA">
+      <!-- 搜索 -->
+      <page-search
+        ref="searchRef"
+        :search-config="searchConfig"
+        @query-click="handleQueryClick"
+        @reset-click="handleResetClick"
+      />
 
-    <!-- 新增 -->
-    <page-modal
-      ref="addModalRef"
-      :modal-config="addModalConfig"
-      @submit-click="handleSubmitClick"
-    >
-      <template #gender="scope">
-        <dictionary v-model="scope.formData[scope.prop]" type-code="gender" />
-      </template>
-    </page-modal>
+      <!-- 列表 -->
+      <page-content
+        ref="contentRef"
+        :content-config="contentConfig"
+        @add-click="handleAddClick"
+        @edit-click="handleEditClick"
+        @export-click="handleExportClick"
+        @search-click="handleSearchClick"
+        @toolbar-click="handleToolbarClick"
+        @operat-click="handleOperatClick"
+        @filter-change="handleFilterChange"
+      >
+        <template #status="scope">
+          <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
+            {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
+          </el-tag>
+        </template>
+      </page-content>
 
-    <!-- 编辑 -->
-    <page-modal
-      ref="editModalRef"
-      :modal-config="editModalConfig"
-      @submit-click="handleSubmitClick"
-    >
-      <template #gender="scope">
-        <dictionary v-model="scope.formData[scope.prop]" type-code="gender" />
-      </template>
-    </page-modal>
+      <!-- 新增 -->
+      <page-modal
+        ref="addModalRef"
+        :modal-config="addModalConfig"
+        @submit-click="handleSubmitClick"
+      >
+        <template #gender="scope">
+          <dictionary v-model="scope.formData[scope.prop]" type-code="gender" />
+        </template>
+      </page-modal>
+
+      <!-- 编辑 -->
+      <page-modal
+        ref="editModalRef"
+        :modal-config="editModalConfig"
+        @submit-click="handleSubmitClick"
+      >
+        <template #gender="scope">
+          <dictionary v-model="scope.formData[scope.prop]" type-code="gender" />
+        </template>
+      </page-modal>
+    </template>
+    <template v-else>
+      <page-content ref="contentRef" :content-config="contentConfig2">
+        <template #status="scope">
+          <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
+            {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
+          </el-tag>
+        </template>
+      </page-content>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import UserAPI from "@/api/user";
-import type { IObject, IOperatData } from "@/hooks/usePage";
-import usePage from "@/hooks/usePage";
+import type { IObject, IOperatData } from "@/components/CURD/types";
+import usePage from "@/components/CURD/usePage";
 import addModalConfig from "./config/add";
 import contentConfig from "./config/content";
-// import contentConfig from "./config/content2";
+import contentConfig2 from "./config/content2";
 import editModalConfig from "./config/edit";
 import searchConfig from "./config/search";
 
@@ -120,4 +136,7 @@ function handleOperatClick(data: IOperatData) {
     });
   }
 }
+
+// 切换示例
+const isA = ref(true);
 </script>

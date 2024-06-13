@@ -1,7 +1,7 @@
 import UserAPI from "@/api/user";
 import RoleAPI from "@/api/role";
 import type { UserQuery } from "@/api/user/model";
-import type { IContentConfig } from "@/components/PageContent/index.vue";
+import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig<UserQuery> = {
   pageName: "sys:user",

@@ -1,11 +1,13 @@
-import type { IContentConfig } from "@/components/PageContent/index.vue";
+import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig = {
   pageName: "sys:user",
   table: {
     showOverflowTooltip: true,
   },
+  toolbar: [],
   indexAction: function (params) {
+    // 模拟发起网络请求获取列表数据
     // console.log("indexAction:", params);
     return Promise.resolve({
       total: 2,
@@ -44,11 +46,13 @@ const contentConfig: IContentConfig = {
     });
   },
   modifyAction(data) {
-    console.log("modifyAction:", data);
+    // 模拟发起网络请求修改字段
+    // console.log("modifyAction:", data);
+    ElMessage.success(JSON.stringify(data));
     return Promise.resolve(null);
   },
   cols: [
-    { type: "selection", width: 50, align: "center" },
+    { type: "index", width: 50, align: "center" },
     { label: "ID", align: "center", prop: "id", show: false },
     { label: "用户名", align: "center", prop: "username" },
     { label: "图片", align: "center", prop: "avatar", templet: "image" },
@@ -105,14 +109,6 @@ const contentConfig: IContentConfig = {
       minWidth: 120,
       templet: "date",
       dateFormat: "YYYY/MM/DD HH:mm:ss",
-    },
-    {
-      label: "操作",
-      align: "center",
-      fixed: "right",
-      width: 150,
-      templet: "tool",
-      operat: ["edit", "delete"],
     },
   ],
 };
