@@ -20,8 +20,8 @@ export type IObject = Record<string, any>;
 
 export interface IOperatData {
   name: string;
-  row: any;
-  column: any;
+  row: IObject;
+  column: IObject;
   $index: number;
 }
 
@@ -152,7 +152,7 @@ export interface IContentConfig<T = any> {
     imageWidth?: number;
     imageHeight?: number;
     // list模板相关参数
-    selectList?: Record<string, any>;
+    selectList?: IObject;
     // switch模板相关参数
     activeValue?: boolean | string | number;
     inactiveValue?: boolean | string | number;
@@ -173,6 +173,8 @@ export interface IContentConfig<T = any> {
           icon?: string;
           name: string;
           text: string;
+          type?: "primary" | "success" | "warning" | "danger" | "info";
+          render?: (row: IObject) => boolean;
         }
     >;
     // filter值拼接符

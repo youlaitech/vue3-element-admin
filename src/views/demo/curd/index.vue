@@ -65,7 +65,11 @@
       </page-modal>
     </template>
     <template v-else>
-      <page-content ref="contentRef" :content-config="contentConfig2">
+      <page-content
+        ref="contentRef"
+        :content-config="contentConfig2"
+        @operat-click="handleOperatClick"
+      >
         <template #status="scope">
           <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
             {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}

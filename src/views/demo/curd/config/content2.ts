@@ -54,7 +54,7 @@ const contentConfig: IContentConfig = {
   cols: [
     { type: "index", width: 50, align: "center" },
     { label: "ID", align: "center", prop: "id", show: false },
-    { label: "用户名", align: "center", prop: "username" },
+    { label: "文本", align: "center", prop: "username" },
     { label: "图片", align: "center", prop: "avatar", templet: "image" },
     {
       label: "百分比",
@@ -63,7 +63,7 @@ const contentConfig: IContentConfig = {
       templet: "percent",
     },
     {
-      label: "价格",
+      label: "货币符",
       align: "center",
       prop: "price",
       templet: "price",
@@ -86,7 +86,7 @@ const contentConfig: IContentConfig = {
       slotName: "status",
     },
     {
-      label: "状态",
+      label: "Switch",
       align: "center",
       prop: "status2",
       templet: "switch",
@@ -96,19 +96,38 @@ const contentConfig: IContentConfig = {
       inactiveText: "禁用",
     },
     {
-      label: "排序",
+      label: "输入框",
       align: "center",
       prop: "sort",
       templet: "input",
       inputType: "number",
     },
     {
-      label: "创建时间",
+      label: "日期格式化",
       align: "center",
       prop: "createTime",
       minWidth: 120,
       templet: "date",
       dateFormat: "YYYY/MM/DD HH:mm:ss",
+    },
+    {
+      label: "操作栏",
+      align: "center",
+      fixed: "right",
+      width: 220,
+      templet: "tool",
+      operat: [
+        {
+          name: "reset_pwd",
+          auth: "password:reset",
+          icon: "refresh-left",
+          text: "重置密码",
+          type: "primary",
+          render(row) {
+            return row.id === 1;
+          },
+        },
+      ],
     },
   ],
 };

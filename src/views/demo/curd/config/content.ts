@@ -86,6 +86,7 @@ const contentConfig: IContentConfig<UserQuery> = {
     { label: "创建时间", align: "center", prop: "createTime", width: 180 },
     {
       label: "操作",
+      align: "center",
       fixed: "right",
       width: 220,
       templet: "tool",
