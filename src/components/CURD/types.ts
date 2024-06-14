@@ -108,6 +108,7 @@ export interface IContentConfig<T = any> {
         icon?: string;
         name: string;
         text: string;
+        type?: "primary" | "success" | "warning" | "danger" | "info";
       }
   >;
   // 表格工具栏右侧图标

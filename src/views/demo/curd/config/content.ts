@@ -49,6 +49,13 @@ const contentConfig: IContentConfig<UserQuery> = {
       text: "导入",
       auth: "import",
     },
+    {
+      name: "custom1",
+      icon: "plus",
+      text: "自定义1",
+      auth: "import",
+      type: "info",
+    },
   ],
   defaultToolbar: ["refresh", "filter", "imports", "exports", "search"],
   cols: [
