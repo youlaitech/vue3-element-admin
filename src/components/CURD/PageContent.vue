@@ -46,7 +46,7 @@
             <el-button
               v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
               :icon="item.icon"
-              type="default"
+              :type="item.type ?? 'default'"
               @click="handleToolbar(item.name)"
             >
               {{ item.text }}
