@@ -293,9 +293,10 @@
                 <!-- 其他 -->
                 <template v-else-if="typeof item === 'object'">
                   <el-button
+                    v-if="item.render === undefined || item.render(scope.row)"
                     v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
                     :icon="item.icon"
-                    type="primary"
+                    :type="item.type ?? 'primary'"
                     size="small"
                     link
                     @click="
