@@ -92,10 +92,10 @@ export interface IContentConfig<T = any> {
   exportAction?: (queryParams: T) => Promise<any>;
   // 前端全量导出的网络请求函数(需返回promise)
   exportsAction?: (queryParams: T) => Promise<IObject[]>;
+  // 导入模板
+  importTemplate?: string | (() => Promise<any>);
   // 后端导入的网络请求函数(需返回promise)
   importAction?: (file: File) => Promise<any>;
-  // 前端导入模板
-  importsTemplate?: string | (() => Promise<any>);
   // 前端导入的网络请求函数(需返回promise)
   importsAction?: (data: IObject[]) => Promise<any>;
   // 主键名(默认为id)
