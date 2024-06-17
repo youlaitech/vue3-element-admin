@@ -29,11 +29,22 @@
                 删除
               </el-button>
             </template>
+            <!-- 导入 -->
+            <template v-else-if="item === 'import'">
+              <el-button
+                v-hasPerm="[`${contentConfig.pageName}:${item}`]"
+                type="default"
+                icon="upload"
+                @click="handleToolbar(item)"
+              >
+                导入
+              </el-button>
+            </template>
             <!-- 导出 -->
             <template v-else-if="item === 'export'">
               <el-button
                 v-hasPerm="[`${contentConfig.pageName}:${item}`]"
-                type="primary"
+                type="default"
                 icon="download"
                 @click="handleToolbar(item)"
               >
@@ -573,8 +584,8 @@ function handleSelectionChange(selection: any[]) {
 }
 
 // 刷新
-function handleRefresh() {
-  fetchPageData(lastFormData);
+function handleRefresh(isRestart = false) {
+  fetchPageData(lastFormData, isRestart);
 }
 
 // 删除
@@ -593,7 +604,7 @@ function handleDelete(id?: number | string) {
     if (props.contentConfig.deleteAction) {
       props.contentConfig.deleteAction(ids).then(() => {
         ElMessage.success("删除成功");
-        fetchPageData({}, true);
+        handleRefresh(true);
       });
     } else {
       ElMessage.error("未配置deleteAction");
@@ -693,6 +704,7 @@ function handleExports() {
 }
 
 // 导入表单
+let isFileImport = false;
 const uploadRef = ref<UploadInstance>();
 const importsModalVisible = ref(false);
 const importsFormRef = ref<FormInstance>();
@@ -705,8 +717,9 @@ const importsFormRules: FormRules = {
   files: [{ required: true, message: "请选择文件" }],
 };
 // 打开导入弹窗
-function handleOpenImportsModal() {
+function handleOpenImportsModal(isFile: boolean = false) {
   importsModalVisible.value = true;
+  isFileImport = isFile;
 }
 // 覆盖前一个文件
 function handleFileExceed(files: File[]) {
@@ -735,7 +748,13 @@ function handleDownloadTemplate() {
 // 导入确认
 const handleImportsSubmit = useThrottleFn(() => {
   importsFormRef.value?.validate((valid: boolean) => {
-    valid && handleImports();
+    if (valid) {
+      if (isFileImport) {
+        handleImport();
+      } else {
+        handleImports();
+      }
+    }
   });
 }, 3000);
 // 关闭导入弹窗
@@ -744,6 +763,19 @@ function handleCloseImportsModal() {
   importsFormRef.value?.resetFields();
   nextTick(() => {
     importsFormRef.value?.clearValidate();
+  });
+}
+// 文件导入
+function handleImport() {
+  const importAction = props.contentConfig.importAction;
+  if (importAction === undefined) {
+    ElMessage.error("未配置importAction");
+    return;
+  }
+  importAction(importsFormData.files[0].raw as File).then(() => {
+    ElMessage.success("导入数据成功");
+    handleCloseImportsModal();
+    handleRefresh(true);
   });
 }
 // 导入
@@ -802,6 +834,7 @@ function handleImports() {
           importsAction(data).then(() => {
             ElMessage.success("导入数据成功");
             handleCloseImportsModal();
+            handleRefresh(true);
           });
         })
         .catch((error) => console.log(error));
@@ -831,6 +864,9 @@ function handleToolbar(name: string) {
       break;
     case "delete":
       handleDelete();
+      break;
+    case "import":
+      handleOpenImportsModal(true);
       break;
     case "export":
       emit("exportClick");
@@ -876,11 +912,11 @@ function handleModify(
 // 分页切换
 function handleSizeChange(value: number) {
   pagination.pageSize = value;
-  fetchPageData(lastFormData);
+  handleRefresh();
 }
 function handleCurrentChange(value: number) {
   pagination.currentPage = value;
-  fetchPageData(lastFormData);
+  handleRefresh();
 }
 
 // 远程数据筛选
