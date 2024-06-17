@@ -416,28 +416,28 @@
     </el-dialog>
     <!-- 导入弹窗 -->
     <el-dialog
-      v-model="importsModalVisible"
+      v-model="importModalVisible"
       :align-center="true"
       title="导入数据"
       width="600px"
       style="padding-right: 0"
-      @close="handleCloseImportsModal"
+      @close="handleCloseImportModal"
     >
       <!-- 滚动 -->
       <el-scrollbar max-height="60vh">
         <!-- 表单 -->
         <el-form
-          ref="importsFormRef"
+          ref="importFormRef"
           label-width="auto"
           style="padding-right: var(--el-dialog-padding-primary)"
-          :model="importsFormData"
-          :rules="importsFormRules"
+          :model="importFormData"
+          :rules="importFormRules"
         >
           <el-form-item label="文件名" prop="files">
             <el-upload
               class="w-full"
               ref="uploadRef"
-              v-model:file-list="importsFormData.files"
+              v-model:file-list="importFormData.files"
               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
               :drag="true"
               :limit="1"
@@ -471,12 +471,12 @@
         <div style="padding-right: var(--el-dialog-padding-primary)">
           <el-button
             type="primary"
-            :disabled="importsFormData.files.length === 0"
-            @click="handleImportsSubmit"
+            :disabled="importFormData.files.length === 0"
+            @click="handleImportSubmit"
           >
             确 定
           </el-button>
-          <el-button @click="handleCloseImportsModal">取 消</el-button>
+          <el-button @click="handleCloseImportModal">取 消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -706,19 +706,19 @@ function handleExports() {
 // 导入表单
 let isFileImport = false;
 const uploadRef = ref<UploadInstance>();
-const importsModalVisible = ref(false);
-const importsFormRef = ref<FormInstance>();
-const importsFormData = reactive<{
+const importModalVisible = ref(false);
+const importFormRef = ref<FormInstance>();
+const importFormData = reactive<{
   files: UploadUserFile[];
 }>({
   files: [],
 });
-const importsFormRules: FormRules = {
+const importFormRules: FormRules = {
   files: [{ required: true, message: "请选择文件" }],
 };
 // 打开导入弹窗
-function handleOpenImportsModal(isFile: boolean = false) {
-  importsModalVisible.value = true;
+function handleOpenImportModal(isFile: boolean = false) {
+  importModalVisible.value = true;
   isFileImport = isFile;
 }
 // 覆盖前一个文件
@@ -746,8 +746,8 @@ function handleDownloadTemplate() {
   }
 }
 // 导入确认
-const handleImportsSubmit = useThrottleFn(() => {
-  importsFormRef.value?.validate((valid: boolean) => {
+const handleImportSubmit = useThrottleFn(() => {
+  importFormRef.value?.validate((valid: boolean) => {
     if (valid) {
       if (isFileImport) {
         handleImport();
@@ -758,11 +758,11 @@ const handleImportsSubmit = useThrottleFn(() => {
   });
 }, 3000);
 // 关闭导入弹窗
-function handleCloseImportsModal() {
-  importsModalVisible.value = false;
-  importsFormRef.value?.resetFields();
+function handleCloseImportModal() {
+  importModalVisible.value = false;
+  importFormRef.value?.resetFields();
   nextTick(() => {
-    importsFormRef.value?.clearValidate();
+    importFormRef.value?.clearValidate();
   });
 }
 // 文件导入
@@ -772,9 +772,9 @@ function handleImport() {
     ElMessage.error("未配置importAction");
     return;
   }
-  importAction(importsFormData.files[0].raw as File).then(() => {
+  importAction(importFormData.files[0].raw as File).then(() => {
     ElMessage.success("导入数据成功");
-    handleCloseImportsModal();
+    handleCloseImportModal();
     handleRefresh(true);
   });
 }
@@ -786,7 +786,7 @@ function handleImports() {
     return;
   }
   // 获取选择的文件
-  const file = importsFormData.files[0].raw as File;
+  const file = importFormData.files[0].raw as File;
   // 创建Workbook实例
   const workbook = new ExcelJS.Workbook();
   // 使用FileReader对象来读取文件内容
@@ -833,7 +833,7 @@ function handleImports() {
           }
           importsAction(data).then(() => {
             ElMessage.success("导入数据成功");
-            handleCloseImportsModal();
+            handleCloseImportModal();
             handleRefresh(true);
           });
         })
@@ -854,7 +854,7 @@ function handleToolbar(name: string) {
       handleOpenExportsModal();
       break;
     case "imports":
-      handleOpenImportsModal();
+      handleOpenImportModal();
       break;
     case "search":
       emit("searchClick");
@@ -866,7 +866,7 @@ function handleToolbar(name: string) {
       handleDelete();
       break;
     case "import":
-      handleOpenImportsModal(true);
+      handleOpenImportModal(true);
       break;
     case "export":
       emit("exportClick");
