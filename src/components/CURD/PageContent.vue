@@ -452,7 +452,7 @@
                 <div class="el-upload__tip">
                   *.xlsx / *.xls
                   <el-link
-                    v-if="contentConfig.importsTemplate"
+                    v-if="contentConfig.importTemplate"
                     type="primary"
                     icon="download"
                     :underline="false"
@@ -730,11 +730,11 @@ function handleFileExceed(files: File[]) {
 }
 // 下载导入模板
 function handleDownloadTemplate() {
-  const importsTemplate = props.contentConfig.importsTemplate;
-  if (typeof importsTemplate === "string") {
-    window.open(importsTemplate);
-  } else if (typeof importsTemplate === "function") {
-    importsTemplate().then((response) => {
+  const importTemplate = props.contentConfig.importTemplate;
+  if (typeof importTemplate === "string") {
+    window.open(importTemplate);
+  } else if (typeof importTemplate === "function") {
+    importTemplate().then((response) => {
       const fileData = response.data;
       const fileName = decodeURI(
         response.headers["content-disposition"].split(";")[1].split("=")[1]
@@ -742,7 +742,7 @@ function handleDownloadTemplate() {
       saveXlsx(fileData, fileName);
     });
   } else {
-    ElMessage.error("未配置importsTemplate");
+    ElMessage.error("未配置importTemplate");
   }
 }
 // 导入确认

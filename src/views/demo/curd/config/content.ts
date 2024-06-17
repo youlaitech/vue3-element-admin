@@ -29,7 +29,7 @@ const contentConfig: IContentConfig<UserQuery> = {
     return UserAPI.import(1, file);
   },
   exportAction: UserAPI.export,
-  importsTemplate: UserAPI.downloadTemplate,
+  importTemplate: UserAPI.downloadTemplate,
   importsAction(data) {
     // 模拟导入数据
     console.log("importsAction", data);
