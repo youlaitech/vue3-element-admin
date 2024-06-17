@@ -1,15 +1,18 @@
 import request from "@/utils/request";
 import { RoleQuery, RolePageResult, RoleForm } from "./model";
 
+const ROLE_BASE_URL = "/api/v1/roles";
+
 class RoleAPI {
   /**
    * 获取角色分页数据
    *
-   * @param queryParams
+   * @param queryParams 查询参数
+   * @returns 角色分页数据
    */
   static getPage(queryParams?: RoleQuery) {
     return request<any, RolePageResult>({
-      url: "/api/v1/roles/page",
+      url: `${ROLE_BASE_URL}/page`,
       method: "get",
       params: queryParams,
     });
@@ -18,11 +21,12 @@ class RoleAPI {
   /**
    * 获取角色下拉数据源
    *
-   * @param queryParams
+   * @param queryParams 查询参数（可选）
+   * @returns 角色下拉数据源
    */
   static getOptions(queryParams?: RoleQuery) {
     return request<any, OptionType[]>({
-      url: "/api/v1/roles/options",
+      url: `${ROLE_BASE_URL}/options`,
       method: "get",
       params: queryParams,
     });
@@ -31,11 +35,12 @@ class RoleAPI {
   /**
    * 获取角色的菜单ID集合
    *
-   * @param queryParams
+   * @param roleId 角色ID
+   * @returns 角色的菜单ID集合
    */
   static getRoleMenuIds(roleId: number) {
     return request<any, number[]>({
-      url: "/api/v1/roles/" + roleId + "/menuIds",
+      url: `${ROLE_BASE_URL}/${roleId}/menuIds`,
       method: "get",
     });
   }
@@ -43,11 +48,13 @@ class RoleAPI {
   /**
    * 分配菜单权限给角色
    *
-   * @param queryParams
+   * @param roleId 角色ID
+   * @param data 菜单ID集合
+   * @returns 请求结果
    */
   static updateRoleMenus(roleId: number, data: number[]) {
     return request({
-      url: "/api/v1/roles/" + roleId + "/menus",
+      url: `${ROLE_BASE_URL}/${roleId}/menus`,
       method: "put",
       data: data,
     });
@@ -56,11 +63,12 @@ class RoleAPI {
   /**
    * 获取角色表单数据
    *
-   * @param id
+   * @param id 角色ID
+   * @returns 角色表单数据
    */
   static getFormData(id: number) {
     return request<any, RoleForm>({
-      url: "/api/v1/roles/" + id + "/form",
+      url: `${ROLE_BASE_URL}/${id}/form`,
       method: "get",
     });
   }
@@ -68,11 +76,12 @@ class RoleAPI {
   /**
    * 添加角色
    *
-   * @param data
+   * @param data 角色表单数据
+   * @returns 请求结果
    */
   static add(data: RoleForm) {
     return request({
-      url: "/api/v1/roles",
+      url: `${ROLE_BASE_URL}`,
       method: "post",
       data: data,
     });
@@ -81,12 +90,13 @@ class RoleAPI {
   /**
    * 更新角色
    *
-   * @param id
-   * @param data
+   * @param id 角色ID
+   * @param data 角色表单数据
+   * @returns 请求结果
    */
   static update(id: number, data: RoleForm) {
     return request({
-      url: "/api/v1/roles/" + id,
+      url: `${ROLE_BASE_URL}/${id}`,
       method: "put",
       data: data,
     });
@@ -95,11 +105,12 @@ class RoleAPI {
   /**
    * 批量删除角色，多个以英文逗号(,)分割
    *
-   * @param ids
+   * @param ids 角色ID字符串，多个以英文逗号(,)分割
+   * @returns 请求结果
    */
   static deleteByIds(ids: string) {
     return request({
-      url: "/api/v1/roles/" + ids,
+      url: `${ROLE_BASE_URL}/${ids}`,
       method: "delete",
     });
   }
