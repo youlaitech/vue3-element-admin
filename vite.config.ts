@@ -147,6 +147,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "@wangeditor/editor-for-vue",
         "vue-i18n",
         "path-browserify",
+        "exceljs",
         "element-plus/es/components/form/style/css",
         "element-plus/es/components/form-item/style/css",
         "element-plus/es/components/button/style/css",
