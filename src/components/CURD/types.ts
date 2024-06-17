@@ -92,6 +92,8 @@ export interface IContentConfig<T = any> {
   exportAction?: (queryParams: T) => Promise<any>;
   // 前端全量导出的网络请求函数(需返回promise)
   exportsAction?: (queryParams: T) => Promise<IObject[]>;
+  // 后端导入的网络请求函数(需返回promise)
+  importAction?: (file: File) => Promise<any>;
   // 前端导入模板
   importsTemplate?: string | (() => Promise<any>);
   // 前端导入的网络请求函数(需返回promise)
@@ -102,6 +104,7 @@ export interface IContentConfig<T = any> {
   toolbar?: Array<
     | "add"
     | "delete"
+    | "import"
     | "export"
     | {
         auth: string;

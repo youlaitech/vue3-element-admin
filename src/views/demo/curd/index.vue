@@ -113,8 +113,8 @@ async function handleEditClick(row: IObject) {
 // 其他工具栏
 function handleToolbarClick(name: string) {
   console.log(name);
-  if (name === "import") {
-    ElMessage.success("点击了导入按钮");
+  if (name === "custom1") {
+    ElMessage.success("点击了自定义1按钮");
   }
 }
 // 其他操作列
