@@ -32,14 +32,14 @@ export const constantRoutes: RouteRecordRaw[] = [
       {
         path: "dashboard",
         component: () => import("@/views/dashboard/index.vue"),
-        name: "Dashboard", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
-        // https://cn.vuejs.org/guide/built-ins/keep-alive.html#include-exclude
+        // 用于 keep-alive 功能，需要与 SFC 中自动推导或显式声明的组件名称一致
+        // 参考文档: https://cn.vuejs.org/guide/built-ins/keep-alive.html#include-exclude
+        name: "Dashboard",
         meta: {
           title: "dashboard",
           icon: "homepage",
           affix: true,
           keepAlive: true,
-          alwaysShow: false,
         },
       },
       {
