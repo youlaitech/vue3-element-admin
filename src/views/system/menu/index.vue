@@ -48,7 +48,19 @@
       >
         <el-table-column label="菜单名称" min-width="200">
           <template #default="scope">
-            <svg-icon :icon-class="scope.row.icon" />
+            <template
+              v-if="scope.row.icon && scope.row.icon.startsWith('el-icon')"
+            >
+              <el-icon style="vertical-align: -0.15em">
+                <component :is="scope.row.icon.replace('el-icon-', '')" />
+              </el-icon>
+            </template>
+            <template v-else-if="scope.row.icon">
+              <svg-icon :icon-class="scope.row.icon" />
+            </template>
+            <template v-else>
+              <svg-icon icon-class="menu" />
+            </template>
             {{ scope.row.name }}
           </template>
         </el-table-column>
@@ -330,8 +342,9 @@
               始终显示
               <el-tooltip placement="bottom" effect="light">
                 <template #content>
-                  当设置为始终显示时，即使只有一个子菜单也会显示<br />
-                  叶子节点的菜单，请选择“否”。
+                  选择“是”，即使目录或菜单下只有一个子节点，也会显示父节点。<br />
+                  选择“否”，如果目录或菜单下只有一个子节点，则只显示该子节点，隐藏父节点。<br />
+                  如果是叶子节点，请选择“否”。
                 </template>
                 <i-ep-QuestionFilled class="inline-block" />
               </el-tooltip>

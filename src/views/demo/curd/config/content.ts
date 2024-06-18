@@ -1,7 +1,7 @@
 import UserAPI from "@/api/user";
 import RoleAPI from "@/api/role";
 import type { UserQuery } from "@/api/user/model";
-import type { IContentConfig } from "@/components/PageContent/index.vue";
+import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig<UserQuery> = {
   pageName: "sys:user",
@@ -25,8 +25,11 @@ const contentConfig: IContentConfig<UserQuery> = {
     return UserAPI.getPage(params);
   },
   deleteAction: UserAPI.deleteByIds,
+  importAction(file) {
+    return UserAPI.import(1, file);
+  },
   exportAction: UserAPI.export,
-  importsTemplate: UserAPI.downloadTemplate,
+  importTemplate: UserAPI.downloadTemplate,
   importsAction(data) {
     // 模拟导入数据
     console.log("importsAction", data);
@@ -42,12 +45,14 @@ const contentConfig: IContentConfig<UserQuery> = {
   toolbar: [
     "add",
     "delete",
+    "import",
     "export",
     {
-      name: "import",
-      icon: "upload",
-      text: "导入",
+      name: "custom1",
+      icon: "plus",
+      text: "自定义1",
       auth: "import",
+      type: "info",
     },
   ],
   defaultToolbar: ["refresh", "filter", "imports", "exports", "search"],
@@ -86,6 +91,7 @@ const contentConfig: IContentConfig<UserQuery> = {
     { label: "创建时间", align: "center", prop: "createTime", width: 180 },
     {
       label: "操作",
+      align: "center",
       fixed: "right",
       width: 220,
       templet: "tool",

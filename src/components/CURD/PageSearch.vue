@@ -116,42 +116,12 @@
 <script setup lang="ts">
 import type { FormInstance } from "element-plus";
 import { reactive, ref } from "vue";
+import type { IObject, ISearchConfig } from "./types";
 
-// 对象类型
-type IObject = Record<string, any>;
 // 定义接收的属性
-export interface ISearchConfig {
-  // 页面名称(参与组成权限标识,如sys:user:xxx)
-  pageName: string;
-  // 表单项
-  formItems: Array<{
-    // 组件类型(如input,select等)
-    type?: "input" | "select" | "tree-select" | "date-picker" | "input-tag";
-    // 标签文本
-    label: string;
-    // 标签提示
-    tips?: string;
-    // 键名
-    prop: string;
-    // 组件属性(input-tag组件支持join,btnText,size属性)
-    attrs?: IObject;
-    // 初始值
-    initialValue?: any;
-    // 可选项(适用于select组件)
-    options?: { label: string; value: any }[];
-    // 初始化数据函数扩展
-    initFn?: (formItem: IObject) => void;
-  }>;
-  // 是否开启展开和收缩
-  isExpandable?: boolean;
-  // 默认展示的表单项数量
-  showNumber?: number;
-}
-
-interface IProps {
+const props = defineProps<{
   searchConfig: ISearchConfig;
-}
-const props = defineProps<IProps>();
+}>();
 // 自定义事件
 const emit = defineEmits<{
   queryClick: [queryParams: IObject];
@@ -218,23 +188,28 @@ for (const item of formItems) {
     queryParams[item.prop] = item.initialValue ?? "";
   }
 }
+
 // 重置操作
 function handleReset() {
   queryFormRef.value?.resetFields();
   emit("resetClick", queryParams);
 }
+
 // 查询操作
 function handleQuery() {
   emit("queryClick", queryParams);
 }
+
 // 获取分页数据
 function getQueryParams() {
   return queryParams;
 }
+
 // 显示/隐藏 SearchForm
 function toggleVisible() {
   visible.value = !visible.value;
 }
+
 // 关闭标签
 function handleCloseTag(prop: string, tag: string) {
   inputTagMap[prop].data.splice(inputTagMap[prop].data.indexOf(tag), 1);

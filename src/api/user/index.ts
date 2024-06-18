@@ -1,13 +1,17 @@
 import request from "@/utils/request";
 import { UserForm, UserInfo, UserPageVO, UserQuery } from "./model";
 
+const USER_BASE_URL = "/api/v1/users";
+
 class UserAPI {
   /**
    * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
+   *
+   * @returns 用户信息
    */
   static getInfo() {
     return request<any, UserInfo>({
-      url: "/api/v1/users/me",
+      url: `${USER_BASE_URL}/me`,
       method: "get",
     });
   }
@@ -15,11 +19,12 @@ class UserAPI {
   /**
    * 获取用户分页列表
    *
-   * @param queryParams
+   * @param queryParams 查询参数
+   * @returns 用户分页列表
    */
   static getPage(queryParams: UserQuery) {
     return request<any, PageResult<UserPageVO[]>>({
-      url: "/api/v1/users/page",
+      url: `${USER_BASE_URL}/page`,
       method: "get",
       params: queryParams,
     });
@@ -28,11 +33,12 @@ class UserAPI {
   /**
    * 获取用户表单详情
    *
-   * @param userId
+   * @param userId 用户ID
+   * @returns 用户表单详情
    */
   static getFormData(userId: number) {
     return request<any, UserForm>({
-      url: "/api/v1/users/" + userId + "/form",
+      url: `${USER_BASE_URL}/${userId}/form`,
       method: "get",
     });
   }
@@ -40,11 +46,12 @@ class UserAPI {
   /**
    * 添加用户
    *
-   * @param data
+   * @param data 用户表单数据
+   * @returns 请求结果
    */
   static add(data: UserForm) {
     return request({
-      url: "/api/v1/users",
+      url: `${USER_BASE_URL}`,
       method: "post",
       data: data,
     });
@@ -53,12 +60,13 @@ class UserAPI {
   /**
    * 修改用户
    *
-   * @param id
-   * @param data
+   * @param id 用户ID
+   * @param data 用户表单数据
+   * @returns 请求结果
    */
   static update(id: number, data: UserForm) {
     return request({
-      url: "/api/v1/users/" + id,
+      url: `${USER_BASE_URL}/${id}`,
       method: "put",
       data: data,
     });
@@ -67,25 +75,27 @@ class UserAPI {
   /**
    * 修改用户密码
    *
-   * @param id
-   * @param password
+   * @param id 用户ID
+   * @param password 新密码
+   * @returns 请求结果
    */
   static updatePassword(id: number, password: string) {
     return request({
-      url: "/api/v1/users/" + id + "/password",
+      url: `${USER_BASE_URL}/${id}/password`,
       method: "patch",
       params: { password: password },
     });
   }
 
   /**
-   * 删除用户
+   * 批量删除用户，多个以英文逗号(,)分割
    *
-   * @param ids
+   * @param ids 用户ID字符串，多个以英文逗号(,)分割
+   * @returns 请求结果
    */
   static deleteByIds(ids: string) {
     return request({
-      url: "/api/v1/users/" + ids,
+      url: `${USER_BASE_URL}/${ids}`,
       method: "delete",
     });
   }
@@ -93,11 +103,11 @@ class UserAPI {
   /**
    * 下载用户导入模板
    *
-   * @returns
+   * @returns 用户导入模板文件
    */
   static downloadTemplate() {
     return request({
-      url: "/api/v1/users/template",
+      url: `${USER_BASE_URL}/template`,
       method: "get",
       responseType: "arraybuffer",
     });
@@ -106,12 +116,12 @@ class UserAPI {
   /**
    * 导出用户
    *
-   * @param queryParams
-   * @returns
+   * @param queryParams 查询参数
+   * @returns 导出文件
    */
   static export(queryParams: UserQuery) {
     return request({
-      url: "/api/v1/users/export",
+      url: `${USER_BASE_URL}/export`,
       method: "get",
       params: queryParams,
       responseType: "arraybuffer",
@@ -121,13 +131,15 @@ class UserAPI {
   /**
    * 导入用户
    *
-   * @param file
+   * @param deptId 部门ID
+   * @param file 导入文件
+   * @returns 请求结果
    */
   static import(deptId: number, file: File) {
     const formData = new FormData();
     formData.append("file", file);
     return request({
-      url: "/api/v1/users/import",
+      url: `${USER_BASE_URL}/import`,
       method: "post",
       params: { deptId: deptId },
       data: formData,

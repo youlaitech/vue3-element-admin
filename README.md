@@ -1,7 +1,7 @@
 <div align="center">
-    <img src="https://img.shields.io/badge/Vue-3.4.27-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-5.2.11-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.7.3-blue.svg"/>
+    <img src="https://img.shields.io/badge/Vue-3.4.29-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vite-5.3.1-green.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.7.5-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
         <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -53,8 +53,8 @@
 
 | 环境                 | 名称版本                                                     | 下载地址                                                     |
 | -------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
-| **开发工具**         | VSCode                                                       | [下载](https://code.visualstudio.com/Download)           |
-| **运行环境**         | Node ≥18                                                    | [下载](http://nodejs.cn/download)                        |
+| **开发工具**         | VSCode    | [下载](https://code.visualstudio.com/Download)           |
+| **运行环境**         | Node ≥18 (其中 20.6.0 版本不可用)    | [下载](http://nodejs.cn/download)                        |
 
 
 ## 项目启动

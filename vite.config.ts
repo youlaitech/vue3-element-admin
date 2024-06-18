@@ -128,9 +128,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 指定symbolId格式
         symbolId: "icon-[dir]-[name]",
       }),
-      VueDevTools({
+      /* VueDevTools({
         openInEditorHost: `http://localhost:${env.VITE_APP_PORT}`,
-      }),
+      }), */
     ],
     // 预加载项目必需的组件
     optimizeDeps: {
@@ -199,6 +199,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/text/style/css",
         "element-plus/es/components/drawer/style/css",
         "element-plus/es/components/color-picker/style/css",
+        "element-plus/es/components/backtop/style/css",
       ],
     },
     // 构建配置

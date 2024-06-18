@@ -1,11 +1,13 @@
-import type { IContentConfig } from "@/components/PageContent/index.vue";
+import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig = {
   pageName: "sys:user",
   table: {
     showOverflowTooltip: true,
   },
+  toolbar: [],
   indexAction: function (params) {
+    // 模拟发起网络请求获取列表数据
     // console.log("indexAction:", params);
     return Promise.resolve({
       total: 2,
@@ -44,13 +46,15 @@ const contentConfig: IContentConfig = {
     });
   },
   modifyAction(data) {
-    console.log("modifyAction:", data);
+    // 模拟发起网络请求修改字段
+    // console.log("modifyAction:", data);
+    ElMessage.success(JSON.stringify(data));
     return Promise.resolve(null);
   },
   cols: [
-    { type: "selection", width: 50, align: "center" },
+    { type: "index", width: 50, align: "center" },
     { label: "ID", align: "center", prop: "id", show: false },
-    { label: "用户名", align: "center", prop: "username" },
+    { label: "文本", align: "center", prop: "username" },
     { label: "图片", align: "center", prop: "avatar", templet: "image" },
     {
       label: "百分比",
@@ -59,7 +63,7 @@ const contentConfig: IContentConfig = {
       templet: "percent",
     },
     {
-      label: "价格",
+      label: "货币符",
       align: "center",
       prop: "price",
       templet: "price",
@@ -82,7 +86,7 @@ const contentConfig: IContentConfig = {
       slotName: "status",
     },
     {
-      label: "状态",
+      label: "Switch",
       align: "center",
       prop: "status2",
       templet: "switch",
@@ -92,14 +96,14 @@ const contentConfig: IContentConfig = {
       inactiveText: "禁用",
     },
     {
-      label: "排序",
+      label: "输入框",
       align: "center",
       prop: "sort",
       templet: "input",
       inputType: "number",
     },
     {
-      label: "创建时间",
+      label: "日期格式化",
       align: "center",
       prop: "createTime",
       minWidth: 120,
@@ -107,12 +111,23 @@ const contentConfig: IContentConfig = {
       dateFormat: "YYYY/MM/DD HH:mm:ss",
     },
     {
-      label: "操作",
+      label: "操作栏",
       align: "center",
       fixed: "right",
-      width: 150,
+      width: 220,
       templet: "tool",
-      operat: ["edit", "delete"],
+      operat: [
+        {
+          name: "reset_pwd",
+          auth: "password:reset",
+          icon: "refresh-left",
+          text: "重置密码",
+          type: "primary",
+          render(row) {
+            return row.id === 1;
+          },
+        },
+      ],
     },
   ],
 };
