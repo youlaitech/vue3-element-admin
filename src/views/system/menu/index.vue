@@ -208,10 +208,7 @@
         </el-form-item>
 
         <el-form-item
-          v-if="
-            formData.type == MenuTypeEnum.CATALOG ||
-            formData.type == MenuTypeEnum.MENU
-          "
+          v-if="formData.type == MenuTypeEnum.MENU"
           prop="routeName"
         >
           <template #label>
@@ -486,6 +483,7 @@ const rules = reactive({
   parentId: [{ required: true, message: "请选择顶级菜单", trigger: "blur" }],
   name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
   type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
+  routeName: [{ required: true, message: "请输入路由名称", trigger: "blur" }],
   routePath: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
   component: [{ required: true, message: "请输入组件路径", trigger: "blur" }],
   visible: [{ required: true, message: "请输入路由路径", trigger: "blur" }],

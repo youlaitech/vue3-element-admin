@@ -119,10 +119,6 @@
               <el-radio :value="0">禁用</el-radio>
             </el-radio-group>
           </el-form-item>
-
-          <el-form-item label="备注">
-            <el-input v-model="formData.remark" />
-          </el-form-item>
         </el-card>
 
         <el-card shadow="never" class="mt-5">

@@ -73,7 +73,7 @@
               <i-ep-edit />编辑
             </el-button>
             <el-button
-              type="primary"
+              type="danger"
               size="small"
               link
               @click="handleDelete(scope.row.id)"
@@ -275,7 +275,7 @@ const isExpanded = ref(true);
 
 const parentChildLinked = ref(true);
 
-// 查询
+/** 查询 */
 function handleQuery() {
   loading.value = true;
   RoleAPI.getPage(queryParams)
@@ -287,19 +287,19 @@ function handleQuery() {
       loading.value = false;
     });
 }
-// 重置查询
+/** 重置查询 */
 function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
   handleQuery();
 }
 
-// 行选中事件
+/** 行选中 */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
 
-// 打开弹窗
+/** 打开角色弹窗 */
 function handleOpenDialog(roleId?: number) {
   dialog.visible = true;
   if (roleId) {
@@ -339,7 +339,7 @@ function handleSubmit() {
   });
 }
 
-/** 关闭表单弹窗 */
+/** 关闭角色弹窗 */
 function handleCloseDialog() {
   dialog.visible = false;
 

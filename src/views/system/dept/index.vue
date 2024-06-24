@@ -90,7 +90,7 @@
             </el-button>
             <el-button
               v-hasPerm="['sys:dept:delete']"
-              type="primary"
+              type="danger"
               link
               size="small"
               @click.stop="handleDelete(scope.row.id)"
