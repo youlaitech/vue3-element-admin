@@ -195,7 +195,6 @@
         :data="menuPermOptions"
         :filter-node-method="handlePermFilter"
         :default-expand-all="true"
-        :check-on-click-node="true"
         :check-strictly="!parentChildLinked"
         class="mt-5"
       >
@@ -222,10 +221,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import RoleAPI from "@/api/role";
+import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/role";
 import MenuAPI from "@/api/menu";
-
-import { RolePageVO, RoleForm, RoleQuery } from "@/api/role/model";
 
 const queryFormRef = ref(ElForm);
 const roleFormRef = ref(ElForm);
@@ -235,7 +232,7 @@ const loading = ref(false);
 const ids = ref<number[]>([]);
 const total = ref(0);
 
-const queryParams = reactive<RoleQuery>({
+const queryParams = reactive<RolePageQuery>({
   pageNum: 1,
   pageSize: 10,
 });
@@ -315,7 +312,7 @@ function handleOpenDialog(roleId?: number) {
   }
 }
 
-// 角色保存提交
+/** 提交角色表单 */
 function handleSubmit() {
   roleFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -342,7 +339,7 @@ function handleSubmit() {
   });
 }
 
-// 关闭表单弹窗
+/** 关闭表单弹窗 */
 function handleCloseDialog() {
   dialog.visible = false;
 
@@ -354,7 +351,7 @@ function handleCloseDialog() {
   formData.status = 1;
 }
 
-// 删除角色
+/** 删除角色 */
 function handleDelete(roleId?: number) {
   const roleIds = [roleId || ids.value].join(",");
   if (!roleIds) {
@@ -377,7 +374,7 @@ function handleDelete(roleId?: number) {
   });
 }
 
-// 打开分配权限
+/** 打开分配菜单权限弹窗 */
 async function handleOpenAssignPermDialog(row: RolePageVO) {
   const roleId = row.id;
   if (roleId) {
@@ -404,7 +401,7 @@ async function handleOpenAssignPermDialog(row: RolePageVO) {
   }
 }
 
-// 分配权限提交
+/** 分配菜单权限提交 */
 function handleAssignPermSubmit() {
   const roleId = checkedRole.value.id;
   if (roleId) {
@@ -425,7 +422,7 @@ function handleAssignPermSubmit() {
   }
 }
 
-// 切换菜单树展开状态
+/** 展开/收缩 菜单权限树  */
 function togglePermTree() {
   isExpanded.value = !isExpanded.value;
   if (permTreeRef.value) {
@@ -438,11 +435,12 @@ function togglePermTree() {
     });
   }
 }
+// 菜单权限筛选
 watch(permKeywords, (val) => {
   permTreeRef.value!.filter(val);
 });
 
-// 权限筛选
+/** 权限筛选  */
 function handlePermFilter(
   value: string,
   data: {
@@ -453,6 +451,7 @@ function handlePermFilter(
   return data.label.includes(value);
 }
 
+/** 父子菜单节点是否联动 change*/
 function handleparentChildLinkedChange(val: any) {
   parentChildLinked.value = val;
 }

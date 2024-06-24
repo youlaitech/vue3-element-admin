@@ -27,7 +27,7 @@
         <el-button
           v-hasPerm="['sys:menu:add']"
           type="success"
-          @click="handleDialogOpen(0)"
+          @click="handleOpenDialog(0)"
         >
           <template #icon><i-ep-plus /></template>
           新增</el-button
@@ -85,10 +85,17 @@
         </el-table-column>
 
         <el-table-column
+          label="路由名称"
+          align="left"
+          width="150"
+          prop="routeName"
+        />
+
+        <el-table-column
           label="路由路径"
           align="left"
           width="150"
-          prop="path"
+          prop="routePath"
         />
 
         <el-table-column
@@ -122,7 +129,7 @@
               type="primary"
               link
               size="small"
-              @click.stop="handleDialogOpen(scope.row.id)"
+              @click.stop="handleOpenDialog(scope.row.id)"
             >
               <i-ep-plus />新增
             </el-button>
@@ -132,7 +139,7 @@
               type="primary"
               link
               size="small"
-              @click.stop="handleDialogOpen(undefined, scope.row.id)"
+              @click.stop="handleOpenDialog(undefined, scope.row.id)"
             >
               <i-ep-edit />编辑
             </el-button>
@@ -150,19 +157,17 @@
       </el-table>
     </el-card>
 
-    <el-dialog
+    <el-drawer
       v-model="dialog.visible"
       :title="dialog.title"
-      destroy-on-close
-      append-to-body
-      width="1000px"
-      @close="closeDialog"
+      @close="handleCloseDialog"
+      size="50%"
     >
       <el-form
         ref="menuFormRef"
         :model="formData"
         :rules="rules"
-        label-width="160px"
+        label-width="100px"
       >
         <el-form-item label="父级菜单" prop="parentId">
           <el-tree-select
@@ -196,7 +201,10 @@
           label="外链地址"
           prop="path"
         >
-          <el-input v-model="formData.path" placeholder="请输入外链完整路径" />
+          <el-input
+            v-model="formData.routePath"
+            placeholder="请输入外链完整路径"
+          />
         </el-form-item>
 
         <el-form-item
@@ -204,8 +212,29 @@
             formData.type == MenuTypeEnum.CATALOG ||
             formData.type == MenuTypeEnum.MENU
           "
-          label=""
-          prop="path"
+          prop="routeName"
+        >
+          <template #label>
+            <div>
+              路由名称
+              <el-tooltip placement="bottom" effect="light">
+                <template #content>
+                  如果需要开启缓存，需保证页面 defineOptions 中的 name
+                  与此处一致，建议使用驼峰。
+                </template>
+                <i-ep-QuestionFilled class="inline-block" />
+              </el-tooltip>
+            </div>
+          </template>
+          <el-input v-model="formData.routeName" placeholder="User" />
+        </el-form-item>
+
+        <el-form-item
+          v-if="
+            formData.type == MenuTypeEnum.CATALOG ||
+            formData.type == MenuTypeEnum.MENU
+          "
+          prop="routePath"
         >
           <template #label>
             <div>
@@ -222,10 +251,10 @@
           </template>
           <el-input
             v-if="formData.type == MenuTypeEnum.CATALOG"
-            v-model="formData.path"
+            v-model="formData.routePath"
             placeholder="system"
           />
-          <el-input v-else v-model="formData.path" placeholder="user" />
+          <el-input v-else v-model="formData.routePath" placeholder="user" />
         </el-form-item>
 
         <el-form-item
@@ -405,10 +434,10 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="closeDialog">取 消</el-button>
+          <el-button @click="handleCloseDialog">取 消</el-button>
         </div>
       </template>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 
@@ -418,8 +447,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import MenuAPI from "@/api/menu";
-import { MenuQuery, MenuForm, MenuVO } from "@/api/menu/model";
+import MenuAPI, { MenuQuery, MenuForm, MenuVO } from "@/api/menu";
 import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
 
 const queryFormRef = ref(ElForm);
@@ -458,7 +486,7 @@ const rules = reactive({
   parentId: [{ required: true, message: "请选择顶级菜单", trigger: "blur" }],
   name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
   type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
-  path: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
+  routePath: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
   component: [{ required: true, message: "请输入组件路径", trigger: "blur" }],
   visible: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
 });
@@ -496,7 +524,7 @@ function handleRowClick(row: MenuVO) {
  * @param parentId 父菜单ID
  * @param menuId 菜单ID
  */
-function handleDialogOpen(parentId?: number, menuId?: number) {
+function handleOpenDialog(parentId?: number, menuId?: number) {
   MenuAPI.getOptions()
     .then((data) => {
       menuOptions.value = [{ value: 0, label: "顶级菜单", children: data }];
@@ -541,13 +569,13 @@ function submitForm() {
       if (menuId) {
         MenuAPI.update(menuId, formData.value).then(() => {
           ElMessage.success("修改成功");
-          closeDialog();
+          handleCloseDialog();
           handleQuery();
         });
       } else {
         MenuAPI.add(formData.value).then(() => {
           ElMessage.success("新增成功");
-          closeDialog();
+          handleCloseDialog();
           handleQuery();
         });
       }
@@ -577,7 +605,7 @@ function handleDelete(menuId: number) {
 }
 
 // 关闭弹窗
-function closeDialog() {
+function handleCloseDialog() {
   dialog.visible = false;
   menuFormRef.value.resetFields();
   menuFormRef.value.clearValidate();

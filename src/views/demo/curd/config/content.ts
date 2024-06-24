@@ -1,9 +1,9 @@
 import UserAPI from "@/api/user";
 import RoleAPI from "@/api/role";
-import type { UserQuery } from "@/api/user/model";
+import type { UserPageQuery } from "@/api/user";
 import type { IContentConfig } from "@/components/CURD/types";
 
-const contentConfig: IContentConfig<UserQuery> = {
+const contentConfig: IContentConfig<UserPageQuery> = {
   pageName: "sys:user",
   table: {
     border: true,

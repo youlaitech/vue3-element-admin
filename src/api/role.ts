@@ -1,34 +1,22 @@
 import request from "@/utils/request";
-import { RoleQuery, RolePageResult, RoleForm } from "./model";
 
 const ROLE_BASE_URL = "/api/v1/roles";
 
 class RoleAPI {
-  /**
-   * 获取角色分页数据
-   *
-   * @param queryParams 查询参数
-   * @returns 角色分页数据
-   */
-  static getPage(queryParams?: RoleQuery) {
-    return request<any, RolePageResult>({
+  /** 获取角色分页数据 */
+  static getPage(queryParams?: RolePageQuery) {
+    return request<any, PageResult<RolePageVO[]>>({
       url: `${ROLE_BASE_URL}/page`,
       method: "get",
       params: queryParams,
     });
   }
 
-  /**
-   * 获取角色下拉数据源
-   *
-   * @param queryParams 查询参数（可选）
-   * @returns 角色下拉数据源
-   */
-  static getOptions(queryParams?: RoleQuery) {
+  /** 获取角色下拉数据源 */
+  static getOptions() {
     return request<any, OptionType[]>({
       url: `${ROLE_BASE_URL}/options`,
       method: "get",
-      params: queryParams,
     });
   }
 
@@ -46,7 +34,7 @@ class RoleAPI {
   }
 
   /**
-   * 分配菜单权限给角色
+   * 分配菜单权限
    *
    * @param roleId 角色ID
    * @param data 菜单ID集合
@@ -73,12 +61,7 @@ class RoleAPI {
     });
   }
 
-  /**
-   * 添加角色
-   *
-   * @param data 角色表单数据
-   * @returns 请求结果
-   */
+  /** 添加角色 */
   static add(data: RoleForm) {
     return request({
       url: `${ROLE_BASE_URL}`,
@@ -92,7 +75,6 @@ class RoleAPI {
    *
    * @param id 角色ID
    * @param data 角色表单数据
-   * @returns 请求结果
    */
   static update(id: number, data: RoleForm) {
     return request({
@@ -106,7 +88,6 @@ class RoleAPI {
    * 批量删除角色，多个以英文逗号(,)分割
    *
    * @param ids 角色ID字符串，多个以英文逗号(,)分割
-   * @returns 请求结果
    */
   static deleteByIds(ids: string) {
     return request({
@@ -117,3 +98,43 @@ class RoleAPI {
 }
 
 export default RoleAPI;
+
+/** 角色分页查询参数 */
+export interface RolePageQuery extends PageQuery {
+  /** 搜索关键字 */
+  keywords?: string;
+}
+
+/** 角色分页对象 */
+export interface RolePageVO {
+  /** 角色编码 */
+  code?: string;
+  /** 角色ID */
+  id?: number;
+  /** 角色名称 */
+  name?: string;
+  /** 排序 */
+  sort?: number;
+  /** 角色状态 */
+  status?: number;
+  /** 创建时间 */
+  createTime?: Date;
+  /** 修改时间 */
+  updateTime?: Date;
+}
+
+/** 角色表单对象 */
+export interface RoleForm {
+  /** 角色ID */
+  id?: number;
+  /** 角色编码 */
+  code: string;
+  /** 数据权限 */
+  dataScope?: number;
+  /** 角色名称 */
+  name: string;
+  /** 排序 */
+  sort?: number;
+  /** 角色状态(1-正常；0-停用) */
+  status?: number;
+}

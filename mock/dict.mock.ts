@@ -92,7 +92,7 @@ export default defineMock([
     },
   },
 
-  // 新增字典类型
+  // 新增字典
   {
     url: "dict/types",
     method: ["POST"],
@@ -100,12 +100,12 @@ export default defineMock([
       return {
         code: "00000",
         data: null,
-        msg: "新增字典类型" + body.name + "成功",
+        msg: "新增字典" + body.name + "成功",
       };
     },
   },
 
-  // 获取字典类型表单数据
+  // 获取字典表单数据
   {
     url: "dict/types/:id/form",
     method: ["GET"],
@@ -118,7 +118,7 @@ export default defineMock([
     },
   },
 
-  // 修改字典类型
+  // 修改字典
   {
     url: "dict/types/:id",
     method: ["PUT"],
@@ -126,12 +126,12 @@ export default defineMock([
       return {
         code: "00000",
         data: null,
-        msg: "修改字典类型" + body.name + "成功",
+        msg: "修改字典" + body.name + "成功",
       };
     },
   },
 
-  // 删除字典类型
+  // 删除字典
   {
     url: "dict/types/:id",
     method: ["DELETE"],
@@ -139,7 +139,7 @@ export default defineMock([
       return {
         code: "00000",
         data: null,
-        msg: "删除字典类型" + params.id + "成功",
+        msg: "删除字典" + params.id + "成功",
       };
     },
   },
@@ -178,7 +178,7 @@ export default defineMock([
       return {
         code: "00000",
         data: null,
-        msg: "修改字典类型" + body.name + "成功",
+        msg: "修改字典" + body.name + "成功",
       };
     },
   },
@@ -197,7 +197,7 @@ export default defineMock([
   },
 ]);
 
-// 字典类型映射表数据
+// 字典映射表数据
 const dictTypeMap: Record<string, any> = {
   1: {
     id: 1,

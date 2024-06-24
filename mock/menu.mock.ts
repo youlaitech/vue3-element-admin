@@ -720,7 +720,7 @@ export default defineMock([
                 {
                   id: 79,
                   parentId: 6,
-                  name: "字典类型新增",
+                  name: "字典新增",
                   type: "BUTTON",
                   path: "",
                   component: null,
@@ -734,7 +734,7 @@ export default defineMock([
                 {
                   id: 81,
                   parentId: 6,
-                  name: "字典类型编辑",
+                  name: "字典编辑",
                   type: "BUTTON",
                   path: "",
                   component: null,
@@ -748,7 +748,7 @@ export default defineMock([
                 {
                   id: 84,
                   parentId: 6,
-                  name: "字典类型删除",
+                  name: "字典删除",
                   type: "BUTTON",
                   path: "",
                   component: null,
@@ -1231,15 +1231,15 @@ export default defineMock([
               children: [
                 {
                   value: 79,
-                  label: "字典类型新增",
+                  label: "字典新增",
                 },
                 {
                   value: 81,
-                  label: "字典类型编辑",
+                  label: "字典编辑",
                 },
                 {
                   value: 84,
-                  label: "字典类型删除",
+                  label: "字典删除",
                 },
                 {
                   value: 85,
