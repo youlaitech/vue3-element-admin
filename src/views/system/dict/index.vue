@@ -30,7 +30,7 @@
         <el-button
           type="danger"
           :disabled="ids.length === 0"
-          @click="handleDeleteClick()"
+          @click="handleDelete()"
           ><i-ep-delete />删除</el-button
         >
       </div>
@@ -75,7 +75,7 @@
               type="danger"
               link
               size="small"
-              @click.stop="handleDeleteClick(scope.row.id)"
+              @click.stop="handleDelete(scope.row.id)"
               ><i-ep-delete />删除</el-button
             >
           </template>
@@ -333,7 +333,7 @@ function handleCloseDialog() {
  *
  * @param id 字典ID
  */
-function handleDeleteClick(id?: number) {
+function handleDelete(id?: number) {
   const attrGroupIds = [id || ids.value].join(",");
   if (!attrGroupIds) {
     ElMessage.warning("请勾选删除项");
@@ -343,12 +343,17 @@ function handleDeleteClick(id?: number) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(() => {
-    DictAPI.deleteByIds(attrGroupIds).then(() => {
-      ElMessage.success("删除成功");
-      handleResetClick();
-    });
-  });
+  }).then(
+    () => {
+      DictAPI.deleteByIds(attrGroupIds).then(() => {
+        ElMessage.success("删除成功");
+        handleResetClick();
+      });
+    },
+    () => {
+      ElMessage.info("已取消删除");
+    }
+  );
 }
 
 // 新增字典

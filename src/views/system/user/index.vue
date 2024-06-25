@@ -375,7 +375,7 @@ function handleResetQuery() {
   handleQuery();
 }
 
-/** 行选中 */
+/** 行复选框选中记录选中ID集合 */
 function handleSelectionChange(selection: any) {
   removeIds.value = selection.map((item: any) => item.id);
 }
@@ -472,12 +472,20 @@ function handleDelete(id?: number) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(function () {
-    UserAPI.deleteByIds(userIds).then(() => {
-      ElMessage.success("删除成功");
-      handleResetQuery();
-    });
-  });
+  }).then(
+    function () {
+      loading.value = true;
+      UserAPI.deleteByIds(userIds)
+        .then(() => {
+          ElMessage.success("删除成功");
+          handleResetQuery();
+        })
+        .finally(() => (loading.value = false));
+    },
+    function () {
+      ElMessage.info("已取消删除");
+    }
+  );
 }
 /** 打开导入弹窗 */
 function handleOpenImportDialog() {
