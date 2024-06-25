@@ -11,8 +11,8 @@ export interface ChartHouseDataVO {
    * 5：新房存量面积
    */
   xaxis: string[];
-  yaxis: number;
-  zaxis: number;
+  yaxis: YaxisInit;
+  zaxis: YaxisInit;
   sevenDayAverage: number;
   fifteenDayAverage: number;
   thirtyDayAverage: number;
@@ -23,6 +23,13 @@ export interface ChartHouseDataList<T> {
   /** 数据列表 */
   list: T;
 }
+
+export interface YaxisInit {
+  max: number;
+  min: number;
+  interval: number;
+}
+
 export interface ChartHouseDataSeries {
   chartName: string;
   chartType: string;

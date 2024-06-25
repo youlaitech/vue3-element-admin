@@ -3,9 +3,9 @@
   <el-card>
     <template #header>
       <div class="title">
-        <el-text>7日平均：{{ chartData.sevenDayAverage }}</el-text>
-        <el-text>15日平均：{{ chartData.fifteenDayAverage }}</el-text>
-        <el-text>30日平均：{{ chartData.thirtyDayAverage }}</el-text>
+        <el-text>七日平均：{{ chartData.sevenDayAverage }}</el-text>
+        <el-text>半月日均：{{ chartData.fifteenDayAverage }}</el-text>
+        <el-text>月日均：{{ chartData.thirtyDayAverage }}</el-text>
         <el-tooltip effect="dark" content="点击试试下载" placement="bottom">
           <i-ep-download class="download" />
         </el-tooltip>
@@ -50,8 +50,20 @@ const options = {
   grid: {
     left: "2%",
     right: "2%",
-    bottom: "10%",
+    height: "75%",
+    bottom: "20%",
     containLabel: true,
+  },
+  toolbox: {
+    show: false,
+    feature: {
+      dataZoom: {
+        yAxisIndex: false,
+      },
+      brush: {
+        type: [],
+      },
+    },
   },
   tooltip: {
     trigger: "axis",
@@ -62,6 +74,22 @@ const options = {
       },
     },
   },
+  dataZoom: [
+    {
+      type: "inside",
+      xAxisIndex: [0, 1],
+      start: 70,
+      end: 100,
+    },
+    {
+      show: true,
+      xAxisIndex: [0, 1],
+      type: "slider",
+      top: "82%",
+      start: 90,
+      end: 100,
+    },
+  ],
   legend: {
     x: "center",
     y: "bottom",
@@ -82,18 +110,18 @@ const options = {
   yAxis: [
     {
       type: "value",
-      min: 0,
-      max: (Math.round(chartData.yaxis / 500) + 1) * 500,
-      interval: (Math.round(chartData.yaxis / 500) + 1) * 50,
+      min: chartData.yaxis.min,
+      max: chartData.yaxis.max,
+      interval: chartData.yaxis.interval,
       axisLabel: {
         formatter: "{value} ",
       },
     },
     {
       type: "value",
-      min: -100,
-      max: (Math.round(chartData.zaxis / 100) + 1) * 100,
-      interval: (Math.round(chartData.zaxis / 100) + 2) * 10,
+      min: chartData.zaxis.min,
+      max: chartData.zaxis.max,
+      interval: chartData.zaxis.interval,
       axisLabel: {
         formatter: "{value}%",
       },
@@ -104,7 +132,7 @@ const options = {
       name: chartData.series[0].chartName,
       type: chartData.series[0].chartType,
       data: chartData.series[0].chatData,
-      barWidth: 15,
+      barWidth: "70%",
       itemStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
           { offset: 0, color: "#83bff6" },
