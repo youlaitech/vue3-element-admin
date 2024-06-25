@@ -115,8 +115,7 @@
 
 <script setup lang="ts">
 import { useSettingsStore, useUserStore } from "@/store";
-import AuthAPI from "@/api/auth";
-import { LoginData } from "@/api/auth/types";
+import AuthAPI, { LoginData } from "@/api/auth";
 import type { FormInstance } from "element-plus";
 import { LocationQuery, useRoute } from "vue-router";
 import router from "@/router";
