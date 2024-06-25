@@ -294,7 +294,7 @@ function handleResetQuery() {
   handleQuery();
 }
 
-/** 行选中 */
+/** 行复选框选中记录选中ID集合 */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
@@ -440,12 +440,12 @@ function togglePermTree() {
     });
   }
 }
-// 菜单权限筛选
+
+/** 权限筛选  */
 watch(permKeywords, (val) => {
   permTreeRef.value!.filter(val);
 });
 
-/** 权限筛选  */
 function handlePermFilter(
   value: string,
   data: {
