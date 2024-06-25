@@ -41,9 +41,14 @@ const appStore = useAppStore();
 const permissionStore = usePermissionStore();
 const router = useRouter();
 
+// 避免 activeTopMenuPath 缓存被清理，从当前路由路径获取顶部菜单路径，eg. /system/user → /system
+const activeTopMenuPath = useRoute().path.replace(/\/[^\/]+$/, "") || "/";
+appStore.activeTopMenu(activeTopMenuPath);
+
+// 激活的顶部菜单路径
 const activePath = computed(() => appStore.activeTopMenuPath);
 
-// 顶部菜单集合
+// 混合模式顶部菜单集合
 const mixTopMenus = ref<RouteRecordRaw[]>([]);
 
 /**
