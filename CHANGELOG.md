@@ -1,9 +1,46 @@
 
+# 2.11.5 (2024/6/18)
+
+## ✨ feat
+
+- 支持后端文件导入([#142](https://github.com/youlaitech/vue3-element-admin/pull/142)) [@cshaptx4869](https://github.com/cshaptx4869) 
+
+
+## 🐛 fix
+- vue-dev-tools 插件导致菜单路由切换卡死，暂时关闭 ([28349e](https://github.com/youlaitech/vue3-element-admin/commit/28349efe147afab36531ba148eaac3a448fe6c71)) [@haoxianrui](https://github.com/haoxianrui)
+
+
+
+# 2.11.4 (2024/6/16)
+
+## ✨ feat
+
+- 操作栏增加render配置参数([#138](https://github.com/youlaitech/vue3-element-admin/pull/140)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 左侧工具栏增加type配置参数([#141](https://github.com/youlaitech/vue3-element-admin/pull/141)) [@diamont1001](https://github.com/diamont1001)
+
+## ♻️ refactor
+- 更换权限分配弹窗类型为 drawer 并添加父子联动开关([2d9193](https://github.com/youlaitech/vue3-element-admin/commit/2d9193c47fd224f01f82b9c0b2bbeb5e7cb33584)) [@haoxianrui](https://github.com/haoxianrui)
+
+
+
+# 2.11.3 (2024/6/11)
+
+## ✨ feat
+
+- 支持默认工具栏的导入([#138](https://github.com/youlaitech/vue3-element-admin/pull/138)) [@cshaptx4869](https://github.com/cshaptx4869) 
+-  添加CURD导入示例([19e7bb](https://github.com/youlaitech/vue3-element-admin/commit/eab91effd6a01d5a3d9257249c8d06aa252b3bf8)) [@cshaptx4869](https://github.com/cshaptx4869)
+
+## ♻️ refactor
+- 修改导出全量数据选项文本([904fec](https://github.com/youlaitech/vue3-element-admin/commit/904fecad65217650482fcdbb10ffb7f3d27eb9ea)) [@cshaptx4869](https://github.com/cshaptx4869)
+
+## 🐛 fix
+- 菜单列表未适配el-icon导致图标不显示问题修复([e72b68](https://github.com/youlaitech/vue3-element-admin/commit/e72b68337562b5a7ea24ad55bbe00023e1266b40)) [@haoxianrui](https://github.com/haoxianrui)
+
 # 2.11.2 (2024/6/8)
 
 ## ✨ feat
 
-- 支持表格远程筛选([#131](https://github.com/youlaitech/vue3-element-admin/pull/119)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 支持表格远程筛选([#131](https://github.com/youlaitech/vue3-element-admin/pull/131)) [@cshaptx4869](https://github.com/cshaptx4869) 
 - 支持标签输入框([#132](https://github.com/youlaitech/vue3-element-admin/pull/132)) [@cshaptx4869](https://github.com/cshaptx4869)
 - 表单项支持tips配置([#133](https://github.com/youlaitech/vue3-element-admin/pull/133)) [@cshaptx4869](https://github.com/cshaptx4869) 
 - 前端导出支持全量数据([#134](https://github.com/youlaitech/vue3-element-admin/pull/134)) [@cshaptx4869](https://github.com/cshaptx4869) 

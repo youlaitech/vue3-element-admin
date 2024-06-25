@@ -1,5 +1,4 @@
 import request from "@/utils/request";
-import { FileInfo } from "./model";
 
 class FileAPI {
   /**
@@ -35,3 +34,13 @@ class FileAPI {
 }
 
 export default FileAPI;
+
+/**
+ * 文件API类型声明
+ */
+export interface FileInfo {
+  /** 文件名 */
+  name: string;
+  /** 文件路径 */
+  url: string;
+}

@@ -38,7 +38,7 @@
         <el-button
           v-hasPerm="['sys:dept:add']"
           type="success"
-          @click="openDialog(0, undefined)"
+          @click="handleOpenDialog(0, undefined)"
           ><i-ep-plus />新增</el-button
         >
         <el-button
@@ -60,6 +60,7 @@
       >
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column prop="name" label="部门名称" min-width="200" />
+        <el-table-column prop="code" label="部门编号" width="200" />
         <el-table-column prop="status" label="状态" width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.status == 1" type="success">正常</el-tag>
@@ -76,7 +77,7 @@
               type="primary"
               link
               size="small"
-              @click.stop="openDialog(scope.row.id, undefined)"
+              @click.stop="handleOpenDialog(scope.row.id, undefined)"
               ><i-ep-plus />新增
             </el-button>
             <el-button
@@ -84,12 +85,12 @@
               type="primary"
               link
               size="small"
-              @click.stop="openDialog(scope.row.parentId, scope.row.id)"
+              @click.stop="handleOpenDialog(scope.row.parentId, scope.row.id)"
               ><i-ep-edit />编辑
             </el-button>
             <el-button
               v-hasPerm="['sys:dept:delete']"
-              type="primary"
+              type="danger"
               link
               size="small"
               @click.stop="handleDelete(scope.row.id)"
@@ -105,7 +106,7 @@
       v-model="dialog.visible"
       :title="dialog.title"
       width="600px"
-      @closed="closeDialog"
+      @closed="handleCloseDialog"
     >
       <el-form
         ref="deptFormRef"
@@ -126,6 +127,9 @@
         <el-form-item label="部门名称" prop="name">
           <el-input v-model="formData.name" placeholder="请输入部门名称" />
         </el-form-item>
+        <el-form-item label="部门编号" prop="code">
+          <el-input v-model="formData.code" placeholder="请输入部门编号" />
+        </el-form-item>
         <el-form-item label="显示排序" prop="sort">
           <el-input-number
             v-model="formData.sort"
@@ -145,7 +149,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmit"> 确 定 </el-button>
-          <el-button @click="closeDialog"> 取 消 </el-button>
+          <el-button @click="handleCloseDialog"> 取 消 </el-button>
         </div>
       </template>
     </el-dialog>
@@ -158,8 +162,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import DeptAPI from "@/api/dept";
-import { DeptVO, DeptForm, DeptQuery } from "@/api/dept/model";
+import DeptAPI, { DeptVO, DeptForm, DeptQuery } from "@/api/dept";
 
 const queryFormRef = ref(ElForm);
 const deptFormRef = ref(ElForm);
@@ -183,12 +186,15 @@ const formData = reactive<DeptForm>({
 });
 
 const rules = reactive({
-  parentId: [{ required: true, message: "上级部门不能为空", trigger: "blur" }],
+  parentId: [
+    { required: true, message: "上级部门不能为空", trigger: "change" },
+  ],
   name: [{ required: true, message: "部门名称不能为空", trigger: "blur" }],
+  code: [{ required: true, message: "部门编号不能为空", trigger: "blur" }],
   sort: [{ required: true, message: "显示排序不能为空", trigger: "blur" }],
 });
 
-/** 查询 */
+/** 查询部门 */
 function handleQuery() {
   loading.value = true;
   DeptAPI.getList(queryParams).then((data) => {
@@ -197,7 +203,7 @@ function handleQuery() {
   });
 }
 
-/**重置查询 */
+/** 重置查询 */
 function handleResetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
@@ -208,27 +214,23 @@ function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
 
-/** 获取部门下拉数据  */
-async function loadDeptOptions() {
-  DeptAPI.getOptions().then((data) => {
-    deptOptions.value = [
-      {
-        value: 0,
-        label: "顶级部门",
-        children: data,
-      },
-    ];
-  });
-}
-
 /**
- * 打开弹窗
+ * 打开部门弹窗
  *
  * @param parentId 父部门ID
  * @param deptId 部门ID
  */
-async function openDialog(parentId?: number, deptId?: number) {
-  await loadDeptOptions();
+async function handleOpenDialog(parentId?: number, deptId?: number) {
+  // 加载部门下拉数据
+  const data = await DeptAPI.getOptions();
+  deptOptions.value = [
+    {
+      value: 0,
+      label: "顶级部门",
+      children: data,
+    },
+  ];
+
   dialog.visible = true;
   if (deptId) {
     dialog.title = "修改部门";
@@ -241,17 +243,17 @@ async function openDialog(parentId?: number, deptId?: number) {
   }
 }
 
-/** 表单提交 */
+/** 提交部门表单 */
 function handleSubmit() {
   deptFormRef.value.validate((valid: any) => {
     if (valid) {
-      const deptId = formData.id;
       loading.value = true;
+      const deptId = formData.id;
       if (deptId) {
         DeptAPI.update(deptId, formData)
           .then(() => {
             ElMessage.success("修改成功");
-            closeDialog();
+            handleCloseDialog();
             handleQuery();
           })
           .finally(() => (loading.value = false));
@@ -259,7 +261,7 @@ function handleSubmit() {
         DeptAPI.add(formData)
           .then(() => {
             ElMessage.success("新增成功");
-            closeDialog();
+            handleCloseDialog();
             handleQuery();
           })
           .finally(() => (loading.value = false));
@@ -290,13 +292,9 @@ function handleDelete(deptId?: number) {
 }
 
 /** 关闭弹窗 */
-function closeDialog() {
+function handleCloseDialog() {
   dialog.visible = false;
-  resetForm();
-}
 
-/** 重置表单  */
-function resetForm() {
   deptFormRef.value.resetFields();
   deptFormRef.value.clearValidate();
 

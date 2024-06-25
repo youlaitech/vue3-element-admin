@@ -1,6 +1,7 @@
 <template>
+  <!-- 如果菜单项没有隐藏则显示 -->
   <div v-if="!item.meta || !item.meta.hidden">
-    <!-- 显示具有单个子路由的菜单项或没有子路由的父路由 -->
+    <!-- 显示只有一个子路由或没有子路由的菜单项 -->
     <template
       v-if="
         hasOneShowingChild(item.children, item as RouteRecordRaw) &&
@@ -59,7 +60,7 @@ import { RouteRecordRaw } from "vue-router";
 
 const props = defineProps({
   /**
-   * 路由(eg:user)123
+   * 当前路由项对象
    */
   item: {
     type: Object,
@@ -67,47 +68,46 @@ const props = defineProps({
   },
 
   /**
-   * 父层级完整路由路径(eg:/system)
+   * 父层级完整路由路径
    */
   basePath: {
     type: String,
     required: true,
   },
+  /**
+   * 是否为嵌套路由
+   */
   isNest: {
     type: Boolean,
     default: false,
   },
 });
 
-const onlyOneChild = ref(); // 临时变量，唯一子路由
+const onlyOneChild = ref();
 
 /**
- * 判断当前路由是否只有一个子路由
- *
- * 1：如果只有一个子路由： 返回 true
- * 2：如果无子路由 ：返回 true
+ * 判断当前路由是否只有一个显示的子路由
  *
  * @param children 子路由数组
- * @param parent 当前路由
+ * @param parent 父级路由对象
+ * @returns 布尔值，表示是否只有一个显示的子路由
  */
 function hasOneShowingChild(
   children: RouteRecordRaw[] = [],
   parent: RouteRecordRaw
 ) {
-  // 子路由集合
+  // 筛选出需要显示的子路由
   const showingChildren = children.filter((route: RouteRecordRaw) => {
     if (route.meta?.hidden) {
-      // 过滤不显示的子路由
       return false;
     } else {
       route.meta!.hidden = false;
-      // 临时变量（多个子路由 onlyOneChild 变量是用不上的）
       onlyOneChild.value = route;
       return true;
     }
   });
 
-  // 如果只有一个子路由, 返回 true
+  // 如果只有一个或没有显示的子路由
   if (showingChildren.length === 1) {
     return true;
   }
@@ -121,9 +121,10 @@ function hasOneShowingChild(
 }
 
 /**
- *  解析路由路径(相对路径 → 绝对路径)
+ * 解析路由路径，将相对路径转换为绝对路径
  *
  * @param routePath 路由路径
+ * @returns 绝对路径
  */
 function resolvePath(routePath: string) {
   if (isExternal(routePath)) {
