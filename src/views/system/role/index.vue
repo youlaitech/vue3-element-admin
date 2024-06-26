@@ -294,7 +294,7 @@ function handleResetQuery() {
   handleQuery();
 }
 
-/** 行选中 */
+/** 行复选框选中记录选中ID集合 */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
@@ -363,15 +363,20 @@ function handleDelete(roleId?: number) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(() => {
-    loading.value = true;
-    RoleAPI.deleteByIds(roleIds)
-      .then(() => {
-        ElMessage.success("删除成功");
-        handleResetQuery();
-      })
-      .finally(() => (loading.value = false));
-  });
+  }).then(
+    () => {
+      loading.value = true;
+      RoleAPI.deleteByIds(roleIds)
+        .then(() => {
+          ElMessage.success("删除成功");
+          handleResetQuery();
+        })
+        .finally(() => (loading.value = false));
+    },
+    () => {
+      ElMessage.info("已取消删除");
+    }
+  );
 }
 
 /** 打开分配菜单权限弹窗 */
@@ -435,12 +440,12 @@ function togglePermTree() {
     });
   }
 }
-// 菜单权限筛选
+
+/** 权限筛选  */
 watch(permKeywords, (val) => {
   permTreeRef.value!.filter(val);
 });
 
-/** 权限筛选  */
 function handlePermFilter(
   value: string,
   data: {

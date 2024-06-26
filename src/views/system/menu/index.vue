@@ -592,14 +592,22 @@ function handleDelete(menuId: number) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  })
-    .then(() => {
-      MenuAPI.deleteById(menuId).then(() => {
-        ElMessage.success("删除成功");
-        handleQuery();
-      });
-    })
-    .catch(() => ElMessage.info("已取消删除"));
+  }).then(
+    () => {
+      loading.value = true;
+      MenuAPI.deleteById(menuId)
+        .then(() => {
+          ElMessage.success("删除成功");
+          handleQuery();
+        })
+        .finally(() => {
+          loading.value = false;
+        });
+    },
+    () => {
+      ElMessage.info("已取消删除");
+    }
+  );
 }
 
 // 关闭弹窗

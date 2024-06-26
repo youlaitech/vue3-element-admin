@@ -283,12 +283,20 @@ function handleDelete(deptId?: number) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(() => {
-    DeptAPI.deleteByIds(deptIds).then(() => {
-      ElMessage.success("删除成功");
-      handleResetQuery();
-    });
-  });
+  }).then(
+    () => {
+      loading.value = true;
+      DeptAPI.deleteByIds(deptIds)
+        .then(() => {
+          ElMessage.success("删除成功");
+          handleResetQuery();
+        })
+        .finally(() => (loading.value = false));
+    },
+    () => {
+      ElMessage.info("已取消删除");
+    }
+  );
 }
 
 /** 关闭弹窗 */

@@ -9,7 +9,7 @@
         ref="tagRef"
         v-for="tag in visitedViews"
         :key="tag.fullPath"
-        :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
+        :class="'tags-item ' + (tagsViewStore.isActive(tag) ? 'active' : '')"
         :to="{ path: tag.path, query: tag.query }"
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent="openContentMenu(tag, $event)"
@@ -190,10 +190,6 @@ function moveToCurrentTag() {
   });
 }
 
-function isActive(tag: TagView) {
-  return tag.path === route.path;
-}
-
 function isAffix(tag: TagView) {
   return tag?.affix;
 }
@@ -228,26 +224,10 @@ function refreshSelectedTag(view: TagView) {
   });
 }
 
-function toLastView(visitedViews: TagView[], view?: TagView) {
-  const latestView = visitedViews.slice(-1)[0];
-  if (latestView && latestView.fullPath) {
-    router.push(latestView.fullPath);
-  } else {
-    // now the default is to redirect to the home page if there is no tags-view,
-    // you can adjust it according to your needs.
-    if (view?.name === "Dashboard") {
-      // to reload home page
-      router.replace("/redirect" + view.fullPath);
-    } else {
-      router.push("/");
-    }
-  }
-}
-
 function closeSelectedTag(view: TagView) {
   tagsViewStore.delView(view).then((res: any) => {
-    if (isActive(view)) {
-      toLastView(res.visitedViews, view);
+    if (tagsViewStore.isActive(view)) {
+      tagsViewStore.toLastView(res.visitedViews, view);
     }
   });
 }
@@ -255,14 +235,14 @@ function closeSelectedTag(view: TagView) {
 function closeLeftTags() {
   tagsViewStore.delLeftViews(selectedTag.value).then((res: any) => {
     if (!res.visitedViews.find((item: any) => item.path === route.path)) {
-      toLastView(res.visitedViews);
+      tagsViewStore.toLastView(res.visitedViews);
     }
   });
 }
 function closeRightTags() {
   tagsViewStore.delRightViews(selectedTag.value).then((res: any) => {
     if (!res.visitedViews.find((item: any) => item.path === route.path)) {
-      toLastView(res.visitedViews);
+      tagsViewStore.toLastView(res.visitedViews);
     }
   });
 }
@@ -276,7 +256,7 @@ function closeOtherTags() {
 
 function closeAllTags(view: TagView) {
   tagsViewStore.delAllViews().then((res: any) => {
-    toLastView(res.visitedViews, view);
+    tagsViewStore.toLastView(res.visitedViews, view);
   });
 }
 

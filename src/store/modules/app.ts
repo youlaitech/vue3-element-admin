@@ -7,19 +7,23 @@ import { store } from "@/store";
 import { DeviceEnum } from "@/enums/DeviceEnum";
 import { SidebarStatusEnum } from "@/enums/SidebarStatusEnum";
 
-// setup
 export const useAppStore = defineStore("app", () => {
-  // state
+  // 设备类型
   const device = useStorage("device", DeviceEnum.DESKTOP);
+  // 布局大小
   const size = useStorage("size", defaultSettings.size);
+  // 语言
   const language = useStorage("language", defaultSettings.language);
+  // 侧边栏状态
   const sidebarStatus = useStorage("sidebarStatus", SidebarStatusEnum.CLOSED);
-
   const sidebar = reactive({
     opened: sidebarStatus.value === SidebarStatusEnum.OPENED,
     withoutAnimation: false,
   });
+
+  // 顶部菜单激活路径
   const activeTopMenuPath = useStorage("activeTopMenuPath", "");
+
   /**
    * 根据语言标识读取对应的语言包
    */
@@ -31,7 +35,7 @@ export const useAppStore = defineStore("app", () => {
     }
   });
 
-  // actions
+  // 切换侧边栏
   function toggleSidebar() {
     sidebar.opened = !sidebar.opened;
     sidebarStatus.value = sidebar.opened
@@ -39,20 +43,28 @@ export const useAppStore = defineStore("app", () => {
       : SidebarStatusEnum.CLOSED;
   }
 
+  // 关闭侧边栏
   function closeSideBar() {
     sidebar.opened = false;
     sidebarStatus.value = SidebarStatusEnum.CLOSED;
   }
 
+  // 打开侧边栏
   function openSideBar() {
     sidebar.opened = true;
     sidebarStatus.value = SidebarStatusEnum.OPENED;
   }
 
+  // 切换设备
   function toggleDevice(val: string) {
     device.value = val;
   }
 
+  /**
+   * 改变布局大小
+   *
+   * @param val 布局大小 default | small | large
+   */
   function changeSize(val: string) {
     size.value = val;
   }
