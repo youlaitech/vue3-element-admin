@@ -6,9 +6,15 @@
         <b>{{ chartData.title.text }}</b>
       </div>
       <div class="title">
-        <el-text>七日：{{ chartData.sevenDayAverage }}</el-text>
-        <el-text>半月：{{ chartData.fifteenDayAverage }}</el-text>
-        <el-text>近月：{{ chartData.thirtyDayAverage }}</el-text>
+        <el-text v-if="displayTitle"
+          >七日：{{ chartData.sevenDayAverage }}</el-text
+        >
+        <el-text v-if="displayTitle"
+          >半月：{{ chartData.fifteenDayAverage }}</el-text
+        >
+        <el-text v-if="displayTitle"
+          >近月：{{ chartData.thirtyDayAverage }}</el-text
+        >
         <el-text>单位：{{ chartData.title.unit }}</el-text>
       </div>
     </template>
@@ -45,6 +51,7 @@ const props = defineProps({
   },
 });
 const chartData: ChartHouseDataVO = props.data as ChartHouseDataVO;
+const displayTitle = ref(false);
 console.log(chartData);
 const options = {
   grid: {
@@ -78,7 +85,7 @@ const options = {
     {
       type: "inside",
       xAxisIndex: [0, 1],
-      start: 70,
+      start: chartData.series[0].chatData.length < 30 ? 0 : 70,
       end: 100,
     },
     {
@@ -86,7 +93,7 @@ const options = {
       xAxisIndex: [0, 1],
       type: "slider",
       top: "82%",
-      start: 90,
+      start: chartData.series[0].chatData.length < 30 ? 0 : 70,
       end: 100,
     },
   ],
@@ -182,6 +189,10 @@ const options = {
 const chart = ref<any>("");
 onMounted(() => {
   console.log("图表初始化");
+  // 是否初始化标题统计
+  if (chartData.sevenDayAverage > 0) {
+    displayTitle.value = true;
+  }
   // 图表初始化
   chart.value = markRaw(
     echarts.init(document.getElementById(props.id) as HTMLDivElement)
