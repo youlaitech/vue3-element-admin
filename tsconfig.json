@@ -12,23 +12,17 @@
     "lib": ["esnext", "dom"],
     "baseUrl": ".",
     "allowJs": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["vite/client", "unplugin-icons/types/vue", "element-plus/global"],
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
-    "allowSyntheticDefaultImports": true /* 允许默认导入 */,
-    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
-
-    "jsx": "preserve",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment"
+    "types": ["vite/client", "unplugin-icons/types/vue", "element-plus/global"]
   },
-  "include": [
-    "src/**/*.vue",
-    "src/types/**/*.d.ts",
-    "mock/**/*.ts",
-    "vite.config.ts"
-  ],
+  "include": ["mock/**/*.ts", "src/**/*.ts", "src/**/*.vue", "vite.config.ts"],
   "exclude": ["node_modules", "dist", "**/*.js"]
 }
