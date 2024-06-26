@@ -3,15 +3,15 @@
   <el-card>
     <template #header>
       <div class="title">
-        <el-text>七日平均：{{ chartData.sevenDayAverage }}</el-text>
-        <el-text>半月日均：{{ chartData.fifteenDayAverage }}</el-text>
-        <el-text>月日均：{{ chartData.thirtyDayAverage }}</el-text>
-        <el-tooltip effect="dark" content="点击试试下载" placement="bottom">
-          <i-ep-download class="download" />
-        </el-tooltip>
+        <b>{{ chartData.title.text }}</b>
+      </div>
+      <div class="title">
+        <el-text>七日：{{ chartData.sevenDayAverage }}</el-text>
+        <el-text>半月：{{ chartData.fifteenDayAverage }}</el-text>
+        <el-text>近月：{{ chartData.thirtyDayAverage }}</el-text>
+        <el-text>单位：{{ chartData.title.unit }}</el-text>
       </div>
     </template>
-
     <div :id="id" :class="className" :style="{ height, width }"></div>
   </el-card>
 </template>
@@ -202,9 +202,16 @@ onActivated(() => {
 });
 </script>
 <style lang="scss" scoped>
+.elBody {
+  text-align: center;
+}
+
 .title {
   display: flex;
-  justify-content: space-between;
+  place-content: center space-between;
+  align-items: center;
+  align-self: center;
+  text-align: center;
 
   .download {
     cursor: pointer;

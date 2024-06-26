@@ -35,7 +35,7 @@ const chartHousedataList = ref<ChartHouseDataVO>();
 const userStore = useUserStore();
 // 图表数据
 const chartType = ref("BarChart");
-const chartId = ref("ResoldNumber");
+const chartId = ref("ResoldArea");
 const chartComponent = (item: string) => {
   return defineAsyncComponent(() => import(`../components/${item}.vue`));
 };
@@ -52,7 +52,7 @@ async function handleQuery(dataType: number) {
 }
 
 onMounted(() => {
-  handleQuery(2);
+  handleQuery(3);
 });
 </script>
 

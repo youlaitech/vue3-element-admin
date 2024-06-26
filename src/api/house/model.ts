@@ -10,6 +10,7 @@ export interface ChartHouseDataVO {
    * 4：新房存量计数
    * 5：新房存量面积
    */
+  title: ChartHouseDataTitle;
   xaxis: string[];
   yaxis: YaxisInit;
   zaxis: YaxisInit;
@@ -24,6 +25,10 @@ export interface ChartHouseDataList<T> {
   list: T;
 }
 
+export interface ChartHouseDataTitle {
+  text: String;
+  unit: String;
+}
 export interface YaxisInit {
   max: number;
   min: number;

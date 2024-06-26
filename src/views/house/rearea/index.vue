@@ -1,6 +1,5 @@
 <template>
   <div class="app-container">
-    resold - 2
     <!-- Echarts 图表 -->
     <el-row :gutter="10" class="mt-3">
       <el-col :xs="24" :sm="24" :lg="24" class="mb-2" :key="chartId">
@@ -53,7 +52,7 @@ async function handleQuery(dataType: number) {
 }
 
 onMounted(() => {
-  handleQuery(3);
+  handleQuery(6);
 });
 </script>
 
