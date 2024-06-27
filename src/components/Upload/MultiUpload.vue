@@ -64,6 +64,11 @@ watch(
       return;
     }
 
+    if (newVal.length <= 0) {
+      fileList.value = [];
+      return;
+    }
+
     fileList.value = newVal.map((filePath) => {
       return { url: filePath } as UploadUserFile;
     });
