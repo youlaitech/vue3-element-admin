@@ -266,10 +266,12 @@
             <template v-else-if="col.templet === 'date'">
               <template v-if="col.prop">
                 {{
-                  useDateFormat(
-                    scope.row[col.prop],
-                    col.dateFormat ?? "YYYY-MM-DD HH:mm:ss"
-                  ).value
+                  scope.row[col.prop]
+                    ? useDateFormat(
+                        scope.row[col.prop],
+                        col.dateFormat ?? "YYYY-MM-DD HH:mm:ss"
+                      ).value
+                    : ""
                 }}
               </template>
             </template>

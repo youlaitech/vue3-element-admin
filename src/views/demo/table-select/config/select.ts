@@ -84,8 +84,10 @@ const selectConfig: ISelectConfig = {
   indexAction: function (params) {
     if ("createAt" in params) {
       const createAt = params.createAt as string[];
-      params.startTime = createAt[0];
-      params.endTime = createAt[1];
+      if (createAt?.length > 1) {
+        params.startTime = createAt[0];
+        params.endTime = createAt[1];
+      }
       delete params.createAt;
     }
     return UserAPI.getPage(params);
