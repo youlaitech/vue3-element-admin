@@ -311,6 +311,9 @@ watch(dateTimeRange, (newVal) => {
   if (newVal) {
     queryParams.startTime = newVal[0];
     queryParams.endTime = newVal[1];
+  } else {
+    queryParams.startTime = undefined;
+    queryParams.endTime = undefined;
   }
 });
 
