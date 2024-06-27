@@ -9,7 +9,7 @@
         inactive-icon="Sunny"
         @change="toggleTheme"
       />
-      <lang-select class="lang-select" />
+      <lang-select class="ml-2 cursor-pointer" />
     </div>
     <!-- 登录表单 -->
     <el-card class="login-card">
