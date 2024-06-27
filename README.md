@@ -1,6 +1,6 @@
 <div align="center">
-    <img src="https://img.shields.io/badge/Vue-3.4.27-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-5.2.11-green.svg"/>
+    <img src="https://img.shields.io/badge/Vue-3.4.29-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vite-5.3.1-green.svg"/>
     <img src="https://img.shields.io/badge/Element Plus-2.7.5-blue.svg"/>
     <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
     <a href="https://gitee.com/youlaiorg" target="_blank">
@@ -30,7 +30,7 @@
 
 - **基础设施**：动态路由、按钮权限、国际化、代码规范、Git 提交规范、常用组件封装。
 
-- **持续更新**：自2021年起，该项目持续开源更新，实时更新工具和依赖，积累了广泛的用户群体。
+- **持续更新**：项目持续开源更新，实时更新工具和依赖。
 
 
 
@@ -44,17 +44,18 @@
 
 ## 项目地址
 
-| 项目 | Gitee                                                        | Github                                                       | GitCode                                                      |
-| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 项目 | Gitee                                                        | Github                                                       | 
+| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | 
 | 前端 | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) | [vue3-element-admin](https://gitcode.net/youlai/vue3-element-admin) |
-| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)       | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git) | [youlai-boot](https://gitcode.net/youlai/youlai-boot)        |
+| 精简版 | [vue3-element-admin-thin](https://gitee.com/cshaptx4869/vue3-element-admin-thin) | [vue3-element-admin-thin](https://github.com/youlaitech/vue3-element-admin-thin) |
+| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)       | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git) |
 
 ## 环境准备
 
 | 环境                 | 名称版本                                                     | 下载地址                                                     |
 | -------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
-| **开发工具**         | VSCode                                                       | [下载](https://code.visualstudio.com/Download)           |
-| **运行环境**         | Node ≥18                                                    | [下载](http://nodejs.cn/download)                        |
+| **开发工具**         | VSCode    | [下载](https://code.visualstudio.com/Download)           |
+| **运行环境**         | Node ≥18 (其中 20.6.0 版本不可用)    | [下载](http://nodejs.cn/download)                        |
 
 
 ## 项目启动

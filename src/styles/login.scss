@@ -1,0 +1,81 @@
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background: url("@/assets/images/login-background-light.jpg") no-repeat center
+    right;
+
+  .top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .login-card {
+    width: 400px;
+    background: transparent;
+    border: none;
+    border-radius: 4%;
+
+    @media (width <= 640px) {
+      width: 340px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .captcha-image {
+      height: 48px;
+      cursor: pointer;
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+  }
+
+  .icp-info {
+    position: absolute;
+    bottom: 4px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .el-form-item {
+    background: var(--el-input-bg-color);
+    border: 1px solid var(--el-border-color);
+    border-radius: 5px;
+  }
+
+  .el-input {
+    .el-input__wrapper {
+      padding: 0;
+      background-color: transparent;
+      box-shadow: none;
+
+      &.is-focus,
+      &:hover {
+        box-shadow: none !important;
+      }
+
+      input:-webkit-autofill {
+        /* 通过延时渲染背景色变相去除背景颜色 */
+        transition: background-color 1000s ease-in-out 0s;
+      }
+    }
+  }
+}
+
+html.dark .login-container {
+  background: url("@/assets/images/login-background-dark.jpg") no-repeat center
+    right;
+}

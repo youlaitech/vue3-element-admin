@@ -36,6 +36,7 @@ export default defineMock([
           id: 1,
           parentId: 0,
           name: "有来技术",
+          code: "YOULAI",
           sort: 1,
           status: 1,
           children: [
@@ -43,6 +44,7 @@ export default defineMock([
               id: 2,
               parentId: 1,
               name: "研发部门",
+              code: "RD001",
               sort: 1,
               status: 1,
               children: [],
@@ -53,6 +55,7 @@ export default defineMock([
               id: 3,
               parentId: 1,
               name: "测试部门",
+              code: "QA001",
               sort: 1,
               status: 1,
               children: [],
@@ -126,6 +129,7 @@ const deptMap: Record<string, any> = {
   1: {
     id: 1,
     name: "有来技术",
+    code: "YOULAI",
     parentId: 0,
     status: 1,
     sort: 1,
@@ -133,6 +137,7 @@ const deptMap: Record<string, any> = {
   2: {
     id: 2,
     name: "研发部门",
+    code: "RD001",
     parentId: 1,
     status: 1,
     sort: 1,
@@ -140,6 +145,7 @@ const deptMap: Record<string, any> = {
   3: {
     id: 3,
     name: "测试部门",
+    code: "QA001",
     parentId: 1,
     status: 1,
     sort: 1,

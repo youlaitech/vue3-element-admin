@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
-    <!-- 顶部 -->
-    <div class="absolute-lt flex-x-end p-3 w-full">
+    <!-- 顶部工具栏 -->
+    <div class="top-bar">
       <el-switch
         v-model="isDark"
         inline-prompt
@@ -12,7 +12,7 @@
       <lang-select class="ml-2 cursor-pointer" />
     </div>
     <!-- 登录表单 -->
-    <el-card class="!border-none !bg-transparent !rounded-4% w-100 <sm:w-85">
+    <el-card class="login-card">
       <div class="text-center relative">
         <h2>{{ defaultSettings.title }}</h2>
         <el-tag class="ml-2 absolute-rt">{{ defaultSettings.version }}</el-tag>
@@ -26,7 +26,7 @@
       >
         <!-- 用户名 -->
         <el-form-item prop="username">
-          <div class="flex-y-center w-full">
+          <div class="input-wrapper">
             <svg-icon icon-class="user" class="mx-2" />
             <el-input
               ref="username"
@@ -46,7 +46,7 @@
           placement="right"
         >
           <el-form-item prop="password">
-            <div class="flex-y-center w-full">
+            <div class="input-wrapper">
               <svg-icon icon-class="lock" class="mx-2" />
               <el-input
                 v-model="loginData.password"
@@ -54,7 +54,7 @@
                 type="password"
                 name="password"
                 @keyup="checkCapslock"
-                @keyup.enter="handleLogin"
+                @keyup.enter="handleLoginSubmit"
                 size="large"
                 class="h-[48px] pr-2"
                 show-password
@@ -65,7 +65,7 @@
 
         <!-- 验证码 -->
         <el-form-item prop="captchaCode">
-          <div class="flex-y-center w-full">
+          <div class="input-wrapper">
             <svg-icon icon-class="captcha" class="mx-2" />
             <el-input
               v-model="loginData.captchaCode"
@@ -73,13 +73,13 @@
               size="large"
               class="flex-1"
               :placeholder="$t('login.captchaCode')"
-              @keyup.enter="handleLogin"
+              @keyup.enter="handleLoginSubmit"
             />
 
             <el-image
               @click="getCaptcha"
               :src="captchaBase64"
-              class="rounded-tr-md rounded-br-md cursor-pointer h-[48px]"
+              class="captcha-image"
             />
           </div>
         </el-form-item>
@@ -90,7 +90,7 @@
           type="primary"
           size="large"
           class="w-full"
-          @click.prevent="handleLogin"
+          @click.prevent="handleLoginSubmit"
           >{{ $t("login.login") }}
         </el-button>
 
@@ -103,7 +103,7 @@
     </el-card>
 
     <!-- ICP备案 -->
-    <div class="absolute bottom-1 text-[10px] text-center" v-show="icpVisible">
+    <div class="icp-info" v-show="icpVisible">
       <p>
         Copyright © 2021 - 2024 youlai.tech All Rights Reserved. 有来技术
         版权所有
@@ -114,35 +114,48 @@
 </template>
 
 <script setup lang="ts">
-import { useSettingsStore, useUserStore } from "@/store";
-import AuthAPI from "@/api/auth";
-import { LoginData } from "@/api/auth/model";
-import type { FormInstance } from "element-plus";
+// 外部库和依赖
 import { LocationQuery, useRoute } from "vue-router";
+
+// 内部依赖
+import { useSettingsStore, useUserStore } from "@/store";
+import AuthAPI, { LoginData } from "@/api/auth";
 import router from "@/router";
 import defaultSettings from "@/settings";
 import { ThemeEnum } from "@/enums/ThemeEnum";
 
+// 类型定义
+import type { FormInstance } from "element-plus";
+
+// 导入 login.scss 文件
+import "@/styles/login.scss";
+
+// 使用导入的依赖和库
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
 const route = useRoute();
-
-// Internationalization
+// 窗口高度
+const { height } = useWindowSize();
+// 国际化 Internationalization
 const { t } = useI18n();
 
-// Reactive states
+// 是否暗黑模式
 const isDark = ref(settingsStore.theme === ThemeEnum.DARK);
+// 是否显示 ICP 备案信息
 const icpVisible = ref(true);
-const loading = ref(false); // 按钮loading
-const isCapslock = ref(false); // 是否大写锁定
-const captchaBase64 = ref(); // 验证码图片Base64字符串
-const loginFormRef = ref<FormInstance>(); // 登录表单ref
-const { height } = useWindowSize();
+// 按钮 loading 状态
+const loading = ref(false);
+// 是否大写锁定
+const isCapslock = ref(false);
+// 验证码图片Base64字符串
+const captchaBase64 = ref();
+// 登录表单ref
+const loginFormRef = ref<FormInstance>();
 
 const loginData = ref<LoginData>({
   username: "admin",
   password: "123456",
-});
+} as LoginData);
 
 const loginRules = computed(() => {
   return {
@@ -183,8 +196,8 @@ function getCaptcha() {
   });
 }
 
-// 登录
-function handleLogin() {
+/** 登录表单提交 */
+function handleLoginSubmit() {
   loginFormRef.value?.validate((valid: boolean) => {
     if (valid) {
       loading.value = true;
@@ -204,7 +217,7 @@ function handleLogin() {
   });
 }
 
-// 解析 redirect 字符串 为 path 和  queryParams
+/** 解析 redirect 字符串 为 path 和  queryParams */
 function parseRedirect(): {
   path: string;
   queryParams: Record<string, string>;
@@ -252,43 +265,4 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-html.dark .login-container {
-  background: url("@/assets/images/login-bg-dark.jpg") no-repeat center right;
-}
-
-.login-container {
-  overflow-y: auto;
-  background: url("@/assets/images/login-bg.jpg") no-repeat center right;
-
-  @apply wh-full flex-center;
-
-  .login-form {
-    padding: 30px 10px;
-  }
-}
-
-.el-form-item {
-  background: var(--el-input-bg-color);
-  border: 1px solid var(--el-border-color);
-  border-radius: 5px;
-}
-
-:deep(.el-input) {
-  .el-input__wrapper {
-    padding: 0;
-    background-color: transparent;
-    box-shadow: none;
-
-    &.is-focus,
-    &:hover {
-      box-shadow: none !important;
-    }
-
-    input:-webkit-autofill {
-      /* 通过延时渲染背景色变相去除背景颜色 */
-      transition: background-color 1000s ease-in-out 0s;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>

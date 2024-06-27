@@ -100,7 +100,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         vueTemplate: true,
         // 指定自动导入函数TS类型声明文件路径 (false:关闭自动生成)
         dts: false,
-        // dts: "src/typings/auto-imports.d.ts",
+        // dts: "src/types/auto-imports.d.ts",
       }),
       Components({
         resolvers: [
@@ -116,7 +116,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         dirs: ["src/components", "src/**/components"],
         // 指定自动导入组件TS类型声明文件路径 (false:关闭自动生成)
         dts: false,
-        // dts: "src/typings/components.d.ts",
+        // dts: "src/types/components.d.ts",
       }),
       Icons({
         // 自动安装图标库
@@ -128,9 +128,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 指定symbolId格式
         symbolId: "icon-[dir]-[name]",
       }),
-      VueDevTools({
+      /* VueDevTools({
         openInEditorHost: `http://localhost:${env.VITE_APP_PORT}`,
-      }),
+      }), */
     ],
     // 预加载项目必需的组件
     optimizeDeps: {

@@ -1,8 +1,7 @@
 import { RouteRecordRaw } from "vue-router";
 import { constantRoutes } from "@/router";
 import { store } from "@/store";
-import MenuAPI from "@/api/menu";
-import { RouteVO } from "@/api/menu/model";
+import MenuAPI, { RouteVO } from "@/api/menu";
 
 const modules = import.meta.glob("../../views/**/**.vue");
 const Layout = () => import("@/layout/index.vue");

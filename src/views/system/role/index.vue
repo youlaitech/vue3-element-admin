@@ -22,7 +22,7 @@
 
     <el-card shadow="never" class="table-container">
       <template #header>
-        <el-button type="success" @click="openDialog()"
+        <el-button type="success" @click="handleOpenDialog()"
           ><i-ep-plus />新增</el-button
         >
         <el-button
@@ -60,7 +60,7 @@
               type="primary"
               size="small"
               link
-              @click="openMenuDialog(scope.row)"
+              @click="handleOpenAssignPermDialog(scope.row)"
             >
               <i-ep-position />分配权限
             </el-button>
@@ -68,12 +68,12 @@
               type="primary"
               size="small"
               link
-              @click="openDialog(scope.row.id)"
+              @click="handleOpenDialog(scope.row.id)"
             >
               <i-ep-edit />编辑
             </el-button>
             <el-button
-              type="primary"
+              type="danger"
               size="small"
               link
               @click="handleDelete(scope.row.id)"
@@ -98,7 +98,7 @@
       v-model="dialog.visible"
       :title="dialog.title"
       width="500px"
-      @close="closeDialog"
+      @close="handleCloseDialog"
     >
       <el-form
         ref="roleFormRef"
@@ -143,74 +143,111 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="closeDialog">取 消</el-button>
+          <el-button @click="handleCloseDialog">取 消</el-button>
         </div>
       </template>
     </el-dialog>
 
-    <!-- 分配菜单弹窗  -->
-    <el-dialog
-      v-model="menuDialogVisible"
+    <!-- 分配权限弹窗 -->
+    <el-drawer
+      v-model="assignPermDialogVisible"
       :title="'【' + checkedRole.name + '】权限分配'"
-      width="800px"
+      size="500"
     >
-      <el-scrollbar v-loading="loading" max-height="600px">
-        <el-tree
-          ref="menuRef"
-          node-key="value"
-          show-checkbox
-          :data="menuList"
-          :default-expand-all="true"
+      <div class="flex-x-between">
+        <el-input
+          v-model="permKeywords"
+          clearable
+          class="w-[200px]"
+          placeholder="菜单权限名称"
         >
-          <template #default="{ data }">
-            {{ data.label }}
+          <template #prefix>
+            <i-ep-search />
           </template>
-        </el-tree>
-      </el-scrollbar>
+        </el-input>
+
+        <div class="flex-center">
+          <el-button type="primary" size="small" plain @click="togglePermTree"
+            ><i-ep-switch />{{ isExpanded ? "收缩" : "展开" }}</el-button
+          >
+          <el-checkbox
+            v-model="parentChildLinked"
+            @change="handleparentChildLinkedChange"
+            class="ml-5"
+            >父子联动
+          </el-checkbox>
+
+          <el-tooltip placement="bottom">
+            <template #content>
+              如果只需勾选菜单权限，不需要勾选子菜单或者按钮权限，请关闭父子联动
+            </template>
+            <i-ep-QuestionFilled
+              class="ml-1 color-[--el-color-primary] inline-block cursor-pointer"
+            />
+          </el-tooltip>
+        </div>
+      </div>
+
+      <el-tree
+        ref="permTreeRef"
+        node-key="value"
+        show-checkbox
+        :data="menuPermOptions"
+        :filter-node-method="handlePermFilter"
+        :default-expand-all="true"
+        :check-strictly="!parentChildLinked"
+        class="mt-5"
+      >
+        <template #default="{ data }">
+          {{ data.label }}
+        </template>
+      </el-tree>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleRoleMenuSubmit"
+          <el-button type="primary" @click="handleAssignPermSubmit"
             >确 定</el-button
           >
-          <el-button @click="menuDialogVisible = false">取 消</el-button>
+          <el-button @click="assignPermDialogVisible = false">取 消</el-button>
         </div>
       </template>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 
 <script setup lang="ts">
-import RoleAPI from "@/api/role";
-import MenuAPI from "@/api/menu";
-
-import { RolePageVO, RoleForm, RoleQuery } from "@/api/role/model";
-
 defineOptions({
   name: "Role",
   inheritAttrs: false,
 });
 
+import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/role";
+import MenuAPI from "@/api/menu";
+
 const queryFormRef = ref(ElForm);
 const roleFormRef = ref(ElForm);
-const menuRef = ref(ElTree);
+const permTreeRef = ref<InstanceType<typeof ElTree>>();
 
 const loading = ref(false);
 const ids = ref<number[]>([]);
 const total = ref(0);
 
-const queryParams = reactive<RoleQuery>({
+const queryParams = reactive<RolePageQuery>({
   pageNum: 1,
   pageSize: 10,
 });
 
+// 角色表格数据
 const roleList = ref<RolePageVO[]>();
+// 菜单权限下拉
+const menuPermOptions = ref<OptionType[]>([]);
 
+// 弹窗
 const dialog = reactive({
   title: "",
   visible: false,
 });
-
+// 角色表单
 const formData = reactive<RoleForm>({
   sort: 1,
   status: 1,
@@ -225,15 +262,18 @@ const rules = reactive({
   status: [{ required: true, message: "请选择状态", trigger: "blur" }],
 });
 
-const menuDialogVisible = ref(false);
-
-const menuList = ref<OptionType[]>([]);
-
+// 选中的角色
 interface CheckedRole {
   id?: number;
   name?: string;
 }
-let checkedRole: CheckedRole = reactive({});
+const checkedRole = ref<CheckedRole>({});
+const assignPermDialogVisible = ref(false);
+
+const permKeywords = ref("");
+const isExpanded = ref(true);
+
+const parentChildLinked = ref(true);
 
 /** 查询 */
 function handleQuery() {
@@ -254,13 +294,13 @@ function handleResetQuery() {
   handleQuery();
 }
 
-/** 行checkbox 选中事件 */
+/** 行复选框选中记录选中ID集合 */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
 
-/** 打开角色表单弹窗 */
-function openDialog(roleId?: number) {
+/** 打开角色弹窗 */
+function handleOpenDialog(roleId?: number) {
   dialog.visible = true;
   if (roleId) {
     dialog.title = "修改角色";
@@ -272,7 +312,7 @@ function openDialog(roleId?: number) {
   }
 }
 
-/** 角色保存提交 */
+/** 提交角色表单 */
 function handleSubmit() {
   roleFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -282,7 +322,7 @@ function handleSubmit() {
         RoleAPI.update(roleId, formData)
           .then(() => {
             ElMessage.success("修改成功");
-            closeDialog();
+            handleCloseDialog();
             handleResetQuery();
           })
           .finally(() => (loading.value = false));
@@ -290,7 +330,7 @@ function handleSubmit() {
         RoleAPI.add(formData)
           .then(() => {
             ElMessage.success("新增成功");
-            closeDialog();
+            handleCloseDialog();
             handleResetQuery();
           })
           .finally(() => (loading.value = false));
@@ -299,14 +339,10 @@ function handleSubmit() {
   });
 }
 
-/** 关闭表单弹窗 */
-function closeDialog() {
+/** 关闭角色弹窗 */
+function handleCloseDialog() {
   dialog.visible = false;
-  resetForm();
-}
 
-/** 重置表单 */
-function resetForm() {
   roleFormRef.value.resetFields();
   roleFormRef.value.clearValidate();
 
@@ -327,37 +363,41 @@ function handleDelete(roleId?: number) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(() => {
-    loading.value = true;
-    RoleAPI.deleteByIds(roleIds)
-      .then(() => {
-        ElMessage.success("删除成功");
-        handleResetQuery();
-      })
-      .finally(() => (loading.value = false));
-  });
+  }).then(
+    () => {
+      loading.value = true;
+      RoleAPI.deleteByIds(roleIds)
+        .then(() => {
+          ElMessage.success("删除成功");
+          handleResetQuery();
+        })
+        .finally(() => (loading.value = false));
+    },
+    () => {
+      ElMessage.info("已取消删除");
+    }
+  );
 }
 
-/** 打开分配菜单弹窗 */
-async function openMenuDialog(row: RolePageVO) {
+/** 打开分配菜单权限弹窗 */
+async function handleOpenAssignPermDialog(row: RolePageVO) {
   const roleId = row.id;
   if (roleId) {
-    checkedRole = {
-      id: roleId,
-      name: row.name,
-    };
-    menuDialogVisible.value = true;
+    assignPermDialogVisible.value = true;
     loading.value = true;
 
+    checkedRole.value.id = roleId;
+    checkedRole.value.name = row.name;
+
     // 获取所有的菜单
-    menuList.value = await MenuAPI.getOptions();
+    menuPermOptions.value = await MenuAPI.getOptions();
 
     // 回显角色已拥有的菜单
     RoleAPI.getRoleMenuIds(roleId)
       .then((data) => {
         const checkedMenuIds = data;
         checkedMenuIds.forEach((menuId) =>
-          menuRef.value.setChecked(menuId, true, false)
+          permTreeRef.value!.setChecked(menuId, true, false)
         );
       })
       .finally(() => {
@@ -366,25 +406,59 @@ async function openMenuDialog(row: RolePageVO) {
   }
 }
 
-/** 角色分配菜单保存提交 */
-function handleRoleMenuSubmit() {
-  const roleId = checkedRole.id;
+/** 分配菜单权限提交 */
+function handleAssignPermSubmit() {
+  const roleId = checkedRole.value.id;
   if (roleId) {
-    const checkedMenuIds: number[] = menuRef.value
-      .getCheckedNodes(false, true)
+    const checkedMenuIds: number[] = permTreeRef
+      .value!.getCheckedNodes(false, true)
       .map((node: any) => node.value);
 
     loading.value = true;
     RoleAPI.updateRoleMenus(roleId, checkedMenuIds)
       .then(() => {
         ElMessage.success("分配权限成功");
-        menuDialogVisible.value = false;
+        assignPermDialogVisible.value = false;
         handleResetQuery();
       })
       .finally(() => {
         loading.value = false;
       });
   }
+}
+
+/** 展开/收缩 菜单权限树  */
+function togglePermTree() {
+  isExpanded.value = !isExpanded.value;
+  if (permTreeRef.value) {
+    Object.values(permTreeRef.value.store.nodesMap).forEach((node: any) => {
+      if (isExpanded.value) {
+        node.expand();
+      } else {
+        node.collapse();
+      }
+    });
+  }
+}
+
+/** 权限筛选  */
+watch(permKeywords, (val) => {
+  permTreeRef.value!.filter(val);
+});
+
+function handlePermFilter(
+  value: string,
+  data: {
+    [key: string]: any;
+  }
+) {
+  if (!value) return true;
+  return data.label.includes(value);
+}
+
+/** 父子菜单节点是否联动 change*/
+function handleparentChildLinkedChange(val: any) {
+  parentChildLinked.value = val;
 }
 
 onMounted(() => {

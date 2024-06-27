@@ -1,9 +1,9 @@
 import UserAPI from "@/api/user";
 import RoleAPI from "@/api/role";
-import type { UserQuery } from "@/api/user/model";
+import type { UserPageQuery } from "@/api/user";
 import type { IContentConfig } from "@/components/CURD/types";
 
-const contentConfig: IContentConfig<UserQuery> = {
+const contentConfig: IContentConfig<UserPageQuery> = {
   pageName: "sys:user",
   table: {
     border: true,
@@ -25,8 +25,11 @@ const contentConfig: IContentConfig<UserQuery> = {
     return UserAPI.getPage(params);
   },
   deleteAction: UserAPI.deleteByIds,
+  importAction(file) {
+    return UserAPI.import(1, file);
+  },
   exportAction: UserAPI.export,
-  importsTemplate: UserAPI.downloadTemplate,
+  importTemplate: UserAPI.downloadTemplate,
   importsAction(data) {
     // 模拟导入数据
     console.log("importsAction", data);
@@ -42,13 +45,8 @@ const contentConfig: IContentConfig<UserQuery> = {
   toolbar: [
     "add",
     "delete",
+    "import",
     "export",
-    {
-      name: "import",
-      icon: "upload",
-      text: "导入",
-      auth: "import",
-    },
     {
       name: "custom1",
       icon: "plus",

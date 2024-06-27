@@ -29,11 +29,22 @@
                 删除
               </el-button>
             </template>
+            <!-- 导入 -->
+            <template v-else-if="item === 'import'">
+              <el-button
+                v-hasPerm="[`${contentConfig.pageName}:${item}`]"
+                type="default"
+                icon="upload"
+                @click="handleToolbar(item)"
+              >
+                导入
+              </el-button>
+            </template>
             <!-- 导出 -->
             <template v-else-if="item === 'export'">
               <el-button
                 v-hasPerm="[`${contentConfig.pageName}:${item}`]"
-                type="primary"
+                type="default"
                 icon="download"
                 @click="handleToolbar(item)"
               >
@@ -407,28 +418,28 @@
     </el-dialog>
     <!-- 导入弹窗 -->
     <el-dialog
-      v-model="importsModalVisible"
+      v-model="importModalVisible"
       :align-center="true"
       title="导入数据"
       width="600px"
       style="padding-right: 0"
-      @close="handleCloseImportsModal"
+      @close="handleCloseImportModal"
     >
       <!-- 滚动 -->
       <el-scrollbar max-height="60vh">
         <!-- 表单 -->
         <el-form
-          ref="importsFormRef"
+          ref="importFormRef"
           label-width="auto"
           style="padding-right: var(--el-dialog-padding-primary)"
-          :model="importsFormData"
-          :rules="importsFormRules"
+          :model="importFormData"
+          :rules="importFormRules"
         >
           <el-form-item label="文件名" prop="files">
             <el-upload
               class="w-full"
               ref="uploadRef"
-              v-model:file-list="importsFormData.files"
+              v-model:file-list="importFormData.files"
               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
               :drag="true"
               :limit="1"
@@ -443,7 +454,7 @@
                 <div class="el-upload__tip">
                   *.xlsx / *.xls
                   <el-link
-                    v-if="contentConfig.importsTemplate"
+                    v-if="contentConfig.importTemplate"
                     type="primary"
                     icon="download"
                     :underline="false"
@@ -462,12 +473,12 @@
         <div style="padding-right: var(--el-dialog-padding-primary)">
           <el-button
             type="primary"
-            :disabled="importsFormData.files.length === 0"
-            @click="handleImportsSubmit"
+            :disabled="importFormData.files.length === 0"
+            @click="handleImportSubmit"
           >
             确 定
           </el-button>
-          <el-button @click="handleCloseImportsModal">取 消</el-button>
+          <el-button @click="handleCloseImportModal">取 消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -575,8 +586,8 @@ function handleSelectionChange(selection: any[]) {
 }
 
 // 刷新
-function handleRefresh() {
-  fetchPageData(lastFormData);
+function handleRefresh(isRestart = false) {
+  fetchPageData(lastFormData, isRestart);
 }
 
 // 删除
@@ -595,7 +606,7 @@ function handleDelete(id?: number | string) {
     if (props.contentConfig.deleteAction) {
       props.contentConfig.deleteAction(ids).then(() => {
         ElMessage.success("删除成功");
-        fetchPageData({}, true);
+        handleRefresh(true);
       });
     } else {
       ElMessage.error("未配置deleteAction");
@@ -695,20 +706,22 @@ function handleExports() {
 }
 
 // 导入表单
+let isFileImport = false;
 const uploadRef = ref<UploadInstance>();
-const importsModalVisible = ref(false);
-const importsFormRef = ref<FormInstance>();
-const importsFormData = reactive<{
+const importModalVisible = ref(false);
+const importFormRef = ref<FormInstance>();
+const importFormData = reactive<{
   files: UploadUserFile[];
 }>({
   files: [],
 });
-const importsFormRules: FormRules = {
+const importFormRules: FormRules = {
   files: [{ required: true, message: "请选择文件" }],
 };
 // 打开导入弹窗
-function handleOpenImportsModal() {
-  importsModalVisible.value = true;
+function handleOpenImportModal(isFile: boolean = false) {
+  importModalVisible.value = true;
+  isFileImport = isFile;
 }
 // 覆盖前一个文件
 function handleFileExceed(files: File[]) {
@@ -719,11 +732,11 @@ function handleFileExceed(files: File[]) {
 }
 // 下载导入模板
 function handleDownloadTemplate() {
-  const importsTemplate = props.contentConfig.importsTemplate;
-  if (typeof importsTemplate === "string") {
-    window.open(importsTemplate);
-  } else if (typeof importsTemplate === "function") {
-    importsTemplate().then((response) => {
+  const importTemplate = props.contentConfig.importTemplate;
+  if (typeof importTemplate === "string") {
+    window.open(importTemplate);
+  } else if (typeof importTemplate === "function") {
+    importTemplate().then((response) => {
       const fileData = response.data;
       const fileName = decodeURI(
         response.headers["content-disposition"].split(";")[1].split("=")[1]
@@ -731,21 +744,40 @@ function handleDownloadTemplate() {
       saveXlsx(fileData, fileName);
     });
   } else {
-    ElMessage.error("未配置importsTemplate");
+    ElMessage.error("未配置importTemplate");
   }
 }
 // 导入确认
-const handleImportsSubmit = useThrottleFn(() => {
-  importsFormRef.value?.validate((valid: boolean) => {
-    valid && handleImports();
+const handleImportSubmit = useThrottleFn(() => {
+  importFormRef.value?.validate((valid: boolean) => {
+    if (valid) {
+      if (isFileImport) {
+        handleImport();
+      } else {
+        handleImports();
+      }
+    }
   });
 }, 3000);
 // 关闭导入弹窗
-function handleCloseImportsModal() {
-  importsModalVisible.value = false;
-  importsFormRef.value?.resetFields();
+function handleCloseImportModal() {
+  importModalVisible.value = false;
+  importFormRef.value?.resetFields();
   nextTick(() => {
-    importsFormRef.value?.clearValidate();
+    importFormRef.value?.clearValidate();
+  });
+}
+// 文件导入
+function handleImport() {
+  const importAction = props.contentConfig.importAction;
+  if (importAction === undefined) {
+    ElMessage.error("未配置importAction");
+    return;
+  }
+  importAction(importFormData.files[0].raw as File).then(() => {
+    ElMessage.success("导入数据成功");
+    handleCloseImportModal();
+    handleRefresh(true);
   });
 }
 // 导入
@@ -756,7 +788,7 @@ function handleImports() {
     return;
   }
   // 获取选择的文件
-  const file = importsFormData.files[0].raw as File;
+  const file = importFormData.files[0].raw as File;
   // 创建Workbook实例
   const workbook = new ExcelJS.Workbook();
   // 使用FileReader对象来读取文件内容
@@ -803,7 +835,8 @@ function handleImports() {
           }
           importsAction(data).then(() => {
             ElMessage.success("导入数据成功");
-            handleCloseImportsModal();
+            handleCloseImportModal();
+            handleRefresh(true);
           });
         })
         .catch((error) => console.log(error));
@@ -823,7 +856,7 @@ function handleToolbar(name: string) {
       handleOpenExportsModal();
       break;
     case "imports":
-      handleOpenImportsModal();
+      handleOpenImportModal();
       break;
     case "search":
       emit("searchClick");
@@ -833,6 +866,9 @@ function handleToolbar(name: string) {
       break;
     case "delete":
       handleDelete();
+      break;
+    case "import":
+      handleOpenImportModal(true);
       break;
     case "export":
       emit("exportClick");
@@ -878,11 +914,11 @@ function handleModify(
 // 分页切换
 function handleSizeChange(value: number) {
   pagination.pageSize = value;
-  fetchPageData(lastFormData);
+  handleRefresh();
 }
 function handleCurrentChange(value: number) {
   pagination.currentPage = value;
-  fetchPageData(lastFormData);
+  handleRefresh();
 }
 
 // 远程数据筛选

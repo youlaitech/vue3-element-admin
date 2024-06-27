@@ -1,7 +1,6 @@
 import DeptAPI from "@/api/dept";
 import RoleAPI from "@/api/role";
-import UserAPI from "@/api/user";
-import type { UserForm } from "@/api/user/model";
+import UserAPI, { UserForm } from "@/api/user";
 import type { IModalConfig } from "@/components/CURD/types";
 
 const modalConfig: IModalConfig<UserForm> = {
