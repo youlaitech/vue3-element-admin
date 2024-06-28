@@ -552,7 +552,7 @@ function handleMenuTypeChange() {
         formData.value.component = "";
       } else {
         // 其他情况，保留原有的组件路径
-        formData.value.path = initialMenuFormData.value.path;
+        formData.value.routePath = initialMenuFormData.value.routePath;
         formData.value.component = initialMenuFormData.value.component;
       }
     }
