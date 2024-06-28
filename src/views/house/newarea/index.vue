@@ -52,7 +52,7 @@ async function handleQuery(dataType: number) {
 }
 
 onMounted(() => {
-  handleQuery(0);
+  handleQuery(1);
 });
 </script>
 
