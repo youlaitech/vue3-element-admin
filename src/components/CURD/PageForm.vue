@@ -139,11 +139,11 @@ function getFormData(key?: string) {
 // 设置表单值
 function setFormData(data: IObject) {
   for (const key in formData) {
-    if (Object.hasOwn(formData, key) && key in data) {
+    if (formData.hasOwnProperty(key) && key in data) {
       formData[key] = data[key];
     }
   }
-  if (Object.hasOwn(data, props.pk)) {
+  if (data?.hasOwnProperty(props.pk)) {
     formData[props.pk] = data[props.pk];
   }
 }
