@@ -1,0 +1,100 @@
+<template>
+  <div class="app-container">
+    <div class="search-container">
+      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+        <el-form-item prop="keywords" label="关键字">
+          <el-input
+            v-model="queryParams.keywords"
+            placeholder="日志内容"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="handleQuery"
+            ><i-ep-search />搜索</el-button
+          >
+          <el-button @click="handleResetQuery"><i-ep-refresh />重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <el-card shadow="never">
+      <el-table
+        v-loading="loading"
+        :data="pageData"
+        highlight-current-row
+        border
+      >
+        <el-table-column label="操作时间" prop="createTime" width="180" />
+        <el-table-column label="操作人" prop="operator" width="120" />
+        <el-table-column label="日志模块" prop="module" width="120" />
+        <el-table-column label="日志内容" prop="content" min-width="100" />
+        <el-table-column label="IP 地址" prop="ip" width="150" />
+        <el-table-column label="地区" prop="region" width="200" />
+        <el-table-column label="浏览器" prop="browser" width="150" />
+        <el-table-column label="终端系统" prop="os" width="300" />
+        <el-table-column
+          label="执行时间(毫秒)"
+          prop="executionTime"
+          width="150"
+        />
+      </el-table>
+
+      <pagination
+        v-if="total > 0"
+        v-model:total="total"
+        v-model:page="queryParams.pageNum"
+        v-model:limit="queryParams.pageSize"
+        @pagination="handleQuery"
+      />
+    </el-card>
+  </div>
+</template>
+
+<script setup lang="ts">
+defineOptions({
+  name: "Log",
+  inheritAttrs: false,
+});
+
+import LogAPI, { LogPageVO, LogPageQuery } from "@/api/log";
+
+const queryFormRef = ref(ElForm);
+
+const loading = ref(false);
+const total = ref(0);
+
+const queryParams = reactive<LogPageQuery>({
+  pageNum: 1,
+  pageSize: 10,
+  keywords: "",
+});
+
+// 日志表格数据
+const pageData = ref<LogPageVO[]>();
+
+/** 查询 */
+function handleQuery() {
+  loading.value = true;
+  LogAPI.getPage(queryParams)
+    .then((data) => {
+      pageData.value = data.list;
+      total.value = data.total;
+    })
+    .finally(() => {
+      loading.value = false;
+    });
+}
+/** 重置查询 */
+function handleResetQuery() {
+  queryFormRef.value.resetFields();
+  queryParams.pageNum = 1;
+  handleQuery();
+}
+
+onMounted(() => {
+  handleQuery();
+});
+</script>
