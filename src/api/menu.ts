@@ -4,16 +4,15 @@ const MENU_BASE_URL = "/api/v1/menus";
 
 class MenuAPI {
   /**
-   * 获取路由列表
+   * 获取当前用户的路由列表
+   * <p/>
+   * 无需传入角色，后端解析token获取角色自行判断是否拥有路由的权限
    *
    * @returns 路由列表
    */
-  static getRoutes(roles: string[]) {
-    const queryParams = roles
-      .map((role) => `roles=${encodeURIComponent(role)}`)
-      .join("&");
+  static getRoutes() {
     return request<any, RouteVO[]>({
-      url: `${MENU_BASE_URL}/routes?${queryParams}`,
+      url: `${MENU_BASE_URL}/routes`,
       method: "get",
     });
   }
