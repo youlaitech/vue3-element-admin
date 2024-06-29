@@ -48,15 +48,14 @@ service.interceptors.response.use(
     if (error.response.data) {
       const { code, msg } = error.response.data;
       if (code === ResultEnum.TOKEN_INVALID) {
-        ElMessageBox.confirm("当前页面已失效，请重新登录", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }).then(() => {
-          const userStore = useUserStoreHook();
-          userStore.resetToken().then(() => {
-            location.reload();
-          });
+        ElNotification({
+          title: "提示",
+          message: "您的会话已过期，请重新登录",
+          type: "info",
+        });
+        const userStore = useUserStoreHook();
+        userStore.resetToken().then(() => {
+          location.reload();
         });
       } else {
         ElMessage.error(msg || "系统出错");
