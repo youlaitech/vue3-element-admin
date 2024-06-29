@@ -8,9 +8,12 @@ class MenuAPI {
    *
    * @returns 路由列表
    */
-  static getRoutes() {
+  static getRoutes(roles: string[]) {
+    const queryParams = roles
+      .map((role) => `roles=${encodeURIComponent(role)}`)
+      .join("&");
     return request<any, RouteVO[]>({
-      url: `${MENU_BASE_URL}/routes`,
+      url: `${MENU_BASE_URL}/routes?${queryParams}`,
       method: "get",
     });
   }
@@ -202,8 +205,6 @@ export interface Meta {
   icon?: string;
   /** 【菜单】是否开启页面缓存 */
   keepAlive?: boolean;
-  /** 拥有路由权限的角色编码 */
-  roles?: string[];
   /** 路由title */
   title?: string;
 }

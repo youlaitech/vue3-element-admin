@@ -50,11 +50,5 @@ declare module "vue-router" {
      * @default false
      */
     breadcrumb?: boolean;
-
-    /**
-     * 拥有访问该菜单权限的角色编码集合
-     * @example ['admin', 'editor']
-     */
-    roles?: string[];
   }
 }
