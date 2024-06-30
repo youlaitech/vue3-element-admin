@@ -29,14 +29,19 @@
       >
         <el-table-column label="操作时间" prop="createTime" width="180" />
         <el-table-column label="操作人" prop="operator" width="120" />
-        <el-table-column label="日志模块" prop="module" width="120" />
-        <el-table-column label="日志内容" prop="content" min-width="100" />
+        <el-table-column label="日志模块" prop="module" width="100" />
+        <el-table-column label="日志内容" prop="content" min-width="200" />
         <el-table-column label="IP 地址" prop="ip" width="150" />
-        <el-table-column label="地区" prop="region" width="200" />
+        <el-table-column label="地区" prop="region" width="150" />
         <el-table-column label="浏览器" prop="browser" width="150" />
-        <el-table-column label="终端系统" prop="os" width="300" />
         <el-table-column
-          label="执行时间(毫秒)"
+          label="终端系统"
+          prop="os"
+          width="200"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          label="执行时间(ms)"
           prop="executionTime"
           width="150"
         />

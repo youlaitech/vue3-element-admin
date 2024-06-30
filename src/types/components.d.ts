@@ -9,7 +9,7 @@ declare module "vue" {
   export interface GlobalComponents {
     AppLink: (typeof import("./../components/AppLink/index.vue"))["default"];
     AppMain: (typeof import("./../layout/components/AppMain/index.vue"))["default"];
-    BarChart: (typeof import("./../views/dashboard/components/BarChart.vue"))["default"];
+    VisitTrend: (typeof import("./../views/dashboard/components/VisitTrend.vue"))["default"];
     Breadcrumb: (typeof import("./../components/Breadcrumb/index.vue"))["default"];
     CURD: (typeof import("./../components/CURD/index.vue"))["default"];
     DeptTree: (typeof import("./../views/system/user/components/dept-tree.vue"))["default"];

@@ -41,7 +41,7 @@
     </el-card>
 
     <!-- 数据卡片 -->
-    <el-row :gutter="10" class="mt-3">
+    <el-row :gutter="10" class="mt-5">
       <el-col
         :xs="24"
         :sm="12"
@@ -55,7 +55,7 @@
               <span class="text-[var(--el-text-color-secondary)]">{{
                 item.title
               }}</span>
-              <el-tag :type="item.tagType">
+              <el-tag v-if="item.tagText" :type="item.tagType" size="small">
                 {{ item.tagText }}
               </el-tag>
             </div>
@@ -72,29 +72,16 @@
             class="flex items-center justify-between mt-5 text-sm text-[var(--el-text-color-secondary)]"
           >
             <span> {{ item.dataDesc }} </span>
-            <span> {{ Math.round(item.count * 15) }} </span>
+            <span> {{ item.totalCount }} </span>
           </div>
         </el-card>
       </el-col>
     </el-row>
 
     <!-- Echarts 图表 -->
-    <el-row :gutter="10" class="mt-3">
-      <el-col
-        :xs="24"
-        :sm="12"
-        :lg="8"
-        class="mb-2"
-        v-for="item in chartData"
-        :key="item"
-      >
-        <component
-          :is="chartComponent(item)"
-          :id="item"
-          height="400px"
-          width="100%"
-          class="bg-[var(--el-bg-color-overlay)]"
-        />
+    <el-row :gutter="10" class="mt-5">
+      <el-col :xs="24" :span="24" class="mb-2">
+        <VisitTrend id="VisitTrend" width="100%" height="450px" />
       </el-col>
     </el-row>
   </div>
@@ -130,37 +117,37 @@ const greetings = computed(() => {
 
 const duration = 5000;
 
-// 销售额
-const amount = ref(0);
-const amountOutput = useTransition(amount, {
+// 在线用户数
+const onlineUserCount = ref(0);
+const onlineUserCountOutput = useTransition(onlineUserCount, {
   duration: duration,
   transition: TransitionPresets.easeOutExpo,
 });
-amount.value = 2000;
+onlineUserCount.value = 1;
+
+// 浏览量
+const pvCount = ref(0);
+const pvCountOutput = useTransition(pvCount, {
+  duration: duration,
+  transition: TransitionPresets.easeOutExpo,
+});
+pvCount.value = 2000;
 
 // 访客数
-const visitCount = ref(0);
-const visitCountOutput = useTransition(visitCount, {
+const uvCount = ref(0);
+const uvCountOutput = useTransition(uvCount, {
   duration: duration,
   transition: TransitionPresets.easeOutExpo,
 });
-visitCount.value = 2000;
+uvCount.value = 2000;
 
 // IP数
-const dauCount = ref(0);
-const dauCountOutput = useTransition(dauCount, {
+const ipCount = ref(0);
+const ipCountOutput = useTransition(ipCount, {
   duration: duration,
   transition: TransitionPresets.easeOutExpo,
 });
-dauCount.value = 2000;
-
-// 订单量
-const orderCount = ref(0);
-const orderCountOutput = useTransition(orderCount, {
-  duration: duration,
-  transition: TransitionPresets.easeOutExpo,
-});
-orderCount.value = 2000;
+ipCount.value = 2000;
 
 // 右上角数量
 const statisticData = ref([
@@ -194,49 +181,65 @@ interface CardProp {
   >;
   tagText: string;
   count: any;
+  totalCount: any;
   dataDesc: string;
   iconClass: string;
 }
 // 卡片数量
 const cardData = ref<CardProp[]>([
   {
-    title: "访客数",
+    title: "在线用户",
     tagType: "success",
-    tagText: "日",
-    count: visitCountOutput,
-    dataDesc: "总访客数",
+    tagText: "-",
+    count: onlineUserCountOutput,
+    totalCount: "3",
+    dataDesc: "总用户数",
     iconClass: "visit",
+  },
+  {
+    title: "浏览量(PV)",
+    tagType: "primary",
+    tagText: "日",
+    count: pvCountOutput,
+    totalCount: 3000,
+    dataDesc: "总浏览量",
+    iconClass: "pv",
+  },
+  {
+    title: "访客数(UV)",
+    tagType: "danger",
+    tagText: "日",
+    count: uvCountOutput,
+    totalCount: 3000,
+    dataDesc: "总访客数",
+    iconClass: "uv",
   },
   {
     title: "IP数",
     tagType: "success",
     tagText: "日",
-    count: dauCountOutput,
+    count: ipCountOutput,
+    totalCount: 3000,
     dataDesc: "总IP数",
     iconClass: "ip",
   },
+]);
+
+// 通知公告数据
+const notices = ref([
   {
-    title: "销售额",
-    tagType: "primary",
-    tagText: "月",
-    count: amountOutput,
-    dataDesc: "总IP数",
-    iconClass: "money",
+    title: "系统更新",
+    content: "系统将于今晚22:00进行更新，请提前保存好工作。",
   },
   {
-    title: "订单量",
-    tagType: "danger",
-    tagText: "季",
-    count: orderCountOutput,
-    dataDesc: "总订单量",
-    iconClass: "order",
+    title: "假期通知",
+    content: "国庆假期将于10月1日开始，请提前做好工作安排。",
+  },
+  {
+    title: "紧急通知",
+    content: "请所有员工注意，明天将进行紧急疏散演练。",
   },
 ]);
-// 图表数据
-const chartData = ref(["BarChart", "PieChart", "RadarChart"]);
-const chartComponent = (item: string) => {
-  return defineAsyncComponent(() => import(`./components/${item}.vue`));
-};
 </script>
 
 <style lang="scss" scoped>
