@@ -200,6 +200,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/drawer/style/css",
         "element-plus/es/components/color-picker/style/css",
         "element-plus/es/components/backtop/style/css",
+        "element-plus/es/components/message-box/style/css",
       ],
     },
     // 构建配置
