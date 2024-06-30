@@ -53,10 +53,11 @@ service.interceptors.response.use(
           message: "您的会话已过期，请重新登录",
           type: "info",
         });
-        const userStore = useUserStoreHook();
-        userStore.resetToken().then(() => {
-          location.reload();
-        });
+        useUserStoreHook()
+          .resetToken()
+          .then(() => {
+            location.reload();
+          });
       } else {
         ElMessage.error(msg || "系统出错");
       }
