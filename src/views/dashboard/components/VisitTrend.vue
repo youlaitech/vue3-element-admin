@@ -71,8 +71,8 @@ const setChartOptions = (data: VisitTrendVO) => {
       bottom: 0,
     },
     grid: {
-      left: "2%",
-      right: "7%",
+      left: "1%",
+      right: "5%",
       bottom: "10%",
       containLabel: true,
     },
@@ -126,22 +126,31 @@ const setChartOptions = (data: VisitTrendVO) => {
   chart.value.setOption(options);
 };
 
-// 计算日期范围
+/** 计算起止时间范围 */
 const calculateDateRange = () => {
   const now = new Date();
-  const endDate = now.toISOString().split("T")[0];
+
+  const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
   const days = dataRange.value === 1 ? 7 : 30;
-  const startDate = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() - days
-  )
-    .toISOString()
-    .split("T")[0];
-  return { startDate, endDate };
+  const startDate = new Date(endDate);
+  startDate.setDate(startDate.getDate() - days);
+
+  // 手动调整日期为当地时间的 23:59:59
+  const adjustDateToLocal = (date: Date) => {
+    date.setHours(23, 59, 59, 999);
+    return date;
+  };
+
+  const adjustedEndDate = adjustDateToLocal(new Date(endDate));
+  const adjustedStartDate = adjustDateToLocal(new Date(startDate));
+  const formattedStartDate = adjustedStartDate.toISOString().split("T")[0];
+  const formattedEndDate = adjustedEndDate.toISOString().split("T")[0];
+
+  return { startDate: formattedStartDate, endDate: formattedEndDate };
 };
 
-// 加载数据
+/** 加载数据 */
 const loadData = () => {
   const { startDate, endDate } = calculateDateRange();
   StatsAPI.getVisitTrend({
@@ -156,7 +165,7 @@ const handleDateRangeChange = () => {
   loadData();
 };
 
-// 下载图表
+/** 下载图表 */
 const handleDownloadChart = () => {
   if (!chart.value) {
     return;
@@ -187,13 +196,15 @@ const handleDownloadChart = () => {
   };
 };
 
+/** 窗口大小变化时，重置图表大小 */
 const handleResize = () => {
-  if (chart.value) {
-    chart.value.resize();
-  }
+  setTimeout(() => {
+    if (chart.value) {
+      chart.value.resize();
+    }
+  }, 100);
 };
-
-// 初始化图表
+/** 初始化图表  */
 onMounted(() => {
   chart.value = markRaw(
     echarts.init(document.getElementById(props.id) as HTMLDivElement)
@@ -201,6 +212,10 @@ onMounted(() => {
   loadData();
 
   window.addEventListener("resize", handleResize);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", handleResize);
 });
 
 onActivated(() => {
