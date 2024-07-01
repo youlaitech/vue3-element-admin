@@ -11,6 +11,7 @@ declare module "vue" {
     AppMain: (typeof import("./../layout/components/AppMain/index.vue"))["default"];
     VisitTrend: (typeof import("./../views/dashboard/components/VisitTrend.vue"))["default"];
     Breadcrumb: (typeof import("./../components/Breadcrumb/index.vue"))["default"];
+    CopyButton: (typeof import("./../components/CopyButton/index.vue"))["default"];
     CURD: (typeof import("./../components/CURD/index.vue"))["default"];
     DeptTree: (typeof import("./../views/system/user/components/dept-tree.vue"))["default"];
     UserImport: (typeof import("./../views/system/user/components/user-import.vue"))["default"];
