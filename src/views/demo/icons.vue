@@ -3,43 +3,39 @@
     <el-tabs type="border-card">
       <el-tab-pane label="Icons">
         <div class="grid">
-          <div
-            v-for="item of svg_icons"
-            :key="item"
-            @click="handleClipboard(generateIconCode(item), $event)"
-          >
-            <el-tooltip
-              effect="dark"
-              :content="generateIconCode(item)"
-              placement="top"
-            >
-              <div class="icon-item">
-                <svg-icon :icon-class="item" />
-                <span>{{ item }}</span>
-              </div>
-            </el-tooltip>
+          <div v-for="item of svg_icons" :key="item">
+            <copy-button :text="generateIconCode(item)">
+              <el-tooltip
+                effect="dark"
+                :content="generateIconCode(item)"
+                placement="top"
+              >
+                <div class="icon-item">
+                  <svg-icon :icon-class="item" />
+                  <span>{{ item }}</span>
+                </div>
+              </el-tooltip>
+            </copy-button>
           </div>
         </div>
       </el-tab-pane>
       <el-tab-pane label="Element-UI Icons">
         <div class="grid">
-          <div
-            v-for="(icon, name) of icons"
-            :key="name"
-            @click="handleClipboard(generateElementIconCode(name), $event)"
-          >
-            <el-tooltip
-              effect="dark"
-              :content="generateElementIconCode(name)"
-              placement="top"
-            >
-              <div class="icon-item">
-                <el-icon :size="20">
-                  <component :is="icon" />
-                </el-icon>
-                <span>{{ name }}</span>
-              </div>
-            </el-tooltip>
+          <div v-for="(icon, name) of icons" :key="name">
+            <copy-button :text="generateElementIconCode(name)">
+              <el-tooltip
+                effect="dark"
+                :content="generateElementIconCode(name)"
+                placement="top"
+              >
+                <div class="icon-item">
+                  <el-icon :size="20">
+                    <component :is="icon" />
+                  </el-icon>
+                  <span>{{ name }}</span>
+                </div>
+              </el-tooltip>
+            </copy-button>
           </div>
         </div>
       </el-tab-pane>
@@ -99,25 +95,12 @@ const svg_icons: string[] = [
 ];
 const icons = ref(ElementPlusIconsVue);
 
-const { copy } = useClipboard();
-
 function generateIconCode(symbol: any) {
   return `<svg-icon icon-class="${symbol}" />`;
 }
 
 function generateElementIconCode(symbol: any) {
   return `<el-icon><${symbol} /></el-icon>`;
-}
-
-function handleClipboard(text: any, event: any) {
-  // clipboard(text, event);
-  copy(text)
-    .then(() => {
-      ElMessage.success("Copy successfully");
-    })
-    .catch(() => {
-      ElMessage.warning("Copy failed");
-    });
 }
 </script>
 

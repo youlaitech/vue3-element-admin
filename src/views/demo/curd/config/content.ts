@@ -82,7 +82,14 @@ const contentConfig: IContentConfig<UserPageQuery> = {
         });
       },
     },
-    { label: "手机号码", align: "center", prop: "mobile", width: 120 },
+    {
+      label: "手机号码",
+      align: "center",
+      prop: "mobile",
+      templet: "custom",
+      slotName: "mobile",
+      width: 150,
+    },
     {
       label: "状态",
       align: "center",

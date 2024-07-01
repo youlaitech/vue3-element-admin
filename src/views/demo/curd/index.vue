@@ -40,6 +40,14 @@
             {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
           </el-tag>
         </template>
+        <template #mobile="scope">
+          <el-text> {{ scope.row[scope.prop] }} </el-text>
+          <copy-button
+            v-if="scope.row[scope.prop]"
+            :text="scope.row[scope.prop]"
+            style="margin-left: 2px"
+          />
+        </template>
       </page-content>
 
       <!-- 新增 -->
