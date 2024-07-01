@@ -62,8 +62,20 @@
           </template>
 
           <div class="flex items-center justify-between mt-2">
-            <div class="text-lg text-right">
-              {{ Math.round(item.count) }}
+            <div class="flex-y-center">
+              <span class="text-lg"> {{ Math.round(item.count) }}</span>
+              <span
+                v-if="item.growthRate"
+                :class="[
+                  'text-xs',
+                  'ml-2',
+                  item.growthRate > 0 ? 'color-red' : 'color-green',
+                ]"
+                ><i-ep-top v-if="item.growthRate > 0" /><i-ep-bottom
+                  v-else-if="item.growthRate < 0"
+                />
+                {{ Math.abs(item.growthRate * 100) }}%
+              </span>
             </div>
             <svg-icon :icon-class="item.iconClass" size="2em" />
           </div>
@@ -80,8 +92,23 @@
 
     <!-- Echarts 图表 -->
     <el-row :gutter="10" class="mt-5">
-      <el-col :xs="24" :span="24">
+      <el-col :xs="24" :span="16">
         <VisitTrend id="VisitTrend" width="100%" height="400px" />
+      </el-col>
+      <el-col :xs="24" :span="8">
+        <el-card>
+          <template #header>
+            <span> 通知公告</span>
+          </template>
+
+          <el-scrollbar height="400px">
+            <div v-for="(item, index) in notices" :key="index" class="mb-2">
+              <el-alert :title="item.title" :closable="false" class="mb-2">
+                <template #default>{{ item.description }} </template>
+              </el-alert>
+            </div>
+          </el-scrollbar>
+        </el-card>
       </el-col>
     </el-row>
   </div>
@@ -184,6 +211,7 @@ interface CardProp {
   totalCount: any;
   dataDesc: string;
   iconClass: string;
+  growthRate?: number;
 }
 // 卡片数量
 const cardData = ref<CardProp[]>([
@@ -204,6 +232,7 @@ const cardData = ref<CardProp[]>([
     totalCount: 3000,
     dataDesc: "总浏览量",
     iconClass: "pv",
+    growthRate: 0.5,
   },
   {
     title: "访客数(UV)",
@@ -213,6 +242,7 @@ const cardData = ref<CardProp[]>([
     totalCount: 3000,
     dataDesc: "总访客数",
     iconClass: "uv",
+    growthRate: -0.1,
   },
   {
     title: "IP数",
@@ -222,22 +252,34 @@ const cardData = ref<CardProp[]>([
     totalCount: 3000,
     dataDesc: "总IP数",
     iconClass: "ip",
+    growthRate: 0.2,
   },
 ]);
 
-// 通知公告数据
 const notices = ref([
   {
-    title: "系统更新",
-    content: "系统将于今晚22:00进行更新，请提前保存好工作。",
+    title: "v2.12.0",
+    description: "新增系统日志，访问趋势统计等功能。",
   },
   {
-    title: "假期通知",
-    content: "国庆假期将于10月1日开始，请提前做好工作安排。",
+    title: "v2.11.5",
+    description: "修复了一些问题，优化了一些代码。",
   },
   {
-    title: "紧急通知",
-    content: "请所有员工注意，明天将进行紧急疏散演练。",
+    title: "v2.11.4",
+    description: "修复了一些问题，优化了一些代码。",
+  },
+  {
+    title: "v2.11.3",
+    description: "修复了一些问题，优化了一些代码。",
+  },
+  {
+    title: "v2.11.2",
+    description: "修复了一些问题，优化了一些代码。",
+  },
+  {
+    title: "v2.11.1",
+    description: "修复了一些问题，优化了一些代码。",
   },
 ]);
 </script>
