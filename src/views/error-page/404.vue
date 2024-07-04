@@ -1,76 +1,68 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
-<script lang="ts">
-export default {
-  name: "Page404",
-};
-</script>
-
 <script setup lang="ts">
-function message() {
-  return "The webmaster said that you can not enter this page...";
+import { useRouter } from "vue-router";
+
+defineOptions({
+  name: "Page404",
+});
+
+const router = useRouter();
+
+function back() {
+  router.back();
 }
 </script>
 
 <template>
-  <div class="wscn-http404-container">
-    <div class="wscn-http404">
-      <div class="pic-404">
-        <img class="pic-404__parent" src="@/assets/images/404.png" alt="404" />
-        <img
-          class="pic-404__child left"
-          src="@/assets/images/404_cloud.png"
-          alt="404"
-        />
-        <img
-          class="pic-404__child mid"
-          src="@/assets/images/404_cloud.png"
-          alt="404"
-        />
-        <img
-          class="pic-404__child right"
-          src="@/assets/images/404_cloud.png"
-          alt="404"
-        />
+  <div class="page-container">
+    <div class="pic-404">
+      <img class="pic-404__parent" src="@/assets/images/404.png" alt="404" />
+      <img
+        class="pic-404__child left"
+        src="@/assets/images/404_cloud.png"
+        alt="404"
+      />
+      <img
+        class="pic-404__child mid"
+        src="@/assets/images/404_cloud.png"
+        alt="404"
+      />
+      <img
+        class="pic-404__child right"
+        src="@/assets/images/404_cloud.png"
+        alt="404"
+      />
+    </div>
+    <div class="bullshit">
+      <div class="bullshit__oops">OOPS!</div>
+      <div class="bullshit__info">
+        All rights reserved
+        <a
+          style="color: #20a0ff"
+          href="https://wallstreetcn.com"
+          target="_blank"
+          >wallstreetcn</a
+        >
       </div>
-      <div class="bullshit">
-        <div class="bullshit__oops">OOPS!</div>
-        <div class="bullshit__info">
-          All rights reserved
-          <a
-            style="color: #20a0ff"
-            href="https://wallstreetcn.com"
-            target="_blank"
-            >wallstreetcn</a
-          >
-        </div>
-        <div class="bullshit__headline">{{ message() }}</div>
-        <div class="bullshit__info">
-          Please check that the URL you entered is correct, or click the button
-          below to return to the homepage.
-        </div>
-        <a href="" class="bullshit__return-home">Back to home</a>
+      <div class="bullshit__headline">
+        The webmaster said that you can not enter this page...
       </div>
+      <div class="bullshit__info">
+        Please check that the URL you entered is correct, or click the button
+        below to return to the homepage.
+      </div>
+      <a href="#" class="bullshit__return-home" @click.prevent="back">
+        Back to home
+      </a>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.wscn-http404-container {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.wscn-http404 {
-  position: relative;
-  width: 1200px;
-  padding: 0 50px;
-  overflow: hidden;
+.page-container {
+  display: flex;
+  padding: 100px;
 
   .pic-404 {
-    position: relative;
-    float: left;
     width: 600px;
     overflow: hidden;
 
@@ -79,8 +71,6 @@ function message() {
     }
 
     &__child {
-      position: absolute;
-
       &.left {
         top: 17px;
         left: 220px;
@@ -198,8 +188,6 @@ function message() {
   }
 
   .bullshit {
-    position: relative;
-    float: left;
     width: 300px;
     padding: 30px 0;
     overflow: hidden;
