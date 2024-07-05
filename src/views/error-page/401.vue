@@ -2,15 +2,12 @@
 import { reactive, toRefs } from "vue";
 import { useRouter } from "vue-router";
 
-import { defineComponent } from "vue";
-
-defineComponent({
+defineOptions({
   name: "Page401",
 });
 
 const state = reactive({
   errGif: new URL(`../../assets/images/401.gif`, import.meta.url).href,
-
   ewizardClap:
     "https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646",
   dialogVisible: false,
@@ -26,7 +23,7 @@ function back() {
 </script>
 
 <template>
-  <div class="errPage-container">
+  <div class="page-container">
     <el-button icon="el-icon-arrow-left" class="pan-back-btn" @click="back">
       返回
     </el-button>
@@ -65,10 +62,9 @@ function back() {
 </template>
 
 <style lang="scss" scoped>
-.errPage-container {
-  width: 800px;
-  max-width: 100%;
-  margin: 100px auto;
+.page-container {
+  width: 100%;
+  padding: 100px;
 
   .pan-back-btn {
     color: #fff;

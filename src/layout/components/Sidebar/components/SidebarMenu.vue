@@ -8,14 +8,13 @@
     :active-text-color="variables['menu-active-text']"
     :unique-opened="false"
     :collapse-transition="false"
-    :mode="layout === 'top' ? 'horizontal' : 'vertical'"
+    :mode="mode"
   >
     <SidebarMenuItem
       v-for="route in menuList"
       :key="route.path"
       :item="route"
       :base-path="resolvePath(route.path)"
-      :is-collapse="!appStore.sidebar.opened"
     />
   </el-menu>
 </template>
@@ -25,11 +24,11 @@ import { useSettingsStore, useAppStore } from "@/store";
 import { isExternal } from "@/utils/index";
 import path from "path-browserify";
 import variables from "@/styles/variables.module.scss";
+import { LayoutEnum } from "@/enums/LayoutEnum";
 
 const settingsStore = useSettingsStore();
 const appStore = useAppStore();
 const currentRoute = useRoute();
-const layout = computed(() => settingsStore.layout);
 const props = defineProps({
   menuList: {
     required: true,
@@ -42,6 +41,9 @@ const props = defineProps({
     type: String,
     required: true,
   },
+});
+const mode = computed(() => {
+  return settingsStore.layout === LayoutEnum.TOP ? "horizontal" : "vertical";
 });
 
 /**
