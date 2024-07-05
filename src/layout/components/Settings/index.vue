@@ -96,8 +96,6 @@ function changeLayout(layout: string) {
   settingsStore.changeLayout(layout);
   if (layout === LayoutEnum.MIX) {
     route.name && againActiveTop(route.name as string);
-  } else if (layout === LayoutEnum.TOP) {
-    appStore.openSideBar();
   }
 }
 

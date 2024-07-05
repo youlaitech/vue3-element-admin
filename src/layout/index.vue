@@ -38,7 +38,7 @@
     <!-- 左侧和顶部布局 -->
     <div v-else :class="{ hasTagsView: showTagsView }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
-        <NavBar v-if="layout === 'left'" />
+        <NavBar v-if="layout === LayoutEnum.LEFT" />
         <TagsView v-if="showTagsView" />
       </div>
       <AppMain />
