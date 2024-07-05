@@ -19,6 +19,12 @@
 
       <!-- 语言选择 -->
       <lang-select class="setting-item" />
+
+      <el-dropdown class="setting-item" trigger="click">
+        <el-badge is-dot class="mt-[16px]">
+          <i-ep-bell />
+        </el-badge>
+      </el-dropdown>
     </template>
 
     <!-- 用户头像 -->

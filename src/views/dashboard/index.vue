@@ -42,51 +42,93 @@
 
     <!-- 数据卡片 -->
     <el-row :gutter="10" class="mt-5">
+      <el-col :xs="24" :sm="12" :lg="6">
+        <el-card shadow="never">
+          <template #header>
+            <div class="flex-x-between">
+              <span class="text-[var(--el-text-color-secondary)]"
+                >在线用户</span
+              >
+              <el-tag type="success" size="small">-</el-tag>
+            </div>
+          </template>
+
+          <div class="flex-x-between mt-2">
+            <span class="text-lg"> 1</span>
+            <svg-icon icon-class="item.iconClass" size="2em" />
+          </div>
+          <div
+            class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
+          >
+            <span> 总用户数 </span>
+            <span>5 </span>
+          </div>
+        </el-card>
+      </el-col>
+
       <el-col
         :xs="24"
         :sm="12"
         :lg="6"
-        v-for="(item, index) in cardData"
+        v-for="(item, index) in visitStatsList"
         :key="index"
       >
-        <el-card shadow="never">
-          <template #header>
-            <div class="flex items-center justify-between">
-              <span class="text-[var(--el-text-color-secondary)]">{{
-                item.title
-              }}</span>
-              <el-tag v-if="item.tagText" :type="item.tagType" size="small">
-                {{ item.tagText }}
-              </el-tag>
+        <el-skeleton :loading="loading" animated>
+          <template #template>
+            <div>
+              <el-skeleton-item variant="text" style="width: 60%" />
+              <div class="mt-2">
+                <el-skeleton-item variant="text" style="width: 40%" />
+                <el-skeleton-item
+                  variant="rect"
+                  style="float: right; width: 2em; height: 2em"
+                />
+              </div>
+              <div class="mt-2">
+                <el-skeleton-item variant="text" style="width: 100%" />
+                <el-skeleton-item variant="text" style="width: 80%" />
+              </div>
             </div>
           </template>
+          <template v-if="!loading">
+            <el-card shadow="never">
+              <template #header>
+                <div class="flex-x-between">
+                  <span class="text-[var(--el-text-color-secondary)]">{{
+                    item.title
+                  }}</span>
+                  <el-tag type="primary" size="small"> 日 </el-tag>
+                </div>
+              </template>
 
-          <div class="flex items-center justify-between mt-2">
-            <div class="flex-y-center">
-              <span class="text-lg"> {{ Math.round(item.count) }}</span>
-              <span
-                v-if="item.growthRate"
-                :class="[
-                  'text-xs',
-                  'ml-2',
-                  item.growthRate > 0 ? 'color-red' : 'color-green',
-                ]"
-                ><i-ep-top v-if="item.growthRate > 0" /><i-ep-bottom
-                  v-else-if="item.growthRate < 0"
-                />
-                {{ Math.abs(item.growthRate * 100) }}%
-              </span>
-            </div>
-            <svg-icon :icon-class="item.iconClass" size="2em" />
-          </div>
+              <div class="flex-x-between mt-2">
+                <div class="flex-y-center">
+                  <span class="text-lg"> {{ item.todayCount }}</span>
+                  <span
+                    v-if="item.growthRate"
+                    :class="[
+                      'text-xs',
+                      'ml-2',
+                      item.growthRate > 0 ? 'color-red' : 'color-green',
+                    ]"
+                  >
+                    <i-ep-top v-if="item.growthRate > 0" />
+                    <i-ep-bottom v-else-if="item.growthRate < 0" />
+                    {{ Math.abs(item.growthRate * 100).toFixed(2) }}%
+                  </span>
+                </div>
+                <svg-icon :icon-class="item.type" size="2em" />
+              </div>
 
-          <div
-            class="flex items-center justify-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
-          >
-            <span> {{ item.dataDesc }} </span>
-            <span> {{ item.totalCount }} </span>
-          </div>
-        </el-card>
+              <div
+                class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
+              >
+                <span>总{{ item.title }} </span>
+                <span> {{ item.totalCountOutput }} </span>
+              </div>
+            </el-card>
+          </template>
+        </el-skeleton>
       </el-col>
     </el-row>
 
@@ -115,18 +157,20 @@
 </template>
 
 <script setup lang="ts">
-import type { EpPropMergeType } from "element-plus/es/utils/vue/props/types";
 defineOptions({
   name: "Dashboard",
   inheritAttrs: false,
 });
 
+import type { EpPropMergeType } from "element-plus/es/utils/vue/props/types";
+
 import { useUserStore } from "@/store/modules/user";
 import { useTransition, TransitionPresets } from "@vueuse/core";
 
+import StatsAPI, { VisitStatsVO } from "@/api/log";
 const userStore = useUserStore();
-const date: Date = new Date();
 
+const date: Date = new Date();
 const greetings = computed(() => {
   const hours = date.getHours();
   if (hours >= 6 && hours < 8) {
@@ -141,40 +185,6 @@ const greetings = computed(() => {
     return "偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！";
   }
 });
-
-const duration = 5000;
-
-// 在线用户数
-const onlineUserCount = ref(0);
-const onlineUserCountOutput = useTransition(onlineUserCount, {
-  duration: duration,
-  transition: TransitionPresets.easeOutExpo,
-});
-onlineUserCount.value = 1;
-
-// 浏览量
-const pvCount = ref(0);
-const pvCountOutput = useTransition(pvCount, {
-  duration: duration,
-  transition: TransitionPresets.easeOutExpo,
-});
-pvCount.value = 2000;
-
-// 访客数
-const uvCount = ref(0);
-const uvCountOutput = useTransition(uvCount, {
-  duration: duration,
-  transition: TransitionPresets.easeOutExpo,
-});
-uvCount.value = 2000;
-
-// IP数
-const ipCount = ref(0);
-const ipCountOutput = useTransition(ipCount, {
-  duration: duration,
-  transition: TransitionPresets.easeOutExpo,
-});
-ipCount.value = 2000;
 
 // 右上角数量
 const statisticData = ref([
@@ -196,63 +206,6 @@ const statisticData = ref([
     iconClass: "project",
     title: "项目",
     key: "project",
-  },
-]);
-
-interface CardProp {
-  title: string;
-  tagType: EpPropMergeType<
-    StringConstructor,
-    "primary" | "success" | "info" | "warning" | "danger",
-    unknown
-  >;
-  tagText: string;
-  count: any;
-  totalCount: any;
-  dataDesc: string;
-  iconClass: string;
-  growthRate?: number;
-}
-// 卡片数量
-const cardData = ref<CardProp[]>([
-  {
-    title: "在线用户",
-    tagType: "success",
-    tagText: "-",
-    count: onlineUserCountOutput,
-    totalCount: "3",
-    dataDesc: "总用户数",
-    iconClass: "visit",
-  },
-  {
-    title: "浏览量(PV)",
-    tagType: "primary",
-    tagText: "日",
-    count: pvCountOutput,
-    totalCount: 3000,
-    dataDesc: "总浏览量",
-    iconClass: "pv",
-    growthRate: 0.5,
-  },
-  {
-    title: "访客数(UV)",
-    tagType: "danger",
-    tagText: "日",
-    count: uvCountOutput,
-    totalCount: 3000,
-    dataDesc: "总访客数",
-    iconClass: "uv",
-    growthRate: -0.1,
-  },
-  {
-    title: "IP数",
-    tagType: "success",
-    tagText: "日",
-    count: ipCountOutput,
-    totalCount: 3000,
-    dataDesc: "总IP数",
-    iconClass: "ip",
-    growthRate: 0.2,
   },
 ]);
 
@@ -282,6 +235,30 @@ const notices = ref([
     description: "修复了一些问题，优化了一些代码。",
   },
 ]);
+
+const loading = ref(true);
+
+const visitStatsList = ref<VisitStatsVO[] | null>(Array(3).fill({}));
+
+const loadVisitStatsData = async () => {
+  const list = await StatsAPI.getVisitStats();
+
+  if (list) {
+    visitStatsList.value = list;
+    // 初始化动画输出
+    list.forEach((item) => {
+      item.totalCountOutput = useTransition(item.totalCount, {
+        duration: 1000,
+        transition: TransitionPresets.easeOutExpo,
+      }).value;
+    });
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  loadVisitStatsData();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -289,33 +266,12 @@ const notices = ref([
   position: relative;
   padding: 24px;
 
-  .user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-
   .github-corner {
     position: absolute;
     top: 0;
     right: 0;
     z-index: 1;
     border: 0;
-  }
-
-  .data-box {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    font-weight: bold;
-    color: var(--el-text-color-regular);
-    background: var(--el-bg-color-overlay);
-    border-color: var(--el-border-color);
-    box-shadow: var(--el-box-shadow-dark);
-  }
-
-  .svg-icon {
-    fill: currentcolor !important;
   }
 }
 </style>
