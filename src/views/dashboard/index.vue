@@ -73,22 +73,28 @@
         v-for="(item, index) in visitStatsList"
         :key="index"
       >
-        <el-skeleton :loading="loading" animated>
+        <el-skeleton :loading="loading" :rows="5" animated>
           <template #template>
-            <div>
-              <el-skeleton-item variant="text" style="width: 60%" />
-              <div class="mt-2">
-                <el-skeleton-item variant="text" style="width: 40%" />
+            <el-card>
+              <div>
+                <el-skeleton-item variant="h3" style="width: 40%" />
                 <el-skeleton-item
                   variant="rect"
-                  style="float: right; width: 2em; height: 2em"
+                  style="float: right; width: 1em; height: 1em"
                 />
               </div>
-              <div class="mt-2">
-                <el-skeleton-item variant="text" style="width: 100%" />
-                <el-skeleton-item variant="text" style="width: 80%" />
+              <div class="mt-10 flex-x-between">
+                <el-skeleton-item variant="text" style="width: 30%" />
+                <el-skeleton-item
+                  variant="circle"
+                  style="width: 2em; height: 2em"
+                />
               </div>
-            </div>
+              <div class="mt-5 flex-x-between">
+                <el-skeleton-item variant="text" style="width: 50%" />
+                <el-skeleton-item variant="text" style="width: 1em" />
+              </div>
+            </el-card>
           </template>
           <template v-if="!loading">
             <el-card shadow="never">
