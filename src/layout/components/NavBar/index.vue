@@ -1,12 +1,27 @@
 <template>
-  <!-- 顶部导航栏 -->
   <div class="navbar-container">
-    <!-- 导航栏左侧 -->
-    <NavbarLeft />
+    <!-- 导航栏面包屑 -->
+    <div class="flex">
+      <hamburger
+        :is-active="appStore.sidebar.opened"
+        @toggle-click="toggleSideBar"
+      />
+      <breadcrumb />
+    </div>
     <!-- 导航栏右侧 -->
-    <NavbarRight />
+    <NavbarAction />
   </div>
 </template>
+
+<script setup lang="ts">
+import { useAppStore } from "@/store";
+
+const appStore = useAppStore();
+
+function toggleSideBar() {
+  appStore.toggleSidebar();
+}
+</script>
 
 <style lang="scss" scoped>
 .navbar-container {

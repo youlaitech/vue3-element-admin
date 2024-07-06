@@ -62,6 +62,7 @@ declare module "vue" {
     ElTreeSelect: (typeof import("element-plus/es"))["ElTreeSelect"];
     ElUpload: (typeof import("element-plus/es"))["ElUpload"];
     ElWatermark: (typeof import("element-plus/es"))["ElWatermark"];
+    ElSkeleton: (typeof import("element-plus/es"))["ElSkeleton"];
     Form: (typeof import("./../components/CURD/Form.vue"))["default"];
     FunnelChart: (typeof import("./../views/dashboard/components/FunnelChart.vue"))["default"];
     GithubCorner: (typeof import("./../components/GithubCorner/index.vue"))["default"];
@@ -75,8 +76,7 @@ declare module "vue" {
     LayoutSelect: (typeof import("./../layout/components/Settings/components/LayoutSelect.vue"))["default"];
     MultiUpload: (typeof import("./../components/Upload/MultiUpload.vue"))["default"];
     NavBar: (typeof import("./../layout/components/NavBar/index.vue"))["default"];
-    NavbarLeft: (typeof import("./../layout/components/NavBar/components/NavbarLeft.vue"))["default"];
-    NavbarRight: (typeof import("./../layout/components/NavBar/components/NavbarRight.vue"))["default"];
+    NavbarAction: (typeof import("./../layout/components/NavBar/components/NavbarAction.vue"))["default"];
     PageContent: (typeof import("./../components/CURD/PageContent.vue"))["default"];
     PageForm: (typeof import("./../components/CURD/PageForm.vue"))["default"];
     PageModal: (typeof import("./../components/CURD/PageModal.vue"))["default"];

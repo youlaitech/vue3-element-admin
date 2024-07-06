@@ -2,7 +2,7 @@
   <div class="flex">
     <template v-if="!isMobile">
       <!--全屏 -->
-      <div class="setting-item" @click="toggle">
+      <div class="nav-action-item" @click="toggle">
         <svg-icon
           :icon-class="isFullscreen ? 'fullscreen-exit' : 'fullscreen'"
         />
@@ -14,21 +14,21 @@
         effect="dark"
         placement="bottom"
       >
-        <size-select class="setting-item" />
+        <size-select class="nav-action-item" />
       </el-tooltip>
 
       <!-- 语言选择 -->
-      <lang-select class="setting-item" />
+      <lang-select class="nav-action-item" />
 
-      <el-dropdown class="setting-item" trigger="click">
-        <el-badge is-dot class="mt-[16px]">
+      <el-dropdown class="message nav-action-item" trigger="click">
+        <el-badge is-dot>
           <i-ep-bell />
         </el-badge>
       </el-dropdown>
     </template>
 
     <!-- 用户头像 -->
-    <el-dropdown class="setting-item" trigger="click">
+    <el-dropdown class="nav-action-item" trigger="click">
       <div class="flex-center h100% p10px">
         <img
           :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'"
@@ -56,7 +56,7 @@
 
     <!-- 设置 -->
     <template v-if="defaultSettings.showSettings">
-      <div class="setting-item" @click="settingStore.settingsVisible = true">
+      <div class="nav-action-item" @click="settingStore.settingsVisible = true">
         <svg-icon icon-class="setting" />
       </div>
     </template>
@@ -106,7 +106,7 @@ function logout() {
 }
 </script>
 <style lang="scss" scoped>
-.setting-item {
+.nav-action-item {
   display: inline-block;
   min-width: 40px;
   height: $navbar-height;
@@ -120,15 +120,19 @@ function logout() {
   }
 }
 
+:deep(.message .el-badge__content.is-fixed.is-dot) {
+  top: 10px;
+}
+
 .layout-top,
 .layout-mix {
-  .setting-item,
+  .nav-action-item,
   .el-icon {
     color: var(--el-color-white);
   }
 }
 
-.dark .setting-item:hover {
+.dark .nav-action-item:hover {
   background: rgb(255 255 255 / 20%);
 }
 </style>
