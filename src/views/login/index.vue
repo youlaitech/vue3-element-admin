@@ -27,7 +27,7 @@
         <!-- 用户名 -->
         <el-form-item prop="username">
           <div class="input-wrapper">
-            <svg-icon icon-class="user" class="mx-2" />
+            <i-ep-user class="mx-2" />
             <el-input
               ref="username"
               v-model="loginData.username"
@@ -47,7 +47,7 @@
         >
           <el-form-item prop="password">
             <div class="input-wrapper">
-              <svg-icon icon-class="lock" class="mx-2" />
+              <i-ep-lock class="mx-2" />
               <el-input
                 v-model="loginData.password"
                 :placeholder="$t('login.password')"
