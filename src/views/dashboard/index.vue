@@ -1,6 +1,5 @@
 <template>
   <div class="dashboard-container">
-    <!-- github角标 -->
     <github-corner class="github-corner" />
 
     <el-card shadow="never">
@@ -55,7 +54,7 @@
 
           <div class="flex-x-between mt-2">
             <span class="text-lg"> 1</span>
-            <svg-icon icon-class="item.iconClass" size="2em" />
+            <svg-icon icon-class="user" size="2em" />
           </div>
           <div
             class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
@@ -103,7 +102,9 @@
                   <span class="text-[var(--el-text-color-secondary)]">{{
                     item.title
                   }}</span>
-                  <el-tag type="primary" size="small"> 日 </el-tag>
+                  <el-tag :type="item.tagType" size="small">
+                    {{ item.granularity }}
+                  </el-tag>
                 </div>
               </template>
 
@@ -111,26 +112,25 @@
                 <div class="flex-y-center">
                   <span class="text-lg"> {{ item.todayCount }}</span>
                   <span
-                    v-if="item.growthRate"
                     :class="[
                       'text-xs',
                       'ml-2',
-                      item.growthRate > 0 ? 'color-red' : 'color-green',
+                      getGrowthRateClass(item.growthRate),
                     ]"
                   >
                     <i-ep-top v-if="item.growthRate > 0" />
                     <i-ep-bottom v-else-if="item.growthRate < 0" />
-                    {{ Math.abs(item.growthRate * 100).toFixed(2) }}%
+                    {{ formatGrowthRate(item.growthRate) }}
                   </span>
                 </div>
-                <svg-icon :icon-class="item.type" size="2em" />
+                <svg-icon :icon-class="item.icon" size="2em" />
               </div>
 
               <div
                 class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
               >
                 <span>总{{ item.title }} </span>
-                <span> {{ item.totalCountOutput }} </span>
+                <span> {{ item.totalCount }} </span>
               </div>
             </el-card>
           </template>
@@ -168,8 +168,6 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import type { EpPropMergeType } from "element-plus/es/utils/vue/props/types";
-
 import { useUserStore } from "@/store/modules/user";
 import { useTransition, TransitionPresets } from "@vueuse/core";
 
@@ -202,7 +200,7 @@ const statisticData = ref([
   },
   {
     value: 50,
-    iconClass: "todolist",
+    iconClass: "todo",
     title: "待办",
     suffix: "/100",
     key: "upcoming",
@@ -244,21 +242,77 @@ const notices = ref([
 
 const loading = ref(true);
 
-const visitStatsList = ref<VisitStatsVO[] | null>(Array(3).fill({}));
+const visitStatsList = ref<VisitStats[] | null>(Array(3).fill({}));
+
+interface VisitStats {
+  title: string;
+  icon: string;
+  tagType: "primary" | "success" | "warning";
+  growthRate: number;
+  /** 粒度 */
+  granularity: string;
+  /** 今日数量输出文档  */
+  todayCount: number;
+  totalCount: number;
+}
 
 const loadVisitStatsData = async () => {
-  const list = await StatsAPI.getVisitStats();
+  const list: VisitStatsVO[] = await StatsAPI.getVisitStats();
 
   if (list) {
-    visitStatsList.value = list;
-    // 初始化动画输出
-    list.forEach((item) => {
-      item.totalCountOutput = useTransition(item.totalCount, {
-        duration: 1000,
-        transition: TransitionPresets.easeOutExpo,
-      }).value;
-    });
+    const tagTypes: ("primary" | "success" | "warning")[] = [
+      "primary",
+      "success",
+      "warning",
+    ];
+    const transformedList: VisitStats[] = list.map((item, index) => ({
+      title: item.title,
+      icon: getVisitStatsIcon(item.type),
+      tagType: tagTypes[index % tagTypes.length],
+      growthRate: item.growthRate,
+      granularity: "日",
+      todayCount: item.todayCount,
+      totalCount: item.totalCount,
+    }));
+    visitStatsList.value = transformedList;
     loading.value = false;
+  }
+};
+
+/** 格式化增长率 */
+const formatGrowthRate = (growthRate: number): string => {
+  if (growthRate === 0) {
+    return "-";
+  }
+
+  const formattedRate = Math.abs(growthRate * 100)
+    .toFixed(2)
+    .replace(/\.?0+$/, "");
+  return formattedRate + "%";
+};
+
+/** 获取增长率文本颜色类 */
+const getGrowthRateClass = (growthRate: number): string => {
+  if (growthRate > 0) {
+    return "color-[--el-color-danger]";
+  } else if (growthRate < 0) {
+    return "color-[--el-color-success]";
+  } else {
+    return "color-[--el-color-info]";
+  }
+};
+
+/** 获取访问统计图标 */
+const getVisitStatsIcon = (type: string) => {
+  switch (type) {
+    case "pv":
+      return "pv";
+    case "uv":
+      return "uv";
+    case "ip":
+      return "ip";
+    default:
+      return "pv";
   }
 };
 
