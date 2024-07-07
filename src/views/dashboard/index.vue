@@ -72,17 +72,20 @@
         v-for="(item, index) in visitStatsList"
         :key="index"
       >
-        <el-skeleton :loading="loading" :rows="5" animated>
+        <el-skeleton :loading="visitStatsLoading" :rows="5" animated>
           <template #template>
             <el-card>
-              <div>
-                <el-skeleton-item variant="h3" style="width: 40%" />
-                <el-skeleton-item
-                  variant="rect"
-                  style="float: right; width: 1em; height: 1em"
-                />
-              </div>
-              <div class="mt-10 flex-x-between">
+              <template #header>
+                <div>
+                  <el-skeleton-item variant="h3" style="width: 40%" />
+                  <el-skeleton-item
+                    variant="rect"
+                    style="float: right; width: 1em; height: 1em"
+                  />
+                </div>
+              </template>
+
+              <div class="flex-x-between">
                 <el-skeleton-item variant="text" style="width: 30%" />
                 <el-skeleton-item
                   variant="circle"
@@ -95,7 +98,7 @@
               </div>
             </el-card>
           </template>
-          <template v-if="!loading">
+          <template v-if="!visitStatsLoading">
             <el-card shadow="never">
               <template #header>
                 <div class="flex-x-between">
@@ -146,14 +149,30 @@
       <el-col :xs="24" :span="8">
         <el-card>
           <template #header>
-            <span> 通知公告</span>
+            <div class="flex-x-between">
+              <span> 通知公告</span>
+              <el-link type="primary">
+                <span class="text-xs">查看更多</span
+                ><el-icon class="text-xs"><ArrowRight /></el-icon
+              ></el-link>
+            </div>
           </template>
 
           <el-scrollbar height="400px">
-            <div v-for="(item, index) in notices" :key="index" class="mb-2">
-              <el-alert :title="item.title" :closable="false" class="mb-2">
-                <template #default>{{ item.description }} </template>
-              </el-alert>
+            <div
+              v-for="(item, index) in notices"
+              :key="index"
+              class="py-3 flex-y-center"
+            >
+              <el-tag :type="getNoticeLevelTag(item.level)" size="small">
+                {{ getNoticeLabel(item.type) }}
+              </el-tag>
+              <el-text truncated class="!mx-2 flex-1">
+                {{ item.title }}
+              </el-text>
+              <el-link>
+                <i-ep-View />
+              </el-link>
             </div>
           </el-scrollbar>
         </el-card>
@@ -169,7 +188,7 @@ defineOptions({
 });
 
 import { useUserStore } from "@/store/modules/user";
-import { useTransition, TransitionPresets } from "@vueuse/core";
+import { NoticeTypeEnum, getNoticeLabel } from "@/enums/NoticeTypeEnum";
 
 import StatsAPI, { VisitStatsVO } from "@/api/log";
 const userStore = useUserStore();
@@ -213,37 +232,8 @@ const statisticData = ref([
   },
 ]);
 
-const notices = ref([
-  {
-    title: "v2.12.0",
-    description: "新增系统日志，访问趋势统计等功能。",
-  },
-  {
-    title: "v2.11.5",
-    description: "修复了一些问题，优化了一些代码。",
-  },
-  {
-    title: "v2.11.4",
-    description: "修复了一些问题，优化了一些代码。",
-  },
-  {
-    title: "v2.11.3",
-    description: "修复了一些问题，优化了一些代码。",
-  },
-  {
-    title: "v2.11.2",
-    description: "修复了一些问题，优化了一些代码。",
-  },
-  {
-    title: "v2.11.1",
-    description: "修复了一些问题，优化了一些代码。",
-  },
-]);
-
-const loading = ref(true);
-
+const visitStatsLoading = ref(true);
 const visitStatsList = ref<VisitStats[] | null>(Array(3).fill({}));
-
 interface VisitStats {
   title: string;
   icon: string;
@@ -255,7 +245,7 @@ interface VisitStats {
   todayCount: number;
   totalCount: number;
 }
-
+/** 加载访问统计数据 */
 const loadVisitStatsData = async () => {
   const list: VisitStatsVO[] = await StatsAPI.getVisitStats();
 
@@ -275,7 +265,7 @@ const loadVisitStatsData = async () => {
       totalCount: item.totalCount,
     }));
     visitStatsList.value = transformedList;
-    loading.value = false;
+    visitStatsLoading.value = false;
   }
 };
 
@@ -313,6 +303,79 @@ const getVisitStatsIcon = (type: string) => {
       return "ip";
     default:
       return "pv";
+  }
+};
+
+const notices = ref([
+  {
+    level: 2,
+    type: NoticeTypeEnum.SYSTEM_UPGRADE,
+    title: "v2.12.0 新增系统日志，访问趋势统计功能。",
+  },
+  {
+    level: 0,
+    type: NoticeTypeEnum.COMPANY_NEWS,
+    title: "公司将在 7 月 1 日举办年中总结大会，请各部门做好准备。",
+  },
+  {
+    level: 3,
+    type: NoticeTypeEnum.HOLIDAY_NOTICE,
+    title: "端午节假期从 6 月 12 日至 6 月 14 日放假，共 3 天。",
+  },
+
+  {
+    level: 2,
+    type: NoticeTypeEnum.SECURITY_ALERT,
+    title: "最近发现一些钓鱼邮件，请大家提高警惕，不要点击陌生链接。",
+  },
+  {
+    level: 2,
+    type: NoticeTypeEnum.SYSTEM_MAINTENANCE,
+    title: "系统将于本周六凌晨 2 点进行维护，预计维护时间为 2 小时。",
+  },
+  {
+    level: 0,
+    type: NoticeTypeEnum.OTHER,
+    title: "公司新规章制度发布，请大家及时查阅。",
+  },
+  {
+    level: 3,
+    type: NoticeTypeEnum.HOLIDAY_NOTICE,
+    title: "中秋节假期从 9 月 22 日至 9 月 24 日放假，共 3 天。",
+  },
+  {
+    level: 1,
+    type: NoticeTypeEnum.COMPANY_NEWS,
+    title: "公司将在 10 月 15 日举办新产品发布会，敬请期待。",
+  },
+  {
+    level: 2,
+    type: NoticeTypeEnum.SECURITY_ALERT,
+    title:
+      "请注意，近期有恶意软件通过即时通讯工具传播，请勿下载不明来源的文件。",
+  },
+  {
+    level: 2,
+    type: NoticeTypeEnum.SYSTEM_MAINTENANCE,
+    title: "系统将于下周日凌晨 3 点进行升级，预计维护时间为 1 小时。",
+  },
+  {
+    level: 3,
+    type: NoticeTypeEnum.OTHER,
+    title: "公司年度体检通知已发布，请各位员工按时参加。",
+  },
+]);
+
+const getNoticeLevelTag = (type: number) => {
+  switch (type) {
+    case 0:
+      return "danger";
+    case 1:
+      return "warning";
+    case 2:
+      return "primary";
+    default:
+      return "success";
   }
 };
 

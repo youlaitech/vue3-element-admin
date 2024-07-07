@@ -95,7 +95,7 @@ const setChartOptions = (data: VisitTrendVO) => {
         type: "line",
         data: data.pvList,
         areaStyle: {
-          color: "rgba(64, 158, 255, 0.3)",
+          color: "rgba(64, 158, 255, 0.1)",
         },
         smooth: true,
         itemStyle: {
@@ -110,7 +110,7 @@ const setChartOptions = (data: VisitTrendVO) => {
         type: "line",
         data: data.ipList,
         areaStyle: {
-          color: "rgba(103, 194, 58, 0.3)",
+          color: "rgba(103, 194, 58, 0.1)",
         },
         smooth: true,
         itemStyle: {
@@ -187,7 +187,7 @@ const handleDownloadChart = () => {
     if (ctx) {
       ctx.drawImage(img, 0, 0, img.width, img.height);
       const link = document.createElement("a");
-      link.download = `业绩柱状图.png`;
+      link.download = `访问趋势.png`;
       link.href = canvas.toDataURL("image/png", 0.9);
       document.body.appendChild(link);
       link.click();
