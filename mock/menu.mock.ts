@@ -26,7 +26,7 @@ export default defineMock([
               name: "User",
               meta: {
                 title: "用户管理",
-                icon: "user",
+                icon: "el-icon-User",
                 hidden: false,
                 keepAlive: true,
                 alwaysShow: false,
@@ -144,7 +144,7 @@ export default defineMock([
               name: "Https://juejin.cn/post/7228990409909108793",
               meta: {
                 title: "平台文档(外链)",
-                icon: "link",
+                icon: "el-icon-Link",
                 hidden: false,
                 alwaysShow: false,
                 params: null,
@@ -443,7 +443,7 @@ export default defineMock([
               component: "system/user/index",
               sort: 1,
               visible: 1,
-              icon: "user",
+              icon: "el-icon-User",
               redirect: null,
               perm: null,
               children: [
