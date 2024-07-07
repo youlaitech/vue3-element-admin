@@ -7,7 +7,7 @@
           访问趋势
           <el-tooltip effect="dark" content="点击试试下载" placement="bottom">
             <i-ep-download
-              class="cursor-pointer hover:color-#409eff ml-2"
+              class="cursor-pointer hover:color-#409eff ml-1"
               @click="handleDownloadChart"
             />
           </el-tooltip>

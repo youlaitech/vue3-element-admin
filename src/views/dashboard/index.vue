@@ -141,16 +141,18 @@
       </el-col>
     </el-row>
 
-    <!-- Echarts 图表 -->
     <el-row :gutter="10" class="mt-5">
       <el-col :xs="24" :span="16">
+        <!-- 访问趋势统计图 -->
         <VisitTrend id="VisitTrend" width="100%" height="400px" />
       </el-col>
       <el-col :xs="24" :span="8">
         <el-card>
           <template #header>
             <div class="flex-x-between">
-              <span> 通知公告</span>
+              <div class="flex-y-center">
+                通知公告<el-icon class="ml-1"><Notification /></el-icon>
+              </div>
               <el-link type="primary">
                 <span class="text-xs">查看更多</span
                 ><el-icon class="text-xs"><ArrowRight /></el-icon
@@ -162,16 +164,19 @@
             <div
               v-for="(item, index) in notices"
               :key="index"
-              class="py-3 flex-y-center"
+              class="flex-y-center py-3"
             >
               <el-tag :type="getNoticeLevelTag(item.level)" size="small">
                 {{ getNoticeLabel(item.type) }}
               </el-tag>
-              <el-text truncated class="!mx-2 flex-1">
+              <el-text
+                truncated
+                class="!mx-2 flex-1 !text-xs !text-[var(--el-text-color-secondary)]"
+              >
                 {{ item.title }}
               </el-text>
               <el-link>
-                <i-ep-View />
+                <el-icon class="text-sm"><View /></el-icon>
               </el-link>
             </div>
           </el-scrollbar>
