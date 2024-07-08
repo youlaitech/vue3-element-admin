@@ -6,7 +6,7 @@
     <svg-icon
       class="hamburger"
       :class="{ 'is-active': isActive }"
-      icon-class="indent-decrease"
+      icon-class="collapse"
     />
   </div>
 </template>
