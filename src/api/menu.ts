@@ -47,7 +47,6 @@ class MenuAPI {
    * 获取菜单表单数据
    *
    * @param id 菜单ID
-   * @returns 菜单表单数据
    */
   static getFormData(id: number) {
     return request<any, MenuForm>({

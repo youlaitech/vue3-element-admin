@@ -26,10 +26,10 @@ class DeptAPI {
   }
 
   /**
-   * 获取部门详情表单数据
+   * 获取部门表单数据
    *
    * @param id 部门ID
-   * @returns 部门详情表单数据
+   * @returns 部门表单数据
    */
   static getFormData(id: number) {
     return request<any, DeptForm>({

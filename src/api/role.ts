@@ -38,7 +38,6 @@ class RoleAPI {
    *
    * @param roleId 角色ID
    * @param data 菜单ID集合
-   * @returns 请求结果
    */
   static updateRoleMenus(roleId: number, data: number[]) {
     return request({
