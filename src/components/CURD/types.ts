@@ -5,6 +5,7 @@ import type {
   FormProps,
   PaginationProps,
   TableProps,
+  ColProps,
 } from "element-plus";
 import PageContent from "./PageContent.vue";
 import PageForm from "./PageForm.vue";
@@ -248,6 +249,8 @@ export type IFormItems<T = any> = Array<{
   initialValue?: any;
   // 是否隐藏
   hidden?: boolean;
+  // layout组件Col属性
+  col?: Partial<ColProps>;
   // 监听函数
   watch?: (newValue: any, oldValue: any, data: T, items: IObject[]) => void;
   // 计算属性函数
