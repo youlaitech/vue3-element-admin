@@ -12,27 +12,32 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery()"
-            ><i-ep-search />搜索</el-button
-          >
-          <el-button @click="handleResetClick()"
-            ><i-ep-refresh />重置</el-button
-          >
+          <el-button type="primary" @click="handleQuery()">
+            <i-ep-search />
+            搜索
+          </el-button>
+          <el-button @click="handleResetClick()">
+            <i-ep-refresh />
+            重置
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <el-card shadow="never">
       <div class="mb-[10px]">
-        <el-button type="success" @click="handleAddClick()"
-          ><i-ep-plus />新增</el-button
-        >
+        <el-button type="success" @click="handleAddClick()">
+          <i-ep-plus />
+          新增
+        </el-button>
         <el-button
           type="danger"
           :disabled="ids.length === 0"
           @click="handleDelete()"
-          ><i-ep-delete />删除</el-button
         >
+          <i-ep-delete />
+          删除
+        </el-button>
       </div>
 
       <el-table
@@ -69,15 +74,19 @@
               link
               size="small"
               @click.stop="handleEditClick(scope.row.id, scope.row.name)"
-              ><i-ep-edit />编辑</el-button
             >
+              <i-ep-edit />
+              编辑
+            </el-button>
             <el-button
               type="danger"
               link
               size="small"
               @click.stop="handleDelete(scope.row.id)"
-              ><i-ep-delete />删除</el-button
             >
+              <i-ep-delete />
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -129,8 +138,10 @@
                 type="primary"
                 size="small"
                 @click.stop="handleAddAttrClick"
-                ><i-ep-plus />新增字典</el-button
               >
+                <i-ep-plus />
+                新增字典
+              </el-button>
             </div>
           </template>
           <el-table
@@ -184,8 +195,10 @@
                   link
                   size="small"
                   @click.stop="handleDeleteAttrClick(scope.$index)"
-                  ><i-ep-delete />删除</el-button
                 >
+                  <i-ep-delete />
+                  删除
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -294,7 +307,6 @@ function handleEditClick(id: number, name: string) {
 // 提交字典表单
 function handleSubmitClick() {
   dataFormRef.value.validate((isValid: boolean) => {
-    console.log("isValid", isValid);
     if (isValid) {
       loading.value = true;
       const id = formData.id;
@@ -327,6 +339,7 @@ function handleCloseDialog() {
   dataFormRef.value.clearValidate();
 
   formData.id = undefined;
+  formData.dictItems = [];
 }
 /**
  * 删除字典
@@ -356,12 +369,13 @@ function handleDelete(id?: number) {
   );
 }
 
-// 新增字典
+/** 新增字典项 */
 function handleAddAttrClick() {
   formData.dictItems = formData.dictItems ?? [];
   formData.dictItems.push({ sort: 1, status: 1 });
 }
-// 删除字典
+
+/** 删除字典项 */
 function handleDeleteAttrClick(index: number) {
   if (formData.dictItems && formData.dictItems.length > 0) {
     formData.dictItems.splice(index, 1);
