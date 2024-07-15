@@ -51,16 +51,16 @@
               type="primary"
               size="small"
               link
-              @click="handlePreview(scope.row.tableName)"
+              @click="handleOpenDialog('config', scope.row.tableName)"
             >
               <i-ep-View />
-              预览
+              配置
             </el-button>
             <el-button
               type="primary"
               size="small"
               link
-              @click="handlePreview(scope.row.tableName)"
+              @click="handleOpenDialog('preview', scope.row.tableName)"
             >
               <i-ep-MagicStick />
               生成
@@ -84,23 +84,31 @@
       @close="handleCloseDialog"
       size="80%"
     >
-      <el-row>
-        <el-col :span="6">
-          <el-tree :data="[{ value: 'Controller', label: 'Controller' }]" />
-        </el-col>
-        <el-col :span="18">
-          <div>
-            <Codemirror
-              v-model:value="code"
-              :options="cmOptions"
-              border
-              ref="cmRef"
-              height="100%"
-              width="100%"
-            />
-          </div>
-        </el-col>
-      </el-row>
+      <div v-if="dialog.type === 'preview'">
+        <el-row>
+          <el-col :span="6">
+            <el-tree :data="[{ value: 'Controller', label: 'Controller' }]" />
+          </el-col>
+          <el-col :span="18">
+            <div>
+              <Codemirror
+                v-model:value="code"
+                :options="cmOptions"
+                border
+                ref="cmRef"
+                height="100%"
+                width="100%"
+              />
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+      <div v-else-if="dialog.type === 'config'">
+        <el-tabs type="border-card">
+          <el-tab-pane label="User">基础信息</el-tab-pane>
+          <el-tab-pane label="Config">字段配置</el-tab-pane>
+        </el-tabs>
+      </div>
 
       <template #footer>
         <el-button @click="handleCloseDialog">取 消</el-button>
@@ -165,6 +173,7 @@ const queryParams = reactive<TablePageQuery>({
 const pageData = ref<TablePageVO[]>([]);
 
 const dialog = reactive({
+  type: "",
   visible: false,
   title: "",
 });
@@ -188,22 +197,24 @@ function handleResetQuery() {
   handleQuery();
 }
 
-function handlePreview(tableName: string) {
-  DatabaseAPI.getPreviewData(tableName).then((data) => {
-    dialog.title = `预览 ${tableName}`;
-    code.value = data[0].content;
-
-    console.log("data", data);
-    handleOpenDialog();
-  });
-}
-
 function handleCloseDialog() {
   dialog.visible = false;
 }
 
-function handleOpenDialog() {
+/** 打开弹窗 */
+function handleOpenDialog(type: string, tableName: string) {
   dialog.visible = true;
+  dialog.type = type;
+  if (type === "preview") {
+    DatabaseAPI.getPreviewData(tableName).then((data) => {
+      dialog.title = `预览 ${tableName}`;
+      code.value = data[0].content;
+    });
+  } else if (type === "config") {
+    DatabaseAPI.getTableColumns(tableName).then((data) => {
+      dialog.title = `配置 ${tableName}`;
+    });
+  }
 }
 
 function handleSubmit() {}

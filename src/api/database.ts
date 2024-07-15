@@ -15,7 +15,7 @@ class DatabaseAPI {
   /** 获取代码生成预览数据 */
   static getTableColumns(tableName: string) {
     return request<any, TableColumnVO[]>({
-      url: `${DATABASE_BASE_URL}/${tableName}/columns`,
+      url: `${DATABASE_BASE_URL}/table/${tableName}/columns`,
       method: "get",
     });
   }
