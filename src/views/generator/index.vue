@@ -85,19 +85,20 @@
       size="80%"
     >
       <el-row>
-        <el-col :span="6">123</el-col>
+        <el-col :span="6">
+          <el-tree :data="[{ value: 'Controller', label: 'Controller' }]" />
+        </el-col>
         <el-col :span="18">
-          <Codemirror
-            v-model:value="code"
-            :options="cmOptions"
-            border
-            ref="cmRef"
-            height="400"
-            width="600"
-            @change="onChange"
-            @input="onInput"
-            @ready="onReady"
-          />
+          <div>
+            <Codemirror
+              v-model:value="code"
+              :options="cmOptions"
+              border
+              ref="cmRef"
+              height="100%"
+              width="100%"
+            />
+          </div>
         </el-col>
       </el-row>
 
@@ -119,30 +120,10 @@ import Codemirror from "codemirror-editor-vue3";
 import type { CmComponentRef } from "codemirror-editor-vue3";
 import type { Editor, EditorConfiguration } from "codemirror";
 
-const code = ref(
-  `var i = 0;
-for (; i < 9; i++) {
-    console.log(i);
-    // more statements
-}
-`
-);
+const code = ref();
 const cmRef = ref<CmComponentRef>();
 const cmOptions: EditorConfiguration = {
   mode: "text/javascript",
-};
-
-const onChange = (val: string, cm: Editor) => {
-  console.log(val);
-  console.log(cm.getValue());
-};
-
-const onInput = (val: string) => {
-  console.log(val);
-};
-
-const onReady = (cm: Editor) => {
-  console.log(cm.focus());
 };
 
 onMounted(() => {
@@ -174,7 +155,6 @@ import DatabaseAPI, {
 const queryFormRef = ref(ElForm);
 
 const loading = ref(false);
-const ids = ref<number[]>([]);
 const total = ref(0);
 
 const queryParams = reactive<TablePageQuery>({
@@ -183,8 +163,6 @@ const queryParams = reactive<TablePageQuery>({
 });
 
 const pageData = ref<TablePageVO[]>([]);
-
-const formData = reactive<any>({});
 
 const dialog = reactive({
   visible: false,
@@ -213,6 +191,9 @@ function handleResetQuery() {
 function handlePreview(tableName: string) {
   DatabaseAPI.getPreviewData(tableName).then((data) => {
     dialog.title = `预览 ${tableName}`;
+    code.value = data[0].content;
+
+    console.log("data", data);
     handleOpenDialog();
   });
 }
@@ -227,9 +208,9 @@ function handleOpenDialog() {
 
 function handleSubmit() {}
 
-/* onMounted(() => {
+onMounted(() => {
   handleQuery();
-}); */
+});
 </script>
 
 <style lang="scss" scoped></style>

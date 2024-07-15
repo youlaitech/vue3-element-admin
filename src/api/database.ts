@@ -22,7 +22,7 @@ class DatabaseAPI {
 
   /** 获取代码生成预览数据 */
   static getPreviewData(tableName: string) {
-    return request<any, GeneratorPreviewVO>({
+    return request<any, GeneratorPreviewVO[]>({
       url: `${DATABASE_BASE_URL}/table/${tableName}/generate-preview`,
       method: "get",
     });
