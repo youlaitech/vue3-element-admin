@@ -53,7 +53,7 @@
               link
               @click="handleOpenDialog('config', scope.row.tableName)"
             >
-              <i-ep-View />
+              <i-ep-Edit />
               配置
             </el-button>
             <el-button
@@ -105,8 +105,132 @@
       </div>
       <div v-else-if="dialog.type === 'config'">
         <el-tabs type="border-card">
-          <el-tab-pane label="User">基础信息</el-tab-pane>
-          <el-tab-pane label="Config">字段配置</el-tab-pane>
+          <el-tab-pane label="基础信息">
+            <el-form :label-width="100">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="表名称">
+                    <el-input v-model="dialog.title" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="表描述">
+                    <el-input v-model="dialog.title" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="包路径">
+                    <el-input v-model="dialog.title" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="实体类名称">
+                    <el-input v-model="dialog.title" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="实体类名称">
+                    <el-input v-model="dialog.title" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="上级菜单">
+                    <el-input v-model="dialog.title" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </el-tab-pane>
+          <el-tab-pane label="字段配置">
+            <el-table
+              v-loading="loading"
+              highlight--currentrow
+              :data="tableColumns"
+            >
+              <el-table-column label="名称" width="200">
+                <template #default="scope">
+                  <el-form-item>
+                    {{ scope.row.columnName }}
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column label="类型" width="200">
+                <template #default="scope">
+                  <el-form-item>
+                    {{ scope.row.dataType }}
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column label="描述">
+                <template #default="scope">
+                  <el-form-item
+                    :prop="'tableColumns.' + scope.$index + '.columnComment'"
+                  >
+                    <el-input v-model="scope.row.columnComment" />
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column label="列表" width="70">
+                <template #default="scope">
+                  <el-form-item>
+                    <el-checkbox v-model="scope.row.showList" />
+                  </el-form-item>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="表单" width="70">
+                <template #default="scope">
+                  <el-form-item>
+                    <el-checkbox v-model="scope.row.showForm" />
+                  </el-form-item>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="查询" width="70">
+                <template #default="scope">
+                  <el-form-item>
+                    <el-checkbox v-model="scope.row.showQuerys" />
+                  </el-form-item>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="表单类型">
+                <template #default="scope">
+                  <el-form-item>
+                    <el-select
+                      v-model="scope.row.htmlType"
+                      placeholder="请选择"
+                    >
+                      <el-option label="输入框" value="input" />
+                      <el-option label="下拉框" value="select" />
+                      <el-option label="日期选择" value="date" />
+                    </el-select>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="查询方式">
+                <template #default="scope">
+                  <el-form-item>
+                    <el-select
+                      v-model="scope.row.queryType"
+                      placeholder="请选择"
+                    >
+                      <el-option label="等于" value="eq" />
+                      <el-option label="模糊" value="like" />
+                      <el-option label="范围" value="range" />
+                    </el-select>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
         </el-tabs>
       </div>
 
@@ -172,6 +296,8 @@ const queryParams = reactive<TablePageQuery>({
 
 const pageData = ref<TablePageVO[]>([]);
 
+const tableColumns = ref<TableColumnVO[]>([]);
+
 const dialog = reactive({
   type: "",
   visible: false,
@@ -213,6 +339,7 @@ function handleOpenDialog(type: string, tableName: string) {
   } else if (type === "config") {
     DatabaseAPI.getTableColumns(tableName).then((data) => {
       dialog.title = `配置 ${tableName}`;
+      tableColumns.value = data;
     });
   }
 }
