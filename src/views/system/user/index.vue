@@ -46,13 +46,14 @@
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" @click="handleQuery"
-                ><i-ep-search />搜索</el-button
-              >
+              <el-button type="primary" @click="handleQuery">
+                <i-ep-search />
+                搜索
+              </el-button>
               <el-button @click="handleResetQuery">
                 <i-ep-refresh />
-                重置</el-button
-              >
+                重置
+              </el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -65,24 +66,30 @@
                   v-hasPerm="['sys:user:add']"
                   type="success"
                   @click="handleOpenDialog()"
-                  ><i-ep-plus />新增</el-button
                 >
+                  <i-ep-plus />
+                  新增
+                </el-button>
                 <el-button
                   v-hasPerm="['sys:user:delete']"
                   type="danger"
                   :disabled="removeIds.length === 0"
                   @click="handleDelete()"
-                  ><i-ep-delete />删除</el-button
                 >
+                  <i-ep-delete />
+                  删除
+                </el-button>
               </div>
               <div>
-                <el-button class="ml-3" @click="handleOpenImportDialog"
-                  ><template #icon><i-ep-upload /></template>导入</el-button
-                >
+                <el-button class="ml-3" @click="handleOpenImportDialog">
+                  <template #icon><i-ep-upload /></template>
+                  导入
+                </el-button>
 
-                <el-button class="ml-3" @click="handleExport"
-                  ><template #icon><i-ep-download /></template>导出</el-button
-                >
+                <el-button class="ml-3" @click="handleExport">
+                  <template #icon><i-ep-download /></template>
+                  导出
+                </el-button>
               </div>
             </div>
           </template>
@@ -135,9 +142,9 @@
 
             <el-table-column label="状态" align="center" prop="status">
               <template #default="scope">
-                <el-tag :type="scope.row.status == 1 ? 'success' : 'info'">{{
-                  scope.row.status == 1 ? "启用" : "禁用"
-                }}</el-tag>
+                <el-tag :type="scope.row.status == 1 ? 'success' : 'info'">
+                  {{ scope.row.status == 1 ? "启用" : "禁用" }}
+                </el-tag>
               </template>
             </el-table-column>
             <el-table-column
@@ -154,24 +161,30 @@
                   size="small"
                   link
                   @click="hancleResetPassword(scope.row)"
-                  ><i-ep-refresh-left />重置密码</el-button
                 >
+                  <i-ep-refresh-left />
+                  重置密码
+                </el-button>
                 <el-button
                   v-hasPerm="['sys:user:edit']"
                   type="primary"
                   link
                   size="small"
                   @click="handleOpenDialog(scope.row.id)"
-                  ><i-ep-edit />编辑</el-button
                 >
+                  <i-ep-edit />
+                  编辑
+                </el-button>
                 <el-button
                   v-hasPerm="['sys:user:delete']"
                   type="danger"
                   link
                   size="small"
                   @click="handleDelete(scope.row.id)"
-                  ><i-ep-delete />删除</el-button
                 >
+                  <i-ep-delete />
+                  删除
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -392,16 +405,21 @@ function hancleResetPassword(row: { [key: string]: any }) {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
     }
-  ).then(({ value }) => {
-    if (!value || value.length < 6) {
-      // 检查密码是否为空或少于6位
-      ElMessage.warning("密码至少需要6位字符，请重新输入");
-      return false;
+  ).then(
+    ({ value }) => {
+      if (!value || value.length < 6) {
+        // 检查密码是否为空或少于6位
+        ElMessage.warning("密码至少需要6位字符，请重新输入");
+        return false;
+      }
+      UserAPI.updatePassword(row.id, value).then(() => {
+        ElMessage.success("密码重置成功，新密码是：" + value);
+      });
+    },
+    () => {
+      ElMessage.info("已取消重置密码");
     }
-    UserAPI.updatePassword(row.id, value).then(() => {
-      ElMessage.success("密码重置成功，新密码是：" + value);
-    });
-  });
+  );
 }
 
 /**
