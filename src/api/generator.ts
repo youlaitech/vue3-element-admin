@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-const DATABASE_BASE_URL = "/api/v1/databases";
+const DATABASE_BASE_URL = "/api/v1/generator";
 
 class DatabaseAPI {
   /** 获取数据表分页列表 */
@@ -23,7 +23,7 @@ class DatabaseAPI {
   /** 获取代码生成预览数据 */
   static getPreviewData(tableName: string) {
     return request<any, GeneratorPreviewVO[]>({
-      url: `${DATABASE_BASE_URL}/table/${tableName}/generate-preview`,
+      url: `${DATABASE_BASE_URL}/table/${tableName}/preview`,
       method: "get",
     });
   }
@@ -90,4 +90,24 @@ export interface TableColumnVO {
 
   /** 字符集排序规则 */
   collationName: string;
+}
+
+interface GeneratorConfigForm {
+  tableName: string;
+  entityName: string;
+  packageName: string;
+  moduleName: string;
+  author: string;
+  fieldConfigs: FieldConfig[];
+}
+
+interface FieldConfig {
+  name: string;
+  type: string;
+  description: string;
+  showInList: boolean;
+  showInForm: boolean;
+  showInQuery: boolean;
+  formType: string;
+  queryMethod: string;
 }
