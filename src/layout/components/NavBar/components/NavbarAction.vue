@@ -43,8 +43,8 @@
                 >
                   <el-link type="primary">
                     <el-text class="w-350px" size="default" truncated>
-                      {{ message.title }}</el-text
-                    >
+                      {{ message.title }}
+                    </el-text>
                   </el-link>
                 </div>
               </el-tab-pane>
@@ -52,12 +52,12 @@
             <el-divider />
             <div class="flex-x-between">
               <el-link type="primary" :underline="false">
-                <span class="text-xs">查看更多</span
-                ><el-icon class="text-xs"><ArrowRight /></el-icon
-              ></el-link>
+                <span class="text-xs">查看更多</span>
+                <el-icon class="text-xs"><ArrowRight /></el-icon>
+              </el-link>
               <el-link type="primary" :underline="false">
-                <span class="text-xs">全部已读</span></el-link
-              >
+                <span class="text-xs">全部已读</span>
+              </el-link>
             </div>
           </div>
         </template>
@@ -211,13 +211,8 @@ function logout() {
   background: rgb(255 255 255 / 20%);
 }
 
-.see-more {
-  padding: 10px 0;
-  text-align: center;
-}
-
-.see-more a {
-  color: var(--el-color-primary);
-  text-decoration: none;
+.layout-top .nav-action-item,
+.layout-mix .nav-action-item {
+  color: #fff;
 }
 </style>
