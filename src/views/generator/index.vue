@@ -87,7 +87,7 @@
       <div v-if="dialog.type === 'preview'">
         <el-row>
           <el-col :span="6">
-            <el-tree :data="[{ value: 'Controller', label: 'Controller' }]" />
+            <el-tree :data="treeData" />
           </el-col>
           <el-col :span="18">
             <div>
@@ -282,7 +282,7 @@ import DatabaseAPI, {
   TableColumnVO,
   TablePageQuery,
   GeneratorPreviewVO,
-} from "@/api/database";
+} from "@/api/generator";
 
 const queryFormRef = ref(ElForm);
 
@@ -297,6 +297,27 @@ const queryParams = reactive<TablePageQuery>({
 const pageData = ref<TablePageVO[]>([]);
 
 const tableColumns = ref<TableColumnVO[]>([]);
+
+interface Tree {
+  label: string;
+  children?: Tree[];
+}
+
+const treeData = ref<Tree[]>([
+  {
+    label: "Level one 1",
+    children: [
+      {
+        label: "Level two 1-1",
+        children: [
+          {
+            label: "Level three 1-1-1",
+          },
+        ],
+      },
+    ],
+  },
+]);
 
 const dialog = reactive({
   type: "",
