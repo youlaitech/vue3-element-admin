@@ -87,7 +87,7 @@
       <div v-if="dialog.type === 'preview'">
         <el-row>
           <el-col :span="6">
-            <el-tree :data="treeData" />
+            <el-tree :data="treeData" default-expand-all />
           </el-col>
           <el-col :span="18">
             <div>
@@ -258,25 +258,6 @@ const cmOptions: EditorConfiguration = {
   mode: "text/javascript",
 };
 
-onMounted(() => {
-  setTimeout(() => {
-    cmRef.value?.refresh();
-  }, 1000);
-
-  setTimeout(() => {
-    cmRef.value?.resize(300, 200);
-  }, 2000);
-
-  setTimeout(() => {
-    cmRef.value?.cminstance.isClean();
-  }, 3000);
-});
-
-onUnmounted(() => {
-  handleQuery();
-  cmRef.value?.destroy();
-});
-
 import DatabaseAPI, {
   TablePageVO,
   TableColumnVO,
@@ -298,12 +279,12 @@ const pageData = ref<TablePageVO[]>([]);
 
 const tableColumns = ref<TableColumnVO[]>([]);
 
-interface Tree {
+interface TreeNode {
   label: string;
-  children?: Tree[];
+  children?: TreeNode[];
 }
 
-const treeData = ref<Tree[]>([
+const treeData = ref<TreeNode[]>([
   {
     label: "Level one 1",
     children: [
@@ -353,9 +334,14 @@ function handleOpenDialog(type: string, tableName: string) {
   dialog.visible = true;
   dialog.type = type;
   if (type === "preview") {
+    treeData.value = [];
     DatabaseAPI.getPreviewData(tableName).then((data) => {
       dialog.title = `预览 ${tableName}`;
       code.value = data[0].content;
+
+      for (let i = 0; i < data.length; i++) {
+        assembleTree(data[i]);
+      }
     });
   } else if (type === "config") {
     DatabaseAPI.getTableColumns(tableName).then((data) => {
@@ -365,11 +351,41 @@ function handleOpenDialog(type: string, tableName: string) {
   }
 }
 
+let autoIncrementKey = 0;
+function assembleTree(data: GeneratorPreviewVO) {
+  const paths: string[] = data.path.split("/");
+  let tempChildren: TreeNode[] | undefined = treeData.value;
+
+  for (const path of paths) {
+    tempChildren = pushDir(tempChildren, {
+      label: path,
+      //key: autoIncrementKey++,
+      children: new Array<TreeNode>(),
+    });
+  }
+
+  tempChildren?.push({
+    label: data.fileName,
+    children: new Array<TreeNode>(),
+  });
+}
+
+const pushDir = (children: TreeNode[] | undefined, treeNode: TreeNode) => {
+  if (children) {
+    for (const child of children) {
+      if (child.label === treeNode.label) {
+        return child.children;
+      }
+    }
+  }
+  children?.push(treeNode);
+  return treeNode.children;
+};
+
 function handleSubmit() {}
 
 onMounted(() => {
   handleQuery();
+  cmRef.value?.destroy();
 });
 </script>
-
-<style lang="scss" scoped></style>
