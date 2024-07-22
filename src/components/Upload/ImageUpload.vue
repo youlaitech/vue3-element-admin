@@ -3,20 +3,43 @@
   <el-upload
     v-model:file-list="fileList"
     list-type="picture-card"
+    :class="
+      fileList.length >= props.limit || !props.showUploadBtn ? 'hide' : 'show'
+    "
     :before-upload="handleBeforeUpload"
     :http-request="handleUpload"
     :on-remove="handleRemove"
-    :on-preview="previewImg"
+    :accept="accept"
     :limit="props.limit"
   >
     <i-ep-plus />
+    <template #file="{ file }">
+      <div>
+        <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+        <span class="el-upload-list__item-actions">
+          <span class="el-upload-list__item-preview" @click="previewImg(file)">
+            <el-icon><zoom-in /></el-icon>
+          </span>
+          <span
+            v-if="props.showDelBtn"
+            class="el-upload-list__item-delete"
+            @click="handleRemove(file)"
+          >
+            <el-icon><Delete /></el-icon>
+          </span>
+        </span>
+      </div>
+    </template>
   </el-upload>
 
-  <el-dialog v-model="dialogVisible">
-    <img w-full :src="previewImgUrl" alt="Preview Image" />
-  </el-dialog>
+  <el-image-viewer
+    v-if="viewVisible"
+    :zoom-rate="1.2"
+    @close="closePreview"
+    :initialIndex="initialIndex"
+    :url-list="viewFileList"
+  />
 </template>
-
 <script setup lang="ts">
 import {
   UploadRawFile,
@@ -44,12 +67,42 @@ const props = defineProps({
     type: Number,
     default: 10,
   },
+  /**
+   * 是否显示删除按钮
+   */
+  showDelBtn: {
+    type: Boolean,
+    default: true,
+  },
+  /**
+   * 是否显示上传按钮
+   */
+  showUploadBtn: {
+    type: Boolean,
+    default: true,
+  },
+  /**
+   * 单张图片最大大小
+   */
+  uploadMaxSize: {
+    type: Number,
+    default: 2 * 1048 * 1048,
+  },
+  /**
+   * 上传文件类型
+   */
+  accept: {
+    type: String,
+    default: "image/*",
+  },
 });
 
-const previewImgUrl = ref("");
-const dialogVisible = ref(false);
+const viewVisible = ref(false);
+const initialIndex = ref(0);
 
 const fileList = ref([] as UploadUserFile[]);
+const viewFileList = ref([] as string[]);
+
 watch(
   () => props.modelValue,
   (newVal: string[]) => {
@@ -79,7 +132,7 @@ watch(
 /**
  * 自定义图片上传
  *
- * @param params
+ * @param options
  */
 async function handleUpload(options: UploadRequestOptions): Promise<any> {
   // 上传API调用
@@ -89,12 +142,10 @@ async function handleUpload(options: UploadRequestOptions): Promise<any> {
   const fileIndex = fileList.value.findIndex(
     (file) => file.uid == (options.file as any).uid
   );
-
   fileList.value.splice(fileIndex, 1, {
     name: data.name,
     url: data.url,
   } as UploadUserFile);
-
   emit(
     "update:modelValue",
     fileList.value.map((file) => file.url)
@@ -122,8 +173,9 @@ function handleRemove(removeFile: UploadFile) {
  * 限制用户上传文件的格式和大小
  */
 function handleBeforeUpload(file: UploadRawFile) {
-  if (file.size > 2 * 1048 * 1048) {
-    ElMessage.warning("上传图片不能大于2M");
+  if (file.size > uploadMaxSize) {
+    let mUploadMaxSize = uploadMaxSize / 1048 / 1048;
+    ElMessage.warning("上传图片不能大于" + mUploadMaxSize + "M");
     return false;
   }
   return true;
@@ -132,8 +184,31 @@ function handleBeforeUpload(file: UploadRawFile) {
 /**
  * 预览图片
  */
-const previewImg: UploadProps["onPreview"] = (uploadFile) => {
-  previewImgUrl.value = uploadFile.url!;
-  dialogVisible.value = true;
+const previewImg: UploadProps["onPreview"] = (uploadFile: UploadFile) => {
+  viewFileList.value = fileList.value.map((file) => file.url!);
+  initialIndex.value = fileList.value.findIndex(
+    (file) => file.url === uploadFile.url
+  );
+  viewVisible.value = true;
+};
+
+/**
+ * 关闭预览
+ */
+const closePreview = () => {
+  viewVisible.value = false;
 };
 </script>
+<style lang="scss" scoped>
+.hide {
+  :deep(.el-upload--picture-card) {
+    display: none;
+  }
+}
+
+.show {
+  :deep(.el-upload--picture-card) {
+    display: flex;
+  }
+}
+</style>
