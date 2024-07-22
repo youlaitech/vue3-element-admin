@@ -87,19 +87,39 @@
       <div v-if="dialog.type === 'preview'">
         <el-row>
           <el-col :span="6">
-            <el-tree :data="treeData" default-expand-all />
+            <el-scrollbar max-height="80vh">
+              <el-tree
+                :data="treeData"
+                default-expand-all
+                highlight-current
+                @node-click="handleFileTreeNodeClick"
+              >
+                <template #default="{ data }">
+                  <svg-icon :icon-class="getFileTreeNodeIcon(data.label)" />
+                  <span class="ml-1">{{ data.label }}</span>
+                </template>
+              </el-tree>
+            </el-scrollbar>
           </el-col>
           <el-col :span="18">
-            <div>
+            <el-scrollbar max-height="80vh">
+              <div class="absolute-rt z-36 right-5 top-2">
+                <el-link @click="handleCopyCode" type="primary">
+                  <el-icon><CopyDocument /></el-icon>
+                  复制
+                </el-link>
+              </div>
+
               <Codemirror
                 v-model:value="code"
                 :options="cmOptions"
                 border
                 ref="cmRef"
+                :readonly="true"
                 height="100%"
                 width="100%"
               />
-            </div>
+            </el-scrollbar>
           </el-col>
         </el-row>
       </div>
@@ -251,6 +271,7 @@ import "codemirror/mode/javascript/javascript.js";
 import Codemirror from "codemirror-editor-vue3";
 import type { CmComponentRef } from "codemirror-editor-vue3";
 import type { Editor, EditorConfiguration } from "codemirror";
+const { copy, copied } = useClipboard();
 
 const code = ref();
 const cmRef = ref<CmComponentRef>();
@@ -278,27 +299,6 @@ const queryParams = reactive<TablePageQuery>({
 const pageData = ref<TablePageVO[]>([]);
 
 const tableColumns = ref<TableColumnVO[]>([]);
-
-interface TreeNode {
-  label: string;
-  children?: TreeNode[];
-}
-
-const treeData = ref<TreeNode[]>([
-  {
-    label: "Level one 1",
-    children: [
-      {
-        label: "Level two 1-1",
-        children: [
-          {
-            label: "Level three 1-1-1",
-          },
-        ],
-      },
-    ],
-  },
-]);
 
 const dialog = reactive({
   type: "",
@@ -329,6 +329,14 @@ function handleCloseDialog() {
   dialog.visible = false;
 }
 
+interface TreeNode {
+  label: string;
+  content?: string;
+  children?: TreeNode[];
+}
+
+const treeData = ref<TreeNode[]>([]);
+
 /** 打开弹窗 */
 function handleOpenDialog(type: string, tableName: string) {
   dialog.visible = true;
@@ -337,10 +345,15 @@ function handleOpenDialog(type: string, tableName: string) {
     treeData.value = [];
     DatabaseAPI.getPreviewData(tableName).then((data) => {
       dialog.title = `预览 ${tableName}`;
-      code.value = data[0].content;
 
-      for (let i = 0; i < data.length; i++) {
-        assembleTree(data[i]);
+      // 组装树形结构完善代码
+      const tree = buildTree(data);
+      treeData.value = [tree];
+
+      // 默认选中第一个叶子节点并设置 code 值
+      const firstLeafNode = findFirstLeafNode(tree);
+      if (firstLeafNode) {
+        code.value = firstLeafNode.content || "";
       }
     });
   } else if (type === "config") {
@@ -351,36 +364,133 @@ function handleOpenDialog(type: string, tableName: string) {
   }
 }
 
-let autoIncrementKey = 0;
-function assembleTree(data: GeneratorPreviewVO) {
-  const paths: string[] = data.path.split("/");
-  let tempChildren: TreeNode[] | undefined = treeData.value;
+/**
+ * 递归构建树形结构
+ * @param data - 数据数组
+ * @returns 树形结构根节点
+ */
+function buildTree(
+  data: { path: string; fileName: string; content: string }[]
+): TreeNode {
+  // 动态获取根节点
+  const root: TreeNode = { label: "前后端工程代码", children: [] };
 
-  for (const path of paths) {
-    tempChildren = pushDir(tempChildren, {
-      label: path,
-      //key: autoIncrementKey++,
-      children: new Array<TreeNode>(),
+  data.forEach((item) => {
+    // 将路径分成数组
+    const separator = item.path.includes("/") ? "/" : "\\";
+    const parts = item.path.split(separator);
+
+    // 定义特殊路径
+    const specialPaths = [
+      "src\\main",
+      "youlai-boot",
+      "vue3-element-admin",
+      "java",
+      "com\\youlai\\system",
+    ];
+
+    // 检查路径中的特殊部分并合并它们
+    const mergedParts: string[] = [];
+    let buffer: string[] = [];
+
+    console.log("parts", parts);
+
+    parts.forEach((part) => {
+      buffer.push(part);
+      const currentPath = buffer.join(separator);
+      console.log("currentPath", currentPath);
+      if (specialPaths.includes(currentPath)) {
+        mergedParts.push(currentPath);
+        buffer = [];
+      }
     });
-  }
 
-  tempChildren?.push({
-    label: data.fileName,
-    children: new Array<TreeNode>(),
+    // 将 mergedParts 路径中的分隔符\替换为/
+    mergedParts.forEach((part, index) => {
+      mergedParts[index] = part.replace(/\\/g, "/");
+    });
+
+    if (buffer.length > 0) {
+      mergedParts.push(...buffer);
+    }
+
+    let currentNode = root;
+
+    mergedParts.forEach((part) => {
+      // 查找或创建当前部分的子节点
+      let node = currentNode.children?.find((child) => child.label === part);
+      if (!node) {
+        node = { label: part, children: [] };
+        currentNode.children?.push(node);
+      }
+      currentNode = node;
+    });
+
+    // 添加文件节点
+    currentNode.children?.push({
+      label: item.fileName,
+      content: item?.content,
+    });
   });
+
+  return root;
 }
 
-const pushDir = (children: TreeNode[] | undefined, treeNode: TreeNode) => {
-  if (children) {
-    for (const child of children) {
-      if (child.label === treeNode.label) {
-        return child.children;
-      }
+/**
+ * 递归查找第一个叶子节点
+ * @param node - 树形节点
+ * @returns 第一个叶子节点
+ */
+function findFirstLeafNode(node: TreeNode): TreeNode | null {
+  if (!node.children || node.children.length === 0) {
+    return node;
+  }
+  for (const child of node.children) {
+    const leafNode = findFirstLeafNode(child);
+    if (leafNode) {
+      return leafNode;
     }
   }
-  children?.push(treeNode);
-  return treeNode.children;
+  return null;
+}
+
+/** 文件树节点 Click */
+function handleFileTreeNodeClick(data: TreeNode) {
+  if (!data.children || data.children.length === 0) {
+    code.value = data.content || "";
+  }
+}
+
+function getFileTreeNodeIcon(label: string) {
+  if (label.endsWith(".java")) {
+    return "java";
+  }
+  if (label.endsWith(".html")) {
+    return "html";
+  }
+  if (label.endsWith(".vue")) {
+    return "vue";
+  }
+  if (label.endsWith(".ts")) {
+    return "typescript";
+  }
+  if (label.endsWith(".xml")) {
+    return "xml";
+  }
+  return "file";
+}
+
+const handleCopyCode = () => {
+  if (code.value) {
+    copy(code.value);
+  }
 };
+
+watch(copied, () => {
+  if (copied.value) {
+    ElMessage.success("复制成功");
+  }
+});
 
 function handleSubmit() {}
 
