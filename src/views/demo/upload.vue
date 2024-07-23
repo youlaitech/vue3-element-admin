@@ -44,7 +44,7 @@ const tableData = [
   {
     argsName: "uploadMaxSize",
     type: "Number",
-    default: "2 * 1048 * 1048",
+    default: "2 * 1024 * 1024",
     desc: "单个图片上传大小限制(单位byte)",
   },
 ];

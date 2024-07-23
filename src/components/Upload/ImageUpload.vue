@@ -9,7 +9,7 @@
     :before-upload="handleBeforeUpload"
     :http-request="handleUpload"
     :on-remove="handleRemove"
-    :accept="accept"
+    :accept="props.accept"
     :limit="props.limit"
   >
     <i-ep-plus />
@@ -174,7 +174,7 @@ function handleRemove(removeFile: UploadFile) {
  */
 function handleBeforeUpload(file: UploadRawFile) {
   if (file.size > props.uploadMaxSize) {
-    let mUploadMaxSize = props.uploadMaxSize / 1048 / 1048;
+    let mUploadMaxSize = props.uploadMaxSize / 1024 / 1024;
     ElMessage.warning("上传图片不能大于" + mUploadMaxSize + "M");
     return false;
   }
