@@ -63,6 +63,7 @@ import {
   UploadUserFile,
   UploadFile,
   UploadProgressEvent,
+  UploadFiles,
 } from "element-plus";
 import { TOKEN_KEY } from "@/enums/CacheEnum";
 import FileAPI from "@/api/file";
@@ -224,8 +225,9 @@ watch(
  */
 function handleBeforeUpload(file: UploadRawFile) {
   if (file.size > props.uploadMaxSize) {
-    let mUploadMaxSize = props.uploadMaxSize / 1024 / 1024;
-    ElMessage.warning("上传文件不能大于" + mUploadMaxSize + "M");
+    ElMessage.warning(
+      "上传文件不能大于" + Math.trunc(props.uploadMaxSize / 1024 / 1024) + "M"
+    );
     return false;
   }
   uploadPercent.value = 0;
