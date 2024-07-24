@@ -53,15 +53,6 @@
               link
               @click="handleOpenDialog('config', scope.row.tableName)"
             >
-              <i-ep-Edit />
-              配置
-            </el-button>
-            <el-button
-              type="primary"
-              size="small"
-              link
-              @click="handleOpenDialog('preview', scope.row.tableName)"
-            >
               <i-ep-MagicStick />
               生成
             </el-button>
@@ -279,7 +270,7 @@ const cmOptions: EditorConfiguration = {
   mode: "text/javascript",
 };
 
-import DatabaseAPI, {
+import GeneratorAPI, {
   TablePageVO,
   TableColumnVO,
   TablePageQuery,
@@ -309,7 +300,7 @@ const dialog = reactive({
 /** 查询 */
 function handleQuery() {
   loading.value = true;
-  DatabaseAPI.getTablePage(queryParams)
+  GeneratorAPI.getTablePage(queryParams)
     .then((data) => {
       pageData.value = data.list;
       total.value = data.total;
@@ -341,9 +332,14 @@ const treeData = ref<TreeNode[]>([]);
 function handleOpenDialog(type: string, tableName: string) {
   dialog.visible = true;
   dialog.type = type;
-  if (type === "preview") {
+  if (type === "config") {
+    GeneratorAPI.getTableColumns(tableName).then((data) => {
+      dialog.title = `配置 ${tableName}`;
+      tableColumns.value = data;
+    });
+  } else if (type === "preview") {
     treeData.value = [];
-    DatabaseAPI.getPreviewData(tableName).then((data) => {
+    GeneratorAPI.getPreviewData(tableName).then((data) => {
       dialog.title = `预览 ${tableName}`;
 
       // 组装树形结构完善代码
@@ -355,11 +351,6 @@ function handleOpenDialog(type: string, tableName: string) {
       if (firstLeafNode) {
         code.value = firstLeafNode.content || "";
       }
-    });
-  } else if (type === "config") {
-    DatabaseAPI.getTableColumns(tableName).then((data) => {
-      dialog.title = `配置 ${tableName}`;
-      tableColumns.value = data;
     });
   }
 }
