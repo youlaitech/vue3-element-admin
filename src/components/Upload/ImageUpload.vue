@@ -1,4 +1,4 @@
-<!-- 多图上传组件 -->
+<!-- 图片上传组件 -->
 <template>
   <el-upload
     v-model:file-list="fileList"

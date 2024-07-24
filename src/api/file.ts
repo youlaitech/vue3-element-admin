@@ -2,6 +2,11 @@ import request from "@/utils/request";
 
 class FileAPI {
   /**
+   * 文件上传地址
+   */
+  static uploadUrl = import.meta.env.VITE_APP_BASE_API + "/api/v1/files";
+
+  /**
    * 上传文件
    *
    * @param file
@@ -29,6 +34,27 @@ class FileAPI {
       url: "/api/v1/files",
       method: "delete",
       params: { filePath: filePath },
+    });
+  }
+
+  /**
+   * 下载文件
+   * @param url
+   * @param fileName
+   */
+  static downloadFile(url: string, fileName?: string) {
+    return request({
+      url: url,
+      method: "get",
+      responseType: "blob",
+    }).then((res) => {
+      const blob = new Blob([res.data]);
+      const a = document.createElement("a");
+      const url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = fileName || "下载文件";
+      a.click();
+      window.URL.revokeObjectURL(url);
     });
   }
 }
