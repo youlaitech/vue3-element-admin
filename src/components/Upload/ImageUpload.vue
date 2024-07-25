@@ -10,6 +10,7 @@
     :action="props.action"
     :headers="props.headers"
     :data="props.data"
+    :name="props.name"
     :on-success="handleSuccessFile"
     :on-error="handleError"
     :accept="props.accept"
@@ -17,7 +18,7 @@
   >
     <i-ep-plus />
     <template #file="{ file }">
-      <div>
+      <div style="width: 100%">
         <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
         <span class="el-upload-list__item-actions">
           <span class="el-upload-list__item-preview" @click="previewImg(file)">
@@ -84,13 +85,20 @@ const props = defineProps({
     },
   },
   /**
-   * 请求参数
+   * 请求携带的额外参数
    */
   data: {
     type: Object,
     default: () => {
       return {};
     },
+  },
+  /**
+   * 上传文件的参数名
+   */
+  name: {
+    type: String,
+    default: "file",
   },
   /**
    * 文件上传数量限制
@@ -190,14 +198,11 @@ const handleError = (error: any) => {
  */
 function handleRemove(removeFile: UploadFile) {
   const filePath = removeFile.url;
-
   if (filePath) {
     FileAPI.deleteByPath(filePath).then(() => {
+      valFileList.value = valFileList.value.filter((x) => x !== filePath);
       // 删除成功回调
-      emit(
-        "update:modelValue",
-        fileList.value.map((file) => file.url)
-      );
+      emit("update:modelValue", valFileList.value);
     });
   }
 }

@@ -19,6 +19,30 @@ const imageUploadArgData = [
     desc: "已经上传的图片数组",
   },
   {
+    argsName: "action",
+    type: "String",
+    default: "FileAPI.uploadUrl",
+    desc: "文件上传地址",
+  },
+  {
+    argsName: "headers",
+    type: "Object",
+    default: "{Authorization: localStorage.getItem(TOKEN_KEY),}",
+    desc: "提示文本类型",
+  },
+  {
+    argsName: "data",
+    type: "Object",
+    default: "{}",
+    desc: "请求携带的额外参数",
+  },
+  {
+    argsName: "name",
+    type: "String",
+    default: "file",
+    desc: "上传文件的参数名",
+  },
+  {
     argsName: "limit",
     type: "Number",
     default: 10,
@@ -37,16 +61,16 @@ const imageUploadArgData = [
     desc: "是否显示上传按钮",
   },
   {
-    argsName: "accept",
-    type: "String",
-    default: "image/*",
-    desc: "上传文件类型",
-  },
-  {
     argsName: "upload-max-size",
     type: "Number",
     default: "2 * 1024 * 1024",
     desc: "单个图片上传大小限制(单位byte)",
+  },
+  {
+    argsName: "accept",
+    type: "String",
+    default: "image/*",
+    desc: "上传文件类型",
   },
 ];
 
@@ -172,13 +196,7 @@ const fileUploadArgData = [
         </el-table>
       </el-form-item>
       <el-form-item label="文件上传">
-        <file-upload
-          v-model="fileUrls"
-          :showUploadBtn="true"
-          :showDelBtn="true"
-          :show-tip="false"
-          :limit="3"
-        />
+        <file-upload v-model="fileUrls" />
       </el-form-item>
       <el-form-item label="参数说明">
         <el-table :data="fileUploadArgData" border>

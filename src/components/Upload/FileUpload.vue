@@ -108,7 +108,7 @@ const props = defineProps({
     default: true,
   },
   /**
-   * 单张图片最大大小
+   * 单个文件上传大小限制(单位byte)
    */
   uploadMaxSize: {
     type: Number,
@@ -154,7 +154,7 @@ const props = defineProps({
     },
   },
   /**
-   * 请求参数
+   * 请求携带的额外参数
    */
   data: {
     type: Object,
@@ -163,7 +163,7 @@ const props = defineProps({
     },
   },
   /**
-   * 上传文件字段名
+   * 上传文件的参数名
    */
   name: {
     type: String,
