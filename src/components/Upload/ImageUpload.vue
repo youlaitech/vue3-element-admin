@@ -126,7 +126,7 @@ const props = defineProps({
    */
   uploadMaxSize: {
     type: Number,
-    default: 2 * 1048 * 1048,
+    default: 2 * 1024 * 1024,
   },
   /**
    * 上传文件类型
