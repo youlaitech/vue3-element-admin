@@ -1,35 +1,46 @@
 import request from "@/utils/request";
+import { FormTypeEnum } from "@/enums/FormTypeEnum";
+import { QueryTypeEnum } from "@/enums/QueryTypeEnum";
 
-const DATABASE_BASE_URL = "/api/v1/generator";
+const GENERATOR_BASE_URL = "/api/v1/generator";
 
-class DatabaseAPI {
+class GeneratorAPI {
   /** 获取数据表分页列表 */
   static getTablePage(params: TablePageQuery) {
     return request<any, PageResult<TablePageVO[]>>({
-      url: `${DATABASE_BASE_URL}/table/page`,
+      url: `${GENERATOR_BASE_URL}/table/page`,
       method: "get",
       params: params,
     });
   }
 
-  /** 获取代码生成预览数据 */
-  static getTableColumns(tableName: string) {
-    return request<any, TableColumnVO[]>({
-      url: `${DATABASE_BASE_URL}/table/${tableName}/columns`,
+  /** 获取代码生成配置 */
+  static getGenConfig(tableName: string) {
+    return request<any, GenConfigForm>({
+      url: `${GENERATOR_BASE_URL}/${tableName}/config`,
       method: "get",
+    });
+  }
+
+  /** 获取代码生成配置 */
+  static saveGenConfig(tableName: string, data: GenConfigForm) {
+    return request({
+      url: `${GENERATOR_BASE_URL}/${tableName}/config`,
+      method: "post",
+      data: data,
     });
   }
 
   /** 获取代码生成预览数据 */
   static getPreviewData(tableName: string) {
     return request<any, GeneratorPreviewVO[]>({
-      url: `${DATABASE_BASE_URL}/table/${tableName}/preview`,
+      url: `${GENERATOR_BASE_URL}/${tableName}/preview`,
       method: "get",
     });
   }
 }
 
-export default DatabaseAPI;
+export default GeneratorAPI;
 
 /** 代码生成预览对象 */
 export interface GeneratorPreviewVO {
@@ -65,49 +76,68 @@ export interface TablePageVO {
   createTime: string;
 }
 
-/** 数据表字段VO */
-export interface TableColumnVO {
-  /** 字段名称 */
-  columnName: string;
+/** 代码生成配置表单 */
+export interface GenConfigForm {
+  /** 主键 */
+  id?: number;
+
+  /** 表名 */
+  tableName?: string;
+
+  /** 业务名 */
+  businessName?: string;
+
+  /** 模块名 */
+  moduleName?: string;
+
+  /** 包名 */
+  packageName?: string;
+
+  /** 实体名 */
+  entityName?: string;
+
+  /** 作者 */
+  author?: string;
+
+  /** 字段配置列表 */
+  fieldConfigs?: FieldConfig[];
+}
+
+/** 字段配置 */
+interface FieldConfig {
+  /** 主键 */
+  id?: number;
+
+  /** 列名 */
+  columnName?: string;
+
+  /** 列类型 */
+  columnType?: string;
+
+  /** 字段名 */
+  fieldName?: string;
 
   /** 字段类型 */
-  dataType: string;
+  fieldType?: string;
 
   /** 字段描述 */
-  columnComment: string;
+  fieldComment?: string;
 
-  /** 字段长度 */
-  characterMaximumLength: number;
+  /** 是否在列表显示 */
+  isShowInList?: number;
 
-  /** 是否主键(1-是 0-否) */
-  isPrimaryKey: number;
+  /** 是否在表单显示 */
+  isShowInForm?: number;
 
-  /** 是否可为空(1-是 0-否) */
-  isNullable: string;
+  /** 是否在查询条件显示 */
+  isShowInQuery?: number;
 
-  /** 字符集 */
-  characterSetName: string;
+  /** 是否必填 */
+  isRequired?: number;
 
-  /** 字符集排序规则 */
-  collationName: string;
-}
+  /** 表单类型 */
+  formType?: number;
 
-interface GeneratorConfigForm {
-  tableName: string;
-  entityName: string;
-  packageName: string;
-  moduleName: string;
-  author: string;
-  fieldConfigs: FieldConfig[];
-}
-
-interface FieldConfig {
-  name: string;
-  type: string;
-  description: string;
-  showInList: boolean;
-  showInForm: boolean;
-  showInQuery: boolean;
-  formType: string;
-  queryMethod: string;
+  /** 查询类型 */
+  queryType?: number;
 }

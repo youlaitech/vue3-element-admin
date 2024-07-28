@@ -51,7 +51,7 @@
               type="primary"
               size="small"
               link
-              @click="handleOpenDialog('config', scope.row.tableName)"
+              @click="handleOpenDialog(scope.row.tableName)"
             >
               <i-ep-MagicStick />
               生成
@@ -75,10 +75,187 @@
       @close="handleCloseDialog"
       size="80%"
     >
-      <div v-if="dialog.type === 'preview'">
-        <el-row>
+      <el-steps :active="active" align-center finish-status="success" simple>
+        <el-step title="基础配置" />
+        <el-step title="字段配置" />
+        <el-step title="预览生成" />
+      </el-steps>
+
+      <div class="mt-5">
+        <el-form v-show="active == 1" :model="formData" :label-width="100">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="表名">
+                <el-input v-model="formData.tableName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="业务名">
+                <el-input v-model="formData.businessName" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="模块名">
+                <el-input v-model="formData.moduleName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="包名">
+                <el-input v-model="formData.packageName" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="实体名">
+                <el-input v-model="formData.entityName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="作者">
+                <el-input v-model="formData.author" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+
+        <el-table
+          v-show="active == 2"
+          v-loading="loading"
+          :element-loading-text="loadingText"
+          highlight--currentrow
+          :data="formData.fieldConfigs"
+        >
+          <el-table-column label="字段列名" width="100">
+            <template #default="scope">
+              <el-form-item>
+                {{ scope.row.columnName }}
+              </el-form-item>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="字段类型" width="100">
+            <template #default="scope">
+              <el-form-item>
+                {{ scope.row.columnType }}
+              </el-form-item>
+            </template>
+          </el-table-column>
+          <el-table-column label="Java属性" width="120">
+            <template #default="scope">
+              <el-form-item
+                :prop="'fieldConfigs.' + scope.$index + '.fieldName'"
+              >
+                <el-input v-model="scope.row.fieldName" />
+              </el-form-item>
+            </template>
+          </el-table-column>
+          <el-table-column label="Java类型" width="120">
+            <template #default="scope">
+              <el-form-item
+                :prop="'fieldConfigs.' + scope.$index + '.fieldType'"
+              >
+                <el-input v-model="scope.row.fieldType" />
+              </el-form-item>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="字段描述">
+            <template #default="scope">
+              <el-form-item
+                :prop="'fieldConfigs.' + scope.$index + '.fieldComment'"
+              >
+                <el-input v-model="scope.row.fieldComment" />
+              </el-form-item>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="查询" width="70">
+            <template #default="scope">
+              <el-form-item>
+                <el-checkbox
+                  v-model="scope.row.isShowInQuery"
+                  :true-value="1"
+                  :false-value="0"
+                />
+              </el-form-item>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="列表" width="70">
+            <template #default="scope">
+              <el-form-item>
+                <el-checkbox
+                  v-model="scope.row.isShowInList"
+                  :true-value="1"
+                  :false-value="0"
+                />
+              </el-form-item>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="表单" width="70">
+            <template #default="scope">
+              <el-form-item>
+                <el-checkbox
+                  v-model="scope.row.isShowInForm"
+                  :true-value="1"
+                  :false-value="0"
+                />
+              </el-form-item>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="是否必填" width="100">
+            <template #default="scope">
+              <el-form-item>
+                <el-checkbox
+                  v-model="scope.row.isRequired"
+                  :true-value="1"
+                  :false-value="0"
+                  :disabled="scope.row.isShowInForm !== 1"
+                />
+              </el-form-item>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="表单类型">
+            <template #default="scope">
+              <el-form-item>
+                <el-select v-model="scope.row.formType" placeholder="请选择">
+                  <el-option
+                    v-for="(option, key) in formTypeOptions"
+                    :key="key"
+                    :label="option.label"
+                    :value="option.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="查询方式">
+            <template #default="scope">
+              <el-form-item>
+                <el-select v-model="scope.row.queryType" placeholder="请选择">
+                  <el-option
+                    v-for="(option, key) in queryTypeOptions"
+                    :key="key"
+                    :label="option.label"
+                    :value="option.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-row v-show="active == 3">
           <el-col :span="6">
-            <el-scrollbar max-height="80vh">
+            <el-scrollbar max-height="72vh">
               <el-tree
                 :data="treeData"
                 default-expand-all
@@ -93,11 +270,11 @@
             </el-scrollbar>
           </el-col>
           <el-col :span="18">
-            <el-scrollbar max-height="80vh">
+            <el-scrollbar max-height="72vh">
               <div class="absolute-rt z-36 right-5 top-2">
                 <el-link @click="handleCopyCode" type="primary">
                   <el-icon><CopyDocument /></el-icon>
-                  复制
+                  一键复制
                 </el-link>
               </div>
 
@@ -114,140 +291,17 @@
           </el-col>
         </el-row>
       </div>
-      <div v-else-if="dialog.type === 'config'">
-        <el-tabs type="border-card">
-          <el-tab-pane label="基础信息">
-            <el-form :label-width="100">
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="表名称">
-                    <el-input v-model="dialog.title" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="表描述">
-                    <el-input v-model="dialog.title" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="包路径">
-                    <el-input v-model="dialog.title" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="实体类名称">
-                    <el-input v-model="dialog.title" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="实体类名称">
-                    <el-input v-model="dialog.title" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="上级菜单">
-                    <el-input v-model="dialog.title" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </el-tab-pane>
-          <el-tab-pane label="字段配置">
-            <el-table
-              v-loading="loading"
-              highlight--currentrow
-              :data="tableColumns"
-            >
-              <el-table-column label="名称" width="200">
-                <template #default="scope">
-                  <el-form-item>
-                    {{ scope.row.columnName }}
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column label="类型" width="200">
-                <template #default="scope">
-                  <el-form-item>
-                    {{ scope.row.dataType }}
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column label="描述">
-                <template #default="scope">
-                  <el-form-item
-                    :prop="'tableColumns.' + scope.$index + '.columnComment'"
-                  >
-                    <el-input v-model="scope.row.columnComment" />
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column label="列表" width="70">
-                <template #default="scope">
-                  <el-form-item>
-                    <el-checkbox v-model="scope.row.showList" />
-                  </el-form-item>
-                </template>
-              </el-table-column>
-
-              <el-table-column label="表单" width="70">
-                <template #default="scope">
-                  <el-form-item>
-                    <el-checkbox v-model="scope.row.showForm" />
-                  </el-form-item>
-                </template>
-              </el-table-column>
-
-              <el-table-column label="查询" width="70">
-                <template #default="scope">
-                  <el-form-item>
-                    <el-checkbox v-model="scope.row.showQuerys" />
-                  </el-form-item>
-                </template>
-              </el-table-column>
-
-              <el-table-column label="表单类型">
-                <template #default="scope">
-                  <el-form-item>
-                    <el-select
-                      v-model="scope.row.htmlType"
-                      placeholder="请选择"
-                    >
-                      <el-option label="输入框" value="input" />
-                      <el-option label="下拉框" value="select" />
-                      <el-option label="日期选择" value="date" />
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-
-              <el-table-column label="查询方式">
-                <template #default="scope">
-                  <el-form-item>
-                    <el-select
-                      v-model="scope.row.queryType"
-                      placeholder="请选择"
-                    >
-                      <el-option label="等于" value="eq" />
-                      <el-option label="模糊" value="like" />
-                      <el-option label="范围" value="range" />
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
 
       <template #footer>
-        <el-button @click="handleCloseDialog">取 消</el-button>
-        <el-button type="primary" @click="handleSubmit">确 定</el-button>
+        <el-button type="success" @click="handlePrevClick" v-if="active !== 1">
+          <el-icon><Back /></el-icon>
+          {{ prevBtnText }}
+        </el-button>
+        <el-button type="primary" @click="handleNextClick">
+          {{ nextBtnText }}
+          <el-icon v-if="active !== 3"><Right /></el-icon>
+          <el-icon v-else><Download /></el-icon>
+        </el-button>
       </template>
     </el-drawer>
   </div>
@@ -263,23 +317,19 @@ import Codemirror from "codemirror-editor-vue3";
 import type { CmComponentRef } from "codemirror-editor-vue3";
 import type { Editor, EditorConfiguration } from "codemirror";
 const { copy, copied } = useClipboard();
-
-const code = ref();
-const cmRef = ref<CmComponentRef>();
-const cmOptions: EditorConfiguration = {
-  mode: "text/javascript",
-};
+import { FormTypeEnum } from "@/enums/FormTypeEnum";
+import { QueryTypeEnum } from "@/enums/QueryTypeEnum";
 
 import GeneratorAPI, {
   TablePageVO,
-  TableColumnVO,
+  GenConfigForm,
   TablePageQuery,
-  GeneratorPreviewVO,
 } from "@/api/generator";
 
 const queryFormRef = ref(ElForm);
 
 const loading = ref(false);
+const loadingText = ref("loading...");
 const total = ref(0);
 
 const queryParams = reactive<TablePageQuery>({
@@ -289,12 +339,66 @@ const queryParams = reactive<TablePageQuery>({
 
 const pageData = ref<TablePageVO[]>([]);
 
-const tableColumns = ref<TableColumnVO[]>([]);
+const formData = ref<GenConfigForm>({});
+
+const formTypeOptions: Record<string, OptionType> = FormTypeEnum;
+const queryTypeOptions: Record<string, OptionType> = QueryTypeEnum;
 
 const dialog = reactive({
-  type: "",
   visible: false,
   title: "",
+});
+
+const code = ref();
+const cmRef = ref<CmComponentRef>();
+const cmOptions: EditorConfiguration = {
+  mode: "text/javascript",
+};
+
+const prevBtnText = ref("");
+const nextBtnText = ref("下一步，字段配置");
+const active = ref(1);
+
+function handlePrevClick() {
+  if (active.value-- <= 1) active.value = 1;
+}
+
+function handleNextClick() {
+  if (active.value === 2) {
+    // 保存生成配置
+    const tableName = formData.value.tableName;
+    if (!tableName) {
+      ElMessage.error("表名不能为空");
+      return;
+    }
+    loading.value = true;
+    loadingText.value = "代码生成中，请稍后...";
+    GeneratorAPI.saveGenConfig(tableName, formData.value)
+      .then(() => {
+        handlePreview(tableName);
+      })
+      .then(() => {
+        if (active.value++ >= 3) active.value = 3;
+      })
+      .finally(() => {
+        loading.value = false;
+        loadingText.value = "loading...";
+      });
+  } else {
+    if (active.value++ >= 3) active.value = 3;
+  }
+}
+
+watch(active, (val) => {
+  if (val === 1) {
+    nextBtnText.value = "下一步，字段配置";
+  } else if (val === 2) {
+    prevBtnText.value = "上一步，基础配置";
+    nextBtnText.value = "下一步，确认生成";
+  } else if (val === 3) {
+    prevBtnText.value = "上一步，字段配置";
+    nextBtnText.value = "下载代码";
+  }
 });
 
 /** 查询 */
@@ -329,34 +433,41 @@ interface TreeNode {
 const treeData = ref<TreeNode[]>([]);
 
 /** 打开弹窗 */
-function handleOpenDialog(type: string, tableName: string) {
+function handleOpenDialog(tableName: string) {
   dialog.visible = true;
-  dialog.type = type;
-  if (type === "config") {
-    GeneratorAPI.getTableColumns(tableName).then((data) => {
-      dialog.title = `配置 ${tableName}`;
-      tableColumns.value = data;
-    });
-  } else if (type === "preview") {
-    treeData.value = [];
-    GeneratorAPI.getPreviewData(tableName).then((data) => {
-      dialog.title = `预览 ${tableName}`;
+  GeneratorAPI.getGenConfig(tableName).then((data) => {
+    dialog.title = `${tableName} 代码生成`;
+    formData.value = data;
+    if (formData.value.id) {
+      active.value = 3;
+      handlePreview(tableName);
+    } else {
+      active.value = 1;
+    }
+  });
+}
 
-      // 组装树形结构完善代码
-      const tree = buildTree(data);
-      treeData.value = [tree];
+/** 获取生成预览 */
+function handlePreview(tableName: string) {
+  treeData.value = [];
+  GeneratorAPI.getPreviewData(tableName).then((data) => {
+    dialog.title = `预览 ${tableName}`;
 
-      // 默认选中第一个叶子节点并设置 code 值
-      const firstLeafNode = findFirstLeafNode(tree);
-      if (firstLeafNode) {
-        code.value = firstLeafNode.content || "";
-      }
-    });
-  }
+    // 组装树形结构完善代码
+    const tree = buildTree(data);
+    treeData.value = [tree];
+
+    // 默认选中第一个叶子节点并设置 code 值
+    const firstLeafNode = findFirstLeafNode(tree);
+    if (firstLeafNode) {
+      code.value = firstLeafNode.content || "";
+    }
+  });
 }
 
 /**
  * 递归构建树形结构
+ *
  * @param data - 数据数组
  * @returns 树形结构根节点
  */
@@ -372,24 +483,22 @@ function buildTree(
     const parts = item.path.split(separator);
 
     // 定义特殊路径
+    // TODO: 如果菜单有多个节点，需要将此菜单作为独立一级的节点，而不是合并到上一级。 按照此规则， com.youlai.system 则是三个节点，而不是合并到一起，但是这里需要将 com.youlai.system 合并到一起，所以需要特殊处理
     const specialPaths = [
+      "com\\youlai\\system",
       "src\\main",
+      "java",
       "youlai-boot",
       "vue3-element-admin",
-      "java",
-      "com\\youlai\\system",
     ];
 
     // 检查路径中的特殊部分并合并它们
     const mergedParts: string[] = [];
     let buffer: string[] = [];
 
-    console.log("parts", parts);
-
     parts.forEach((part) => {
       buffer.push(part);
       const currentPath = buffer.join(separator);
-      console.log("currentPath", currentPath);
       if (specialPaths.includes(currentPath)) {
         mergedParts.push(currentPath);
         buffer = [];
@@ -482,8 +591,6 @@ watch(copied, () => {
     ElMessage.success("复制成功");
   }
 });
-
-function handleSubmit() {}
 
 onMounted(() => {
   handleQuery();
