@@ -5,18 +5,18 @@ export const enum MenuTypeEnum {
   /**
    * 目录
    */
-  CATALOG,
+  CATALOG = "CATALOG",
   /**
    * 菜单
    */
-  MENU,
+  MENU = "MENU",
 
   /**
    * 按钮
    */
-  BUTTON,
+  BUTTON = "BUTTON",
   /**
    * 外链
    */
-  EXTLINK,
+  EXTLINK = "EXTLINK",
 }
