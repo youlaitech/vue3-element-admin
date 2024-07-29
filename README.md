@@ -17,7 +17,7 @@
 
 ## 项目简介
 
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等主流技术栈构建的免费开源的后台管理前端模板（配套[后端源码](https://gitee.com/youlaiorg/youlai-boot)）。
+[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等主流技术栈构建的免费开源的中后台管理的前端模板（配套[Java 后端源码](https://gitee.com/youlaiorg/youlai-boot)）。
 
 
 ## 项目特色
@@ -70,6 +70,9 @@ cd vue3-element-admin
 # 安装 pnpm
 npm install pnpm -g
 
+# 设置镜像源(可忽略)
+pnpm config set registry https://registry.npmmirror.com
+
 # 安装依赖
 pnpm install
 
@@ -86,7 +89,7 @@ pnpm run dev
 pnpm run build
 
 # 上传文件至远程服务器
-将打包生成在 `dist` 目录下的文件拷贝至 `/usr/share/nginx/html` 目录
+将本地打包生成的 dist 目录下的所有文件拷贝至服务器的 /usr/share/nginx/html 目录。
 
 # nginx.cofig 配置
 server {
