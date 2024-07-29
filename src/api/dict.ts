@@ -34,7 +34,6 @@ class DictAPI {
    * 新增字典
    *
    * @param data 字典表单数据
-   * @returns 请求结果
    */
   static add(data: DictForm) {
     return request({
@@ -49,7 +48,6 @@ class DictAPI {
    *
    * @param id 字典ID
    * @param data 字典表单数据
-   * @returns 请求结果
    */
   static update(id: number, data: DictForm) {
     return request({
@@ -63,12 +61,23 @@ class DictAPI {
    * 删除字典
    *
    * @param ids 字典ID，多个以英文逗号(,)分隔
-   * @returns 请求结果
    */
   static deleteByIds(ids: string) {
     return request({
       url: `${DICT_BASE_URL}/${ids}`,
       method: "delete",
+    });
+  }
+
+  /**
+   * 获取字典列表
+   *
+   * @returns 字典列表
+   */
+  static getList() {
+    return request<any, OptionType[]>({
+      url: `${DICT_BASE_URL}/list`,
+      method: "get",
     });
   }
 

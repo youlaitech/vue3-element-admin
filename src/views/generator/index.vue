@@ -223,6 +223,21 @@
             </template>
           </el-table-column>
 
+          <el-table-column label="查询方式">
+            <template #default="scope">
+              <el-form-item>
+                <el-select v-model="scope.row.queryType" placeholder="请选择">
+                  <el-option
+                    v-for="(option, key) in queryTypeOptions"
+                    :key="key"
+                    :label="option.label"
+                    :value="option.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </template>
+          </el-table-column>
+
           <el-table-column label="表单类型">
             <template #default="scope">
               <el-form-item>
@@ -238,13 +253,13 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="查询方式">
+          <el-table-column label="字典类型">
             <template #default="scope">
               <el-form-item>
-                <el-select v-model="scope.row.queryType" placeholder="请选择">
+                <el-select v-model="scope.row.dictType" placeholder="请选择">
                   <el-option
-                    v-for="(option, key) in queryTypeOptions"
-                    :key="key"
+                    v-for="option in dictOptions"
+                    :key="option.value"
                     :label="option.label"
                     :value="option.value"
                   />
@@ -316,8 +331,8 @@ defineOptions({
 import "codemirror/mode/javascript/javascript.js";
 import Codemirror from "codemirror-editor-vue3";
 import type { CmComponentRef } from "codemirror-editor-vue3";
-import type { Editor, EditorConfiguration } from "codemirror";
-const { copy, copied } = useClipboard();
+import type { EditorConfiguration } from "codemirror";
+
 import { FormTypeEnum } from "@/enums/FormTypeEnum";
 import { QueryTypeEnum } from "@/enums/QueryTypeEnum";
 
@@ -327,29 +342,29 @@ import GeneratorAPI, {
   TablePageQuery,
 } from "@/api/generator";
 
+import DictAPI from "@/api/dict";
+
 const queryFormRef = ref(ElForm);
 
 const loading = ref(false);
 const loadingText = ref("loading...");
 const total = ref(0);
-
 const queryParams = reactive<TablePageQuery>({
   pageNum: 1,
   pageSize: 10,
 });
-
 const pageData = ref<TablePageVO[]>([]);
-
 const formData = ref<GenConfigForm>({});
-
 const formTypeOptions: Record<string, OptionType> = FormTypeEnum;
 const queryTypeOptions: Record<string, OptionType> = QueryTypeEnum;
+const dictOptions = ref<OptionType[]>();
 
 const dialog = reactive({
   visible: false,
   title: "",
 });
 
+const { copy, copied } = useClipboard();
 const code = ref();
 const cmRef = ref<CmComponentRef>();
 const cmOptions: EditorConfiguration = {
@@ -436,15 +451,21 @@ function handleCloseDialog() {
 /** 打开弹窗 */
 function handleOpenDialog(tableName: string) {
   dialog.visible = true;
-  GeneratorAPI.getGenConfig(tableName).then((data) => {
-    dialog.title = `${tableName} 代码生成`;
-    formData.value = data;
-    if (formData.value.id) {
-      active.value = 2;
-      handlePreview(tableName);
-    } else {
-      active.value = 0;
-    }
+
+  // 获取字典数据
+  DictAPI.getList().then((data) => {
+    dictOptions.value = data;
+
+    GeneratorAPI.getGenConfig(tableName).then((data) => {
+      dialog.title = `${tableName} 代码生成`;
+      formData.value = data;
+      if (formData.value.id) {
+        active.value = 2;
+        handlePreview(tableName);
+      } else {
+        active.value = 0;
+      }
+    });
   });
 }
 
@@ -452,8 +473,7 @@ function handleOpenDialog(tableName: string) {
 function handlePreview(tableName: string) {
   treeData.value = [];
   GeneratorAPI.getPreviewData(tableName).then((data) => {
-    dialog.title = `预览 ${tableName}`;
-
+    dialog.title = `代码生成 ${tableName}`;
     // 组装树形结构完善代码
     const tree = buildTree(data);
     treeData.value = [tree];
