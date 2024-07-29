@@ -27,11 +27,12 @@
           >
             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
             <div class="el-upload__text">
-              将文件拖到此处，或<em>点击上传</em>
+              将文件拖到此处，或
+              <em>点击上传</em>
             </div>
             <template #tip>
               <div class="el-upload__tip">
-                *.xlsx / *.xls
+                格式为*.xlsx / *.xls，文件不超过一个
                 <el-link
                   type="primary"
                   icon="download"
@@ -95,7 +96,12 @@ const importFormRules = {
   files: [{ required: true, message: "文件不能为空", trigger: "blur" }],
 };
 
+const emptyFileList = () => {
+  importFormData.files.length = 0;
+};
+
 const handleClose = () => {
+  emptyFileList();
   dialogVisible.value = false;
 };
 
