@@ -53,21 +53,21 @@
       >
         <el-table-column type="index" label="序号" width="60" />
         <el-table-column
-          key="sysName"
+          key="configName"
           label="配置名称"
-          prop="sysName"
+          prop="configName"
           min-width="100"
         />
         <el-table-column
-          key="sysKey"
+          key="configKey"
           label="配置key"
-          prop="sysKey"
+          prop="configKey"
           min-width="100"
         />
         <el-table-column
-          key="sysValue"
+          key="configValue"
           label="配置值"
-          prop="sysValue"
+          prop="configValue"
           min-width="100"
         />
         <el-table-column
@@ -125,14 +125,17 @@
         label-suffix=":"
         label-width="100px"
       >
-        <el-form-item label="配置名称" prop="sysName">
-          <el-input v-model="formData.sysName" placeholder="请输入配置名称" />
+        <el-form-item label="配置名称" prop="configName">
+          <el-input
+            v-model="formData.configName"
+            placeholder="请输入配置名称"
+          />
         </el-form-item>
-        <el-form-item label="配置key" prop="sysKey">
-          <el-input v-model="formData.sysKey" placeholder="请输入配置key" />
+        <el-form-item label="配置key" prop="configKey">
+          <el-input v-model="formData.configKey" placeholder="请输入配置key" />
         </el-form-item>
-        <el-form-item label="配置值" prop="sysValue">
-          <el-input v-model="formData.sysValue" placeholder="请输入配置值" />
+        <el-form-item label="配置值" prop="configValue">
+          <el-input v-model="formData.configValue" placeholder="请输入配置值" />
         </el-form-item>
         <el-form-item label="描述" prop="remark">
           <el-input
@@ -191,16 +194,22 @@ const dialog = reactive({
 // 系统配置表单
 const formData = reactive<ConfigForm>({
   id: undefined,
-  sysName: "",
-  sysKey: "",
-  sysValue: "",
+  configName: "",
+  configKey: "",
+  configValue: "",
   remark: "",
 });
 
 const rules = reactive({
-  sysName: [{ required: true, message: "请输入系统配置名称", trigger: "blur" }],
-  sysKey: [{ required: true, message: "请输入系统配置编码", trigger: "blur" }],
-  sysValue: [{ required: true, message: "请输入系统配置值", trigger: "blur" }],
+  configName: [
+    { required: true, message: "请输入系统配置名称", trigger: "blur" },
+  ],
+  configKey: [
+    { required: true, message: "请输入系统配置编码", trigger: "blur" },
+  ],
+  configValue: [
+    { required: true, message: "请输入系统配置值", trigger: "blur" },
+  ],
 });
 
 /** 查询系统配置 */
