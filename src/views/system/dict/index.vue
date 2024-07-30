@@ -386,9 +386,3 @@ onMounted(() => {
   handleQuery();
 });
 </script>
-
-<style scoped lang="scss">
-.el-form--inline .el-form-item {
-  margin-top: 18px;
-}
-</style>
