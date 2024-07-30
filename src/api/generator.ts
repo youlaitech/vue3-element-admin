@@ -140,4 +140,7 @@ interface FieldConfig {
 
   /** 查询类型 */
   queryType?: number;
+
+  /** 字段长度 */
+  maxLength?: number;
 }

@@ -174,6 +174,14 @@
             </template>
           </el-table-column>
 
+          <el-table-column label="最大长度" width="100">
+            <template #default="scope">
+              <el-form-item>
+                <el-input v-model="scope.row.maxLength" />
+              </el-form-item>
+            </template>
+          </el-table-column>
+
           <el-table-column label="查询" width="70">
             <template #default="scope">
               <el-form-item>
@@ -228,10 +236,10 @@
               <el-form-item>
                 <el-select v-model="scope.row.queryType" placeholder="请选择">
                   <el-option
-                    v-for="(option, key) in queryTypeOptions"
+                    v-for="(item, key) in queryTypeOptions"
                     :key="key"
-                    :label="option.label"
-                    :value="option.value"
+                    :label="item.label"
+                    :value="item.value"
                   />
                 </el-select>
               </el-form-item>
@@ -243,10 +251,10 @@
               <el-form-item>
                 <el-select v-model="scope.row.formType" placeholder="请选择">
                   <el-option
-                    v-for="(option, key) in formTypeOptions"
+                    v-for="(item, key) in formTypeOptions"
                     :key="key"
-                    :label="option.label"
-                    :value="option.value"
+                    :label="item.label"
+                    :value="item.value"
                   />
                 </el-select>
               </el-form-item>
@@ -258,10 +266,10 @@
               <el-form-item>
                 <el-select v-model="scope.row.dictType" placeholder="请选择">
                   <el-option
-                    v-for="option in dictOptions"
-                    :key="option.value"
-                    :label="option.label"
-                    :value="option.value"
+                    v-for="item in dictOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
                   />
                 </el-select>
               </el-form-item>
