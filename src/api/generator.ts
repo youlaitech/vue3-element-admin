@@ -100,7 +100,7 @@ export interface GenConfigForm {
   author?: string;
 
   /** 字段配置列表 */
-  fieldConfigs?: FieldConfig[];
+  fieldConfigs: FieldConfig[];
 }
 
 /** 字段配置 */
