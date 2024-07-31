@@ -107,6 +107,9 @@ export interface GenConfigForm {
   /** 作者 */
   author?: string;
 
+  /** 上级菜单 */
+  parentMenuId?: number;
+
   /** 字段配置列表 */
   fieldConfigs?: FieldConfig[];
 }
