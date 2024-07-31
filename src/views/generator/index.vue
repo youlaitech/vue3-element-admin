@@ -54,7 +54,17 @@
               @click="handleOpenDialog(scope.row.tableName)"
             >
               <i-ep-MagicStick />
-              生成
+              生成代码
+            </el-button>
+
+            <el-button
+              type="danger"
+              size="small"
+              link
+              @click="handleResetConfig(scope.row.tableName)"
+            >
+              <i-ep-RefreshLeft />
+              重置配置
             </el-button>
           </template>
         </el-table-column>
@@ -72,7 +82,7 @@
     <el-drawer
       v-model="dialog.visible"
       :title="dialog.title"
-      @close="handleCloseDialog"
+      @close="dialog.visible = false"
       size="80%"
     >
       <el-steps :active="active" align-center finish-status="success" simple>
@@ -452,10 +462,6 @@ function handleResetQuery() {
   handleQuery();
 }
 
-function handleCloseDialog() {
-  dialog.visible = false;
-}
-
 /** 打开弹窗 */
 function handleOpenDialog(tableName: string) {
   dialog.visible = true;
@@ -463,16 +469,32 @@ function handleOpenDialog(tableName: string) {
   // 获取字典数据
   DictAPI.getList().then((data) => {
     dictOptions.value = data;
+    loading.value = true;
 
-    GeneratorAPI.getGenConfig(tableName).then((data) => {
-      dialog.title = `${tableName} 代码生成`;
-      formData.value = data;
-      if (formData.value.id) {
-        active.value = 2;
-        handlePreview(tableName);
-      } else {
-        active.value = 0;
-      }
+    GeneratorAPI.getGenConfig(tableName)
+      .then((data) => {
+        dialog.title = `${tableName} 代码生成`;
+        formData.value = data;
+        if (formData.value.id) {
+          active.value = 2;
+          handlePreview(tableName);
+        } else {
+          active.value = 0;
+        }
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  });
+}
+
+/** 重置配置 */
+function handleResetConfig(tableName: string) {
+  ElMessageBox.confirm("确定要重置配置吗？", "提示", {
+    type: "warning",
+  }).then(() => {
+    GeneratorAPI.resetGenConfig(tableName).then(() => {
+      handleQuery();
     });
   });
 }

@@ -38,6 +38,14 @@ class GeneratorAPI {
       method: "get",
     });
   }
+
+  /** 重置代码配置 */
+  static resetGenConfig(tableName: string) {
+    return request({
+      url: `${GENERATOR_BASE_URL}/${tableName}/config`,
+      method: "delete",
+    });
+  }
 }
 
 export default GeneratorAPI;
