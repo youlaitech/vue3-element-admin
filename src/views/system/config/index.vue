@@ -129,13 +129,22 @@
           <el-input
             v-model="formData.configName"
             placeholder="请输入配置名称"
+            :maxlength="50"
           />
         </el-form-item>
         <el-form-item label="配置键" prop="configKey">
-          <el-input v-model="formData.configKey" placeholder="请输入配置键" />
+          <el-input
+            v-model="formData.configKey"
+            placeholder="请输入配置键"
+            :maxlength="50"
+          />
         </el-form-item>
         <el-form-item label="配置值" prop="configValue">
-          <el-input v-model="formData.configValue" placeholder="请输入配置值" />
+          <el-input
+            v-model="formData.configValue"
+            placeholder="请输入配置值"
+            :maxlength="100"
+          />
         </el-form-item>
         <el-form-item label="描述" prop="remark">
           <el-input
@@ -246,6 +255,7 @@ function handleOpenDialog(id?: number) {
     });
   } else {
     dialog.title = "新增系统配置";
+    formData.id = undefined;
   }
 }
 
