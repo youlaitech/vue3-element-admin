@@ -454,7 +454,7 @@ function togglePermTree() {
   }
 }
 
-/** 权限筛选  */
+/** 权限筛选 */
 watch(permKeywords, (val) => {
   permTreeRef.value!.filter(val);
 });

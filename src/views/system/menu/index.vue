@@ -11,13 +11,14 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery"
-            ><template #icon><i-ep-search /></template>搜索</el-button
-          >
+          <el-button type="primary" @click="handleQuery">
+            <template #icon><i-ep-search /></template>
+            搜索
+          </el-button>
           <el-button @click="handleResetQuery">
             <template #icon><i-ep-refresh /></template>
-            重置</el-button
-          >
+            重置
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -30,8 +31,8 @@
           @click="handleOpenDialog(0)"
         >
           <template #icon><i-ep-plus /></template>
-          新增</el-button
-        >
+          新增
+        </el-button>
       </template>
 
       <el-table
@@ -70,17 +71,18 @@
             <el-tag
               v-if="scope.row.type === MenuTypeEnum.CATALOG"
               type="warning"
-              >目录</el-tag
             >
-            <el-tag v-if="scope.row.type === MenuTypeEnum.MENU" type="success"
-              >菜单</el-tag
-            >
-            <el-tag v-if="scope.row.type === MenuTypeEnum.BUTTON" type="danger"
-              >按钮</el-tag
-            >
-            <el-tag v-if="scope.row.type === MenuTypeEnum.EXTLINK" type="info"
-              >外链</el-tag
-            >
+              目录
+            </el-tag>
+            <el-tag v-if="scope.row.type === MenuTypeEnum.MENU" type="success">
+              菜单
+            </el-tag>
+            <el-tag v-if="scope.row.type === MenuTypeEnum.BUTTON" type="danger">
+              按钮
+            </el-tag>
+            <el-tag v-if="scope.row.type === MenuTypeEnum.EXTLINK" type="info">
+              外链
+            </el-tag>
           </template>
         </el-table-column>
 
@@ -131,7 +133,8 @@
               size="small"
               @click.stop="handleOpenDialog(scope.row.id)"
             >
-              <i-ep-plus />新增
+              <i-ep-plus />
+              新增
             </el-button>
 
             <el-button
@@ -141,7 +144,8 @@
               size="small"
               @click.stop="handleOpenDialog(undefined, scope.row.id)"
             >
-              <i-ep-edit />编辑
+              <i-ep-edit />
+              编辑
             </el-button>
             <el-button
               v-hasPerm="['sys:menu:delete']"
@@ -149,7 +153,8 @@
               link
               size="small"
               @click.stop="handleDelete(scope.row.id)"
-              ><i-ep-delete />
+            >
+              <i-ep-delete />
               删除
             </el-button>
           </template>
@@ -276,12 +281,12 @@
             placeholder="system/user/index"
             style="width: 95%"
           >
-            <template v-if="formData.type == MenuTypeEnum.MENU" #prepend
-              >src/views/</template
-            >
-            <template v-if="formData.type == MenuTypeEnum.MENU" #append
-              >.vue</template
-            >
+            <template v-if="formData.type == MenuTypeEnum.MENU" #prepend>
+              src/views/
+            </template>
+            <template v-if="formData.type == MenuTypeEnum.MENU" #append>
+              .vue
+            </template>
           </el-input>
         </el-form-item>
 
@@ -303,8 +308,9 @@
               type="success"
               plain
               @click="formData.params = [{ key: '', value: '' }]"
-              >添加路由参数</el-button
             >
+              添加路由参数
+            </el-button>
           </div>
 
           <div v-else>
@@ -368,8 +374,10 @@
               始终显示
               <el-tooltip placement="bottom" effect="light">
                 <template #content>
-                  选择“是”，即使目录或菜单下只有一个子节点，也会显示父节点。<br />
-                  选择“否”，如果目录或菜单下只有一个子节点，则只显示该子节点，隐藏父节点。<br />
+                  选择“是”，即使目录或菜单下只有一个子节点，也会显示父节点。
+                  <br />
+                  选择“否”，如果目录或菜单下只有一个子节点，则只显示该子节点，隐藏父节点。
+                  <br />
                   如果是叶子节点，请选择“否”。
                 </template>
                 <i-ep-QuestionFilled class="inline-block" />
@@ -492,7 +500,7 @@ const rules = reactive({
 // 选择表格的行菜单ID
 const selectedMenuId = ref<number | undefined>();
 
-// 查询
+// 查询菜单
 function handleQuery() {
   loading.value = true;
   MenuAPI.getList(queryParams)
