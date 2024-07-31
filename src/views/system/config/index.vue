@@ -6,7 +6,7 @@
         <el-form-item label="关键字" prop="keywords">
           <el-input
             v-model="queryParams.keywords"
-            placeholder="请输入配置key\配置名称"
+            placeholder="请输入配置键\配置名称"
             clearable
             @keyup.enter="handleQuery"
           />
@@ -60,7 +60,7 @@
         />
         <el-table-column
           key="configKey"
-          label="配置key"
+          label="配置键"
           prop="configKey"
           min-width="100"
         />
@@ -131,8 +131,8 @@
             placeholder="请输入配置名称"
           />
         </el-form-item>
-        <el-form-item label="配置key" prop="configKey">
-          <el-input v-model="formData.configKey" placeholder="请输入配置key" />
+        <el-form-item label="配置键" prop="configKey">
+          <el-input v-model="formData.configKey" placeholder="请输入配置键" />
         </el-form-item>
         <el-form-item label="配置值" prop="configValue">
           <el-input v-model="formData.configValue" placeholder="请输入配置值" />

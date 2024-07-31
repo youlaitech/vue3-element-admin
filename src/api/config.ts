@@ -81,7 +81,7 @@ export interface ConfigForm {
   id?: number;
   /** 配置名称 */
   configName?: string;
-  /** 配置key */
+  /** 配置键 */
   configKey?: string;
   /** 配置值 */
   configValue?: string;
@@ -95,7 +95,7 @@ export interface ConfigPageVO {
   id?: number;
   /** 配置名称 */
   configName?: string;
-  /** 配置key */
+  /** 配置键 */
   configKey?: string;
   /** 配置值 */
   configValue?: string;
