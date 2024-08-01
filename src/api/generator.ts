@@ -38,12 +38,24 @@ class GeneratorAPI {
       method: "get",
     });
   }
-
-  /** 重置代码配置 */
-  static resetGenConfig(tableName: string) {
+  /**
+   * 下载 ZIP 文件
+   * @param url
+   * @param fileName
+   */
+  static downloadZip(tableName: string, fileName?: string) {
     return request({
-      url: `${GENERATOR_BASE_URL}/${tableName}/config`,
-      method: "delete",
+      url: `${GENERATOR_BASE_URL}/${tableName}/downloadZip`,
+      method: "get",
+      responseType: "blob",
+    }).then((res) => {
+      const blob = new Blob([res.data], { type: "application/zip" });
+      const a = document.createElement("a");
+      const url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = fileName || "下载文件.zip";
+      a.click();
+      window.URL.revokeObjectURL(url);
     });
   }
 }
