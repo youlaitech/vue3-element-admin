@@ -465,6 +465,14 @@ function handleNextClick() {
     if (active.value++ >= 2) {
       active.value = 2;
     }
+    if (active.value === 2) {
+      const tableName = formData.value.tableName;
+      if (!tableName) {
+        ElMessage.error("表名不能为空");
+        return;
+      }
+      GeneratorAPI.downloadZip(tableName, "youlai-admin-code.zip");
+    }
   }
 }
 
