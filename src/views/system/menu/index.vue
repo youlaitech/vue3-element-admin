@@ -531,7 +531,7 @@ function handleRowClick(row: MenuVO) {
  * @param menuId 菜单ID
  */
 function handleOpenDialog(parentId?: number, menuId?: number) {
-  MenuAPI.getOptions()
+  MenuAPI.getOptions(true)
     .then((data) => {
       menuOptions.value = [{ value: 0, label: "顶级菜单", children: data }];
     })

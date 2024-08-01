@@ -36,10 +36,11 @@ class MenuAPI {
    *
    * @returns 菜单下拉数据源
    */
-  static getOptions() {
+  static getOptions(onlyParent?: boolean) {
     return request<any, OptionType[]>({
       url: `${MENU_BASE_URL}/options`,
       method: "get",
+      params: { onlyParent: onlyParent },
     });
   }
 
