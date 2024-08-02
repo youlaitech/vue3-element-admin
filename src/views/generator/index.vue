@@ -347,7 +347,7 @@
 defineOptions({
   name: "Generator",
 });
-//导入sortablejs
+
 import Sortable from "sortablejs";
 import "codemirror/mode/javascript/javascript.js";
 import Codemirror from "codemirror-editor-vue3";
@@ -361,6 +361,7 @@ import GeneratorAPI, {
   TablePageVO,
   GenConfigForm,
   TablePageQuery,
+  FieldConfig,
 } from "@/api/generator";
 
 import DictAPI from "@/api/dict";
@@ -438,7 +439,7 @@ const setNodeSort = (oldIndex: number, newIndex: number) => {
   let arr = Object.assign([], formData.value.fieldConfigs);
   const currentRow = arr.splice(oldIndex, 1)[0];
   arr.splice(newIndex, 0, currentRow);
-  arr.forEach((item, index) => {
+  arr.forEach((item: FieldConfig, index) => {
     item.fieldSort = index + 1;
   });
   formData.value.fieldConfigs = [];
@@ -502,7 +503,7 @@ function handleNextClick() {
         ElMessage.error("表名不能为空");
         return;
       }
-      GeneratorAPI.downloadZip(tableName, "youlai-admin-code.zip");
+      GeneratorAPI.download(tableName, "youlai-admin-code.zip");
     }
   }
 }
@@ -612,7 +613,7 @@ function buildTree(
   data: { path: string; fileName: string; content: string }[]
 ): TreeNode {
   // 动态获取根节点
-  const root: TreeNode = { label: "前后端工程代码", children: [] };
+  const root: TreeNode = { label: "前后端代码", children: [] };
 
   data.forEach((item) => {
     // 将路径分成数组
@@ -622,11 +623,11 @@ function buildTree(
     // 定义特殊路径
     // TODO: 如果菜单有多个节点，需要将此菜单作为独立一级的节点，而不是合并到上一级。 按照此规则， com.youlai.system 则是三个节点，而不是合并到一起，但是这里需要将 com.youlai.system 合并到一起，所以需要特殊处理
     const specialPaths = [
-      "src/main",
+      "src" + separator + "main",
       "java",
       "youlai-boot",
       "vue3-element-admin",
-      "com/youlai/system",
+      "com" + separator + "youlai" + separator + "system",
     ];
 
     // 检查路径中的特殊部分并合并它们
