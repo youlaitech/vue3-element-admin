@@ -28,13 +28,14 @@
                 clearable
                 class="!w-[100px]"
               >
-                <el-option label="启用" value="1" />
-                <el-option label="禁用" value="0" />
+                <el-option label="正常" :value="1" />
+                <el-option label="禁用" :value="0" />
               </el-select>
             </el-form-item>
 
             <el-form-item label="创建时间">
               <el-date-picker
+                :editable="false"
                 class="!w-[240px]"
                 v-model="dateTimeRange"
                 type="daterange"
@@ -105,7 +106,7 @@
               label="编号"
               align="center"
               prop="id"
-              width="100"
+              width="80"
             />
             <el-table-column
               key="username"
@@ -113,12 +114,7 @@
               align="center"
               prop="username"
             />
-            <el-table-column
-              label="用户昵称"
-              width="120"
-              align="center"
-              prop="nickname"
-            />
+            <el-table-column label="用户昵称" align="center" prop="nickname" />
 
             <el-table-column
               label="性别"
@@ -129,7 +125,7 @@
 
             <el-table-column
               label="部门"
-              width="120"
+              width="150"
               align="center"
               prop="deptName"
             />
@@ -140,10 +136,15 @@
               width="120"
             />
 
-            <el-table-column label="状态" align="center" prop="status">
+            <el-table-column
+              label="状态"
+              align="center"
+              prop="status"
+              width="100"
+            >
               <template #default="scope">
                 <el-tag :type="scope.row.status == 1 ? 'success' : 'info'">
-                  {{ scope.row.status == 1 ? "启用" : "禁用" }}
+                  {{ scope.row.status == 1 ? "正常" : "禁用" }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -268,10 +269,14 @@
         </el-form-item>
 
         <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :value="1">正常</el-radio>
-            <el-radio :value="0">禁用</el-radio>
-          </el-radio-group>
+          <el-switch
+            v-model="formData.status"
+            inline-prompt
+            active-text="正常"
+            inactive-text="禁用"
+            :active-value="1"
+            :inactive-value="0"
+          />
         </el-form-item>
       </el-form>
 
