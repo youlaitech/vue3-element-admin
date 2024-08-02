@@ -107,14 +107,26 @@ const modalConfig: IModalConfig<UserForm> = {
         maxlength: 50,
       },
     },
+    // {
+    //   label: "状态",
+    //   prop: "status",
+    //   type: "radio",
+    //   options: [
+    //     { label: "正常", value: 1 },
+    //     { label: "禁用", value: 0 },
+    //   ],
+    //   initialValue: 1,
+    // },
     {
-      label: "状态",
+      label: "状态123",
       prop: "status",
-      type: "radio",
-      options: [
-        { label: "正常", value: 1 },
-        { label: "禁用", value: 0 },
-      ],
+      type: "switch",
+      attrs: {
+        activeText: "正常",
+        inactiveText: "禁用",
+        activeValue: 1,
+        inactiveValue: 0,
+      },
     },
   ],
 };

@@ -220,6 +220,7 @@ export type IFormItems<T = any> = Array<{
     | "input"
     | "select"
     | "radio"
+    | "switch"
     | "checkbox"
     | "tree-select"
     | "date-picker"
