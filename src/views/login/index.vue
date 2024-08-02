@@ -91,13 +91,14 @@
           size="large"
           class="w-full"
           @click.prevent="handleLoginSubmit"
-          >{{ $t("login.login") }}
+        >
+          {{ $t("login.login") }}
         </el-button>
 
         <!-- 账号密码提示 -->
         <div class="mt-10 text-sm">
           <span>{{ $t("login.username") }}: admin</span>
-          <span class="ml-4"> {{ $t("login.password") }}: 123456</span>
+          <span class="ml-4">{{ $t("login.password") }}: 123456</span>
         </div>
       </el-form>
     </el-card>
@@ -155,6 +156,8 @@ const loginFormRef = ref<FormInstance>();
 const loginData = ref<LoginData>({
   username: "admin",
   password: "123456",
+  captchaKey: "",
+  captchaCode: "",
 } as LoginData);
 
 const loginRules = computed(() => {
