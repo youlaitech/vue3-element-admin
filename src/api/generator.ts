@@ -52,9 +52,9 @@ class GeneratorAPI {
    * @param url
    * @param fileName
    */
-  static downloadZip(tableName: string, fileName?: string) {
+  static download(tableName: string, fileName?: string) {
     return request({
-      url: `${GENERATOR_BASE_URL}/${tableName}/downloadZip`,
+      url: `${GENERATOR_BASE_URL}/${tableName}/download`,
       method: "get",
       responseType: "blob",
     }).then((res) => {
@@ -131,15 +131,12 @@ export interface GenConfigForm {
   /** 上级菜单 */
   parentMenuId?: number;
 
-  /** 字段排序 */
-  fieldSort?: number;
-
   /** 字段配置列表 */
   fieldConfigs?: FieldConfig[];
 }
 
 /** 字段配置 */
-interface FieldConfig {
+export interface FieldConfig {
   /** 主键 */
   id?: number;
 
@@ -178,4 +175,7 @@ interface FieldConfig {
 
   /** 字段长度 */
   maxLength?: number;
+
+  /** 字段排序 */
+  fieldSort?: number;
 }
