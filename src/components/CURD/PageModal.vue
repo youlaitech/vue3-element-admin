@@ -66,6 +66,14 @@
                     </template>
                   </el-radio-group>
                 </template>
+                <!-- switch 开关 -->
+                <template v-else-if="item.type === 'switch'">
+                  <el-switch
+                    inline-prompt
+                    v-model="formData[item.prop]"
+                    v-bind="item.attrs"
+                  />
+                </template>
                 <!-- Checkbox 多选框 -->
                 <template v-else-if="item.type === 'checkbox'">
                   <el-checkbox-group
@@ -209,6 +217,14 @@
                       </template>
                     </el-radio-group>
                   </template>
+                  <!-- switch 开关 -->
+                  <template v-else-if="item.type === 'switch'">
+                    <el-switch
+                      inline-prompt
+                      v-model="formData[item.prop]"
+                      v-bind="item.attrs"
+                    />
+                  </template>
                   <!-- Checkbox 多选框 -->
                   <template v-else-if="item.type === 'checkbox'">
                     <el-checkbox-group
@@ -334,7 +350,7 @@ prepareFuncs.forEach((func) => func());
 
 // 获取表单数据
 function getFormData(key?: string) {
-  return key === undefined ? formData : formData[key] ?? undefined;
+  return key === undefined ? formData : (formData[key] ?? undefined);
 }
 
 // 设置表单值
