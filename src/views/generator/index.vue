@@ -58,6 +58,7 @@
             </el-button>
 
             <el-button
+              v-if="scope.row.isConfigured === 1"
               type="danger"
               size="small"
               link
