@@ -36,7 +36,7 @@
             <el-form-item label="创建时间">
               <el-date-picker
                 class="!w-[240px]"
-                v-model="dateTimeRange"
+                v-model="queryParams.createTimeRange"
                 type="daterange"
                 range-separator="~"
                 start-placeholder="开始时间"
@@ -318,17 +318,6 @@ const queryParams = reactive<UserPageQuery>({
   pageSize: 10,
 });
 
-const dateTimeRange = ref("");
-watch(dateTimeRange, (newVal) => {
-  if (newVal) {
-    queryParams.startTime = newVal[0];
-    queryParams.endTime = newVal[1];
-  } else {
-    queryParams.startTime = undefined;
-    queryParams.endTime = undefined;
-  }
-});
-
 /**  用户弹窗对象  */
 const dialog = reactive({
   visible: false,
@@ -370,7 +359,6 @@ function handleQuery() {
   loading.value = true;
   UserAPI.getPage(queryParams)
     .then((data) => {
-      console.log("handleQuery", data);
       pageData.value = data.list;
       total.value = data.total;
     })
@@ -382,11 +370,9 @@ function handleQuery() {
 /** 重置查询 */
 function handleResetQuery() {
   queryFormRef.value.resetFields();
-  dateTimeRange.value = "";
   queryParams.pageNum = 1;
   queryParams.deptId = undefined;
-  queryParams.startTime = undefined;
-  queryParams.endTime = undefined;
+  queryParams.createTimeRange = undefined;
   handleQuery();
 }
 
