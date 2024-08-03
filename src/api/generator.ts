@@ -1,6 +1,4 @@
 import request from "@/utils/request";
-import { FormTypeEnum } from "@/enums/FormTypeEnum";
-import { QueryTypeEnum } from "@/enums/QueryTypeEnum";
 
 const GENERATOR_BASE_URL = "/api/v1/generator";
 
@@ -178,4 +176,7 @@ export interface FieldConfig {
 
   /** 字段排序 */
   fieldSort?: number;
+
+  /** 字典类型 */
+  dictType?: string;
 }

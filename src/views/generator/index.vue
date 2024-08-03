@@ -154,7 +154,7 @@
 
         <div class="elTableCustom" v-show="active == 1">
           <el-table
-            v-loading="fieldLoading"
+            v-loading="loading"
             row-key="id"
             :element-loading-text="loadingText"
             highlight--currentrow
@@ -231,14 +231,19 @@
                   v-model="scope.row.isRequired"
                   :true-value="1"
                   :false-value="0"
-                  :disabled="scope.row.isShowInForm !== 1"
+                  v-if="scope.row.isShowInForm == 1"
                 />
+                <span v-else>-</span>
               </template>
             </el-table-column>
 
             <el-table-column label="查询方式" min-width="100">
               <template #default="scope">
-                <el-select v-model="scope.row.queryType" placeholder="请选择">
+                <el-select
+                  v-model="scope.row.queryType"
+                  placeholder="请选择"
+                  v-if="scope.row.isShowInQuery === 1"
+                >
                   <el-option
                     v-for="(item, key) in queryTypeOptions"
                     :key="key"
@@ -246,12 +251,17 @@
                     :value="item.value"
                   />
                 </el-select>
+                <span v-else>-</span>
               </template>
             </el-table-column>
 
             <el-table-column label="表单类型" min-width="110">
               <template #default="scope">
-                <el-select v-model="scope.row.formType" placeholder="请选择">
+                <el-select
+                  v-model="scope.row.formType"
+                  placeholder="请选择"
+                  v-if="scope.row.isShowInForm === 1"
+                >
                   <el-option
                     v-for="(item, key) in formTypeOptions"
                     :key="key"
@@ -259,12 +269,14 @@
                     :value="item.value"
                   />
                 </el-select>
+                <span v-else>-</span>
               </template>
             </el-table-column>
 
             <el-table-column label="字典类型" min-width="100">
               <template #default="scope">
                 <el-select
+                  v-if="scope.row.formType === FormTypeEnum.SELECT.value"
                   v-model="scope.row.dictType"
                   placeholder="请选择"
                   clearable
@@ -276,6 +288,7 @@
                     :value="item.value"
                   />
                 </el-select>
+                <span v-else>-</span>
               </template>
             </el-table-column>
           </el-table>
@@ -368,24 +381,25 @@ import DictAPI from "@/api/dict";
 import MenuAPI from "@/api/menu";
 
 const queryFormRef = ref(ElForm);
-
-const loading = ref(false);
-const fieldLoading = ref(false);
-const loadingText = ref("loading...");
-const total = ref(0);
 const queryParams = reactive<TablePageQuery>({
   keywords: undefined,
   pageNum: 1,
   pageSize: 10,
 });
+
+const loading = ref(false);
+const loadingText = ref("loading...");
+
 const pageData = ref<TablePageVO[]>([]);
-const formData = ref<GenConfigForm>({
-  fieldConfigs: [],
-});
+const total = ref(0);
+
 const formTypeOptions: Record<string, OptionType> = FormTypeEnum;
 const queryTypeOptions: Record<string, OptionType> = QueryTypeEnum;
 const dictOptions = ref<OptionType[]>();
 const menuOptions = ref<OptionType[]>([]);
+const formData = ref<GenConfigForm>({
+  fieldConfigs: [],
+});
 
 const dialog = reactive({
   visible: false,
@@ -410,8 +424,40 @@ interface TreeNode {
   content?: string;
   children?: TreeNode[];
 }
-
 const treeData = ref<TreeNode[]>([]);
+
+watch(active, (val) => {
+  if (val === 0) {
+    nextBtnText.value = "下一步，字段配置";
+  } else if (val === 1) {
+    prevBtnText.value = "上一步，基础配置";
+    nextBtnText.value = "下一步，确认生成";
+  } else if (val === 2) {
+    prevBtnText.value = "上一步，字段配置";
+    nextBtnText.value = "下载代码";
+  }
+});
+
+watch(copied, () => {
+  if (copied.value) {
+    ElMessage.success("复制成功");
+  }
+});
+
+watch(
+  () => formData.value.fieldConfigs as FieldConfig[],
+  (newVal: FieldConfig[]) => {
+    newVal.forEach((fieldConfig) => {
+      if (
+        fieldConfig.formType === FormTypeEnum.DATE_TIME.value ||
+        fieldConfig.formType === FormTypeEnum.DATE.value
+      ) {
+        fieldConfig.queryType = QueryTypeEnum.BETWEEN.value as number;
+      }
+    });
+  },
+  { deep: true, immediate: true }
+);
 
 const initSort = () => {
   if (sortFlag.value) {
@@ -455,13 +501,13 @@ function handlePrevClick() {
       fieldConfigs: [],
     };
     nextTick(() => {
-      fieldLoading.value = true;
+      loading.value = true;
       GeneratorAPI.getGenConfig(currentTableName.value)
         .then((data) => {
           formData.value = data;
         })
         .finally(() => {
-          fieldLoading.value = false;
+          loading.value = false;
         });
     });
     initSort();
@@ -480,7 +526,7 @@ function handleNextClick() {
       ElMessage.error("表名不能为空");
       return;
     }
-    fieldLoading.value = true;
+    loading.value = true;
     loadingText.value = "代码生成中，请稍后...";
     GeneratorAPI.saveGenConfig(tableName, formData.value)
       .then(() => {
@@ -490,7 +536,7 @@ function handleNextClick() {
         if (active.value++ >= 2) active.value = 2;
       })
       .finally(() => {
-        fieldLoading.value = false;
+        loading.value = false;
         loadingText.value = "loading...";
       });
   } else {
@@ -507,18 +553,6 @@ function handleNextClick() {
     }
   }
 }
-
-watch(active, (val) => {
-  if (val === 0) {
-    nextBtnText.value = "下一步，字段配置";
-  } else if (val === 1) {
-    prevBtnText.value = "上一步，基础配置";
-    nextBtnText.value = "下一步，确认生成";
-  } else if (val === 2) {
-    prevBtnText.value = "上一步，字段配置";
-    nextBtnText.value = "下载代码";
-  }
-});
 
 /** 查询 */
 function handleQuery() {
@@ -637,7 +671,6 @@ function buildTree(
     parts.forEach((part) => {
       buffer.push(part);
       const currentPath = buffer.join(separator);
-      console.log("currentPath", currentPath);
       if (specialPaths.includes(currentPath)) {
         mergedParts.push(currentPath);
         buffer = [];
@@ -700,6 +733,7 @@ function handleFileTreeNodeClick(data: TreeNode) {
   }
 }
 
+/** 获取文件树节点图标 */
 function getFileTreeNodeIcon(label: string) {
   if (label.endsWith(".java")) {
     return "java";
@@ -719,18 +753,14 @@ function getFileTreeNodeIcon(label: string) {
   return "file";
 }
 
+/** 一键复制 */
 const handleCopyCode = () => {
   if (code.value) {
     copy(code.value);
   }
 };
 
-watch(copied, () => {
-  if (copied.value) {
-    ElMessage.success("复制成功");
-  }
-});
-
+/** 组件挂载后执行 */
 onMounted(() => {
   handleQuery();
   cmRef.value?.destroy();
