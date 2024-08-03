@@ -62,6 +62,7 @@
     "path-browserify": "^1.0.1",
     "path-to-regexp": "^6.2.2",
     "pinia": "^2.1.7",
+    "qs": "^6.13.0",
     "sockjs-client": "1.6.1",
     "sortablejs": "^1.15.2",
     "stompjs": "^2.3.3",
@@ -79,6 +80,7 @@
     "@types/node": "^20.14.10",
     "@types/nprogress": "^0.2.3",
     "@types/path-browserify": "^1.0.2",
+    "@types/qs": "^6.9.15",
     "@types/sockjs-client": "^1.5.4",
     "@types/sortablejs": "^1.15.8",
     "@types/stompjs": "^2.3.9",
@@ -125,5 +127,6 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "packageManager": "pnpm@9.1.3+sha512.7c2ea089e1a6af306409c4fc8c4f0897bdac32b772016196c469d9428f1fe2d5a21daf8ad6512762654ac645b5d9136bb210ec9a00afa8dbc4677843ba362ecd"
 }
