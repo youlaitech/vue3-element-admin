@@ -161,7 +161,10 @@
             highlight--currentrow
             :data="formData.fieldConfigs"
           >
-            <el-table-column type="index" label="序号" width="80" />
+            <el-table-column width="55" align="center">
+              <i-ep-Rank class="cursor-move sortable-handle" />
+            </el-table-column>
+
             <el-table-column label="字段列名" width="150">
               <template #default="scope">
                 {{ scope.row.columnName }}
@@ -471,6 +474,7 @@ const initSort = () => {
     group: "shared",
     animation: 150,
     ghostClass: "sortable-ghost", //拖拽样式
+    handle: ".sortable-handle", //拖拽区域
     easing: "cubic-bezier(1, 0, 0, 1)",
     onStart: (item: any) => {},
 
