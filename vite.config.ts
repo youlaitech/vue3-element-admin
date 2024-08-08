@@ -21,7 +21,7 @@ import {
   devDependencies,
 } from "./package.json";
 
-// https://devtools-next.vuejs.org/
+/** @see  https://devtools-next.vuejs.org  */
 import VueDevTools from "vite-plugin-vue-devtools";
 
 /** 平台的名称、版本、运行所需的`node`版本、依赖、构建时间的类型提示 */
@@ -31,7 +31,7 @@ const __APP_INFO__ = {
 };
 
 const pathSrc = resolve(__dirname, "src");
-//  https://cn.vitejs.dev/config
+/**  Vite配置 @see https://cn.vitejs.dev/config */
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
   return {
@@ -63,7 +63,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         /** 代理前缀为 /dev-api 的请求  */
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
-          // 接口地址
+          // 接口地址 例如：http://vapi.youlai.tech
           target: env.VITE_APP_API_URL,
           rewrite: (path) =>
             path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
@@ -79,7 +79,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       UnoCSS({
         hmrTopLevelAwait: false,
       }),
-      // 自动导入参考： https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts
+      /** 自动导入配置  @see https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts */
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ["vue", "@vueuse/core", "pinia", "vue-router", "vue-i18n"],

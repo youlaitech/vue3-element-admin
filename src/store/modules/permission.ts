@@ -7,13 +7,9 @@ const modules = import.meta.glob("../../views/**/**.vue");
 const Layout = () => import("@/layout/index.vue");
 
 export const usePermissionStore = defineStore("permission", () => {
-  /**
-   * 应用中所有的路由列表，包括静态路由和动态路由
-   */
+  /** 所有路由，包括静态和动态路由 */
   const routes = ref<RouteRecordRaw[]>([]);
-  /**
-   * 混合模式左侧菜单列表
-   */
+  /** 混合模式左侧菜单 */
   const mixLeftMenus = ref<RouteRecordRaw[]>([]);
 
   /**
@@ -84,9 +80,8 @@ const transformRoutes = (routes: RouteVO[]) => {
 };
 
 /**
- * 用于在组件外部（如在Pinia Store 中）使用 Pinia 提供的 store 实例。
- * 官方文档解释了如何在组件外部使用 Pinia Store：
- * https://pinia.vuejs.org/core-concepts/outside-component-usage.html#using-a-store-outside-of-a-component
+ * 在组件外使用 Pinia store 实例
+ * @see https://pinia.vuejs.org/core-concepts/outside-component-usage.html
  */
 export function usePermissionStoreHook() {
   return usePermissionStore(store);
