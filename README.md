@@ -1,19 +1,25 @@
+
 <div align="center">
-    <img src="https://img.shields.io/badge/Vue-3.4.35-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-5.3.5-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.7.8-blue.svg"/>
-    <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
-    <a href="https://gitee.com/youlaiorg" target="_blank">
-        <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
-    </a>
-    <div align="center"> 中文 | <a href="./README.en-US.md">English</div>
+  <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/logo.png">
+  <h1>vue3-element-admin</h1>
+
+  <img src="https://img.shields.io/badge/Vue-3.4.35-brightgreen.svg"/>
+  <img src="https://img.shields.io/badge/Vite-5.3.5-green.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.7.8-blue.svg"/>
+  <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
+  <a href="https://gitee.com/youlaiorg" target="_blank">
+      <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
+  </a>
 </div>
 
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
 
+
 <div align="center">
-  <a target="_blank" href="http://vue3.youlai.tech">👀 在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📖 阅读文档</a>  
+  <a target="_blank" href="http://vue3.youlai.tech">🔍 在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📖 阅读文档</a> | <a href="./README.en-US.md">🌐English
 </div>
+
+
 
 ## 项目简介
 
