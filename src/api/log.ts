@@ -52,6 +52,8 @@ export default LogAPI;
 export interface LogPageQuery extends PageQuery {
   /** 搜索关键字 */
   keywords?: string;
+  /** 操作时间 */
+  createTime?: [string, string];
 }
 
 /**

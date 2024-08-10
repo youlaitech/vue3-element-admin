@@ -37,7 +37,7 @@
               <el-date-picker
                 :editable="false"
                 class="!w-[240px]"
-                v-model="queryParams.createTimeRange"
+                v-model="queryParams.createTime"
                 type="daterange"
                 range-separator="~"
                 start-placeholder="开始时间"
@@ -377,7 +377,7 @@ function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
   queryParams.deptId = undefined;
-  queryParams.createTimeRange = undefined;
+  queryParams.createTime = undefined;
   handleQuery();
 }
 

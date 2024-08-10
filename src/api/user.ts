@@ -175,7 +175,7 @@ export interface UserPageQuery extends PageQuery {
   deptId?: number;
 
   /** 开始时间 */
-  createTimeRange?: [string, string];
+  createTime?: [string, string];
 }
 
 /** 用户分页对象 */
