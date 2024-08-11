@@ -10,12 +10,28 @@
             @keyup.enter="handleQuery"
           />
         </el-form-item>
+        <el-form-item prop="createTime" label="操作时间">
+          <el-date-picker
+            :editable="false"
+            class="!w-[240px]"
+            v-model="queryParams.createTime"
+            type="daterange"
+            range-separator="~"
+            start-placeholder="开始时间"
+            end-placeholder="截止时间"
+            value-format="YYYY-MM-DD"
+          />
+        </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="handleQuery"
-            ><i-ep-search />搜索</el-button
-          >
-          <el-button @click="handleResetQuery"><i-ep-refresh />重置</el-button>
+          <el-button type="primary" @click="handleQuery">
+            <i-ep-search />
+            搜索
+          </el-button>
+          <el-button @click="handleResetQuery">
+            <i-ep-refresh />
+            重置
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -75,6 +91,7 @@ const queryParams = reactive<LogPageQuery>({
   pageNum: 1,
   pageSize: 10,
   keywords: "",
+  createTime: ["", ""],
 });
 
 // 日志表格数据
@@ -96,6 +113,7 @@ function handleQuery() {
 function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
+  queryParams.createTime = undefined;
   handleQuery();
 }
 
