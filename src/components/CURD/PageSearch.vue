@@ -51,7 +51,9 @@
               </el-tag>
               <template v-if="inputTagMap[item.prop].inputVisible">
                 <el-input
-                  :ref="(el) => (inputTagMap[item.prop].inputRef = el)"
+                  :ref="
+                    (el: HTMLElement) => (inputTagMap[item.prop].inputRef = el)
+                  "
                   v-model="inputTagMap[item.prop].inputValue"
                   v-bind="inputTagMap[item.prop].inputAttrs"
                   @keyup.enter="handleInputConfirm(item.prop)"
@@ -105,8 +107,14 @@
           :underline="false"
           @click="isExpand = !isExpand"
         >
-          <template v-if="isExpand"> 收起<i-ep-arrow-up /> </template>
-          <template v-else> 展开<i-ep-arrow-down /> </template>
+          <template v-if="isExpand">
+            收起
+            <i-ep-arrow-up />
+          </template>
+          <template v-else>
+            展开
+            <i-ep-arrow-down />
+          </template>
         </el-link>
       </el-form-item>
     </el-form>

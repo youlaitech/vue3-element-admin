@@ -16,14 +16,6 @@ const contentConfig: IContentConfig<UserPageQuery> = {
     pageSizes: [10, 20, 30, 50],
   },
   indexAction: function (params) {
-    if ("createAt" in params) {
-      const createAt = params.createAt as string[];
-      if (createAt?.length > 1) {
-        params.startTime = createAt[0];
-        params.endTime = createAt[1];
-      }
-      delete params.createAt;
-    }
     return UserAPI.getPage(params);
   },
   deleteAction: UserAPI.deleteByIds,
