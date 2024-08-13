@@ -103,9 +103,11 @@ function initSearchData(routes: RouteRecordRaw[], parentPath: string = "") {
     if (item.children) {
       initSearchData(item.children, path);
     } else if (item.meta && item.meta.title && item.path) {
+      let title = item.meta.title == "dashboard" ? "首页" : item.meta.title;
+      let toLowerCaseTitle = title.toLowerCase();
       searchData.value.push({
-        title: item.meta.title,
-        toLowerCaseTitle: item.meta.title.toLowerCase(),
+        title: title,
+        toLowerCaseTitle: toLowerCaseTitle,
         path: path,
         name: item.name,
         icon: item.meta.icon,
