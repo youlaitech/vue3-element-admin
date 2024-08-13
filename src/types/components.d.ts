@@ -73,6 +73,7 @@ declare module "vue" {
     IEpClose: (typeof import("~icons/ep/close"))["default"];
     IEpDownload: (typeof import("~icons/ep/download"))["default"];
     LangSelect: (typeof import("./../components/LangSelect/index.vue"))["default"];
+    MenuSearch: (typeof import("./../components/MenuSearch/index.vue"))["default"];
     LayoutSelect: (typeof import("./../layout/components/Settings/components/LayoutSelect.vue"))["default"];
     MultiUpload: (typeof import("./../components/Upload/MultiUpload.vue"))["default"];
     NavBar: (typeof import("./../layout/components/NavBar/index.vue"))["default"];

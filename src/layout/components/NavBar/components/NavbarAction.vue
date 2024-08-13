@@ -1,6 +1,8 @@
 <template>
   <div class="flex">
     <template v-if="!isMobile">
+      <!-- 搜索 -->
+      <menu-search />
       <!--全屏 -->
       <div class="nav-action-item" @click="toggle">
         <svg-icon
