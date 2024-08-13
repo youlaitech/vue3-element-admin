@@ -133,7 +133,7 @@
       <template #footer>
         <div>
           <el-button type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="handleCloseModal">取 消</el-button>
+          <el-button @click="handleClose">取 消</el-button>
         </div>
       </template>
     </el-drawer>
@@ -285,7 +285,7 @@
       <template #footer>
         <div style="padding-right: var(--el-dialog-padding-primary)">
           <el-button type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="handleCloseModal">取 消</el-button>
+          <el-button @click="handleClose">取 消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -399,15 +399,19 @@ const handleSubmit = useThrottleFn(() => {
         }
         ElMessage.success(msg);
         emit("submitClick");
-        handleCloseModal();
+        handleClose();
       });
     }
   });
 }, 3000);
 
+// 隐藏弹窗
+function handleClose() {
+  modalVisible.value = false;
+}
+
 // 关闭弹窗
 function handleCloseModal() {
-  modalVisible.value = false;
   formRef.value?.resetFields();
   nextTick(() => {
     formRef.value?.clearValidate();

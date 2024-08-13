@@ -1,7 +1,4 @@
-import DeptAPI from "@/api/dept";
-import RoleAPI from "@/api/role";
-import UserAPI from "@/api/user";
-import type { UserForm } from "@/api/user";
+import UserAPI, { type UserForm } from "@/api/user";
 import type { IModalConfig } from "@/components/CURD/types";
 import { DeviceEnum } from "@/enums/DeviceEnum";
 import { useAppStore } from "@/store";
@@ -11,7 +8,7 @@ const modalConfig: IModalConfig<UserForm> = {
   component: "drawer",
   drawer: {
     title: "修改用户",
-    size: useAppStore().device === DeviceEnum.MOBILE ? "90%" : 600,
+    size: useAppStore().device === DeviceEnum.MOBILE ? "80%" : 500,
   },
   pk: "id",
   formAction: function (data) {
@@ -52,14 +49,12 @@ const modalConfig: IModalConfig<UserForm> = {
         "check-strictly": true,
         "render-after-expand": false,
       },
-      async initFn(formItem) {
-        formItem.attrs.data = await DeptAPI.getOptions();
-      },
     },
     {
       type: "custom",
       label: "性别",
       prop: "gender",
+      initialValue: 1,
     },
     {
       label: "角色",
@@ -71,9 +66,7 @@ const modalConfig: IModalConfig<UserForm> = {
         multiple: true,
       },
       options: [],
-      async initFn(formItem) {
-        this.options = await RoleAPI.getOptions();
-      },
+      initialValue: [],
     },
     {
       type: "input",
@@ -107,18 +100,8 @@ const modalConfig: IModalConfig<UserForm> = {
         maxlength: 50,
       },
     },
-    // {
-    //   label: "状态",
-    //   prop: "status",
-    //   type: "radio",
-    //   options: [
-    //     { label: "正常", value: 1 },
-    //     { label: "禁用", value: 0 },
-    //   ],
-    //   initialValue: 1,
-    // },
     {
-      label: "状态123",
+      label: "状态",
       prop: "status",
       type: "switch",
       attrs: {
@@ -131,4 +114,4 @@ const modalConfig: IModalConfig<UserForm> = {
   ],
 };
 
-export default modalConfig;
+export default reactive(modalConfig);

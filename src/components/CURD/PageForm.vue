@@ -149,7 +149,7 @@ prepareFuncs.forEach((func) => func());
 
 // 获取表单数据
 function getFormData(key?: string) {
-  return key === undefined ? formData : formData[key] ?? undefined;
+  return key === undefined ? formData : (formData[key] ?? undefined);
 }
 
 // 设置表单值
