@@ -59,9 +59,9 @@ const permissionStore = usePermissionStore();
 //获取当前拥有的路由
 const menuSearchInput = ref();
 const noSearchRoutePath = ref(["/redirect", "/login", "/401", "/404"]);
-const searchData = ref(<SearchItem>[]);
+const searchData = ref<SearchItem[]>([]);
 
-const searchResult = ref(<SearchItem>[]);
+const searchResult = ref<SearchItem[]>([]);
 function showSearchModal() {
   searchKey.value = "";
   searchResult.value = [];
