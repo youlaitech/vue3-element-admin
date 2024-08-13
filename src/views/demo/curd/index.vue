@@ -41,7 +41,7 @@
           </el-tag>
         </template>
         <template #mobile="scope">
-          <el-text> {{ scope.row[scope.prop] }} </el-text>
+          <el-text>{{ scope.row[scope.prop] }}</el-text>
           <copy-button
             v-if="scope.row[scope.prop]"
             :text="scope.row[scope.prop]"
@@ -90,6 +90,8 @@
 
 <script setup lang="ts">
 import UserAPI from "@/api/user";
+import DeptAPI from "@/api/dept";
+import RoleAPI from "@/api/role";
 import type { IObject, IOperatData } from "@/components/CURD/types";
 import usePage from "@/components/CURD/usePage";
 import addModalConfig from "./config/add";
@@ -105,18 +107,32 @@ const {
   editModalRef,
   handleQueryClick,
   handleResetClick,
-  handleAddClick,
+  // handleAddClick,
   // handleEditClick,
   handleSubmitClick,
   handleExportClick,
   handleSearchClick,
   handleFilterChange,
 } = usePage();
+
+// 新增
+async function handleAddClick() {
+  addModalRef.value?.setModalVisible();
+  // 加载部门下拉数据源
+  addModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
+  // 加载角色下拉数据源
+  addModalConfig.formItems[4]!.options = await RoleAPI.getOptions();
+}
 // 编辑
 async function handleEditClick(row: IObject) {
+  editModalRef.value?.setModalVisible();
+  // 加载部门下拉数据源
+  editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
+  // 加载角色下拉数据源
+  editModalConfig.formItems[4]!.options = await RoleAPI.getOptions();
   // 根据id获取数据进行填充
   const data = await UserAPI.getFormData(row.id);
-  editModalRef.value?.setModalVisible(data);
+  editModalRef.value?.setFormData(data);
 }
 // 其他工具栏
 function handleToolbarClick(name: string) {

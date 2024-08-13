@@ -245,7 +245,7 @@
             </template>
             <!-- 格式化为百分比 -->
             <template v-else-if="col.templet === 'percent'">
-              <template v-if="col.prop"> {{ scope.row[col.prop] }}% </template>
+              <template v-if="col.prop">{{ scope.row[col.prop] }}%</template>
             </template>
             <!-- 显示图标 -->
             <template v-else-if="col.templet === 'icon'">
@@ -448,7 +448,8 @@
             >
               <el-icon class="el-icon--upload"><upload-filled /></el-icon>
               <div class="el-upload__text">
-                将文件拖到此处，或<em>点击上传</em>
+                <span>将文件拖到此处，或</span>
+                <em>点击上传</em>
               </div>
               <template #tip>
                 <div class="el-upload__tip">
