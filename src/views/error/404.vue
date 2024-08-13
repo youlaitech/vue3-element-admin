@@ -40,8 +40,9 @@ function back() {
           style="color: #20a0ff"
           href="https://wallstreetcn.com"
           target="_blank"
-          >wallstreetcn</a
         >
+          wallstreetcn
+        </a>
       </div>
       <div class="bullshit__headline">
         The webmaster said that you can not enter this page...

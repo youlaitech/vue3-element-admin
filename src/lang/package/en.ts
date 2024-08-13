@@ -30,6 +30,7 @@ export default {
     logout: "Logout",
     document: "Document",
     gitee: "Gitee",
+    profile: "User Profile",
   },
   sizeSelect: {
     tooltip: "Layout Size",

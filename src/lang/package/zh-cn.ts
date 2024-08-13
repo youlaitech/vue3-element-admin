@@ -30,6 +30,7 @@ export default {
     logout: "注销登出",
     document: "项目文档",
     gitee: "项目地址",
+    profile: "个人中心",
   },
   sizeSelect: {
     tooltip: "布局大小",

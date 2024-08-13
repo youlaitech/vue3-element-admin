@@ -44,13 +44,19 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "401",
-        component: () => import("@/views/error-page/401.vue"),
+        component: () => import("@/views/error/401.vue"),
         meta: { hidden: true },
       },
       {
         path: "404",
-        component: () => import("@/views/error-page/404.vue"),
+        component: () => import("@/views/error/404.vue"),
         meta: { hidden: true },
+      },
+      {
+        path: "profile",
+        name: "Profile",
+        component: () => import("@/views/profile/index.vue"),
+        meta: { title: "个人中心", icon: "user", hidden: true },
       },
     ],
   },
