@@ -41,8 +41,6 @@ const appStore = useAppStore();
 const permissionStore = usePermissionStore();
 const router = useRouter();
 
-console.log("当前路由", useRoute().path);
-
 // 避免 activeTopMenuPath 缓存被清理，从当前路由路径获取顶部菜单路径，eg. /system/user → /system
 const activeTopMenuPath = useRoute().path.match(/^\/[^\/]+/)?.[0] || "/";
 appStore.activeTopMenu(activeTopMenuPath);
