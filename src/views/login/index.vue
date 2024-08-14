@@ -120,7 +120,7 @@ import { LocationQuery, useRoute } from "vue-router";
 
 // 内部依赖
 import { useSettingsStore, useUserStore } from "@/store";
-import AuthAPI, { LoginData } from "@/api/auth";
+import AuthAPI, { type LoginData } from "@/api/auth";
 import router from "@/router";
 import defaultSettings from "@/settings";
 import { ThemeEnum } from "@/enums/ThemeEnum";
@@ -158,7 +158,7 @@ const loginData = ref<LoginData>({
   password: "123456",
   captchaKey: "",
   captchaCode: "",
-} as LoginData);
+});
 
 const loginRules = computed(() => {
   return {
