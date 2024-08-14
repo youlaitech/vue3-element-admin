@@ -1,8 +1,7 @@
-import AuthAPI, { LoginData } from "@/api/auth";
-import UserAPI, { UserInfo } from "@/api/user";
+import AuthAPI, { type LoginData } from "@/api/auth";
+import UserAPI, { type UserInfo } from "@/api/user";
 import { resetRouter } from "@/router";
 import { store } from "@/store";
-
 import { TOKEN_KEY } from "@/enums/CacheEnum";
 
 export const useUserStore = defineStore("user", () => {
