@@ -207,6 +207,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/badge/style/css",
         "element-plus/es/components/steps/style/css",
         "element-plus/es/components/step/style/css",
+        "element-plus/es/components/avatar/style/cs",
       ],
     },
     // 构建配置

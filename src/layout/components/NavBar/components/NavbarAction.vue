@@ -77,6 +77,9 @@
       </div>
       <template #dropdown>
         <el-dropdown-menu>
+          <el-dropdown-item divided @click="handleOpenUserProfile">
+            {{ $t("navbar.profile") }}
+          </el-dropdown-item>
           <a
             target="_blank"
             href="https://gitee.com/youlaiorg/vue3-element-admin"
@@ -165,6 +168,11 @@ const messages = ref([
 const getFilteredMessages = (type: MessageTypeEnum) => {
   return messages.value.filter((message) => message.type === type);
 };
+
+/** 打开个人中心 */
+function handleOpenUserProfile() {
+  router.push({ name: "Profile" });
+}
 
 /* 注销 */
 function logout() {

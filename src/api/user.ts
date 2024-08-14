@@ -136,6 +136,23 @@ class UserAPI {
       },
     });
   }
+
+  /** 获取个人中心用户信息 */
+  static getProfile(id: number) {
+    return request<any, UserProfileVO>({
+      url: `${USER_BASE_URL}/${id}/profile`,
+      method: "get",
+    });
+  }
+
+  /** 修改个人中心用户信息 */
+  static updateProfile(id: number, data: UserProfileForm) {
+    return request({
+      url: `${USER_BASE_URL}/${id}/profile`,
+      method: "put",
+      data: data,
+    });
+  }
 }
 
 export default UserAPI;
@@ -143,7 +160,7 @@ export default UserAPI;
 /** 登录用户信息 */
 export interface UserInfo {
   /** 用户ID */
-  userId?: number;
+  userId: number;
 
   /** 用户名 */
   username?: string;
@@ -226,4 +243,52 @@ export interface UserForm {
   status?: number;
   /** 用户名 */
   username?: string;
+}
+
+/** 个人中心用户信息 */
+export interface UserProfileVO {
+  /** 用户ID */
+  id?: number;
+
+  /** 用户名 */
+  username?: string;
+
+  /** 昵称 */
+  nickname?: string;
+
+  /** 头像URL */
+  avatar?: string;
+
+  /** 性别 */
+  gender?: number;
+
+  /** 手机号 */
+  mobile?: string;
+
+  /** 邮箱 */
+  email?: string;
+}
+
+/** 个人中心用户信息表单 */
+export interface UserProfileForm {
+  /** 用户ID */
+  id?: number;
+
+  /** 用户名 */
+  username?: string;
+
+  /** 昵称 */
+  nickname?: string;
+
+  /** 头像URL */
+  avatar?: string;
+
+  /** 性别 */
+  gender?: number;
+
+  /** 手机号 */
+  mobile?: string;
+
+  /** 邮箱 */
+  email?: string;
 }

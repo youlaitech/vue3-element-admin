@@ -5,8 +5,9 @@
       type="primary"
       target="_blank"
       class="mb-[20px]"
-      >示例源码 请点击>>>></el-link
     >
+      示例源码 请点击>>>>
+    </el-link>
     <el-row :gutter="10">
       <el-col :span="12">
         <el-card>
@@ -18,21 +19,23 @@
                 class="ml-5"
                 @click="connectWebSocket"
                 :disabled="isConnected"
-                >连接</el-button
               >
+                连接
+              </el-button>
               <el-button
                 type="danger"
                 @click="disconnectWebSocket"
                 :disabled="!isConnected"
-                >断开</el-button
               >
+                断开
+              </el-button>
             </el-col>
 
             <el-col :span="8" class="text-right">
               连接状态：
-              <el-tag class="ml-2" type="success" v-if="isConnected"
-                >已连接</el-tag
-              >
+              <el-tag class="ml-2" type="success" v-if="isConnected">
+                已连接
+              </el-tag>
               <el-tag class="ml-2" type="info" v-else>已断开</el-tag>
             </el-col>
           </el-row>
@@ -59,9 +62,9 @@
               <el-input v-model="receiver" />
             </el-form-item>
             <el-form-item>
-              <el-button @click="sendToUser" type="primary"
-                >发送点对点消息</el-button
-              >
+              <el-button @click="sendToUser" type="primary">
+                发送点对点消息
+              </el-button>
             </el-form-item>
           </el-form>
         </el-card>
