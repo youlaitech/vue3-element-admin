@@ -74,10 +74,10 @@ class UserAPI {
    * @param id 用户ID
    * @param password 新密码
    */
-  static updatePassword(id: number, password: string) {
+  static resetPassword(id: number, password: string) {
     return request({
       url: `${USER_BASE_URL}/${id}/password`,
-      method: "patch",
+      method: "put",
       params: { password: password },
     });
   }
@@ -149,6 +149,15 @@ class UserAPI {
   static updateProfile(id: number, data: UserProfileForm) {
     return request({
       url: `${USER_BASE_URL}/${id}/profile`,
+      method: "put",
+      data: data,
+    });
+  }
+
+  /** 修改个人中心用户密码 */
+  static changePassword(data: PasswordChangeForm) {
+    return request({
+      url: `${USER_BASE_URL}/password`,
       method: "put",
       data: data,
     });
@@ -291,4 +300,12 @@ export interface UserProfileForm {
 
   /** 邮箱 */
   email?: string;
+}
+
+/** 修改密码表单 */
+export interface PasswordChangeForm {
+  /** 原密码 */
+  oldPassword?: string;
+  /** 新密码 */
+  newPassword?: string;
 }

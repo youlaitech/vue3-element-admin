@@ -158,7 +158,7 @@ function handleOperatClick(data: IOperatData) {
         ElMessage.warning("密码至少需要6位字符，请重新输入");
         return false;
       }
-      UserAPI.updatePassword(data.row.id, value).then(() => {
+      UserAPI.resetPassword(data.row.id, value).then(() => {
         ElMessage.success("密码重置成功，新密码是：" + value);
       });
     });
