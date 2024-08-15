@@ -1,25 +1,90 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="24">
-        <el-card>
-          <el-avatar :src="userProfile.avatar" size="large" />
+      <el-col :span="6">
+        <el-tabs tab-position="left">
+          <el-tab-pane label="账号信息">
+            <el-card>
+              <div class="">
+                <div class="relative w-100px h-100px flex-center">
+                  <el-avatar :src="userProfile.avatar" :size="100" />
+                  <el-button
+                    type="info"
+                    class="absolute bottom-0 right-0 cursor-pointer"
+                    circle
+                    :icon="Camera"
+                    size="small"
+                    @click="triggerFileUpload"
+                  />
+                  <input
+                    type="file"
+                    ref="fileInput"
+                    style="display: none"
+                    @change="handleFileChange"
+                  />
+                </div>
+                <div class="mt-5">
+                  {{ userProfile.nickname }}
+                  <el-icon class="align-middle cursor-pointer">
+                    <Edit />
+                  </el-icon>
+                </div>
+              </div>
 
-          <el-form />
+              <el-descriptions :column="1" class="mt-10">
+                <el-descriptions-item>
+                  <template #label>
+                    <el-icon class="align-middle"><User /></el-icon>
+                    用户名
+                  </template>
+                  {{ userProfile.username }}
 
-          <div class="profile-info">
-            <h2>{{ userProfile.username }}</h2>
-            <h2>{{ userProfile.nickname }}</h2>
-            <p>{{ userProfile.email }}</p>
-            <el-button type="primary" @click="handleOpenDialog">
-              编辑个人信息
-            </el-button>
-            <el-button @click="handleOpenDialog">修改密码</el-button>
-          </div>
-        </el-card>
+                  <el-icon
+                    v-if="userProfile.gender === 1"
+                    class="align-middle color-blue"
+                  >
+                    <Male />
+                  </el-icon>
+                  <el-icon v-else class="align-middle color-pink">
+                    <Female />
+                  </el-icon>
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template #label>
+                    <el-icon class="align-middle"><Phone /></el-icon>
+                    手机号码
+                  </template>
+                  {{ userProfile.mobile }}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template #label>
+                    <el-icon class="align-middle"><Message /></el-icon>
+                    邮箱
+                  </template>
+                  {{ userProfile.email }}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template #label>
+                    <el-icon class="align-middle"><User /></el-icon>
+                    部门
+                  </template>
+                  {{ userProfile.email }}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template #label>
+                    <el-icon class="align-middle"><User /></el-icon>
+                    角色
+                  </template>
+                  {{ userProfile.email }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </el-tab-pane>
+          <el-tab-pane label="安全设置">Config</el-tab-pane>
+          <el-tab-pane label="偏好设置">Role</el-tab-pane>
+          <el-tab-pane label="接收设置">Task</el-tab-pane>
+        </el-tabs>
       </el-col>
-
-      <el-col :span="24" />
     </el-row>
 
     <el-dialog title="修改密码" v-model:visible="dialogVisible">
@@ -58,7 +123,7 @@ import UserAPI, {
   PasswordChangeForm,
 } from "@/api/user";
 import { useUserStore } from "@/store/modules/user";
-
+import { Camera } from "@element-plus/icons-vue";
 const router = useRouter();
 const userStore = useUserStore();
 
@@ -91,19 +156,40 @@ const handleChangePassword = async () => {
   dialogVisible.value = false;
 };
 
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const triggerFileUpload = () => {
+  fileInput.value?.click();
+};
+
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files ? target.files[0] : null;
+  if (file) {
+    // Handle the file upload here
+    console.log("Selected file:", file);
+  }
+};
+
 onMounted(async () => {
   const data = await UserAPI.getProfile(userStore.user.userId);
   userProfile.value = data;
 });
 </script>
 
-<style scoped>
-.profile-info {
-  margin-left: 20px;
+<style lang="scss" scoped>
+/** 关闭tag标签  */
+.app-container {
+  /* 50px = navbar = 50px */
+  height: calc(100vh - 50px);
+  background: var(--el-fill-color-blank);
 }
 
-.el-card {
-  display: flex;
-  padding: 20px;
+/** 开启tag标签  */
+.hasTagsView {
+  .app-container {
+    /* 84px = navbar + tags-view = 50px + 34px */
+    height: calc(100vh - 84px);
+  }
 }
 </style>
