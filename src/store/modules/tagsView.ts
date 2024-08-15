@@ -3,6 +3,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
   const cachedViews = ref<string[]>([]);
   const router = useRouter();
   const route = useRoute();
+
   /**
    * 添加已访问视图到已访问视图列表中
    */
@@ -144,6 +145,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
       });
     });
   }
+
   function delRightViews(view: TagView) {
     return new Promise((resolve) => {
       const currIndex = visitedViews.value.findIndex(
@@ -209,6 +211,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
       }
     });
   }
+
   function isActive(tag: TagView) {
     return tag.path === route.path;
   }
@@ -228,6 +231,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
       }
     }
   }
+
   return {
     visitedViews,
     cachedViews,
