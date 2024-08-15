@@ -1,122 +1,151 @@
 <template>
   <div class="app-container">
-    <el-row>
-      <el-col :span="6">
-        <el-tabs tab-position="left">
-          <el-tab-pane label="账号信息">
-            <div class="w-full">
-              <el-card class="flex-1">
-                <div class="">
-                  <div class="relative w-100px h-100px flex-center">
-                    <el-avatar :src="userProfile.avatar" :size="100" />
-                    <el-button
-                      type="info"
-                      class="absolute bottom-0 right-0 cursor-pointer"
-                      circle
-                      :icon="Camera"
-                      size="small"
-                      @click="triggerFileUpload"
-                    />
-                    <input
-                      type="file"
-                      ref="fileInput"
-                      style="display: none"
-                      @change="handleFileChange"
-                    />
-                  </div>
-                  <div class="mt-5">
-                    {{ userProfile.nickname }}
-                    <el-icon class="align-middle cursor-pointer">
-                      <Edit />
-                    </el-icon>
-                  </div>
-                </div>
-                <el-descriptions :column="1" class="mt-10">
-                  <el-descriptions-item>
-                    <template #label>
-                      <el-icon class="align-middle"><User /></el-icon>
-                      用户名
-                    </template>
-                    {{ userProfile.username }}
-
-                    <el-icon
-                      v-if="userProfile.gender === 1"
-                      class="align-middle color-blue"
-                    >
-                      <Male />
-                    </el-icon>
-                    <el-icon v-else class="align-middle color-pink">
-                      <Female />
-                    </el-icon>
-                  </el-descriptions-item>
-                  <el-descriptions-item>
-                    <template #label>
-                      <el-icon class="align-middle"><Phone /></el-icon>
-                      手机号码
-                    </template>
-                    {{ userProfile.mobile }}
-                  </el-descriptions-item>
-                  <el-descriptions-item>
-                    <template #label>
-                      <el-icon class="align-middle"><Message /></el-icon>
-                      邮箱
-                    </template>
-                    {{ userProfile.email }}
-                  </el-descriptions-item>
-                  <el-descriptions-item>
-                    <template #label>
-                      <el-icon class="align-middle"><User /></el-icon>
-                      部门
-                    </template>
-                    {{ userProfile.email }}
-                  </el-descriptions-item>
-                  <el-descriptions-item>
-                    <template #label>
-                      <el-icon class="align-middle"><User /></el-icon>
-                      角色
-                    </template>
-                    {{ userProfile.email }}
-                  </el-descriptions-item>
-                </el-descriptions>
-              </el-card>
+    <el-tabs tab-position="left">
+      <el-tab-pane label="账号信息">
+        <div class="w-full">
+          <el-card class="flex-1">
+            <div class="">
+              <div class="relative w-100px h-100px flex-center">
+                <el-avatar :src="userProfile.avatar" :size="100" />
+                <el-button
+                  type="info"
+                  class="absolute bottom-0 right-0 cursor-pointer"
+                  circle
+                  :icon="Camera"
+                  size="small"
+                  @click="triggerFileUpload"
+                />
+                <input
+                  type="file"
+                  ref="fileInput"
+                  style="display: none"
+                  @change="handleFileChange"
+                />
+              </div>
+              <div class="mt-5">
+                {{ userProfile.nickname }}
+                <el-icon class="align-middle cursor-pointer">
+                  <Edit />
+                </el-icon>
+              </div>
             </div>
-          </el-tab-pane>
-          <el-tab-pane label="安全设置">
-            <el-card>
-              <el-descriptions :column="1">
-                <el-descriptions-item>
-                  <template #label>
-                    <el-icon class="align-middle"><Lock /></el-icon>
-                    密码
-                  </template>
-                  <el-button type="primary" @click="handleOpenDialog">
-                    修改密码
-                  </el-button>
-                </el-descriptions-item>
+            <el-descriptions :column="1" class="mt-10">
+              <el-descriptions-item>
+                <template #label>
+                  <el-icon class="align-middle"><User /></el-icon>
+                  用户名
+                </template>
+                {{ userProfile.username }}
 
-                <el-descriptions-item>
-                  <template #label>
-                    <el-icon class="align-middle"><Lock /></el-icon>
-                    手机绑定
-                  </template>
-                  <el-button type="primary">设置安全问题</el-button>
-                </el-descriptions-item>
+                <el-icon
+                  v-if="userProfile.gender === 1"
+                  class="align-middle color-blue"
+                >
+                  <Male />
+                </el-icon>
+                <el-icon v-else class="align-middle color-pink">
+                  <Female />
+                </el-icon>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <el-icon class="align-middle"><Phone /></el-icon>
+                  手机号码
+                </template>
+                {{ userProfile.mobile }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <el-icon class="align-middle"><Message /></el-icon>
+                  邮箱
+                </template>
+                {{ userProfile.email }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <el-icon class="align-middle"><User /></el-icon>
+                  部门
+                </template>
+                {{ userProfile.email }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <el-icon class="align-middle"><User /></el-icon>
+                  角色
+                </template>
+                {{ userProfile.email }}
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-card>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="安全设置">
+        <el-card>
+          <el-row>
+            <el-col :span="16">
+              <div class="font-bold">登录密码</div>
+              <div class="text-14px py-2">
+                安全性高的密码可以使账号更安全。建议您定期更换密码，设置一个包含字母，符号或数字钟至少两项长度超过6为的密码
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="flex-y-center h-full">
+                <el-button
+                  type="primary"
+                  plain
+                  size="small"
+                  @click="handleOpenDialog"
+                >
+                  修改
+                </el-button>
+              </div>
+            </el-col>
+          </el-row>
 
-                <el-descriptions-item>
-                  <template #label>
-                    <el-icon class="align-middle"><Lock /></el-icon>
-                    邮箱绑定
-                  </template>
-                  <el-button type="primary">设置安全问题</el-button>
-                </el-descriptions-item>
-              </el-descriptions>
-            </el-card>
-          </el-tab-pane>
-          <el-tab-pane label="偏好设置">Role</el-tab-pane>
-          <el-tab-pane label="接收设置">Task</el-tab-pane>
-        </el-tabs>
-      </el-col>
-    </el-row>
+          <el-row class="mt-5">
+            <el-col :span="16">
+              <div class="font-bold">手机</div>
+              <div class="text-14px py-2">
+                可用手机号加密码登录，可通过手机号找回密码
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="flex-y-center h-full">
+                <el-button
+                  type="primary"
+                  plain
+                  size="small"
+                  @click="handleOpenDialog"
+                >
+                  绑定
+                </el-button>
+              </div>
+            </el-col>
+          </el-row>
+
+          <el-row class="mt-5">
+            <el-col :span="16">
+              <div class="font-bold">邮箱</div>
+              <div class="text-14px py-2">
+                可用邮箱加密码登录，可通过邮箱找回密码
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="flex-y-center h-full">
+                <el-button
+                  type="primary"
+                  plain
+                  size="small"
+                  @click="handleOpenDialog"
+                >
+                  绑定
+                </el-button>
+              </div>
+            </el-col>
+          </el-row>
+        </el-card>
+      </el-tab-pane>
+    </el-tabs>
 
     <el-dialog title="修改密码" v-model:visible="dialogVisible">
       <el-form
@@ -147,7 +176,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
 import UserAPI, {
   UserProfileVO,
   UserProfileForm,
@@ -155,7 +183,6 @@ import UserAPI, {
 } from "@/api/user";
 import { useUserStore } from "@/store/modules/user";
 import { Camera } from "@element-plus/icons-vue";
-const router = useRouter();
 const userStore = useUserStore();
 
 const userProfile = ref<UserProfileVO>({});
