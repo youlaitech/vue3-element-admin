@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-tabs tab-position="left">
-      <el-tab-pane label="账号信息">
+      <el-tab-pane label="基本设置">
         <div class="w-full">
           <el-card class="flex-1">
             <div class="">
@@ -83,18 +83,15 @@
         <el-card>
           <el-row>
             <el-col :span="16">
-              <div class="font-bold">登录密码</div>
-              <div class="text-14px py-2">
-                安全性高的密码可以使账号更安全。建议您定期更换密码，设置一个包含字母，符号或数字钟至少两项长度超过6为的密码
-              </div>
-            </el-col>
-            <el-col :span="8">
-              <div class="flex-y-center h-full">
+              <div class="font-bold">账户密码</div>
+              <div class="text-14px mt-2">
+                定期修改密码有助于保护账户安全
                 <el-button
                   type="primary"
                   plain
                   size="small"
                   @click="handleOpenDialog"
+                  class="ml-5"
                 >
                   修改
                 </el-button>
@@ -104,18 +101,29 @@
 
           <el-row class="mt-5">
             <el-col :span="16">
-              <div class="font-bold">手机</div>
-              <div class="text-14px py-2">
-                可用手机号加密码登录，可通过手机号找回密码
-              </div>
-            </el-col>
-            <el-col :span="8">
-              <div class="flex-y-center h-full">
+              <div class="font-bold">绑定手机</div>
+              <div class="text-14px mt-2">
+                <span v-if="userProfile.mobile">
+                  已绑定手机号：{{ userProfile.mobile }}
+                </span>
+                <span v-else>未绑定手机</span>
                 <el-button
                   type="primary"
                   plain
                   size="small"
                   @click="handleOpenDialog"
+                  class="ml-5"
+                  v-if="userProfile.mobile"
+                >
+                  修改
+                </el-button>
+                <el-button
+                  type="primary"
+                  plain
+                  size="small"
+                  @click="handleOpenDialog"
+                  class="ml-5"
+                  v-else
                 >
                   绑定
                 </el-button>
@@ -125,8 +133,8 @@
 
           <el-row class="mt-5">
             <el-col :span="16">
-              <div class="font-bold">邮箱</div>
-              <div class="text-14px py-2">
+              <div class="font-bold">绑定邮箱</div>
+              <div class="text-14px mt-2">
                 可用邮箱加密码登录，可通过邮箱找回密码
               </div>
             </el-col>
