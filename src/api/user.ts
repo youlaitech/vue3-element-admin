@@ -276,6 +276,15 @@ export interface UserProfileVO {
 
   /** 邮箱 */
   email?: string;
+
+  /** 部门名称 */
+  deptName?: string;
+
+  /** 角色名称，多个使用英文逗号(,)分割 */
+  roleNames?: string;
+
+  /** 创建时间 */
+  createTime?: Date;
 }
 
 /** 个人中心用户信息表单 */
@@ -308,4 +317,20 @@ export interface PasswordChangeForm {
   oldPassword?: string;
   /** 新密码 */
   newPassword?: string;
+}
+
+/** 手机绑定表单 */
+export interface MobileBindingForm {
+  /** 新手机号 */
+  mobile?: string;
+  /** 验证码 */
+  code?: string;
+}
+
+/** 邮箱绑定表单 */
+export interface EmailBindingForm {
+  /** 新邮箱 */
+  email?: string;
+  /** 验证码 */
+  code?: string;
 }
