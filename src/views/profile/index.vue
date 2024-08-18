@@ -2,34 +2,35 @@
   <div class="app-container">
     <el-tabs tab-position="left">
       <!-- 基本设置 Tab Pane -->
-      <el-tab-pane label="基本设置">
+      <el-tab-pane label="账号信息">
         <div class="w-full">
-          <el-card class="flex-1">
-            <div class="">
-              <!-- 头像和昵称部分 -->
-              <div class="relative w-100px h-100px flex-center">
-                <el-avatar :src="userProfile.avatar" :size="100" />
-                <el-button
-                  type="info"
-                  class="absolute bottom-0 right-0 cursor-pointer"
-                  circle
-                  :icon="Camera"
-                  size="small"
-                  @click="triggerFileUpload"
-                />
-                <input
-                  type="file"
-                  ref="fileInput"
-                  style="display: none"
-                  @change="handleFileChange"
-                />
-              </div>
-              <div class="mt-5">
-                {{ userProfile.nickname }}
-                <el-icon class="align-middle cursor-pointer">
-                  <Edit />
-                </el-icon>
-              </div>
+          <el-card>
+            <!-- 头像和昵称部分 -->
+            <div class="relative w-100px h-100px flex-center">
+              <el-avatar :src="userProfile.avatar" :size="100" />
+              <el-button
+                type="info"
+                class="absolute bottom-0 right-0 cursor-pointer"
+                circle
+                :icon="Camera"
+                size="small"
+                @click="triggerFileUpload"
+              />
+              <input
+                type="file"
+                ref="fileInput"
+                style="display: none"
+                @change="handleFileChange"
+              />
+            </div>
+            <div class="mt-5">
+              {{ userProfile.nickname }}
+              <el-icon
+                class="align-middle cursor-pointer"
+                @click="handleOpenDialog(DialogType.ACCOUNT)"
+              >
+                <Edit />
+              </el-icon>
             </div>
             <!-- 用户信息描述 -->
             <el-descriptions :column="1" class="mt-10">
@@ -177,12 +178,29 @@
     </el-tabs>
 
     <!-- 弹窗 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" :width="400">
+    <el-dialog :title="dialog.title" v-model="dialog.visible" :width="500">
+      <!-- 账号资料 -->
+      <el-form
+        v-if="dialog.type === DialogType.ACCOUNT"
+        :model="userProfileForm"
+        ref="userProfileFormRef"
+        :label-width="100"
+      >
+        <el-form-item label="昵称">
+          <el-input v-model="userProfileForm.nickname" />
+        </el-form-item>
+        <el-form-item label="性别">
+          <dictionary v-model="userProfileForm.gender" code="gender" />
+        </el-form-item>
+      </el-form>
+
+      <!-- 修改密码 -->
       <el-form
         v-if="dialog.type === DialogType.PASSWORD"
         :model="passwordChangeForm"
         :rules="passwordChangeRules"
         ref="passwordChangeFormRef"
+        :label-width="100"
       >
         <el-form-item label="原密码" prop="oldPassword">
           <el-input
@@ -199,55 +217,70 @@
           />
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input type="password" v-model="confirmPassword" show-password />
+          <el-input
+            type="password"
+            v-model="passwordChangeForm.confirmPassword"
+            show-password
+          />
         </el-form-item>
       </el-form>
+      <!-- 绑定手机 -->
       <el-form
         v-else-if="dialog.type === DialogType.MOBILE"
         :model="mobileBindingForm"
         :rules="mobileBindingRules"
         ref="mobileBindingFormRef"
+        :label-width="100"
       >
         <el-form-item label="手机号码" prop="mobile">
-          <el-input v-model="mobileBindingForm.mobile" />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            :disabled="mobileCountdown > 0"
-            @click="handleSendMobileCode"
-          >
-            {{
-              mobileCountdown > 0
-                ? `${mobileCountdown}s后重新发送`
-                : "发送验证码"
-            }}
-          </el-button>
+          <el-input v-model="mobileBindingForm.mobile" style="width: 250px" />
         </el-form-item>
         <el-form-item label="验证码" prop="code">
-          <el-input v-model="mobileBindingForm.code" />
+          <el-input v-model="mobileBindingForm.code" style="width: 250px">
+            <template #append>
+              <el-button
+                class="ml-5"
+                :disabled="mobileCountdown > 0"
+                @click="handleSendVerificationCode('MOBILE')"
+              >
+                {{
+                  mobileCountdown > 0
+                    ? `${mobileCountdown}s后重新发送`
+                    : "发送验证码"
+                }}
+              </el-button>
+            </template>
+          </el-input>
         </el-form-item>
       </el-form>
+
+      <!-- 绑定邮箱 -->
       <el-form
         v-else-if="dialog.type === DialogType.EMAIL"
         :model="emailBindingForm"
         :rules="emailBindingRules"
         ref="emailBindingFormRef"
+        :label-width="100"
       >
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="emailBindingForm.email" />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            :disabled="emailCountdown > 0"
-            @click="handleSendEmailCode"
-          >
-            {{
-              emailCountdown > 0 ? `${emailCountdown}s后重新发送` : "发送验证码"
-            }}
-          </el-button>
+          <el-input v-model="emailBindingForm.email" style="width: 250px" />
         </el-form-item>
         <el-form-item label="验证码" prop="code">
-          <el-input v-model="emailBindingForm.code" />
+          <el-input v-model="emailBindingForm.code" style="width: 250px">
+            <template #append>
+              <el-button
+                class="ml-5"
+                :disabled="emailCountdown > 0"
+                @click="handleSendVerificationCode('EMAIL')"
+              >
+                {{
+                  emailCountdown > 0
+                    ? `${emailCountdown}s后重新发送`
+                    : "发送验证码"
+                }}
+              </el-button>
+            </template>
+          </el-input>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -263,18 +296,23 @@
 <script lang="ts" setup>
 import UserAPI, {
   UserProfileVO,
-  UserProfileForm,
   PasswordChangeForm,
   MobileBindingForm,
   EmailBindingForm,
+  UserProfileForm,
 } from "@/api/user";
+
+import FileAPI from "@/api/file";
+
 import { useUserStore } from "@/store/modules/user";
 import { Camera } from "@element-plus/icons-vue";
+
 const userStore = useUserStore();
 
 const userProfile = ref<UserProfileVO>({});
 
 enum DialogType {
+  ACCOUNT = "account",
   PASSWORD = "password",
   MOBILE = "mobile",
   EMAIL = "email",
@@ -283,11 +321,10 @@ enum DialogType {
 const dialog = reactive({
   visible: false,
   title: "",
-  type: "" as DialogType, // 修改密码、绑定手机、绑定邮箱
+  type: "" as DialogType, // 修改账号资料,修改密码、绑定手机、绑定邮箱
 });
 
-const confirmPassword = ref("");
-
+const userProfileForm = reactive<UserProfileForm>({});
 const passwordChangeForm = reactive<PasswordChangeForm>({});
 const mobileBindingForm = reactive<MobileBindingForm>({});
 const emailBindingForm = reactive<EmailBindingForm>({});
@@ -298,6 +335,7 @@ const mobileTimer = ref<NodeJS.Timeout | null>(null);
 const emailCountdown = ref(0);
 const emailTimer = ref<NodeJS.Timeout | null>(null);
 
+// 修改密码校验规则
 const passwordChangeRules = {
   oldPassword: [{ required: true, message: "请输入原密码", trigger: "blur" }],
   newPassword: [{ required: true, message: "请输入新密码", trigger: "blur" }],
@@ -306,66 +344,132 @@ const passwordChangeRules = {
   ],
 };
 
+// 手机号校验规则
 const mobileBindingRules = {
-  mobile: [{ required: true, message: "请输入手机号", trigger: "blur" }],
-  mobileCode: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+  mobile: [
+    { required: true, message: "请输入手机号", trigger: "blur" },
+    {
+      pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+      message: "请输入正确的手机号码",
+      trigger: "blur",
+    },
+  ],
+  code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
 };
 
+// 邮箱校验规则
 const emailBindingRules = {
-  email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
-  emailCode: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+  email: [
+    { required: true, message: "请输入邮箱", trigger: "blur" },
+    {
+      pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
+      message: "请输入正确的邮箱地址",
+      trigger: "blur",
+    },
+  ],
+  code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
 };
 
+/**
+ * 打开弹窗
+ * @param type 弹窗类型 ACCOUNT: 账号资料 PASSWORD: 修改密码 MOBILE: 绑定手机 EMAIL: 绑定邮箱
+ */
 const handleOpenDialog = (type: DialogType) => {
   dialog.type = type;
   dialog.visible = true;
-};
-
-const handleSendMobileCode = async () => {
-  if (!mobileBindingForm.value.mobile) {
-    return;
+  switch (type) {
+    case DialogType.ACCOUNT:
+      dialog.title = "账号资料";
+      // 初始化表单数据
+      userProfileForm.id = userProfile.value.id;
+      userProfileForm.nickname = userProfile.value.nickname;
+      userProfileForm.gender = userProfile.value.gender;
+      break;
+    case DialogType.PASSWORD:
+      dialog.title = "修改密码";
+      break;
+    case DialogType.MOBILE:
+      dialog.title = "绑定手机";
+      break;
+    case DialogType.EMAIL:
+      dialog.title = "绑定邮箱";
+      break;
   }
-  // await UserAPI.sendMobileCode(mobileBindingForm.value.mobile);
-
-  mobileCountdown.value = 60;
-  mobileTimer.value = setInterval(() => {
-    if (mobileCountdown.value > 0) {
-      mobileCountdown.value -= 1;
-    } else {
-      clearInterval(mobileTimer.value!);
-    }
-  }, 1000);
 };
 
-const handleSendEmailCode = async () => {
-  if (!emailBindingForm.email) {
-    return;
+/**
+ *  发送验证码
+ *
+ * @param contactType 联系方式类型 MOBILE: 手机号码  EMAIL: 邮箱
+ */
+const handleSendVerificationCode = async (contactType: string) => {
+  if (contactType === "MOBILE") {
+    if (!mobileBindingForm.mobile) {
+      ElMessage.error("请输入手机号");
+      return;
+    }
+    // 验证手机号格式
+    const reg = /^1[3-9]\d{9}$/;
+    if (!reg.test(mobileBindingForm.mobile)) {
+      ElMessage.error("手机号格式不正确");
+      return;
+    }
+
+    mobileCountdown.value = 60;
+    mobileTimer.value = setInterval(() => {
+      if (mobileCountdown.value > 0) {
+        mobileCountdown.value -= 1;
+      } else {
+        clearInterval(mobileTimer.value!);
+      }
+    }, 1000);
+  } else if (contactType === "EMAIL") {
+    if (!emailBindingForm.email) {
+      ElMessage.error("请输入邮箱");
+      return;
+    }
+    // 验证邮箱格式
+    const reg = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
+    if (!reg.test(emailBindingForm.email)) {
+      ElMessage.error("邮箱格式不正确");
+      return;
+    }
+
+    emailCountdown.value = 60;
+    emailTimer.value = setInterval(() => {
+      if (emailCountdown.value > 0) {
+        emailCountdown.value -= 1;
+      } else {
+        clearInterval(emailTimer.value!);
+      }
+    }, 1000);
   }
-  // await UserAPI.sendEmailCode(emailBindingForm.value.email);
-
-  emailCountdown.value = 60;
-  emailTimer.value = setInterval(() => {
-    if (emailCountdown.value > 0) {
-      emailCountdown.value -= 1;
-    } else {
-      clearInterval(emailTimer.value!);
-    }
-  }, 1000);
 };
 
+/**
+ * 提交表单
+ */
 const handleSubmit = async () => {
-  if (dialog.type === DialogType.PASSWORD) {
-    if (passwordChangeForm.newPassword !== confirmPassword.value) {
+  if (dialog.type === DialogType.ACCOUNT) {
+    UserAPI.updateProfile(userProfileForm.id, userProfileForm).then(() => {
+      ElMessage.success("账号资料修改成功");
+      dialog.visible = false;
+      loadUserProfile();
+    });
+  } else if (dialog.type === DialogType.PASSWORD) {
+    if (passwordChangeForm.newPassword !== passwordChangeForm.confirmPassword) {
       ElMessage.error("两次输入的密码不一致");
       return;
     }
-    await UserAPI.changePassword(passwordChangeForm);
+    UserAPI.changePassword(passwordChangeForm).then(() => {
+      ElMessage.success("密码修改成功");
+      dialog.visible = false;
+    });
   } else if (dialog.type === "mobile") {
     //await UserAPI.bindMobile(mobileBindingForm.value);
   } else if (dialog.type === "email") {
     //await UserAPI.bindEmail(emailBindingForm.value);
   }
-  dialog.visible = false;
 };
 
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -374,13 +478,29 @@ const triggerFileUpload = () => {
   fileInput.value?.click();
 };
 
-const handleFileChange = (event: Event) => {
+const handleFileChange = async (event: Event) => {
   const target = event.target as HTMLInputElement;
   const file = target.files ? target.files[0] : null;
   if (file) {
-    // Handle the file upload here
-    console.log("Selected file:", file);
+    // 调用文件上传API
+    try {
+      const data = await FileAPI.upload(file);
+      // 更新用户头像
+      userProfile.value.avatar = data.url;
+      // 更新用户信息
+      await UserAPI.updateProfile(userProfile.value.id, {
+        avatar: data.url,
+      });
+    } catch (error) {
+      ElMessage.error("头像上传失败");
+    }
   }
+};
+
+/** 加载用户信息 */
+const loadUserProfile = async () => {
+  const data = await UserAPI.getProfile(userStore.user.userId);
+  userProfile.value = data;
 };
 
 onMounted(async () => {
@@ -390,9 +510,7 @@ onMounted(async () => {
   if (emailTimer.value) {
     clearInterval(emailTimer.value);
   }
-
-  const data = await UserAPI.getProfile(userStore.user.userId);
-  userProfile.value = data;
+  await loadUserProfile();
 });
 </script>
 

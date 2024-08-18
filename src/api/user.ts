@@ -162,6 +162,20 @@ class UserAPI {
       data: data,
     });
   }
+
+  /**
+   *   发送手机/邮箱验证码
+   *
+   * @param contact 联系方式  手机号/邮箱
+   * @param contactType 联系方式类型 MOBILE:手机;EMAIL:邮箱
+   */
+  static sendVerificationCode(contact: string, contactType: string) {
+    return request({
+      url: `${USER_BASE_URL}/send-verification-code`,
+      method: "get",
+      params: { contact: contact, contactType: contactType },
+    });
+  }
 }
 
 export default UserAPI;
@@ -317,6 +331,8 @@ export interface PasswordChangeForm {
   oldPassword?: string;
   /** 新密码 */
   newPassword?: string;
+  /** 确认新密码 */
+  confirmPassword?: string;
 }
 
 /** 手机绑定表单 */
