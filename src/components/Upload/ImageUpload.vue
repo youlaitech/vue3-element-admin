@@ -47,7 +47,6 @@
 <script setup lang="ts">
 import {
   UploadRawFile,
-  UploadRequestOptions,
   UploadUserFile,
   UploadFile,
   UploadProps,

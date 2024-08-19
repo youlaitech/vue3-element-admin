@@ -77,7 +77,7 @@
       </div>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item divided @click="handleOpenUserProfile">
+          <el-dropdown-item @click="handleOpenUserProfile">
             {{ $t("navbar.profile") }}
           </el-dropdown-item>
           <a
