@@ -304,10 +304,7 @@ import UserAPI, {
 
 import FileAPI from "@/api/file";
 
-import { useUserStore } from "@/store/modules/user";
 import { Camera } from "@element-plus/icons-vue";
-
-const userStore = useUserStore();
 
 const userProfile = ref<UserProfileVO>({});
 
@@ -496,7 +493,7 @@ const handleFileChange = async (event: Event) => {
       // 更新用户头像
       userProfile.value.avatar = data.url;
       // 更新用户信息
-      await UserAPI.updateProfile(userProfile.value.id as number, {
+      await UserAPI.updateProfile({
         avatar: data.url,
       });
     } catch (error) {
@@ -507,7 +504,7 @@ const handleFileChange = async (event: Event) => {
 
 /** 加载用户信息 */
 const loadUserProfile = async () => {
-  const data = await UserAPI.getProfile(userStore.user.userId);
+  const data = await UserAPI.getProfile();
   userProfile.value = data;
 };
 

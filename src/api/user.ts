@@ -138,9 +138,9 @@ class UserAPI {
   }
 
   /** 获取个人中心用户信息 */
-  static getProfile(id: number) {
+  static getProfile() {
     return request<any, UserProfileVO>({
-      url: `${USER_BASE_URL}/${id}/profile`,
+      url: `${USER_BASE_URL}/profile`,
       method: "get",
     });
   }
