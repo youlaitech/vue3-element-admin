@@ -451,7 +451,7 @@ const handleSendVerificationCode = async (contactType: string) => {
  */
 const handleSubmit = async () => {
   if (dialog.type === DialogType.ACCOUNT) {
-    UserAPI.updateProfile(userProfileForm.id, userProfileForm).then(() => {
+    UserAPI.updateProfile(userProfileForm).then(() => {
       ElMessage.success("账号资料修改成功");
       dialog.visible = false;
       loadUserProfile();
@@ -465,10 +465,18 @@ const handleSubmit = async () => {
       ElMessage.success("密码修改成功");
       dialog.visible = false;
     });
-  } else if (dialog.type === "mobile") {
-    //await UserAPI.bindMobile(mobileBindingForm.value);
-  } else if (dialog.type === "email") {
-    //await UserAPI.bindEmail(emailBindingForm.value);
+  } else if (dialog.type === DialogType.MOBILE) {
+    UserAPI.bindMobile(mobileBindingForm).then(() => {
+      ElMessage.success("手机号绑定成功");
+      dialog.visible = false;
+      loadUserProfile();
+    });
+  } else if (dialog.type === DialogType.EMAIL) {
+    UserAPI.bindEmail(emailBindingForm).then(() => {
+      ElMessage.success("邮箱绑定成功");
+      dialog.visible = false;
+      loadUserProfile();
+    });
   }
 };
 
@@ -488,7 +496,7 @@ const handleFileChange = async (event: Event) => {
       // 更新用户头像
       userProfile.value.avatar = data.url;
       // 更新用户信息
-      await UserAPI.updateProfile(userProfile.value.id, {
+      await UserAPI.updateProfile(userProfile.value.id as number, {
         avatar: data.url,
       });
     } catch (error) {

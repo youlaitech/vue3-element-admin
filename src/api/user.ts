@@ -146,9 +146,9 @@ class UserAPI {
   }
 
   /** 修改个人中心用户信息 */
-  static updateProfile(id: number, data: UserProfileForm) {
+  static updateProfile(data: UserProfileForm) {
     return request({
-      url: `${USER_BASE_URL}/${id}/profile`,
+      url: `${USER_BASE_URL}/profile`,
       method: "put",
       data: data,
     });
@@ -174,6 +174,24 @@ class UserAPI {
       url: `${USER_BASE_URL}/send-verification-code`,
       method: "get",
       params: { contact: contact, contactType: contactType },
+    });
+  }
+
+  /** 绑定个人中心用户手机 */
+  static bindMobile(data: MobileBindingForm) {
+    return request({
+      url: `${USER_BASE_URL}/mobile`,
+      method: "put",
+      data: data,
+    });
+  }
+
+  /** 丙丁个人中心用户邮箱 */
+  static bindEmail(data: EmailBindingForm) {
+    return request({
+      url: `${USER_BASE_URL}/email`,
+      method: "put",
+      data: data,
     });
   }
 }
@@ -335,17 +353,17 @@ export interface PasswordChangeForm {
   confirmPassword?: string;
 }
 
-/** 手机绑定表单 */
+/** 修改手机表单 */
 export interface MobileBindingForm {
-  /** 新手机号 */
+  /** 手机号 */
   mobile?: string;
   /** 验证码 */
   code?: string;
 }
 
-/** 邮箱绑定表单 */
+/** 修改邮箱表单 */
 export interface EmailBindingForm {
-  /** 新邮箱 */
+  /** 邮箱 */
   email?: string;
   /** 验证码 */
   code?: string;
