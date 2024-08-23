@@ -30,7 +30,6 @@
                 断开
               </el-button>
             </el-col>
-
             <el-col :span="8" class="text-right">
               连接状态：
               <el-tag class="ml-2" type="success" v-if="isConnected">
@@ -40,19 +39,18 @@
             </el-col>
           </el-row>
         </el-card>
-
+        <!-- 广播消息发送部分 -->
         <el-card class="mt-5">
           <el-form label-width="90px">
             <el-form-item label="消息内容">
               <el-input type="textarea" v-model="topicMessage" />
             </el-form-item>
-
             <el-form-item>
               <el-button @click="sendToAll" type="primary">发送广播</el-button>
             </el-form-item>
           </el-form>
         </el-card>
-
+        <!-- 点对点消息发送部分 -->
         <el-card class="mt-5">
           <el-form label-width="90px">
             <el-form-item label="消息内容">
@@ -69,7 +67,7 @@
           </el-form>
         </el-card>
       </el-col>
-
+      <!-- 消息接收显示部分 -->
       <el-col :span="12">
         <el-card>
           <div class="message-container">
@@ -105,25 +103,21 @@
   </div>
 </template>
 
-<!-- websocket 示例 -->
 <script setup lang="ts">
-import SockJS from "sockjs-client/dist/sockjs.min.js";
-//import SockJS from "sockjs-client";
-import Stomp from "stompjs";
+import { Client } from "@stomp/stompjs";
 
 import { useUserStoreHook } from "@/store/modules/user";
 import { TOKEN_KEY } from "@/enums/CacheEnum";
 
 const userStore = useUserStoreHook();
-
 const isConnected = ref(false);
-// const socketEndpoint = ref("http://47.117.115.107:8989/ws"); // 线上
-const socketEndpoint = ref("http://localhost:8989/ws"); // 本地
+const socketEndpoint = ref("https://vue3.youlai.tech/ws");
+//const socketEndpoint = ref("ws://localhost:8989/ws");
 
 const receiver = ref("root");
 
 interface MessageType {
-  type?: string; // 消息类型： tip-提示消息
+  type?: string;
   sender?: string;
   content: string;
 }
@@ -142,32 +136,19 @@ const queneMessage = ref(
     " , 想和你交个朋友 ! "
 );
 
-function sendToAll() {
-  stompClient.send("/app/sendToAll", {}, topicMessage.value);
-  messages.value.push({
-    sender: userStore.user.username,
-    content: topicMessage.value,
-  });
-}
-
-function sendToUser() {
-  stompClient.send("/app/sendToUser/" + receiver.value, {}, queneMessage.value);
-  messages.value.push({
-    sender: userStore.user.username,
-    content: queneMessage.value,
-  });
-}
-
-let stompClient: Stomp.Client;
+let stompClient: Client;
 
 function connectWebSocket() {
-  let socket = new SockJS(socketEndpoint.value);
-
-  stompClient = Stomp.over(socket);
-
-  stompClient.connect(
-    { Authorization: localStorage.getItem(TOKEN_KEY) },
-    () => {
+  stompClient = new Client({
+    brokerURL: socketEndpoint.value,
+    connectHeaders: {
+      Authorization: localStorage.getItem(TOKEN_KEY) || "",
+    },
+    debug: (str) => {
+      console.log(str);
+    },
+    onConnect: () => {
+      console.log("连接成功");
       isConnected.value = true;
       messages.value.push({
         sender: "Server",
@@ -175,7 +156,7 @@ function connectWebSocket() {
         type: "tip",
       });
 
-      stompClient.subscribe("/topic/notice", (res: any) => {
+      stompClient.subscribe("/topic/notice", (res) => {
         messages.value.push({
           sender: "Server",
           content: res.body,
@@ -190,27 +171,57 @@ function connectWebSocket() {
         });
       });
     },
-    (error) => {
-      console.log("连接失败: " + error);
-      isConnected.value = false; // 更新连接状态
+    onStompError: (frame) => {
+      console.error("Broker reported error: " + frame.headers["message"]);
+      console.error("Additional details: " + frame.body);
+    },
+    onDisconnect: () => {
+      isConnected.value = false;
       messages.value.push({
         sender: "Server",
         content: "Websocket 已断开",
         type: "tip",
       });
-    }
-  );
+    },
+  });
+
+  stompClient.activate();
 }
 
 function disconnectWebSocket() {
   if (stompClient && stompClient.connected) {
-    stompClient.disconnect(() => {
-      isConnected.value = false; // 更新连接状态
-      messages.value.push({
-        sender: "Server",
-        content: "Websocket 已断开",
-        type: "tip",
-      });
+    stompClient.deactivate();
+    isConnected.value = false;
+    messages.value.push({
+      sender: "Server",
+      content: "Websocket 已断开",
+      type: "tip",
+    });
+  }
+}
+
+function sendToAll() {
+  if (stompClient.connected) {
+    stompClient.publish({
+      destination: "/topic/notice",
+      body: topicMessage.value,
+    });
+    messages.value.push({
+      sender: userStore.user.username,
+      content: topicMessage.value,
+    });
+  }
+}
+
+function sendToUser() {
+  if (stompClient.connected) {
+    stompClient.publish({
+      destination: "/app/sendToUser/" + receiver.value,
+      body: queneMessage.value,
+    });
+    messages.value.push({
+      sender: userStore.user.username,
+      content: queneMessage.value,
     });
   }
 }
