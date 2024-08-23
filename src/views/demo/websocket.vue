@@ -111,8 +111,7 @@ import { TOKEN_KEY } from "@/enums/CacheEnum";
 
 const userStore = useUserStoreHook();
 const isConnected = ref(false);
-const socketEndpoint = ref("https://vue3.youlai.tech/ws");
-//const socketEndpoint = ref("ws://localhost:8989/ws");
+const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT);
 
 const receiver = ref("root");
 
