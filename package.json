@@ -80,7 +80,6 @@
     "@types/path-browserify": "^1.0.2",
     "@types/qs": "^6.9.15",
     "@types/sortablejs": "^1.15.8",
-    "@types/stompjs": "^2.3.9",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "@vitejs/plugin-vue": "^5.1.2",
