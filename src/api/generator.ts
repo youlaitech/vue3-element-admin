@@ -50,17 +50,21 @@ class GeneratorAPI {
    * @param url
    * @param fileName
    */
-  static download(tableName: string, fileName?: string) {
+  static download(tableName: string) {
     return request({
       url: `${GENERATOR_BASE_URL}/${tableName}/download`,
       method: "get",
       responseType: "blob",
-    }).then((res) => {
-      const blob = new Blob([res.data], { type: "application/zip" });
+    }).then((response) => {
+      const fileName = decodeURI(
+        response.headers["content-disposition"].split(";")[1].split("=")[1]
+      );
+
+      const blob = new Blob([response.data], { type: "application/zip" });
       const a = document.createElement("a");
       const url = window.URL.createObjectURL(blob);
       a.href = url;
-      a.download = fileName || "下载文件.zip";
+      a.download = fileName;
       a.click();
       window.URL.revokeObjectURL(url);
     });
@@ -128,6 +132,11 @@ export interface GenConfigForm {
 
   /** 上级菜单 */
   parentMenuId?: number;
+
+  /** 后端应用名 */
+  backendAppName?: string;
+  /** 前端应用名 */
+  frontendAppName?: string;
 
   /** 字段配置列表 */
   fieldConfigs?: FieldConfig[];

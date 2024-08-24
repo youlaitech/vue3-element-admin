@@ -93,16 +93,23 @@
       </el-steps>
 
       <div class="mt-5">
-        <el-form v-show="active == 0" :model="formData" :label-width="100">
+        <el-form
+          v-show="active == 0"
+          :model="genConfigFormData"
+          :label-width="100"
+        >
           <el-row>
             <el-col :span="12">
               <el-form-item label="表名">
-                <el-input v-model="formData.tableName" readonly />
+                <el-input v-model="genConfigFormData.tableName" readonly />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="业务名">
-                <el-input v-model="formData.businessName" placeholder="用户" />
+                <el-input
+                  v-model="genConfigFormData.businessName"
+                  placeholder="用户"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -110,13 +117,16 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="模块名">
-                <el-input v-model="formData.moduleName" placeholder="system" />
+                <el-input
+                  v-model="genConfigFormData.moduleName"
+                  placeholder="system"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="包名">
                 <el-input
-                  v-model="formData.packageName"
+                  v-model="genConfigFormData.packageName"
                   placeholder="com.youlai.boot"
                 />
               </el-form-item>
@@ -126,12 +136,18 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="实体名">
-                <el-input v-model="formData.entityName" placeholder="User" />
+                <el-input
+                  v-model="genConfigFormData.entityName"
+                  placeholder="User"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="作者">
-                <el-input v-model="formData.author" placeholder="youlai" />
+                <el-input
+                  v-model="genConfigFormData.author"
+                  placeholder="youlai"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -140,7 +156,7 @@
             <el-col :span="12">
               <el-form-item label="上级菜单">
                 <el-tree-select
-                  v-model="formData.parentMenuId"
+                  v-model="genConfigFormData.parentMenuId"
                   placeholder="选择上级菜单"
                   :data="menuOptions"
                   check-strictly
@@ -159,47 +175,57 @@
             row-key="id"
             :element-loading-text="loadingText"
             highlight--currentrow
-            :data="formData.fieldConfigs"
+            :data="genConfigFormData.fieldConfigs"
           >
             <el-table-column width="55" align="center">
               <i-ep-Rank class="cursor-move sortable-handle" />
             </el-table-column>
 
-            <el-table-column label="字段列名" width="150">
+            <el-table-column label="列名" width="110">
               <template #default="scope">
                 {{ scope.row.columnName }}
               </template>
             </el-table-column>
 
-            <el-table-column label="字段类型" width="80">
+            <el-table-column label="列类型" width="80">
               <template #default="scope">
                 {{ scope.row.columnType }}
               </template>
             </el-table-column>
-            <el-table-column label="Java属性" width="120">
+            <el-table-column label="字段名" width="120">
               <template #default="scope">
                 <el-input v-model="scope.row.fieldName" />
               </template>
             </el-table-column>
-            <el-table-column label="Java类型" width="120">
+            <el-table-column label="字段类型" width="80">
               <template #default="scope">
-                <el-input v-model="scope.row.fieldType" />
+                {{ scope.row.fieldType }}
               </template>
             </el-table-column>
 
-            <el-table-column label="字段描述" min-width="120">
+            <el-table-column label="字段注释" min-width="100">
               <template #default="scope">
                 <el-input v-model="scope.row.fieldComment" />
               </template>
             </el-table-column>
 
-            <el-table-column label="最大长度" width="100">
+            <el-table-column label="最大长度" width="80">
               <template #default="scope">
                 <el-input v-model="scope.row.maxLength" />
               </template>
             </el-table-column>
 
-            <el-table-column label="查询" width="70">
+            <el-table-column width="70">
+              <template #header>
+                <div class="flex-y-center">
+                  <span>查询</span>
+                  <el-checkbox
+                    class="ml-1"
+                    v-model="isCheckAllQuery"
+                    @change="toggleCheckAll('isShowInQuery', isCheckAllQuery)"
+                  />
+                </div>
+              </template>
               <template #default="scope">
                 <el-checkbox
                   v-model="scope.row.isShowInQuery"
@@ -209,7 +235,18 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="列表" width="70">
+            <el-table-column width="70">
+              <template #header>
+                <div class="flex-y-center">
+                  <span>列表</span>
+                  <el-checkbox
+                    class="ml-1"
+                    v-model="isCheckAllList"
+                    @change="toggleCheckAll('isShowInList', isCheckAllList)"
+                  />
+                </div>
+              </template>
+
               <template #default="scope">
                 <el-checkbox
                   v-model="scope.row.isShowInList"
@@ -219,7 +256,18 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="表单" width="70">
+            <el-table-column width="70">
+              <template #header>
+                <div class="flex-y-center">
+                  <span>表单</span>
+                  <el-checkbox
+                    class="ml-1"
+                    v-model="isCheckAllForm"
+                    @change="toggleCheckAll('isShowInForm', isCheckAllForm)"
+                  />
+                </div>
+              </template>
+
               <template #default="scope">
                 <el-checkbox
                   v-model="scope.row.isShowInForm"
@@ -241,7 +289,7 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="查询方式" min-width="100">
+            <el-table-column label="查询方式" min-width="120">
               <template #default="scope">
                 <el-select
                   v-model="scope.row.queryType"
@@ -259,12 +307,15 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="表单类型" min-width="110">
+            <el-table-column label="表单类型" min-width="120">
               <template #default="scope">
                 <el-select
                   v-model="scope.row.formType"
                   placeholder="请选择"
-                  v-if="scope.row.isShowInForm === 1"
+                  v-if="
+                    scope.row.isShowInQuery === 1 ||
+                    scope.row.isShowInForm === 1
+                  "
                 >
                   <el-option
                     v-for="(item, key) in formTypeOptions"
@@ -386,7 +437,6 @@ import MenuAPI from "@/api/menu";
 
 const queryFormRef = ref(ElForm);
 const queryParams = reactive<TablePageQuery>({
-  keywords: undefined,
   pageNum: 1,
   pageSize: 10,
 });
@@ -401,7 +451,7 @@ const formTypeOptions: Record<string, OptionType> = FormTypeEnum;
 const queryTypeOptions: Record<string, OptionType> = QueryTypeEnum;
 const dictOptions = ref<OptionType[]>();
 const menuOptions = ref<OptionType[]>([]);
-const formData = ref<GenConfigForm>({
+const genConfigFormData = ref<GenConfigForm>({
   fieldConfigs: [],
 });
 
@@ -449,12 +499,13 @@ watch(copied, () => {
 });
 
 watch(
-  () => formData.value.fieldConfigs as FieldConfig[],
+  () => genConfigFormData.value.fieldConfigs as FieldConfig[],
   (newVal: FieldConfig[]) => {
     newVal.forEach((fieldConfig) => {
       if (
-        fieldConfig.formType === FormTypeEnum.DATE_TIME.value ||
-        fieldConfig.formType === FormTypeEnum.DATE.value
+        fieldConfig.fieldType &&
+        fieldConfig.fieldType.includes("Date") &&
+        fieldConfig.isShowInQuery === 1
       ) {
         fieldConfig.queryType = QueryTypeEnum.BETWEEN.value as number;
       }
@@ -487,29 +538,29 @@ const initSort = () => {
 
 const setNodeSort = (oldIndex: number, newIndex: number) => {
   // 使用arr复制一份表格数组数据
-  let arr = Object.assign([], formData.value.fieldConfigs);
+  let arr = Object.assign([], genConfigFormData.value.fieldConfigs);
   const currentRow = arr.splice(oldIndex, 1)[0];
   arr.splice(newIndex, 0, currentRow);
   arr.forEach((item: FieldConfig, index) => {
     item.fieldSort = index + 1;
   });
-  formData.value.fieldConfigs = [];
+  genConfigFormData.value.fieldConfigs = [];
   nextTick(async () => {
-    formData.value.fieldConfigs = arr;
+    genConfigFormData.value.fieldConfigs = arr;
   });
 };
 
 function handlePrevClick() {
   if (active.value === 2) {
     //这里需要重新获取一次数据，如果第一次生成代码后，再次点击上一步，数据不重新获取，再次点击下一步，会再次插入数据，导致索引重复报错
-    formData.value = {
+    genConfigFormData.value = {
       fieldConfigs: [],
     };
     nextTick(() => {
       loading.value = true;
       GeneratorAPI.getGenConfig(currentTableName.value)
         .then((data) => {
-          formData.value = data;
+          genConfigFormData.value = data;
         })
         .finally(() => {
           loading.value = false;
@@ -526,14 +577,14 @@ function handleNextClick() {
   }
   if (active.value === 1) {
     // 保存生成配置
-    const tableName = formData.value.tableName;
+    const tableName = genConfigFormData.value.tableName;
     if (!tableName) {
       ElMessage.error("表名不能为空");
       return;
     }
     loading.value = true;
     loadingText.value = "代码生成中，请稍后...";
-    GeneratorAPI.saveGenConfig(tableName, formData.value)
+    GeneratorAPI.saveGenConfig(tableName, genConfigFormData.value)
       .then(() => {
         handlePreview(tableName);
       })
@@ -549,12 +600,12 @@ function handleNextClick() {
       active.value = 2;
     }
     if (active.value === 2) {
-      const tableName = formData.value.tableName;
+      const tableName = genConfigFormData.value.tableName;
       if (!tableName) {
         ElMessage.error("表名不能为空");
         return;
       }
-      GeneratorAPI.download(tableName, "youlai-admin-code.zip");
+      GeneratorAPI.download(tableName);
     }
   }
 }
@@ -591,15 +642,21 @@ async function handleOpenDialog(tableName: string) {
   DictAPI.getList().then((data) => {
     dictOptions.value = data;
     loading.value = true;
-
     GeneratorAPI.getGenConfig(tableName)
       .then((data) => {
         dialog.title = `${tableName} 代码生成`;
-        formData.value = data;
-        if (formData.value.id) {
+        genConfigFormData.value = data;
+
+        checkAllSelected("isShowInQuery", isCheckAllQuery);
+        checkAllSelected("isShowInList", isCheckAllList);
+        checkAllSelected("isShowInForm", isCheckAllForm);
+
+        // 如果已经配置过，直接跳转到预览页面
+        if (genConfigFormData.value.id) {
           active.value = 2;
           handlePreview(tableName);
         } else {
+          // 如果没有配置过，跳转到基础配置页面
           active.value = 0;
         }
       })
@@ -620,6 +677,29 @@ function handleResetConfig(tableName: string) {
     });
   });
 }
+
+type FieldConfigKey = "isShowInQuery" | "isShowInList" | "isShowInForm";
+
+const toggleCheckAll = (key: FieldConfigKey, value: boolean) => {
+  const fieldConfigs = genConfigFormData.value?.fieldConfigs;
+
+  if (fieldConfigs) {
+    fieldConfigs.forEach((row: FieldConfig) => {
+      row[key] = value ? 1 : 0;
+    });
+  }
+};
+
+const isCheckAllQuery = ref(false);
+const isCheckAllList = ref(false);
+const isCheckAllForm = ref(false);
+
+const checkAllSelected = (key: keyof FieldConfig, isCheckAllRef: any) => {
+  const fieldConfigs = genConfigFormData.value?.fieldConfigs || [];
+  isCheckAllRef.value = fieldConfigs.every(
+    (row: FieldConfig) => row[key] === 1
+  );
+};
 
 /** 获取生成预览 */
 function handlePreview(tableName: string) {
@@ -664,10 +744,16 @@ function buildTree(
     const specialPaths = [
       "src" + separator + "main",
       "java",
-      "youlai-boot",
-      "vue3-element-admin",
-      "com" + separator + "youlai" + separator + "system",
+      genConfigFormData.value.backendAppName,
+      genConfigFormData.value.frontendAppName,
+      (
+        genConfigFormData.value.packageName +
+        "." +
+        genConfigFormData.value.moduleName
+      ).replace(/\./g, separator),
     ];
+
+    console.log("specialPaths", specialPaths);
 
     // 检查路径中的特殊部分并合并它们
     const mergedParts: string[] = [];
