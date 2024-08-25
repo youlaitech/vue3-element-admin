@@ -45,22 +45,22 @@
         <el-card shadow="never">
           <template #header>
             <div class="flex-x-between">
-              <span class="text-[var(--el-text-color-secondary)]"
-                >在线用户</span
-              >
-              <el-tag type="success" size="small">-</el-tag>
+              <span class="text-[var(--el-text-color-secondary)]">
+                在线用户
+              </span>
+              <el-tag type="success" size="small">{{ onlineUserCount }}</el-tag>
             </div>
           </template>
 
           <div class="flex-x-between mt-2">
-            <span class="text-lg"> 1</span>
+            <span class="text-lg">1</span>
             <svg-icon icon-class="user" size="2em" />
           </div>
           <div
             class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
           >
-            <span> 总用户数 </span>
-            <span>5 </span>
+            <span>总用户数</span>
+            <span>5</span>
           </div>
         </el-card>
       </el-col>
@@ -102,9 +102,9 @@
             <el-card shadow="never">
               <template #header>
                 <div class="flex-x-between">
-                  <span class="text-[var(--el-text-color-secondary)]">{{
-                    item.title
-                  }}</span>
+                  <span class="text-[var(--el-text-color-secondary)]">
+                    {{ item.title }}
+                  </span>
                   <el-tag :type="item.tagType" size="small">
                     {{ item.granularity }}
                   </el-tag>
@@ -113,7 +113,7 @@
 
               <div class="flex-x-between mt-2">
                 <div class="flex-y-center">
-                  <span class="text-lg"> {{ item.todayCount }}</span>
+                  <span class="text-lg">{{ item.todayCount }}</span>
                   <span
                     :class="[
                       'text-xs',
@@ -132,8 +132,8 @@
               <div
                 class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
               >
-                <span>总{{ item.title }} </span>
-                <span> {{ item.totalCount }} </span>
+                <span>总{{ item.title }}</span>
+                <span>{{ item.totalCount }}</span>
               </div>
             </el-card>
           </template>
@@ -151,12 +151,13 @@
           <template #header>
             <div class="flex-x-between">
               <div class="flex-y-center">
-                通知公告<el-icon class="ml-1"><Notification /></el-icon>
+                通知公告
+                <el-icon class="ml-1"><Notification /></el-icon>
               </div>
               <el-link type="primary">
-                <span class="text-xs">查看更多</span
-                ><el-icon class="text-xs"><ArrowRight /></el-icon
-              ></el-link>
+                <span class="text-xs">查看更多</span>
+                <el-icon class="text-xs"><ArrowRight /></el-icon>
+              </el-link>
             </div>
           </template>
 
@@ -192,12 +193,15 @@ defineOptions({
   inheritAttrs: false,
 });
 
+import { Client } from "@stomp/stompjs";
+
 import { useUserStore } from "@/store/modules/user";
 import { NoticeTypeEnum, getNoticeLabel } from "@/enums/NoticeTypeEnum";
-
+import { TOKEN_KEY } from "@/enums/CacheEnum";
 import StatsAPI, { VisitStatsVO } from "@/api/log";
 const userStore = useUserStore();
 
+const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT);
 const date: Date = new Date();
 const greetings = computed(() => {
   const hours = date.getHours();
@@ -236,6 +240,8 @@ const statisticData = ref([
     key: "project",
   },
 ]);
+
+const onlineUserCount = ref(0);
 
 const visitStatsLoading = ref(true);
 const visitStatsList = ref<VisitStats[] | null>(Array(3).fill({}));
@@ -384,8 +390,36 @@ const getNoticeLevelTag = (type: number) => {
   }
 };
 
+let stompClient: Client;
+
+function connectWebSocket() {
+  stompClient = new Client({
+    brokerURL: socketEndpoint.value,
+    connectHeaders: {
+      Authorization: localStorage.getItem(TOKEN_KEY) || "",
+    },
+    debug: (str) => {
+      console.log(str);
+    },
+    onConnect: () => {
+      console.log("连接成功");
+      stompClient.subscribe("/topic/onlineUserCount", (message) => {
+        onlineUserCount.value = JSON.parse(message.body);
+      });
+    },
+    onStompError: (frame) => {
+      console.error("Broker reported error: " + frame.headers["message"]);
+      console.error("Additional details: " + frame.body);
+    },
+    onDisconnect: () => {},
+  });
+
+  stompClient.activate();
+}
+
 onMounted(() => {
   loadVisitStatsData();
+  connectWebSocket();
 });
 </script>
 
