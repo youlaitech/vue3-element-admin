@@ -48,12 +48,12 @@
               <span class="text-[var(--el-text-color-secondary)]">
                 在线用户
               </span>
-              <el-tag type="success" size="small">{{ onlineUserCount }}</el-tag>
+              <el-tag type="success" size="small">-</el-tag>
             </div>
           </template>
 
           <div class="flex-x-between mt-2">
-            <span class="text-lg">1</span>
+            <span class="text-lg">{{ onlineUserCount }}</span>
             <svg-icon icon-class="user" size="2em" />
           </div>
           <div
