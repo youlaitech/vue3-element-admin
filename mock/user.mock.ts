@@ -134,8 +134,8 @@ export default defineMock([
 
   // 重置密码
   {
-    url: "users/:userId/password",
-    method: ["PATCH"],
+    url: "users/:userId/password/reset",
+    method: ["PUT"],
     body({ query }) {
       return {
         code: "00000",
@@ -175,6 +175,30 @@ export default defineMock([
         roleNames: "系统管理员",
         createTime: "2019-10-10",
       },
+    },
+  },
+
+  {
+    url: "users/profile",
+    method: ["PUT"],
+    body({ query }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "修改个人信息成功",
+      };
+    },
+  },
+
+  {
+    url: "users/password",
+    method: ["PUT"],
+    body({ query }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "修改密码成功",
+      };
     },
   },
 ]);
