@@ -55,7 +55,9 @@
             <div class="flex-x-between">
               <el-link type="primary" :underline="false">
                 <span class="text-xs">查看更多</span>
-                <el-icon class="text-xs"><ArrowRight /></el-icon>
+                <el-icon class="text-xs">
+                  <ArrowRight />
+                </el-icon>
               </el-link>
               <el-link type="primary" :underline="false">
                 <span class="text-xs">全部已读</span>
@@ -114,6 +116,8 @@ import {
 import defaultSettings from "@/settings";
 import { DeviceEnum } from "@/enums/DeviceEnum";
 import { MessageTypeEnum, MessageTypeLabels } from "@/enums/MessageTypeEnum";
+import { Client } from "@stomp/stompjs";
+import { TOKEN_KEY } from "@/enums/CacheEnum";
 
 const appStore = useAppStore();
 const tagsViewStore = useTagsViewStore();
@@ -122,7 +126,8 @@ const settingStore = useSettingsStore();
 
 const route = useRoute();
 const router = useRouter();
-
+const isConnected = ref(false);
+const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT);
 const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE);
 
 const { isFullscreen, toggle } = useFullscreen();
@@ -192,6 +197,56 @@ function logout() {
       });
   });
 }
+
+let stompClient: Client;
+
+function connectWebSocket() {
+  stompClient = new Client({
+    brokerURL: socketEndpoint.value,
+    connectHeaders: {
+      Authorization: localStorage.getItem(TOKEN_KEY) || "",
+    },
+    debug: (str) => {
+      console.log(str);
+    },
+    onConnect: () => {
+      console.log("连接成功");
+      isConnected.value = true;
+      messages.value.push({
+        sender: "Server",
+        content: "Websocket 已连接",
+        type: "tip",
+      });
+      // 订阅 /topic/chat 主题
+      stompClient.subscribe("/topic/chat", (res) => {
+        debugger;
+        console.log("收到消息：" + res.body);
+        // messages.value.push({
+        //   sender: "Server",
+        //   content: res.body,
+        // });
+      });
+    },
+    onStompError: (frame) => {
+      console.error("Broker reported error: " + frame.headers["message"]);
+      console.error("Additional details: " + frame.body);
+    },
+    onDisconnect: () => {
+      isConnected.value = false;
+      messages.value.push({
+        sender: "Server",
+        content: "Websocket 已断开",
+        type: "tip",
+      });
+    },
+  });
+
+  stompClient.activate();
+}
+
+onMounted(() => {
+  connectWebSocket();
+});
 </script>
 <style lang="scss" scoped>
 .nav-action-item {
