@@ -156,6 +156,27 @@ export default defineMock([
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     },
   },
+
+  {
+    url: "users/profile",
+    method: ["GET"],
+    body: {
+      code: "00000",
+      data: {
+        id: 2,
+        username: "admin",
+        nickname: "系统管理员",
+        avatar:
+          "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
+        gender: 1,
+        mobile: "17621210366",
+        email: null,
+        deptName: "有来技术",
+        roleNames: "系统管理员",
+        createTime: "2019-10-10",
+      },
+    },
+  },
 ]);
 
 // 用户映射表数据
