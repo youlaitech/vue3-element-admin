@@ -76,7 +76,7 @@ class UserAPI {
    */
   static resetPassword(id: number, password: string) {
     return request({
-      url: `${USER_BASE_URL}/${id}/password`,
+      url: `${USER_BASE_URL}/${id}/password/reset`,
       method: "put",
       params: { password: password },
     });
