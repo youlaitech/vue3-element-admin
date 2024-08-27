@@ -208,7 +208,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/steps/style/css",
         "element-plus/es/components/step/style/css",
         "element-plus/es/components/avatar/style/css",
-        "sockjs-client/dist/sockjs.min.js",
+        "element-plus/es/components/descriptions/style/css",
+        "element-plus/es/components/descriptions-item/style/css",
       ],
     },
     // 构建配置
