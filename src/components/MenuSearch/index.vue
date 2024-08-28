@@ -147,6 +147,11 @@ interface SearchItem {
   }
 }
 
+.search-content {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 .search-space {
   padding: 20px;
   color: #999;
