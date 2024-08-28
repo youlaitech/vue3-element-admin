@@ -150,24 +150,24 @@ const messages = ref([
     title: "重要提醒：请定期更改您的密码以保证账户安全。",
     type: MessageTypeEnum.MESSAGE,
   },
-  {
-    id: 4,
-    title: "通知：您有一条未读的系统消息，请及时查看。",
-    type: MessageTypeEnum.NOTICE,
-  },
-  {
-    id: 5,
-    title: "新订单通知：您有一笔新的订单需要处理。",
-    type: MessageTypeEnum.NOTICE,
-  },
-  {
-    id: 6,
-    title: "审核提醒：您的审核请求已被批准。",
-    type: MessageTypeEnum.NOTICE,
-  },
-  { id: 7, title: "待办事项：完成用户权限设置。", type: MessageTypeEnum.TODO },
-  { id: 8, title: "待办事项：更新产品列表。", type: MessageTypeEnum.TODO },
-  { id: 9, title: "待办事项：备份数据库。", type: MessageTypeEnum.TODO },
+  // {
+  //   id: 4,
+  //   title: "通知：您有一条未读的系统消息，请及时查看。",
+  //   type: MessageTypeEnum.NOTICE,
+  // },
+  // {
+  //   id: 5,
+  //   title: "新订单通知：您有一笔新的订单需要处理。",
+  //   type: MessageTypeEnum.NOTICE,
+  // },
+  // {
+  //   id: 6,
+  //   title: "审核提醒：您的审核请求已被批准。",
+  //   type: MessageTypeEnum.NOTICE,
+  // },
+  // { id: 7, title: "待办事项：完成用户权限设置。", type: MessageTypeEnum.TODO },
+  // { id: 8, title: "待办事项：更新产品列表。", type: MessageTypeEnum.TODO },
+  // { id: 9, title: "待办事项：备份数据库。", type: MessageTypeEnum.TODO },
 ]);
 
 const getFilteredMessages = (type: MessageTypeEnum) => {
@@ -212,19 +212,30 @@ function connectWebSocket() {
     onConnect: () => {
       console.log("连接成功");
       isConnected.value = true;
-      messages.value.push({
-        sender: "Server",
-        content: "Websocket 已连接",
-        type: "tip",
-      });
+      // messages.value.push({
+      //   sender: "Server",
+      //   content: "Websocket 已连接",
+      //   type: "tip",
+      // });
       // 订阅 /topic/chat 主题
+      while (messages.value.length > 3) {
+        messages.value.shift();
+      }
       stompClient.subscribe("/topic/chat", (res) => {
-        debugger;
         console.log("收到消息：" + res.body);
-        // messages.value.push({
-        //   sender: "Server",
-        //   content: res.body,
-        // });
+        const message = JSON.parse(res.body);
+        console.log("当前有：" + message.id);
+        console.log("数组已更新，强制重新渲染");
+        messages.value.push({
+          id: message.id,
+          title: message.title,
+          type: MessageTypeEnum.MESSAGE,
+        });
+        while (messages.value.length > 3) {
+          messages.value.shift();
+        }
+        console.log("当前还有：" + messages.value);
+        nextTick(async () => {});
       });
     },
     onStompError: (frame) => {
@@ -233,11 +244,11 @@ function connectWebSocket() {
     },
     onDisconnect: () => {
       isConnected.value = false;
-      messages.value.push({
-        sender: "Server",
-        content: "Websocket 已断开",
-        type: "tip",
-      });
+      // messages.value.push({
+      //   sender: "Server",
+      //   content: "Websocket 已断开",
+      //   type: "tip",
+      // });
     },
   });
 

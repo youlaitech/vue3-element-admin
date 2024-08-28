@@ -64,10 +64,32 @@ class NoticeStatusAPI {
 export default NoticeStatusAPI;
 
 /** 用户公告状态分页查询参数 */
-export interface NoticeStatusPageQuery extends PageQuery {}
+export interface NoticeStatusPageQuery extends PageQuery {
+  /** id */
+  id?: bigint;
+  /** 公共通知id */
+  noticeId?: bigint;
+  /** 用户id */
+  userId?: number;
+  /** 读取状态，0未读，1已读取 */
+  readStatus?: bigint;
+  /** 用户阅读时间 */
+  readTiem?: [string, string];
+}
 
 /** 用户公告状态表单对象 */
 export interface NoticeStatusForm {}
 
 /** 用户公告状态分页对象 */
-export interface NoticeStatusPageVO {}
+export interface NoticeStatusPageVO {
+  /** id */
+  id?: bigint;
+  /** 公共通知id */
+  noticeId?: bigint;
+  /** 用户id */
+  userId?: number;
+  /** 读取状态，0未读，1已读取 */
+  readStatus?: bigint;
+  /** 用户阅读时间 */
+  readTiem?: Date;
+}

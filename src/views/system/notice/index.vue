@@ -34,32 +34,40 @@
             @keyup.enter="handleQuery()"
           />
         </el-form-item>
-        <el-form-item label="优先级(0-低 1-中 2-高)" prop="priority">
-          <el-input
+        <el-form-item label="优先级" prop="priority">
+          <el-select
             v-model="queryParams.priority"
-            placeholder="优先级(0-低 1-中 2-高)"
+            class="!w-[100px]"
             clearable
-            @keyup.enter="handleQuery()"
-          />
+            placeholder="全部"
+          >
+            <el-option :value="0" label="低" />
+            <el-option :value="1" label="中" />
+            <el-option :value="2" label="高" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="目标类型(0-全体 1-指定)" prop="tarType">
-          <el-input
+        <el-form-item label="目标类型" prop="tarType">
+          <el-select
             v-model="queryParams.tarType"
-            placeholder="目标类型(0-全体 1-指定)"
+            class="!w-[100px]"
             clearable
-            @keyup.enter="handleQuery()"
-          />
+            placeholder="全部"
+          >
+            <el-option :value="0" label="全体" />
+            <el-option :value="1" label="指定" />
+          </el-select>
         </el-form-item>
-        <el-form-item
-          label="发布状态(0-未发布 1已发布 2已撤回)"
-          prop="sendStatus"
-        >
-          <el-input
+        <el-form-item label="发布状态" prop="sendStatus">
+          <el-select
             v-model="queryParams.sendStatus"
-            placeholder="发布状态(0-未发布 1已发布 2已撤回)"
+            class="!w-[100px]"
             clearable
-            @keyup.enter="handleQuery()"
-          />
+            placeholder="全部"
+          >
+            <el-option :value="0" label="未发布" />
+            <el-option :value="1" label="已发布" />
+            <el-option :value="2" label="已撤回" />
+          </el-select>
         </el-form-item>
         <el-form-item label="发布时间" prop="sendTime">
           <el-date-picker
@@ -120,78 +128,117 @@
         v-loading="loading"
         :data="pageData"
         highlight-current-row
-        border
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column key="id" label="id" prop="id" min-width="100" />
         <el-table-column
+          align="center"
+          key="id"
+          label="id"
+          prop="id"
+          min-width="100"
+        />
+        <el-table-column
+          align="center"
           key="title"
           label="通知标题"
           prop="title"
-          min-width="100"
+          min-width="150"
         />
         <el-table-column
+          align="center"
           key="content"
           label="通知内容"
           prop="content"
-          min-width="100"
+          min-width="150"
         />
         <el-table-column
+          align="center"
           key="noticeType"
           label="通知类型"
           prop="noticeType"
-          min-width="100"
+          min-width="150"
         />
         <el-table-column
+          align="center"
           key="releaseBy"
           label="发布人"
           prop="releaseBy"
           min-width="100"
         />
         <el-table-column
+          align="center"
           key="priority"
-          label="优先级(0-低 1-中 2-高)"
+          label="优先级"
           prop="priority"
           min-width="100"
-        />
+        >
+          <template #default="scope">
+            <el-tag v-if="scope.row.priority == 0" type="danger">低</el-tag>
+            <el-tag v-if="scope.row.priority == 1" type="success">中</el-tag>
+            <el-tag v-if="scope.row.priority == 2" type="warning">高</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
+          align="center"
           key="tarType"
-          label="目标类型(0-全体 1-指定)"
+          label="目标类型"
           prop="tarType"
           min-width="100"
-        />
+        >
+          <template #default="scope">
+            <el-tag v-if="scope.row.tarType == 0" type="warning">全体</el-tag>
+            <el-tag v-if="scope.row.tarType == 1" type="success">指定</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
+          align="center"
           key="sendStatus"
-          label="发布状态(0-未发布 1已发布 2已撤回)"
+          label="发布状态"
           prop="sendStatus"
           min-width="100"
-        />
+        >
+          <template #default="scope">
+            <el-tag v-if="scope.row.sendStatus == 0" type="warning">
+              未发布
+            </el-tag>
+            <el-tag v-if="scope.row.sendStatus == 1" type="success">
+              已发布
+            </el-tag>
+            <el-tag v-if="scope.row.sendStatus == 2" type="primary">
+              已撤回
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
+          align="center"
           key="sendTime"
           label="发布时间"
           prop="sendTime"
           min-width="100"
         />
         <el-table-column
+          align="center"
           key="recallTime"
           label="撤回时间"
           prop="recallTime"
           min-width="100"
         />
         <el-table-column
+          align="center"
           key="createTime"
           label="创建时间"
           prop="createTime"
           min-width="100"
         />
         <el-table-column
+          align="center"
           key="updateTime"
           label="更新时间"
           prop="updateTime"
           min-width="100"
         />
-        <el-table-column fixed="right" label="操作" width="220">
+        <el-table-column align="center" fixed="right" label="操作" width="220">
           <template #default="scope">
             <el-button
               v-hasPerm="['system:notice:edit']"
@@ -264,42 +311,57 @@
             @keyup.enter="handleQuery()"
           />
         </el-form-item>
-        <el-form-item label="发布人" prop="releaseBy">
-          <el-input
-            v-model="formData.releaseBy"
-            placeholder="发布人"
-            clearable
-            @keyup.enter="handleQuery()"
-          />
+        <!--        <el-form-item label="发布人" prop="releaseBy">-->
+        <!--          <el-input-->
+        <!--            v-model="formData.releaseBy"-->
+        <!--            placeholder="发布人"-->
+        <!--            clearable-->
+        <!--            @keyup.enter="handleQuery()"-->
+        <!--          />-->
+        <!--        </el-form-item>-->
+        <el-form-item label="优先级" prop="priority">
+          <!--          <el-input-->
+          <!--            v-model="formData.priority"-->
+          <!--            placeholder="优先级(0-低 1-中 2-高)"-->
+          <!--            clearable-->
+          <!--            @keyup.enter="handleQuery()"-->
+          <!--          />-->
+          <el-radio-group v-model="formData.priority">
+            <el-radio :value="0">低</el-radio>
+            <el-radio :value="1">中</el-radio>
+            <el-radio :value="2">高</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="优先级(0-低 1-中 2-高)" prop="priority">
-          <el-input
-            v-model="formData.priority"
-            placeholder="优先级(0-低 1-中 2-高)"
-            clearable
-            @keyup.enter="handleQuery()"
-          />
+        <el-form-item label="目标类型" prop="tarType">
+          <!--          <el-input-->
+          <!--            v-model="formData.tarType"-->
+          <!--            placeholder="目标类型(0-全体 1-指定)"-->
+          <!--            clearable-->
+          <!--            @keyup.enter="handleQuery()"-->
+          <!--          />-->
+          <el-radio-group v-model="formData.tarType">
+            <el-radio :value="0">全体</el-radio>
+            <el-radio :value="1">指定</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="目标类型(0-全体 1-指定)" prop="tarType">
-          <el-input
-            v-model="formData.tarType"
-            placeholder="目标类型(0-全体 1-指定)"
-            clearable
-            @keyup.enter="handleQuery()"
-          />
+        <el-form-item label="发布状态" prop="sendStatus">
+          <!--          <el-input-->
+          <!--            v-model="formData.sendStatus"-->
+          <!--            placeholder="发布状态(0-未发布 1已发布 2已撤回)"-->
+          <!--            clearable-->
+          <!--            @keyup.enter="handleQuery()"-->
+          <!--          />-->
+          <el-radio-group v-model="formData.sendStatus">
+            <el-radio :value="0">未发布</el-radio>
+            <el-radio :value="1">已发布</el-radio>
+            <el-radio :value="2">已撤回</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item
-          label="发布状态(0-未发布 1已发布 2已撤回)"
-          prop="sendStatus"
+          v-if="formData.sendStatus === 1"
+          label="发布时间"
+          prop="sendTime"
         >
-          <el-input
-            v-model="formData.sendStatus"
-            placeholder="发布状态(0-未发布 1已发布 2已撤回)"
-            clearable
-            @keyup.enter="handleQuery()"
-          />
-        </el-form-item>
-        <el-form-item label="发布时间" prop="sendTime">
           <el-date-picker
             v-model="formData.sendTime"
             type="datetime"
@@ -307,7 +369,11 @@
             value-format="YYYY-MM-DD HH:mm:ss"
           />
         </el-form-item>
-        <el-form-item label="撤回时间" prop="recallTime">
+        <el-form-item
+          v-if="formData.sendStatus === 2"
+          label="撤回时间"
+          prop="recallTime"
+        >
           <el-date-picker
             v-model="formData.recallTime"
             type="datetime"
@@ -360,13 +426,17 @@ const dialog = reactive({
 });
 
 // 通知公告表单数据
-const formData = reactive<NoticeForm>({});
+const formData = reactive<NoticeForm>({
+  sendStatus: 0, // 默认状态为未发布
+  priority: 0, // 默认优先级为低
+  tarType: 0, // 默认目标类型为全体
+});
 
 // 通知公告表单校验规则
 const rules = reactive({
   title: [{ required: true, message: "请输入通知标题", trigger: "blur" }],
   content: [{ required: true, message: "请输入通知内容", trigger: "blur" }],
-  releaseBy: [{ required: true, message: "请输入发布人", trigger: "blur" }],
+  // releaseBy: [{ required: true, message: "请输入发布人", trigger: "blur" }],
   sendTime: [{ required: true, message: "请输入发布时间", trigger: "blur" }],
   recallTime: [{ required: true, message: "请输入撤回时间", trigger: "blur" }],
 });

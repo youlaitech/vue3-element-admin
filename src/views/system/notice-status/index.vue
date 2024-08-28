@@ -2,6 +2,48 @@
   <div class="app-container">
     <div class="search-container">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+        <el-form-item label="id" prop="id">
+          <el-input
+            v-model="queryParams.id"
+            placeholder="id"
+            clearable
+            @keyup.enter="handleQuery()"
+          />
+        </el-form-item>
+        <el-form-item label="公共通知id" prop="noticeId">
+          <el-input
+            v-model="queryParams.noticeId"
+            placeholder="公共通知id"
+            clearable
+            @keyup.enter="handleQuery()"
+          />
+        </el-form-item>
+        <el-form-item label="用户id" prop="userId">
+          <el-input
+            v-model="queryParams.userId"
+            placeholder="用户id"
+            clearable
+            @keyup.enter="handleQuery()"
+          />
+        </el-form-item>
+        <el-form-item label="读取状态，0未读，1已读取" prop="readStatus">
+          <el-input
+            v-model="queryParams.readStatus"
+            placeholder="读取状态，0未读，1已读取"
+            clearable
+            @keyup.enter="handleQuery()"
+          />
+        </el-form-item>
+        <el-form-item label="用户阅读时间" prop="readTiem">
+          <el-date-picker
+            v-model="queryParams.readTiem"
+            type="daterange"
+            range-separator="~"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            value-format="YYYY-MM-DD HH:mm:ss"
+          />
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery()">
             <i-ep-search />
@@ -45,6 +87,31 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
+        <el-table-column key="id" label="id" prop="id" min-width="100" />
+        <el-table-column
+          key="noticeId"
+          label="公共通知id"
+          prop="noticeId"
+          min-width="100"
+        />
+        <el-table-column
+          key="userId"
+          label="用户id"
+          prop="userId"
+          min-width="100"
+        />
+        <el-table-column
+          key="readStatus"
+          label="读取状态，0未读，1已读取"
+          prop="readStatus"
+          min-width="100"
+        />
+        <el-table-column
+          key="readTiem"
+          label="用户阅读时间"
+          prop="readTiem"
+          min-width="100"
+        />
         <el-table-column fixed="right" label="操作" width="220">
           <template #default="scope">
             <el-button
@@ -113,7 +180,7 @@ import NoticeStatusAPI, {
   NoticeStatusPageVO,
   NoticeStatusForm,
   NoticeStatusPageQuery,
-} from "@/api/noticeStatus";
+} from "@/api/notice-status";
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
