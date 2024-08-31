@@ -25,7 +25,11 @@ class NoticeAPI {
     });
   }
 
-  /** 添加通知公告*/
+  /**
+   * 添加通知公告
+   * @param data Notice表单数据
+   * @returns
+   */
   static add(data: NoticeForm) {
     return request({
       url: `${NOTICE_BASE_URL}`,
@@ -59,63 +63,64 @@ class NoticeAPI {
       method: "delete",
     });
   }
+
+  /**
+   * 发布通知
+   *
+   * @param id 被发布的通知公告id
+   * @returns
+   */
+  static releaseNotice(id: number) {
+    return request({
+      url: `${NOTICE_BASE_URL}/release/${id}`,
+      method: "patch",
+    });
+  }
+
+  /**
+   * 撤回通知
+   *
+   * @param id 撤回的通知id
+   * @returns
+   */
+  static recallNotice(id: number) {
+    return request({
+      url: `${NOTICE_BASE_URL}/recall/${id}`,
+      method: "patch",
+    });
+  }
 }
 
 export default NoticeAPI;
 
 /** 通知公告分页查询参数 */
 export interface NoticePageQuery extends PageQuery {
-  id?: bigint;
-  /** 通知标题 */
+  /** 标题 */
   title?: string;
-  /** 通知内容 */
-  content?: string;
-  /** 通知类型 */
-  noticeType?: number;
-  /** 发布人 */
-  releaseBy?: bigint;
-  /** 优先级(0-低 1-中 2-高) */
-  priority?: number;
-  /** 目标类型(0-全体 1-指定) */
-  tarType?: number;
   /** 发布状态(0-未发布 1已发布 2已撤回) */
   sendStatus?: number;
-  /** 发布时间 */
-  sendTime?: [string, string];
-  /** 撤回时间 */
-  recallTime?: [string, string];
-  /** 创建时间 */
-  createTime?: Date;
-  /** 更新时间 */
-  updateTime?: Date;
 }
 
 /** 通知公告表单对象 */
 export interface NoticeForm {
-  id?: bigint;
+  id?: number;
   /** 通知标题 */
   title?: string;
   /** 通知内容 */
   content?: string;
   /** 通知类型 */
   noticeType?: number;
-  /** 发布人 */
-  releaseBy?: bigint;
   /** 优先级(0-低 1-中 2-高) */
   priority?: number;
   /** 目标类型(0-全体 1-指定) */
   tarType?: number;
-  /** 发布状态(0-未发布 1已发布 2已撤回) */
-  sendStatus?: number;
-  /** 发布时间 */
-  sendTime?: Date;
-  /** 撤回时间 */
-  recallTime?: Date;
+  /** 目标ID合集，以,分割 */
+  tarIds?: string;
 }
 
 /** 通知公告分页对象 */
 export interface NoticePageVO {
-  id?: bigint;
+  id?: string;
   /** 通知标题 */
   title?: string;
   /** 通知内容 */
@@ -129,13 +134,9 @@ export interface NoticePageVO {
   /** 目标类型(0-全体 1-指定) */
   tarType?: number;
   /** 发布状态(0-未发布 1已发布 2已撤回) */
-  sendStatus?: number;
+  releaseStatus?: number;
   /** 发布时间 */
-  sendTime?: Date;
+  releaseTime?: Date;
   /** 撤回时间 */
   recallTime?: Date;
-  /** 创建时间 */
-  createTime?: Date;
-  /** 更新时间 */
-  updateTime?: Date;
 }
