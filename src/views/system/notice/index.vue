@@ -80,7 +80,7 @@
           align="center"
           key="noticeType"
           label="通知类型"
-          prop="noticeType"
+          prop="noticeTypeLabel"
           min-width="150"
         />
         <el-table-column
@@ -211,48 +211,66 @@
     <el-dialog
       v-model="dialog.visible"
       :title="dialog.title"
-      width="70%"
+      top="4vh"
+      width="60%"
       @close="handleCloseDialog"
     >
-      <div style="max-height: calc(100vh - 200px)">
-        <el-form
-          ref="dataFormRef"
-          :model="formData"
-          :rules="rules"
-          label-width="100px"
+      <el-form
+        ref="dataFormRef"
+        :model="formData"
+        :rules="rules"
+        label-width="100px"
+      >
+        <el-form-item label="通知标题" prop="title">
+          <el-input v-model="formData.title" placeholder="通知标题" clearable />
+        </el-form-item>
+        <el-form-item label="通知内容" prop="content">
+          <editor
+            v-model="formData.content"
+            :excludeKeys="['headerSelect', 'blockquote']"
+            style="min-height: 480px; max-height: 500px"
+          />
+        </el-form-item>
+        <el-form-item label="通知类型" prop="noticeType">
+          <dictionary
+            type="button"
+            v-model="formData.noticeType"
+            code="notice_type"
+          />
+        </el-form-item>
+        <el-form-item label="优先级" prop="priority">
+          <el-radio-group v-model="formData.priority">
+            <el-radio :value="0">低</el-radio>
+            <el-radio :value="1">中</el-radio>
+            <el-radio :value="2">高</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="目标类型" prop="tarType">
+          <el-radio-group v-model="formData.tarType">
+            <el-radio :value="0">全体</el-radio>
+            <el-radio :value="1">指定</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          label="指定用户"
+          prop="tarType"
+          v-if="formData.tarType == 1"
         >
-          <el-form-item label="通知标题" prop="title">
-            <el-input
-              v-model="formData.title"
-              placeholder="通知标题"
-              clearable
+          <el-select
+            v-model="formData.tarIds"
+            multiple
+            search
+            placeholder="请选择指定用户"
+          >
+            <el-option
+              v-for="item in userOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             />
-          </el-form-item>
-          <el-form-item label="通知内容" prop="content">
-            <editor v-model="formData.content" style="height: 500px" />
-          </el-form-item>
-          <el-form-item label="通知类型" prop="noticeType">
-            <el-input
-              v-model="formData.noticeType"
-              placeholder="通知类型"
-              clearable
-            />
-          </el-form-item>
-          <el-form-item label="优先级" prop="priority">
-            <el-radio-group v-model="formData.priority">
-              <el-radio :value="0">低</el-radio>
-              <el-radio :value="1">中</el-radio>
-              <el-radio :value="2">高</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="目标类型" prop="tarType">
-            <el-radio-group v-model="formData.tarType">
-              <el-radio :value="0">全体</el-radio>
-              <el-radio :value="1">指定</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-      </div>
+          </el-select>
+        </el-form-item>
+      </el-form>
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmit()">确定</el-button>
@@ -275,6 +293,7 @@ import NoticeAPI, {
   NoticeForm,
   NoticePageQuery,
 } from "@/api/notice";
+import UserAPI from "@/api/user";
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -288,6 +307,7 @@ const queryParams = reactive<NoticePageQuery>({
   pageSize: 10,
 });
 
+const userOptions = ref<OptionType[]>([]);
 // 通知公告表格数据
 const pageData = ref<NoticePageVO[]>([]);
 
@@ -306,7 +326,25 @@ const formData = reactive<NoticeForm>({
 // 通知公告表单校验规则
 const rules = reactive({
   title: [{ required: true, message: "请输入通知标题", trigger: "blur" }],
-  content: [{ required: true, message: "请输入通知内容", trigger: "blur" }],
+  // content: [{ required: true, message: "请输入通知内容", trigger: "blur" }],
+  // 写一个content的校验规则，去掉html标签如果为空则提示
+  content: [
+    {
+      required: true,
+      message: "请输入通知内容",
+      trigger: "blur",
+      validator: (rule: any, value: string, callback: any) => {
+        if (!value.replace(/<[^>]+>/g, "").trim()) {
+          callback(new Error("请输入通知内容"));
+        } else {
+          callback();
+        }
+      },
+    },
+  ],
+  noticeType: [
+    { required: true, message: "请选择通知类型", trigger: "change" },
+  ],
 });
 
 /** 查询通知公告 */
@@ -336,6 +374,7 @@ function handleSelectionChange(selection: any) {
 
 /** 打开通知公告弹窗 */
 function handleOpenDialog(id?: number) {
+  getUserOptions();
   dialog.visible = true;
   if (id) {
     dialog.title = "修改通知公告";
@@ -343,6 +382,7 @@ function handleOpenDialog(id?: number) {
       Object.assign(formData, data);
     });
   } else {
+    Object.assign(formData, { priority: 0, tarType: 0 });
     dialog.title = "新增通知公告";
   }
 }
@@ -424,7 +464,20 @@ function handleDelete(id?: number) {
   );
 }
 
+function getUserOptions() {
+  if (userOptions.value.length == 0) {
+    UserAPI.getOptions().then((res) => {
+      userOptions.value = res;
+    });
+  }
+}
+
 onMounted(() => {
   handleQuery();
 });
 </script>
+<style>
+.editor-wrapper {
+  border: 1px solid #dcdfe6;
+}
+</style>

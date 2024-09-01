@@ -1,4 +1,5 @@
 import request from "@/utils/request";
+import { AxiosPromise, AxiosResponse } from "axios";
 
 const USER_BASE_URL = "/api/v1/users";
 
@@ -192,6 +193,16 @@ class UserAPI {
       url: `${USER_BASE_URL}/email`,
       method: "put",
       data: data,
+    });
+  }
+
+  /**
+   *  获取用户下拉列表
+   */
+  static getOptions(): AxiosPromise<OptionType[]> {
+    return request({
+      url: `${USER_BASE_URL}/options`,
+      method: "get",
     });
   }
 }
