@@ -116,18 +116,18 @@
 
           <el-row>
             <el-col :span="12">
-              <el-form-item label="模块名">
-                <el-input
-                  v-model="genConfigFormData.moduleName"
-                  placeholder="system"
-                />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
               <el-form-item label="包名">
                 <el-input
                   v-model="genConfigFormData.packageName"
                   placeholder="com.youlai.boot"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="模块名">
+                <el-input
+                  v-model="genConfigFormData.moduleName"
+                  placeholder="system"
                 />
               </el-form-item>
             </el-col>
@@ -154,7 +154,23 @@
 
           <el-row>
             <el-col :span="12">
-              <el-form-item label="上级菜单">
+              <el-form-item>
+                <template #label>
+                  <div class="flex-y-between">
+                    <span>上级菜单</span>
+                    <el-tooltip effect="dark">
+                      <template #content>
+                        选择上级菜单，生成代码后会自动创建对应菜单。
+                        <br />
+                        注意1：生成菜单后需分配权限给角色，否则菜单将无法显示。
+                        <br />
+                        注意2：演示环境默认不生成菜单，如需生成，请在本地部署数据库。
+                      </template>
+                      <i-ep-QuestionFilled class="cursor-pointer" />
+                    </el-tooltip>
+                  </div>
+                </template>
+
                 <el-tree-select
                   v-model="genConfigFormData.parentMenuId"
                   placeholder="选择上级菜单"
@@ -435,6 +451,13 @@ import GeneratorAPI, {
 import DictAPI from "@/api/dict";
 import MenuAPI from "@/api/menu";
 
+interface TreeNode {
+  label: string;
+  content?: string;
+  children?: TreeNode[];
+}
+const treeData = ref<TreeNode[]>([]);
+
 const queryFormRef = ref(ElForm);
 const queryParams = reactive<TablePageQuery>({
   pageNum: 1,
@@ -473,12 +496,12 @@ const active = ref(0);
 const currentTableName = ref("");
 const sortFlag = ref<Object>();
 
-interface TreeNode {
-  label: string;
-  content?: string;
-  children?: TreeNode[];
-}
-const treeData = ref<TreeNode[]>([]);
+// 查询是否全选
+const isCheckAllQuery = ref(false);
+// 列表是否全选
+const isCheckAllList = ref(false);
+// 表单是否全选
+const isCheckAllForm = ref(false);
 
 watch(active, (val) => {
   if (val === 0) {
@@ -550,6 +573,7 @@ const setNodeSort = (oldIndex: number, newIndex: number) => {
   });
 };
 
+/** 上一步 */
 function handlePrevClick() {
   if (active.value === 2) {
     //这里需要重新获取一次数据，如果第一次生成代码后，再次点击上一步，数据不重新获取，再次点击下一步，会再次插入数据，导致索引重复报错
@@ -571,6 +595,7 @@ function handlePrevClick() {
   if (active.value-- <= 0) active.value = 0;
 }
 
+/** 下一步 */
 function handleNextClick() {
   if (active.value === 0) {
     initSort();
@@ -680,6 +705,7 @@ function handleResetConfig(tableName: string) {
 
 type FieldConfigKey = "isShowInQuery" | "isShowInList" | "isShowInForm";
 
+/** 全选 */
 const toggleCheckAll = (key: FieldConfigKey, value: boolean) => {
   const fieldConfigs = genConfigFormData.value?.fieldConfigs;
 
@@ -689,10 +715,6 @@ const toggleCheckAll = (key: FieldConfigKey, value: boolean) => {
     });
   }
 };
-
-const isCheckAllQuery = ref(false);
-const isCheckAllList = ref(false);
-const isCheckAllForm = ref(false);
 
 const checkAllSelected = (key: keyof FieldConfig, isCheckAllRef: any) => {
   const fieldConfigs = genConfigFormData.value?.fieldConfigs || [];
@@ -740,7 +762,6 @@ function buildTree(
     const parts = item.path.split(separator);
 
     // 定义特殊路径
-    // TODO: 如果菜单有多个节点，需要将此菜单作为独立一级的节点，而不是合并到上一级。 按照此规则， com.youlai.system 则是三个节点，而不是合并到一起，但是这里需要将 com.youlai.system 合并到一起，所以需要特殊处理
     const specialPaths = [
       "src" + separator + "main",
       "java",
@@ -752,8 +773,6 @@ function buildTree(
         genConfigFormData.value.moduleName
       ).replace(/\./g, separator),
     ];
-
-    console.log("specialPaths", specialPaths);
 
     // 检查路径中的特殊部分并合并它们
     const mergedParts: string[] = [];
