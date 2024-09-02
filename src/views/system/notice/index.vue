@@ -69,6 +69,7 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
+        <el-table-column type="index" label="序号" width="60" />
         <el-table-column
           align="center"
           key="title"
@@ -212,7 +213,7 @@
       v-model="dialog.visible"
       :title="dialog.title"
       top="4vh"
-      width="60%"
+      width="1250"
       @close="handleCloseDialog"
     >
       <el-form
@@ -227,7 +228,6 @@
         <el-form-item label="通知内容" prop="content">
           <editor
             v-model="formData.content"
-            :excludeKeys="['headerSelect', 'blockquote']"
             style="min-height: 480px; max-height: 500px"
           />
         </el-form-item>

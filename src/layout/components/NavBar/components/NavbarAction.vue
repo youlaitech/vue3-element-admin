@@ -201,6 +201,7 @@ function logout() {
 let stompClient: Client;
 
 function connectWebSocket() {
+  console.log("连接消息ws的url：" + socketEndpoint.value);
   stompClient = new Client({
     brokerURL: socketEndpoint.value,
     connectHeaders: {
@@ -210,32 +211,11 @@ function connectWebSocket() {
       console.log(str);
     },
     onConnect: () => {
-      console.log("连接成功");
+      console.log("消息ws连接成功");
       isConnected.value = true;
-      // messages.value.push({
-      //   sender: "Server",
-      //   content: "Websocket 已连接",
-      //   type: "tip",
-      // });
-      // 订阅 /topic/chat 主题
-      while (messages.value.length > 3) {
-        messages.value.shift();
-      }
-      stompClient.subscribe("/topic/chat", (res) => {
+
+      stompClient.subscribe("/user/queue/message", (res) => {
         console.log("收到消息：" + res.body);
-        const message = JSON.parse(res.body);
-        console.log("当前有：" + message.id);
-        console.log("数组已更新，强制重新渲染");
-        messages.value.push({
-          id: message.id,
-          title: message.title,
-          type: MessageTypeEnum.MESSAGE,
-        });
-        while (messages.value.length > 3) {
-          messages.value.shift();
-        }
-        console.log("当前还有：" + messages.value);
-        nextTick(async () => {});
       });
     },
     onStompError: (frame) => {
@@ -244,11 +224,6 @@ function connectWebSocket() {
     },
     onDisconnect: () => {
       isConnected.value = false;
-      // messages.value.push({
-      //   sender: "Server",
-      //   content: "Websocket 已断开",
-      //   type: "tip",
-      // });
     },
   });
 
