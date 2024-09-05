@@ -96,7 +96,7 @@ function changeLayout(layout: string) {
 /** 重新激活顶部菜单 */
 function againActiveTop(newVal: string) {
   const parent = findOutermostParent(permissionStore.routes, newVal);
-  if (appStore.activeTopMenu !== parent.path) {
+  if (appStore.activeTopMenuPath !== parent.path) {
     appStore.activeTopMenu(parent.path);
   }
 }

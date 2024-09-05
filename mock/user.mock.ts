@@ -134,8 +134,8 @@ export default defineMock([
 
   // 重置密码
   {
-    url: "users/:userId/password",
-    method: ["PATCH"],
+    url: "users/:userId/password/reset",
+    method: ["PUT"],
     body({ query }) {
       return {
         code: "00000",
@@ -154,6 +154,51 @@ export default defineMock([
         "attachment; filename=%E7%94%A8%E6%88%B7%E5%88%97%E8%A1%A8.xlsx",
       "Content-Type":
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    },
+  },
+
+  {
+    url: "users/profile",
+    method: ["GET"],
+    body: {
+      code: "00000",
+      data: {
+        id: 2,
+        username: "admin",
+        nickname: "系统管理员",
+        avatar:
+          "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
+        gender: 1,
+        mobile: "17621210366",
+        email: null,
+        deptName: "有来技术",
+        roleNames: "系统管理员",
+        createTime: "2019-10-10",
+      },
+    },
+  },
+
+  {
+    url: "users/profile",
+    method: ["PUT"],
+    body({ query }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "修改个人信息成功",
+      };
+    },
+  },
+
+  {
+    url: "users/password",
+    method: ["PUT"],
+    body({ query }) {
+      return {
+        code: "00000",
+        data: null,
+        msg: "修改密码成功",
+      };
     },
   },
 ]);
