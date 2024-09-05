@@ -89,6 +89,17 @@ class NoticeAPI {
       method: "patch",
     });
   }
+
+  /**
+   * 获取我的通知公告n条
+   * @returns 消息
+   */
+  static listNotice() {
+    return request({
+      url: `${NOTICE_BASE_URL}/notice/5`,
+      method: "get",
+    });
+  }
 }
 
 export default NoticeAPI;
