@@ -97,15 +97,16 @@
           v-show="active == 0"
           :model="genConfigFormData"
           :label-width="100"
+          :rules="genConfigFormRules"
         >
           <el-row>
             <el-col :span="12">
-              <el-form-item label="表名">
+              <el-form-item label="表名" prop="tableName">
                 <el-input v-model="genConfigFormData.tableName" readonly />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="业务名">
+              <el-form-item label="业务名" prop="businessName">
                 <el-input
                   v-model="genConfigFormData.businessName"
                   placeholder="用户"
@@ -116,7 +117,7 @@
 
           <el-row>
             <el-col :span="12">
-              <el-form-item label="包名">
+              <el-form-item label="包名" prop="packageName">
                 <el-input
                   v-model="genConfigFormData.packageName"
                   placeholder="com.youlai.boot"
@@ -124,7 +125,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="模块名">
+              <el-form-item label="模块名" prop="moduleName">
                 <el-input
                   v-model="genConfigFormData.moduleName"
                   placeholder="system"
@@ -135,7 +136,7 @@
 
           <el-row>
             <el-col :span="12">
-              <el-form-item label="实体名">
+              <el-form-item label="实体名" prop="entityName">
                 <el-input
                   v-model="genConfigFormData.entityName"
                   placeholder="User"
@@ -477,6 +478,14 @@ const menuOptions = ref<OptionType[]>([]);
 const genConfigFormData = ref<GenConfigForm>({
   fieldConfigs: [],
 });
+
+const genConfigFormRules = {
+  tableName: [{ required: true, message: "请输入表名", trigger: "blur" }],
+  businessName: [{ required: true, message: "请输入业务名", trigger: "blur" }],
+  packageName: [{ required: true, message: "请输入包名", trigger: "blur" }],
+  moduleName: [{ required: true, message: "请输入模块名", trigger: "blur" }],
+  entityName: [{ required: true, message: "请输入实体名", trigger: "blur" }],
+};
 
 const dialog = reactive({
   visible: false,
