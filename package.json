@@ -119,8 +119,7 @@
     "vue-tsc": "^2.1.6"
   },
   "engines": {
-    "node": "^18.0.0 || ^20.7.0",
-    "pnpm": ">=9"
+    "node": ">=18.0.0"
   },
   "repository": "https://gitee.com/youlaiorg/vue3-element-admin.git",
   "author": "有来开源组织",
