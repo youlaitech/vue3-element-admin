@@ -44,10 +44,10 @@
   </el-dropdown>
 </template>
 <script setup lang="ts">
-import { Client } from "@stomp/stompjs";
-import { TOKEN_KEY } from "@/enums/CacheEnum";
 import { MessageTypeEnum, MessageTypeLabels } from "@/enums/MessageTypeEnum";
 import NoticeAPI from "@/api/notice";
+import { getWebSocketClient, WebSocketService } from "@/api/socket";
+import WebSocketManager from "@/api/WebSocketManager";
 
 const activeTab = ref(MessageTypeEnum.MESSAGE);
 
@@ -90,49 +90,18 @@ const getFilteredMessages = (type: MessageTypeEnum) => {
   return messages.value.filter((message) => message.type === type);
 };
 
-const isConnected = ref(false);
-const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT);
-
-let stompClient: Client;
-
 function connectWebSocket() {
-  console.log("连接消息ws的url：" + socketEndpoint.value);
-  stompClient = new Client({
-    brokerURL: socketEndpoint.value,
-    connectHeaders: {
-      Authorization: localStorage.getItem(TOKEN_KEY) || "",
-    },
-    debug: (str) => {
-      console.log(str);
-    },
-    onConnect: () => {
-      console.log("消息ws连接成功");
-      isConnected.value = true;
-
-      stompClient.subscribe("/user/queue/message", (res) => {
-        console.log("收到消息：" + res.body);
-      });
-    },
-    onStompError: (frame) => {
-      console.error("Broker reported error: " + frame.headers["message"]);
-      console.error("Additional details: " + frame.body);
-    },
-    onDisconnect: () => {
-      isConnected.value = false;
-    },
+  WebSocketManager.getWebSocketClient("/user/queue/message", (message) => {
+    console.log("收到消息：", message);
   });
-
-  stompClient.activate();
 }
 
 function listNotice() {
-  NoticeAPI.listNotice().then((res) => {
-    console.log(res);
-  });
+  NoticeAPI.listNotice().then((res) => {});
 }
 
 onMounted(() => {
-  listNotice();
+  // listNotice();
   connectWebSocket();
 });
 </script>
