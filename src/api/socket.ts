@@ -5,7 +5,7 @@ const MAX_RETRIES = 3; // 最大重试次数
 const RETRY_DELAY_MS = 5000; // 重试延迟时间，单位：毫秒
 const HEARTBEAT_INTERVAL = 30000; // 心跳间隔时间，单位：毫秒
 
-class WebSocketManager {
+class Socket {
   private clients: Map<string, Client> = new Map();
   private retryCountMap: Map<string, number> = new Map();
   private subscriptions: Map<string, ((message: string) => void)[]> = new Map();
@@ -110,4 +110,4 @@ class WebSocketManager {
   }
 }
 
-export default new WebSocketManager();
+export default new Socket();

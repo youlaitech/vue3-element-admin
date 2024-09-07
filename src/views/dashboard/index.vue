@@ -188,7 +188,7 @@
 </template>
 
 <script setup lang="ts">
-import WebSocketManager from "@/api/WebSocketManager";
+import WebSocketManager from "@/api/socket";
 
 defineOptions({
   name: "Dashboard",

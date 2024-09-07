@@ -1,107 +1,143 @@
 <template>
-  <el-dropdown class="message nav-action-item" trigger="click">
-    <el-badge is-dot>
-      <div class="flex-center h100% p10px">
-        <i-ep-bell />
-      </div>
-    </el-badge>
-    <template #dropdown>
-      <div class="px-5 py-2">
-        <el-tabs v-model="activeTab">
-          <el-tab-pane
-            v-for="(label, key) in MessageTypeLabels"
-            :label="label"
-            :name="key"
-            :key="key"
-          >
-            <div
-              class="w-[380px] py-2"
-              v-for="message in getFilteredMessages(key)"
-              :key="message.id"
-            >
-              <el-link type="primary">
-                <el-text class="w-350px" size="default" truncated>
-                  {{ message.title }}
-                </el-text>
-              </el-link>
-            </div>
-          </el-tab-pane>
-        </el-tabs>
-        <el-divider />
-        <div class="flex-x-between">
-          <el-link type="primary" :underline="false">
-            <span class="text-xs">查看更多</span>
-            <el-icon class="text-xs">
-              <ArrowRight />
-            </el-icon>
-          </el-link>
-          <el-link type="primary" :underline="false">
-            <span class="text-xs">全部已读</span>
-          </el-link>
+  <div class="nav-action-item" style="display: flex; justify-content: center">
+    <el-dropdown trigger="hover">
+      <el-badge :is-dot="messages.length > 0" :offset="offset">
+        <div class="flex-center h100% p10px">
+          <i-ep-bell />
         </div>
-      </div>
-    </template>
-  </el-dropdown>
+      </el-badge>
+      <template #dropdown>
+        <div class="px-5 py-2">
+          <el-tabs v-model="activeTab">
+            <el-tab-pane
+              v-for="(label, key) in MessageTypeLabels"
+              :label="label"
+              :name="key"
+              :key="key"
+            >
+              <template v-if="messages.length > 0">
+                <div
+                  class="w-[380px] py-2"
+                  v-for="(item, index) in messages"
+                  :key="index"
+                >
+                  <el-link type="primary" @click="readNotice(item.id)">
+                    <el-badge is-dot />
+                    <el-text class="w-350px" size="default" truncated>
+                      {{ item.title }}
+                    </el-text>
+                  </el-link>
+                </div>
+              </template>
+              <template v-else>
+                <div class="flex-center h-150px w-350px">
+                  <el-text class="w-350px" size="default" truncated>
+                    <el-empty :image-size="30" description="暂无消息" />
+                  </el-text>
+                </div>
+              </template>
+            </el-tab-pane>
+          </el-tabs>
+          <el-divider />
+          <div class="flex-x-between">
+            <el-link type="primary" :underline="false">
+              <span class="text-xs">查看更多</span>
+              <el-icon class="text-xs">
+                <ArrowRight />
+              </el-icon>
+            </el-link>
+            <el-link
+              v-if="messages.length > 0"
+              type="primary"
+              :underline="false"
+              @click="readAllNotice()"
+            >
+              <span class="text-xs">全部已读</span>
+            </el-link>
+          </div>
+        </div>
+      </template>
+    </el-dropdown>
+    <NoticeModal ref="noticeModalRef" />
+  </div>
 </template>
 <script setup lang="ts">
 import { MessageTypeEnum, MessageTypeLabels } from "@/enums/MessageTypeEnum";
 import NoticeAPI from "@/api/notice";
-import { getWebSocketClient, WebSocketService } from "@/api/socket";
-import WebSocketManager from "@/api/WebSocketManager";
+import socket from "@/api/socket";
+import NoticeModal from "@/components/NoticeModal/index.vue";
 
 const activeTab = ref(MessageTypeEnum.MESSAGE);
+const messages = ref<any>([]);
+const noticeModalRef = ref(null);
+const offset = ref<["number", "number"]>([-15, 15] as ["number", "number"]);
 
-const messages = ref([
-  {
-    id: 1,
-    title: "系统升级通知：服务器将于今晚12点进行升级维护，请提前保存工作内容。",
-    type: MessageTypeEnum.MESSAGE,
-  },
-  {
-    id: 2,
-    title: "新功能发布：我们的应用程序现在支持多语言功能。",
-    type: MessageTypeEnum.MESSAGE,
-  },
-  {
-    id: 3,
-    title: "重要提醒：请定期更改您的密码以保证账户安全。",
-    type: MessageTypeEnum.MESSAGE,
-  },
-  // {
-  //   id: 4,
-  //   title: "通知：您有一条未读的系统消息，请及时查看。",
-  //   type: MessageTypeEnum.NOTICE,
-  // },
-  // {
-  //   id: 5,
-  //   title: "新订单通知：您有一笔新的订单需要处理。",
-  //   type: MessageTypeEnum.NOTICE,
-  // },
-  // {
-  //   id: 6,
-  //   title: "审核提醒：您的审核请求已被批准。",
-  //   type: MessageTypeEnum.NOTICE,
-  // },
-  // { id: 7, title: "待办事项：完成用户权限设置。", type: MessageTypeEnum.TODO },
-  // { id: 8, title: "待办事项：更新产品列表。", type: MessageTypeEnum.TODO },
-  // { id: 9, title: "待办事项：备份数据库。", type: MessageTypeEnum.TODO },
-]);
 const getFilteredMessages = (type: MessageTypeEnum) => {
   return messages.value.filter((message) => message.type === type);
 };
 
+/**'
+ * 连接WebSocket
+ */
 function connectWebSocket() {
-  WebSocketManager.getWebSocketClient("/user/queue/message", (message) => {
-    console.log("收到消息：", message);
+  socket.getWebSocketClient("/user/queue/message", (message) => {
+    // 这里是不是可以获取到消息之后，直接调用接口获取消息列表呢？？？
+    let parse = JSON.parse(message);
+    // 如果是消息类型
+    if (parse.noticeType === MessageTypeEnum.MESSAGE) {
+      let content = JSON.parse(parse.content);
+      //是发布消息
+      if (content.type === "release") {
+        //获取到id
+        let id = content.id;
+        //确认messages里面是否有这个id
+        let index = messages.value.findIndex((item) => item.id === id);
+        if (index < 0) {
+          let messageContent = {
+            id: id,
+            title: content.title,
+            type: MessageTypeEnum.MESSAGE,
+          };
+          messages.value.unshift(messageContent);
+        }
+      }
+    }
   });
 }
 
+/**
+ * 获取消息列表
+ * @returns
+ */
 function listNotice() {
-  NoticeAPI.listNotice().then((res) => {});
+  NoticeAPI.listUnreadNotice().then((res) => {
+    messages.value = res;
+  });
+}
+
+/**
+ * 阅读通知公告
+ * @param id
+ */
+function readNotice(id: number) {
+  let index = messages.value.findIndex((item) => item.id === id);
+  if (index >= 0) {
+    messages.value.splice(index, 1);
+  }
+  noticeModalRef.value?.open(id); // 调用 open 方法，传入 ID
+}
+
+/**
+ * 全部已读
+ */
+function readAllNotice() {
+  NoticeAPI.readAllNotice().then(() => {
+    messages.value = [];
+  });
 }
 
 onMounted(() => {
-  // listNotice();
+  listNotice();
   connectWebSocket();
 });
 </script>
