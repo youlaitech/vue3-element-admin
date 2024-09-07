@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-const GENERATOR_BASE_URL = "/api/v1/generator";
+const GENERATOR_BASE_URL = "/api/v1/codegen";
 
 class GeneratorAPI {
   /** 获取数据表分页列表 */

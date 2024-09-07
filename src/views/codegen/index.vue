@@ -430,7 +430,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "Generator",
+  name: "Codegen",
 });
 
 import Sortable from "sortablejs";
@@ -447,7 +447,7 @@ import GeneratorAPI, {
   GenConfigForm,
   TablePageQuery,
   FieldConfig,
-} from "@/api/generator";
+} from "@/api/codegen";
 
 import DictAPI from "@/api/dict";
 import MenuAPI from "@/api/menu";
