@@ -201,7 +201,7 @@ onClickOutside(iconSelectRef, () => (popoverVisible.value = false), {
   }
 
   .icon-item:hover {
-    border-color: #409eff;
+    border-color: #4080ff;
     scale: 1.2;
   }
 }

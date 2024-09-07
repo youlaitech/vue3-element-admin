@@ -85,7 +85,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         imports: ["vue", "@vueuse/core", "pinia", "vue-router", "vue-i18n"],
         resolvers: [
           // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
-          ElementPlusResolver(),
+          ElementPlusResolver({
+            importStyle: "sass",
+          }),
           // 自动导入图标组件
           IconsResolver({}),
         ],
@@ -105,7 +107,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       Components({
         resolvers: [
           // 自动导入 Element Plus 组件
-          ElementPlusResolver(),
+          ElementPlusResolver({
+            importStyle: "sass",
+          }),
           // 自动注册图标组件
           IconsResolver({
             // element-plus图标库，其他图标库 https://icon-sets.iconify.design/
