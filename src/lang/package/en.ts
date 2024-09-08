@@ -11,6 +11,8 @@ export default {
     login: "Login",
     captchaCode: "Verify Code",
     capsLock: "Caps Lock is On",
+    rememberMe: "Remember Me",
+    forgetPassword: "Forget Password",
     message: {
       username: {
         required: "Please enter Username",
@@ -23,6 +25,7 @@ export default {
         required: "Please enter Verify Code",
       },
     },
+    otherLoginMethods: "Other login methods",
   },
   // 导航栏国际化
   navbar: {

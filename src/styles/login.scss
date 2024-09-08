@@ -8,25 +8,47 @@
   background: url("@/assets/images/login-background-light.jpg") no-repeat center
     right;
 
-  .top-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
+  .login-content {
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
     width: 100%;
-    padding: 10px;
-  }
+    min-width: 400px;
+    max-width: 850px;
+    overflow: hidden;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: var(--el-box-shadow-light);
 
-  .login-card {
-    width: 400px;
-    background: transparent;
-    border: none;
-    border-radius: 4%;
+    @media (width <= 768px) {
+      flex-direction: column;
+      max-width: 100%;
+      height: 100vh;
+      border-radius: 0;
+      box-shadow: none;
+    }
 
-    @media (width <= 640px) {
-      width: 340px;
+    .login-image {
+      display: flex;
+      flex: 3;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(60deg, #165dff, #6aa1ff);
+
+      @media (width <= 768px) {
+        display: none;
+      }
+    }
+
+    .login-box {
+      display: flex;
+      flex: 2;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 400px;
+      padding: 30px;
+
+      @media (width <= 768px) {
+        width: 100%;
+      }
     }
 
     .input-wrapper {
@@ -41,13 +63,6 @@
       border-top-right-radius: 6px;
       border-bottom-right-radius: 6px;
     }
-  }
-
-  .icp-info {
-    position: absolute;
-    bottom: 4px;
-    font-size: 12px;
-    text-align: center;
   }
 
   .el-form-item {
@@ -75,7 +90,14 @@
   }
 }
 
-html.dark .login-container {
-  background: url("@/assets/images/login-background-dark.jpg") no-repeat center
-    right;
+html.dark {
+  .login-container {
+    background: url("@/assets/images/login-background-dark.jpg") no-repeat
+      center right;
+
+    .login-content {
+      background: transparent;
+      box-shadow: var(--el-box-shadow);
+    }
+  }
 }
