@@ -318,7 +318,7 @@
               <el-input
                 v-model="item.key"
                 placeholder="参数名"
-                class="w-[100px]"
+                style="width: 100px"
               />
 
               <span class="mx-1">=</span>
@@ -326,7 +326,7 @@
               <el-input
                 v-model="item.value"
                 placeholder="参数值"
-                class="w-[100px]"
+                style="width: 100px"
               />
 
               <el-icon
