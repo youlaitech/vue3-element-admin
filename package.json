@@ -52,7 +52,7 @@
     "animate.css": "^4.1.1",
     "axios": "^1.7.7",
     "codemirror": "^5.65.17",
-    "codemirror-editor-vue3": "^2.7.0",
+    "codemirror-editor-vue3": "^2.7.1",
     "echarts": "^5.5.1",
     "element-plus": "^2.8.1",
     "exceljs": "^4.4.0",
