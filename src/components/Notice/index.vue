@@ -70,10 +70,12 @@ import NoticeModal from "@/components/NoticeModal/index.vue";
 const activeTab = ref(MessageTypeEnum.MESSAGE);
 const messages = ref<any>([]);
 const noticeModalRef = ref(null);
-const offset = ref<["number", "number"]>([-15, 15] as ["number", "number"]);
+const offset = ref<Number[]>([-15, 15]);
 
 const getFilteredMessages = (type: MessageTypeEnum) => {
-  return messages.value.filter((message) => message.type === type);
+  return messages.value.filter(
+    (message: { type: MessageTypeEnum }) => message.type === type
+  );
 };
 
 /**'
@@ -91,7 +93,7 @@ function connectWebSocket() {
         //获取到id
         let id = content.id;
         //确认messages里面是否有这个id
-        let index = messages.value.findIndex((item) => item.id === id);
+        let index = messages.value.findIndex((item: any) => item.id === id);
         if (index < 0) {
           let messageContent = {
             id: id,
@@ -120,7 +122,9 @@ function listNotice() {
  * @param id
  */
 function readNotice(id: number) {
-  let index = messages.value.findIndex((item) => item.id === id);
+  let index = messages.value.findIndex(
+    (item: { id: number }) => item.id === id
+  );
   if (index >= 0) {
     messages.value.splice(index, 1);
   }

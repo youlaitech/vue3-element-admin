@@ -132,6 +132,14 @@ class NoticeAPI {
       method: "PATCH",
     });
   }
+
+  static getMyNoticePage(queryParams?: NoticePageQuery) {
+    return request<any, PageResult<NoticePageVO[]>>({
+      url: `${NOTICE_BASE_URL}/my/page`,
+      method: "get",
+      params: queryParams,
+    });
+  }
 }
 
 export default NoticeAPI;
