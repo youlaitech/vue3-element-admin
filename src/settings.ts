@@ -18,7 +18,7 @@ const defaultSettings: AppSettings = {
   theme: mediaQueryList.matches ? ThemeEnum.DARK : ThemeEnum.LIGHT,
   size: SizeEnum.DEFAULT,
   language: LanguageEnum.ZH_CN,
-  themeColor: "#409EFF",
+  themeColor: "#4080FF",
   watermarkEnabled: false,
   watermarkContent: pkg.name,
 };

@@ -10,10 +10,10 @@ import "element-plus/theme-chalk/dark/css-vars.css";
 import "@/styles/index.scss";
 import "uno.css";
 import "animate.css";
-import { InstallCodemirro } from "codemirror-editor-vue3";
+import { InstallCodeMirror } from "codemirror-editor-vue3";
 
 const app = createApp(App);
 // 注册插件
 app.use(setupPlugins);
-app.use(InstallCodemirro);
+app.use(InstallCodeMirror);
 app.mount("#app");

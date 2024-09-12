@@ -7,7 +7,7 @@
           访问趋势
           <el-tooltip effect="dark" content="点击试试下载" placement="bottom">
             <i-ep-download
-              class="cursor-pointer hover:color-#409eff ml-1"
+              class="cursor-pointer hover:color-#4080FF ml-1"
               @click="handleDownloadChart"
             />
           </el-tooltip>
@@ -99,10 +99,10 @@ const setChartOptions = (data: VisitTrendVO) => {
         },
         smooth: true,
         itemStyle: {
-          color: "#409EFF",
+          color: "#4080FF",
         },
         lineStyle: {
-          color: "#409EFF",
+          color: "#4080FF",
         },
       },
       {

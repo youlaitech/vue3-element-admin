@@ -1,3 +1,27 @@
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+  $colors: (
+    "primary": (
+      "base": #4080ff,
+    ),
+    "success": (
+      "base": #23c343,
+    ),
+    "warning": (
+      "base": #ff9a2e,
+    ),
+    "danger": (
+      "base": #f76560,
+    ),
+    "info": (
+      "base": #a9aeb8,
+    ),
+  ),
+
+  $bg-color: (
+    "page": #f5f8fd,
+  )
+);
+
 /** 全局SCSS变量 */
 
 :root {

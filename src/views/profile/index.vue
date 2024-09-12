@@ -67,14 +67,14 @@
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
-                  <el-icon class="align-middle"><User /></el-icon>
+                  <SvgIcon icon-class="tree" />
                   部门
                 </template>
                 {{ userProfile.deptName }}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
-                  <el-icon class="align-middle"><User /></el-icon>
+                  <SvgIcon icon-class="role" />
                   角色
                 </template>
                 {{ userProfile.roleNames }}
@@ -82,7 +82,7 @@
 
               <el-descriptions-item>
                 <template #label>
-                  <el-icon class="align-middle"><User /></el-icon>
+                  <el-icon class="align-middle"><Timer /></el-icon>
                   创建日期
                 </template>
                 {{ userProfile.createTime }}

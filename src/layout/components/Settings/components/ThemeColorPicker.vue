@@ -15,7 +15,7 @@ const emit = defineEmits(["update:modelValue"]);
 
 // 定义颜色预设
 const colorPresets = [
-  "#409EFF",
+  "#4080FF",
   "#ff4500",
   "#ff8c00",
   "#90ee90",
