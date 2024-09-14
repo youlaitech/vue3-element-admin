@@ -159,6 +159,8 @@ watch(
 
     if (newVal.length <= 0) {
       fileList.value = [];
+      viewFileList.value = [];
+      valFileList.value = [];
       return;
     }
 
