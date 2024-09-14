@@ -391,7 +391,6 @@ const getNoticeLevelTag = (type: number) => {
 
 function connectWebSocket() {
   WebSocketManager.getWebSocketClient("/topic/onlineUserCount", (message) => {
-    console.log("收到消息：", message);
     onlineUserCount.value = JSON.parse(message);
   });
 }

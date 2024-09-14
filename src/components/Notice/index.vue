@@ -40,7 +40,7 @@
           </el-tabs>
           <el-divider />
           <div class="flex-x-between">
-            <el-link type="primary" :underline="false">
+            <el-link type="primary" :underline="false" @click="more">
               <span class="text-xs">查看更多</span>
               <el-icon class="text-xs">
                 <ArrowRight />
@@ -66,10 +66,11 @@ import { MessageTypeEnum, MessageTypeLabels } from "@/enums/MessageTypeEnum";
 import NoticeAPI from "@/api/notice";
 import socket from "@/api/socket";
 import NoticeModal from "@/components/NoticeModal/index.vue";
+import router from "@/router";
 
 const activeTab = ref(MessageTypeEnum.MESSAGE);
 const messages = ref<any>([]);
-const noticeModalRef = ref(null);
+const noticeModalRef = ref(NoticeModal);
 const offset = ref<Number[]>([-15, 15]);
 
 const getFilteredMessages = (type: MessageTypeEnum) => {
@@ -129,6 +130,14 @@ function readNotice(id: number) {
     messages.value.splice(index, 1);
   }
   noticeModalRef.value?.open(id); // 调用 open 方法，传入 ID
+}
+
+/**
+ * 查看更多
+ */
+function more() {
+  //跳转到我的消息页面
+  router.push({ path: "notice/notice" });
 }
 
 /**

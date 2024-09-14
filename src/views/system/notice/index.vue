@@ -152,6 +152,14 @@
         <el-table-column align="center" fixed="right" label="操作" width="220">
           <template #default="scope">
             <el-button
+              type="primary"
+              size="small"
+              link
+              @click="examine(scope.row.id)"
+            >
+              查看
+            </el-button>
+            <el-button
               v-if="scope.row.releaseStatus != 1"
               v-hasPerm="['system:notice:release']"
               type="primary"
@@ -159,7 +167,6 @@
               link
               @click="releaseNotice(scope.row.id)"
             >
-              <i-ep-edit />
               发布
             </el-button>
             <el-button
@@ -170,7 +177,6 @@
               link
               @click="recallNotice(scope.row.id)"
             >
-              <i-ep-edit />
               撤回
             </el-button>
             <el-button
@@ -181,7 +187,6 @@
               link
               @click="handleOpenDialog(scope.row.id)"
             >
-              <i-ep-edit />
               编辑
             </el-button>
             <el-button
@@ -192,7 +197,6 @@
               link
               @click="handleDelete(scope.row.id)"
             >
-              <i-ep-delete />
               删除
             </el-button>
           </template>
@@ -278,10 +282,14 @@
         </div>
       </template>
     </el-dialog>
+
+    <NoticeModal ref="noticeModalRef" />
   </div>
 </template>
 
 <script setup lang="ts">
+import NoticeModal from "@/components/NoticeModal/index.vue";
+
 defineOptions({
   name: "Notice",
   inheritAttrs: false,
@@ -323,11 +331,11 @@ const formData = reactive<NoticeForm>({
   tarType: 0, // 默认目标类型为全体
 });
 
+const noticeModalRef = ref(NoticeModal);
+
 // 通知公告表单校验规则
 const rules = reactive({
   title: [{ required: true, message: "请输入通知标题", trigger: "blur" }],
-  // content: [{ required: true, message: "请输入通知内容", trigger: "blur" }],
-  // 写一个content的校验规则，去掉html标签如果为空则提示
   content: [
     {
       required: true,
@@ -370,6 +378,10 @@ function handleResetQuery() {
 /** 行复选框选中记录选中ID集合 */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
+}
+
+function examine(id: number) {
+  noticeModalRef.value?.open(id, true);
 }
 
 /** 打开通知公告弹窗 */

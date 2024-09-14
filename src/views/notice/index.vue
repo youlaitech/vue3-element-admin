@@ -29,8 +29,8 @@
         v-loading="loading"
         :data="pageData"
         highlight-current-row
-        @selection-change="handleSelectionChange"
       >
+        <el-table-column type="index" label="序号" width="60" />
         <el-table-column
           align="center"
           key="title"
@@ -69,7 +69,7 @@
           align="center"
           key="releaseTime"
           label="发布时间"
-          prop="sendTime"
+          prop="releaseTime"
           min-width="100"
         />
         <el-table-column align="center" fixed="right" label="操作" width="220">
@@ -95,20 +95,19 @@
         @pagination="handleQuery()"
       />
     </el-card>
+    <NoticeModal ref="noticeModalRef" />
   </div>
 </template>
 
 <script setup lang="ts">
+import NoticeModal from "@/components/NoticeModal/index.vue";
+
 defineOptions({
   name: "MyNotice",
   inheritAttrs: false,
 });
 
-import NoticeAPI, {
-  NoticePageVO,
-  NoticeForm,
-  NoticePageQuery,
-} from "@/api/notice";
+import NoticeAPI, { NoticePageVO, NoticePageQuery } from "@/api/notice";
 
 const queryFormRef = ref(ElForm);
 const pageData = ref<NoticePageVO[]>([]);
@@ -116,6 +115,7 @@ const pageData = ref<NoticePageVO[]>([]);
 const loading = ref(false);
 const ids = ref<number[]>([]);
 const total = ref(0);
+const noticeModalRef = ref(null);
 
 const queryParams = reactive<NoticePageQuery>({
   pageNum: 1,
@@ -142,85 +142,8 @@ function handleResetQuery() {
   handleQuery();
 }
 
-/** 行复选框选中记录选中ID集合 */
-function handleSelectionChange(selection: any) {
-  ids.value = selection.map((item: any) => item.id);
-}
-
-/** 打开通知公告弹窗 */
-function handleOpenDialog(id?: number) {
-  dialog.visible = true;
-  if (id) {
-    dialog.title = "修改通知公告";
-    NoticeAPI.getFormData(id).then((data) => {
-      Object.assign(formData, data);
-    });
-  } else {
-    dialog.title = "新增通知公告";
-  }
-}
-
-/** 提交通知公告表单 */
-function handleSubmit() {
-  dataFormRef.value.validate((valid: any) => {
-    if (valid) {
-      loading.value = true;
-      const id = formData.id;
-      if (id) {
-        NoticeAPI.update(id, formData)
-          .then(() => {
-            ElMessage.success("修改成功");
-            handleCloseDialog();
-            handleResetQuery();
-          })
-          .finally(() => (loading.value = false));
-      } else {
-        NoticeAPI.add(formData)
-          .then(() => {
-            ElMessage.success("新增成功");
-            handleCloseDialog();
-            handleResetQuery();
-          })
-          .finally(() => (loading.value = false));
-      }
-    }
-  });
-}
-
-/** 关闭通知公告弹窗 */
-function handleCloseDialog() {
-  dialog.visible = false;
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
-  formData.id = undefined;
-}
-
-/** 删除通知公告 */
-function handleDelete(id?: number) {
-  const deleteIds = [id || ids.value].join(",");
-  if (!deleteIds) {
-    ElMessage.warning("请勾选删除项");
-    return;
-  }
-
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  }).then(
-    () => {
-      loading.value = true;
-      NoticeAPI.deleteByIds(deleteIds)
-        .then(() => {
-          ElMessage.success("删除成功");
-          handleResetQuery();
-        })
-        .finally(() => (loading.value = false));
-    },
-    () => {
-      ElMessage.info("已取消删除");
-    }
-  );
+function handleOpenDialog(id: number) {
+  noticeModalRef.value?.open(id);
 }
 
 onMounted(() => {
