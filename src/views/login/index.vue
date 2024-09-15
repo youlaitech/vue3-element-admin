@@ -1,11 +1,11 @@
 <template>
   <div class="login-container">
-    <!-- 顶部工具栏 -->
     <div class="flex-x-between absolute-lt w-full p-2">
       <div class="flex-center">
-        <el-image :src="logo" style="width: 34px; height: 30px" />
-
-        <span class="text-xl font-medium mx-1">
+        <el-image :src="logo" style="width: 30px; height: 30px" />
+        <span
+          class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-teal-500 text-transparent bg-clip-text mx-1"
+        >
           {{ defaultSettings.title }}
         </span>
         <el-tag size="small" type="success">
