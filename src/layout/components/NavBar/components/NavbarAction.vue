@@ -71,7 +71,7 @@
       <div class="flex-center h100% p10px">
         <img
           :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'"
-          class="rounded-full mr-10px w24px w24px"
+          class="rounded-full mr-10px w24px h24px"
         />
         <span>{{ userStore.user.username }}</span>
       </div>
