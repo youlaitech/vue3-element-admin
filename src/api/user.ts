@@ -187,7 +187,7 @@ class UserAPI {
     });
   }
 
-  /** 丙丁个人中心用户邮箱 */
+  /** 绑定个人中心用户邮箱 */
   static bindEmail(data: EmailBindingForm) {
     return request({
       url: `${USER_BASE_URL}/email`,
