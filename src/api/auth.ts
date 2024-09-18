@@ -35,16 +35,6 @@ class AuthAPI {
       method: "get",
     });
   }
-
-  /**
-   * 获取验证码规则
-   */
-  static getCaptchaRule() {
-    return request<any, boolean>({
-      url: `${AUTH_BASE_URL}/captcha/unable`,
-      method: "get",
-    });
-  }
 }
 
 export default AuthAPI;
