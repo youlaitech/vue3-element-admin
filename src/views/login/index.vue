@@ -107,7 +107,7 @@
           </el-tooltip>
 
           <!-- 验证码 -->
-          <el-form-item prop="captchaCode">
+          <el-form-item prop="captchaCode" v-if="!closeCaptcha">
             <div class="input-wrapper">
               <svg-icon icon-class="captcha" class="mx-2" />
               <el-input
@@ -218,6 +218,8 @@ const isCapslock = ref(false);
 const captchaBase64 = ref();
 // 登录表单ref
 const loginFormRef = ref<FormInstance>();
+// 是否关闭验证码
+const closeCaptcha = ref(false);
 
 const logo = ref(new URL(`../../assets/logo.png`, import.meta.url).href);
 
@@ -341,8 +343,17 @@ const setLoginCredentials = (username: string, password: string) => {
   loginData.value.password = password;
 };
 
+function getCaptchaRule() {
+  AuthAPI.getCaptchaRule().then((data) => {
+    closeCaptcha.value = data;
+    if (!closeCaptcha.value) {
+      getCaptcha();
+    }
+  });
+}
+
 onMounted(() => {
-  getCaptcha();
+  getCaptchaRule();
 });
 </script>
 
