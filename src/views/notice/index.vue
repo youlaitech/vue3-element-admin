@@ -44,7 +44,16 @@
           label="通知类型"
           prop="noticeType"
           min-width="150"
-        />
+        >
+          <template #default="scope">
+            <el-tag v-if="scope.row.noticeType == 2" type="warning">
+              系统通知
+            </el-tag>
+            <el-tag v-if="scope.row.noticeType == 1" type="success">
+              通知消息
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           key="releaseBy"
@@ -72,10 +81,25 @@
           prop="releaseTime"
           min-width="100"
         />
-        <el-table-column align="center" fixed="right" label="操作" width="220">
+        <el-table-column
+          align="center"
+          key="readStatus"
+          label="状态"
+          prop="readStatus"
+          min-width="100"
+        >
+          <template #default="scope">
+            <el-tag v-if="scope.row.readStatus == 1" type="success">
+              已读
+            </el-tag>
+            <el-tag v-if="scope.row.readStatus == 0" type="warning">
+              未读
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" fixed="right" label="操作" width="80">
           <template #default="scope">
             <el-button
-              v-hasPerm="['system:notice:edit']"
               type="primary"
               size="small"
               link

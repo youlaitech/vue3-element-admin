@@ -199,7 +199,7 @@ export interface NoticeDetailVO {
   /** 通知内容 */
   content?: string;
   /** 通知类型 */
-  noticeTypeLabel?: number;
+  noticeType?: number;
   /** 发布人 */
   releaseBy?: string;
   /** 优先级(0-低 1-中 2-高) */

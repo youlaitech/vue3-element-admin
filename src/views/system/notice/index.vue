@@ -83,7 +83,16 @@
           label="通知类型"
           prop="noticeTypeLabel"
           min-width="150"
-        />
+        >
+          <template #default="scope">
+            <el-tag v-if="scope.row.noticeType == 2" type="warning">
+              系统通知
+            </el-tag>
+            <el-tag v-if="scope.row.noticeType == 1" type="success">
+              通知消息
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           key="releaseBy"

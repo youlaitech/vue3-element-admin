@@ -137,7 +137,7 @@ function readNotice(id: number) {
  */
 function more() {
   //跳转到我的消息页面
-  router.push({ path: "notice/notice" });
+  router.push({ path: "/notice/notice" });
 }
 
 /**

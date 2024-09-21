@@ -27,10 +27,17 @@
       </div>
     </template>
     <div style="width: auto; text-align: left">
-      {{ message.noticeTypeLabel }} 优先级 {{ message.priority }} 发布人：{{
-        message.releaseBy
-      }}
-      发布时间：{{ message.releaseTime }}
+      <span class="header-item">
+        <el-tag v-if="message.noticeType == 2" type="warning">系统通知</el-tag>
+        <el-tag v-if="message.noticeType == 1" type="success">通知消息</el-tag>
+      </span>
+      <span class="header-item">
+        <el-tag v-if="message.priority == 0" type="danger">低</el-tag>
+        <el-tag v-if="message.priority == 1" type="success">中</el-tag>
+        <el-tag v-if="message.priority == 2" type="warning">高</el-tag>
+      </span>
+      <span class="header-item">{{ message.releaseBy }}</span>
+      <span class="header-item">{{ message.releaseTime }}</span>
     </div>
     <el-divider />
     <div
@@ -95,5 +102,9 @@ defineExpose({ open });
 
 .icon {
   cursor: pointer;
+}
+
+.header-item {
+  margin-right: 16px;
 }
 </style>
