@@ -188,6 +188,8 @@
 </template>
 
 <script setup lang="ts">
+import WebSocketManager from "@/api/socket";
+
 defineOptions({
   name: "Dashboard",
   inheritAttrs: false,
@@ -197,11 +199,8 @@ import { Client } from "@stomp/stompjs";
 
 import { useUserStore } from "@/store/modules/user";
 import { NoticeTypeEnum, getNoticeLabel } from "@/enums/NoticeTypeEnum";
-import { TOKEN_KEY } from "@/enums/CacheEnum";
 import StatsAPI, { VisitStatsVO } from "@/api/log";
 const userStore = useUserStore();
-
-const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT);
 const date: Date = new Date();
 const greetings = computed(() => {
   const hours = date.getHours();
@@ -390,31 +389,10 @@ const getNoticeLevelTag = (type: number) => {
   }
 };
 
-let stompClient: Client;
-
 function connectWebSocket() {
-  stompClient = new Client({
-    brokerURL: socketEndpoint.value,
-    connectHeaders: {
-      Authorization: localStorage.getItem(TOKEN_KEY) || "",
-    },
-    debug: (str) => {
-      console.log(str);
-    },
-    onConnect: () => {
-      console.log("连接成功");
-      stompClient.subscribe("/topic/onlineUserCount", (message) => {
-        onlineUserCount.value = JSON.parse(message.body);
-      });
-    },
-    onStompError: (frame) => {
-      console.error("Broker reported error: " + frame.headers["message"]);
-      console.error("Additional details: " + frame.body);
-    },
-    onDisconnect: () => {},
+  WebSocketManager.getWebSocketClient("/topic/onlineUserCount", (message) => {
+    onlineUserCount.value = JSON.parse(message);
   });
-
-  stompClient.activate();
 }
 
 onMounted(() => {
