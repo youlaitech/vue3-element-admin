@@ -52,7 +52,7 @@ import {
   UploadProps,
 } from "element-plus";
 import FileAPI from "@/api/file";
-import { TOKEN_KEY } from "@/enums/CacheEnum";
+import { getToken } from "@/utils/auth";
 import { ResultEnum } from "@/enums/ResultEnum";
 
 const emit = defineEmits(["update:modelValue"]);
@@ -79,7 +79,7 @@ const props = defineProps({
     type: Object,
     default: () => {
       return {
-        Authorization: localStorage.getItem(TOKEN_KEY),
+        Authorization: getToken(),
       };
     },
   },

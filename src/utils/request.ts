@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import { useUserStoreHook } from "@/store/modules/user";
 import { ResultEnum } from "@/enums/ResultEnum";
-import { TOKEN_KEY } from "@/enums/CacheEnum";
+import { getToken } from "@/utils/auth";
 import qs from "qs";
 
 // 创建 axios 实例
@@ -17,7 +17,7 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const accessToken = localStorage.getItem(TOKEN_KEY);
+    const accessToken = getToken();
     if (accessToken) {
       config.headers.Authorization = accessToken;
     }

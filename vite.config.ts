@@ -216,6 +216,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/descriptions/style/index",
         "element-plus/es/components/descriptions-item/style/index",
         "element-plus/es/components/checkbox-group/style/index",
+        "element-plus/es/components/progress/style/index",
+        "element-plus/es/components/image-viewer/style/index",
       ],
     },
     // 构建配置

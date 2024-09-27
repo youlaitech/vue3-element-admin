@@ -107,7 +107,7 @@
 import { Client } from "@stomp/stompjs";
 
 import { useUserStoreHook } from "@/store/modules/user";
-import { TOKEN_KEY } from "@/enums/CacheEnum";
+import { getToken } from "@/utils/auth";
 
 const userStore = useUserStoreHook();
 const isConnected = ref(false);
@@ -141,7 +141,7 @@ function connectWebSocket() {
   stompClient = new Client({
     brokerURL: socketEndpoint.value,
     connectHeaders: {
-      Authorization: localStorage.getItem(TOKEN_KEY) || "",
+      Authorization: getToken(),
     },
     debug: (str) => {
       console.log(str);

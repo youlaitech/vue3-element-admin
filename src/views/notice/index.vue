@@ -119,13 +119,10 @@
         @pagination="handleQuery()"
       />
     </el-card>
-    <NoticeModal ref="noticeModalRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import NoticeModal from "@/components/NoticeModal/index.vue";
-
 defineOptions({
   name: "MyNotice",
   inheritAttrs: false,
