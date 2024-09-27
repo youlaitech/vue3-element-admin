@@ -23,7 +23,7 @@
       <lang-select class="nav-action-item" />
 
       <!-- 消息通知 -->
-      <notice />
+      <notice class="nav-action-item" />
     </template>
 
     <!-- 用户头像 -->

@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-action-item" style="display: flex; justify-content: center">
+  <div>
     <el-dropdown trigger="hover">
       <el-badge :is-dot="messages.length > 0" :offset="offset">
         <div class="flex-center h100% p10px">
@@ -40,7 +40,7 @@
           </el-tabs>
           <el-divider />
           <div class="flex-x-between">
-            <el-link type="primary" :underline="false" @click="more">
+            <el-link type="primary" :underline="false" @click="viewMore">
               <span class="text-xs">查看更多</span>
               <el-icon class="text-xs">
                 <ArrowRight />
@@ -50,7 +50,7 @@
               v-if="messages.length > 0"
               type="primary"
               :underline="false"
-              @click="readAllNotice()"
+              @click="markAllAsRead"
             >
               <span class="text-xs">全部已读</span>
             </el-link>
@@ -58,99 +58,110 @@
         </div>
       </template>
     </el-dropdown>
-    <NoticeModal ref="noticeModalRef" />
+
+    <!-- 弹窗部分 -->
+    <el-dialog
+      v-model="modalVisible"
+      :show-close="false"
+      append-to-body
+      :fullscreen="fullscreen"
+      style="z-index: revert"
+    >
+      <template #header="{ close }">
+        <div class="flex-x-between">
+          <h3>{{ currentMessage.title }}</h3>
+          <div class="flex-center">
+            <el-icon
+              class="ml10px"
+              @click="
+                () => {
+                  fullscreen = !fullscreen;
+                }
+              "
+            >
+              <FullScreen />
+            </el-icon>
+            <el-icon @click="close" class="icon">
+              <Close />
+            </el-icon>
+          </div>
+        </div>
+      </template>
+
+      <div style="width: auto; text-align: left">
+        <span class="header-item">
+          <el-tag v-if="currentMessage.type === 2" type="warning">
+            系统通知
+          </el-tag>
+          <el-tag v-if="currentMessage.type === 1" type="success">
+            通知消息
+          </el-tag>
+        </span>
+        <div v-html="currentMessage.content"></div>
+      </div>
+    </el-dialog>
   </div>
 </template>
+
 <script setup lang="ts">
 import { MessageTypeEnum, MessageTypeLabels } from "@/enums/MessageTypeEnum";
 import NoticeAPI from "@/api/notice";
-import socket from "@/api/socket";
-import NoticeModal from "@/components/NoticeModal/index.vue";
+import WebSocketManager from "@/utils/socket";
 import router from "@/router";
 
+// 状态和引用
 const activeTab = ref(MessageTypeEnum.MESSAGE);
-const messages = ref<any>([]);
-const noticeModalRef = ref(NoticeModal);
-const offset = ref<Number[]>([-15, 15]);
+const messages = ref<any[]>([]);
+const offset = ref<[number, number]>([-15, 15]);
+const currentMessage = ref<any>({});
+const modalVisible = ref(false);
+const fullscreen = ref(false);
 
-const getFilteredMessages = (type: MessageTypeEnum) => {
-  return messages.value.filter(
-    (message: { type: MessageTypeEnum }) => message.type === type
-  );
-};
+// 获取未读消息列表并连接 WebSocket
+onMounted(() => {
+  NoticeAPI.getUnreadList().then((data) => {
+    messages.value = data;
+  });
 
-/**'
- * 连接WebSocket
- */
-function connectWebSocket() {
-  socket.getWebSocketClient("/user/queue/message", (message) => {
-    // 这里是不是可以获取到消息之后，直接调用接口获取消息列表呢？？？
-    let parse = JSON.parse(message);
-    // 如果是消息类型
-    if (parse.noticeType === MessageTypeEnum.MESSAGE) {
-      let content = JSON.parse(parse.content);
-      //是发布消息
+  WebSocketManager.getOrCreateClient("/user/queue/message", (message) => {
+    const parsedMessage = JSON.parse(message);
+    if (parsedMessage.noticeType === MessageTypeEnum.MESSAGE) {
+      const content = JSON.parse(parsedMessage.content);
       if (content.type === "release") {
-        //获取到id
-        let id = content.id;
-        //确认messages里面是否有这个id
-        let index = messages.value.findIndex((item: any) => item.id === id);
-        if (index < 0) {
-          let messageContent = {
-            id: id,
+        const id = content.id;
+        if (!messages.value.some((msg) => msg.id === id)) {
+          messages.value.unshift({
+            id,
             title: content.title,
             type: MessageTypeEnum.MESSAGE,
-          };
-          messages.value.unshift(messageContent);
+          });
         }
       }
     }
   });
-}
+});
 
-/**
- * 获取消息列表
- * @returns
- */
-function listNotice() {
-  NoticeAPI.listUnreadNotice().then((res) => {
-    messages.value = res;
-  });
-}
-
-/**
- * 阅读通知公告
- * @param id
- */
+// 阅读通知公告
 function readNotice(id: number) {
-  let index = messages.value.findIndex(
-    (item: { id: number }) => item.id === id
-  );
+  const index = messages.value.findIndex((msg) => msg.id === id);
   if (index >= 0) {
-    messages.value.splice(index, 1);
+    currentMessage.value = messages.value[index];
+    modalVisible.value = true;
+    messages.value.splice(index, 1); // 从消息列表中移除已读消息
   }
-  noticeModalRef.value?.open(id); // 调用 open 方法，传入 ID
 }
 
-/**
- * 查看更多
- */
-function more() {
-  //跳转到我的消息页面
+// 查看更多
+function viewMore() {
   router.push({ path: "/notice/notice" });
 }
 
-/**
- * 全部已读
- */
-function readAllNotice() {
-  NoticeAPI.readAllNotice().then(() => {
+// 全部已读
+function markAllAsRead() {
+  NoticeAPI.readAll().then(() => {
     messages.value = [];
   });
 }
-
-onMounted(() => {
-  listNotice();
-  connectWebSocket();
-});
 </script>
+
+<style scoped></style>

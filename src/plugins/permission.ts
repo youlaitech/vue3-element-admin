@@ -5,7 +5,8 @@ import {
 } from "vue-router";
 
 import NProgress from "@/utils/nprogress";
-import { TOKEN_KEY } from "@/enums/CacheEnum";
+import { isLogin } from "@/utils/auth";
+
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
 
@@ -15,9 +16,7 @@ export function setupPermission() {
 
   router.beforeEach(async (to, from, next) => {
     NProgress.start();
-    const hasToken = localStorage.getItem(TOKEN_KEY);
-
-    if (hasToken) {
+    if (isLogin()) {
       if (to.path === "/login") {
         // 如果已登录，跳转到首页
         next({ path: "/" });

@@ -27,6 +27,7 @@ class NoticeAPI {
 
   /**
    * 添加通知公告
+   *
    * @param data Notice表单数据
    * @returns
    */
@@ -70,7 +71,7 @@ class NoticeAPI {
    * @param id 被发布的通知公告id
    * @returns
    */
-  static releaseNotice(id: number) {
+  static publish(id: number) {
     return request({
       url: `${NOTICE_BASE_URL}/release/${id}`,
       method: "patch",
@@ -83,19 +84,18 @@ class NoticeAPI {
    * @param id 撤回的通知id
    * @returns
    */
-  static recallNotice(id: number): Promise<[]> {
+  static revoke(id: number): Promise<[]> {
     return request({
-      url: `${NOTICE_BASE_URL}/recall/${id}`,
+      url: `${NOTICE_BASE_URL}/${id}/revoke`,
       method: "patch",
     });
   }
 
   /**
    * 获取未读消息
-   * @returns 消息
    */
-  static listUnreadNotice() {
-    return request({
+  static getUnreadList() {
+    return request<any, UserNoticePageVO[]>({
       url: `${NOTICE_BASE_URL}/unread`,
       method: "get",
     });
@@ -103,36 +103,25 @@ class NoticeAPI {
 
   /**
    * 查看通知
-   * @param id
-   */
-  static readNotice(id: number): Promise<NoticeDetailVO> {
-    return request({
-      url: `${NOTICE_BASE_URL}/read/${id}`,
-      method: "PATCH",
-    });
-  }
-
-  /**
-   * 查看通知详情
+   *
    * @param id
    */
   static getDetail(id: number): Promise<NoticeDetailVO> {
     return request({
-      url: `${NOTICE_BASE_URL}/detail/${id}`,
-      method: "get",
-    });
-  }
-
-  /**
-   * 全部已读
-   */
-  static readAllNotice() {
-    return request({
-      url: `${NOTICE_BASE_URL}/readAll`,
+      url: `${NOTICE_BASE_URL}/${id}/detail`,
       method: "PATCH",
     });
   }
 
+  /* 全部已读 */
+  static readAll() {
+    return request({
+      url: `${NOTICE_BASE_URL}/read-all`,
+      method: "PATCH",
+    });
+  }
+
+  /** 获取我的通知分页列表 */
   static getMyNoticePage(queryParams?: NoticePageQuery) {
     return request<any, PageResult<NoticePageVO[]>>({
       url: `${NOTICE_BASE_URL}/my/page`,
@@ -148,8 +137,8 @@ export default NoticeAPI;
 export interface NoticePageQuery extends PageQuery {
   /** 标题 */
   title?: string;
-  /** 发布状态(0-未发布 1已发布 2已撤回) */
-  sendStatus?: number;
+  /** 发布状态(0：未发布，1：已发布，-1：已撤回) */
+  publishStatus?: number;
 }
 
 /** 通知公告表单对象 */
@@ -160,13 +149,13 @@ export interface NoticeForm {
   /** 通知内容 */
   content?: string;
   /** 通知类型 */
-  noticeType?: number;
-  /** 优先级(0-低 1-中 2-高) */
-  priority?: number;
-  /** 目标类型(0-全体 1-指定) */
-  tarType?: number;
+  type?: number;
+  /** 优先级(L：低，M：中，H：高) */
+  level?: number;
+  /** 目标类型(1-全体 2-指定) */
+  targetType?: number;
   /** 目标ID合集，以,分割 */
-  tarIds?: string;
+  targetUserIds?: string;
 }
 
 /** 通知公告分页对象 */
@@ -177,33 +166,67 @@ export interface NoticePageVO {
   /** 通知内容 */
   content?: string;
   /** 通知类型 */
-  noticeType?: number;
+  type?: number;
   /** 发布人 */
-  releaseBy?: bigint;
+  publisherId?: bigint;
   /** 优先级(0-低 1-中 2-高) */
   priority?: number;
   /** 目标类型(0-全体 1-指定) */
-  tarType?: number;
+  targetType?: number;
   /** 发布状态(0-未发布 1已发布 2已撤回) */
-  releaseStatus?: number;
+  publishStatus?: number;
   /** 发布时间 */
-  releaseTime?: Date;
+  publishTime?: Date;
   /** 撤回时间 */
-  recallTime?: Date;
+  revokeTime?: Date;
 }
 
 export interface NoticeDetailVO {
+  /** 通知ID */
   id?: string;
+
   /** 通知标题 */
   title?: string;
+
   /** 通知内容 */
   content?: string;
+
   /** 通知类型 */
-  noticeType?: number;
+  type?: number;
+
   /** 发布人 */
-  releaseBy?: string;
-  /** 优先级(0-低 1-中 2-高) */
-  priority?: number;
+  publisherName?: string;
+
+  /** 优先级(L-低 M-中 H-高) */
+  level?: string;
+
   /** 发布时间 */
-  releaseTime?: Date;
+  publishTime?: Date;
+
+  /** 发布状态 */
+  publishStatus?: number;
+}
+
+/** 用户通知分页列表 */
+interface UserNoticePageVO {
+  /** 通知ID */
+  id: number;
+
+  /** 通知标题 */
+  title: string;
+
+  /** 通知类型 */
+  typeLabel: string;
+
+  /** 发布人姓名 */
+  publisherName: string;
+
+  /** 通知级别 */
+  levelLabel: string;
+
+  /** 发布时间 */
+  publishTime: string;
+
+  /** 是否已读 */
+  isReadLabel: string;
 }

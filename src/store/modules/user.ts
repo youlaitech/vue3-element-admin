@@ -2,7 +2,7 @@ import AuthAPI, { type LoginData } from "@/api/auth";
 import UserAPI, { type UserInfo } from "@/api/user";
 import { resetRouter } from "@/router";
 import { store } from "@/store";
-import { TOKEN_KEY } from "@/enums/CacheEnum";
+import { setToken, removeToken } from "@/utils/auth";
 
 export const useUserStore = defineStore("user", () => {
   const user = ref<UserInfo>({
@@ -21,7 +21,7 @@ export const useUserStore = defineStore("user", () => {
       AuthAPI.login(loginData)
         .then((data) => {
           const { tokenType, accessToken } = data;
-          localStorage.setItem(TOKEN_KEY, tokenType + " " + accessToken); // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
+          setToken(tokenType + " " + accessToken); // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
           resolve();
         })
         .catch((error) => {
@@ -57,7 +57,6 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve, reject) => {
       AuthAPI.logout()
         .then(() => {
-          localStorage.setItem(TOKEN_KEY, "");
           location.reload(); // 清空路由
           resolve();
         })

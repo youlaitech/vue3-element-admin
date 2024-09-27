@@ -184,7 +184,7 @@
               type="primary"
               size="small"
               link
-              @click="recallNotice(scope.row.id)"
+              @click="revokeNotice(scope.row.id)"
             >
               撤回
             </el-button>
@@ -415,8 +415,8 @@ function releaseNotice(id: number) {
   });
 }
 
-function recallNotice(id: number) {
-  NoticeAPI.recallNotice(id).then((res) => {
+function revokeNotice(id: number) {
+  NoticeAPI.revokeNotice(id).then((res) => {
     ElMessage.success("撤回成功");
     handleQuery();
   });
