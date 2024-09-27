@@ -69,7 +69,7 @@ export const useUserStore = defineStore("user", () => {
   // remove token
   function resetToken() {
     return new Promise<void>((resolve) => {
-      localStorage.setItem(TOKEN_KEY, "");
+      removeToken();
       resetRouter();
       resolve();
     });

@@ -188,7 +188,7 @@
 </template>
 
 <script setup lang="ts">
-import WebSocketManager from "@/api/socket";
+import WebSocketManager from "@/utils/socket";
 
 defineOptions({
   name: "Dashboard",
@@ -390,7 +390,7 @@ const getNoticeLevelTag = (type: number) => {
 };
 
 function connectWebSocket() {
-  WebSocketManager.getWebSocketClient("/topic/onlineUserCount", (message) => {
+  WebSocketManager.getOrCreateClient("/topic/onlineUserCount", (message) => {
     onlineUserCount.value = JSON.parse(message);
   });
 }
