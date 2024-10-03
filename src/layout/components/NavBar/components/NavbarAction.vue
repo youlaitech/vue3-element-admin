@@ -124,11 +124,6 @@ function logout() {
   }
 }
 
-:deep(.message .el-badge__content.is-fixed.is-dot) {
-  top: 5px;
-  right: 10px;
-}
-
 :deep(.el-divider--horizontal) {
   margin: 10px 0;
 }

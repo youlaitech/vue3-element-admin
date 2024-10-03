@@ -15,16 +15,16 @@
             @keyup.enter="handleQuery()"
           />
         </el-form-item>
-        <el-form-item label="发布状态" prop="releaseStatus">
+        <el-form-item label="发布状态" prop="publishStatus">
           <el-select
-            v-model="queryParams.releaseStatus"
+            v-model="queryParams.publishStatus"
             class="!w-[100px]"
             clearable
             placeholder="全部"
           >
             <el-option :value="0" label="未发布" />
             <el-option :value="1" label="已发布" />
-            <el-option :value="2" label="已撤回" />
+            <el-option :value="-1" label="已撤回" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -43,7 +43,7 @@
     <el-card shadow="never" class="table-container">
       <template #header>
         <el-button
-          v-hasPerm="['system:notice:add']"
+          v-hasPerm="['sys:notice:add']"
           type="success"
           @click="handleOpenDialog()"
         >
@@ -51,7 +51,7 @@
           新增通知
         </el-button>
         <el-button
-          v-hasPerm="['system:notice:delete']"
+          v-hasPerm="['sys:notice:delete']"
           type="danger"
           :disabled="ids.length === 0"
           @click="handleDelete()"
@@ -79,108 +79,105 @@
         />
         <el-table-column
           align="center"
-          key="noticeType"
           label="通知类型"
-          prop="noticeTypeLabel"
+          prop="typeLabel"
           min-width="150"
         >
           <template #default="scope">
-            <el-tag v-if="scope.row.noticeType == 2" type="warning">
-              系统通知
-            </el-tag>
-            <el-tag v-if="scope.row.noticeType == 1" type="success">
-              通知消息
-            </el-tag>
+            <el-tag v-if="scope.row.type == 2" type="warning">系统通知</el-tag>
+            <el-tag v-if="scope.row.type == 1" type="success">通知消息</el-tag>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
-          key="releaseBy"
           label="发布人"
-          prop="releaseBy"
+          prop="publisherName"
           min-width="100"
         />
         <el-table-column
           align="center"
-          key="priority"
-          label="优先级"
-          prop="priority"
+          key="level"
+          label="通知等级"
+          prop="level"
           min-width="100"
         >
           <template #default="scope">
-            <el-tag v-if="scope.row.priority == 0" type="danger">低</el-tag>
-            <el-tag v-if="scope.row.priority == 1" type="success">中</el-tag>
-            <el-tag v-if="scope.row.priority == 2" type="warning">高</el-tag>
+            <el-tag v-if="scope.row.level == 'L'" type="danger">低</el-tag>
+            <el-tag v-if="scope.row.level == 'M'" type="success">中</el-tag>
+            <el-tag v-if="scope.row.level == 'H'" type="warning">高</el-tag>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
-          key="tarType"
-          label="通告对象"
-          prop="tarType"
+          label="通告目标类型"
+          prop="targetType"
           min-width="100"
         >
           <template #default="scope">
-            <el-tag v-if="scope.row.tarType == 0" type="warning">全体</el-tag>
-            <el-tag v-if="scope.row.tarType == 1" type="success">指定</el-tag>
+            <el-tag v-if="scope.row.targetType == 1" type="warning">
+              全体
+            </el-tag>
+            <el-tag v-if="scope.row.targetType == 2" type="success">
+              指定
+            </el-tag>
           </template>
         </el-table-column>
-        <el-table-column
-          align="center"
-          key="releaseStatus"
-          label="发布状态"
-          prop="releaseStatus"
-          min-width="100"
-        >
+        <el-table-column align="center" label="发布状态" min-width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.releaseStatus == 0" type="warning">
+            <el-tag v-if="scope.row.publishStatus == 0" type="info">
               未发布
             </el-tag>
-            <el-tag v-if="scope.row.releaseStatus == 1" type="success">
+            <el-tag v-if="scope.row.publishStatus == 1" type="success">
               已发布
             </el-tag>
-            <el-tag v-if="scope.row.releaseStatus == 2" type="primary">
+            <el-tag v-if="scope.row.publishStatus == -1" type="warning">
               已撤回
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column
-          align="center"
-          key="releaseTime"
-          label="发布时间"
-          prop="releaseTime"
-          min-width="100"
-        />
-        <el-table-column
-          align="center"
-          key="recallTime"
-          label="撤回时间"
-          prop="recallTime"
-          min-width="100"
-        />
+        <el-table-column align="center" label="操作时间" min-width="220">
+          <template #default="scope">
+            <div class="flex-x-start">
+              <span>创建时间：</span>
+              <span>{{ scope.row.createTime || "-" }}</span>
+            </div>
+
+            <div v-if="scope.row.publishStatus === 1" class="flex-x-start">
+              <span>发布时间：</span>
+              <span>{{ scope.row.publishTime || "-" }}</span>
+            </div>
+            <div
+              v-else-if="scope.row.publishStatus === -1"
+              class="flex-x-start"
+            >
+              <span>撤回时间：</span>
+              <span>{{ scope.row.revokeTime || "-" }}</span>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column align="center" fixed="right" label="操作" width="220">
           <template #default="scope">
             <el-button
               type="primary"
               size="small"
+              @click="openNoticeDetailDialog(scope.row.id)"
               link
-              @click="examine(scope.row.id)"
             >
               查看
             </el-button>
             <el-button
-              v-if="scope.row.releaseStatus != 1"
-              v-hasPerm="['system:notice:release']"
+              v-if="scope.row.publishStatus != 1"
+              v-hasPerm="['sys:notice:publish']"
               type="primary"
               size="small"
               link
-              @click="releaseNotice(scope.row.id)"
+              @click="handlePublishNotice(scope.row.id)"
             >
               发布
             </el-button>
             <el-button
-              v-if="scope.row.releaseStatus == 1"
-              v-hasPerm="['system:notice:recall']"
+              v-if="scope.row.publishStatus == 1"
+              v-hasPerm="['sys:notice:revoke']"
               type="primary"
               size="small"
               link
@@ -189,8 +186,8 @@
               撤回
             </el-button>
             <el-button
-              v-if="scope.row.releaseStatus != 1"
-              v-hasPerm="['system:notice:edit']"
+              v-if="scope.row.publishStatus != 1"
+              v-hasPerm="['sys:notice:edit']"
               type="primary"
               size="small"
               link
@@ -199,8 +196,8 @@
               编辑
             </el-button>
             <el-button
-              v-if="scope.row.releaseStatus != 1"
-              v-hasPerm="['system:notice:delete']"
+              v-if="scope.row.publishStatus != 1"
+              v-hasPerm="['sys:notice:delete']"
               type="danger"
               size="small"
               link
@@ -239,38 +236,38 @@
           <el-input v-model="formData.title" placeholder="通知标题" clearable />
         </el-form-item>
         <el-form-item label="通知内容" prop="content">
-          <editor
+          <WangEditor
             v-model="formData.content"
             style="min-height: 480px; max-height: 500px"
           />
         </el-form-item>
-        <el-form-item label="通知类型" prop="noticeType">
+        <el-form-item label="通知类型" prop="type">
           <dictionary
             type="button"
-            v-model="formData.noticeType"
+            v-model="formData.type"
             code="notice_type"
           />
         </el-form-item>
-        <el-form-item label="优先级" prop="priority">
-          <el-radio-group v-model="formData.priority">
-            <el-radio :value="0">低</el-radio>
-            <el-radio :value="1">中</el-radio>
-            <el-radio :value="2">高</el-radio>
+        <el-form-item label="优先级" prop="level">
+          <el-radio-group v-model="formData.level">
+            <el-radio value="L">低</el-radio>
+            <el-radio value="M">中</el-radio>
+            <el-radio value="H">高</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="目标类型" prop="tarType">
-          <el-radio-group v-model="formData.tarType">
-            <el-radio :value="0">全体</el-radio>
-            <el-radio :value="1">指定</el-radio>
+        <el-form-item label="目标类型" prop="targetType">
+          <el-radio-group v-model="formData.targetType">
+            <el-radio :value="1">全体</el-radio>
+            <el-radio :value="2">指定</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
           label="指定用户"
-          prop="tarType"
-          v-if="formData.tarType == 1"
+          prop="targetUserIds"
+          v-if="formData.targetType == 2"
         >
           <el-select
-            v-model="formData.tarIds"
+            v-model="formData.targetUserIds"
             multiple
             search
             placeholder="请选择指定用户"
@@ -291,19 +288,16 @@
         </div>
       </template>
     </el-dialog>
-
-    <NoticeModal ref="noticeModalRef" />
+    <!-- 通知公告详情 -->
+    <NoticeDetail ref="noticeDetailRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import NoticeModal from "@/components/NoticeModal/index.vue";
-
 defineOptions({
   name: "Notice",
   inheritAttrs: false,
 });
-import Editor from "@/components/WangEditor/index.vue";
 
 import NoticeAPI, {
   NoticePageVO,
@@ -314,6 +308,7 @@ import UserAPI from "@/api/user";
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
+const noticeDetailRef = ref();
 
 const loading = ref(false);
 const ids = ref<number[]>([]);
@@ -336,11 +331,9 @@ const dialog = reactive({
 
 // 通知公告表单数据
 const formData = reactive<NoticeForm>({
-  priority: 0, // 默认优先级为低
-  tarType: 0, // 默认目标类型为全体
+  level: "L", // 默认优先级为低
+  targetType: 1, // 默认目标类型为全体
 });
-
-const noticeModalRef = ref(NoticeModal);
 
 // 通知公告表单校验规则
 const rules = reactive({
@@ -359,9 +352,7 @@ const rules = reactive({
       },
     },
   ],
-  noticeType: [
-    { required: true, message: "请选择通知类型", trigger: "change" },
-  ],
+  type: [{ required: true, message: "请选择通知类型", trigger: "change" }],
 });
 
 /** 查询通知公告 */
@@ -389,34 +380,33 @@ function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
 
-function examine(id: number) {
-  noticeModalRef.value?.open(id, true);
-}
-
 /** 打开通知公告弹窗 */
 function handleOpenDialog(id?: number) {
-  getUserOptions();
+  UserAPI.getOptions().then((data) => {
+    userOptions.value = data;
+  });
+
   dialog.visible = true;
   if (id) {
-    dialog.title = "修改通知公告";
+    dialog.title = "修改公告";
     NoticeAPI.getFormData(id).then((data) => {
       Object.assign(formData, data);
     });
   } else {
-    Object.assign(formData, { priority: 0, tarType: 0 });
-    dialog.title = "新增通知公告";
+    Object.assign(formData, { level: 0, targetType: 0 });
+    dialog.title = "新增公告";
   }
 }
 
-function releaseNotice(id: number) {
-  NoticeAPI.releaseNotice(id).then((res) => {
+function handlePublishNotice(id: number) {
+  NoticeAPI.publish(id).then(() => {
     ElMessage.success("发布成功");
     handleQuery();
   });
 }
 
 function revokeNotice(id: number) {
-  NoticeAPI.revokeNotice(id).then((res) => {
+  NoticeAPI.revoke(id).then(() => {
     ElMessage.success("撤回成功");
     handleQuery();
   });
@@ -485,12 +475,9 @@ function handleDelete(id?: number) {
   );
 }
 
-function getUserOptions() {
-  if (userOptions.value.length == 0) {
-    UserAPI.getOptions().then((res) => {
-      userOptions.value = res;
-    });
-  }
+/** 打开通知公告详情弹窗 */
+function openNoticeDetailDialog(id: number) {
+  noticeDetailRef.value.openNotice(id);
 }
 
 onMounted(() => {

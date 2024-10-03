@@ -1,43 +1,41 @@
 <template>
   <div>
-    <el-dropdown trigger="hover">
-      <el-badge :is-dot="messages.length > 0" :offset="offset">
-        <div class="flex-center h100% p10px">
-          <i-ep-bell />
-        </div>
+    <el-dropdown class="flex-center h-full align-middle">
+      <el-badge v-if="messages.length > 0" :value="messages.length" :max="99">
+        <div><i-ep-bell /></div>
       </el-badge>
+      <el-badge v-else>
+        <i-ep-bell />
+      </el-badge>
+
       <template #dropdown>
-        <div class="px-5 py-2">
-          <el-tabs v-model="activeTab">
-            <el-tab-pane
-              v-for="(label, key) in MessageTypeLabels"
-              :label="label"
-              :name="key"
-              :key="key"
+        <div class="p-5">
+          <template v-if="messages.length > 0">
+            <div
+              class="w400px flex-x-between py-2"
+              v-for="(item, index) in messages"
+              :key="index"
             >
-              <template v-if="messages.length > 0">
-                <div
-                  class="w-[380px] py-2"
-                  v-for="(item, index) in messages"
-                  :key="index"
+              <div>
+                <el-tag type="success" size="small">系统通知</el-tag>
+                <el-link
+                  type="primary"
+                  @click="readNotice(item.id)"
+                  class="ml-1"
                 >
-                  <el-link type="primary" @click="readNotice(item.id)">
-                    <el-badge is-dot />
-                    <el-text class="w-350px" size="default" truncated>
-                      {{ item.title }}
-                    </el-text>
-                  </el-link>
-                </div>
-              </template>
-              <template v-else>
-                <div class="flex-center h-150px w-350px">
-                  <el-text class="w-350px" size="default" truncated>
-                    <el-empty :image-size="30" description="暂无消息" />
-                  </el-text>
-                </div>
-              </template>
-            </el-tab-pane>
-          </el-tabs>
+                  {{ item.title }}
+                </el-link>
+              </div>
+              <div>
+                {{ item.publishTime }}
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="flex-center h150px w350px">
+              <el-empty :image-size="30" description="暂无消息" />
+            </div>
+          </template>
           <el-divider />
           <div class="flex-x-between">
             <el-link type="primary" :underline="false" @click="viewMore">
@@ -59,101 +57,58 @@
       </template>
     </el-dropdown>
 
-    <!-- 弹窗部分 -->
-    <el-dialog
-      v-model="modalVisible"
-      :show-close="false"
-      append-to-body
-      :fullscreen="fullscreen"
-      style="z-index: revert"
-    >
-      <template #header="{ close }">
-        <div class="flex-x-between">
-          <h3>{{ currentMessage.title }}</h3>
-          <div class="flex-center">
-            <el-icon
-              class="ml10px"
-              @click="
-                () => {
-                  fullscreen = !fullscreen;
-                }
-              "
-            >
-              <FullScreen />
-            </el-icon>
-            <el-icon @click="close" class="icon">
-              <Close />
-            </el-icon>
-          </div>
-        </div>
-      </template>
-
-      <div style="width: auto; text-align: left">
-        <span class="header-item">
-          <el-tag v-if="currentMessage.type === 2" type="warning">
-            系统通知
-          </el-tag>
-          <el-tag v-if="currentMessage.type === 1" type="success">
-            通知消息
-          </el-tag>
-        </span>
-        <div v-html="currentMessage.content"></div>
-      </div>
-    </el-dialog>
+    <NoticeDetail ref="noticeDetailRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { MessageTypeEnum, MessageTypeLabels } from "@/enums/MessageTypeEnum";
-import NoticeAPI from "@/api/notice";
+import NoticeAPI, { NoticePageQuery, NoticePageVO } from "@/api/notice";
 import WebSocketManager from "@/utils/socket";
 import router from "@/router";
 
-// 状态和引用
-const activeTab = ref(MessageTypeEnum.MESSAGE);
-const messages = ref<any[]>([]);
-const offset = ref<[number, number]>([-15, 15]);
-const currentMessage = ref<any>({});
-const modalVisible = ref(false);
-const fullscreen = ref(false);
+const messages = ref<NoticePageVO[]>([]);
+const noticeDetailRef = ref();
 
 // 获取未读消息列表并连接 WebSocket
 onMounted(() => {
-  NoticeAPI.getUnreadList().then((data) => {
-    messages.value = data;
-  });
+  NoticeAPI.getMyNoticePage({ pageNum: 1, pageSize: 5, isRead: 0 }).then(
+    (data) => {
+      messages.value = data.list;
+    }
+  );
 
-  WebSocketManager.getOrCreateClient("/user/queue/message", (message) => {
-    const parsedMessage = JSON.parse(message);
-    if (parsedMessage.noticeType === MessageTypeEnum.MESSAGE) {
-      const content = JSON.parse(parsedMessage.content);
-      if (content.type === "release") {
-        const id = content.id;
-        if (!messages.value.some((msg) => msg.id === id)) {
-          messages.value.unshift({
-            id,
-            title: content.title,
-            type: MessageTypeEnum.MESSAGE,
-          });
-        }
-      }
+  WebSocketManager.subscribeToTopic("/user/queue/message", (message) => {
+    console.log("收到消息：", message);
+    const data = JSON.parse(message);
+    const id = data.id;
+    if (!messages.value.some((msg) => msg.id === id)) {
+      messages.value.unshift({
+        id,
+        title: data.title,
+      });
+
+      ElNotification({
+        title: "您收到一条新的通知消息！",
+        message: data.title,
+        type: "success",
+        position: "bottom-right",
+      });
     }
   });
 });
 
 // 阅读通知公告
-function readNotice(id: number) {
+function readNotice(id: string) {
+  noticeDetailRef.value.openNotice(id);
   const index = messages.value.findIndex((msg) => msg.id === id);
   if (index >= 0) {
-    currentMessage.value = messages.value[index];
-    modalVisible.value = true;
     messages.value.splice(index, 1); // 从消息列表中移除已读消息
   }
 }
 
 // 查看更多
 function viewMore() {
-  router.push({ path: "/notice/notice" });
+  router.push({ path: "/myNotice" });
 }
 
 // 全部已读
@@ -164,4 +119,4 @@ function markAllAsRead() {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>

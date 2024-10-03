@@ -40,61 +40,42 @@
         />
         <el-table-column
           align="center"
-          key="noticeType"
           label="通知类型"
-          prop="noticeType"
+          prop="typeLabel"
           min-width="150"
-        >
-          <template #default="scope">
-            <el-tag v-if="scope.row.noticeType == 2" type="warning">
-              系统通知
-            </el-tag>
-            <el-tag v-if="scope.row.noticeType == 1" type="success">
-              通知消息
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          key="releaseBy"
-          label="发布人"
-          prop="releaseBy"
-          min-width="100"
         />
         <el-table-column
           align="center"
-          key="priority"
-          label="优先级"
-          prop="priority"
+          label="发布人"
+          prop="publisherName"
           min-width="100"
-        >
+        />
+        <el-table-column align="center" label="通知等级" min-width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.priority == 0" type="danger">低</el-tag>
-            <el-tag v-if="scope.row.priority == 1" type="success">中</el-tag>
-            <el-tag v-if="scope.row.priority == 2" type="warning">高</el-tag>
+            <!-- 翻译字典  字典code 为level，显示不同的tag和label -->
+            <el-tag v-if="scope.row.level == 'L'" type="danger">低</el-tag>
+            <el-tag v-if="scope.row.level == 'M'" type="success">中</el-tag>
+            <el-tag v-if="scope.row.level == 'H'" type="warning">高</el-tag>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           key="releaseTime"
           label="发布时间"
-          prop="releaseTime"
+          prop="publishTime"
           min-width="100"
         />
+
         <el-table-column
           align="center"
-          key="readStatus"
-          label="状态"
-          prop="readStatus"
+          label="发布人"
+          prop="publisherName"
           min-width="100"
-        >
+        />
+        <el-table-column align="center" label="状态" min-width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.readStatus == 1" type="success">
-              已读
-            </el-tag>
-            <el-tag v-if="scope.row.readStatus == 0" type="warning">
-              未读
-            </el-tag>
+            <el-tag v-if="scope.row.isRead == 1" type="success">已读</el-tag>
+            <el-tag v-if="scope.row.isRead == 0" type="warning">未读</el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" fixed="right" label="操作" width="80">
@@ -103,7 +84,7 @@
               type="primary"
               size="small"
               link
-              @click="handleOpenDialog(scope.row.id)"
+              @click="viewNoticeDetail(scope.row.id)"
             >
               查看
             </el-button>
@@ -119,6 +100,8 @@
         @pagination="handleQuery()"
       />
     </el-card>
+
+    <NoticeDetail ref="noticeDetailRef" />
   </div>
 </template>
 
@@ -131,12 +114,12 @@ defineOptions({
 import NoticeAPI, { NoticePageVO, NoticePageQuery } from "@/api/notice";
 
 const queryFormRef = ref(ElForm);
+const noticeDetailRef = ref();
+
 const pageData = ref<NoticePageVO[]>([]);
 
 const loading = ref(false);
-const ids = ref<number[]>([]);
 const total = ref(0);
-const noticeModalRef = ref(null);
 
 const queryParams = reactive<NoticePageQuery>({
   pageNum: 1,
@@ -163,8 +146,8 @@ function handleResetQuery() {
   handleQuery();
 }
 
-function handleOpenDialog(id: number) {
-  noticeModalRef.value?.open(id);
+function viewNoticeDetail(id: string) {
+  noticeDetailRef.value.openNotice(id);
 }
 
 onMounted(() => {

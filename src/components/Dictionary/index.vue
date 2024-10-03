@@ -16,18 +16,16 @@
 </template>
 
 <script setup lang="ts">
-import DictAPI from "@/api/dict";
+import DictDataAPI from "@/api/dict-data";
 
 const props = defineProps({
-  /**
-   * 字典编码(eg: 性别-gender)
-   */
   code: {
     type: String,
     required: true,
   },
   modelValue: {
     type: [String, Number],
+    required: true,
   },
   placeholder: {
     type: String,
@@ -39,38 +37,42 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["update:modelValue"]);
+// 使用 defineEmits 声明 emits
+const emit = defineEmits(["update:modelValue"]);
 
-const options: Ref<OptionType[]> = ref([]);
+// 下拉框选项
+const options = ref<Array<{ label: string; value: string | number }>>([]);
+const selectedValue = ref<string | number | undefined>(props.modelValue);
 
-const selectedValue = ref<string | number | undefined>();
-
-watch([options, () => props.modelValue], ([newOptions, newModelValue]) => {
-  if (newOptions.length === 0) {
-    // 下拉数据源加载未完成不回显
-    return;
+// 监听 modelValue 变化
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    // 类型转换确保 selectedValue 和 option.value 类型一致
+    if (typeof options.value[0]?.value === "number") {
+      selectedValue.value = Number(newValue);
+    } else {
+      selectedValue.value = String(newValue);
+    }
   }
-  if (newModelValue == undefined) {
-    selectedValue.value = undefined;
-    return;
-  }
-  if (typeof newOptions[0].value === "number") {
-    selectedValue.value = Number(newModelValue);
-  } else if (typeof newOptions[0].value === "string") {
-    selectedValue.value = String(newModelValue);
-  } else {
-    selectedValue.value = newModelValue;
-  }
-});
+);
 
-function handleChange(val?: string | number | undefined) {
-  emits("update:modelValue", val);
+// 监听 selectedValue 的变化并触发 update:modelValue
+function handleChange(val?: string | number) {
+  emit("update:modelValue", val);
 }
 
-onBeforeMount(() => {
-  // 根据字典编码获取字典项
-  DictAPI.getOptions(props.code).then((data) => {
-    options.value = data;
-  });
+// 获取字典数据
+onBeforeMount(async () => {
+  const data = await DictDataAPI.getOptions(props.code);
+  options.value = data;
+  // 初次加载时处理类型一致性
+  if (props.modelValue !== undefined) {
+    if (typeof options.value[0]?.value === "number") {
+      selectedValue.value = Number(props.modelValue);
+    } else {
+      selectedValue.value = String(props.modelValue);
+    }
+  }
 });
 </script>

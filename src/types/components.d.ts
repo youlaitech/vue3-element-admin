@@ -13,10 +13,7 @@ declare module "vue" {
     Breadcrumb: (typeof import("./../components/Breadcrumb/index.vue"))["default"];
     CopyButton: (typeof import("./../components/CopyButton/index.vue"))["default"];
     CURD: (typeof import("./../components/CURD/index.vue"))["default"];
-    DeptTree: (typeof import("./../views/system/user/components/dept-tree.vue"))["default"];
-    UserImport: (typeof import("./../views/system/user/components/user-import.vue"))["default"];
     Dictionary: (typeof import("./../components/Dictionary/index.vue"))["default"];
-    DictItem: (typeof import("./../views/system/dict/components/dict-item.vue"))["default"];
     ElBacktop: (typeof import("element-plus/es"))["ElBacktop"];
     ElBreadcrumb: (typeof import("element-plus/es"))["ElBreadcrumb"];
     ElBreadcrumbItem: (typeof import("element-plus/es"))["ElBreadcrumbItem"];
@@ -75,7 +72,7 @@ declare module "vue" {
     LangSelect: (typeof import("./../components/LangSelect/index.vue"))["default"];
     MenuSearch: (typeof import("./../components/MenuSearch/index.vue"))["default"];
     Notice: (typeof import("./../components/Notice/index.vue"))["default"];
-    NoticeModal: (typeof import("./../components/NoticeModal/index.vue"))["default"];
+    NoticeDetail: (typeof import("../views/system/notice/notice-detail.vue"))["default"];
     LayoutSelect: (typeof import("./../layout/components/Settings/components/LayoutSelect.vue"))["default"];
     MultiUpload: (typeof import("./../components/Upload/MultiUpload.vue"))["default"];
     NavBar: (typeof import("./../layout/components/NavBar/index.vue"))["default"];

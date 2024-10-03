@@ -80,19 +80,6 @@ class DictAPI {
       method: "get",
     });
   }
-
-  /**
-   * 获取字典的数据项
-   *
-   * @param typeCode 字典编码
-   * @returns 字典数据项
-   */
-  static getOptions(code: string) {
-    return request<any, OptionType[]>({
-      url: `${DICT_BASE_URL}/${code}/options`,
-      method: "get",
-    });
-  }
 }
 
 export default DictAPI;
@@ -105,6 +92,11 @@ export interface DictPageQuery extends PageQuery {
    * 关键字(字典名称/编码)
    */
   keywords?: string;
+
+  /**
+   * 字典状态（1:启用，0:禁用）
+   */
+  status?: number;
 }
 
 /**
@@ -122,44 +114,12 @@ export interface DictPageVO {
   /**
    * 字典编码
    */
-  code: string;
+  dictCode: string;
   /**
-   * 字典状态（1-启用，0-禁用）
+   * 字典状态（1:启用，0:禁用）
    */
   status: number;
-  /**
-   * 字典项列表
-   */
-  dictItems: DictItem[];
 }
-
-/**
- * 字典项
- */
-export interface DictItem {
-  /**
-   * 字典项ID
-   */
-  id?: number;
-  /**
-   * 字典项名称
-   */
-  name?: string;
-  /**
-   * 字典项值
-   */
-  value?: string;
-  /**
-   * 排序
-   */
-  sort?: number;
-  /**
-   * 状态（1-启用，0-禁用）
-   */
-  status?: number;
-}
-
-// TypeScript 类型声明
 
 /**
  * 字典
@@ -176,7 +136,7 @@ export interface DictForm {
   /**
    * 字典编码
    */
-  code?: string;
+  dictCode?: string;
   /**
    * 字典状态（1-启用，0-禁用）
    */
@@ -185,8 +145,4 @@ export interface DictForm {
    * 备注
    */
   remark?: string;
-  /**
-   * 字典数据项列表
-   */
-  dictItems?: DictItem[];
 }

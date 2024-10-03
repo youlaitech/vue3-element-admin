@@ -73,7 +73,7 @@ class NoticeAPI {
    */
   static publish(id: number) {
     return request({
-      url: `${NOTICE_BASE_URL}/release/${id}`,
+      url: `${NOTICE_BASE_URL}/${id}/publish`,
       method: "patch",
     });
   }
@@ -84,32 +84,21 @@ class NoticeAPI {
    * @param id 撤回的通知id
    * @returns
    */
-  static revoke(id: number): Promise<[]> {
+  static revoke(id: number) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}/revoke`,
       method: "patch",
     });
   }
-
-  /**
-   * 获取未读消息
-   */
-  static getUnreadList() {
-    return request<any, UserNoticePageVO[]>({
-      url: `${NOTICE_BASE_URL}/unread`,
-      method: "get",
-    });
-  }
-
   /**
    * 查看通知
    *
    * @param id
    */
-  static getDetail(id: number): Promise<NoticeDetailVO> {
-    return request({
+  static getDetail(id: string) {
+    return request<any, NoticeDetailVO>({
       url: `${NOTICE_BASE_URL}/${id}/detail`,
-      method: "PATCH",
+      method: "get",
     });
   }
 
@@ -117,7 +106,7 @@ class NoticeAPI {
   static readAll() {
     return request({
       url: `${NOTICE_BASE_URL}/read-all`,
-      method: "PATCH",
+      method: "put",
     });
   }
 
@@ -139,6 +128,8 @@ export interface NoticePageQuery extends PageQuery {
   title?: string;
   /** 发布状态(0：未发布，1：已发布，-1：已撤回) */
   publishStatus?: number;
+
+  isRead?: number;
 }
 
 /** 通知公告表单对象 */
@@ -151,7 +142,7 @@ export interface NoticeForm {
   /** 通知类型 */
   type?: number;
   /** 优先级(L：低，M：中，H：高) */
-  level?: number;
+  level?: string;
   /** 目标类型(1-全体 2-指定) */
   targetType?: number;
   /** 目标ID合集，以,分割 */
@@ -160,7 +151,7 @@ export interface NoticeForm {
 
 /** 通知公告分页对象 */
 export interface NoticePageVO {
-  id?: string;
+  id: string;
   /** 通知标题 */
   title?: string;
   /** 通知内容 */

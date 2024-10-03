@@ -27,7 +27,8 @@
             搜索
           </el-button>
           <el-button @click="handleResetQuery">
-            <i-ep-refresh />重置
+            <i-ep-refresh />
+            重置
           </el-button>
         </el-form-item>
       </el-form>
@@ -39,14 +40,18 @@
           v-hasPerm="['sys:dept:add']"
           type="success"
           @click="handleOpenDialog(0, undefined)"
-          ><i-ep-plus />新增</el-button
         >
+          <i-ep-plus />
+          新增
+        </el-button>
         <el-button
           v-hasPerm="['sys:dept:delete']"
           type="danger"
           :disabled="ids.length === 0"
           @click="handleDelete()"
-          ><i-ep-delete />删除
+        >
+          <i-ep-delete />
+          删除
         </el-button>
       </template>
 
@@ -78,7 +83,9 @@
               link
               size="small"
               @click.stop="handleOpenDialog(scope.row.id, undefined)"
-              ><i-ep-plus />新增
+            >
+              <i-ep-plus />
+              新增
             </el-button>
             <el-button
               v-hasPerm="['sys:dept:edit']"
@@ -86,7 +93,9 @@
               link
               size="small"
               @click.stop="handleOpenDialog(scope.row.parentId, scope.row.id)"
-              ><i-ep-edit />编辑
+            >
+              <i-ep-edit />
+              编辑
             </el-button>
             <el-button
               v-hasPerm="['sys:dept:delete']"
@@ -95,7 +104,8 @@
               size="small"
               @click.stop="handleDelete(scope.row.id)"
             >
-              <i-ep-delete />删除
+              <i-ep-delete />
+              删除
             </el-button>
           </template>
         </el-table-column>
@@ -148,8 +158,8 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit"> 确 定 </el-button>
-          <el-button @click="handleCloseDialog"> 取 消 </el-button>
+          <el-button type="primary" @click="handleSubmit">确 定</el-button>
+          <el-button @click="handleCloseDialog">取 消</el-button>
         </div>
       </template>
     </el-dialog>

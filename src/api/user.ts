@@ -199,8 +199,8 @@ class UserAPI {
   /**
    *  获取用户下拉列表
    */
-  static getOptions(): AxiosPromise<OptionType[]> {
-    return request({
+  static getOptions() {
+    return request<any, OptionType[]>({
       url: `${USER_BASE_URL}/options`,
       method: "get",
     });

@@ -4,7 +4,7 @@
     <el-row :gutter="20">
       <!-- 部门树 -->
       <el-col :lg="4" :xs="24" class="mb-[12px]">
-        <dept-tree v-model="queryParams.deptId" @node-click="handleQuery" />
+        <DeptTree v-model="queryParams.deptId" @node-click="handleQuery" />
       </el-col>
 
       <!-- 用户列表 -->
@@ -289,9 +289,9 @@
     </el-drawer>
 
     <!-- 用户导入弹窗 -->
-    <user-import
+    <UserImport
       v-model:visible="importDialogVisible"
-      @import-success="handleOpenImportDialogSuccess"
+      @import-success="handleUserImportSuccess"
     />
   </div>
 </template>
@@ -305,6 +305,9 @@ defineOptions({
 import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/user";
 import DeptAPI from "@/api/dept";
 import RoleAPI from "@/api/role";
+
+import DeptTree from "./dept-tree.vue";
+import UserImport from "./import.vue";
 
 const queryFormRef = ref(ElForm);
 const userFormRef = ref(ElForm);
@@ -504,7 +507,7 @@ function handleOpenImportDialog() {
 }
 
 /** 导入用户成功 */
-function handleOpenImportDialogSuccess() {
+function handleUserImportSuccess() {
   handleQuery();
 }
 
