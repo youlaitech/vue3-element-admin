@@ -14,6 +14,7 @@ declare module "vue" {
     CopyButton: (typeof import("./../components/CopyButton/index.vue"))["default"];
     CURD: (typeof import("./../components/CURD/index.vue"))["default"];
     Dictionary: (typeof import("./../components/Dictionary/index.vue"))["default"];
+    DictLabel: (typeof import("./../components/Dictionary/DictLabel.vue"))["default"];
     ElBacktop: (typeof import("element-plus/es"))["ElBacktop"];
     ElBreadcrumb: (typeof import("element-plus/es"))["ElBreadcrumb"];
     ElBreadcrumbItem: (typeof import("element-plus/es"))["ElBreadcrumbItem"];

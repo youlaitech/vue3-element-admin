@@ -154,4 +154,9 @@ export interface DictDataForm {
    * 字典排序
    */
   sort?: number;
+
+  /**
+   * 标签类型
+   */
+  tagType: "success" | "warning" | "info" | "primary" | "danger" | undefined;
 }

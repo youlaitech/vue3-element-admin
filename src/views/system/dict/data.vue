@@ -102,7 +102,7 @@
     <el-dialog
       v-model="dialog.visible"
       :title="dialog.title"
-      width="500px"
+      width="800px"
       @close="handleCloseDialog"
     >
       <el-form
@@ -124,12 +124,28 @@
               <el-radio :value="0">禁用</el-radio>
             </el-radio-group>
           </el-form-item>
-
           <el-form-item label="排序">
             <el-input-number
               v-model="formData.sort"
               controls-position="right"
             />
+          </el-form-item>
+          <el-form-item label="标签类型">
+            <el-tag
+              v-if="formData.tagType"
+              :type="formData.tagType"
+              class="mb-2"
+            >
+              {{ formData.label }}
+            </el-tag>
+            <el-radio-group v-model="formData.tagType">
+              <el-radio value="success" border size="small">success</el-radio>
+              <el-radio value="warning" border size="small">warning</el-radio>
+              <el-radio value="info" border size="small">info</el-radio>
+              <el-radio value="primary" border size="small">primary</el-radio>
+              <el-radio value="danger" border size="small">danger</el-radio>
+              <el-radio value="" border size="small">清空</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-card>
       </el-form>

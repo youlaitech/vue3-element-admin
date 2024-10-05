@@ -38,12 +38,11 @@
           prop="title"
           min-width="150"
         />
-        <el-table-column
-          align="center"
-          label="通知类型"
-          prop="typeLabel"
-          min-width="150"
-        />
+        <el-table-column align="center" label="通知类型" min-width="150">
+          <template #default="scope">
+            <DictLabel :dictCode="'notice_type'" :value="scope.row.type" />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="发布人"
@@ -52,10 +51,7 @@
         />
         <el-table-column align="center" label="通知等级" min-width="100">
           <template #default="scope">
-            <!-- 翻译字典  字典code 为level，显示不同的tag和label -->
-            <el-tag v-if="scope.row.level == 'L'" type="danger">低</el-tag>
-            <el-tag v-if="scope.row.level == 'M'" type="success">中</el-tag>
-            <el-tag v-if="scope.row.level == 'H'" type="warning">高</el-tag>
+            <DictLabel :dictCode="'notice_level'" :value="scope.row.type" />
           </template>
         </el-table-column>
         <el-table-column
