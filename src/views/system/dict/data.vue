@@ -102,7 +102,7 @@
     <el-dialog
       v-model="dialog.visible"
       :title="dialog.title"
-      width="800px"
+      width="820px"
       @close="handleCloseDialog"
     >
       <el-form
@@ -134,7 +134,7 @@
             <el-tag
               v-if="formData.tagType"
               :type="formData.tagType"
-              class="mb-2"
+              class="mr-2"
             >
               {{ formData.label }}
             </el-tag>
