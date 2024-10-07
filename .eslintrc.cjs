@@ -73,6 +73,8 @@ module.exports = {
         useTabs: false, // 不使用制表符
       },
     ],
+
+    "vue/no-v-html": "off", // 关闭v-html检查
   },
   // eslint不能对html文件生效
   overrides: [
