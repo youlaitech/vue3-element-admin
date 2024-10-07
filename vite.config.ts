@@ -218,6 +218,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/checkbox-group/style/index",
         "element-plus/es/components/progress/style/index",
         "element-plus/es/components/image-viewer/style/index",
+        "element-plus/es/components/empty/style/index",
       ],
     },
     // 构建配置
