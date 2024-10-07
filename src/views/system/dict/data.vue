@@ -261,7 +261,7 @@ function handleSubmitClick() {
     if (isValid) {
       loading.value = true;
       const id = formData.id;
-      formData.dictCode = dictCode;
+      formData.dictCode = dictCode.value;
       if (id) {
         DictDataAPI.update(id, formData)
           .then(() => {
