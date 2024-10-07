@@ -31,27 +31,21 @@
         highlight-current-row
       >
         <el-table-column type="index" label="序号" width="60" />
-        <el-table-column
-          align="center"
-          key="title"
-          label="通知标题"
-          prop="title"
-          min-width="150"
-        />
-        <el-table-column align="center" label="通知类型" min-width="150">
+        <el-table-column label="通知标题" prop="title" min-width="200" />
+        <el-table-column align="center" label="通知类型" width="150">
           <template #default="scope">
-            <DictLabel :dictCode="'notice_type'" :value="scope.row.type" />
+            <DictLabel code="notice_type" v-model="scope.row.type" />
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           label="发布人"
           prop="publisherName"
-          min-width="100"
+          width="100"
         />
-        <el-table-column align="center" label="通知等级" min-width="100">
+        <el-table-column align="center" label="通知等级" width="100">
           <template #default="scope">
-            <DictLabel :dictCode="'notice_level'" :value="scope.row.type" />
+            <DictLabel code="notice_level" v-model="scope.row.level" />
           </template>
         </el-table-column>
         <el-table-column
@@ -59,19 +53,19 @@
           key="releaseTime"
           label="发布时间"
           prop="publishTime"
-          min-width="100"
+          width="150"
         />
 
         <el-table-column
           align="center"
           label="发布人"
           prop="publisherName"
-          min-width="100"
+          width="150"
         />
-        <el-table-column align="center" label="状态" min-width="100">
+        <el-table-column align="center" label="状态" width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.isRead == 1" type="success">已读</el-tag>
-            <el-tag v-if="scope.row.isRead == 0" type="warning">未读</el-tag>
+            <el-tag v-else type="info">未读</el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" fixed="right" label="操作" width="80">

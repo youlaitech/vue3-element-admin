@@ -1,10 +1,13 @@
+import type { App } from "vue";
+
 import { setupDirective } from "@/directive";
 import { setupI18n } from "@/lang";
 import { setupRouter } from "@/router";
 import { setupStore } from "@/store";
-import type { App } from "vue";
 import { setupElIcons } from "./icons";
 import { setupPermission } from "./permission";
+import webSocketManager from "@/utils/websocket";
+import { InstallCodeMirror } from "codemirror-editor-vue3";
 
 export default {
   install(app: App<Element>) {
@@ -20,5 +23,9 @@ export default {
     setupElIcons(app);
     // 路由守卫
     setupPermission();
+    // 初始化 WebSocket
+    webSocketManager.setupWebSocket();
+    // 注册 CodeMirror
+    app.use(InstallCodeMirror);
   },
 };

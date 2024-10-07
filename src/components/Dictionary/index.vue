@@ -25,7 +25,7 @@ const props = defineProps({
   },
   modelValue: {
     type: [String, Number],
-    required: true,
+    required: false,
   },
   placeholder: {
     type: String,

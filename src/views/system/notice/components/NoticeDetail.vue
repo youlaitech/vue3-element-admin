@@ -43,13 +43,8 @@
       <el-descriptions-item label="发布时间：">
         {{ notice.publishTime }}
       </el-descriptions-item>
-      <el-descriptions-item label="内容：">
-        <el-input
-          v-model="notice.content"
-          type="textarea"
-          style="max-height: 400px"
-          :readonly="true"
-        />
+      <el-descriptions-item label="公告内容：">
+        <div v-html="notice.content"></div>
       </el-descriptions-item>
     </el-descriptions>
   </el-dialog>

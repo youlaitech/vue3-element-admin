@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main" :style="{ minHeight: minHeight }">
+  <section class="app-main" :style="{ height: height }">
     <router-view>
       <template #default="{ Component, route }">
         <transition
@@ -19,8 +19,9 @@
 import { useSettingsStore, useTagsViewStore } from "@/store";
 import variables from "@/styles/variables.module.scss";
 
-const cachedViews = computed(() => useTagsViewStore().cachedViews); // 缓存页面集合
-const minHeight = computed(() => {
+// 缓存页面集合
+const cachedViews = computed(() => useTagsViewStore().cachedViews);
+const height = computed(() => {
   if (useSettingsStore().tagsView) {
     return `calc(100vh - ${variables["navbar-height"]} - ${variables["tags-view-height"]})`;
   } else {
@@ -32,6 +33,7 @@ const minHeight = computed(() => {
 <style lang="scss" scoped>
 .app-main {
   position: relative;
+  overflow-y: auto;
   background-color: var(--el-bg-color-page);
 }
 </style>

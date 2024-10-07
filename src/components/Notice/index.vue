@@ -1,58 +1,176 @@
 <template>
   <div>
-    <el-dropdown class="flex-center h-full align-middle">
-      <el-badge v-if="messages.length > 0" :value="messages.length" :max="99">
-        <div><i-ep-bell /></div>
-      </el-badge>
-      <el-badge v-else>
-        <i-ep-bell />
-      </el-badge>
+    <el-dropdown class="flex-center wh-full align-middle">
+      <div class="wh-full">
+        <el-badge
+          :offset="[-10, 15]"
+          v-if="notices.length > 0"
+          :value="notices.length"
+          :max="99"
+          class="wh-full"
+        >
+          <i-ep-bell class="notification-icon h-full" />
+        </el-badge>
+        <el-badge :offset="[-10, 15]" v-else>
+          <i-ep-bell class="notification-icon h-full" />
+        </el-badge>
+      </div>
 
       <template #dropdown>
-        <div class="p-5">
-          <template v-if="messages.length > 0">
-            <div
-              class="w400px flex-x-between py-2"
-              v-for="(item, index) in messages"
-              :key="index"
-            >
-              <div>
-                <el-tag type="success" size="small">系统通知</el-tag>
-                <el-link
-                  type="primary"
-                  @click="readNotice(item.id)"
-                  class="ml-1"
+        <div class="p-2">
+          <el-tabs v-model="activeTab">
+            <el-tab-pane label="通知" name="notice">
+              <template v-if="notices.length > 0">
+                <div
+                  class="w400px flex-x-between p-1"
+                  v-for="(item, index) in notices"
+                  :key="index"
                 >
-                  {{ item.title }}
+                  <div class="flex-center">
+                    <DictLabel
+                      code="notice_type"
+                      v-model="item.type"
+                      size="small"
+                      class="mr-1"
+                    />
+                    <el-text
+                      type="primary"
+                      @click="readNotice(item.id)"
+                      size="small"
+                      class="w200px cursor-pointer"
+                      truncated
+                    >
+                      {{ item.title }}
+                    </el-text>
+                  </div>
+                  <div>
+                    {{ item.publishTime }}
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="flex-center h150px w350px">
+                  <el-empty :image-size="50" description="暂无通知" />
+                </div>
+              </template>
+              <el-divider />
+              <div class="flex-x-between">
+                <el-link type="primary" :underline="false" @click="viewMore">
+                  <span class="text-xs">查看更多</span>
+                  <el-icon class="text-xs">
+                    <ArrowRight />
+                  </el-icon>
+                </el-link>
+                <el-link
+                  v-if="notices.length > 0"
+                  type="primary"
+                  :underline="false"
+                  @click="markAllAsRead"
+                >
+                  <span class="text-xs">全部已读</span>
                 </el-link>
               </div>
-              <div>
-                {{ item.publishTime }}
+            </el-tab-pane>
+            <el-tab-pane label="消息" name="message">
+              <template v-if="messages.length > 0">
+                <div
+                  class="w400px flex-x-between p-1"
+                  v-for="(item, index) in messages"
+                  :key="index"
+                >
+                  <div>
+                    <DictLabel
+                      code="notice_type"
+                      v-model="item.type"
+                      size="small"
+                    />
+                    <el-link
+                      type="primary"
+                      @click="readNotice(item.id)"
+                      class="ml-1"
+                    >
+                      {{ item.title }}
+                    </el-link>
+                  </div>
+                  <div>
+                    {{ item.publishTime }}
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="flex-center h150px w350px">
+                  <el-empty :image-size="50" description="暂无消息" />
+                </div>
+              </template>
+              <el-divider />
+              <div class="flex-x-between">
+                <el-link type="primary" :underline="false" @click="viewMore">
+                  <span class="text-xs">查看更多</span>
+                  <el-icon class="text-xs">
+                    <ArrowRight />
+                  </el-icon>
+                </el-link>
+                <el-link
+                  v-if="messages.length > 0"
+                  type="primary"
+                  :underline="false"
+                  @click="markAllAsRead"
+                >
+                  <span class="text-xs">全部已读</span>
+                </el-link>
               </div>
-            </div>
-          </template>
-          <template v-else>
-            <div class="flex-center h150px w350px">
-              <el-empty :image-size="30" description="暂无消息" />
-            </div>
-          </template>
-          <el-divider />
-          <div class="flex-x-between">
-            <el-link type="primary" :underline="false" @click="viewMore">
-              <span class="text-xs">查看更多</span>
-              <el-icon class="text-xs">
-                <ArrowRight />
-              </el-icon>
-            </el-link>
-            <el-link
-              v-if="messages.length > 0"
-              type="primary"
-              :underline="false"
-              @click="markAllAsRead"
-            >
-              <span class="text-xs">全部已读</span>
-            </el-link>
-          </div>
+            </el-tab-pane>
+
+            <el-tab-pane label="待办" name="task">
+              <template v-if="tasks.length > 0">
+                <div
+                  class="w400px flex-x-between p-1"
+                  v-for="(item, index) in tasks"
+                  :key="index"
+                >
+                  <div>
+                    <DictLabel
+                      code="notice_type"
+                      v-model="item.type"
+                      size="small"
+                    />
+                    <el-link
+                      type="primary"
+                      @click="readNotice(item.id)"
+                      class="ml-1"
+                    >
+                      {{ item.title }}
+                    </el-link>
+                  </div>
+                  <div>
+                    {{ item.publishTime }}
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="flex-center h150px w350px">
+                  <el-empty :image-size="50" description="暂无待办" />
+                </div>
+              </template>
+              <el-divider />
+              <div class="flex-x-between">
+                <el-link type="primary" :underline="false" @click="viewMore">
+                  <span class="text-xs">查看更多</span>
+                  <el-icon class="text-xs">
+                    <ArrowRight />
+                  </el-icon>
+                </el-link>
+                <el-link
+                  v-if="tasks.length > 0"
+                  type="primary"
+                  :underline="false"
+                  @click="markAllAsRead"
+                >
+                  <span class="text-xs">全部已读</span>
+                </el-link>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
         </div>
       </template>
     </el-dropdown>
@@ -62,18 +180,21 @@
 </template>
 
 <script setup lang="ts">
-import NoticeAPI, { NoticePageQuery, NoticePageVO } from "@/api/notice";
-import WebSocketManager from "@/utils/socket";
+import NoticeAPI, { NoticePageVO } from "@/api/notice";
+import WebSocketManager from "@/utils/websocket";
 import router from "@/router";
 
-const messages = ref<NoticePageVO[]>([]);
+const activeTab = ref("notice");
+const notices = ref<NoticePageVO[]>([]);
+const messages = ref<any[]>([]);
+const tasks = ref<any[]>([]);
 const noticeDetailRef = ref();
 
 // 获取未读消息列表并连接 WebSocket
 onMounted(() => {
   NoticeAPI.getMyNoticePage({ pageNum: 1, pageSize: 5, isRead: 0 }).then(
     (data) => {
-      messages.value = data.list;
+      notices.value = data.list;
     }
   );
 
@@ -81,10 +202,12 @@ onMounted(() => {
     console.log("收到消息：", message);
     const data = JSON.parse(message);
     const id = data.id;
-    if (!messages.value.some((msg) => msg.id === id)) {
-      messages.value.unshift({
+    if (!notices.value.some((notice) => notice.id == id)) {
+      notices.value.unshift({
         id,
         title: data.title,
+        type: data.type,
+        publishTime: data.publishTime,
       });
 
       ElNotification({
@@ -100,9 +223,9 @@ onMounted(() => {
 // 阅读通知公告
 function readNotice(id: string) {
   noticeDetailRef.value.openNotice(id);
-  const index = messages.value.findIndex((msg) => msg.id === id);
+  const index = notices.value.findIndex((notice) => notice.id === id);
   if (index >= 0) {
-    messages.value.splice(index, 1); // 从消息列表中移除已读消息
+    notices.value.splice(index, 1); // 从消息列表中移除已读消息
   }
 }
 
@@ -114,9 +237,14 @@ function viewMore() {
 // 全部已读
 function markAllAsRead() {
   NoticeAPI.readAll().then(() => {
-    messages.value = [];
+    notices.value = [];
   });
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.layout-top .notification-icon,
+.layout-mix .notification-icon {
+  color: #fff;
+}
+</style>

@@ -155,7 +155,7 @@
                 <el-icon class="ml-1"><Notification /></el-icon>
               </div>
               <el-link type="primary">
-                <span class="text-xs">查看更多</span>
+                <span class="text-xs" @click="viewMoreNotice">查看更多</span>
                 <el-icon class="text-xs"><ArrowRight /></el-icon>
               </el-link>
             </div>
@@ -167,16 +167,14 @@
               :key="index"
               class="flex-y-center py-3"
             >
-              <el-tag :type="getNoticeLevelTag(item.level)" size="small">
-                {{ getNoticeLabel(item.type) }}
-              </el-tag>
+              <DictLabel code="notice_type" v-model="item.type" size="small" />
               <el-text
                 truncated
                 class="!mx-2 flex-1 !text-xs !text-[var(--el-text-color-secondary)]"
               >
                 {{ item.title }}
               </el-text>
-              <el-link>
+              <el-link @click="viewNoticeDetail(item.id)">
                 <el-icon class="text-sm"><View /></el-icon>
               </el-link>
             </div>
@@ -184,20 +182,27 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <NoticeDetail ref="noticeDetailRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import WebSocketManager from "@/utils/socket";
-
 defineOptions({
   name: "Dashboard",
   inheritAttrs: false,
 });
 
+import WebSocketManager from "@/utils/websocket";
+import router from "@/router";
+
 import { useUserStore } from "@/store/modules/user";
 import { NoticeTypeEnum, getNoticeLabel } from "@/enums/NoticeTypeEnum";
 import StatsAPI, { VisitStatsVO } from "@/api/log";
+import NoticeAPI, { NoticePageVO } from "@/api/notice";
+
+const noticeDetailRef = ref();
+
 const userStore = useUserStore();
 const date: Date = new Date();
 const greetings = computed(() => {
@@ -247,13 +252,13 @@ interface VisitStats {
   icon: string;
   tagType: "primary" | "success" | "warning";
   growthRate: number;
-  /** 粒度 */
+  // 粒度
   granularity: string;
-  /** 今日数量输出文档  */
+  // 今日数量
   todayCount: number;
   totalCount: number;
 }
-/** 加载访问统计数据 */
+// 加载访问统计数据
 const loadVisitStatsData = async () => {
   const list: VisitStatsVO[] = await StatsAPI.getVisitStats();
 
@@ -314,88 +319,30 @@ const getVisitStatsIcon = (type: string) => {
   }
 };
 
-const notices = ref([
-  {
-    level: 2,
-    type: NoticeTypeEnum.SYSTEM_UPGRADE,
-    title: "v2.12.0 新增系统日志，访问趋势统计功能。",
-  },
-  {
-    level: 0,
-    type: NoticeTypeEnum.COMPANY_NEWS,
-    title: "公司将在 7 月 1 日举办年中总结大会，请各部门做好准备。",
-  },
-  {
-    level: 3,
-    type: NoticeTypeEnum.HOLIDAY_NOTICE,
-    title: "端午节假期从 6 月 12 日至 6 月 14 日放假，共 3 天。",
-  },
+const notices = ref<NoticePageVO[]>([]);
 
-  {
-    level: 2,
-    type: NoticeTypeEnum.SECURITY_ALERT,
-    title: "最近发现一些钓鱼邮件，请大家提高警惕，不要点击陌生链接。",
-  },
-  {
-    level: 2,
-    type: NoticeTypeEnum.SYSTEM_MAINTENANCE,
-    title: "系统将于本周六凌晨 2 点进行维护，预计维护时间为 2 小时。",
-  },
-  {
-    level: 0,
-    type: NoticeTypeEnum.OTHER,
-    title: "公司新规章制度发布，请大家及时查阅。",
-  },
-  {
-    level: 3,
-    type: NoticeTypeEnum.HOLIDAY_NOTICE,
-    title: "中秋节假期从 9 月 22 日至 9 月 24 日放假，共 3 天。",
-  },
-  {
-    level: 1,
-    type: NoticeTypeEnum.COMPANY_NEWS,
-    title: "公司将在 10 月 15 日举办新产品发布会，敬请期待。",
-  },
-  {
-    level: 2,
-    type: NoticeTypeEnum.SECURITY_ALERT,
-    title:
-      "请注意，近期有恶意软件通过即时通讯工具传播，请勿下载不明来源的文件。",
-  },
-  {
-    level: 2,
-    type: NoticeTypeEnum.SYSTEM_MAINTENANCE,
-    title: "系统将于下周日凌晨 3 点进行升级，预计维护时间为 1 小时。",
-  },
-  {
-    level: 3,
-    type: NoticeTypeEnum.OTHER,
-    title: "公司年度体检通知已发布，请各位员工按时参加。",
-  },
-]);
+// 查看更多
+function viewMoreNotice() {
+  router.push({ path: "/myNotice" });
+}
 
-const getNoticeLevelTag = (type: number) => {
-  switch (type) {
-    case 0:
-      return "danger";
-    case 1:
-      return "warning";
-    case 2:
-      return "primary";
-    default:
-      return "success";
-  }
-};
-
-function connectWebSocket() {
-  WebSocketManager.getOrCreateClient("/topic/onlineUserCount", (message) => {
-    onlineUserCount.value = JSON.parse(message);
-  });
+// 阅读通知公告
+function viewNoticeDetail(id: string) {
+  noticeDetailRef.value.openNotice(id);
 }
 
 onMounted(() => {
   loadVisitStatsData();
-  connectWebSocket();
+
+  // 获取我的通知公告
+  NoticeAPI.getMyNoticePage({ pageNum: 1, pageSize: 10 }).then((data) => {
+    notices.value = data.list;
+  });
+
+  WebSocketManager.subscribeToTopic("/topic/onlineUserCount", (data) => {
+    console.log("收到在线用户数量：", data);
+    onlineUserCount.value = JSON.parse(data);
+  });
 });
 </script>
 

@@ -143,7 +143,7 @@ function connectWebSocket() {
     connectHeaders: {
       Authorization: getToken(),
     },
-    debug: (str) => {
+    debug: (str: any) => {
       console.log(str);
     },
     onConnect: () => {
@@ -155,14 +155,14 @@ function connectWebSocket() {
         type: "tip",
       });
 
-      stompClient.subscribe("/topic/notice", (res) => {
+      stompClient.subscribe("/topic/notice", (res: any) => {
         messages.value.push({
           sender: "Server",
           content: res.body,
         });
       });
 
-      stompClient.subscribe("/user/queue/greeting", (res) => {
+      stompClient.subscribe("/user/queue/greeting", (res: any) => {
         const messageData = JSON.parse(res.body) as MessageType;
         messages.value.push({
           sender: messageData.sender,
@@ -170,7 +170,7 @@ function connectWebSocket() {
         });
       });
     },
-    onStompError: (frame) => {
+    onStompError: (frame: any) => {
       console.error("Broker reported error: " + frame.headers["message"]);
       console.error("Additional details: " + frame.body);
     },

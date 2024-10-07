@@ -70,27 +70,21 @@
       >
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column type="index" label="序号" width="60" />
-        <el-table-column
-          align="center"
-          key="title"
-          label="通知标题"
-          prop="title"
-          min-width="150"
-        />
-        <el-table-column align="center" label="通知类型" min-width="150">
+        <el-table-column label="通知标题" prop="title" min-width="200" />
+        <el-table-column align="center" label="通知类型" width="150">
           <template #default="scope">
-            <DictLabel :dictCode="'notice_type'" :value="scope.row.type" />
+            <DictLabel :code="'notice_type'" v-model="scope.row.type" />
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           label="发布人"
           prop="publisherName"
-          min-width="100"
+          width="150"
         />
-        <el-table-column align="center" label="通知等级" min-width="100">
+        <el-table-column align="center" label="通知等级" width="100">
           <template #default="scope">
-            <DictLabel :dictCode="'notice_level'" :value="scope.row.level" />
+            <DictLabel code="notice_level" v-model="scope.row.level" />
           </template>
         </el-table-column>
         <el-table-column
@@ -121,7 +115,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作时间" min-width="220">
+        <el-table-column label="操作时间" width="250">
           <template #default="scope">
             <div class="flex-x-start">
               <span>创建时间：</span>
@@ -141,7 +135,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" fixed="right" label="操作" width="220">
+        <el-table-column align="center" fixed="right" label="操作" width="150">
           <template #default="scope">
             <el-button
               type="primary"
@@ -230,16 +224,16 @@
         <el-form-item label="通知类型" prop="type">
           <dictionary
             type="button"
-            v-model="formData.type"
             code="notice_type"
+            v-model="formData.type"
           />
         </el-form-item>
-        <el-form-item label="优先级" prop="level">
-          <el-radio-group v-model="formData.level">
-            <el-radio value="L">低</el-radio>
-            <el-radio value="M">中</el-radio>
-            <el-radio value="H">高</el-radio>
-          </el-radio-group>
+        <el-form-item label="通知等级" prop="level">
+          <dictionary
+            type="button"
+            code="notice_level"
+            v-model="formData.level"
+          />
         </el-form-item>
         <el-form-item label="目标类型" prop="targetType">
           <el-radio-group v-model="formData.targetType">

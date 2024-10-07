@@ -168,7 +168,7 @@
         <el-input
           v-model="permKeywords"
           clearable
-          class="w-[200px]"
+          class="w-[150px]"
           placeholder="菜单权限名称"
         >
           <template #prefix>
@@ -176,7 +176,7 @@
           </template>
         </el-input>
 
-        <div class="flex-center">
+        <div class="flex-center ml-5">
           <el-button type="primary" size="small" plain @click="togglePermTree">
             <i-ep-switch />
             {{ isExpanded ? "收缩" : "展开" }}

@@ -113,7 +113,7 @@ class NoticeAPI {
   /** 获取我的通知分页列表 */
   static getMyNoticePage(queryParams?: NoticePageQuery) {
     return request<any, PageResult<NoticePageVO[]>>({
-      url: `${NOTICE_BASE_URL}/my/page`,
+      url: `${NOTICE_BASE_URL}/my-page`,
       method: "get",
       params: queryParams,
     });

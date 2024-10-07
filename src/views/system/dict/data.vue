@@ -174,8 +174,8 @@ import DictDataAPI, {
 
 const route = useRoute();
 
-const dictCode = route.query.dictCode as string;
-const dictName = route.query.dictName as string;
+const dictCode = ref(route.query.dictCode as string);
+const dictName = ref(route.query.dictName as string);
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -201,15 +201,15 @@ const formData = reactive<DictDataForm>({});
 
 // 监听路由参数变化，更新字典数据
 watch(
-  () => route.query.dictCode,
-  (newDictCode) => {
-    if (newDictCode !== queryParams.dictCode) {
-      queryParams.dictCode = newDictCode as string;
-      handleQuery();
-    }
+  () => [route.query.dictCode, route.query.dictName],
+  ([newDictCode, newDictName]) => {
+    queryParams.dictCode = newDictCode as string;
+    dictCode.value = newDictCode as string;
+    dictName.value = newDictName as string;
+
+    handleQuery();
   }
 );
-
 const computedRules = computed(() => {
   const rules: Partial<Record<string, any>> = {
     value: [{ required: true, message: "请输入字典值", trigger: "blur" }],
@@ -291,6 +291,8 @@ function handleCloseDialog() {
   dataFormRef.value.clearValidate();
 
   formData.id = undefined;
+  formData.sort = 1;
+  formData.status = 1;
 }
 /**
  * 删除字典

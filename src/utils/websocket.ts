@@ -1,22 +1,19 @@
 import { Client } from "@stomp/stompjs";
 import { getToken } from "@/utils/auth";
 
-const MAX_RECONNECT_ATTEMPTS = 3;
-const RECONNECT_DELAY_MS = 5000;
-const HEARTBEAT_INTERVAL_MS = 30000;
-
 class WebSocketManager {
   private client: Client | null = null;
-  private reconnectAttempts: number = 0;
   private messageHandlers: Map<string, ((message: string) => void)[]> =
     new Map();
 
   constructor() {}
 
-  private getOrCreateClient(onError?: (error: any) => void): Client {
+  // 初始化 WebSocket 客户端
+  setupWebSocket() {
     const endpoint = import.meta.env.VITE_APP_WS_ENDPOINT;
 
-    if (this.client) {
+    if (this.client && this.client.connected) {
+      console.log("客户端已存在并且连接正常");
       return this.client;
     }
 
@@ -25,10 +22,10 @@ class WebSocketManager {
       connectHeaders: {
         Authorization: getToken(),
       },
-      heartbeatIncoming: HEARTBEAT_INTERVAL_MS,
-      heartbeatOutgoing: HEARTBEAT_INTERVAL_MS,
+      heartbeatIncoming: 30000,
+      heartbeatOutgoing: 30000,
       onConnect: () => {
-        console.log(`已连接到 WebSocket 服务器: ${endpoint}`);
+        console.log(`连接到 WebSocket 服务器: ${endpoint}`);
         this.messageHandlers.forEach((handlers, topic) => {
           handlers.forEach((handler) => {
             this.subscribeToTopic(topic, handler);
@@ -36,33 +33,22 @@ class WebSocketManager {
         });
       },
       onStompError: (frame) => {
-        console.error(
-          `连接错误: ${endpoint}, 错误消息: ${frame.headers["message"]}`
-        );
+        console.error(`连接错误: ${frame.headers["message"]}`);
         console.error(`错误详情: ${frame.body}`);
-        if (onError) {
-          onError(frame);
-        }
-        this.handleReconnect();
       },
       onDisconnect: () => {
-        console.log(`已断开连接: ${endpoint}`);
-        this.handleReconnect();
+        console.log(`WebSocket 连接已断开: ${endpoint}`);
       },
     });
 
     this.client.activate();
-    return this.client;
   }
 
-  public subscribeToTopic(
-    topic: string,
-    onMessage: (message: string) => void,
-    onError?: (error: any) => void
-  ) {
+  // 订阅主题
+  public subscribeToTopic(topic: string, onMessage: (message: string) => void) {
+    console.log(`正在订阅主题: ${topic}`);
     if (!this.client || !this.client.connected) {
-      console.log("WebSocket 尚未连接，正在连接...");
-      this.getOrCreateClient(onError);
+      this.setupWebSocket();
     }
 
     if (this.messageHandlers.has(topic)) {
@@ -72,7 +58,6 @@ class WebSocketManager {
     }
 
     if (this.client?.connected) {
-      console.log(`正在订阅主题: ${topic}`);
       this.client.subscribe(topic, (message) => {
         const handlers = this.messageHandlers.get(topic);
         handlers?.forEach((handler) => handler(message.body));
@@ -80,23 +65,7 @@ class WebSocketManager {
     }
   }
 
-  private handleReconnect() {
-    if (this.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-      this.reconnectAttempts++;
-      console.log(
-        `重连尝试 (${this.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`
-      );
-
-      setTimeout(() => {
-        this.client?.deactivate();
-        this.client = null;
-        this.getOrCreateClient();
-      }, RECONNECT_DELAY_MS);
-    } else {
-      console.error("达到最大重连次数，停止重连");
-    }
-  }
-
+  // 断开 WebSocket 连接
   public disconnect() {
     if (this.client) {
       console.log("断开 WebSocket 连接");

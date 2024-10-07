@@ -16,7 +16,7 @@ const contentConfig: IContentConfig = {
           id: 1,
           username: "tom",
           avatar:
-            "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+            "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
           percent: 99,
           price: 10,
           url: "https://www.baidu.com",
@@ -31,7 +31,7 @@ const contentConfig: IContentConfig = {
           id: 2,
           username: "jerry",
           avatar:
-            "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+            "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
           percent: 88,
           price: 999,
           url: "https://www.google.com",
