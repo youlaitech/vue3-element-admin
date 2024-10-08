@@ -23,6 +23,22 @@ module.exports = {
     extraFileExtensions: [".vue"],
   },
   plugins: ["vue", "@typescript-eslint"],
+  // 添加忽略的文件或目录
+  ignores: [
+    "dist",
+    "node_modules",
+    "public",
+    ".husky",
+    ".vscode",
+    ".idea",
+    "*.sh",
+    "*.md",
+    "src/assets",
+    ".eslintrc.cjs",
+    ".prettierrc.cjs",
+    ".stylelintrc.cjs",
+  ],
+
   rules: {
     // https://eslint.vuejs.org/rules/#priority-a-essential-error-prevention
     "vue/multi-word-component-names": "off",
