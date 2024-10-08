@@ -199,7 +199,6 @@ import WebSocketManager from "@/utils/websocket";
 import router from "@/router";
 
 import { useUserStore } from "@/store/modules/user";
-import { NoticeTypeEnum, getNoticeLabel } from "@/enums/NoticeTypeEnum";
 import StatsAPI, { VisitStatsVO } from "@/api/log";
 import NoticeAPI, { NoticePageVO } from "@/api/notice";
 
