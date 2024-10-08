@@ -12,8 +12,13 @@
 
     <!-- 混合布局 -->
     <div v-if="layout === LayoutEnum.MIX" class="mix-container">
-      <div class="mix-container__left">
-        <SidebarMenu :menu-list="mixLeftMenus" :base-path="activeTopMenuPath" />
+      <div class="mix-container-sidebar">
+        <el-scrollbar>
+          <SidebarMenu
+            :menu-list="mixLeftMenus"
+            :base-path="activeTopMenuPath"
+          />
+        </el-scrollbar>
         <div class="sidebar-toggle">
           <hamburger
             :is-active="appStore.sidebar.opened"
@@ -73,7 +78,7 @@ const mixLeftMenus = computed(() => permissionStore.mixLeftMenus); // 混合布�
 
 watch(
   () => activeTopMenuPath.value,
-  (newVal) => {
+  (newVal: string) => {
     permissionStore.setMixLeftMenus(newVal);
   },
   {
@@ -205,10 +210,16 @@ watch(route, () => {
     height: 100%;
     padding-top: $navbar-height;
 
-    .mix-container__left {
+    .mix-container-sidebar {
       position: relative;
       width: $sidebar-width;
       height: 100%;
+      background-color: var(--menu-background);
+
+      :deep(.el-scrollbar) {
+        // 50px 是底部收缩按钮的高度
+        height: calc(100vh - $navbar-height - 50px);
+      }
 
       :deep(.el-menu) {
         height: 100%;
@@ -261,7 +272,7 @@ watch(route, () => {
     }
 
     .mix-container {
-      .mix-container__left {
+      &-sidebar {
         width: $sidebar-width-collapsed;
       }
     }
