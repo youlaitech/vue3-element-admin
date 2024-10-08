@@ -13,11 +13,15 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery">
-            <i-ep-search />
+            <template #icon>
+              <Search />
+            </template>
             搜索
           </el-button>
           <el-button @click="handleResetQuery">
-            <i-ep-refresh />
+            <template #icon>
+              <Refresh />
+            </template>
             重置
           </el-button>
         </el-form-item>
@@ -31,7 +35,9 @@
           v-hasPerm="['sys:config:add']"
           @click="handleOpenDialog()"
         >
-          <i-ep-plus />
+          <template #icon>
+            <Plus />
+          </template>
           新增
         </el-button>
         <el-button
@@ -85,7 +91,9 @@
               v-hasPerm="['sys:config:update']"
               @click="handleOpenDialog(scope.row.id)"
             >
-              <i-ep-edit />
+              <template #icon>
+                <Edit />
+              </template>
               编辑
             </el-button>
             <el-button
@@ -95,7 +103,9 @@
               v-hasPerm="['sys:config:delete']"
               @click="handleDelete(scope.row.id)"
             >
-              <i-ep-delete />
+              <template #icon>
+                <Delete />
+              </template>
               删除
             </el-button>
           </template>

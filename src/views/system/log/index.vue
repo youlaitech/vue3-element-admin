@@ -25,11 +25,15 @@
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery">
-            <i-ep-search />
+            <template #icon>
+              <Search />
+            </template>
             搜索
           </el-button>
           <el-button @click="handleResetQuery">
-            <i-ep-refresh />
+            <template #icon>
+              <Refresh />
+            </template>
             重置
           </el-button>
         </el-form-item>

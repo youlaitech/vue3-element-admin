@@ -15,12 +15,13 @@
         @contextmenu.prevent="openContentMenu(tag, $event)"
       >
         {{ translateRouteTitle(tag.title) }}
-        <i-ep-close
-          class="close-icon"
-          size="12px"
+        <el-icon
+          class="tag-close-icon"
           v-if="!isAffix(tag)"
           @click.prevent.stop="closeSelectedTag(tag)"
-        />
+        >
+          <Close />
+        </el-icon>
       </router-link>
     </el-scrollbar>
 
@@ -382,7 +383,9 @@ onMounted(() => {
       margin-right: 15px;
     }
 
-    .close-icon {
+    .tag-close-icon {
+      vertical-align: -0.15em;
+      cursor: pointer;
       border-radius: 50%;
 
       &:hover {
@@ -405,7 +408,7 @@ onMounted(() => {
         border-radius: 50%;
       }
 
-      .close-icon:hover {
+      .tag-close-icon:hover {
         color: var(--el-color-primary);
         background-color: var(--el-fill-color-light);
       }

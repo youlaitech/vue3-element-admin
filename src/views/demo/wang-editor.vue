@@ -17,7 +17,7 @@ const value = ref("初始内容");
     </el-link>
     <editor
       v-model="value"
-      style=" z-index: 99999;height: calc(100vh - 180px)"
+      style="z-index: 99999; height: calc(100vh - 180px)"
     />
   </div>
 </template>

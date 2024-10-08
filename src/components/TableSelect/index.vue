@@ -145,8 +145,8 @@
           <el-button type="primary" size="small" @click="handleConfirm">
             {{ confirmText }}
           </el-button>
-          <el-button size="small" @click="handleClear"> 清 空 </el-button>
-          <el-button size="small" @click="handleClose"> 关 闭 </el-button>
+          <el-button size="small" @click="handleClear">清 空</el-button>
+          <el-button size="small" @click="handleClose">关 闭</el-button>
         </div>
       </div>
     </el-popover>

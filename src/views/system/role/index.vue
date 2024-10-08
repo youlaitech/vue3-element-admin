@@ -13,11 +13,11 @@
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery">
-            <i-ep-search />
+            <Search />
             搜索
           </el-button>
           <el-button @click="handleResetQuery">
-            <i-ep-refresh />
+            <Refresh />
             重置
           </el-button>
         </el-form-item>
@@ -27,7 +27,9 @@
     <el-card shadow="never" class="table-container">
       <template #header>
         <el-button type="success" @click="handleOpenDialog()">
-          <i-ep-plus />
+          <el-icon>
+            <Plus />
+          </el-icon>
           新增
         </el-button>
         <el-button
@@ -35,7 +37,9 @@
           :disabled="ids.length === 0"
           @click="handleDelete()"
         >
-          <i-ep-delete />
+          <el-icon>
+            <Delete />
+          </el-icon>
           删除
         </el-button>
       </template>
@@ -69,7 +73,7 @@
               link
               @click="handleOpenAssignPermDialog(scope.row)"
             >
-              <i-ep-position />
+              <template #icon><Position /></template>
               分配权限
             </el-button>
             <el-button
@@ -78,7 +82,7 @@
               link
               @click="handleOpenDialog(scope.row.id)"
             >
-              <i-ep-edit />
+              <template #icon><Edit /></template>
               编辑
             </el-button>
             <el-button
@@ -87,7 +91,7 @@
               link
               @click="handleDelete(scope.row.id)"
             >
-              <i-ep-delete />
+              <template #icon><Delete /></template>
               删除
             </el-button>
           </template>
@@ -172,13 +176,15 @@
           placeholder="菜单权限名称"
         >
           <template #prefix>
-            <i-ep-search />
+            <Search />
           </template>
         </el-input>
 
         <div class="flex-center ml-5">
           <el-button type="primary" size="small" plain @click="togglePermTree">
-            <i-ep-switch />
+            <template #icon>
+              <Switch />
+            </template>
             {{ isExpanded ? "收缩" : "展开" }}
           </el-button>
           <el-checkbox
@@ -193,9 +199,11 @@
             <template #content>
               如果只需勾选菜单权限，不需要勾选子菜单或者按钮权限，请关闭父子联动
             </template>
-            <i-ep-QuestionFilled
+            <el-icon
               class="ml-1 color-[--el-color-primary] inline-block cursor-pointer"
-            />
+            >
+              <QuestionFilled />
+            </el-icon>
           </el-tooltip>
         </div>
       </div>

@@ -9,10 +9,14 @@
           :max="99"
           class="wh-full"
         >
-          <i-ep-bell class="notification-icon h-full" />
+          <el-icon class="notification-icon h-full">
+            <Bell />
+          </el-icon>
         </el-badge>
-        <el-badge :offset="[-10, 15]" v-else>
-          <i-ep-bell class="notification-icon h-full" />
+        <el-badge v-else class="wh-full">
+          <el-icon class="notification-icon h-full">
+            <Bell />
+          </el-icon>
         </el-badge>
       </div>
 

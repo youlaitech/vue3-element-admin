@@ -16,7 +16,7 @@
     :accept="props.accept"
     :limit="props.limit"
   >
-    <i-ep-plus />
+    <el-icon><Plus /></el-icon>
     <template #file="{ file }">
       <div style="width: 100%">
         <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />

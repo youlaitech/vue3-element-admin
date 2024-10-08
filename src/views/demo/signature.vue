@@ -138,8 +138,8 @@ function paint(
     <h3>基于canvas实现的签名组件</h3>
     <header>
       <el-button type="primary" @click="handleSaveImg">保存为图片</el-button>
-      <el-button @click="handleToFile"> 保存到后端 </el-button>
-      <el-button @click="handleClearSign"> 清空签名 </el-button>
+      <el-button @click="handleToFile">保存到后端</el-button>
+      <el-button @click="handleClearSign">清空签名</el-button>
     </header>
     <canvas
       ref="canvas"
@@ -151,8 +151,7 @@ function paint(
       @touchstart="onEventStart"
       @touchmove.stop.prevent="onEventMove"
       @touchend="onEventEnd"
-    >
-    </canvas>
+    ></canvas>
     <img v-if="imgUrl" :src="imgUrl" alt="签名" />
   </div>
 </template>

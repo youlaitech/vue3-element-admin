@@ -48,11 +48,11 @@
 
             <el-form-item>
               <el-button type="primary" @click="handleQuery">
-                <i-ep-search />
+                <Search />
                 搜索
               </el-button>
               <el-button @click="handleResetQuery">
-                <i-ep-refresh />
+                <Refresh />
                 重置
               </el-button>
             </el-form-item>
@@ -68,7 +68,7 @@
                   type="success"
                   @click="handleOpenDialog()"
                 >
-                  <i-ep-plus />
+                  <template #icon><Plus /></template>
                   新增
                 </el-button>
                 <el-button
@@ -77,18 +77,18 @@
                   :disabled="removeIds.length === 0"
                   @click="handleDelete()"
                 >
-                  <i-ep-delete />
+                  <template #icon><Delete /></template>
                   删除
                 </el-button>
               </div>
               <div>
                 <el-button class="ml-3" @click="handleOpenImportDialog">
-                  <template #icon><i-ep-upload /></template>
+                  <template #icon><Upload /></template>
                   导入
                 </el-button>
 
                 <el-button class="ml-3" @click="handleExport">
-                  <template #icon><i-ep-download /></template>
+                  <template #icon><Download /></template>
                   导出
                 </el-button>
               </div>
@@ -163,7 +163,7 @@
                   link
                   @click="hancleResetPassword(scope.row)"
                 >
-                  <i-ep-refresh-left />
+                  <template #icon><RefreshLeft /></template>
                   重置密码
                 </el-button>
                 <el-button
@@ -173,7 +173,7 @@
                   size="small"
                   @click="handleOpenDialog(scope.row.id)"
                 >
-                  <i-ep-edit />
+                  <template #icon><Edit /></template>
                   编辑
                 </el-button>
                 <el-button
@@ -183,7 +183,7 @@
                   size="small"
                   @click="handleDelete(scope.row.id)"
                 >
-                  <i-ep-delete />
+                  <template #icon><Delete /></template>
                   删除
                 </el-button>
               </template>

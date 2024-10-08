@@ -5,8 +5,6 @@ import { UserConfig, ConfigEnv, loadEnv, defineConfig } from "vite";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-import Icons from "unplugin-icons/vite";
-import IconsResolver from "unplugin-icons/resolver";
 
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import mockDevServerPlugin from "vite-plugin-mock-dev-server";
@@ -88,8 +86,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           ElementPlusResolver({
             importStyle: "sass",
           }),
-          // 自动导入图标组件
-          IconsResolver({}),
         ],
         eslintrc: {
           // 是否自动生成 eslint 规则，建议生成之后设置 false
@@ -110,21 +106,12 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           ElementPlusResolver({
             importStyle: "sass",
           }),
-          // 自动注册图标组件
-          IconsResolver({
-            // element-plus图标库，其他图标库 https://icon-sets.iconify.design/
-            enabledCollections: ["ep"],
-          }),
         ],
         // 指定自定义组件位置(默认:src/components)
         dirs: ["src/components", "src/**/components"],
         // 指定自动导入组件TS类型声明文件路径 (false:关闭自动生成)
         dts: false,
         // dts: "src/types/components.d.ts",
-      }),
-      Icons({
-        // 自动安装图标库
-        autoInstall: true,
       }),
       createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹
