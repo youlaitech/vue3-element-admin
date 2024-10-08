@@ -21,7 +21,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["vite/client", "unplugin-icons/types/vue", "element-plus/global"]
+    "types": ["vite/client", "element-plus/global"]
   },
   "include": [
     "mock/**/*.ts",
