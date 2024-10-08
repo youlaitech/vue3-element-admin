@@ -13,11 +13,15 @@
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery">
-            <i-ep-search />
+            <template #icon>
+              <Search />
+            </template>
             搜索
           </el-button>
           <el-button @click="handleResetQuery">
-            <i-ep-refresh />
+            <template #icon>
+              <Refresh />
+            </template>
             重置
           </el-button>
         </el-form-item>
@@ -53,7 +57,9 @@
               link
               @click="handleOpenDialog(scope.row.tableName)"
             >
-              <i-ep-MagicStick />
+              <template #icon>
+                <MagicStick />
+              </template>
               生成代码
             </el-button>
 
@@ -64,7 +70,9 @@
               link
               @click="handleResetConfig(scope.row.tableName)"
             >
-              <i-ep-RefreshLeft />
+              <template #icon>
+                <RefreshLeft />
+              </template>
               重置配置
             </el-button>
           </template>
@@ -167,7 +175,9 @@
                         <br />
                         注意2：演示环境默认不生成菜单，如需生成，请在本地部署数据库。
                       </template>
-                      <i-ep-QuestionFilled class="cursor-pointer" />
+                      <el-icon class="cursor-pointer">
+                        <QuestionFilled />
+                      </el-icon>
                     </el-tooltip>
                   </div>
                 </template>
@@ -195,7 +205,9 @@
             :data="genConfigFormData.fieldConfigs"
           >
             <el-table-column width="55" align="center">
-              <i-ep-Rank class="cursor-move sortable-handle" />
+              <el-icon class="cursor-move sortable-handle">
+                <Rank />
+              </el-icon>
             </el-table-column>
 
             <el-table-column label="列名" width="110">

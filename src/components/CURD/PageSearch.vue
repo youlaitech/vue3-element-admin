@@ -109,11 +109,15 @@
         >
           <template v-if="isExpand">
             收起
-            <i-ep-arrow-up />
+            <el-icon>
+              <ArrowUp />
+            </el-icon>
           </template>
           <template v-else>
             展开
-            <i-ep-arrow-down />
+            <el-icon>
+              <ArrowDown />
+            </el-icon>
           </template>
         </el-link>
       </el-form-item>

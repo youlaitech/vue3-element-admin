@@ -13,12 +13,16 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery()">
-            <i-ep-search />
+            <template #icon>
+              <Search />
+            </template>
             搜索
           </el-button>
           <el-button @click="handleResetQuery()">
-            <i-ep-refresh />
-            重置
+            <template #icon>
+              <Refresh />
+              重置
+            </template>
           </el-button>
         </el-form-item>
       </el-form>
@@ -27,7 +31,9 @@
     <el-card shadow="never">
       <div class="mb-[10px]">
         <el-button type="success" @click="handleAddClick()">
-          <i-ep-plus />
+          <template #icon>
+            <Plus />
+          </template>
           新增
         </el-button>
         <el-button
@@ -35,7 +41,9 @@
           :disabled="ids.length === 0"
           @click="handleDelete()"
         >
-          <i-ep-delete />
+          <template #icon>
+            <Delete />
+          </template>
           删除
         </el-button>
       </div>
@@ -65,7 +73,9 @@
               size="small"
               @click.stop="handleOpenDictData(scope.row)"
             >
-              <i-ep-Collection />
+              <template #icon>
+                <Collection />
+              </template>
               字典数据
             </el-button>
 
@@ -75,7 +85,9 @@
               size="small"
               @click.stop="handleEditClick(scope.row.id, scope.row.name)"
             >
-              <i-ep-edit />
+              <template #icon>
+                <Edit />
+              </template>
               编辑
             </el-button>
             <el-button
@@ -84,7 +96,9 @@
               size="small"
               @click.stop="handleDelete(scope.row.id)"
             >
-              <i-ep-delete />
+              <template #icon>
+                <Delete />
+              </template>
               删除
             </el-button>
           </template>

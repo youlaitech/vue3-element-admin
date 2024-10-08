@@ -18,7 +18,9 @@
           </el-button>
           <!-- 关闭按钮 -->
           <el-button @click="handleClose" circle>
-            <i-ep-Close />
+            <template #icon>
+              <Close />
+            </template>
           </el-button>
         </div>
       </div>

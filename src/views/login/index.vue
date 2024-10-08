@@ -70,7 +70,9 @@
           <!-- 用户名 -->
           <el-form-item prop="username">
             <div class="input-wrapper">
-              <i-ep-user class="mx-2" />
+              <el-icon class="mx-2">
+                <User />
+              </el-icon>
               <el-input
                 ref="username"
                 v-model="loginData.username"
@@ -90,7 +92,9 @@
           >
             <el-form-item prop="password">
               <div class="input-wrapper">
-                <i-ep-lock class="mx-2" />
+                <el-icon class="mx-2">
+                  <Lock />
+                </el-icon>
                 <el-input
                   v-model="loginData.password"
                   :placeholder="$t('login.password')"

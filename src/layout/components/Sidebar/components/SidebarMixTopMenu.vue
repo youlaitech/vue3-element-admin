@@ -15,10 +15,16 @@
         :index="route.path"
       >
         <template #title>
-          <svg-icon
-            v-if="route.meta && route.meta.icon"
-            :icon-class="route.meta.icon"
-          />
+          <template v-if="route.meta && route.meta.icon">
+            <el-icon
+              v-if="route.meta.icon.startsWith('el-icon')"
+              class="sub-el-icon"
+            >
+              <component :is="route.meta.icon.replace('el-icon-', '')" />
+            </el-icon>
+            <svg-icon v-else :icon-class="route.meta.icon" />
+          </template>
+          <svg-icon v-else icon-class="menu" />
           <span v-if="route.path === '/'">首页</span>
           <template v-else>
             <span v-if="route.meta && route.meta.title" class="ml-1">

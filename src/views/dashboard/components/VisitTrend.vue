@@ -6,10 +6,13 @@
         <div class="flex-y-center">
           访问趋势
           <el-tooltip effect="dark" content="点击试试下载" placement="bottom">
-            <i-ep-download
+            <el-icon
               class="cursor-pointer hover:color-#4080FF ml-1"
+              name="el-icon-download"
               @click="handleDownloadChart"
-            />
+            >
+              <Download />
+            </el-icon>
           </el-tooltip>
         </div>
 

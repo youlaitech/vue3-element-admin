@@ -12,11 +12,11 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery">
-            <template #icon><i-ep-search /></template>
+            <template #icon><Search /></template>
             搜索
           </el-button>
           <el-button @click="handleResetQuery">
-            <template #icon><i-ep-refresh /></template>
+            <template #icon><Refresh /></template>
             重置
           </el-button>
         </el-form-item>
@@ -30,7 +30,7 @@
           type="success"
           @click="handleOpenDialog(0)"
         >
-          <template #icon><i-ep-plus /></template>
+          <template #icon><Plus /></template>
           新增
         </el-button>
       </template>
@@ -133,7 +133,7 @@
               size="small"
               @click.stop="handleOpenDialog(scope.row.id)"
             >
-              <i-ep-plus />
+              <template #icon><Plus /></template>
               新增
             </el-button>
 
@@ -144,7 +144,7 @@
               size="small"
               @click.stop="handleOpenDialog(undefined, scope.row.id)"
             >
-              <i-ep-edit />
+              <template #icon><Edit /></template>
               编辑
             </el-button>
             <el-button
@@ -154,7 +154,7 @@
               size="small"
               @click.stop="handleDelete(scope.row.id)"
             >
-              <i-ep-delete />
+              <template #icon><Delete /></template>
               删除
             </el-button>
           </template>
@@ -217,14 +217,17 @@
           prop="routeName"
         >
           <template #label>
-            <div>
+            <div class="flex-y-center">
               路由名称
               <el-tooltip placement="bottom" effect="light">
                 <template #content>
                   如果需要开启缓存，需保证页面 defineOptions 中的 name
                   与此处一致，建议使用驼峰。
                 </template>
-                <i-ep-QuestionFilled class="inline-block" />
+
+                <el-icon class="ml-1 cursor-pointer">
+                  <QuestionFilled />
+                </el-icon>
               </el-tooltip>
             </div>
           </template>
@@ -239,7 +242,7 @@
           prop="routePath"
         >
           <template #label>
-            <div>
+            <div class="flex-y-center">
               路由路径
               <el-tooltip placement="bottom" effect="light">
                 <template #content>
@@ -247,7 +250,9 @@
                   开头，菜单项不用。例如：系统管理目录
                   /system，系统管理下的用户管理菜单 user。
                 </template>
-                <i-ep-QuestionFilled class="inline-block" />
+                <el-icon class="ml-1 cursor-pointer">
+                  <QuestionFilled />
+                </el-icon>
               </el-tooltip>
             </div>
           </template>
@@ -264,14 +269,16 @@
           prop="component"
         >
           <template #label>
-            <div>
+            <div class="flex-y-center">
               组件路径
               <el-tooltip placement="bottom" effect="light">
                 <template #content>
                   组件页面完整路径，相对于 src/views/，如
                   system/user/index，缺省后缀 .vue
                 </template>
-                <i-ep-QuestionFilled class="inline-block" />
+                <el-icon class="ml-1 cursor-pointer">
+                  <QuestionFilled />
+                </el-icon>
               </el-tooltip>
             </div>
           </template>
@@ -292,13 +299,15 @@
 
         <el-form-item v-if="formData.type == MenuTypeEnum.MENU">
           <template #label>
-            <div>
+            <div class="flex-y-center">
               路由参数
               <el-tooltip placement="bottom" effect="light">
                 <template #content>
                   组件页面使用 `useRoute().query.参数名` 获取路由参数值。
                 </template>
-                <i-ep-QuestionFilled class="inline-block" />
+                <el-icon class="ml-1 cursor-pointer">
+                  <QuestionFilled />
+                </el-icon>
               </el-tooltip>
             </div>
           </template>
@@ -370,7 +379,7 @@
           "
         >
           <template #label>
-            <div>
+            <div class="flex-y-center">
               始终显示
               <el-tooltip placement="bottom" effect="light">
                 <template #content>
@@ -380,7 +389,9 @@
                   <br />
                   如果是叶子节点，请选择“否”。
                 </template>
-                <i-ep-QuestionFilled class="inline-block" />
+                <el-icon class="ml-1 cursor-pointer">
+                  <QuestionFilled />
+                </el-icon>
               </el-tooltip>
             </div>
           </template>
@@ -393,7 +404,7 @@
 
         <el-form-item
           v-if="formData.type === MenuTypeEnum.MENU"
-          label="页面缓存"
+          label="缓存页面"
         >
           <el-radio-group v-model="formData.keepAlive">
             <el-radio :value="1">开启</el-radio>

@@ -9,8 +9,9 @@
             item.redirect === 'noredirect' || index === breadcrumbs.length - 1
           "
           class="color-gray-400"
-          >{{ translateRouteTitle(item.meta.title) }}</span
         >
+          {{ translateRouteTitle(item.meta.title) }}
+        </span>
         <a v-else @click.prevent="handleLink(item)">
           {{ translateRouteTitle(item.meta.title) }}
         </a>
