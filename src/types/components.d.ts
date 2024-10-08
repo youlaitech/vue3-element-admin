@@ -66,10 +66,7 @@ declare module "vue" {
     GithubCorner: (typeof import("./../components/GithubCorner/index.vue"))["default"];
     Hamburger: (typeof import("./../components/Hamburger/index.vue"))["default"];
     IconSelect: (typeof import("./../components/IconSelect/index.vue"))["default"];
-    IEpArrowDown: (typeof import("~icons/ep/arrow-down"))["default"];
-    IEpArrowUp: (typeof import("~icons/ep/arrow-up"))["default"];
-    IEpClose: (typeof import("~icons/ep/close"))["default"];
-    IEpDownload: (typeof import("~icons/ep/download"))["default"];
+
     LangSelect: (typeof import("./../components/LangSelect/index.vue"))["default"];
     MenuSearch: (typeof import("./../components/MenuSearch/index.vue"))["default"];
     Notice: (typeof import("./../components/Notice/index.vue"))["default"];
@@ -83,8 +80,6 @@ declare module "vue" {
     PageModal: (typeof import("./../components/CURD/PageModal.vue"))["default"];
     PageSearch: (typeof import("./../components/CURD/PageSearch.vue"))["default"];
     Pagination: (typeof import("./../components/Pagination/index.vue"))["default"];
-    PieChart: (typeof import("./../views/dashboard/components/PieChart.vue"))["default"];
-    RadarChart: (typeof import("./../views/dashboard/components/RadarChart.vue"))["default"];
     RouterLink: (typeof import("vue-router"))["RouterLink"];
     RouterView: (typeof import("vue-router"))["RouterView"];
     Settings: (typeof import("./../layout/components/Settings/index.vue"))["default"];
