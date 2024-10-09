@@ -1,4 +1,4 @@
-<!-- 混合布局菜单(top) -->
+<!-- 混合布局的顶部 -->
 <template>
   <el-scrollbar>
     <el-menu
@@ -24,7 +24,7 @@
             </el-icon>
             <svg-icon v-else :icon-class="route.meta.icon" />
           </template>
-          <svg-icon v-else icon-class="menu" />
+
           <span v-if="route.path === '/'">首页</span>
           <template v-else>
             <span v-if="route.meta && route.meta.title" class="ml-1">
@@ -47,8 +47,13 @@ const appStore = useAppStore();
 const permissionStore = usePermissionStore();
 const router = useRouter();
 
-// 避免 activeTopMenuPath 缓存被清理，从当前路由路径获取顶部菜单路径，eg. /system/user → /system
-const activeTopMenuPath = useRoute().path.match(/^\/[^\/]+/)?.[0] || "/";
+// 避免 activeTopMenuPath 缓存被清理，从当前路由路径获取顶部菜单路径，
+// eg. / system / user → /system； / dashboard → /
+const activeTopMenuPath =
+  useRoute().path.split("/").filter(Boolean).length > 1
+    ? useRoute().path.match(/^\/[^\/]+/)?.[0] || "/"
+    : "/";
+
 appStore.activeTopMenu(activeTopMenuPath);
 
 // 激活的顶部菜单路径

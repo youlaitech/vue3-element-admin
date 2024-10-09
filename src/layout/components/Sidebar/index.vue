@@ -1,12 +1,12 @@
 <template>
   <div :class="{ 'has-logo': sidebarLogo }">
-    <!-- layout mix-->
-    <div class="flex w-full" v-if="layout == LayoutEnum.MIX">
+    <!-- 混合布局的顶部的Sidebar -->
+    <div v-if="layout == LayoutEnum.MIX" class="flex w-full">
       <SidebarLogo v-if="sidebarLogo" :collapse="!appStore.sidebar.opened" />
       <SidebarMixTopMenu class="flex-1" />
       <NavbarAction />
     </div>
-    <!-- layout left || layout top -->
+    <!-- 左侧和顶部布局的Sidebar -->
     <template v-else>
       <SidebarLogo v-if="sidebarLogo" :collapse="!appStore.sidebar.opened" />
       <el-scrollbar>
