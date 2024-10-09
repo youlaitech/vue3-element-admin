@@ -55,7 +55,6 @@ const getLabelAndTagByValue = async (dictCode: string, value: any) => {
 
     // 等待请求完成并获取数据
     dictData = await requestCache.get(dictCode);
-    console.log(`Received data for ${dictCode}:`, dictData);
   }
 
   // 查找对应的字典项

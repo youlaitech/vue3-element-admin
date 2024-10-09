@@ -1,12 +1,6 @@
 <!-- 字典数据 -->
 <template>
   <div class="app-container">
-    <el-alert
-      :title="`字典：${dictName}【${dictCode}】`"
-      type="success"
-      :closable="false"
-    />
-
     <div class="search-container mt-5">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
@@ -187,7 +181,6 @@ import DictDataAPI, {
 const route = useRoute();
 
 const dictCode = ref(route.query.dictCode as string);
-const dictName = ref(route.query.dictName as string);
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -213,12 +206,10 @@ const formData = reactive<DictDataForm>({});
 
 // 监听路由参数变化，更新字典数据
 watch(
-  () => [route.query.dictCode, route.query.dictName],
-  ([newDictCode, newDictName]) => {
+  () => [route.query.dictCode],
+  ([newDictCode]) => {
     queryParams.dictCode = newDictCode as string;
     dictCode.value = newDictCode as string;
-    dictName.value = newDictName as string;
-
     handleQuery();
   }
 );

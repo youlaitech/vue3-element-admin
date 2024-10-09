@@ -316,9 +316,14 @@ function handleDelete(id?: number) {
 // 打开字典数据
 function handleOpenDictData(row: DictPageVO) {
   router.push({
-    name: "DictData",
-    query: { dictCode: row.dictCode, dictName: row.name },
+    path: "/system/dict-data",
+    query: { dictCode: row.dictCode, title: "【" + row.name + "】字典数据" },
   });
+
+  /*  router.push({
+    name: "DictData",
+    params: { dictCode: row.dictCode, title: "【" + row.name + "】字典数据" },
+  }); */
 }
 
 onMounted(() => {
