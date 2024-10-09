@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import * as echarts from "echarts";
-import StatsAPI, { VisitTrendVO, VisitTrendQuery } from "@/api/log";
+import LogAPI, { VisitTrendVO, VisitTrendQuery } from "@/api/log";
 
 const dataRange = ref(1);
 const chart: Ref<echarts.ECharts | null> = ref(null);
@@ -156,7 +156,7 @@ const calculateDateRange = () => {
 /** 加载数据 */
 const loadData = () => {
   const { startDate, endDate } = calculateDateRange();
-  StatsAPI.getVisitTrend({
+  LogAPI.getVisitTrend({
     startDate,
     endDate,
   } as VisitTrendQuery).then((data) => {
