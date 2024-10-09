@@ -23,12 +23,6 @@
     },
     "types": ["vite/client", "element-plus/global"]
   },
-  "include": [
-    "mock/**/*.ts",
-    "src/**/*.ts",
-    "src/**/*.vue",
-    "vite.config.ts",
-    "src/views/system/notice/components/myvue"
-  ],
+  "include": ["mock/**/*.ts", "src/**/*.ts", "src/**/*.vue", "vite.config.ts"],
   "exclude": ["node_modules", "dist", "**/*.js"]
 }
