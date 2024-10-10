@@ -176,6 +176,9 @@ Thanks to all the contributors!
 
 [![contributors](https://contrib.rocks/image?repo=youlaitech/vue3-element-admin)](https://github.com/youlaitech/vue3-element-admin/graphs/contributors)
 
+## G-Star
+
+![](https://foruda.gitee.com/images/1728577513089814203/95f2a70d_716974.jpeg)
 
 ## 交流群🚀
 
