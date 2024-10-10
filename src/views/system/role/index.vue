@@ -13,11 +13,11 @@
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery">
-            <Search />
+            <template #icon><Search /></template>
             搜索
           </el-button>
           <el-button @click="handleResetQuery">
-            <Refresh />
+            <template #icon><Refresh /></template>
             重置
           </el-button>
         </el-form-item>
@@ -27,9 +27,7 @@
     <el-card shadow="never" class="table-container">
       <template #header>
         <el-button type="success" @click="handleOpenDialog()">
-          <el-icon>
-            <Plus />
-          </el-icon>
+          <template #icon><Plus /></template>
           新增
         </el-button>
         <el-button
@@ -37,9 +35,7 @@
           :disabled="ids.length === 0"
           @click="handleDelete()"
         >
-          <el-icon>
-            <Delete />
-          </el-icon>
+          <template #icon><Delete /></template>
           删除
         </el-button>
       </template>
