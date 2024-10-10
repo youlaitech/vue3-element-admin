@@ -66,13 +66,11 @@ declare module "vue" {
     GithubCorner: (typeof import("./../components/GithubCorner/index.vue"))["default"];
     Hamburger: (typeof import("./../components/Hamburger/index.vue"))["default"];
     IconSelect: (typeof import("./../components/IconSelect/index.vue"))["default"];
-
     LangSelect: (typeof import("./../components/LangSelect/index.vue"))["default"];
     MenuSearch: (typeof import("./../components/MenuSearch/index.vue"))["default"];
     Notice: (typeof import("./../components/Notice/index.vue"))["default"];
     NoticeDetail: (typeof import("../views/system/notice/notice-detail.vue"))["default"];
     LayoutSelect: (typeof import("./../layout/components/Settings/components/LayoutSelect.vue"))["default"];
-    MultiUpload: (typeof import("./../components/Upload/MultiUpload.vue"))["default"];
     NavBar: (typeof import("./../layout/components/NavBar/index.vue"))["default"];
     NavbarAction: (typeof import("./../layout/components/NavBar/components/NavbarAction.vue"))["default"];
     PageContent: (typeof import("./../components/CURD/PageContent.vue"))["default"];
@@ -89,12 +87,14 @@ declare module "vue" {
     SidebarMenuItem: (typeof import("./../layout/components/Sidebar/components/SidebarMenuItem.vue"))["default"];
     SidebarMenuItemTitle: (typeof import("./../layout/components/Sidebar/components/SidebarMenuItemTitle.vue"))["default"];
     SidebarMixTopMenu: (typeof import("./../layout/components/Sidebar/components/SidebarMixTopMenu.vue"))["default"];
-    SingleUpload: (typeof import("./../components/Upload/SingleUpload.vue"))["default"];
     SizeSelect: (typeof import("./../components/SizeSelect/index.vue"))["default"];
     SvgIcon: (typeof import("./../components/SvgIcon/index.vue"))["default"];
     TableSelect: (typeof import("./../components/TableSelect/index.vue"))["default"];
     TagsView: (typeof import("./../layout/components/TagsView/index.vue"))["default"];
     ThemeColorPicker: (typeof import("./../layout/components/Settings/components/ThemeColorPicker.vue"))["default"];
+    FileUpload: (typeof import("./../components/Upload/FileUpload.vue"))["default"];
+    ImageUpload: (typeof import("./../components/Upload/ImageUpload.vue"))["default"];
+    SingleImageUpload: (typeof import("./../components/Upload/SingleImageUpload.vue"))["default"];
     WangEditor: (typeof import("./../components/WangEditor/index.vue"))["default"];
   }
   export interface ComponentCustomProperties {
