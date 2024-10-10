@@ -1,7 +1,7 @@
 <template>
-  <!-- 如果菜单项没有隐藏则显示 -->
+  <!-- 如果菜单项未隐藏，显示菜单项 -->
   <div v-if="!item.meta || !item.meta.hidden">
-    <!-- 显示只有一个子路由或没有子路由的菜单项 -->
+    <!-- 如果只有一个子路由或没有子路由，显示该菜单项 -->
     <template
       v-if="
         hasOneShowingChild(item.children, item as RouteRecordRaw) &&
@@ -28,7 +28,7 @@
       </AppLink>
     </template>
 
-    <!-- 显示具有多个子路由的父菜单项 -->
+    <!-- 如果有多个子路由，显示父菜单项 -->
     <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
       <template #title>
         <SidebarMenuItemTitle
@@ -48,6 +48,7 @@
     </el-sub-menu>
   </div>
 </template>
+
 <script setup lang="ts">
 defineOptions({
   name: "SidebarMenuItem",
@@ -60,7 +61,7 @@ import { RouteRecordRaw } from "vue-router";
 
 const props = defineProps({
   /**
-   * 当前路由项对象
+   * 当前路由对象
    */
   item: {
     type: Object,
@@ -68,12 +69,13 @@ const props = defineProps({
   },
 
   /**
-   * 父层级完整路由路径
+   * 父级完整路径
    */
   basePath: {
     type: String,
     required: true,
   },
+
   /**
    * 是否为嵌套路由
    */
@@ -86,17 +88,17 @@ const props = defineProps({
 const onlyOneChild = ref();
 
 /**
- * 判断当前路由是否只有一个显示的子路由
+ * 判断是否只有一个可见的子路由
  *
  * @param children 子路由数组
  * @param parent 父级路由对象
- * @returns 布尔值，表示是否只有一个显示的子路由
+ * @returns 是否只有一个可见子路由
  */
 function hasOneShowingChild(
   children: RouteRecordRaw[] = [],
   parent: RouteRecordRaw
 ) {
-  // 筛选出需要显示的子路由
+  // 筛选出可见的子路由
   const showingChildren = children.filter((route: RouteRecordRaw) => {
     if (route.meta?.hidden) {
       return false;
@@ -107,12 +109,12 @@ function hasOneShowingChild(
     }
   });
 
-  // 如果只有一个或没有显示的子路由
+  // 如果只有一个或没有可见的子路由
   if (showingChildren.length === 1) {
     return true;
   }
 
-  // 如果没有子路由，显示父级路由
+  // 如果没有子路由，使用父级路由
   if (showingChildren.length === 0) {
     onlyOneChild.value = { ...parent, path: "", noShowingChildren: true };
     return true;
@@ -121,7 +123,7 @@ function hasOneShowingChild(
 }
 
 /**
- * 解析路由路径，将相对路径转换为绝对路径
+ * 解析路径，将相对路径转换为绝对路径
  *
  * @param routePath 路由路径
  * @returns 绝对路径
@@ -134,7 +136,7 @@ function resolvePath(routePath: string) {
     return props.basePath;
   }
 
-  // 完整路径(/system/user) = 父级路径(/system) + 路由路径(user)
+  // 组合父级路径和路由路径形成完整路径
   const fullPath = path.resolve(props.basePath, routePath);
   return fullPath;
 }

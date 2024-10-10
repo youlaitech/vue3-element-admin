@@ -9,7 +9,7 @@
     :active-text-color="variables['menu-active-text']"
     :unique-opened="false"
     :collapse-transition="false"
-    :mode="mode"
+    :mode="menuMode"
     @open="handleOpen"
     @close="handleClose"
   >
@@ -17,72 +17,83 @@
       v-for="route in menuList"
       :key="route.path"
       :item="route"
-      :base-path="resolvePath(route.path)"
+      :base-path="getFullPath(route.path)"
     />
   </el-menu>
 </template>
 
 <script lang="ts" setup>
-import { useSettingsStore, useAppStore } from "@/store";
-import { isExternal } from "@/utils/index";
-import path from "path-browserify";
-import variables from "@/styles/variables.module.scss";
-import { LayoutEnum } from "@/enums/LayoutEnum";
-import type { MenuInstance } from "element-plus";
+import path from "path-browserify"; // 第三方库
+import { useSettingsStore, useAppStore } from "@/store"; // 内部模块
+import { isExternal } from "@/utils/index"; // 工具函数
+import variables from "@/styles/variables.module.scss"; // 样式
+import { LayoutEnum } from "@/enums/LayoutEnum"; // 枚举
+import type { MenuInstance } from "element-plus"; // 类型
 
-const menuRef = ref<MenuInstance>();
-const settingsStore = useSettingsStore();
-const appStore = useAppStore();
-const currentRoute = useRoute();
+// 定义组件 props
 const props = defineProps({
   menuList: {
-    required: true,
-    default: () => {
-      return [];
-    },
     type: Array<any>,
+    required: true,
+    default: () => [],
   },
   basePath: {
     type: String,
     required: true,
   },
 });
-const mode = computed(() => {
+
+const menuRef = ref<MenuInstance>();
+const settingsStore = useSettingsStore();
+const appStore = useAppStore();
+const currentRoute = useRoute();
+
+// 根据布局计算菜单模式
+const menuMode = computed(() => {
   return settingsStore.layout === LayoutEnum.TOP ? "horizontal" : "vertical";
 });
-
 /**
- * 解析路径
- *
+ * 获取完整路径
  * @param routePath 路由路径 /user
+ * @returns 完整的路径
  */
-function resolvePath(routePath: string) {
+function getFullPath(routePath: string) {
   if (isExternal(routePath)) {
     return routePath;
   }
   if (isExternal(props.basePath)) {
     return props.basePath;
   }
-
-  // 完整绝对路径 = 父级路径(/system) + 路由路径(/user)
-  const fullPath = path.resolve(props.basePath, routePath);
-  return fullPath;
+  return path.resolve(props.basePath, routePath); // 父路径 + 子路径
 }
+
+// 存储已打开菜单的索引
+const openMenuIndexes = ref<string[]>([]);
+
 /**
- * 修复切换到horizontal时，展开的菜单显示问题，切换时关闭全部菜单
+ * 菜单打开时添加索引
+ * @param index 当前菜单索引
  */
-const menuIndexArray = ref<string[]>([]);
-const handleOpen = (index: string, keyPath: string[]) => {
-  menuIndexArray.value.push(index);
+const handleOpen = (index: string) => {
+  openMenuIndexes.value.push(index);
 };
+
+/**
+ * 菜单关闭时移除索引
+ * @param index 当前菜单索引
+ */
 const handleClose = (index: string) => {
-  menuIndexArray.value = menuIndexArray.value.filter((item) => item !== index);
+  openMenuIndexes.value = openMenuIndexes.value.filter(
+    (item) => item !== index
+  );
 };
+
+// 监听菜单模式变化，横向时关闭所有菜单
 watch(
-  () => mode.value,
+  () => menuMode.value,
   () => {
-    if (mode.value === "horizontal") {
-      menuIndexArray.value.map((item: string) => menuRef.value!.close(item));
+    if (menuMode.value === "horizontal") {
+      openMenuIndexes.value.forEach((item) => menuRef.value!.close(item));
     }
   }
 );
