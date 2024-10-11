@@ -31,7 +31,7 @@ class LogAPI {
   }
 
   /**
-   * 获取访问趋势
+   * 获取访问统计
    *
    * @param queryParams
    * @returns
@@ -117,6 +117,4 @@ export interface VisitStatsVO {
   totalCount: number;
   /** 同比增长率（相对于昨天同一时间段的增长率） */
   growthRate: number;
-
-  totalCountOutput: number;
 }
