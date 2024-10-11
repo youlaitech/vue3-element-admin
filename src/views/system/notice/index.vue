@@ -47,7 +47,7 @@
           type="success"
           @click="handleOpenDialog()"
         >
-          <template #icon><Add /></template>
+          <template #icon><Plus /></template>
           新增通知
         </el-button>
         <el-button
