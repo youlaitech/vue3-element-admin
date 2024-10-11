@@ -44,6 +44,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 定义全局 SCSS 变量
         scss: {
           javascriptEnabled: true,
+          api: "modern-compiler",
           additionalData: `
             @use "@/styles/variables.scss" as *;
           `,
