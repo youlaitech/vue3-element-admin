@@ -29,11 +29,11 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery()">
-            <Search />
+            <template #icon><Search /></template>
             搜索
           </el-button>
           <el-button @click="handleResetQuery()">
-            <Refresh />
+            <template #icon><Refresh /></template>
             重置
           </el-button>
         </el-form-item>
@@ -47,7 +47,7 @@
           type="success"
           @click="handleOpenDialog()"
         >
-          <Plus />
+          <template #icon><Add /></template>
           新增通知
         </el-button>
         <el-button
@@ -56,7 +56,7 @@
           :disabled="ids.length === 0"
           @click="handleDelete()"
         >
-          <Delete />
+          <template #icon><Delete /></template>
           删除
         </el-button>
       </template>

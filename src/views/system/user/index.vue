@@ -48,11 +48,11 @@
 
             <el-form-item>
               <el-button type="primary" @click="handleQuery">
-                <Search />
+                <template #icon><Search /></template>
                 搜索
               </el-button>
               <el-button @click="handleResetQuery">
-                <Refresh />
+                <template #icon><Refresh /></template>
                 重置
               </el-button>
             </el-form-item>
