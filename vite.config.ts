@@ -1,6 +1,5 @@
 import vue from "@vitejs/plugin-vue";
-import vueJsx from "@vitejs/plugin-vue-jsx";
-import { UserConfig, ConfigEnv, loadEnv, defineConfig } from "vite";
+import { type UserConfig, type ConfigEnv, loadEnv, defineConfig } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
@@ -19,17 +18,23 @@ import {
   devDependencies,
 } from "./package.json";
 
-/** @see  https://devtools-next.vuejs.org  */
+/**
+ * Vite 插件：Vue Devtools
+ *
+ * @see  https://devtools-next.vuejs.org
+ */
 import VueDevTools from "vite-plugin-vue-devtools";
 
-/** 平台的名称、版本、运行所需的`node`版本、依赖、构建时间的类型提示 */
+// 平台的名称、版本、运行所需的`node`版本、依赖、构建时间的类型提示
 const __APP_INFO__ = {
   pkg: { name, version, engines, dependencies, devDependencies },
   buildTimestamp: Date.now(),
 };
 
 const pathSrc = resolve(__dirname, "src");
-/**  Vite配置 @see https://cn.vitejs.dev/config */
+/**
+ * Vite配置 @see https://cn.vitejs.dev/config
+ */
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
   return {
@@ -52,17 +57,17 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       },
     },
     server: {
-      // 允许IP访问
+      // 主机地址
       host: "0.0.0.0",
-      // 应用端口 (默认:3000)
-      port: Number(env.VITE_APP_PORT),
-      // 运行是否自动打开浏览器
+      // 端口号
+      port: +env.VITE_APP_PORT,
+      // 是否自动在浏览器中打开
       open: true,
       proxy: {
-        /** 代理前缀为 /dev-api 的请求  */
+        // 代理前缀为 /dev-api 的请求
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
-          // 接口地址 例如：http://vapi.youlai.tech
+          // 代理目标真实接口地址：https://api.youlai.tech
           target: env.VITE_APP_API_URL,
           rewrite: (path) =>
             path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
@@ -71,22 +76,22 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     plugins: [
       vue(),
-      // jsx、tsx语法支持
-      vueJsx(),
       // MOCK 服务
       env.VITE_MOCK_DEV_SERVER === "true" ? mockDevServerPlugin() : null,
       UnoCSS({
         hmrTopLevelAwait: false,
       }),
-      /** 自动导入配置  @see https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts */
+      /**
+       * 自动导入配置
+       *
+       * @see https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts1
+       */
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ["vue", "@vueuse/core", "pinia", "vue-router", "vue-i18n"],
         resolvers: [
           // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
-          ElementPlusResolver({
-            importStyle: "sass",
-          }),
+          ElementPlusResolver(),
         ],
         eslintrc: {
           // 是否自动生成 eslint 规则，建议生成之后设置 false
@@ -104,9 +109,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       Components({
         resolvers: [
           // 自动导入 Element Plus 组件
-          ElementPlusResolver({
-            importStyle: "sass",
-          }),
+          ElementPlusResolver(),
         ],
         // 指定自定义组件位置(默认:src/components)
         dirs: ["src/components", "src/**/components"],
@@ -117,12 +120,11 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹
         iconDirs: [resolve(pathSrc, "assets/icons")],
-        // 指定symbolId格式
         symbolId: "icon-[dir]-[name]",
       }),
-      /* VueDevTools({
+      VueDevTools({
         openInEditorHost: `http://localhost:${env.VITE_APP_PORT}`,
-      }), */
+      }),
     ],
     // 预加载项目必需的组件
     optimizeDeps: {
@@ -140,73 +142,73 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "@wangeditor/editor-for-vue",
         "vue-i18n",
         "path-browserify",
-        "element-plus/es/components/form/style/index",
-        "element-plus/es/components/form-item/style/index",
-        "element-plus/es/components/button/style/index",
-        "element-plus/es/components/input/style/index",
-        "element-plus/es/components/input-number/style/index",
-        "element-plus/es/components/switch/style/index",
-        "element-plus/es/components/upload/style/index",
-        "element-plus/es/components/menu/style/index",
-        "element-plus/es/components/col/style/index",
-        "element-plus/es/components/icon/style/index",
-        "element-plus/es/components/row/style/index",
-        "element-plus/es/components/tag/style/index",
-        "element-plus/es/components/dialog/style/index",
-        "element-plus/es/components/loading/style/index",
-        "element-plus/es/components/radio/style/index",
-        "element-plus/es/components/radio-group/style/index",
-        "element-plus/es/components/popover/style/index",
-        "element-plus/es/components/scrollbar/style/index",
-        "element-plus/es/components/tooltip/style/index",
-        "element-plus/es/components/dropdown/style/index",
-        "element-plus/es/components/dropdown-menu/style/index",
-        "element-plus/es/components/dropdown-item/style/index",
-        "element-plus/es/components/sub-menu/style/index",
-        "element-plus/es/components/menu-item/style/index",
-        "element-plus/es/components/divider/style/index",
-        "element-plus/es/components/card/style/index",
-        "element-plus/es/components/link/style/index",
-        "element-plus/es/components/breadcrumb/style/index",
-        "element-plus/es/components/breadcrumb-item/style/index",
-        "element-plus/es/components/table/style/index",
-        "element-plus/es/components/tree-select/style/index",
-        "element-plus/es/components/table-column/style/index",
-        "element-plus/es/components/select/style/index",
-        "element-plus/es/components/option/style/index",
-        "element-plus/es/components/pagination/style/index",
-        "element-plus/es/components/tree/style/index",
-        "element-plus/es/components/alert/style/index",
-        "element-plus/es/components/radio-button/style/index",
-        "element-plus/es/components/checkbox-group/style/index",
-        "element-plus/es/components/checkbox/style/index",
-        "element-plus/es/components/tabs/style/index",
-        "element-plus/es/components/tab-pane/style/index",
-        "element-plus/es/components/rate/style/index",
-        "element-plus/es/components/date-picker/style/index",
-        "element-plus/es/components/notification/style/index",
-        "element-plus/es/components/image/style/index",
-        "element-plus/es/components/statistic/style/index",
-        "element-plus/es/components/watermark/style/index",
-        "element-plus/es/components/config-provider/style/index",
-        "element-plus/es/components/text/style/index",
-        "element-plus/es/components/drawer/style/index",
-        "element-plus/es/components/color-picker/style/index",
-        "element-plus/es/components/backtop/style/index",
-        "element-plus/es/components/message-box/style/index",
-        "element-plus/es/components/skeleton/style/index",
-        "element-plus/es/components/skeleton/style/index",
-        "element-plus/es/components/skeleton-item/style/index",
-        "element-plus/es/components/badge/style/index",
-        "element-plus/es/components/steps/style/index",
-        "element-plus/es/components/step/style/index",
-        "element-plus/es/components/avatar/style/index",
-        "element-plus/es/components/descriptions/style/index",
-        "element-plus/es/components/descriptions-item/style/index",
-        "element-plus/es/components/checkbox-group/style/index",
-        "element-plus/es/components/progress/style/index",
-        "element-plus/es/components/image-viewer/style/index",
-        "element-plus/es/components/empty/style/index",
+        "element-plus/es/components/form/style/css",
+        "element-plus/es/components/form-item/style/css",
+        "element-plus/es/components/button/style/css",
+        "element-plus/es/components/input/style/css",
+        "element-plus/es/components/input-number/style/css",
+        "element-plus/es/components/switch/style/css",
+        "element-plus/es/components/upload/style/css",
+        "element-plus/es/components/menu/style/css",
+        "element-plus/es/components/col/style/css",
+        "element-plus/es/components/icon/style/css",
+        "element-plus/es/components/row/style/css",
+        "element-plus/es/components/tag/style/css",
+        "element-plus/es/components/dialog/style/css",
+        "element-plus/es/components/loading/style/css",
+        "element-plus/es/components/radio/style/css",
+        "element-plus/es/components/radio-group/style/css",
+        "element-plus/es/components/popover/style/css",
+        "element-plus/es/components/scrollbar/style/css",
+        "element-plus/es/components/tooltip/style/css",
+        "element-plus/es/components/dropdown/style/css",
+        "element-plus/es/components/dropdown-menu/style/css",
+        "element-plus/es/components/dropdown-item/style/css",
+        "element-plus/es/components/sub-menu/style/css",
+        "element-plus/es/components/menu-item/style/css",
+        "element-plus/es/components/divider/style/css",
+        "element-plus/es/components/card/style/css",
+        "element-plus/es/components/link/style/css",
+        "element-plus/es/components/breadcrumb/style/css",
+        "element-plus/es/components/breadcrumb-item/style/css",
+        "element-plus/es/components/table/style/css",
+        "element-plus/es/components/tree-select/style/css",
+        "element-plus/es/components/table-column/style/css",
+        "element-plus/es/components/select/style/css",
+        "element-plus/es/components/option/style/css",
+        "element-plus/es/components/pagination/style/css",
+        "element-plus/es/components/tree/style/css",
+        "element-plus/es/components/alert/style/css",
+        "element-plus/es/components/radio-button/style/css",
+        "element-plus/es/components/checkbox-group/style/css",
+        "element-plus/es/components/checkbox/style/css",
+        "element-plus/es/components/tabs/style/css",
+        "element-plus/es/components/tab-pane/style/css",
+        "element-plus/es/components/rate/style/css",
+        "element-plus/es/components/date-picker/style/css",
+        "element-plus/es/components/notification/style/css",
+        "element-plus/es/components/image/style/css",
+        "element-plus/es/components/statistic/style/css",
+        "element-plus/es/components/watermark/style/css",
+        "element-plus/es/components/config-provider/style/css",
+        "element-plus/es/components/text/style/css",
+        "element-plus/es/components/drawer/style/css",
+        "element-plus/es/components/color-picker/style/css",
+        "element-plus/es/components/backtop/style/css",
+        "element-plus/es/components/message-box/style/css",
+        "element-plus/es/components/skeleton/style/css",
+        "element-plus/es/components/skeleton/style/css",
+        "element-plus/es/components/skeleton-item/style/css",
+        "element-plus/es/components/badge/style/css",
+        "element-plus/es/components/steps/style/css",
+        "element-plus/es/components/step/style/css",
+        "element-plus/es/components/avatar/style/css",
+        "element-plus/es/components/descriptions/style/css",
+        "element-plus/es/components/descriptions-item/style/css",
+        "element-plus/es/components/checkbox-group/style/css",
+        "element-plus/es/components/progress/style/css",
+        "element-plus/es/components/image-viewer/style/css",
+        "element-plus/es/components/empty/style/css",
       ],
     },
     // 构建配置
