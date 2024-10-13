@@ -15,14 +15,11 @@
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "jsx": "preserve",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment",
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["vite/client", "element-plus/global"]
+    "types": ["node", "vite/client", "element-plus/global"]
   },
   "include": ["mock/**/*.ts", "src/**/*.ts", "src/**/*.vue", "vite.config.ts"],
-  "exclude": ["node_modules", "dist", "**/*.js"]
+  "exclude": ["node_modules", "dist"]
 }
