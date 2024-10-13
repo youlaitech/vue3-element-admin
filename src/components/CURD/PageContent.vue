@@ -98,30 +98,30 @@
             <!-- 导出 -->
             <template v-else-if="item === 'exports'">
               <el-button
+                v-hasPerm="[`${contentConfig.pageName}:export`]"
                 icon="download"
                 circle
                 title="导出"
-                v-hasPerm="[`${contentConfig.pageName}:export`]"
                 @click="handleToolbar(item)"
               />
             </template>
             <!-- 导入 -->
             <template v-else-if="item === 'imports'">
               <el-button
+                v-hasPerm="[`${contentConfig.pageName}:import`]"
                 icon="upload"
                 circle
                 title="导入"
-                v-hasPerm="[`${contentConfig.pageName}:import`]"
                 @click="handleToolbar(item)"
               />
             </template>
             <!-- 搜索 -->
             <template v-else-if="item === 'search'">
               <el-button
+                v-hasPerm="[`${contentConfig.pageName}:query`]"
                 icon="search"
                 circle
                 title="搜索"
-                v-hasPerm="[`${contentConfig.pageName}:query`]"
                 @click="handleToolbar(item)"
               />
             </template>
@@ -130,10 +130,10 @@
           <template v-else-if="typeof item === 'object'">
             <template v-if="item.auth">
               <el-button
+                v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
                 :icon="item.icon"
                 circle
                 :title="item.title"
-                v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
                 @click="handleToolbar(item.name)"
               />
             </template>
@@ -332,7 +332,7 @@
                 :name="col.slotName ?? col.prop"
                 :prop="col.prop"
                 v-bind="scope"
-              ></slot>
+              />
             </template>
           </template>
         </el-table-column>
@@ -437,9 +437,9 @@
         >
           <el-form-item label="文件名" prop="files">
             <el-upload
-              class="w-full"
               ref="uploadRef"
               v-model:file-list="importFormData.files"
+              class="w-full"
               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
               :drag="true"
               :limit="1"

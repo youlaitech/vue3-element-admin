@@ -7,10 +7,10 @@ import type {
   TableProps,
   ColProps,
 } from "element-plus";
-import PageContent from "./PageContent.vue";
-import PageForm from "./PageForm.vue";
-import PageModal from "./PageModal.vue";
-import PageSearch from "./PageSearch.vue";
+import type PageContent from "./PageContent.vue";
+import type PageForm from "./PageForm.vue";
+import type PageModal from "./PageModal.vue";
+import type PageSearch from "./PageSearch.vue";
 
 export type PageSearchInstance = InstanceType<typeof PageSearch>;
 export type PageContentInstance = InstanceType<typeof PageContent>;

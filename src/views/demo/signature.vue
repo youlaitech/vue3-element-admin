@@ -151,7 +151,7 @@ function paint(
       @touchstart="onEventStart"
       @touchmove.stop.prevent="onEventMove"
       @touchend="onEventEnd"
-    ></canvas>
+    />
     <img v-if="imgUrl" :src="imgUrl" alt="签名" />
   </div>
 </template>

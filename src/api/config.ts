@@ -2,36 +2,36 @@ import request from "@/utils/request";
 
 const CONFIG_BASE_URL = "/api/v1/config";
 
-class ConfigAPI {
+const ConfigAPI = {
   /** 获取系统配置分页数据 */
-  static getPage(queryParams?: ConfigPageQuery) {
+  getPage(queryParams?: ConfigPageQuery) {
     return request<any, PageResult<ConfigPageVO[]>>({
       url: `${CONFIG_BASE_URL}/page`,
       method: "get",
       params: queryParams,
     });
-  }
+  },
   /**
    * 获取系统配置表单数据
    *
    * @param id ConfigID
    * @returns Config表单数据
    */
-  static getFormData(id: number) {
+  getFormData(id: number) {
     return request<any, ConfigForm>({
       url: `${CONFIG_BASE_URL}/${id}/form`,
       method: "get",
     });
-  }
+  },
 
   /** 添加系统配置*/
-  static add(data: ConfigForm) {
+  add(data: ConfigForm) {
     return request({
       url: `${CONFIG_BASE_URL}`,
       method: "post",
       data: data,
     });
-  }
+  },
 
   /**
    * 更新系统配置
@@ -39,33 +39,33 @@ class ConfigAPI {
    * @param id ConfigID
    * @param data Config表单数据
    */
-  static update(id: number, data: ConfigForm) {
+  update(id: number, data: ConfigForm) {
     return request({
       url: `${CONFIG_BASE_URL}/${id}`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /**
    * 删除系统配置
    *
    * @param ids 系统配置ID
    */
-  static deleteById(id: number) {
+  deleteById(id: number) {
     return request({
       url: `${CONFIG_BASE_URL}/${id}`,
       method: "delete",
     });
-  }
+  },
 
-  static refreshCache() {
+  refreshCache() {
     return request({
       url: `${CONFIG_BASE_URL}`,
       method: "patch",
     });
-  }
-}
+  },
+};
 
 export default ConfigAPI;
 

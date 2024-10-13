@@ -6,8 +6,8 @@
       @wheel.prevent="handleScroll"
     >
       <router-link
-        ref="tagRef"
         v-for="tag in visitedViews"
+        ref="tagRef"
         :key="tag.fullPath"
         :class="'tags-item ' + (tagsViewStore.isActive(tag) ? 'active' : '')"
         :to="{ path: tag.path, query: tag.query }"
@@ -16,8 +16,8 @@
       >
         {{ translateRouteTitle(tag.title) }}
         <el-icon
-          class="tag-close-icon"
           v-if="!isAffix(tag)"
+          class="tag-close-icon"
           @click.prevent.stop="closeSelectedTag(tag)"
         >
           <Close />

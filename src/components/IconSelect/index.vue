@@ -3,8 +3,8 @@
     <el-popover :visible="popoverVisible" :width="width" placement="bottom-end">
       <template #reference>
         <el-input
-          class="reference"
           v-model="selectedIcon"
+          class="reference"
           readonly
           placeholder="点击选择图标"
           @click="popoverVisible = !popoverVisible"

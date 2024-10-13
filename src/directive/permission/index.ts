@@ -1,5 +1,5 @@
 import { hasAuth } from "@/plugins/permission";
-import { Directive, DirectiveBinding } from "vue";
+import type { Directive, DirectiveBinding } from "vue";
 
 /**
  * 按钮权限
@@ -10,7 +10,9 @@ export const hasPerm: Directive = {
     const { value: requiredPerms } = binding;
     if (requiredPerms) {
       if (!hasAuth(requiredPerms)) {
-        el.parentNode && el.parentNode.removeChild(el);
+        if (el.parentNode) {
+          el.parentNode.removeChild(el);
+        }
       }
     } else {
       throw new Error(
@@ -29,7 +31,9 @@ export const hasRole: Directive = {
     const { value: requiredRoles } = binding;
     if (requiredRoles) {
       if (!hasAuth(requiredRoles, "role")) {
-        el.parentNode && el.parentNode.removeChild(el);
+        if (el.parentNode) {
+          el.parentNode.removeChild(el);
+        }
       }
     } else {
       throw new Error("need roles! Like v-has-role=\"['admin','test']\"");

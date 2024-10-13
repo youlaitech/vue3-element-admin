@@ -100,11 +100,11 @@
                   :placeholder="$t('login.password')"
                   type="password"
                   name="password"
-                  @keyup="checkCapslock"
-                  @keyup.enter="handleLoginSubmit"
                   size="large"
                   class="h-[48px] pr-2"
                   show-password
+                  @keyup="checkCapslock"
+                  @keyup.enter="handleLoginSubmit"
                 />
               </div>
             </el-form-item>
@@ -124,9 +124,9 @@
               />
 
               <el-image
-                @click="getCaptcha"
                 :src="captchaBase64"
                 class="captcha-image"
+                @click="getCaptcha"
               />
             </div>
           </el-form-item>
@@ -223,10 +223,10 @@ const captchaBase64 = ref();
 // 登录表单ref
 const loginFormRef = ref<FormInstance>();
 
-const logo = ref(new URL(`../../assets/logo.png`, import.meta.url).href);
+const logo = ref(new URL("../../assets/logo.png", import.meta.url).href);
 
 const loginImage = ref(
-  new URL(`../../assets/images/login-image.svg`, import.meta.url).href
+  new URL("../../assets/images/login-image.svg", import.meta.url).href
 );
 
 const loginData = ref<LoginData>({

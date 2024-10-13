@@ -41,11 +41,11 @@
         highlight-current-row
         row-key="id"
         :expand-row-keys="['1']"
-        @row-click="handleRowClick"
         :tree-props="{
           children: 'children',
           hasChildren: 'hasChildren',
         }"
+        @row-click="handleRowClick"
       >
         <el-table-column label="菜单名称" min-width="200">
           <template #default="scope">
@@ -165,8 +165,8 @@
     <el-drawer
       v-model="dialog.visible"
       :title="dialog.title"
-      @close="handleCloseDialog"
       size="50%"
+      @close="handleCloseDialog"
     >
       <el-form
         ref="menuFormRef"
@@ -339,11 +339,11 @@
               />
 
               <el-icon
-                class="ml-2 cursor-pointer color-[var(--el-color-success)]"
-                style="vertical-align: -0.15em"
                 v-if="
                   formData.params.indexOf(item) === formData.params.length - 1
                 "
+                class="ml-2 cursor-pointer color-[var(--el-color-success)]"
+                style="vertical-align: -0.15em"
                 @click="formData.params.push({ key: '', value: '' })"
               >
                 <CirclePlusFilled />
@@ -459,7 +459,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "Menu",
+  name: "SysMenu",
   inheritAttrs: false,
 });
 

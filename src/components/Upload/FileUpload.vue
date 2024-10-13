@@ -19,13 +19,13 @@
       :limit="props.limit"
     >
       <el-button
-        type="primary"
         v-if="props.showUploadBtn"
+        type="primary"
         :disabled="fileList.length >= props.limit"
       >
         {{ props.uploadBtnText }}
       </el-button>
-      <template #tip v-if="props.showTip">
+      <template v-if="props.showTip" #tip>
         <div class="el-upload__tip">
           {{ props.tip }}
         </div>
@@ -36,8 +36,8 @@
             <el-icon><Document /></el-icon>
             <span class="el-upload-list__item-file-name">{{ file.name }}</span>
             <span
-              class="el-icon--close"
               v-if="props.showDelBtn"
+              class="el-icon--close"
               @click.stop="handleRemove(file)"
             >
               <el-icon><Close /></el-icon>
@@ -47,13 +47,13 @@
       </template>
     </el-upload>
     <el-progress
+      v-if="showUploadPercent"
       :style="{
         display: showUploadPercent ? 'inline-flex' : 'none',
         width: '100%',
       }"
       :percentage="uploadPercent"
       :color="customColorMethod"
-      v-if="showUploadPercent"
     />
   </div>
 </template>

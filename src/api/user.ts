@@ -1,33 +1,32 @@
 import request from "@/utils/request";
-import { AxiosPromise, AxiosResponse } from "axios";
 
 const USER_BASE_URL = "/api/v1/users";
 
-class UserAPI {
+const UserAPI = {
   /**
    * 获取当前登录用户信息
    *
    * @returns 登录用户昵称、头像信息，包括角色和权限
    */
-  static getInfo() {
+  getInfo() {
     return request<any, UserInfo>({
       url: `${USER_BASE_URL}/me`,
       method: "get",
     });
-  }
+  },
 
   /**
    * 获取用户分页列表
    *
    * @param queryParams 查询参数
    */
-  static getPage(queryParams: UserPageQuery) {
+  getPage(queryParams: UserPageQuery) {
     return request<any, PageResult<UserPageVO[]>>({
       url: `${USER_BASE_URL}/page`,
       method: "get",
       params: queryParams,
     });
-  }
+  },
 
   /**
    * 获取用户表单详情
@@ -35,25 +34,25 @@ class UserAPI {
    * @param userId 用户ID
    * @returns 用户表单详情
    */
-  static getFormData(userId: number) {
+  getFormData(userId: number) {
     return request<any, UserForm>({
       url: `${USER_BASE_URL}/${userId}/form`,
       method: "get",
     });
-  }
+  },
 
   /**
    * 添加用户
    *
    * @param data 用户表单数据
    */
-  static add(data: UserForm) {
+  add(data: UserForm) {
     return request({
       url: `${USER_BASE_URL}`,
       method: "post",
       data: data,
     });
-  }
+  },
 
   /**
    * 修改用户
@@ -61,13 +60,13 @@ class UserAPI {
    * @param id 用户ID
    * @param data 用户表单数据
    */
-  static update(id: number, data: UserForm) {
+  update(id: number, data: UserForm) {
     return request({
       url: `${USER_BASE_URL}/${id}`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /**
    * 修改用户密码
@@ -75,48 +74,48 @@ class UserAPI {
    * @param id 用户ID
    * @param password 新密码
    */
-  static resetPassword(id: number, password: string) {
+  resetPassword(id: number, password: string) {
     return request({
       url: `${USER_BASE_URL}/${id}/password/reset`,
       method: "put",
       params: { password: password },
     });
-  }
+  },
 
   /**
    * 批量删除用户，多个以英文逗号(,)分割
    *
    * @param ids 用户ID字符串，多个以英文逗号(,)分割
    */
-  static deleteByIds(ids: string) {
+  deleteByIds(ids: string) {
     return request({
       url: `${USER_BASE_URL}/${ids}`,
       method: "delete",
     });
-  }
+  },
 
   /** 下载用户导入模板 */
-  static downloadTemplate() {
+  downloadTemplate() {
     return request({
       url: `${USER_BASE_URL}/template`,
       method: "get",
       responseType: "arraybuffer",
     });
-  }
+  },
 
   /**
    * 导出用户
    *
    * @param queryParams 查询参数
    */
-  static export(queryParams: UserPageQuery) {
+  export(queryParams: UserPageQuery) {
     return request({
       url: `${USER_BASE_URL}/export`,
       method: "get",
       params: queryParams,
       responseType: "arraybuffer",
     });
-  }
+  },
 
   /**
    * 导入用户
@@ -124,7 +123,7 @@ class UserAPI {
    * @param deptId 部门ID
    * @param file 导入文件
    */
-  static import(deptId: number, file: File) {
+  import(deptId: number, file: File) {
     const formData = new FormData();
     formData.append("file", file);
     return request({
@@ -136,33 +135,33 @@ class UserAPI {
         "Content-Type": "multipart/form-data",
       },
     });
-  }
+  },
 
   /** 获取个人中心用户信息 */
-  static getProfile() {
+  getProfile() {
     return request<any, UserProfileVO>({
       url: `${USER_BASE_URL}/profile`,
       method: "get",
     });
-  }
+  },
 
   /** 修改个人中心用户信息 */
-  static updateProfile(data: UserProfileForm) {
+  updateProfile(data: UserProfileForm) {
     return request({
       url: `${USER_BASE_URL}/profile`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /** 修改个人中心用户密码 */
-  static changePassword(data: PasswordChangeForm) {
+  changePassword(data: PasswordChangeForm) {
     return request({
       url: `${USER_BASE_URL}/password`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /**
    *   发送手机/邮箱验证码
@@ -170,42 +169,42 @@ class UserAPI {
    * @param contact 联系方式  手机号/邮箱
    * @param contactType 联系方式类型 MOBILE:手机;EMAIL:邮箱
    */
-  static sendVerificationCode(contact: string, contactType: string) {
+  sendVerificationCode(contact: string, contactType: string) {
     return request({
       url: `${USER_BASE_URL}/send-verification-code`,
       method: "get",
       params: { contact: contact, contactType: contactType },
     });
-  }
+  },
 
   /** 绑定个人中心用户手机 */
-  static bindMobile(data: MobileBindingForm) {
+  bindMobile(data: MobileBindingForm) {
     return request({
       url: `${USER_BASE_URL}/mobile`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /** 绑定个人中心用户邮箱 */
-  static bindEmail(data: EmailBindingForm) {
+  bindEmail(data: EmailBindingForm) {
     return request({
       url: `${USER_BASE_URL}/email`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /**
    *  获取用户下拉列表
    */
-  static getOptions() {
+  getOptions() {
     return request<any, OptionType[]>({
       url: `${USER_BASE_URL}/options`,
       method: "get",
     });
-  }
-}
+  },
+};
 
 export default UserAPI;
 

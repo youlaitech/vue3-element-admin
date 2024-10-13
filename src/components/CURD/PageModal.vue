@@ -20,7 +20,7 @@
             <el-col v-show="!item.hidden" v-bind="item.col">
               <el-form-item :label="item.label" :prop="item.prop">
                 <!-- Label -->
-                <template #label v-if="item.tips">
+                <template v-if="item.tips" #label>
                   <span>
                     {{ item.label }}
                     <el-tooltip
@@ -69,8 +69,8 @@
                 <!-- switch 开关 -->
                 <template v-else-if="item.type === 'switch'">
                   <el-switch
-                    inline-prompt
                     v-model="formData[item.prop]"
+                    inline-prompt
                     v-bind="item.attrs"
                   />
                 </template>
@@ -122,7 +122,7 @@
                     :prop="item.prop"
                     :formData="formData"
                     :attrs="item.attrs"
-                  ></slot>
+                  />
                 </template>
               </el-form-item>
             </el-col>
@@ -165,7 +165,7 @@
               <el-col v-show="!item.hidden" v-bind="item.col">
                 <el-form-item :label="item.label" :prop="item.prop">
                   <!-- Label -->
-                  <template #label v-if="item.tips">
+                  <template v-if="item.tips" #label>
                     <span>
                       {{ item.label }}
                       <el-tooltip
@@ -220,8 +220,8 @@
                   <!-- switch 开关 -->
                   <template v-else-if="item.type === 'switch'">
                     <el-switch
-                      inline-prompt
                       v-model="formData[item.prop]"
+                      inline-prompt
                       v-bind="item.attrs"
                     />
                   </template>
@@ -273,7 +273,7 @@
                       :prop="item.prop"
                       :formData="formData"
                       :attrs="item.attrs"
-                    ></slot>
+                    />
                   </template>
                 </el-form-item>
               </el-col>

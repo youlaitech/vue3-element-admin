@@ -1,4 +1,4 @@
-const TOKEN_KEY = "v3-admin-token";
+const TOKEN_KEY = "admin-token";
 
 function getToken(): string {
   return localStorage.getItem(TOKEN_KEY) || "";

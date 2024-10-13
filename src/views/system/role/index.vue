@@ -185,8 +185,8 @@
           </el-button>
           <el-checkbox
             v-model="parentChildLinked"
-            @change="handleparentChildLinkedChange"
             class="ml-5"
+            @change="handleparentChildLinkedChange"
           >
             父子联动
           </el-checkbox>

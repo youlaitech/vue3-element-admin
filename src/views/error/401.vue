@@ -7,7 +7,7 @@ defineOptions({
 });
 
 const state = reactive({
-  errGif: new URL(`../../assets/images/401.gif`, import.meta.url).href,
+  errGif: new URL("../../assets/images/401.gif", import.meta.url).href,
   ewizardClap:
     "https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646",
   dialogVisible: false,

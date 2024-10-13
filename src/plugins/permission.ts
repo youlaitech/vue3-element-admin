@@ -1,4 +1,4 @@
-import {
+import type {
   NavigationGuardNext,
   RouteLocationNormalized,
   RouteRecordRaw,
@@ -49,6 +49,7 @@ export function setupPermission() {
             );
             next({ ...to, replace: true });
           } catch (error) {
+            console.error(error);
             // 移除 token 并重定向到登录页，携带当前页面路由作为跳转参数
             await userStore.resetToken();
             redirectToLogin(to, next);

@@ -12,12 +12,12 @@
         <span>通知公告详情</span>
         <div class="dialog-toolbar">
           <!-- 全屏/退出全屏按钮 -->
-          <el-button @click="toggleFullscreen" circle>
+          <el-button circle @click="toggleFullscreen">
             <SvgIcon v-if="isFullscreen" icon-class="fullscreen-exit" />
             <SvgIcon v-else icon-class="fullscreen" />
           </el-button>
           <!-- 关闭按钮 -->
-          <el-button @click="handleClose" circle>
+          <el-button circle @click="handleClose">
             <template #icon>
               <Close />
             </template>
@@ -46,7 +46,7 @@
         {{ notice.publishTime }}
       </el-descriptions-item>
       <el-descriptions-item label="公告内容：">
-        <div v-html="notice.content"></div>
+        <div v-html="notice.content" />
       </el-descriptions-item>
     </el-descriptions>
   </el-dialog>

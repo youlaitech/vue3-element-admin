@@ -123,7 +123,7 @@
                     :name="col.slotName ?? col.prop"
                     :prop="col.prop"
                     v-bind="scope"
-                  ></slot>
+                  />
                 </template>
               </el-table-column>
             </template>

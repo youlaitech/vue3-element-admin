@@ -2,15 +2,15 @@ import request from "@/utils/request";
 
 const NOTICE_BASE_URL = "/api/v1/notices";
 
-class NoticeAPI {
+const NoticeAPI = {
   /** 获取通知公告分页数据 */
-  static getPage(queryParams?: NoticePageQuery) {
+  getPage(queryParams?: NoticePageQuery) {
     return request<any, PageResult<NoticePageVO[]>>({
       url: `${NOTICE_BASE_URL}/page`,
       method: "get",
       params: queryParams,
     });
-  }
+  },
 
   /**
    * 获取通知公告表单数据
@@ -18,12 +18,12 @@ class NoticeAPI {
    * @param id NoticeID
    * @returns Notice表单数据
    */
-  static getFormData(id: number) {
+  getFormData(id: number) {
     return request<any, NoticeForm>({
       url: `${NOTICE_BASE_URL}/${id}/form`,
       method: "get",
     });
-  }
+  },
 
   /**
    * 添加通知公告
@@ -31,13 +31,13 @@ class NoticeAPI {
    * @param data Notice表单数据
    * @returns
    */
-  static add(data: NoticeForm) {
+  add(data: NoticeForm) {
     return request({
       url: `${NOTICE_BASE_URL}`,
       method: "post",
       data: data,
     });
-  }
+  },
 
   /**
    * 更新通知公告
@@ -45,25 +45,25 @@ class NoticeAPI {
    * @param id NoticeID
    * @param data Notice表单数据
    */
-  static update(id: number, data: NoticeForm) {
+  update(id: number, data: NoticeForm) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /**
    * 批量删除通知公告，多个以英文逗号(,)分割
    *
    * @param ids 通知公告ID字符串，多个以英文逗号(,)分割
    */
-  static deleteByIds(ids: string) {
+  deleteByIds(ids: string) {
     return request({
       url: `${NOTICE_BASE_URL}/${ids}`,
       method: "delete",
     });
-  }
+  },
 
   /**
    * 发布通知
@@ -71,12 +71,12 @@ class NoticeAPI {
    * @param id 被发布的通知公告id
    * @returns
    */
-  static publish(id: number) {
+  publish(id: number) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}/publish`,
       method: "patch",
     });
-  }
+  },
 
   /**
    * 撤回通知
@@ -84,41 +84,41 @@ class NoticeAPI {
    * @param id 撤回的通知id
    * @returns
    */
-  static revoke(id: number) {
+  revoke(id: number) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}/revoke`,
       method: "patch",
     });
-  }
+  },
   /**
    * 查看通知
    *
    * @param id
    */
-  static getDetail(id: string) {
+  getDetail(id: string) {
     return request<any, NoticeDetailVO>({
       url: `${NOTICE_BASE_URL}/${id}/detail`,
       method: "get",
     });
-  }
+  },
 
   /* 全部已读 */
-  static readAll() {
+  readAll() {
     return request({
       url: `${NOTICE_BASE_URL}/read-all`,
       method: "put",
     });
-  }
+  },
 
   /** 获取我的通知分页列表 */
-  static getMyNoticePage(queryParams?: NoticePageQuery) {
+  getMyNoticePage(queryParams?: NoticePageQuery) {
     return request<any, PageResult<NoticePageVO[]>>({
       url: `${NOTICE_BASE_URL}/my-page`,
       method: "get",
       params: queryParams,
     });
-  }
-}
+  },
+};
 
 export default NoticeAPI;
 
@@ -196,28 +196,4 @@ export interface NoticeDetailVO {
 
   /** 发布状态 */
   publishStatus?: number;
-}
-
-/** 用户通知分页列表 */
-interface UserNoticePageVO {
-  /** 通知ID */
-  id: number;
-
-  /** 通知标题 */
-  title: string;
-
-  /** 通知类型 */
-  typeLabel: string;
-
-  /** 发布人姓名 */
-  publisherName: string;
-
-  /** 通知级别 */
-  levelLabel: string;
-
-  /** 发布时间 */
-  publishTime: string;
-
-  /** 是否已读 */
-  isReadLabel: string;
 }

@@ -73,7 +73,7 @@
         <el-table-column label="通知标题" prop="title" min-width="200" />
         <el-table-column align="center" label="通知类型" width="150">
           <template #default="scope">
-            <DictLabel :code="'notice_type'" v-model="scope.row.type" />
+            <DictLabel v-model="scope.row.type" :code="'notice_type'" />
           </template>
         </el-table-column>
         <el-table-column
@@ -84,7 +84,7 @@
         />
         <el-table-column align="center" label="通知等级" width="100">
           <template #default="scope">
-            <DictLabel code="notice_level" v-model="scope.row.level" />
+            <DictLabel v-model="scope.row.level" code="notice_level" />
           </template>
         </el-table-column>
         <el-table-column
@@ -140,8 +140,8 @@
             <el-button
               type="primary"
               size="small"
-              @click="openNoticeDetailDialog(scope.row.id)"
               link
+              @click="openNoticeDetailDialog(scope.row.id)"
             >
               查看
             </el-button>
@@ -223,16 +223,16 @@
         </el-form-item>
         <el-form-item label="通知类型" prop="type">
           <dictionary
+            v-model="formData.type"
             type="button"
             code="notice_type"
-            v-model="formData.type"
           />
         </el-form-item>
         <el-form-item label="通知等级" prop="level">
           <dictionary
+            v-model="formData.level"
             type="button"
             code="notice_level"
-            v-model="formData.level"
           />
         </el-form-item>
         <el-form-item label="目标类型" prop="targetType">
@@ -242,9 +242,9 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item
+          v-if="formData.targetType == 2"
           label="指定用户"
           prop="targetUserIds"
-          v-if="formData.targetType == 2"
         >
           <el-select
             v-model="formData.targetUserIds"

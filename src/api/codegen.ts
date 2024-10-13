@@ -2,55 +2,55 @@ import request from "@/utils/request";
 
 const GENERATOR_BASE_URL = "/api/v1/codegen";
 
-class GeneratorAPI {
+const GeneratorAPI = {
   /** 获取数据表分页列表 */
-  static getTablePage(params: TablePageQuery) {
+  getTablePage(params: TablePageQuery) {
     return request<any, PageResult<TablePageVO[]>>({
       url: `${GENERATOR_BASE_URL}/table/page`,
       method: "get",
       params: params,
     });
-  }
+  },
 
   /** 获取代码生成配置 */
-  static getGenConfig(tableName: string) {
+  getGenConfig(tableName: string) {
     return request<any, GenConfigForm>({
       url: `${GENERATOR_BASE_URL}/${tableName}/config`,
       method: "get",
     });
-  }
+  },
 
   /** 获取代码生成配置 */
-  static saveGenConfig(tableName: string, data: GenConfigForm) {
+  saveGenConfig(tableName: string, data: GenConfigForm) {
     return request({
       url: `${GENERATOR_BASE_URL}/${tableName}/config`,
       method: "post",
       data: data,
     });
-  }
+  },
 
   /** 获取代码生成预览数据 */
-  static getPreviewData(tableName: string) {
+  getPreviewData(tableName: string) {
     return request<any, GeneratorPreviewVO[]>({
       url: `${GENERATOR_BASE_URL}/${tableName}/preview`,
       method: "get",
     });
-  }
+  },
 
   /** 重置代码生成配置 */
-  static resetGenConfig(tableName: string) {
+  resetGenConfig(tableName: string) {
     return request({
       url: `${GENERATOR_BASE_URL}/${tableName}/config`,
       method: "delete",
     });
-  }
+  },
 
   /**
    * 下载 ZIP 文件
    * @param url
    * @param fileName
    */
-  static download(tableName: string) {
+  download(tableName: string) {
     return request({
       url: `${GENERATOR_BASE_URL}/${tableName}/download`,
       method: "get",
@@ -68,8 +68,8 @@ class GeneratorAPI {
       a.click();
       window.URL.revokeObjectURL(url);
     });
-  }
-}
+  },
+};
 
 export default GeneratorAPI;
 

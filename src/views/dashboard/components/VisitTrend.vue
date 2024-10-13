@@ -27,7 +27,7 @@
       </div>
     </template>
 
-    <div :id="id" :class="className" :style="{ height, width }"></div>
+    <div :id="id" :class="className" :style="{ height, width }" />
   </el-card>
 </template>
 
@@ -190,7 +190,7 @@ const handleDownloadChart = () => {
     if (ctx) {
       ctx.drawImage(img, 0, 0, img.width, img.height);
       const link = document.createElement("a");
-      link.download = `访问趋势.png`;
+      link.download = "访问趋势.png";
       link.href = canvas.toDataURL("image/png", 0.9);
       document.body.appendChild(link);
       link.click();

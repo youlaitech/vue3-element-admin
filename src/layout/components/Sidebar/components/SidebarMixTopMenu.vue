@@ -59,7 +59,7 @@ const topMenus = ref<RouteRecordRaw[]>([]);
 // 获取当前路由路径的顶部菜单路径
 const activeTopMenuPath =
   useRoute().path.split("/").filter(Boolean).length > 1
-    ? useRoute().path.match(/^\/[^\/]+/)?.[0] || "/"
+    ? useRoute().path.match(/^\/[^/]+/)?.[0] || "/"
     : "/";
 
 // 设置当前激活的顶部菜单路径

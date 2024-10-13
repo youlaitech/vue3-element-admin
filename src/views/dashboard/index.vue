@@ -66,11 +66,11 @@
       </el-col>
 
       <el-col
+        v-for="(item, index) in visitStatsList"
+        :key="index"
         :xs="24"
         :sm="12"
         :lg="6"
-        v-for="(item, index) in visitStatsList"
-        :key="index"
       >
         <el-skeleton :loading="visitStatsLoading" :rows="5" animated>
           <template #template>
@@ -169,7 +169,7 @@
               :key="index"
               class="flex-y-center py-3"
             >
-              <DictLabel code="notice_type" v-model="item.type" size="small" />
+              <DictLabel v-model="item.type" code="notice_type" size="small" />
               <el-text
                 truncated
                 class="!mx-2 flex-1 !text-xs !text-[var(--el-text-color-secondary)]"

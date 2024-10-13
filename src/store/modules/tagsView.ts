@@ -57,11 +57,12 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     const viewName = view.name;
     return new Promise((resolve) => {
       const index = cachedViews.value.indexOf(viewName);
-      index > -1 && cachedViews.value.splice(index, 1);
+      if (index > -1) {
+        cachedViews.value.splice(index, 1);
+      }
       resolve([...cachedViews.value]);
     });
   }
-
   function delOtherVisitedViews(view: TagView) {
     return new Promise((resolve) => {
       visitedViews.value = visitedViews.value.filter((v) => {

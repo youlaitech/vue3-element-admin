@@ -17,25 +17,25 @@
               <el-button
                 type="primary"
                 class="ml-5"
-                @click="connectWebSocket"
                 :disabled="isConnected"
+                @click="connectWebSocket"
               >
                 连接
               </el-button>
               <el-button
                 type="danger"
-                @click="disconnectWebSocket"
                 :disabled="!isConnected"
+                @click="disconnectWebSocket"
               >
                 断开
               </el-button>
             </el-col>
             <el-col :span="8" class="text-right">
               连接状态：
-              <el-tag class="ml-2" type="success" v-if="isConnected">
+              <el-tag v-if="isConnected" class="ml-2" type="success">
                 已连接
               </el-tag>
-              <el-tag class="ml-2" type="info" v-else>已断开</el-tag>
+              <el-tag v-else class="ml-2" type="info">已断开</el-tag>
             </el-col>
           </el-row>
         </el-card>
@@ -43,10 +43,10 @@
         <el-card class="mt-5">
           <el-form label-width="90px">
             <el-form-item label="消息内容">
-              <el-input type="textarea" v-model="topicMessage" />
+              <el-input v-model="topicMessage" type="textarea" />
             </el-form-item>
             <el-form-item>
-              <el-button @click="sendToAll" type="primary">发送广播</el-button>
+              <el-button type="primary" @click="sendToAll">发送广播</el-button>
             </el-form-item>
           </el-form>
         </el-card>
@@ -54,13 +54,13 @@
         <el-card class="mt-5">
           <el-form label-width="90px">
             <el-form-item label="消息内容">
-              <el-input type="textarea" v-model="queneMessage" />
+              <el-input v-model="queneMessage" type="textarea" />
             </el-form-item>
             <el-form-item label="消息接收人">
               <el-input v-model="receiver" />
             </el-form-item>
             <el-form-item>
-              <el-button @click="sendToUser" type="primary">
+              <el-button type="primary" @click="sendToUser">
                 发送点对点消息
               </el-button>
             </el-form-item>

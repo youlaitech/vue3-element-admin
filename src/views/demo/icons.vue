@@ -48,7 +48,6 @@ import SvgIcon from "@/components/SvgIcon/index.vue";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
 defineOptions({
-  // eslint-disable-next-line
   name: "Icons",
   inheritAttrs: false,
 });

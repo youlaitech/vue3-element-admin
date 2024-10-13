@@ -1,7 +1,7 @@
-import { RouteRecordRaw } from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
 import { constantRoutes } from "@/router";
 import { store } from "@/store";
-import MenuAPI, { RouteVO } from "@/api/menu";
+import MenuAPI, { type RouteVO } from "@/api/menu";
 
 const modules = import.meta.glob("../../views/**/**.vue");
 const Layout = () => import("@/layout/index.vue");
@@ -65,7 +65,7 @@ const transformRoutes = (routes: RouteVO[]) => {
       if (component) {
         tmpRoute.component = component;
       } else {
-        tmpRoute.component = modules[`../../views/error-page/404.vue`];
+        tmpRoute.component = modules["../../views/error-page/404.vue"];
       }
     }
 

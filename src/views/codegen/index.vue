@@ -91,8 +91,8 @@
     <el-drawer
       v-model="dialog.visible"
       :title="dialog.title"
-      @close="dialog.visible = false"
       size="80%"
+      @close="dialog.visible = false"
     >
       <el-steps :active="active" align-center finish-status="success" simple>
         <el-step title="基础配置" />
@@ -196,7 +196,7 @@
           </el-row>
         </el-form>
 
-        <div class="elTableCustom" v-show="active == 1">
+        <div v-show="active == 1" class="elTableCustom">
           <el-table
             v-loading="loading"
             row-key="id"
@@ -249,8 +249,8 @@
                 <div class="flex-y-center">
                   <span>查询</span>
                   <el-checkbox
-                    class="ml-1"
                     v-model="isCheckAllQuery"
+                    class="ml-1"
                     @change="toggleCheckAll('isShowInQuery', isCheckAllQuery)"
                   />
                 </div>
@@ -269,8 +269,8 @@
                 <div class="flex-y-center">
                   <span>列表</span>
                   <el-checkbox
-                    class="ml-1"
                     v-model="isCheckAllList"
+                    class="ml-1"
                     @change="toggleCheckAll('isShowInList', isCheckAllList)"
                   />
                 </div>
@@ -290,8 +290,8 @@
                 <div class="flex-y-center">
                   <span>表单</span>
                   <el-checkbox
-                    class="ml-1"
                     v-model="isCheckAllForm"
+                    class="ml-1"
                     @change="toggleCheckAll('isShowInForm', isCheckAllForm)"
                   />
                 </div>
@@ -309,10 +309,10 @@
             <el-table-column label="必填" width="70">
               <template #default="scope">
                 <el-checkbox
+                  v-if="scope.row.isShowInForm == 1"
                   v-model="scope.row.isRequired"
                   :true-value="1"
                   :false-value="0"
-                  v-if="scope.row.isShowInForm == 1"
                 />
                 <span v-else>-</span>
               </template>
@@ -321,9 +321,9 @@
             <el-table-column label="查询方式" min-width="120">
               <template #default="scope">
                 <el-select
+                  v-if="scope.row.isShowInQuery === 1"
                   v-model="scope.row.queryType"
                   placeholder="请选择"
-                  v-if="scope.row.isShowInQuery === 1"
                 >
                   <el-option
                     v-for="(item, key) in queryTypeOptions"
@@ -339,12 +339,12 @@
             <el-table-column label="表单类型" min-width="120">
               <template #default="scope">
                 <el-select
-                  v-model="scope.row.formType"
-                  placeholder="请选择"
                   v-if="
                     scope.row.isShowInQuery === 1 ||
                     scope.row.isShowInForm === 1
                   "
+                  v-model="scope.row.formType"
+                  placeholder="请选择"
                 >
                   <el-option
                     v-for="(item, key) in formTypeOptions"
@@ -397,7 +397,7 @@
           <el-col :span="18">
             <el-scrollbar max-height="72vh">
               <div class="absolute-rt z-36 right-5 top-2">
-                <el-link @click="handleCopyCode" type="primary">
+                <el-link type="primary" @click="handleCopyCode">
                   <el-icon>
                     <CopyDocument />
                   </el-icon>
@@ -406,10 +406,10 @@
               </div>
 
               <Codemirror
+                ref="cmRef"
                 v-model:value="code"
                 :options="cmOptions"
                 border
-                ref="cmRef"
                 :readonly="true"
                 height="100%"
                 width="100%"
@@ -420,7 +420,7 @@
       </div>
 
       <template #footer>
-        <el-button type="success" @click="handlePrevClick" v-if="active !== 0">
+        <el-button v-if="active !== 0" type="success" @click="handlePrevClick">
           <el-icon>
             <Back />
           </el-icon>
@@ -515,7 +515,7 @@ const prevBtnText = ref("");
 const nextBtnText = ref("下一步，字段配置");
 const active = ref(0);
 const currentTableName = ref("");
-const sortFlag = ref<Object>();
+const sortFlag = ref<object>();
 
 // 查询是否全选
 const isCheckAllQuery = ref(false);

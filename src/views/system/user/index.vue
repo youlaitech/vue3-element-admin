@@ -35,9 +35,9 @@
 
             <el-form-item label="创建时间">
               <el-date-picker
+                v-model="queryParams.createTime"
                 :editable="false"
                 class="!w-[240px]"
-                v-model="queryParams.createTime"
                 type="daterange"
                 range-separator="~"
                 start-placeholder="开始时间"

@@ -148,8 +148,8 @@
 
           <el-form-item label="备注">
             <el-input
-              type="textarea"
               v-model="formData.remark"
+              type="textarea"
               placeholder="请输入备注"
             />
           </el-form-item>

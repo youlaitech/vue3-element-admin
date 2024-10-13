@@ -5,7 +5,7 @@
       v-if="isMobile && isOpenSidebar"
       class="wh-full fixed-lt z-999 bg-black bg-opacity-30"
       @click="handleOutsideClick"
-    ></div>
+    />
 
     <!-- 公用侧边栏 -->
     <Sidebar class="sidebar-container" />

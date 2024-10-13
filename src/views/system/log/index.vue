@@ -12,9 +12,9 @@
         </el-form-item>
         <el-form-item prop="createTime" label="操作时间">
           <el-date-picker
+            v-model="queryParams.createTime"
             :editable="false"
             class="!w-[240px]"
-            v-model="queryParams.createTime"
             type="daterange"
             range-separator="~"
             start-placeholder="开始时间"

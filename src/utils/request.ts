@@ -1,4 +1,7 @@
-import axios, { InternalAxiosRequestConfig, AxiosResponse } from "axios";
+import axios, {
+  type InternalAxiosRequestConfig,
+  type AxiosResponse,
+} from "axios";
 import { useUserStoreHook } from "@/store/modules/user";
 import { ResultEnum } from "@/enums/ResultEnum";
 import { getToken } from "@/utils/auth";

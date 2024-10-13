@@ -17,8 +17,8 @@
                 @click="triggerFileUpload"
               />
               <input
-                type="file"
                 ref="fileInput"
+                type="file"
                 style="display: none"
                 @change="handleFileChange"
               />
@@ -105,8 +105,8 @@
                   type="primary"
                   plain
                   size="small"
-                  @click="() => handleOpenDialog(DialogType.PASSWORD)"
                   class="ml-5"
+                  @click="() => handleOpenDialog(DialogType.PASSWORD)"
                 >
                   修改
                 </el-button>
@@ -122,22 +122,22 @@
               </span>
               <span v-else>未绑定手机</span>
               <el-button
+                v-if="userProfile.mobile"
                 type="primary"
                 plain
                 size="small"
-                @click="() => handleOpenDialog(DialogType.MOBILE)"
                 class="ml-5"
-                v-if="userProfile.mobile"
+                @click="() => handleOpenDialog(DialogType.MOBILE)"
               >
                 更换
               </el-button>
               <el-button
+                v-else
                 type="primary"
                 plain
                 size="small"
-                @click="() => handleOpenDialog(DialogType.MOBILE)"
                 class="ml-5"
-                v-else
+                @click="() => handleOpenDialog(DialogType.MOBILE)"
               >
                 绑定
               </el-button>
@@ -152,22 +152,22 @@
               </span>
               <span v-else>未绑定邮箱</span>
               <el-button
+                v-if="userProfile.email"
                 type="primary"
                 plain
                 size="small"
-                @click="() => handleOpenDialog(DialogType.EMAIL)"
                 class="ml-5"
-                v-if="userProfile.email"
+                @click="() => handleOpenDialog(DialogType.EMAIL)"
               >
                 更换
               </el-button>
               <el-button
+                v-else
                 type="primary"
                 plain
                 size="small"
-                @click="() => handleOpenDialog(DialogType.EMAIL)"
                 class="ml-5"
-                v-else
+                @click="() => handleOpenDialog(DialogType.EMAIL)"
               >
                 绑定
               </el-button>
@@ -178,12 +178,12 @@
     </el-tabs>
 
     <!-- 弹窗 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" :width="500">
+    <el-dialog v-model="dialog.visible" :title="dialog.title" :width="500">
       <!-- 账号资料 -->
       <el-form
         v-if="dialog.type === DialogType.ACCOUNT"
-        :model="userProfileForm"
         ref="userProfileFormRef"
+        :model="userProfileForm"
         :label-width="100"
       >
         <el-form-item label="昵称">
@@ -197,29 +197,29 @@
       <!-- 修改密码 -->
       <el-form
         v-if="dialog.type === DialogType.PASSWORD"
+        ref="passwordChangeFormRef"
         :model="passwordChangeForm"
         :rules="passwordChangeRules"
-        ref="passwordChangeFormRef"
         :label-width="100"
       >
         <el-form-item label="原密码" prop="oldPassword">
           <el-input
-            type="password"
             v-model="passwordChangeForm.oldPassword"
+            type="password"
             show-password
           />
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
           <el-input
-            type="password"
             v-model="passwordChangeForm.newPassword"
+            type="password"
             show-password
           />
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
           <el-input
-            type="password"
             v-model="passwordChangeForm.confirmPassword"
+            type="password"
             show-password
           />
         </el-form-item>
@@ -227,9 +227,9 @@
       <!-- 绑定手机 -->
       <el-form
         v-else-if="dialog.type === DialogType.MOBILE"
+        ref="mobileBindingFormRef"
         :model="mobileBindingForm"
         :rules="mobileBindingRules"
-        ref="mobileBindingFormRef"
         :label-width="100"
       >
         <el-form-item label="手机号码" prop="mobile">
@@ -257,9 +257,9 @@
       <!-- 绑定邮箱 -->
       <el-form
         v-else-if="dialog.type === DialogType.EMAIL"
+        ref="emailBindingFormRef"
         :model="emailBindingForm"
         :rules="emailBindingRules"
-        ref="emailBindingFormRef"
         :label-width="100"
       >
         <el-form-item label="邮箱" prop="email">

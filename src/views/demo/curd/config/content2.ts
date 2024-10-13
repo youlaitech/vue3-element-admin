@@ -8,7 +8,7 @@ const contentConfig: IContentConfig = {
   toolbar: [],
   indexAction: function (params) {
     // 模拟发起网络请求获取列表数据
-    // console.log("indexAction:", params);
+    console.log("indexAction:", params);
     return Promise.resolve({
       total: 2,
       list: [
@@ -76,7 +76,7 @@ const contentConfig: IContentConfig = {
       align: "center",
       prop: "gender",
       templet: "list",
-      selectList: { 0: "女", 1: "男" },
+      selectList: { "0": "女", "1": "男" },
     },
     {
       label: "自定义",

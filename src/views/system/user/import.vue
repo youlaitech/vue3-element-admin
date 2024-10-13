@@ -16,9 +16,9 @@
       >
         <el-form-item label="文件名" prop="files">
           <el-upload
-            class="w-full"
             ref="uploadRef"
             v-model:file-list="importFormData.files"
+            class="w-full"
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             :drag="true"
             :limit="1"

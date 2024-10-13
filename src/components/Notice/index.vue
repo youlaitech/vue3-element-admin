@@ -3,8 +3,8 @@
     <el-dropdown class="flex-center wh-full align-middle">
       <div class="wh-full">
         <el-badge
-          :offset="[-10, 15]"
           v-if="notices.length > 0"
+          :offset="[-10, 15]"
           :value="notices.length"
           :max="99"
           class="wh-full"
@@ -26,23 +26,23 @@
             <el-tab-pane label="通知" name="notice">
               <template v-if="notices.length > 0">
                 <div
-                  class="w400px flex-x-between p-1"
                   v-for="(item, index) in notices"
                   :key="index"
+                  class="w400px flex-x-between p-1"
                 >
                   <div class="flex-center">
                     <DictLabel
-                      code="notice_type"
                       v-model="item.type"
+                      code="notice_type"
                       size="small"
                       class="mr-1"
                     />
                     <el-text
                       type="primary"
-                      @click="readNotice(item.id)"
                       size="small"
                       class="w200px cursor-pointer"
                       truncated
+                      @click="readNotice(item.id)"
                     >
                       {{ item.title }}
                     </el-text>
@@ -78,20 +78,20 @@
             <el-tab-pane label="消息" name="message">
               <template v-if="messages.length > 0">
                 <div
-                  class="w400px flex-x-between p-1"
                   v-for="(item, index) in messages"
                   :key="index"
+                  class="w400px flex-x-between p-1"
                 >
                   <div>
                     <DictLabel
-                      code="notice_type"
                       v-model="item.type"
+                      code="notice_type"
                       size="small"
                     />
                     <el-link
                       type="primary"
-                      @click="readNotice(item.id)"
                       class="ml-1"
+                      @click="readNotice(item.id)"
                     >
                       {{ item.title }}
                     </el-link>
@@ -128,20 +128,20 @@
             <el-tab-pane label="待办" name="task">
               <template v-if="tasks.length > 0">
                 <div
-                  class="w400px flex-x-between p-1"
                   v-for="(item, index) in tasks"
                   :key="index"
+                  class="w400px flex-x-between p-1"
                 >
                   <div>
                     <DictLabel
-                      code="notice_type"
                       v-model="item.type"
+                      code="notice_type"
                       size="small"
                     />
                     <el-link
                       type="primary"
-                      @click="readNotice(item.id)"
                       class="ml-1"
+                      @click="readNotice(item.id)"
                     >
                       {{ item.title }}
                     </el-link>

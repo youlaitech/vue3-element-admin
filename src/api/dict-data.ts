@@ -2,20 +2,20 @@ import request from "@/utils/request";
 
 const DICT_DATA_BASE_URL = "/api/v1/dict-data";
 
-class DictDataAPI {
+const DictDataAPI = {
   /**
    * 获取字典分页列表
    *
    * @param queryParams 查询参数
    * @returns 字典分页结果
    */
-  static getPage(queryParams: DictDataPageQuery) {
+  getPage(queryParams: DictDataPageQuery) {
     return request<any, PageResult<DictDataPageVO[]>>({
       url: `${DICT_DATA_BASE_URL}/page`,
       method: "get",
       params: queryParams,
     });
-  }
+  },
 
   /**
    * 获取字典数据表单
@@ -23,25 +23,25 @@ class DictDataAPI {
    * @param id 字典ID
    * @returns 字典数据表单
    */
-  static getFormData(id: number) {
+  getFormData(id: number) {
     return request<any, ResponseData<DictDataForm>>({
       url: `${DICT_DATA_BASE_URL}/${id}/form`,
       method: "get",
     });
-  }
+  },
 
   /**
    * 新增字典数据
    *
    * @param data 字典数据
    */
-  static add(data: DictDataForm) {
+  add(data: DictDataForm) {
     return request({
       url: `${DICT_DATA_BASE_URL}`,
       method: "post",
       data: data,
     });
-  }
+  },
 
   /**
    * 修改字典数据
@@ -49,25 +49,25 @@ class DictDataAPI {
    * @param id 字典ID
    * @param data 字典数据
    */
-  static update(id: number, data: DictDataForm) {
+  update(id: number, data: DictDataForm) {
     return request({
       url: `${DICT_DATA_BASE_URL}/${id}`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /**
    * 删除字典
    *
    * @param ids 字典ID，多个以英文逗号(,)分隔
    */
-  static deleteByIds(ids: string) {
+  deleteByIds(ids: string) {
     return request({
       url: `${DICT_DATA_BASE_URL}/${ids}`,
       method: "delete",
     });
-  }
+  },
 
   /**
    * 获取字典的数据项
@@ -75,13 +75,13 @@ class DictDataAPI {
    * @param dictCode 字典编码
    * @returns 字典数据项
    */
-  static getOptions(dictCode: string) {
+  getOptions(dictCode: string) {
     return request<any, OptionType[]>({
       url: `${DICT_DATA_BASE_URL}/${dictCode}/options`,
       method: "get",
     });
-  }
-}
+  },
+};
 
 export default DictDataAPI;
 

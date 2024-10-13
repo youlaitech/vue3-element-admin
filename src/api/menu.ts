@@ -2,7 +2,7 @@ import request from "@/utils/request";
 // 菜单基础URL
 const MENU_BASE_URL = "/api/v1/menus";
 
-class MenuAPI {
+const MenuAPI = {
   /**
    * 获取当前用户的路由列表
    * <p/>
@@ -10,12 +10,12 @@ class MenuAPI {
    *
    * @returns 路由列表
    */
-  static getRoutes() {
+  getRoutes() {
     return request<any, RouteVO[]>({
       url: `${MENU_BASE_URL}/routes`,
       method: "get",
     });
-  }
+  },
 
   /**
    * 获取菜单树形列表
@@ -23,38 +23,38 @@ class MenuAPI {
    * @param queryParams 查询参数
    * @returns 菜单树形列表
    */
-  static getList(queryParams: MenuQuery) {
+  getList(queryParams: MenuQuery) {
     return request<any, MenuVO[]>({
       url: `${MENU_BASE_URL}`,
       method: "get",
       params: queryParams,
     });
-  }
+  },
 
   /**
    * 获取菜单下拉数据源
    *
    * @returns 菜单下拉数据源
    */
-  static getOptions(onlyParent?: boolean) {
+  getOptions(onlyParent?: boolean) {
     return request<any, OptionType[]>({
       url: `${MENU_BASE_URL}/options`,
       method: "get",
       params: { onlyParent: onlyParent },
     });
-  }
+  },
 
   /**
    * 获取菜单表单数据
    *
    * @param id 菜单ID
    */
-  static getFormData(id: number) {
+  getFormData(id: number) {
     return request<any, MenuForm>({
       url: `${MENU_BASE_URL}/${id}/form`,
       method: "get",
     });
-  }
+  },
 
   /**
    * 添加菜单
@@ -62,13 +62,13 @@ class MenuAPI {
    * @param data 菜单表单数据
    * @returns 请求结果
    */
-  static add(data: MenuForm) {
+  add(data: MenuForm) {
     return request({
       url: `${MENU_BASE_URL}`,
       method: "post",
       data: data,
     });
-  }
+  },
 
   /**
    * 修改菜单
@@ -77,13 +77,13 @@ class MenuAPI {
    * @param data 菜单表单数据
    * @returns 请求结果
    */
-  static update(id: string, data: MenuForm) {
+  update(id: string, data: MenuForm) {
     return request({
       url: `${MENU_BASE_URL}/${id}`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /**
    * 删除菜单
@@ -91,17 +91,17 @@ class MenuAPI {
    * @param id 菜单ID
    * @returns 请求结果
    */
-  static deleteById(id: number) {
+  deleteById(id: number) {
     return request({
       url: `${MENU_BASE_URL}/${id}`,
       method: "delete",
     });
-  }
-}
+  },
+};
 
 export default MenuAPI;
 
-import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
+import type { MenuTypeEnum } from "@/enums/MenuTypeEnum";
 
 /** 菜单查询参数 */
 export interface MenuQuery {

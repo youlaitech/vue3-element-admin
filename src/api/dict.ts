@@ -2,20 +2,20 @@ import request from "@/utils/request";
 
 const DICT_BASE_URL = "/api/v1/dict";
 
-class DictAPI {
+const DictAPI = {
   /**
    * 获取字典分页列表
    *
    * @param queryParams 查询参数
    * @returns 字典分页结果
    */
-  static getPage(queryParams: DictPageQuery) {
+  getPage(queryParams: DictPageQuery) {
     return request<any, PageResult<DictPageVO[]>>({
       url: `${DICT_BASE_URL}/page`,
       method: "get",
       params: queryParams,
     });
-  }
+  },
 
   /**
    * 获取字典表单数据
@@ -23,25 +23,25 @@ class DictAPI {
    * @param id 字典ID
    * @returns 字典表单数据
    */
-  static getFormData(id: number) {
+  getFormData(id: number) {
     return request<any, ResponseData<DictForm>>({
       url: `${DICT_BASE_URL}/${id}/form`,
       method: "get",
     });
-  }
+  },
 
   /**
    * 新增字典
    *
    * @param data 字典表单数据
    */
-  static add(data: DictForm) {
+  add(data: DictForm) {
     return request({
       url: `${DICT_BASE_URL}`,
       method: "post",
       data: data,
     });
-  }
+  },
 
   /**
    * 修改字典
@@ -49,38 +49,38 @@ class DictAPI {
    * @param id 字典ID
    * @param data 字典表单数据
    */
-  static update(id: number, data: DictForm) {
+  update(id: number, data: DictForm) {
     return request({
       url: `${DICT_BASE_URL}/${id}`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /**
    * 删除字典
    *
    * @param ids 字典ID，多个以英文逗号(,)分隔
    */
-  static deleteByIds(ids: string) {
+  deleteByIds(ids: string) {
     return request({
       url: `${DICT_BASE_URL}/${ids}`,
       method: "delete",
     });
-  }
+  },
 
   /**
    * 获取字典列表
    *
    * @returns 字典列表
    */
-  static getList() {
+  getList() {
     return request<any, OptionType[]>({
       url: `${DICT_BASE_URL}/list`,
       method: "get",
     });
-  }
-}
+  },
+};
 
 export default DictAPI;
 

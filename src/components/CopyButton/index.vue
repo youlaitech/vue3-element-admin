@@ -1,6 +1,6 @@
 <!-- 复制组件 -->
 <template>
-  <el-button link @click="handleClipboard" :style="style">
+  <el-button link :style="style" @click="handleClipboard">
     <slot>
       <el-icon><DocumentCopy color="var(--el-color-primary)" /></el-icon>
     </slot>

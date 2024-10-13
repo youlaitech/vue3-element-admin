@@ -38,7 +38,7 @@
         <el-table-column label="通知标题" prop="title" min-width="200" />
         <el-table-column align="center" label="通知类型" width="150">
           <template #default="scope">
-            <DictLabel code="notice_type" v-model="scope.row.type" />
+            <DictLabel v-model="scope.row.type" code="notice_type" />
           </template>
         </el-table-column>
         <el-table-column
@@ -49,12 +49,12 @@
         />
         <el-table-column align="center" label="通知等级" width="100">
           <template #default="scope">
-            <DictLabel code="notice_level" v-model="scope.row.level" />
+            <DictLabel v-model="scope.row.level" code="notice_level" />
           </template>
         </el-table-column>
         <el-table-column
-          align="center"
           key="releaseTime"
+          align="center"
           label="发布时间"
           prop="publishTime"
           width="150"

@@ -1,9 +1,9 @@
 <template>
   <div class="logo-container">
     <transition enter-active-class="animate__animated animate__fadeInLeft">
-      <router-link class="wh-full flex-center" to="/" :key="+collapse">
+      <router-link :key="+collapse" class="wh-full flex-center" to="/">
         <img :src="logo" class="logo-image" />
-        <span class="logo-title" v-if="!collapse">
+        <span v-if="!collapse" class="logo-title">
           {{ defaultSettings.title }}
         </span>
       </router-link>

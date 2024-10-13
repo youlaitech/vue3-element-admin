@@ -39,9 +39,9 @@
   <el-image-viewer
     v-if="viewVisible"
     :zoom-rate="1.2"
-    @close="closePreview"
     :initialIndex="initialIndex"
     :url-list="viewFileList"
+    @close="closePreview"
   />
 </template>
 <script setup lang="ts">

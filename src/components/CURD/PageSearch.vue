@@ -1,9 +1,9 @@
 <template>
   <el-card
-    shadow="never"
-    class="mb-[10px]"
     v-show="visible"
     v-hasPerm="[`${searchConfig.pageName}:query`]"
+    shadow="never"
+    class="mb-[10px]"
   >
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <template v-for="(item, index) in formItems" :key="item.prop">
@@ -13,7 +13,7 @@
           :prop="item.prop"
         >
           <!-- Label -->
-          <template #label v-if="item.tips">
+          <template v-if="item.tips" #label>
             <span>
               {{ item.label }}
               <el-tooltip
@@ -41,8 +41,8 @@
             <div class="flex-center">
               <el-tag
                 v-for="tag in inputTagMap[item.prop].data"
-                class="mr-2"
                 :key="tag"
+                class="mr-2"
                 :closable="true"
                 v-bind="inputTagMap[item.prop].tagAttrs"
                 @close="handleCloseTag(item.prop, tag)"

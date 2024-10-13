@@ -41,9 +41,9 @@
             {{ item.title }}
           </li>
         </ul>
-        <div class="search-space" v-else>暂无数据</div>
+        <div v-else class="search-space">暂无数据</div>
       </div>
-      <template #footer></template>
+      <template #footer />
     </el-dialog>
   </div>
 </template>

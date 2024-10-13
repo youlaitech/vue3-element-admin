@@ -2,36 +2,35 @@ import request from "@/utils/request";
 
 const ROLE_BASE_URL = "/api/v1/roles";
 
-class RoleAPI {
+const RoleAPI = {
   /** 获取角色分页数据 */
-  static getPage(queryParams?: RolePageQuery) {
+  getPage(queryParams?: RolePageQuery) {
     return request<any, PageResult<RolePageVO[]>>({
       url: `${ROLE_BASE_URL}/page`,
       method: "get",
       params: queryParams,
     });
-  }
+  },
 
   /** 获取角色下拉数据源 */
-  static getOptions() {
+  getOptions() {
     return request<any, OptionType[]>({
       url: `${ROLE_BASE_URL}/options`,
       method: "get",
     });
-  }
-
+  },
   /**
    * 获取角色的菜单ID集合
    *
    * @param roleId 角色ID
    * @returns 角色的菜单ID集合
    */
-  static getRoleMenuIds(roleId: number) {
+  getRoleMenuIds(roleId: number) {
     return request<any, number[]>({
       url: `${ROLE_BASE_URL}/${roleId}/menuIds`,
       method: "get",
     });
-  }
+  },
 
   /**
    * 分配菜单权限
@@ -39,13 +38,13 @@ class RoleAPI {
    * @param roleId 角色ID
    * @param data 菜单ID集合
    */
-  static updateRoleMenus(roleId: number, data: number[]) {
+  updateRoleMenus(roleId: number, data: number[]) {
     return request({
       url: `${ROLE_BASE_URL}/${roleId}/menus`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /**
    * 获取角色表单数据
@@ -53,21 +52,21 @@ class RoleAPI {
    * @param id 角色ID
    * @returns 角色表单数据
    */
-  static getFormData(id: number) {
+  getFormData(id: number) {
     return request<any, RoleForm>({
       url: `${ROLE_BASE_URL}/${id}/form`,
       method: "get",
     });
-  }
+  },
 
   /** 添加角色 */
-  static add(data: RoleForm) {
+  add(data: RoleForm) {
     return request({
       url: `${ROLE_BASE_URL}`,
       method: "post",
       data: data,
     });
-  }
+  },
 
   /**
    * 更新角色
@@ -75,26 +74,26 @@ class RoleAPI {
    * @param id 角色ID
    * @param data 角色表单数据
    */
-  static update(id: number, data: RoleForm) {
+  update(id: number, data: RoleForm) {
     return request({
       url: `${ROLE_BASE_URL}/${id}`,
       method: "put",
       data: data,
     });
-  }
+  },
 
   /**
    * 批量删除角色，多个以英文逗号(,)分割
    *
    * @param ids 角色ID字符串，多个以英文逗号(,)分割
    */
-  static deleteByIds(ids: string) {
+  deleteByIds(ids: string) {
     return request({
       url: `${ROLE_BASE_URL}/${ids}`,
       method: "delete",
     });
-  }
-}
+  },
+};
 
 export default RoleAPI;
 
