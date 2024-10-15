@@ -619,6 +619,19 @@ function handlePrevClick() {
 /** 下一步 */
 function handleNextClick() {
   if (active.value === 0) {
+    //这里需要校验基础配置
+    const { tableName, packageName, businessName, moduleName, entityName } =
+      genConfigFormData.value;
+    if (
+      !tableName ||
+      !packageName ||
+      !businessName ||
+      !moduleName ||
+      !entityName
+    ) {
+      ElMessage.error("表名、业务名、包名、模块名、实体名不能为空");
+      return;
+    }
     initSort();
   }
   if (active.value === 1) {
