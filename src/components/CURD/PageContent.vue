@@ -947,7 +947,7 @@ function handleFilterChange(newFilters: any) {
   emit("filterChange", filterParams);
 }
 
-// 获取涮选条件
+// 获取筛选条件
 function getFilterParams() {
   return filterParams;
 }
