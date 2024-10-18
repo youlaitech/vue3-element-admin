@@ -699,7 +699,10 @@ async function handleOpenDialog(tableName: string) {
   currentTableName.value = tableName;
   // 获取字典数据
   DictAPI.getList().then((data) => {
-    dictOptions.value = data;
+    dictOptions.value = data.map((item) => ({
+      label: item.name,
+      value: item.dictCode,
+    }));
     loading.value = true;
     GeneratorAPI.getGenConfig(tableName)
       .then((data) => {
