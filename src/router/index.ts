@@ -87,11 +87,4 @@ export function setupRouter(app: App<Element>) {
   app.use(router);
 }
 
-/**
- * 重置路由
- */
-export function resetRouter() {
-  router.replace({ path: "/login" });
-}
-
 export default router;
