@@ -8,12 +8,11 @@ declare module "vue" {
   export interface GlobalComponents {
     AppLink: (typeof import("./../components/AppLink/index.vue"))["default"];
     AppMain: (typeof import("./../layout/components/AppMain/index.vue"))["default"];
-    VisitTrend: (typeof import("./../views/dashboard/components/VisitTrend.vue"))["default"];
     Breadcrumb: (typeof import("./../components/Breadcrumb/index.vue"))["default"];
     CopyButton: (typeof import("./../components/CopyButton/index.vue"))["default"];
     CURD: (typeof import("./../components/CURD/index.vue"))["default"];
-    Dictionary: (typeof import("./../components/Dictionary/index.vue"))["default"];
-    DictLabel: (typeof import("./../components/Dictionary/DictLabel.vue"))["default"];
+    Dict: (typeof import("./../components/Dict/index.vue"))["default"];
+    DictLabel: (typeof import("./../components/Dict/DictLabel.vue"))["default"];
     ElBacktop: (typeof import("element-plus/es"))["ElBacktop"];
     ElBreadcrumb: (typeof import("element-plus/es"))["ElBreadcrumb"];
     ElBreadcrumbItem: (typeof import("element-plus/es"))["ElBreadcrumbItem"];
@@ -93,7 +92,7 @@ declare module "vue" {
     TagsView: (typeof import("./../layout/components/TagsView/index.vue"))["default"];
     ThemeColorPicker: (typeof import("./../layout/components/Settings/components/ThemeColorPicker.vue"))["default"];
     FileUpload: (typeof import("./../components/Upload/FileUpload.vue"))["default"];
-    ImageUpload: (typeof import("./../components/Upload/ImageUpload.vue"))["default"];
+    MultiImageUpload: (typeof import("./../components/Upload/MultiImageUpload.vue"))["default"];
     SingleImageUpload: (typeof import("./../components/Upload/SingleImageUpload.vue"))["default"];
     WangEditor: (typeof import("./../components/WangEditor/index.vue"))["default"];
   }
