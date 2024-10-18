@@ -30,10 +30,10 @@
     <el-dropdown class="nav-action-item" trigger="click">
       <div class="flex-center h100% p10px">
         <img
-          :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'"
+          :src="userStore.userInfo.avatar"
           class="rounded-full mr-10px w24px h24px"
         />
-        <span>{{ userStore.user.username }}</span>
+        <span>{{ userStore.userInfo.username }}</span>
       </div>
       <template #dropdown>
         <el-dropdown-menu>
@@ -65,14 +65,15 @@
   </div>
 </template>
 <script setup lang="ts">
+import defaultSettings from "@/settings";
+import { DeviceEnum } from "@/enums/DeviceEnum";
+
 import {
   useAppStore,
   useTagsViewStore,
   useUserStore,
   useSettingsStore,
 } from "@/store";
-import defaultSettings from "@/settings";
-import { DeviceEnum } from "@/enums/DeviceEnum";
 
 const appStore = useAppStore();
 const tagsViewStore = useTagsViewStore();
@@ -81,16 +82,19 @@ const settingStore = useSettingsStore();
 
 const route = useRoute();
 const router = useRouter();
+const { isFullscreen, toggle } = useFullscreen();
 const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE);
 
-const { isFullscreen, toggle } = useFullscreen();
-
-/** 打开个人中心 */
+/**
+ * 打开个人中心页面
+ */
 function handleOpenUserProfile() {
   router.push({ name: "Profile" });
 }
 
-/* 注销 */
+/**
+ * 注销登出
+ */
 function logout() {
   ElMessageBox.confirm("确定注销并退出系统吗？", "提示", {
     confirmButtonText: "确定",
