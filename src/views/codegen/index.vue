@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="search-bar">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -461,8 +461,8 @@ import GeneratorAPI, {
   FieldConfig,
 } from "@/api/codegen";
 
-import DictAPI from "@/api/dict";
-import MenuAPI from "@/api/menu";
+import DictAPI from "@/api/system/dict";
+import MenuAPI from "@/api/system/menu";
 
 interface TreeNode {
   label: string;

@@ -1,4 +1,4 @@
-import UserAPI, { type UserForm } from "@/api/user";
+import UserAPI, { type UserForm } from "@/api/system/user";
 import type { IModalConfig } from "@/components/CURD/types";
 import { DeviceEnum } from "@/enums/DeviceEnum";
 import { useAppStore } from "@/store";

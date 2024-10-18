@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="search-bar">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -24,7 +24,7 @@
       </el-form>
     </div>
 
-    <el-card shadow="never" class="table-container">
+    <el-card shadow="never" class="table-wrapper">
       <template #header>
         <el-button type="success" @click="handleOpenDialog()">
           <template #icon><Plus /></template>
@@ -237,8 +237,12 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/role";
-import MenuAPI from "@/api/menu";
+import RoleAPI, {
+  RolePageVO,
+  RoleForm,
+  RolePageQuery,
+} from "@/api/system/role";
+import MenuAPI from "@/api/system/menu";
 
 const queryFormRef = ref(ElForm);
 const roleFormRef = ref(ElForm);

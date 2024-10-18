@@ -8,12 +8,8 @@ function setToken(token: string) {
   return localStorage.setItem(TOKEN_KEY, token);
 }
 
-function removeToken() {
+function clearToken() {
   return localStorage.removeItem(TOKEN_KEY);
 }
 
-function isLogin(): boolean {
-  return !!getToken();
-}
-
-export { getToken, setToken, removeToken, isLogin };
+export { getToken, setToken, clearToken };

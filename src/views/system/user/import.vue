@@ -65,7 +65,7 @@
 <script lang="ts" setup>
 import { type UploadUserFile } from "element-plus";
 
-import UserAPI from "@/api/user";
+import UserAPI from "@/api/system/user";
 
 const props = defineProps({
   visible: {

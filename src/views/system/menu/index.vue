@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="search-bar">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -23,7 +23,7 @@
       </el-form>
     </div>
 
-    <el-card shadow="never" class="table-container">
+    <el-card shadow="never" class="table-wrapper">
       <template #header>
         <el-button
           v-hasPerm="['sys:menu:add']"
@@ -463,7 +463,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import MenuAPI, { MenuQuery, MenuForm, MenuVO } from "@/api/menu";
+import MenuAPI, { MenuQuery, MenuForm, MenuVO } from "@/api/system/menu";
 import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
 
 const queryFormRef = ref(ElForm);

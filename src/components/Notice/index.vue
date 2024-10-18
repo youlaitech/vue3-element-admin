@@ -184,7 +184,7 @@
 </template>
 
 <script setup lang="ts">
-import NoticeAPI, { NoticePageVO } from "@/api/notice";
+import NoticeAPI, { NoticePageVO } from "@/api/system/notice";
 import WebSocketManager from "@/utils/websocket";
 import router from "@/router";
 

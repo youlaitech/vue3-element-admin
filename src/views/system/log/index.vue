@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="search-bar">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -84,7 +84,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import LogAPI, { LogPageVO, LogPageQuery } from "@/api/log";
+import LogAPI, { LogPageVO, LogPageQuery } from "@/api/system/log";
 
 const queryFormRef = ref(ElForm);
 

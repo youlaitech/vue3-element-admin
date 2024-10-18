@@ -2,10 +2,10 @@ import axios, {
   type InternalAxiosRequestConfig,
   type AxiosResponse,
 } from "axios";
+import qs from "qs";
 import { useUserStoreHook } from "@/store/modules/user";
 import { ResultEnum } from "@/enums/ResultEnum";
 import { getToken } from "@/utils/auth";
-import qs from "qs";
 
 // 创建 axios 实例
 const service = axios.create({
@@ -51,7 +51,7 @@ service.interceptors.response.use(
     return Promise.reject(new Error(msg || "Error"));
   },
   (error: any) => {
-    // 异常处理
+    // 异常处理 非 2xx 状态码 会进入这里
     if (error.response.data) {
       const { code, msg } = error.response.data;
       if (code === ResultEnum.TOKEN_INVALID) {
@@ -61,7 +61,7 @@ service.interceptors.response.use(
           type: "info",
         });
         useUserStoreHook()
-          .resetToken()
+          .clearUserSession()
           .then(() => {
             location.reload();
           });
@@ -73,5 +73,4 @@ service.interceptors.response.use(
   }
 );
 
-// 导出 axios 实例
 export default service;

@@ -9,7 +9,7 @@
 
       <!-- 用户列表 -->
       <el-col :lg="20" :xs="24">
-        <div class="search-container">
+        <div class="search-bar">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true">
             <el-form-item label="关键字" prop="keywords">
               <el-input
@@ -59,7 +59,7 @@
           </el-form>
         </div>
 
-        <el-card shadow="never" class="table-container">
+        <el-card shadow="never" class="table-wrapper">
           <template #header>
             <div class="flex-x-between">
               <div>
@@ -238,7 +238,7 @@
         </el-form-item>
 
         <el-form-item label="性别" prop="gender">
-          <dictionary v-model="formData.gender" code="gender" />
+          <Dict v-model="formData.gender" code="gender" />
         </el-form-item>
 
         <el-form-item label="角色" prop="roleIds">
@@ -302,9 +302,13 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/user";
-import DeptAPI from "@/api/dept";
-import RoleAPI from "@/api/role";
+import UserAPI, {
+  UserForm,
+  UserPageQuery,
+  UserPageVO,
+} from "@/api/system/user";
+import DeptAPI from "@/api/system/dept";
+import RoleAPI from "@/api/system/role";
 
 import DeptTree from "./dept-tree.vue";
 import UserImport from "./import.vue";

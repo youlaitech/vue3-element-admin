@@ -1,7 +1,7 @@
 <!-- 字典数据 -->
 <template>
   <div class="app-container">
-    <div class="search-container mt-5">
+    <div class="search-bar mt-5">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -176,7 +176,7 @@ import DictDataAPI, {
   DictDataPageQuery,
   DictDataPageVO,
   DictDataForm,
-} from "@/api/dict-data";
+} from "@/api/system/dict-data";
 
 const route = useRoute();
 

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="search-bar">
       <el-form
         ref="queryFormRef"
         :model="queryParams"
@@ -40,7 +40,7 @@
       </el-form>
     </div>
 
-    <el-card shadow="never" class="table-container">
+    <el-card shadow="never" class="table-wrapper">
       <template #header>
         <el-button
           v-hasPerm="['sys:notice:add']"
@@ -222,18 +222,10 @@
           />
         </el-form-item>
         <el-form-item label="通知类型" prop="type">
-          <dictionary
-            v-model="formData.type"
-            type="button"
-            code="notice_type"
-          />
+          <Dict v-model="formData.type" type="button" code="notice_type" />
         </el-form-item>
         <el-form-item label="通知等级" prop="level">
-          <dictionary
-            v-model="formData.level"
-            type="button"
-            code="notice_level"
-          />
+          <Dict v-model="formData.level" type="button" code="notice_level" />
         </el-form-item>
         <el-form-item label="目标类型" prop="targetType">
           <el-radio-group v-model="formData.targetType">
@@ -283,8 +275,8 @@ import NoticeAPI, {
   NoticePageVO,
   NoticeForm,
   NoticePageQuery,
-} from "@/api/notice";
-import UserAPI from "@/api/user";
+} from "@/api/system/notice";
+import UserAPI from "@/api/system/user";
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);

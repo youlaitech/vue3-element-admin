@@ -1,7 +1,7 @@
 <!-- 字典 -->
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="search-bar">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -172,7 +172,11 @@ defineOptions({
   inherititems: false,
 });
 
-import DictAPI, { DictPageQuery, DictPageVO, DictForm } from "@/api/dict";
+import DictAPI, {
+  DictPageQuery,
+  DictPageVO,
+  DictForm,
+} from "@/api/system/dict";
 
 import router from "@/router";
 

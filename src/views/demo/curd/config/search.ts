@@ -1,4 +1,4 @@
-import DeptAPI from "@/api/dept";
+import DeptAPI from "@/api/system/dept";
 import type { ISearchConfig } from "@/components/CURD/types";
 
 const searchConfig: ISearchConfig = {

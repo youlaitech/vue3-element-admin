@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="search-bar">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="通知标题" prop="title">
           <el-input
@@ -27,7 +27,7 @@
       </el-form>
     </div>
 
-    <el-card shadow="never" class="table-container">
+    <el-card shadow="never" class="table-wrapper">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
@@ -105,7 +105,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import NoticeAPI, { NoticePageVO, NoticePageQuery } from "@/api/notice";
+import NoticeAPI, { NoticePageVO, NoticePageQuery } from "@/api/system/notice";
 
 const queryFormRef = ref(ElForm);
 const noticeDetailRef = ref();

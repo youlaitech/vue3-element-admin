@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import NoticeAPI, { NoticeDetailVO } from "@/api/notice";
+import NoticeAPI, { NoticeDetailVO } from "@/api/system/notice";
 
 const visible = ref(false);
 const notice = ref<NoticeDetailVO>({});

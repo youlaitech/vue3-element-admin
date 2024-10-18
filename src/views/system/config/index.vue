@@ -1,7 +1,7 @@
 <!-- 系统配置 -->
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="search-bar">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -28,7 +28,7 @@
       </el-form>
     </div>
 
-    <el-card shadow="never" class="table-container">
+    <el-card shadow="never" class="table-wrapper">
       <template #header>
         <el-button
           v-hasPerm="['sys:config:add']"
@@ -187,7 +187,7 @@ import ConfigAPI, {
   ConfigPageVO,
   ConfigForm,
   ConfigPageQuery,
-} from "@/api/config";
+} from "@/api/system/config";
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);

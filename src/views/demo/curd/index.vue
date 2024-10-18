@@ -57,7 +57,7 @@
         @submit-click="handleSubmitClick"
       >
         <template #gender="scope">
-          <dictionary v-model="scope.formData[scope.prop]" code="gender" />
+          <Dict v-model="scope.formData[scope.prop]" code="gender" />
         </template>
       </page-modal>
 
@@ -68,7 +68,7 @@
         @submit-click="handleSubmitClick"
       >
         <template #gender="scope">
-          <dictionary v-model="scope.formData[scope.prop]" code="gender" />
+          <Dict v-model="scope.formData[scope.prop]" code="gender" />
         </template>
       </page-modal>
     </template>
@@ -89,9 +89,9 @@
 </template>
 
 <script setup lang="ts">
-import UserAPI from "@/api/user";
-import DeptAPI from "@/api/dept";
-import RoleAPI from "@/api/role";
+import UserAPI from "@/api/system/user";
+import DeptAPI from "@/api/system/dept";
+import RoleAPI from "@/api/system/role";
 import type { IObject, IOperatData } from "@/components/CURD/types";
 import usePage from "@/components/CURD/usePage";
 import addModalConfig from "./config/add";

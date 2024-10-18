@@ -8,7 +8,7 @@
           <div class="flex h-full items-center">
             <img
               class="w-20 h-20 mr-5 rounded-full"
-              :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'"
+              :src="userStore.userInfo.avatar + '?imageView2/1/w/80/h/80'"
             />
             <div>
               <p>{{ greetings }}</p>
@@ -195,12 +195,14 @@ defineOptions({
   inheritAttrs: false,
 });
 
+import VisitTrend from "./components/VisitTrend.vue";
+
 import WebSocketManager from "@/utils/websocket";
 import router from "@/router";
 
 import { useUserStore } from "@/store/modules/user";
-import StatsAPI, { VisitStatsVO } from "@/api/log";
-import NoticeAPI, { NoticePageVO } from "@/api/notice";
+import StatsAPI, { VisitStatsVO } from "@/api/system/log";
+import NoticeAPI, { NoticePageVO } from "@/api/system/notice";
 
 const noticeDetailRef = ref();
 
@@ -211,11 +213,11 @@ const greetings = computed(() => {
   if (hours >= 6 && hours < 8) {
     return "晨起披衣出草堂，轩窗已自喜微凉🌅！";
   } else if (hours >= 8 && hours < 12) {
-    return "上午好，" + userStore.user.nickname + "！";
+    return "上午好，" + userStore.userInfo.nickname + "！";
   } else if (hours >= 12 && hours < 18) {
-    return "下午好，" + userStore.user.nickname + "！";
+    return "下午好，" + userStore.userInfo.nickname + "！";
   } else if (hours >= 18 && hours < 24) {
-    return "晚上好，" + userStore.user.nickname + "！";
+    return "晚上好，" + userStore.userInfo.nickname + "！";
   } else {
     return "偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！";
   }

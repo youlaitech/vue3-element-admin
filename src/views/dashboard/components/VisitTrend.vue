@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import * as echarts from "echarts";
-import LogAPI, { VisitTrendVO, VisitTrendQuery } from "@/api/log";
+import LogAPI, { VisitTrendVO, VisitTrendQuery } from "@/api/system/log";
 
 const dataRange = ref(1);
 const chart: Ref<echarts.ECharts | null> = ref(null);

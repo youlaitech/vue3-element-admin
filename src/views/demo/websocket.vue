@@ -77,17 +77,18 @@
               :class="{
                 'tip-message': message.type === 'tip',
                 message: message.type !== 'tip',
-                'message--sent': message.sender === userStore.user.username,
-                'message--received': message.sender !== userStore.user.username,
+                'message--sent': message.sender === userStore.userInfo.username,
+                'message--received':
+                  message.sender !== userStore.userInfo.username,
               }"
             >
               <div v-if="message.type != 'tip'" class="message-content">
                 <div
                   :class="{
                     'message-sender':
-                      message.sender === userStore.user.username,
+                      message.sender === userStore.userInfo.username,
                     'message-receiver':
-                      message.sender !== userStore.user.username,
+                      message.sender !== userStore.userInfo.username,
                   }"
                 >
                   {{ message.sender }}
@@ -131,7 +132,7 @@ const queneMessage = ref(
   "hi , " +
     receiver.value +
     " , 我是" +
-    userStore.user.username +
+    userStore.userInfo.username +
     " , 想和你交个朋友 ! "
 );
 
@@ -206,7 +207,7 @@ function sendToAll() {
       body: topicMessage.value,
     });
     messages.value.push({
-      sender: userStore.user.username,
+      sender: userStore.userInfo.username,
       content: topicMessage.value,
     });
   }
@@ -219,7 +220,7 @@ function sendToUser() {
       body: queneMessage.value,
     });
     messages.value.push({
-      sender: userStore.user.username,
+      sender: userStore.userInfo.username,
       content: queneMessage.value,
     });
   }

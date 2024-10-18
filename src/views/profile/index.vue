@@ -190,7 +190,7 @@
           <el-input v-model="userProfileForm.nickname" />
         </el-form-item>
         <el-form-item label="性别">
-          <dictionary v-model="userProfileForm.gender" code="gender" />
+          <Dict v-model="userProfileForm.gender" code="gender" />
         </el-form-item>
       </el-form>
 
@@ -300,7 +300,7 @@ import UserAPI, {
   MobileBindingForm,
   EmailBindingForm,
   UserProfileForm,
-} from "@/api/user";
+} from "@/api/system/user";
 
 import FileAPI from "@/api/file";
 
