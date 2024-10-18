@@ -3,10 +3,8 @@ import type {
   RouteLocationNormalized,
   RouteRecordRaw,
 } from "vue-router";
-
 import NProgress from "@/utils/nprogress";
-import { isLogin } from "@/utils/auth";
-
+import { getToken } from "@/utils/auth";
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
 
@@ -16,22 +14,21 @@ export function setupPermission() {
 
   router.beforeEach(async (to, from, next) => {
     NProgress.start();
-    if (isLogin()) {
-      if (to.path === "/login") {
-        // 如果已登录，跳转到首页
-        next({ path: "/" });
-        NProgress.done();
-      } else {
-        const userStore = useUserStore();
-        const hasRoles =
-          userStore.user.roles && userStore.user.roles.length > 0;
 
-        if (hasRoles) {
-          // 如果未匹配到任何路由，跳转到404页面
+    const isLogin = !!getToken(); // 判断是否登录
+    if (isLogin) {
+      if (to.path === "/login") {
+        // 已登录，访问登录页，跳转到首页
+        next({ path: "/" });
+      } else {
+        const permissionStore = usePermissionStore();
+        // 判断路由是否加载过
+        if (permissionStore.isRoutesLoaded) {
           if (to.matched.length === 0) {
-            next(from.name ? { name: from.name } : "/404");
+            // 路由未匹配，跳转到404
+            next("/404");
           } else {
-            // 如果路由参数中有 title，覆盖路由元信息中的 title
+            // 动态设置页面标题
             const title =
               (to.params.title as string) || (to.query.title as string);
             if (title) {
@@ -40,35 +37,35 @@ export function setupPermission() {
             next();
           }
         } else {
-          const permissionStore = usePermissionStore();
           try {
-            await userStore.getUserInfo();
+            // 生成动态路由
             const dynamicRoutes = await permissionStore.generateRoutes();
             dynamicRoutes.forEach((route: RouteRecordRaw) =>
               router.addRoute(route)
             );
-            next({ ...to, replace: true });
+            next({ ...to, replace: true }); // 添加动态路由后重新导航
           } catch (error) {
             console.error(error);
-            // 移除 token 并重定向到登录页，携带当前页面路由作为跳转参数
-            await userStore.resetToken();
+            // 路由加载失败，重置 token 并重定向到登录页
+            await useUserStore().clearUserSession();
             redirectToLogin(to, next);
             NProgress.done();
           }
         }
       }
     } else {
-      // 未登录
+      // 未登录，判断是否在白名单中
       if (whiteList.includes(to.path)) {
-        next(); // 在白名单，直接进入
+        next();
       } else {
         // 不在白名单，重定向到登录页
         redirectToLogin(to, next);
-        NProgress.done();
+        NProgress.done(); // 关闭进度条
       }
     }
   });
 
+  // 后置守卫，保证每次路由跳转结束时关闭进度条
   router.afterEach(() => {
     NProgress.done();
   });
@@ -90,7 +87,7 @@ export function hasAuth(
   value: string | string[],
   type: "button" | "role" = "button"
 ) {
-  const { roles, perms } = useUserStore().user;
+  const { roles, perms } = useUserStore().userInfo;
 
   // 超级管理员 拥有所有权限
   if (type === "button" && roles.includes("ROOT")) {
