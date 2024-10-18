@@ -1,11 +1,10 @@
 <template>
-  <div class="login-container">
-    <div class="flex-x-between absolute-lt w-full p-2">
-      <div class="flex-center">
-        <el-image :src="logo" style="width: 30px; height: 30px" />
-        <span
-          class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-teal-500 text-transparent bg-clip-text mx-1"
-        >
+  <div class="login">
+    <!-- 登录页头部 -->
+    <div class="login-header">
+      <div class="flex-y-center">
+        <el-image :src="logo" class="logo" />
+        <span class="title">
           {{ defaultSettings.title }}
         </span>
         <el-tag size="small" type="success">
@@ -13,7 +12,7 @@
         </el-tag>
       </div>
 
-      <div class="flex-center">
+      <div class="flex-y-center">
         <el-switch
           v-model="isDark"
           inline-prompt
@@ -25,19 +24,14 @@
       </div>
     </div>
 
-    <!-- 登录表单 -->
+    <!-- 登录页内容 -->
     <div class="login-content">
-      <div class="login-image">
-        <el-image :src="loginImage" style="width: 210px; height: 210px" />
+      <div class="login-img">
+        <el-image :src="loginImage" style="width: 210px" />
       </div>
-      <div class="login-box">
-        <el-form
-          ref="loginFormRef"
-          :model="loginData"
-          :rules="loginRules"
-          class="login-form"
-        >
-          <h2 class="text-xl font-medium text-center flex-center relative">
+      <div class="login-form">
+        <el-form ref="loginFormRef" :model="loginData" :rules="loginRules">
+          <div class="form-title">
             {{ $t("login.login") }}
             <el-dropdown style="position: absolute; right: 0">
               <div class="cursor-pointer">
@@ -65,7 +59,7 @@
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-          </h2>
+          </div>
 
           <!-- 用户名 -->
           <el-form-item prop="username">
@@ -125,7 +119,7 @@
 
               <el-image
                 :src="captchaBase64"
-                class="captcha-image"
+                class="captcha-img"
                 @click="getCaptcha"
               />
             </div>
@@ -152,79 +146,62 @@
             {{ $t("login.login") }}
           </el-button>
 
-          <el-divider>
-            <span class="text-12px">{{ $t("login.otherLoginMethods") }}</span>
-          </el-divider>
-
           <!-- 第三方登录 -->
-          <div class="flex-x-center text-lg color-gray-5">
-            <svg-icon icon-class="wechat" class="cursor-pointer" />
-            <svg-icon icon-class="qq" class="cursor-pointer ml-5" />
-            <svg-icon icon-class="github" class="cursor-pointer ml-5" />
-            <svg-icon icon-class="gitee" class="cursor-pointer ml-5" />
+          <el-divider>
+            <el-text size="small">{{ $t("login.otherLoginMethods") }}</el-text>
+          </el-divider>
+          <div class="third-party-login">
+            <svg-icon icon-class="wechat" class="icon" />
+            <svg-icon icon-class="qq" class="icon" />
+            <svg-icon icon-class="github" class="icon" />
+            <svg-icon icon-class="gitee" class="icon" />
           </div>
         </el-form>
       </div>
     </div>
 
-    <!-- ICP备案 -->
-    <div class="absolute bottom-0 w-full text-center text-12px">
-      <p>
+    <!--  -->
+    <div class="login-footer">
+      <el-text size="small">
         Copyright © 2021 - 2024 youlai.tech All Rights Reserved.
-        <a
+        <el-link
+          :underline="false"
           href="http://beian.miit.gov.cn/"
           target="_blank"
-          rel="noopener noreferrer"
-          class="hover:underline"
         >
           皖ICP备20006496号-2
-        </a>
-      </p>
+        </el-link>
+      </el-text>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// 外部库和依赖
 import { LocationQuery, useRoute } from "vue-router";
 
-// 内部依赖
-import { useSettingsStore, useUserStore } from "@/store";
 import AuthAPI, { type LoginData } from "@/api/auth";
 import router from "@/router";
+
+import type { FormInstance } from "element-plus";
+
 import defaultSettings from "@/settings";
 import { ThemeEnum } from "@/enums/ThemeEnum";
 
-// 类型定义
-import type { FormInstance } from "element-plus";
-
-// 导入 login.scss 文件
-import "@/styles/login.scss";
-
-// 使用导入的依赖和库
+import { useSettingsStore, useUserStore, useDictStore } from "@/store";
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
-const route = useRoute();
-// 窗口高度
-const { height } = useWindowSize();
-// 国际化 Internationalization
-const { t } = useI18n();
+const dictStore = useDictStore();
 
-// 是否暗黑模式
-const isDark = ref(settingsStore.theme === ThemeEnum.DARK);
-// 是否显示 ICP 备案信息
-const icpVisible = ref(true);
-// 按钮 loading 状态
-const loading = ref(false);
-// 是否大写锁定
-const isCapslock = ref(false);
-// 验证码图片Base64字符串
-const captchaBase64 = ref();
-// 登录表单ref
+const route = useRoute();
+const { t } = useI18n();
 const loginFormRef = ref<FormInstance>();
 
-const logo = ref(new URL("../../assets/logo.png", import.meta.url).href);
+const isDark = ref(settingsStore.theme === ThemeEnum.DARK); // 是否暗黑模式
+const loading = ref(false); // 按钮 loading 状态
+const isCapslock = ref(false); // 是否大写锁定
+const captchaBase64 = ref(); // 验证码图片Base64字符串
 
+const logo = ref(new URL("../../assets/logo.png", import.meta.url).href);
 const loginImage = ref(
   new URL("../../assets/images/login-image.svg", import.meta.url).href
 );
@@ -276,13 +253,16 @@ function getCaptcha() {
 }
 
 /** 登录表单提交 */
-function handleLoginSubmit() {
+async function handleLoginSubmit() {
   loginFormRef.value?.validate((valid: boolean) => {
     if (valid) {
       loading.value = true;
       userStore
         .login(loginData.value)
-        .then(() => {
+        .then(async () => {
+          await userStore.getUserInfo();
+          await dictStore.loadDictionaries(); // 需要在路由跳转前加载字典数据，否则会出现字典数据未加载完成导致页面渲染异常
+          // 跳转到登录前的页面
           const { path, queryParams } = parseRedirect();
           router.push({ path: path, query: queryParams });
         })
@@ -296,7 +276,11 @@ function handleLoginSubmit() {
   });
 }
 
-/** 解析 redirect 字符串 为 path 和  queryParams */
+/**
+ * 解析 redirect 字符串 为 path 和  queryParams
+ *
+ * @returns { path: string, queryParams: Record<string, string> } 解析后的 path 和 queryParams
+ */
 function parseRedirect(): {
   path: string;
   queryParams: Record<string, string>;
@@ -315,23 +299,14 @@ function parseRedirect(): {
   return { path, queryParams };
 }
 
-/** 主题切换 */
+// 主题切换
 const toggleTheme = () => {
   const newTheme =
     settingsStore.theme === ThemeEnum.DARK ? ThemeEnum.LIGHT : ThemeEnum.DARK;
   settingsStore.changeTheme(newTheme);
 };
 
-/** 根据屏幕宽度切换设备模式 */
-watchEffect(() => {
-  if (height.value < 600) {
-    icpVisible.value = false;
-  } else {
-    icpVisible.value = true;
-  }
-});
-
-/** 检查输入大小写 */
+// 检查输入大小写
 function checkCapslock(event: KeyboardEvent) {
   // 防止浏览器密码自动填充时报错
   if (event instanceof KeyboardEvent) {
@@ -339,7 +314,7 @@ function checkCapslock(event: KeyboardEvent) {
   }
 }
 
-/** 设置登录凭证 */
+// 设置登录凭证
 const setLoginCredentials = (username: string, password: string) => {
   loginData.value.username = username;
   loginData.value.password = password;
@@ -350,4 +325,163 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background: url("@/assets/images/login-background-light.jpg") no-repeat center
+    right;
+
+  .login-header {
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px;
+
+    .logo {
+      width: 26px;
+      height: 26px;
+    }
+
+    .title {
+      margin: auto 5px;
+      font-size: 26px;
+      font-weight: bold;
+      color: transparent;
+      background: linear-gradient(to right, #3b82f6, #14b8a6);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .login-content {
+    display: flex;
+    width: 850px;
+    overflow: hidden;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: var(--el-box-shadow-light);
+
+    @media (width <= 768px) {
+      flex-direction: column;
+      max-width: 100%;
+      height: 100vh;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .login-img {
+      display: flex;
+      flex: 3;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(60deg, #165dff, #6aa1ff);
+
+      @media (width <= 768px) {
+        display: none;
+      }
+    }
+
+    .login-form {
+      display: flex;
+      flex: 2;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 400px;
+      padding: 30px;
+
+      @media (width <= 768px) {
+        width: 100%;
+        padding: 0 20px;
+      }
+
+      .form-title {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 0;
+        font-size: 20px;
+        text-align: center;
+      }
+
+      .input-wrapper {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      .captcha-img {
+        height: 48px;
+        cursor: pointer;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+      }
+
+      .third-party-login {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        color: var(--el-text-color-secondary);
+
+        *:not(:first-child) {
+          margin-left: 20px;
+        }
+
+        .icon {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .login-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+:deep(.el-form-item) {
+  background: var(--el-input-bg-color);
+  border: 1px solid var(--el-border-color);
+  border-radius: 5px;
+}
+
+:deep(.el-input) {
+  .el-input__wrapper {
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+
+    &.is-focus,
+    &:hover {
+      box-shadow: none !important;
+    }
+
+    input:-webkit-autofill {
+      /* 通过延时渲染背景色变相去除背景颜色 */
+      transition: background-color 1000s ease-in-out 0s;
+    }
+  }
+}
+
+html.dark {
+  .login {
+    background: url("@/assets/images/login-background-dark.jpg") no-repeat
+      center right;
+
+    .login-content {
+      background: transparent;
+      box-shadow: var(--el-box-shadow);
+    }
+  }
+}
+</style>
