@@ -108,9 +108,9 @@ const props = defineProps({
     default: true,
   },
   /**
-   * 单个文件上传大小限制(单位byte)
+   * 单个文件上传大小限制(单位MB)
    */
-  uploadMaxSize: {
+  maxSize: {
     type: Number,
     default: 2 * 1024 * 1024,
   },
