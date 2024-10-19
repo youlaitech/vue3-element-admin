@@ -49,7 +49,7 @@ export default defineMock([
             {
               path: "menu",
               component: "system/menu/index",
-              name: "Menu",
+              name: "SysMenu",
               meta: {
                 title: "菜单管理",
                 icon: "menu",
@@ -79,6 +79,84 @@ export default defineMock([
               meta: {
                 title: "字典管理",
                 icon: "dict",
+                hidden: false,
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
+            {
+              path: "log",
+              component: "system/log/index",
+              name: "Log",
+              meta: {
+                title: "系统日志",
+                icon: "document",
+                hidden: false,
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
+            {
+              path: "dict-data",
+              component: "system/dict/data",
+              name: "DictData",
+              meta: {
+                title: "字典数据",
+                icon: "",
+                hidden: true,
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
+            {
+              path: "config",
+              component: "system/config/index",
+              name: "Config",
+              meta: {
+                title: "系统配置",
+                icon: "setting",
+                hidden: false,
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
+            {
+              path: "notice",
+              component: "system/notice/index",
+              name: "Notice",
+              meta: {
+                title: "通知公告",
+                icon: "",
+                hidden: false,
+                alwaysShow: false,
+                params: null,
+              },
+            },
+          ],
+        },
+        {
+          path: "/codegen",
+          component: "Layout",
+          name: "/codegen",
+          meta: {
+            title: "系统工具",
+            icon: "menu",
+            hidden: false,
+            alwaysShow: false,
+            params: null,
+          },
+          children: [
+            {
+              path: "codegen",
+              component: "codegen/index",
+              name: "Codegen",
+              meta: {
+                title: "代码生成",
+                icon: "code",
                 hidden: false,
                 keepAlive: true,
                 alwaysShow: false,
@@ -132,7 +210,7 @@ export default defineMock([
               component: "demo/internal-doc",
               name: "InternalDoc",
               meta: {
-                title: "平台文档(内嵌)",
+                title: "document",
                 icon: "document",
                 hidden: false,
                 alwaysShow: false,
@@ -144,7 +222,7 @@ export default defineMock([
               name: "Https://juejin.cn/post/7228990409909108793",
               meta: {
                 title: "平台文档(外链)",
-                icon: "el-icon-Link",
+                icon: "link",
                 hidden: false,
                 alwaysShow: false,
                 params: null,
@@ -285,11 +363,11 @@ export default defineMock([
               },
             },
             {
-              path: "icon-selector",
-              component: "demo/icon-selector",
-              name: "IconSelector",
+              path: "dict-demo",
+              component: "demo/dictionary",
+              name: "DictDemo",
               meta: {
-                title: "图标选择器",
+                title: "字典组件",
                 icon: "",
                 hidden: false,
                 keepAlive: true,
@@ -298,11 +376,11 @@ export default defineMock([
               },
             },
             {
-              path: "dict-demo",
-              component: "demo/dict",
-              name: "DictDemo",
+              path: "icon-selector",
+              component: "demo/icon-selector",
+              name: "IconSelector",
               meta: {
-                title: "字典组件",
+                title: "图标选择器",
                 icon: "",
                 hidden: false,
                 keepAlive: true,
