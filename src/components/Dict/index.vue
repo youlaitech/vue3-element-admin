@@ -52,7 +52,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onBeforeMount } from "vue";
 import { useDictStore } from "@/store";
 
 const dictStore = useDictStore();
@@ -109,7 +108,24 @@ watch(
     if (props.type === "checkbox") {
       selectedValue.value = Array.isArray(newValue) ? newValue : [];
     } else {
-      selectedValue.value = newValue;
+      selectedValue.value = newValue?.toString() || "";
+    }
+  },
+  { immediate: true }
+);
+
+// 监听 options 变化并重新匹配 selectedValue
+watch(
+  () => options.value,
+  (newOptions) => {
+    // options 加载后，确保 selectedValue 可以正确匹配到 options
+    if (newOptions.length > 0 && selectedValue.value !== undefined) {
+      const matchedOption = newOptions.find(
+        (option) => option.value === selectedValue.value
+      );
+      if (!matchedOption) {
+        selectedValue.value = ""; // 如果找不到匹配项，清空选中
+      }
     }
   }
 );
@@ -120,17 +136,7 @@ function handleChange(val: any) {
 }
 
 // 获取字典数据
-onBeforeMount(async () => {
-  options.value = await dictStore.getDictionary(props.code);
-
-  if (props.modelValue !== undefined) {
-    if (props.type === "checkbox") {
-      selectedValue.value = Array.isArray(props.modelValue)
-        ? props.modelValue
-        : [];
-    } else {
-      selectedValue.value = props.modelValue;
-    }
-  }
+onMounted(() => {
+  options.value = dictStore.getDictionary(props.code);
 });
 </script>
