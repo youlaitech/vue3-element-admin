@@ -2,7 +2,7 @@
 <script setup lang="ts">
 const stringValue = ref("1"); // 性别(值为String)
 const numberValue = ref(1); // 性别(值为Number)
-const arraryValue = ref(["1", "2"]); // 性别(值为Array)
+const arrayValue = ref(["1", "2"]); // 性别(值为Array)
 </script>
 
 <template>
@@ -38,7 +38,7 @@ const arraryValue = ref(["1", "2"]); // 性别(值为Array)
       </el-form-item>
 
       <el-form-item label="复选框字典">
-        <dict v-model="arraryValue" type="checkbox" code="gender" />
+        <dict v-model="arrayValue" type="checkbox" code="gender" />
         <el-link :underline="false" type="success" class="ml-5">
           值为Number: const value = ref(["1", "2"]);
         </el-link>
