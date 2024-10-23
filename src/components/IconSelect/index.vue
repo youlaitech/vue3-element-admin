@@ -111,12 +111,15 @@ const elementIcons = ref<string[]>(Object.keys(ElementPlusIconsVue));
 const selectedIcon = defineModel("modelValue", {
   type: String,
   required: true,
+  default: "",
 });
 
 const filterText = ref("");
 const filteredSvgIcons = ref<string[]>([]);
 const filteredElementIcons = ref<string[]>(elementIcons.value);
-const isElementIcon = computed(() => selectedIcon.value.startsWith("el-icon-"));
+const isElementIcon = computed(() => {
+  return selectedIcon.value && selectedIcon.value.startsWith("el-icon");
+});
 
 function loadIcons() {
   const icons = import.meta.glob("../../assets/icons/*.svg");
