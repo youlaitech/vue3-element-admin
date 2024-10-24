@@ -24,6 +24,15 @@
                 </template>
               </template>
               <template #suffix>
+                <!-- 清空按钮 -->
+                <el-icon
+                  v-if="selectedIcon"
+                  style="margin-right: 8px"
+                  @click.stop="clearSelectedIcon"
+                >
+                  <CircleClose />
+                </el-icon>
+
                 <el-icon
                   :style="{
                     transform: popoverVisible ? 'rotate(180deg)' : 'rotate(0)',
@@ -164,6 +173,13 @@ function togglePopover() {
 onClickOutside(iconSelectRef, () => (popoverVisible.value = false), {
   ignore: [popoverContentRef],
 });
+
+/**
+ * 清空已选图标
+ */
+function clearSelectedIcon() {
+  selectedIcon.value = "";
+}
 
 onMounted(() => {
   loadIcons();
