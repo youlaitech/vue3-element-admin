@@ -30,7 +30,7 @@ const arrayValue = ref(["1", "2"]); // 性别(值为Array)
         </el-link>
       </el-form-item>
 
-      <el-form-item label="单字典">
+      <el-form-item label="单选框字典">
         <dict v-model="numberValue" type="radio" code="gender" />
         <el-link :underline="false" type="success" class="ml-5">
           值为Number: const value = ref(1);
@@ -40,7 +40,7 @@ const arrayValue = ref(["1", "2"]); // 性别(值为Array)
       <el-form-item label="复选框字典">
         <dict v-model="arrayValue" type="checkbox" code="gender" />
         <el-link :underline="false" type="success" class="ml-5">
-          值为Number: const value = ref(["1", "2"]);
+          值为Array: const value = ref(["1", "2"]);
         </el-link>
       </el-form-item>
     </el-form>
