@@ -60,18 +60,18 @@ declare module "vue" {
     ElUpload: (typeof import("element-plus/es"))["ElUpload"];
     ElWatermark: (typeof import("element-plus/es"))["ElWatermark"];
     ElSkeleton: (typeof import("element-plus/es"))["ElSkeleton"];
+    FileUpload: (typeof import("./../components/Upload/FileUpload.vue"))["default"];
     Form: (typeof import("./../components/CURD/Form.vue"))["default"];
-    FunnelChart: (typeof import("./../views/dashboard/components/FunnelChart.vue"))["default"];
+    Fullscreen: (typeof import("./../components/Fullscreen/index.vue"))["default"];
     GithubCorner: (typeof import("./../components/GithubCorner/index.vue"))["default"];
     Hamburger: (typeof import("./../components/Hamburger/index.vue"))["default"];
     IconSelect: (typeof import("./../components/IconSelect/index.vue"))["default"];
     LangSelect: (typeof import("./../components/LangSelect/index.vue"))["default"];
     MenuSearch: (typeof import("./../components/MenuSearch/index.vue"))["default"];
-    Notice: (typeof import("./../components/Notice/index.vue"))["default"];
-    NoticeDetail: (typeof import("../views/system/notice/notice-detail.vue"))["default"];
+    MultiImageUpload: (typeof import("./../components/Upload/MultiImageUpload.vue"))["default"];
     LayoutSelect: (typeof import("./../layout/components/Settings/components/LayoutSelect.vue"))["default"];
-    NavBar: (typeof import("./../layout/components/NavBar/index.vue"))["default"];
-    NavbarAction: (typeof import("./../layout/components/NavBar/components/NavbarAction.vue"))["default"];
+    Navbar: (typeof import("./../layout/components/Navbar/index.vue"))["default"];
+    NavbarRight: (typeof import("./../layout/components/Navbar/NavbarRight.vue"))["default"];
     PageContent: (typeof import("./../components/CURD/PageContent.vue"))["default"];
     PageForm: (typeof import("./../components/CURD/PageForm.vue"))["default"];
     PageModal: (typeof import("./../components/CURD/PageModal.vue"))["default"];
@@ -91,8 +91,6 @@ declare module "vue" {
     TableSelect: (typeof import("./../components/TableSelect/index.vue"))["default"];
     TagsView: (typeof import("./../layout/components/TagsView/index.vue"))["default"];
     ThemeColorPicker: (typeof import("./../layout/components/Settings/components/ThemeColorPicker.vue"))["default"];
-    FileUpload: (typeof import("./../components/Upload/FileUpload.vue"))["default"];
-    MultiImageUpload: (typeof import("./../components/Upload/MultiImageUpload.vue"))["default"];
     SingleImageUpload: (typeof import("./../components/Upload/SingleImageUpload.vue"))["default"];
     WangEditor: (typeof import("./../components/WangEditor/index.vue"))["default"];
   }

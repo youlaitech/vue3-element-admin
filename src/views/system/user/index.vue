@@ -307,11 +307,12 @@ import UserAPI, {
   UserPageQuery,
   UserPageVO,
 } from "@/api/system/user";
+
 import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
 
-import DeptTree from "./dept-tree.vue";
-import UserImport from "./import.vue";
+import DeptTree from "./components/DeptTree.vue";
+import UserImport from "./components/UserImport.vue";
 
 const queryFormRef = ref(ElForm);
 const userFormRef = ref(ElForm);
@@ -320,17 +321,17 @@ const loading = ref(false);
 const removeIds = ref([]);
 const total = ref(0);
 const pageData = ref<UserPageVO[]>();
-/** 部门下拉选项 */
+// 部门下拉数据源
 const deptOptions = ref<OptionType[]>();
-/** 角色下拉选项 */
+// 角色下拉数据源
 const roleOptions = ref<OptionType[]>();
-/** 用户查询参数  */
+// 用户查询参数
 const queryParams = reactive<UserPageQuery>({
   pageNum: 1,
   pageSize: 10,
 });
 
-/**  用户弹窗对象  */
+// 用户弹窗
 const dialog = reactive({
   visible: false,
   title: "",
@@ -393,7 +394,11 @@ function handleSelectionChange(selection: any) {
   removeIds.value = selection.map((item: any) => item.id);
 }
 
-/** 重置密码 */
+/**
+ * 重置密码
+ *
+ *
+ */
 function hancleResetPassword(row: { [key: string]: any }) {
   ElMessageBox.prompt(
     "请输入用户「" + row.username + "」的新密码",

@@ -188,6 +188,7 @@ import defaultSettings from "@/settings";
 import { ThemeEnum } from "@/enums/ThemeEnum";
 
 import { useSettingsStore, useUserStore, useDictStore } from "@/store";
+
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
 const dictStore = useDictStore();
@@ -351,7 +352,7 @@ onMounted(() => {
 
     .title {
       margin: auto 5px;
-      font-size: 26px;
+      font-size: 24px;
       font-weight: bold;
       color: transparent;
       background: linear-gradient(to right, #3b82f6, #14b8a6);
