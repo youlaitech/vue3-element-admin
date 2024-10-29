@@ -1,15 +1,16 @@
+<!-- 汉堡按钮组件：展开/收缩菜单  -->
 <template>
   <div
     class="px-[15px] flex items-center justify-center color-[var(--el-text-color-regular)]"
     @click="toggleClick"
   >
     <svg-icon
-      class="hamburger"
-      :class="{ 'is-active': isActive }"
       icon-class="collapse"
+      :class="{ hamburger: true, 'is-active': isActive }"
     />
   </div>
 </template>
+
 <script setup lang="ts">
 defineProps({
   isActive: {
