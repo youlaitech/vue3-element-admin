@@ -257,7 +257,7 @@ export interface UserPageVO {
   /** 用户邮箱 */
   email?: string;
   /** 性别 */
-  genderLabel?: string;
+  gender?: number;
   /** 用户ID */
   id?: number;
   /** 手机号 */

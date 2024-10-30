@@ -59,41 +59,47 @@
           </el-form>
         </div>
 
-        <el-card shadow="never" class="table-wrapper">
-          <template #header>
-            <div class="flex-x-between">
-              <div>
-                <el-button
-                  v-hasPerm="['sys:user:add']"
-                  type="success"
-                  @click="handleOpenDialog()"
-                >
-                  <template #icon><Plus /></template>
-                  新增
-                </el-button>
-                <el-button
-                  v-hasPerm="['sys:user:delete']"
-                  type="danger"
-                  :disabled="removeIds.length === 0"
-                  @click="handleDelete()"
-                >
-                  <template #icon><Delete /></template>
-                  删除
-                </el-button>
-              </div>
-              <div>
-                <el-button class="ml-3" @click="handleOpenImportDialog">
-                  <template #icon><Upload /></template>
-                  导入
-                </el-button>
-
-                <el-button class="ml-3" @click="handleExport">
-                  <template #icon><Download /></template>
-                  导出
-                </el-button>
-              </div>
+        <el-card shadow="never">
+          <div class="flex-x-between mb-10px">
+            <div>
+              <el-button
+                v-hasPerm="['sys:user:add']"
+                type="success"
+                @click="handleOpenDialog()"
+              >
+                <template #icon><Plus /></template>
+                新增
+              </el-button>
+              <el-button
+                v-hasPerm="['sys:user:delete']"
+                type="danger"
+                :disabled="removeIds.length === 0"
+                @click="handleDelete()"
+              >
+                <template #icon><Delete /></template>
+                删除
+              </el-button>
             </div>
-          </template>
+            <div>
+              <el-button
+                v-hasPerm="['sys:user:import']"
+                type="default"
+                icon="upload"
+                @click="handleOpenImportDialog"
+              >
+                导入
+              </el-button>
+
+              <el-button
+                v-hasPerm="['sys:user:export']"
+                type="default"
+                icon="download"
+                @click="handleExport"
+              >
+                导出
+              </el-button>
+            </div>
+          </div>
 
           <el-table
             v-loading="loading"
@@ -116,12 +122,11 @@
             />
             <el-table-column label="用户昵称" align="center" prop="nickname" />
 
-            <el-table-column
-              label="性别"
-              width="100"
-              align="center"
-              prop="genderLabel"
-            />
+            <el-table-column label="性别" width="100" align="center">
+              <template #default="scope">
+                <DictLabel :v-modle="scope.row.gender" code="gender" />
+              </template>
+            </el-table-column>
 
             <el-table-column
               label="部门"
@@ -291,7 +296,7 @@
     <!-- 用户导入弹窗 -->
     <UserImport
       v-model:visible="importDialogVisible"
-      @import-success="handleUserImportSuccess"
+      @import-success="handleQuery()"
     />
   </div>
 </template>
@@ -337,7 +342,7 @@ const dialog = reactive({
   title: "",
 });
 
-/** 导入弹窗显示状态 */
+// 导入弹窗显示状态
 const importDialogVisible = ref(false);
 
 // 用户表单数据
@@ -345,7 +350,7 @@ const formData = reactive<UserForm>({
   status: 1,
 });
 
-/** 用户表单校验规则  */
+// 用户表单校验规则
 const rules = reactive({
   username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
   nickname: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
@@ -367,7 +372,7 @@ const rules = reactive({
   ],
 });
 
-/** 查询 */
+//查询
 function handleQuery() {
   loading.value = true;
   UserAPI.getPage(queryParams)
@@ -380,7 +385,7 @@ function handleQuery() {
     });
 }
 
-/** 重置查询 */
+// 重置查询
 function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
@@ -389,16 +394,12 @@ function handleResetQuery() {
   handleQuery();
 }
 
-/** 行复选框选中记录选中ID集合 */
+// 行复选框选中记录选中ID集合
 function handleSelectionChange(selection: any) {
   removeIds.value = selection.map((item: any) => item.id);
 }
 
-/**
- * 重置密码
- *
- *
- */
+// 重置密码
 function hancleResetPassword(row: { [key: string]: any }) {
   ElMessageBox.prompt(
     "请输入用户「" + row.username + "」的新密码",
@@ -446,7 +447,7 @@ async function handleOpenDialog(id?: number) {
   }
 }
 
-/** 关闭弹窗 */
+// 关闭弹窗
 function handleCloseDialog() {
   dialog.visible = false;
   userFormRef.value.resetFields();
@@ -456,7 +457,7 @@ function handleCloseDialog() {
   formData.status = 1;
 }
 
-/** 表单提交 */
+// 表单提交
 const handleSubmit = useThrottleFn(() => {
   userFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -483,7 +484,7 @@ const handleSubmit = useThrottleFn(() => {
   });
 }, 3000);
 
-/** 删除用户 */
+// 删除用户
 function handleDelete(id?: number) {
   const userIds = [id || removeIds.value].join(",");
   if (!userIds) {
@@ -510,17 +511,17 @@ function handleDelete(id?: number) {
     }
   );
 }
-/** 打开导入弹窗 */
+// 打开导入弹窗 *
 function handleOpenImportDialog() {
   importDialogVisible.value = true;
 }
 
-/** 导入用户成功 */
+// 导入用户成功
 function handleUserImportSuccess() {
   handleQuery();
 }
 
-/** 导出用户 */
+// 导出用户
 function handleExport() {
   UserAPI.export(queryParams).then((response: any) => {
     const fileData = response.data;
