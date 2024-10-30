@@ -1,19 +1,18 @@
 import type { RouteRecordRaw } from "vue-router";
 import { constantRoutes } from "@/router";
 import { store } from "@/store";
-import MenuAPI, { type RouteVO } from "@/api/system/menu";
+import router from "@/router";
 
+import MenuAPI, { type RouteVO } from "@/api/system/menu";
 const modules = import.meta.glob("../../views/**/**.vue");
 const Layout = () => import("@/layout/index.vue");
 
-import router from "@/router";
-
 export const usePermissionStore = defineStore("permission", () => {
-  /** 所有路由，包括静态和动态路由 */
+  // 所有路由，包括静态和动态路由
   const routes = ref<RouteRecordRaw[]>([]);
-  /** 混合模式左侧菜单 */
+  // 混合模式左侧菜单
   const mixLeftMenus = ref<RouteRecordRaw[]>([]);
-
+  // 路由是否已加载
   const isRoutesLoaded = ref(false);
 
   /**
@@ -53,7 +52,8 @@ export const usePermissionStore = defineStore("permission", () => {
     // 删除动态路由，保留静态路由
     routes.value.forEach((route) => {
       if (route.name && !constantRoutes.find((r) => r.name === route.name)) {
-        router.removeRoute(route.name); // 从 router 实例中移除动态路由
+        // 从 router 实例中移除动态路由
+        router.removeRoute(route.name);
       }
     });
 
@@ -103,8 +103,7 @@ const transformRoutes = (routes: RouteVO[]) => {
 };
 
 /**
- * 在组件外使用 Pinia store 实例
- * @see https://pinia.vuejs.org/core-concepts/outside-component-usage.html
+ * 在组件外使用 Pinia store 实例 @see https://pinia.vuejs.org/core-concepts/outside-component-usage.html
  */
 export function usePermissionStoreHook() {
   return usePermissionStore(store);

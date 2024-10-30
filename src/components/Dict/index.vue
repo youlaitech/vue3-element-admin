@@ -124,7 +124,8 @@ watch(
         (option) => option.value === selectedValue.value
       );
       if (!matchedOption && props.type !== "checkbox") {
-        selectedValue.value = ""; // 如果找不到匹配项，清空选中
+        // 如果找不到匹配项，清空选中
+        selectedValue.value = "";
       }
     }
   }
