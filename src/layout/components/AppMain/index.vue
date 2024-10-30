@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main" :style="{ height: height }">
+  <section class="app-main" :style="{ height: appMainHeight }">
     <router-view>
       <template #default="{ Component, route }">
         <transition
@@ -21,7 +21,7 @@ import variables from "@/styles/variables.module.scss";
 
 // 缓存页面集合
 const cachedViews = computed(() => useTagsViewStore().cachedViews);
-const height = computed(() => {
+const appMainHeight = computed(() => {
   if (useSettingsStore().tagsView) {
     return `calc(100vh - ${variables["navbar-height"]} - ${variables["tags-view-height"]})`;
   } else {
