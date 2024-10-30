@@ -1,12 +1,14 @@
 <template>
-  <!-- 如果菜单项未隐藏，显示菜单项 -->
   <div v-if="!item.meta || !item.meta.hidden">
-    <!-- 如果只有一个子路由或没有子路由，显示该菜单项 -->
+    <!--【叶子节点】显示叶子节点或唯一子节点且父节点未配置始终显示 -->
     <template
       v-if="
-        hasOneShowingChild(item.children, item as RouteRecordRaw) &&
-        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-        !item.meta?.alwaysShow
+        // 判断条件：仅有一个子节点，且父节点未配置始终显示
+        (hasOneShowingChild(item.children, item) &&
+          (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
+          !item.meta?.alwaysShow) ||
+        // 父节点即使配置了始终显示，但无子节点，也显示未叶子节点
+        (item.meta?.alwaysShow && !item.children)
       "
     >
       <AppLink
@@ -21,19 +23,19 @@
           :class="{ 'submenu-title-noDropdown': !isNest }"
         >
           <SidebarMenuItemTitle
-            :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
+            :icon="onlyOneChild.meta.icon || item.meta?.icon"
             :title="onlyOneChild.meta.title"
           />
         </el-menu-item>
       </AppLink>
     </template>
 
-    <!-- 如果有多个子路由，显示父菜单项 -->
+    <!--【非叶子节点】显示含多个子节点的父菜单，或始终显示的单子节点 -->
     <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
       <template #title>
         <SidebarMenuItemTitle
           v-if="item.meta"
-          :icon="item.meta && item.meta.icon"
+          :icon="item.meta.icon"
           :title="item.meta.title"
         />
       </template>
@@ -56,15 +58,16 @@ defineOptions({
 });
 
 import path from "path-browserify";
-import { isExternal } from "@/utils";
 import { RouteRecordRaw } from "vue-router";
+
+import { isExternal } from "@/utils";
 
 const props = defineProps({
   /**
    * 当前路由对象
    */
   item: {
-    type: Object,
+    type: Object as PropType<RouteRecordRaw>,
     required: true,
   },
 
@@ -85,36 +88,35 @@ const props = defineProps({
   },
 });
 
+// 可见的唯一子节点
 const onlyOneChild = ref();
 
 /**
- * 判断是否只有一个可见的子路由
+ * 检查是否仅有一个可见子节点
  *
  * @param children 子路由数组
- * @param parent 父级路由对象
- * @returns 是否只有一个可见子路由
+ * @param parent 父级路由
+ * @returns 是否仅有一个可见子节点
  */
 function hasOneShowingChild(
   children: RouteRecordRaw[] = [],
   parent: RouteRecordRaw
 ) {
-  // 筛选出可见的子路由
+  // 过滤出可见子节点
   const showingChildren = children.filter((route: RouteRecordRaw) => {
-    if (route.meta?.hidden) {
-      return false;
-    } else {
-      route.meta!.hidden = false;
+    if (!route.meta?.hidden) {
       onlyOneChild.value = route;
       return true;
     }
+    return false;
   });
 
-  // 如果只有一个或没有可见的子路由
+  // 仅有一个或无子节点
   if (showingChildren.length === 1) {
     return true;
   }
 
-  // 如果没有子路由，使用父级路由
+  // 无子节点时，设置父节点为唯一显示节点
   if (showingChildren.length === 0) {
     onlyOneChild.value = { ...parent, path: "", noShowingChildren: true };
     return true;
@@ -123,22 +125,17 @@ function hasOneShowingChild(
 }
 
 /**
- * 解析路径，将相对路径转换为绝对路径
+ * 获取完整路径，适配外部链接
  *
  * @param routePath 路由路径
  * @returns 绝对路径
  */
 function resolvePath(routePath: string) {
-  if (isExternal(routePath)) {
-    return routePath;
-  }
-  if (isExternal(props.basePath)) {
-    return props.basePath;
-  }
+  if (isExternal(routePath)) return routePath;
+  if (isExternal(props.basePath)) return props.basePath;
 
-  // 组合父级路径和路由路径形成完整路径
-  const fullPath = path.resolve(props.basePath, routePath);
-  return fullPath;
+  // 拼接父路径和当前路径
+  return path.resolve(props.basePath, routePath);
 }
 </script>
 
@@ -185,14 +182,12 @@ function resolvePath(routePath: string) {
     width: $sidebar-width-collapsed;
 
     .el-sub-menu {
-      & > .el-sub-menu__title {
-        & > span {
-          display: inline-block;
-          width: 0;
-          height: 0;
-          overflow: hidden;
-          visibility: hidden;
-        }
+      & > .el-sub-menu__title > span {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        visibility: hidden;
       }
     }
   }
