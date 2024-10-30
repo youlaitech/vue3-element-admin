@@ -43,7 +43,7 @@
             {{ item.title }}
           </li>
         </ul>
-        <div v-else class="text-center py-5">暂无历史记录</div>
+        <el-empty v-else description="暂无数据" />
       </div>
 
       <template #footer>
@@ -76,7 +76,6 @@ const searchInputRef = ref();
 const excludedRoutes = ref(["/redirect", "/login", "/401", "/404"]);
 const menuItems = ref<SearchItem[]>([]);
 const searchResults = ref<SearchItem[]>([]);
-const searchHistory = ref<SearchItem[]>([]);
 const activeIndex = ref(-1);
 
 interface SearchItem {
@@ -115,12 +114,8 @@ function updateSearchResults() {
   }
 }
 
-// 显示搜索结果或历史记录
-const displayResults = computed(() => {
-  return searchResults.value.length > 0
-    ? searchResults.value
-    : searchHistory.value.slice(0, 3);
-});
+// 显示搜索结果
+const displayResults = computed(() => searchResults.value);
 
 // 执行搜索
 function selectActiveResult() {
@@ -146,16 +141,9 @@ function navigateResults(direction: string) {
   }
 }
 
-// 跳转
+// 跳转到
 function navigateToRoute(item: SearchItem) {
   closeSearchModal();
-  if (!searchHistory.value.some((history) => history.path === item.path)) {
-    searchHistory.value.unshift(item);
-    if (searchHistory.value.length > 3) {
-      searchHistory.value.pop();
-    }
-  }
-
   if (isExternal(item.path)) {
     window.open(item.path, "_blank");
   } else {
