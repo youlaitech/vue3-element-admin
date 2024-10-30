@@ -1,4 +1,4 @@
-<!-- 左侧边菜单：包括左侧布局(left)、顶部布局(all)、混合布局(left) -->
+<!-- 菜单组件 -->
 <template>
   <el-menu
     ref="menuRef"
@@ -10,27 +10,29 @@
     :unique-opened="false"
     :collapse-transition="false"
     :mode="menuMode"
-    @open="handleOpen"
-    @close="handleClose"
+    @open="onMenuOpen"
+    @close="onMenuClose"
   >
+    <!-- 菜单项 -->
     <SidebarMenuItem
       v-for="route in menuList"
       :key="route.path"
       :item="route"
-      :base-path="getFullPath(route.path)"
+      :base-path="resolveFullPath(route.path)"
     />
   </el-menu>
 </template>
 
 <script lang="ts" setup>
-import path from "path-browserify"; // 第三方库
-import { useSettingsStore, useAppStore } from "@/store"; // 内部模块
-import { isExternal } from "@/utils/index"; // 工具函数
-import variables from "@/styles/variables.module.scss"; // 样式
-import { LayoutEnum } from "@/enums/LayoutEnum"; // 枚举
-import type { MenuInstance } from "element-plus"; // 类型
+import path from "path-browserify";
+import type { MenuInstance } from "element-plus";
 
-// 定义组件 props
+import { LayoutEnum } from "@/enums/LayoutEnum";
+import { useSettingsStore, useAppStore } from "@/store";
+import { isExternal } from "@/utils/index";
+
+import variables from "@/styles/variables.module.scss";
+
 const props = defineProps({
   menuList: {
     type: Array<any>,
@@ -40,6 +42,7 @@ const props = defineProps({
   basePath: {
     type: String,
     required: true,
+    example: "/system",
   },
 });
 
@@ -48,52 +51,63 @@ const settingsStore = useSettingsStore();
 const appStore = useAppStore();
 const currentRoute = useRoute();
 
-// 根据布局计算菜单模式
+// 存储已展开的菜单项索引
+const expandedMenuIndexes = ref<string[]>([]);
+
+// 根据布局模式设置菜单的显示方式：顶部布局使用水平模式，其他使用垂直模式
 const menuMode = computed(() => {
   return settingsStore.layout === LayoutEnum.TOP ? "horizontal" : "vertical";
 });
+
 /**
  * 获取完整路径
- * @param routePath 路由路径 /user
- * @returns 完整的路径
+ *
+ * @param routePath 当前路由的相对路径  /user
+ * @returns 完整的绝对路径 D://vue3-element-admin/system/user
  */
-function getFullPath(routePath: string) {
+function resolveFullPath(routePath: string) {
   if (isExternal(routePath)) {
     return routePath;
   }
   if (isExternal(props.basePath)) {
     return props.basePath;
   }
-  return path.resolve(props.basePath, routePath); // 父路径 + 子路径
+
+  // 解析路径，生成完整的绝对路径
+  return path.resolve(props.basePath, routePath);
 }
 
-// 存储已打开菜单的索引
-const openMenuIndexes = ref<string[]>([]);
-
 /**
- * 菜单打开时添加索引
- * @param index 当前菜单索引
+ * 打开菜单
+ *
+ * @param index 当前展开的菜单项索引
  */
-const handleOpen = (index: string) => {
-  openMenuIndexes.value.push(index);
+const onMenuOpen = (index: string) => {
+  expandedMenuIndexes.value.push(index);
 };
 
 /**
- * 菜单关闭时移除索引
- * @param index 当前菜单索引
+ * 关闭菜单
+ *
+ * @param index 当前收起的菜单项索引
  */
-const handleClose = (index: string) => {
-  openMenuIndexes.value = openMenuIndexes.value.filter(
+const onMenuClose = (index: string) => {
+  expandedMenuIndexes.value = expandedMenuIndexes.value.filter(
     (item) => item !== index
   );
 };
 
-// 监听菜单模式变化，横向时关闭所有菜单
+/**
+ * 监听菜单模式变化：当菜单模式切换为水平模式时，关闭所有展开的菜单项，
+ * 避免在水平模式下菜单项显示错位。
+ *
+ * @see https://gitee.com/youlaiorg/vue3-element-admin/issues/IAJ1DR
+ */
 watch(
   () => menuMode.value,
   () => {
     if (menuMode.value === "horizontal") {
-      openMenuIndexes.value.forEach((item) => menuRef.value!.close(item));
+      expandedMenuIndexes.value.forEach((item) => menuRef.value!.close(item));
     }
   }
 );
