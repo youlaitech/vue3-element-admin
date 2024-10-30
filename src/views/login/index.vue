@@ -354,10 +354,7 @@ onMounted(() => {
       margin: auto 5px;
       font-size: 24px;
       font-weight: bold;
-      color: transparent;
-      background: linear-gradient(to right, #3b82f6, #14b8a6);
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #3b82f6;
     }
   }
 
