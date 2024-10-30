@@ -1,9 +1,9 @@
 <template>
-  <div class="logo-container">
+  <div class="logo">
     <transition enter-active-class="animate__animated animate__fadeInLeft">
       <router-link :key="+collapse" class="wh-full flex-center" to="/">
-        <img :src="logo" class="logo-image" />
-        <span v-if="!collapse" class="logo-title">
+        <img :src="logo" class="w20px h20px" />
+        <span v-if="!collapse" class="title">
           {{ defaultSettings.title }}
         </span>
       </router-link>
@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts" setup>
-import logo from "@/assets/logo.png";
 import defaultSettings from "@/settings";
+import logo from "@/assets/logo.png";
 
 defineProps({
   collapse: {
@@ -24,17 +24,12 @@ defineProps({
 </script>
 
 <style lang="scss" scoped>
-.logo-container {
+.logo {
   width: 100%;
   height: $navbar-height;
   background-color: $sidebar-logo-background;
 
-  .logo-image {
-    width: 20px;
-    height: 20px;
-  }
-
-  .logo-title {
+  .title {
     flex-shrink: 0; /* 防止容器在空间不足时缩小 */
     margin-left: 10px;
     font-size: 14px;
@@ -45,12 +40,12 @@ defineProps({
 
 .layout-top,
 .layout-mix {
-  .logo-container {
+  .logo {
     width: $sidebar-width;
   }
 
   &.hideSidebar {
-    .logo-container {
+    .logo {
       width: $sidebar-width-collapsed;
     }
   }
