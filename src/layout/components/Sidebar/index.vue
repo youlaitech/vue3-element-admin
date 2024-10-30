@@ -24,6 +24,8 @@
 import { LayoutEnum } from "@/enums/LayoutEnum";
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
 
+import NavbarRight from "../NavBar/components/NavbarRight.vue";
+
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
