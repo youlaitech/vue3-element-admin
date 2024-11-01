@@ -18,16 +18,14 @@ import {
   devDependencies,
 } from "./package.json";
 
-// 平台的名称、版本、运行所需的`node`版本、依赖、构建时间的类型提示
+// 平台的名称、版本、运行所需的 node 版本、依赖、构建时间的类型提示
 const __APP_INFO__ = {
   pkg: { name, version, engines, dependencies, devDependencies },
   buildTimestamp: Date.now(),
 };
 
 const pathSrc = resolve(__dirname, "src");
-/**
- * Vite配置 @see https://cn.vitejs.dev/config
- */
+// Vite配置  https://cn.vitejs.dev/config
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
   return {
@@ -37,7 +35,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       },
     },
     css: {
-      // CSS 预处理器
       preprocessorOptions: {
         // 定义全局 SCSS 变量
         scss: {
@@ -50,17 +47,14 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       },
     },
     server: {
-      // 主机地址
       host: "0.0.0.0",
-      // 端口号
       port: +env.VITE_APP_PORT,
-      // 是否自动在浏览器中打开
       open: true,
       proxy: {
-        // 代理前缀为 /dev-api 的请求
+        // 代理 /dev-api 的请求
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
-          // 代理目标真实接口地址：https://api.youlai.tech
+          // 代理目标地址：https://api.youlai.tech
           target: env.VITE_APP_API_URL,
           rewrite: (path) =>
             path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
@@ -69,49 +63,41 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     plugins: [
       vue(),
-      // MOCK 服务
       env.VITE_MOCK_DEV_SERVER === "true" ? mockDevServerPlugin() : null,
       UnoCSS({
         hmrTopLevelAwait: false,
       }),
-      /**
-       * 自动导入配置
-       *
-       * @see https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts1
-       */
+      // 自动导入配置 https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts
       AutoImport({
-        // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
+        // 导入 Vue 函数，如：ref, reactive, toRef 等
         imports: ["vue", "@vueuse/core", "pinia", "vue-router", "vue-i18n"],
         resolvers: [
-          // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
+          // 导入 Element Plus函数，如：ElMessage, ElMessageBox 等
           ElementPlusResolver(),
         ],
         eslintrc: {
-          // 是否自动生成 eslint 规则，建议生成之后设置 false
           enabled: false,
-          // 指定自动导入函数 eslint 规则的文件
           filepath: "./.eslintrc-auto-import.json",
           globalsPropValue: true,
         },
-        // 是否在 vue 模板中自动导入
         vueTemplate: true,
-        // 指定自动导入函数TS类型声明文件路径 (false:关闭自动生成)
+        // 导入函数类型声明文件路径 (false:关闭自动生成)
         dts: false,
         // dts: "src/types/auto-imports.d.ts",
       }),
       Components({
         resolvers: [
-          // 自动导入 Element Plus 组件
+          // 导入 Element Plus 组件
           ElementPlusResolver(),
         ],
         // 指定自定义组件位置(默认:src/components)
         dirs: ["src/components", "src/**/components"],
-        // 指定自动导入组件TS类型声明文件路径 (false:关闭自动生成)
+        // 导入组件类型声明文件路径 (false:关闭自动生成)
         dts: false,
         // dts: "src/types/components.d.ts",
       }),
       createSvgIconsPlugin({
-        // 指定需要缓存的图标文件夹
+        // 缓存图标位置
         iconDirs: [resolve(pathSrc, "assets/icons")],
         symbolId: "icon-[dir]-[name]",
       }),
