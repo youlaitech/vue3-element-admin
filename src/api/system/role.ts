@@ -126,11 +126,11 @@ export interface RoleForm {
   /** 角色ID */
   id?: number;
   /** 角色编码 */
-  code: string;
+  code?: string;
   /** 数据权限 */
   dataScope?: number;
   /** 角色名称 */
-  name: string;
+  name?: string;
   /** 排序 */
   sort?: number;
   /** 角色状态(1-正常；0-停用) */
