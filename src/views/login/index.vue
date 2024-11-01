@@ -3,16 +3,6 @@
     <!-- 登录页头部 -->
     <div class="login-header">
       <div class="flex-y-center">
-        <el-image :src="logo" class="logo" />
-        <span class="title">
-          {{ defaultSettings.title }}
-        </span>
-        <el-tag size="small" type="success">
-          {{ defaultSettings.version }}
-        </el-tag>
-      </div>
-
-      <div class="flex-y-center">
         <el-switch
           v-model="isDark"
           inline-prompt
@@ -32,7 +22,7 @@
       <div class="login-form">
         <el-form ref="loginFormRef" :model="loginData" :rules="loginRules">
           <div class="form-title">
-            {{ $t("login.login") }}
+            <h2>{{ defaultSettings.title }}</h2>
             <el-dropdown style="position: absolute; right: 0">
               <div class="cursor-pointer">
                 <el-icon>
@@ -41,6 +31,13 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item>
+                    版本号：
+                    <el-tag type="success">
+                      {{ defaultSettings.version }}
+                    </el-tag>
+                  </el-dropdown-item>
+
                   <el-dropdown-item
                     @click="setLoginCredentials('root', '123456')"
                   >
@@ -160,7 +157,7 @@
       </div>
     </div>
 
-    <!--  -->
+    <!-- 登录页底部 -->
     <div class="login-footer">
       <el-text size="small">
         Copyright © 2021 - 2024 youlai.tech All Rights Reserved.
@@ -245,7 +242,7 @@ const loginRules = computed(() => {
   };
 });
 
-/** 获取验证码 */
+// 获取验证码
 function getCaptcha() {
   AuthAPI.getCaptcha().then((data) => {
     loginData.value.captchaKey = data.captchaKey;
@@ -253,7 +250,7 @@ function getCaptcha() {
   });
 }
 
-/** 登录表单提交 */
+// 登录
 async function handleLoginSubmit() {
   loginFormRef.value?.validate((valid: boolean) => {
     if (valid) {
@@ -262,7 +259,8 @@ async function handleLoginSubmit() {
         .login(loginData.value)
         .then(async () => {
           await userStore.getUserInfo();
-          await dictStore.loadDictionaries(); // 需要在路由跳转前加载字典数据，否则会出现字典数据未加载完成导致页面渲染异常
+          // 需要在路由跳转前加载字典数据，否则会出现字典数据未加载完成导致页面渲染异常
+          await dictStore.loadDictionaries();
           // 跳转到登录前的页面
           const { path, queryParams } = parseRedirect();
           router.push({ path: path, query: queryParams });
@@ -341,7 +339,7 @@ onMounted(() => {
     position: absolute;
     top: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: right;
     width: 100%;
     padding: 15px;
 
@@ -360,7 +358,7 @@ onMounted(() => {
 
   .login-content {
     display: flex;
-    width: 850px;
+    width: 960px;
     overflow: hidden;
     background-color: #fff;
     border-radius: 5px;
@@ -370,6 +368,7 @@ onMounted(() => {
       flex-direction: column;
       max-width: 100%;
       height: 100vh;
+      padding: 0 30px;
       border-radius: 0;
       box-shadow: none;
     }
@@ -404,8 +403,7 @@ onMounted(() => {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px 0;
-        font-size: 20px;
+        padding: 0 0 20px;
         text-align: center;
       }
 
