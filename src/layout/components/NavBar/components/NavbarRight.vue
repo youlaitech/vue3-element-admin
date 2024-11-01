@@ -1,6 +1,6 @@
 <template>
   <div class="navbar__right">
-    <!-- 手机设备（窄屏）不显示 -->
+    <!-- 非手机设备（窄屏）才显示 -->
     <template v-if="!isMobile">
       <!-- 搜索 -->
       <MenuSearch />
