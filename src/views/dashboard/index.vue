@@ -152,10 +152,7 @@
         <el-card>
           <template #header>
             <div class="flex-x-between">
-              <div class="flex-y-center">
-                通知公告
-                <el-icon class="ml-1"><Notification /></el-icon>
-              </div>
+              <div class="flex-y-center">通知公告</div>
               <el-link type="primary">
                 <span class="text-xs" @click="viewMoreNotice">查看更多</span>
                 <el-icon class="text-xs"><ArrowRight /></el-icon>
