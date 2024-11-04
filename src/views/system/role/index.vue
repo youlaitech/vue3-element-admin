@@ -24,8 +24,8 @@
       </el-form>
     </div>
 
-    <el-card shadow="never" class="table-wrapper">
-      <template #header>
+    <el-card shadow="never">
+      <div class="mb-10px">
         <el-button type="success" @click="handleOpenDialog()">
           <template #icon><Plus /></template>
           新增
@@ -38,7 +38,7 @@
           <template #icon><Delete /></template>
           删除
         </el-button>
-      </template>
+      </div>
 
       <el-table
         ref="dataTableRef"
@@ -67,27 +67,27 @@
               type="primary"
               size="small"
               link
+              icon="position"
               @click="handleOpenAssignPermDialog(scope.row)"
             >
-              <template #icon><Position /></template>
               分配权限
             </el-button>
             <el-button
               type="primary"
               size="small"
               link
+              icon="edit"
               @click="handleOpenDialog(scope.row.id)"
             >
-              <template #icon><Edit /></template>
               编辑
             </el-button>
             <el-button
               type="danger"
               size="small"
               link
+              icon="delete"
               @click="handleDelete(scope.row.id)"
             >
-              <template #icon><Delete /></template>
               删除
             </el-button>
           </template>
@@ -218,7 +218,6 @@
           {{ data.label }}
         </template>
       </el-tree>
-
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleAssignPermSubmit">
@@ -271,8 +270,6 @@ const dialog = reactive({
 const formData = reactive<RoleForm>({
   sort: 1,
   status: 1,
-  code: "",
-  name: "",
 });
 
 const rules = reactive({
@@ -295,7 +292,7 @@ const isExpanded = ref(true);
 
 const parentChildLinked = ref(true);
 
-/** 查询 */
+// 查询
 function handleQuery() {
   loading.value = true;
   RoleAPI.getPage(queryParams)
@@ -308,19 +305,19 @@ function handleQuery() {
     });
 }
 
-/** 重置查询 */
+// 重置查询
 function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
   handleQuery();
 }
 
-/** 行复选框选中记录选中ID集合 */
+// 行复选框选中
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
 
-/** 打开角色弹窗 */
+// 打开角色弹窗
 function handleOpenDialog(roleId?: number) {
   dialog.visible = true;
   if (roleId) {
@@ -333,7 +330,7 @@ function handleOpenDialog(roleId?: number) {
   }
 }
 
-/** 提交角色表单 */
+// 提交角色表单
 function handleSubmit() {
   roleFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -360,7 +357,7 @@ function handleSubmit() {
   });
 }
 
-/** 关闭角色弹窗 */
+// 关闭弹窗
 function handleCloseDialog() {
   dialog.visible = false;
 
@@ -372,7 +369,7 @@ function handleCloseDialog() {
   formData.status = 1;
 }
 
-/** 删除角色 */
+// 删除角色
 function handleDelete(roleId?: number) {
   const roleIds = [roleId || ids.value].join(",");
   if (!roleIds) {
@@ -400,7 +397,7 @@ function handleDelete(roleId?: number) {
   );
 }
 
-/** 打开分配菜单权限弹窗 */
+// 打开分配菜单权限弹窗
 async function handleOpenAssignPermDialog(row: RolePageVO) {
   const roleId = row.id;
   if (roleId) {
@@ -427,7 +424,7 @@ async function handleOpenAssignPermDialog(row: RolePageVO) {
   }
 }
 
-/** 分配菜单权限提交 */
+// 分配菜单权限提交
 function handleAssignPermSubmit() {
   const roleId = checkedRole.value.id;
   if (roleId) {
@@ -448,7 +445,7 @@ function handleAssignPermSubmit() {
   }
 }
 
-/** 展开/收缩 菜单权限树  */
+// 展开/收缩 菜单权限树
 function togglePermTree() {
   isExpanded.value = !isExpanded.value;
   if (permTreeRef.value) {
@@ -462,7 +459,7 @@ function togglePermTree() {
   }
 }
 
-/** 权限筛选 */
+// 权限筛选
 watch(permKeywords, (val) => {
   permTreeRef.value!.filter(val);
 });
@@ -477,7 +474,7 @@ function handlePermFilter(
   return data.label.includes(value);
 }
 
-/** 父子菜单节点是否联动 change*/
+// 父子菜单节点是否联动
 function handleparentChildLinkedChange(val: any) {
   parentChildLinked.value = val;
 }
