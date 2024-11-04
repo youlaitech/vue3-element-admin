@@ -107,30 +107,24 @@
             @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="50" align="center" />
+            <el-table-column label="编号" align="center" prop="id" width="60" />
+            <el-table-column label="用户名" align="center" prop="username" />
             <el-table-column
-              key="id"
-              label="编号"
+              label="昵称"
+              width="100"
               align="center"
-              prop="id"
-              width="80"
+              prop="nickname"
             />
-            <el-table-column
-              key="username"
-              label="用户名"
-              align="center"
-              prop="username"
-            />
-            <el-table-column label="用户昵称" align="center" prop="nickname" />
 
             <el-table-column label="性别" width="100" align="center">
               <template #default="scope">
-                <DictLabel :v-modle="scope.row.gender" code="gender" />
+                <DictLabel v-model="scope.row.gender" code="gender" />
               </template>
             </el-table-column>
 
             <el-table-column
               label="部门"
-              width="150"
+              width="120"
               align="center"
               prop="deptName"
             />
@@ -145,7 +139,7 @@
               label="状态"
               align="center"
               prop="status"
-              width="100"
+              width="80"
             >
               <template #default="scope">
                 <el-tag :type="scope.row.status == 1 ? 'success' : 'info'">
@@ -157,7 +151,7 @@
               label="创建时间"
               align="center"
               prop="createTime"
-              width="180"
+              width="120"
             />
             <el-table-column label="操作" fixed="right" width="220">
               <template #default="scope">
@@ -206,7 +200,7 @@
       </el-col>
     </el-row>
 
-    <!-- 用户表单弹窗 -->
+    <!-- 用户表单 -->
     <el-drawer
       v-model="dialog.visible"
       :title="dialog.title"
@@ -296,7 +290,7 @@
     <!-- 用户导入弹窗 -->
     <UserImport
       v-model:visible="importDialogVisible"
-      @import-success="handleQuery()"
+      @import-success="handleUserImportSuccess()"
     />
   </div>
 </template>
