@@ -21,8 +21,8 @@
           <el-button @click="handleResetQuery()">
             <template #icon>
               <Refresh />
-              重置
             </template>
+            重置
           </el-button>
         </el-form-item>
       </el-form>
