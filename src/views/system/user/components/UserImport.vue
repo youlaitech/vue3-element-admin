@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    v-model="dialogVisible"
+    v-model="visible"
     :align-center="true"
     title="导入数据"
     width="600px"
@@ -52,7 +52,7 @@
         <el-button
           type="primary"
           :disabled="importFormData.files.length === 0"
-          @click="handleSubmit"
+          @click="handleUpload"
         >
           确 定
         </el-button>
@@ -63,24 +63,14 @@
 </template>
 
 <script lang="ts" setup>
-import { type UploadUserFile } from "element-plus";
-
+import { ElMessage, type UploadUserFile } from "element-plus";
 import UserAPI from "@/api/system/user";
 
-const props = defineProps({
-  visible: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-const emit = defineEmits(["update:visible", "import-success"]);
-
-const dialogVisible = computed({
-  get: () => props.visible,
-  set: (val) => {
-    emit("update:visible", val);
-  },
+const emit = defineEmits(["import-success"]);
+const visible = defineModel("modelValue", {
+  type: Boolean,
+  required: true,
+  default: false,
 });
 
 const importFormRef = ref(null);
@@ -96,41 +86,16 @@ const importFormRules = {
   files: [{ required: true, message: "文件不能为空", trigger: "blur" }],
 };
 
-const emptyFileList = () => {
-  importFormData.files.length = 0;
-};
-
-const handleClose = () => {
-  emptyFileList();
-  dialogVisible.value = false;
-};
-
-const handleSubmit = async () => {
-  if (!importFormData.files.length) {
-    ElMessage.warning("请选择文件");
-    return;
-  }
-
-  try {
-    await UserAPI.import(1, importFormData.files[0].raw as File);
-    ElMessage.success("上传成功");
-    emit("import-success");
-    handleClose();
-  } catch (error) {
-    ElMessage.error("上传失败");
-  }
-};
-
+// 文件超出个数限制
 const handleFileExceed = () => {
   ElMessage.warning("只能上传一个文件");
 };
 
+// 下载导入模板
 const handleDownloadTemplate = () => {
   UserAPI.downloadTemplate().then((response: any) => {
     const fileData = response.data;
-    const fileName = decodeURI(
-      response.headers["content-disposition"].split(";")[1].split("=")[1]
-    );
+    const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
 
@@ -147,5 +112,28 @@ const handleDownloadTemplate = () => {
     document.body.removeChild(downloadLink);
     window.URL.revokeObjectURL(downloadUrl);
   });
+};
+
+// 上传文件
+const handleUpload = async () => {
+  if (!importFormData.files.length) {
+    ElMessage.warning("请选择文件");
+    return;
+  }
+
+  try {
+    await UserAPI.import(1, importFormData.files[0].raw as File);
+    ElMessage.success("上传成功");
+    emit("import-success");
+    handleClose();
+  } catch (error) {
+    ElMessage.error("上传失败");
+  }
+};
+
+// 关闭弹窗
+const handleClose = () => {
+  importFormData.files.length = 0;
+  visible.value = false;
 };
 </script>
