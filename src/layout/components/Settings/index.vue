@@ -1,68 +1,55 @@
 <template>
-  <el-drawer
-    v-model="settingsVisible"
-    size="300"
-    :title="$t('settings.project')"
-  >
+  <el-drawer v-model="settingsVisible" size="300" :title="$t('settings.project')">
     <el-divider>{{ $t("settings.theme") }}</el-divider>
 
     <div class="flex-center">
-      <el-switch
-        v-model="isDark"
-        active-icon="Moon"
-        inactive-icon="Sunny"
-        @change="changeTheme"
-      />
+      <el-switch v-model="isDark" active-icon="Moon" inactive-icon="Sunny" @change="changeTheme" />
     </div>
 
     <el-divider>{{ $t("settings.interface") }}</el-divider>
 
-    <div class="setting-item">
+    <div class="py-1 flex-x-between">
       <span class="text-xs">{{ $t("settings.themeColor") }}</span>
-      <ThemeColorPicker
-        v-model="settingsStore.themeColor"
-        @update:model-value="changeThemeColor"
-      />
+      <ThemeColorPicker v-model="settingsStore.themeColor" @update:model-value="changeThemeColor" />
     </div>
 
-    <div class="setting-item">
+    <div class="py-1 flex-x-between">
       <span class="text-xs">{{ $t("settings.tagsView") }}</span>
       <el-switch v-model="settingsStore.tagsView" />
     </div>
 
-    <div class="setting-item">
+    <div class="py-1 flex-x-between">
       <span class="text-xs">{{ $t("settings.fixedHeader") }}</span>
       <el-switch v-model="settingsStore.fixedHeader" />
     </div>
 
-    <div class="setting-item">
+    <div class="py-1 flex-x-between">
       <span class="text-xs">{{ $t("settings.sidebarLogo") }}</span>
       <el-switch v-model="settingsStore.sidebarLogo" />
     </div>
 
-    <div class="setting-item">
+    <div class="py-1 flex-x-between">
       <span class="text-xs">{{ $t("settings.watermark") }}</span>
       <el-switch v-model="settingsStore.watermarkEnabled" />
     </div>
 
     <el-divider>{{ $t("settings.navigation") }}</el-divider>
 
-    <LayoutSelect
-      v-model="settingsStore.layout"
-      @update:model-value="changeLayout"
-    />
+    <LayoutSelect v-model="settingsStore.layout" @update:model-value="changeLayout" />
   </el-drawer>
 </template>
 
 <script setup lang="ts">
-import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
 import { LayoutEnum } from "@/enums/LayoutEnum";
 import { ThemeEnum } from "@/enums/ThemeEnum";
+
+import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
 
 const route = useRoute();
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
+const isDark = ref<boolean>(settingsStore.theme === ThemeEnum.DARK);
 
 const settingsVisible = computed({
   get() {
@@ -73,19 +60,30 @@ const settingsVisible = computed({
   },
 });
 
-/** 切换主题颜色 */
+/**
+ *  切换主题颜色
+ *
+ * @param color 颜色
+ */
 function changeThemeColor(color: string) {
   settingsStore.changeThemeColor(color);
 }
 
-/** 切换主题 */
-const isDark = ref<boolean>(settingsStore.theme === ThemeEnum.DARK);
+/**
+ * 切换主题
+ *
+ * @param val 是否为暗黑模式
+ */
 const changeTheme = (val: any) => {
   isDark.value = val;
   settingsStore.changeTheme(isDark.value ? ThemeEnum.DARK : ThemeEnum.LIGHT);
 };
 
-/** 切换布局 */
+/**
+ * 切换布局
+ *
+ * @param layout 布局  LayoutEnum
+ */
 function changeLayout(layout: string) {
   settingsStore.changeLayout(layout);
   if (layout === LayoutEnum.MIX) {
@@ -93,15 +91,24 @@ function changeLayout(layout: string) {
   }
 }
 
-/** 重新激活顶部菜单 */
-function againActiveTop(newVal: string) {
-  const parent = findOutermostParent(permissionStore.routes, newVal);
+/**
+ * 重新激活顶部菜单
+ *
+ * @param routeName 路由名称
+ */
+function againActiveTop(routeName: string) {
+  const parent = findOutermostParent(permissionStore.routes, routeName);
   if (appStore.activeTopMenuPath !== parent.path) {
     appStore.activeTopMenu(parent.path);
   }
 }
 
-/** 递归查找最外层父节点 */
+/**
+ * 查找最外层父级
+ *
+ * @param tree 树形数据
+ * @param findName 查找的名称
+ */
 function findOutermostParent(tree: any[], findName: string) {
   let parentMap: any = {};
 
@@ -131,8 +138,4 @@ function findOutermostParent(tree: any[], findName: string) {
 }
 </script>
 
-<style lang="scss" scoped>
-.setting-item {
-  @apply py-1 flex-x-between;
-}
-</style>
+<style lang="scss" scoped></style>
