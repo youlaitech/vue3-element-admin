@@ -248,6 +248,8 @@ export interface UserPageQuery extends PageQuery {
 
 /** 用户分页对象 */
 export interface UserPageVO {
+  /** 用户ID */
+  id: number;
   /** 用户头像URL */
   avatar?: string;
   /** 创建时间 */
@@ -258,8 +260,6 @@ export interface UserPageVO {
   email?: string;
   /** 性别 */
   gender?: number;
-  /** 用户ID */
-  id?: number;
   /** 手机号 */
   mobile?: string;
   /** 用户昵称 */

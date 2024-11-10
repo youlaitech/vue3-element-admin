@@ -47,14 +47,8 @@
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" @click="handleQuery">
-                <template #icon><Search /></template>
-                搜索
-              </el-button>
-              <el-button @click="handleResetQuery">
-                <template #icon><Refresh /></template>
-                重置
-              </el-button>
+              <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
+              <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -65,18 +59,18 @@
               <el-button
                 v-hasPerm="['sys:user:add']"
                 type="success"
+                icon="plus"
                 @click="handleOpenDialog()"
               >
-                <template #icon><Plus /></template>
                 新增
               </el-button>
               <el-button
                 v-hasPerm="['sys:user:delete']"
                 type="danger"
-                :disabled="removeIds.length === 0"
+                icon="delete"
+                :disabled="selectIds.length === 0"
                 @click="handleDelete()"
               >
-                <template #icon><Delete /></template>
                 删除
               </el-button>
             </div>
@@ -101,88 +95,56 @@
             </div>
           </div>
 
-          <el-table
-            v-loading="loading"
-            :data="pageData"
-            @selection-change="handleSelectionChange"
-          >
+          <el-table v-loading="loading" :data="pageData" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" align="center" />
             <el-table-column label="编号" align="center" prop="id" width="60" />
             <el-table-column label="用户名" align="center" prop="username" />
-            <el-table-column
-              label="昵称"
-              width="100"
-              align="center"
-              prop="nickname"
-            />
-
+            <el-table-column label="昵称" width="100" align="center" prop="nickname" />
             <el-table-column label="性别" width="100" align="center">
               <template #default="scope">
                 <DictLabel v-model="scope.row.gender" code="gender" />
               </template>
             </el-table-column>
-
-            <el-table-column
-              label="部门"
-              width="120"
-              align="center"
-              prop="deptName"
-            />
-            <el-table-column
-              label="手机号码"
-              align="center"
-              prop="mobile"
-              width="120"
-            />
-
-            <el-table-column
-              label="状态"
-              align="center"
-              prop="status"
-              width="80"
-            >
+            <el-table-column label="部门" width="120" align="center" prop="deptName" />
+            <el-table-column label="手机号码" align="center" prop="mobile" width="120" />
+            <el-table-column label="状态" align="center" prop="status" width="80">
               <template #default="scope">
                 <el-tag :type="scope.row.status == 1 ? 'success' : 'info'">
                   {{ scope.row.status == 1 ? "正常" : "禁用" }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column
-              label="创建时间"
-              align="center"
-              prop="createTime"
-              width="120"
-            />
+            <el-table-column label="创建时间" align="center" prop="createTime" width="120" />
             <el-table-column label="操作" fixed="right" width="220">
               <template #default="scope">
                 <el-button
                   v-hasPerm="['sys:user:password:reset']"
                   type="primary"
+                  icon="RefreshLeft"
                   size="small"
                   link
                   @click="hancleResetPassword(scope.row)"
                 >
-                  <template #icon><RefreshLeft /></template>
                   重置密码
                 </el-button>
                 <el-button
                   v-hasPerm="['sys:user:edit']"
                   type="primary"
+                  icon="edit"
                   link
                   size="small"
                   @click="handleOpenDialog(scope.row.id)"
                 >
-                  <template #icon><Edit /></template>
                   编辑
                 </el-button>
                 <el-button
                   v-hasPerm="['sys:user:delete']"
                   type="danger"
+                  icon="delete"
                   link
                   size="small"
                   @click="handleDelete(scope.row.id)"
                 >
-                  <template #icon><Delete /></template>
                   删除
                 </el-button>
               </template>
@@ -207,12 +169,7 @@
       append-to-body
       @close="handleCloseDialog"
     >
-      <el-form
-        ref="userFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="80px"
-      >
+      <el-form ref="userFormRef" :model="formData" :rules="rules" label-width="80px">
         <el-form-item label="用户名" prop="username">
           <el-input
             v-model="formData.username"
@@ -252,19 +209,11 @@
         </el-form-item>
 
         <el-form-item label="手机号码" prop="mobile">
-          <el-input
-            v-model="formData.mobile"
-            placeholder="请输入手机号码"
-            maxlength="11"
-          />
+          <el-input v-model="formData.mobile" placeholder="请输入手机号码" maxlength="11" />
         </el-form-item>
 
         <el-form-item label="邮箱" prop="email">
-          <el-input
-            v-model="formData.email"
-            placeholder="请输入邮箱"
-            maxlength="50"
-          />
+          <el-input v-model="formData.email" placeholder="请输入邮箱" maxlength="50" />
         </el-form-item>
 
         <el-form-item label="状态" prop="status">
@@ -287,25 +236,13 @@
       </template>
     </el-drawer>
 
-    <!-- 用户导入弹窗 -->
-    <UserImport
-      v-model:visible="importDialogVisible"
-      @import-success="handleUserImportSuccess()"
-    />
+    <!-- 用户导入 -->
+    <UserImport v-model="importDialogVisible" @import-success="handleQuery()" />
   </div>
 </template>
 
 <script setup lang="ts">
-defineOptions({
-  name: "User",
-  inheritAttrs: false,
-});
-
-import UserAPI, {
-  UserForm,
-  UserPageQuery,
-  UserPageVO,
-} from "@/api/system/user";
+import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user";
 
 import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
@@ -313,38 +250,32 @@ import RoleAPI from "@/api/system/role";
 import DeptTree from "./components/DeptTree.vue";
 import UserImport from "./components/UserImport.vue";
 
+defineOptions({
+  name: "User",
+  inheritAttrs: false,
+});
+
 const queryFormRef = ref(ElForm);
 const userFormRef = ref(ElForm);
 
-const loading = ref(false);
-const removeIds = ref([]);
-const total = ref(0);
-const pageData = ref<UserPageVO[]>();
-// 部门下拉数据源
-const deptOptions = ref<OptionType[]>();
-// 角色下拉数据源
-const roleOptions = ref<OptionType[]>();
-// 用户查询参数
 const queryParams = reactive<UserPageQuery>({
   pageNum: 1,
   pageSize: 10,
 });
 
-// 用户弹窗
+const pageData = ref<UserPageVO[]>();
+const total = ref(0);
+const loading = ref(false);
+
 const dialog = reactive({
   visible: false,
-  title: "",
+  title: "新增用户",
 });
 
-// 导入弹窗显示状态
-const importDialogVisible = ref(false);
-
-// 用户表单数据
 const formData = reactive<UserForm>({
   status: 1,
 });
 
-// 用户表单校验规则
 const rules = reactive({
   username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
   nickname: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
@@ -366,7 +297,16 @@ const rules = reactive({
   ],
 });
 
-//查询
+// 选中的用户ID
+const selectIds = ref<number[]>([]);
+// 部门下拉数据源
+const deptOptions = ref<OptionType[]>();
+// 角色下拉数据源
+const roleOptions = ref<OptionType[]>();
+// 导入弹窗显示状态
+const importDialogVisible = ref(false);
+
+// 查询
 function handleQuery() {
   loading.value = true;
   UserAPI.getPage(queryParams)
@@ -388,24 +328,19 @@ function handleResetQuery() {
   handleQuery();
 }
 
-// 行复选框选中记录选中ID集合
-function handleSelectionChange(selection: any) {
-  removeIds.value = selection.map((item: any) => item.id);
+// 选中项发生变化
+function handleSelectionChange(selection: any[]) {
+  selectIds.value = selection.map((item) => item.id);
 }
 
 // 重置密码
-function hancleResetPassword(row: { [key: string]: any }) {
-  ElMessageBox.prompt(
-    "请输入用户「" + row.username + "」的新密码",
-    "重置密码",
-    {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-    }
-  ).then(
+function hancleResetPassword(row: UserPageVO) {
+  ElMessageBox.prompt("请输入用户【" + row.username + "】的新密码", "重置密码", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+  }).then(
     ({ value }) => {
       if (!value || value.length < 6) {
-        // 检查密码是否为空或少于6位
         ElMessage.warning("密码至少需要6位字符，请重新输入");
         return false;
       }
@@ -451,7 +386,7 @@ function handleCloseDialog() {
   formData.status = 1;
 }
 
-// 表单提交
+// 提交用户表单（防抖处理）
 const handleSubmit = useThrottleFn(() => {
   userFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -478,9 +413,13 @@ const handleSubmit = useThrottleFn(() => {
   });
 }, 3000);
 
-// 删除用户
+/**
+ * 删除用户
+ *
+ * @param id  用户ID
+ */
 function handleDelete(id?: number) {
-  const userIds = [id || removeIds.value].join(",");
+  const userIds = [id || selectIds.value].join(",");
   if (!userIds) {
     ElMessage.warning("请勾选删除项");
     return;
@@ -505,23 +444,17 @@ function handleDelete(id?: number) {
     }
   );
 }
-// 打开导入弹窗 *
+
+// 打开导入弹窗
 function handleOpenImportDialog() {
   importDialogVisible.value = true;
-}
-
-// 导入用户成功
-function handleUserImportSuccess() {
-  handleQuery();
 }
 
 // 导出用户
 function handleExport() {
   UserAPI.export(queryParams).then((response: any) => {
     const fileData = response.data;
-    const fileName = decodeURI(
-      response.headers["content-disposition"].split(";")[1].split("=")[1]
-    );
+    const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
 
