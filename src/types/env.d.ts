@@ -1,11 +1,5 @@
 // https://cn.vitejs.dev/guide/env-and-mode
 
-declare module "*.vue" {
-  import type { DefineComponent } from "vue";
-  const component: DefineComponent<object, object, any>;
-  export default component;
-}
-
 // TypeScript 类型提示都为 string： https://github.com/vitejs/vite/issues/6930
 interface ImportMetaEnv {
   /** 应用端口 */
