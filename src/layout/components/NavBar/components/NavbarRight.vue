@@ -36,8 +36,8 @@ import { DeviceEnum } from "@/enums/DeviceEnum";
 
 import { useAppStore, useSettingsStore } from "@/store";
 
-import UserProfile from "./UserProfile.vue";
-import Notification from "./Notification.vue";
+import UserProfile from "@/layout/components/NavBar/components/UserProfile.vue";
+import Notification from "@/layout/components/NavBar/components/Notification.vue";
 
 const appStore = useAppStore();
 const settingStore = useSettingsStore();

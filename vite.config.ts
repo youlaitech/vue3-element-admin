@@ -107,6 +107,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       include: [
         "vue",
         "vue-router",
+        "element-plus",
         "pinia",
         "axios",
         "@vueuse/core",

@@ -69,7 +69,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   /**
-   *  清理用户会话
+   * 清理用户会话
    *
    * @returns
    */

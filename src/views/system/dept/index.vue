@@ -38,8 +38,8 @@
       </el-form>
     </div>
 
-    <el-card shadow="never" class="table-wrapper">
-      <template #header>
+    <el-card shadow="never">
+      <div class="mb-10px">
         <el-button
           v-hasPerm="['sys:dept:add']"
           type="success"
@@ -61,7 +61,7 @@
           </template>
           删除
         </el-button>
-      </template>
+      </div>
 
       <el-table
         v-loading="loading"
