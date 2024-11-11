@@ -22,10 +22,7 @@
     <UserProfile />
 
     <!-- 设置面板 -->
-    <div
-      v-if="defaultSettings.showSettings"
-      @click="settingStore.settingsVisible = true"
-    >
+    <div v-if="defaultSettings.showSettings" @click="settingStore.settingsVisible = true">
       <SvgIcon icon-class="setting" />
     </div>
   </div>
@@ -36,8 +33,8 @@ import { DeviceEnum } from "@/enums/DeviceEnum";
 
 import { useAppStore, useSettingsStore } from "@/store";
 
-import UserProfile from "@/layout/components/NavBar/components/UserProfile.vue";
-import Notification from "@/layout/components/NavBar/components/Notification.vue";
+import UserProfile from "./UserProfile.vue";
+import Notification from "./Notification.vue";
 
 const appStore = useAppStore();
 const settingStore = useSettingsStore();

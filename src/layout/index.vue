@@ -14,16 +14,10 @@
     <div v-if="layout === LayoutEnum.MIX" class="mix-container">
       <div class="mix-container-sidebar">
         <el-scrollbar>
-          <SidebarMenu
-            :menu-list="mixLeftMenus"
-            :base-path="activeTopMenuPath"
-          />
+          <SidebarMenu :menu-list="mixLeftMenus" :base-path="activeTopMenuPath" />
         </el-scrollbar>
         <div class="sidebar-toggle">
-          <hamburger
-            :is-active="appStore.sidebar.opened"
-            @toggle-click="toggleSidebar"
-          />
+          <hamburger :is-active="appStore.sidebar.opened" @toggle-click="toggleSidebar" />
         </div>
       </div>
 
@@ -43,7 +37,7 @@
     <!-- 左侧和顶部布局 -->
     <div v-else :class="{ hasTagsView: showTagsView }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
-        <Navbar v-if="layout === LayoutEnum.LEFT" />
+        <NavBar v-if="layout === LayoutEnum.LEFT" />
         <TagsView v-if="showTagsView" />
       </div>
       <AppMain />
@@ -62,7 +56,7 @@ import defaultSettings from "@/settings";
 import { DeviceEnum } from "@/enums/DeviceEnum";
 import { LayoutEnum } from "@/enums/LayoutEnum";
 
-import Navbar from "@/layout/components/NavBar/index.vue";
+import NavBar from "./components/NavBar/index.vue";
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
@@ -97,9 +91,7 @@ const classObj = computed(() => ({
 }));
 
 watchEffect(() => {
-  appStore.toggleDevice(
-    width.value < WIDTH_DESKTOP ? DeviceEnum.MOBILE : DeviceEnum.DESKTOP
-  );
+  appStore.toggleDevice(width.value < WIDTH_DESKTOP ? DeviceEnum.MOBILE : DeviceEnum.DESKTOP);
   if (width.value >= WIDTH_DESKTOP) {
     appStore.openSideBar();
   } else {
