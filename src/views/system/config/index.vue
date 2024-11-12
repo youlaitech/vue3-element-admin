@@ -30,21 +30,13 @@
 
     <el-card shadow="never" class="table-wrapper">
       <template #header>
-        <el-button
-          v-hasPerm="['sys:config:add']"
-          type="success"
-          @click="handleOpenDialog()"
-        >
+        <el-button v-hasPerm="['sys:config:add']" type="success" @click="handleOpenDialog()">
           <template #icon>
             <Plus />
           </template>
           新增
         </el-button>
-        <el-button
-          v-hasPerm="['sys:config:refresh']"
-          color="#626aef"
-          @click="handleRefreshCache"
-        >
+        <el-button v-hasPerm="['sys:config:refresh']" color="#626aef" @click="handleRefreshCache">
           <el-icon><RefreshLeft /></el-icon>
           刷新缓存
         </el-button>
@@ -58,30 +50,10 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="index" label="序号" width="60" />
-        <el-table-column
-          key="configName"
-          label="配置名称"
-          prop="configName"
-          min-width="100"
-        />
-        <el-table-column
-          key="configKey"
-          label="配置键"
-          prop="configKey"
-          min-width="100"
-        />
-        <el-table-column
-          key="configValue"
-          label="配置值"
-          prop="configValue"
-          min-width="100"
-        />
-        <el-table-column
-          key="remark"
-          label="描述"
-          prop="remark"
-          min-width="100"
-        />
+        <el-table-column key="configName" label="配置名称" prop="configName" min-width="100" />
+        <el-table-column key="configKey" label="配置键" prop="configKey" min-width="100" />
+        <el-table-column key="configValue" label="配置值" prop="configValue" min-width="100" />
+        <el-table-column key="remark" label="描述" prop="remark" min-width="100" />
         <el-table-column fixed="right" label="操作" width="220">
           <template #default="scope">
             <el-button
@@ -136,25 +108,13 @@
         label-width="100px"
       >
         <el-form-item label="配置名称" prop="configName">
-          <el-input
-            v-model="formData.configName"
-            placeholder="请输入配置名称"
-            :maxlength="50"
-          />
+          <el-input v-model="formData.configName" placeholder="请输入配置名称" :maxlength="50" />
         </el-form-item>
         <el-form-item label="配置键" prop="configKey">
-          <el-input
-            v-model="formData.configKey"
-            placeholder="请输入配置键"
-            :maxlength="50"
-          />
+          <el-input v-model="formData.configKey" placeholder="请输入配置键" :maxlength="50" />
         </el-form-item>
         <el-form-item label="配置值" prop="configValue">
-          <el-input
-            v-model="formData.configValue"
-            placeholder="请输入配置值"
-            :maxlength="100"
-          />
+          <el-input v-model="formData.configValue" placeholder="请输入配置值" :maxlength="100" />
         </el-form-item>
         <el-form-item label="描述" prop="remark">
           <el-input
@@ -183,11 +143,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import ConfigAPI, {
-  ConfigPageVO,
-  ConfigForm,
-  ConfigPageQuery,
-} from "@/api/system/config";
+import ConfigAPI, { ConfigPageVO, ConfigForm, ConfigPageQuery } from "@/api/system/config";
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -220,15 +176,9 @@ const formData = reactive<ConfigForm>({
 });
 
 const rules = reactive({
-  configName: [
-    { required: true, message: "请输入系统配置名称", trigger: "blur" },
-  ],
-  configKey: [
-    { required: true, message: "请输入系统配置编码", trigger: "blur" },
-  ],
-  configValue: [
-    { required: true, message: "请输入系统配置值", trigger: "blur" },
-  ],
+  configName: [{ required: true, message: "请输入系统配置名称", trigger: "blur" }],
+  configKey: [{ required: true, message: "请输入系统配置编码", trigger: "blur" }],
+  configValue: [{ required: true, message: "请输入系统配置值", trigger: "blur" }],
 });
 
 /** 查询系统配置 */
@@ -308,7 +258,7 @@ function handleCloseDialog() {
   dialog.visible = false;
   dataFormRef.value.resetFields();
   dataFormRef.value.clearValidate();
-  formData.id != undefined;
+  formData.id = undefined;
 }
 
 /** 删除系统配置 */
