@@ -1,12 +1,7 @@
 <template>
   <div class="app-container">
     <div class="search-bar">
-      <el-form
-        ref="queryFormRef"
-        :model="queryParams"
-        :inline="true"
-        label-suffix=":"
-      >
+      <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-suffix=":">
         <el-form-item label="标题" prop="title">
           <el-input
             v-model="queryParams.title"
@@ -28,14 +23,8 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery()">
-            <template #icon><Search /></template>
-            搜索
-          </el-button>
-          <el-button @click="handleResetQuery()">
-            <template #icon><Refresh /></template>
-            重置
-          </el-button>
+          <el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
+          <el-button icon="refresh" @click="handleResetQuery()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -45,18 +34,18 @@
         <el-button
           v-hasPerm="['sys:notice:add']"
           type="success"
+          icon="plus"
           @click="handleOpenDialog()"
         >
-          <template #icon><Plus /></template>
           新增通知
         </el-button>
         <el-button
           v-hasPerm="['sys:notice:delete']"
           type="danger"
-          :disabled="ids.length === 0"
+          :disabled="selectIds.length === 0"
+          icon="delete"
           @click="handleDelete()"
         >
-          <template #icon><Delete /></template>
           删除
         </el-button>
       </template>
@@ -76,43 +65,23 @@
             <DictLabel v-model="scope.row.type" :code="'notice_type'" />
           </template>
         </el-table-column>
-        <el-table-column
-          align="center"
-          label="发布人"
-          prop="publisherName"
-          width="150"
-        />
+        <el-table-column align="center" label="发布人" prop="publisherName" width="150" />
         <el-table-column align="center" label="通知等级" width="100">
           <template #default="scope">
             <DictLabel v-model="scope.row.level" code="notice_level" />
           </template>
         </el-table-column>
-        <el-table-column
-          align="center"
-          label="通告目标类型"
-          prop="targetType"
-          min-width="100"
-        >
+        <el-table-column align="center" label="通告目标类型" prop="targetType" min-width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.targetType == 1" type="warning">
-              全体
-            </el-tag>
-            <el-tag v-if="scope.row.targetType == 2" type="success">
-              指定
-            </el-tag>
+            <el-tag v-if="scope.row.targetType == 1" type="warning">全体</el-tag>
+            <el-tag v-if="scope.row.targetType == 2" type="success">指定</el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" label="发布状态" min-width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.publishStatus == 0" type="info">
-              未发布
-            </el-tag>
-            <el-tag v-if="scope.row.publishStatus == 1" type="success">
-              已发布
-            </el-tag>
-            <el-tag v-if="scope.row.publishStatus == -1" type="warning">
-              已撤回
-            </el-tag>
+            <el-tag v-if="scope.row.publishStatus == 0" type="info">未发布</el-tag>
+            <el-tag v-if="scope.row.publishStatus == 1" type="success">已发布</el-tag>
+            <el-tag v-if="scope.row.publishStatus == -1" type="warning">已撤回</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作时间" width="250">
@@ -126,10 +95,7 @@
               <span>发布时间：</span>
               <span>{{ scope.row.publishTime || "-" }}</span>
             </div>
-            <div
-              v-else-if="scope.row.publishStatus === -1"
-              class="flex-x-start"
-            >
+            <div v-else-if="scope.row.publishStatus === -1" class="flex-x-start">
               <span>撤回时间：</span>
               <span>{{ scope.row.revokeTime || "-" }}</span>
             </div>
@@ -141,7 +107,7 @@
               type="primary"
               size="small"
               link
-              @click="openNoticeDetailDialog(scope.row.id)"
+              @click="handleOpenNoticeDetailDialog(scope.row.id)"
             >
               查看
             </el-button>
@@ -151,7 +117,7 @@
               type="primary"
               size="small"
               link
-              @click="handlePublishNotice(scope.row.id)"
+              @click="handlePublish(scope.row.id)"
             >
               发布
             </el-button>
@@ -161,7 +127,7 @@
               type="primary"
               size="small"
               link
-              @click="revokeNotice(scope.row.id)"
+              @click="handleRevoke(scope.row.id)"
             >
               撤回
             </el-button>
@@ -206,20 +172,12 @@
       width="1250"
       @close="handleCloseDialog"
     >
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-      >
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="通知标题" prop="title">
           <el-input v-model="formData.title" placeholder="通知标题" clearable />
         </el-form-item>
         <el-form-item label="通知内容" prop="content">
-          <WangEditor
-            v-model="formData.content"
-            style="min-height: 480px; max-height: 500px"
-          />
+          <WangEditor v-model="formData.content" style="min-height: 480px; max-height: 500px" />
         </el-form-item>
         <el-form-item label="通知类型" prop="type">
           <Dict v-model="formData.type" type="button" code="notice_type" />
@@ -233,17 +191,8 @@
             <el-radio :value="2">指定</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item
-          v-if="formData.targetType == 2"
-          label="指定用户"
-          prop="targetUserIds"
-        >
-          <el-select
-            v-model="formData.targetUserIds"
-            multiple
-            search
-            placeholder="请选择指定用户"
-          >
+        <el-form-item v-if="formData.targetType == 2" label="指定用户" prop="targetUserIds">
+          <el-select v-model="formData.targetUserIds" multiple search placeholder="请选择指定用户">
             <el-option
               v-for="item in userOptions"
               :key="item.value"
@@ -271,11 +220,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import NoticeAPI, {
-  NoticePageVO,
-  NoticeForm,
-  NoticePageQuery,
-} from "@/api/system/notice";
+import NoticeAPI, { NoticePageVO, NoticeForm, NoticePageQuery } from "@/api/system/notice";
 import UserAPI from "@/api/system/user";
 
 const queryFormRef = ref(ElForm);
@@ -283,7 +228,7 @@ const dataFormRef = ref(ElForm);
 const noticeDetailRef = ref();
 
 const loading = ref(false);
-const ids = ref<number[]>([]);
+const selectIds = ref<number[]>([]);
 const total = ref(0);
 
 const queryParams = reactive<NoticePageQuery>({
@@ -327,7 +272,7 @@ const rules = reactive({
   type: [{ required: true, message: "请选择通知类型", trigger: "change" }],
 });
 
-/** 查询通知公告 */
+// 查询通知公告
 function handleQuery() {
   loading.value = true;
   NoticeAPI.getPage(queryParams)
@@ -340,19 +285,19 @@ function handleQuery() {
     });
 }
 
-/** 重置通知公告查询 */
+// 重置查询
 function handleResetQuery() {
   queryFormRef.value!.resetFields();
   queryParams.pageNum = 1;
   handleQuery();
 }
 
-/** 行复选框选中记录选中ID集合 */
+// 行复选框选中项变化
 function handleSelectionChange(selection: any) {
-  ids.value = selection.map((item: any) => item.id);
+  selectIds.value = selection.map((item: any) => item.id);
 }
 
-/** 打开通知公告弹窗 */
+// 打开通知公告弹窗
 function handleOpenDialog(id?: number) {
   UserAPI.getOptions().then((data) => {
     userOptions.value = data;
@@ -370,21 +315,23 @@ function handleOpenDialog(id?: number) {
   }
 }
 
-function handlePublishNotice(id: number) {
+// 发布通知公告
+function handlePublish(id: number) {
   NoticeAPI.publish(id).then(() => {
     ElMessage.success("发布成功");
     handleQuery();
   });
 }
 
-function revokeNotice(id: number) {
+// 撤回通知公告
+function handleRevoke(id: number) {
   NoticeAPI.revoke(id).then(() => {
     ElMessage.success("撤回成功");
     handleQuery();
   });
 }
 
-/** 提交通知公告表单 */
+// 通知公告表单提交
 function handleSubmit() {
   dataFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -411,7 +358,7 @@ function handleSubmit() {
   });
 }
 
-/** 关闭通知公告弹窗 */
+// 关闭通知公告弹窗
 function handleCloseDialog() {
   dialog.visible = false;
   dataFormRef.value.resetFields();
@@ -419,9 +366,9 @@ function handleCloseDialog() {
   formData.id = undefined;
 }
 
-/** 删除通知公告 */
+// 删除通知公告
 function handleDelete(id?: number) {
-  const deleteIds = [id || ids.value].join(",");
+  const deleteIds = [id || selectIds.value].join(",");
   if (!deleteIds) {
     ElMessage.warning("请勾选删除项");
     return;
@@ -447,8 +394,8 @@ function handleDelete(id?: number) {
   );
 }
 
-/** 打开通知公告详情弹窗 */
-function openNoticeDetailDialog(id: number) {
+// 打开通知公告详情弹窗
+function handleOpenNoticeDetailDialog(id: number) {
   noticeDetailRef.value.openNotice(id);
 }
 

@@ -12,38 +12,16 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery()">
-            <template #icon>
-              <Search />
-            </template>
-            搜索
-          </el-button>
-          <el-button @click="handleResetQuery()">
-            <template #icon>
-              <Refresh />
-            </template>
-            重置
-          </el-button>
+          <el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
+          <el-button icon="refresh" @click="handleResetQuery()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <el-card shadow="never">
       <div class="mb-[10px]">
-        <el-button type="success" @click="handleAddClick()">
-          <template #icon>
-            <Plus />
-          </template>
-          新增
-        </el-button>
-        <el-button
-          type="danger"
-          :disabled="ids.length === 0"
-          @click="handleDelete()"
-        >
-          <template #icon>
-            <Delete />
-          </template>
+        <el-button type="success" icon="plus" @click="handleAddClick()">新增</el-button>
+        <el-button type="danger" :disabled="ids.length === 0" icon="delete" @click="handleDelete()">
           删除
         </el-button>
       </div>
@@ -67,12 +45,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="220">
           <template #default="scope">
-            <el-button
-              type="primary"
-              link
-              size="small"
-              @click.stop="handleOpenDictData(scope.row)"
-            >
+            <el-button type="primary" link size="small" @click.stop="handleOpenDictData(scope.row)">
               <template #icon>
                 <Collection />
               </template>
@@ -83,22 +56,18 @@
               type="primary"
               link
               size="small"
+              icon="edit"
               @click.stop="handleEditClick(scope.row.id, scope.row.name)"
             >
-              <template #icon>
-                <Edit />
-              </template>
               编辑
             </el-button>
             <el-button
               type="danger"
               link
               size="small"
+              icon="delete"
               @click.stop="handleDelete(scope.row.id)"
             >
-              <template #icon>
-                <Delete />
-              </template>
               删除
             </el-button>
           </template>
@@ -121,22 +90,14 @@
       width="500px"
       @close="handleCloseDialog"
     >
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="computedRules"
-        label-width="100px"
-      >
+      <el-form ref="dataFormRef" :model="formData" :rules="computedRules" label-width="100px">
         <el-card shadow="never">
           <el-form-item label="字典名称" prop="name">
             <el-input v-model="formData.name" placeholder="请输入字典名称" />
           </el-form-item>
 
           <el-form-item label="字典编码" prop="dictCode">
-            <el-input
-              v-model="formData.dictCode"
-              placeholder="请输入字典编码"
-            />
+            <el-input v-model="formData.dictCode" placeholder="请输入字典编码" />
           </el-form-item>
 
           <el-form-item label="状态">
@@ -147,11 +108,7 @@
           </el-form-item>
 
           <el-form-item label="备注">
-            <el-input
-              v-model="formData.remark"
-              type="textarea"
-              placeholder="请输入备注"
-            />
+            <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
           </el-form-item>
         </el-card>
       </el-form>
@@ -172,11 +129,7 @@ defineOptions({
   inherititems: false,
 });
 
-import DictAPI, {
-  DictPageQuery,
-  DictPageVO,
-  DictForm,
-} from "@/api/system/dict";
+import DictAPI, { DictPageQuery, DictPageVO, DictForm } from "@/api/system/dict";
 
 import router from "@/router";
 

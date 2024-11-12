@@ -12,38 +12,16 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery()">
-            <template #icon>
-              <Search />
-            </template>
-            搜索
-          </el-button>
-          <el-button @click="handleResetQuery()">
-            <template #icon>
-              <Refresh />
-            </template>
-            重置
-          </el-button>
+          <el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
+          <el-button icon="refresh" @click="handleResetQuery()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <el-card shadow="never">
       <div class="mb-[10px]">
-        <el-button type="success" @click="handleOpenDialog()">
-          <template #icon>
-            <Plus />
-          </template>
-          新增
-        </el-button>
-        <el-button
-          type="danger"
-          :disabled="ids.length === 0"
-          @click="handleDelete()"
-        >
-          <template #icon>
-            <Delete />
-          </template>
+        <el-button type="success" icon="plus" @click="handleOpenDialog()">新增</el-button>
+        <el-button type="danger" :disabled="ids.length === 0" icon="delete" @click="handleDelete()">
           删除
         </el-button>
       </div>
@@ -73,22 +51,18 @@
               type="primary"
               link
               size="small"
+              icon="edit"
               @click.stop="handleOpenDialog(scope.row)"
             >
-              <template #icon>
-                <Edit />
-              </template>
               编辑
             </el-button>
             <el-button
               type="danger"
               link
               size="small"
+              icon="delete"
               @click.stop="handleDelete(scope.row.id)"
             >
-              <template #icon>
-                <Delete />
-              </template>
               删除
             </el-button>
           </template>
@@ -111,12 +85,7 @@
       width="820px"
       @close="handleCloseDialog"
     >
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="computedRules"
-        label-width="100px"
-      >
+      <el-form ref="dataFormRef" :model="formData" :rules="computedRules" label-width="100px">
         <el-card shadow="never">
           <el-form-item label="字典标签" prop="label">
             <el-input v-model="formData.label" placeholder="请输入字典标签" />
@@ -131,17 +100,10 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="排序">
-            <el-input-number
-              v-model="formData.sort"
-              controls-position="right"
-            />
+            <el-input-number v-model="formData.sort" controls-position="right" />
           </el-form-item>
           <el-form-item label="标签类型">
-            <el-tag
-              v-if="formData.tagType"
-              :type="formData.tagType"
-              class="mr-2"
-            >
+            <el-tag v-if="formData.tagType" :type="formData.tagType" class="mr-2">
               {{ formData.label }}
             </el-tag>
             <el-radio-group v-model="formData.tagType">
