@@ -180,10 +180,10 @@
           <WangEditor v-model="formData.content" style="min-height: 480px; max-height: 500px" />
         </el-form-item>
         <el-form-item label="通知类型" prop="type">
-          <Dict v-model="formData.type" type="button" code="notice_type" />
+          <Dict v-model="formData.type" code="notice_type" />
         </el-form-item>
         <el-form-item label="通知等级" prop="level">
-          <Dict v-model="formData.level" type="button" code="notice_level" />
+          <Dict v-model="formData.level" code="notice_level" />
         </el-form-item>
         <el-form-item label="目标类型" prop="targetType">
           <el-radio-group v-model="formData.targetType">
@@ -358,12 +358,18 @@ function handleSubmit() {
   });
 }
 
-// 关闭通知公告弹窗
-function handleCloseDialog() {
-  dialog.visible = false;
+// 重置表单
+function resetForm() {
   dataFormRef.value.resetFields();
   dataFormRef.value.clearValidate();
   formData.id = undefined;
+  formData.targetType = 1;
+}
+
+// 关闭通知公告弹窗
+function handleCloseDialog() {
+  dialog.visible = false;
+  resetForm();
 }
 
 // 删除通知公告
