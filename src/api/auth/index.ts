@@ -20,6 +20,18 @@ const AuthAPI = {
     });
   },
 
+  /** 刷新token 接口*/
+  refreshToken(refreshToken: string) {
+    return request<any, LoginResult>({
+      url: `${AUTH_BASE_URL}/refresh-token`,
+      method: "post",
+      data: { refreshToken: refreshToken },
+      headers: {
+        Authorization: "no-auth",
+      },
+    });
+  },
+
   /** 注销 接口*/
   logout() {
     return request({

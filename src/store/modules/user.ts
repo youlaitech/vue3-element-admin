@@ -59,7 +59,7 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve, reject) => {
       AuthAPI.logout()
         .then(() => {
-          clearUserSession();
+          clearUserData();
           resolve();
         })
         .catch((error) => {
@@ -73,7 +73,7 @@ export const useUserStore = defineStore("user", () => {
    *
    * @returns
    */
-  function clearUserSession() {
+  function clearUserData() {
     return new Promise<void>((resolve) => {
       clearToken();
       usePermissionStoreHook().resetRouter();
@@ -87,7 +87,7 @@ export const useUserStore = defineStore("user", () => {
     getUserInfo,
     login,
     logout,
-    clearUserSession,
+    clearUserData,
   };
 });
 

@@ -1,7 +1,4 @@
-import axios, {
-  type InternalAxiosRequestConfig,
-  type AxiosResponse,
-} from "axios";
+import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from "axios";
 import qs from "qs";
 import { useUserStoreHook } from "@/store/modules/user";
 import { ResultEnum } from "@/enums/ResultEnum";
@@ -20,9 +17,14 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const accessToken = getToken();
-    if (accessToken) {
-      config.headers.Authorization = accessToken;
+    // 如果设置了 "no-auth"，则不携带 Authorization 头，用于登录、刷新 token 等接口
+    if (config.headers.Authorization === "no-auth") {
+      delete config.headers.Authorization;
+    } else {
+      const accessToken = getToken();
+      if (accessToken) {
+        config.headers.Authorization = accessToken;
+      }
     }
     return config;
   },
@@ -34,11 +36,10 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response: AxiosResponse) => {
-    // 检查配置的响应类型是否为二进制类型（'blob' 或 'arraybuffer'）, 如果是，直接返回响应对象
-    if (
-      response.config.responseType === "blob" ||
-      response.config.responseType === "arraybuffer"
-    ) {
+    const { responseType } = response.config;
+
+    // 如果响应类型是二进制数据（文件导出场景）, 则直接返回 response
+    if (responseType === "blob") {
       return response;
     }
 
@@ -61,7 +62,7 @@ service.interceptors.response.use(
           type: "info",
         });
         useUserStoreHook()
-          .clearUserSession()
+          .clearUserData()
           .then(() => {
             location.reload();
           });
