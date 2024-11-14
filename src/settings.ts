@@ -25,7 +25,9 @@ const defaultSettings: AppSettings = {
   layout: LayoutEnum.LEFT,
   // 主题，根据操作系统的色彩方案自动选择
   theme: mediaQueryList.matches ? ThemeEnum.DARK : ThemeEnum.LIGHT,
+  // 组件大小 default | medium | small | large
   size: SizeEnum.DEFAULT,
+  // 语言
   language: LanguageEnum.ZH_CN,
   // 主题颜色
   themeColor: "#4080FF",
