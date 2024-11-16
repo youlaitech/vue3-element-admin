@@ -97,11 +97,11 @@
 
           <el-table v-loading="loading" :data="pageData" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" align="center" />
-            <el-table-column label="编号" align="center" prop="id" width="60" />
-            <el-table-column label="用户名" align="center" prop="username" />
-            <el-table-column label="昵称" width="100" align="center" prop="nickname" />
+            <el-table-column label="用户名" prop="username" />
+            <el-table-column label="昵称" width="150" align="center" prop="nickname" />
             <el-table-column label="性别" width="100" align="center">
               <template #default="scope">
+                <!-- 性别字典翻译 -->
                 <DictLabel v-model="scope.row.gender" code="gender" />
               </template>
             </el-table-column>
