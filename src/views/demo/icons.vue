@@ -5,11 +5,7 @@
         <div class="grid">
           <div v-for="item of svg_icons" :key="item">
             <copy-button :text="generateIconCode(item)">
-              <el-tooltip
-                effect="dark"
-                :content="generateIconCode(item)"
-                placement="top"
-              >
+              <el-tooltip effect="dark" :content="generateIconCode(item)" placement="top">
                 <div class="icon-item">
                   <svg-icon :icon-class="item" />
                   <span>{{ item }}</span>
@@ -23,11 +19,7 @@
         <div class="grid">
           <div v-for="(icon, name) of icons" :key="name">
             <copy-button :text="generateElementIconCode(name)">
-              <el-tooltip
-                effect="dark"
-                :content="generateElementIconCode(name)"
-                placement="top"
-              >
+              <el-tooltip effect="dark" :content="generateElementIconCode(name)" placement="top">
                 <div class="icon-item">
                   <el-icon :size="20">
                     <component :is="icon" />

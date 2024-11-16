@@ -1,10 +1,6 @@
 <template>
   <div class="tags-container">
-    <el-scrollbar
-      class="scroll-container"
-      :vertical="false"
-      @wheel.prevent="handleScroll"
-    >
+    <el-scrollbar class="scroll-container" :vertical="false" @wheel.prevent="handleScroll">
       <router-link
         v-for="tag in visitedViews"
         ref="tagRef"
@@ -64,12 +60,7 @@ import { useRoute, useRouter, RouteRecordRaw } from "vue-router";
 import { resolve } from "path-browserify";
 import { translateRouteTitle } from "@/utils/i18n";
 
-import {
-  usePermissionStore,
-  useTagsViewStore,
-  useSettingsStore,
-  useAppStore,
-} from "@/store";
+import { usePermissionStore, useTagsViewStore, useSettingsStore, useAppStore } from "@/store";
 
 const { proxy } = getCurrentInstance()!;
 const router = useRouter();

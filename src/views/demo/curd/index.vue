@@ -8,9 +8,7 @@
       >
         示例源码 请点击>>>>
       </el-link>
-      <el-button type="primary" plain round size="small" @click="isA = !isA">
-        切换示例
-      </el-button>
+      <el-button type="primary" plain round size="small" @click="isA = !isA">切换示例</el-button>
     </div>
 
     <!-- 列表 -->
@@ -146,14 +144,10 @@ function handleOperatClick(data: IOperatData) {
   console.log(data);
   // 重置密码
   if (data.name === "reset_pwd") {
-    ElMessageBox.prompt(
-      "请输入用户「" + data.row.username + "」的新密码",
-      "重置密码",
-      {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-      }
-    ).then(({ value }) => {
+    ElMessageBox.prompt("请输入用户「" + data.row.username + "」的新密码", "重置密码", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+    }).then(({ value }) => {
       if (!value || value.length < 6) {
         ElMessage.warning("密码至少需要6位字符，请重新输入");
         return false;

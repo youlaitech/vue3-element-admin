@@ -4,10 +4,7 @@
     class="px-[15px] flex items-center justify-center color-[var(--el-text-color-regular)]"
     @click="toggleClick"
   >
-    <svg-icon
-      icon-class="collapse"
-      :class="{ hamburger: true, 'is-active': isActive }"
-    />
+    <svg-icon icon-class="collapse" :class="{ hamburger: true, 'is-active': isActive }" />
   </div>
 </template>
 

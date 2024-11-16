@@ -1,19 +1,10 @@
 <template>
   <div ref="iconSelectRef" :style="{ width: props.width }">
-    <el-popover
-      :visible="popoverVisible"
-      :width="props.width"
-      placement="bottom-end"
-    >
+    <el-popover :visible="popoverVisible" :width="props.width" placement="bottom-end">
       <template #reference>
         <div @click="popoverVisible = !popoverVisible">
           <slot>
-            <el-input
-              v-model="selectedIcon"
-              readonly
-              placeholder="点击选择图标"
-              class="reference"
-            >
+            <el-input v-model="selectedIcon" readonly placeholder="点击选择图标" class="reference">
               <template #prepend>
                 <!-- 根据图标类型展示 -->
                 <el-icon v-if="isElementIcon">
@@ -49,12 +40,7 @@
 
       <!-- 图标选择弹窗 -->
       <div ref="popoverContentRef">
-        <el-input
-          v-model="filterText"
-          placeholder="搜索图标"
-          clearable
-          @input="filterIcons"
-        />
+        <el-input v-model="filterText" placeholder="搜索图标" clearable @input="filterIcons" />
         <el-tabs v-model="activeTab" @tab-click="handleTabClick">
           <el-tab-pane label="SVG 图标" name="svg">
             <el-scrollbar height="300px">
@@ -147,9 +133,7 @@ function handleTabClick(tabPane: any) {
 function filterIcons() {
   if (activeTab.value === "svg") {
     filteredSvgIcons.value = filterText.value
-      ? svgIcons.value.filter((icon) =>
-          icon.toLowerCase().includes(filterText.value.toLowerCase())
-        )
+      ? svgIcons.value.filter((icon) => icon.toLowerCase().includes(filterText.value.toLowerCase()))
       : svgIcons.value;
   } else {
     filteredElementIcons.value = filterText.value
@@ -184,9 +168,7 @@ function clearSelectedIcon() {
 onMounted(() => {
   loadIcons();
   if (selectedIcon.value) {
-    if (
-      elementIcons.value.includes(selectedIcon.value.replace("el-icon-", ""))
-    ) {
+    if (elementIcons.value.includes(selectedIcon.value.replace("el-icon-", ""))) {
       activeTab.value = "element";
     } else {
       activeTab.value = "svg";

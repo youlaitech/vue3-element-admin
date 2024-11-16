@@ -16,12 +16,7 @@
                 size="small"
                 @click="triggerFileUpload"
               />
-              <input
-                ref="fileInput"
-                type="file"
-                style="display: none"
-                @change="handleFileChange"
-              />
+              <input ref="fileInput" type="file" style="display: none" @change="handleFileChange" />
             </div>
             <div class="mt-5">
               {{ userProfile.nickname }}
@@ -41,10 +36,7 @@
                   用户名
                 </template>
                 {{ userProfile.username }}
-                <el-icon
-                  v-if="userProfile.gender === 1"
-                  class="align-middle color-blue"
-                >
+                <el-icon v-if="userProfile.gender === 1" class="align-middle color-blue">
                   <Male />
                 </el-icon>
                 <el-icon v-else class="align-middle color-pink">
@@ -117,9 +109,7 @@
           <div class="mt-5">
             <div class="font-bold">绑定手机</div>
             <div class="text-14px mt-2">
-              <span v-if="userProfile.mobile">
-                已绑定手机号：{{ userProfile.mobile }}
-              </span>
+              <span v-if="userProfile.mobile">已绑定手机号：{{ userProfile.mobile }}</span>
               <span v-else>未绑定手机</span>
               <el-button
                 v-if="userProfile.mobile"
@@ -147,9 +137,7 @@
           <div class="mt-5">
             <div class="font-bold">绑定邮箱</div>
             <div class="text-14px mt-2">
-              <span v-if="userProfile.email">
-                已绑定邮箱：{{ userProfile.email }}
-              </span>
+              <span v-if="userProfile.email">已绑定邮箱：{{ userProfile.email }}</span>
               <span v-else>未绑定邮箱</span>
               <el-button
                 v-if="userProfile.email"
@@ -203,25 +191,13 @@
         :label-width="100"
       >
         <el-form-item label="原密码" prop="oldPassword">
-          <el-input
-            v-model="passwordChangeForm.oldPassword"
-            type="password"
-            show-password
-          />
+          <el-input v-model="passwordChangeForm.oldPassword" type="password" show-password />
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
-          <el-input
-            v-model="passwordChangeForm.newPassword"
-            type="password"
-            show-password
-          />
+          <el-input v-model="passwordChangeForm.newPassword" type="password" show-password />
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input
-            v-model="passwordChangeForm.confirmPassword"
-            type="password"
-            show-password
-          />
+          <el-input v-model="passwordChangeForm.confirmPassword" type="password" show-password />
         </el-form-item>
       </el-form>
       <!-- 绑定手机 -->
@@ -243,11 +219,7 @@
                 :disabled="mobileCountdown > 0"
                 @click="handleSendVerificationCode('MOBILE')"
               >
-                {{
-                  mobileCountdown > 0
-                    ? `${mobileCountdown}s后重新发送`
-                    : "发送验证码"
-                }}
+                {{ mobileCountdown > 0 ? `${mobileCountdown}s后重新发送` : "发送验证码" }}
               </el-button>
             </template>
           </el-input>
@@ -273,11 +245,7 @@
                 :disabled="emailCountdown > 0"
                 @click="handleSendVerificationCode('EMAIL')"
               >
-                {{
-                  emailCountdown > 0
-                    ? `${emailCountdown}s后重新发送`
-                    : "发送验证码"
-                }}
+                {{ emailCountdown > 0 ? `${emailCountdown}s后重新发送` : "发送验证码" }}
               </el-button>
             </template>
           </el-input>
@@ -336,9 +304,7 @@ const emailTimer = ref<NodeJS.Timeout | null>(null);
 const passwordChangeRules = {
   oldPassword: [{ required: true, message: "请输入原密码", trigger: "blur" }],
   newPassword: [{ required: true, message: "请输入新密码", trigger: "blur" }],
-  confirmPassword: [
-    { required: true, message: "请再次输入新密码", trigger: "blur" },
-  ],
+  confirmPassword: [{ required: true, message: "请再次输入新密码", trigger: "blur" }],
 };
 
 // 手机号校验规则

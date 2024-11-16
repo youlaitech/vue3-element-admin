@@ -36,78 +36,48 @@
                   </span>
                 </template>
                 <!-- Input 输入框 -->
-                <template
-                  v-if="item.type === 'input' || item.type === undefined"
-                >
+                <template v-if="item.type === 'input' || item.type === undefined">
                   <el-input v-model="formData[item.prop]" v-bind="item.attrs" />
                 </template>
                 <!-- Select 选择器 -->
                 <template v-else-if="item.type === 'select'">
                   <el-select v-model="formData[item.prop]" v-bind="item.attrs">
-                    <template
-                      v-for="option in item.options"
-                      :key="option.value"
-                    >
+                    <template v-for="option in item.options" :key="option.value">
                       <el-option v-bind="option" />
                     </template>
                   </el-select>
                 </template>
                 <!-- Radio 单选框 -->
                 <template v-else-if="item.type === 'radio'">
-                  <el-radio-group
-                    v-model="formData[item.prop]"
-                    v-bind="item.attrs"
-                  >
-                    <template
-                      v-for="option in item.options"
-                      :key="option.value"
-                    >
+                  <el-radio-group v-model="formData[item.prop]" v-bind="item.attrs">
+                    <template v-for="option in item.options" :key="option.value">
                       <el-radio v-bind="option" />
                     </template>
                   </el-radio-group>
                 </template>
                 <!-- switch 开关 -->
                 <template v-else-if="item.type === 'switch'">
-                  <el-switch
-                    v-model="formData[item.prop]"
-                    inline-prompt
-                    v-bind="item.attrs"
-                  />
+                  <el-switch v-model="formData[item.prop]" inline-prompt v-bind="item.attrs" />
                 </template>
                 <!-- Checkbox 多选框 -->
                 <template v-else-if="item.type === 'checkbox'">
-                  <el-checkbox-group
-                    v-model="formData[item.prop]"
-                    v-bind="item.attrs"
-                  >
-                    <template
-                      v-for="option in item.options"
-                      :key="option.value"
-                    >
+                  <el-checkbox-group v-model="formData[item.prop]" v-bind="item.attrs">
+                    <template v-for="option in item.options" :key="option.value">
                       <el-checkbox v-bind="option" />
                     </template>
                   </el-checkbox-group>
                 </template>
                 <!-- Input Number 数字输入框 -->
                 <template v-else-if="item.type === 'input-number'">
-                  <el-input-number
-                    v-model="formData[item.prop]"
-                    v-bind="item.attrs"
-                  />
+                  <el-input-number v-model="formData[item.prop]" v-bind="item.attrs" />
                 </template>
                 <!-- TreeSelect 树形选择 -->
                 <template v-else-if="item.type === 'tree-select'">
-                  <el-tree-select
-                    v-model="formData[item.prop]"
-                    v-bind="item.attrs"
-                  />
+                  <el-tree-select v-model="formData[item.prop]" v-bind="item.attrs" />
                 </template>
                 <!-- DatePicker 日期选择器 -->
                 <template v-else-if="item.type === 'date-picker'">
-                  <el-date-picker
-                    v-model="formData[item.prop]"
-                    v-bind="item.attrs"
-                  />
+                  <el-date-picker v-model="formData[item.prop]" v-bind="item.attrs" />
                 </template>
                 <!-- Text 文本 -->
                 <template v-else-if="item.type === 'text'">
@@ -181,84 +151,48 @@
                     </span>
                   </template>
                   <!-- Input 输入框 -->
-                  <template
-                    v-if="item.type === 'input' || item.type === undefined"
-                  >
-                    <el-input
-                      v-model="formData[item.prop]"
-                      v-bind="item.attrs"
-                    />
+                  <template v-if="item.type === 'input' || item.type === undefined">
+                    <el-input v-model="formData[item.prop]" v-bind="item.attrs" />
                   </template>
                   <!-- Select 选择器 -->
                   <template v-else-if="item.type === 'select'">
-                    <el-select
-                      v-model="formData[item.prop]"
-                      v-bind="item.attrs"
-                    >
-                      <template
-                        v-for="option in item.options"
-                        :key="option.value"
-                      >
+                    <el-select v-model="formData[item.prop]" v-bind="item.attrs">
+                      <template v-for="option in item.options" :key="option.value">
                         <el-option v-bind="option" />
                       </template>
                     </el-select>
                   </template>
                   <!-- Radio 单选框 -->
                   <template v-else-if="item.type === 'radio'">
-                    <el-radio-group
-                      v-model="formData[item.prop]"
-                      v-bind="item.attrs"
-                    >
-                      <template
-                        v-for="option in item.options"
-                        :key="option.value"
-                      >
+                    <el-radio-group v-model="formData[item.prop]" v-bind="item.attrs">
+                      <template v-for="option in item.options" :key="option.value">
                         <el-radio v-bind="option" />
                       </template>
                     </el-radio-group>
                   </template>
                   <!-- switch 开关 -->
                   <template v-else-if="item.type === 'switch'">
-                    <el-switch
-                      v-model="formData[item.prop]"
-                      inline-prompt
-                      v-bind="item.attrs"
-                    />
+                    <el-switch v-model="formData[item.prop]" inline-prompt v-bind="item.attrs" />
                   </template>
                   <!-- Checkbox 多选框 -->
                   <template v-else-if="item.type === 'checkbox'">
-                    <el-checkbox-group
-                      v-model="formData[item.prop]"
-                      v-bind="item.attrs"
-                    >
-                      <template
-                        v-for="option in item.options"
-                        :key="option.value"
-                      >
+                    <el-checkbox-group v-model="formData[item.prop]" v-bind="item.attrs">
+                      <template v-for="option in item.options" :key="option.value">
                         <el-checkbox v-bind="option" />
                       </template>
                     </el-checkbox-group>
                   </template>
                   <!-- Input Number 数字输入框 -->
                   <template v-else-if="item.type === 'input-number'">
-                    <el-input-number
-                      v-model="formData[item.prop]"
-                      v-bind="item.attrs"
-                    />
+                    <el-input-number v-model="formData[item.prop]" v-bind="item.attrs" />
                   </template>
                   <!-- TreeSelect 树形选择 -->
                   <template v-else-if="item.type === 'tree-select'">
-                    <el-tree-select
-                      v-model="formData[item.prop]"
-                      v-bind="item.attrs"
-                    />
+                    <el-tree-select v-model="formData[item.prop]" v-bind="item.attrs" />
                   </template>
                   <!-- DatePicker 日期选择器 -->
                   <template v-else-if="item.type === 'date-picker'">
-                    <el-date-picker
-                      v-model="formData[item.prop]"
-                      v-bind="item.attrs"
-                    />
+                    <el-date-picker v-model="formData[item.prop]" v-bind="item.attrs" />
                   </template>
                   <!-- Text 文本 -->
                   <template v-else-if="item.type === 'text'">

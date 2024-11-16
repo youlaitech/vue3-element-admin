@@ -31,7 +31,7 @@
           v-hasPerm="['sys:dept:add']"
           type="success"
           icon="plus"
-          @click="handleOpenDialog(0, undefined)"
+          @click="handleOpenDialog()"
         >
           新增
         </el-button>

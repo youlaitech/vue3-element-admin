@@ -10,15 +10,9 @@ export const useSettingsStore = defineStore("setting", () => {
   // 标签
   const tagsView = useStorage<boolean>("tagsView", defaultSettings.tagsView);
   // 侧边栏 Logo
-  const sidebarLogo = useStorage<boolean>(
-    "sidebarLogo",
-    defaultSettings.sidebarLogo
-  );
+  const sidebarLogo = useStorage<boolean>("sidebarLogo", defaultSettings.sidebarLogo);
   // 固定头部
-  const fixedHeader = useStorage<boolean>(
-    "fixedHeader",
-    defaultSettings.fixedHeader
-  );
+  const fixedHeader = useStorage<boolean>("fixedHeader", defaultSettings.fixedHeader);
   // 布局
   const layout = useStorage<string>("layout", defaultSettings.layout);
   // 水印
@@ -28,10 +22,7 @@ export const useSettingsStore = defineStore("setting", () => {
   );
 
   // 主题
-  const themeColor = useStorage<string>(
-    "themeColor",
-    defaultSettings.themeColor
-  );
+  const themeColor = useStorage<string>("themeColor", defaultSettings.themeColor);
   const theme = useStorage<string>("theme", defaultSettings.theme);
 
   // 监听主题变化
@@ -53,13 +44,7 @@ export const useSettingsStore = defineStore("setting", () => {
     watermarkEnabled,
   };
 
-  function changeSetting({
-    key,
-    value,
-  }: {
-    key: string;
-    value: SettingsValue;
-  }) {
+  function changeSetting({ key, value }: { key: string; value: SettingsValue }) {
     const setting = settingsMap[key];
     if (setting) setting.value = value;
   }

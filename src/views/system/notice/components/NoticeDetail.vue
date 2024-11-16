@@ -32,12 +32,8 @@
       </el-descriptions-item>
       <el-descriptions-item label="发布状态：">
         <el-tag v-if="notice.publishStatus == 0" type="info">未发布</el-tag>
-        <el-tag v-else-if="notice.publishStatus == 1" type="success">
-          已发布
-        </el-tag>
-        <el-tag v-else-if="notice.publishStatus == -1" type="warning">
-          已撤回
-        </el-tag>
+        <el-tag v-else-if="notice.publishStatus == 1" type="success">已发布</el-tag>
+        <el-tag v-else-if="notice.publishStatus == -1" type="warning">已撤回</el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="发布人：">
         {{ notice.publisherName }}

@@ -16,11 +16,7 @@
           </el-tooltip>
         </div>
 
-        <el-radio-group
-          v-model="dataRange"
-          size="small"
-          @change="handleDateRangeChange"
-        >
+        <el-radio-group v-model="dataRange" size="small" @change="handleDateRangeChange">
           <el-radio-button label="近7天" :value="1" />
           <el-radio-button label="近30天" :value="2" />
         </el-radio-group>
@@ -209,9 +205,7 @@ const handleResize = () => {
 };
 /** 初始化图表  */
 onMounted(() => {
-  chart.value = markRaw(
-    echarts.init(document.getElementById(props.id) as HTMLDivElement)
-  );
+  chart.value = markRaw(echarts.init(document.getElementById(props.id) as HTMLDivElement));
   loadData();
 
   window.addEventListener("resize", handleResize);

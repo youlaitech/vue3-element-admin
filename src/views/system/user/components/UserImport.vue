@@ -95,9 +95,7 @@ const handleFileExceed = () => {
 const handleDownloadTemplate = () => {
   UserAPI.downloadTemplate().then((response: any) => {
     const fileData = response.data;
-    const fileName = decodeURI(
-      response.headers["content-disposition"].split(";")[1].split("=")[1]
-    );
+    const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
 

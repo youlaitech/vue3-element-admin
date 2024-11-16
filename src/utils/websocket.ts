@@ -3,8 +3,7 @@ import { getToken } from "@/utils/auth";
 
 class WebSocketManager {
   private client: Client | null = null;
-  private messageHandlers: Map<string, ((message: string) => void)[]> =
-    new Map();
+  private messageHandlers: Map<string, ((message: string) => void)[]> = new Map();
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 3; // 自定义最大重试次数
   private reconnectDelay = 5000; // 重试延迟（单位：毫秒）
@@ -15,9 +14,7 @@ class WebSocketManager {
 
     // 如果没有配置 WebSocket 端点或显式关闭，直接返回
     if (!endpoint) {
-      console.log(
-        "WebSocket 已被禁用，如需打开请在配置文件中配置 VITE_APP_WS_ENDPOINT"
-      );
+      console.log("WebSocket 已被禁用，如需打开请在配置文件中配置 VITE_APP_WS_ENDPOINT");
       return;
     }
 

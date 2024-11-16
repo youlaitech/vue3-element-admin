@@ -15,9 +15,7 @@ export const hasPerm: Directive = {
         }
       }
     } else {
-      throw new Error(
-        "need perms! Like v-has-perm=\"['sys:user:add','sys:user:edit']\""
-      );
+      throw new Error("need perms! Like v-has-perm=\"['sys:user:add','sys:user:edit']\"");
     }
   },
 };

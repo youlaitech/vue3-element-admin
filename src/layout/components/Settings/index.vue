@@ -1,28 +1,16 @@
 <template>
-  <el-drawer
-    v-model="settingsVisible"
-    size="300"
-    :title="$t('settings.project')"
-  >
+  <el-drawer v-model="settingsVisible" size="300" :title="$t('settings.project')">
     <el-divider>{{ $t("settings.theme") }}</el-divider>
 
     <div class="flex-center">
-      <el-switch
-        v-model="isDark"
-        active-icon="Moon"
-        inactive-icon="Sunny"
-        @change="changeTheme"
-      />
+      <el-switch v-model="isDark" active-icon="Moon" inactive-icon="Sunny" @change="changeTheme" />
     </div>
 
     <el-divider>{{ $t("settings.interface") }}</el-divider>
 
     <div class="py-1 flex-x-between">
       <span class="text-xs">{{ $t("settings.themeColor") }}</span>
-      <ThemeColorPicker
-        v-model="settingsStore.themeColor"
-        @update:model-value="changeThemeColor"
-      />
+      <ThemeColorPicker v-model="settingsStore.themeColor" @update:model-value="changeThemeColor" />
     </div>
 
     <div class="py-1 flex-x-between">
@@ -47,10 +35,7 @@
 
     <el-divider>{{ $t("settings.navigation") }}</el-divider>
 
-    <LayoutSelect
-      v-model="settingsStore.layout"
-      @update:model-value="changeLayout"
-    />
+    <LayoutSelect v-model="settingsStore.layout" @update:model-value="changeLayout" />
   </el-drawer>
 </template>
 

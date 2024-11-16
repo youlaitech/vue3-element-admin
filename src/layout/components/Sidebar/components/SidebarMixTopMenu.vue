@@ -9,17 +9,10 @@
       :active-text-color="variables['menu-active-text']"
       @select="handleMenuSelect"
     >
-      <el-menu-item
-        v-for="route in topMenus"
-        :key="route.path"
-        :index="route.path"
-      >
+      <el-menu-item v-for="route in topMenus" :key="route.path" :index="route.path">
         <template #title>
           <template v-if="route.meta && route.meta.icon">
-            <el-icon
-              v-if="route.meta.icon.startsWith('el-icon')"
-              class="sub-el-icon"
-            >
+            <el-icon v-if="route.meta.icon.startsWith('el-icon')" class="sub-el-icon">
               <component :is="route.meta.icon.replace('el-icon-', '')" />
             </el-icon>
             <svg-icon v-else :icon-class="route.meta.icon" />
@@ -99,8 +92,6 @@ const navigateToFirstLeftMenu = (menus: RouteRecordRaw[]) => {
 };
 
 onMounted(() => {
-  topMenus.value = permissionStore.routes.filter(
-    (item) => !item.meta || !item.meta.hidden
-  );
+  topMenus.value = permissionStore.routes.filter((item) => !item.meta || !item.meta.hidden);
 });
 </script>

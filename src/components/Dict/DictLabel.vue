@@ -21,9 +21,7 @@ const props = defineProps({
 });
 
 const label = ref("");
-const tagType = ref<
-  "success" | "warning" | "info" | "primary" | "danger" | undefined
->();
+const tagType = ref<"success" | "warning" | "info" | "primary" | "danger" | undefined>();
 
 const tagSize = ref(props.size as "default" | "large" | "small");
 
@@ -41,18 +39,9 @@ const getLabelAndTagByValue = async (dictCode: string, value: any) => {
 
 // 监听 props 的变化，获取并更新 label 和 tag
 const fetchLabelAndTag = async () => {
-  const result = await getLabelAndTagByValue(
-    props.code as string,
-    props.modelValue
-  );
+  const result = await getLabelAndTagByValue(props.code as string, props.modelValue);
   label.value = result.label;
-  tagType.value = result.tag as
-    | "success"
-    | "warning"
-    | "info"
-    | "primary"
-    | "danger"
-    | undefined;
+  tagType.value = result.tag as "success" | "warning" | "info" | "primary" | "danger" | undefined;
 };
 
 // 首次挂载时获取字典数据

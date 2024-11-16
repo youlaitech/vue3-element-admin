@@ -35,11 +35,7 @@
           <a class="el-upload-list__item-name" @click="downloadFile(file)">
             <el-icon><Document /></el-icon>
             <span class="el-upload-list__item-file-name">{{ file.name }}</span>
-            <span
-              v-if="props.showDelBtn"
-              class="el-icon--close"
-              @click.stop="handleRemove(file)"
-            >
+            <span v-if="props.showDelBtn" class="el-icon--close" @click.stop="handleRemove(file)">
               <el-icon><Close /></el-icon>
             </span>
           </a>
@@ -278,9 +274,7 @@ function handleRemove(removeFile: UploadUserFile) {
   if (filePath) {
     FileAPI.deleteByPath(filePath).then(() => {
       // 删除成功回调
-      valFileList.value = valFileList.value.filter(
-        (file) => file.url !== filePath
-      );
+      valFileList.value = valFileList.value.filter((file) => file.url !== filePath);
       emit("update:modelValue", valFileList.value);
     });
   }

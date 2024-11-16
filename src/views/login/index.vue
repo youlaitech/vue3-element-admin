@@ -38,19 +38,13 @@
                     </el-tag>
                   </el-dropdown-item>
 
-                  <el-dropdown-item
-                    @click="setLoginCredentials('root', '123456')"
-                  >
+                  <el-dropdown-item @click="setLoginCredentials('root', '123456')">
                     超级管理员：root/123456
                   </el-dropdown-item>
-                  <el-dropdown-item
-                    @click="setLoginCredentials('admin', '123456')"
-                  >
+                  <el-dropdown-item @click="setLoginCredentials('admin', '123456')">
                     系统管理员：admin/123456
                   </el-dropdown-item>
-                  <el-dropdown-item
-                    @click="setLoginCredentials('test', '123456')"
-                  >
+                  <el-dropdown-item @click="setLoginCredentials('test', '123456')">
                     测试小游客：test/123456
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -76,11 +70,7 @@
           </el-form-item>
 
           <!-- 密码 -->
-          <el-tooltip
-            :visible="isCapslock"
-            :content="$t('login.capsLock')"
-            placement="right"
-          >
+          <el-tooltip :visible="isCapslock" :content="$t('login.capsLock')" placement="right">
             <el-form-item prop="password">
               <div class="input-wrapper">
                 <el-icon class="mx-2">
@@ -114,11 +104,7 @@
                 @keyup.enter="handleLoginSubmit"
               />
 
-              <el-image
-                :src="captchaBase64"
-                class="captcha-img"
-                @click="getCaptcha"
-              />
+              <el-image :src="captchaBase64" class="captcha-img" @click="getCaptcha" />
             </div>
           </el-form-item>
 
@@ -161,11 +147,7 @@
     <div class="login-footer">
       <el-text size="small">
         Copyright © 2021 - 2024 youlai.tech All Rights Reserved.
-        <el-link
-          :underline="false"
-          href="http://beian.miit.gov.cn/"
-          target="_blank"
-        >
+        <el-link :underline="false" href="http://beian.miit.gov.cn/" target="_blank">
           皖ICP备20006496号-2
         </el-link>
       </el-text>
@@ -200,9 +182,7 @@ const isCapslock = ref(false); // 是否大写锁定
 const captchaBase64 = ref(); // 验证码图片Base64字符串
 
 const logo = ref(new URL("../../assets/logo.png", import.meta.url).href);
-const loginImage = ref(
-  new URL("../../assets/images/login-image.svg", import.meta.url).href
-);
+const loginImage = ref(new URL("../../assets/images/login-image.svg", import.meta.url).href);
 
 const loginData = ref<LoginData>({
   username: "admin",
@@ -300,8 +280,7 @@ function parseRedirect(): {
 
 // 主题切换
 const toggleTheme = () => {
-  const newTheme =
-    settingsStore.theme === ThemeEnum.DARK ? ThemeEnum.LIGHT : ThemeEnum.DARK;
+  const newTheme = settingsStore.theme === ThemeEnum.DARK ? ThemeEnum.LIGHT : ThemeEnum.DARK;
   settingsStore.changeTheme(newTheme);
 };
 
@@ -332,8 +311,7 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  background: url("@/assets/images/login-background-light.jpg") no-repeat center
-    right;
+  background: url("@/assets/images/login-background-light.jpg") no-repeat center right;
 
   .login-header {
     position: absolute;
@@ -471,8 +449,7 @@ onMounted(() => {
 
 html.dark {
   .login {
-    background: url("@/assets/images/login-background-dark.jpg") no-repeat
-      center right;
+    background: url("@/assets/images/login-background-dark.jpg") no-repeat center right;
 
     .login-content {
       background: transparent;

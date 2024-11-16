@@ -130,14 +130,10 @@ function navigateResults(direction: string) {
 
   if (direction === "up") {
     activeIndex.value =
-      activeIndex.value <= 0
-        ? displayResults.value.length - 1
-        : activeIndex.value - 1;
+      activeIndex.value <= 0 ? displayResults.value.length - 1 : activeIndex.value - 1;
   } else if (direction === "down") {
     activeIndex.value =
-      activeIndex.value >= displayResults.value.length - 1
-        ? 0
-        : activeIndex.value + 1;
+      activeIndex.value >= displayResults.value.length - 1 ? 0 : activeIndex.value + 1;
   }
 }
 
@@ -153,24 +149,19 @@ function navigateToRoute(item: SearchItem) {
 
 function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
   routes.forEach((route) => {
-    const path = route.path.startsWith("/")
-      ? route.path
-      : `${parentPath}/${route.path}`;
-    if (excludedRoutes.value.includes(route.path) || isExternal(route.path))
-      return;
+    const path = route.path.startsWith("/") ? route.path : `${parentPath}/${route.path}`;
+    if (excludedRoutes.value.includes(route.path) || isExternal(route.path)) return;
 
     if (route.children) {
       loadRoutes(route.children, path);
     } else if (route.meta?.title) {
-      const title =
-        route.meta.title === "dashboard" ? "首页" : route.meta.title;
+      const title = route.meta.title === "dashboard" ? "首页" : route.meta.title;
       menuItems.value.push({
         title,
         path,
         name: typeof route.name === "string" ? route.name : undefined,
         icon: route.meta.icon,
-        redirect:
-          typeof route.redirect === "string" ? route.redirect : undefined,
+        redirect: typeof route.redirect === "string" ? route.redirect : undefined,
       });
     }
   });

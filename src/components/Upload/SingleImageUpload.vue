@@ -30,11 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ElImageViewer,
-  UploadRawFile,
-  UploadRequestOptions,
-} from "element-plus";
+import { ElImageViewer, UploadRawFile, UploadRequestOptions } from "element-plus";
 import FileAPI from "@/api/file";
 
 const props = defineProps({

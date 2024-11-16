@@ -31,12 +31,7 @@
                   class="w400px flex-x-between p-1"
                 >
                   <div class="flex-center">
-                    <DictLabel
-                      v-model="item.type"
-                      code="notice_type"
-                      size="small"
-                      class="mr-1"
-                    />
+                    <DictLabel v-model="item.type" code="notice_type" size="small" class="mr-1" />
                     <el-text
                       type="primary"
                       size="small"
@@ -83,16 +78,8 @@
                   class="w400px flex-x-between p-1"
                 >
                   <div>
-                    <DictLabel
-                      v-model="item.type"
-                      code="notice_type"
-                      size="small"
-                    />
-                    <el-link
-                      type="primary"
-                      class="ml-1"
-                      @click="readNotice(item.id)"
-                    >
+                    <DictLabel v-model="item.type" code="notice_type" size="small" />
+                    <el-link type="primary" class="ml-1" @click="readNotice(item.id)">
                       {{ item.title }}
                     </el-link>
                   </div>
@@ -127,22 +114,10 @@
 
             <el-tab-pane label="待办" name="task">
               <template v-if="tasks.length > 0">
-                <div
-                  v-for="(item, index) in tasks"
-                  :key="index"
-                  class="w400px flex-x-between p-1"
-                >
+                <div v-for="(item, index) in tasks" :key="index" class="w400px flex-x-between p-1">
                   <div>
-                    <DictLabel
-                      v-model="item.type"
-                      code="notice_type"
-                      size="small"
-                    />
-                    <el-link
-                      type="primary"
-                      class="ml-1"
-                      @click="readNotice(item.id)"
-                    >
+                    <DictLabel v-model="item.type" code="notice_type" size="small" />
+                    <el-link type="primary" class="ml-1" @click="readNotice(item.id)">
                       {{ item.title }}
                     </el-link>
                   </div>
@@ -196,11 +171,9 @@ const noticeDetailRef = ref();
 
 // 获取未读消息列表并连接 WebSocket
 onMounted(() => {
-  NoticeAPI.getMyNoticePage({ pageNum: 1, pageSize: 5, isRead: 0 }).then(
-    (data) => {
-      notices.value = data.list;
-    }
-  );
+  NoticeAPI.getMyNoticePage({ pageNum: 1, pageSize: 5, isRead: 0 }).then((data) => {
+    notices.value = data.list;
+  });
 
   WebSocketManager.subscribeToTopic("/user/queue/message", (message) => {
     console.log("收到消息：", message);

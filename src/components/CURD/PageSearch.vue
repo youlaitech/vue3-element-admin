@@ -51,9 +51,7 @@
               </el-tag>
               <template v-if="inputTagMap[item.prop].inputVisible">
                 <el-input
-                  :ref="
-                    (el: HTMLElement) => (inputTagMap[item.prop].inputRef = el)
-                  "
+                  :ref="(el: HTMLElement) => (inputTagMap[item.prop].inputRef = el)"
                   v-model="inputTagMap[item.prop].inputValue"
                   v-bind="inputTagMap[item.prop].inputAttrs"
                   @keyup.enter="handleInputConfirm(item.prop)"
@@ -80,24 +78,16 @@
           </template>
           <!-- TreeSelect 树形选择 -->
           <template v-else-if="item.type === 'tree-select'">
-            <el-tree-select
-              v-model="queryParams[item.prop]"
-              v-bind="item.attrs"
-            />
+            <el-tree-select v-model="queryParams[item.prop]" v-bind="item.attrs" />
           </template>
           <!-- DatePicker 日期选择器 -->
           <template v-else-if="item.type === 'date-picker'">
-            <el-date-picker
-              v-model="queryParams[item.prop]"
-              v-bind="item.attrs"
-            />
+            <el-date-picker v-model="queryParams[item.prop]" v-bind="item.attrs" />
           </template>
         </el-form-item>
       </template>
       <el-form-item>
-        <el-button type="primary" icon="search" @click="handleQuery">
-          搜索
-        </el-button>
+        <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
         <el-button icon="refresh" @click="handleReset">重置</el-button>
         <!-- 展开/收起 -->
         <el-link

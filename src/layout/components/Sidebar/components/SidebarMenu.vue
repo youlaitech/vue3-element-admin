@@ -92,9 +92,7 @@ const onMenuOpen = (index: string) => {
  * @param index 当前收起的菜单项索引
  */
 const onMenuClose = (index: string) => {
-  expandedMenuIndexes.value = expandedMenuIndexes.value.filter(
-    (item) => item !== index
-  );
+  expandedMenuIndexes.value = expandedMenuIndexes.value.filter((item) => item !== index);
 };
 
 /**

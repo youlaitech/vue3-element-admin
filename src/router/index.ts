@@ -1,9 +1,5 @@
 import type { App } from "vue";
-import {
-  createRouter,
-  createWebHashHistory,
-  type RouteRecordRaw,
-} from "vue-router";
+import { createRouter, createWebHashHistory, type RouteRecordRaw } from "vue-router";
 
 export const Layout = () => import("@/layout/index.vue");
 
@@ -65,8 +61,7 @@ export const constantRoutes: RouteRecordRaw[] = [
       {
         path: "myNotice",
         name: "MyNotice",
-        component: () =>
-          import("@/views/system/notice/components/MyNotice.vue"),
+        component: () => import("@/views/system/notice/components/MyNotice.vue"),
         meta: { title: "我的通知", icon: "user", hidden: true },
       },
     ],

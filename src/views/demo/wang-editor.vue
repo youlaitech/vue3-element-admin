@@ -15,9 +15,6 @@ const value = ref("初始内容");
     >
       示例源码 请点击>>>>
     </el-link>
-    <editor
-      v-model="value"
-      style="z-index: 99999; height: calc(100vh - 180px)"
-    />
+    <editor v-model="value" style="z-index: 99999; height: calc(100vh - 180px)" />
   </div>
 </template>

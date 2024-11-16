@@ -42,11 +42,7 @@
 
         <el-table-column label="存储引擎" align="center" prop="engine" />
 
-        <el-table-column
-          label="排序规则"
-          align="center"
-          prop="tableCollation"
-        />
+        <el-table-column label="排序规则" align="center" prop="tableCollation" />
         <el-table-column label="创建时间" align="center" prop="createTime" />
 
         <el-table-column fixed="right" label="操作" width="200">
@@ -115,10 +111,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="业务名" prop="businessName">
-                <el-input
-                  v-model="genConfigFormData.businessName"
-                  placeholder="用户"
-                />
+                <el-input v-model="genConfigFormData.businessName" placeholder="用户" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -126,18 +119,12 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="包名" prop="packageName">
-                <el-input
-                  v-model="genConfigFormData.packageName"
-                  placeholder="com.youlai.boot"
-                />
+                <el-input v-model="genConfigFormData.packageName" placeholder="com.youlai.boot" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="模块名" prop="moduleName">
-                <el-input
-                  v-model="genConfigFormData.moduleName"
-                  placeholder="system"
-                />
+                <el-input v-model="genConfigFormData.moduleName" placeholder="system" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -145,18 +132,12 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="实体名" prop="entityName">
-                <el-input
-                  v-model="genConfigFormData.entityName"
-                  placeholder="User"
-                />
+                <el-input v-model="genConfigFormData.entityName" placeholder="User" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="作者">
-                <el-input
-                  v-model="genConfigFormData.author"
-                  placeholder="youlai"
-                />
+                <el-input v-model="genConfigFormData.author" placeholder="youlai" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -256,11 +237,7 @@
                 </div>
               </template>
               <template #default="scope">
-                <el-checkbox
-                  v-model="scope.row.isShowInQuery"
-                  :true-value="1"
-                  :false-value="0"
-                />
+                <el-checkbox v-model="scope.row.isShowInQuery" :true-value="1" :false-value="0" />
               </template>
             </el-table-column>
 
@@ -277,11 +254,7 @@
               </template>
 
               <template #default="scope">
-                <el-checkbox
-                  v-model="scope.row.isShowInList"
-                  :true-value="1"
-                  :false-value="0"
-                />
+                <el-checkbox v-model="scope.row.isShowInList" :true-value="1" :false-value="0" />
               </template>
             </el-table-column>
 
@@ -298,11 +271,7 @@
               </template>
 
               <template #default="scope">
-                <el-checkbox
-                  v-model="scope.row.isShowInForm"
-                  :true-value="1"
-                  :false-value="0"
-                />
+                <el-checkbox v-model="scope.row.isShowInForm" :true-value="1" :false-value="0" />
               </template>
             </el-table-column>
 
@@ -339,10 +308,7 @@
             <el-table-column label="表单类型" min-width="120">
               <template #default="scope">
                 <el-select
-                  v-if="
-                    scope.row.isShowInQuery === 1 ||
-                    scope.row.isShowInForm === 1
-                  "
+                  v-if="scope.row.isShowInQuery === 1 || scope.row.isShowInForm === 1"
                   v-model="scope.row.formType"
                   placeholder="请选择"
                 >
@@ -562,9 +528,7 @@ const initSort = () => {
   if (sortFlag.value) {
     return;
   }
-  const table = document.querySelector(
-    ".elTableCustom .el-table__body-wrapper tbody"
-  );
+  const table = document.querySelector(".elTableCustom .el-table__body-wrapper tbody");
   sortFlag.value = Sortable.create(<HTMLElement>table, {
     group: "shared",
     animation: 150,
@@ -622,13 +586,7 @@ function handleNextClick() {
     //这里需要校验基础配置
     const { tableName, packageName, businessName, moduleName, entityName } =
       genConfigFormData.value;
-    if (
-      !tableName ||
-      !packageName ||
-      !businessName ||
-      !moduleName ||
-      !entityName
-    ) {
+    if (!tableName || !packageName || !businessName || !moduleName || !entityName) {
       ElMessage.error("表名、业务名、包名、模块名、实体名不能为空");
       return;
     }
@@ -755,9 +713,7 @@ const toggleCheckAll = (key: FieldConfigKey, value: boolean) => {
 
 const checkAllSelected = (key: keyof FieldConfig, isCheckAllRef: any) => {
   const fieldConfigs = genConfigFormData.value?.fieldConfigs || [];
-  isCheckAllRef.value = fieldConfigs.every(
-    (row: FieldConfig) => row[key] === 1
-  );
+  isCheckAllRef.value = fieldConfigs.every((row: FieldConfig) => row[key] === 1);
 };
 
 /** 获取生成预览 */
@@ -787,9 +743,7 @@ function handlePreview(tableName: string) {
  * @param data - 数据数组
  * @returns 树形结构根节点
  */
-function buildTree(
-  data: { path: string; fileName: string; content: string }[]
-): TreeNode {
+function buildTree(data: { path: string; fileName: string; content: string }[]): TreeNode {
   // 动态获取根节点
   const root: TreeNode = { label: "前后端代码", children: [] };
 
@@ -804,11 +758,10 @@ function buildTree(
       "java",
       genConfigFormData.value.backendAppName,
       genConfigFormData.value.frontendAppName,
-      (
-        genConfigFormData.value.packageName +
-        "." +
-        genConfigFormData.value.moduleName
-      ).replace(/\./g, separator),
+      (genConfigFormData.value.packageName + "." + genConfigFormData.value.moduleName).replace(
+        /\./g,
+        separator
+      ),
     ];
 
     // 检查路径中的特殊部分并合并它们

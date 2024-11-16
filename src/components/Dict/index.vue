@@ -68,8 +68,7 @@ const props = defineProps({
   type: {
     type: String,
     default: "select",
-    validator: (value: string) =>
-      ["select", "radio", "checkbox"].includes(value),
+    validator: (value: string) => ["select", "radio", "checkbox"].includes(value),
   },
   placeholder: {
     type: String,
@@ -120,9 +119,7 @@ watch(
   (newOptions) => {
     // options 加载后，确保 selectedValue 可以正确匹配到 options
     if (newOptions.length > 0 && selectedValue.value !== undefined) {
-      const matchedOption = newOptions.find(
-        (option) => option.value === selectedValue.value
-      );
+      const matchedOption = newOptions.find((option) => option.value === selectedValue.value);
       if (!matchedOption && props.type !== "checkbox") {
         // 如果找不到匹配项，清空选中
         selectedValue.value = "";

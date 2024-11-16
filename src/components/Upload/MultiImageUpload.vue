@@ -3,9 +3,7 @@
   <el-upload
     v-model:file-list="fileList"
     list-type="picture-card"
-    :class="
-      fileList.length >= props.limit || !props.showUploadBtn ? 'hide' : 'show'
-    "
+    :class="fileList.length >= props.limit || !props.showUploadBtn ? 'hide' : 'show'"
     :before-upload="handleBeforeUpload"
     :action="props.action"
     :headers="props.headers"
@@ -45,12 +43,7 @@
   />
 </template>
 <script setup lang="ts">
-import {
-  UploadRawFile,
-  UploadUserFile,
-  UploadFile,
-  UploadProps,
-} from "element-plus";
+import { UploadRawFile, UploadUserFile, UploadFile, UploadProps } from "element-plus";
 import FileAPI from "@/api/file";
 import { getToken } from "@/utils/auth";
 import { ResultEnum } from "@/enums/ResultEnum";
@@ -224,9 +217,7 @@ function handleBeforeUpload(file: UploadRawFile) {
  */
 const previewImg: UploadProps["onPreview"] = (uploadFile: UploadFile) => {
   viewFileList.value = fileList.value.map((file) => file.url!);
-  initialIndex.value = fileList.value.findIndex(
-    (file) => file.url === uploadFile.url
-  );
+  initialIndex.value = fileList.value.findIndex((file) => file.url === uploadFile.url);
   viewVisible.value = true;
 };
 

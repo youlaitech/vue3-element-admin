@@ -124,9 +124,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
 
   function delLeftViews(view: TagView) {
     return new Promise((resolve) => {
-      const currIndex = visitedViews.value.findIndex(
-        (v) => v.path === view.path
-      );
+      const currIndex = visitedViews.value.findIndex((v) => v.path === view.path);
       if (currIndex === -1) {
         return;
       }
@@ -149,9 +147,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
 
   function delRightViews(view: TagView) {
     return new Promise((resolve) => {
-      const currIndex = visitedViews.value.findIndex(
-        (v) => v.path === view.path
-      );
+      const currIndex = visitedViews.value.findIndex((v) => v.path === view.path);
       if (currIndex === -1) {
         return;
       }

@@ -12,20 +12,14 @@
             />
             <div>
               <p>{{ greetings }}</p>
-              <p class="text-sm text-gray">
-                今日天气晴朗，气温在15℃至25℃之间，东南风。
-              </p>
+              <p class="text-sm text-gray">今日天气晴朗，气温在15℃至25℃之间，东南风。</p>
             </div>
           </div>
         </el-col>
 
         <el-col :span="6" :xs="24">
           <div class="flex h-full items-center justify-around">
-            <el-statistic
-              v-for="item in statisticData"
-              :key="item.key"
-              :value="item.value"
-            >
+            <el-statistic v-for="item in statisticData" :key="item.key" :value="item.value">
               <template #title>
                 <div class="flex items-center">
                   <svg-icon :icon-class="item.iconClass" size="20px" />
@@ -45,9 +39,7 @@
         <el-card shadow="never">
           <template #header>
             <div class="flex-x-between">
-              <span class="text-[var(--el-text-color-secondary)]">
-                在线用户
-              </span>
+              <span class="text-[var(--el-text-color-secondary)]">在线用户</span>
               <el-tag type="success" size="small">-</el-tag>
             </div>
           </template>
@@ -56,41 +48,27 @@
             <span class="text-lg">{{ onlineUserCount }}</span>
             <svg-icon icon-class="user" size="2em" />
           </div>
-          <div
-            class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
-          >
+          <div class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]">
             <span>总用户数</span>
             <span>5</span>
           </div>
         </el-card>
       </el-col>
 
-      <el-col
-        v-for="(item, index) in visitStatsList"
-        :key="index"
-        :xs="24"
-        :sm="12"
-        :lg="6"
-      >
+      <el-col v-for="(item, index) in visitStatsList" :key="index" :xs="24" :sm="12" :lg="6">
         <el-skeleton :loading="visitStatsLoading" :rows="5" animated>
           <template #template>
             <el-card>
               <template #header>
                 <div>
                   <el-skeleton-item variant="h3" style="width: 40%" />
-                  <el-skeleton-item
-                    variant="rect"
-                    style="float: right; width: 1em; height: 1em"
-                  />
+                  <el-skeleton-item variant="rect" style="float: right; width: 1em; height: 1em" />
                 </div>
               </template>
 
               <div class="flex-x-between">
                 <el-skeleton-item variant="text" style="width: 30%" />
-                <el-skeleton-item
-                  variant="circle"
-                  style="width: 2em; height: 2em"
-                />
+                <el-skeleton-item variant="circle" style="width: 2em; height: 2em" />
               </div>
               <div class="mt-5 flex-x-between">
                 <el-skeleton-item variant="text" style="width: 50%" />
@@ -114,13 +92,7 @@
               <div class="flex-x-between mt-2">
                 <div class="flex-y-center">
                   <span class="text-lg">{{ item.todayCount }}</span>
-                  <span
-                    :class="[
-                      'text-xs',
-                      'ml-2',
-                      getGrowthRateClass(item.growthRate),
-                    ]"
-                  >
+                  <span :class="['text-xs', 'ml-2', getGrowthRateClass(item.growthRate)]">
                     <el-icon>
                       <Top v-if="item.growthRate > 0" />
                       <Bottom v-else-if="item.growthRate < 0" />
@@ -131,9 +103,7 @@
                 <svg-icon :icon-class="item.icon" size="2em" />
               </div>
 
-              <div
-                class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
-              >
+              <div class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]">
                 <span>总{{ item.title }}</span>
                 <span>{{ item.totalCount }}</span>
               </div>
@@ -161,11 +131,7 @@
           </template>
 
           <el-scrollbar height="400px">
-            <div
-              v-for="(item, index) in notices"
-              :key="index"
-              class="flex-y-center py-3"
-            >
+            <div v-for="(item, index) in notices" :key="index" class="flex-y-center py-3">
               <DictLabel v-model="item.type" code="notice_type" size="small" />
               <el-text
                 truncated
@@ -263,11 +229,7 @@ const loadVisitStatsData = async () => {
   const list: VisitStatsVO[] = await StatsAPI.getVisitStats();
 
   if (list) {
-    const tagTypes: ("primary" | "success" | "warning")[] = [
-      "primary",
-      "success",
-      "warning",
-    ];
+    const tagTypes: ("primary" | "success" | "warning")[] = ["primary", "success", "warning"];
     const transformedList: VisitStats[] = list.map((item, index) => ({
       title: item.title,
       icon: getVisitStatsIcon(item.type),

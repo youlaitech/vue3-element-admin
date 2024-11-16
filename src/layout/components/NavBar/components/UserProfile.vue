@@ -1,10 +1,7 @@
 <template>
   <el-dropdown trigger="click">
     <div class="flex-center h100% p13px">
-      <img
-        :src="userStore.userInfo.avatar"
-        class="rounded-full mr-10px w24px h24px"
-      />
+      <img :src="userStore.userInfo.avatar" class="rounded-full mr-10px w24px h24px" />
       <span>{{ userStore.userInfo.username }}</span>
     </div>
     <template #dropdown>
@@ -12,10 +9,7 @@
         <el-dropdown-item @click="handleOpenUserProfile">
           {{ $t("navbar.profile") }}
         </el-dropdown-item>
-        <a
-          target="_blank"
-          href="https://gitee.com/youlaiorg/vue3-element-admin"
-        >
+        <a target="_blank" href="https://gitee.com/youlaiorg/vue3-element-admin">
           <el-dropdown-item>{{ $t("navbar.gitee") }}</el-dropdown-item>
         </a>
         <a target="_blank" href="https://juejin.cn/post/7228990409909108793">

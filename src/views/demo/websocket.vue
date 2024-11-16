@@ -22,19 +22,13 @@
               >
                 连接
               </el-button>
-              <el-button
-                type="danger"
-                :disabled="!isConnected"
-                @click="disconnectWebSocket"
-              >
+              <el-button type="danger" :disabled="!isConnected" @click="disconnectWebSocket">
                 断开
               </el-button>
             </el-col>
             <el-col :span="8" class="text-right">
               连接状态：
-              <el-tag v-if="isConnected" class="ml-2" type="success">
-                已连接
-              </el-tag>
+              <el-tag v-if="isConnected" class="ml-2" type="success">已连接</el-tag>
               <el-tag v-else class="ml-2" type="info">已断开</el-tag>
             </el-col>
           </el-row>
@@ -60,9 +54,7 @@
               <el-input v-model="receiver" />
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="sendToUser">
-                发送点对点消息
-              </el-button>
+              <el-button type="primary" @click="sendToUser">发送点对点消息</el-button>
             </el-form-item>
           </el-form>
         </el-card>
@@ -78,17 +70,14 @@
                 'tip-message': message.type === 'tip',
                 message: message.type !== 'tip',
                 'message--sent': message.sender === userStore.userInfo.username,
-                'message--received':
-                  message.sender !== userStore.userInfo.username,
+                'message--received': message.sender !== userStore.userInfo.username,
               }"
             >
               <div v-if="message.type != 'tip'" class="message-content">
                 <div
                   :class="{
-                    'message-sender':
-                      message.sender === userStore.userInfo.username,
-                    'message-receiver':
-                      message.sender !== userStore.userInfo.username,
+                    'message-sender': message.sender === userStore.userInfo.username,
+                    'message-receiver': message.sender !== userStore.userInfo.username,
                   }"
                 >
                   {{ message.sender }}
@@ -124,16 +113,10 @@ interface MessageType {
 
 const messages = ref<MessageType[]>([]);
 
-const topicMessage = ref(
-  "亲爱的大冤种们，由于一只史诗级的BUG，系统版本已经被迫回退到了0.0.1。"
-); // 广播消息
+const topicMessage = ref("亲爱的大冤种们，由于一只史诗级的BUG，系统版本已经被迫回退到了0.0.1。"); // 广播消息
 
 const queneMessage = ref(
-  "hi , " +
-    receiver.value +
-    " , 我是" +
-    userStore.userInfo.username +
-    " , 想和你交个朋友 ! "
+  "hi , " + receiver.value + " , 我是" + userStore.userInfo.username + " , 想和你交个朋友 ! "
 );
 
 let stompClient: Client;
