@@ -11,12 +11,7 @@
         </el-form-item>
 
         <el-form-item label="部门状态" prop="status">
-          <el-select
-            v-model="queryParams.status"
-            placeholder="全部"
-            clearable
-            class="!w-[100px]"
-          >
+          <el-select v-model="queryParams.status" placeholder="全部" clearable class="!w-[100px]">
             <el-option :value="1" label="正常" />
             <el-option :value="0" label="禁用" />
           </el-select>
@@ -132,12 +127,7 @@
       width="600px"
       @closed="handleCloseDialog"
     >
-      <el-form
-        ref="deptFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="80px"
-      >
+      <el-form ref="deptFormRef" :model="formData" :rules="rules" label-width="80px">
         <el-form-item label="上级部门" prop="parentId">
           <el-tree-select
             v-model="formData.parentId"
@@ -164,8 +154,8 @@
         </el-form-item>
         <el-form-item label="部门状态">
           <el-radio-group v-model="formData.status">
-            <el-radio :label="1">正常</el-radio>
-            <el-radio :label="0">禁用</el-radio>
+            <el-radio :value="1">正常</el-radio>
+            <el-radio :value="0">禁用</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -205,20 +195,18 @@ const deptOptions = ref<OptionType[]>();
 
 const formData = reactive<DeptForm>({
   status: 1,
-  parentId: 0,
+  parentId: "0",
   sort: 1,
 });
 
 const rules = reactive({
-  parentId: [
-    { required: true, message: "上级部门不能为空", trigger: "change" },
-  ],
+  parentId: [{ required: true, message: "上级部门不能为空", trigger: "change" }],
   name: [{ required: true, message: "部门名称不能为空", trigger: "blur" }],
   code: [{ required: true, message: "部门编号不能为空", trigger: "blur" }],
   sort: [{ required: true, message: "显示排序不能为空", trigger: "blur" }],
 });
 
-/** 查询部门 */
+// 查询部门
 function handleQuery() {
   loading.value = true;
   DeptAPI.getList(queryParams).then((data) => {
@@ -227,13 +215,13 @@ function handleQuery() {
   });
 }
 
-/** 重置查询 */
+// 重置查询
 function handleResetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
 }
 
-/** 行复选框选中记录选中ID集合 */
+// 行复选框选中记录选中ID集合
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
@@ -244,12 +232,12 @@ function handleSelectionChange(selection: any) {
  * @param parentId 父部门ID
  * @param deptId 部门ID
  */
-async function handleOpenDialog(parentId?: number, deptId?: number) {
+async function handleOpenDialog(parentId?: string, deptId?: number) {
   // 加载部门下拉数据
   const data = await DeptAPI.getOptions();
   deptOptions.value = [
     {
-      value: 0,
+      value: "0",
       label: "顶级部门",
       children: data,
     },
@@ -263,11 +251,11 @@ async function handleOpenDialog(parentId?: number, deptId?: number) {
     });
   } else {
     dialog.title = "新增部门";
-    formData.parentId = parentId ?? 0;
+    formData.parentId = parentId || "0";
   }
 }
 
-/** 提交部门表单 */
+// 提交部门表单
 function handleSubmit() {
   deptFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -294,7 +282,7 @@ function handleSubmit() {
   });
 }
 
-/** 删除部门 */
+// 删除部门
 function handleDelete(deptId?: number) {
   const deptIds = [deptId || ids.value].join(",");
 
@@ -323,17 +311,21 @@ function handleDelete(deptId?: number) {
   );
 }
 
-/** 关闭弹窗 */
-function handleCloseDialog() {
-  dialog.visible = false;
-
+// 重置表单
+function resetForm() {
   deptFormRef.value.resetFields();
   deptFormRef.value.clearValidate();
 
   formData.id = undefined;
-  formData.parentId = 0;
+  formData.parentId = "0";
   formData.status = 1;
   formData.sort = 1;
+}
+
+// 关闭弹窗
+function handleCloseDialog() {
+  dialog.visible = false;
+  resetForm();
 }
 
 onMounted(() => {

@@ -59,7 +59,7 @@ const DeptAPI = {
    * @param data 部门表单数据
    * @returns 请求结果
    */
-  update(id: number, data: DeptForm) {
+  update(id: string, data: DeptForm) {
     return request({
       url: `${DEPT_BASE_URL}/${id}`,
       method: "put",
@@ -116,13 +116,13 @@ export interface DeptVO {
 /** 部门表单类型 */
 export interface DeptForm {
   /** 部门ID(新增不填) */
-  id?: number;
+  id?: string;
   /** 部门名称 */
   name?: string;
   /** 部门编号 */
   code?: string;
   /** 父部门ID */
-  parentId: number;
+  parentId: string;
   /** 排序 */
   sort?: number;
   /** 状态(1:启用；0：禁用) */
