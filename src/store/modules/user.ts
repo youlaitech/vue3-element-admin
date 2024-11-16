@@ -5,7 +5,7 @@ import { useDictStoreHook } from "@/store/modules/dict";
 import AuthAPI, { type LoginData } from "@/api/auth";
 import UserAPI, { type UserInfo } from "@/api/system/user";
 
-import { setToken, clearToken } from "@/utils/auth";
+import { setToken, setRefreshToken, getRefreshToken, clearToken } from "@/utils/auth";
 
 export const useUserStore = defineStore("user", () => {
   const userInfo = useStorage<UserInfo>("userInfo", {} as UserInfo);
@@ -20,8 +20,9 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve, reject) => {
       AuthAPI.login(loginData)
         .then((data) => {
-          const { tokenType, accessToken } = data;
+          const { tokenType, accessToken, refreshToken } = data;
           setToken(tokenType + " " + accessToken); // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
+          setRefreshToken(refreshToken);
           resolve();
         })
         .catch((error) => {
@@ -59,7 +60,7 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve, reject) => {
       AuthAPI.logout()
         .then(() => {
-          clearUserSession();
+          clearUserData();
           resolve();
         })
         .catch((error) => {
@@ -69,11 +70,31 @@ export const useUserStore = defineStore("user", () => {
   }
 
   /**
-   * 清理用户会话
+   * 刷新 token
+   */
+  function refreshToken() {
+    const refreshToken = getRefreshToken();
+    return new Promise<void>((resolve, reject) => {
+      AuthAPI.refreshToken(refreshToken)
+        .then((data) => {
+          const { tokenType, accessToken, refreshToken } = data;
+          setToken(tokenType + " " + accessToken);
+          setRefreshToken(refreshToken);
+          resolve();
+        })
+        .catch((error) => {
+          console.log(" refreshToken  刷新失败", error);
+          reject(error);
+        });
+    });
+  }
+
+  /**
+   * 清理用户数据
    *
    * @returns
    */
-  function clearUserSession() {
+  function clearUserData() {
     return new Promise<void>((resolve) => {
       clearToken();
       usePermissionStoreHook().resetRouter();
@@ -87,7 +108,8 @@ export const useUserStore = defineStore("user", () => {
     getUserInfo,
     login,
     logout,
-    clearUserSession,
+    clearUserData,
+    refreshToken,
   };
 });
 

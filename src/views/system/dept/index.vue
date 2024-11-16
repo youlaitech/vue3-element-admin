@@ -17,18 +17,10 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button class="filter-item" type="primary" @click="handleQuery">
-            <template #icon>
-              <Search />
-            </template>
+          <el-button class="filter-item" type="primary" icon="search" @click="handleQuery">
             搜索
           </el-button>
-          <el-button @click="handleResetQuery">
-            <template #icon>
-              <Refresh />
-            </template>
-            重置
-          </el-button>
+          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -38,22 +30,18 @@
         <el-button
           v-hasPerm="['sys:dept:add']"
           type="success"
+          icon="plus"
           @click="handleOpenDialog(0, undefined)"
         >
-          <template #icon>
-            <Plus />
-          </template>
           新增
         </el-button>
         <el-button
           v-hasPerm="['sys:dept:delete']"
           type="danger"
-          :disabled="ids.length === 0"
+          :disabled="selectIds.length === 0"
+          icon="delete"
           @click="handleDelete()"
         >
-          <template #icon>
-            <Delete />
-          </template>
           删除
         </el-button>
       </div>
@@ -85,11 +73,9 @@
               type="primary"
               link
               size="small"
+              icon="plus"
               @click.stop="handleOpenDialog(scope.row.id, undefined)"
             >
-              <template #icon>
-                <Plus />
-              </template>
               新增
             </el-button>
             <el-button
@@ -97,11 +83,9 @@
               type="primary"
               link
               size="small"
+              icon="edit"
               @click.stop="handleOpenDialog(scope.row.parentId, scope.row.id)"
             >
-              <template #icon>
-                <Edit />
-              </template>
               编辑
             </el-button>
             <el-button
@@ -109,11 +93,9 @@
               type="danger"
               link
               size="small"
+              icon="delete"
               @click.stop="handleDelete(scope.row.id)"
             >
-              <template #icon>
-                <Delete />
-              </template>
               删除
             </el-button>
           </template>
@@ -182,17 +164,16 @@ const queryFormRef = ref(ElForm);
 const deptFormRef = ref(ElForm);
 
 const loading = ref(false);
-const ids = ref<number[]>([]);
+const selectIds = ref<number[]>([]);
+const queryParams = reactive<DeptQuery>({});
+
 const dialog = reactive({
   title: "",
   visible: false,
 });
 
-const queryParams = reactive<DeptQuery>({});
 const deptList = ref<DeptVO[]>();
-
 const deptOptions = ref<OptionType[]>();
-
 const formData = reactive<DeptForm>({
   status: 1,
   parentId: "0",
@@ -221,9 +202,9 @@ function handleResetQuery() {
   handleQuery();
 }
 
-// 行复选框选中记录选中ID集合
+// 处理选中项变化
 function handleSelectionChange(selection: any) {
-  ids.value = selection.map((item: any) => item.id);
+  selectIds.value = selection.map((item: any) => item.id);
 }
 
 /**
@@ -284,7 +265,7 @@ function handleSubmit() {
 
 // 删除部门
 function handleDelete(deptId?: number) {
-  const deptIds = [deptId || ids.value].join(",");
+  const deptIds = [deptId || selectIds.value].join(",");
 
   if (!deptIds) {
     ElMessage.warning("请勾选删除项");

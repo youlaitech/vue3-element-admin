@@ -113,7 +113,7 @@ const UserAPI = {
       url: `${USER_BASE_URL}/export`,
       method: "get",
       params: queryParams,
-      responseType: "arraybuffer",
+      responseType: "blob",
     });
   },
 

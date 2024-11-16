@@ -12,7 +12,12 @@ export const enum ResultEnum {
   ERROR = "B0001",
 
   /**
-   * 令牌无效或过期
+   * 访问令牌无效或过期
    */
-  TOKEN_INVALID = "A0230",
+  ACCESS_TOKEN_INVALID = "A0230",
+
+  /**
+   * 刷新令牌无效或过期
+   */
+  REFRESH_TOKEN_INVALID = "A0231",
 }

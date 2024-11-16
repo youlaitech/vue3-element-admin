@@ -7,7 +7,7 @@
         (hasOneShowingChild(item.children, item) &&
           (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
           !item.meta?.alwaysShow) ||
-        // 父节点即使配置了始终显示，但无子节点，也显示未叶子节点
+        // 父节点即使配置了始终显示，但无子节点，也显示为叶子节点
         (item.meta?.alwaysShow && !item.children)
       "
     >
@@ -33,11 +33,7 @@
     <!--【非叶子节点】显示含多个子节点的父菜单，或始终显示的单子节点 -->
     <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
       <template #title>
-        <SidebarMenuItemTitle
-          v-if="item.meta"
-          :icon="item.meta.icon"
-          :title="item.meta.title"
-        />
+        <SidebarMenuItemTitle v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
       </template>
 
       <SidebarMenuItem
@@ -98,10 +94,7 @@ const onlyOneChild = ref();
  * @param parent 父级路由
  * @returns 是否仅有一个可见子节点
  */
-function hasOneShowingChild(
-  children: RouteRecordRaw[] = [],
-  parent: RouteRecordRaw
-) {
+function hasOneShowingChild(children: RouteRecordRaw[] = [], parent: RouteRecordRaw) {
   // 过滤出可见子节点
   const showingChildren = children.filter((route: RouteRecordRaw) => {
     if (!route.meta?.hidden) {

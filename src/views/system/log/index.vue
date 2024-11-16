@@ -24,29 +24,14 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="handleQuery">
-            <template #icon>
-              <Search />
-            </template>
-            搜索
-          </el-button>
-          <el-button @click="handleResetQuery">
-            <template #icon>
-              <Refresh />
-            </template>
-            重置
-          </el-button>
+          <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
+          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <el-card shadow="never">
-      <el-table
-        v-loading="loading"
-        :data="pageData"
-        highlight-current-row
-        border
-      >
+      <el-table v-loading="loading" :data="pageData" highlight-current-row border>
         <el-table-column label="操作时间" prop="createTime" width="180" />
         <el-table-column label="操作人" prop="operator" width="120" />
         <el-table-column label="日志模块" prop="module" width="100" />
@@ -54,17 +39,8 @@
         <el-table-column label="IP 地址" prop="ip" width="150" />
         <el-table-column label="地区" prop="region" width="150" />
         <el-table-column label="浏览器" prop="browser" width="150" />
-        <el-table-column
-          label="终端系统"
-          prop="os"
-          width="200"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          label="执行时间(ms)"
-          prop="executionTime"
-          width="150"
-        />
+        <el-table-column label="终端系统" prop="os" width="200" show-overflow-tooltip />
+        <el-table-column label="执行时间(ms)" prop="executionTime" width="150" />
       </el-table>
 
       <pagination

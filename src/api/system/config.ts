@@ -61,8 +61,8 @@ const ConfigAPI = {
 
   refreshCache() {
     return request({
-      url: `${CONFIG_BASE_URL}`,
-      method: "patch",
+      url: `${CONFIG_BASE_URL}/refresh`,
+      method: "PUT",
     });
   },
 };
