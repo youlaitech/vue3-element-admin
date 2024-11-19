@@ -45,6 +45,7 @@ service.interceptors.response.use(
     return Promise.reject(new Error(msg || "Error"));
   },
   async (error: any) => {
+    // 非 2xx 状态码处理 401、403、500 等
     const { config, response } = error;
     if (response) {
       const { code, msg } = response.data;
