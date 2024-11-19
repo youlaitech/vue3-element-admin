@@ -64,25 +64,10 @@ export function setupPermission() {
   });
 }
 
-/** 重定向到登录页 */
+// 重定向到登录页
 function redirectToLogin(to: RouteLocationNormalized, next: NavigationGuardNext) {
   const params = new URLSearchParams(to.query as Record<string, string>);
   const queryString = params.toString();
   const redirect = queryString ? `${to.path}?${queryString}` : to.path;
   next(`/login?redirect=${encodeURIComponent(redirect)}`);
-}
-
-/** 判断是否有权限 */
-export function hasAuth(value: string | string[], type: "button" | "role" = "button") {
-  const { roles, perms } = useUserStore().userInfo;
-
-  // 超级管理员 拥有所有权限
-  if (type === "button" && roles.includes("ROOT")) {
-    return true;
-  }
-
-  const auths = type === "button" ? perms : roles;
-  return typeof value === "string"
-    ? auths.includes(value)
-    : value.some((perm) => auths.includes(perm));
 }
