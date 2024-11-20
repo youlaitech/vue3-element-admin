@@ -99,7 +99,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/template`,
       method: "get",
-      responseType: "arraybuffer",
+      responseType: "blob",
     });
   },
 
