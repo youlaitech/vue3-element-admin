@@ -1,6 +1,6 @@
 {
   "name": "vue3-element-admin",
-  "version": "2.19.0",
+  "version": "2.19.1",
   "private": true,
   "type": "module",
   "scripts": {
