@@ -136,6 +136,7 @@ defineOptions({
 });
 
 import ConfigAPI, { ConfigPageVO, ConfigForm, ConfigPageQuery } from "@/api/system/config";
+import { debounce } from "@/utils";
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -211,11 +212,16 @@ function handleOpenDialog(id?: number) {
   }
 }
 
-// 刷新缓存
-function handleRefreshCache() {
+// 防抖刷新缓存
+const debouncedRefresh = debounce(() => {
   ConfigAPI.refreshCache().then(() => {
     ElMessage.success("刷新成功");
   });
+}, 1000);
+
+// 刷新缓存
+function handleRefreshCache() {
+  debouncedRefresh();
 }
 
 // 系统配置表单提交
