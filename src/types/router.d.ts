@@ -17,7 +17,7 @@ declare module "vue-router" {
     icon?: string;
 
     /**
-     * 是否隐藏菜单项
+     * 是否隐藏菜单
      * true 隐藏, false 显示
      * @default false
      */
