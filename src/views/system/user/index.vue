@@ -380,9 +380,9 @@ function handleCloseDialog() {
   formData.status = 1;
 }
 
-// 提交用户表单（防抖处理）
-const handleSubmit = useThrottleFn(() => {
-  userFormRef.value.validate((valid: any) => {
+// 提交用户表单（防抖）
+const handleSubmit = useDebounceFn(() => {
+  userFormRef.value.validate((valid: boolean) => {
     if (valid) {
       const userId = formData.id;
       loading.value = true;
@@ -405,7 +405,7 @@ const handleSubmit = useThrottleFn(() => {
       }
     }
   });
-}, 3000);
+}, 1000);
 
 /**
  * 删除用户

@@ -39,32 +39,3 @@ export function isExternal(path: string) {
   const isExternal = /^(https?:|http?:|mailto:|tel:)/.test(path);
   return isExternal;
 }
-
-/**
- * 防抖函数
- *
- * @param {Function} fn 需要防抖的函数
- * @param {number} delay 防抖时间
- * @returns {Function}
- */
-export const debounce = <T extends (...args: any[]) => any>(
-  fn: T,
-  delay: number,
-  immediate = false
-) => {
-  let timer: NodeJS.Timeout | null = null;
-  return function (this: any, ...args: Parameters<T>) {
-    if (timer) clearTimeout(timer);
-
-    if (immediate && !timer) {
-      fn.apply(this, args);
-    }
-
-    timer = setTimeout(() => {
-      if (!immediate) {
-        fn.apply(this, args);
-      }
-      timer = null;
-    }, delay);
-  };
-};

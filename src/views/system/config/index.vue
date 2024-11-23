@@ -136,7 +136,6 @@ defineOptions({
 });
 
 import ConfigAPI, { ConfigPageVO, ConfigForm, ConfigPageQuery } from "@/api/system/config";
-import { debounce } from "@/utils";
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -212,8 +211,8 @@ function handleOpenDialog(id?: number) {
   }
 }
 
-// 防抖刷新缓存
-const debouncedRefresh = debounce(() => {
+// 刷新缓存(防抖)
+const debouncedRefresh = useDebounceFn(() => {
   ConfigAPI.refreshCache().then(() => {
     ElMessage.success("刷新成功");
   });
