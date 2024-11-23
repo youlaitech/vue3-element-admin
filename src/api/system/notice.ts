@@ -74,7 +74,7 @@ const NoticeAPI = {
   publish(id: number) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}/publish`,
-      method: "patch",
+      method: "put",
     });
   },
 
@@ -87,7 +87,7 @@ const NoticeAPI = {
   revoke(id: number) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}/revoke`,
-      method: "patch",
+      method: "put",
     });
   },
   /**
