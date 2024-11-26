@@ -23,7 +23,7 @@
           v-hasPerm="['sys:menu:add']"
           type="success"
           icon="plus"
-          @click="handleOpenDialog(0)"
+          @click="handleOpenDialog('0')"
         >
           新增
         </el-button>
@@ -357,7 +357,7 @@ const menuOptions = ref<OptionType[]>([]);
 // 初始菜单表单数据
 const initialMenuFormData = ref<MenuForm>({
   id: undefined,
-  parentId: 0,
+  parentId: "0",
   visible: 1,
   sort: 1,
   type: MenuTypeEnum.MENU, // 默认菜单
@@ -379,7 +379,7 @@ const rules = reactive({
 });
 
 // 选择表格的行菜单ID
-const selectedMenuId = ref<number | undefined>();
+const selectedMenuId = ref<string | undefined>();
 
 // 查询菜单
 function handleQuery() {
@@ -401,7 +401,6 @@ function handleResetQuery() {
 
 // 行点击事件
 function handleRowClick(row: MenuVO) {
-  // 记录表格选择的菜单ID，新增子菜单作为父菜单ID
   selectedMenuId.value = row.id;
 }
 
@@ -411,10 +410,10 @@ function handleRowClick(row: MenuVO) {
  * @param parentId 父菜单ID
  * @param menuId 菜单ID
  */
-function handleOpenDialog(parentId?: number, menuId?: number) {
+function handleOpenDialog(parentId?: string, menuId?: string) {
   MenuAPI.getOptions(true)
     .then((data) => {
-      menuOptions.value = [{ value: 0, label: "顶级菜单", children: data }];
+      menuOptions.value = [{ value: "0", label: "顶级菜单", children: data }];
     })
     .then(() => {
       dialog.visible = true;
@@ -501,12 +500,16 @@ function handleDelete(menuId: number) {
   );
 }
 
+function resetRorm() {
+  menuFormRef.value.resetFields();
+  menuFormRef.value.clearValidate();
+  formData.value = { ...initialMenuFormData.value };
+}
+
 // 关闭弹窗
 function handleCloseDialog() {
   dialog.visible = false;
-  menuFormRef.value.resetFields();
-  menuFormRef.value.clearValidate();
-  formData.value.id = undefined;
+  resetRorm();
 }
 
 onMounted(() => {

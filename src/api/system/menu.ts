@@ -49,7 +49,7 @@ const MenuAPI = {
    *
    * @param id 菜单ID
    */
-  getFormData(id: number) {
+  getFormData(id: string) {
     return request<any, MenuForm>({
       url: `${MENU_BASE_URL}/${id}/form`,
       method: "get",
@@ -118,11 +118,11 @@ export interface MenuVO {
   /** ICON */
   icon?: string;
   /** 菜单ID */
-  id?: number;
+  id?: string;
   /** 菜单名称 */
   name?: string;
   /** 父菜单ID */
-  parentId?: number;
+  parentId?: string;
   /** 按钮权限标识 */
   perm?: string;
   /** 跳转路径 */
@@ -144,7 +144,7 @@ export interface MenuForm {
   /** 菜单ID */
   id?: string;
   /** 父菜单ID */
-  parentId?: number;
+  parentId?: string;
   /** 菜单名称 */
   name?: string;
   /** 菜单是否可见(1-是 0-否) */
