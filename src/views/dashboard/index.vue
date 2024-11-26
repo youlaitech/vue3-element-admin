@@ -16,20 +16,6 @@
             </div>
           </div>
         </el-col>
-
-        <el-col :span="6" :xs="24">
-          <div class="flex h-full items-center justify-around">
-            <el-statistic v-for="item in statisticData" :key="item.key" :value="item.value">
-              <template #title>
-                <div class="flex items-center">
-                  <svg-icon :icon-class="item.iconClass" size="20px" />
-                  <span class="text-[16px] ml-1">{{ item.title }}</span>
-                </div>
-              </template>
-              <template v-if="item.suffix" #suffix>/100</template>
-            </el-statistic>
-          </div>
-        </el-col>
       </el-row>
     </el-card>
 
@@ -167,6 +153,18 @@ import { useUserStore } from "@/store/modules/user";
 import StatsAPI, { VisitStatsVO } from "@/api/system/log";
 import NoticeAPI, { NoticePageVO } from "@/api/system/notice";
 
+interface VisitStats {
+  title: string;
+  icon: string;
+  tagType: "primary" | "success" | "warning";
+  growthRate: number;
+  // 粒度
+  granularity: string;
+  // 今日数量
+  todayCount: number;
+  totalCount: number;
+}
+
 const noticeDetailRef = ref();
 
 const userStore = useUserStore();
@@ -186,44 +184,11 @@ const greetings = computed(() => {
   }
 });
 
-// 右上角数量
-const statisticData = ref([
-  {
-    value: 99,
-    iconClass: "message",
-    title: "消息",
-    key: "message",
-  },
-  {
-    value: 50,
-    iconClass: "todo",
-    title: "待办",
-    suffix: "/100",
-    key: "upcoming",
-  },
-  {
-    value: 10,
-    iconClass: "project",
-    title: "项目",
-    key: "project",
-  },
-]);
-
 const onlineUserCount = ref(0);
 
 const visitStatsLoading = ref(true);
 const visitStatsList = ref<VisitStats[] | null>(Array(3).fill({}));
-interface VisitStats {
-  title: string;
-  icon: string;
-  tagType: "primary" | "success" | "warning";
-  growthRate: number;
-  // 粒度
-  granularity: string;
-  // 今日数量
-  todayCount: number;
-  totalCount: number;
-}
+
 // 加载访问统计数据
 const loadVisitStatsData = async () => {
   const list: VisitStatsVO[] = await StatsAPI.getVisitStats();
@@ -244,7 +209,7 @@ const loadVisitStatsData = async () => {
   }
 };
 
-/** 格式化增长率 */
+// 格式化增长率
 const formatGrowthRate = (growthRate: number): string => {
   if (growthRate === 0) {
     return "-";
