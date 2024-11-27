@@ -174,7 +174,7 @@ export interface IContentConfig<T = any> {
       | "edit"
       | "delete"
       | {
-          auth: string;
+          auth?: string;
           icon?: string;
           name: string;
           text: string;

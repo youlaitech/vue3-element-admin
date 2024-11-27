@@ -284,7 +284,9 @@
                 <template v-else-if="typeof item === 'object'">
                   <el-button
                     v-if="item.render === undefined || item.render(scope.row)"
-                    v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
+                    v-bind="
+                      item.auth ? { 'v-hasPerm': [`${contentConfig.pageName}:${item.auth}`] } : {}
+                    "
                     :icon="item.icon"
                     :type="item.type ?? 'primary'"
                     size="small"

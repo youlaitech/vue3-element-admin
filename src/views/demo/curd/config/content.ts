@@ -105,7 +105,6 @@ const contentConfig: IContentConfig<UserPageQuery> = {
       templet: "tool",
       operat: [
         {
-          auth: "password:reset",
           icon: "Document",
           name: "detail",
           text: "详情",
