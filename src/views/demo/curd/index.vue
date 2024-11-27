@@ -38,6 +38,9 @@
             {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
           </el-tag>
         </template>
+        <template #gender="scope">
+          <DictLabel v-model="scope.row[scope.prop]" code="gender" />
+        </template>
         <template #mobile="scope">
           <el-text>{{ scope.row[scope.prop] }}</el-text>
           <copy-button
@@ -66,7 +69,7 @@
         @submit-click="handleSubmitClick"
       >
         <template #gender="scope">
-          <Dict v-model="scope.formData[scope.prop]" code="gender" />
+          <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
         </template>
       </page-modal>
     </template>
@@ -123,6 +126,7 @@ async function handleAddClick() {
 }
 // 编辑
 async function handleEditClick(row: IObject) {
+  editModalRef.value?.handleDisabled(false);
   editModalRef.value?.setModalVisible();
   // 加载部门下拉数据源
   editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
@@ -140,7 +144,7 @@ function handleToolbarClick(name: string) {
   }
 }
 // 其他操作列
-function handleOperatClick(data: IOperatData) {
+async function handleOperatClick(data: IOperatData) {
   console.log(data);
   // 重置密码
   if (data.name === "reset_pwd") {
@@ -156,6 +160,21 @@ function handleOperatClick(data: IOperatData) {
         ElMessage.success("密码重置成功，新密码是：" + value);
       });
     });
+  } else if (data.name === "detail") {
+    // 禁用表单编辑
+    editModalRef.value?.handleDisabled(true);
+    // 打开抽屉
+    editModalRef.value?.setModalVisible();
+    // 修改抽屉标题
+    editModalConfig.drawer = { ...editModalConfig.drawer, title: "用户详情" };
+    // 加载部门下拉数据源
+    editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
+    // 加载角色下拉数据源
+    editModalConfig.formItems[4]!.options = await RoleAPI.getOptions();
+    // 根据id获取数据进行填充
+    const formData = await UserAPI.getFormData(data.row.id);
+    // 设置表单数据
+    editModalRef.value?.setFormData(formData);
   }
 }
 
