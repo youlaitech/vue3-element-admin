@@ -23,22 +23,6 @@
         </el-table>
       </el-form-item>
 
-      <el-form-item label="单图裁剪">
-        <ImgCorpper
-          v-model="cprpperValue"
-          :presetMode="{ width: 295, height: 413 }"
-          :title="'上传图片'"
-        />
-      </el-form-item>
-      <el-form-item label="参数说明">
-        <el-table :data="imageCprpperUploadArgData" border>
-          <el-table-column prop="argsName" label="参数名称" width="300" />
-          <el-table-column prop="type" label="参数类型" width="200" />
-          <el-table-column prop="default" label="默认值" width="400" />
-          <el-table-column prop="desc" label="描述" width="300" />
-        </el-table>
-      </el-form-item>
-
       <el-form-item label="多图上传">
         <MultiImageUpload v-model="picUrls" />
       </el-form-item>

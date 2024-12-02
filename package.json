@@ -65,7 +65,6 @@
     "sortablejs": "^1.15.6",
     "vue": "^3.5.13",
     "vue-i18n": "9.9.1",
-    "vue-picture-cropper": "^0.7.0",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
