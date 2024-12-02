@@ -101,9 +101,12 @@
       </el-form>
       <!-- 弹窗底部操作按钮 -->
       <template #footer>
-        <div>
+        <div v-if="!formDisable">
           <el-button type="primary" @click="handleSubmit">确 定</el-button>
           <el-button @click="handleClose">取 消</el-button>
+        </div>
+        <div v-else>
+          <el-button @click="handleClose">关闭</el-button>
         </div>
       </template>
     </el-drawer>
@@ -247,6 +250,7 @@ const formRef = ref<FormInstance>();
 const formItems = reactive(props.modalConfig.formItems);
 const formData = reactive<IObject>({});
 const formRules: FormRules = {};
+const formDisable = ref(false);
 const prepareFuncs = [];
 for (const item of formItems) {
   item.initFn && item.initFn(item);
@@ -352,8 +356,22 @@ function handleCloseModal() {
   });
 }
 
+// 禁用表单--用于详情时候用
+function handleDisabled(disable: boolean) {
+  formDisable.value = disable;
+  props.modalConfig.formItems.forEach((item) => {
+    if (item) {
+      if (item.attrs) {
+        item.attrs.disabled = disable;
+      } else {
+        item.attrs = { disabled: disable };
+      }
+    }
+  });
+}
+
 // 暴露的属性和方法
-defineExpose({ setModalVisible, getFormData, setFormData, setFormItemData });
+defineExpose({ setModalVisible, getFormData, setFormData, setFormItemData, handleDisabled });
 </script>
 
 <style lang="scss" scoped></style>
