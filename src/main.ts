@@ -4,8 +4,7 @@ import setupPlugins from "@/plugins";
 
 // 本地SVG图标
 import "virtual:svg-icons-register";
-
-// 样式
+// 暗黑主题样式
 import "element-plus/theme-chalk/dark/css-vars.css";
 // 暗黑模式自定义变量
 import "@/styles/dark/css-vars.css";
