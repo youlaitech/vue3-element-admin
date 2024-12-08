@@ -9,12 +9,6 @@
         <el-dropdown-item @click="handleOpenUserProfile">
           {{ $t("navbar.profile") }}
         </el-dropdown-item>
-        <a target="_blank" href="https://gitee.com/youlaiorg/vue3-element-admin">
-          <el-dropdown-item>{{ $t("navbar.gitee") }}</el-dropdown-item>
-        </a>
-        <a target="_blank" href="https://juejin.cn/post/7228990409909108793">
-          <el-dropdown-item>{{ $t("navbar.document") }}</el-dropdown-item>
-        </a>
         <el-dropdown-item divided @click="logout">
           {{ $t("navbar.logout") }}
         </el-dropdown-item>

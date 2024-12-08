@@ -37,7 +37,7 @@ const LogAPI = {
    * @returns
    */
   getVisitStats() {
-    return request<any, VisitStatsVO[]>({
+    return request<any, VisitStatsVO>({
       url: `${LOG_BASE_URL}/visit-stats`,
       method: "get",
     });
@@ -106,15 +106,16 @@ export interface VisitTrendQuery {
 
 /**  访问统计 */
 export interface VisitStatsVO {
-  /** 标题 */
-  title: string;
-  /** 类型 */
-  type: "pv" | "uv" | "ip";
-
-  /** 今日访问量 */
-  todayCount: number;
-  /** 总访问量 */
-  totalCount: number;
+  /** 今日访客数(UV) */
+  todayUvCount: number;
+  /** 总访客数 */
+  totalUvCount: number;
+  /** 访客数同比增长率（相对于昨天同一时间段的增长率） */
+  uvGrowthRate: number;
+  /** 今日浏览量(PV) */
+  todayPvCount: number;
+  /** 总浏览量 */
+  totalPvCount: number;
   /** 同比增长率（相对于昨天同一时间段的增长率） */
-  growthRate: number;
+  pvGrowthRate: number;
 }

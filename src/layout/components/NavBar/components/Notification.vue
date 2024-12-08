@@ -1,49 +1,37 @@
 <template>
   <div>
-    <el-dropdown class="flex-center wh-full align-middle">
-      <div class="wh-full">
-        <el-badge
-          v-if="notices.length > 0"
-          :offset="[-10, 15]"
-          :value="notices.length"
-          :max="99"
-          class="wh-full"
-        >
-          <el-icon class="notification-icon h-full">
-            <Bell />
-          </el-icon>
-        </el-badge>
-        <el-badge v-else class="wh-full">
-          <el-icon class="notification-icon h-full">
-            <Bell />
-          </el-icon>
-        </el-badge>
-      </div>
+    <el-dropdown class="wh-full">
+      <el-badge v-if="notices.length > 0" :offset="[-10, 15]" :value="notices.length" :max="99">
+        <el-icon>
+          <Bell />
+        </el-icon>
+      </el-badge>
+      <el-badge v-else>
+        <el-icon>
+          <Bell />
+        </el-icon>
+      </el-badge>
 
       <template #dropdown>
         <div class="p-2">
           <el-tabs v-model="activeTab">
             <el-tab-pane label="通知" name="notice">
               <template v-if="notices.length > 0">
-                <div
-                  v-for="(item, index) in notices"
-                  :key="index"
-                  class="w400px flex-x-between p-1"
-                >
-                  <div class="flex-center">
-                    <DictLabel v-model="item.type" code="notice_type" size="small" class="mr-1" />
+                <div v-for="(item, index) in notices" :key="index" class="w500px py-3">
+                  <div class="flex-y-center">
+                    <DictLabel v-model="item.type" code="notice_type" size="small" />
                     <el-text
-                      type="primary"
                       size="small"
-                      class="w200px cursor-pointer"
+                      class="w200px cursor-pointer !ml-2 !flex-1"
                       truncated
-                      @click="readNotice(item.id)"
+                      @click="handleReadNotice(item.id)"
                     >
                       {{ item.title }}
                     </el-text>
-                  </div>
-                  <div>
-                    {{ item.publishTime }}
+
+                    <div class="text-xs text-gray">
+                      {{ item.publishTime }}
+                    </div>
                   </div>
                 </div>
               </template>
@@ -54,7 +42,7 @@
               </template>
               <el-divider />
               <div class="flex-x-between">
-                <el-link type="primary" :underline="false" @click="viewMore">
+                <el-link type="primary" :underline="false" @click="handleViewMore">
                   <span class="text-xs">查看更多</span>
                   <el-icon class="text-xs">
                     <ArrowRight />
@@ -77,14 +65,19 @@
                   :key="index"
                   class="w400px flex-x-between p-1"
                 >
-                  <div>
+                  <div class="flex-y-center">
                     <DictLabel v-model="item.type" code="notice_type" size="small" />
-                    <el-link type="primary" class="ml-1" @click="readNotice(item.id)">
+                    <el-link
+                      type="primary"
+                      class="w200px cursor-pointer !ml-2 !flex-1"
+                      @click="handleReadNotice(item.id)"
+                    >
                       {{ item.title }}
                     </el-link>
-                  </div>
-                  <div>
-                    {{ item.publishTime }}
+
+                    <div class="text-xs text-gray-400">
+                      {{ item.publishTime }}
+                    </div>
                   </div>
                 </div>
               </template>
@@ -95,7 +88,12 @@
               </template>
               <el-divider />
               <div class="flex-x-between">
-                <el-link type="primary" :underline="false" @click="viewMore">
+                <el-link
+                  v-if="tasks.length > 5"
+                  type="primary"
+                  :underline="false"
+                  @click="handleViewMore"
+                >
                   <span class="text-xs">查看更多</span>
                   <el-icon class="text-xs">
                     <ArrowRight />
@@ -114,15 +112,19 @@
 
             <el-tab-pane label="待办" name="task">
               <template v-if="tasks.length > 0">
-                <div v-for="(item, index) in tasks" :key="index" class="w400px flex-x-between p-1">
-                  <div>
+                <div v-for="(item, index) in tasks" :key="index" class="w500px py-3">
+                  <div class="flex-y-center">
                     <DictLabel v-model="item.type" code="notice_type" size="small" />
-                    <el-link type="primary" class="ml-1" @click="readNotice(item.id)">
+                    <el-link
+                      type="primary"
+                      class="w200px cursor-pointer !ml-2 !flex-1"
+                      @click="handleReadNotice(item.id)"
+                    >
                       {{ item.title }}
                     </el-link>
-                  </div>
-                  <div>
-                    {{ item.publishTime }}
+                    <div class="text-xs text-gray-400">
+                      {{ item.publishTime }}
+                    </div>
                   </div>
                 </div>
               </template>
@@ -133,7 +135,12 @@
               </template>
               <el-divider />
               <div class="flex-x-between">
-                <el-link type="primary" :underline="false" @click="viewMore">
+                <el-link
+                  v-if="tasks.length > 5"
+                  type="primary"
+                  :underline="false"
+                  @click="handleViewMore"
+                >
                   <span class="text-xs">查看更多</span>
                   <el-icon class="text-xs">
                     <ArrowRight />
@@ -198,7 +205,7 @@ onMounted(() => {
 });
 
 // 阅读通知公告
-function readNotice(id: string) {
+function handleReadNotice(id: string) {
   noticeDetailRef.value.openNotice(id);
   const index = notices.value.findIndex((notice) => notice.id === id);
   if (index >= 0) {
@@ -207,7 +214,7 @@ function readNotice(id: string) {
 }
 
 // 查看更多
-function viewMore() {
+function handleViewMore() {
   router.push({ path: "/myNotice" });
 }
 
@@ -220,8 +227,11 @@ function markAllAsRead() {
 </script>
 
 <style lang="scss" scoped>
-.layout-top .notification-icon,
-.layout-mix .notification-icon {
-  color: #fff;
+:deep(.el-badge) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 </style>
