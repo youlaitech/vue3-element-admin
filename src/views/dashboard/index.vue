@@ -244,7 +244,7 @@ import VisitTrend from "./components/visit-trend.vue";
 
 import router from "@/router";
 
-import StatsAPI, { VisitStatsVO } from "@/api/system/log";
+import LogAPI, { VisitStatsVO } from "@/api/system/log";
 import NoticeAPI, { NoticePageVO } from "@/api/system/notice";
 
 import { useUserStore } from "@/store/modules/user";
@@ -283,7 +283,7 @@ const visitStatsData = ref<VisitStatsVO>({
 
 // 加载访问统计数据
 const loadVisitStatsData = async () => {
-  StatsAPI.getVisitStats()
+  LogAPI.getVisitStats()
     .then((data) => {
       visitStatsData.value = data;
     })
