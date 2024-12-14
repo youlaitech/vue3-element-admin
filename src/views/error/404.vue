@@ -1,3 +1,23 @@
+<template>
+  <div class="page-container">
+    <div class="pic-404">
+      <img class="pic-404__parent" src="@/assets/images/404.svg" alt="404" />
+    </div>
+    <div class="bullshit">
+      <div class="bullshit__oops">OOPS！</div>
+      <div class="bullshit__info">
+        该页面无法访问。
+        <a style="color: #20a0ff" href="https://www.youlai.tech.com" target="_blank">
+          有来开源官网
+        </a>
+      </div>
+      <div class="bullshit__headline">抱歉，您访问的页面不存在。</div>
+      <div class="bullshit__info">请确认您输入的网址是否正确，或者点击下方按钮返回首页。</div>
+      <a href="#" class="bullshit__return-home" @click.prevent="back">返回首页</a>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 
@@ -12,30 +32,6 @@ function back() {
 }
 </script>
 
-<template>
-  <div class="page-container">
-    <div class="pic-404">
-      <img class="pic-404__parent" src="@/assets/images/404.png" alt="404" />
-      <img class="pic-404__child left" src="@/assets/images/404_cloud.png" alt="404" />
-      <img class="pic-404__child mid" src="@/assets/images/404_cloud.png" alt="404" />
-      <img class="pic-404__child right" src="@/assets/images/404_cloud.png" alt="404" />
-    </div>
-    <div class="bullshit">
-      <div class="bullshit__oops">OOPS!</div>
-      <div class="bullshit__info">
-        All rights reserved
-        <a style="color: #20a0ff" href="https://wallstreetcn.com" target="_blank">wallstreetcn</a>
-      </div>
-      <div class="bullshit__headline">The webmaster said that you can not enter this page...</div>
-      <div class="bullshit__info">
-        Please check that the URL you entered is correct, or click the button below to return to the
-        homepage.
-      </div>
-      <a href="#" class="bullshit__return-home" @click.prevent="back">Back to home</a>
-    </div>
-  </div>
-</template>
-
 <style lang="scss" scoped>
 .page-container {
   display: flex;
@@ -48,127 +44,11 @@ function back() {
     &__parent {
       width: 100%;
     }
-
-    &__child {
-      &.left {
-        top: 17px;
-        left: 220px;
-        width: 80px;
-        opacity: 0;
-        animation-name: cloudLeft;
-        animation-duration: 2s;
-        animation-timing-function: linear;
-        animation-delay: 1s;
-        animation-fill-mode: forwards;
-      }
-
-      &.mid {
-        top: 10px;
-        left: 420px;
-        width: 46px;
-        opacity: 0;
-        animation-name: cloudMid;
-        animation-duration: 2s;
-        animation-timing-function: linear;
-        animation-delay: 1.2s;
-        animation-fill-mode: forwards;
-      }
-
-      &.right {
-        top: 100px;
-        left: 500px;
-        width: 62px;
-        opacity: 0;
-        animation-name: cloudRight;
-        animation-duration: 2s;
-        animation-timing-function: linear;
-        animation-delay: 1s;
-        animation-fill-mode: forwards;
-      }
-
-      @keyframes cloudLeft {
-        0% {
-          top: 17px;
-          left: 220px;
-          opacity: 0;
-        }
-
-        20% {
-          top: 33px;
-          left: 188px;
-          opacity: 1;
-        }
-
-        80% {
-          top: 81px;
-          left: 92px;
-          opacity: 1;
-        }
-
-        100% {
-          top: 97px;
-          left: 60px;
-          opacity: 0;
-        }
-      }
-
-      @keyframes cloudMid {
-        0% {
-          top: 10px;
-          left: 420px;
-          opacity: 0;
-        }
-
-        20% {
-          top: 40px;
-          left: 360px;
-          opacity: 1;
-        }
-
-        70% {
-          top: 130px;
-          left: 180px;
-          opacity: 1;
-        }
-
-        100% {
-          top: 160px;
-          left: 120px;
-          opacity: 0;
-        }
-      }
-
-      @keyframes cloudRight {
-        0% {
-          top: 100px;
-          left: 500px;
-          opacity: 0;
-        }
-
-        20% {
-          top: 120px;
-          left: 460px;
-          opacity: 1;
-        }
-
-        80% {
-          top: 180px;
-          left: 340px;
-          opacity: 1;
-        }
-
-        100% {
-          top: 200px;
-          left: 300px;
-          opacity: 0;
-        }
-      }
-    }
   }
 
   .bullshit {
     width: 300px;
-    padding: 30px 0;
+    padding: 50px 0;
     overflow: hidden;
 
     &__oops {
