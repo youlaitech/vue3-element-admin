@@ -16,13 +16,30 @@
 
     <!-- 登录页内容 -->
     <div class="login-content">
-      <div class="login-img">
-        <el-image :src="loginImage" style="width: 210px" />
+      <div class="login-carousel">
+        <div class="project-info">
+          <div class="title-container">
+            <h2>{{ defaultSettings.title }}</h2>
+            <el-tag type="success" size="small">
+              {{ defaultSettings.version }}
+            </el-tag>
+          </div>
+          <p class="description">
+            基于 Vue3 + Vite6 + TypeScript + Element-Plus 构建的中后台管理模板
+          </p>
+        </div>
+        <el-carousel style="width: 100%" indicator-position="none">
+          <el-carousel-item>
+            <div class="flex-center h-full">
+              <el-image :src="loginImage" alt="login" style="width: 60%; height: 60%" />
+            </div>
+          </el-carousel-item>
+        </el-carousel>
       </div>
       <div class="login-form">
         <el-form ref="loginFormRef" :model="loginData" :rules="loginRules">
           <div class="form-title">
-            <h2>{{ defaultSettings.title }}</h2>
+            <h3>登录</h3>
             <el-dropdown style="position: absolute; right: 0">
               <div class="cursor-pointer">
                 <el-icon>
@@ -31,13 +48,6 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>
-                    版本号：
-                    <el-tag type="success">
-                      {{ defaultSettings.version }}
-                    </el-tag>
-                  </el-dropdown-item>
-
                   <el-dropdown-item @click="setLoginCredentials('root', '123456')">
                     超级管理员：root/123456
                   </el-dropdown-item>
@@ -157,6 +167,7 @@
 
 <script setup lang="ts">
 import { LocationQuery, useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 
 import AuthAPI, { type LoginData } from "@/api/auth";
 import router from "@/router";
@@ -351,15 +362,39 @@ onMounted(() => {
       box-shadow: none;
     }
 
-    .login-img {
+    .login-carousel {
       display: flex;
       flex: 3;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       background: linear-gradient(60deg, #165dff, #6aa1ff);
 
       @media (width <= 768px) {
         display: none;
+      }
+
+      .project-info {
+        position: relative;
+        color: #fff;
+        text-align: center;
+
+        .title-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          h2 {
+            margin-right: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 18px;
+          }
+        }
+
+        .description {
+          font-size: 12px;
+        }
       }
     }
 
