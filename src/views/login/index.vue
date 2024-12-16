@@ -15,142 +15,123 @@
     </div>
 
     <!-- 登录页内容 -->
-    <div class="login-content">
-      <div class="login-carousel">
-        <div class="project-info">
-          <div class="title-container">
-            <h2>{{ defaultSettings.title }}</h2>
-            <el-tag type="success" size="small">
-              {{ defaultSettings.version }}
-            </el-tag>
-          </div>
-          <p class="description">
-            基于 Vue3 + Vite6 + TypeScript + Element-Plus 构建的中后台管理模板
-          </p>
-        </div>
-        <el-carousel style="width: 100%" indicator-position="none">
-          <el-carousel-item>
-            <div class="flex-center h-full">
-              <el-image :src="loginImage" alt="login" style="width: 60%; height: 60%" />
+    <div class="login-form">
+      <el-form ref="loginFormRef" :model="loginData" :rules="loginRules">
+        <div class="form-title">
+          <h2>{{ defaultSettings.title }}</h2>
+          <el-dropdown style="position: absolute; right: 0">
+            <div class="cursor-pointer">
+              <el-icon>
+                <arrow-down />
+              </el-icon>
             </div>
-          </el-carousel-item>
-        </el-carousel>
-      </div>
-      <div class="login-form">
-        <el-form ref="loginFormRef" :model="loginData" :rules="loginRules">
-          <div class="form-title">
-            <h3>登录</h3>
-            <el-dropdown style="position: absolute; right: 0">
-              <div class="cursor-pointer">
-                <el-icon>
-                  <arrow-down />
-                </el-icon>
-              </div>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="setLoginCredentials('root', '123456')">
-                    超级管理员：root/123456
-                  </el-dropdown-item>
-                  <el-dropdown-item @click="setLoginCredentials('admin', '123456')">
-                    系统管理员：admin/123456
-                  </el-dropdown-item>
-                  <el-dropdown-item @click="setLoginCredentials('test', '123456')">
-                    测试小游客：test/123456
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </div>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item>
+                  <el-tag>{{ defaultSettings.version }}</el-tag>
+                </el-dropdown-item>
+                <el-dropdown-item @click="setLoginCredentials('root', '123456')">
+                  超级管理员：root/123456
+                </el-dropdown-item>
+                <el-dropdown-item @click="setLoginCredentials('admin', '123456')">
+                  系统管理员：admin/123456
+                </el-dropdown-item>
+                <el-dropdown-item @click="setLoginCredentials('test', '123456')">
+                  测试小游客：test/123456
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
 
-          <!-- 用户名 -->
-          <el-form-item prop="username">
+        <!-- 用户名 -->
+        <el-form-item prop="username">
+          <div class="input-wrapper">
+            <el-icon class="mx-2">
+              <User />
+            </el-icon>
+            <el-input
+              ref="username"
+              v-model="loginData.username"
+              :placeholder="$t('login.username')"
+              name="username"
+              size="large"
+              class="h-[48px]"
+            />
+          </div>
+        </el-form-item>
+
+        <!-- 密码 -->
+        <el-tooltip :visible="isCapslock" :content="$t('login.capsLock')" placement="right">
+          <el-form-item prop="password">
             <div class="input-wrapper">
               <el-icon class="mx-2">
-                <User />
+                <Lock />
               </el-icon>
               <el-input
-                ref="username"
-                v-model="loginData.username"
-                :placeholder="$t('login.username')"
-                name="username"
+                v-model="loginData.password"
+                :placeholder="$t('login.password')"
+                type="password"
+                name="password"
                 size="large"
-                class="h-[48px]"
-              />
-            </div>
-          </el-form-item>
-
-          <!-- 密码 -->
-          <el-tooltip :visible="isCapslock" :content="$t('login.capsLock')" placement="right">
-            <el-form-item prop="password">
-              <div class="input-wrapper">
-                <el-icon class="mx-2">
-                  <Lock />
-                </el-icon>
-                <el-input
-                  v-model="loginData.password"
-                  :placeholder="$t('login.password')"
-                  type="password"
-                  name="password"
-                  size="large"
-                  class="h-[48px] pr-2"
-                  show-password
-                  @keyup="checkCapslock"
-                  @keyup.enter="handleLoginSubmit"
-                />
-              </div>
-            </el-form-item>
-          </el-tooltip>
-
-          <!-- 验证码 -->
-          <el-form-item prop="captchaCode">
-            <div class="input-wrapper">
-              <svg-icon icon-class="captcha" class="mx-2" />
-              <el-input
-                v-model="loginData.captchaCode"
-                auto-complete="off"
-                size="large"
-                class="flex-1"
-                :placeholder="$t('login.captchaCode')"
+                class="h-[48px] pr-2"
+                show-password
+                @keyup="checkCapslock"
                 @keyup.enter="handleLoginSubmit"
               />
-
-              <el-image :src="captchaBase64" class="captcha-img" @click="getCaptcha" />
             </div>
           </el-form-item>
+        </el-tooltip>
 
-          <div class="flex-x-between w-full py-1">
-            <el-checkbox>
-              {{ $t("login.rememberMe") }}
-            </el-checkbox>
+        <!-- 验证码 -->
+        <el-form-item prop="captchaCode">
+          <div class="input-wrapper">
+            <svg-icon icon-class="captcha" class="mx-2" />
+            <el-input
+              v-model="loginData.captchaCode"
+              auto-complete="off"
+              size="large"
+              class="flex-1"
+              :placeholder="$t('login.captchaCode')"
+              @keyup.enter="handleLoginSubmit"
+            />
 
-            <el-link type="primary" href="/forget-password">
-              {{ $t("login.forgetPassword") }}
-            </el-link>
+            <el-image :src="captchaBase64" class="captcha-img" @click="getCaptcha" />
           </div>
+        </el-form-item>
 
-          <!-- 登录按钮 -->
-          <el-button
-            :loading="loading"
-            type="primary"
-            size="large"
-            class="w-full"
-            @click.prevent="handleLoginSubmit"
-          >
-            {{ $t("login.login") }}
-          </el-button>
+        <div class="flex-x-between w-full py-1">
+          <el-checkbox>
+            {{ $t("login.rememberMe") }}
+          </el-checkbox>
 
-          <!-- 第三方登录 -->
-          <el-divider>
-            <el-text size="small">{{ $t("login.otherLoginMethods") }}</el-text>
-          </el-divider>
-          <div class="third-party-login">
-            <svg-icon icon-class="wechat" class="icon" />
-            <svg-icon icon-class="qq" class="icon" />
-            <svg-icon icon-class="github" class="icon" />
-            <svg-icon icon-class="gitee" class="icon" />
-          </div>
-        </el-form>
-      </div>
+          <el-link type="primary" href="/forget-password">
+            {{ $t("login.forgetPassword") }}
+          </el-link>
+        </div>
+
+        <!-- 登录按钮 -->
+        <el-button
+          :loading="loading"
+          type="primary"
+          size="large"
+          class="w-full"
+          @click.prevent="handleLoginSubmit"
+        >
+          {{ $t("login.login") }}
+        </el-button>
+
+        <!-- 第三方登录 -->
+        <el-divider>
+          <el-text size="small">{{ $t("login.otherLoginMethods") }}</el-text>
+        </el-divider>
+        <div class="third-party-login">
+          <svg-icon icon-class="wechat" class="icon" />
+          <svg-icon icon-class="qq" class="icon" />
+          <svg-icon icon-class="github" class="icon" />
+          <svg-icon icon-class="gitee" class="icon" />
+        </div>
+      </el-form>
     </div>
 
     <!-- 登录页底部 -->
@@ -345,107 +326,56 @@ onMounted(() => {
     }
   }
 
-  .login-content {
+  .login-form {
     display: flex;
-    width: 960px;
+    flex-direction: column;
+    justify-content: center;
+    width: 460px;
+    padding: 40px;
     overflow: hidden;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: var(--el-box-shadow-light);
 
-    @media (width <= 768px) {
-      flex-direction: column;
-      max-width: 100%;
-      height: 100vh;
-      padding: 0 30px;
-      border-radius: 0;
-      box-shadow: none;
+    @media (width <= 460px) {
+      width: 100%;
+      padding: 0 20px;
     }
 
-    .login-carousel {
+    .form-title {
+      position: relative;
       display: flex;
-      flex: 3;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(60deg, #165dff, #6aa1ff);
-
-      @media (width <= 768px) {
-        display: none;
-      }
-
-      .project-info {
-        position: relative;
-        color: #fff;
-        text-align: center;
-
-        .title-container {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          h2 {
-            margin-right: 10px;
-            font-size: 24px;
-            font-weight: bold;
-            line-height: 18px;
-          }
-        }
-
-        .description {
-          font-size: 12px;
-        }
-      }
+      padding: 0 0 20px;
+      text-align: center;
     }
 
-    .login-form {
+    .input-wrapper {
       display: flex;
-      flex: 2;
-      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .captcha-img {
+      height: 48px;
+      cursor: pointer;
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+
+    .third-party-login {
+      display: flex;
       justify-content: center;
-      min-width: 400px;
-      padding: 30px;
+      width: 100%;
+      color: var(--el-text-color-secondary);
 
-      @media (width <= 768px) {
-        width: 100%;
-        padding: 0 20px;
+      *:not(:first-child) {
+        margin-left: 20px;
       }
 
-      .form-title {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 0 20px;
-        text-align: center;
-      }
-
-      .input-wrapper {
-        display: flex;
-        align-items: center;
-        width: 100%;
-      }
-
-      .captcha-img {
-        height: 48px;
+      .icon {
         cursor: pointer;
-        border-top-right-radius: 6px;
-        border-bottom-right-radius: 6px;
-      }
-
-      .third-party-login {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        color: var(--el-text-color-secondary);
-
-        *:not(:first-child) {
-          margin-left: 20px;
-        }
-
-        .icon {
-          cursor: pointer;
-        }
       }
     }
   }
