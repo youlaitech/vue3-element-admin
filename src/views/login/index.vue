@@ -303,7 +303,7 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  background: url("@/assets/images/login-background-light.jpg") no-repeat center right;
+  background: url("@/assets/images/login-bg.jpg") no-repeat center right;
 
   .login-header {
     position: absolute;
@@ -414,7 +414,7 @@ onMounted(() => {
 
 html.dark {
   .login {
-    background: url("@/assets/images/login-background-dark.jpg") no-repeat center right;
+    background: url("@/assets/images/login-bg-dark.jpg") no-repeat center right;
 
     .login-content {
       background: transparent;
