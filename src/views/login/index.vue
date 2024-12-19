@@ -173,9 +173,6 @@ const loading = ref(false); // 按钮 loading 状态
 const isCapslock = ref(false); // 是否大写锁定
 const captchaBase64 = ref(); // 验证码图片Base64字符串
 
-const logo = ref(new URL("../../assets/logo.png", import.meta.url).href);
-const loginImage = ref(new URL("../../assets/images/login-image.svg", import.meta.url).href);
-
 const loginData = ref<LoginData>({
   username: "admin",
   password: "123456",
@@ -416,7 +413,7 @@ html.dark {
   .login {
     background: url("@/assets/images/login-bg-dark.jpg") no-repeat center right;
 
-    .login-content {
+    .login-form {
       background: transparent;
       box-shadow: var(--el-box-shadow);
     }
