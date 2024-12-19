@@ -507,7 +507,16 @@ function handleDelete(menuId: number) {
 function resetRorm() {
   menuFormRef.value.resetFields();
   menuFormRef.value.clearValidate();
-  formData.value = { ...initialMenuFormData.value };
+  formData.value = {
+    id: undefined,
+    parentId: "0",
+    visible: 1,
+    sort: 1,
+    type: MenuTypeEnum.MENU, // 默认菜单
+    alwaysShow: 0,
+    keepAlive: 1,
+    params: [],
+  };
 }
 
 // 关闭弹窗
