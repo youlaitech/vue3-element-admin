@@ -1,16 +1,16 @@
-
 <div align="center">
   <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/logo.png">
   <h1>vue3-element-admin</h1>
 
-  <img src="https://img.shields.io/badge/Vue-3.5.1-brightgreen.svg"/>
-  <img src="https://img.shields.io/badge/Vite-5.4.3-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.8.1-blue.svg"/>
+  <img src="https://img.shields.io/badge/Vue-3.5.13-brightgreen.svg"/>
+  <img src="https://img.shields.io/badge/Vite-6.0.5-green.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.9.1-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
   </a>
 </div>
+
 
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
 
