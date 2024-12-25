@@ -83,10 +83,7 @@
                 视频
               </div>
               <div class="mt-3">
-                <el-link
-                  href="https://space.bilibili.com/1731537706/channel/seriesdetail?sid=4459672"
-                  target="_blank"
-                >
+                <el-link href="https://www.bilibili.com/video/BV1eFUuYyEFj" target="_blank">
                   <SvgIcon icon-class="bilibili" class="text-lg" />
                 </el-link>
               </div>
