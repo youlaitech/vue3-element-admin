@@ -11,20 +11,11 @@
     </el-link>
 
     <el-form>
-      <el-form-item label="单图上传">
-        <SingleImageUpload v-model="picUrl" />
+      <el-form-item label="绑定值">
+        {{ picUrl }}
       </el-form-item>
-      <el-form-item label="参数说明">
-        <el-table :data="singleImageUploadArgData" border>
-          <el-table-column prop="argsName" label="参数名称" width="300" />
-          <el-table-column prop="type" label="参数类型" width="200" />
-          <el-table-column prop="default" label="默认值" width="400" />
-          <el-table-column prop="desc" label="描述" width="300" />
-        </el-table>
-      </el-form-item>
-
-      <el-form-item label="多图上传">
-        <MultiImageUpload v-model="picUrls" />
+      <el-form-item label="图片上传">
+        <ImageUpload v-model="picUrl" :limit="1" :maxSize="10" />
       </el-form-item>
       <el-form-item label="参数说明">
         <el-table :data="imageUploadArgData" border>
@@ -54,71 +45,12 @@
 // 单图
 const picUrl = ref("https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg");
 
-const singleImageUploadArgData = [
-  {
-    argsName: "v-model",
-    type: "String",
-    default: "",
-    desc: "已经上传的图片URL",
-  },
-  {
-    argsName: "size",
-    type: "String",
-    default: "150px",
-    desc: "图片上传组件的尺寸大小",
-  },
-  {
-    argsName: "max-size",
-    type: "Number",
-    default: "10",
-    desc: "单个图片上传大小限制(单位M)",
-  },
-  {
-    argsName: "accept",
-    type: "String",
-    default: "",
-    desc: "上传文件类型",
-  },
-];
-
-const imageCprpperUploadArgData = [
-  {
-    argsName: "v-model",
-    type: "Object",
-    default: "",
-    desc: "裁剪后图片Base64编码",
-  },
-  {
-    argsName: "presetMode",
-    type: "String",
-    default: "{ width: 295, height: 413 }",
-    desc: "裁剪窗口的长宽，及裁剪图片大小",
-  },
-  {
-    argsName: "title",
-    type: "String",
-    default: "上传图片",
-    desc: "组件内容",
-  },
-];
-
-const cprpperValue = ref();
-
-// 多图
-const picUrls = ref([
-  "https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg",
-  "https://s2.loli.net/2023/05/24/RuHFMwW4rG5lIqs.jpg",
-  "https://s2.loli.net/2023/05/24/ZPiGbcpR91WqInB.jpg",
-  "https://s2.loli.net/2023/05/24/e1bcnEq3MFdmlNL.jpg",
-  "https://s2.loli.net/2023/05/24/wZTSPj1yDQNcuhU.jpg",
-]);
-
 const imageUploadArgData = [
   {
     argsName: "v-model",
-    type: "Array",
-    default: "[]",
-    desc: "已经上传的图片数组",
+    type: "[Array,String]",
+    default: "[]  |  ''",
+    desc: "已经上传的图片数组,单张图片时为String",
   },
   {
     argsName: "action",
@@ -148,7 +80,7 @@ const imageUploadArgData = [
     argsName: "limit",
     type: "Number",
     default: 10,
-    desc: "上传最大的图片数量",
+    desc: "上传最大的图片数量,单张图片时填写1",
   },
   {
     argsName: "show-del-btn",
@@ -173,6 +105,18 @@ const imageUploadArgData = [
     type: "String",
     default: "image/*",
     desc: "上传文件类型",
+  },
+  {
+    argsName: "supportFileType",
+    type: "Array",
+    default: "[]",
+    desc: "支持的文件类型,默认支持所有图片格式,eg:['png','jpg','jpeg','gif']",
+  },
+  {
+    argsName: "style",
+    type: "Object",
+    default: "{width: '130px',height: '130px'}",
+    desc: "上传组件的样式",
   },
 ];
 
