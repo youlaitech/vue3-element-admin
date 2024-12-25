@@ -3,6 +3,7 @@
   <!-- 实际的上传组件（隐藏） -->
   <div style="display: none">
     <el-upload
+      ref="uploadRef"
       v-model:file-list="fileList"
       :before-upload="handleBeforeUpload"
       :action="props.action"
@@ -164,6 +165,9 @@ const fileList = ref([] as UploadUserFile[]);
 const valFileList = ref([] as string[]);
 const viewFileList = ref([] as string[]);
 
+// 添加一个ref来引用el-upload组件
+const uploadRef = ref();
+
 watch(
   () => props.modelValue,
   (newVal) => {
@@ -295,9 +299,10 @@ const closePreview = () => {
   viewVisible.value = false;
 };
 
-// 新增一个触发上传的方法
+// 修改triggerUpload方法
 const triggerUpload = () => {
-  const uploadEl = document.querySelector(".el-upload__input") as HTMLElement;
+  // 通过ref直接访问el-upload组件内的input元素
+  const uploadEl = uploadRef.value.$el.querySelector(".el-upload__input");
   if (uploadEl) {
     uploadEl.click();
   }
@@ -359,6 +364,7 @@ const triggerUpload = () => {
   width: v-bind("props.style.width");
   height: v-bind("props.style.height");
   cursor: pointer;
+  background-color: rgb(255 254 254 / 50%);
   border: 1px dashed var(--el-border-color);
   border-radius: 6px;
   transition: var(--el-transition-duration);
