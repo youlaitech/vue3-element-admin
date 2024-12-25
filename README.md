@@ -19,6 +19,17 @@
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
   </a>
+
+  <a href="https://gitee.com/youlaiorg/youlai-boot" target="_blank">
+     <img alt="有来技术" src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
+   </a>     
+  <a href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
+    <img alt="有来技术" src="https://img.shields.io/github/stars/youlaitech/vue3-element-admin.svg?style=social&label=Stars"/>
+  </a>
+  <a href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
+    <img alt="有来技术" src="https://gitcode.com/youlai/vue3-element-admin/star/badge.svg"/>
+  </a>
+
 </div>
 
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
