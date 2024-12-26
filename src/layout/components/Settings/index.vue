@@ -19,11 +19,6 @@
     </div>
 
     <div class="py-1 flex-x-between">
-      <span class="text-xs">{{ $t("settings.fixedHeader") }}</span>
-      <el-switch v-model="settingsStore.fixedHeader" />
-    </div>
-
-    <div class="py-1 flex-x-between">
       <span class="text-xs">{{ $t("settings.sidebarLogo") }}</span>
       <el-switch v-model="settingsStore.sidebarLogo" />
     </div>

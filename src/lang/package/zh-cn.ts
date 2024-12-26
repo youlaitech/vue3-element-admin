@@ -56,7 +56,6 @@ export default {
     navigation: "导航设置",
     themeColor: "主题颜色",
     tagsView: "开启 Tags-View",
-    fixedHeader: "固定 Header",
     sidebarLogo: "侧边栏 Logo",
     watermark: "开启水印",
   },

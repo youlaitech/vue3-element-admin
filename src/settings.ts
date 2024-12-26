@@ -17,8 +17,6 @@ const defaultSettings: AppSettings = {
   showSettings: true,
   // 是否显示标签视图
   tagsView: true,
-  // 是否固定头部
-  fixedHeader: true,
   // 是否显示侧边栏Logo
   sidebarLogo: true,
   // 布局方式，默认为左侧布局
