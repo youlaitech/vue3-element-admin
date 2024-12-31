@@ -62,7 +62,6 @@ const width = useWindowSize().width;
 const WIDTH_DESKTOP = 992; // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
 const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE);
 const isOpenSidebar = computed(() => appStore.sidebar.opened);
-const fixedHeader = computed(() => settingsStore.fixedHeader); // 是否固定header
 const showTagsView = computed(() => settingsStore.tagsView); // 是否显示tagsView
 const layout = computed(() => settingsStore.layout); // 布局模式 left top mix
 const activeTopMenuPath = computed(() => appStore.activeTopMenuPath); // 顶部菜单激活path
