@@ -138,9 +138,7 @@
     <div class="login-footer">
       <el-text size="small">
         Copyright © 2021 - 2024 youlai.tech All Rights Reserved.
-        <el-link :underline="false" href="http://beian.miit.gov.cn/" target="_blank">
-          皖ICP备20006496号-2
-        </el-link>
+        <a href="http://beian.miit.gov.cn/" target="_blank">皖ICP备20006496号-2</a>
       </el-text>
     </div>
   </div>
@@ -299,6 +297,7 @@ onMounted(() => {
   justify-content: center;
   width: 100%;
   height: 100%;
+  padding: 20px;
   overflow-y: auto;
   background: url("@/assets/images/login-bg.jpg") no-repeat center right;
 
@@ -336,7 +335,7 @@ onMounted(() => {
 
     @media (width <= 460px) {
       width: 100%;
-      padding: 0 20px;
+      padding: 20px;
     }
 
     .form-title {
@@ -378,9 +377,10 @@ onMounted(() => {
   }
 
   .login-footer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
+    padding: 10px 0;
     text-align: center;
   }
 }
