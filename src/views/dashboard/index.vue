@@ -1,19 +1,5 @@
 <template>
   <div class="dashboard-container">
-    <el-alert title="With description" type="error">
-      <template #title>
-        🔥🔥🔥 2024.12.20-12.30
-        ，掘金2024年度人气创作者打榜中，麻烦大家投票支持一下我们，感谢！投票地址：
-        <el-link
-          type="primary"
-          href="https://activity.juejin.cn/rank/2024/writer/4187394044331261"
-          target="_blank"
-        >
-          https://activity.juejin.cn/rank/2024/writer/4187394044331261
-        </el-link>
-      </template>
-    </el-alert>
-
     <!-- github 角标 -->
     <github-corner class="github-corner" />
 
