@@ -118,7 +118,7 @@
 
           <el-row>
             <el-col :span="12">
-              <el-form-item label="包名" prop="packageName">
+              <el-form-item label="主包名" prop="packageName">
                 <el-input v-model="genConfigFormData.packageName" placeholder="com.youlai.boot" />
               </el-form-item>
             </el-col>
@@ -460,7 +460,7 @@ const genConfigFormData = ref<GenConfigForm>({
 const genConfigFormRules = {
   tableName: [{ required: true, message: "请输入表名", trigger: "blur" }],
   businessName: [{ required: true, message: "请输入业务名", trigger: "blur" }],
-  packageName: [{ required: true, message: "请输入包名", trigger: "blur" }],
+  packageName: [{ required: true, message: "请输入主包名", trigger: "blur" }],
   moduleName: [{ required: true, message: "请输入模块名", trigger: "blur" }],
   entityName: [{ required: true, message: "请输入实体名", trigger: "blur" }],
 };

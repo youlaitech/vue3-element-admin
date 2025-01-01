@@ -11,4 +11,5 @@ export const FormTypeEnum: Record<string, OptionType> = {
   TEXT_AREA: { value: 7, label: "文本域" },
   DATE: { value: 8, label: "日期框" },
   DATE_TIME: { value: 9, label: "日期时间框" },
+  HIDDEN: { value: 10, label: "隐藏域" },
 };
