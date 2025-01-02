@@ -137,7 +137,7 @@
     <!-- 登录页底部 -->
     <div class="login-footer">
       <el-text size="small">
-        Copyright © 2021 - 2024 youlai.tech All Rights Reserved.
+        Copyright © 2021 - 2025 youlai.tech All Rights Reserved.
         <a href="http://beian.miit.gov.cn/" target="_blank">皖ICP备20006496号-2</a>
       </el-text>
     </div>
