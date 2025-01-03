@@ -424,6 +424,7 @@ function handleOpenDialog(parentId?: string, menuId?: string) {
         });
       } else {
         dialog.title = "新增菜单";
+        // formData.value = { ...initialMenuFormData.value };
         formData.value.parentId = parentId?.toString();
       }
     });
@@ -504,7 +505,7 @@ function handleDelete(menuId: number) {
   );
 }
 
-function resetRorm() {
+function resetForm() {
   menuFormRef.value.resetFields();
   menuFormRef.value.clearValidate();
   formData.value = {
@@ -522,7 +523,7 @@ function resetRorm() {
 // 关闭弹窗
 function handleCloseDialog() {
   dialog.visible = false;
-  resetRorm();
+  resetForm();
 }
 
 onMounted(() => {
