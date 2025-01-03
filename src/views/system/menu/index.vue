@@ -424,7 +424,6 @@ function handleOpenDialog(parentId?: string, menuId?: string) {
         });
       } else {
         dialog.title = "新增菜单";
-        // formData.value = { ...initialMenuFormData.value };
         formData.value.parentId = parentId?.toString();
       }
     });
