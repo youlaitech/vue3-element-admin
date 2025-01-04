@@ -2,7 +2,7 @@
   <section class="app-main" :style="{ height: appMainHeight }">
     <router-view>
       <template #default="{ Component, route }">
-        <transition enter-active-class="animate__animated animate__fadeIn" mode="out-in">
+        <transition name="el-fade-in">
           <keep-alive :include="cachedViews">
             <component :is="Component" :key="route.path" />
           </keep-alive>
