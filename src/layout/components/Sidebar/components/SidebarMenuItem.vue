@@ -3,12 +3,15 @@
     <!--【叶子节点】显示叶子节点或唯一子节点且父节点未配置始终显示 -->
     <template
       v-if="
-        // 判断条件：仅有一个子节点，且父节点未配置始终显示
-        (hasOneShowingChild(item.children, item) &&
-          (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-          !item.meta?.alwaysShow) ||
-        // 父节点即使配置了始终显示，但无子节点，也显示为叶子节点
-        (item.meta?.alwaysShow && !item.children)
+        // 未配置始终显示，使用唯一子节点替换父节点显示为叶子节点
+        (!item.meta?.alwaysShow &&
+          hasOneShowingChild(item.children, item) &&
+          (!onlyOneChild.children ||
+            onlyOneChild.children.filter((child: any) => !child.meta?.hidden).length === 0 ||
+            onlyOneChild.noShowingChildren)) ||
+        // 即使配置了始终显示，但无子节点，也显示为叶子节点
+        (item.meta?.alwaysShow &&
+          (!item.children || item.children.filter((child) => !child.meta?.hidden).length === 0))
       "
     >
       <AppLink
@@ -104,13 +107,14 @@ function hasOneShowingChild(children: RouteRecordRaw[] = [], parent: RouteRecord
     return false;
   });
 
-  // 仅有一个或无子节点
+  // 仅有一个节点
   if (showingChildren.length === 1) {
     return true;
   }
 
-  // 无子节点时，设置父节点为唯一显示节点
+  // 无子节点时
   if (showingChildren.length === 0) {
+    // 父节点设置为唯一显示节点，并标记为无子节点
     onlyOneChild.value = { ...parent, path: "", noShowingChildren: true };
     return true;
   }
