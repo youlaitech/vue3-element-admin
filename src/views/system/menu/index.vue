@@ -504,7 +504,7 @@ function handleDelete(menuId: number) {
   );
 }
 
-function resetRorm() {
+function resetForm() {
   menuFormRef.value.resetFields();
   menuFormRef.value.clearValidate();
   formData.value = {
@@ -522,7 +522,7 @@ function resetRorm() {
 // 关闭弹窗
 function handleCloseDialog() {
   dialog.visible = false;
-  resetRorm();
+  resetForm();
 }
 
 onMounted(() => {
