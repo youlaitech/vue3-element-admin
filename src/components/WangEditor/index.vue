@@ -13,6 +13,7 @@
       v-model="modelValue"
       :default-config="editorConfig"
       :mode="mode"
+      style="height: 500px; overflow-y: hidden"
       @on-change="handleChange"
       @on-created="handleCreated"
     />

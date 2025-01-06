@@ -177,7 +177,9 @@
           <el-input v-model="formData.title" placeholder="通知标题" clearable />
         </el-form-item>
         <el-form-item label="通知内容" prop="content">
-          <WangEditor v-model="formData.content" style="min-height: 480px; max-height: 500px" />
+          <div style="border: 1px solid #dcdfe6; border-radius: 4px">
+            <WangEditor v-model="formData.content" style="min-height: 480px" />
+          </div>
         </el-form-item>
         <el-form-item label="通知类型" prop="type">
           <Dict v-model="formData.type" code="notice_type" />
