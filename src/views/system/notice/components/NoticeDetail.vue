@@ -42,7 +42,7 @@
         {{ notice.publishTime }}
       </el-descriptions-item>
       <el-descriptions-item label="公告内容：">
-        <div v-html="notice.content" />
+        <div class="notice-content" v-html="notice.content" />
       </el-descriptions-item>
     </el-descriptions>
   </el-dialog>
@@ -77,4 +77,15 @@ defineExpose({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.notice-content {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* 由于 v-html 内容不受 scoped 样式影响，需要使用 :deep() */
+:deep(.notice-content img) {
+  max-width: 100%;
+  height: auto;
+}
+</style>
