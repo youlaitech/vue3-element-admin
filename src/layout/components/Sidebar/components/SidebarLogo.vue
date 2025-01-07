@@ -1,6 +1,6 @@
 <template>
   <div class="logo">
-    <transition enter-active-class="animate__animated animate__fadeInLeft">
+    <transition enter-active-class="el-fade-in-left">
       <router-link :key="+collapse" class="wh-full flex-center" to="/">
         <img :src="logo" class="w20px h20px" />
         <span v-if="!collapse" class="title">

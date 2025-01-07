@@ -6,12 +6,9 @@
         // 未配置始终显示，使用唯一子节点替换父节点显示为叶子节点
         (!item.meta?.alwaysShow &&
           hasOneShowingChild(item.children, item) &&
-          (!onlyOneChild.children ||
-            onlyOneChild.children.filter((child: any) => !child.meta?.hidden).length === 0 ||
-            onlyOneChild.noShowingChildren)) ||
+          (!onlyOneChild.children || onlyOneChild.noShowingChildren)) ||
         // 即使配置了始终显示，但无子节点，也显示为叶子节点
-        (item.meta?.alwaysShow &&
-          (!item.children || item.children.filter((child) => !child.meta?.hidden).length === 0))
+        (item.meta?.alwaysShow && !item.children)
       "
     >
       <AppLink
