@@ -1,6 +1,6 @@
 <template>
   <el-breadcrumb class="flex-y-center">
-    <transition-group name="el-fade-in-right">
+    <transition-group name="el-fade-in-linear" mode="out-in">
       <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.path">
         <span
           v-if="item.redirect === 'noredirect' || index === breadcrumbs.length - 1"
