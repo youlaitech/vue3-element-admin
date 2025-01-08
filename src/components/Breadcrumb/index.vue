@@ -1,18 +1,16 @@
 <template>
   <el-breadcrumb class="flex-y-center">
-    <transition-group name="el-fade-in-linear" mode="out-in">
-      <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.path">
-        <span
-          v-if="item.redirect === 'noredirect' || index === breadcrumbs.length - 1"
-          class="color-gray-400"
-        >
-          {{ translateRouteTitle(item.meta.title) }}
-        </span>
-        <a v-else @click.prevent="handleLink(item)">
-          {{ translateRouteTitle(item.meta.title) }}
-        </a>
-      </el-breadcrumb-item>
-    </transition-group>
+    <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.path">
+      <span
+        v-if="item.redirect === 'noredirect' || index === breadcrumbs.length - 1"
+        class="color-gray-400"
+      >
+        {{ translateRouteTitle(item.meta.title) }}
+      </span>
+      <a v-else @click.prevent="handleLink(item)">
+        {{ translateRouteTitle(item.meta.title) }}
+      </a>
+    </el-breadcrumb-item>
   </el-breadcrumb>
 </template>
 
