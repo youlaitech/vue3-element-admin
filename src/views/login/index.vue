@@ -16,7 +16,7 @@
 
     <!-- 登录页内容 -->
     <div class="login-form">
-      <el-form ref="loginFormRef" :model="loginData" :rules="loginRules">
+      <el-form ref="loginFormRef" :model="loginFormData" :rules="loginRules">
         <div class="form-title">
           <h2>{{ defaultSettings.title }}</h2>
           <el-dropdown style="position: absolute; right: 0">
@@ -52,7 +52,7 @@
             </el-icon>
             <el-input
               ref="username"
-              v-model="loginData.username"
+              v-model="loginFormData.username"
               :placeholder="$t('login.username')"
               name="username"
               size="large"
@@ -69,7 +69,7 @@
                 <Lock />
               </el-icon>
               <el-input
-                v-model="loginData.password"
+                v-model="loginFormData.password"
                 :placeholder="$t('login.password')"
                 type="password"
                 name="password"
@@ -88,7 +88,7 @@
           <div class="input-wrapper">
             <svg-icon icon-class="captcha" class="mx-2" />
             <el-input
-              v-model="loginData.captchaCode"
+              v-model="loginFormData.captchaCode"
               auto-complete="off"
               size="large"
               class="flex-1"
@@ -148,7 +148,7 @@
 import { LocationQuery, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 
-import AuthAPI, { type LoginData } from "@/api/auth";
+import AuthAPI, { type LoginFormData } from "@/api/auth";
 import router from "@/router";
 
 import type { FormInstance } from "element-plus";
@@ -171,7 +171,7 @@ const loading = ref(false); // 按钮 loading 状态
 const isCapslock = ref(false); // 是否大写锁定
 const captchaBase64 = ref(); // 验证码图片Base64字符串
 
-const loginData = ref<LoginData>({
+const loginFormData = ref<LoginFormData>({
   username: "admin",
   password: "123456",
   captchaKey: "",
@@ -212,7 +212,7 @@ const loginRules = computed(() => {
 // 获取验证码
 function getCaptcha() {
   AuthAPI.getCaptcha().then((data) => {
-    loginData.value.captchaKey = data.captchaKey;
+    loginFormData.value.captchaKey = data.captchaKey;
     captchaBase64.value = data.captchaBase64;
   });
 }
@@ -223,7 +223,7 @@ async function handleLoginSubmit() {
     if (valid) {
       loading.value = true;
       userStore
-        .login(loginData.value)
+        .login(loginFormData.value)
         .then(async () => {
           await userStore.getUserInfo();
           // 需要在路由跳转前加载字典数据，否则会出现字典数据未加载完成导致页面渲染异常
@@ -281,8 +281,8 @@ function checkCapslock(event: KeyboardEvent) {
 
 // 设置登录凭证
 const setLoginCredentials = (username: string, password: string) => {
-  loginData.value.username = username;
-  loginData.value.password = password;
+  loginFormData.value.username = username;
+  loginFormData.value.password = password;
 };
 
 onMounted(() => {

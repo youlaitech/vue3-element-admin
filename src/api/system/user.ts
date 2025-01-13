@@ -163,22 +163,17 @@ const UserAPI = {
     });
   },
 
-  /**
-   *   发送手机/邮箱验证码
-   *
-   * @param contact 联系方式  手机号/邮箱
-   * @param contactType 联系方式类型 MOBILE:手机;EMAIL:邮箱
-   */
-  sendVerificationCode(contact: string, contactType: string) {
+  /** 发送短信验证码（绑定或更换手机号）*/
+  sendMobileCode(mobile: string) {
     return request({
-      url: `${USER_BASE_URL}/send-verification-code`,
-      method: "get",
-      params: { contact: contact, contactType: contactType },
+      url: `${USER_BASE_URL}/mobile/code`,
+      method: "post",
+      params: { mobile: mobile },
     });
   },
 
-  /** 绑定个人中心用户手机 */
-  bindMobile(data: MobileBindingForm) {
+  /** 绑定或更换手机号 */
+  bindOrChangeMobile(data: MobileUpdateForm) {
     return request({
       url: `${USER_BASE_URL}/mobile`,
       method: "put",
@@ -186,8 +181,17 @@ const UserAPI = {
     });
   },
 
-  /** 绑定个人中心用户邮箱 */
-  bindEmail(data: EmailBindingForm) {
+  /** 发送邮箱验证码（绑定或更换邮箱）*/
+  sendEmailCode(email: string) {
+    return request({
+      url: `${USER_BASE_URL}/email/code`,
+      method: "post",
+      params: { email: email },
+    });
+  },
+
+  /** 绑定或更换邮箱 */
+  bindOrChangeEmail(data: EmailUpdateForm) {
     return request({
       url: `${USER_BASE_URL}/email`,
       method: "put",
@@ -364,7 +368,7 @@ export interface PasswordChangeForm {
 }
 
 /** 修改手机表单 */
-export interface MobileBindingForm {
+export interface MobileUpdateForm {
   /** 手机号 */
   mobile?: string;
   /** 验证码 */
@@ -372,7 +376,7 @@ export interface MobileBindingForm {
 }
 
 /** 修改邮箱表单 */
-export interface EmailBindingForm {
+export interface EmailUpdateForm {
   /** 邮箱 */
   email?: string;
   /** 验证码 */

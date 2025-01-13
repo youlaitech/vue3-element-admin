@@ -204,21 +204,17 @@
       <el-form
         v-else-if="dialog.type === DialogType.MOBILE"
         ref="mobileBindingFormRef"
-        :model="mobileBindingForm"
+        :model="mobileUpdateForm"
         :rules="mobileBindingRules"
         :label-width="100"
       >
         <el-form-item label="手机号码" prop="mobile">
-          <el-input v-model="mobileBindingForm.mobile" style="width: 250px" />
+          <el-input v-model="mobileUpdateForm.mobile" style="width: 250px" />
         </el-form-item>
         <el-form-item label="验证码" prop="code">
-          <el-input v-model="mobileBindingForm.code" style="width: 250px">
+          <el-input v-model="mobileUpdateForm.code" style="width: 250px">
             <template #append>
-              <el-button
-                class="ml-5"
-                :disabled="mobileCountdown > 0"
-                @click="handleSendVerificationCode('MOBILE')"
-              >
+              <el-button class="ml-5" :disabled="mobileCountdown > 0" @click="handleSendMobileCode">
                 {{ mobileCountdown > 0 ? `${mobileCountdown}s后重新发送` : "发送验证码" }}
               </el-button>
             </template>
@@ -230,21 +226,17 @@
       <el-form
         v-else-if="dialog.type === DialogType.EMAIL"
         ref="emailBindingFormRef"
-        :model="emailBindingForm"
+        :model="emailUpdateForm"
         :rules="emailBindingRules"
         :label-width="100"
       >
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="emailBindingForm.email" style="width: 250px" />
+          <el-input v-model="emailUpdateForm.email" style="width: 250px" />
         </el-form-item>
         <el-form-item label="验证码" prop="code">
-          <el-input v-model="emailBindingForm.code" style="width: 250px">
+          <el-input v-model="emailUpdateForm.code" style="width: 250px">
             <template #append>
-              <el-button
-                class="ml-5"
-                :disabled="emailCountdown > 0"
-                @click="handleSendVerificationCode('EMAIL')"
-              >
+              <el-button class="ml-5" :disabled="emailCountdown > 0" @click="handleSendEmailCode">
                 {{ emailCountdown > 0 ? `${emailCountdown}s后重新发送` : "发送验证码" }}
               </el-button>
             </template>
@@ -265,8 +257,8 @@
 import UserAPI, {
   UserProfileVO,
   PasswordChangeForm,
-  MobileBindingForm,
-  EmailBindingForm,
+  MobileUpdateForm,
+  EmailUpdateForm,
   UserProfileForm,
 } from "@/api/system/user";
 
@@ -291,8 +283,8 @@ const dialog = reactive({
 
 const userProfileForm = reactive<UserProfileForm>({});
 const passwordChangeForm = reactive<PasswordChangeForm>({});
-const mobileBindingForm = reactive<MobileBindingForm>({});
-const emailBindingForm = reactive<EmailBindingForm>({});
+const mobileUpdateForm = reactive<MobileUpdateForm>({});
+const emailUpdateForm = reactive<EmailUpdateForm>({});
 
 const mobileCountdown = ref(0);
 const mobileTimer = ref<NodeJS.Timeout | null>(null);
@@ -361,23 +353,24 @@ const handleOpenDialog = (type: DialogType) => {
 };
 
 /**
- *  发送验证码
- *
- * @param contactType 联系方式类型 MOBILE: 手机号码  EMAIL: 邮箱
+ * 发送手机验证码
  */
-const handleSendVerificationCode = async (contactType: string) => {
-  if (contactType === "MOBILE") {
-    if (!mobileBindingForm.mobile) {
-      ElMessage.error("请输入手机号");
-      return;
-    }
-    // 验证手机号格式
-    const reg = /^1[3-9]\d{9}$/;
-    if (!reg.test(mobileBindingForm.mobile)) {
-      ElMessage.error("手机号格式不正确");
-      return;
-    }
+function handleSendMobileCode() {
+  if (!mobileUpdateForm.mobile) {
+    ElMessage.error("请输入手机号");
+    return;
+  }
+  // 验证手机号格式
+  const reg = /^1[3-9]\d{9}$/;
+  if (!reg.test(mobileUpdateForm.mobile)) {
+    ElMessage.error("手机号格式不正确");
+    return;
+  }
+  // 发送短信验证码
+  UserAPI.sendMobileCode(mobileUpdateForm.mobile).then(() => {
+    ElMessage.success("验证码发送成功");
 
+    // 倒计时 60s 重新发送
     mobileCountdown.value = 60;
     mobileTimer.value = setInterval(() => {
       if (mobileCountdown.value > 0) {
@@ -386,18 +379,28 @@ const handleSendVerificationCode = async (contactType: string) => {
         clearInterval(mobileTimer.value!);
       }
     }, 1000);
-  } else if (contactType === "EMAIL") {
-    if (!emailBindingForm.email) {
-      ElMessage.error("请输入邮箱");
-      return;
-    }
-    // 验证邮箱格式
-    const reg = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
-    if (!reg.test(emailBindingForm.email)) {
-      ElMessage.error("邮箱格式不正确");
-      return;
-    }
+  });
+}
 
+/**
+ * 发送邮箱验证码
+ */
+function handleSendEmailCode() {
+  if (!emailUpdateForm.email) {
+    ElMessage.error("请输入邮箱");
+    return;
+  }
+  // 验证邮箱格式
+  const reg = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
+  if (!reg.test(emailUpdateForm.email)) {
+    ElMessage.error("邮箱格式不正确");
+    return;
+  }
+
+  // 发送邮箱验证码
+  UserAPI.sendEmailCode(emailUpdateForm.email).then(() => {
+    ElMessage.success("验证码发送成功");
+    // 倒计时 60s 重新发送
     emailCountdown.value = 60;
     emailTimer.value = setInterval(() => {
       if (emailCountdown.value > 0) {
@@ -406,8 +409,8 @@ const handleSendVerificationCode = async (contactType: string) => {
         clearInterval(emailTimer.value!);
       }
     }, 1000);
-  }
-};
+  });
+}
 
 /**
  * 提交表单
@@ -429,13 +432,13 @@ const handleSubmit = async () => {
       dialog.visible = false;
     });
   } else if (dialog.type === DialogType.MOBILE) {
-    UserAPI.bindMobile(mobileBindingForm).then(() => {
+    UserAPI.bindOrChangeMobile(mobileUpdateForm).then(() => {
       ElMessage.success("手机号绑定成功");
       dialog.visible = false;
       loadUserProfile();
     });
   } else if (dialog.type === DialogType.EMAIL) {
-    UserAPI.bindEmail(emailBindingForm).then(() => {
+    UserAPI.bindOrChangeEmail(emailUpdateForm).then(() => {
       ElMessage.success("邮箱绑定成功");
       dialog.visible = false;
       loadUserProfile();
