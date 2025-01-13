@@ -127,8 +127,7 @@ export default defineMock([
           },
           {
             id: 10,
-            title:
-              "v2.16.1 版本修复了 WebSocket 重复连接导致的后台线程阻塞问题，优化了通知公告。",
+            title: "v2.16.1 版本修复了 WebSocket 重复连接导致的后台线程阻塞问题，优化了通知公告。",
             publishStatus: 1,
             type: 1,
             publisherName: "系统管理员",
@@ -150,7 +149,7 @@ export default defineMock([
   {
     url: "notices",
     method: ["POST"],
-    body({ body }) {
+    body() {
       return {
         code: "00000",
         data: null,
@@ -220,8 +219,7 @@ export default defineMock([
         list: [
           {
             id: 10,
-            title:
-              "v2.16.1 版本修复了 WebSocket 重复连接导致的后台线程阻塞问题，优化了通知公告。",
+            title: "v2.16.1 版本修复了 WebSocket 重复连接导致的后台线程阻塞问题，优化了通知公告。",
             type: 1,
             level: "L",
             publisherName: "系统管理员",
@@ -403,8 +401,7 @@ const noticeMap: Record<string, any> = {
   },
   10: {
     id: 10,
-    title:
-      "v2.16.1 版本修复了 WebSocket 重复连接导致的后台线程阻塞问题，优化了通知公告。",
+    title: "v2.16.1 版本修复了 WebSocket 重复连接导致的后台线程阻塞问题，优化了通知公告。",
     publishStatus: 1,
     type: 1,
     publisherName: "系统管理员",

@@ -2,7 +2,7 @@ import { store } from "@/store";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import { useDictStoreHook } from "@/store/modules/dict";
 
-import AuthAPI, { type LoginData } from "@/api/auth";
+import AuthAPI, { type LoginFormData } from "@/api/auth";
 import UserAPI, { type UserInfo } from "@/api/system/user";
 
 import { setToken, setRefreshToken, getRefreshToken, clearToken } from "@/utils/auth";
@@ -13,12 +13,12 @@ export const useUserStore = defineStore("user", () => {
   /**
    * 登录
    *
-   * @param {LoginData}
+   * @param {LoginFormData}
    * @returns
    */
-  function login(loginData: LoginData) {
+  function login(LoginFormData: LoginFormData) {
     return new Promise<void>((resolve, reject) => {
-      AuthAPI.login(loginData)
+      AuthAPI.login(LoginFormData)
         .then((data) => {
           const { tokenType, accessToken, refreshToken } = data;
           setToken(tokenType + " " + accessToken); // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx

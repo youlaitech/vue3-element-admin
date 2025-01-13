@@ -4,7 +4,7 @@ const AUTH_BASE_URL = "/api/v1/auth";
 
 const AuthAPI = {
   /** 登录接口*/
-  login(data: LoginData) {
+  login(data: LoginFormData) {
     const formData = new FormData();
     formData.append("username", data.username);
     formData.append("password", data.password);
@@ -22,17 +22,19 @@ const AuthAPI = {
 
   /** 刷新 token 接口*/
   refreshToken(refreshToken: string) {
+    const formData = new FormData();
+    formData.append("refreshToken", refreshToken);
     return request<any, LoginResult>({
       url: `${AUTH_BASE_URL}/refresh-token`,
       method: "post",
-      data: { refreshToken: refreshToken },
+      data: formData,
       headers: {
         Authorization: "no-auth",
       },
     });
   },
 
-  /** 注销接口*/
+  /** 注销接口 */
   logout() {
     return request({
       url: `${AUTH_BASE_URL}/logout`,
@@ -42,7 +44,7 @@ const AuthAPI = {
 
   /** 获取验证码接口*/
   getCaptcha() {
-    return request<any, CaptchaResult>({
+    return request<any, CaptchaInfo>({
       url: `${AUTH_BASE_URL}/captcha`,
       method: "get",
     });
@@ -51,8 +53,8 @@ const AuthAPI = {
 
 export default AuthAPI;
 
-/** 登录请求参数 */
-export interface LoginData {
+/** 登录表单数据 */
+export interface LoginFormData {
   /** 用户名 */
   username: string;
   /** 密码 */
@@ -75,8 +77,8 @@ export interface LoginResult {
   expiresIn: number;
 }
 
-/** 验证码响应 */
-export interface CaptchaResult {
+/** 验证码信息 */
+export interface CaptchaInfo {
   /** 验证码缓存key */
   captchaKey: string;
   /** 验证码图片Base64字符串 */
