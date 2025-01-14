@@ -126,7 +126,7 @@ const UserAPI = {
   import(deptId: number, file: File) {
     const formData = new FormData();
     formData.append("file", file);
-    return request({
+    return request<any, ExcelResult>({
       url: `${USER_BASE_URL}/import`,
       method: "post",
       params: { deptId: deptId },
