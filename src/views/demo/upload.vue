@@ -15,7 +15,7 @@
         {{ picUrl }}
       </el-form-item>
       <el-form-item label="图片上传">
-        <ImageUpload v-model="picUrl" :limit="1" :maxSize="10" />
+        <ImageUpload v-model="picUrl" :maxSize="10" />
       </el-form-item>
       <el-form-item label="参数说明">
         <el-table :data="imageUploadArgData" border>
@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 // 单图
-const picUrl = ref("https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg");
+const picUrl = ref(null);
 
 const imageUploadArgData = [
   {
@@ -79,8 +79,8 @@ const imageUploadArgData = [
   {
     argsName: "limit",
     type: "Number",
-    default: 10,
-    desc: "上传最大的图片数量,单张图片时填写1",
+    default: 1,
+    desc: "上传最大的图片数量,多张图片时填写最大上传数量，默认单张图片",
   },
   {
     argsName: "show-del-btn",
