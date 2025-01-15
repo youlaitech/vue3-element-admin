@@ -113,6 +113,12 @@ const imageUploadArgData = [
     desc: "支持的文件类型,默认支持所有图片格式,eg:['png','jpg','jpeg','gif']",
   },
   {
+    argsName: "isSyncDelete",
+    type: "Boolean",
+    default: "true",
+    desc: "是否同步删除服务端文件(默认是，如果为否，则只会删除当前上传的图片，已经上传到服务端到图片不会删除)",
+  },
+  {
     argsName: "style",
     type: "Object",
     default: "{width: '130px',height: '130px'}",

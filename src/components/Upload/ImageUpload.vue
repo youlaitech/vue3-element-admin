@@ -144,6 +144,14 @@ const props = defineProps({
     type: Array<string>,
     default: () => [],
   },
+
+  /**
+   * 是否同步删除
+   */
+  isSyncDelete: {
+    type: Boolean,
+    default: true,
+  },
   /**
    * 自定义样式
    */
@@ -235,7 +243,19 @@ const handleError = (error: any) => {
  */
 function handleRemove(path: string) {
   if (path) {
-    FileAPI.deleteByPath(path).then(() => {
+    if (props.isSyncDelete) {
+      FileAPI.deleteByPath(path).then(() => {
+        valFileList.value = valFileList.value.filter((x) => x !== path);
+        // 删除成功回调
+        if (props.limit === 1) {
+          emit("update:modelValue", "");
+          emit("change", "");
+        } else {
+          emit("update:modelValue", valFileList.value);
+          emit("change", valFileList.value);
+        }
+      });
+    } else {
       valFileList.value = valFileList.value.filter((x) => x !== path);
       // 删除成功回调
       if (props.limit === 1) {
@@ -245,7 +265,7 @@ function handleRemove(path: string) {
         emit("update:modelValue", valFileList.value);
         emit("change", valFileList.value);
       }
-    });
+    }
   }
 }
 
