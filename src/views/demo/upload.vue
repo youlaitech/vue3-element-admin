@@ -62,7 +62,7 @@ const imageUploadArgData = [
     argsName: "headers",
     type: "Object",
     default: "{Authorization: localStorage.getItem(TOKEN_KEY),}",
-    desc: "提示文本类型",
+    desc: "上传请求头",
   },
   {
     argsName: "data",
