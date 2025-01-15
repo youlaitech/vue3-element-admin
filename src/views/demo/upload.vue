@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 // 单图
-const picUrl = ref(null);
+const picUrl = ref("https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg");
 
 const imageUploadArgData = [
   {
