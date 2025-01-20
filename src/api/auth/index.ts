@@ -22,19 +22,17 @@ const AuthAPI = {
 
   /** 刷新 token 接口*/
   refreshToken(refreshToken: string) {
-    const formData = new FormData();
-    formData.append("refreshToken", refreshToken);
     return request<any, LoginResult>({
       url: `${AUTH_BASE_URL}/refresh-token`,
       method: "post",
-      data: formData,
+      params: { refreshToken: refreshToken },
       headers: {
         Authorization: "no-auth",
       },
     });
   },
 
-  /** 注销接口 */
+  /** 注销登录接口 */
   logout() {
     return request({
       url: `${AUTH_BASE_URL}/logout`,
