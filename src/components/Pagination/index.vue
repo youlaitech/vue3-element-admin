@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
+const props = defineProps({
   total: {
     required: true,
     type: Number as PropType<number>,
@@ -59,7 +59,19 @@ const pageSize = defineModel("limit", {
   default: 10,
 });
 
+watch(
+  props.total,
+  (newVal: number) => {
+    const lastPage = Math.ceil(newVal / pageSize.value)
+    if (newVal > 0 && currentPage.value > lastPage) {
+      currentPage.value = lastPage
+      emit("pagination", { page: currentPage.value, limit: pageSize.value });
+    }
+  }
+);
+
 function handleSizeChange(val: number) {
+  currentPage.value = 1
   emit("pagination", { page: currentPage.value, limit: val });
 }
 
