@@ -1,15 +1,11 @@
 <!--
- * wangEditor 富文本编辑器组件
- * Copyright © 2021-present 有来开源组织
- * 
- * 本组件基于 wangEditor-next 进行二次封装，支持 Vue 3.x
- * 作者：有来开源-Ray 
+ * 基于 wangEditor-next 的富文本编辑器组件二次封装
+ * 版权所有 © 2021-present 有来开源组织
  *
- * 使用请保留本段注释，感谢支持开源！
- * 参考官方示例：https://stackblitz.com/edit/vue3-wangeditor-demo-8emmc7?file=src%2Fcomponents%2FBasicEditor.vue
- * 
- * 开源协议：MIT License
- * 详情参见：https://opensource.org/licenses/MIT
+ * 开源协议：https://opensource.org/licenses/MIT
+ * 项目地址：https://gitee.com/youlaiorg/vue3-element-admin
+ *
+ * 在使用时，请保留此注释，感谢您对开源的支持！
  -->
 
 <template>
