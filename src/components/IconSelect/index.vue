@@ -126,7 +126,7 @@ function loadIcons() {
 }
 
 function handleTabClick(tabPane: any) {
-  activeTab.value = tabPane.name;
+  activeTab.value = tabPane.props.name;
   filterIcons();
 }
 
