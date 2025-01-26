@@ -4,14 +4,13 @@
   <div style="display: none">
     <el-upload
       ref="uploadRef"
-      v-model:file-list="fileList"
+      :file-list="fileList"
+      :http-request="handleUpload"
       :before-upload="handleBeforeUpload"
-      :action="props.action"
-      :headers="props.headers"
-      :data="props.data"
-      :name="props.name"
-      :on-success="handleSuccessFile"
+      :on-success="handleSuccess"
       :on-error="handleError"
+      :data="props.additionalParams"
+      :name="props.fileParamName"
       :accept="props.accept"
       :limit="props.limit"
     />
@@ -47,48 +46,21 @@
     v-if="viewVisible"
     :zoom-rate="1.2"
     :initialIndex="initialIndex"
-    :url-list="viewFileList"
+    :url-list="previewImgUrls"
     @close="closePreview"
   />
 </template>
 <script setup lang="ts">
-import { UploadRawFile, UploadUserFile, UploadFile } from "element-plus";
-import FileAPI from "@/api/file";
-import { getToken } from "@/utils/auth";
-import { ResultEnum } from "@/enums/ResultEnum";
+import { UploadRawFile, UploadUserFile, UploadRequestOptions } from "element-plus";
+import FileAPI, { FileInfo } from "@/api/file";
 
-const emit = defineEmits(["update:modelValue", "change"]);
+const emit = defineEmits(["update:modelValue"]);
 
 const props = defineProps({
   /**
-   * 文件路径集合
+   * 附加的参数
    */
-  modelValue: {
-    type: [Array, String],
-    default: () => [],
-  },
-  /**
-   * 上传地址
-   */
-  action: {
-    type: String,
-    default: FileAPI.uploadUrl,
-  },
-  /**
-   * 请求头
-   */
-  headers: {
-    type: Object,
-    default: () => {
-      return {
-        Authorization: getToken(),
-      };
-    },
-  },
-  /**
-   * 请求携带的额外参数
-   */
-  data: {
+  additionalParams: {
     type: Object,
     default: () => {
       return {};
@@ -97,7 +69,7 @@ const props = defineProps({
   /**
    * 上传文件的参数名
    */
-  name: {
+  fileParamName: {
     type: String,
     default: "file",
   },
@@ -146,13 +118,6 @@ const props = defineProps({
   },
 
   /**
-   * 是否同步删除
-   */
-  isSyncDelete: {
-    type: Boolean,
-    default: true,
-  },
-  /**
    * 自定义样式
    */
   style: {
@@ -164,108 +129,60 @@ const props = defineProps({
       };
     },
   },
+
+  /**
+   * 是否多图上传
+   */
+  multiple: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+// 定义v-model
+const modelValue = defineModel("modelValue", {
+  type: [String, Array] as PropType<string | string[]>,
+  required: true,
+  default: () => "",
 });
 
 const viewVisible = ref(false);
 const initialIndex = ref(0);
 
-const fileList = ref([] as UploadUserFile[]);
-const valFileList = ref([] as string[]);
-const viewFileList = ref([] as string[]);
+const fileList = ref<UploadUserFile[]>([]); // 默认上传文件
+const previewImgUrls = ref<string[]>([]);
 
 // 添加一个ref来引用el-upload组件
 const uploadRef = ref();
 
 watch(
-  () => props.modelValue,
-  (newVal) => {
-    if (typeof newVal === "string" && !newVal) {
-      fileList.value = [];
-      viewFileList.value = [];
-      valFileList.value = [];
+  () => modelValue.value,
+  (newValue) => {
+    if (!props.multiple) {
       return;
+    } else {
+      if (Array.isArray(newValue)) {
+        fileList.value = newValue.map((filePath) => {
+          return { url: filePath } as UploadUserFile;
+        });
+      }
     }
-    const modelValue = typeof newVal === "string" ? [newVal] : (newVal as string[]);
-    const filePaths = fileList.value.map((file) => file.url);
-    // 监听modelValue文件集合值未变化时，跳过赋值
-    if (
-      filePaths.length > 0 &&
-      filePaths.length === modelValue.length &&
-      filePaths.every((x) => modelValue.some((y) => y === x)) &&
-      modelValue.every((y) => filePaths.some((x) => x === y))
-    ) {
-      return;
-    }
-
-    if (!modelValue || modelValue.length <= 0) {
-      fileList.value = [];
-      viewFileList.value = [];
-      valFileList.value = [];
-      return;
-    }
-
-    fileList.value = modelValue.map((filePath) => {
-      return { url: filePath } as UploadUserFile;
-    });
-    valFileList.value = modelValue;
   },
   { immediate: true }
 );
-
-/**
- * 上传成功回调
- *
- * @param options
- */
-const handleSuccessFile = (response: any, file: UploadFile) => {
-  if (response.code === ResultEnum.SUCCESS) {
-    ElMessage.success("上传成功");
-    valFileList.value.push(response.data.url);
-    if (props.limit === 1) {
-      emit("update:modelValue", response.data.url);
-      emit("change", response.data.url);
-    } else {
-      emit("update:modelValue", valFileList.value);
-      emit("change", valFileList.value);
-    }
-    return;
-  } else {
-    ElMessage.error(response.msg || "上传失败");
-  }
-};
-
-const handleError = (error: any) => {
-  ElMessage.error("上传失败");
-};
 
 /**
  * 删除图片
  */
 function handleRemove(path: string) {
   if (path) {
-    if (props.isSyncDelete) {
-      FileAPI.deleteByPath(path).then(() => {
-        valFileList.value = valFileList.value.filter((x) => x !== path);
-        // 删除成功回调
-        if (props.limit === 1) {
-          emit("update:modelValue", "");
-          emit("change", "");
-        } else {
-          emit("update:modelValue", valFileList.value);
-          emit("change", valFileList.value);
-        }
-      });
-    } else {
-      valFileList.value = valFileList.value.filter((x) => x !== path);
-      // 删除成功回调
-      if (props.limit === 1) {
-        emit("update:modelValue", "");
-        emit("change", "");
+    FileAPI.deleteByPath(path).then(() => {
+      if (Array.isArray(modelValue.value)) {
+        modelValue.value = modelValue.value.filter((x) => x !== path);
       } else {
-        emit("update:modelValue", valFileList.value);
-        emit("change", valFileList.value);
+        modelValue.value = "";
       }
-    }
+    });
   }
 }
 
@@ -303,11 +220,65 @@ function handleBeforeUpload(file: UploadRawFile) {
   return true;
 }
 
+/*
+ * 上传文件
+ */
+function handleUpload(options: UploadRequestOptions) {
+  return new Promise((resolve, reject) => {
+    const { file, onSuccess, onError } = options;
+
+    const formData = new FormData();
+    formData.append(props.fileParamName, file);
+
+    // 处理附加参数
+    Object.keys(props.additionalParams).forEach((key) => {
+      formData.append(key, props.additionalParams[key]);
+    });
+
+    FileAPI.upload(formData)
+      .then((data) => {
+        onSuccess(data);
+        resolve(data);
+      })
+      .catch((error) => {
+        onError(error);
+        reject(error);
+      });
+  });
+}
+
+/**
+ * 上传成功回调
+ *
+ * @param fileInfo 上传成功后的文件信息
+ */
+const handleSuccess = (fileInfo: FileInfo) => {
+  ElMessage.success("上传成功");
+  valFileList.value.push(fileInfo.url);
+  if (!props.multiple) {
+    emit("update:modelValue", fileInfo.url);
+    emit("change", fileInfo.url);
+  } else {
+    emit("update:modelValue", valFileList.value);
+    emit("change", valFileList.value);
+  }
+  return;
+};
+
+/**
+ * 上传失败回调
+ *
+ * @param error 上传失败的错误信息
+ */
+const handleError = (error: any) => {
+  ElMessage.error("上传失败");
+};
+
 /**
  * 预览图片
  */
 const previewImg = (path: string) => {
-  viewFileList.value = fileList.value.map((file) => file.url!);
+  previewImgUrls.value = fileList.value.map((file) => file.url!);
   initialIndex.value = fileList.value.findIndex((file) => file.url === path);
   viewVisible.value = true;
 };
