@@ -108,14 +108,6 @@ const props = defineProps({
     type: String,
     default: "image/*",
   },
-  /**
-   * 支持的文件类型,默认支持所有图片格式
-   * eg:['png','jpg','jpeg','gif']
-   */
-  supportFileType: {
-    type: Array<string>,
-    default: () => [],
-  },
 
   /**
    * 自定义样式
@@ -150,6 +142,7 @@ const viewVisible = ref(false);
 const initialIndex = ref(0);
 
 const fileList = ref<UploadUserFile[]>([]); // 默认上传文件
+const uploadedImgUrls = ref<string[]>([]); // 已上传的图片
 const previewImgUrls = ref<string[]>([]);
 
 // 添加一个ref来引用el-upload组件
@@ -254,13 +247,12 @@ function handleUpload(options: UploadRequestOptions) {
  */
 const handleSuccess = (fileInfo: FileInfo) => {
   ElMessage.success("上传成功");
-  valFileList.value.push(fileInfo.url);
-  if (!props.multiple) {
-    emit("update:modelValue", fileInfo.url);
-    emit("change", fileInfo.url);
+  const { url } = fileInfo;
+  uploadedImgUrls.value.push(url);
+  if (props.multiple && Array.isArray(modelValue.value)) {
+    modelValue.value.push(url);
   } else {
-    emit("update:modelValue", valFileList.value);
-    emit("change", valFileList.value);
+    modelValue.value = url;
   }
   return;
 };
