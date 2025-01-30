@@ -19,7 +19,7 @@
   <!-- 自定义的显示区域 -->
   <div class="custom-upload-list">
     <!-- 已上传的图片列表 -->
-    <div v-for="(path, index) in valFileList" :key="index" class="custom-upload-item">
+    <div v-for="(path, index) in uploadedImageUrls" :key="index" class="custom-upload-item">
       <img class="upload-thumbnail" :src="path" alt="" />
       <div class="upload-actions">
         <span class="action-item preview" @click="previewImg(path)">
@@ -33,7 +33,7 @@
 
     <!-- 上传按钮 -->
     <div
-      v-if="valFileList.length < props.limit && props.showUploadBtn"
+      v-if="uploadedImageUrls.length < props.limit && props.showUploadBtn"
       class="custom-upload-trigger"
       @click="triggerUpload"
     >
@@ -43,10 +43,10 @@
 
   <!-- 图片预览组件 -->
   <el-image-viewer
-    v-if="viewVisible"
+    v-if="previewVisible"
     :zoom-rate="1.2"
-    :initialIndex="initialIndex"
-    :url-list="previewImgUrls"
+    :initialIndex="previewImageIndex"
+    :url-list="uploadedImageUrls"
     @close="closePreview"
   />
 </template>
@@ -121,7 +121,6 @@ const props = defineProps({
       };
     },
   },
-
   /**
    * 是否多图上传
    */
@@ -138,12 +137,11 @@ const modelValue = defineModel("modelValue", {
   default: () => "",
 });
 
-const viewVisible = ref(false);
-const initialIndex = ref(0);
+const previewVisible = ref(false); // 是否显示预览
+const previewImageIndex = ref(0); // 预览的图片索引
 
 const fileList = ref<UploadUserFile[]>([]); // 默认上传文件
-const uploadedImgUrls = ref<string[]>([]); // 已上传的图片
-const previewImgUrls = ref<string[]>([]);
+const uploadedImageUrls = ref<string[]>([]); // 已上传的图片
 
 // 添加一个ref来引用el-upload组件
 const uploadRef = ref();
@@ -151,14 +149,13 @@ const uploadRef = ref();
 watch(
   () => modelValue.value,
   (newValue) => {
-    if (!props.multiple) {
-      return;
+    if (Array.isArray(newValue)) {
+      fileList.value = newValue.map((filePath) => {
+        return { url: filePath } as UploadUserFile;
+      });
     } else {
-      if (Array.isArray(newValue)) {
-        fileList.value = newValue.map((filePath) => {
-          return { url: filePath } as UploadUserFile;
-        });
-      }
+      fileList.value = [];
+      uploadedImageUrls.value = [];
     }
   },
   { immediate: true }
@@ -187,28 +184,6 @@ function handleBeforeUpload(file: UploadRawFile) {
   if (file.size > props.maxSize * 1024 * 1024) {
     ElMessage.warning("上传图片不能大于" + props.maxSize + "M");
     return false;
-  }
-  // 判断文件类型
-  // 获取文件后缀名
-  const fileExt = file.name.split(".").pop();
-  if (!fileExt) {
-    ElMessage.warning("上传图片格式错误,支持的文件类型:" + props.supportFileType.join(","));
-    return false;
-  }
-  // 给文件后缀名转换为小写
-  const lowerCaseFileExt = fileExt.toLowerCase();
-  // 判断文件后缀名是否在支持的文件类型中
-  if (props.supportFileType.length > 0) {
-    let isSupport = false;
-    props.supportFileType.forEach((type) => {
-      if (type.toLowerCase() === lowerCaseFileExt) {
-        isSupport = true;
-      }
-    });
-    if (!isSupport) {
-      ElMessage.warning("上传图片格式错误,支持的文件类型:" + props.supportFileType.join(","));
-      return false;
-    }
   }
   return true;
 }
@@ -248,7 +223,7 @@ function handleUpload(options: UploadRequestOptions) {
 const handleSuccess = (fileInfo: FileInfo) => {
   ElMessage.success("上传成功");
   const { url } = fileInfo;
-  uploadedImgUrls.value.push(url);
+  uploadedImageUrls.value.push(url);
   if (props.multiple && Array.isArray(modelValue.value)) {
     modelValue.value.push(url);
   } else {
@@ -270,16 +245,16 @@ const handleError = (error: any) => {
  * 预览图片
  */
 const previewImg = (path: string) => {
-  previewImgUrls.value = fileList.value.map((file) => file.url!);
+  previewImageUrls.value = fileList.value.map((file) => file.url!);
   initialIndex.value = fileList.value.findIndex((file) => file.url === path);
-  viewVisible.value = true;
+  previewVisible.value = true;
 };
 
 /**
  * 关闭预览
  */
 const closePreview = () => {
-  viewVisible.value = false;
+  previewVisible.value = false;
 };
 
 // 修改triggerUpload方法
