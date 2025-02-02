@@ -458,7 +458,7 @@ const handleFileChange = async (event: Event) => {
   if (file) {
     // 调用文件上传API
     try {
-      const data = await FileAPI.upload(file);
+      const data = await FileAPI.uploadFile(file);
       // 更新用户头像
       userProfile.value.avatar = data.url;
       // 更新用户信息
