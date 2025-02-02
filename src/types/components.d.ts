@@ -84,12 +84,12 @@ declare module "vue" {
     SidebarMenuItem: (typeof import("./../layout/components/Sidebar/components/SidebarMenuItem.vue"))["default"];
     SidebarMenuItemTitle: (typeof import("./../layout/components/Sidebar/components/SidebarMenuItemTitle.vue"))["default"];
     SidebarMixTopMenu: (typeof import("./../layout/components/Sidebar/components/SidebarMixTopMenu.vue"))["default"];
+    SingleImageUpload: (typeof import("./../components/Upload/SingleImageUpload.vue"))["default"];
     SizeSelect: (typeof import("./../components/SizeSelect/index.vue"))["default"];
     SvgIcon: (typeof import("./../components/SvgIcon/index.vue"))["default"];
     TableSelect: (typeof import("./../components/TableSelect/index.vue"))["default"];
     TagsView: (typeof import("./../layout/components/TagsView/index.vue"))["default"];
     ThemeColorPicker: (typeof import("./../layout/components/Settings/components/ThemeColorPicker.vue"))["default"];
-    SingleImageUpload: (typeof import("./../components/Upload/SingleImageUpload.vue"))["default"];
     WangEditor: (typeof import("./../components/WangEditor/index.vue"))["default"];
   }
   export interface ComponentCustomProperties {

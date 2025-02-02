@@ -1,45 +1,30 @@
-<!-- 图片上传组件 -->
+<!-- 单图上传组件 -->
 <template>
   <el-upload
-    v-model:file-list="fileList"
+    v-model="modelValue"
+    class="single-upload"
     list-type="picture-card"
+    :accept="props.accept"
     :before-upload="handleBeforeUpload"
     :http-request="handleUpload"
-    :on-success="handleSuccess"
-    :on-error="handleError"
-    :on-exceed="handleExceed"
-    :accept="props.accept"
-    :limit="props.limit"
+    :on-success="onSuccess"
+    :on-error="onError"
     multiple
   >
-    <el-icon><Plus /></el-icon>
-    <template #file="{ file }">
-      <div style="width: 100%">
-        <img class="el-upload-list__item-thumbnail" :src="file.url" />
-        <span class="el-upload-list__item-actions">
-          <!-- 预览 -->
-          <span @click="handlePreviewImage(file.url!)">
-            <el-icon><zoom-in /></el-icon>
-          </span>
-          <!-- 删除 -->
-          <span @click="handleRemove(file.url!)">
-            <el-icon><Delete /></el-icon>
-          </span>
-        </span>
-      </div>
+    <template #default>
+      <el-image v-if="modelValue" :src="modelValue" />
+      <el-icon v-if="modelValue" class="single-upload__delete-btn" @click.stop="handleDelete">
+        <CircleCloseFilled />
+      </el-icon>
+      <el-icon v-else class="single-upload__add-btn">
+        <Plus />
+      </el-icon>
     </template>
   </el-upload>
-
-  <el-image-viewer
-    v-if="previewVisible"
-    :zoom-rate="1.2"
-    :initial-index="previewImageIndex"
-    :url-list="modelValue"
-    @close="handlePreviewClose"
-  />
 </template>
+
 <script setup lang="ts">
-import { UploadRawFile, UploadRequestOptions, UploadUserFile } from "element-plus";
+import { ElImageViewer, UploadRawFile, UploadRequestOptions } from "element-plus";
 import FileAPI, { FileInfo } from "@/api/file";
 
 const props = defineProps({
@@ -60,66 +45,43 @@ const props = defineProps({
     default: "file",
   },
   /**
-   * 文件上传数量限制
-   */
-  limit: {
-    type: Number,
-    default: 10,
-  },
-  /**
-   * 单个文件的最大允许大小
+   * 文件大小允许最大（单位：MB）
    */
   maxFileSize: {
     type: Number,
     default: 10,
   },
+
   /**
-   * 上传文件类型
+   * 接收文件类型
    */
   accept: {
     type: String,
     default: "image/*", //  默认支持所有图片格式 ，如果需要指定格式，格式如下：'.png,.jpg,.jpeg,.gif,.bmp'
   },
-});
 
-const previewVisible = ref(false); // 是否显示预览
-const previewImageIndex = ref(0); // 预览图片的索引
+  /**
+   * 自定义样式
+   */
+  style: {
+    type: Object,
+    default: () => {
+      return {
+        width: "130px",
+        height: "130px",
+      };
+    },
+  },
+});
 
 const modelValue = defineModel("modelValue", {
-  type: [Array] as PropType<string[]>,
+  type: String,
   required: true,
-  default: () => [],
+  default: () => "",
 });
 
-const fileList = ref<UploadUserFile[]>([]);
-
-// 监听 modelValue 转换用于显示的 fileList
-watch(
-  modelValue,
-  (value) => {
-    console.log("modelValue 发生变化:", value);
-    fileList.value = value.map((url) => {
-      return {
-        url,
-      } as UploadUserFile;
-    });
-  },
-  {
-    immediate: true,
-  }
-);
-
 /**
- * 删除图片
- */
-function handleRemove(imageUrl: string) {
-  FileAPI.delete(imageUrl).then(() => {
-    modelValue.value = modelValue.value.filter((url) => url !== imageUrl);
-  });
-}
-
-/**
- * 上传前校验
+ * 限制用户上传文件的格式和大小
  */
 function handleBeforeUpload(file: UploadRawFile) {
   // 校验文件类型：虽然 accept 属性限制了用户在文件选择器中可选的文件类型，但仍需在上传时再次校验文件实际类型，确保符合 accept 的规则
@@ -153,7 +115,7 @@ function handleBeforeUpload(file: UploadRawFile) {
 }
 
 /*
- * 上传文件
+ * 上传图片
  */
 function handleUpload(options: UploadRequestOptions) {
   return new Promise((resolve, reject) => {
@@ -178,41 +140,63 @@ function handleUpload(options: UploadRequestOptions) {
 }
 
 /**
- * 上传文件超出限制
+ * 删除图片
  */
-function handleExceed(files: File[], uploadFiles: UploadUserFile[]) {
-  ElMessage.warning("最多只能上传" + props.limit + "张图片");
+function handleDelete() {
+  modelValue.value = "";
 }
 
 /**
  * 上传成功回调
+ *
+ * @param fileInfo 上传成功后的文件信息
  */
-const handleSuccess = (fileInfo: FileInfo) => {
+const onSuccess = (fileInfo: FileInfo) => {
   ElMessage.success("上传成功");
-  modelValue.value = [...modelValue.value, fileInfo.url];
+  modelValue.value = fileInfo.url;
 };
 
 /**
  * 上传失败回调
  */
-const handleError = (error: any) => {
-  console.log("handleError");
+const onError = (error: any) => {
+  console.log("onError");
   ElMessage.error("上传失败: " + error.message);
 };
-
-/**
- * 预览图片
- */
-const handlePreviewImage = (imageUrl: string) => {
-  previewImageIndex.value = modelValue.value.findIndex((url) => url === imageUrl);
-  previewVisible.value = true;
-};
-
-/**
- * 关闭预览
- */
-const handlePreviewClose = () => {
-  previewVisible.value = false;
-};
 </script>
-<style lang="scss" scoped></style>
+
+<style scoped lang="scss">
+:deep(.el-upload--picture-card) {
+  /*  width: var(--el-upload-picture-card-size);
+  height: var(--el-upload-picture-card-size); */
+  width: v-bind("props.style.width");
+  height: v-bind("props.style.height");
+}
+
+.single-upload {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px var(--el-border-color) solid;
+  border-radius: 5px;
+
+  &:hover {
+    border-color: var(--el-color-primary);
+  }
+
+  &__delete-btn {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    font-size: 16px;
+    color: #ff7901;
+    cursor: pointer;
+    background: #fff;
+    border-radius: 100%;
+
+    :hover {
+      color: #ff4500;
+    }
+  }
+}
+</style>

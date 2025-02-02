@@ -15,7 +15,8 @@
         {{ picUrl }}
       </el-form-item>
       <el-form-item label="图片上传">
-        <ImageUpload v-model="picUrl" :maxSize="10" />
+        <MultiImageUpload v-model="picUrls" :maxFileSize="10" :limit="3" accept=".png" />
+        <SingleImageUpload v-model="picUrl" accept=".png" style="width: 120px; height: 120px" />
       </el-form-item>
       <el-form-item label="参数说明">
         <el-table :data="imageUploadArgData" border>
@@ -42,8 +43,11 @@
 </template>
 
 <script setup lang="ts">
+import MultiImageUpload from "@/components/Upload/MultiImageUpload.vue";
+
 // 单图
 const picUrl = ref("https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg");
+const picUrls = ref(["https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg"]);
 
 const imageUploadArgData = [
   {
@@ -127,14 +131,8 @@ const imageUploadArgData = [
 ];
 
 const fileUrls = ref([
-  {
-    name: "file one.jpg",
-    url: "https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg",
-  },
-  {
-    name: "file two.jpg",
-    url: "https://s2.loli.net/2023/05/24/RuHFMwW4rG5lIqs.jpg",
-  },
+  "https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg",
+  "https://s2.loli.net/2023/05/24/RuHFMwW4rG5lIqs.jpg",
 ]);
 
 const fileUploadArgData = [
