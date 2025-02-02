@@ -93,28 +93,17 @@ const modelValue = defineModel("modelValue", {
 
 const fileList = ref<UploadUserFile[]>([]);
 
-// 监听 modelValue 转换用于显示的 fileList
-watch(
-  modelValue,
-  (value) => {
-    console.log("modelValue 发生变化:", value);
-    fileList.value = value.map((url) => {
-      return {
-        url,
-      } as UploadUserFile;
-    });
-  },
-  {
-    immediate: true,
-  }
-);
-
 /**
  * 删除图片
  */
 function handleRemove(imageUrl: string) {
   FileAPI.delete(imageUrl).then(() => {
-    modelValue.value = modelValue.value.filter((url) => url !== imageUrl);
+    const index = modelValue.value.indexOf(imageUrl);
+    if (index !== -1) {
+      // 直接修改数组避免触发整体更新
+      modelValue.value.splice(index, 1);
+      fileList.value.splice(index, 1); // 同步更新 fileList
+    }
   });
 }
 
@@ -187,9 +176,14 @@ function handleExceed(files: File[], uploadFiles: UploadUserFile[]) {
 /**
  * 上传成功回调
  */
-const handleSuccess = (fileInfo: FileInfo) => {
+const handleSuccess = (fileInfo: FileInfo, uploadFile: UploadUserFile) => {
   ElMessage.success("上传成功");
-  modelValue.value = [...modelValue.value, fileInfo.url];
+  const index = fileList.value.findIndex((file) => file.uid === uploadFile.uid);
+  if (index !== -1) {
+    fileList.value[index].url = fileInfo.url;
+    fileList.value[index].status = "success";
+    modelValue.value[index] = fileInfo.url;
+  }
 };
 
 /**
@@ -214,5 +208,9 @@ const handlePreviewImage = (imageUrl: string) => {
 const handlePreviewClose = () => {
   previewVisible.value = false;
 };
+
+onMounted(() => {
+  fileList.value = modelValue.value.map((url) => ({ url }) as UploadUserFile);
+});
 </script>
 <style lang="scss" scoped></style>
