@@ -53,6 +53,7 @@ const currentPage = defineModel("page", {
   required: true,
   default: 1,
 });
+
 const pageSize = defineModel("limit", {
   type: Number,
   required: true,
@@ -60,18 +61,18 @@ const pageSize = defineModel("limit", {
 });
 
 watch(
-  props.total,
+  () => props.total,
   (newVal: number) => {
-    const lastPage = Math.ceil(newVal / pageSize.value)
+    const lastPage = Math.ceil(newVal / pageSize.value);
     if (newVal > 0 && currentPage.value > lastPage) {
-      currentPage.value = lastPage
+      currentPage.value = lastPage;
       emit("pagination", { page: currentPage.value, limit: pageSize.value });
     }
   }
 );
 
 function handleSizeChange(val: number) {
-  currentPage.value = 1
+  currentPage.value = 1;
   emit("pagination", { page: currentPage.value, limit: val });
 }
 
