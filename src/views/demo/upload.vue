@@ -12,7 +12,7 @@
 
     <el-form>
       <el-form-item label="单图上传">
-        <SingleImageUpload v-model="picUrl" accept=".png" style="width: 120px; height: 120px" />
+        <SingleImageUpload v-model="picUrl" />
       </el-form-item>
 
       <el-form-item label="多图上传">
