@@ -62,7 +62,7 @@ const props = defineProps({
   },
 
   /**
-   * 自定义样式
+   * 自定义样式，用于设置组件的宽度和高度等其他样式
    */
   style: {
     type: Object,
