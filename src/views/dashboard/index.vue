@@ -197,7 +197,7 @@
     <el-row :gutter="10" class="mt-5">
       <!-- 访问趋势统计图 -->
       <el-col :xs="24" :span="16">
-        <VisitTrend id="VisitTrend" width="100%" height="400px" />
+        <VisitTrend id="VisitTrend" height="400px" />
       </el-col>
       <!-- 通知公告 -->
       <el-col :xs="24" :span="8">
