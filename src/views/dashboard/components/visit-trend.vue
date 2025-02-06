@@ -23,7 +23,7 @@
       </div>
     </template>
 
-    <div :id="id" :class="className" :style="{ height, width }" />
+    <div :id="id" :style="{ height, width }" />
   </el-card>
 </template>
 
@@ -32,33 +32,27 @@ import * as echarts from "echarts";
 import LogAPI, { VisitTrendVO } from "@/api/system/log";
 import { dayjs } from "element-plus";
 
-// 日期范围
-const recentDaysRange = ref(7);
-// 图表对象
-const chart: Ref<echarts.ECharts | null> = ref(null);
-
 const props = defineProps({
   id: {
     type: String,
     default: "VisitTrend",
   },
-  className: {
-    type: String,
-    default: "",
-  },
   width: {
     type: String,
-    default: "200px",
-    required: true,
+    default: "100%",
   },
   height: {
     type: String,
-    default: "200px",
-    required: true,
+    default: "500px",
   },
 });
 
-/** 设置图表  */
+// 日期范围
+const recentDaysRange = ref(7);
+// 图表对象
+const chart: Ref<echarts.ECharts | null> = ref(null);
+
+// 图表配置
 const setChartOptions = (data: VisitTrendVO) => {
   if (!chart.value) {
     return;
@@ -69,7 +63,7 @@ const setChartOptions = (data: VisitTrendVO) => {
       trigger: "axis",
     },
     legend: {
-      data: ["浏览量(PV)", "IP"],
+      data: ["浏览量(PV)", "访客数(UV)"],
       bottom: 0,
     },
     grid: {
@@ -108,7 +102,7 @@ const setChartOptions = (data: VisitTrendVO) => {
         },
       },
       {
-        name: "IP",
+        name: "访客数(UV)",
         type: "line",
         data: data.ipList,
         areaStyle: {
@@ -194,12 +188,8 @@ const handleResize = () => {
 onMounted(() => {
   chart.value = markRaw(echarts.init(document.getElementById(props.id) as HTMLDivElement));
   loadData();
-
+  // 监听窗口大小变化
   window.addEventListener("resize", handleResize);
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", handleResize);
 });
 
 onActivated(() => {
