@@ -15,7 +15,7 @@
   >
     <!-- 菜单项 -->
     <SidebarMenuItem
-      v-for="route in menuList"
+      v-for="route in data"
       :key="route.path"
       :item="route"
       :base-path="resolveFullPath(route.path)"
@@ -26,6 +26,7 @@
 <script lang="ts" setup>
 import path from "path-browserify";
 import type { MenuInstance } from "element-plus";
+import type { RouteRecordRaw } from "vue-router";
 
 import { LayoutEnum } from "@/enums/LayoutEnum";
 import { useSettingsStore, useAppStore } from "@/store";
@@ -34,8 +35,8 @@ import { isExternal } from "@/utils/index";
 import variables from "@/styles/variables.module.scss";
 
 const props = defineProps({
-  menuList: {
-    type: Array<any>,
+  data: {
+    type: Array<RouteRecordRaw>,
     required: true,
     default: () => [],
   },

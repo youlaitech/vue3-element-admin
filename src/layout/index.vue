@@ -14,7 +14,7 @@
     <div v-if="layout === LayoutEnum.MIX" class="mix-container">
       <div class="mix-container-sidebar">
         <el-scrollbar>
-          <SidebarMenu :menu-list="mixLeftMenus" :base-path="activeTopMenuPath" />
+          <SidebarMenu :data="mixedLayoutLeftRoutes" :base-path="activeTopMenuPath" />
         </el-scrollbar>
         <div class="sidebar-toggle">
           <hamburger :is-active="appStore.sidebar.opened" @toggle-click="toggleSidebar" />
@@ -65,12 +65,12 @@ const isOpenSidebar = computed(() => appStore.sidebar.opened);
 const showTagsView = computed(() => settingsStore.tagsView); // 是否显示tagsView
 const layout = computed(() => settingsStore.layout); // 布局模式 left top mix
 const activeTopMenuPath = computed(() => appStore.activeTopMenuPath); // 顶部菜单激活path
-const mixLeftMenus = computed(() => permissionStore.mixLeftMenus); // 混合布局左侧菜单
+const mixedLayoutLeftRoutes = computed(() => permissionStore.mixedLayoutLeftRoutes); // 混合布局左侧菜单
 
 watch(
   () => activeTopMenuPath.value,
   (newVal: string) => {
-    permissionStore.setMixLeftMenus(newVal);
+    permissionStore.setMixedLayoutLeftRoutes(newVal);
   },
   {
     deep: true,
@@ -280,8 +280,8 @@ watch(route, () => {
   &.mobile {
     .sidebar-container {
       pointer-events: none;
-      transition-duration: 0.3s;
       transform: translate3d(-210px, 0, 0);
+      transition-duration: 0.3s;
     }
 
     .main-container {

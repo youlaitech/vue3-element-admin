@@ -28,17 +28,11 @@
 </template>
 
 <script lang="ts" setup>
-/**
- * 导入模块：先外部库，再内部模块，最后导入样式和工具类
- */
 import { LocationQueryRaw, RouteRecordRaw } from "vue-router";
 import { usePermissionStore, useAppStore } from "@/store";
 import { translateRouteTitle } from "@/utils/i18n";
 import variables from "@/styles/variables.module.scss";
 
-/**
- * 定义状态：先定义 reactive、ref 或 computed 状态
- */
 const router = useRouter();
 const appStore = useAppStore();
 const permissionStore = usePermissionStore();
@@ -64,8 +58,8 @@ appStore.activeTopMenu(activeTopMenuPath);
  */
 const handleMenuSelect = (routePath: string) => {
   appStore.activeTopMenu(routePath); // 设置激活的顶部菜单
-  permissionStore.setMixLeftMenus(routePath); // 更新左侧菜单
-  navigateToFirstLeftMenu(permissionStore.mixLeftMenus); // 跳转到左侧第一个菜单
+  permissionStore.setMixedLayoutLeftRoutes(routePath); // 更新左侧菜单
+  navigateToFirstLeftMenu(permissionStore.mixedLayoutLeftRoutes); // 跳转到左侧第一个菜单
 };
 
 /**
