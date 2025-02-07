@@ -354,7 +354,7 @@
                 @node-click="handleFileTreeNodeClick"
               >
                 <template #default="{ data }">
-                  <svg-icon :icon-class="getFileTreeNodeIcon(data.label)" />
+                  <div :class="`i-svg:${getFileTreeNodeIcon(data.label)}`" />
                   <span class="ml-1">{{ data.label }}</span>
                 </template>
               </el-tree>

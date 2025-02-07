@@ -1,7 +1,7 @@
 <template>
   <el-dropdown trigger="click" @command="handleLanguageChange">
     <div>
-      <svg-icon icon-class="language" :size="size" />
+      <div class="i-svg:language" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>

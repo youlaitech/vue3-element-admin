@@ -7,7 +7,7 @@
             <copy-button :text="generateIconCode(item)">
               <el-tooltip effect="dark" :content="generateIconCode(item)" placement="top">
                 <div class="icon-item">
-                  <svg-icon :icon-class="item" />
+                  <div :class="`i-svg:${item}`" />
                   <span>{{ item }}</span>
                 </div>
               </el-tooltip>
@@ -36,7 +36,6 @@
 </template>
 
 <script setup lang="ts">
-import SvgIcon from "@/components/SvgIcon/index.vue";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
 defineOptions({
@@ -87,7 +86,7 @@ const svg_icons: string[] = [
 const icons = ref(ElementPlusIconsVue);
 
 function generateIconCode(symbol: any) {
-  return `<svg-icon icon-class="${symbol}" />`;
+  return `<div class="i-svg:${symbol}" />`;
 }
 
 function generateElementIconCode(symbol: any) {

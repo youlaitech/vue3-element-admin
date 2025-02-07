@@ -48,7 +48,7 @@
               </el-icon>
             </template>
             <template v-else-if="scope.row.icon">
-              <svg-icon :icon-class="scope.row.icon" />
+              <div :class="`i-svg:${scope.row.icon}`" />
             </template>
             {{ scope.row.name }}
           </template>

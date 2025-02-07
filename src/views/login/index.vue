@@ -86,7 +86,8 @@
         <!-- 验证码 -->
         <el-form-item prop="captchaCode">
           <div class="input-wrapper">
-            <svg-icon icon-class="captcha" class="mx-2" />
+            <div class="i-svg:captcha mx-2" />
+
             <el-input
               v-model="loginFormData.captchaCode"
               auto-complete="off"
@@ -126,10 +127,10 @@
           <el-text size="small">{{ $t("login.otherLoginMethods") }}</el-text>
         </el-divider>
         <div class="third-party-login">
-          <svg-icon icon-class="wechat" class="icon" />
-          <svg-icon icon-class="qq" class="icon" />
-          <svg-icon icon-class="github" class="icon" />
-          <svg-icon icon-class="gitee" class="icon" />
+          <div class="i-svg:wechat" />
+          <div class="i-svg:qq" />
+          <div class="i-svg:github" />
+          <div class="i-svg:gitee" />
         </div>
       </el-form>
     </div>

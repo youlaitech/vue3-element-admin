@@ -27,7 +27,7 @@
         <Settings v-if="defaultSettings.showSettings" />
         <!-- 返回顶部 -->
         <el-backtop target=".app-main">
-          <svg-icon icon-class="backtop" size="24px" />
+          <div class="i-svg:backtop w-6 h-6" />
         </el-backtop>
       </div>
     </div>
@@ -40,7 +40,7 @@
       <Settings v-if="defaultSettings.showSettings" />
       <!-- 返回顶部 -->
       <el-backtop target=".app-main">
-        <svg-icon icon-class="backtop" size="24px" />
+        <div class="i-svg:backtop w-6 h-6" />
       </el-backtop>
     </div>
   </div>

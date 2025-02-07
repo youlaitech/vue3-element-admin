@@ -240,7 +240,7 @@
                   </el-icon>
                 </template>
                 <template v-else>
-                  <svg-icon :icon-class="scope.row[col.prop]" />
+                  <div class="i-svg:{{ scope.row[col.prop] }}" />
                 </template>
               </template>
             </template>

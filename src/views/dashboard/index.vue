@@ -27,15 +27,15 @@
               </div>
               <div class="mt-3">
                 <el-link href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
-                  <SvgIcon icon-class="gitee" class="text-lg color-#f76560" />
+                  <div class="i-svg:gitee text-lg color-#F76560" />
                 </el-link>
                 <el-divider direction="vertical" />
                 <el-link href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
-                  <SvgIcon icon-class="github" class="text-lg color-#4080ff" />
+                  <div class="i-svg:github text-lg color-#4080FF" />
                 </el-link>
                 <el-divider direction="vertical" />
                 <el-link href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
-                  <SvgIcon icon-class="gitcode" class="text-lg color-#ff9a2e" />
+                  <div class="i-svg:gitcode text-lg color-#FF9A2E" />
                 </el-link>
               </div>
             </el-col>
@@ -47,18 +47,18 @@
               </div>
               <div class="mt-3">
                 <el-link href="https://juejin.cn/post/7228990409909108793" target="_blank">
-                  <SvgIcon icon-class="juejin" class="text-lg" />
+                  <div class="i-svg:juejin text-lg" />
                 </el-link>
                 <el-divider direction="vertical" />
                 <el-link
                   href="https://youlai.blog.csdn.net/article/details/130191394"
                   target="_blank"
                 >
-                  <SvgIcon icon-class="csdn" class="text-lg" />
+                  <div class="i-svg:csdn text-lg" />
                 </el-link>
                 <el-divider direction="vertical" />
                 <el-link href="https://www.cnblogs.com/haoxianrui/p/17331952.html" target="_blank">
-                  <SvgIcon icon-class="cnblogs" class="text-lg" />
+                  <div class="i-svg:cnblogs text-lg" />
                 </el-link>
               </div>
             </el-col>
@@ -70,7 +70,7 @@
               </div>
               <div class="mt-3">
                 <el-link href="https://www.bilibili.com/video/BV1eFUuYyEFj" target="_blank">
-                  <SvgIcon icon-class="bilibili" class="text-lg" />
+                  <div class="i-svg:bilibili text-lg" />
                 </el-link>
               </div>
             </el-col>
@@ -125,7 +125,7 @@
                     {{ formatGrowthRate(visitStatsData.uvGrowthRate) }}
                   </span>
                 </div>
-                <svg-icon icon-class="visitor" size="2em" />
+                <div class="i-svg:visitor w-8 h-8" />
               </div>
 
               <div class="flex-x-between mt-2 text-sm text-gray">
@@ -181,7 +181,7 @@
                     {{ formatGrowthRate(visitStatsData.pvGrowthRate) }}
                   </span>
                 </div>
-                <svg-icon icon-class="browser" size="2em" />
+                <div class="i-svg:browser w-8 h-8" />
               </div>
 
               <div class="flex-x-between mt-2 text-sm text-gray">

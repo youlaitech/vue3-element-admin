@@ -1,11 +1,10 @@
 import vue from "@vitejs/plugin-vue";
-import { type UserConfig, type ConfigEnv, loadEnv, defineConfig } from "vite";
+import { type ConfigEnv, loadEnv, defineConfig } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 
-import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import mockDevServerPlugin from "vite-plugin-mock-dev-server";
 
 import UnoCSS from "unocss/vite";
@@ -19,8 +18,10 @@ const __APP_INFO__ = {
 };
 
 const pathSrc = resolve(__dirname, "src");
+
 // Vite配置  https://cn.vitejs.dev/config
-export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
+
+export default defineConfig(({ mode }: ConfigEnv) => {
   const env = loadEnv(mode, process.cwd());
   return {
     resolve: {
@@ -56,9 +57,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     plugins: [
       vue(),
       env.VITE_MOCK_DEV_SERVER === "true" ? mockDevServerPlugin() : null,
-      UnoCSS({
-        hmrTopLevelAwait: false,
-      }),
+      UnoCSS(),
       // 自动导入配置 https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts
       AutoImport({
         // 导入 Vue 函数，如：ref, reactive, toRef 等
@@ -87,11 +86,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 导入组件类型声明文件路径 (false:关闭自动生成)
         dts: false,
         // dts: "src/types/components.d.ts",
-      }),
-      createSvgIconsPlugin({
-        // 缓存图标位置
-        iconDirs: [resolve(pathSrc, "assets/icons")],
-        symbolId: "icon-[dir]-[name]",
       }),
     ],
     // 预加载项目必需的组件

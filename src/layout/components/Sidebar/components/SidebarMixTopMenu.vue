@@ -15,7 +15,7 @@
             <el-icon v-if="route.meta.icon.startsWith('el-icon')" class="sub-el-icon">
               <component :is="route.meta.icon.replace('el-icon-', '')" />
             </el-icon>
-            <svg-icon v-else :icon-class="route.meta.icon" />
+            <div v-else :class="`i-svg:${route.meta.icon}`" />
           </template>
           <span v-if="route.path === '/'">首页</span>
           <span v-else-if="route.meta && route.meta.title" class="ml-1">

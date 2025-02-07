@@ -23,7 +23,7 @@
 
     <!-- 设置面板 -->
     <div v-if="defaultSettings.showSettings" @click="settingStore.settingsVisible = true">
-      <SvgIcon icon-class="setting" />
+      <div class="i-svg:setting" />
     </div>
   </div>
 </template>
