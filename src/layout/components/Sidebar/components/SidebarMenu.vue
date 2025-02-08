@@ -4,9 +4,10 @@
     ref="menuRef"
     :default-active="currentRoute.path"
     :collapse="!appStore.sidebar.opened"
-    :background-color="variables['menu-background']"
-    :text-color="variables['menu-text']"
-    :active-text-color="variables['menu-active-text']"
+    :background-color="theme === 'dark' ? variables['menu-background'] : undefined"
+    :text-color="theme === 'dark' ? variables['menu-text'] : undefined"
+    :active-text-color="theme === 'dark' ? variables['menu-active-text'] : undefined"
+    :popper-effect="theme"
     :unique-opened="false"
     :collapse-transition="false"
     :mode="menuMode"
@@ -58,6 +59,9 @@ const expandedMenuIndexes = ref<string[]>([]);
 const menuMode = computed(() => {
   return settingsStore.layout === LayoutEnum.TOP ? "horizontal" : "vertical";
 });
+
+// 获取主题
+const theme = computed(() => settingsStore.theme);
 
 /**
  * 获取完整路径

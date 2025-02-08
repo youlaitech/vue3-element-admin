@@ -70,9 +70,4 @@ const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE);
 .dark .navbar__right > *:hover {
   background: rgb(255 255 255 / 20%);
 }
-
-.layout-top .navbar__right > *,
-.layout-mix .navbar__right > * {
-  color: #fff;
-}
 </style>
