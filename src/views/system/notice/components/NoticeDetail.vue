@@ -13,8 +13,7 @@
         <div class="dialog-toolbar">
           <!-- 全屏/退出全屏按钮 -->
           <el-button circle @click="toggleFullscreen">
-            <SvgIcon v-if="isFullscreen" icon-class="fullscreen-exit" />
-            <SvgIcon v-else icon-class="fullscreen" />
+            <div :class="`i-svg:${isFullscreen ? 'fullscreen-exit' : 'fullscreen'}`" />
           </el-button>
           <!-- 关闭按钮 -->
           <el-button circle @click="handleClose">

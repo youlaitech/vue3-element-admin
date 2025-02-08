@@ -59,14 +59,14 @@
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
-                  <SvgIcon icon-class="tree" />
+                  <div class="i-svg:tree" />
                   部门
                 </template>
                 {{ userProfile.deptName }}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
-                  <SvgIcon icon-class="role" />
+                  <div class="i-svg:role" />
                   角色
                 </template>
                 {{ userProfile.roleNames }}

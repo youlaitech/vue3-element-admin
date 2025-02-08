@@ -453,7 +453,6 @@
 </template>
 
 <script setup lang="ts">
-import SvgIcon from "@/components/SvgIcon/index.vue";
 import { hasAuth } from "@/plugins/permission";
 import { useDateFormat, useThrottleFn } from "@vueuse/core";
 import {
