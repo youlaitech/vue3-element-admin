@@ -1,4 +1,4 @@
-// uno.config.ts
+// https://unocss.nodejs.cn/guide/config-file
 import {
   defineConfig,
   presetAttributify,
@@ -11,9 +11,9 @@ import {
 } from "unocss";
 
 import { FileSystemIconLoader } from "@iconify/utils/lib/loader/node-loaders";
-
 import fs from "fs";
 
+// 本地SVG图标目录
 const iconsDir = "./src/assets/icons";
 
 // 读取本地 SVG 目录，自动生成 safelist
@@ -52,11 +52,13 @@ export default defineConfig({
     presetUno(),
     presetAttributify(),
     presetIcons({
+      // 额外属性
       extraProperties: {
         display: "inline-block",
         width: "1em",
         height: "1em",
       },
+      // 图表集合
       collections: {
         svg: FileSystemIconLoader(iconsDir, (svg) => {
           // 如果 `fill` 没有定义，则添加 `fill="currentColor"`
