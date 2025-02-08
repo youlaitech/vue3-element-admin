@@ -51,15 +51,16 @@ export const usePermissionStore = defineStore("permission", () => {
    * 重置路由
    */
   const resetRouter = () => {
-    // 清空本地存储的路由和菜单数据
-    routes.value = [];
-    mixedLayoutLeftRoutes.value = [];
-    // 从 Vue Router 中移除所有动态注册的路由
-    router.getRoutes().forEach((route) => {
-      if (route.name) {
+    //  从 router 实例中移除动态路由
+    routes.value.forEach((route) => {
+      if (route.name && !constantRoutes.find((r) => r.name === route.name)) {
         router.removeRoute(route.name);
       }
     });
+
+    // 清空本地存储的路由和菜单数据
+    routes.value = [];
+    mixedLayoutLeftRoutes.value = [];
     isRoutesLoaded.value = false;
   };
 
