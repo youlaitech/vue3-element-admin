@@ -34,17 +34,19 @@ const iconComponent = computed(() => props.icon?.replace("el-icon-", ""));
 [class^="i-svg:"] {
   width: 14px;
   height: 14px;
-  margin-right: 0;
   color: currentcolor !important;
 }
 
 .hideSidebar {
   .el-sub-menu,
   .el-menu-item {
-    .svg-icon,
     .el-icon {
       margin-left: 20px;
     }
+  }
+
+  [class^="i-svg:"] {
+    margin-left: 20px;
   }
 }
 </style>
