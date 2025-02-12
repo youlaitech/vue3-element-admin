@@ -49,7 +49,7 @@ export default [
       "no-unused-vars": [
         "error",
         {
-          argsIgnorePattern: "^_", // 忽略以 _ 开头的变量未使用警告
+          argsIgnorePattern: "^_", // 忽略参数名以 _ 开头的参数未使用警告
           varsIgnorePattern: "^[A-Z0-9_]+$", // 忽略变量名为大写字母、数字或下划线组合的未使用警告（枚举定义未使用场景）
           ignoreRestSiblings: true, // 忽略解构赋值中同级未使用变量的警告
         },

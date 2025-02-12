@@ -586,7 +586,6 @@ cols.value.forEach((item) => {
     fields.push(item.prop);
   }
 });
-
 const enum ExportsOriginEnum {
   CURRENT = "current",
   SELECTED = "selected",
