@@ -34,6 +34,7 @@
             </el-col>
           </el-row>
         </el-card>
+
         <!-- 广播消息发送部分 -->
         <el-card class="mt-5">
           <el-form label-width="90px">
@@ -45,6 +46,7 @@
             </el-form-item>
           </el-form>
         </el-card>
+
         <!-- 点对点消息发送部分 -->
         <el-card class="mt-5">
           <el-form label-width="90px">
@@ -60,6 +62,7 @@
           </el-form>
         </el-card>
       </el-col>
+
       <!-- 消息接收显示部分 -->
       <el-col :span="12">
         <el-card>
@@ -96,10 +99,11 @@
 
 <script setup lang="ts">
 import { useStomp } from "@/hooks/useStomp";
-import { getAccessToken } from "@/utils/auth"; // 此处可与 hook 内 getToken 保持一致
-import { useUserStoreHook } from "@/store/modules/user";
+import { getAccessToken } from "@/utils/auth"; // 用于获取token
+import { useUserStoreHook } from "@/store/modules/user"; // 获取用户信息
 
 const userStore = useUserStoreHook();
+
 // 用于手动调整 WebSocket 地址
 const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT);
 // 同步连接状态
@@ -175,8 +179,8 @@ function disconnectWebSocket() {
 
 // 发送广播消息
 function sendToAll() {
-  if (client && client.connected) {
-    client.publish({
+  if (client.value && isConnected.value) {
+    client.value.publish({
       destination: "/topic/notice",
       body: topicMessage.value,
     });
@@ -189,8 +193,8 @@ function sendToAll() {
 
 // 发送点对点消息
 function sendToUser() {
-  if (client && client.connected) {
-    client.publish({
+  if (client.value && isConnected.value) {
+    client.value.publish({
       destination: "/app/sendToUser/" + receiver.value,
       body: queneMessage.value,
     });

@@ -1,4 +1,3 @@
-import { ref, watch, onMounted } from "vue";
 import { Client, IMessage, StompSubscription } from "@stomp/stompjs";
 import { getAccessToken } from "@/utils/auth";
 
@@ -14,26 +13,18 @@ export interface UseStompOptions {
 }
 
 export function useStomp(options: UseStompOptions = {}) {
-  // 默认值：brokerURL 从环境变量中获取，token 从 getAccessToken() 获取
   const defaultBrokerURL = import.meta.env.VITE_APP_WS_ENDPOINT || "";
   const defaultToken = getAccessToken();
 
-  // 将 brokerURL 定义为响应式 ref，便于动态修改
   const brokerURL = ref(options.brokerURL ?? defaultBrokerURL);
   const token = options.token ?? defaultToken;
 
-  // 连接状态标记
   const isConnected = ref(false);
-  // 存储所有订阅
   const subscriptions = new Map<string, StompSubscription>();
 
-  // 用于保存 STOMP 客户端的实例
-  let client: Client | null = null;
+  const client = ref<Client | null>(null);
 
-  /**
-   * 初始化 STOMP 客户端
-   * 只有在 brokerURL 非空时才会初始化客户端
-   */
+  // 初始化 STOMP 客户端
   const initializeClient = () => {
     if (!brokerURL.value) {
       console.warn(
@@ -42,8 +33,8 @@ export function useStomp(options: UseStompOptions = {}) {
       return;
     }
 
-    if (!client) {
-      client = new Client({
+    if (!client.value) {
+      client.value = new Client({
         brokerURL: brokerURL.value,
         reconnectDelay: options.reconnectDelay ?? 5000,
         debug: options.debug ? (msg) => console.log("[STOMP]", msg) : () => {},
@@ -54,17 +45,17 @@ export function useStomp(options: UseStompOptions = {}) {
         heartbeatOutgoing: 4000,
       });
 
-      client.onConnect = (frame) => {
+      client.value.onConnect = (frame) => {
         isConnected.value = true;
         console.log("STOMP connected", frame);
       };
 
-      client.onStompError = (frame) => {
+      client.value.onStompError = (frame) => {
         console.error("Broker reported error: " + frame.headers["message"]);
         console.error("Additional details: " + frame.body);
       };
 
-      client.onWebSocketClose = (evt) => {
+      client.value.onWebSocketClose = (evt) => {
         isConnected.value = false;
         console.warn("WebSocket closed", evt);
       };
@@ -75,9 +66,8 @@ export function useStomp(options: UseStompOptions = {}) {
   watch(brokerURL, (newURL, oldURL) => {
     if (newURL !== oldURL) {
       console.log(`brokerURL changed from ${oldURL} to ${newURL}`);
-      // 断开当前连接，重新激活客户端
-      if (client && client.connected) {
-        client.deactivate();
+      if (client.value && client.value.connected) {
+        client.value.deactivate();
       }
       brokerURL.value = newURL;
       initializeClient(); // 重新初始化客户端
@@ -89,36 +79,39 @@ export function useStomp(options: UseStompOptions = {}) {
     initializeClient();
   });
 
-  /**
-   * 激活连接（如果已经连接或正在激活则直接返回）
-   */
+  // 激活连接（如果已经连接或正在激活则直接返回）
   const connect = () => {
-    if (client && (client.connected || client.active)) {
+    if (client.value && (client.value.connected || client.value.active)) {
       console.log("Already connected or connecting, skipping connect() call.");
       return;
     }
-    client?.activate();
-  };
-
-  /**
-   * 订阅指定主题
-   * @param destination 目标主题地址
-   * @param callback 接收到消息时的回调函数
-   * @returns 返回订阅 id，用于后续取消订阅
-   */
-  const subscribe = (destination: string, callback: (message: IMessage) => void): string => {
-    if (client) {
-      const subscription = client.subscribe(destination, callback);
-      subscriptions.set(subscription.id, subscription);
-      return subscription.id;
+    if (client.value) {
+      client.value.activate();
+    } else {
+      console.warn("Client is not initialized.");
     }
-    return "";
   };
 
-  /**
-   * 取消指定订阅
-   * @param subscriptionId 要取消的订阅 id
-   */
+  // 订阅指定主题，连接成功后自动订阅
+  const subscribe = (destination: string, callback: (message: IMessage) => void): string => {
+    if (!client.value) {
+      console.error("STOMP client is not initialized.");
+      return "";
+    }
+
+    // 如果还没有连接，就先激活连接
+    if (!isConnected.value) {
+      console.log("Not connected yet. Connecting...");
+      connect();
+    }
+
+    // 连接成功后订阅主题
+    const subscription = client.value.subscribe(destination, callback);
+    subscriptions.set(subscription.id, subscription);
+    return subscription.id;
+  };
+
+  // 取消指定订阅
   const unsubscribe = (subscriptionId: string) => {
     const subscription = subscriptions.get(subscriptionId);
     if (subscription) {
@@ -127,15 +120,17 @@ export function useStomp(options: UseStompOptions = {}) {
     }
   };
 
-  /**
-   * 主动断开连接（如果未连接则不执行）
-   */
+  // 主动断开连接（如果未连接则不执行）
   const disconnect = () => {
-    if (client && !(client.connected || client.active)) {
+    if (client.value && !(client.value.connected || client.value.active)) {
       console.log("Already disconnected, skipping disconnect() call.");
       return;
     }
-    client?.deactivate();
+    if (client.value) {
+      client.value.deactivate();
+    } else {
+      console.warn("Client is not initialized.");
+    }
     isConnected.value = false;
   };
 
@@ -143,7 +138,7 @@ export function useStomp(options: UseStompOptions = {}) {
     client,
     isConnected,
     connect,
-    subscribe,
+    subscribe, // 订阅函数放到这里
     unsubscribe,
     disconnect,
     brokerURL, // 暴露 brokerURL 以便组件中动态修改
