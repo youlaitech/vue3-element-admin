@@ -144,8 +144,8 @@ const route = useRoute();
 
 const dictCode = ref(route.query.dictCode as string);
 
-const queryFormRef = ref(ElForm);
-const dataFormRef = ref(ElForm);
+const queryFormRef = ref();
+const dataFormRef = ref();
 
 const loading = ref(false);
 const ids = ref<number[]>([]);

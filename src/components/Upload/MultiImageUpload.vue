@@ -169,7 +169,7 @@ function handleUpload(options: UploadRequestOptions) {
 /**
  * 上传文件超出限制
  */
-function handleExceed(files: File[], uploadFiles: UploadUserFile[]) {
+function handleExceed() {
   ElMessage.warning("最多只能上传" + props.limit + "张图片");
 }
 

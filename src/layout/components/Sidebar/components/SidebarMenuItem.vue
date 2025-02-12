@@ -149,10 +149,10 @@ function resolvePath(routePath: string) {
 
     & > span {
       display: inline-block;
+      visibility: hidden;
       width: 0;
       height: 0;
       overflow: hidden;
-      visibility: hidden;
     }
   }
 
@@ -178,10 +178,10 @@ function resolvePath(routePath: string) {
     .el-sub-menu {
       & > .el-sub-menu__title > span {
         display: inline-block;
+        visibility: hidden;
         width: 0;
         height: 0;
         overflow: hidden;
-        visibility: hidden;
       }
     }
   }

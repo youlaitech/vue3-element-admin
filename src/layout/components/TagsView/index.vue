@@ -187,25 +187,17 @@ function isAffix(tag: TagView) {
 }
 
 function isFirstView() {
-  try {
-    return (
-      selectedTag.value.path === "/dashboard" ||
-      selectedTag.value.fullPath === tagsViewStore.visitedViews[1].fullPath
-    );
-  } catch (err) {
-    return false;
-  }
+  return (
+    selectedTag.value.path === "/dashboard" ||
+    selectedTag.value.fullPath === tagsViewStore.visitedViews[1]?.fullPath
+  );
 }
 
 function isLastView() {
-  try {
-    return (
-      selectedTag.value.fullPath ===
-      tagsViewStore.visitedViews[tagsViewStore.visitedViews.length - 1].fullPath
-    );
-  } catch (err) {
-    return false;
-  }
+  return (
+    selectedTag.value.fullPath ===
+    tagsViewStore.visitedViews[tagsViewStore.visitedViews.length - 1]?.fullPath
+  );
 }
 
 function refreshSelectedTag(view: TagView) {

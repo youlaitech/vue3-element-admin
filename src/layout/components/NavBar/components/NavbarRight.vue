@@ -67,12 +67,12 @@ const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE);
   margin: 10px 0;
 }
 
-.dark .navbar__right > *:hover {
-  background: rgb(255 255 255 / 20%);
-}
-
 .layout-top .navbar__right > *,
 .layout-mix .navbar__right > * {
   color: #fff;
+}
+
+.dark .navbar__right > *:hover {
+  color: #ccc;
 }
 </style>

@@ -249,9 +249,8 @@ defineOptions({
   name: "User",
   inheritAttrs: false,
 });
-
-const queryFormRef = ref(ElForm);
-const userFormRef = ref(ElForm);
+const queryFormRef = ref();
+const userFormRef = ref();
 
 const queryParams = reactive<UserPageQuery>({
   pageNum: 1,

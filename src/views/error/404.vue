@@ -89,8 +89,8 @@ function back() {
     }
 
     &__return-home {
-      display: block;
       float: left;
+      display: block;
       width: 110px;
       height: 36px;
       font-size: 14px;

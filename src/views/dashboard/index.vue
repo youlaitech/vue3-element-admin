@@ -236,7 +236,6 @@ defineOptions({
   name: "Dashboard",
   inheritAttrs: false,
 });
-
 import VisitTrend from "./components/visit-trend.vue";
 
 import router from "@/router";

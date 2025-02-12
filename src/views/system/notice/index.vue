@@ -223,8 +223,8 @@ defineOptions({
 import NoticeAPI, { NoticePageVO, NoticeForm, NoticePageQuery } from "@/api/system/notice";
 import UserAPI from "@/api/system/user";
 
-const queryFormRef = ref(ElForm);
-const dataFormRef = ref(ElForm);
+const queryFormRef = ref();
+const dataFormRef = ref();
 const noticeDetailRef = ref();
 
 const loading = ref(false);

@@ -268,7 +268,7 @@ import { Camera } from "@element-plus/icons-vue";
 
 const userProfile = ref<UserProfileVO>({});
 
-enum DialogType {
+const enum DialogType {
   ACCOUNT = "account",
   PASSWORD = "password",
   MOBILE = "mobile",
@@ -287,10 +287,10 @@ const mobileUpdateForm = reactive<MobileUpdateForm>({});
 const emailUpdateForm = reactive<EmailUpdateForm>({});
 
 const mobileCountdown = ref(0);
-const mobileTimer = ref<NodeJS.Timeout | null>(null);
+const mobileTimer = ref();
 
 const emailCountdown = ref(0);
-const emailTimer = ref<NodeJS.Timeout | null>(null);
+const emailTimer = ref();
 
 // 修改密码校验规则
 const passwordChangeRules = {
@@ -466,6 +466,7 @@ const handleFileChange = async (event: Event) => {
         avatar: data.url,
       });
     } catch (error) {
+      console.error("头像上传失败：" + error);
       ElMessage.error("头像上传失败");
     }
   }

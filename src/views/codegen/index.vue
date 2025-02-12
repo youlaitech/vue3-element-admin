@@ -437,7 +437,7 @@ interface TreeNode {
 }
 const treeData = ref<TreeNode[]>([]);
 
-const queryFormRef = ref(ElForm);
+const queryFormRef = ref();
 const queryParams = reactive<TablePageQuery>({
   pageNum: 1,
   pageSize: 10,
@@ -535,7 +535,6 @@ const initSort = () => {
     ghostClass: "sortable-ghost", //拖拽样式
     handle: ".sortable-handle", //拖拽区域
     easing: "cubic-bezier(1, 0, 0, 1)",
-    onStart: (item: any) => {},
 
     // 结束拖动事件
     onEnd: (item: any) => {

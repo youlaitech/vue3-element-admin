@@ -192,7 +192,11 @@ const handleSuccess = (fileInfo: FileInfo) => {
   modelValue.value = [...modelValue.value, fileInfo.url];
 };
 
-const handleError = (error: any) => {
+/**
+ * 上传失败
+ */
+const handleError = (_error: any) => {
+  console.error(_error);
   ElMessage.error("上传失败");
 };
 
@@ -223,8 +227,8 @@ function handleDownload(file: UploadUserFile) {
   color: var(--el-text-color-regular);
   cursor: pointer;
   opacity: 0.75;
-  transition: opacity var(--el-transition-duration);
   transform: translateY(-50%);
+  transition: opacity var(--el-transition-duration);
 }
 
 :deep(.el-upload-list) {
