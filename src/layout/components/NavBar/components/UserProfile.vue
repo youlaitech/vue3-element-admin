@@ -1,7 +1,7 @@
 <template>
   <el-dropdown trigger="click">
     <div class="flex-center h100% p13px">
-      <img :src="userStore.userInfo.avatar" class="rounded-full mr-10px w24px h24px" />
+      <img :src="userStore.userInfo.avatar" class="rounded-full mr10px w24px h24px" />
       <span>{{ userStore.userInfo.username }}</span>
     </div>
     <template #dropdown>

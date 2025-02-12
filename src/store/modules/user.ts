@@ -5,7 +5,7 @@ import { useDictStoreHook } from "@/store/modules/dict";
 import AuthAPI, { type LoginFormData } from "@/api/auth";
 import UserAPI, { type UserInfo } from "@/api/system/user";
 
-import { setToken, setRefreshToken, getRefreshToken, clearToken } from "@/utils/auth";
+import { setAccessToken, setRefreshToken, getRefreshToken, clearToken } from "@/utils/auth";
 
 export const useUserStore = defineStore("user", () => {
   const userInfo = useStorage<UserInfo>("userInfo", {} as UserInfo);
@@ -20,8 +20,8 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve, reject) => {
       AuthAPI.login(LoginFormData)
         .then((data) => {
-          const { tokenType, accessToken, refreshToken } = data;
-          setToken(tokenType + " " + accessToken); // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
+          const { accessToken, refreshToken } = data;
+          setAccessToken(accessToken); // eyJhbGciOiJIUzI1NiJ9.xxx.xxx
           setRefreshToken(refreshToken);
           resolve();
         })
@@ -77,8 +77,8 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve, reject) => {
       AuthAPI.refreshToken(refreshToken)
         .then((data) => {
-          const { tokenType, accessToken, refreshToken } = data;
-          setToken(tokenType + " " + accessToken);
+          const { accessToken, refreshToken } = data;
+          setAccessToken(accessToken);
           setRefreshToken(refreshToken);
           resolve();
         })

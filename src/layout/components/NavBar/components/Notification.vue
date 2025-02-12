@@ -167,8 +167,8 @@
 
 <script setup lang="ts">
 import NoticeAPI, { NoticePageVO } from "@/api/system/notice";
-import WebSocketManager from "@/utils/websocket";
 import router from "@/router";
+import { useStomp } from "@/hooks/useStomp";
 
 const activeTab = ref("notice");
 const notices = ref<NoticePageVO[]>([]);
@@ -176,15 +176,23 @@ const messages = ref<any[]>([]);
 const tasks = ref<any[]>([]);
 const noticeDetailRef = ref();
 
+// 初始化 useStomp hook（这里仅用于订阅通知消息），同时调用 connect 建立连接
+const { connect, subscribe, disconnect } = useStomp({
+  debug: true,
+});
+
 // 获取未读消息列表并连接 WebSocket
 onMounted(() => {
   NoticeAPI.getMyNoticePage({ pageNum: 1, pageSize: 5, isRead: 0 }).then((data) => {
     notices.value = data.list;
   });
 
-  WebSocketManager.subscribeToTopic("/user/queue/message", (message) => {
+  // 建立连接
+  connect();
+
+  subscribe("/user/queue/message", (message) => {
     console.log("收到消息：", message);
-    const data = JSON.parse(message);
+    const data = JSON.parse(message.body);
     const id = data.id;
     if (!notices.value.some((notice) => notice.id == id)) {
       notices.value.unshift({
@@ -224,6 +232,11 @@ function markAllAsRead() {
     notices.value = [];
   });
 }
+
+onBeforeUnmount(() => {
+  // 如果需要取消订阅，可以在这里调用 disconnect 或 unsubscribe（本示例直接断开连接）
+  disconnect();
+});
 </script>
 
 <style lang="scss" scoped>
