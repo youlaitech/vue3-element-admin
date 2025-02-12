@@ -13,6 +13,7 @@ declare module "vue" {
     CURD: (typeof import("./../components/CURD/index.vue"))["default"];
     Dict: (typeof import("./../components/Dict/index.vue"))["default"];
     DictLabel: (typeof import("./../components/Dict/DictLabel.vue"))["default"];
+    ECharts: (typeof import("./../components/ECharts/index.vue"))["default"];
     ElBacktop: (typeof import("element-plus/es"))["ElBacktop"];
     ElBreadcrumb: (typeof import("element-plus/es"))["ElBreadcrumb"];
     ElBreadcrumbItem: (typeof import("element-plus/es"))["ElBreadcrumbItem"];
