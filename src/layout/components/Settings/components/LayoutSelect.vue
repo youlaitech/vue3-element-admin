@@ -4,7 +4,7 @@
       <div
         class="layout-item left"
         :class="{ 'is-active': modelValue === LayoutEnum.LEFT }"
-        @click="updateValue(LayoutEnum.LEFT)"
+        @click="handleLayoutChange(LayoutEnum.LEFT)"
       >
         <div />
         <div />
@@ -15,7 +15,7 @@
       <div
         class="layout-item top"
         :class="{ 'is-active': modelValue === LayoutEnum.TOP }"
-        @click="updateValue(LayoutEnum.TOP)"
+        @click="handleLayoutChange(LayoutEnum.TOP)"
       >
         <div />
         <div />
@@ -26,7 +26,7 @@
       <div
         class="layout-item mix"
         :class="{ 'is-active': modelValue === LayoutEnum.MIX }"
-        @click="updateValue(LayoutEnum.MIX)"
+        @click="handleLayoutChange(LayoutEnum.MIX)"
       >
         <div />
         <div />
@@ -38,14 +38,19 @@
 <script lang="ts" setup>
 import { LayoutEnum } from "@/enums/LayoutEnum";
 
-const props = defineProps({
-  modelValue: String,
+const modelValue = defineModel("modelValue", {
+  type: String,
+  required: true,
+  default: () => "",
 });
 
-const emit = defineEmits(["update:modelValue"]);
-
-function updateValue(layout: string) {
-  emit("update:modelValue", layout);
+/**
+ * 变换布局
+ *
+ * @param layout
+ */
+function handleLayoutChange(layout: string) {
+  modelValue.value = layout;
 }
 </script>
 
