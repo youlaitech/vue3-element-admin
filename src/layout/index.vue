@@ -52,7 +52,7 @@ import defaultSettings from "@/settings";
 import { DeviceEnum } from "@/enums/DeviceEnum";
 import { LayoutEnum } from "@/enums/LayoutEnum";
 
-import NavBar from "@/components/NavBar/index.vue";
+import NavBar from "./components/NavBar/index.vue";
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
