@@ -1,4 +1,5 @@
 <template>
+  <!-- 菜单图标 -->
   <template v-if="icon">
     <el-icon v-if="isElIcon" class="el-icon">
       <component :is="iconComponent" />
