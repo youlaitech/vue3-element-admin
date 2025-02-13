@@ -24,7 +24,7 @@
                       size="small"
                       class="w200px cursor-pointer !ml-2 !flex-1"
                       truncated
-                      @click="handleReadNotice(item.id)"
+                      @click="readNotice(item.id)"
                     >
                       {{ item.title }}
                     </el-text>
@@ -42,7 +42,7 @@
               </template>
               <el-divider />
               <div class="flex-x-between">
-                <el-link type="primary" :underline="false" @click="handleViewMore">
+                <el-link type="primary" :underline="false" @click="viewMoreNotice">
                   <span class="text-xs">查看更多</span>
                   <el-icon class="text-xs">
                     <ArrowRight />
@@ -70,7 +70,7 @@
                     <el-link
                       type="primary"
                       class="w200px cursor-pointer !ml-2 !flex-1"
-                      @click="handleReadNotice(item.id)"
+                      @click="readNotice(item.id)"
                     >
                       {{ item.title }}
                     </el-link>
@@ -92,7 +92,7 @@
                   v-if="tasks.length > 5"
                   type="primary"
                   :underline="false"
-                  @click="handleViewMore"
+                  @click="viewMoreNotice"
                 >
                   <span class="text-xs">查看更多</span>
                   <el-icon class="text-xs">
@@ -118,7 +118,7 @@
                     <el-link
                       type="primary"
                       class="w200px cursor-pointer !ml-2 !flex-1"
-                      @click="handleReadNotice(item.id)"
+                      @click="readNotice(item.id)"
                     >
                       {{ item.title }}
                     </el-link>
@@ -139,7 +139,7 @@
                   v-if="tasks.length > 5"
                   type="primary"
                   :underline="false"
-                  @click="handleViewMore"
+                  @click="viewMoreNotice"
                 >
                   <span class="text-xs">查看更多</span>
                   <el-icon class="text-xs">
@@ -176,36 +176,37 @@ const tasks = ref<any[]>([]);
 const noticeDetailRef = ref();
 
 import { useStomp } from "@/hooks/useStomp";
-
-const { subscribe, disconnect } = useStomp({
+const { subscribe, unsubscribe, isConnected } = useStomp({
   debug: true,
 });
 
-/**
- * 订阅通知消息
- */
-function subscribeNotice() {
-  subscribe("/user/queue/message", (message) => {
-    console.log("收到消息：", message);
-    const data = JSON.parse(message.body);
-    const id = data.id;
-    if (!notices.value.some((notice) => notice.id == id)) {
-      notices.value.unshift({
-        id,
-        title: data.title,
-        type: data.type,
-        publishTime: data.publishTime,
-      });
+watch(
+  () => isConnected.value,
+  (connected) => {
+    if (connected) {
+      subscribe("/user/queue/message", (message) => {
+        console.log("收到通知消息：", message);
+        const data = JSON.parse(message.body);
+        const id = data.id;
+        if (!notices.value.some((notice) => notice.id == id)) {
+          notices.value.unshift({
+            id,
+            title: data.title,
+            type: data.type,
+            publishTime: data.publishTime,
+          });
 
-      ElNotification({
-        title: "您收到一条新的通知消息！",
-        message: data.title,
-        type: "success",
-        position: "bottom-right",
+          ElNotification({
+            title: "您收到一条新的通知消息！",
+            message: data.title,
+            type: "success",
+            position: "bottom-right",
+          });
+        }
       });
     }
-  });
-}
+  }
+);
 
 /**
  * 获取我的通知公告
@@ -217,7 +218,7 @@ function featchMyNotice() {
 }
 
 // 阅读通知公告
-function handleReadNotice(id: string) {
+function readNotice(id: string) {
   noticeDetailRef.value.openNotice(id);
   const index = notices.value.findIndex((notice) => notice.id === id);
   if (index >= 0) {
@@ -226,7 +227,7 @@ function handleReadNotice(id: string) {
 }
 
 // 查看更多
-function handleViewMore() {
+function viewMoreNotice() {
   router.push({ path: "/myNotice" });
 }
 
@@ -237,14 +238,12 @@ function markAllAsRead() {
   });
 }
 
-// 获取未读消息列表并连接 WebSocket
 onMounted(() => {
   featchMyNotice();
-  subscribeNotice();
 });
 
 onBeforeUnmount(() => {
-  disconnect();
+  unsubscribe("/user/queue/message");
 });
 </script>
 
