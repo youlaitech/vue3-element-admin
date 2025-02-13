@@ -1,6 +1,6 @@
 <template>
   <div class="logo">
-    <transition name="el-fade-in-linear" mode="out-in">
+    <transition enter-active-class="animate__animated animate__fadeInLeft">
       <router-link :key="+collapse" class="wh-full flex-center" to="/">
         <img :src="logo" class="w20px h20px" />
         <span v-if="!collapse" class="title">
@@ -34,7 +34,7 @@ defineProps({
     margin-left: 10px;
     font-size: 14px;
     font-weight: bold;
-    color: white;
+    color: #ffffff;
   }
 }
 
