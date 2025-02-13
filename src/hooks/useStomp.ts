@@ -4,7 +4,7 @@ import { getAccessToken } from "@/utils/auth";
 export interface UseStompOptions {
   /** WebSocket 地址，不传时使用 VITE_APP_WS_ENDPOINT 环境变量 */
   brokerURL?: string;
-  /** 用于鉴权的 token，不传时使用 getToken() 的返回值 */
+  /** 用于鉴权的 token，不传时使用 getAccessToken() 的返回值 */
   token?: string;
   /** 重连延迟，单位毫秒，默认为 5000 */
   reconnectDelay?: number;
@@ -13,18 +13,25 @@ export interface UseStompOptions {
 }
 
 export function useStomp(options: UseStompOptions = {}) {
+  // 默认值：brokerURL 从环境变量中获取，token 从 getAccessToken() 获取
   const defaultBrokerURL = import.meta.env.VITE_APP_WS_ENDPOINT || "";
   const defaultToken = getAccessToken();
 
   const brokerURL = ref(options.brokerURL ?? defaultBrokerURL);
   const token = options.token ?? defaultToken;
 
+  // 连接状态标记
   const isConnected = ref(false);
+  // 存储所有订阅
   const subscriptions = new Map<string, StompSubscription>();
 
-  const client = ref<Client | null>(null);
+  // 用于保存 STOMP 客户端的实例
+  let client = ref<Client | null>(null);
 
-  // 初始化 STOMP 客户端
+  /**
+   * 初始化 STOMP 客户端
+   * 只有在 brokerURL 非空时才会初始化客户端
+   */
   const initializeClient = () => {
     if (!brokerURL.value) {
       console.warn(
@@ -66,6 +73,7 @@ export function useStomp(options: UseStompOptions = {}) {
   watch(brokerURL, (newURL, oldURL) => {
     if (newURL !== oldURL) {
       console.log(`brokerURL changed from ${oldURL} to ${newURL}`);
+      // 断开当前连接，重新激活客户端
       if (client.value && client.value.connected) {
         client.value.deactivate();
       }
@@ -76,42 +84,40 @@ export function useStomp(options: UseStompOptions = {}) {
 
   // 在组件挂载时检查并初始化客户端
   onMounted(() => {
+    console.log("useStomp onMounted initializeClient");
     initializeClient();
   });
 
-  // 激活连接（如果已经连接或正在激活则直接返回）
+  /**
+   * 激活连接（如果已经连接或正在激活则直接返回）
+   */
   const connect = () => {
     if (client.value && (client.value.connected || client.value.active)) {
       console.log("Already connected or connecting, skipping connect() call.");
       return;
     }
-    if (client.value) {
-      client.value.activate();
-    } else {
-      console.warn("Client is not initialized.");
-    }
+    client.value?.activate();
   };
 
-  // 订阅指定主题，连接成功后自动订阅
+  /**
+   * 订阅指定主题
+   * @param destination 目标主题地址
+   * @param callback 接收到消息时的回调函数
+   * @returns 返回订阅 id，用于后续取消订阅
+   */
   const subscribe = (destination: string, callback: (message: IMessage) => void): string => {
-    if (!client.value) {
-      console.error("STOMP client is not initialized.");
-      return "";
+    if (client.value) {
+      const subscription = client.value.subscribe(destination, callback);
+      subscriptions.set(subscription.id, subscription);
+      return subscription.id;
     }
-
-    // 如果还没有连接，就先激活连接
-    if (!isConnected.value) {
-      console.log("Not connected yet. Connecting...");
-      connect();
-    }
-
-    // 连接成功后订阅主题
-    const subscription = client.value.subscribe(destination, callback);
-    subscriptions.set(subscription.id, subscription);
-    return subscription.id;
+    return "";
   };
 
-  // 取消指定订阅
+  /**
+   * 取消指定订阅
+   * @param subscriptionId 要取消的订阅 id
+   */
   const unsubscribe = (subscriptionId: string) => {
     const subscription = subscriptions.get(subscriptionId);
     if (subscription) {
@@ -120,17 +126,15 @@ export function useStomp(options: UseStompOptions = {}) {
     }
   };
 
-  // 主动断开连接（如果未连接则不执行）
+  /**
+   * 主动断开连接（如果未连接则不执行）
+   */
   const disconnect = () => {
     if (client.value && !(client.value.connected || client.value.active)) {
       console.log("Already disconnected, skipping disconnect() call.");
       return;
     }
-    if (client.value) {
-      client.value.deactivate();
-    } else {
-      console.warn("Client is not initialized.");
-    }
+    client.value?.deactivate();
     isConnected.value = false;
   };
 
@@ -138,9 +142,9 @@ export function useStomp(options: UseStompOptions = {}) {
     client,
     isConnected,
     connect,
-    subscribe, // 订阅函数放到这里
+    subscribe,
     unsubscribe,
     disconnect,
-    brokerURL, // 暴露 brokerURL 以便组件中动态修改
+    brokerURL,
   };
 }

@@ -12,9 +12,8 @@
       <el-col :span="12">
         <el-card>
           <el-row>
-            <el-col :span="16">
-              <!-- 输入框允许修改 websocket 地址（注意：修改后不会自动更新已创建的 hook 实例） -->
-              <el-input v-model="socketEndpoint" class="w-220px" />
+            <el-col :span="18">
+              <el-input v-model="socketEndpoint" style="width: 200px" />
               <el-button
                 type="primary"
                 class="ml-5"
@@ -27,14 +26,13 @@
                 断开
               </el-button>
             </el-col>
-            <el-col :span="8" class="text-right">
+            <el-col :span="6" class="text-right">
               连接状态：
-              <el-tag v-if="isConnected" class="ml-2" type="success">已连接</el-tag>
-              <el-tag v-else class="ml-2" type="info">已断开</el-tag>
+              <el-tag v-if="isConnected" type="success">已连接</el-tag>
+              <el-tag v-else type="info">已断开</el-tag>
             </el-col>
           </el-row>
         </el-card>
-
         <!-- 广播消息发送部分 -->
         <el-card class="mt-5">
           <el-form label-width="90px">
@@ -46,7 +44,6 @@
             </el-form-item>
           </el-form>
         </el-card>
-
         <!-- 点对点消息发送部分 -->
         <el-card class="mt-5">
           <el-form label-width="90px">
@@ -62,32 +59,34 @@
           </el-form>
         </el-card>
       </el-col>
-
       <!-- 消息接收显示部分 -->
       <el-col :span="12">
         <el-card>
-          <div class="message-container">
+          <div class="chat-messages-wrapper">
             <div
               v-for="(message, index) in messages"
               :key="index"
-              :class="{
-                'tip-message': message.type === 'tip',
-                message: message.type !== 'tip',
-                'message--sent': message.sender === userStore.userInfo.username,
-                'message--received': message.sender !== userStore.userInfo.username,
-              }"
+              :class="[
+                message.type === 'tip' ? 'system-notice' : 'chat-message',
+                {
+                  'chat-message--sent': message.sender === userStore.userInfo.username,
+                  'chat-message--received': message.sender !== userStore.userInfo.username,
+                },
+              ]"
             >
-              <div v-if="message.type != 'tip'" class="message-content">
-                <div
-                  :class="{
-                    'message-sender': message.sender === userStore.userInfo.username,
-                    'message-receiver': message.sender !== userStore.userInfo.username,
-                  }"
-                >
-                  {{ message.sender }}
+              <template v-if="message.type != 'tip'">
+                <div class="chat-message__content">
+                  <div
+                    :class="{
+                      'chat-message__sender': message.sender === userStore.userInfo.username,
+                      'chat-message__receiver': message.sender !== userStore.userInfo.username,
+                    }"
+                  >
+                    {{ message.sender }}
+                  </div>
+                  <div class="text-gray-600">{{ message.content }}</div>
                 </div>
-                <div class="color-#333">{{ message.content }}</div>
-              </div>
+              </template>
               <div v-else>{{ message.content }}</div>
             </div>
           </div>
@@ -99,16 +98,12 @@
 
 <script setup lang="ts">
 import { useStomp } from "@/hooks/useStomp";
-import { getAccessToken } from "@/utils/auth"; // 用于获取token
-import { useUserStoreHook } from "@/store/modules/user"; // 获取用户信息
+import { useUserStoreHook } from "@/store/modules/user";
 
 const userStore = useUserStoreHook();
-
 // 用于手动调整 WebSocket 地址
 const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT);
 // 同步连接状态
-const isConnected = ref(false);
-// 消息接收列表
 interface MessageType {
   type?: string;
   sender?: string;
@@ -122,50 +117,42 @@ const queneMessage = ref("Hi, " + userStore.userInfo.username + " 这里是点�
 const receiver = ref("root");
 
 // 调用 useStomp hook，默认使用 socketEndpoint 和 token（此处用 getAccessToken()）
-const {
-  isConnected: stompConnected,
-  connect,
-  subscribe,
-  disconnect,
-  client,
-} = useStomp({
-  brokerURL: socketEndpoint.value,
-  token: getAccessToken(),
-  reconnectDelay: 5000,
+const { isConnected, connect, subscribe, disconnect, client } = useStomp({
   debug: true,
 });
 
-// 同步 hook 的连接状态到组件
-watch(stompConnected, (newVal) => {
-  isConnected.value = newVal;
-  if (newVal) {
-    // 连接成功后，订阅广播和点对点消息主题
-    subscribe("/topic/notice", (res) => {
+watch(
+  () => isConnected.value,
+  (connected) => {
+    if (connected) {
+      // 连接成功后，订阅广播和点对点消息主题
+      subscribe("/topic/notice", (res) => {
+        messages.value.push({
+          sender: "Server",
+          content: res.body,
+        });
+      });
+      subscribe("/user/queue/greeting", (res) => {
+        const messageData = JSON.parse(res.body) as MessageType;
+        messages.value.push({
+          sender: messageData.sender,
+          content: messageData.content,
+        });
+      });
       messages.value.push({
         sender: "Server",
-        content: res.body,
+        content: "Websocket 已连接",
+        type: "tip",
       });
-    });
-    subscribe("/user/queue/greeting", (res) => {
-      const messageData = JSON.parse(res.body) as MessageType;
+    } else {
       messages.value.push({
-        sender: messageData.sender,
-        content: messageData.content,
+        sender: "Server",
+        content: "Websocket 已断开",
+        type: "tip",
       });
-    });
-    messages.value.push({
-      sender: "Server",
-      content: "Websocket 已连接",
-      type: "tip",
-    });
-  } else {
-    messages.value.push({
-      sender: "Server",
-      content: "Websocket 已断开",
-      type: "tip",
-    });
+    }
   }
-});
+);
 
 // 连接 WebSocket
 function connectWebSocket() {
@@ -179,7 +166,7 @@ function disconnectWebSocket() {
 
 // 发送广播消息
 function sendToAll() {
-  if (client.value && isConnected.value) {
+  if (client.value && client.value.connected) {
     client.value.publish({
       destination: "/topic/notice",
       body: topicMessage.value,
@@ -193,7 +180,7 @@ function sendToAll() {
 
 // 发送点对点消息
 function sendToUser() {
-  if (client.value && isConnected.value) {
+  if (client.value && client.value.connected) {
     client.value.publish({
       destination: "/app/sendToUser/" + receiver.value,
       body: queneMessage.value,
@@ -214,45 +201,46 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped>
-.message-container {
+<style scoped lang="scss">
+.chat-messages-wrapper {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
-.message {
+.chat-message {
+  max-width: 80%;
   padding: 10px;
-  margin: 10px;
   border-radius: 5px;
+  &--sent {
+    align-self: flex-end;
+    background-color: #dcf8c6;
+  }
+  &--received {
+    align-self: flex-start;
+    background-color: #e8e8e8;
+  }
+  &__content {
+    display: flex;
+    flex-direction: column;
+    color: var(--el-text-color-primary); // 使用主题文本颜色
+  }
+  &__sender {
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: right;
+  }
+  &__receiver {
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: left;
+  }
 }
-.message--sent {
-  align-self: flex-end;
-  background-color: #dcf8c6;
-}
-.message--received {
-  align-self: flex-start;
-  background-color: #e8e8e8;
-}
-.message-content {
-  display: flex;
-  flex-direction: column;
-}
-.message-sender {
-  margin-bottom: 5px;
-  font-weight: bold;
-  text-align: right;
-}
-.message-receiver {
-  margin-bottom: 5px;
-  font-weight: bold;
-  text-align: left;
-}
-.tip-message {
+.system-notice {
   align-self: center;
   padding: 5px 10px;
-  margin-bottom: 5px;
-  font-style: italic;
-  text-align: center;
-  background-color: #f0f0f0;
-  border-radius: 5px;
+  font-size: 0.9em;
+  color: var(--el-text-color-secondary);
+  background-color: var(--el-fill-color-lighter);
+  border-radius: 15px;
 }
 </style>
