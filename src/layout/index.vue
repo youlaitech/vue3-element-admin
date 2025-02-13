@@ -34,7 +34,7 @@
 
     <!-- 左侧和顶部布局 -->
     <div v-else :class="{ hasTagsView: isShowTagsView }" class="main-container">
-      <Navbar v-if="layout === LayoutEnum.LEFT" />
+      <NavBar v-if="layout === LayoutEnum.LEFT" />
       <TagsView v-if="isShowTagsView" />
       <AppMain />
       <Settings v-if="defaultSettings.showSettings" />
@@ -52,7 +52,7 @@ import defaultSettings from "@/settings";
 import { DeviceEnum } from "@/enums/DeviceEnum";
 import { LayoutEnum } from "@/enums/LayoutEnum";
 
-import Navbar from "./components/Navbar/index.vue";
+import NavBar from "@/components/NavBar/index.vue";
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
