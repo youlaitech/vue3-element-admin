@@ -52,14 +52,17 @@ import Notification from "./Notification.vue";
 const appStore = useAppStore();
 const settingStore = useSettingsStore();
 const userStore = useUserStore();
+const tagsViewStore = useTagsViewStore();
 
+const route = useRoute();
+const router = useRouter();
 const isDesktop = computed(() => appStore.device === DeviceEnum.DESKTOP);
 
 /**
  * 打开个人中心页面
  */
 function handleProfileClick() {
-  useRouter().push({ name: "Profile" });
+  router.push({ name: "Profile" });
 }
 
 /**
@@ -75,10 +78,10 @@ function logout() {
     userStore
       .logout()
       .then(() => {
-        useTagsViewStore().delAllViews();
+        tagsViewStore.delAllViews();
       })
       .then(() => {
-        useRouter().push(`/login?redirect=${useRoute().fullPath}`);
+        router.push(`/login?redirect=${route.fullPath}`);
       });
   });
 }
