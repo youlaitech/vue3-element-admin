@@ -3,8 +3,8 @@
   <h1>vue3-element-admin</h1>
 
   <img src="https://img.shields.io/badge/Vue-3.5.13-brightgreen.svg"/>
-  <img src="https://img.shields.io/badge/Vite-6.0.5-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.9.1-blue.svg"/>
+  <img src="https://img.shields.io/badge/Vite-6.1.0-green.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.9.4-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -12,7 +12,7 @@
 
   <a href="https://gitee.com/youlaiorg/youlai-boot" target="_blank">
      <img alt="有来技术" src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
-   </a>     
+   </a>
   <a href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
     <img alt="有来技术" src="https://img.shields.io/github/stars/youlaitech/vue3-element-admin.svg?style=social&label=Stars"/>
   </a>
@@ -118,7 +118,7 @@ server {
 	# 反向代理配置
 	location /prod-api/ {
       # api.youlai.tech 替换后端API地址，注意保留后面的斜杠 /
-      proxy_pass http://api.youlai.tech/; 
+      proxy_pass http://api.youlai.tech/;
 	}
 }
 ```
