@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-dropdown class="wh-full flex-center" trigger="click">
-      <el-badge v-if="notices.length > 0" :offset="[-10, 15]" :value="notices.length" :max="99">
+    <el-dropdown class="h-full items-center justify-center" trigger="click">
+      <el-badge v-if="notices.length > 0" :offset="[0, 15]" :value="notices.length" :max="99">
         <el-icon>
           <Bell />
         </el-icon>
@@ -14,7 +14,7 @@
       </div>
 
       <template #dropdown>
-        <div class="p-2">
+        <div class="p-5">
           <template v-if="notices.length > 0">
             <div v-for="(item, index) in notices" :key="index" class="w500px py-3">
               <div class="flex-y-center">
@@ -53,7 +53,7 @@
           </template>
           <template v-else>
             <div class="flex-center h150px w350px">
-              <el-empty :image-size="50" description="暂无通知" />
+              <el-empty :image-size="50" description="暂无消息" />
             </div>
           </template>
         </div>
@@ -148,5 +148,8 @@ onBeforeUnmount(() => {
   justify-content: center;
   width: 100%;
   height: 100%;
+}
+:deep(.el-dropdown) {
+  color: currentColor;
 }
 </style>
