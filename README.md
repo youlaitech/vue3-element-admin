@@ -49,10 +49,6 @@
 
 ## 项目截图
 
-![](https://www.youlai.tech/storage/blog/2025/01/18/20250118183316.png)
-
-![](https://www.youlai.tech/storage/blog/2025/01/18/20250118183410.png)
-
 ![](https://www.youlai.tech/storage/blog/2025/01/18/20250118160647.png)
 
 ![](https://www.youlai.tech/storage/blog/2025/01/18/20250118183539.png)
@@ -99,26 +95,33 @@ pnpm run dev
 
 ## 项目部署
 
-```bash
-# 项目打包
-pnpm run build
+[Nginx 安装和配置](https://blog.csdn.net/u013737132/article/details/145667694)
 
-# 上传文件至远程服务器
+**项目打包**
+```bash
+pnpm run build
+# 生成文件将输出至 /dist 目录
+```
+
+**部署静态资源**
+
 将本地打包生成的 dist 目录下的所有文件拷贝至服务器的 /usr/share/nginx/html 目录。
 
+**Nginx 配置**
+```shell
 # nginx.cofig 配置
 server {
-	listen     80;
-	server_name  localhost;
-	location / {
-			root /usr/share/nginx/html;
-			index index.html index.htm;
-	}
-	# 反向代理配置
-	location /prod-api/ {
-      # api.youlai.tech 替换后端API地址，注意保留后面的斜杠 /
-      proxy_pass http://api.youlai.tech/;
-	}
+    listen      80;
+    server_name localhost;
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+    # 反向代理配置
+    location /prod-api/ {
+        # api.youlai.tech 替换后端API地址，注意保留后面的斜杠 /
+        proxy_pass http://api.youlai.tech/;
+    }
 }
 ```
 
@@ -165,8 +168,8 @@ server {
 
 - [基于 Vue3 + Vite + TypeScript + Element-Plus 从0到1搭建后台管理系统](https://blog.csdn.net/u013737132/article/details/130191394)
 
-- [ESLint+Prettier+Stylelint+EditorConfig 约束和统一前端代码规范](https://blog.csdn.net/u013737132/article/details/130190788)
-- [Husky + Lint-staged + Commitlint + Commitizen + cz-git 配置 Git 提交规范](https://blog.csdn.net/u013737132/article/details/130191363)
+- [ESLint+Prettier+Stylelint+EditorConfig 约束和统一前端代码规范](https://youlai.blog.csdn.net/article/details/145608723)
+- [Husky + Lint-staged + Commitlint + Commitizen + cz-git 配置 Git 提交规范](https://youlai.blog.csdn.net/article/details/145615236)
 
 
 ## 提交规范
