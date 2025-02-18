@@ -26,37 +26,35 @@
 
 
 <div align="center">
-  <a target="_blank" href="http://vue3.youlai.tech">🔍 在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📖 阅读文档</a> | <a href="./README.en-US.md">🌐English
+  <a target="_blank" href="http://vue3.youlai.tech">🖥️ 在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📑 阅读文档</a> | <a href="./README.en-US.md">💬 English
 </div>
-
 
 
 ## 项目简介
 
-[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等主流技术栈构建的免费开源的中后台管理的前端模板（配套[Java 后端源码](https://gitee.com/youlaiorg/youlai-boot)）。
+[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) 基于 Vue3、Vite、TypeScript 和 Element-Plus 搭建的极简开箱即用企业级后台管理前端模板。 （配套 Java 后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) 和 Node 后端 [youlai-nest](https://gitee.com/youlaiorg/youlai-nest)）。
 
 
 ## 项目特色
 
 - **简洁易用**：基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本，无过渡封装 ，易上手。
-
 - **数据交互**：同时支持本地 `Mock` 和线上接口，配套 [Java 后端源码](https://gitee.com/youlaiorg/youlai-boot)和[在线接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)。
-
-- **权限管理**：用户、角色、菜单、字典、部门等完善的权限系统功能。
-
-- **基础设施**：动态路由、按钮权限、国际化、代码规范、Git 提交规范、常用组件封装。
-
+- **系统功能：** 提供用户管理、角色管理、菜单管理、部门管理、字典管理等功能模块。
+- **权限管理：** 支持动态路由、按钮权限、角色权限和数据权限等多种权限管理方式。
+- **数据交互：** 支持 Mock 数据和线上接口数据，并提供配套的 Java 和 Node 后端源码。
+- **基础设施：** 提供国际化、多布局、暗黑模式、全屏、水印、接口文档和代码生成器等功能。
 - **持续更新**：项目持续开源更新，实时更新工具和依赖。
 
 
+## 项目截图
 
-## 项目预览
+![](https://www.youlai.tech/storage/blog/2025/01/18/20250118183316.png)
 
-![明亮模式](https://foruda.gitee.com/images/1709651876583793739/0ba1ee1c_716974.png)
+![](https://www.youlai.tech/storage/blog/2025/01/18/20250118183410.png)
 
-![暗黑模式](https://foruda.gitee.com/images/1709651875494206224/2a2b0b53_716974.png)
+![](https://www.youlai.tech/storage/blog/2025/01/18/20250118160647.png)
 
-![接口文档](https://foruda.gitee.com/images/1687755822857820115/96054330_716974.png)
+![](https://www.youlai.tech/storage/blog/2025/01/18/20250118183539.png)
 
 ## 项目源码
 
