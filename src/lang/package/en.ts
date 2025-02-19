@@ -57,6 +57,9 @@ export default {
     themeColor: "Theme Color",
     tagsView: "Tags View",
     sidebarLogo: "Sidebar Logo",
+    sidebarColorScheme: "Sidebar Color Scheme",
     watermark: "Watermark",
+    white: "white",
+    darkBlue: "darkBlue",
   },
 };

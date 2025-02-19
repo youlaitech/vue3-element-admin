@@ -4,9 +4,21 @@
     <el-menu
       mode="horizontal"
       :default-active="activePath"
-      :background-color="theme === 'dark' ? variables['menu-background'] : undefined"
-      :text-color="theme === 'dark' ? variables['menu-text'] : undefined"
-      :active-text-color="theme === 'dark' ? variables['menu-active-text'] : undefined"
+      :background-color="
+        theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+          ? variables['menu-background']
+          : undefined
+      "
+      :text-color="
+        theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+          ? variables['menu-text']
+          : undefined
+      "
+      :active-text-color="
+        theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+          ? variables['menu-active-text']
+          : undefined
+      "
       @select="handleMenuSelect"
     >
       <el-menu-item v-for="route in topMenus" :key="route.path" :index="route.path">
@@ -35,6 +47,7 @@ import { LocationQueryRaw, RouteRecordRaw } from "vue-router";
 import { usePermissionStore, useAppStore, useSettingsStore } from "@/store";
 import { translateRouteTitle } from "@/utils/i18n";
 import variables from "@/styles/variables.module.scss";
+import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
 
 /**
  * 定义状态：先定义 reactive、ref 或 computed 状态
@@ -49,6 +62,9 @@ const activePath = computed(() => appStore.activeTopMenuPath);
 
 // 获取主题
 const theme = computed(() => settingsStore.theme);
+
+// 获取浅色主题下的侧边栏配色方案
+const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
 
 // 顶部菜单列表
 const topMenus = ref<RouteRecordRaw[]>([]);

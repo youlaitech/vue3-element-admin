@@ -1,3 +1,5 @@
+import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
+
 // 辅助函数：将十六进制颜色转换为 RGB
 function hexToRgb(hex: string): [number, number, number] {
   const bigint = parseInt(hex.slice(1), 16);
@@ -43,10 +45,28 @@ export function applyTheme(colors: Record<string, string>) {
   });
 }
 
+/**
+ * 切换暗黑模式
+ *
+ * @param isDark 是否启用暗黑模式
+ */
 export function toggleDarkMode(isDark: boolean) {
   if (isDark) {
     document.documentElement.classList.add("dark");
   } else {
     document.documentElement.classList.remove("dark");
+  }
+}
+
+/**
+ * 切换浅色主题下的侧边栏颜色方案
+ *
+ * @param isBlue 布尔值，表示是否开启深蓝色侧边栏颜色方案
+ */
+export function toggleLightModeSidebarColorScheme(isDarkBlueDark: boolean) {
+  if (isDarkBlueDark) {
+    document.documentElement.classList.add(SidebarLightThemeEnum.DARKBLUE);
+  } else {
+    document.documentElement.classList.remove(SidebarLightThemeEnum.DARKBLUE);
   }
 }

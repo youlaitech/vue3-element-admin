@@ -33,6 +33,8 @@ const defaultSettings: AppSettings = {
   watermarkEnabled: false,
   // 水印内容
   watermarkContent: pkg.name,
+  // 侧边栏配色方案
+  sidebarColorScheme: "light-white",
 };
 
 export default defaultSettings;

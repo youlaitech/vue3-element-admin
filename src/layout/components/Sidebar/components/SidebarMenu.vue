@@ -4,9 +4,21 @@
     ref="menuRef"
     :default-active="currentRoute.path"
     :collapse="!appStore.sidebar.opened"
-    :background-color="theme === 'dark' ? variables['menu-background'] : undefined"
-    :text-color="theme === 'dark' ? variables['menu-text'] : undefined"
-    :active-text-color="theme === 'dark' ? variables['menu-active-text'] : undefined"
+    :background-color="
+      theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+        ? variables['menu-background']
+        : undefined
+    "
+    :text-color="
+      theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+        ? variables['menu-text']
+        : undefined
+    "
+    :active-text-color="
+      theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+        ? variables['menu-active-text']
+        : undefined
+    "
     :popper-effect="theme"
     :unique-opened="false"
     :collapse-transition="false"
@@ -29,6 +41,7 @@ import path from "path-browserify";
 import type { MenuInstance } from "element-plus";
 
 import { LayoutEnum } from "@/enums/LayoutEnum";
+import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
 import { useSettingsStore, useAppStore } from "@/store";
 import { isExternal } from "@/utils/index";
 
@@ -62,6 +75,9 @@ const menuMode = computed(() => {
 
 // 获取主题
 const theme = computed(() => settingsStore.theme);
+
+// 获取浅色主题下的侧边栏配色方案
+const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
 
 /**
  * 获取完整路径
