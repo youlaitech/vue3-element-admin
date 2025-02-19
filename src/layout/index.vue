@@ -14,33 +14,33 @@
     <div v-if="layout === LayoutEnum.MIX" class="mix-container">
       <div class="mix-container-sidebar">
         <el-scrollbar>
-          <SidebarMenu :menu-list="mixLeftMenus" :base-path="activeTopMenuPath" />
+          <SidebarMenu :data="mixedLayoutLeftRoutes" :base-path="activeTopMenuPath" />
         </el-scrollbar>
         <div class="sidebar-toggle">
           <hamburger :is-active="appStore.sidebar.opened" @toggle-click="toggleSidebar" />
         </div>
       </div>
 
-      <div :class="{ hasTagsView: showTagsView }" class="main-container">
-        <TagsView v-if="showTagsView" />
+      <div :class="{ hasTagsView: isShowTagsView }" class="main-container">
+        <TagsView v-if="isShowTagsView" />
         <AppMain />
         <Settings v-if="defaultSettings.showSettings" />
         <!-- 返回顶部 -->
         <el-backtop target=".app-main">
-          <svg-icon icon-class="backtop" size="24px" />
+          <div class="i-svg:backtop w-6 h-6" />
         </el-backtop>
       </div>
     </div>
 
     <!-- 左侧和顶部布局 -->
-    <div v-else :class="{ hasTagsView: showTagsView }" class="main-container">
+    <div v-else :class="{ hasTagsView: isShowTagsView }" class="main-container">
       <NavBar v-if="layout === LayoutEnum.LEFT" />
-      <TagsView v-if="showTagsView" />
+      <TagsView v-if="isShowTagsView" />
       <AppMain />
       <Settings v-if="defaultSettings.showSettings" />
       <!-- 返回顶部 -->
       <el-backtop target=".app-main">
-        <svg-icon icon-class="backtop" size="24px" />
+        <div class="i-svg:backtop w-6 h-6" />
       </el-backtop>
     </div>
   </div>
@@ -62,15 +62,15 @@ const width = useWindowSize().width;
 const WIDTH_DESKTOP = 992; // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
 const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE);
 const isOpenSidebar = computed(() => appStore.sidebar.opened);
-const showTagsView = computed(() => settingsStore.tagsView); // 是否显示tagsView
+const isShowTagsView = computed(() => settingsStore.tagsView); // 是否显示tagsView
 const layout = computed(() => settingsStore.layout); // 布局模式 left top mix
 const activeTopMenuPath = computed(() => appStore.activeTopMenuPath); // 顶部菜单激活path
-const mixLeftMenus = computed(() => permissionStore.mixLeftMenus); // 混合布局左侧菜单
+const mixedLayoutLeftRoutes = computed(() => permissionStore.mixedLayoutLeftRoutes); // 混合布局左侧菜单
 
 watch(
   () => activeTopMenuPath.value,
   (newVal: string) => {
-    permissionStore.setMixLeftMenus(newVal);
+    permissionStore.setMixedLayoutLeftRoutes(newVal);
   },
   {
     deep: true,
@@ -245,8 +245,10 @@ watch(route, () => {
 }
 
 .hideSidebar {
-  .main-container {
-    margin-left: $sidebar-width-collapsed;
+  &.layout-left {
+    .main-container {
+      margin-left: $sidebar-width-collapsed;
+    }
   }
 
   &.layout-top {
@@ -280,8 +282,8 @@ watch(route, () => {
   &.mobile {
     .sidebar-container {
       pointer-events: none;
+      transform: translate3d(-$sidebar-width, 0, 0);
       transition-duration: 0.3s;
-      transform: translate3d(-210px, 0, 0);
     }
 
     .main-container {
@@ -291,13 +293,10 @@ watch(route, () => {
 }
 
 .mobile {
-  .main-container {
+  .layout-mix,
+  .layout-top,
+  .layout-left {
     margin-left: 0;
-  }
-
-  &.layout-top {
-    // 顶部模式全局变量修改
-    --el-menu-item-height: $navbar-height;
   }
 }
 </style>

@@ -57,7 +57,7 @@
               link
               size="small"
               icon="edit"
-              @click.stop="handleEditClick(scope.row.id, scope.row.name)"
+              @click.stop="handleEditClick(scope.row.id)"
             >
               编辑
             </el-button>
@@ -133,8 +133,8 @@ import DictAPI, { DictPageQuery, DictPageVO, DictForm } from "@/api/system/dict"
 
 import router from "@/router";
 
-const queryFormRef = ref(ElForm);
-const dataFormRef = ref(ElForm);
+const queryFormRef = ref();
+const dataFormRef = ref();
 
 const loading = ref(false);
 const ids = ref<number[]>([]);
@@ -198,7 +198,7 @@ function handleAddClick() {
  *
  * @param id 字典ID
  */
-function handleEditClick(id: number, name: string) {
+function handleEditClick(id: number) {
   dialog.visible = true;
   dialog.title = "修改字典";
   DictAPI.getFormData(id).then((data) => {

@@ -97,7 +97,14 @@ const selectConfig: ISelectConfig = {
     { label: "编号", align: "center", prop: "id", width: 100 },
     { label: "用户名", align: "center", prop: "username" },
     { label: "用户昵称", align: "center", prop: "nickname", width: 120 },
-    { label: "性别", align: "center", prop: "genderLabel", width: 100 },
+    {
+      label: "性别",
+      align: "center",
+      prop: "gender",
+      width: 100,
+      templet: "custom",
+      slotName: "gender",
+    },
     { label: "部门", align: "center", prop: "deptName", width: 120 },
     { label: "手机号码", align: "center", prop: "mobile", width: 120 },
     {

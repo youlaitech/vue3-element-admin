@@ -1,6 +1,6 @@
 <template>
   <div @click="openSearchModal">
-    <svg-icon icon-class="search" />
+    <div class="i-svg:search" />
     <el-dialog
       v-model="isModalVisible"
       width="30%"
@@ -38,8 +38,8 @@
             <el-icon v-if="item.icon && item.icon.startsWith('el-icon')">
               <component :is="item.icon.replace('el-icon-', '')" />
             </el-icon>
-            <svg-icon v-else-if="item.icon" :icon-class="item.icon" />
-            <svg-icon v-else icon-class="menu" />
+            <div v-else-if="item.icon" :class="`i-svg:${item.icon}`" />
+            <div v-else class="i-svg:menu" />
             {{ item.title }}
           </li>
         </ul>
@@ -48,14 +48,15 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <svg-icon icon-class="enter" size="20px" />
+          <div class="i-svg:enter w-5 h-5" />
           <span>选择</span>
 
-          <svg-icon icon-class="down" size="20px" class="ml-5" />
-          <svg-icon icon-class="up" size="20px" class="ml-1" />
+          <div class="i-svg:down w-5 h-5 ml-5" />
+          <div class="i-svg:up w-5 h-5 ml-5" />
           <span>切换</span>
 
-          <svg-icon icon-class="esc" size="20px" class="ml-5" />
+          <div class="i-svg:esc w-5 h-5ml-5" />
+
           <span>退出</span>
         </div>
       </template>

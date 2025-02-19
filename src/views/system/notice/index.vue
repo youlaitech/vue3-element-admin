@@ -177,9 +177,7 @@
           <el-input v-model="formData.title" placeholder="通知标题" clearable />
         </el-form-item>
         <el-form-item label="通知内容" prop="content">
-          <div style="border: 1px solid #dcdfe6; border-radius: 4px">
-            <WangEditor v-model="formData.content" style="min-height: 480px" />
-          </div>
+          <WangEditor v-model="formData.content" />
         </el-form-item>
         <el-form-item label="通知类型" prop="type">
           <Dict v-model="formData.type" code="notice_type" />
@@ -225,8 +223,8 @@ defineOptions({
 import NoticeAPI, { NoticePageVO, NoticeForm, NoticePageQuery } from "@/api/system/notice";
 import UserAPI from "@/api/system/user";
 
-const queryFormRef = ref(ElForm);
-const dataFormRef = ref(ElForm);
+const queryFormRef = ref();
+const dataFormRef = ref();
 const noticeDetailRef = ref();
 
 const loading = ref(false);
@@ -411,8 +409,3 @@ onMounted(() => {
   handleQuery();
 });
 </script>
-<style>
-.editor-wrapper {
-  border: 1px solid #dcdfe6;
-}
-</style>

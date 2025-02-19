@@ -160,8 +160,8 @@ defineOptions({
 
 import DeptAPI, { DeptVO, DeptForm, DeptQuery } from "@/api/system/dept";
 
-const queryFormRef = ref(ElForm);
-const deptFormRef = ref(ElForm);
+const queryFormRef = ref();
+const deptFormRef = ref();
 
 const loading = ref(false);
 const selectIds = ref<number[]>([]);

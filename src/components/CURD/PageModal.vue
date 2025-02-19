@@ -90,7 +90,7 @@
                   <slot
                     :name="item.slotName ?? item.prop"
                     :prop="item.prop"
-                    :formData="formData"
+                    :form-data="formData"
                     :attrs="item.attrs"
                   />
                 </template>
@@ -208,7 +208,7 @@
                     <slot
                       :name="item.slotName ?? item.prop"
                       :prop="item.prop"
-                      :formData="formData"
+                      :form-data="formData"
                       :attrs="item.attrs"
                     />
                   </template>
@@ -294,11 +294,11 @@ function getFormData(key?: string) {
 // 设置表单值
 function setFormData(data: IObject) {
   for (const key in formData) {
-    if (formData.hasOwnProperty(key) && key in data) {
+    if (Object.prototype.hasOwnProperty.call(formData, key) && key in data) {
       formData[key] = data[key];
     }
   }
-  if (data?.hasOwnProperty(pk)) {
+  if (Object.prototype.hasOwnProperty.call(data, pk)) {
     formData[pk] = data[pk];
   }
 }

@@ -137,8 +137,8 @@ defineOptions({
 
 import ConfigAPI, { ConfigPageVO, ConfigForm, ConfigPageQuery } from "@/api/system/config";
 
-const queryFormRef = ref(ElForm);
-const dataFormRef = ref(ElForm);
+const queryFormRef = ref();
+const dataFormRef = ref();
 
 const loading = ref(false);
 const selectIds = ref<number[]>([]);

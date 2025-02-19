@@ -48,7 +48,7 @@
               </el-icon>
             </template>
             <template v-else-if="scope.row.icon">
-              <svg-icon :icon-class="scope.row.icon" />
+              <div :class="`i-svg:${scope.row.icon}`" />
             </template>
             {{ scope.row.name }}
           </template>
@@ -338,8 +338,8 @@ defineOptions({
 import MenuAPI, { MenuQuery, MenuForm, MenuVO } from "@/api/system/menu";
 import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
 
-const queryFormRef = ref(ElForm);
-const menuFormRef = ref(ElForm);
+const queryFormRef = ref();
+const menuFormRef = ref();
 
 const loading = ref(false);
 const dialog = reactive({

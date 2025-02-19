@@ -1,21 +1,21 @@
 <template>
   <div :class="{ 'has-logo': sidebarLogo }">
-    <!-- 混合布局顶部  -->
-    <div v-if="isMixLayout" class="flex w-full">
+    <!-- 混合布局 -->
+    <div v-if="layout == LayoutEnum.MIX" class="flex w-full">
       <SidebarLogo v-if="sidebarLogo" :collapse="isSidebarCollapsed" />
       <SidebarMixTopMenu class="flex-1" />
       <NavbarRight />
     </div>
 
-    <!-- 顶部布局顶部 || 左侧布局左侧 -->
+    <!-- 顶部布局 || 左侧布局 -->
     <template v-else>
       <SidebarLogo v-if="sidebarLogo" :collapse="isSidebarCollapsed" />
       <el-scrollbar>
-        <SidebarMenu :menu-list="permissionStore.routes" base-path="" />
+        <SidebarMenu :data="permissionStore.routes" base-path="" />
       </el-scrollbar>
 
-      <!-- 顶部布局导航 -->
-      <NavbarRight v-if="isTopLayout" />
+      <!-- 顶部导航 -->
+      <NavbarRight v-if="layout == LayoutEnum.TOP" />
     </template>
   </div>
 </template>
@@ -33,8 +33,6 @@ const permissionStore = usePermissionStore();
 const sidebarLogo = computed(() => settingsStore.sidebarLogo);
 const layout = computed(() => settingsStore.layout);
 
-const isMixLayout = computed(() => layout.value === LayoutEnum.MIX);
-const isTopLayout = computed(() => layout.value === LayoutEnum.TOP);
 const isSidebarCollapsed = computed(() => !appStore.sidebar.opened);
 </script>
 

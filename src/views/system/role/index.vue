@@ -211,9 +211,9 @@ defineOptions({
 import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/system/role";
 import MenuAPI from "@/api/system/menu";
 
-const queryFormRef = ref(ElForm);
-const roleFormRef = ref(ElForm);
-const permTreeRef = ref<InstanceType<typeof ElTree>>();
+const queryFormRef = ref();
+const roleFormRef = ref();
+const permTreeRef = ref();
 
 const loading = ref(false);
 const ids = ref<number[]>([]);

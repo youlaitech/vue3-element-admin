@@ -2,16 +2,25 @@ import request from "@/utils/request";
 
 const FileAPI = {
   /**
-   * 文件上传地址
+   * 上传文件
+   *
+   * @param formData
    */
-  uploadUrl: import.meta.env.VITE_APP_BASE_API + "/api/v1/files",
+  upload(formData: FormData) {
+    return request<any, FileInfo>({
+      url: "/api/v1/files",
+      method: "post",
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
 
   /**
    * 上传文件
-   *
-   * @param file
    */
-  upload(file: File) {
+  uploadFile(file: File) {
     const formData = new FormData();
     formData.append("file", file);
     return request<any, FileInfo>({
@@ -29,7 +38,7 @@ const FileAPI = {
    *
    * @param filePath 文件完整路径
    */
-  deleteByPath(filePath?: string) {
+  delete(filePath?: string) {
     return request({
       url: "/api/v1/files",
       method: "delete",
@@ -42,7 +51,7 @@ const FileAPI = {
    * @param url
    * @param fileName
    */
-  downloadFile(url: string, fileName?: string) {
+  download(url: string, fileName?: string) {
     return request({
       url: url,
       method: "get",

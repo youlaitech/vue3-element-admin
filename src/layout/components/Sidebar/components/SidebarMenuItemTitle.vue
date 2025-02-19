@@ -1,10 +1,14 @@
 <template>
-  <!-- 根据 icon 类型决定使用的不同类型的图标组件 -->
-  <el-icon v-if="icon && icon.startsWith('el-icon')" class="sub-el-icon">
-    <component :is="icon.replace('el-icon-', '')" />
-  </el-icon>
-  <svg-icon v-else-if="icon" :icon-class="icon" />
-  <svg-icon v-else icon-class="menu" />
+  <!-- 菜单图标 -->
+  <template v-if="icon">
+    <el-icon v-if="isElIcon" class="el-icon">
+      <component :is="iconComponent" />
+    </el-icon>
+    <div v-else :class="`i-svg:${icon}`" />
+  </template>
+  <template v-else>
+    <div class="i-svg:menu" />
+  </template>
   <!-- 菜单标题 -->
   <span v-if="title" class="ml-1">{{ translateRouteTitle(title) }}</span>
 </template>
@@ -12,32 +16,38 @@
 <script setup lang="ts">
 import { translateRouteTitle } from "@/utils/i18n";
 
-defineProps({
-  icon: {
-    type: String,
-    default: "",
-  },
-  title: {
-    type: String,
-    default: "",
-  },
-});
+const props = defineProps<{
+  icon?: string;
+  title?: string;
+}>();
+
+const isElIcon = computed(() => props.icon?.startsWith("el-icon"));
+const iconComponent = computed(() => props.icon?.replace("el-icon-", ""));
 </script>
 
 <style lang="scss" scoped>
-.sub-el-icon {
+.el-icon {
   width: 14px !important;
   margin-right: 0 !important;
   color: currentcolor;
 }
 
+[class^="i-svg:"] {
+  width: 14px;
+  height: 14px;
+  color: currentcolor !important;
+}
+
 .hideSidebar {
   .el-sub-menu,
   .el-menu-item {
-    .svg-icon,
-    .sub-el-icon {
+    .el-icon {
       margin-left: 20px;
     }
+  }
+
+  [class^="i-svg:"] {
+    margin-left: 20px;
   }
 }
 </style>

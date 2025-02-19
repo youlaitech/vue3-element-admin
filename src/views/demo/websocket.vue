@@ -12,8 +12,8 @@
       <el-col :span="12">
         <el-card>
           <el-row>
-            <el-col :span="16">
-              <el-input v-model="socketEndpoint" class="w-220px" />
+            <el-col :span="18">
+              <el-input v-model="socketEndpoint" style="width: 200px" />
               <el-button
                 type="primary"
                 class="ml-5"
@@ -26,10 +26,10 @@
                 断开
               </el-button>
             </el-col>
-            <el-col :span="8" class="text-right">
+            <el-col :span="6" class="text-right">
               连接状态：
-              <el-tag v-if="isConnected" class="ml-2" type="success">已连接</el-tag>
-              <el-tag v-else class="ml-2" type="info">已断开</el-tag>
+              <el-tag v-if="isConnected" type="success">已连接</el-tag>
+              <el-tag v-else type="info">已断开</el-tag>
             </el-col>
           </el-row>
         </el-card>
@@ -62,28 +62,31 @@
       <!-- 消息接收显示部分 -->
       <el-col :span="12">
         <el-card>
-          <div class="message-container">
+          <div class="chat-messages-wrapper">
             <div
               v-for="(message, index) in messages"
               :key="index"
-              :class="{
-                'tip-message': message.type === 'tip',
-                message: message.type !== 'tip',
-                'message--sent': message.sender === userStore.userInfo.username,
-                'message--received': message.sender !== userStore.userInfo.username,
-              }"
+              :class="[
+                message.type === 'tip' ? 'system-notice' : 'chat-message',
+                {
+                  'chat-message--sent': message.sender === userStore.userInfo.username,
+                  'chat-message--received': message.sender !== userStore.userInfo.username,
+                },
+              ]"
             >
-              <div v-if="message.type != 'tip'" class="message-content">
-                <div
-                  :class="{
-                    'message-sender': message.sender === userStore.userInfo.username,
-                    'message-receiver': message.sender !== userStore.userInfo.username,
-                  }"
-                >
-                  {{ message.sender }}
+              <template v-if="message.type != 'tip'">
+                <div class="chat-message__content">
+                  <div
+                    :class="{
+                      'chat-message__sender': message.sender === userStore.userInfo.username,
+                      'chat-message__receiver': message.sender !== userStore.userInfo.username,
+                    }"
+                  >
+                    {{ message.sender }}
+                  </div>
+                  <div class="text-gray-600">{{ message.content }}</div>
                 </div>
-                <div class="color-#333">{{ message.content }}</div>
-              </div>
+              </template>
               <div v-else>{{ message.content }}</div>
             </div>
           </div>
@@ -94,98 +97,77 @@
 </template>
 
 <script setup lang="ts">
-import { Client } from "@stomp/stompjs";
-
+import { useStomp } from "@/hooks/useStomp";
 import { useUserStoreHook } from "@/store/modules/user";
-import { getToken } from "@/utils/auth";
 
 const userStore = useUserStoreHook();
-const isConnected = ref(false);
+// 用于手动调整 WebSocket 地址
 const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT);
-
-const receiver = ref("root");
-
+// 同步连接状态
 interface MessageType {
   type?: string;
   sender?: string;
   content: string;
 }
-
 const messages = ref<MessageType[]>([]);
+// 广播消息内容
+const topicMessage = ref("亲爱的朋友们，系统已恢复最新状态。");
+// 点对点消息内容（默认示例）
+const queneMessage = ref("Hi, " + userStore.userInfo.username + " 这里是点对点消息示例！");
+const receiver = ref("root");
 
-const topicMessage = ref("亲爱的大冤种们，由于一只史诗级的BUG，系统版本已经被迫回退到了0.0.1。"); // 广播消息
+// 调用 useStomp hook，默认使用 socketEndpoint 和 token（此处用 getAccessToken()）
+const { isConnected, connect, subscribe, disconnect, client } = useStomp({
+  debug: true,
+});
 
-const queneMessage = ref(
-  "hi , " + receiver.value + " , 我是" + userStore.userInfo.username + " , 想和你交个朋友 ! "
-);
-
-let stompClient: Client;
-
-function connectWebSocket() {
-  stompClient = new Client({
-    brokerURL: socketEndpoint.value,
-    connectHeaders: {
-      Authorization: getToken(),
-    },
-    debug: (str: any) => {
-      console.log(str);
-    },
-    onConnect: () => {
-      console.log("连接成功");
-      isConnected.value = true;
-      messages.value.push({
-        sender: "Server",
-        content: "Websocket 已连接",
-        type: "tip",
-      });
-
-      stompClient.subscribe("/topic/notice", (res: any) => {
+watch(
+  () => isConnected.value,
+  (connected) => {
+    if (connected) {
+      // 连接成功后，订阅广播和点对点消息主题
+      subscribe("/topic/notice", (res) => {
         messages.value.push({
           sender: "Server",
           content: res.body,
         });
       });
-
-      stompClient.subscribe("/user/queue/greeting", (res: any) => {
+      subscribe("/user/queue/greeting", (res) => {
         const messageData = JSON.parse(res.body) as MessageType;
         messages.value.push({
           sender: messageData.sender,
           content: messageData.content,
         });
       });
-    },
-    onStompError: (frame: any) => {
-      console.error("Broker reported error: " + frame.headers["message"]);
-      console.error("Additional details: " + frame.body);
-    },
-    onDisconnect: () => {
-      isConnected.value = false;
+      messages.value.push({
+        sender: "Server",
+        content: "Websocket 已连接",
+        type: "tip",
+      });
+    } else {
       messages.value.push({
         sender: "Server",
         content: "Websocket 已断开",
         type: "tip",
       });
-    },
-  });
-
-  stompClient.activate();
-}
-
-function disconnectWebSocket() {
-  if (stompClient && stompClient.connected) {
-    stompClient.deactivate();
-    isConnected.value = false;
-    messages.value.push({
-      sender: "Server",
-      content: "Websocket 已断开",
-      type: "tip",
-    });
+    }
   }
+);
+
+// 连接 WebSocket
+function connectWebSocket() {
+  connect();
 }
 
+// 断开 WebSocket
+function disconnectWebSocket() {
+  disconnect();
+}
+
+// 发送广播消息
 function sendToAll() {
-  if (stompClient.connected) {
-    stompClient.publish({
+  if (client.value && client.value.connected) {
+    client.value.publish({
       destination: "/topic/notice",
       body: topicMessage.value,
     });
@@ -196,9 +178,10 @@ function sendToAll() {
   }
 }
 
+// 发送点对点消息
 function sendToUser() {
-  if (stompClient.connected) {
-    stompClient.publish({
+  if (client.value && client.value.connected) {
+    client.value.publish({
       destination: "/app/sendToUser/" + receiver.value,
       body: queneMessage.value,
     });
@@ -212,54 +195,52 @@ function sendToUser() {
 onMounted(() => {
   connectWebSocket();
 });
+
+onBeforeUnmount(() => {
+  disconnectWebSocket();
+});
 </script>
 
-<style scoped>
-.message-container {
+<style scoped lang="scss">
+.chat-messages-wrapper {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
-
-.message {
+.chat-message {
+  max-width: 80%;
   padding: 10px;
-  margin: 10px;
   border-radius: 5px;
+  &--sent {
+    align-self: flex-end;
+    background-color: #dcf8c6;
+  }
+  &--received {
+    align-self: flex-start;
+    background-color: #e8e8e8;
+  }
+  &__content {
+    display: flex;
+    flex-direction: column;
+    color: var(--el-text-color-primary); // 使用主题文本颜色
+  }
+  &__sender {
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: right;
+  }
+  &__receiver {
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: left;
+  }
 }
-
-.message--sent {
-  align-self: flex-end;
-  background-color: #dcf8c6;
-}
-
-.message--received {
-  align-self: flex-start;
-  background-color: #e8e8e8;
-}
-
-.message-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.message-sender {
-  margin-bottom: 5px;
-  font-weight: bold;
-  text-align: right;
-}
-
-.message-receiver {
-  margin-bottom: 5px;
-  font-weight: bold;
-  text-align: left;
-}
-
-.tip-message {
+.system-notice {
   align-self: center;
   padding: 5px 10px;
-  margin-bottom: 5px;
-  font-style: italic;
-  text-align: center;
-  background-color: #f0f0f0;
-  border-radius: 5px;
+  font-size: 0.9em;
+  color: var(--el-text-color-secondary);
+  background-color: var(--el-fill-color-lighter);
+  border-radius: 15px;
 }
 </style>
