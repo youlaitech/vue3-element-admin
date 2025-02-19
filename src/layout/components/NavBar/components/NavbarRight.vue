@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar__right">
+  <div class="navbar__right" :class="navbarRightClass">
     <!-- 桌面端显示 -->
     <template v-if="isDesktop">
       <!-- 搜索 -->
@@ -48,6 +48,7 @@ import { DeviceEnum } from "@/enums/DeviceEnum";
 import { useAppStore, useSettingsStore, useUserStore, useTagsViewStore } from "@/store";
 
 import Notification from "./Notification.vue";
+import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
 
 const appStore = useAppStore();
 const settingStore = useSettingsStore();
@@ -64,6 +65,13 @@ const isDesktop = computed(() => appStore.device === DeviceEnum.DESKTOP);
 function handleProfileClick() {
   router.push({ name: "Profile" });
 }
+
+// 根据浅色模式-侧边栏颜色配置选择navbar右侧的样式类
+const navbarRightClass = computed(() => {
+  return settingStore.sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+    ? "navbar__right--darkBlue"
+    : "navbar__right--white";
+});
 
 /**
  * 注销登出
@@ -125,9 +133,15 @@ function logout() {
   }
 }
 
-.layout-top .navbar__right > *,
-.layout-mix .navbar__right > * {
+.layout-top .navbar__right--darkBlue > *,
+.layout-mix .navbar__right--darkBlue > * {
   color: #fff;
+}
+
+
+.layout-top .navbar__right--white > *,
+.layout-mix .navbar__right--white > * {
+  color: #000;
 }
 
 .dark .navbar__right > *:hover {

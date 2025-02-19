@@ -187,7 +187,15 @@ function resolvePath(routePath: string) {
   }
 }
 
-.el-menu-item:hover {
-  background-color: $menu-hover;
+html.dark {
+  .el-menu-item:hover {
+    background-color: $menu-hover;
+  }
+}
+
+html.light-darkBlue {
+  .el-menu-item:hover {
+    background-color: $menu-hover;
+  }
 }
 </style>

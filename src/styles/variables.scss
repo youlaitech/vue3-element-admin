@@ -25,16 +25,29 @@
 /** 全局SCSS变量 */
 
 :root {
-  --menu-background: #304156;
-  --menu-text: #bfcbd9;
-  --menu-active-text: var(--el-menu-active-color);
-  --menu-hover: #263445;
-  --sidebar-logo-background: #2d3748;
+  --menu-background: #fff; // 菜单背景色
+  --menu-text: #212121; // 菜单文字颜色 浅色主题-白色侧边栏配色下仅占位，实际颜色由 el-menu-item 组件决定
+  --menu-active-text: var(
+    --el-menu-active-color
+  ); // 菜单激活文字颜色 浅色主题-白色侧边栏配色下仅占位，实际颜色由 el-menu-item 组件决定
 
+  --menu-hover: #e6f4ff; // 菜单悬停背景色 浅色主题-白色侧边栏配色下仅占位，实际颜色由 el-menu-item 组件决定
+  --sidebar-logo-background: #f5f5f5; // 侧边栏 Logo 背景色
+  --sidebar-logo-text-color: #333; // 侧边栏 Logo 文字颜色
   // 修复表格 fixed 列被选中后由于透明色导致叠字的 bug
   .el-table {
     --el-table-current-row-bg-color: rgb(235 243 250);
   }
+}
+
+/** 浅色主题-深蓝色侧边栏配色 */
+html.light-darkBlue {
+  --menu-background: #304156; // 菜单背景色
+  --menu-text: #bfcbd9; // 菜单文字颜色
+  --menu-active-text: var(--el-menu-active-color); // 菜单激活文字颜色
+  --menu-hover: #263445; // 菜单悬停背景色
+  --sidebar-logo-background: #2d3748; // 侧边栏 Logo 背景色
+  --sidebar-logo-text-color: #fff; // 侧边栏 Logo 文字颜色
 }
 
 /** 暗黑主题 */
@@ -44,6 +57,7 @@ html.dark {
   --menu-active-text: var(--el-menu-active-color);
   --menu-hover: rgb(0 0 0 / 20%);
   --sidebar-logo-background: rgb(0 0 0 / 20%);
+  --sidebar-logo-text-color: #fff;
 }
 
 $menu-background: var(--menu-background); // 菜单背景色
@@ -51,6 +65,7 @@ $menu-text: var(--menu-text); // 菜单文字颜色
 $menu-active-text: var(--menu-active-text); // 菜单激活文字颜色
 $menu-hover: var(--menu-hover); // 菜单悬停背景色
 $sidebar-logo-background: var(--sidebar-logo-background); // 侧边栏 Logo 背景色
+$sidebar-logo-text-color: var(--sidebar-logo-text-color); // 侧边栏 Logo 文字颜色
 
 $sidebar-width: 210px; // 侧边栏宽度
 $sidebar-width-collapsed: 54px; // 侧边栏收缩宽度

@@ -27,6 +27,13 @@
       <span class="text-xs">{{ $t("settings.watermark") }}</span>
       <el-switch v-model="settingsStore.watermarkEnabled" />
     </div>
+    <div v-if="!isDark" class="py-1 flex-x-between">
+      <span class="text-xs">{{ $t("settings.sidebarColorScheme") }}</span>
+      <el-radio-group v-model="settingsStore.sidebarColorScheme" @change="changeSidebarColorScheme">
+        <el-radio :value="SidebarLightThemeEnum.WHITE">{{ $t("settings.white") }}</el-radio>
+        <el-radio :value="SidebarLightThemeEnum.DARKBLUE">{{ $t("settings.darkBlue") }}</el-radio>
+      </el-radio-group>
+    </div>
 
     <el-divider>{{ $t("settings.navigation") }}</el-divider>
 
@@ -37,7 +44,7 @@
 <script setup lang="ts">
 import { LayoutEnum } from "@/enums/LayoutEnum";
 import { ThemeEnum } from "@/enums/ThemeEnum";
-
+import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
 
 const route = useRoute();
@@ -72,6 +79,16 @@ function changeThemeColor(color: string) {
 const changeTheme = (val: any) => {
   isDark.value = val;
   settingsStore.changeTheme(isDark.value ? ThemeEnum.DARK : ThemeEnum.LIGHT);
+};
+
+/**
+ * 更改侧边栏颜色方案
+ *
+ * @param val 颜色方案名称
+ */
+const changeSidebarColorScheme = (val: any) => {
+  console.log(val);
+  settingsStore.changeSidebarColorScheme(val);
 };
 
 /**

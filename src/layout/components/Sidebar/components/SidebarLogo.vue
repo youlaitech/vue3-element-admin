@@ -34,7 +34,7 @@ defineProps({
     margin-left: 10px;
     font-size: 14px;
     font-weight: bold;
-    color: #ffffff;
+    color: $sidebar-logo-text-color;
   }
 }
 
