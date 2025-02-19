@@ -1,13 +1,14 @@
 <!-- 列表选择器示例 -->
 <script setup lang="ts">
 import selectConfig from "./config/select";
-
+import { useDictStore } from "@/store";
+const dictStore = useDictStore();
 interface IUser {
   id: number;
   username: string;
   nickname: string;
   mobile: string;
-  genderLabel: string;
+  gender: string;
   avatar: string;
   email: string | null;
   status: number;
@@ -20,8 +21,11 @@ function handleConfirm(data: IUser[]) {
   selectedUser.value = data[0];
 }
 const text = computed(() => {
+  // 获取字典数据
+  const dictData = dictStore.getDictionary("gender");
+  const genderLabel = dictData.find((item: any) => item.value == selectedUser.value?.gender)?.label;
   return selectedUser.value
-    ? `${selectedUser.value.username} - ${selectedUser.value.genderLabel} - ${selectedUser.value.deptName}`
+    ? `${selectedUser.value.username} - ${genderLabel} - ${selectedUser.value.deptName}`
     : "";
 });
 </script>
@@ -41,6 +45,9 @@ const text = computed(() => {
         <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
           {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
         </el-tag>
+      </template>
+      <template #gender="scope">
+        <DictLabel v-model="scope.row.gender" code="gender" />
       </template>
     </table-select>
   </div>

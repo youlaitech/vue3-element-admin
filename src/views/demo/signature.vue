@@ -68,7 +68,7 @@ const handleToFile = async () => {
   const file = dataURLtoFile(canvas.value.toDataURL(), "签名.png");
 
   if (!file) return;
-  const data = await FileAPI.upload(file);
+  const data = await FileAPI.uploadFile(file);
   handleClearSign();
   imgUrl.value = data.url;
 };

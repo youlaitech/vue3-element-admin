@@ -240,7 +240,7 @@
                   </el-icon>
                 </template>
                 <template v-else>
-                  <svg-icon :icon-class="scope.row[col.prop]" />
+                  <div class="i-svg:{{ scope.row[col.prop] }}" />
                 </template>
               </template>
             </template>
@@ -453,7 +453,6 @@
 </template>
 
 <script setup lang="ts">
-import SvgIcon from "@/components/SvgIcon/index.vue";
 import { hasAuth } from "@/plugins/permission";
 import { useDateFormat, useThrottleFn } from "@vueuse/core";
 import {
@@ -951,7 +950,7 @@ function exportPageData(formData: IObject = {}) {
 }
 
 // 浏览器保存文件
-function saveXlsx(fileData: BlobPart, fileName: string) {
+function saveXlsx(fileData: any, fileName: string) {
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
 

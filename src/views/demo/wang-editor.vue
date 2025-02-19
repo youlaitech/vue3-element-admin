@@ -1,8 +1,8 @@
 <!-- wangEditor富文本编辑器示例 -->
 <script setup lang="ts">
-import Editor from "@/components/WangEditor/index.vue";
+import WangEditor from "@/components/WangEditor/index.vue";
 
-const value = ref("初始内容");
+const value = ref("初始化内容");
 </script>
 
 <template>
@@ -15,6 +15,10 @@ const value = ref("初始内容");
     >
       示例源码 请点击>>>>
     </el-link>
-    <editor v-model="value" style="z-index: 99999; height: calc(100vh - 180px)" />
+    <WangEditor v-model="value" height="400px" />
+
+    <div style="margin-top: 10px">
+      <textarea v-model="value" readonly style="width: 100%; height: 200px; outline: none" />
+    </div>
   </div>
 </template>

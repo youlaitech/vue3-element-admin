@@ -143,7 +143,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed } from "vue";
-import { onClickOutside, useResizeObserver } from "@vueuse/core";
+import { useResizeObserver } from "@vueuse/core";
 import type { FormInstance, PopoverProps, TableInstance } from "element-plus";
 
 // 对象类型
@@ -157,7 +157,7 @@ export interface ISelectConfig<T = any> {
   // popover组件属性
   popover?: Partial<Omit<PopoverProps, "visible" | "v-model:visible">>;
   // 列表的网络请求函数(需返回promise)
-  indexAction: (queryParams: T) => Promise<any>;
+  indexAction: (_queryParams: T) => Promise<any>;
   // 主键名(跨页选择必填,默认为id)
   pk?: string;
   // 多选
@@ -284,7 +284,7 @@ const selectedItems = ref<IObject[]>([]);
 const confirmText = computed(() => {
   return selectedItems.value.length > 0 ? `已选(${selectedItems.value.length})` : "确 定";
 });
-function handleSelect(selection: any[], row: any) {
+function handleSelect(selection: any[], _row: any) {
   if (isMultiple || selection.length === 0) {
     // 多选
     selectedItems.value = selection;

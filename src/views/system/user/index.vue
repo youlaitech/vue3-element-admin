@@ -101,6 +101,7 @@
             </el-table-column>
             <el-table-column label="部门" width="120" align="center" prop="deptName" />
             <el-table-column label="手机号码" align="center" prop="mobile" width="120" />
+            <el-table-column label="邮箱" align="center" prop="email" width="160" />
             <el-table-column label="状态" align="center" prop="status" width="80">
               <template #default="scope">
                 <el-tag :type="scope.row.status == 1 ? 'success' : 'info'">
@@ -248,9 +249,8 @@ defineOptions({
   name: "User",
   inheritAttrs: false,
 });
-
-const queryFormRef = ref(ElForm);
-const userFormRef = ref(ElForm);
+const queryFormRef = ref();
+const userFormRef = ref();
 
 const queryParams = reactive<UserPageQuery>({
   pageNum: 1,

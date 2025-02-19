@@ -8,7 +8,7 @@
         <el-col :span="18" :xs="24">
           <div class="flex-x-start">
             <img
-              class="wh-80px rounded-full"
+              class="w80px h80px rounded-full"
               :src="userStore.userInfo.avatar + '?imageView2/1/w/80/h/80'"
             />
             <div class="ml-5">
@@ -27,15 +27,15 @@
               </div>
               <div class="mt-3">
                 <el-link href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
-                  <SvgIcon icon-class="gitee" class="text-lg color-#f76560" />
+                  <div class="i-svg:gitee text-lg color-#F76560" />
                 </el-link>
                 <el-divider direction="vertical" />
                 <el-link href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
-                  <SvgIcon icon-class="github" class="text-lg color-#4080ff" />
+                  <div class="i-svg:github text-lg color-#4080FF" />
                 </el-link>
                 <el-divider direction="vertical" />
                 <el-link href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
-                  <SvgIcon icon-class="gitcode" class="text-lg color-#ff9a2e" />
+                  <div class="i-svg:gitcode text-lg color-#FF9A2E" />
                 </el-link>
               </div>
             </el-col>
@@ -47,18 +47,18 @@
               </div>
               <div class="mt-3">
                 <el-link href="https://juejin.cn/post/7228990409909108793" target="_blank">
-                  <SvgIcon icon-class="juejin" class="text-lg" />
+                  <div class="i-svg:juejin text-lg" />
                 </el-link>
                 <el-divider direction="vertical" />
                 <el-link
                   href="https://youlai.blog.csdn.net/article/details/130191394"
                   target="_blank"
                 >
-                  <SvgIcon icon-class="csdn" class="text-lg" />
+                  <div class="i-svg:csdn text-lg" />
                 </el-link>
                 <el-divider direction="vertical" />
                 <el-link href="https://www.cnblogs.com/haoxianrui/p/17331952.html" target="_blank">
-                  <SvgIcon icon-class="cnblogs" class="text-lg" />
+                  <div class="i-svg:cnblogs text-lg" />
                 </el-link>
               </div>
             </el-col>
@@ -70,7 +70,7 @@
               </div>
               <div class="mt-3">
                 <el-link href="https://www.bilibili.com/video/BV1eFUuYyEFj" target="_blank">
-                  <SvgIcon icon-class="bilibili" class="text-lg" />
+                  <div class="i-svg:bilibili text-lg" />
                 </el-link>
               </div>
             </el-col>
@@ -116,7 +116,11 @@
                 <div class="flex-y-center">
                   <span class="text-lg">{{ visitStatsData.todayUvCount }}</span>
                   <span
-                    :class="['text-xs', 'ml-2', getGrowthRateClass(visitStatsData.uvGrowthRate)]"
+                    :class="[
+                      'text-xs',
+                      'ml-2',
+                      computeGrowthRateClass(visitStatsData.uvGrowthRate),
+                    ]"
                   >
                     <el-icon>
                       <Top v-if="visitStatsData.uvGrowthRate > 0" />
@@ -125,7 +129,7 @@
                     {{ formatGrowthRate(visitStatsData.uvGrowthRate) }}
                   </span>
                 </div>
-                <svg-icon icon-class="visitor" size="2em" />
+                <div class="i-svg:visitor w-8 h-8" />
               </div>
 
               <div class="flex-x-between mt-2 text-sm text-gray">
@@ -172,7 +176,11 @@
                 <div class="flex-y-center">
                   <span class="text-lg">{{ visitStatsData.todayPvCount }}</span>
                   <span
-                    :class="['text-xs', 'ml-2', getGrowthRateClass(visitStatsData.pvGrowthRate)]"
+                    :class="[
+                      'text-xs',
+                      'ml-2',
+                      computeGrowthRateClass(visitStatsData.pvGrowthRate),
+                    ]"
                   >
                     <el-icon>
                       <Top v-if="visitStatsData.pvGrowthRate > 0" />
@@ -181,7 +189,7 @@
                     {{ formatGrowthRate(visitStatsData.pvGrowthRate) }}
                   </span>
                 </div>
-                <svg-icon icon-class="browser" size="2em" />
+                <div class="i-svg:browser w-8 h-8" />
               </div>
 
               <div class="flex-x-between mt-2 text-sm text-gray">
@@ -197,7 +205,18 @@
     <el-row :gutter="10" class="mt-5">
       <!-- 访问趋势统计图 -->
       <el-col :xs="24" :span="16">
-        <VisitTrend id="VisitTrend" width="100%" height="400px" />
+        <el-card>
+          <template #header>
+            <div class="flex-x-between">
+              <span>访问趋势</span>
+              <el-radio-group v-model="visitTrendDateRange" size="small">
+                <el-radio-button label="近7天" :value="7" />
+                <el-radio-button label="近30天" :value="30" />
+              </el-radio-group>
+            </div>
+          </template>
+          <ECharts :options="visitTrendChartOptions" height="400px" />
+        </el-card>
       </el-col>
       <!-- 通知公告 -->
       <el-col :xs="24" :span="8">
@@ -206,7 +225,7 @@
             <div class="flex-x-between">
               <div class="flex-y-center">通知公告</div>
               <el-link type="primary">
-                <span class="text-xs" @click="handleViewMoreNotice">查看更多</span>
+                <span class="text-xs" @click="navigateToNoticePage">查看更多</span>
                 <el-icon class="text-xs"><ArrowRight /></el-icon>
               </el-link>
             </div>
@@ -218,7 +237,7 @@
               <el-text truncated class="!mx-2 flex-1 !text-xs !text-gray">
                 {{ item.title }}
               </el-text>
-              <el-link @click="handleOpenNoticeDetail(item.id)">
+              <el-link @click="openNoticeDetail(item.id)">
                 <el-icon class="text-sm"><View /></el-icon>
               </el-link>
             </div>
@@ -237,38 +256,43 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import VisitTrend from "./components/visit-trend.vue";
-
+import { dayjs } from "element-plus";
 import router from "@/router";
-
-import LogAPI, { VisitStatsVO } from "@/api/system/log";
+import LogAPI, { VisitStatsVO, VisitTrendVO } from "@/api/system/log";
 import NoticeAPI, { NoticePageVO } from "@/api/system/notice";
-
 import { useUserStore } from "@/store/modules/user";
 import { formatGrowthRate } from "@/utils";
 
+const userStore = useUserStore();
+
 const noticeDetailRef = ref();
 
+// 当前通知公告列表
 const notices = ref<NoticePageVO[]>([]);
 
-const userStore = useUserStore();
-const date: Date = new Date();
+// 当前时间（用于计算问候语）
+const currentDate = new Date();
+
+// 问候语：根据当前小时返回不同问候语
 const greetings = computed(() => {
-  const hours = date.getHours();
+  const hours = currentDate.getHours();
+  const nickname = userStore.userInfo.nickname;
   if (hours >= 6 && hours < 8) {
     return "晨起披衣出草堂，轩窗已自喜微凉🌅！";
   } else if (hours >= 8 && hours < 12) {
-    return "上午好，" + userStore.userInfo.nickname + "！";
+    return `上午好，${nickname}！`;
   } else if (hours >= 12 && hours < 18) {
-    return "下午好，" + userStore.userInfo.nickname + "！";
+    return `下午好，${nickname}！`;
   } else if (hours >= 18 && hours < 24) {
-    return "晚上好，" + userStore.userInfo.nickname + "！";
+    return `晚上好，${nickname}！`;
   } else {
     return "偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！";
   }
 });
 
+// 访客统计数据加载状态
 const visitStatsLoading = ref(true);
+// 访客统计数据
 const visitStatsData = ref<VisitStatsVO>({
   todayUvCount: 0,
   uvGrowthRate: 0,
@@ -278,8 +302,15 @@ const visitStatsData = ref<VisitStatsVO>({
   totalPvCount: 0,
 });
 
-// 加载访问统计数据
-const loadVisitStatsData = async () => {
+// 访问趋势日期范围（单位：天）
+const visitTrendDateRange = ref(7);
+// 访问趋势图表配置
+const visitTrendChartOptions = ref();
+
+/**
+ * 获取访客统计数据
+ */
+const fetchVisitStatsData = () => {
   LogAPI.getVisitStats()
     .then((data) => {
       visitStatsData.value = data;
@@ -289,12 +320,102 @@ const loadVisitStatsData = async () => {
     });
 };
 
-// 根据增长率获取样式
-const getGrowthRateClass = (growthRate?: number): string => {
+/**
+ * 获取访问趋势数据，并更新图表配置
+ */
+const fetchVisitTrendData = () => {
+  const startDate = dayjs()
+    .subtract(visitTrendDateRange.value - 1, "day")
+    .toDate();
+  const endDate = new Date();
+
+  LogAPI.getVisitTrend({
+    startDate: dayjs(startDate).format("YYYY-MM-DD"),
+    endDate: dayjs(endDate).format("YYYY-MM-DD"),
+  }).then((data) => {
+    updateVisitTrendChartOptions(data);
+  });
+};
+
+/**
+ * 更新访问趋势图表的配置项
+ *
+ * @param data - 访问趋势数据
+ */
+const updateVisitTrendChartOptions = (data: VisitTrendVO) => {
+  console.log("Updating visit trend chart options");
+
+  visitTrendChartOptions.value = {
+    tooltip: {
+      trigger: "axis",
+    },
+    legend: {
+      data: ["浏览量(PV)", "访客数(UV)"],
+      bottom: 0,
+    },
+    grid: {
+      left: "1%",
+      right: "5%",
+      bottom: "10%",
+      containLabel: true,
+    },
+    xAxis: {
+      type: "category",
+      data: data.dates,
+    },
+    yAxis: {
+      type: "value",
+      splitLine: {
+        show: true,
+        lineStyle: {
+          type: "dashed",
+        },
+      },
+    },
+    series: [
+      {
+        name: "浏览量(PV)",
+        type: "line",
+        data: data.pvList,
+        areaStyle: {
+          color: "rgba(64, 158, 255, 0.1)",
+        },
+        smooth: true,
+        itemStyle: {
+          color: "#4080FF",
+        },
+        lineStyle: {
+          color: "#4080FF",
+        },
+      },
+      {
+        name: "访客数(UV)",
+        type: "line",
+        data: data.ipList,
+        areaStyle: {
+          color: "rgba(103, 194, 58, 0.1)",
+        },
+        smooth: true,
+        itemStyle: {
+          color: "#67C23A",
+        },
+        lineStyle: {
+          color: "#67C23A",
+        },
+      },
+    ],
+  };
+};
+
+/**
+ * 根据增长率计算对应的 CSS 类名
+ *
+ * @param growthRate - 增长率数值
+ */
+const computeGrowthRateClass = (growthRate?: number): string => {
   if (!growthRate) {
     return "color-[--el-color-info]";
   }
-
   if (growthRate > 0) {
     return "color-[--el-color-danger]";
   } else if (growthRate < 0) {
@@ -304,25 +425,45 @@ const getGrowthRateClass = (growthRate?: number): string => {
   }
 };
 
-const loadMyNotice = () => {
+/**
+ * 获取当前用户的通知公告数据
+ */
+const fetchMyNotices = () => {
   NoticeAPI.getMyNoticePage({ pageNum: 1, pageSize: 10 }).then((data) => {
     notices.value = data.list;
   });
 };
 
-// 查看更多
-function handleViewMoreNotice() {
+/**
+ * 跳转至通知公告详情页面（查看更多通知）
+ */
+function navigateToNoticePage() {
   router.push({ path: "/myNotice" });
 }
 
-// 打开通知公告
-function handleOpenNoticeDetail(id: string) {
+/**
+ * 打开指定通知详情
+ *
+ * @param id - 通知 ID
+ */
+function openNoticeDetail(id: string) {
   noticeDetailRef.value.openNotice(id);
 }
 
+// 监听访问趋势日期范围的变化，重新获取趋势数据
+watch(
+  () => visitTrendDateRange.value,
+  (newVal) => {
+    console.log("Visit trend date range changed:", newVal);
+    fetchVisitTrendData();
+  },
+  { immediate: true }
+);
+
+// 组件挂载后加载访客统计数据和通知公告数据
 onMounted(() => {
-  loadVisitStatsData();
-  loadMyNotice();
+  fetchVisitStatsData();
+  fetchMyNotices();
 });
 </script>
 

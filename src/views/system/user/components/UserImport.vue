@@ -175,8 +175,9 @@ const handleUpload = async () => {
       invalidCount.value = result.invalidCount;
       validCount.value = result.validCount;
     }
-  } catch (error) {
-    ElMessage.error("上传失败");
+  } catch (error: any) {
+    console.error(error);
+    ElMessage.error("上传失败：" + error);
   }
 };
 

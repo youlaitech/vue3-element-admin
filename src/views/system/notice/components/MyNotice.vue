@@ -87,7 +87,7 @@ defineOptions({
 
 import NoticeAPI, { NoticePageVO, NoticePageQuery } from "@/api/system/notice";
 
-const queryFormRef = ref(ElForm);
+const queryFormRef = ref();
 const noticeDetailRef = ref();
 
 const pageData = ref<NoticePageVO[]>([]);

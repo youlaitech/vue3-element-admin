@@ -62,7 +62,7 @@ defineOptions({
 
 import LogAPI, { LogPageVO, LogPageQuery } from "@/api/system/log";
 
-const queryFormRef = ref(ElForm);
+const queryFormRef = ref();
 
 const loading = ref(false);
 const total = ref(0);

@@ -1,80 +1,87 @@
+<!--
+ * 基于 wangEditor-next 的富文本编辑器组件二次封装
+ * 版权所有 © 2021-present 有来开源组织
+ *
+ * 开源协议：https://opensource.org/licenses/MIT
+ * 项目地址：https://gitee.com/youlaiorg/vue3-element-admin
+ *
+ * 在使用时，请保留此注释，感谢您对开源的支持！
+ -->
+
 <template>
-  <div class="editor-wrapper">
+  <div style="z-index: 999; border: 1px solid #ccc">
     <!-- 工具栏 -->
     <Toolbar
-      id="toolbar-container"
       :editor="editorRef"
+      mode="simple"
       :default-config="toolbarConfig"
-      :mode="mode"
+      style="border-bottom: 1px solid #ccc"
     />
     <!-- 编辑器 -->
     <Editor
-      id="editor-container"
       v-model="modelValue"
+      :style="{ height: height, overflowY: 'hidden' }"
       :default-config="editorConfig"
-      :mode="mode"
-      style="height: 500px; overflow-y: hidden"
-      @on-change="handleChange"
+      mode="simple"
       @on-created="handleCreated"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import "@wangeditor-next/editor/dist/css/style.css";
+import { Toolbar, Editor } from "@wangeditor-next/editor-for-vue";
+import { IToolbarConfig, IEditorConfig } from "@wangeditor-next/editor";
 
-// API 引用
+// 文件上传 API
 import FileAPI from "@/api/file";
 
-const props = defineProps({
-  modelValue: {
-    type: [String],
-    default: "",
-  },
-  excludeKeys: {
-    type: Array<string>,
-    default: [],
+// 上传图片回调函数类型
+type InsertFnType = (_url: string, _alt: string, _href: string) => void;
+
+defineProps({
+  height: {
+    type: String,
+    default: "500px",
   },
 });
+// 双向绑定
+const modelValue = defineModel("modelValue", {
+  type: String,
+  required: false,
+});
 
-const emit = defineEmits(["update:modelValue"]);
+// 编辑器实例，必须用 shallowRef，重要！
+const editorRef = shallowRef();
 
-const modelValue = useVModel(props, "modelValue", emit);
+// 工具栏配置
+const toolbarConfig = ref<Partial<IToolbarConfig>>({});
 
-const editorRef = shallowRef(); // 编辑器实例，必须用 shallowRef
-const mode = ref("simple"); // 编辑器模式
-const toolbarConfig = ref({
-  excludeKeys: props.excludeKeys,
-}); // 工具条配置
 // 编辑器配置
-const editorConfig = ref({
+const editorConfig = ref<Partial<IEditorConfig>>({
   placeholder: "请输入内容...",
   MENU_CONF: {
     uploadImage: {
-      // 自定义图片上传
-      async customUpload(file: any, insertFn: any) {
-        FileAPI.upload(file).then((data) => {
-          insertFn(data.url);
+      customUpload(file: File, insertFn: InsertFnType) {
+        // 上传图片
+        FileAPI.uploadFile(file).then((res) => {
+          // 插入图片
+          insertFn(res.url, res.name, res.url);
         });
       },
-    },
+    } as any,
   },
 });
 
+// 记录 editor 实例，重要！
 const handleCreated = (editor: any) => {
-  editorRef.value = editor; // 记录 editor 实例，重要！
+  editorRef.value = editor;
 };
 
-function handleChange(editor: any) {
-  modelValue.value = editor.getHtml();
-}
-
-// 组件销毁时，也及时销毁编辑器
+// 组件销毁时，也及时销毁编辑器，重要！
 onBeforeUnmount(() => {
   const editor = editorRef.value;
   if (editor == null) return;
   editor.destroy();
 });
 </script>
-
-<style src="@wangeditor/editor/dist/css/style.css"></style>

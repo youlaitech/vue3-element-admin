@@ -3,7 +3,7 @@
 
 ## ✨ feat
 
-- 支持后端文件导入([#142](https://github.com/youlaitech/vue3-element-admin/pull/142)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 支持后端文件导入([#142](https://github.com/youlaitech/vue3-element-admin/pull/142)) [@cshaptx4869](https://github.com/cshaptx4869)
 
 
 ## 🐛 fix
@@ -15,7 +15,7 @@
 
 ## ✨ feat
 
-- 操作栏增加render配置参数([#138](https://github.com/youlaitech/vue3-element-admin/pull/140)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 操作栏增加render配置参数([#138](https://github.com/youlaitech/vue3-element-admin/pull/140)) [@cshaptx4869](https://github.com/cshaptx4869)
 - 左侧工具栏增加type配置参数([#141](https://github.com/youlaitech/vue3-element-admin/pull/141)) [@diamont1001](https://github.com/diamont1001)
 
 ## ♻️ refactor
@@ -27,7 +27,7 @@
 
 ## ✨ feat
 
-- 支持默认工具栏的导入([#138](https://github.com/youlaitech/vue3-element-admin/pull/138)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 支持默认工具栏的导入([#138](https://github.com/youlaitech/vue3-element-admin/pull/138)) [@cshaptx4869](https://github.com/cshaptx4869)
 -  添加CURD导入示例([19e7bb](https://github.com/youlaitech/vue3-element-admin/commit/eab91effd6a01d5a3d9257249c8d06aa252b3bf8)) [@cshaptx4869](https://github.com/cshaptx4869)
 
 ## ♻️ refactor
@@ -40,13 +40,13 @@
 
 ## ✨ feat
 
-- 支持表格远程筛选([#131](https://github.com/youlaitech/vue3-element-admin/pull/131)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 支持表格远程筛选([#131](https://github.com/youlaitech/vue3-element-admin/pull/131)) [@cshaptx4869](https://github.com/cshaptx4869)
 - 支持标签输入框([#132](https://github.com/youlaitech/vue3-element-admin/pull/132)) [@cshaptx4869](https://github.com/cshaptx4869)
-- 表单项支持tips配置([#133](https://github.com/youlaitech/vue3-element-admin/pull/133)) [@cshaptx4869](https://github.com/cshaptx4869) 
-- 前端导出支持全量数据([#134](https://github.com/youlaitech/vue3-element-admin/pull/134)) [@cshaptx4869](https://github.com/cshaptx4869) 
-- 支持选中数据导出([#135](https://github.com/youlaitech/vue3-element-admin/pull/135)) [@cshaptx4869](https://github.com/cshaptx4869) 
-- 表格默认工具栏的导出、搜索按钮增加权限点控制([883128](https://github.com/youlaitech/vue3-element-admin/commit/8831289b655f2cc086ecdababaa89f8d8a087c42)) [@cshaptx4869](https://github.com/cshaptx4869) 
-- 页签title支持动态设置([23876a](https://github.com/youlaitech/vue3-element-admin/commit/23876aa396143bf77cb5c86af8d6023d9ff6555a)) [@haoxianrui](https://github.com/haoxianrui) 
+- 表单项支持tips配置([#133](https://github.com/youlaitech/vue3-element-admin/pull/133)) [@cshaptx4869](https://github.com/cshaptx4869)
+- 前端导出支持全量数据([#134](https://github.com/youlaitech/vue3-element-admin/pull/134)) [@cshaptx4869](https://github.com/cshaptx4869)
+- 支持选中数据导出([#135](https://github.com/youlaitech/vue3-element-admin/pull/135)) [@cshaptx4869](https://github.com/cshaptx4869)
+- 表格默认工具栏的导出、搜索按钮增加权限点控制([883128](https://github.com/youlaitech/vue3-element-admin/commit/8831289b655f2cc086ecdababaa89f8d8a087c42)) [@cshaptx4869](https://github.com/cshaptx4869)
+- 页签title支持动态设置([23876a](https://github.com/youlaitech/vue3-element-admin/commit/23876aa396143bf77cb5c86af8d6023d9ff6555a)) [@haoxianrui](https://github.com/haoxianrui)
 
 ## ♻️ refactor
 - 默认工具栏支持自定义([#136](https://github.com/youlaitech/vue3-element-admin/pull/136)) [@cshaptx4869](https://github.com/cshaptx4869)
@@ -59,9 +59,9 @@
 
 ## ✨ feat
 
-- 增加pagination、request、parseData配置参数([#119](https://github.com/youlaitech/vue3-element-admin/pull/119)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 增加pagination、request、parseData配置参数([#119](https://github.com/youlaitech/vue3-element-admin/pull/119)) [@cshaptx4869](https://github.com/cshaptx4869)
 - 增加返回顶部功能([#120](https://github.com/youlaitech/vue3-element-admin/pull/120)) [@cshaptx4869](https://github.com/cshaptx4869)
-- 支持前端导出([#126](https://github.com/youlaitech/vue3-element-admin/pull/126)) [@cshaptx4869](https://github.com/cshaptx4869) 
+- 支持前端导出([#126](https://github.com/youlaitech/vue3-element-admin/pull/126)) [@cshaptx4869](https://github.com/cshaptx4869)
 
 ## ♻️ refactor
 - 重构布局样式(解决页面抖动问题)([#116](https://github.com/youlaitech/vue3-element-admin/pull/116)) [@cshaptx4869](https://github.com/cshaptx4869)
@@ -174,7 +174,7 @@
 - 本地缓存的 token 变量重命名（author by [haoxianrui](https://github.com/haoxianrui)）
 - 完善 Vite 环境变量类型声明（author by [haoxianrui](https://github.com/haoxianrui)）
 
-## 🐛 fix 
+## 🐛 fix
 - 修复构建时提示iconComponent.name可能为undefined的报错 （author by [wangji1042](https://github.com/wangji1042)）
 - 修复浏览器密码自动填充时可能存在的报错 （author by [cshaptx4869](https://github.com/cshaptx4869)）
 - 修复eslint报错（author by [cshaptx4869](https://github.com/cshaptx4869)）
@@ -211,7 +211,7 @@
 ## ♻️ refactor
 - 项目配置按钮移入navbar（author by [cshaptx4869](https://github.com/cshaptx4869)）
 - 优化user数据定义（author by [cshaptx4869](https://github.com/cshaptx4869)）
-- 统一设置栏的 SVG 图标风格 
+- 统一设置栏的 SVG 图标风格
 
 ## 🐛 fix
 - 规整一些开发依赖（author by [cshaptx4869](https://github.com/cshaptx4869)）
@@ -241,7 +241,7 @@
 # 2.8.1 (2024/01/10)
 
 ## ✨ feat
-- 替换 Mock 解决方案 vite-plugin-mock 为 vite-plugin-mock-dev-server 适配 Vite5 
+- 替换 Mock 解决方案 vite-plugin-mock 为 vite-plugin-mock-dev-server 适配 Vite5
 
 # 2.8.0 (2023/12/27)
 
@@ -280,7 +280,7 @@
 ## ✨ feat
 - 菜单管理新增目录只有一级子路由是否始终显示(alwaysShow)和路由页面是否缓存(keepAlive)的配置
 - 接口文档新增 swagger、knife4j
-- 引入和支持 tsx 
+- 引入和支持 tsx
 
 ## ♻️ refactor
 - 代码瘦身，整理并删除未使用的 svg
@@ -329,7 +329,7 @@
 - 字典组件封装（author by [haoxr](https://juejin.cn/user/4187394044331261/posts)）
 
 ## 🐛 fix
-- 分页组件hidden无效 
+- 分页组件hidden无效
 - 签名无法保存至后端
 - Git 提交 stylelint 校验部分机器报错
 
