@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar__right" :class="navbarRightClass">
+  <div :class="['navbar__right', navbarRightClass]">
     <!-- 非手机设备（窄屏）才显示 -->
     <template v-if="!isMobile">
       <!-- 搜索 -->
@@ -35,18 +35,20 @@ import { useAppStore, useSettingsStore } from "@/store";
 
 import UserProfile from "./UserProfile.vue";
 import Notification from "./Notification.vue";
-import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
+import { SidebarLightThemeEnum, ThemeEnum } from "@/enums/ThemeEnum";
 
 const appStore = useAppStore();
 const settingStore = useSettingsStore();
 
 const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE);
 
-// 根据浅色模式-侧边栏颜色配置选择navbar右侧的样式类
+// 根据主题和侧边栏配色方案选择 navbar 右侧的样式类
 const navbarRightClass = computed(() => {
-  return settingStore.sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
-    ? "navbar__right--darkBlue"
-    : "navbar__right--white";
+  const isDarkTheme = settingStore.theme === ThemeEnum.DARK;
+  const isDarkBlueSidebar = settingStore.sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE;
+
+  // 如果是暗黑主题，或者是浅色主题中的深蓝色侧边栏配色
+  return isDarkTheme || isDarkBlueSidebar ? "navbar__right--darkBlue" : "navbar__right--white";
 });
 </script>
 
