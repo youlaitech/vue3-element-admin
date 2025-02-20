@@ -4,7 +4,7 @@
       <!-- 展开/收缩菜单  -->
       <Hamburger :is-active="isSidebarOpened" @toggle-click="toggleSideBar" />
       <!-- 面包屑 -->
-      <breadcrumb />
+      <Breadcrumb />
     </div>
     <!-- 导航栏右侧 -->
     <NavbarRight />
