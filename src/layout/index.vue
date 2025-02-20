@@ -13,8 +13,9 @@
         <el-scrollbar>
           <SidebarMenu :data="mixedLayoutLeftRoutes" :base-path="activeTopMenuPath" />
         </el-scrollbar>
+        <!-- 侧边栏切换按钮 -->
         <div class="layout__sidebar-toggle">
-          <hamburger :is-active="appStore.sidebar.opened" @toggle-click="handleToggleSidebar" />
+          <Hamburger :is-active="appStore.sidebar.opened" @toggle-click="handleToggleSidebar" />
         </div>
       </div>
       <!-- 主内容区域 -->
