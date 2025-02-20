@@ -38,9 +38,7 @@ export const useAppStore = defineStore("app", () => {
   // 切换侧边栏
   function toggleSidebar() {
     sidebar.opened = !sidebar.opened;
-    sidebarStatus.value = sidebar.opened
-      ? SidebarStatusEnum.OPENED
-      : SidebarStatusEnum.CLOSED;
+    sidebarStatus.value = sidebar.opened ? SidebarStatusEnum.OPENED : SidebarStatusEnum.CLOSED;
   }
 
   // 关闭侧边栏

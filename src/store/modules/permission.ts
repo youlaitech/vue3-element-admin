@@ -1,16 +1,19 @@
-import { RouteRecordRaw } from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
 import { constantRoutes } from "@/router";
 import { store } from "@/store";
-import MenuAPI, { RouteVO } from "@/api/menu";
+import router from "@/router";
 
+import MenuAPI, { type RouteVO } from "@/api/system/menu";
 const modules = import.meta.glob("../../views/**/**.vue");
 const Layout = () => import("@/layout/index.vue");
 
 export const usePermissionStore = defineStore("permission", () => {
-  /** 所有路由，包括静态和动态路由 */
+  // 所有路由，包括静态和动态路由
   const routes = ref<RouteRecordRaw[]>([]);
-  /** 混合模式左侧菜单 */
+  // 混合模式左侧菜单
   const mixLeftMenus = ref<RouteRecordRaw[]>([]);
+  // 路由是否已加载
+  const isRoutesLoaded = ref(false);
 
   /**
    * 生成动态路由
@@ -21,6 +24,7 @@ export const usePermissionStore = defineStore("permission", () => {
         .then((data) => {
           const dynamicRoutes = transformRoutes(data);
           routes.value = constantRoutes.concat(dynamicRoutes);
+          isRoutesLoaded.value = true;
           resolve(dynamicRoutes);
         })
         .catch((error) => {
@@ -41,11 +45,30 @@ export const usePermissionStore = defineStore("permission", () => {
     }
   };
 
+  /**
+   * 重置路由
+   */
+  const resetRouter = () => {
+    // 删除动态路由，保留静态路由
+    routes.value.forEach((route) => {
+      if (route.name && !constantRoutes.find((r) => r.name === route.name)) {
+        // 从 router 实例中移除动态路由
+        router.removeRoute(route.name);
+      }
+    });
+
+    routes.value = [];
+    mixLeftMenus.value = [];
+    isRoutesLoaded.value = false;
+  };
+
   return {
     routes,
     generateRoutes,
     mixLeftMenus,
     setMixLeftMenus,
+    isRoutesLoaded,
+    resetRouter,
   };
 });
 
@@ -65,7 +88,7 @@ const transformRoutes = (routes: RouteVO[]) => {
       if (component) {
         tmpRoute.component = component;
       } else {
-        tmpRoute.component = modules[`../../views/error-page/404.vue`];
+        tmpRoute.component = modules["../../views/error-page/404.vue"];
       }
     }
 
@@ -80,8 +103,7 @@ const transformRoutes = (routes: RouteVO[]) => {
 };
 
 /**
- * 在组件外使用 Pinia store 实例
- * @see https://pinia.vuejs.org/core-concepts/outside-component-usage.html
+ * 在组件外使用 Pinia store 实例 @see https://pinia.vuejs.org/core-concepts/outside-component-usage.html
  */
 export function usePermissionStoreHook() {
   return usePermissionStore(store);

@@ -13,6 +13,6 @@ dist-ssr
 *.sln
 *.local
 
-package-lock.json
-pnpm-lock.yaml
 stats.html
+pnpm-lock.yaml
+package-lock.json

@@ -8,15 +8,14 @@ const contentConfig: IContentConfig = {
   toolbar: [],
   indexAction: function (params) {
     // 模拟发起网络请求获取列表数据
-    // console.log("indexAction:", params);
+    console.log("indexAction:", params);
     return Promise.resolve({
       total: 2,
       list: [
         {
           id: 1,
           username: "tom",
-          avatar:
-            "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+          avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
           percent: 99,
           price: 10,
           url: "https://www.baidu.com",
@@ -30,8 +29,7 @@ const contentConfig: IContentConfig = {
         {
           id: 2,
           username: "jerry",
-          avatar:
-            "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+          avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
           percent: 88,
           price: 999,
           url: "https://www.google.com",
@@ -76,7 +74,7 @@ const contentConfig: IContentConfig = {
       align: "center",
       prop: "gender",
       templet: "list",
-      selectList: { 0: "女", 1: "男" },
+      selectList: { "0": "女", "1": "男" },
     },
     {
       label: "自定义",

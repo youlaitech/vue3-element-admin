@@ -1,5 +1,5 @@
 export default {
-  // 路由国际化
+  // 菜单国际化
   route: {
     dashboard: "首页",
     document: "项目文档",
@@ -11,6 +11,8 @@ export default {
     login: "登 录",
     captchaCode: "验证码",
     capsLock: "大写锁定已打开",
+    rememberMe: "记住我",
+    forgetPassword: "忘记密码",
     message: {
       username: {
         required: "请输入用户名",
@@ -23,6 +25,7 @@ export default {
         required: "请输入验证码",
       },
     },
+    otherLoginMethods: "其他登录方式",
   },
   // 导航栏国际化
   navbar: {

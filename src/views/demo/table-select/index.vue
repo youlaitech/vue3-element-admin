@@ -36,11 +36,7 @@ const text = computed(() => {
     >
       示例源码 请点击>>>>
     </el-link>
-    <table-select
-      :text="text"
-      :select-config="selectConfig"
-      @confirm-click="handleConfirm"
-    >
+    <table-select :text="text" :select-config="selectConfig" @confirm-click="handleConfirm">
       <template #status="scope">
         <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
           {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}

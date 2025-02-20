@@ -16,6 +16,7 @@ export default defineConfig({
     "flex-x-center": "flex justify-center",
     "flex-y-center": "flex items-center",
     "wh-full": "w-full h-full",
+    "flex-x-start": "flex items-center justify-start",
     "flex-x-between": "flex items-center justify-between",
     "flex-x-end": "flex items-center justify-end",
     "absolute-lt": "absolute left-0 top-0",

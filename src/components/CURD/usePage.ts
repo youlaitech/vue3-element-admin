@@ -1,10 +1,5 @@
 import { ref } from "vue";
-import type {
-  IObject,
-  PageContentInstance,
-  PageModalInstance,
-  PageSearchInstance,
-} from "./types";
+import type { IObject, PageContentInstance, PageModalInstance, PageSearchInstance } from "./types";
 
 function usePage() {
   const searchRef = ref<PageSearchInstance>();

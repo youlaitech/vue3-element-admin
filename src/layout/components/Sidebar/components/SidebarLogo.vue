@@ -1,13 +1,11 @@
 <template>
-  <div class="logo-container">
+  <div class="logo">
     <transition enter-active-class="animate__animated animate__fadeInLeft">
-      <router-link v-if="collapse" class="wh-full flex-center" to="/">
-        <img v-if="settingsStore.sidebarLogo" :src="logo" class="logo-image" />
-      </router-link>
-
-      <router-link v-else class="wh-full flex-center" to="/">
-        <img v-if="settingsStore.sidebarLogo" :src="logo" class="logo-image" />
-        <span class="logo-title"> {{ defaultSettings.title }}</span>
+      <router-link :key="+collapse" class="wh-full flex-center" to="/">
+        <img :src="logo" class="w20px h20px" />
+        <span v-if="!collapse" class="title">
+          {{ defaultSettings.title }}
+        </span>
       </router-link>
     </transition>
   </div>
@@ -15,9 +13,7 @@
 
 <script lang="ts" setup>
 import defaultSettings from "@/settings";
-import { useSettingsStore } from "@/store";
-
-const settingsStore = useSettingsStore();
+import logo from "@/assets/logo.png";
 
 defineProps({
   collapse: {
@@ -25,22 +21,15 @@ defineProps({
     required: true,
   },
 });
-
-const logo = ref(new URL(`../../../../assets/logo.png`, import.meta.url).href);
 </script>
 
 <style lang="scss" scoped>
-.logo-container {
+.logo {
   width: 100%;
   height: $navbar-height;
   background-color: $sidebar-logo-background;
 
-  .logo-image {
-    width: 20px;
-    height: 20px;
-  }
-
-  .logo-title {
+  .title {
     flex-shrink: 0; /* 防止容器在空间不足时缩小 */
     margin-left: 10px;
     font-size: 14px;
@@ -51,12 +40,12 @@ const logo = ref(new URL(`../../../../assets/logo.png`, import.meta.url).href);
 
 .layout-top,
 .layout-mix {
-  .logo-container {
+  .logo {
     width: $sidebar-width;
   }
 
   &.hideSidebar {
-    .logo-container {
+    .logo {
       width: $sidebar-width-collapsed;
     }
   }

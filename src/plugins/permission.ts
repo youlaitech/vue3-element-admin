@@ -1,11 +1,6 @@
-import {
-  NavigationGuardNext,
-  RouteLocationNormalized,
-  RouteRecordRaw,
-} from "vue-router";
-
+import type { NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from "vue-router";
 import NProgress from "@/utils/nprogress";
-import { TOKEN_KEY } from "@/enums/CacheEnum";
+import { getToken } from "@/utils/auth";
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
 
@@ -15,52 +10,46 @@ export function setupPermission() {
 
   router.beforeEach(async (to, from, next) => {
     NProgress.start();
-    const hasToken = localStorage.getItem(TOKEN_KEY);
 
-    if (hasToken) {
+    const isLogin = !!getToken(); // 判断是否登录
+    if (isLogin) {
       if (to.path === "/login") {
-        // 如果已登录，跳转到首页
+        // 已登录，访问登录页，跳转到首页
         next({ path: "/" });
-        NProgress.done();
       } else {
-        const userStore = useUserStore();
-        const hasRoles =
-          userStore.user.roles && userStore.user.roles.length > 0;
-
-        if (hasRoles) {
-          // 如果未匹配到任何路由，跳转到404页面
+        const permissionStore = usePermissionStore();
+        // 判断路由是否加载完成
+        if (permissionStore.isRoutesLoaded) {
           if (to.matched.length === 0) {
-            next(from.name ? { name: from.name } : "/404");
+            // 路由未匹配，跳转到404
+            next("/404");
           } else {
-            // 如果路由参数中有 title，覆盖路由元信息中的 title
-            const title =
-              (to.params.title as string) || (to.query.title as string);
+            // 动态设置页面标题
+            const title = (to.params.title as string) || (to.query.title as string);
             if (title) {
               to.meta.title = title;
             }
             next();
           }
         } else {
-          const permissionStore = usePermissionStore();
           try {
-            await userStore.getUserInfo();
+            // 生成动态路由
             const dynamicRoutes = await permissionStore.generateRoutes();
-            dynamicRoutes.forEach((route: RouteRecordRaw) =>
-              router.addRoute(route)
-            );
+            dynamicRoutes.forEach((route: RouteRecordRaw) => router.addRoute(route));
             next({ ...to, replace: true });
           } catch (error) {
-            // 移除 token 并重定向到登录页，携带当前页面路由作为跳转参数
-            await userStore.resetToken();
+            console.error(error);
+            // 路由加载失败，重置 token 并重定向到登录页
+            await useUserStore().clearUserData();
             redirectToLogin(to, next);
             NProgress.done();
           }
         }
       }
     } else {
-      // 未登录
+      // 未登录，判断是否在白名单中
       if (whiteList.includes(to.path)) {
-        next(); // 在白名单，直接进入
+        next();
       } else {
         // 不在白名单，重定向到登录页
         redirectToLogin(to, next);
@@ -69,16 +58,14 @@ export function setupPermission() {
     }
   });
 
+  // 后置守卫，保证每次路由跳转结束时关闭进度条
   router.afterEach(() => {
     NProgress.done();
   });
 }
 
-/** 重定向到登录页 */
-function redirectToLogin(
-  to: RouteLocationNormalized,
-  next: NavigationGuardNext
-) {
+// 重定向到登录页
+function redirectToLogin(to: RouteLocationNormalized, next: NavigationGuardNext) {
   const params = new URLSearchParams(to.query as Record<string, string>);
   const queryString = params.toString();
   const redirect = queryString ? `${to.path}?${queryString}` : to.path;
@@ -86,11 +73,8 @@ function redirectToLogin(
 }
 
 /** 判断是否有权限 */
-export function hasAuth(
-  value: string | string[],
-  type: "button" | "role" = "button"
-) {
-  const { roles, perms } = useUserStore().user;
+export function hasAuth(value: string | string[], type: "button" | "role" = "button") {
+  const { roles, perms } = useUserStore().userInfo;
 
   // 超级管理员 拥有所有权限
   if (type === "button" && roles.includes("ROOT")) {

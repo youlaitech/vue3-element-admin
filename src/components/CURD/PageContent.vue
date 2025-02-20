@@ -71,12 +71,7 @@
           <template v-if="typeof item === 'string'">
             <!-- 刷新 -->
             <template v-if="item === 'refresh'">
-              <el-button
-                icon="refresh"
-                circle
-                title="刷新"
-                @click="handleToolbar(item)"
-              />
+              <el-button icon="refresh" circle title="刷新" @click="handleToolbar(item)" />
             </template>
             <!-- 筛选列 -->
             <template v-else-if="item === 'filter'">
@@ -86,11 +81,7 @@
                 </template>
                 <el-scrollbar max-height="350px">
                   <template v-for="col in cols" :key="col">
-                    <el-checkbox
-                      v-if="col.prop"
-                      v-model="col.show"
-                      :label="col.label"
-                    />
+                    <el-checkbox v-if="col.prop" v-model="col.show" :label="col.label" />
                   </template>
                 </el-scrollbar>
               </el-popover>
@@ -98,30 +89,30 @@
             <!-- 导出 -->
             <template v-else-if="item === 'exports'">
               <el-button
+                v-hasPerm="[`${contentConfig.pageName}:export`]"
                 icon="download"
                 circle
                 title="导出"
-                v-hasPerm="[`${contentConfig.pageName}:export`]"
                 @click="handleToolbar(item)"
               />
             </template>
             <!-- 导入 -->
             <template v-else-if="item === 'imports'">
               <el-button
+                v-hasPerm="[`${contentConfig.pageName}:import`]"
                 icon="upload"
                 circle
                 title="导入"
-                v-hasPerm="[`${contentConfig.pageName}:import`]"
                 @click="handleToolbar(item)"
               />
             </template>
             <!-- 搜索 -->
             <template v-else-if="item === 'search'">
               <el-button
+                v-hasPerm="[`${contentConfig.pageName}:query`]"
                 icon="search"
                 circle
                 title="搜索"
-                v-hasPerm="[`${contentConfig.pageName}:query`]"
                 @click="handleToolbar(item)"
               />
             </template>
@@ -130,10 +121,10 @@
           <template v-else-if="typeof item === 'object'">
             <template v-if="item.auth">
               <el-button
+                v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
                 :icon="item.icon"
                 circle
                 :title="item.title"
-                v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
                 @click="handleToolbar(item.name)"
               />
             </template>
@@ -151,6 +142,7 @@
     </div>
     <!-- 列表 -->
     <el-table
+      ref="tableRef"
       v-loading="loading"
       v-bind="contentConfig.table"
       :data="pageData"
@@ -165,10 +157,7 @@
             <template v-if="col.templet === 'image'">
               <template v-if="col.prop">
                 <template v-if="Array.isArray(scope.row[col.prop])">
-                  <template
-                    v-for="(item, index) in scope.row[col.prop]"
-                    :key="item"
-                  >
+                  <template v-for="(item, index) in scope.row[col.prop]" :key="item">
                     <el-image
                       :src="item"
                       :preview-src-list="scope.row[col.prop]"
@@ -197,11 +186,7 @@
             <!-- 格式化显示链接 -->
             <template v-else-if="col.templet === 'url'">
               <template v-if="col.prop">
-                <el-link
-                  type="primary"
-                  :href="scope.row[col.prop]"
-                  target="_blank"
-                >
+                <el-link type="primary" :href="scope.row[col.prop]" target="_blank">
                   {{ scope.row[col.prop] }}
                 </el-link>
               </template>
@@ -220,8 +205,7 @@
                   :validate-event="false"
                   :disabled="!hasAuth(`${contentConfig.pageName}:modify`)"
                   @change="
-                    pageData.length > 0 &&
-                      handleModify(col.prop, scope.row[col.prop], scope.row)
+                    pageData.length > 0 && handleModify(col.prop, scope.row[col.prop], scope.row)
                   "
                 />
               </template>
@@ -252,9 +236,7 @@
               <template v-if="col.prop">
                 <template v-if="scope.row[col.prop].startsWith('el-icon-')">
                   <el-icon>
-                    <component
-                      :is="scope.row[col.prop].replace('el-icon-', '')"
-                    />
+                    <component :is="scope.row[col.prop].replace('el-icon-', '')" />
                   </el-icon>
                 </template>
                 <template v-else>
@@ -267,20 +249,15 @@
               <template v-if="col.prop">
                 {{
                   scope.row[col.prop]
-                    ? useDateFormat(
-                        scope.row[col.prop],
-                        col.dateFormat ?? "YYYY-MM-DD HH:mm:ss"
-                      ).value
+                    ? useDateFormat(scope.row[col.prop], col.dateFormat ?? "YYYY-MM-DD HH:mm:ss")
+                        .value
                     : ""
                 }}
               </template>
             </template>
             <!-- 列操作栏 -->
             <template v-else-if="col.templet === 'tool'">
-              <template
-                v-for="item in col.operat ?? ['edit', 'delete']"
-                :key="item"
-              >
+              <template v-for="item in col.operat ?? ['edit', 'delete']" :key="item">
                 <template v-if="typeof item === 'string'">
                   <!-- 编辑/删除 -->
                   <template v-if="item === 'edit' || item === 'delete'">
@@ -307,7 +284,9 @@
                 <template v-else-if="typeof item === 'object'">
                   <el-button
                     v-if="item.render === undefined || item.render(scope.row)"
-                    v-hasPerm="[`${contentConfig.pageName}:${item.auth}`]"
+                    v-bind="
+                      item.auth ? { 'v-hasPerm': [`${contentConfig.pageName}:${item.auth}`] } : {}
+                    "
                     :icon="item.icon"
                     :type="item.type ?? 'primary'"
                     size="small"
@@ -328,11 +307,7 @@
             </template>
             <!-- 自定义 -->
             <template v-else-if="col.templet === 'custom'">
-              <slot
-                :name="col.slotName ?? col.prop"
-                :prop="col.prop"
-                v-bind="scope"
-              ></slot>
+              <slot :name="col.slotName ?? col.prop" :prop="col.prop" v-bind="scope" />
             </template>
           </template>
         </el-table-column>
@@ -377,10 +352,7 @@
           </el-form-item>
           <el-form-item label="数据源" prop="origin">
             <el-select v-model="exportsFormData.origin">
-              <el-option
-                label="当前数据 (当前页的数据)"
-                :value="ExportsOriginEnum.CURRENT"
-              />
+              <el-option label="当前数据 (当前页的数据)" :value="ExportsOriginEnum.CURRENT" />
               <el-option
                 label="选中数据 (所有选中的数据)"
                 :value="ExportsOriginEnum.SELECTED"
@@ -396,11 +368,7 @@
           <el-form-item label="字段" prop="fields">
             <el-checkbox-group v-model="exportsFormData.fields">
               <template v-for="col in cols" :key="col">
-                <el-checkbox
-                  v-if="col.prop"
-                  :value="col.prop"
-                  :label="col.label"
-                />
+                <el-checkbox v-if="col.prop" :value="col.prop" :label="col.label" />
               </template>
             </el-checkbox-group>
           </el-form-item>
@@ -409,9 +377,7 @@
       <!-- 弹窗底部操作按钮 -->
       <template #footer>
         <div style="padding-right: var(--el-dialog-padding-primary)">
-          <el-button type="primary" @click="handleExportsSubmit">
-            确 定
-          </el-button>
+          <el-button type="primary" @click="handleExportsSubmit">确 定</el-button>
           <el-button @click="handleCloseExportsModal">取 消</el-button>
         </div>
       </template>
@@ -437,9 +403,9 @@
         >
           <el-form-item label="文件名" prop="files">
             <el-upload
-              class="w-full"
               ref="uploadRef"
               v-model:file-list="importFormData.files"
+              class="w-full"
               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
               :drag="true"
               :limit="1"
@@ -497,6 +463,7 @@ import {
   type UploadInstance,
   type UploadRawFile,
   type UploadUserFile,
+  type TableInstance,
 } from "element-plus";
 import ExcelJS from "exceljs";
 import { reactive, ref } from "vue";
@@ -522,10 +489,7 @@ const pk = props.contentConfig.pk ?? "id";
 // 表格左侧工具栏
 const toolbar = props.contentConfig.toolbar ?? ["add", "delete"];
 // 表格右侧工具栏
-const defaultToolbar = props.contentConfig.defaultToolbar ?? [
-  "refresh",
-  "filter",
-];
+const defaultToolbar = props.contentConfig.defaultToolbar ?? ["refresh", "filter"];
 // 表格列
 const cols = ref(
   props.contentConfig.cols.map((col) => {
@@ -533,11 +497,7 @@ const cols = ref(
     if (col.show === undefined) {
       col.show = true;
     }
-    if (
-      col.prop !== undefined &&
-      col.columnKey === undefined &&
-      col["column-key"] === undefined
-    ) {
+    if (col.prop !== undefined && col.columnKey === undefined && col["column-key"] === undefined) {
       col.columnKey = col.prop;
     }
     if (
@@ -577,6 +537,8 @@ const request = props.contentConfig.request ?? {
   limitName: "pageSize",
 };
 
+const tableRef = ref<TableInstance>();
+
 // 行选中
 const selectionData = ref<IObject[]>([]);
 // 删除ID集合 用于批量删除
@@ -607,6 +569,9 @@ function handleDelete(id?: number | string) {
     if (props.contentConfig.deleteAction) {
       props.contentConfig.deleteAction(ids).then(() => {
         ElMessage.success("删除成功");
+        removeIds.value = [];
+        //清空选中项
+        tableRef.value?.clearSelection();
         handleRefresh(true);
       });
     } else {
@@ -665,9 +630,7 @@ function handleExports() {
   const filename = exportsFormData.filename
     ? exportsFormData.filename
     : props.contentConfig.pageName;
-  const sheetname = exportsFormData.sheetname
-    ? exportsFormData.sheetname
-    : "sheet";
+  const sheetname = exportsFormData.sheetname ? exportsFormData.sheetname : "sheet";
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(sheetname);
   const columns: Partial<ExcelJS.Column>[] = [];
@@ -693,9 +656,7 @@ function handleExports() {
     }
   } else {
     worksheet.addRows(
-      exportsFormData.origin === ExportsOriginEnum.SELECTED
-        ? selectionData.value
-        : pageData.value
+      exportsFormData.origin === ExportsOriginEnum.SELECTED ? selectionData.value : pageData.value
     );
     workbook.xlsx
       .writeBuffer()
@@ -814,11 +775,7 @@ function handleImports() {
               fields.push(cell.value);
             });
             // 遍历工作表的每一行（从第二行开始，因为第一行通常是标题行）
-            for (
-              let rowNumber = 2;
-              rowNumber <= worksheet.rowCount;
-              rowNumber++
-            ) {
+            for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
               const rowData: IObject = {};
               const row = worksheet.getRow(rowNumber);
               // 遍历当前行的每个单元格
@@ -896,11 +853,7 @@ function handleOperat(data: IOperatData) {
 }
 
 // 属性修改
-function handleModify(
-  field: string,
-  value: boolean | string | number,
-  row: Record<string, any>
-) {
+function handleModify(field: string, value: boolean | string | number, row: Record<string, any>) {
   if (props.contentConfig.modifyAction) {
     props.contentConfig.modifyAction({
       [pk]: row[pk],
@@ -940,7 +893,7 @@ function handleFilterChange(newFilters: any) {
   emit("filterChange", filterParams);
 }
 
-// 获取涮选条件
+// 获取筛选条件
 function getFilterParams() {
   return filterParams;
 }

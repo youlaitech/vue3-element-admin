@@ -16,12 +16,7 @@
                 size="small"
                 @click="triggerFileUpload"
               />
-              <input
-                type="file"
-                ref="fileInput"
-                style="display: none"
-                @change="handleFileChange"
-              />
+              <input ref="fileInput" type="file" style="display: none" @change="handleFileChange" />
             </div>
             <div class="mt-5">
               {{ userProfile.nickname }}
@@ -41,10 +36,7 @@
                   用户名
                 </template>
                 {{ userProfile.username }}
-                <el-icon
-                  v-if="userProfile.gender === 1"
-                  class="align-middle color-blue"
-                >
+                <el-icon v-if="userProfile.gender === 1" class="align-middle color-blue">
                   <Male />
                 </el-icon>
                 <el-icon v-else class="align-middle color-pink">
@@ -67,14 +59,14 @@
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
-                  <el-icon class="align-middle"><User /></el-icon>
+                  <SvgIcon icon-class="tree" />
                   部门
                 </template>
                 {{ userProfile.deptName }}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
-                  <el-icon class="align-middle"><User /></el-icon>
+                  <SvgIcon icon-class="role" />
                   角色
                 </template>
                 {{ userProfile.roleNames }}
@@ -82,7 +74,7 @@
 
               <el-descriptions-item>
                 <template #label>
-                  <el-icon class="align-middle"><User /></el-icon>
+                  <el-icon class="align-middle"><Timer /></el-icon>
                   创建日期
                 </template>
                 {{ userProfile.createTime }}
@@ -105,8 +97,8 @@
                   type="primary"
                   plain
                   size="small"
-                  @click="() => handleOpenDialog(DialogType.PASSWORD)"
                   class="ml-5"
+                  @click="() => handleOpenDialog(DialogType.PASSWORD)"
                 >
                   修改
                 </el-button>
@@ -117,27 +109,25 @@
           <div class="mt-5">
             <div class="font-bold">绑定手机</div>
             <div class="text-14px mt-2">
-              <span v-if="userProfile.mobile">
-                已绑定手机号：{{ userProfile.mobile }}
-              </span>
+              <span v-if="userProfile.mobile">已绑定手机号：{{ userProfile.mobile }}</span>
               <span v-else>未绑定手机</span>
               <el-button
+                v-if="userProfile.mobile"
                 type="primary"
                 plain
                 size="small"
-                @click="() => handleOpenDialog(DialogType.MOBILE)"
                 class="ml-5"
-                v-if="userProfile.mobile"
+                @click="() => handleOpenDialog(DialogType.MOBILE)"
               >
                 更换
               </el-button>
               <el-button
+                v-else
                 type="primary"
                 plain
                 size="small"
-                @click="() => handleOpenDialog(DialogType.MOBILE)"
                 class="ml-5"
-                v-else
+                @click="() => handleOpenDialog(DialogType.MOBILE)"
               >
                 绑定
               </el-button>
@@ -147,27 +137,25 @@
           <div class="mt-5">
             <div class="font-bold">绑定邮箱</div>
             <div class="text-14px mt-2">
-              <span v-if="userProfile.email">
-                已绑定邮箱：{{ userProfile.email }}
-              </span>
+              <span v-if="userProfile.email">已绑定邮箱：{{ userProfile.email }}</span>
               <span v-else>未绑定邮箱</span>
               <el-button
+                v-if="userProfile.email"
                 type="primary"
                 plain
                 size="small"
-                @click="() => handleOpenDialog(DialogType.EMAIL)"
                 class="ml-5"
-                v-if="userProfile.email"
+                @click="() => handleOpenDialog(DialogType.EMAIL)"
               >
                 更换
               </el-button>
               <el-button
+                v-else
                 type="primary"
                 plain
                 size="small"
-                @click="() => handleOpenDialog(DialogType.EMAIL)"
                 class="ml-5"
-                v-else
+                @click="() => handleOpenDialog(DialogType.EMAIL)"
               >
                 绑定
               </el-button>
@@ -178,58 +166,46 @@
     </el-tabs>
 
     <!-- 弹窗 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" :width="500">
+    <el-dialog v-model="dialog.visible" :title="dialog.title" :width="500">
       <!-- 账号资料 -->
       <el-form
         v-if="dialog.type === DialogType.ACCOUNT"
-        :model="userProfileForm"
         ref="userProfileFormRef"
+        :model="userProfileForm"
         :label-width="100"
       >
         <el-form-item label="昵称">
           <el-input v-model="userProfileForm.nickname" />
         </el-form-item>
         <el-form-item label="性别">
-          <dictionary v-model="userProfileForm.gender" code="gender" />
+          <Dict v-model="userProfileForm.gender" code="gender" />
         </el-form-item>
       </el-form>
 
       <!-- 修改密码 -->
       <el-form
         v-if="dialog.type === DialogType.PASSWORD"
+        ref="passwordChangeFormRef"
         :model="passwordChangeForm"
         :rules="passwordChangeRules"
-        ref="passwordChangeFormRef"
         :label-width="100"
       >
         <el-form-item label="原密码" prop="oldPassword">
-          <el-input
-            type="password"
-            v-model="passwordChangeForm.oldPassword"
-            show-password
-          />
+          <el-input v-model="passwordChangeForm.oldPassword" type="password" show-password />
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
-          <el-input
-            type="password"
-            v-model="passwordChangeForm.newPassword"
-            show-password
-          />
+          <el-input v-model="passwordChangeForm.newPassword" type="password" show-password />
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input
-            type="password"
-            v-model="passwordChangeForm.confirmPassword"
-            show-password
-          />
+          <el-input v-model="passwordChangeForm.confirmPassword" type="password" show-password />
         </el-form-item>
       </el-form>
       <!-- 绑定手机 -->
       <el-form
         v-else-if="dialog.type === DialogType.MOBILE"
+        ref="mobileBindingFormRef"
         :model="mobileBindingForm"
         :rules="mobileBindingRules"
-        ref="mobileBindingFormRef"
         :label-width="100"
       >
         <el-form-item label="手机号码" prop="mobile">
@@ -243,11 +219,7 @@
                 :disabled="mobileCountdown > 0"
                 @click="handleSendVerificationCode('MOBILE')"
               >
-                {{
-                  mobileCountdown > 0
-                    ? `${mobileCountdown}s后重新发送`
-                    : "发送验证码"
-                }}
+                {{ mobileCountdown > 0 ? `${mobileCountdown}s后重新发送` : "发送验证码" }}
               </el-button>
             </template>
           </el-input>
@@ -257,9 +229,9 @@
       <!-- 绑定邮箱 -->
       <el-form
         v-else-if="dialog.type === DialogType.EMAIL"
+        ref="emailBindingFormRef"
         :model="emailBindingForm"
         :rules="emailBindingRules"
-        ref="emailBindingFormRef"
         :label-width="100"
       >
         <el-form-item label="邮箱" prop="email">
@@ -273,11 +245,7 @@
                 :disabled="emailCountdown > 0"
                 @click="handleSendVerificationCode('EMAIL')"
               >
-                {{
-                  emailCountdown > 0
-                    ? `${emailCountdown}s后重新发送`
-                    : "发送验证码"
-                }}
+                {{ emailCountdown > 0 ? `${emailCountdown}s后重新发送` : "发送验证码" }}
               </el-button>
             </template>
           </el-input>
@@ -300,14 +268,11 @@ import UserAPI, {
   MobileBindingForm,
   EmailBindingForm,
   UserProfileForm,
-} from "@/api/user";
+} from "@/api/system/user";
 
 import FileAPI from "@/api/file";
 
-import { useUserStore } from "@/store/modules/user";
 import { Camera } from "@element-plus/icons-vue";
-
-const userStore = useUserStore();
 
 const userProfile = ref<UserProfileVO>({});
 
@@ -339,9 +304,7 @@ const emailTimer = ref<NodeJS.Timeout | null>(null);
 const passwordChangeRules = {
   oldPassword: [{ required: true, message: "请输入原密码", trigger: "blur" }],
   newPassword: [{ required: true, message: "请输入新密码", trigger: "blur" }],
-  confirmPassword: [
-    { required: true, message: "请再次输入新密码", trigger: "blur" },
-  ],
+  confirmPassword: [{ required: true, message: "请再次输入新密码", trigger: "blur" }],
 };
 
 // 手机号校验规则
@@ -451,7 +414,7 @@ const handleSendVerificationCode = async (contactType: string) => {
  */
 const handleSubmit = async () => {
   if (dialog.type === DialogType.ACCOUNT) {
-    UserAPI.updateProfile(userProfileForm.id, userProfileForm).then(() => {
+    UserAPI.updateProfile(userProfileForm).then(() => {
       ElMessage.success("账号资料修改成功");
       dialog.visible = false;
       loadUserProfile();
@@ -465,10 +428,18 @@ const handleSubmit = async () => {
       ElMessage.success("密码修改成功");
       dialog.visible = false;
     });
-  } else if (dialog.type === "mobile") {
-    //await UserAPI.bindMobile(mobileBindingForm.value);
-  } else if (dialog.type === "email") {
-    //await UserAPI.bindEmail(emailBindingForm.value);
+  } else if (dialog.type === DialogType.MOBILE) {
+    UserAPI.bindMobile(mobileBindingForm).then(() => {
+      ElMessage.success("手机号绑定成功");
+      dialog.visible = false;
+      loadUserProfile();
+    });
+  } else if (dialog.type === DialogType.EMAIL) {
+    UserAPI.bindEmail(emailBindingForm).then(() => {
+      ElMessage.success("邮箱绑定成功");
+      dialog.visible = false;
+      loadUserProfile();
+    });
   }
 };
 
@@ -488,7 +459,7 @@ const handleFileChange = async (event: Event) => {
       // 更新用户头像
       userProfile.value.avatar = data.url;
       // 更新用户信息
-      await UserAPI.updateProfile(userProfile.value.id, {
+      await UserAPI.updateProfile({
         avatar: data.url,
       });
     } catch (error) {
@@ -499,7 +470,7 @@ const handleFileChange = async (event: Event) => {
 
 /** 加载用户信息 */
 const loadUserProfile = async () => {
-  const data = await UserAPI.getProfile(userStore.user.userId);
+  const data = await UserAPI.getProfile();
   userProfile.value = data;
 };
 

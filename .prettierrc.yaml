@@ -1,0 +1,41 @@
+# 在单参数箭头函数中始终添加括号
+arrowParens: "always"
+# JSX 多行元素的闭合标签另起一行
+bracketSameLine: false
+# 对象字面量中的括号之间添加空格
+bracketSpacing: true
+# 自动格式化嵌入的代码（如 Markdown 和 HTML 内的代码）
+embeddedLanguageFormatting: "auto"
+# 忽略 HTML 空白敏感度，将空白视为非重要内容
+htmlWhitespaceSensitivity: "ignore"
+# 不插入 @prettier 的 pragma 注释
+insertPragma: false
+# 在 JSX 中使用双引号
+jsxSingleQuote: false
+# 每行代码的最大长度限制为 100 字符
+printWidth: 100
+# 在 Markdown 中保留原有的换行格式
+proseWrap: "preserve"
+# 仅在必要时添加对象属性的引号
+quoteProps: "as-needed"
+# 不要求文件开头插入 @prettier 的 pragma 注释
+requirePragma: false
+# 在语句末尾添加分号
+semi: true
+# 使用双引号而不是单引号
+singleQuote: false
+# 缩进使用 2 个空格
+tabWidth: 2
+# 在多行元素的末尾添加逗号（ES5 支持的对象、数组等）
+trailingComma: "es5"
+# 使用空格而不是制表符缩进
+useTabs: false
+# Vue 文件中的 <script> 和 <style> 不增加额外的缩进
+vueIndentScriptAndStyle: false
+# 根据系统自动检测换行符
+endOfLine: "auto"
+# 对 HTML 文件应用特定格式化规则
+overrides:
+  - files: "*.html"
+    options:
+      parser: "html"

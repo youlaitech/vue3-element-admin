@@ -19,13 +19,13 @@
       :limit="props.limit"
     >
       <el-button
-        type="primary"
         v-if="props.showUploadBtn"
+        type="primary"
         :disabled="fileList.length >= props.limit"
       >
         {{ props.uploadBtnText }}
       </el-button>
-      <template #tip v-if="props.showTip">
+      <template v-if="props.showTip" #tip>
         <div class="el-upload__tip">
           {{ props.tip }}
         </div>
@@ -35,11 +35,7 @@
           <a class="el-upload-list__item-name" @click="downloadFile(file)">
             <el-icon><Document /></el-icon>
             <span class="el-upload-list__item-file-name">{{ file.name }}</span>
-            <span
-              class="el-icon--close"
-              v-if="props.showDelBtn"
-              @click.stop="handleRemove(file)"
-            >
+            <span v-if="props.showDelBtn" class="el-icon--close" @click.stop="handleRemove(file)">
               <el-icon><Close /></el-icon>
             </span>
           </a>
@@ -47,13 +43,13 @@
       </template>
     </el-upload>
     <el-progress
+      v-if="showUploadPercent"
       :style="{
         display: showUploadPercent ? 'inline-flex' : 'none',
         width: '100%',
       }"
       :percentage="uploadPercent"
       :color="customColorMethod"
-      v-if="showUploadPercent"
     />
   </div>
 </template>
@@ -65,11 +61,11 @@ import {
   UploadProgressEvent,
   UploadFiles,
 } from "element-plus";
-import { TOKEN_KEY } from "@/enums/CacheEnum";
+
 import FileAPI from "@/api/file";
-import { ref, watch } from "vue";
-import { ElMessage } from "element-plus";
+import { getToken } from "@/utils/auth";
 import { ResultEnum } from "@/enums/ResultEnum";
+
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   /**
@@ -108,9 +104,9 @@ const props = defineProps({
     default: true,
   },
   /**
-   * 单个文件上传大小限制(单位byte)
+   * 单个文件上传大小限制(单位MB)
    */
-  uploadMaxSize: {
+  maxSize: {
     type: Number,
     default: 2 * 1024 * 1024,
   },
@@ -149,7 +145,7 @@ const props = defineProps({
     type: Object,
     default: () => {
       return {
-        Authorization: localStorage.getItem(TOKEN_KEY),
+        Authorization: getToken(),
       };
     },
   },
@@ -206,6 +202,7 @@ watch(
 
     if (newVal.length <= 0) {
       fileList.value = [];
+      valFileList.value = [];
       return;
     }
 
@@ -224,10 +221,8 @@ watch(
  * 限制用户上传文件的大小
  */
 function handleBeforeUpload(file: UploadRawFile) {
-  if (file.size > props.uploadMaxSize) {
-    ElMessage.warning(
-      "上传文件不能大于" + Math.trunc(props.uploadMaxSize / 1024 / 1024) + "M"
-    );
+  if (file.size > props.maxSize) {
+    ElMessage.warning("上传文件不能大于" + props.maxSize + "M");
     return false;
   }
   uploadPercent.value = 0;
@@ -279,9 +274,7 @@ function handleRemove(removeFile: UploadUserFile) {
   if (filePath) {
     FileAPI.deleteByPath(filePath).then(() => {
       // 删除成功回调
-      valFileList.value = valFileList.value.filter(
-        (file) => file.url !== filePath
-      );
+      valFileList.value = valFileList.value.filter((file) => file.url !== filePath);
       emit("update:modelValue", valFileList.value);
     });
   }

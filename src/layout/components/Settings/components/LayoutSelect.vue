@@ -6,8 +6,8 @@
         :class="{ 'is-active': modelValue === LayoutEnum.LEFT }"
         @click="updateValue(LayoutEnum.LEFT)"
       >
-        <div></div>
-        <div></div>
+        <div />
+        <div />
       </div>
     </el-tooltip>
 
@@ -17,8 +17,8 @@
         :class="{ 'is-active': modelValue === LayoutEnum.TOP }"
         @click="updateValue(LayoutEnum.TOP)"
       >
-        <div></div>
-        <div></div>
+        <div />
+        <div />
       </div>
     </el-tooltip>
 
@@ -28,8 +28,8 @@
         :class="{ 'is-active': modelValue === LayoutEnum.MIX }"
         @click="updateValue(LayoutEnum.MIX)"
       >
-        <div></div>
-        <div></div>
+        <div />
+        <div />
       </div>
     </el-tooltip>
   </div>

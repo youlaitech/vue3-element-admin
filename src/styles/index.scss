@@ -4,7 +4,7 @@
   padding: 15px;
 }
 
-.search-container {
+.search-bar {
   padding: 18px 0 0 10px;
   margin-bottom: 10px;
   background-color: var(--el-bg-color-overlay);
@@ -25,8 +25,4 @@
   &:hover {
     color: rgb(32 160 255);
   }
-}
-
-.search-container .el-form .el-input {
-  width: 16rem !important;
 }

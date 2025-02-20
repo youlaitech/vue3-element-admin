@@ -81,7 +81,7 @@ declare global {
   }
 
   /**
-   * 组件数据源
+   * 下拉选项数据类型
    */
   interface OptionType {
     /** 值 */

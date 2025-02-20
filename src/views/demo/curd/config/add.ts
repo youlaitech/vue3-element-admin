@@ -1,4 +1,4 @@
-import UserAPI, { type UserForm } from "@/api/user";
+import UserAPI, { type UserForm } from "@/api/system/user";
 import type { IModalConfig } from "@/components/CURD/types";
 
 const modalConfig: IModalConfig<UserForm> = {

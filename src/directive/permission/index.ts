@@ -1,38 +1,64 @@
-import { hasAuth } from "@/plugins/permission";
-import { Directive, DirectiveBinding } from "vue";
+import type { Directive, DirectiveBinding } from "vue";
+
+import { useUserStore } from "@/store";
 
 /**
  * 按钮权限
  */
 export const hasPerm: Directive = {
   mounted(el: HTMLElement, binding: DirectiveBinding) {
-    // DOM绑定需要的按钮权限标识
-    const { value: requiredPerms } = binding;
-    if (requiredPerms) {
-      if (!hasAuth(requiredPerms)) {
-        el.parentNode && el.parentNode.removeChild(el);
-      }
-    } else {
+    const requiredPerms = binding.value;
+
+    // 校验传入的权限值是否合法
+    if (!requiredPerms || (typeof requiredPerms !== "string" && !Array.isArray(requiredPerms))) {
       throw new Error(
-        "need perms! Like v-has-perm=\"['sys:user:add','sys:user:edit']\""
+        "需要提供权限标识！例如：v-has-perm=\"'sys:user:add'\" 或 v-has-perm=\"['sys:user:add', 'sys:user:edit']\""
       );
+    }
+
+    const { roles, perms } = useUserStore().userInfo;
+
+    // 超级管理员拥有所有权限
+    if (roles.includes("ROOT")) {
+      return;
+    }
+
+    // 检查权限
+    const hasAuth = Array.isArray(requiredPerms)
+      ? requiredPerms.some((perm) => perms.includes(perm))
+      : perms.includes(requiredPerms);
+
+    // 如果没有权限，移除该元素
+    if (!hasAuth && el.parentNode) {
+      el.parentNode.removeChild(el);
     }
   },
 };
 
 /**
- * 角色权限
+ * 角色权限指令
  */
 export const hasRole: Directive = {
   mounted(el: HTMLElement, binding: DirectiveBinding) {
-    // DOM绑定需要的角色编码
-    const { value: requiredRoles } = binding;
-    if (requiredRoles) {
-      if (!hasAuth(requiredRoles, "role")) {
-        el.parentNode && el.parentNode.removeChild(el);
-      }
-    } else {
-      throw new Error("need roles! Like v-has-role=\"['admin','test']\"");
+    const requiredRoles = binding.value;
+
+    // 校验传入的角色值是否合法
+    if (!requiredRoles || (typeof requiredRoles !== "string" && !Array.isArray(requiredRoles))) {
+      throw new Error(
+        "需要提供角色标识！例如：v-has-role=\"'ADMIN'\" 或 v-has-role=\"['ADMIN', 'TEST']\""
+      );
+    }
+
+    const { roles } = useUserStore().userInfo;
+
+    // 检查是否有对应角色权限
+    const hasAuth = Array.isArray(requiredRoles)
+      ? requiredRoles.some((role) => roles.includes(role))
+      : roles.includes(requiredRoles);
+
+    // 如果没有权限，移除元素
+    if (!hasAuth && el.parentNode) {
+      el.parentNode.removeChild(el);
     }
   },
 };

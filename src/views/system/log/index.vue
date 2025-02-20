@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="search-bar">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -12,9 +12,9 @@
         </el-form-item>
         <el-form-item prop="createTime" label="操作时间">
           <el-date-picker
+            v-model="queryParams.createTime"
             :editable="false"
             class="!w-[240px]"
-            v-model="queryParams.createTime"
             type="daterange"
             range-separator="~"
             start-placeholder="开始时间"
@@ -24,25 +24,14 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="handleQuery">
-            <i-ep-search />
-            搜索
-          </el-button>
-          <el-button @click="handleResetQuery">
-            <i-ep-refresh />
-            重置
-          </el-button>
+          <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
+          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <el-card shadow="never">
-      <el-table
-        v-loading="loading"
-        :data="pageData"
-        highlight-current-row
-        border
-      >
+      <el-table v-loading="loading" :data="pageData" highlight-current-row border>
         <el-table-column label="操作时间" prop="createTime" width="180" />
         <el-table-column label="操作人" prop="operator" width="120" />
         <el-table-column label="日志模块" prop="module" width="100" />
@@ -50,17 +39,8 @@
         <el-table-column label="IP 地址" prop="ip" width="150" />
         <el-table-column label="地区" prop="region" width="150" />
         <el-table-column label="浏览器" prop="browser" width="150" />
-        <el-table-column
-          label="终端系统"
-          prop="os"
-          width="200"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          label="执行时间(ms)"
-          prop="executionTime"
-          width="150"
-        />
+        <el-table-column label="终端系统" prop="os" width="200" show-overflow-tooltip />
+        <el-table-column label="执行时间(ms)" prop="executionTime" width="150" />
       </el-table>
 
       <pagination
@@ -80,7 +60,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import LogAPI, { LogPageVO, LogPageQuery } from "@/api/log";
+import LogAPI, { LogPageVO, LogPageQuery } from "@/api/system/log";
 
 const queryFormRef = ref(ElForm);
 

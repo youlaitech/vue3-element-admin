@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="search-bar">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -12,33 +12,19 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="handleQuery">
-            <i-ep-search />
-            搜索
-          </el-button>
-          <el-button @click="handleResetQuery">
-            <i-ep-refresh />
-            重置
-          </el-button>
+          <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
+          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
 
-    <el-card shadow="never" class="table-container">
-      <template #header>
-        <el-button type="success" @click="handleOpenDialog()">
-          <i-ep-plus />
-          新增
-        </el-button>
-        <el-button
-          type="danger"
-          :disabled="ids.length === 0"
-          @click="handleDelete()"
-        >
-          <i-ep-delete />
+    <el-card shadow="never">
+      <div class="mb-10px">
+        <el-button type="success" icon="plus" @click="handleOpenDialog()">新增</el-button>
+        <el-button type="danger" :disabled="ids.length === 0" icon="delete" @click="handleDelete()">
           删除
         </el-button>
-      </template>
+      </div>
 
       <el-table
         ref="dataTableRef"
@@ -67,27 +53,27 @@
               type="primary"
               size="small"
               link
+              icon="position"
               @click="handleOpenAssignPermDialog(scope.row)"
             >
-              <i-ep-position />
               分配权限
             </el-button>
             <el-button
               type="primary"
               size="small"
               link
+              icon="edit"
               @click="handleOpenDialog(scope.row.id)"
             >
-              <i-ep-edit />
               编辑
             </el-button>
             <el-button
               type="danger"
               size="small"
               link
+              icon="delete"
               @click="handleDelete(scope.row.id)"
             >
-              <i-ep-delete />
               删除
             </el-button>
           </template>
@@ -110,12 +96,7 @@
       width="500px"
       @close="handleCloseDialog"
     >
-      <el-form
-        ref="roleFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-      >
+      <el-form ref="roleFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="formData.name" placeholder="请输入角色名称" />
         </el-form-item>
@@ -165,26 +146,23 @@
       size="500"
     >
       <div class="flex-x-between">
-        <el-input
-          v-model="permKeywords"
-          clearable
-          class="w-[200px]"
-          placeholder="菜单权限名称"
-        >
+        <el-input v-model="permKeywords" clearable class="w-[150px]" placeholder="菜单权限名称">
           <template #prefix>
-            <i-ep-search />
+            <Search />
           </template>
         </el-input>
 
-        <div class="flex-center">
+        <div class="flex-center ml-5">
           <el-button type="primary" size="small" plain @click="togglePermTree">
-            <i-ep-switch />
+            <template #icon>
+              <Switch />
+            </template>
             {{ isExpanded ? "收缩" : "展开" }}
           </el-button>
           <el-checkbox
             v-model="parentChildLinked"
-            @change="handleparentChildLinkedChange"
             class="ml-5"
+            @change="handleparentChildLinkedChange"
           >
             父子联动
           </el-checkbox>
@@ -193,9 +171,9 @@
             <template #content>
               如果只需勾选菜单权限，不需要勾选子菜单或者按钮权限，请关闭父子联动
             </template>
-            <i-ep-QuestionFilled
-              class="ml-1 color-[--el-color-primary] inline-block cursor-pointer"
-            />
+            <el-icon class="ml-1 color-[--el-color-primary] inline-block cursor-pointer">
+              <QuestionFilled />
+            </el-icon>
           </el-tooltip>
         </div>
       </div>
@@ -214,12 +192,9 @@
           {{ data.label }}
         </template>
       </el-tree>
-
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleAssignPermSubmit">
-            确 定
-          </el-button>
+          <el-button type="primary" @click="handleAssignPermSubmit">确 定</el-button>
           <el-button @click="assignPermDialogVisible = false">取 消</el-button>
         </div>
       </template>
@@ -233,8 +208,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/role";
-import MenuAPI from "@/api/menu";
+import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/system/role";
+import MenuAPI from "@/api/system/menu";
 
 const queryFormRef = ref(ElForm);
 const roleFormRef = ref(ElForm);
@@ -263,8 +238,6 @@ const dialog = reactive({
 const formData = reactive<RoleForm>({
   sort: 1,
   status: 1,
-  code: "",
-  name: "",
 });
 
 const rules = reactive({
@@ -287,7 +260,7 @@ const isExpanded = ref(true);
 
 const parentChildLinked = ref(true);
 
-/** 查询 */
+// 查询
 function handleQuery() {
   loading.value = true;
   RoleAPI.getPage(queryParams)
@@ -300,19 +273,19 @@ function handleQuery() {
     });
 }
 
-/** 重置查询 */
+// 重置查询
 function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
   handleQuery();
 }
 
-/** 行复选框选中记录选中ID集合 */
+// 行复选框选中
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
 }
 
-/** 打开角色弹窗 */
+// 打开角色弹窗
 function handleOpenDialog(roleId?: number) {
   dialog.visible = true;
   if (roleId) {
@@ -325,7 +298,7 @@ function handleOpenDialog(roleId?: number) {
   }
 }
 
-/** 提交角色表单 */
+// 提交角色表单
 function handleSubmit() {
   roleFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -352,7 +325,7 @@ function handleSubmit() {
   });
 }
 
-/** 关闭角色弹窗 */
+// 关闭弹窗
 function handleCloseDialog() {
   dialog.visible = false;
 
@@ -364,7 +337,7 @@ function handleCloseDialog() {
   formData.status = 1;
 }
 
-/** 删除角色 */
+// 删除角色
 function handleDelete(roleId?: number) {
   const roleIds = [roleId || ids.value].join(",");
   if (!roleIds) {
@@ -392,7 +365,7 @@ function handleDelete(roleId?: number) {
   );
 }
 
-/** 打开分配菜单权限弹窗 */
+// 打开分配菜单权限弹窗
 async function handleOpenAssignPermDialog(row: RolePageVO) {
   const roleId = row.id;
   if (roleId) {
@@ -409,9 +382,7 @@ async function handleOpenAssignPermDialog(row: RolePageVO) {
     RoleAPI.getRoleMenuIds(roleId)
       .then((data) => {
         const checkedMenuIds = data;
-        checkedMenuIds.forEach((menuId) =>
-          permTreeRef.value!.setChecked(menuId, true, false)
-        );
+        checkedMenuIds.forEach((menuId) => permTreeRef.value!.setChecked(menuId, true, false));
       })
       .finally(() => {
         loading.value = false;
@@ -419,7 +390,7 @@ async function handleOpenAssignPermDialog(row: RolePageVO) {
   }
 }
 
-/** 分配菜单权限提交 */
+// 分配菜单权限提交
 function handleAssignPermSubmit() {
   const roleId = checkedRole.value.id;
   if (roleId) {
@@ -440,7 +411,7 @@ function handleAssignPermSubmit() {
   }
 }
 
-/** 展开/收缩 菜单权限树  */
+// 展开/收缩 菜单权限树
 function togglePermTree() {
   isExpanded.value = !isExpanded.value;
   if (permTreeRef.value) {
@@ -454,7 +425,7 @@ function togglePermTree() {
   }
 }
 
-/** 权限筛选 */
+// 权限筛选
 watch(permKeywords, (val) => {
   permTreeRef.value!.filter(val);
 });
@@ -469,7 +440,7 @@ function handlePermFilter(
   return data.label.includes(value);
 }
 
-/** 父子菜单节点是否联动 change*/
+// 父子菜单节点是否联动
 function handleparentChildLinkedChange(val: any) {
   parentChildLinked.value = val;
 }

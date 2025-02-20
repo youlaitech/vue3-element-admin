@@ -1,9 +1,110 @@
 <!-- 文件上传组件示例 -->
+<template>
+  <div class="app-container">
+    <el-link
+      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/upload.vue"
+      type="primary"
+      target="_blank"
+      class="mb-10"
+    >
+      示例源码 请点击>>>>
+    </el-link>
+
+    <el-form>
+      <el-form-item label="单图上传">
+        <SingleImageUpload v-model="picUrl" />
+      </el-form-item>
+      <el-form-item label="参数说明">
+        <el-table :data="singleImageUploadArgData" border>
+          <el-table-column prop="argsName" label="参数名称" width="300" />
+          <el-table-column prop="type" label="参数类型" width="200" />
+          <el-table-column prop="default" label="默认值" width="400" />
+          <el-table-column prop="desc" label="描述" width="300" />
+        </el-table>
+      </el-form-item>
+
+      <el-form-item label="多图上传">
+        <MultiImageUpload v-model="picUrls" />
+      </el-form-item>
+      <el-form-item label="参数说明">
+        <el-table :data="imageUploadArgData" border>
+          <el-table-column prop="argsName" label="参数名称" width="300" />
+          <el-table-column prop="type" label="参数类型" width="200" />
+          <el-table-column prop="default" label="默认值" width="400" />
+          <el-table-column prop="desc" label="描述" width="300" />
+        </el-table>
+      </el-form-item>
+
+      <el-form-item label="文件上传">
+        <FileUpload v-model="fileUrls" />
+      </el-form-item>
+      <el-form-item label="参数说明">
+        <el-table :data="fileUploadArgData" border>
+          <el-table-column prop="argsName" label="参数名称" width="300" />
+          <el-table-column prop="type" label="参数类型" width="200" />
+          <el-table-column prop="default" label="默认值" width="400" />
+          <el-table-column prop="desc" label="描述" width="300" />
+        </el-table>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
 <script setup lang="ts">
-import ImageUpload from "@/components/Upload/ImageUpload.vue";
-import FileUpload from "@/components/Upload/FileUpload.vue";
-const size = ref("");
-// 这里放外链图片，防止被删
+// 单图
+const picUrl = ref("https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg");
+
+const singleImageUploadArgData = [
+  {
+    argsName: "v-model",
+    type: "String",
+    default: "",
+    desc: "已经上传的图片URL",
+  },
+  {
+    argsName: "size",
+    type: "String",
+    default: "150px",
+    desc: "图片上传组件的尺寸大小",
+  },
+  {
+    argsName: "max-size",
+    type: "Number",
+    default: "10",
+    desc: "单个图片上传大小限制(单位M)",
+  },
+  {
+    argsName: "accept",
+    type: "String",
+    default: "",
+    desc: "上传文件类型",
+  },
+];
+
+const imageCprpperUploadArgData = [
+  {
+    argsName: "v-model",
+    type: "Object",
+    default: "",
+    desc: "裁剪后图片Base64编码",
+  },
+  {
+    argsName: "presetMode",
+    type: "String",
+    default: "{ width: 295, height: 413 }",
+    desc: "裁剪窗口的长宽，及裁剪图片大小",
+  },
+  {
+    argsName: "title",
+    type: "String",
+    default: "上传图片",
+    desc: "组件内容",
+  },
+];
+
+const cprpperValue = ref();
+
+// 多图
 const picUrls = ref([
   "https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg",
   "https://s2.loli.net/2023/05/24/RuHFMwW4rG5lIqs.jpg",
@@ -11,10 +112,11 @@ const picUrls = ref([
   "https://s2.loli.net/2023/05/24/e1bcnEq3MFdmlNL.jpg",
   "https://s2.loli.net/2023/05/24/wZTSPj1yDQNcuhU.jpg",
 ]);
+
 const imageUploadArgData = [
   {
     argsName: "v-model",
-    type: "Arrays",
+    type: "Array",
     default: "[]",
     desc: "已经上传的图片数组",
   },
@@ -61,10 +163,10 @@ const imageUploadArgData = [
     desc: "是否显示上传按钮",
   },
   {
-    argsName: "upload-max-size",
+    argsName: "max-size",
     type: "Number",
-    default: "2 * 1024 * 1024",
-    desc: "单个图片上传大小限制(单位byte)",
+    default: "10",
+    desc: "单个图片上传大小限制(单位MB)",
   },
   {
     argsName: "accept",
@@ -117,10 +219,10 @@ const fileUploadArgData = [
     desc: "是否显示上传按钮",
   },
   {
-    argsName: "upload-max-size",
+    argsName: "max-size",
     type: "Number",
-    default: "2 * 1024 * 1024",
-    desc: "单个文件上传大小限制(单位byte)",
+    default: "10",
+    desc: "单个文件上传大小限制(单位MB)",
   },
   {
     argsName: "accept",
@@ -172,40 +274,3 @@ const fileUploadArgData = [
   },
 ];
 </script>
-<template>
-  <div class="app-container">
-    <el-link
-      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/upload.vue"
-      type="primary"
-      target="_blank"
-      class="mb-10"
-    >
-      示例源码 请点击>>>>
-    </el-link>
-
-    <el-form>
-      <el-form-item label="图片上传">
-        <image-upload v-model="picUrls" />
-      </el-form-item>
-      <el-form-item label="参数说明">
-        <el-table :data="imageUploadArgData" border>
-          <el-table-column prop="argsName" label="参数名称" width="300" />
-          <el-table-column prop="type" label="参数类型" width="200" />
-          <el-table-column prop="default" label="默认值" width="400" />
-          <el-table-column prop="desc" label="描述" width="300" />
-        </el-table>
-      </el-form-item>
-      <el-form-item label="文件上传">
-        <file-upload v-model="fileUrls" />
-      </el-form-item>
-      <el-form-item label="参数说明">
-        <el-table :data="fileUploadArgData" border>
-          <el-table-column prop="argsName" label="参数名称" width="300" />
-          <el-table-column prop="type" label="参数类型" width="200" />
-          <el-table-column prop="default" label="默认值" width="400" />
-          <el-table-column prop="desc" label="描述" width="300" />
-        </el-table>
-      </el-form-item>
-    </el-form>
-  </div>
-</template>

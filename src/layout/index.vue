@@ -5,20 +5,19 @@
       v-if="isMobile && isOpenSidebar"
       class="wh-full fixed-lt z-999 bg-black bg-opacity-30"
       @click="handleOutsideClick"
-    ></div>
+    />
 
     <!-- 公用侧边栏 -->
     <Sidebar class="sidebar-container" />
 
     <!-- 混合布局 -->
     <div v-if="layout === LayoutEnum.MIX" class="mix-container">
-      <div class="mix-container__left">
-        <SidebarMenu :menu-list="mixLeftMenus" :base-path="activeTopMenuPath" />
+      <div class="mix-container-sidebar">
+        <el-scrollbar>
+          <SidebarMenu :menu-list="mixLeftMenus" :base-path="activeTopMenuPath" />
+        </el-scrollbar>
         <div class="sidebar-toggle">
-          <hamburger
-            :is-active="appStore.sidebar.opened"
-            @toggle-click="toggleSidebar"
-          />
+          <hamburger :is-active="appStore.sidebar.opened" @toggle-click="toggleSidebar" />
         </div>
       </div>
 
@@ -29,7 +28,7 @@
         <AppMain />
         <Settings v-if="defaultSettings.showSettings" />
         <!-- 返回顶部 -->
-        <el-backtop target=".main-container">
+        <el-backtop target=".app-main">
           <svg-icon icon-class="backtop" size="24px" />
         </el-backtop>
       </div>
@@ -44,7 +43,7 @@
       <AppMain />
       <Settings v-if="defaultSettings.showSettings" />
       <!-- 返回顶部 -->
-      <el-backtop target=".main-container">
+      <el-backtop target=".app-main">
         <svg-icon icon-class="backtop" size="24px" />
       </el-backtop>
     </div>
@@ -56,6 +55,8 @@ import { useAppStore, useSettingsStore, usePermissionStore } from "@/store";
 import defaultSettings from "@/settings";
 import { DeviceEnum } from "@/enums/DeviceEnum";
 import { LayoutEnum } from "@/enums/LayoutEnum";
+
+import NavBar from "./components/NavBar/index.vue";
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
@@ -73,7 +74,7 @@ const mixLeftMenus = computed(() => permissionStore.mixLeftMenus); // 混合布�
 
 watch(
   () => activeTopMenuPath.value,
-  (newVal) => {
+  (newVal: string) => {
     permissionStore.setMixLeftMenus(newVal);
   },
   {
@@ -90,9 +91,7 @@ const classObj = computed(() => ({
 }));
 
 watchEffect(() => {
-  appStore.toggleDevice(
-    width.value < WIDTH_DESKTOP ? DeviceEnum.MOBILE : DeviceEnum.DESKTOP
-  );
+  appStore.toggleDevice(width.value < WIDTH_DESKTOP ? DeviceEnum.MOBILE : DeviceEnum.DESKTOP);
   if (width.value >= WIDTH_DESKTOP) {
     appStore.openSideBar();
   } else {
@@ -205,10 +204,16 @@ watch(route, () => {
     height: 100%;
     padding-top: $navbar-height;
 
-    .mix-container__left {
+    .mix-container-sidebar {
       position: relative;
       width: $sidebar-width;
       height: 100%;
+      background-color: var(--menu-background);
+
+      :deep(.el-scrollbar) {
+        // 50px 是底部收缩按钮的高度
+        height: calc(100vh - $navbar-height - 50px);
+      }
 
       :deep(.el-menu) {
         height: 100%;
@@ -261,7 +266,7 @@ watch(route, () => {
     }
 
     .mix-container {
-      .mix-container__left {
+      &-sidebar {
         width: $sidebar-width-collapsed;
       }
     }

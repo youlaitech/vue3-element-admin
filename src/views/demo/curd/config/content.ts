@@ -1,6 +1,6 @@
-import UserAPI from "@/api/user";
-import RoleAPI from "@/api/role";
-import type { UserPageQuery } from "@/api/user";
+import UserAPI from "@/api/system/user";
+import RoleAPI from "@/api/system/role";
+import type { UserPageQuery } from "@/api/system/user";
 import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig<UserPageQuery> = {
@@ -56,7 +56,14 @@ const contentConfig: IContentConfig<UserPageQuery> = {
     { label: "用户名", align: "center", prop: "username" },
     { label: "头像", align: "center", prop: "avatar", templet: "image" },
     { label: "用户昵称", align: "center", prop: "nickname", width: 120 },
-    { label: "性别", align: "center", prop: "genderLabel", width: 100 },
+    {
+      label: "性别",
+      align: "center",
+      prop: "gender",
+      width: 100,
+      templet: "custom",
+      slotName: "gender",
+    },
     { label: "部门", align: "center", prop: "deptName", width: 120 },
     {
       label: "角色",
@@ -94,9 +101,14 @@ const contentConfig: IContentConfig<UserPageQuery> = {
       label: "操作",
       align: "center",
       fixed: "right",
-      width: 220,
+      width: 280,
       templet: "tool",
       operat: [
+        {
+          icon: "Document",
+          name: "detail",
+          text: "详情",
+        },
         {
           name: "reset_pwd",
           auth: "password:reset",

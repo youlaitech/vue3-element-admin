@@ -16,19 +16,11 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+defineProps({
   total: {
     required: true,
     type: Number as PropType<number>,
     default: 0,
-  },
-  page: {
-    type: Number,
-    default: 1,
-  },
-  limit: {
-    type: Number,
-    default: 20,
   },
   pageSizes: {
     type: Array as PropType<number[]>,
@@ -54,19 +46,25 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["pagination", "update:page", "update:limit"]);
+const emit = defineEmits(["pagination"]);
 
-const currentPage = useVModel(props, "page", emit);
-
-const pageSize = useVModel(props, "limit", emit);
+const currentPage = defineModel("page", {
+  type: Number,
+  required: true,
+  default: 1,
+});
+const pageSize = defineModel("limit", {
+  type: Number,
+  required: true,
+  default: 10,
+});
 
 function handleSizeChange(val: number) {
-  emit("pagination", { page: currentPage, limit: val });
+  emit("pagination", { page: currentPage.value, limit: val });
 }
 
 function handleCurrentChange(val: number) {
-  currentPage.value = val;
-  emit("pagination", { page: val, limit: props.limit });
+  emit("pagination", { page: val, limit: pageSize.value });
 }
 </script>
 
