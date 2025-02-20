@@ -96,7 +96,7 @@ const changeSidebarColorScheme = (val: any) => {
  *
  * @param layout 布局  LayoutEnum
  */
-function changeLayout(layout: string) {
+function changeLayout(layout: LayoutEnum) {
   settingsStore.changeLayout(layout);
   if (layout === LayoutEnum.MIX) {
     route.name && againActiveTop(route.name as string);

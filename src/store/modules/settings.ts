@@ -1,5 +1,6 @@
 import defaultSettings from "@/settings";
 import { SidebarLightThemeEnum, ThemeEnum } from "@/enums/ThemeEnum";
+import { LayoutEnum } from "@/enums/LayoutEnum";
 import {
   generateThemeColors,
   applyTheme,
@@ -12,7 +13,7 @@ type SettingsValue = boolean | string;
 export const useSettingsStore = defineStore("setting", () => {
   // 基本设置
   const settingsVisible = ref(false);
-  // 标签
+  // 标签视图
   const tagsView = useStorage<boolean>("tagsView", defaultSettings.tagsView);
   // 侧边栏 Logo
   const sidebarLogo = useStorage<boolean>("sidebarLogo", defaultSettings.sidebarLogo);
@@ -22,7 +23,7 @@ export const useSettingsStore = defineStore("setting", () => {
     defaultSettings.sidebarColorScheme
   );
   // 布局
-  const layout = useStorage<string>("layout", defaultSettings.layout);
+  const layout = useStorage<LayoutEnum>("layout", defaultSettings.layout as LayoutEnum);
   // 水印
   const watermarkEnabled = useStorage<boolean>(
     "watermarkEnabled",
@@ -79,7 +80,7 @@ export const useSettingsStore = defineStore("setting", () => {
     themeColor.value = color;
   }
 
-  function changeLayout(val: string) {
+  function changeLayout(val: LayoutEnum) {
     layout.value = val;
   }
 
