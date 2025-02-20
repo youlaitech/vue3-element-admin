@@ -35,7 +35,7 @@ module.exports = {
     "at-rule-no-unknown": [
       true,
       {
-        ignoreAtRules: ["apply", "use", "forward"],
+        ignoreAtRules: ["apply", "use", "forward", "extend"],
       },
     ],
   },
