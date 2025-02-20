@@ -30,17 +30,15 @@ const generateSafeList = () => {
 };
 
 export default defineConfig({
+  // 自定义快捷类
   shortcuts: {
+    "wh-full": "w-full h-full",
     "flex-center": "flex justify-center items-center",
     "flex-x-center": "flex justify-center",
     "flex-y-center": "flex items-center",
-    "wh-full": "w-full h-full",
     "flex-x-start": "flex items-center justify-start",
     "flex-x-between": "flex items-center justify-between",
     "flex-x-end": "flex items-center justify-end",
-    "absolute-lt": "absolute left-0 top-0",
-    "absolute-rt": "absolute right-0 top-0 ",
-    "fixed-lt": "fixed left-0 top-0",
   },
   theme: {
     colors: {

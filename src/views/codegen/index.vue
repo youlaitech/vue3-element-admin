@@ -362,7 +362,7 @@
           </el-col>
           <el-col :span="18">
             <el-scrollbar max-height="72vh">
-              <div class="absolute-rt z-36 right-5 top-2">
+              <div class="absolute z-36 right-5 top-2">
                 <el-link type="primary" @click="handleCopyCode">
                   <el-icon>
                     <CopyDocument />
