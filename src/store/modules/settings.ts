@@ -1,12 +1,7 @@
 import defaultSettings from "@/settings";
-import { SidebarLightThemeEnum, ThemeEnum } from "@/enums/ThemeEnum";
+import { SidebarColorEnum, ThemeEnum } from "@/enums/ThemeEnum";
 import { LayoutEnum } from "@/enums/LayoutEnum";
-import {
-  generateThemeColors,
-  applyTheme,
-  toggleDarkMode,
-  toggleLightModeSidebarColorScheme,
-} from "@/utils/theme";
+import { generateThemeColors, applyTheme, toggleDarkMode, toggleSidebarColor } from "@/utils/theme";
 
 type SettingsValue = boolean | string;
 
@@ -17,7 +12,7 @@ export const useSettingsStore = defineStore("setting", () => {
   const tagsView = useStorage<boolean>("tagsView", defaultSettings.tagsView);
   // 侧边栏 Logo
   const sidebarLogo = useStorage<boolean>("sidebarLogo", defaultSettings.sidebarLogo);
-  // 浅色主题下的侧边栏配色方案 (白色/深蓝色)
+  // 侧边栏配色方案 (经典蓝/极简白)
   const sidebarColorScheme = useStorage<string>(
     "sidebarColorScheme",
     defaultSettings.sidebarColorScheme
@@ -49,7 +44,7 @@ export const useSettingsStore = defineStore("setting", () => {
   watch(
     [sidebarColorScheme],
     ([newSidebarColorScheme]) => {
-      toggleLightModeSidebarColorScheme(newSidebarColorScheme === SidebarLightThemeEnum.DARKBLUE);
+      toggleSidebarColor(newSidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE);
     },
     { immediate: true }
   );

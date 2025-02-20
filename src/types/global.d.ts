@@ -76,8 +76,8 @@ declare global {
     watermarkEnabled: boolean;
     /** 水印内容 */
     watermarkContent: string;
-    /** 侧边栏配色方案(light-white | light-darkBlue) */
-    sidebarColorScheme: "light-white" | "light-darkBlue";
+    /** 侧边栏配色方案 */
+    sidebarColorScheme: "classic-blue" | "minimal-white";
   }
 
   /**

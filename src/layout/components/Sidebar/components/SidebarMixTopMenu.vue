@@ -5,17 +5,17 @@
       mode="horizontal"
       :default-active="activePath"
       :background-color="
-        theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+        theme === 'dark' || sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE
           ? variables['menu-background']
           : undefined
       "
       :text-color="
-        theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+        theme === 'dark' || sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE
           ? variables['menu-text']
           : undefined
       "
       :active-text-color="
-        theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+        theme === 'dark' || sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE
           ? variables['menu-active-text']
           : undefined
       "
@@ -44,7 +44,7 @@ import { LocationQueryRaw, RouteRecordRaw } from "vue-router";
 import { usePermissionStore, useAppStore, useSettingsStore } from "@/store";
 import { translateRouteTitle } from "@/utils/i18n";
 import variables from "@/styles/variables.module.scss";
-import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
+import { SidebarColorEnum } from "@/enums/ThemeEnum";
 
 const router = useRouter();
 const appStore = useAppStore();

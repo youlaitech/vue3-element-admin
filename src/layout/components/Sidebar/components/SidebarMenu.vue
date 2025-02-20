@@ -5,17 +5,17 @@
     :default-active="currentRoute.path"
     :collapse="!appStore.sidebar.opened"
     :background-color="
-      theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+      theme === 'dark' || sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE
         ? variables['menu-background']
         : undefined
     "
     :text-color="
-      theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+      theme === 'dark' || sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE
         ? variables['menu-text']
         : undefined
     "
     :active-text-color="
-      theme === 'dark' || sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE
+      theme === 'dark' || sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE
         ? variables['menu-active-text']
         : undefined
     "
@@ -42,7 +42,7 @@ import type { MenuInstance } from "element-plus";
 import type { RouteRecordRaw } from "vue-router";
 
 import { LayoutEnum } from "@/enums/LayoutEnum";
-import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
+import { SidebarColorEnum } from "@/enums/ThemeEnum";
 import { useSettingsStore, useAppStore } from "@/store";
 import { isExternal } from "@/utils/index";
 

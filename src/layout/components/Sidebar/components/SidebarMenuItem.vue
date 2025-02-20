@@ -193,7 +193,7 @@ html.dark {
   }
 }
 
-html.light-darkBlue {
+html.sidebar-color-blue {
   .el-menu-item:hover {
     background-color: $menu-hover;
   }

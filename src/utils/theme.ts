@@ -1,5 +1,3 @@
-import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
-
 // 辅助函数：将十六进制颜色转换为 RGB
 function hexToRgb(hex: string): [number, number, number] {
   const bigint = parseInt(hex.slice(1), 16);
@@ -63,10 +61,10 @@ export function toggleDarkMode(isDark: boolean) {
  *
  * @param isBlue 布尔值，表示是否开启深蓝色侧边栏颜色方案
  */
-export function toggleLightModeSidebarColorScheme(isDarkBlueDark: boolean) {
-  if (isDarkBlueDark) {
-    document.documentElement.classList.add(SidebarLightThemeEnum.DARKBLUE);
+export function toggleSidebarColor(isBuleSidebar: boolean) {
+  if (isBuleSidebar) {
+    document.documentElement.classList.add("sidebar-color-blue");
   } else {
-    document.documentElement.classList.remove(SidebarLightThemeEnum.DARKBLUE);
+    document.documentElement.classList.remove("sidebar-color-blue");
   }
 }

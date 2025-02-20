@@ -18,15 +18,15 @@ export const enum ThemeEnum {
 }
 
 /**
- * 浅色主题下的侧边栏配色方案枚举
+ * 侧边栏配色方案枚举
  */
-export const enum SidebarLightThemeEnum {
+export const enum SidebarColorEnum {
   /**
-   * 深蓝色
+   * 经典蓝
    */
-  DARKBLUE = "light-darkBlue",
+  CLASSIC_BLUE = "classic-blue",
   /**
-   * 白色
+   * 极简白
    */
-  WHITE = "light-white",
+  MINIMAL_WHITE = "minimal-white",
 }

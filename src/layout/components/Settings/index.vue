@@ -30,8 +30,10 @@
     <div v-if="!isDark" class="py-1 flex-x-between">
       <span class="text-xs">{{ $t("settings.sidebarColorScheme") }}</span>
       <el-radio-group v-model="settingsStore.sidebarColorScheme" @change="changeSidebarColorScheme">
-        <el-radio :value="SidebarLightThemeEnum.WHITE">{{ $t("settings.white") }}</el-radio>
-        <el-radio :value="SidebarLightThemeEnum.DARKBLUE">{{ $t("settings.darkBlue") }}</el-radio>
+        <el-radio :value="SidebarColorEnum.MINIMAL_WHITE">
+          {{ $t("settings.minimalWhite") }}
+        </el-radio>
+        <el-radio :value="SidebarColorEnum.CLASSIC_BLUE">{{ $t("settings.classicBlue") }}</el-radio>
       </el-radio-group>
     </div>
 
@@ -44,7 +46,7 @@
 <script setup lang="ts">
 import { LayoutEnum } from "@/enums/LayoutEnum";
 import { ThemeEnum } from "@/enums/ThemeEnum";
-import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
+import { SidebarColorEnum } from "@/enums/ThemeEnum";
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
 
 const route = useRoute();

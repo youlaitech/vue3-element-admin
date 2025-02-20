@@ -59,7 +59,7 @@ export default {
     sidebarLogo: "Sidebar Logo",
     sidebarColorScheme: "Sidebar Color Scheme",
     watermark: "Watermark",
-    white: "white",
-    darkBlue: "darkBlue",
+    classicBlue: "Classic Blue",
+    minimalWhite: "Minimal White",
   },
 };

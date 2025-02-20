@@ -48,7 +48,7 @@ import { DeviceEnum } from "@/enums/DeviceEnum";
 import { useAppStore, useSettingsStore, useUserStore, useTagsViewStore } from "@/store";
 
 import Notification from "./Notification.vue";
-import { SidebarLightThemeEnum, ThemeEnum } from "@/enums/ThemeEnum";
+import { SidebarColorEnum, ThemeEnum } from "@/enums/ThemeEnum";
 
 const appStore = useAppStore();
 const settingStore = useSettingsStore();
@@ -68,11 +68,16 @@ function handleProfileClick() {
 
 // 根据主题和侧边栏配色方案选择 navbar 右侧的样式类
 const navbarRightClass = computed(() => {
-  const isDarkTheme = settingStore.theme === ThemeEnum.DARK;
-  const isDarkBlueSidebar = settingStore.sidebarColorScheme === SidebarLightThemeEnum.DARKBLUE;
+  // 如果暗黑主题
+  if (settingStore.theme === ThemeEnum.DARK) {
+    return "navbar__right--white";
+  }
 
-  // 如果是暗黑主题，或者是浅色主题中的深蓝色侧边栏配色
-  return isDarkTheme || isDarkBlueSidebar ? "navbar__right--darkBlue" : "navbar__right--white";
+  // 如果侧边栏是经典蓝
+
+  if (settingStore.sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE) {
+    return "navbar__right--white";
+  }
 });
 
 /**
@@ -135,14 +140,9 @@ function logout() {
   }
 }
 
-.layout-top .navbar__right--darkBlue > *,
-.layout-mix .navbar__right--darkBlue > * {
-  color: #fff;
-}
-
 .layout-top .navbar__right--white > *,
 .layout-mix .navbar__right--white > * {
-  color: #000;
+  color: #fff;
 }
 
 .dark .navbar__right > *:hover {
