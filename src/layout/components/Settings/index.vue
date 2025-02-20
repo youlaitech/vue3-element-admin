@@ -55,7 +55,7 @@ const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 
 const isDark = ref<boolean>(settingsStore.theme === ThemeEnum.DARK);
-const sidebarColor = computed(() => settingsStore.sidebarColorScheme);
+const sidebarColor = ref(settingsStore.sidebarColorScheme);
 
 const settingsVisible = computed({
   get() {
