@@ -63,7 +63,7 @@ declare global {
     /** 是否显示侧边栏Logo */
     sidebarLogo: boolean;
     /** 导航栏布局(left|top|mix) */
-    layout: string;
+    layout: "left" | "top" | "mix";
     /** 主题颜色 */
     themeColor: string;
     /** 主题模式(dark|light) */

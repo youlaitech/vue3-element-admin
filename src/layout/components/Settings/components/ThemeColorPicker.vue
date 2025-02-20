@@ -13,7 +13,7 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 
-// 定义颜色预设
+// 主题颜色预设
 const colorPresets = [
   "#4080FF",
   "#ff4500",
