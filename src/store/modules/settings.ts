@@ -67,7 +67,7 @@ export const useSettingsStore = defineStore("setting", () => {
     theme.value = val;
   }
 
-  function changeSidebarColorScheme(val: string) {
+  function changeSidebarColor(val: string) {
     sidebarColorScheme.value = val;
   }
 
@@ -92,6 +92,6 @@ export const useSettingsStore = defineStore("setting", () => {
     changeTheme,
     changeThemeColor,
     changeLayout,
-    changeSidebarColorScheme,
+    changeSidebarColor,
   };
 });

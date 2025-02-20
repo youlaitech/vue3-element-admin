@@ -29,7 +29,7 @@
     </div>
     <div v-if="!isDark" class="py-1 flex-x-between">
       <span class="text-xs">{{ $t("settings.sidebarColorScheme") }}</span>
-      <el-radio-group v-model="settingsStore.sidebarColorScheme" @change="changeSidebarColorScheme">
+      <el-radio-group v-model="sidebarColor" @change="changeSidebarColor">
         <el-radio :value="SidebarColorEnum.MINIMAL_WHITE">
           {{ $t("settings.minimalWhite") }}
         </el-radio>
@@ -53,7 +53,9 @@ const route = useRoute();
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
+
 const isDark = ref<boolean>(settingsStore.theme === ThemeEnum.DARK);
+const sidebarColor = computed(() => settingsStore.sidebarColorScheme);
 
 const settingsVisible = computed({
   get() {
@@ -84,13 +86,12 @@ const changeTheme = (val: any) => {
 };
 
 /**
- * 更改侧边栏颜色方案
+ * 更改侧边栏颜色
  *
  * @param val 颜色方案名称
  */
-const changeSidebarColorScheme = (val: any) => {
-  console.log(val);
-  settingsStore.changeSidebarColorScheme(val);
+const changeSidebarColor = (val: any) => {
+  settingsStore.changeSidebarColor(val);
 };
 
 /**
