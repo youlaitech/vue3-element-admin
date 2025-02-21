@@ -235,6 +235,7 @@ function handleToggleSidebar() {
         width: 100%;
         height: 50px;
         line-height: 50px;
+        box-shadow: 0 0 6px -2px var(--el-color-primary);
       }
     }
 
