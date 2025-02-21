@@ -32,7 +32,7 @@
           <li
             v-for="(item, index) in displayResults"
             :key="item.path"
-            :class="{ active: index === activeIndex }"
+            :class="{ 'search-result__item--active': index === activeIndex }"
             @click="navigateToRoute(item)"
           >
             <el-icon v-if="item.icon && item.icon.startsWith('el-icon')">
@@ -48,16 +48,22 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <div class="i-svg:enter w-5 h-5" />
-          <span>选择</span>
+          <div class="dialog-footer__shortcut">
+            <div class="i-svg:enter" />
+          </div>
+          <span class="dialog-footer__text mr-3">选择</span>
 
-          <div class="i-svg:down w-5 h-5 ml-5" />
-          <div class="i-svg:up w-5 h-5 ml-5" />
-          <span>切换</span>
-
-          <div class="i-svg:esc w-5 h-5ml-5" />
-
-          <span>退出</span>
+          <div class="dialog-footer__shortcut">
+            <div class="i-svg:down" />
+          </div>
+          <div class="dialog-footer__shortcut ml-1">
+            <div class="i-svg:up" />
+          </div>
+          <span class="dialog-footer__text mr-3">切换</span>
+          <div class="dialog-footer__shortcut">
+            <div class="i-svg:esc" />
+          </div>
+          <span class="dialog-footer__text">退出</span>
         </div>
       </template>
     </el-dialog>
@@ -174,25 +180,28 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .search-result {
   max-height: 400px;
   overflow-y: auto;
-}
 
-.search-result ul li {
-  padding: 10px;
-  line-height: 40px;
-  text-align: left;
-  cursor: pointer;
-}
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
 
-.search-result ul li.active {
-  background-color: #e6f7ff;
-}
+  &__item {
+    padding: 10px;
+    line-height: 40px;
+    text-align: left;
+    cursor: pointer;
 
-.search-result ul li:hover {
-  background-color: #f5f5f5;
+    &--active {
+      color: $menu-active-text;
+      background-color: $menu-hover;
+    }
+  }
 }
 
 .dialog-footer {
@@ -200,25 +209,32 @@ onMounted(() => {
   align-items: center;
   justify-content: start;
 
-  svg {
+  &__shortcut {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 2px;
-    margin-right: 0.4em;
-    color: #909399;
-    background: rgb(125 125 125 / 10%);
+    width: 20px;
+    height: 18px;
+    padding: 0 0 1px;
+    color: var(--el-text-color-secondary);
+    background: rgba(125, 125, 125, 0.1);
     border: 0;
     border-radius: 2px;
     box-shadow:
       inset 0 -2px 0 0 #cdcde6,
       inset 0 0 1px 1px #fff,
-      0 1px 2px 1px rgb(30 35 90 / 40%);
+      0 1px 2px 1px rgba(30, 35, 90, 0.4);
   }
 
-  span {
-    font-size: 12px;
-    color: #909399;
+  &__text {
+    margin-left: 5px;
+    font-size: 14px;
+    color: var(--el-text-color-secondary);
   }
+}
+
+[class^="i-svg:"] {
+  display: inline-block;
+  color: var(--el-text-color-secondary);
 }
 </style>
