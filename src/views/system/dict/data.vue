@@ -166,15 +166,6 @@ const dialog = reactive({
 
 const formData = reactive<DictDataForm>({});
 
-// 监听路由参数变化，更新字典数据
-watch(
-  () => [route.query.dictCode],
-  ([newDictCode]) => {
-    queryParams.dictCode = newDictCode as string;
-    dictCode.value = newDictCode as string;
-    handleQuery();
-  }
-);
 const computedRules = computed(() => {
   const rules: Partial<Record<string, any>> = {
     value: [{ required: true, message: "请输入字典值", trigger: "blur" }],
@@ -288,6 +279,12 @@ function handleDelete(id?: number) {
 }
 
 onMounted(() => {
+  handleQuery();
+});
+
+// 同一路由参数变化时更新数据
+onBeforeRouteUpdate((to) => {
+  queryParams.dictCode = to.query.dictCode as string;
   handleQuery();
 });
 </script>
