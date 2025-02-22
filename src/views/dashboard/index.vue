@@ -218,35 +218,63 @@
           <ECharts :options="visitTrendChartOptions" height="400px" />
         </el-card>
       </el-col>
-      <!-- 通知公告 -->
+      <!-- 最新动态 -->
       <el-col :xs="24" :span="8">
         <el-card>
           <template #header>
             <div class="flex-x-between">
-              <div class="flex-y-center">通知公告</div>
-              <el-link type="primary">
-                <span class="text-xs" @click="navigateToNoticePage">查看更多</span>
-                <el-icon class="text-xs"><ArrowRight /></el-icon>
+              <span class="header-title">最新动态</span>
+              <el-link
+                type="primary"
+                :underline="false"
+                href="https://gitee.com/youlaiorg/vue3-element-admin/releases"
+                target="_blank"
+              >
+                完整记录
+                <el-icon class="link-icon"><TopRight /></el-icon>
               </el-link>
             </div>
           </template>
 
           <el-scrollbar height="400px">
-            <div v-for="(item, index) in notices" :key="index" class="flex-y-center py-4">
-              <DictLabel v-model="item.type" code="notice_type" size="small" />
-              <el-text truncated class="!mx-2 flex-1 !text-xs !text-gray">
-                {{ item.title }}
-              </el-text>
-              <el-link @click="openNoticeDetail(item.id)">
-                <el-icon class="text-sm"><View /></el-icon>
-              </el-link>
-            </div>
+            <el-timeline class="p-3">
+              <el-timeline-item
+                v-for="(item, index) in vesionList"
+                :key="index"
+                :timestamp="item.date"
+                placement="top"
+                :color="index === 0 ? '#67C23A' : '#909399'"
+                :hollow="index !== 0"
+                size="large"
+              >
+                <div class="version-item" :class="{ 'latest-item': index === 0 }">
+                  <div>
+                    <el-text tag="strong">{{ item.title }}</el-text>
+                    <el-tag v-if="item.tag" :type="index === 0 ? 'success' : 'info'" size="small">
+                      {{ item.tag }}
+                    </el-tag>
+                  </div>
+
+                  <el-text class="version-content">{{ item.content }}</el-text>
+
+                  <div v-if="item.link">
+                    <el-link
+                      :type="index === 0 ? 'primary' : 'info'"
+                      :href="item.link"
+                      target="_blank"
+                      :underline="false"
+                    >
+                      详情
+                      <el-icon class="link-icon"><TopRight /></el-icon>
+                    </el-link>
+                  </div>
+                </div>
+              </el-timeline-item>
+            </el-timeline>
           </el-scrollbar>
         </el-card>
       </el-col>
     </el-row>
-
-    <NoticeDetail ref="noticeDetailRef" />
   </div>
 </template>
 
@@ -257,18 +285,48 @@ defineOptions({
 });
 
 import { dayjs } from "element-plus";
-import router from "@/router";
 import LogAPI, { VisitStatsVO, VisitTrendVO } from "@/api/system/log";
-import NoticeAPI, { NoticePageVO } from "@/api/system/notice";
 import { useUserStore } from "@/store/modules/user";
 import { formatGrowthRate } from "@/utils";
 
+interface VersionItem {
+  id: string;
+  title: string; // 版本标题（如：v2.4.0）
+  date: string; // 发布时间
+  content: string; // 版本描述
+  link: string; // 详情链接
+  tag?: string; // 版本标签（可选）
+}
+
 const userStore = useUserStore();
 
-const noticeDetailRef = ref();
-
 // 当前通知公告列表
-const notices = ref<NoticePageVO[]>([]);
+const vesionList = ref<VersionItem[]>([
+  {
+    id: "1",
+    title: "v2.4.0",
+    date: "2021-09-01 00:00:00",
+    content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
+    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
+    tag: "里程碑",
+  },
+  {
+    id: "1",
+    title: "v2.4.0",
+    date: "2021-09-01 00:00:00",
+    content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
+    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
+    tag: "里程碑",
+  },
+  {
+    id: "1",
+    title: "v2.4.0",
+    date: "2021-09-01 00:00:00",
+    content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
+    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
+    tag: "里程碑",
+  },
+]);
 
 // 当前时间（用于计算问候语）
 const currentDate = new Date();
@@ -425,31 +483,6 @@ const computeGrowthRateClass = (growthRate?: number): string => {
   }
 };
 
-/**
- * 获取当前用户的通知公告数据
- */
-const fetchMyNotices = () => {
-  NoticeAPI.getMyNoticePage({ pageNum: 1, pageSize: 10 }).then((data) => {
-    notices.value = data.list;
-  });
-};
-
-/**
- * 跳转至通知公告详情页面（查看更多通知）
- */
-function navigateToNoticePage() {
-  router.push({ path: "/myNotice" });
-}
-
-/**
- * 打开指定通知详情
- *
- * @param id - 通知 ID
- */
-function openNoticeDetail(id: string) {
-  noticeDetailRef.value.openNotice(id);
-}
-
 // 监听访问趋势日期范围的变化，重新获取趋势数据
 watch(
   () => visitTrendDateRange.value,
@@ -463,7 +496,6 @@ watch(
 // 组件挂载后加载访客统计数据和通知公告数据
 onMounted(() => {
   fetchVisitStatsData();
-  fetchMyNotices();
 });
 </script>
 
@@ -478,6 +510,28 @@ onMounted(() => {
     right: 0;
     z-index: 1;
     border: 0;
+  }
+
+  .version-item {
+    padding: 16px;
+    margin-bottom: 12px;
+    background: var(--el-fill-color-lighter);
+    border-radius: 8px;
+    transition: all 0.2s;
+
+    &.latest-item {
+      background: var(--el-color-primary-light-9);
+      border: 1px solid var(--el-color-primary-light-5);
+    }
+    &:hover {
+      transform: translateX(5px);
+    }
+    .version-content {
+      margin-bottom: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--el-text-color-secondary);
+    }
   }
 }
 </style>
