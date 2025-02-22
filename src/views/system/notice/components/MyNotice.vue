@@ -59,7 +59,7 @@
         </el-table-column>
         <el-table-column align="center" fixed="right" label="操作" width="80">
           <template #default="scope">
-            <el-button type="primary" size="small" link @click="viewNoticeDetail(scope.row.id)">
+            <el-button type="primary" size="small" link @click="handleReadNotice(scope.row.id)">
               查看
             </el-button>
           </template>
@@ -75,7 +75,29 @@
       />
     </el-card>
 
-    <NoticeDetail ref="noticeDetailRef" />
+    <el-dialog
+      v-model="noticeDialogVisible"
+      :title="noticeDetail?.title ?? '通知详情'"
+      width="800px"
+      custom-class="notice-detail"
+    >
+      <div v-if="noticeDetail" class="notice-detail__wrapper">
+        <div class="notice-detail__meta">
+          <span>
+            <el-icon><User /></el-icon>
+            {{ noticeDetail.publisherName }}
+          </span>
+          <span class="ml-2">
+            <el-icon><Timer /></el-icon>
+            {{ noticeDetail.publishTime }}
+          </span>
+        </div>
+
+        <div class="notice-detail__content">
+          <div v-html="noticeDetail.content"></div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -85,11 +107,9 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import NoticeAPI, { NoticePageVO, NoticePageQuery } from "@/api/system/notice";
+import NoticeAPI, { NoticePageVO, NoticePageQuery, NoticeDetailVO } from "@/api/system/notice";
 
 const queryFormRef = ref();
-const noticeDetailRef = ref();
-
 const pageData = ref<NoticePageVO[]>([]);
 
 const loading = ref(false);
@@ -100,7 +120,10 @@ const queryParams = reactive<NoticePageQuery>({
   pageSize: 10,
 });
 
-/** 查询通知公告 */
+const noticeDialogVisible = ref(false);
+const noticeDetail = ref<NoticeDetailVO | null>(null);
+
+// 查询通知公告
 function handleQuery() {
   loading.value = true;
   NoticeAPI.getMyNoticePage(queryParams)
@@ -113,18 +136,61 @@ function handleQuery() {
     });
 }
 
-/** 重置通知公告查询 */
+// 重置通知公告查询
 function handleResetQuery() {
   queryFormRef.value!.resetFields();
   queryParams.pageNum = 1;
   handleQuery();
 }
 
-function viewNoticeDetail(id: string) {
-  noticeDetailRef.value.openNotice(id);
+// 阅读通知公告
+function handleReadNotice(id: string) {
+  NoticeAPI.getDetail(id).then((data) => {
+    noticeDialogVisible.value = true;
+    noticeDetail.value = data;
+  });
 }
 
 onMounted(() => {
   handleQuery();
 });
 </script>
+
+<style lang="scss" scoped>
+:deep(.el-dialog__header) {
+  text-align: center;
+}
+.notice-detail {
+  &__wrapper {
+    padding: 0 20px;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--el-text-color-secondary);
+  }
+
+  &__publisher {
+    margin-right: 24px;
+
+    i {
+      margin-right: 4px;
+    }
+  }
+
+  &__content {
+    max-height: 60vh;
+    padding-top: 16px;
+    margin-bottom: 24px;
+    overflow-y: auto;
+    border-top: 1px solid var(--el-border-color);
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+  }
+}
+</style>

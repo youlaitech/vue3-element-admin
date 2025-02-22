@@ -103,12 +103,7 @@
         </el-table-column>
         <el-table-column align="center" fixed="right" label="操作" width="150">
           <template #default="scope">
-            <el-button
-              type="primary"
-              size="small"
-              link
-              @click="handleOpenNoticeDetailDialog(scope.row.id)"
-            >
+            <el-button type="primary" size="small" link @click="openDetailDialog(scope.row.id)">
               查看
             </el-button>
             <el-button
@@ -168,17 +163,15 @@
     <el-dialog
       v-model="dialog.visible"
       :title="dialog.title"
-      top="4vh"
-      width="1250"
+      top="3vh"
+      width="80%"
       @close="handleCloseDialog"
     >
       <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="通知标题" prop="title">
           <el-input v-model="formData.title" placeholder="通知标题" clearable />
         </el-form-item>
-        <el-form-item label="通知内容" prop="content">
-          <WangEditor v-model="formData.content" />
-        </el-form-item>
+
         <el-form-item label="通知类型" prop="type">
           <Dict v-model="formData.type" code="notice_type" />
         </el-form-item>
@@ -201,6 +194,9 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="通知内容" prop="content">
+          <WangEditor v-model="formData.content" />
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -210,7 +206,45 @@
       </template>
     </el-dialog>
     <!-- 通知公告详情 -->
-    <NoticeDetail ref="noticeDetailRef" />
+    <el-dialog
+      v-model="detailDialog.visible"
+      :show-close="false"
+      width="50%"
+      append-to-body
+      @close="closeDetailDialog"
+    >
+      <template #header>
+        <div class="flex-x-between">
+          <span>通知公告详情</span>
+          <div class="dialog-toolbar">
+            <el-button circle @click="closeDetailDialog">
+              <template #icon>
+                <Close />
+              </template>
+            </el-button>
+          </div>
+        </div>
+      </template>
+      <el-descriptions :column="1">
+        <el-descriptions-item label="标题：">
+          {{ currentNotice.title }}
+        </el-descriptions-item>
+        <el-descriptions-item label="发布状态：">
+          <el-tag v-if="currentNotice.publishStatus == 0" type="info">未发布</el-tag>
+          <el-tag v-else-if="currentNotice.publishStatus == 1" type="success">已发布</el-tag>
+          <el-tag v-else-if="currentNotice.publishStatus == -1" type="warning">已撤回</el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item label="发布人：">
+          {{ currentNotice.publisherName }}
+        </el-descriptions-item>
+        <el-descriptions-item label="发布时间：">
+          {{ currentNotice.publishTime }}
+        </el-descriptions-item>
+        <el-descriptions-item label="公告内容：">
+          <div class="notice-content" v-html="currentNotice.content" />
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
   </div>
 </template>
 
@@ -220,12 +254,16 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import NoticeAPI, { NoticePageVO, NoticeForm, NoticePageQuery } from "@/api/system/notice";
+import NoticeAPI, {
+  NoticePageVO,
+  NoticeForm,
+  NoticePageQuery,
+  NoticeDetailVO,
+} from "@/api/system/notice";
 import UserAPI from "@/api/system/user";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
-const noticeDetailRef = ref();
 
 const loading = ref(false);
 const selectIds = ref<number[]>([]);
@@ -271,6 +309,11 @@ const rules = reactive({
   ],
   type: [{ required: true, message: "请选择通知类型", trigger: "change" }],
 });
+
+const detailDialog = reactive({
+  visible: false,
+});
+const currentNotice = ref<NoticeDetailVO>({});
 
 // 查询通知公告
 function handleQuery() {
@@ -400,10 +443,15 @@ function handleDelete(id?: number) {
   );
 }
 
-// 打开通知公告详情弹窗
-function handleOpenNoticeDetailDialog(id: number) {
-  noticeDetailRef.value.openNotice(id);
-}
+const closeDetailDialog = () => {
+  detailDialog.visible = false;
+};
+
+const openDetailDialog = async (id: string) => {
+  const noticeDetail = await NoticeAPI.getDetail(id);
+  currentNotice.value = noticeDetail;
+  detailDialog.visible = true;
+};
 
 onMounted(() => {
   handleQuery();

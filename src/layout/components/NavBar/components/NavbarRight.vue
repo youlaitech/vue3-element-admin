@@ -14,8 +14,8 @@
       <!-- 语言选择 -->
       <LangSelect />
 
-      <!-- 消息通知 -->
-      <Notification />
+      <!-- 通知下拉 -->
+      <NoticeDropdown />
     </template>
 
     <!-- 用户头像（个人中心、注销登录等） -->
@@ -47,7 +47,6 @@ import defaultSettings from "@/settings";
 import { DeviceEnum } from "@/enums/DeviceEnum";
 import { useAppStore, useSettingsStore, useUserStore, useTagsViewStore } from "@/store";
 
-import Notification from "./Notification.vue";
 import { SidebarColorEnum, ThemeEnum } from "@/enums/ThemeEnum";
 
 const appStore = useAppStore();

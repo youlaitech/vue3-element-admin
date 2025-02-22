@@ -30,10 +30,10 @@
     <div v-if="!isDark" class="py-1 flex-x-between">
       <span class="text-xs">{{ $t("settings.sidebarColorScheme") }}</span>
       <el-radio-group v-model="sidebarColor" @change="changeSidebarColor">
+        <el-radio :value="SidebarColorEnum.CLASSIC_BLUE">{{ $t("settings.classicBlue") }}</el-radio>
         <el-radio :value="SidebarColorEnum.MINIMAL_WHITE">
           {{ $t("settings.minimalWhite") }}
         </el-radio>
-        <el-radio :value="SidebarColorEnum.CLASSIC_BLUE">{{ $t("settings.classicBlue") }}</el-radio>
       </el-radio-group>
     </div>
 
