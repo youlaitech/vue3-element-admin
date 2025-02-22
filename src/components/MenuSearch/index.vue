@@ -233,7 +233,7 @@ onMounted(() => {
   }
 }
 
-[class^="i-svg:"] {
+.dialog-footer > [class^="i-svg:"] {
   display: inline-block;
   color: var(--el-text-color-secondary);
 }
