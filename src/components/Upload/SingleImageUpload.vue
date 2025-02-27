@@ -77,7 +77,6 @@ const props = defineProps({
 
 const modelValue = defineModel("modelValue", {
   type: String,
-  required: true,
   default: () => "",
 });
 

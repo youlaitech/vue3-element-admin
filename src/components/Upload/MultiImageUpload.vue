@@ -87,7 +87,6 @@ const previewImageIndex = ref(0); // 预览图片的索引
 
 const modelValue = defineModel("modelValue", {
   type: [Array] as PropType<string[]>,
-  required: true,
   default: () => [],
 });
 
