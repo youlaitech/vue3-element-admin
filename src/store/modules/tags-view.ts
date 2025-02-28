@@ -8,8 +8,11 @@ export const useTagsViewStore = defineStore("tagsView", () => {
    * 添加已访问视图到已访问视图列表中
    */
   function addVisitedView(view: TagView) {
-    // 如果已经存在于已访问的视图列表中，则不再添加
-    if (visitedViews.value.some((v) => v.path === view.path)) {
+    // 如果已经存在于已访问的视图列表中或者是重定向地址，则不再添加
+    if (view.path.startsWith("/redirect")) {
+      return;
+    }
+    if (visitedViews.value.some((v) => v.name === view.name)) {
       return;
     }
     // 如果视图是固定的（affix），则在已访问的视图列表的开头添加
