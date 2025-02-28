@@ -178,6 +178,8 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         "element-plus/es/components/image-viewer/style/css",
         "element-plus/es/components/empty/style/css",
         "element-plus/es/components/message/style/css",
+        "element-plus/es/components/timeline/style/css",
+        "element-plus/es/components/timeline-item/style/css",
       ],
     },
     // 构建配置
