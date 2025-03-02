@@ -32,7 +32,12 @@
           <li
             v-for="(item, index) in displayResults"
             :key="item.path"
-            :class="{ 'search-result__item--active': index === activeIndex }"
+            :class="[
+              'search-result__item',
+              {
+                'search-result__item--active': index === activeIndex,
+              },
+            ]"
             @click="navigateToRoute(item)"
           >
             <el-icon v-if="item.icon && item.icon.startsWith('el-icon')">
@@ -40,7 +45,7 @@
             </el-icon>
             <div v-else-if="item.icon" :class="`i-svg:${item.icon}`" />
             <div v-else class="i-svg:menu" />
-            {{ item.title }}
+            <span class="ml-2">{{ item.title }}</span>
           </li>
         </ul>
         <el-empty v-else description="暂无数据" />
@@ -192,14 +197,15 @@ onMounted(() => {
   }
 
   &__item {
+    display: flex;
+    align-items: center;
     padding: 10px;
-    line-height: 40px;
     text-align: left;
     cursor: pointer;
 
     &--active {
-      color: $menu-active-text;
-      background-color: $menu-hover;
+      color: var(--el-color-primary);
+      background-color: var(--el-menu-hover-bg-color);
     }
   }
 }
