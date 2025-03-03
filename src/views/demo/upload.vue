@@ -16,7 +16,7 @@
       </el-form-item>
 
       <el-form-item label="多图上传">
-        <MultiImageUpload v-model="picUrls" />
+        <MultiImageUpload v-model="picUrls" :limit="2" />
       </el-form-item>
 
       <el-form-item label="文件上传">
@@ -34,7 +34,7 @@ const picUrl = ref("https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg");
 const picUrls = ref(["https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg"]);
 
 const fileUrls = ref([
-  "https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg",
-  "https://s2.loli.net/2023/05/24/RuHFMwW4rG5lIqs.jpg",
+  { name: "照片1.jpg", url: "https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg" },
+  { name: "照片2.jpg", url: "https://s2.loli.net/2023/05/24/RuHFMwW4rG5lIqs.jpg" },
 ]);
 </script>
