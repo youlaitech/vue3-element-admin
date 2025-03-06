@@ -208,7 +208,6 @@ const handleError = (_error: any) => {
  * 删除文件
  */
 function handleRemove(fileUrl: string) {
-  console.log(fileUrl);
   FileAPI.delete(fileUrl).then(() => {
     modelValue.value = modelValue.value.filter((file) => file.url !== fileUrl);
   });
