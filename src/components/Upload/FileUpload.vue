@@ -112,7 +112,7 @@ const props = defineProps({
 });
 
 const modelValue = defineModel("modelValue", {
-  type: [Array] as PropType<UploadFile[]>,
+  type: [Array] as PropType<FileInfo[]>,
   required: true,
   default: () => [],
 });
@@ -131,6 +131,8 @@ watch(
       return {
         name: name,
         url: item.url,
+        status: "success",
+        uid: getUid(),
       } as UploadFile;
     });
   },
@@ -191,10 +193,7 @@ const handleProgress = (event: UploadProgressEvent) => {
 const handleSuccess = (fileInfo: FileInfo) => {
   ElMessage.success("上传成功");
 
-  modelValue.value = [
-    ...modelValue.value,
-    { name: fileInfo.name, url: fileInfo.url } as UploadFile,
-  ];
+  modelValue.value = [...modelValue.value, { name: fileInfo.name, url: fileInfo.url } as FileInfo];
 };
 
 /**
@@ -223,6 +222,12 @@ function handleDownload(file: UploadUserFile) {
   if (url) {
     FileAPI.download(url, name);
   }
+}
+
+/** 获取一个不重复的id */
+function getUid(): number {
+  // 时间戳左移13位（相当于乘以8192） + 4位随机数
+  return (Date.now() << 13) | Math.floor(Math.random() * 8192);
 }
 </script>
 <style lang="scss" scoped>
