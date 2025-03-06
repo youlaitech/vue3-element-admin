@@ -1,6 +1,6 @@
 <template>
   <div class="tags-container">
-    <el-scrollbar class="scroll-container" :vertical="false" @wheel.prevent="handleScroll">
+    <el-scrollbar class="scroll-container" :vertical="false" @wheel="handleScroll">
       <router-link
         v-for="tag in visitedViews"
         ref="tagRef"
@@ -341,7 +341,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .tags-container {
   width: 100%;
-  height: 34px;
+  height: $tags-view-height;
   background-color: var(--el-bg-color);
   border: 1px solid var(--el-border-color-light);
   box-shadow: 0 1px 1px var(--el-box-shadow-light);
