@@ -51,7 +51,6 @@ import variables from "@/styles/variables.module.scss";
 const props = defineProps({
   data: {
     type: Array<RouteRecordRaw>,
-    required: true,
     default: () => [],
   },
   basePath: {

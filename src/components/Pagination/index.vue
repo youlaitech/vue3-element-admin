@@ -18,7 +18,6 @@
 <script setup lang="ts">
 const props = defineProps({
   total: {
-    required: true,
     type: Number as PropType<number>,
     default: 0,
   },
