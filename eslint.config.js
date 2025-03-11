@@ -91,7 +91,7 @@ export default [
     plugins: { vue: pluginVue, "@typescript-eslint": pluginTypeScript },
     processor: pluginVue.processors[".vue"],
     rules: {
-      ...pluginVue.configs["vue3-recommended"].rules, // Vue 3 推荐规则
+      ...pluginVue.configs.recommended.rules, // Vue 推荐规则
       "vue/no-v-html": "off", // 允许 v-html
       "vue/multi-word-component-names": "off", // 允许单个单词组件名
     },
