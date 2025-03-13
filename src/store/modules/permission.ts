@@ -77,11 +77,6 @@ export const usePermissionStore = defineStore("permission", () => {
 /**
  * 解析后端返回的路由数据并转换为 Vue Router 兼容的路由配置
  *
- * 1. 遍历 `rawRoutes` 并转换为 `RouteRecordRaw` 格式。
- * 2. 若 `component` 为 `"Layout"`，则替换为 `Layout` 组件。
- * 3. 若 `component` 为字符串路径，则动态加载对应的 Vue 组件，找不到则默认 `404.vue`。
- * 4. 递归解析 `children`，确保子路由也被正确转换。
- *
  * @param rawRoutes 后端返回的原始路由数据
  * @returns 解析后的路由配置数组
  */
