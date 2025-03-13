@@ -73,14 +73,13 @@ const navbarRightClass = computed(() => {
   }
 
   // 如果侧边栏是经典蓝
-
   if (settingStore.sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE) {
     return "navbar__right--white";
   }
 });
 
 /**
- * 注销登出
+ * 注销登录
  */
 function logout() {
   ElMessageBox.confirm("确定注销并退出系统吗？", "提示", {
