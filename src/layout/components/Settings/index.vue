@@ -1,45 +1,68 @@
 <template>
-  <el-drawer v-model="settingsVisible" size="300" :title="$t('settings.project')">
-    <el-divider>{{ $t("settings.theme") }}</el-divider>
+  <el-drawer
+    v-model="drawerVisible"
+    size="300"
+    :title="$t('settings.project')"
+    :before-close="handleCloseDrawer"
+  >
+    <section class="config-section">
+      <el-divider>{{ $t("settings.theme") }}</el-divider>
 
-    <div class="flex-center">
-      <el-switch v-model="isDark" active-icon="Moon" inactive-icon="Sunny" @change="changeTheme" />
-    </div>
+      <div class="flex-center">
+        <el-switch
+          v-model="isDark"
+          active-icon="Moon"
+          inactive-icon="Sunny"
+          @change="handleThemeChange"
+        />
+      </div>
+    </section>
 
-    <el-divider>{{ $t("settings.interface") }}</el-divider>
+    <!-- 界面设置 -->
+    <section class="config-section">
+      <el-divider>{{ $t("settings.interface") }}</el-divider>
 
-    <div class="py-1 flex-x-between">
-      <span class="text-xs">{{ $t("settings.themeColor") }}</span>
-      <ThemeColorPicker v-model="settingsStore.themeColor" @update:model-value="changeThemeColor" />
-    </div>
+      <div class="config-item flex-x-between">
+        <span class="text-xs">{{ $t("settings.themeColor") }}</span>
+        <el-color-picker
+          v-model="selectedThemeColor"
+          :predefine="colorPresets"
+          popper-class="theme-picker-dropdown"
+        />
+      </div>
 
-    <div class="py-1 flex-x-between">
-      <span class="text-xs">{{ $t("settings.tagsView") }}</span>
-      <el-switch v-model="settingsStore.tagsView" />
-    </div>
+      <div class="config-item flex-x-between">
+        <span class="text-xs">{{ $t("settings.tagsView") }}</span>
+        <el-switch v-model="settingsStore.tagsView" />
+      </div>
 
-    <div class="py-1 flex-x-between">
-      <span class="text-xs">{{ $t("settings.sidebarLogo") }}</span>
-      <el-switch v-model="settingsStore.sidebarLogo" />
-    </div>
+      <div class="config-item flex-x-between">
+        <span class="text-xs">{{ $t("settings.sidebarLogo") }}</span>
+        <el-switch v-model="settingsStore.sidebarLogo" />
+      </div>
 
-    <div class="py-1 flex-x-between">
-      <span class="text-xs">{{ $t("settings.watermark") }}</span>
-      <el-switch v-model="settingsStore.watermarkEnabled" />
-    </div>
-    <div v-if="!isDark" class="py-1 flex-x-between">
-      <span class="text-xs">{{ $t("settings.sidebarColorScheme") }}</span>
-      <el-radio-group v-model="sidebarColor" @change="changeSidebarColor">
-        <el-radio :value="SidebarColorEnum.CLASSIC_BLUE">{{ $t("settings.classicBlue") }}</el-radio>
-        <el-radio :value="SidebarColorEnum.MINIMAL_WHITE">
-          {{ $t("settings.minimalWhite") }}
-        </el-radio>
-      </el-radio-group>
-    </div>
+      <div class="config-item flex-x-between">
+        <span class="text-xs">{{ $t("settings.watermark") }}</span>
+        <el-switch v-model="settingsStore.watermarkEnabled" />
+      </div>
+      <div v-if="!isDark" class="config-item flex-x-between">
+        <span class="text-xs">{{ $t("settings.sidebarColorScheme") }}</span>
+        <el-radio-group v-model="sidebarColor" @change="changeSidebarColor">
+          <el-radio :value="SidebarColorEnum.CLASSIC_BLUE">
+            {{ $t("settings.classicBlue") }}
+          </el-radio>
+          <el-radio :value="SidebarColorEnum.MINIMAL_WHITE">
+            {{ $t("settings.minimalWhite") }}
+          </el-radio>
+        </el-radio-group>
+      </div>
+    </section>
 
-    <el-divider>{{ $t("settings.navigation") }}</el-divider>
-
-    <LayoutSelect v-model="settingsStore.layout" @update:model-value="changeLayout" />
+    <!-- 布局设置 -->
+    <section class="config-section">
+      <el-divider>{{ $t("settings.navigation") }}</el-divider>
+      <LayoutSelect v-model="settingsStore.layout" @update:model-value="handleLayoutChange" />
+    </section>
   </el-drawer>
 </template>
 
@@ -48,6 +71,18 @@ import { LayoutEnum } from "@/enums/LayoutEnum";
 import { ThemeEnum } from "@/enums/ThemeEnum";
 import { SidebarColorEnum } from "@/enums/ThemeEnum";
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
+// 颜色预设
+const colorPresets = [
+  "#4080FF",
+  "#ff4500",
+  "#ff8c00",
+  "#90ee90",
+  "#00ced1",
+  "#1e90ff",
+  "#c71585",
+  "rgb(255, 120, 0)",
+  "hsva(120, 40, 94)",
+];
 
 const route = useRoute();
 const appStore = useAppStore();
@@ -57,32 +92,23 @@ const permissionStore = usePermissionStore();
 const isDark = ref<boolean>(settingsStore.theme === ThemeEnum.DARK);
 const sidebarColor = ref(settingsStore.sidebarColorScheme);
 
-const settingsVisible = computed({
-  get() {
-    return settingsStore.settingsVisible;
-  },
-  set() {
-    settingsStore.settingsVisible = false;
-  },
+const selectedThemeColor = computed({
+  get: () => settingsStore.themeColor,
+  set: (value) => settingsStore.changeThemeColor(value),
+});
+
+const drawerVisible = computed({
+  get: () => settingsStore.settingsVisible,
+  set: (value) => (settingsStore.settingsVisible = value),
 });
 
 /**
- *  切换主题颜色
+ * 处理主题切换
  *
- * @param color 颜色
+ * @param isDark 是否启用暗黑模式
  */
-function changeThemeColor(color: string) {
-  settingsStore.changeThemeColor(color);
-}
-
-/**
- * 切换主题
- *
- * @param val 是否为暗黑模式
- */
-const changeTheme = (val: any) => {
-  isDark.value = val;
-  settingsStore.changeTheme(isDark.value ? ThemeEnum.DARK : ThemeEnum.LIGHT);
+const handleThemeChange = (isDark: string | number | boolean) => {
+  settingsStore.changeTheme(isDark ? ThemeEnum.DARK : ThemeEnum.LIGHT);
 };
 
 /**
@@ -97,34 +123,25 @@ const changeSidebarColor = (val: any) => {
 /**
  * 切换布局
  *
- * @param layout 布局  LayoutEnum
+ * @param layout - 布局模式
  */
-function changeLayout(layout: LayoutEnum) {
+const handleLayoutChange = (layout: LayoutEnum) => {
   settingsStore.changeLayout(layout);
-  if (layout === LayoutEnum.MIX) {
-    route.name && againActiveTop(route.name as string);
+  if (layout === LayoutEnum.MIX && route.name) {
+    const topLevelRoute = findTopLevelRoute(permissionStore.routes, route.name as string);
+    if (appStore.activeTopMenuPath !== topLevelRoute.path) {
+      appStore.activeTopMenu(topLevelRoute.path);
+    }
   }
-}
+};
 
 /**
- * 重新激活顶部菜单
- *
- * @param routeName 路由名称
- */
-function againActiveTop(routeName: string) {
-  const parent = findOutermostParent(permissionStore.routes, routeName);
-  if (appStore.activeTopMenuPath !== parent.path) {
-    appStore.activeTopMenu(parent.path);
-  }
-}
-
-/**
- * 查找最外层父级
+ * 查找路由的顶层父路由
  *
  * @param tree 树形数据
  * @param findName 查找的名称
  */
-function findOutermostParent(tree: any[], findName: string) {
+function findTopLevelRoute(tree: any[], findName: string) {
   let parentMap: any = {};
 
   function buildParentMap(node: any, parent: any) {
@@ -148,9 +165,28 @@ function findOutermostParent(tree: any[], findName: string) {
     }
     currentNode = parentMap[currentNode.name];
   }
-
   return null;
 }
+
+/**
+ * 关闭抽屉前的回调
+ */
+const handleCloseDrawer = () => {
+  settingsStore.settingsVisible = false;
+};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.config-section {
+  margin-bottom: 24px;
+
+  .config-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--el-border-color-light);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+</style>
