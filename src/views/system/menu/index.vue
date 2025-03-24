@@ -76,7 +76,7 @@
         <el-table-column fixed="right" align="center" label="操作" width="220">
           <template #default="scope">
             <el-button
-              v-if="scope.row.type == 'CATALOG' || scope.row.type == 'MENU'"
+              v-if="scope.row.type == MenuTypeEnum.CATALOG || scope.row.type == MenuTypeEnum.MENU"
               v-hasPerm="['sys:menu:add']"
               type="primary"
               link
@@ -131,14 +131,14 @@
 
         <el-form-item label="菜单类型" prop="type">
           <el-radio-group v-model="formData.type" @change="handleMenuTypeChange">
-            <el-radio value="CATALOG">目录</el-radio>
-            <el-radio value="MENU">菜单</el-radio>
-            <el-radio value="BUTTON">按钮</el-radio>
-            <el-radio value="EXTLINK">外链</el-radio>
+            <el-radio :value="MenuTypeEnum.CATALOG">目录</el-radio>
+            <el-radio :value="MenuTypeEnum.MENU">菜单</el-radio>
+            <el-radio :value="MenuTypeEnum.BUTTON">按钮</el-radio>
+            <el-radio :value="MenuTypeEnum.EXTLINK">外链</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="formData.type == 'EXTLINK'" label="外链地址" prop="path">
+        <el-form-item v-if="formData.type == MenuTypeEnum.EXTLINK" label="外链地址" prop="path">
           <el-input v-model="formData.routePath" placeholder="请输入外链完整路径" />
         </el-form-item>
 
@@ -465,7 +465,7 @@ function handleSubmit() {
           handleQuery();
         });
       } else {
-        MenuAPI.create(formData.value).then(() => {
+        MenuAPI.add(formData.value).then(() => {
           ElMessage.success("新增成功");
           handleCloseDialog();
           handleQuery();
