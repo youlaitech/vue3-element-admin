@@ -21,6 +21,11 @@ const DictAPI = {
     });
   },
 
+  /**
+   * 字典列表
+   *
+   * @returns 字典列表
+   */
   getList() {
     return request<any, OptionType[]>({
       url: `${DICT_BASE_URL}`,

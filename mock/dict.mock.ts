@@ -21,6 +21,27 @@ export default defineMock([
     },
   },
 
+  /**
+   * 字典列表
+   */
+  {
+    url: "dicts",
+    method: ["GET"],
+    body: {
+      code: "00000",
+      data: {
+        list: [
+          {
+            value: "gender",
+            label: "性别",
+          },
+        ],
+        total: 1,
+      },
+      msg: "一切ok",
+    },
+  },
+
   // 新增字典
   {
     url: "dicts",
