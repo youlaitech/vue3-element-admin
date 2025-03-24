@@ -60,7 +60,7 @@ const RoleAPI = {
   },
 
   /** 添加角色 */
-  add(data: RoleForm) {
+  create(data: RoleForm) {
     return request({
       url: `${ROLE_BASE_URL}`,
       method: "post",

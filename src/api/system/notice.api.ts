@@ -31,7 +31,7 @@ const NoticeAPI = {
    * @param data Notice表单数据
    * @returns
    */
-  add(data: NoticeForm) {
+  create(data: NoticeForm) {
     return request({
       url: `${NOTICE_BASE_URL}`,
       method: "post",

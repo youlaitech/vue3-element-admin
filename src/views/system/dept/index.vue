@@ -158,7 +158,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import DeptAPI, { DeptVO, DeptForm, DeptQuery } from "@/api/system/dept";
+import DeptAPI, { DeptVO, DeptForm, DeptQuery } from "@/api/system/dept.api";
 
 const queryFormRef = ref();
 const deptFormRef = ref();
@@ -251,7 +251,7 @@ function handleSubmit() {
           })
           .finally(() => (loading.value = false));
       } else {
-        DeptAPI.add(formData)
+        DeptAPI.create(formData)
           .then(() => {
             ElMessage.success("新增成功");
             handleCloseDialog();

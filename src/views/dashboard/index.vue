@@ -285,8 +285,8 @@ defineOptions({
 });
 
 import { dayjs } from "element-plus";
-import LogAPI, { VisitStatsVO, VisitTrendVO } from "@/api/system/log";
-import { useUserStore } from "@/store/modules/user";
+import LogAPI, { VisitStatsVO, VisitTrendVO } from "@/api/system/log.api";
+import { useUserStore } from "@/store/modules/user.store";
 import { formatGrowthRate } from "@/utils";
 
 interface VersionItem {

@@ -129,7 +129,7 @@ defineOptions({
   inherititems: false,
 });
 
-import DictAPI, { DictPageQuery, DictPageVO, DictForm } from "@/api/system/dict";
+import DictAPI, { DictPageQuery, DictPageVO, DictForm } from "@/api/system/dict.api";
 
 import router from "@/router";
 
@@ -221,7 +221,7 @@ function handleSubmitClick() {
           })
           .finally(() => (loading.value = false));
       } else {
-        DictAPI.add(formData)
+        DictAPI.create(formData)
           .then(() => {
             ElMessage.success("新增成功");
             handleCloseDialog();
@@ -270,17 +270,12 @@ function handleDelete(id?: number) {
   );
 }
 
-// 打开字典数据
+// 打开字典项
 function handleOpenDictData(row: DictPageVO) {
   router.push({
-    path: "/system/dict-data",
+    path: "/system/dict-item",
     query: { dictCode: row.dictCode, title: "【" + row.name + "】字典数据" },
   });
-
-  /*  router.push({
-    name: "DictData",
-    params: { dictCode: row.dictCode, title: "【" + row.name + "】字典数据" },
-  }); */
 }
 
 onMounted(() => {

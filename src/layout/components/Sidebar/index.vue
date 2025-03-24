@@ -1,7 +1,7 @@
 <template>
   <div :class="{ 'has-logo': sidebarLogo }">
     <!-- 混合布局 -->
-    <div v-if="layout == LayoutEnum.MIX" class="flex w-full">
+    <div v-if="layout == LayoutMode.MIX" class="flex w-full">
       <SidebarLogo v-if="sidebarLogo" :collapse="isSidebarCollapsed" />
       <SidebarMixTopMenu class="flex-1" />
       <NavbarRight />
@@ -15,13 +15,13 @@
       </el-scrollbar>
 
       <!-- 顶部导航 -->
-      <NavbarRight v-if="layout == LayoutEnum.TOP" />
+      <NavbarRight v-if="layout == LayoutMode.TOP" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { LayoutEnum } from "@/enums/LayoutEnum";
+import { LayoutMode } from "@/enums/settings/layout.enum";
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
 
 import NavbarRight from "../NavBar/components/NavbarRight.vue";

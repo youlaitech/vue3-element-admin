@@ -135,7 +135,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import ConfigAPI, { ConfigPageVO, ConfigForm, ConfigPageQuery } from "@/api/system/config";
+import ConfigAPI, { ConfigPageVO, ConfigForm, ConfigPageQuery } from "@/api/system/config.api";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -233,7 +233,7 @@ function handleSubmit() {
           })
           .finally(() => (loading.value = false));
       } else {
-        ConfigAPI.add(formData)
+        ConfigAPI.create(formData)
           .then(() => {
             ElMessage.success("新增成功");
             handleCloseDialog();

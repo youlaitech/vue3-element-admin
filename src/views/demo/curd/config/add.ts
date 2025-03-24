@@ -1,4 +1,4 @@
-import UserAPI, { type UserForm } from "@/api/system/user";
+import UserAPI, { type UserForm } from "@/api/system/user.api";
 import type { IModalConfig } from "@/components/CURD/types";
 
 const modalConfig: IModalConfig<UserForm> = {
@@ -11,7 +11,7 @@ const modalConfig: IModalConfig<UserForm> = {
   form: {
     labelWidth: 100,
   },
-  formAction: UserAPI.add,
+  formAction: UserAPI.create,
   beforeSubmit(data) {
     console.log("提交之前处理", data);
   },

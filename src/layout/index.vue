@@ -7,7 +7,7 @@
     <Sidebar class="layout__sidebar" />
 
     <!-- 混合布局 -->
-    <div v-if="layout === LayoutEnum.MIX" class="layout__container">
+    <div v-if="layout === LayoutMode.MIX" class="layout__container">
       <!-- 左侧菜单栏 -->
       <div class="layout__sidebar--left">
         <el-scrollbar>
@@ -32,7 +32,7 @@
 
     <!-- 左侧或顶部布局的主内容区 -->
     <div v-else :class="{ hasTagsView: isShowTagsView }" class="layout__main">
-      <NavBar v-if="layout === LayoutEnum.LEFT" />
+      <NavBar v-if="layout === LayoutMode.LEFT" />
       <TagsView v-if="isShowTagsView" />
       <AppMain />
       <Settings v-if="defaultSettings.showSettings" />
@@ -52,8 +52,8 @@ import { useAppStore, useSettingsStore, usePermissionStore } from "@/store";
 import defaultSettings from "@/settings";
 
 // 枚举
-import { DeviceEnum } from "@/enums/DeviceEnum";
-import { LayoutEnum } from "@/enums/LayoutEnum";
+import { DeviceEnum } from "@/enums/settings/device.enum";
+import { LayoutMode } from "@/enums/settings/layout.enum";
 
 // 组件
 import NavBar from "./components/NavBar/index.vue";

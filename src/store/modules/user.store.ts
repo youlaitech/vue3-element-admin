@@ -1,9 +1,9 @@
 import { store } from "@/store";
-import { usePermissionStoreHook } from "@/store/modules/permission";
-import { useDictStoreHook } from "@/store/modules/dict";
+import { usePermissionStoreHook } from "@/store/modules/permission.store";
+import { useDictStoreHook } from "@/store/modules/dict.store";
 
-import AuthAPI, { type LoginFormData } from "@/api/auth";
-import UserAPI, { type UserInfo } from "@/api/system/user";
+import AuthAPI, { type LoginFormData } from "@/api/auth.api";
+import UserAPI, { type UserInfo } from "@/api/system/user.api";
 
 import { setAccessToken, setRefreshToken, getRefreshToken, clearToken } from "@/utils/auth";
 
@@ -60,7 +60,7 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve, reject) => {
       AuthAPI.logout()
         .then(() => {
-          clearUserData();
+          clearSessionAndCache();
           resolve();
         })
         .catch((error) => {
@@ -90,15 +90,13 @@ export const useUserStore = defineStore("user", () => {
   }
 
   /**
-   * 清理用户数据
-   *
-   * @returns
+   * 清除用户会话和缓存
    */
-  function clearUserData() {
+  function clearSessionAndCache() {
     return new Promise<void>((resolve) => {
       clearToken();
       usePermissionStoreHook().resetRouter();
-      useDictStoreHook().clearDictionaryCache();
+      useDictStoreHook().clearDictCache();
       resolve();
     });
   }
@@ -108,7 +106,7 @@ export const useUserStore = defineStore("user", () => {
     getUserInfo,
     login,
     logout,
-    clearUserData,
+    clearSessionAndCache,
     refreshToken,
   };
 });

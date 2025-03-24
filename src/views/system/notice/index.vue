@@ -259,8 +259,8 @@ import NoticeAPI, {
   NoticeForm,
   NoticePageQuery,
   NoticeDetailVO,
-} from "@/api/system/notice";
-import UserAPI from "@/api/system/user";
+} from "@/api/system/notice.api";
+import UserAPI from "@/api/system/user.api";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -389,7 +389,7 @@ function handleSubmit() {
           })
           .finally(() => (loading.value = false));
       } else {
-        NoticeAPI.add(formData)
+        NoticeAPI.create(formData)
           .then(() => {
             ElMessage.success("新增成功");
             handleCloseDialog();

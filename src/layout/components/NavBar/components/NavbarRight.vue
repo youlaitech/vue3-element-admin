@@ -44,10 +44,10 @@
 </template>
 <script setup lang="ts">
 import defaultSettings from "@/settings";
-import { DeviceEnum } from "@/enums/DeviceEnum";
+import { DeviceEnum } from "@/enums/settings/device.enum";
 import { useAppStore, useSettingsStore, useUserStore, useTagsViewStore } from "@/store";
 
-import { SidebarColorEnum, ThemeEnum } from "@/enums/ThemeEnum";
+import { SidebarColor, ThemeMode } from "@/enums/settings/theme.enum";
 
 const appStore = useAppStore();
 const settingStore = useSettingsStore();
@@ -68,12 +68,12 @@ function handleProfileClick() {
 // 根据主题和侧边栏配色方案选择 navbar 右侧的样式类
 const navbarRightClass = computed(() => {
   // 如果暗黑主题
-  if (settingStore.theme === ThemeEnum.DARK) {
+  if (settingStore.theme === ThemeMode.DARK) {
     return "navbar__right--white";
   }
 
   // 如果侧边栏是经典蓝
-  if (settingStore.sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE) {
+  if (settingStore.sidebarColorScheme === SidebarColor.CLASSIC_BLUE) {
     return "navbar__right--white";
   }
 });

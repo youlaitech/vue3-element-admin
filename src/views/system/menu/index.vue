@@ -335,8 +335,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import MenuAPI, { MenuQuery, MenuForm, MenuVO } from "@/api/system/menu";
-import { MenuTypeEnum } from "@/enums/MenuTypeEnum";
+import MenuAPI, { MenuQuery, MenuForm, MenuVO } from "@/api/system/menu.api";
+import { MenuTypeEnum } from "@/enums/system/menu.enum";
 
 const queryFormRef = ref();
 const menuFormRef = ref();
@@ -465,7 +465,7 @@ function handleSubmit() {
           handleQuery();
         });
       } else {
-        MenuAPI.add(formData.value).then(() => {
+        MenuAPI.create(formData.value).then(() => {
           ElMessage.success("新增成功");
           handleCloseDialog();
           handleQuery();

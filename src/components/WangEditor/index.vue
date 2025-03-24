@@ -34,7 +34,7 @@ import { Toolbar, Editor } from "@wangeditor-next/editor-for-vue";
 import { IToolbarConfig, IEditorConfig } from "@wangeditor-next/editor";
 
 // 文件上传 API
-import FileAPI from "@/api/file";
+import FileAPI from "@/api/file.api";
 
 // 上传图片回调函数类型
 type InsertFnType = (_url: string, _alt: string, _href: string) => void;

@@ -146,28 +146,27 @@
 </template>
 
 <script setup lang="ts">
-import { LocationQuery, useRoute } from "vue-router";
+import { LocationQuery, RouteLocationRaw, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 
-import AuthAPI, { type LoginFormData } from "@/api/auth";
+import AuthAPI, { type LoginFormData } from "@/api/auth.api";
 import router from "@/router";
 
 import type { FormInstance } from "element-plus";
 
 import defaultSettings from "@/settings";
-import { ThemeEnum } from "@/enums/ThemeEnum";
+import { ThemeMode } from "@/enums/settings/theme.enum";
 
-import { useSettingsStore, useUserStore, useDictStore } from "@/store";
+import { useSettingsStore, useUserStore } from "@/store";
 
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
-const dictStore = useDictStore();
 
 const route = useRoute();
 const { t } = useI18n();
 const loginFormRef = ref<FormInstance>();
 
-const isDark = ref(settingsStore.theme === ThemeEnum.DARK); // 是否暗黑模式
+const isDark = ref(settingsStore.theme === ThemeMode.DARK); // 是否暗黑模式
 const loading = ref(false); // 按钮 loading 状态
 const isCapslock = ref(false); // 是否大写锁定
 const captchaBase64 = ref(); // 验证码图片Base64字符串
@@ -218,57 +217,60 @@ function getCaptcha() {
   });
 }
 
-// 登录
+// 登录提交处理
 async function handleLoginSubmit() {
-  loginFormRef.value?.validate((valid: boolean) => {
-    if (valid) {
-      loading.value = true;
-      userStore
-        .login(loginFormData.value)
-        .then(async () => {
-          await userStore.getUserInfo();
-          // 需要在路由跳转前加载字典数据，否则会出现字典数据未加载完成导致页面渲染异常
-          await dictStore.loadDictionaries();
-          // 跳转到登录前的页面
-          const { path, queryParams } = parseRedirect();
-          router.push({ path: path, query: queryParams });
-        })
-        .catch(() => {
-          getCaptcha();
-        })
-        .finally(() => {
-          loading.value = false;
-        });
-    }
-  });
+  // 1. 表单验证
+  const valid = await loginFormRef.value?.validate();
+  if (!valid) return;
+
+  loading.value = true;
+  try {
+    // 2. 执行登录
+    await userStore.login(loginFormData.value);
+
+    // 3. 获取用户信息
+    await userStore.getUserInfo();
+
+    // 4. 解析并跳转目标地址
+    const redirect = resolveRedirectTarget(route.query);
+    await router.push(redirect);
+  } catch (error) {
+    // 5. 统一错误处理
+    getCaptcha(); // 刷新验证码
+    console.error("登录失败:", error);
+  } finally {
+    loading.value = false;
+  }
 }
 
 /**
- * 解析 redirect 字符串 为 path 和  queryParams
- *
- * @returns { path: string, queryParams: Record<string, string> } 解析后的 path 和 queryParams
+ * 解析重定向目标
+ * @param query 路由查询参数
+ * @returns 标准化后的路由地址对象
  */
-function parseRedirect(): {
-  path: string;
-  queryParams: Record<string, string>;
-} {
-  const query: LocationQuery = route.query;
-  const redirect = (query.redirect as string) ?? "/";
+function resolveRedirectTarget(query: LocationQuery): RouteLocationRaw {
+  // 默认跳转路径
+  const defaultPath = "/";
 
-  const url = new URL(redirect, window.location.origin);
-  const path = url.pathname;
-  const queryParams: Record<string, string> = {};
+  // 获取原始重定向路径
+  const rawRedirect = (query.redirect as string) || defaultPath;
 
-  url.searchParams.forEach((value, key) => {
-    queryParams[key] = value;
-  });
-
-  return { path, queryParams };
+  try {
+    // 6. 使用Vue Router解析路径
+    const resolved = router.resolve(rawRedirect);
+    return {
+      path: resolved.path,
+      query: resolved.query,
+    };
+  } catch {
+    // 7. 异常处理：返回安全路径
+    return { path: defaultPath };
+  }
 }
 
 // 主题切换
 const toggleTheme = () => {
-  const newTheme = settingsStore.theme === ThemeEnum.DARK ? ThemeEnum.LIGHT : ThemeEnum.DARK;
+  const newTheme = settingsStore.theme === ThemeMode.DARK ? ThemeMode.LIGHT : ThemeMode.DARK;
   settingsStore.changeTheme(newTheme);
 };
 

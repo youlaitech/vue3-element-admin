@@ -5,17 +5,17 @@
     :default-active="currentRoute.path"
     :collapse="!appStore.sidebar.opened"
     :background-color="
-      theme === 'dark' || sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE
+      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
         ? variables['menu-background']
         : undefined
     "
     :text-color="
-      theme === 'dark' || sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE
+      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
         ? variables['menu-text']
         : undefined
     "
     :active-text-color="
-      theme === 'dark' || sidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE
+      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
         ? variables['menu-active-text']
         : undefined
     "
@@ -41,8 +41,8 @@ import path from "path-browserify";
 import type { MenuInstance } from "element-plus";
 import type { RouteRecordRaw } from "vue-router";
 
-import { LayoutEnum } from "@/enums/LayoutEnum";
-import { SidebarColorEnum } from "@/enums/ThemeEnum";
+import { LayoutMode } from "@/enums/settings/layout.enum";
+import { SidebarColor } from "@/enums/settings/theme.enum";
 import { useSettingsStore, useAppStore } from "@/store";
 import { isExternal } from "@/utils/index";
 
@@ -70,7 +70,7 @@ const expandedMenuIndexes = ref<string[]>([]);
 
 // 根据布局模式设置菜单的显示方式：顶部布局使用水平模式，其他使用垂直模式
 const menuMode = computed(() => {
-  return settingsStore.layout === LayoutEnum.TOP ? "horizontal" : "vertical";
+  return settingsStore.layout === LayoutMode.TOP ? "horizontal" : "vertical";
 });
 
 // 获取主题

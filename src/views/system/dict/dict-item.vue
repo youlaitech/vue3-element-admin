@@ -1,4 +1,4 @@
-<!-- 字典数据 -->
+<!-- 字典项 -->
 <template>
   <div class="app-container">
     <div class="search-bar mt-5">
@@ -34,8 +34,8 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="字典标签" prop="label" />
-        <el-table-column label="字典值" prop="value" />
+        <el-table-column label="字典项标签" prop="label" />
+        <el-table-column label="字典项值" prop="value" />
         <el-table-column label="排序" prop="sort" />
         <el-table-column label="状态">
           <template #default="scope">
@@ -78,7 +78,7 @@
       />
     </el-card>
 
-    <!--字典弹窗-->
+    <!--字典项弹窗-->
     <el-dialog
       v-model="dialog.visible"
       :title="dialog.title"
@@ -87,10 +87,10 @@
     >
       <el-form ref="dataFormRef" :model="formData" :rules="computedRules" label-width="100px">
         <el-card shadow="never">
-          <el-form-item label="字典标签" prop="label">
+          <el-form-item label="字典项标签" prop="label">
             <el-input v-model="formData.label" placeholder="请输入字典标签" />
           </el-form-item>
-          <el-form-item label="字典值" prop="value">
+          <el-form-item label="字典项值" prop="value">
             <el-input v-model="formData.value" placeholder="请输入字典值" />
           </el-form-item>
           <el-form-item label="状态">
@@ -130,15 +130,11 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "DictData",
+  name: "DictItem",
   inherititems: false,
 });
 
-import DictDataAPI, {
-  DictDataPageQuery,
-  DictDataPageVO,
-  DictDataForm,
-} from "@/api/system/dict-data";
+import DictAPI, { DictItemPageQuery, DictItemPageVO, DictItemForm } from "@/api/system/dict.api";
 
 const route = useRoute();
 
@@ -151,20 +147,19 @@ const loading = ref(false);
 const ids = ref<number[]>([]);
 const total = ref(0);
 
-const queryParams = reactive<DictDataPageQuery>({
+const queryParams = reactive<DictItemPageQuery>({
   pageNum: 1,
   pageSize: 10,
-  dictCode: dictCode.value,
 });
 
-const tableData = ref<DictDataPageVO[]>();
+const tableData = ref<DictItemPageVO[]>();
 
 const dialog = reactive({
   title: "",
   visible: false,
 });
 
-const formData = reactive<DictDataForm>({});
+const formData = reactive<DictItemForm>({});
 
 const computedRules = computed(() => {
   const rules: Partial<Record<string, any>> = {
@@ -177,7 +172,7 @@ const computedRules = computed(() => {
 // 查询
 function handleQuery() {
   loading.value = true;
-  DictDataAPI.getPage(queryParams)
+  DictAPI.getDictItemPage(dictCode.value, queryParams)
     .then((data) => {
       tableData.value = data.list;
       total.value = data.total;
@@ -200,12 +195,12 @@ function handleSelectionChange(selection: any) {
 }
 
 // 打开弹窗
-function handleOpenDialog(row?: DictDataPageVO) {
+function handleOpenDialog(row?: DictItemPageVO) {
   dialog.visible = true;
-  dialog.title = row ? "编辑字典数据" : "新增字典数据";
+  dialog.title = row ? "编辑字典项" : "新增字典项";
 
   if (row?.id) {
-    DictDataAPI.getFormData(row.id).then((data) => {
+    DictAPI.getDictItemFormData(dictCode.value, row.id).then((data) => {
       Object.assign(formData, data);
     });
   }
@@ -219,7 +214,7 @@ function handleSubmitClick() {
       const id = formData.id;
       formData.dictCode = dictCode.value;
       if (id) {
-        DictDataAPI.update(id, formData)
+        DictAPI.updateDictItem(dictCode.value, id, formData)
           .then(() => {
             ElMessage.success("修改成功");
             handleCloseDialog();
@@ -227,7 +222,7 @@ function handleSubmitClick() {
           })
           .finally(() => (loading.value = false));
       } else {
-        DictDataAPI.add(formData)
+        DictAPI.createDictItem(dictCode.value, formData)
           .then(() => {
             ElMessage.success("新增成功");
             handleCloseDialog();
@@ -256,8 +251,8 @@ function handleCloseDialog() {
  * @param id 字典ID
  */
 function handleDelete(id?: number) {
-  const attrGroupIds = [id || ids.value].join(",");
-  if (!attrGroupIds) {
+  const itemIds = [id || ids.value].join(",");
+  if (!itemIds) {
     ElMessage.warning("请勾选删除项");
     return;
   }
@@ -267,7 +262,7 @@ function handleDelete(id?: number) {
     type: "warning",
   }).then(
     () => {
-      DictDataAPI.deleteByIds(attrGroupIds).then(() => {
+      DictAPI.deleteDictItems(dictCode.value, itemIds).then(() => {
         ElMessage.success("删除成功");
         handleResetQuery();
       });

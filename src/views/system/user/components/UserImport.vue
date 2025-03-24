@@ -90,8 +90,8 @@
 
 <script lang="ts" setup>
 import { ElMessage, type UploadUserFile } from "element-plus";
-import UserAPI from "@/api/system/user";
-import { ResultEnum } from "@/enums/ResultEnum";
+import UserAPI from "@/api/system/user.api";
+import { ResultEnum } from "@/enums/api/result.enum";
 
 const emit = defineEmits(["import-success"]);
 const visible = defineModel("modelValue", {

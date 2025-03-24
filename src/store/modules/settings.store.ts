@@ -1,6 +1,6 @@
 import defaultSettings from "@/settings";
-import { SidebarColorEnum, ThemeEnum } from "@/enums/ThemeEnum";
-import { LayoutEnum } from "@/enums/LayoutEnum";
+import { SidebarColor, ThemeMode } from "@/enums/settings/theme.enum";
+import { LayoutMode } from "@/enums/settings/layout.enum";
 import { generateThemeColors, applyTheme, toggleDarkMode, toggleSidebarColor } from "@/utils/theme";
 
 type SettingsValue = boolean | string;
@@ -18,7 +18,7 @@ export const useSettingsStore = defineStore("setting", () => {
     defaultSettings.sidebarColorScheme
   );
   // 布局
-  const layout = useStorage<LayoutEnum>("layout", defaultSettings.layout as LayoutEnum);
+  const layout = useStorage<LayoutMode>("layout", defaultSettings.layout as LayoutMode);
   // 水印
   const watermarkEnabled = useStorage<boolean>(
     "watermarkEnabled",
@@ -33,7 +33,7 @@ export const useSettingsStore = defineStore("setting", () => {
   watch(
     [theme, themeColor],
     ([newTheme, newThemeColor]) => {
-      toggleDarkMode(newTheme === ThemeEnum.DARK);
+      toggleDarkMode(newTheme === ThemeMode.DARK);
       const colors = generateThemeColors(newThemeColor);
       applyTheme(colors);
     },
@@ -44,7 +44,7 @@ export const useSettingsStore = defineStore("setting", () => {
   watch(
     [sidebarColorScheme],
     ([newSidebarColorScheme]) => {
-      toggleSidebarColor(newSidebarColorScheme === SidebarColorEnum.CLASSIC_BLUE);
+      toggleSidebarColor(newSidebarColorScheme === SidebarColor.CLASSIC_BLUE);
     },
     { immediate: true }
   );
@@ -75,7 +75,7 @@ export const useSettingsStore = defineStore("setting", () => {
     themeColor.value = color;
   }
 
-  function changeLayout(val: LayoutEnum) {
+  function changeLayout(val: LayoutMode) {
     layout.value = val;
   }
 

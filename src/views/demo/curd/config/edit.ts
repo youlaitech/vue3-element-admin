@@ -1,6 +1,6 @@
-import UserAPI, { type UserForm } from "@/api/system/user";
+import UserAPI, { type UserForm } from "@/api/system/user.api";
 import type { IModalConfig } from "@/components/CURD/types";
-import { DeviceEnum } from "@/enums/DeviceEnum";
+import { DeviceEnum } from "@/enums/settings/device.enum";
 import { useAppStore } from "@/store";
 
 const modalConfig: IModalConfig<UserForm> = {

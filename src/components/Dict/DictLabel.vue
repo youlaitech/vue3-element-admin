@@ -6,47 +6,55 @@
     <span>{{ label }}</span>
   </template>
 </template>
-
 <script setup lang="ts">
 import { useDictStore } from "@/store";
-const dictStore = useDictStore();
 
 const props = defineProps({
-  code: String,
-  modelValue: [String, Number],
+  code: String, // 字典编码
+  modelValue: [String, Number], // 字典项的值
   size: {
     type: String,
-    default: "default",
+    default: "default", // 标签大小
   },
 });
-
 const label = ref("");
-const tagType = ref<"success" | "warning" | "info" | "primary" | "danger" | undefined>();
+const tagType = ref<"success" | "warning" | "info" | "primary" | "danger" | undefined>(); // 标签类型
+const tagSize = ref<"default" | "large" | "small">(props.size as "default" | "large" | "small"); // 标签大小
 
-const tagSize = ref(props.size as "default" | "large" | "small");
-
+const dictStore = useDictStore();
+/**
+ * 根据字典项的值获取对应的 label 和 tagType
+ * @param dictCode 字典编码
+ * @param value 字典项的值
+ * @returns 包含 label 和 tagType 的对象
+ */
 const getLabelAndTagByValue = async (dictCode: string, value: any) => {
-  // 先从本地缓存中获取字典数据
-  const dictData = dictStore.getDictionary(dictCode);
-
+  // 按需加载字典数据
+  await dictStore.loadDictItems(dictCode);
+  // 从缓存中获取字典数据
+  const dictItems = dictStore.getDictItems(dictCode);
   // 查找对应的字典项
-  const dictEntry = dictData.find((item: any) => item.value == value);
+  const dictItem = dictItems.find((item) => item.value == value);
   return {
-    label: dictEntry ? dictEntry.label : "",
-    tag: dictEntry ? dictEntry.tagType : undefined,
+    label: dictItem?.label || "",
+    tagType: dictItem?.tagType,
   };
 };
-
-// 监听 props 的变化，获取并更新 label 和 tag
-const fetchLabelAndTag = async () => {
-  const result = await getLabelAndTagByValue(props.code as string, props.modelValue);
-  label.value = result.label;
-  tagType.value = result.tag as "success" | "warning" | "info" | "primary" | "danger" | undefined;
+/**
+ * 更新 label 和 tagType
+ */
+const updateLabelAndTag = async () => {
+  console.log("updateLabelAndTag", props.code, props.modelValue);
+  if (!props.code || props.modelValue === undefined) return;
+  const { label: newLabel, tagType: newTagType } = await getLabelAndTagByValue(
+    props.code,
+    props.modelValue
+  );
+  label.value = newLabel;
+  tagType.value = newTagType as typeof tagType.value;
 };
 
-// 首次挂载时获取字典数据
-onMounted(fetchLabelAndTag);
+watch([() => props.code, () => props.modelValue], updateLabelAndTag);
 
-// 当 modelValue 发生变化时重新获取
-watch(() => props.modelValue, fetchLabelAndTag);
+onMounted(updateLabelAndTag);
 </script>

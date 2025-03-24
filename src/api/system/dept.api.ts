@@ -44,7 +44,7 @@ const DeptAPI = {
    * @param data 部门表单数据
    * @returns 请求结果
    */
-  add(data: DeptForm) {
+  create(data: DeptForm) {
     return request({
       url: `${DEPT_BASE_URL}`,
       method: "post",

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FileAPI from "@/api/file";
+import FileAPI from "@/api/file.api";
 
 const imgUrl = ref("");
 const canvas = ref();

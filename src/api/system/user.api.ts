@@ -46,7 +46,7 @@ const UserAPI = {
    *
    * @param data 用户表单数据
    */
-  add(data: UserForm) {
+  create(data: UserForm) {
     return request({
       url: `${USER_BASE_URL}`,
       method: "post",

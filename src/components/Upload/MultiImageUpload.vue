@@ -40,7 +40,7 @@
 </template>
 <script setup lang="ts">
 import { UploadRawFile, UploadRequestOptions, UploadUserFile } from "element-plus";
-import FileAPI, { FileInfo } from "@/api/file";
+import FileAPI, { FileInfo } from "@/api/file.api";
 
 const props = defineProps({
   /**

@@ -237,10 +237,10 @@
 </template>
 
 <script setup lang="ts">
-import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user";
+import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user.api";
 
-import DeptAPI from "@/api/system/dept";
-import RoleAPI from "@/api/system/role";
+import DeptAPI from "@/api/system/dept.api";
+import RoleAPI from "@/api/system/role.api";
 
 import DeptTree from "./components/DeptTree.vue";
 import UserImport from "./components/UserImport.vue";
@@ -301,7 +301,7 @@ const roleOptions = ref<OptionType[]>();
 const importDialogVisible = ref(false);
 
 // 查询
-function handleQuery() {
+async function handleQuery() {
   loading.value = true;
   UserAPI.getPage(queryParams)
     .then((data) => {
@@ -395,7 +395,7 @@ const handleSubmit = useDebounceFn(() => {
           })
           .finally(() => (loading.value = false));
       } else {
-        UserAPI.add(formData)
+        UserAPI.create(formData)
           .then(() => {
             ElMessage.success("新增用户成功");
             handleCloseDialog();

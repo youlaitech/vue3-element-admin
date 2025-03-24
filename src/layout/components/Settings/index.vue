@@ -48,10 +48,10 @@
       <div v-if="!isDark" class="config-item flex-x-between">
         <span class="text-xs">{{ $t("settings.sidebarColorScheme") }}</span>
         <el-radio-group v-model="sidebarColor" @change="changeSidebarColor">
-          <el-radio :value="SidebarColorEnum.CLASSIC_BLUE">
+          <el-radio :value="SidebarColor.CLASSIC_BLUE">
             {{ $t("settings.classicBlue") }}
           </el-radio>
-          <el-radio :value="SidebarColorEnum.MINIMAL_WHITE">
+          <el-radio :value="SidebarColor.MINIMAL_WHITE">
             {{ $t("settings.minimalWhite") }}
           </el-radio>
         </el-radio-group>
@@ -67,9 +67,9 @@
 </template>
 
 <script setup lang="ts">
-import { LayoutEnum } from "@/enums/LayoutEnum";
-import { ThemeEnum } from "@/enums/ThemeEnum";
-import { SidebarColorEnum } from "@/enums/ThemeEnum";
+import { LayoutMode } from "@/enums/settings/layout.enum";
+import { ThemeMode } from "@/enums/settings/theme.enum";
+import { SidebarColor } from "@/enums/settings/theme.enum";
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
 // 颜色预设
 const colorPresets = [
@@ -89,7 +89,7 @@ const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 
-const isDark = ref<boolean>(settingsStore.theme === ThemeEnum.DARK);
+const isDark = ref<boolean>(settingsStore.theme === ThemeMode.DARK);
 const sidebarColor = ref(settingsStore.sidebarColorScheme);
 
 const selectedThemeColor = computed({
@@ -108,7 +108,7 @@ const drawerVisible = computed({
  * @param isDark 是否启用暗黑模式
  */
 const handleThemeChange = (isDark: string | number | boolean) => {
-  settingsStore.changeTheme(isDark ? ThemeEnum.DARK : ThemeEnum.LIGHT);
+  settingsStore.changeTheme(isDark ? ThemeMode.DARK : ThemeMode.LIGHT);
 };
 
 /**
@@ -125,9 +125,9 @@ const changeSidebarColor = (val: any) => {
  *
  * @param layout - 布局模式
  */
-const handleLayoutChange = (layout: LayoutEnum) => {
+const handleLayoutChange = (layout: LayoutMode) => {
   settingsStore.changeLayout(layout);
-  if (layout === LayoutEnum.MIX && route.name) {
+  if (layout === LayoutMode.MIX && route.name) {
     const topLevelRoute = findTopLevelRoute(permissionStore.routes, route.name as string);
     if (appStore.activeTopMenuPath !== topLevelRoute.path) {
       appStore.activeTopMenu(topLevelRoute.path);

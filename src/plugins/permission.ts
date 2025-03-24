@@ -40,7 +40,7 @@ export function setupPermission() {
           } catch (error) {
             console.error(error);
             // 路由加载失败，重置 token 并重定向到登录页
-            await useUserStore().clearUserData();
+            await useUserStore().clearSessionAndCache();
             redirectToLogin(to, next);
             NProgress.done();
           }

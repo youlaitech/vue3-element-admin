@@ -208,8 +208,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/system/role";
-import MenuAPI from "@/api/system/menu";
+import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/system/role.api";
+import MenuAPI from "@/api/system/menu.api";
 
 const queryFormRef = ref();
 const roleFormRef = ref();
@@ -313,7 +313,7 @@ function handleSubmit() {
           })
           .finally(() => (loading.value = false));
       } else {
-        RoleAPI.add(formData)
+        RoleAPI.create(formData)
           .then(() => {
             ElMessage.success("新增成功");
             handleCloseDialog();

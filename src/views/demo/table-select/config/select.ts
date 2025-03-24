@@ -1,4 +1,4 @@
-import UserAPI from "@/api/system/user";
+import UserAPI from "@/api/system/user.api";
 import type { ISelectConfig } from "@/components/TableSelect/index.vue";
 
 const selectConfig: ISelectConfig = {

@@ -1,7 +1,4 @@
-import { SizeEnum } from "./enums/SizeEnum";
-import { LayoutEnum } from "./enums/LayoutEnum";
-import { ThemeEnum, SidebarColorEnum } from "./enums/ThemeEnum";
-import { LanguageEnum } from "./enums/LanguageEnum";
+import { LayoutMode, ComponentSize, SidebarColor, ThemeMode, LanguageEnum } from "./enums";
 
 const { pkg } = __APP_INFO__;
 
@@ -20,11 +17,11 @@ const defaultSettings: AppSettings = {
   // 是否显示侧边栏Logo
   sidebarLogo: true,
   // 布局方式，默认为左侧布局
-  layout: LayoutEnum.LEFT,
+  layout: LayoutMode.LEFT,
   // 主题，根据操作系统的色彩方案自动选择
-  theme: mediaQueryList.matches ? ThemeEnum.DARK : ThemeEnum.LIGHT,
+  theme: mediaQueryList.matches ? ThemeMode.DARK : ThemeMode.LIGHT,
   // 组件大小 default | medium | small | large
-  size: SizeEnum.DEFAULT,
+  size: ComponentSize.DEFAULT,
   // 语言
   language: LanguageEnum.ZH_CN,
   // 主题颜色
@@ -34,7 +31,7 @@ const defaultSettings: AppSettings = {
   // 水印内容
   watermarkContent: pkg.name,
   // 侧边栏配色方案
-  sidebarColorScheme: SidebarColorEnum.CLASSIC_BLUE,
+  sidebarColorScheme: SidebarColor.CLASSIC_BLUE,
 };
 
 export default defaultSettings;

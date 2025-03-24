@@ -4,8 +4,8 @@ import defaultSettings from "@/settings";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import en from "element-plus/es/locale/lang/en";
 import { store } from "@/store";
-import { DeviceEnum } from "@/enums/DeviceEnum";
-import { SidebarStatusEnum } from "@/enums/SidebarStatusEnum";
+import { DeviceEnum } from "@/enums/settings/device.enum";
+import { SidebarStatus } from "@/enums/settings/layout.enum";
 
 export const useAppStore = defineStore("app", () => {
   // 设备类型
@@ -15,9 +15,9 @@ export const useAppStore = defineStore("app", () => {
   // 语言
   const language = useStorage("language", defaultSettings.language);
   // 侧边栏状态
-  const sidebarStatus = useStorage("sidebarStatus", SidebarStatusEnum.CLOSED);
+  const sidebarStatus = useStorage("sidebarStatus", SidebarStatus.CLOSED);
   const sidebar = reactive({
-    opened: sidebarStatus.value === SidebarStatusEnum.OPENED,
+    opened: sidebarStatus.value === SidebarStatus.OPENED,
     withoutAnimation: false,
   });
 
@@ -38,19 +38,19 @@ export const useAppStore = defineStore("app", () => {
   // 切换侧边栏
   function toggleSidebar() {
     sidebar.opened = !sidebar.opened;
-    sidebarStatus.value = sidebar.opened ? SidebarStatusEnum.OPENED : SidebarStatusEnum.CLOSED;
+    sidebarStatus.value = sidebar.opened ? SidebarStatus.OPENED : SidebarStatus.CLOSED;
   }
 
   // 关闭侧边栏
   function closeSideBar() {
     sidebar.opened = false;
-    sidebarStatus.value = SidebarStatusEnum.CLOSED;
+    sidebarStatus.value = SidebarStatus.CLOSED;
   }
 
   // 打开侧边栏
   function openSideBar() {
     sidebar.opened = true;
-    sidebarStatus.value = SidebarStatusEnum.OPENED;
+    sidebarStatus.value = SidebarStatus.OPENED;
   }
 
   // 切换设备
