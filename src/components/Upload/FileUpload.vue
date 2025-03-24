@@ -46,6 +46,7 @@ import {
   UploadRawFile,
   UploadUserFile,
   UploadFile,
+  UploadFiles,
   UploadProgressEvent,
   UploadRequestOptions,
 } from "element-plus";
@@ -147,7 +148,7 @@ watch(
 function handleBeforeUpload(file: UploadRawFile) {
   // 限制文件大小
   if (file.size > props.maxFileSize * 1024 * 1024) {
-    ElMessage.warning("上传图片不能大于" + props.maxFileSize + "M");
+    ElMessage.warning("上传文件不能大于" + props.maxFileSize + "M");
     return false;
   }
   return true;
@@ -190,10 +191,34 @@ const handleProgress = (event: UploadProgressEvent) => {
 /**
  * 上传成功
  */
-const handleSuccess = (fileInfo: FileInfo) => {
+const handleSuccess = (response: any, uploadFile: UploadFile, files: UploadFiles) => {
   ElMessage.success("上传成功");
-
-  modelValue.value = [...modelValue.value, { name: fileInfo.name, url: fileInfo.url } as FileInfo];
+  //只有当状态为success或者fail，代表文件上传全部完成了，失败也算完成
+  if (
+    files.every((file: UploadFile) => {
+      return file.status === "success" || file.status === "fail";
+    })
+  ) {
+    let fileInfos = [] as FileInfo[];
+    files.map((file: UploadFile) => {
+      if (file.status === "success") {
+        //只取携带response的才是刚上传的
+        let res = file.response as FileInfo;
+        if (res) {
+          fileInfos.push({ name: res.name, url: res.url } as FileInfo);
+        }
+      } else {
+        //失败上传 从fileList删掉，不展示
+        fileList.value.splice(
+          fileList.value.findIndex((e) => e.uid === file.uid),
+          1
+        );
+      }
+    });
+    if (fileInfos.length > 0) {
+      modelValue.value = [...modelValue.value, ...fileInfos];
+    }
+  }
 };
 
 /**

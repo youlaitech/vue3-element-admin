@@ -10,7 +10,6 @@
     :http-request="handleUpload"
     :on-success="onSuccess"
     :on-error="onError"
-    multiple
   >
     <template #default>
       <el-image v-if="modelValue" :src="modelValue" />
