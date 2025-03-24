@@ -21,6 +21,13 @@ const DictAPI = {
     });
   },
 
+  getList() {
+    return request<any, OptionType[]>({
+      url: `${DICT_BASE_URL}`,
+      method: "get",
+    });
+  },
+
   /**
    * 字典表单数据
    *

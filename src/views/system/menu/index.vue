@@ -465,7 +465,7 @@ function handleSubmit() {
           handleQuery();
         });
       } else {
-        MenuAPI.add(formData.value).then(() => {
+        MenuAPI.create(formData.value).then(() => {
           ElMessage.success("新增成功");
           handleCloseDialog();
           handleQuery();
