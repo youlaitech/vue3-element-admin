@@ -26,17 +26,31 @@ export interface IOperatData {
   $index: number;
 }
 
+export type ComponentType =
+  | "input"
+  | "select"
+  | "input-number"
+  | "date-picker"
+  | "time-picker"
+  | "time-select"
+  | "tree-select"
+  | "input-tag"
+  | "custom-tag"
+  | "cascader";
+
 export interface ISearchConfig {
   // 页面名称(参与组成权限标识,如sys:user:xxx)
   pageName: string;
+  // 标签冒号
+  colon?: boolean;
   // 表单项
   formItems: Array<{
     // 组件类型(如input,select等)
-    type?: "input" | "select" | "tree-select" | "date-picker" | "input-tag";
+    type?: ComponentType;
     // 标签文本
     label: string;
     // 标签提示
-    tips?: string;
+    tips?: string | IObject;
     // 键名
     prop: string;
     // 组件属性(input-tag组件支持join,btnText,size属性)
@@ -44,7 +58,9 @@ export interface ISearchConfig {
     // 初始值
     initialValue?: any;
     // 可选项(适用于select组件)
-    options?: { label: string; value: any }[];
+    options?: Array<{ label: string; value: any }>;
+    // 组件事件
+    events?: Record<string, (...args: any[]) => void>;
     // 初始化数据函数扩展
     initFn?: (formItem: IObject) => void;
   }>;
