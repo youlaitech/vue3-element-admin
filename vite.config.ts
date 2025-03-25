@@ -63,7 +63,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         imports: ["vue", "@vueuse/core", "pinia", "vue-router", "vue-i18n"],
         resolvers: [
           // 导入 Element Plus函数，如：ElMessage, ElMessageBox 等
-          ElementPlusResolver(),
+          ElementPlusResolver({ importStyle: "sass" }),
         ],
         eslintrc: {
           enabled: false,
@@ -78,7 +78,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
       Components({
         resolvers: [
           // 导入 Element Plus 组件
-          ElementPlusResolver(),
+          ElementPlusResolver({ importStyle: "sass" }),
         ],
         // 指定自定义组件位置(默认:src/components)
         dirs: ["src/components", "src/**/components"],
