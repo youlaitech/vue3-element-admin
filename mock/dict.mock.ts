@@ -276,53 +276,37 @@ export default defineMock([
 // 字典映射表数据
 const dictMap: Record<string, any> = {
   1: {
-    code: "00000",
-    data: {
-      id: 1,
-      name: "性别",
-      dictCode: "gender",
-      status: 1,
-    },
-    msg: "一切ok",
+    id: 1,
+    name: "性别",
+    dictCode: "gender",
+    status: 1,
   },
 };
 
 // 字典项映射表数据
 const dictItemMap: Record<string, any> = {
   1: {
-    code: "00000",
-    data: {
-      id: 1,
-      value: "1",
-      label: "男",
-      sort: 1,
-      status: 1,
-      tagType: "primary",
-    },
-    msg: "一切ok",
+    id: 1,
+    value: "1",
+    label: "男",
+    sort: 1,
+    status: 1,
+    tagType: "primary",
   },
   2: {
-    code: "00000",
-    data: {
-      id: 2,
-      value: "2",
-      label: "女",
-      sort: 2,
-      status: 1,
-      tagType: "danger",
-    },
-    msg: "一切ok",
+    id: 2,
+    value: "2",
+    label: "女",
+    sort: 2,
+    status: 1,
+    tagType: "danger",
   },
   3: {
-    code: "00000",
-    data: {
-      id: 3,
-      value: "0",
-      label: "保密",
-      sort: 3,
-      status: 1,
-      tagType: "info",
-    },
-    msg: "一切ok",
+    id: 3,
+    value: "0",
+    label: "保密",
+    sort: 3,
+    status: 1,
+    tagType: "info",
   },
 };
