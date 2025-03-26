@@ -17,12 +17,7 @@
   padding: calc(var(--el-card-padding) - 8px) var(--el-card-padding);
 }
 
-.link-type,
-.link-type:focus {
-  color: #337ab7;
-  cursor: pointer;
-
-  &:hover {
-    color: rgb(32 160 255);
-  }
+// 进度条颜色
+#nprogress .bar {
+  background-color: var(--el-color-primary);
 }

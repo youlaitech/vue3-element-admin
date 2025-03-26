@@ -32,11 +32,7 @@ module.exports = {
       },
     ],
     // 允许使用未知伪元素
-    "at-rule-no-unknown": [
-      true,
-      {
-        ignoreAtRules: ["apply", "use", "forward", "extend"],
-      },
-    ],
+    "at-rule-no-unknown": null, // 禁用默认的未知 at-rule 检查
+    "scss/at-rule-no-unknown": true, // 启用 SCSS 特定的 at-rule 检查
   },
 };

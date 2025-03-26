@@ -74,9 +74,9 @@ import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
 // 颜色预设
 const colorPresets = [
   "#4080FF",
+  "#626AEF",
   "#ff4500",
   "#ff8c00",
-  "#90ee90",
   "#00ced1",
   "#1e90ff",
   "#c71585",
