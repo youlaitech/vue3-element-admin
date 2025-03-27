@@ -547,6 +547,11 @@ function handleSelectionChange(selection: any[]) {
   removeIds.value = selection.map((item) => item[pk]);
 }
 
+// 获取行选中
+function getSelectionData() {
+  return selectionData.value;
+}
+
 // 刷新
 function handleRefresh(isRestart = false) {
   fetchPageData(lastFormData, isRestart);
@@ -969,7 +974,7 @@ function saveXlsx(fileData: any, fileName: string) {
 }
 
 // 暴露的属性和方法
-defineExpose({ fetchPageData, exportPageData, getFilterParams });
+defineExpose({ fetchPageData, exportPageData, getFilterParams, getSelectionData });
 </script>
 
 <style lang="scss" scoped></style>
