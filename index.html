@@ -17,7 +17,13 @@
 
   <body>
     <div id="app">
-      <div class="loader"></div>
+      <div class="loading-container">
+        <div class="loading-spinner">
+          <div class="loading-bar"></div>
+          <div class="loading-bar"></div>
+          <div class="loading-bar"></div>
+        </div>
+      </div>
     </div>
   </body>
   <script type="module" src="/src/main.ts"></script>
@@ -34,27 +40,56 @@
       height: 100%;
     }
 
-    .loader {
-      --d: 22px;
-
-      width: 4px;
-      height: 4px;
-      color: #25b09b;
-      border-radius: 50%;
-      box-shadow:
-        calc(1 * var(--d)) calc(0 * var(--d)) 0 0,
-        calc(0.707 * var(--d)) calc(0.707 * var(--d)) 0 1px,
-        calc(0 * var(--d)) calc(1 * var(--d)) 0 2px,
-        calc(-0.707 * var(--d)) calc(0.707 * var(--d)) 0 3px,
-        calc(-1 * var(--d)) calc(0 * var(--d)) 0 4px,
-        calc(-0.707 * var(--d)) calc(-0.707 * var(--d)) 0 5px,
-        calc(0 * var(--d)) calc(-1 * var(--d)) 0 6px;
-      animation: l27 1s infinite steps(8);
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
     }
 
-    @keyframes l27 {
+    .loading-spinner {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+    }
+
+    .loading-bar {
+      width: 4px;
+      height: 24px;
+      background-color: #498cff;
+      border-radius: 2px;
+      animation: loading-animation 1.2s ease-in-out infinite;
+    }
+
+    .loading-bar:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .loading-bar:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .loading-bar:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes loading-animation {
+      0% {
+        opacity: 0.3;
+        transform: scaleY(0.5);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scaleY(1.2);
+      }
+
       100% {
-        transform: rotate(1turn);
+        opacity: 0.3;
+        transform: scaleY(0.5);
       }
     }
   </style>
