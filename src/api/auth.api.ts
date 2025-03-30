@@ -61,6 +61,8 @@ export interface LoginFormData {
   captchaKey: string;
   /** 验证码 */
   captchaCode: string;
+  /** 记住我 */
+  rememberMe: boolean;
 }
 
 /** 登录响应 */
