@@ -388,6 +388,32 @@ export default defineMock([
                 params: null,
               },
             },
+            {
+              path: "drag",
+              component: "demo/drag",
+              name: "Drag",
+              meta: {
+                title: "拖拽组件",
+                icon: "",
+                hidden: false,
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
+            {
+              path: "text-scroll",
+              component: "demo/text-scroll",
+              name: "TextScroll",
+              meta: {
+                title: "滚动文本",
+                icon: "",
+                hidden: false,
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
           ],
         },
         {
