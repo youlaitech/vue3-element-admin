@@ -26,7 +26,7 @@
 
 
 <div align="center">
-  <a target="_blank" href="https://vue.youlai.tech">🖥️ 在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📑 阅读文档</a> | <a href="./README.en-US.md">💬 English
+  <a target="_blank" href="https://vue.youlai.tech">🖥️ 在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📑 阅读文档</a>|  <a target="_blank" href="https://www.youlai.tech/youlai-boot">🌐 官网</a> | <a href="./README.en-US.md">💬 English
 </div>
 
 
