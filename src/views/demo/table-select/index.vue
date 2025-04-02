@@ -4,7 +4,7 @@ import selectConfig from "./config/select";
 import { useDictStore } from "@/store";
 const dictStore = useDictStore();
 interface IUser {
-  id: number;
+  id: string;
   username: string;
   nickname: string;
   mobile: string;

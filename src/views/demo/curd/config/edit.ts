@@ -12,7 +12,7 @@ const modalConfig: IModalConfig<UserForm> = {
   },
   pk: "id",
   formAction: function (data) {
-    return UserAPI.update(data.id as number, data);
+    return UserAPI.update(data.id as string, data);
   },
   beforeSubmit(data) {
     console.log("提交之前处理", data);

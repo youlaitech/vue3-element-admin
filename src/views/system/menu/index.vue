@@ -487,7 +487,7 @@ function handleSubmit() {
 }
 
 // 删除菜单
-function handleDelete(menuId: number) {
+function handleDelete(menuId: string) {
   if (!menuId) {
     ElMessage.warning("请勾选删除项");
     return false;

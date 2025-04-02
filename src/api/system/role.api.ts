@@ -25,8 +25,8 @@ const RoleAPI = {
    * @param roleId 角色ID
    * @returns 角色的菜单ID集合
    */
-  getRoleMenuIds(roleId: number) {
-    return request<any, number[]>({
+  getRoleMenuIds(roleId: string) {
+    return request<any, string[]>({
       url: `${ROLE_BASE_URL}/${roleId}/menuIds`,
       method: "get",
     });
@@ -38,7 +38,7 @@ const RoleAPI = {
    * @param roleId 角色ID
    * @param data 菜单ID集合
    */
-  updateRoleMenus(roleId: number, data: number[]) {
+  updateRoleMenus(roleId: string, data: number[]) {
     return request({
       url: `${ROLE_BASE_URL}/${roleId}/menus`,
       method: "put",
@@ -52,7 +52,7 @@ const RoleAPI = {
    * @param id 角色ID
    * @returns 角色表单数据
    */
-  getFormData(id: number) {
+  getFormData(id: string) {
     return request<any, RoleForm>({
       url: `${ROLE_BASE_URL}/${id}/form`,
       method: "get",
@@ -74,7 +74,7 @@ const RoleAPI = {
    * @param id 角色ID
    * @param data 角色表单数据
    */
-  update(id: number, data: RoleForm) {
+  update(id: string, data: RoleForm) {
     return request({
       url: `${ROLE_BASE_URL}/${id}`,
       method: "put",
@@ -105,10 +105,10 @@ export interface RolePageQuery extends PageQuery {
 
 /** 角色分页对象 */
 export interface RolePageVO {
+  /** 角色ID */
+  id?: string;
   /** 角色编码 */
   code?: string;
-  /** 角色ID */
-  id?: number;
   /** 角色名称 */
   name?: string;
   /** 排序 */
@@ -124,7 +124,7 @@ export interface RolePageVO {
 /** 角色表单对象 */
 export interface RoleForm {
   /** 角色ID */
-  id?: number;
+  id?: string;
   /** 角色编码 */
   code?: string;
   /** 数据权限 */

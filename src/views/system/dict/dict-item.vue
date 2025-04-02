@@ -129,11 +129,6 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({
-  name: "DictItem",
-  inherititems: false,
-});
-
 import DictAPI, { DictItemPageQuery, DictItemPageVO, DictItemForm } from "@/api/system/dict.api";
 
 const route = useRoute();
@@ -274,12 +269,6 @@ function handleDelete(id?: number) {
 }
 
 onMounted(() => {
-  handleQuery();
-});
-
-// 同一路由参数变化时更新数据
-onBeforeRouteUpdate((to) => {
-  queryParams.dictCode = to.query.dictCode as string;
   handleQuery();
 });
 </script>

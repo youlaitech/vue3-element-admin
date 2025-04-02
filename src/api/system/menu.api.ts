@@ -91,7 +91,7 @@ const MenuAPI = {
    * @param id 菜单ID
    * @returns 请求结果
    */
-  deleteById(id: number) {
+  deleteById(id: string) {
     return request({
       url: `${MENU_BASE_URL}/${id}`,
       method: "delete",

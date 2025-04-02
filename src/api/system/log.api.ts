@@ -61,7 +61,7 @@ export interface LogPageQuery extends PageQuery {
  */
 export interface LogPageVO {
   /** 主键 */
-  id: number;
+  id: string;
   /** 日志模块 */
   module: string;
   /** 日志内容 */

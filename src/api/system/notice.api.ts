@@ -15,10 +15,10 @@ const NoticeAPI = {
   /**
    * 获取通知公告表单数据
    *
-   * @param id NoticeID
-   * @returns Notice表单数据
+   * @param id 通知
+   * @returns 通知表单数据
    */
-  getFormData(id: number) {
+  getFormData(id: string) {
     return request<any, NoticeForm>({
       url: `${NOTICE_BASE_URL}/${id}/form`,
       method: "get",
@@ -28,7 +28,7 @@ const NoticeAPI = {
   /**
    * 添加通知公告
    *
-   * @param data Notice表单数据
+   * @param data 通知表单数据
    * @returns
    */
   create(data: NoticeForm) {
@@ -42,10 +42,10 @@ const NoticeAPI = {
   /**
    * 更新通知公告
    *
-   * @param id NoticeID
-   * @param data Notice表单数据
+   * @param id 通知ID
+   * @param data 通知表单数据
    */
-  update(id: number, data: NoticeForm) {
+  update(id: string, data: NoticeForm) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}`,
       method: "put",
@@ -71,7 +71,7 @@ const NoticeAPI = {
    * @param id 被发布的通知公告id
    * @returns
    */
-  publish(id: number) {
+  publish(id: string) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}/publish`,
       method: "put",
@@ -84,7 +84,7 @@ const NoticeAPI = {
    * @param id 撤回的通知id
    * @returns
    */
-  revoke(id: number) {
+  revoke(id: string) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}/revoke`,
       method: "put",
@@ -134,7 +134,7 @@ export interface NoticePageQuery extends PageQuery {
 
 /** 通知公告表单对象 */
 export interface NoticeForm {
-  id?: number;
+  id?: string;
   /** 通知标题 */
   title?: string;
   /** 通知内容 */

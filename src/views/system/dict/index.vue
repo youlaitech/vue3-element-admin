@@ -198,7 +198,7 @@ function handleAddClick() {
  *
  * @param id 字典ID
  */
-function handleEditClick(id: number) {
+function handleEditClick(id: string) {
   dialog.visible = true;
   dialog.title = "修改字典";
   DictAPI.getFormData(id).then((data) => {

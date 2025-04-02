@@ -341,7 +341,7 @@ function handleSelectionChange(selection: any) {
 }
 
 // 打开通知公告弹窗
-function handleOpenDialog(id?: number) {
+function handleOpenDialog(id?: string) {
   UserAPI.getOptions().then((data) => {
     userOptions.value = data;
   });
@@ -359,7 +359,7 @@ function handleOpenDialog(id?: number) {
 }
 
 // 发布通知公告
-function handlePublish(id: number) {
+function handlePublish(id: string) {
   NoticeAPI.publish(id).then(() => {
     ElMessage.success("发布成功");
     handleQuery();
@@ -367,7 +367,7 @@ function handlePublish(id: number) {
 }
 
 // 撤回通知公告
-function handleRevoke(id: number) {
+function handleRevoke(id: string) {
   NoticeAPI.revoke(id).then(() => {
     ElMessage.success("撤回成功");
     handleQuery();
