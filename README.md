@@ -10,8 +10,8 @@
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
   </a>
 
-  <a href="https://gitee.com/youlaiorg/youlai-boot" target="_blank">
-     <img alt="有来技术" src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
+  <a href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
+    <img alt="有来技术" src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
    </a>
   <a href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
     <img alt="有来技术" src="https://img.shields.io/github/stars/youlaitech/vue3-element-admin.svg?style=social&label=Stars"/>
@@ -26,7 +26,7 @@
 
 
 <div align="center">
-  <a target="_blank" href="https://vue.youlai.tech">🖥️ 在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📑 阅读文档</a>|  <a target="_blank" href="https://www.youlai.tech/youlai-boot">🌐 官网</a> | <a href="./README.en-US.md">💬 English
+  <a target="_blank" href="https://vue.youlai.tech">🖥️ 在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📑 阅读文档</a>|  <a target="_blank" href="https://www.youlai.tech//vue3-element-admin">🌐 官网</a> | <a href="./README.en-US.md">💬 English
 </div>
 
 
@@ -57,19 +57,38 @@
 
 | 项目 | Gitee   | Github    | GitCode|
 | ---- | ----| ---- | ---- |
-| 前端 | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) | [vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) |
-| 精简版 | [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) | [vue3-element-template](https://github.com/youlaitech/vue3-element-template) |-|
-| 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)       | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git) |[youlai-boot](https://gitcode.com/youlai/youlai-boot.git)|
+| vue3-element-admin 标准版| [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) | [vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) |
+| vue3-element-admin 精简版 | [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) | [vue3-element-template](https://github.com/youlaitech/vue3-element-template) |-|
+| Java 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)       | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git) |[youlai-boot](https://gitcode.com/youlai/youlai-boot.git)|
+| Node 后端 | [youlai-nest](https://gitee.com/youlaiorg/youlai-nest)       | [youlai-nest](https://github.com/haoxianrui/youlai-nest.git) |[youlai-nest](https://gitcode.com/youlai/youlai-nest.git)|
 
-## 环境准备
 
-| 环境                 | 名称版本                                                     | 下载地址                                                     |
-| -------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
-| **开发工具**         | VSCode    | [下载](https://code.visualstudio.com/Download)           |
-| **运行环境**         | Node ≥18 (其中 20.6.0 版本不可用)    | [下载](http://nodejs.cn/download)                        |
+
+## 项目文档
+
+| 文档名称          | 访问地址                                                                                   |
+|---------------|-------------------------------------------------------------------------------------------|
+| 项目 0 到 1  | [基于 Vue3 + Vite + TypeScript + Element-Plus 从0到1搭建后台管理系统](https://blog.csdn.net/u013737132/article/details/130191394)  |
+| 官方文档 | [https://www.youlai.tech/vue3-element-admin/](https://www.youlai.tech/vue3-element-admin/)  |
+| 代码规范     | [ESLint V9 + Prettier + Stylelint + EditorConfig 约束和统一前端代码规范](https://youlai.blog.csdn.net/article/details/145608723) |
+| Git 规范 | [Husky + Lint-staged + Commitlint + Commitizen + cz-git 配置 Git 提交规范](https://youlai.blog.csdn.net/article/details/145615236) |
+| 在线接口文档 | [https://www.apifox.cn/apidoc](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5) |
+
 
 
 ## 项目启动
+
+
+- **环境准备**
+
+| 环境类型       | 版本要求                     | 下载链接                     |
+|----------------|-----------------------------|-----------------------------|
+| **开发工具**   | Visual Studio Code (最新版) | [官方下载](https://code.visualstudio.com/Download) |
+| **运行环境**   | Node.js 18.x (推荐18.16.1)  | [中文镜像](https://npmmirror.com/mirrors/node/v18.16.1/) |
+> ⚠️ 注意：Node.js 20.6.0版本存在兼容性问题，请勿使用
+
+
+- **快速开始**
 
 ```bash
 # 克隆代码
@@ -90,7 +109,6 @@ pnpm install
 # 启动运行
 pnpm run dev
 ```
-
 
 
 ## 项目部署
@@ -161,14 +179,6 @@ server {
   如果有其他问题或者建议，建议 [ISSUE](https://gitee.com/youlaiorg/vue3-element-admin/issues/new)
 
 
-
-## 项目文档
-
-- [基于 Vue3 + Vite + TypeScript + Element-Plus 从0到1搭建后台管理系统](https://blog.csdn.net/u013737132/article/details/130191394)
-- [ESLint+Prettier+Stylelint+EditorConfig 约束和统一前端代码规范](https://youlai.blog.csdn.net/article/details/145608723)
-- [Husky + Lint-staged + Commitlint + Commitizen + cz-git 配置 Git 提交规范](https://youlai.blog.csdn.net/article/details/145615236)
-
-
 ## 提交规范
 
 执行 `pnpm run commit` 唤起 git commit 交互，根据提示完成信息的输入和选择。
@@ -191,11 +201,8 @@ Thanks to all the contributors!
 
 ## 加群交流
 
-> **关注「有来技术」公众号，点击菜单“交流群”获取加群二维码。**
->
-> 如果二维码过期，请加微信(haoxianrui)备注「前端」、「后端」或「全栈」拉你进群。
->
-> 交流群仅限技术交流，为过滤广告营销暂设此门槛，感谢理解与配合
+① 关注「有来技术」公众号，点击菜单 **交流群** 获取加群二维码（此举防止广告进群，感谢理解和支持）。
 
-![有来技术公众号二维码](https://foruda.gitee.com/images/1737108820762592766/3390ed0d_716974.png)
+② 直接添加微信 **`haoxianrui`** 备注「前端/后端/全栈」。
 
+![有来技术公众号](https://foruda.gitee.com/images/1737108820762592766/3390ed0d_716974.png)
