@@ -13,7 +13,7 @@ const ConfigAPI = {
   },
 
   /** 系统配置表单数据 */
-  getFormData(id: number) {
+  getFormData(id: string) {
     return request<any, ConfigForm>({
       url: `${CONFIG_BASE_URL}/${id}/form`,
       method: "get",
@@ -30,7 +30,7 @@ const ConfigAPI = {
   },
 
   /** 更新系统配置 */
-  update(id: number, data: ConfigForm) {
+  update(id: string, data: ConfigForm) {
     return request({
       url: `${CONFIG_BASE_URL}/${id}`,
       method: "put",
@@ -43,7 +43,7 @@ const ConfigAPI = {
    *
    * @param ids 系统配置ID
    */
-  deleteById(id: number) {
+  deleteById(id: string) {
     return request({
       url: `${CONFIG_BASE_URL}/${id}`,
       method: "delete",
@@ -69,7 +69,7 @@ export interface ConfigPageQuery extends PageQuery {
 /** 系统配置表单对象 */
 export interface ConfigForm {
   /** 主键 */
-  id?: number;
+  id?: string;
   /** 配置名称 */
   configName?: string;
   /** 配置键 */
@@ -83,7 +83,7 @@ export interface ConfigForm {
 /** 系统配置分页对象 */
 export interface ConfigPageVO {
   /** 主键 */
-  id?: number;
+  id?: string;
   /** 配置名称 */
   configName?: string;
   /** 配置键 */

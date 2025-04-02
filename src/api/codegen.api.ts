@@ -110,7 +110,7 @@ export interface TablePageVO {
 /** 代码生成配置表单 */
 export interface GenConfigForm {
   /** 主键 */
-  id?: number;
+  id?: string;
 
   /** 表名 */
   tableName?: string;
@@ -131,7 +131,7 @@ export interface GenConfigForm {
   author?: string;
 
   /** 上级菜单 */
-  parentMenuId?: number;
+  parentMenuId?: string;
 
   /** 后端应用名 */
   backendAppName?: string;
@@ -145,7 +145,7 @@ export interface GenConfigForm {
 /** 字段配置 */
 export interface FieldConfig {
   /** 主键 */
-  id?: number;
+  id?: string;
 
   /** 列名 */
   columnName?: string;

@@ -20,7 +20,7 @@ const contentConfig: IContentConfig<UserPageQuery> = {
   },
   deleteAction: UserAPI.deleteByIds,
   importAction(file) {
-    return UserAPI.import(1, file);
+    return UserAPI.import("1", file);
   },
   exportAction: UserAPI.export,
   importTemplate: UserAPI.downloadTemplate,

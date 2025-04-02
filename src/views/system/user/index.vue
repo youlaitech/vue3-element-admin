@@ -360,7 +360,7 @@ function hancleResetPassword(row: UserPageVO) {
  *
  * @param id 用户ID
  */
-async function handleOpenDialog(id?: number) {
+async function handleOpenDialog(id?: string) {
   dialog.visible = true;
   // 加载角色下拉数据源
   roleOptions.value = await RoleAPI.getOptions();

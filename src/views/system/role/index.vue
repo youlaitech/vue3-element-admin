@@ -257,7 +257,7 @@ const rules = reactive({
 
 // 选中的角色
 interface CheckedRole {
-  id?: number;
+  id?: string;
   name?: string;
 }
 const checkedRole = ref<CheckedRole>({});
@@ -294,7 +294,7 @@ function handleSelectionChange(selection: any) {
 }
 
 // 打开角色弹窗
-function handleOpenDialog(roleId?: number) {
+function handleOpenDialog(roleId?: string) {
   dialog.visible = true;
   if (roleId) {
     dialog.title = "修改角色";

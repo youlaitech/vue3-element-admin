@@ -31,7 +31,7 @@ const DeptAPI = {
    * @param id 部门ID
    * @returns 部门表单数据
    */
-  getFormData(id: number) {
+  getFormData(id: string) {
     return request<any, DeptForm>({
       url: `${DEPT_BASE_URL}/${id}/form`,
       method: "get",
@@ -98,13 +98,13 @@ export interface DeptVO {
   /** 创建时间 */
   createTime?: Date;
   /** 部门ID */
-  id?: number;
+  id?: string;
   /** 部门名称 */
   name?: string;
   /** 部门编号 */
   code?: string;
   /** 父部门ID */
-  parentId?: number;
+  parentid?: string;
   /** 排序 */
   sort?: number;
   /** 状态(1:启用；0:禁用) */

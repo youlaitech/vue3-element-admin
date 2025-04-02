@@ -198,7 +198,7 @@ function handleSelectionChange(selection: any) {
 }
 
 // 打开系统配置弹窗
-function handleOpenDialog(id?: number) {
+function handleOpenDialog(id?: string) {
   dialog.visible = true;
   if (id) {
     dialog.title = "修改系统配置";
@@ -259,7 +259,7 @@ function handleCloseDialog() {
 }
 
 // 删除系统配置
-function handleDelete(id: number) {
+function handleDelete(id: string) {
   ElMessageBox.confirm("确认删除该项配置?", "警告", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
