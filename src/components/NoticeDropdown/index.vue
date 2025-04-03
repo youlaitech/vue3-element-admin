@@ -149,7 +149,7 @@ function handleReadNotice(id: string) {
 
 // 查看更多
 function handleViewMoreNotice() {
-  router.push({ path: "/myNotice" });
+  router.push({ name: "MyNotice" });
 }
 
 // 全部已读

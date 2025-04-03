@@ -10,27 +10,60 @@ function rgbToHex(r: number, g: number, b: number): string {
 }
 
 // 辅助函数：调整颜色亮度
-function adjustBrightness(hex: string, factor: number): string {
+/** function adjustBrightness(hex: string, factor: number, theme: string): string {
   const rgb = hexToRgb(hex);
+  // 是否是暗黑模式
+  const isDarkMode = theme === "dark" ? 0 : 255;
   const newRgb = rgb.map((val) =>
-    Math.max(0, Math.min(255, Math.round(val + (255 - val) * factor)))
+    Math.max(0, Math.min(255, Math.round(val + (isDarkMode - val) * factor)))
   ) as [number, number, number];
   return rgbToHex(...newRgb);
+} */
+
+/**
+ * 加深颜色值
+ * @param {String} color 颜色值字符串
+ * @param {Number} level 加深的程度，限0-1之间
+ * @returns {String} 返回处理后的颜色值
+ */
+export function getDarkColor(color: string, level: number): string {
+  const rgb = hexToRgb(color);
+  for (let i = 0; i < 3; i++) rgb[i] = Math.round(20.5 * level + rgb[i] * (1 - level));
+  return rgbToHex(rgb[0], rgb[1], rgb[2]);
 }
 
-export function generateThemeColors(primary: string) {
+/**
+ * 变浅颜色值
+ * @param {String} color 颜色值字符串
+ * @param {Number} level 加深的程度，限0-1之间
+ * @returns {String} 返回处理后的颜色值
+ */
+export const getLightColor = (color: string, level: number): string => {
+  const rgb = hexToRgb(color);
+  for (let i = 0; i < 3; i++) rgb[i] = Math.round(255 * level + rgb[i] * (1 - level));
+  return rgbToHex(rgb[0], rgb[1], rgb[2]);
+};
+
+/**
+ * 生成主题色
+ * @param primary 主题色
+ * @param theme 主题类型
+ */
+export function generateThemeColors(primary: string, theme: string) {
   const colors: Record<string, string> = {
     primary,
   };
 
   // 生成浅色变体
   for (let i = 1; i <= 9; i++) {
-    const factor = i * 0.1;
-    colors[`primary-light-${i}`] = adjustBrightness(primary, factor);
+    const primaryColor =
+      theme === "light" ? `${getLightColor(primary, i / 10)}` : `${getDarkColor(primary, i / 10)}`;
+    colors[`primary-light-${i}`] = primaryColor;
   }
 
   // 生成深色变体
-  colors["primary-dark-2"] = adjustBrightness(primary, -0.2);
+  colors["primary-dark-2"] =
+    theme === "light" ? `${getLightColor(primary, 0.2)}` : `${getDarkColor(primary, 0.3)}`;
 
   return colors;
 }

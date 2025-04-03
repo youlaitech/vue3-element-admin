@@ -34,7 +34,7 @@ export const useSettingsStore = defineStore("setting", () => {
     [theme, themeColor],
     ([newTheme, newThemeColor]) => {
       toggleDarkMode(newTheme === ThemeMode.DARK);
-      const colors = generateThemeColors(newThemeColor);
+      const colors = generateThemeColors(newThemeColor, newTheme);
       applyTheme(colors);
     },
     { immediate: true }
