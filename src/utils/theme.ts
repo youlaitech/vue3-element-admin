@@ -1,3 +1,5 @@
+import { ThemeMode } from "@/enums";
+
 // 辅助函数：将十六进制颜色转换为 RGB
 function hexToRgb(hex: string): [number, number, number] {
   const bigint = parseInt(hex.slice(1), 16);
@@ -49,21 +51,22 @@ export const getLightColor = (color: string, level: number): string => {
  * @param primary 主题色
  * @param theme 主题类型
  */
-export function generateThemeColors(primary: string, theme: string) {
+export function generateThemeColors(primary: string, theme: ThemeMode) {
   const colors: Record<string, string> = {
     primary,
   };
 
   // 生成浅色变体
   for (let i = 1; i <= 9; i++) {
-    const primaryColor =
-      theme === "light" ? `${getLightColor(primary, i / 10)}` : `${getDarkColor(primary, i / 10)}`;
-    colors[`primary-light-${i}`] = primaryColor;
+    colors[`primary-light-${i}`] =
+      theme === ThemeMode.LIGHT
+        ? `${getLightColor(primary, i / 10)}`
+        : `${getDarkColor(primary, i / 10)}`;
   }
 
   // 生成深色变体
   colors["primary-dark-2"] =
-    theme === "light" ? `${getLightColor(primary, 0.2)}` : `${getDarkColor(primary, 0.3)}`;
+    theme === ThemeMode.LIGHT ? `${getLightColor(primary, 0.2)}` : `${getDarkColor(primary, 0.3)}`;
 
   return colors;
 }
@@ -83,9 +86,9 @@ export function applyTheme(colors: Record<string, string>) {
  */
 export function toggleDarkMode(isDark: boolean) {
   if (isDark) {
-    document.documentElement.classList.add("dark");
+    document.documentElement.classList.add(ThemeMode.DARK);
   } else {
-    document.documentElement.classList.remove("dark");
+    document.documentElement.classList.remove(ThemeMode.DARK);
   }
 }
 
