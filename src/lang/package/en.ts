@@ -6,13 +6,17 @@ export default {
   },
   // 登录页面国际化
   login: {
+    theneToggle: "Theme Switch",
+    languageToggle: "Language Switch",
+    dark: "Dark",
+    light: "Light",
     username: "Username",
     password: "Password",
     login: "Login",
     captchaCode: "Verify Code",
     capsLock: "Caps Lock is On",
     rememberMe: "Remember Me",
-    forgetPassword: "Forget Password",
+    forgetPassword: "Forget Password?",
     message: {
       username: {
         required: "Please enter Username",
@@ -20,12 +24,23 @@ export default {
       password: {
         required: "Please enter Password",
         min: "The password can not be less than 6 digits",
+        confirm: "Please confirm the password again",
+        inconformity: "The two password entries are inconsistent",
       },
       captchaCode: {
         required: "Please enter Verify Code",
       },
     },
-    otherLoginMethods: "Other login methods",
+    otherLoginMethods: "Other",
+    resetPassword: "Reset password",
+    thinkOfPasswd: "Remember your password?",
+    register: "Register account",
+    agree: "I have read and agree to the",
+    userAgreement: "User Agreement",
+    haveAccount: "Already have an account?",
+    noAccount: "Don't have an account?",
+    quickFill: "Quick fill",
+    reg: "Register",
   },
   // 导航栏国际化
   navbar: {
