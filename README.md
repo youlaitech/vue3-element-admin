@@ -32,7 +32,7 @@
 
 ## 项目简介
 
-[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) 基于 Vue3、Vite、TypeScript 和 Element-Plus 搭建的极简开箱即用企业级后台管理前端模板。 （配套 Java 后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) 和 Node 后端 [youlai-nest](https://gitee.com/youlaiorg/youlai-nest)）。
+[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) 基于 Vue3、Vite、TypeScript 和 Element-Plus 搭建的极简开箱即用企业级后台管理前端模板。 配套 Java 后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) 和 Node 后端 [youlai-nest](https://gitee.com/youlaiorg/youlai-nest) 。 提供开发简版[vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) 和 JS 版本[vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin) 供开发者快速开发。
 
 
 ## 项目特色
@@ -58,6 +58,7 @@
 | 项目 | Gitee   | Github    | GitCode|
 | ---- | ----| ---- | ---- |
 | vue3-element-admin 标准版| [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) | [vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) |
+| vue3-element-admin JS版| [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js) | [vue3-element-admin-js](https://github.com/youlaitech/vue3-element-admin-js) | [vue3-element-admin-js](https://gitcode.com/youlai/vue3-element-admin-js) |
 | vue3-element-admin 精简版 | [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) | [vue3-element-template](https://github.com/youlaitech/vue3-element-template) |-|
 | Java 后端 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)       | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git) |[youlai-boot](https://gitcode.com/youlai/youlai-boot.git)|
 | Node 后端 | [youlai-nest](https://gitee.com/youlaiorg/youlai-nest)       | [youlai-nest](https://github.com/haoxianrui/youlai-nest.git) |[youlai-nest](https://gitcode.com/youlai/youlai-nest.git)|
