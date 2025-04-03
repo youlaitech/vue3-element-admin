@@ -57,14 +57,6 @@
         </div>
       </el-form-item>
 
-      <!-- 快捷登录 -->
-      <div flex-y-center gap-10px>
-        <el-text size="default">{{ t("login.quickFill") }}</el-text>
-        <el-link type="danger" @click="setLoginCredentials('root', '123456')">ROOT</el-link>
-        <el-link type="warning" @click="setLoginCredentials('admin', '123456')">ADMIN</el-link>
-        <el-link type="primary" @click="setLoginCredentials('test', '123456')">TEST</el-link>
-      </div>
-
       <div class="flex-x-between w-full">
         <el-checkbox v-model="loginFormData.rememberMe">{{ t("login.rememberMe") }}</el-checkbox>
         <el-link type="primary" :underline="false" @click="toOtherForm('resetPwd')">
@@ -239,12 +231,6 @@ function checkCapsLock(event: KeyboardEvent) {
     isCapsLock.value = event.getModifierState("CapsLock");
   }
 }
-
-// 设置登录凭证
-const setLoginCredentials = (username: string, password: string) => {
-  loginFormData.value.username = username;
-  loginFormData.value.password = password;
-};
 
 const emit = defineEmits(["update:modelValue"]);
 function toOtherForm(type: "register" | "resetPwd") {

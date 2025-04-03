@@ -1,71 +1,71 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="100%" height="100%" viewBox="0 0 1400 800">
+  <style>
+    :root {
+      --blue: rgba(64, 158, 255, 0.08);
+      --grey: rgba(144, 147, 153, 0.05);
+      --orange: rgba(230, 162, 60, 0.06);
+      --green: rgba(144, 238, 144, 0.06);
+    }
 
-  <!-- 主波浪 (蓝色系) -->
-  <path d="M-200 450 Q100 400 400 450 T1000 430"
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --blue: rgba(64, 158, 255, 0.04);
+        --grey: rgba(144, 147, 153, 0.03);
+        --orange: rgba(230, 162, 60, 0.04);
+        --green: rgba(144, 238, 144, 0.04);
+      }
+    }
+  </style>
+
+  <!-- 左侧波浪 -->
+  <path d="M-50 550 Q200 500 450 550 T950 530"
         fill="none"
         stroke="#409EFF"
-        stroke-width="8"
-        stroke-opacity="0.4"
+        stroke-width="1.5"
+        stroke-opacity="0.05"
         stroke-linecap="round">
-    <animate attributeName="d"
-             values="M-200 450 Q100 400 400 450 T1000 430;
-                    M-200 460 Q100 420 400 440 T1000 420;
-                    M-200 450 Q100 400 400 450 T1000 430"
-             dur="12s"
-             repeatCount="indefinite"/>
   </path>
 
-  <!-- 次级波浪 (金色系) -->
-  <path d="M-150 550 Q200 520 500 560 T1300 530"
+  <!-- 右侧波浪 -->
+  <path d="M450 650 Q800 620 1150 660 T1550 630"
         fill="none"
-        stroke="#FF914D"
-        stroke-width="5"
-        stroke-opacity="0.3"
+        stroke="#909399"
+        stroke-width="1"
+        stroke-opacity="0.03"
         stroke-linecap="round">
-    <animate attributeName="d"
-             values="M-150 550 Q200 520 500 560 T1300 530;
-                    M-150 540 Q200 530 500 550 T1300 520;
-                    M-150 550 Q200 520 500 560 T1300 530"
-             dur="9s"
-             repeatCount="indefinite"/>
   </path>
 
-  <!-- 动态流动线 -->
-  <path d="M-100 600 Q300 620 700 580 T1400 590"
-        fill="none"
-        stroke="#FF6B6B"
-        stroke-width="3"
-        stroke-opacity="0.25"
-        stroke-dasharray="20 10">
-    <animate attributeName="stroke-dashoffset"
-             from="0" to="100"
-             dur="15s"
-             repeatCount="indefinite"/>
-  </path>
-
-  <!-- 主园球 -->
-  <circle cx="220" cy="220" r="160" fill="#37B6FF" stroke="#37B6FF" stroke-width="8">
-    <animateMotion path="M 0 0 L 30 15 Z" dur="6s" repeatCount="indefinite"/>
+  <!-- 右下方圆形 -->
+  <circle cx="950" cy="400" r="70" 
+          fill="var(--blue)" 
+          stroke="#409EFF" 
+          stroke-width="1" 
+          stroke-opacity="0.05">
   </circle>
 
-  <!-- 半球形 -->
-  <path d="M 100 350 A 150 150 0 1 1 400 350 Q400 370 380 370 L 250 370 L 120 370 Q100 370 100 350" fill="#FF914D">
-    <animateMotion path="M 800 -200 L 800 -300 L 800 -200" dur="20s" begin="0s" repeatCount="indefinite"/>
-    <animateTransform attributeType="XML" attributeName="transform" begin="0s" dur="30s" type="rotate" values="0 210 530 ; -30 210 530 ; 0 210 530" keyTimes="0 ; 0.5 ; 1" repeatCount="indefinite"/>
+  <!-- 左上方半球形  -->
+  <g transform="rotate(-10, 300, 180)">
+    <path d="M 180 180 A 120 120 0 1 1 420 180 Q420 195 405 195 L 310 195 L 195 195 Q180 195 180 180" 
+          fill="var(--orange)" 
+          stroke="#E6A23C" 
+          stroke-width="1" 
+          stroke-opacity="0.05">
+    </path>
+  </g>
+
+  <!-- 左下方三角形 -->
+  <path d="M300 600 L380 520 L420 650 Z" 
+        fill="var(--green)" 
+        stroke="#909399" 
+        stroke-width="1" 
+        stroke-opacity="0.04">
   </path>
 
   <!-- 旋转方块 -->
-  <rect x="1000" y="420" rx="20" ry="20" width="110" height="110" fill="#FABBD8" stroke="#FABBD8" stroke-width="3">
+ <rect x="1000" y="420" rx="10" ry="10" width="60" height="60" fill="rgba(169, 174, 184, 0.1)" stroke="rgba(169, 174, 184, 0.2)" stroke-width="1" opacity="0.5">
     <animateTransform attributeType="XML" attributeName="transform"
                       begin="0s" dur="30s" type="rotate"
                       from="0 1450 550" to="360 1450 550"
                       repeatCount="indefinite"/>
   </rect>
-
-  <!-- 动态光点 -->
-  <circle cx="1050" cy="580" r="24" fill="#FFD93D" opacity="0.9">
-    <animateMotion path="M 0 0 L -25 35 Z" dur="8s" repeatCount="indefinite"/>
-    <animate attributeName="r" values="24;28;24" dur="4s" repeatCount="indefinite"/>
-  </circle>
-
 </svg>
