@@ -1,9 +1,10 @@
 <template>
   <el-select
-    v-if="type === 'select'"
+    v-if="type === 'select' || type === 'select-multiple'"
     v-model="selectedValue"
     :placeholder="placeholder"
     :disabled="disabled"
+    :multiple="type === 'select-multiple'"
     clearable
     :style="style"
     @change="handleChange"
@@ -93,28 +94,30 @@ const emit = defineEmits(["update:modelValue"]);
 const options = ref<Array<{ label: string; value: string | number }>>([]);
 
 const selectedValue = ref<any>(
-  typeof props.modelValue === "string" || typeof props.modelValue === "number"
-    ? props.modelValue
-    : Array.isArray(props.modelValue)
+  ["select-multiple", "checkbox"].includes(props.type)
+    ? Array.isArray(props.modelValue)
+      ? props.modelValue
+      : []
+    : typeof props.modelValue === "string" || typeof props.modelValue === "number"
       ? props.modelValue
       : undefined
 );
 
 // 监听 modelValue 和 options 的变化
 watch(
-  [() => props.modelValue, () => options.value],
-  ([newValue, newOptions]) => {
-    if (newOptions.length > 0 && newValue !== undefined) {
-      if (props.type === "checkbox") {
-        selectedValue.value = Array.isArray(newValue) ? newValue : [];
-      } else {
+  [() => props.modelValue, () => props.type, () => options.value],
+  ([newValue, newType, newOptions]) => {
+    if (["select-multiple", "checkbox"].includes(newType)) {
+      selectedValue.value = Array.isArray(newValue) ? newValue : [];
+    } else {
+      if (newOptions.length > 0 && newValue !== undefined && newValue !== null) {
         const matchedOption = newOptions.find(
           (option) => String(option.value) === String(newValue)
         );
-        selectedValue.value = matchedOption?.value;
+        selectedValue.value = matchedOption?.value ?? undefined;
+      } else {
+        selectedValue.value = undefined;
       }
-    } else {
-      selectedValue.value = undefined;
     }
   },
   { immediate: true }
