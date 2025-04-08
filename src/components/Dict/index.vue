@@ -1,6 +1,7 @@
 <template>
+  <!-- Select / Select-Multiple -->
   <el-select
-    v-if="type === 'select' || type === 'select-multiple'"
+    v-if="['select', 'select-multiple'].includes(type)"
     v-model="selectedValue"
     :placeholder="placeholder"
     :disabled="disabled"
@@ -17,6 +18,7 @@
     />
   </el-select>
 
+  <!-- Radio -->
   <el-radio-group
     v-else-if="type === 'radio'"
     v-model="selectedValue"
@@ -34,6 +36,7 @@
     </el-radio>
   </el-radio-group>
 
+  <!-- Checkbox -->
   <el-checkbox-group
     v-else-if="type === 'checkbox'"
     v-model="selectedValue"
@@ -53,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch, onMounted } from "vue";
 import { useDictStore } from "@/store";
 
 const dictStore = useDictStore();
@@ -69,7 +73,8 @@ const props = defineProps({
   type: {
     type: String,
     default: "select",
-    validator: (value: string) => ["select", "radio", "checkbox"].includes(value),
+    validator: (value: string) =>
+      ["select", "select-multiple", "radio", "checkbox"].includes(value),
   },
   placeholder: {
     type: String,
@@ -81,11 +86,7 @@ const props = defineProps({
   },
   style: {
     type: Object,
-    default: () => {
-      return {
-        width: "300px",
-      };
-    },
+    default: () => ({ width: "300px" }),
   },
 });
 
@@ -93,37 +94,29 @@ const emit = defineEmits(["update:modelValue"]);
 
 const options = ref<Array<{ label: string; value: string | number }>>([]);
 
+// 动态初始化 selectedValue
 const selectedValue = ref<any>(
   ["select-multiple", "checkbox"].includes(props.type)
     ? Array.isArray(props.modelValue)
       ? props.modelValue
       : []
-    : typeof props.modelValue === "string" || typeof props.modelValue === "number"
-      ? props.modelValue
-      : undefined
+    : (props.modelValue ?? undefined)
 );
 
-// 监听 modelValue 和 options 的变化
+// 同步 selectedValue 与 props.modelValue
 watch(
-  [() => props.modelValue, () => props.type, () => options.value],
-  ([newValue, newType, newOptions]) => {
-    if (["select-multiple", "checkbox"].includes(newType)) {
+  () => props.modelValue,
+  (newValue) => {
+    if (["select-multiple", "checkbox"].includes(props.type)) {
       selectedValue.value = Array.isArray(newValue) ? newValue : [];
     } else {
-      if (newOptions.length > 0 && newValue !== undefined && newValue !== null) {
-        const matchedOption = newOptions.find(
-          (option) => String(option.value) === String(newValue)
-        );
-        selectedValue.value = matchedOption?.value ?? undefined;
-      } else {
-        selectedValue.value = undefined;
-      }
+      selectedValue.value = newValue ?? undefined;
     }
   },
   { immediate: true }
 );
 
-// 监听 selectedValue 的变化并触发 update:modelValue
+// selectedValue 改变时回传给父组件
 function handleChange(val: any) {
   emit("update:modelValue", val);
 }
