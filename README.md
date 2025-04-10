@@ -84,7 +84,7 @@
 
 | 环境类型       | 名称                     |
 |----------------|-----------------------------|
-| **开发工具**   | [Visual Studio Code](https://code.visualstudio.com/Download)/(WebStorm)(https://www.jetbrains.com.cn/webstorm/) |
+| **开发工具**   | [Visual Studio Code](https://code.visualstudio.com/Download)/[WebStorm](https://www.jetbrains.com.cn/webstorm/) |
 | **运行环境**   | Node 18 + (推荐[22.9.0](https://npmmirror.com/mirrors/node/v22.9.0/))  |
 > ⚠️ 注意：Node.js 20.6.0版本存在兼容性问题，请勿使用
 
