@@ -6,6 +6,8 @@ import type {
   PaginationProps,
   TableProps,
   ColProps,
+  ButtonType,
+  CardProps,
 } from "element-plus";
 import type PageContent from "./PageContent.vue";
 import type PageForm from "./PageForm.vue";
@@ -69,7 +71,7 @@ export interface ISearchConfig {
   // 默认展示的表单项数量(默认：3)
   showNumber?: number;
   // 卡片属性
-  cardAttrs?: IObject;
+  cardAttrs?: Partial<CardProps>;
   // 自适应网格布局(使用时表单不要添加 style: { width: "200px" })
   grid?: boolean;
 }
@@ -79,6 +81,8 @@ export interface IContentConfig<T = any> {
   pageName: string;
   // table组件属性
   table?: Omit<TableProps<any>, "data">;
+  // 分页组件位置(默认：left)
+  pagePosition?: "left" | "right";
   // pagination组件属性
   pagination?:
     | boolean
@@ -132,7 +136,7 @@ export interface IContentConfig<T = any> {
         icon?: string;
         name: string;
         text: string;
-        type?: "primary" | "success" | "warning" | "danger" | "info";
+        type?: ButtonType;
       }
   >;
   // 表格工具栏右侧图标
@@ -198,7 +202,7 @@ export interface IContentConfig<T = any> {
           icon?: string;
           name: string;
           text: string;
-          type?: "primary" | "success" | "warning" | "danger" | "info";
+          type?: ButtonType;
           render?: (row: IObject) => boolean;
         }
     >;

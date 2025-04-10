@@ -315,14 +315,12 @@
     </el-table>
     <!-- 分页 -->
     <template v-if="showPagination">
-      <el-scrollbar>
-        <div class="mt-[12px]">
-          <el-pagination
-            v-bind="pagination"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
-        </div>
+      <el-scrollbar :class="['mt-3', { 'flex-x-end': contentConfig?.pagePosition === 'right' }]">
+        <el-pagination
+          v-bind="pagination"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
       </el-scrollbar>
     </template>
     <!-- 导出弹窗 -->

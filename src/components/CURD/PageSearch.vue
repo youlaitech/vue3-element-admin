@@ -1,5 +1,5 @@
 <template>
-  <el-card v-show="visible" v-bind="cardAttrs">
+  <el-card v-show="visible" v-bind="cardAttrs" class="mb-2.5!">
     <el-form ref="queryFormRef" :model="queryParams" :inline="true" :class="isGrid">
       <template v-for="(item, index) in formItems" :key="item.prop">
         <el-form-item
@@ -98,8 +98,8 @@ const cardAttrs = computed<IObject>(() => {
     ? { "v-hasPerm": [`${props.searchConfig.pageName}:query`] }
     : {};
   return props.searchConfig?.cardAttrs && props.searchConfig.cardAttrs instanceof Object
-    ? { class: "mb-2.5", shadow: "never", ...auth, ...props.searchConfig.cardAttrs }
-    : { class: "mb-2.5", shadow: "never", ...auth };
+    ? { shadow: "never", ...auth, ...props.searchConfig.cardAttrs }
+    : { shadow: "never", ...auth };
 });
 // 是否使用自适应网格布局
 const isGrid = computed(() =>
