@@ -1,34 +1,28 @@
 <template>
-  <el-card
-    v-show="visible"
-    v-hasPerm="[`${searchConfig.pageName}:query`]"
-    shadow="never"
-    class="mb-2.5"
-  >
-    <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+  <el-card v-show="visible" v-bind="cardAttrs">
+    <el-form ref="queryFormRef" :model="queryParams" :inline="true" :class="isGrid">
       <template v-for="(item, index) in formItems" :key="item.prop">
         <el-form-item
           v-show="isExpand ? true : index < showNumber"
-          :label="item.label"
+          :label="item?.label"
           :prop="item.prop"
         >
           <!-- Label -->
-          <template v-if="item.tips" #label>
+          <template v-if="item?.tips" #label>
             <span class="flex-y-center">
               {{ item.label }}
               <el-tooltip v-bind="getTooltipProps(item.tips)">
                 <QuestionFilled class="w-4 h-4 mx-1" />
               </el-tooltip>
-              {{ searchConfig.colon === false ? "" : ":" }}
+              {{ searchConfig.colon ? ":" : "" }}
             </span>
           </template>
-          <template v-else #label>
-            {{ item.label }} {{ searchConfig.colon === false ? "" : ":" }}
-          </template>
+          <template v-else #label>{{ item.label }} {{ searchConfig.colon ? ":" : "" }}</template>
 
           <component
             :is="componentMap[item?.type ? item?.type : 'input']"
             v-model.trim="queryParams[item.prop]"
+            style="width: 100%"
             v-bind="item.attrs"
             :config="item.attrs"
             v-on="item.events || {}"
@@ -45,16 +39,12 @@
         <el-button icon="search" type="primary" @click="handleQuery">搜索</el-button>
         <el-button icon="refresh" @click="handleReset">重置</el-button>
         <!-- 展开/收起 -->
-        <el-link
-          v-if="isExpandable && formItems.length > showNumber"
-          class="ml-3"
-          type="primary"
-          :underline="false"
-          @click="isExpand = !isExpand"
-        >
-          {{ isExpand ? "收起" : "展开" }}
-          <component :is="isExpand ? ArrowUp : ArrowDown" class="w-4 h-4 ml-2" />
-        </el-link>
+        <template v-if="isExpandable && formItems.length > showNumber">
+          <el-link class="ml-3" type="primary" :underline="false" @click="isExpand = !isExpand">
+            {{ isExpand ? "收起" : "展开" }}
+            <component :is="isExpand ? ArrowUp : ArrowDown" class="w-4 h-4 ml-2" />
+          </el-link>
+        </template>
       </el-form-item>
     </el-form>
   </el-card>
@@ -93,14 +83,29 @@ const queryFormRef = ref<FormInstance>();
 // 是否显示
 const visible = ref(true);
 // 响应式的formItems
-const formItems = reactive(props.searchConfig.formItems);
+const formItems = reactive(props.searchConfig?.formItems ?? []);
 // 是否可展开/收缩
-const isExpandable = ref(props.searchConfig.isExpandable ?? true);
+const isExpandable = ref(props.searchConfig?.isExpandable ?? true);
 // 是否已展开
 const isExpand = ref(false);
 // 表单项展示数量，若可展开，超出展示数量的表单项隐藏
 const showNumber = computed(() =>
-  isExpandable.value ? (props.searchConfig.showNumber ?? 3) : formItems.length
+  isExpandable.value ? (props.searchConfig?.showNumber ?? 3) : formItems.length
+);
+// 卡片组件自定义属性（累名、阴影、权限等）
+const cardAttrs = computed<IObject>(() => {
+  let auth = props.searchConfig?.pageName
+    ? { "v-hasPerm": [`${props.searchConfig.pageName}:query`] }
+    : {};
+  return props.searchConfig?.cardAttrs && props.searchConfig.cardAttrs instanceof Object
+    ? { class: "mb-2.5", shadow: "never", ...auth, ...props.searchConfig.cardAttrs }
+    : { class: "mb-2.5", shadow: "never", ...auth };
+});
+// 是否使用自适应网格布局
+const isGrid = computed(() =>
+  props.searchConfig?.grid
+    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 gap-5"
+    : "flex flex-wrap gap-x-8 gap-y-4"
 );
 // 搜索表单数据
 const queryParams = reactive<IObject>({});
@@ -110,10 +115,10 @@ const getTooltipProps = (tips: any) => {
 };
 
 onMounted(() => {
-  formItems.map((item) => {
+  formItems.forEach((item) => {
     item.initFn && item.initFn(item);
     if (item.type === "input-tag" || item.type === "custom-tag") {
-      queryParams[item.prop] = item.initialValue ?? [];
+      queryParams[item.prop] = Array.isArray(item.initialValue) ? item.initialValue : [];
     } else if (item.type === "input-number") {
       queryParams[item.prop] = item.initialValue ?? null;
     } else {
@@ -141,12 +146,6 @@ defineExpose({
 <style lang="scss" scoped>
 :deep(.el-input-number .el-input__inner) {
   text-align: left;
-}
-.el-form {
-  display: flex;
-  flex-wrap: wrap;
-  row-gap: 1rem;
-  column-gap: 2rem;
 }
 .el-form-item {
   margin-right: 0;

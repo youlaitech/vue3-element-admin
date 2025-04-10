@@ -45,6 +45,12 @@ export default defineConfig({
       primary: "var(--el-color-primary)",
       primary_dark: "var(--el-color-primary-light-5)",
     },
+    breakpoints: Object.fromEntries(
+      [640, 768, 1024, 1280, 1536, 1920, 2048].map((size, index) => [
+        ["sm", "md", "lg", "xl", "2xl", "3xl", "4xl"][index],
+        `${size}px`,
+      ])
+    ),
   },
   presets: [
     presetUno(),

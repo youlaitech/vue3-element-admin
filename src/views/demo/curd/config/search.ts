@@ -1,6 +1,11 @@
 import DeptAPI from "@/api/system/dept.api";
 import type { ISearchConfig } from "@/components/CURD/types";
 
+const selectOptions = reactive([
+  { label: "启用", value: 1 },
+  { label: "禁用", value: 0 },
+]);
+
 const searchConfig: ISearchConfig = {
   pageName: "sys:user",
   colon: false,
@@ -16,9 +21,11 @@ const searchConfig: ISearchConfig = {
         style: { width: "200px" },
       },
       events: {
-        // 监听输入框输入事件
-        blur: (e) => console.log("失去焦点: ", e),
-        focus: (e) => console.log("获得焦点: ", e),
+        change: (e) => {
+          console.log("输入框的值: ", e);
+          // 级联操作示例，需要使用reactive提前定义数组
+          // selectOptions.push({ label: e, value: e });
+        },
       },
     },
     {
@@ -50,12 +57,11 @@ const searchConfig: ISearchConfig = {
         clearable: true,
         style: { width: "200px" },
       },
-      options: [
-        { label: "启用", value: 1 },
-        { label: "禁用", value: 0 },
-      ],
+      options: selectOptions,
       events: {
-        change: (e) => console.log("发生变化: ", e),
+        change: function (e) {
+          console.log("选中的值: ", e);
+        },
       },
     },
     {
