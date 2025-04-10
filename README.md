@@ -82,10 +82,10 @@
 
 - **环境准备**
 
-| 环境类型       | 版本要求                     | 下载链接                     |
-|----------------|-----------------------------|-----------------------------|
-| **开发工具**   | Visual Studio Code (最新版) | [官方下载](https://code.visualstudio.com/Download) |
-| **运行环境**   | Node.js 18.x (推荐18.16.1)  | [中文镜像](https://npmmirror.com/mirrors/node/v18.16.1/) |
+| 环境类型       | 名称                     |
+|----------------|-----------------------------|
+| **开发工具**   | [Visual Studio Code](https://code.visualstudio.com/Download)/[WebStorm](https://www.jetbrains.com.cn/webstorm/) |
+| **运行环境**   | Node 18 + (推荐[22.9.0](https://npmmirror.com/mirrors/node/v22.9.0/))  |
 > ⚠️ 注意：Node.js 20.6.0版本存在兼容性问题，请勿使用
 
 
@@ -196,9 +196,11 @@ Thanks to all the contributors!
 
 [![contributors](https://contrib.rocks/image?repo=youlaitech/vue3-element-admin)](https://github.com/youlaitech/vue3-element-admin/graphs/contributors)
 
-## G-Star
 
-![](https://foruda.gitee.com/images/1728577513089814203/95f2a70d_716974.jpeg)
+## 特别感谢
+- 感谢 [Jetbrains](https://www.jetbrains.com.cn/) 为项目提供的 [WebStorm](https://www.jetbrains.com/community/opensource/#support) 授权
+- 感谢 [GitCode](https://gitcode.com/) 官方的 [G-Star](https://gitcode.com/g-star) 认证
+  ![](https://foruda.gitee.com/images/1728577513089814203/95f2a70d_716974.jpeg)
 
 ## 加群交流
 
