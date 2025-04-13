@@ -1,5 +1,10 @@
 <template>
-  <el-card v-show="visible" v-bind="cardAttrs" class="mb-2.5!">
+  <el-card
+    v-show="visible"
+    v-hasPerm="searchConfig?.pageName ? `${searchConfig.pageName}:query` : '*:*:*'"
+    v-bind="cardAttrs"
+    class="mb-2.5!"
+  >
     <el-form ref="queryFormRef" :model="queryParams" :inline="true" :class="isGrid">
       <template v-for="(item, index) in formItems" :key="item.prop">
         <el-form-item
@@ -94,12 +99,9 @@ const showNumber = computed(() =>
 );
 // 卡片组件自定义属性（累名、阴影、权限等）
 const cardAttrs = computed<IObject>(() => {
-  let auth = props.searchConfig?.pageName
-    ? { "v-hasPerm": [`${props.searchConfig.pageName}:query`] }
-    : {};
   return props.searchConfig?.cardAttrs && props.searchConfig.cardAttrs instanceof Object
-    ? { shadow: "never", ...auth, ...props.searchConfig.cardAttrs }
-    : { shadow: "never", ...auth };
+    ? { shadow: "never", ...props.searchConfig.cardAttrs }
+    : { shadow: "never" };
 });
 // 是否使用自适应网格布局
 const isGrid = computed(() =>

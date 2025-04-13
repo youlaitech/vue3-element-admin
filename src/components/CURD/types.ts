@@ -41,7 +41,7 @@ export type ComponentType =
   | "cascader";
 
 export interface ISearchConfig {
-  // 页面名称(参与组成权限标识,如sys:user:xxx)
+  // 页面名称(参与组成权限标识,如sys:user:xxx),不填则不进行权限校验
   pageName?: string;
   // 标签冒号(默认：false)
   colon?: boolean;
