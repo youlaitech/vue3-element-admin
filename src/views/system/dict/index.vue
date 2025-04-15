@@ -1,38 +1,38 @@
 <!-- 字典 -->
 <template>
   <div class="app-container">
-    <div class="search-bar">
+    <!-- 搜索区域 -->
+    <div class="search-container">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-row :gutter="20">
-          <el-col :span="24" :md="12" :lg="6">
-            <el-form-item label="关键字" prop="keywords">
-              <el-input
-                v-model="queryParams.keywords"
-                placeholder="字典名称/编码"
-                clearable
-                @keyup.enter="handleQuery"
-              />
-            </el-form-item>
-          </el-col>
+        <el-form-item label="关键字" prop="keywords">
+          <el-input
+            v-model="queryParams.keywords"
+            placeholder="字典名称/编码"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
 
-          <div class="search-form-btn-box">
-            <div class="search-form-btn-box-item">
-              <el-form-item>
-                <el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
-                <el-button icon="refresh" @click="handleResetQuery()">重置</el-button>
-              </el-form-item>
-            </div>
-          </div>
-        </el-row>
+        <el-form-item class="search-buttons">
+          <el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
+          <el-button icon="refresh" @click="handleResetQuery()">重置</el-button>
+        </el-form-item>
       </el-form>
     </div>
 
-    <el-card shadow="never">
-      <div class="mb-[10px]">
-        <el-button type="success" icon="plus" @click="handleAddClick()">新增</el-button>
-        <el-button type="danger" :disabled="ids.length === 0" icon="delete" @click="handleDelete()">
-          删除
-        </el-button>
+    <el-card shadow="hover" class="data-table">
+      <div class="data-table__toolbar">
+        <div class="data-table__toolbar--actions">
+          <el-button type="success" icon="plus" @click="handleAddClick()">新增</el-button>
+          <el-button
+            type="danger"
+            :disabled="ids.length === 0"
+            icon="delete"
+            @click="handleDelete()"
+          >
+            删除
+          </el-button>
+        </div>
       </div>
 
       <el-table
@@ -40,6 +40,7 @@
         highlight-current-row
         :data="tableData"
         border
+        class="data-table__content"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />

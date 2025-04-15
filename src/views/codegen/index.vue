@@ -1,48 +1,42 @@
 <template>
   <div class="app-container">
-    <div class="search-bar">
+    <!-- 搜索区域 -->
+    <div class="search-container">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
-        <el-row :gutter="22">
-          <el-col :span="24" :md="12" :lg="6">
-            <el-form-item prop="keywords" label="关键字">
-              <el-input
-                v-model="queryParams.keywords"
-                placeholder="表名"
-                clearable
-                @keyup.enter="handleQuery"
-              />
-            </el-form-item>
-          </el-col>
+        <el-form-item prop="keywords" label="关键字">
+          <el-input
+            v-model="queryParams.keywords"
+            placeholder="表名"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
 
-          <div class="search-form-btn-box">
-            <div class="search-form-btn-box-item">
-              <el-form-item>
-                <el-button type="primary" @click="handleQuery">
-                  <template #icon>
-                    <Search />
-                  </template>
-                  搜索
-                </el-button>
-                <el-button @click="handleResetQuery">
-                  <template #icon>
-                    <Refresh />
-                  </template>
-                  重置
-                </el-button>
-              </el-form-item>
-            </div>
-          </div>
-        </el-row>
+        <el-form-item class="search-buttons">
+          <el-button type="primary" @click="handleQuery">
+            <template #icon>
+              <Search />
+            </template>
+            搜索
+          </el-button>
+          <el-button @click="handleResetQuery">
+            <template #icon>
+              <Refresh />
+            </template>
+            重置
+          </el-button>
+        </el-form-item>
       </el-form>
     </div>
 
-    <el-card shadow="never" class="table-container">
+    <el-card shadow="hover" class="table-card">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
         :data="pageData"
         highlight-current-row
         border
+        class="data-table__content"
       >
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="表名" prop="tableName" min-width="100" />

@@ -4,42 +4,76 @@
   padding: 15px;
 }
 
-.search-bar {
-  padding: 18px 18px 0;
-  margin-bottom: 15px;
-  background-color: var(--el-bg-color-overlay);
-  border: 1px solid var(--el-border-color-light);
-  border-radius: 4px;
-  box-shadow: var(--el-box-shadow-light);
-
-  //搜索表单按钮组全局样式
-  .search-form-btn-box {
-    flex: 1;
-    padding-right: 13px;
-
-    .search-form-btn-box-item {
-      display: flex;
-      align-items: center;
-      justify-content: end;
-      width: 100%;
-    }
-  }
-
-  :deep(.el-form-item) {
-    width: 100% !important;
-  }
-
-  .el-form--inline .el-form-item {
-    display: flex !important;
-    margin-right: 0px !important;
-  }
-}
-
-.table-container > .el-card__header {
-  padding: calc(var(--el-card-padding) - 8px) var(--el-card-padding);
-}
-
 // 进度条颜色
 #nprogress .bar {
   background-color: var(--el-color-primary);
+}
+
+// 全局搜索区域样式
+.search-container {
+  padding: 18px 16px 0;
+  margin-bottom: 16px;
+  background-color: var(--el-bg-color-overlay);
+  border: 1px solid var(--el-border-color-light);
+  border-radius: 4px;
+
+  .search-buttons {
+    margin-right: 0;
+  }
+
+  .el-form-item {
+    margin-bottom: 18px;
+  }
+}
+
+// 表格区域样式 (BEM规范)
+.data-table {
+  margin-bottom: 16px;
+
+  // 表格工具栏区域
+  &__toolbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    &--actions,
+    &--tools {
+      display: flex;
+      gap: 8px;
+    }
+  }
+
+  // 表格内容区域
+  &__content {
+    margin: 8px 0;
+  }
+
+  // 分页区域
+  .el-pagination {
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+}
+
+// 抽屉和对话框底部按钮区域
+.dialog-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 16px;
+}
+
+// 搜索表单固定宽度项
+.fixed-width-item {
+  &-sm {
+    width: 100px !important;
+  }
+
+  &-md {
+    width: 150px !important;
+  }
+
+  &-lg {
+    width: 200px !important;
+  }
 }

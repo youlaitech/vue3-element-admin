@@ -1,50 +1,45 @@
 <!-- 系统配置 -->
 <template>
   <div class="app-container">
-    <div class="search-bar">
+    <!-- 搜索区域 -->
+    <div class="search-container">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
-        <el-row :gutter="22">
-          <el-col :span="24" :md="12" :lg="6">
-            <el-form-item label="关键字" prop="keywords">
-              <el-input
-                v-model="queryParams.keywords"
-                placeholder="请输入配置键\配置名称"
-                clearable
-                @keyup.enter="handleQuery"
-              />
-            </el-form-item>
-          </el-col>
+        <el-form-item label="关键字" prop="keywords">
+          <el-input
+            v-model="queryParams.keywords"
+            placeholder="请输入配置键\配置名称"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
 
-          <div class="search-form-btn-box">
-            <div class="search-form-btn-box-item">
-              <el-form-item>
-                <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
-                <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
-              </el-form-item>
-            </div>
-          </div>
-        </el-row>
+        <el-form-item class="search-buttons">
+          <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
+          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
+        </el-form-item>
       </el-form>
     </div>
 
-    <el-card shadow="never">
-      <div class="mb-10px">
-        <el-button
-          v-hasPerm="['sys:config:add']"
-          type="success"
-          icon="plus"
-          @click="handleOpenDialog()"
-        >
-          新增
-        </el-button>
-        <el-button
-          v-hasPerm="['sys:config:refresh']"
-          color="#626aef"
-          icon="RefreshLeft"
-          @click="handleRefreshCache"
-        >
-          刷新缓存
-        </el-button>
+    <el-card shadow="hover" class="data-table">
+      <div class="data-table__toolbar">
+        <div class="data-table__toolbar--actions">
+          <el-button
+            v-hasPerm="['sys:config:add']"
+            type="success"
+            icon="plus"
+            @click="handleOpenDialog()"
+          >
+            新增
+          </el-button>
+          <el-button
+            v-hasPerm="['sys:config:refresh']"
+            color="#626aef"
+            icon="RefreshLeft"
+            @click="handleRefreshCache"
+          >
+            刷新缓存
+          </el-button>
+        </div>
       </div>
 
       <el-table
@@ -52,6 +47,8 @@
         v-loading="loading"
         :data="pageData"
         highlight-current-row
+        class="data-table__content"
+        border
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="index" label="序号" width="60" />

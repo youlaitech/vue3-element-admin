@@ -1,59 +1,53 @@
 <template>
   <div class="app-container">
-    <div class="search-bar">
+    <!-- 搜索区域 -->
+    <div class="search-container">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
-        <el-row :gutter="22">
-          <el-col :span="24" :md="12" :lg="6">
-            <el-form-item label="关键字" prop="keywords">
-              <el-input
-                v-model="queryParams.keywords"
-                placeholder="部门名称"
-                @keyup.enter="handleQuery"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24" :md="12" :lg="6">
-            <el-form-item label="部门状态" prop="status">
-              <el-select v-model="queryParams.status" placeholder="全部" clearable>
-                <el-option :value="1" label="正常" />
-                <el-option :value="0" label="禁用" />
-              </el-select>
-            </el-form-item>
-          </el-col>
+        <el-form-item label="关键字" prop="keywords">
+          <el-input
+            v-model="queryParams.keywords"
+            placeholder="部门名称"
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
 
-          <div class="search-form-btn-box">
-            <div class="search-form-btn-box-item">
-              <el-form-item>
-                <el-button class="filter-item" type="primary" icon="search" @click="handleQuery">
-                  搜索
-                </el-button>
-                <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
-              </el-form-item>
-            </div>
-          </div>
-        </el-row>
+        <el-form-item label="部门状态" prop="status">
+          <el-select v-model="queryParams.status" placeholder="全部" clearable style="width: 100px">
+            <el-option :value="1" label="正常" />
+            <el-option :value="0" label="禁用" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item class="search-buttons">
+          <el-button class="filter-item" type="primary" icon="search" @click="handleQuery">
+            搜索
+          </el-button>
+          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
+        </el-form-item>
       </el-form>
     </div>
 
-    <el-card shadow="never">
-      <div class="mb-10px">
-        <el-button
-          v-hasPerm="['sys:dept:add']"
-          type="success"
-          icon="plus"
-          @click="handleOpenDialog()"
-        >
-          新增
-        </el-button>
-        <el-button
-          v-hasPerm="['sys:dept:delete']"
-          type="danger"
-          :disabled="selectIds.length === 0"
-          icon="delete"
-          @click="handleDelete()"
-        >
-          删除
-        </el-button>
+    <el-card shadow="hover" class="data-table">
+      <div class="data-table__toolbar">
+        <div class="data-table__toolbar--actions">
+          <el-button
+            v-hasPerm="['sys:dept:add']"
+            type="success"
+            icon="plus"
+            @click="handleOpenDialog()"
+          >
+            新增
+          </el-button>
+          <el-button
+            v-hasPerm="['sys:dept:delete']"
+            type="danger"
+            :disabled="selectIds.length === 0"
+            icon="delete"
+            @click="handleDelete()"
+          >
+            删除
+          </el-button>
+        </div>
       </div>
 
       <el-table
@@ -62,6 +56,7 @@
         row-key="id"
         default-expand-all
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        class="data-table__content"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />

@@ -1,43 +1,42 @@
 <template>
   <div class="app-container">
-    <div class="search-bar">
+    <!-- 搜索区域 -->
+    <div class="search-container">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-row :gutter="22">
-          <el-col :span="24" :md="12" :lg="6">
-            <el-form-item label="通知标题" prop="title">
-              <el-input
-                v-model="queryParams.title"
-                placeholder="关键字"
-                clearable
-                @keyup.enter="handleQuery()"
-              />
-            </el-form-item>
-          </el-col>
+        <el-form-item label="通知标题" prop="title">
+          <el-input
+            v-model="queryParams.title"
+            placeholder="关键字"
+            clearable
+            @keyup.enter="handleQuery()"
+          />
+        </el-form-item>
 
-          <div class="search-form-btn-box">
-            <div class="search-form-btn-box-item">
-              <el-form-item>
-                <el-button type="primary" @click="handleQuery()">
-                  <template #icon>
-                    <Search />
-                  </template>
-                  搜索
-                </el-button>
-                <el-button @click="handleResetQuery()">
-                  <template #icon>
-                    <Refresh />
-                  </template>
-                  重置
-                </el-button>
-              </el-form-item>
-            </div>
-          </div>
-        </el-row>
+        <el-form-item class="search-buttons">
+          <el-button type="primary" @click="handleQuery()">
+            <template #icon>
+              <Search />
+            </template>
+            搜索
+          </el-button>
+          <el-button @click="handleResetQuery()">
+            <template #icon>
+              <Refresh />
+            </template>
+            重置
+          </el-button>
+        </el-form-item>
       </el-form>
     </div>
 
-    <el-card shadow="never">
-      <el-table ref="dataTableRef" v-loading="loading" :data="pageData" highlight-current-row>
+    <el-card shadow="hover" class="data-table">
+      <el-table
+        ref="dataTableRef"
+        v-loading="loading"
+        :data="pageData"
+        highlight-current-row
+        class="data-table__content"
+      >
         <el-table-column type="index" label="序号" width="60" />
         <el-table-column label="通知标题" prop="title" min-width="200" />
         <el-table-column align="center" label="通知类型" width="150">

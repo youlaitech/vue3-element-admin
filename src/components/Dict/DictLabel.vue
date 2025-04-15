@@ -1,18 +1,9 @@
 <template>
-  <template v-if="Array.isArray(modelValue)">
-    <el-tag
-      v-for="(tag, index) in tagList"
-      :key="index"
-      :type="tag.tagType"
-      :size="tagSize"
-      class="me-1"
-    >
-      {{ tag.label }}
-    </el-tag>
+  <template v-if="tagType">
+    <el-tag :type="tagType" :size="tagSize">{{ label }}</el-tag>
   </template>
   <template v-else>
-    <el-tag v-if="tagType" :type="tagType" :size="tagSize">{{ label }}</el-tag>
-    <span v-else>{{ label }}</span>
+    <span>{{ label }}</span>
   </template>
 </template>
 <script setup lang="ts">
@@ -20,19 +11,15 @@ import { useDictStore } from "@/store";
 
 const props = defineProps({
   code: String, // 字典编码
-  modelValue: [String, Number, Array], // 字典项的值
+  modelValue: [String, Number], // 字典项的值
   size: {
     type: String,
     default: "default", // 标签大小
   },
 });
 const label = ref("");
-type TagType = "success" | "info" | "warning" | "danger" | "primary";
-const tagType = ref<TagType | undefined>(undefined);
+const tagType = ref<"success" | "warning" | "info" | "primary" | "danger" | undefined>(); // 标签类型
 const tagSize = ref<"default" | "large" | "small">(props.size as "default" | "large" | "small"); // 标签大小
-
-// 多个标签时使用
-const tagList = ref<Array<{ label: string; tagType?: TagType }>>([]);
 
 const dictStore = useDictStore();
 /**
@@ -49,27 +36,24 @@ const getLabelAndTagByValue = async (dictCode: string, value: any) => {
   // 查找对应的字典项
   const dictItem = dictItems.find((item) => item.value == value);
   return {
-    label: dictItem?.label || String(value),
-    tagType: dictItem?.tagType as TagType,
+    label: dictItem?.label || "",
+    tagType: dictItem?.tagType,
   };
 };
-
+/**
+ * 更新 label 和 tagType
+ */
 const updateLabelAndTag = async () => {
-  if (!props.code || props.modelValue === undefined || props.modelValue === null) return;
-
-  await dictStore.loadDictItems(props.code);
-
-  if (Array.isArray(props.modelValue)) {
-    const results = await Promise.all(
-      props.modelValue.map((val) => getLabelAndTagByValue(props.code!, val))
-    );
-    tagList.value = results;
-  } else {
-    const result = await getLabelAndTagByValue(props.code, props.modelValue);
-    label.value = result.label;
-    tagType.value = result.tagType as typeof tagType.value;
-  }
+  console.log("updateLabelAndTag", props.code, props.modelValue);
+  if (!props.code || props.modelValue === undefined) return;
+  const { label: newLabel, tagType: newTagType } = await getLabelAndTagByValue(
+    props.code,
+    props.modelValue
+  );
+  label.value = newLabel;
+  tagType.value = newTagType as typeof tagType.value;
 };
+
 watch([() => props.code, () => props.modelValue], updateLabelAndTag);
 
 onMounted(updateLabelAndTag);
