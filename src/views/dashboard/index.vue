@@ -114,7 +114,7 @@
 
               <div class="flex-x-between mt-2">
                 <div class="flex-y-center">
-                  <span class="text-lg">{{ visitStatsData.todayUvCount }}</span>
+                  <span class="text-lg">{{ Math.round(transitionUvCount) }}</span>
                   <span
                     :class="[
                       'text-xs',
@@ -134,7 +134,7 @@
 
               <div class="flex-x-between mt-2 text-sm text-gray">
                 <span>总访客数</span>
-                <span>{{ visitStatsData.totalUvCount }}</span>
+                <span>{{ Math.round(transitionTotalUvCount) }}</span>
               </div>
             </el-card>
           </template>
@@ -174,7 +174,7 @@
 
               <div class="flex-x-between mt-2">
                 <div class="flex-y-center">
-                  <span class="text-lg">{{ visitStatsData.todayPvCount }}</span>
+                  <span class="text-lg">{{ Math.round(transitionPvCount) }}</span>
                   <span
                     :class="[
                       'text-xs',
@@ -194,7 +194,7 @@
 
               <div class="flex-x-between mt-2 text-sm text-gray">
                 <span>总浏览量</span>
-                <span>{{ visitStatsData.totalPvCount }}</span>
+                <span>{{ Math.round(transitionTotalPvCount) }}</span>
               </div>
             </el-card>
           </template>
@@ -288,6 +288,7 @@ import { dayjs } from "element-plus";
 import LogAPI, { VisitStatsVO, VisitTrendVO } from "@/api/system/log.api";
 import { useUserStore } from "@/store/modules/user.store";
 import { formatGrowthRate } from "@/utils";
+import { useTransition } from "@vueuse/core";
 
 interface VersionItem {
   id: string;
@@ -359,6 +360,39 @@ const visitStatsData = ref<VisitStatsVO>({
   pvGrowthRate: 0,
   totalPvCount: 0,
 });
+
+// 数字过渡动画
+const transitionUvCount = useTransition(
+  computed(() => visitStatsData.value.todayUvCount),
+  {
+    duration: 1000,
+    transition: [0.25, 0.1, 0.25, 1.0], // CSS cubic-bezier
+  }
+);
+
+const transitionTotalUvCount = useTransition(
+  computed(() => visitStatsData.value.totalUvCount),
+  {
+    duration: 1200,
+    transition: [0.25, 0.1, 0.25, 1.0],
+  }
+);
+
+const transitionPvCount = useTransition(
+  computed(() => visitStatsData.value.todayPvCount),
+  {
+    duration: 1000,
+    transition: [0.25, 0.1, 0.25, 1.0],
+  }
+);
+
+const transitionTotalPvCount = useTransition(
+  computed(() => visitStatsData.value.totalPvCount),
+  {
+    duration: 1200,
+    transition: [0.25, 0.1, 0.25, 1.0],
+  }
+);
 
 // 访问趋势日期范围（单位：天）
 const visitTrendDateRange = ref(7);
