@@ -2,31 +2,41 @@
   <div class="app-container">
     <div class="search-bar">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-form-item prop="keywords" label="关键字">
-          <el-input
-            v-model="queryParams.keywords"
-            placeholder="日志内容"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item prop="createTime" label="操作时间">
-          <el-date-picker
-            v-model="queryParams.createTime"
-            :editable="false"
-            class="!w-[240px]"
-            type="daterange"
-            range-separator="~"
-            start-placeholder="开始时间"
-            end-placeholder="截止时间"
-            value-format="YYYY-MM-DD"
-          />
-        </el-form-item>
+        <el-row :gutter="22">
+          <el-col :span="24" :md="12" :lg="6">
+            <el-form-item prop="keywords" label="关键字">
+              <el-input
+                v-model="queryParams.keywords"
+                placeholder="日志内容"
+                clearable
+                @keyup.enter="handleQuery"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24" :md="12" :lg="6">
+            <el-form-item prop="createTime" label="操作时间">
+              <el-date-picker
+                v-model="queryParams.createTime"
+                :editable="false"
+                class="!w-[240px]"
+                type="daterange"
+                range-separator="~"
+                start-placeholder="开始时间"
+                end-placeholder="截止时间"
+                value-format="YYYY-MM-DD"
+              />
+            </el-form-item>
+          </el-col>
 
-        <el-form-item>
-          <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
-          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
-        </el-form-item>
+          <div class="search-form-btn-box">
+            <div class="search-form-btn-box-item">
+              <el-form-item>
+                <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
+                <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
+              </el-form-item>
+            </div>
+          </div>
+        </el-row>
       </el-form>
     </div>
 
