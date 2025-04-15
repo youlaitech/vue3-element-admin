@@ -10,46 +10,51 @@
       <!-- 用户列表 -->
       <el-col :lg="20" :xs="24">
         <div class="search-bar">
-          <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-            <el-form-item label="关键字" prop="keywords">
-              <el-input
-                v-model="queryParams.keywords"
-                placeholder="用户名/昵称/手机号"
-                clearable
-                style="width: 200px"
-                @keyup.enter="handleQuery"
-              />
-            </el-form-item>
+          <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
+            <el-row :gutter="22">
+              <el-col :span="24" :md="12" :lg="6">
+                <el-form-item label="关键字" prop="keywords">
+                  <el-input
+                    v-model="queryParams.keywords"
+                    placeholder="用户名/昵称/手机号"
+                    clearable
+                    @keyup.enter="handleQuery"
+                  />
+                </el-form-item>
+              </el-col>
 
-            <el-form-item label="状态" prop="status">
-              <el-select
-                v-model="queryParams.status"
-                placeholder="全部"
-                clearable
-                class="!w-[100px]"
-              >
-                <el-option label="正常" :value="1" />
-                <el-option label="禁用" :value="0" />
-              </el-select>
-            </el-form-item>
+              <el-col :span="24" :md="12" :lg="6">
+                <el-form-item label="状态" prop="status">
+                  <el-select v-model="queryParams.status" placeholder="全部" clearable>
+                    <el-option label="正常" :value="1" />
+                    <el-option label="禁用" :value="0" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
 
-            <el-form-item label="创建时间">
-              <el-date-picker
-                v-model="queryParams.createTime"
-                :editable="false"
-                class="!w-[240px]"
-                type="daterange"
-                range-separator="~"
-                start-placeholder="开始时间"
-                end-placeholder="截止时间"
-                value-format="YYYY-MM-DD"
-              />
-            </el-form-item>
+              <el-col :span="24" :md="12" :lg="6">
+                <el-form-item label="创建时间">
+                  <el-date-picker
+                    v-model="queryParams.createTime"
+                    :editable="false"
+                    type="daterange"
+                    range-separator="~"
+                    start-placeholder="开始时间"
+                    end-placeholder="截止时间"
+                    value-format="YYYY-MM-DD"
+                  />
+                </el-form-item>
+              </el-col>
 
-            <el-form-item>
-              <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
-              <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
-            </el-form-item>
+              <div class="search-form-btn-box">
+                <div class="search-form-btn-box-item">
+                  <el-form-item>
+                    <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
+                    <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
+                  </el-form-item>
+                </div>
+              </div>
+            </el-row>
           </el-form>
         </div>
 

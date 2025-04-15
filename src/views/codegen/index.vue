@@ -1,30 +1,38 @@
 <template>
   <div class="app-container">
     <div class="search-bar">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-form-item prop="keywords" label="关键字">
-          <el-input
-            v-model="queryParams.keywords"
-            placeholder="表名"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
+      <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
+        <el-row :gutter="22">
+          <el-col :span="24" :md="12" :lg="6">
+            <el-form-item prop="keywords" label="关键字">
+              <el-input
+                v-model="queryParams.keywords"
+                placeholder="表名"
+                clearable
+                @keyup.enter="handleQuery"
+              />
+            </el-form-item>
+          </el-col>
 
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">
-            <template #icon>
-              <Search />
-            </template>
-            搜索
-          </el-button>
-          <el-button @click="handleResetQuery">
-            <template #icon>
-              <Refresh />
-            </template>
-            重置
-          </el-button>
-        </el-form-item>
+          <div class="search-form-btn-box">
+            <div class="search-form-btn-box-item">
+              <el-form-item>
+                <el-button type="primary" @click="handleQuery">
+                  <template #icon>
+                    <Search />
+                  </template>
+                  搜索
+                </el-button>
+                <el-button @click="handleResetQuery">
+                  <template #icon>
+                    <Refresh />
+                  </template>
+                  重置
+                </el-button>
+              </el-form-item>
+            </div>
+          </div>
+        </el-row>
       </el-form>
     </div>
 

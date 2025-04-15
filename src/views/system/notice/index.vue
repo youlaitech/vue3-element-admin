@@ -1,31 +1,43 @@
 <template>
   <div class="app-container">
     <div class="search-bar">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-suffix=":">
-        <el-form-item label="标题" prop="title">
-          <el-input
-            v-model="queryParams.title"
-            placeholder="标题"
-            clearable
-            @keyup.enter="handleQuery()"
-          />
-        </el-form-item>
-        <el-form-item label="发布状态" prop="publishStatus">
-          <el-select
-            v-model="queryParams.publishStatus"
-            class="!w-[100px]"
-            clearable
-            placeholder="全部"
-          >
-            <el-option :value="0" label="未发布" />
-            <el-option :value="1" label="已发布" />
-            <el-option :value="-1" label="已撤回" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
-          <el-button icon="refresh" @click="handleResetQuery()">重置</el-button>
-        </el-form-item>
+      <el-form
+        ref="queryFormRef"
+        :model="queryParams"
+        :inline="true"
+        label-suffix=":"
+        label-width="auto"
+      >
+        <el-row :gutter="22">
+          <el-col :span="24" :md="12" :lg="6">
+            <el-form-item label="标题" prop="title">
+              <el-input
+                v-model="queryParams.title"
+                placeholder="标题"
+                clearable
+                @keyup.enter="handleQuery()"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24" :md="12" :lg="6">
+            <el-form-item label="发布状态" prop="publishStatus">
+              <el-select v-model="queryParams.publishStatus" clearable placeholder="全部">
+                <el-option :value="0" label="未发布" />
+                <el-option :value="1" label="已发布" />
+                <el-option :value="-1" label="已撤回" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <div class="search-form-btn-box">
+            <div class="search-form-btn-box-item">
+              <el-form-item>
+                <el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
+                <el-button icon="refresh" @click="handleResetQuery()">重置</el-button>
+              </el-form-item>
+            </div>
+          </div>
+        </el-row>
       </el-form>
     </div>
 

@@ -5,12 +5,34 @@
 }
 
 .search-bar {
-  padding: 18px 0 0 10px;
-  margin-bottom: 10px;
+  padding: 18px 18px 0;
+  margin-bottom: 15px;
   background-color: var(--el-bg-color-overlay);
   border: 1px solid var(--el-border-color-light);
   border-radius: 4px;
   box-shadow: var(--el-box-shadow-light);
+
+  //搜索表单按钮组全局样式
+  .search-form-btn-box {
+    flex: 1;
+    padding-right: 13px;
+
+    .search-form-btn-box-item {
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      width: 100%;
+    }
+  }
+
+  :deep(.el-form-item) {
+    width: 100% !important;
+  }
+
+  .el-form--inline .el-form-item {
+    display: flex !important;
+    margin-right: 0px !important;
+  }
 }
 
 .table-container > .el-card__header {
