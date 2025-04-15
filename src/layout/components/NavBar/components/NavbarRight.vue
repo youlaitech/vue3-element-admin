@@ -107,10 +107,11 @@ function logout() {
   justify-content: center;
 
   & > * {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-width: 40px;
     height: $navbar-height;
-    line-height: $navbar-height;
     color: var(--el-text-color);
     text-align: center;
     cursor: pointer;
@@ -141,6 +142,12 @@ function logout() {
 .layout-top .navbar__right--white > *,
 .layout-mix .navbar__right--white > * {
   color: #fff;
+
+  // 强制所有svg图标为白色（包括通知图标）
+  :deep(svg) {
+    color: #fff;
+    fill: #fff;
+  }
 }
 
 .dark .navbar__right > *:hover {
