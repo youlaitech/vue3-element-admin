@@ -26,7 +26,7 @@
   }
 }
 
-// 表格区域样式 (BEM规范)
+// 表格区域样式
 .data-table {
   margin-bottom: 16px;
 
@@ -61,19 +61,4 @@
   gap: 8px;
   justify-content: flex-end;
   padding-top: 16px;
-}
-
-// 搜索表单固定宽度项
-.fixed-width-item {
-  &-sm {
-    width: 100px !important;
-  }
-
-  &-md {
-    width: 150px !important;
-  }
-
-  &-lg {
-    width: 200px !important;
-  }
 }

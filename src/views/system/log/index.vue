@@ -16,12 +16,12 @@
           <el-date-picker
             v-model="queryParams.createTime"
             :editable="false"
-            class="fixed-width-item-lg"
             type="daterange"
             range-separator="~"
             start-placeholder="开始时间"
             end-placeholder="截止时间"
             value-format="YYYY-MM-DD"
+            style="width: 200px"
           />
         </el-form-item>
 
