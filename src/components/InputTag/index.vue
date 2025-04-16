@@ -1,26 +1,29 @@
 <template>
-  <div class="flex-y-center gap-2">
-    <el-tag
-      v-for="tag in tags"
-      :key="tag"
-      closable
-      :disable-transitions="false"
-      v-bind="config.tagAttrs"
-      @close="handleClose(tag)"
-    >
-      {{ tag }}
-    </el-tag>
-    <el-input
-      v-if="inputVisible"
-      ref="inputRef"
-      v-model.trim="inputValue"
-      @keyup.enter.stop.prevent="handleInputConfirm"
-      @blur.stop.prevent="handleInputConfirm"
-    />
-    <el-button v-else v-bind="config.buttonAttrs" @click="showInput">
-      {{ config.buttonAttrs.btnText ? config.buttonAttrs.btnText : "+ New Tag" }}
-    </el-button>
-  </div>
+  <el-scrollbar>
+    <div class="flex-y-center gap-2">
+      <el-tag
+        v-for="tag in tags"
+        :key="tag"
+        closable
+        :disable-transitions="false"
+        v-bind="config.tagAttrs"
+        @close="handleClose(tag)"
+      >
+        {{ tag }}
+      </el-tag>
+      <el-input
+        v-if="inputVisible"
+        ref="inputRef"
+        v-model.trim="inputValue"
+        style="min-width: 100px"
+        @keyup.enter.stop.prevent="handleInputConfirm"
+        @blur.stop.prevent="handleInputConfirm"
+      />
+      <el-button v-else v-bind="config.buttonAttrs" @click="showInput">
+        {{ config.buttonAttrs.btnText ? config.buttonAttrs.btnText : "+ New Tag" }}
+      </el-button>
+    </div>
+  </el-scrollbar>
 </template>
 <script setup lang="ts">
 import type { InputInstance } from "element-plus";

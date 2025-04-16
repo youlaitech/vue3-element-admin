@@ -1,6 +1,4 @@
 import { createApp } from "vue";
-// TODO::不引入el-input-tag样式会丢失
-import "element-plus/es/components/input-tag/style/css";
 import App from "./App.vue";
 import setupPlugins from "@/plugins";
 

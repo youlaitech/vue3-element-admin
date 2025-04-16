@@ -19,6 +19,7 @@ declare module "vue" {
     ElBreadcrumbItem: (typeof import("element-plus/es"))["ElBreadcrumbItem"];
     ElButton: (typeof import("element-plus/es"))["ElButton"];
     ElCard: (typeof import("element-plus/es"))["ElCard"];
+    ElCascader: (typeof import("element-plus/es"))["ElCascader"];
     ElCheckbox: (typeof import("element-plus/es"))["ElCheckbox"];
     ElCheckboxGroup: (typeof import("element-plus/es"))["ElCheckboxGroup"];
     ElCol: (typeof import("element-plus/es"))["ElCol"];
@@ -56,6 +57,7 @@ declare module "vue" {
     ElTableColumn: (typeof import("element-plus/es"))["ElTableColumn"];
     ElTag: (typeof import("element-plus/es"))["ElTag"];
     ElText: (typeof import("element-plus/es"))["ElText"];
+    ElTimeSelect: (typeof import("element-plus/es"))["ElTimeSelect"];
     ElTooltip: (typeof import("element-plus/es"))["ElTooltip"];
     ElTree: (typeof import("element-plus/es"))["ElTree"];
     ElTreeSelect: (typeof import("element-plus/es"))["ElTreeSelect"];

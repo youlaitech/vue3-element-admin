@@ -74,6 +74,7 @@
       </page-modal>
     </template>
     <template v-else>
+      <page-search ref="searchRef" :search-config="searchConfig2" @reset-click="handleResetClick" />
       <page-content
         ref="contentRef"
         :content-config="contentConfig2"
@@ -100,6 +101,7 @@ import contentConfig from "./config/content";
 import contentConfig2 from "./config/content2";
 import editModalConfig from "./config/edit";
 import searchConfig from "./config/search";
+import searchConfig2 from "./config/search2";
 
 const {
   searchRef,

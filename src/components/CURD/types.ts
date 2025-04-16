@@ -13,6 +13,7 @@ import type PageContent from "./PageContent.vue";
 import type PageForm from "./PageForm.vue";
 import type PageModal from "./PageModal.vue";
 import type PageSearch from "./PageSearch.vue";
+import { CSSProperties } from "vue";
 
 export type PageSearchInstance = InstanceType<typeof PageSearch>;
 export type PageContentInstance = InstanceType<typeof PageContent>;
@@ -71,9 +72,11 @@ export interface ISearchConfig {
   // 默认展示的表单项数量(默认：3)
   showNumber?: number;
   // 卡片属性
-  cardAttrs?: Partial<CardProps>;
+  cardAttrs?: Partial<CardProps> & { style?: CSSProperties };
+  // form组件属性
+  form?: IForm;
   // 自适应网格布局(使用时表单不要添加 style: { width: "200px" })
-  grid?: boolean;
+  grid?: boolean | "left" | "right";
 }
 
 export interface IContentConfig<T = any> {
