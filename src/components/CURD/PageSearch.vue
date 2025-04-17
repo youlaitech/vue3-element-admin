@@ -1,5 +1,5 @@
 <template>
-  <div v-show="visible" style="margin-bottom: 12px" v-bind="cardAttrs">
+  <div v-show="visible" v-bind="{ style: { 'margin-bottom': '12px' }, ...cardAttrs }">
     <el-card
       v-hasPerm="searchConfig?.pageName ? `${searchConfig.pageName}:query` : '*:*:*'"
       v-bind="cardAttrs"
@@ -12,16 +12,15 @@
             :prop="item.prop"
           >
             <!-- Label -->
-            <template v-if="item?.tips" #label>
+            <template #label>
               <span class="flex-y-center">
-                {{ item.label }}
-                <el-tooltip v-bind="getTooltipProps(item.tips)">
+                {{ item?.label || "" }}
+                <el-tooltip v-if="item?.tips" v-bind="getTooltipProps(item.tips)">
                   <QuestionFilled class="w-4 h-4 mx-1" />
                 </el-tooltip>
-                {{ searchConfig.colon ? ":" : "" }}
+                <span v-if="searchConfig.colon" class="ml-0.5">:</span>
               </span>
             </template>
-            <template v-else #label>{{ item.label }} {{ searchConfig.colon ? ":" : "" }}</template>
 
             <el-cascader
               v-if="item.type === 'cascader'"
@@ -44,6 +43,7 @@
             </component>
           </el-form-item>
         </template>
+
         <el-form-item :class="{ 'col-[auto/-1] justify-self-end': searchConfig?.grid === 'right' }">
           <el-button icon="search" type="primary" @click="handleQuery">搜索</el-button>
           <el-button icon="refresh" @click="handleReset">重置</el-button>
@@ -61,9 +61,9 @@
 </template>
 
 <script setup lang="ts">
-import type { IObject, ISearchConfig, ComponentType } from "./types";
+import type { IObject, IForm, ISearchConfig, ISearchComponent } from "./types";
 import { ArrowUp, ArrowDown } from "@element-plus/icons-vue";
-import { type FormInstance } from "element-plus";
+import type { FormInstance, ElTooltipProps } from "element-plus";
 import InputTag from "@/components/InputTag/index.vue";
 
 // 定义接收的属性
@@ -74,7 +74,7 @@ const emit = defineEmits<{
   resetClick: [queryParams: IObject];
 }>();
 // 组件映射表
-const componentMap = new Map<ComponentType, Component>([
+const componentMap = new Map<ISearchComponent, Component>([
   /* eslint-disable */
   // @ts-ignore
   ["input", markRaw(ElInput)], // @ts-ignore
@@ -108,7 +108,7 @@ const cardAttrs = computed<IObject>(() => {
   return { shadow: "never", ...props.searchConfig?.cardAttrs };
 });
 // 表单组件自定义属性（label位置、宽度、对齐方式等）
-const formAttrs = computed(() => {
+const formAttrs = computed<IForm>(() => {
   return { inline: true, ...props.searchConfig?.form };
 });
 // 是否使用自适应网格布局
@@ -120,7 +120,7 @@ const isGrid = computed(() =>
 // 搜索表单数据
 const queryParams = reactive<IObject>({});
 // 获取tooltip的属性
-const getTooltipProps = (tips: any) => {
+const getTooltipProps = (tips: string | Partial<ElTooltipProps>) => {
   return typeof tips === "string" ? { content: tips } : tips;
 };
 

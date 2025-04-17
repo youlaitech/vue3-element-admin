@@ -1,14 +1,6 @@
-import type {
-  DialogProps,
-  DrawerProps,
-  FormItemRule,
-  FormProps,
-  PaginationProps,
-  TableProps,
-  ColProps,
-  ButtonType,
-  CardProps,
-} from "element-plus";
+import type { DialogProps, DrawerProps, FormItemRule, PaginationProps } from "element-plus";
+import type { FormProps, TableProps, ColProps, ButtonProps, CardProps } from "element-plus";
+import type { ButtonType, ElTooltipProps } from "element-plus";
 import type PageContent from "./PageContent.vue";
 import type PageForm from "./PageForm.vue";
 import type PageModal from "./PageModal.vue";
@@ -22,24 +14,31 @@ export type PageFormInstance = InstanceType<typeof PageForm>;
 
 export type IObject = Record<string, any>;
 
+type DataComponent = "date-picker" | "time-picker" | "time-select" | "custom-tag" | "input-tag";
+type InputComponent = "input" | "select" | "input-number" | "cascader" | "tree-select";
+type OtherComponent = "text" | "radio" | "checkbox" | "switch" | "custom";
+export type ISearchComponent = DataComponent | InputComponent;
+export type IComponentType = DataComponent | InputComponent | OtherComponent;
+
+type ToolbarLeft = "add" | "delete" | "import" | "export";
+type ToolbarRight = "refresh" | "filter" | "imports" | "exports" | "search";
+type ToolbarTable = "edit" | "view" | "delete";
+type IToolsButton = {
+  name?: string; // 按钮名称
+  text?: string; // 按钮文本
+  icon?: string; // 按钮图标
+  type?: ButtonType; // 按钮类型
+  auth?: Array<string> | string; // 按钮权限
+  attrs?: Partial<ButtonProps>; // 按钮属性
+};
+export type IToolsDefault = ToolbarLeft | ToolbarRight | ToolbarTable | IToolsButton;
+
 export interface IOperatData {
   name: string;
   row: IObject;
   column: IObject;
   $index: number;
 }
-
-export type ComponentType =
-  | "input"
-  | "select"
-  | "input-number"
-  | "date-picker"
-  | "time-picker"
-  | "time-select"
-  | "tree-select"
-  | "input-tag"
-  | "custom-tag"
-  | "cascader";
 
 export interface ISearchConfig {
   // 页面名称(参与组成权限标识,如sys:user:xxx),不填则不进行权限校验
@@ -49,11 +48,11 @@ export interface ISearchConfig {
   // 表单项(默认：[])
   formItems?: Array<{
     // 组件类型(如input,select等)
-    type?: ComponentType;
+    type?: ISearchComponent;
     // 标签文本
     label?: string;
     // 标签提示
-    tips?: string | IObject;
+    tips?: string | Partial<ElTooltipProps>;
     // 键名
     prop: string;
     // 组件属性(input-tag组件支持join,btnText,size属性)
@@ -63,7 +62,7 @@ export interface ISearchConfig {
     // 可选项(适用于select组件)
     options?: Array<{ label: string; value: any }>;
     // 组件事件
-    events?: Record<string, (...args: any[]) => void>;
+    events?: Record<string, (...args: any) => void>;
     // 初始化数据函数扩展
     initFn?: (formItem: IObject) => void;
   }>;
@@ -81,7 +80,7 @@ export interface ISearchConfig {
 
 export interface IContentConfig<T = any> {
   // 页面名称(参与组成权限标识,如sys:user:xxx)
-  pageName: string;
+  pageName?: string;
   // table组件属性
   table?: Omit<TableProps<any>, "data">;
   // 分页组件位置(默认：left)
@@ -128,34 +127,10 @@ export interface IContentConfig<T = any> {
   importsAction?: (data: IObject[]) => Promise<any>;
   // 主键名(默认为id)
   pk?: string;
-  // 表格工具栏(默认支持add,delete,export,也可自定义)
-  toolbar?: Array<
-    | "add"
-    | "delete"
-    | "import"
-    | "export"
-    | {
-        auth: string;
-        icon?: string;
-        name: string;
-        text: string;
-        type?: ButtonType;
-      }
-  >;
-  // 表格工具栏右侧图标
-  defaultToolbar?: Array<
-    | "refresh"
-    | "filter"
-    | "imports"
-    | "exports"
-    | "search"
-    | {
-        name: string;
-        icon: string;
-        title?: string;
-        auth?: string;
-      }
-  >;
+  // 表格工具栏(默认:add,delete,export,也可自定义)
+  toolbar?: Array<ToolbarLeft | IToolsButton>;
+  // 表格工具栏右侧图标(默认:refresh,filter,imports,exports,search)
+  defaultToolbar?: Array<ToolbarRight | IToolsButton>;
   // table组件列属性(额外的属性templet,operat,slotName)
   cols: Array<{
     type?: "default" | "selection" | "index" | "expand";
@@ -197,18 +172,7 @@ export interface IContentConfig<T = any> {
     // date模板相关参数
     dateFormat?: string;
     // tool模板相关参数
-    operat?: Array<
-      | "edit"
-      | "delete"
-      | {
-          auth?: string;
-          icon?: string;
-          name: string;
-          text: string;
-          type?: ButtonType;
-          render?: (row: IObject) => boolean;
-        }
-    >;
+    operat?: Array<ToolbarTable | IToolsButton>;
     // filter值拼接符
     filterJoin?: string;
     [key: string]: any;
@@ -243,17 +207,7 @@ export type IForm = Partial<Omit<FormProps, "model" | "rules">>;
 // 表单项
 export type IFormItems<T = any> = Array<{
   // 组件类型(如input,select,radio,custom等，默认input)
-  type?:
-    | "input"
-    | "select"
-    | "radio"
-    | "switch"
-    | "checkbox"
-    | "tree-select"
-    | "date-picker"
-    | "input-number"
-    | "text"
-    | "custom";
+  type?: IComponentType;
   // 组件属性
   attrs?: IObject;
   // 组件可选项(适用于select,radio,checkbox组件)
