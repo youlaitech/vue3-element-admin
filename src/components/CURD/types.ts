@@ -1,6 +1,6 @@
 import type { DialogProps, DrawerProps, FormItemRule, PaginationProps } from "element-plus";
 import type { FormProps, TableProps, ColProps, ButtonProps, CardProps } from "element-plus";
-import type { ButtonType, ElTooltipProps } from "element-plus";
+import type { ElTooltipProps } from "element-plus";
 import type PageContent from "./PageContent.vue";
 import type PageForm from "./PageForm.vue";
 import type PageModal from "./PageModal.vue";
@@ -24,12 +24,11 @@ type ToolbarLeft = "add" | "delete" | "import" | "export";
 type ToolbarRight = "refresh" | "filter" | "imports" | "exports" | "search";
 type ToolbarTable = "edit" | "view" | "delete";
 type IToolsButton = {
-  name?: string; // 按钮名称
+  name: string; // 按钮名称
   text?: string; // 按钮文本
-  icon?: string; // 按钮图标
-  type?: ButtonType; // 按钮类型
   auth?: Array<string> | string; // 按钮权限
-  attrs?: Partial<ButtonProps>; // 按钮属性
+  attrs?: Partial<ButtonProps> & { style?: CSSProperties }; // 按钮属性
+  render?: (row: IObject) => boolean; // 条件渲染
 };
 export type IToolsDefault = ToolbarLeft | ToolbarRight | ToolbarTable | IToolsButton;
 

@@ -4,7 +4,7 @@ import type { UserPageQuery } from "@/api/system/user.api";
 import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig<UserPageQuery> = {
-  pageName: "sys:user",
+  // pageName: "sys:demo", // 不写不进行按钮权限校验
   table: {
     border: true,
     highlightCurrentRow: true,
@@ -14,6 +14,12 @@ const contentConfig: IContentConfig<UserPageQuery> = {
     layout: "prev,pager,next,jumper,total,sizes",
     pageSize: 20,
     pageSizes: [10, 20, 30, 50],
+  },
+  parseData(res) {
+    return {
+      total: res.total,
+      list: res.list,
+    };
   },
   indexAction: function (params) {
     return UserAPI.getPage(params);
@@ -43,10 +49,9 @@ const contentConfig: IContentConfig<UserPageQuery> = {
     "export",
     {
       name: "custom1",
-      icon: "plus",
       text: "自定义1",
-      auth: "import",
-      type: "info",
+      auth: "custom",
+      attrs: { icon: "plus", color: "#626AEF" },
     },
   ],
   defaultToolbar: ["refresh", "filter", "imports", "exports", "search"],
@@ -105,15 +110,22 @@ const contentConfig: IContentConfig<UserPageQuery> = {
       templet: "tool",
       operat: [
         {
-          icon: "Document",
           name: "detail",
           text: "详情",
+          attrs: { icon: "Document" },
         },
         {
           name: "reset_pwd",
-          auth: "password:reset",
-          icon: "refresh-left",
           text: "重置密码",
+          auth: "password:reset",
+          attrs: {
+            icon: "refresh-left",
+            // color: "#626AEF", // 使用 text 属性，颜色不生效
+            style: {
+              "--el-button-text-color": "#626AEF",
+              "--el-button-hover-link-text-color": "#9197f4",
+            },
+          },
         },
         "edit",
         "delete",
