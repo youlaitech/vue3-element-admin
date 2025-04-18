@@ -12,7 +12,12 @@
             <template #label>
               <span class="flex-y-center">
                 {{ item?.label || "" }}
-                <el-tooltip v-if="item?.tips" v-bind="getTooltipProps(item.tips)">
+                <el-tooltip
+                  v-if="item?.tips"
+                  v-bind="
+                    typeof item.tips === 'string' ? { content: item.tips } : (item.tips as any)
+                  "
+                >
                   <QuestionFilled class="w-4 h-4 mx-1" />
                 </el-tooltip>
                 <span v-if="searchConfig.colon" class="ml-0.5">:</span>
@@ -60,7 +65,7 @@
 <script setup lang="ts">
 import type { IObject, IForm, ISearchConfig, ISearchComponent } from "./types";
 import { ArrowUp, ArrowDown } from "@element-plus/icons-vue";
-import type { FormInstance, ElTooltipProps } from "element-plus";
+import type { FormInstance } from "element-plus";
 import InputTag from "@/components/InputTag/index.vue";
 
 // 定义接收的属性
@@ -116,10 +121,6 @@ const isGrid = computed(() =>
 );
 // 搜索表单数据
 const queryParams = reactive<IObject>({});
-// 获取tooltip的属性
-const getTooltipProps = (tips: string | Partial<ElTooltipProps>) => {
-  return typeof tips === "string" ? { content: tips } : tips;
-};
 
 onMounted(() => {
   formItems.forEach((item) => {
