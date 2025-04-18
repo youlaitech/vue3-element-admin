@@ -2,7 +2,7 @@ import UserAPI, { type UserForm } from "@/api/system/user.api";
 import type { IModalConfig } from "@/components/CURD/types";
 
 const modalConfig: IModalConfig<UserForm> = {
-  pageName: "sys:user",
+  permPrefix: "sys:user",
   dialog: {
     title: "新增用户",
     width: 800,

@@ -2,7 +2,7 @@ import DeptAPI from "@/api/system/dept.api";
 import type { ISearchConfig } from "@/components/CURD/types";
 
 const searchConfig: ISearchConfig = {
-  pageName: "sys:user",
+  permPrefix: "sys:user",
   formItems: [
     {
       tips: "支持模糊搜索",

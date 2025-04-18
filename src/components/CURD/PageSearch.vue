@@ -1,9 +1,6 @@
 <template>
   <div v-show="visible" v-bind="{ style: { 'margin-bottom': '12px' }, ...cardAttrs }">
-    <el-card
-      v-hasPerm="searchConfig?.pageName ? `${searchConfig.pageName}:query` : '*:*:*'"
-      v-bind="cardAttrs"
-    >
+    <el-card v-bind="cardAttrs">
       <el-form ref="queryFormRef" :model="queryParams" v-bind="formAttrs" :class="isGrid">
         <template v-for="(item, index) in formItems" :key="item.prop">
           <el-form-item

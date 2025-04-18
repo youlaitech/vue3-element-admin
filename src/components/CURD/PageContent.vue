@@ -6,7 +6,7 @@
       <div class="toolbar-left flex gap-y-2.5 gap-x-2 md:gap-x-3 flex-wrap">
         <template v-for="btn in toolbarLeftBtn">
           <el-button
-            v-hasPerm="authName ? `${authName}:${btn.auth}` : '*:*:*'"
+            v-hasPerm="btn.perm ?? '*:*:*'"
             :disabled="btn.name === 'delete' && removeIds.length === 0"
             v-bind="btn.attrs"
             @click="handleToolbar(btn.name)"
@@ -30,7 +30,7 @@
           </el-popover>
           <el-button
             v-else
-            v-hasPerm="authName ? `${authName}:${btn.auth}` : '*:*:*'"
+            v-hasPerm="btn.perm ?? '*:*:*'"
             v-bind="btn.attrs"
             @click="handleToolbar(btn.name)"
           ></el-button>
@@ -100,7 +100,7 @@
                   :active-text="col.activeText ?? ''"
                   :inactive-text="col.inactiveText ?? ''"
                   :validate-event="false"
-                  :disabled="!hasAuth(`${contentConfig.pageName}:modify`)"
+                  :disabled="!hasButtonPerm(col.prop)"
                   @change="
                     pageData.length > 0 && handleModify(col.prop, scope.row[col.prop], scope.row)
                   "
@@ -113,7 +113,7 @@
                 <el-input
                   v-model="scope.row[col.prop]"
                   :type="col.inputType ?? 'text'"
-                  :disabled="!hasAuth(`${contentConfig.pageName}:modify`)"
+                  :disabled="!hasButtonPerm(col.prop)"
                   @blur="handleModify(col.prop, scope.row[col.prop], scope.row)"
                 />
               </template>
@@ -157,7 +157,7 @@
               <template v-for="btn in tableToolbarBtn">
                 <el-button
                   v-if="btn.render === undefined || btn.render(scope.row)"
-                  v-hasPerm="authName ? `${authName}:${btn.auth}` : '*:*:*'"
+                  v-hasPerm="btn.perm ?? '*:*:*'"
                   v-bind="btn.attrs"
                   @click="
                     handleOperat({
@@ -330,8 +330,9 @@ import {
   type TableInstance,
 } from "element-plus";
 import ExcelJS from "exceljs";
-import { reactive, ref } from "vue";
-import type { IContentConfig, IObject, IOperatData, IToolsDefault } from "./types";
+import { reactive, ref, computed } from "vue";
+import type { IContentConfig, IObject, IOperatData } from "./types";
+import type { IToolsButton } from "./types";
 
 // 定义接收的属性
 const props = defineProps<{ contentConfig: IContentConfig }>();
@@ -346,48 +347,123 @@ const emit = defineEmits<{
   filterChange: [data: IObject];
 }>();
 
-// 主键
-const pk = props.contentConfig.pk ?? "id";
+// 按钮文本映射
+const BUTTONS_TEXT: Record<string, string> = {
+  add: "新增",
+  delete: "删除",
+  import: "导入",
+  export: "导出",
+  refresh: "刷新",
+  filter: "筛选列",
+  search: "搜索",
+  imports: "批量导入",
+  exports: "批量导出",
+  view: "查看",
+  edit: "编辑",
+};
+
+// 按钮权限映射
+const AUTH_MAP: Record<string, string> = {
+  add: "add",
+  delete: "delete",
+  import: "import",
+  export: "export",
+  refresh: "*:*:*",
+  filter: "*:*:*",
+  search: "search",
+  imports: "imports",
+  exports: "exports",
+  view: "view",
+  edit: "edit",
+};
+
+// 按钮图标映射
+const BUTTONS_ICON: Record<string, string> = {
+  add: "plus",
+  delete: "delete",
+  import: "upload",
+  export: "download",
+  refresh: "refresh",
+  filter: "operation",
+  search: "search",
+  imports: "upload",
+  exports: "download",
+  view: "view",
+  edit: "edit",
+};
+
 // 表格工具栏按钮配置
 const config = computed(() => props.contentConfig);
-const authName = computed(() => props.contentConfig.pageName);
 const buttonConfig = reactive<Record<string, IObject>>({
-  add: { text: "新增", attrs: { icon: "plus", type: "success" }, auth: "add" },
-  delete: { text: "删除", attrs: { icon: "delete", type: "danger" }, auth: "delete" },
-  import: { text: "导入", attrs: { icon: "upload", type: "" }, auth: "import" },
-  export: { text: "导出", attrs: { icon: "download", type: "" }, auth: "export" },
-  refresh: { text: "刷新", attrs: { icon: "refresh", type: "" }, auth: "*:*:*" },
-  filter: { text: "筛选列", attrs: { icon: "operation", type: "" }, auth: "*:*:*" },
-  search: { text: "搜索", attrs: { icon: "search", type: "" }, auth: "search" },
-  imports: { text: "批量导入", attrs: { icon: "upload", type: "" }, auth: "imports" },
-  exports: { text: "批量导出", attrs: { icon: "download", type: "" }, auth: "exports" },
-  view: { text: "查看", attrs: { icon: "view", type: "primary" }, auth: "view" },
-  edit: { text: "编辑", attrs: { icon: "edit", type: "primary" }, auth: "edit" },
+  add: { text: "新增", attrs: { icon: "plus", type: "success" }, perm: "add" },
+  delete: { text: "删除", attrs: { icon: "delete", type: "danger" }, perm: "delete" },
+  import: { text: "导入", attrs: { icon: "upload", type: "" }, perm: "import" },
+  export: { text: "导出", attrs: { icon: "download", type: "" }, perm: "export" },
+  refresh: { text: "刷新", attrs: { icon: "refresh", type: "" }, perm: "*:*:*" },
+  filter: { text: "筛选列", attrs: { icon: "operation", type: "" }, perm: "*:*:*" },
+  search: { text: "搜索", attrs: { icon: "search", type: "" }, perm: "search" },
+  imports: { text: "批量导入", attrs: { icon: "upload", type: "" }, perm: "imports" },
+  exports: { text: "批量导出", attrs: { icon: "download", type: "" }, perm: "exports" },
+  view: { text: "查看", attrs: { icon: "view", type: "primary" }, perm: "view" },
+  edit: { text: "编辑", attrs: { icon: "edit", type: "primary" }, perm: "edit" },
 });
-const createToolbar = (toolbar: Array<IToolsDefault>, attr = {}) => {
+
+// 主键
+const pk = props.contentConfig.pk ?? "id";
+// 权限名称前缀
+const authPrefix = computed(() => props.contentConfig.permPrefix);
+
+// 获取按钮权限标识
+function getButtonPerm(action: string): string | null {
+  // 如果action已经包含完整路径(包含冒号)，则直接使用
+  if (action.includes(":")) {
+    return action;
+  }
+  // 否则使用权限前缀组合
+  return authPrefix.value ? `${authPrefix.value}:${action}` : null;
+}
+
+// 检查是否有权限
+function hasButtonPerm(action: string): boolean {
+  const perm = getButtonPerm(action);
+  // 如果没有设置权限标识，则默认具有权限
+  if (!perm) return true;
+  return hasAuth(perm);
+}
+
+// 创建工具栏按钮
+function createToolbar(toolbar: Array<string | IToolsButton>, attr = {}) {
   return toolbar.map((item) => {
     const isString = typeof item === "string";
     return {
       name: isString ? item : item?.name || "",
       text: isString ? buttonConfig[item].text : item?.text,
       attrs: {
-        type: isString ? buttonConfig[item].type : "",
-        icon: isString ? buttonConfig[item].icon : "",
-        title: isString ? buttonConfig[item].text : item?.text,
         ...attr,
         ...(isString ? buttonConfig[item].attrs : item?.attrs),
       },
       render: isString ? undefined : (item?.render ?? undefined),
-      auth: isString ? buttonConfig[item].auth : (item?.auth ?? "*:*:*"),
+      perm: isString
+        ? getButtonPerm(buttonConfig[item].perm)
+        : item?.perm
+          ? getButtonPerm(item.perm as string)
+          : "*:*:*",
     };
   });
-};
-// 表格左侧工具栏
-const toolbarLeft = props.contentConfig?.toolbar ?? ["add", "delete"];
-const toolbarLeftBtn = createToolbar(toolbarLeft, {});
-// 表格右侧工具栏
-const toolbarRight = props.contentConfig?.defaultToolbar ?? ["refresh", "filter"];
-const toolbarRightBtn = createToolbar(toolbarRight, { circle: true });
+}
+
+// 左侧工具栏按钮
+const toolbarLeftBtn = computed(() => {
+  if (!config.value.toolbar || config.value.toolbar.length === 0) return [];
+  return createToolbar(config.value.toolbar, {});
+});
+
+// 右侧工具栏按钮
+const toolbarRightBtn = computed(() => {
+  if (!config.value.defaultToolbar || config.value.defaultToolbar.length === 0) return [];
+  return createToolbar(config.value.defaultToolbar, { circle: true });
+});
+
 // 表格操作工具栏
 const tableToolbar = config.value.cols[config.value.cols.length - 1].operat ?? ["edit", "delete"];
 const tableToolbarBtn = createToolbar(tableToolbar, { link: true, size: "small" });
@@ -536,7 +612,7 @@ function handleCloseExportsModal() {
 function handleExports() {
   const filename = exportsFormData.filename
     ? exportsFormData.filename
-    : props.contentConfig.pageName;
+    : props.contentConfig.permPrefix || "export";
   const sheetname = exportsFormData.sheetname ? exportsFormData.sheetname : "sheet";
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(sheetname);

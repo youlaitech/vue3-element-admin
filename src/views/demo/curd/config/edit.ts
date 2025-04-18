@@ -4,7 +4,7 @@ import { DeviceEnum } from "@/enums/settings/device.enum";
 import { useAppStore } from "@/store";
 
 const modalConfig: IModalConfig<UserForm> = {
-  pageName: "sys:user",
+  permPrefix: "sys:user",
   component: "drawer",
   drawer: {
     title: "修改用户",

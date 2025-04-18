@@ -4,7 +4,7 @@ import type { UserPageQuery } from "@/api/system/user.api";
 import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig<UserPageQuery> = {
-  // pageName: "sys:demo", // 不写不进行按钮权限校验
+  permPrefix: "sys:user", // 不写不进行按钮权限校验
   table: {
     border: true,
     highlightCurrentRow: true,
@@ -50,7 +50,7 @@ const contentConfig: IContentConfig<UserPageQuery> = {
     {
       name: "custom1",
       text: "自定义1",
-      auth: "custom",
+      perm: "add",
       attrs: { icon: "plus", color: "#626AEF" },
     },
   ],
@@ -117,7 +117,7 @@ const contentConfig: IContentConfig<UserPageQuery> = {
         {
           name: "reset_pwd",
           text: "重置密码",
-          auth: "password:reset",
+          perm: "password:reset",
           attrs: {
             icon: "refresh-left",
             // color: "#626AEF", // 使用 text 属性，颜色不生效

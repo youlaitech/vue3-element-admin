@@ -23,10 +23,12 @@ export type IComponentType = DataComponent | InputComponent | OtherComponent;
 type ToolbarLeft = "add" | "delete" | "import" | "export";
 type ToolbarRight = "refresh" | "filter" | "imports" | "exports" | "search";
 type ToolbarTable = "edit" | "view" | "delete";
-type IToolsButton = {
+export type IToolsButton = {
   name: string; // 按钮名称
   text?: string; // 按钮文本
-  auth?: Array<string> | string; // 按钮权限
+  perm?: Array<string> | string; // 权限标识(可以是完整权限字符串如'sys:user:add'或操作权限如'add')
+  icon?: string; // 按钮图标
+  type?: string; // 按钮类型
   attrs?: Partial<ButtonProps> & { style?: CSSProperties }; // 按钮属性
   render?: (row: IObject) => boolean; // 条件渲染
 };
@@ -40,8 +42,8 @@ export interface IOperatData {
 }
 
 export interface ISearchConfig {
-  // 页面名称(参与组成权限标识,如sys:user:xxx),不填则不进行权限校验
-  pageName?: string;
+  // 权限前缀(如sys:user，用于组成权限标识)，不提供则不进行权限校验
+  permPrefix?: string;
   // 标签冒号(默认：false)
   colon?: boolean;
   // 表单项(默认：[])
@@ -78,8 +80,8 @@ export interface ISearchConfig {
 }
 
 export interface IContentConfig<T = any> {
-  // 页面名称(参与组成权限标识,如sys:user:xxx)
-  pageName?: string;
+  // 权限前缀(如sys:user，用于组成权限标识)，不提供则不进行权限校验
+  permPrefix?: string;
   // table组件属性
   table?: Omit<TableProps<any>, "data">;
   // 分页组件位置(默认：left)
@@ -181,8 +183,8 @@ export interface IContentConfig<T = any> {
 }
 
 export interface IModalConfig<T = any> {
-  // 页面名称
-  pageName?: string;
+  // 权限前缀(如sys:user，用于组成权限标识)，不提供则不进行权限校验
+  permPrefix?: string;
   // 主键名(主要用于编辑数据,默认为id)
   pk?: string;
   // 组件类型

@@ -1,7 +1,7 @@
 import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig = {
-  // pageName: "sys:demo", // 不写不进行按钮权限校验
+  // permPrefix: "sys:demo", // 不写不进行按钮权限校验
   table: {
     showOverflowTooltip: true,
   },
@@ -118,7 +118,7 @@ const contentConfig: IContentConfig = {
         {
           name: "reset_pwd",
           text: "重置密码",
-          auth: "password:reset",
+          perm: "password:reset",
           attrs: { icon: "refresh-left", type: "primary" },
           render(row) {
             // 根据条件，显示或隐藏
