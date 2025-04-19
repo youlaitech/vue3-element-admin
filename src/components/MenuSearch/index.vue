@@ -53,22 +53,29 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <div class="dialog-footer__shortcut">
-            <div class="i-svg:enter" />
+          <div class="ctrl-k-hint">
+            <span class="ctrl-k-text">Ctrl+K 快速打开</span>
           </div>
-          <span class="dialog-footer__text mr-3">选择</span>
-
-          <div class="dialog-footer__shortcut">
-            <div class="i-svg:down" />
+          <div class="shortcuts-group">
+            <div class="key-box">
+              <div class="key-btn">选择</div>
+            </div>
+            <div class="arrow-box">
+              <div class="arrow-up-down">
+                <div class="key-btn">
+                  <div class="i-svg:up" />
+                </div>
+                <div class="key-btn ml-1">
+                  <div class="i-svg:down" />
+                </div>
+              </div>
+              <span class="key-text">切换</span>
+            </div>
+            <div class="key-box">
+              <div class="key-btn esc-btn">ESC</div>
+              <span class="key-text">关闭</span>
+            </div>
           </div>
-          <div class="dialog-footer__shortcut ml-1">
-            <div class="i-svg:up" />
-          </div>
-          <span class="dialog-footer__text mr-3">切换</span>
-          <div class="dialog-footer__shortcut">
-            <div class="i-svg:esc" />
-          </div>
-          <span class="dialog-footer__text">退出</span>
         </div>
       </template>
     </el-dialog>
@@ -97,6 +104,26 @@ interface SearchItem {
   icon?: string;
   redirect?: string;
 }
+
+// 注册全局快捷键
+function handleKeyDown(e: KeyboardEvent) {
+  // 判断是否为Ctrl+K组合键
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault(); // 阻止默认行为
+    openSearchModal();
+  }
+}
+
+// 添加键盘事件监听
+onMounted(() => {
+  loadRoutes(permissionStore.routes);
+  document.addEventListener("keydown", handleKeyDown);
+});
+
+// 移除键盘事件监听
+onBeforeUnmount(() => {
+  document.removeEventListener("keydown", handleKeyDown);
+});
 
 // 打开搜索模态框
 function openSearchModal() {
@@ -178,11 +205,6 @@ function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
     }
   });
 }
-
-// 初始化路由数据
-onMounted(() => {
-  loadRoutes(permissionStore.routes);
-});
 </script>
 
 <style scoped lang="scss">
@@ -213,34 +235,89 @@ onMounted(() => {
 .dialog-footer {
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: space-between;
+  width: 100%;
+}
 
-  &__shortcut {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 18px;
-    padding: 0 0 1px;
-    color: var(--el-text-color-secondary);
-    background: rgba(125, 125, 125, 0.1);
-    border: 0;
-    border-radius: 2px;
-    box-shadow:
-      inset 0 -2px 0 0 #cdcde6,
-      inset 0 0 1px 1px #fff,
-      0 1px 2px 1px rgba(30, 35, 90, 0.4);
-  }
+.shortcuts-group {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
 
-  &__text {
-    margin-left: 5px;
-    font-size: 14px;
-    color: var(--el-text-color-secondary);
+.key-box {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.arrow-box {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.arrow-up-down {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.key-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 20px;
+  padding: 0 4px;
+  font-size: 12px;
+  color: #606266;
+  background-color: white;
+  border: 1px solid #cdcde6;
+  border-radius: 3px;
+  box-shadow:
+    inset 0 -2px 0 0 #cdcde6,
+    inset 0 0 1px 1px #fff,
+    0 1px 2px rgba(30, 35, 90, 0.2);
+
+  &::before {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    left: 1px;
+    height: 50%;
+    pointer-events: none;
+    content: "";
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+    border-radius: 2px 2px 0 0;
   }
 }
 
-.dialog-footer > [class^="i-svg:"] {
-  display: inline-block;
-  color: var(--el-text-color-secondary);
+.esc-btn {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 11px;
+}
+
+.key-text {
+  font-size: 12px;
+  color: #909399;
+}
+
+.ctrl-k-hint {
+  display: flex;
+  align-items: center;
+}
+
+.ctrl-k-text {
+  font-size: 12px;
+  color: #909399;
+}
+
+// 适配Element Plus对话框
+:deep(.el-dialog__footer) {
+  box-sizing: border-box;
+  padding-top: 10px;
+  text-align: right;
 }
 </style>
