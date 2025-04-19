@@ -28,27 +28,68 @@
       </template>
 
       <div class="search-result">
-        <ul v-if="displayResults.length > 0">
-          <li
-            v-for="(item, index) in displayResults"
-            :key="item.path"
-            :class="[
-              'search-result__item',
-              {
-                'search-result__item--active': index === activeIndex,
-              },
-            ]"
-            @click="navigateToRoute(item)"
-          >
-            <el-icon v-if="item.icon && item.icon.startsWith('el-icon')">
-              <component :is="item.icon.replace('el-icon-', '')" />
-            </el-icon>
-            <div v-else-if="item.icon" :class="`i-svg:${item.icon}`" />
-            <div v-else class="i-svg:menu" />
-            <span class="ml-2">{{ item.title }}</span>
-          </li>
-        </ul>
-        <el-empty v-else description="暂无数据" />
+        <!-- 搜索历史 -->
+        <template v-if="searchKeyword === '' && searchHistory.length > 0">
+          <div class="search-history">
+            <div class="search-history__title">
+              搜索历史
+              <el-button
+                type="primary"
+                text
+                size="small"
+                class="search-history__clear"
+                @click="clearHistory"
+              >
+                <el-icon><Delete /></el-icon>
+              </el-button>
+            </div>
+            <ul class="search-history__list">
+              <li
+                v-for="(item, index) in searchHistory"
+                :key="index"
+                class="search-history__item"
+                @click="navigateToRoute(item)"
+              >
+                <div class="search-history__icon">
+                  <el-icon><Clock /></el-icon>
+                </div>
+                <span class="search-history__name">{{ item.title }}</span>
+                <div class="search-history__action">
+                  <el-icon @click.stop="removeHistoryItem(index)"><Close /></el-icon>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </template>
+
+        <!-- 搜索结果 -->
+        <template v-else>
+          <ul v-if="displayResults.length > 0">
+            <li
+              v-for="(item, index) in displayResults"
+              :key="item.path"
+              :class="[
+                'search-result__item',
+                {
+                  'search-result__item--active': index === activeIndex,
+                },
+              ]"
+              @click="navigateToRoute(item)"
+            >
+              <el-icon v-if="item.icon && item.icon.startsWith('el-icon')">
+                <component :is="item.icon.replace('el-icon-', '')" />
+              </el-icon>
+              <div v-else-if="item.icon" :class="`i-svg:${item.icon}`" />
+              <div v-else class="i-svg:menu" />
+              <span class="ml-2">{{ item.title }}</span>
+            </li>
+          </ul>
+        </template>
+
+        <!-- 无搜索历史显示 -->
+        <div v-if="searchKeyword === '' && searchHistory.length === 0" class="no-history">
+          <p class="no-history__text">没有搜索历史</p>
+        </div>
       </div>
 
       <template #footer>
@@ -83,10 +124,15 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import router from "@/router";
 import { usePermissionStore } from "@/store";
 import { isExternal } from "@/utils";
 import { RouteRecordRaw } from "vue-router";
+import { Clock, Close, Delete } from "@element-plus/icons-vue";
+
+const HISTORY_KEY = "menu_search_history";
+const MAX_HISTORY = 5;
 
 const permissionStore = usePermissionStore();
 const isModalVisible = ref(false);
@@ -96,6 +142,7 @@ const excludedRoutes = ref(["/redirect", "/login", "/401", "/404"]);
 const menuItems = ref<SearchItem[]>([]);
 const searchResults = ref<SearchItem[]>([]);
 const activeIndex = ref(-1);
+const searchHistory = ref<SearchItem[]>([]);
 
 interface SearchItem {
   title: string;
@@ -103,6 +150,57 @@ interface SearchItem {
   name?: string;
   icon?: string;
   redirect?: string;
+}
+
+// 从本地存储加载搜索历史
+function loadSearchHistory() {
+  const historyStr = localStorage.getItem(HISTORY_KEY);
+  if (historyStr) {
+    try {
+      searchHistory.value = JSON.parse(historyStr);
+    } catch {
+      searchHistory.value = [];
+    }
+  }
+}
+
+// 保存搜索历史到本地存储
+function saveSearchHistory() {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(searchHistory.value));
+}
+
+// 添加项目到搜索历史
+function addToHistory(item: SearchItem) {
+  // 检查是否已存在
+  const index = searchHistory.value.findIndex((i) => i.path === item.path);
+
+  // 如果存在则移除
+  if (index !== -1) {
+    searchHistory.value.splice(index, 1);
+  }
+
+  // 添加到历史开头
+  searchHistory.value.unshift(item);
+
+  // 限制历史记录数量
+  if (searchHistory.value.length > MAX_HISTORY) {
+    searchHistory.value = searchHistory.value.slice(0, MAX_HISTORY);
+  }
+
+  // 保存到本地存储
+  saveSearchHistory();
+}
+
+// 移除历史记录项
+function removeHistoryItem(index: number) {
+  searchHistory.value.splice(index, 1);
+  saveSearchHistory();
+}
+
+// 清空历史记录
+function clearHistory() {
+  searchHistory.value = [];
+  localStorage.removeItem(HISTORY_KEY);
 }
 
 // 注册全局快捷键
@@ -117,6 +215,7 @@ function handleKeyDown(e: KeyboardEvent) {
 // 添加键盘事件监听
 onMounted(() => {
   loadRoutes(permissionStore.routes);
+  loadSearchHistory();
   document.addEventListener("keydown", handleKeyDown);
 });
 
@@ -179,6 +278,9 @@ function navigateResults(direction: string) {
 // 跳转到
 function navigateToRoute(item: SearchItem) {
   closeSearchModal();
+  // 添加到历史记录
+  addToHistory(item);
+
   if (isExternal(item.path)) {
     window.open(item.path, "_blank");
   } else {
@@ -232,6 +334,92 @@ function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
   }
 }
 
+/* 搜索历史样式 */
+.search-history {
+  &__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    font-size: 12px;
+    line-height: 34px;
+    color: var(--el-text-color-secondary);
+  }
+
+  &__clear {
+    padding: 2px;
+    font-size: 12px;
+
+    &:hover {
+      color: var(--el-color-danger);
+    }
+  }
+
+  &__list {
+    padding: 0;
+    margin: 0;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    font-size: 16px;
+    color: var(--el-text-color-secondary);
+  }
+
+  &__name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    color: var(--el-text-color-primary);
+    white-space: nowrap;
+  }
+
+  &__action {
+    padding: 4px;
+    color: var(--el-text-color-secondary);
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+
+    &:hover {
+      color: var(--el-color-danger);
+      background-color: var(--el-fill-color);
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 12px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--el-fill-color-light);
+
+      .search-history__action {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+/* 没有搜索历史时的样式 */
+.no-history {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+
+  &__text {
+    font-size: 14px;
+    color: var(--el-text-color-secondary);
+  }
+}
+
 .dialog-footer {
   display: flex;
   align-items: center;
@@ -272,13 +460,13 @@ function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
   height: 20px;
   padding: 0 4px;
   font-size: 12px;
-  color: #606266;
-  background-color: white;
-  border: 1px solid #cdcde6;
+  color: var(--el-text-color-regular);
+  background-color: var(--el-fill-color-blank);
+  border: 1px solid var(--el-border-color);
   border-radius: 3px;
   box-shadow:
-    inset 0 -2px 0 0 #cdcde6,
-    inset 0 0 1px 1px #fff,
+    inset 0 -2px 0 0 var(--el-border-color),
+    inset 0 0 1px 1px var(--el-color-white),
     0 1px 2px rgba(30, 35, 90, 0.2);
 
   &::before {
@@ -301,7 +489,7 @@ function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
 
 .key-text {
   font-size: 12px;
-  color: #909399;
+  color: var(--el-text-color-secondary);
 }
 
 .ctrl-k-hint {
@@ -311,7 +499,7 @@ function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
 
 .ctrl-k-text {
   font-size: 12px;
-  color: #909399;
+  color: var(--el-text-color-secondary);
 }
 
 // 适配Element Plus对话框
@@ -319,5 +507,12 @@ function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
   box-sizing: border-box;
   padding-top: 10px;
   text-align: right;
+}
+
+// 暗黑模式适配
+html.dark {
+  .key-btn::before {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  }
 }
 </style>
