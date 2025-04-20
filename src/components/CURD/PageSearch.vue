@@ -12,12 +12,7 @@
             <template #label>
               <span class="flex-y-center">
                 {{ item?.label || "" }}
-                <el-tooltip
-                  v-if="item?.tips"
-                  v-bind="
-                    typeof item.tips === 'string' ? { content: item.tips } : (item.tips as any)
-                  "
-                >
+                <el-tooltip v-if="item?.tips" v-bind="getTooltipProps(item.tips)">
                   <QuestionFilled class="w-4 h-4 mx-1" />
                 </el-tooltip>
                 <span v-if="searchConfig.colon" class="ml-0.5">:</span>
@@ -92,7 +87,10 @@ const componentMap = new Map<ISearchComponent, Component>([
   /* eslint-enable */
 ]);
 
+// 存储表单实例
 const queryFormRef = ref<FormInstance>();
+// 存储查询参数
+const queryParams = reactive<IObject>({});
 // 是否显示
 const visible = ref(true);
 // 响应式的formItems
@@ -119,12 +117,21 @@ const isGrid = computed(() =>
     ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 gap-5"
     : "flex flex-wrap gap-x-8 gap-y-4"
 );
-// 搜索表单数据
-const queryParams = reactive<IObject>({});
+
+// 获取tooltip提示框属性
+const getTooltipProps = (tips: string | IObject) => {
+  return typeof tips === "string" ? { content: tips } : tips;
+};
+// 查询/重置操作
+const handleQuery = () => emit("queryClick", queryParams);
+const handleReset = () => {
+  queryFormRef.value?.resetFields();
+  emit("resetClick", queryParams);
+};
 
 onMounted(() => {
   formItems.forEach((item) => {
-    item.initFn && item.initFn(item);
+    item?.initFn && item.initFn(item);
     if (["input-tag", "custom-tag", "cascader"].includes(item?.type ?? "")) {
       queryParams[item.prop] = Array.isArray(item.initialValue) ? item.initialValue : [];
     } else if (item.type === "input-number") {
@@ -134,14 +141,6 @@ onMounted(() => {
     }
   });
 });
-
-// 查询/重置操作
-const handleQuery = () => emit("queryClick", queryParams);
-const handleReset = () => {
-  queryFormRef.value?.resetFields();
-  emit("resetClick", queryParams);
-};
-
 // 暴露的属性和方法
 defineExpose({
   // 获取分页数据

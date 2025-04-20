@@ -1,6 +1,5 @@
 import type { DialogProps, DrawerProps, FormItemRule, PaginationProps } from "element-plus";
 import type { FormProps, TableProps, ColProps, ButtonProps, CardProps } from "element-plus";
-import type { ElTooltipProps } from "element-plus";
 import type PageContent from "./PageContent.vue";
 import type PageForm from "./PageForm.vue";
 import type PageModal from "./PageModal.vue";
@@ -53,7 +52,7 @@ export interface ISearchConfig {
     // 标签文本
     label?: string;
     // 标签提示
-    tips?: string | Partial<ElTooltipProps>;
+    tips?: string | IObject;
     // 键名
     prop: string;
     // 组件属性(input-tag组件支持join,btnText,size属性)

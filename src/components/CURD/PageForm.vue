@@ -5,21 +5,15 @@
         <el-col v-show="!item.hidden" v-bind="item.col">
           <el-form-item :label="item.label" :prop="item.prop">
             <!-- Label -->
-            <template v-if="item.tips" #label>
-              <span>
-                {{ item.label }}
-                <el-tooltip
-                  placement="bottom"
-                  effect="light"
-                  :content="item.tips"
-                  :raw-content="true"
-                >
-                  <el-icon style="vertical-align: -0.15em" size="16">
-                    <QuestionFilled />
-                  </el-icon>
+            <template #label>
+              <span class="flex-y-center">
+                {{ item?.label || "" }}
+                <el-tooltip v-if="item?.tips" v-bind="getTooltipProps(item.tips)">
+                  <QuestionFilled class="w-4 h-4 mx-1" />
                 </el-tooltip>
               </span>
             </template>
+
             <!-- Input 输入框 -->
             <template v-if="item.type === 'input' || item.type === undefined">
               <el-input v-model="formData[item.prop]" v-bind="item.attrs" />
@@ -150,6 +144,11 @@ function setFormData(data: IObject) {
 function setFormItemData(key: string, value: any) {
   formData[key] = value;
 }
+
+// 获取tooltip提示框属性
+const getTooltipProps = (tips: string | IObject) => {
+  return typeof tips === "string" ? { content: tips } : tips;
+};
 
 // 暴露的属性和方法
 defineExpose({ formRef, getFormData, setFormData, setFormItemData });
