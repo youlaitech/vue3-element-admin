@@ -34,10 +34,6 @@
   --menu-hover: #e6f4ff; // 菜单悬停背景色 浅色主题-白色侧边栏配色下仅占位，实际颜色由 el-menu-item 组件决定
   --sidebar-logo-background: #f5f5f5; // 侧边栏 Logo 背景色
   --sidebar-logo-text-color: #333; // 侧边栏 Logo 文字颜色
-  // 修复表格 fixed 列被选中后由于透明色导致叠字的 bug
-  .el-table {
-    --el-table-current-row-bg-color: rgb(235 243 250);
-  }
 }
 
 /** 浅色主题-深蓝色侧边栏配色 */
