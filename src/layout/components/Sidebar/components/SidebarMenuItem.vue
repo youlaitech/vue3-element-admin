@@ -4,8 +4,8 @@
     <template
       v-if="
         // 未配置始终显示，使用唯一子节点替换父节点显示为叶子节点
-        (!item.meta?.alwaysShow &&
-          hasOneShowingChild(item.children, item) &&
+        (hasOneShowingChild(item.children, item) &&
+          !item.meta?.alwaysShow &&
           (!onlyOneChild.children || onlyOneChild.noShowingChildren)) ||
         // 即使配置了始终显示，但无子节点，也显示为叶子节点
         (item.meta?.alwaysShow && !item.children)
