@@ -85,7 +85,7 @@ const props = withDefaults(defineProps<IPageForm>(), {
 });
 
 const formRef = ref<FormInstance>();
-const formItems = reactive(props.formItems);
+const formItems = reactive<any>(props.formItems);
 const formData = reactive<IObject>({});
 const formRules: FormRules = {};
 const prepareFuncs = [];
