@@ -160,7 +160,7 @@
                   v-hasPerm="btn.perm ?? '*:*:*'"
                   v-bind="btn.attrs"
                   @click="
-                    handleOperat({
+                    handleOperate({
                       name: btn.name,
                       row: scope.row,
                       column: scope.column,
@@ -331,7 +331,7 @@ import {
 } from "element-plus";
 import ExcelJS from "exceljs";
 import { reactive, ref, computed } from "vue";
-import type { IContentConfig, IObject, IOperatData } from "./types";
+import type { IContentConfig, IObject, IOperateData } from "./types";
 import type { IToolsButton } from "./types";
 
 // 定义接收的属性
@@ -343,54 +343,9 @@ const emit = defineEmits<{
   searchClick: [];
   toolbarClick: [name: string];
   editClick: [row: IObject];
-  operatClick: [data: IOperatData];
   filterChange: [data: IObject];
+  operateClick: [data: IOperateData];
 }>();
-
-// 按钮文本映射
-const BUTTONS_TEXT: Record<string, string> = {
-  add: "新增",
-  delete: "删除",
-  import: "导入",
-  export: "导出",
-  refresh: "刷新",
-  filter: "筛选列",
-  search: "搜索",
-  imports: "批量导入",
-  exports: "批量导出",
-  view: "查看",
-  edit: "编辑",
-};
-
-// 按钮权限映射
-const AUTH_MAP: Record<string, string> = {
-  add: "add",
-  delete: "delete",
-  import: "import",
-  export: "export",
-  refresh: "*:*:*",
-  filter: "*:*:*",
-  search: "search",
-  imports: "imports",
-  exports: "exports",
-  view: "view",
-  edit: "edit",
-};
-
-// 按钮图标映射
-const BUTTONS_ICON: Record<string, string> = {
-  add: "plus",
-  delete: "delete",
-  import: "upload",
-  export: "download",
-  refresh: "refresh",
-  filter: "operation",
-  search: "search",
-  imports: "upload",
-  exports: "download",
-  view: "view",
-  edit: "edit",
-};
 
 // 表格工具栏按钮配置
 const config = computed(() => props.contentConfig);
@@ -821,18 +776,8 @@ function handleToolbar(name: string) {
 }
 
 // 操作列
-function handleOperat(data: IOperatData) {
-  switch (data.name) {
-    case "edit":
-      emit("editClick", data.row);
-      break;
-    case "delete":
-      handleDelete(data.row[pk]);
-      break;
-    default:
-      emit("operatClick", data);
-      break;
-  }
+function handleOperate(data: IOperateData) {
+  emit("operateClick", data);
 }
 
 // 属性修改
@@ -953,7 +898,7 @@ function saveXlsx(fileData: any, fileName: string) {
 }
 
 // 暴露的属性和方法
-defineExpose({ fetchPageData, exportPageData, getFilterParams, getSelectionData });
+defineExpose({ fetchPageData, exportPageData, getFilterParams, getSelectionData, handleRefresh });
 </script>
 
 <style lang="scss" scoped>

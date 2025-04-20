@@ -5,6 +5,7 @@ const contentConfig: IContentConfig = {
   table: {
     showOverflowTooltip: true,
   },
+  pagePosition: "right",
   toolbar: [],
   indexAction: function (params) {
     // 模拟发起网络请求获取列表数据
@@ -14,7 +15,7 @@ const contentConfig: IContentConfig = {
       list: [
         {
           id: 1,
-          username: "tom",
+          username: "root",
           avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
           percent: 99,
           price: 10,
@@ -115,14 +116,16 @@ const contentConfig: IContentConfig = {
       width: 220,
       templet: "tool",
       operat: [
+        "view",
+        "edit",
         {
-          name: "reset_pwd",
-          text: "重置密码",
-          perm: "password:reset",
-          attrs: { icon: "refresh-left", type: "primary" },
+          name: "delete",
+          text: "展示删除",
+          perm: "delete",
+          attrs: { icon: "delete", type: "danger" },
           render(row) {
             // 根据条件，显示或隐藏
-            return row.id === 1;
+            return row.id !== 1;
           },
         },
       ],

@@ -26,11 +26,10 @@
         ref="contentRef"
         :content-config="contentConfig"
         @add-click="handleAddClick"
-        @edit-click="handleEditClick"
         @export-click="handleExportClick"
         @search-click="handleSearchClick"
         @toolbar-click="handleToolbarClick"
-        @operat-click="handleOperatClick"
+        @operate-click="handleOperateClick"
         @filter-change="handleFilterChange"
       >
         <template #status="scope">
@@ -75,10 +74,11 @@
     </template>
     <template v-else>
       <page-search ref="searchRef" :search-config="searchConfig2" @reset-click="handleResetClick" />
+
       <page-content
         ref="contentRef"
         :content-config="contentConfig2"
-        @operat-click="handleOperatClick"
+        @operate-click="handleOperateClick2"
       >
         <template #status="scope">
           <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
@@ -86,20 +86,31 @@
           </el-tag>
         </template>
       </page-content>
+
+      <page-modal ref="editModalRef" :modal-config="editModalConfig2">
+        <template #suffix>
+          <span style="color: black">%</span>
+        </template>
+        <template #prefix>
+          <span>$</span>
+        </template>
+        <template #gender="scope">
+          <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
+        </template>
+      </page-modal>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import UserAPI from "@/api/system/user.api";
-import DeptAPI from "@/api/system/dept.api";
-import RoleAPI from "@/api/system/role.api";
-import type { IObject, IOperatData } from "@/components/CURD/types";
+import type { IObject, IOperateData } from "@/components/CURD/types";
 import usePage from "@/components/CURD/usePage";
 import addModalConfig from "./config/add";
 import contentConfig from "./config/content";
 import contentConfig2 from "./config/content2";
 import editModalConfig from "./config/edit";
+import editModalConfig2 from "./config/edit2";
 import searchConfig from "./config/search";
 import searchConfig2 from "./config/search2";
 
@@ -111,7 +122,8 @@ const {
   handleQueryClick,
   handleResetClick,
   // handleAddClick,
-  // handleEditClick,
+  handleEditClick,
+  handleViewClick,
   handleSubmitClick,
   handleExportClick,
   handleSearchClick,
@@ -121,22 +133,8 @@ const {
 // 新增
 async function handleAddClick() {
   addModalRef.value?.setModalVisible();
-  // 加载部门下拉数据源
-  addModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
-  // 加载角色下拉数据源
-  addModalConfig.formItems[4]!.options = await RoleAPI.getOptions();
-}
-// 编辑
-async function handleEditClick(row: IObject) {
-  editModalRef.value?.handleDisabled(false);
-  editModalRef.value?.setModalVisible();
-  // 加载部门下拉数据源
-  editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
-  // 加载角色下拉数据源
-  editModalConfig.formItems[4]!.options = await RoleAPI.getOptions();
-  // 根据id获取数据进行填充
-  const data = await UserAPI.getFormData(row.id);
-  editModalRef.value?.setFormData(data);
+  // 加载下拉数据源，建议在初始化配置项 initFn 中加载，避免多次请求
+  // addModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
 }
 // 其他工具栏
 function handleToolbarClick(name: string) {
@@ -145,11 +143,22 @@ function handleToolbarClick(name: string) {
     ElMessage.success("点击了自定义1按钮");
   }
 }
-// 其他操作列
-async function handleOperatClick(data: IOperatData) {
-  console.log(data);
-  // 重置密码
-  if (data.name === "reset_pwd") {
+
+// 表格工具栏
+const handleOperateClick = (data: IObject) => {
+  if (data.name === "detail") {
+    editModalConfig.drawer = { ...editModalConfig.drawer, title: "查看" };
+    handleViewClick(data.row, async () => {
+      // 加载下拉数据源，建议在初始化配置项 initFn 中加载，避免多次请求
+      // editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
+      return await UserAPI.getFormData(data.row.id); // 根据ID获取详情
+    });
+  } else if (data.name === "edit") {
+    editModalConfig.drawer = { ...editModalConfig.drawer, title: "修改" };
+    handleEditClick(data.row, async () => {
+      return await UserAPI.getFormData(data.row.id); // 根据ID获取详情
+    });
+  } else if (data.name === "reset_pwd") {
     ElMessageBox.prompt("请输入用户「" + data.row.username + "」的新密码", "重置密码", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -162,23 +171,32 @@ async function handleOperatClick(data: IOperatData) {
         ElMessage.success("密码重置成功，新密码是：" + value);
       });
     });
-  } else if (data.name === "detail") {
-    // 禁用表单编辑
-    editModalRef.value?.handleDisabled(true);
-    // 打开抽屉
-    editModalRef.value?.setModalVisible();
-    // 修改抽屉标题
-    editModalConfig.drawer = { ...editModalConfig.drawer, title: "用户详情" };
-    // 加载部门下拉数据源
-    editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
-    // 加载角色下拉数据源
-    editModalConfig.formItems[4]!.options = await RoleAPI.getOptions();
-    // 根据id获取数据进行填充
-    const formData = await UserAPI.getFormData(data.row.id);
-    // 设置表单数据
-    editModalRef.value?.setFormData(formData);
+  } else if (data.name === "delete") {
+    ElMessageBox.confirm("确认删除?", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    })
+      .then(function () {
+        UserAPI.deleteByIds(data.row.id).then(() => {
+          ElMessage.success("删除成功");
+          contentRef.value?.handleRefresh(true); // 刷新列表
+        });
+      })
+      .catch(() => {});
   }
-}
+};
+const handleOperateClick2 = (data: IOperateData) => {
+  if (data.name === "view") {
+    editModalConfig.drawer = { ...editModalConfig.drawer, title: "查看" };
+    handleViewClick(data.row);
+  } else if (data.name === "edit") {
+    editModalConfig.drawer = { ...editModalConfig.drawer, title: "修改" };
+    handleEditClick(data.row);
+  } else if (data.name === "delete") {
+    ElMessage.success("模拟删除成功");
+  }
+};
 
 // 切换示例
 const isA = ref(true);

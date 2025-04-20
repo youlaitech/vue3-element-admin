@@ -112,12 +112,12 @@ const contentConfig: IContentConfig<UserPageQuery> = {
         {
           name: "detail",
           text: "详情",
-          attrs: { icon: "Document" },
+          attrs: { icon: "Document", type: "primary" },
         },
         {
           name: "reset_pwd",
           text: "重置密码",
-          perm: "password:reset",
+          // perm: "password-reset",
           attrs: {
             icon: "refresh-left",
             // color: "#626AEF", // 使用 text 属性，颜色不生效

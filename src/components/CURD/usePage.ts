@@ -23,9 +23,18 @@ function usePage() {
     addModalRef.value?.setModalVisible();
   }
   // 编辑
-  function handleEditClick(row: IObject) {
-    //显示编辑表单 根据数据进行填充
-    editModalRef.value?.setModalVisible(row);
+  async function handleEditClick(row: IObject, callback?: (result?: IObject) => IObject) {
+    editModalRef.value?.setModalVisible();
+    editModalRef.value?.handleDisabled(false);
+    let from = await (callback?.(row) ?? Promise.resolve(row));
+    editModalRef.value?.setFormData(from ? from : row);
+  }
+  // 编辑
+  async function handleViewClick(row: IObject, callback?: (result?: IObject) => IObject) {
+    editModalRef.value?.setModalVisible();
+    editModalRef.value?.handleDisabled(true);
+    let from = await (callback?.(row) ?? Promise.resolve(row));
+    editModalRef.value?.setFormData(from ? from : row);
   }
   // 表单提交
   function handleSubmitClick() {
@@ -58,6 +67,7 @@ function usePage() {
     handleResetClick,
     handleAddClick,
     handleEditClick,
+    handleViewClick,
     handleSubmitClick,
     handleExportClick,
     handleSearchClick,

@@ -2,6 +2,8 @@ import UserAPI, { type UserForm } from "@/api/system/user.api";
 import type { IModalConfig } from "@/components/CURD/types";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 import { useAppStore } from "@/store";
+import DeptAPI from "@/api/system/dept.api";
+import RoleAPI from "@/api/system/role.api";
 
 const modalConfig: IModalConfig<UserForm> = {
   permPrefix: "sys:user",
@@ -11,11 +13,11 @@ const modalConfig: IModalConfig<UserForm> = {
     size: useAppStore().device === DeviceEnum.MOBILE ? "80%" : 500,
   },
   pk: "id",
+  beforeSubmit(data) {
+    console.log("beforeSubmit", data);
+  },
   formAction: function (data) {
     return UserAPI.update(data.id as string, data);
-  },
-  beforeSubmit(data) {
-    console.log("提交之前处理", data);
   },
   formItems: [
     {
@@ -49,12 +51,17 @@ const modalConfig: IModalConfig<UserForm> = {
         "check-strictly": true,
         "render-after-expand": false,
       },
+      async initFn(formItem) {
+        // 注意:如果initFn函数不是箭头函数,this会指向此配置项对象,那么也就可以用this来替代形参formItem
+        formItem.attrs.data = await DeptAPI.getOptions();
+      },
     },
     {
       type: "custom",
       label: "性别",
       prop: "gender",
       initialValue: 1,
+      attrs: { style: { width: "100%" } },
     },
     {
       label: "角色",
@@ -67,6 +74,9 @@ const modalConfig: IModalConfig<UserForm> = {
       },
       options: [],
       initialValue: [],
+      async initFn(formItem) {
+        formItem.options = await RoleAPI.getOptions();
+      },
     },
     {
       type: "input",
@@ -105,6 +115,7 @@ const modalConfig: IModalConfig<UserForm> = {
       prop: "status",
       type: "switch",
       attrs: {
+        inlinePrompt: true,
         activeText: "正常",
         inactiveText: "禁用",
         activeValue: 1,

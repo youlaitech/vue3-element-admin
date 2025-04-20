@@ -15,7 +15,7 @@ export type IObject = Record<string, any>;
 
 type DataComponent = "date-picker" | "time-picker" | "time-select" | "custom-tag" | "input-tag";
 type InputComponent = "input" | "select" | "input-number" | "cascader" | "tree-select";
-type OtherComponent = "text" | "radio" | "checkbox" | "switch" | "custom";
+type OtherComponent = "text" | "radio" | "checkbox" | "switch" | "icon-select" | "custom";
 export type ISearchComponent = DataComponent | InputComponent;
 export type IComponentType = DataComponent | InputComponent | OtherComponent;
 
@@ -26,14 +26,12 @@ export type IToolsButton = {
   name: string; // 按钮名称
   text?: string; // 按钮文本
   perm?: Array<string> | string; // 权限标识(可以是完整权限字符串如'sys:user:add'或操作权限如'add')
-  icon?: string; // 按钮图标
-  type?: string; // 按钮类型
   attrs?: Partial<ButtonProps> & { style?: CSSProperties }; // 按钮属性
   render?: (row: IObject) => boolean; // 条件渲染
 };
 export type IToolsDefault = ToolbarLeft | ToolbarRight | ToolbarTable | IToolsButton;
 
-export interface IOperatData {
+export interface IOperateData {
   name: string;
   row: IObject;
   column: IObject;
@@ -184,9 +182,11 @@ export interface IContentConfig<T = any> {
 export interface IModalConfig<T = any> {
   // 权限前缀(如sys:user，用于组成权限标识)，不提供则不进行权限校验
   permPrefix?: string;
+  // 标签冒号(默认：false)
+  colon?: boolean;
   // 主键名(主要用于编辑数据,默认为id)
   pk?: string;
-  // 组件类型
+  // 组件类型(默认：dialog)
   component?: "dialog" | "drawer";
   // dialog组件属性
   dialog?: Partial<Omit<DialogProps, "modelValue">>;
@@ -195,7 +195,7 @@ export interface IModalConfig<T = any> {
   // form组件属性
   form?: IForm;
   // 表单项
-  formItems: IFormItems<T>;
+  formItems: IFormItems;
   // 提交之前处理
   beforeSubmit?: (data: T) => void;
   // 提交的网络请求函数(需返回promise)
@@ -205,9 +205,9 @@ export interface IModalConfig<T = any> {
 export type IForm = Partial<Omit<FormProps, "model" | "rules">>;
 
 // 表单项
-export type IFormItems<T = any> = Array<{
+export type IFormItems = Array<{
   // 组件类型(如input,select,radio,custom等，默认input)
-  type?: IComponentType;
+  type: IComponentType;
   // 组件属性
   attrs?: IObject;
   // 组件可选项(适用于select,radio,checkbox组件)
@@ -222,7 +222,7 @@ export type IFormItems<T = any> = Array<{
   // 标签文本
   label: string;
   // 标签提示
-  tips?: string;
+  tips?: string | IObject;
   // 键名
   prop: string;
   // 验证规则
@@ -233,12 +233,8 @@ export type IFormItems<T = any> = Array<{
   hidden?: boolean;
   // layout组件Col属性
   col?: Partial<ColProps>;
-  // 监听函数
-  watch?: (newValue: any, oldValue: any, data: T, items: IObject[]) => void;
-  // 计算属性函数
-  computed?: (data: T) => any;
-  // 监听收集函数
-  watchEffect?: (data: T) => void;
+  // 组件事件
+  events?: Record<string, (...args: any) => void>;
   // 初始化数据函数扩展
   initFn?: (item: IObject) => void;
 }>;
