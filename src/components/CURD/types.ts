@@ -44,7 +44,7 @@ export interface ISearchConfig {
   // 标签冒号(默认：false)
   colon?: boolean;
   // 表单项(默认：[])
-  formItems?: IFormItems;
+  formItems?: IFormItems<ISearchComponent>;
   // 是否开启展开和收缩(默认：true)
   isExpandable?: boolean;
   // 默认展示的表单项数量(默认：3)
@@ -176,7 +176,7 @@ export interface IModalConfig<T = any> {
   // form组件属性
   form?: IForm;
   // 表单项
-  formItems: IFormItems;
+  formItems: IFormItems<IComponentType>;
   // 提交之前处理
   beforeSubmit?: (data: T) => void;
   // 提交的网络请求函数(需返回promise)
@@ -186,9 +186,9 @@ export interface IModalConfig<T = any> {
 export type IForm = Partial<Omit<FormProps, "model" | "rules">>;
 
 // 表单项
-export type IFormItems = Array<{
+export type IFormItems<T = IComponentType> = Array<{
   // 组件类型(如input,select,radio,custom等)
-  type: IComponentType;
+  type: T;
   // 标签提示
   tips?: string | IObject;
   // 标签文本
@@ -226,5 +226,5 @@ export interface IPageForm {
   // form组件属性
   form?: IForm;
   // 表单项
-  formItems: IFormItems;
+  formItems: IFormItems<IComponentType>;
 }
