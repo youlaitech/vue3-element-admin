@@ -1,5 +1,7 @@
 import UserAPI, { type UserForm } from "@/api/system/user.api";
 import type { IModalConfig } from "@/components/CURD/types";
+import DeptAPI from "@/api/system/dept.api";
+import RoleAPI from "@/api/system/role.api";
 
 const modalConfig: IModalConfig<UserForm> = {
   permPrefix: "sys:user",
@@ -45,7 +47,7 @@ const modalConfig: IModalConfig<UserForm> = {
     {
       label: "所属部门",
       prop: "deptId",
-      rules: [{ required: true, message: "所属部门不能为空", trigger: "blur" }],
+      rules: [{ required: true, message: "所属部门不能为空", trigger: "change" }],
       type: "tree-select",
       attrs: {
         placeholder: "请选择所属部门",
@@ -54,17 +56,22 @@ const modalConfig: IModalConfig<UserForm> = {
         "check-strictly": true,
         "render-after-expand": false,
       },
+      async initFn(formItem) {
+        // 注意:如果initFn函数不是箭头函数,this会指向此配置项对象,那么也就可以用this来替代形参formItem
+        formItem.attrs.data = await DeptAPI.getOptions();
+      },
     },
     {
       type: "custom",
       label: "性别",
       prop: "gender",
       initialValue: 1,
+      attrs: { style: { width: "100%" } },
     },
     {
       label: "角色",
       prop: "roleIds",
-      rules: [{ required: true, message: "用户角色不能为空", trigger: "blur" }],
+      rules: [{ required: true, message: "用户角色不能为空", trigger: "change" }],
       type: "select",
       attrs: {
         placeholder: "请选择",
@@ -72,6 +79,9 @@ const modalConfig: IModalConfig<UserForm> = {
       },
       options: [],
       initialValue: [],
+      async initFn(formItem) {
+        formItem.options = await RoleAPI.getOptions();
+      },
     },
     {
       type: "input",
@@ -114,6 +124,12 @@ const modalConfig: IModalConfig<UserForm> = {
         { label: "禁用", value: 0 },
       ],
       initialValue: 1,
+    },
+    {
+      type: "custom",
+      label: "二级弹窗",
+      prop: "openModal",
+      slotName: "openModal",
     },
   ],
 };

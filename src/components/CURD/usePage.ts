@@ -18,23 +18,50 @@ function usePage() {
     contentRef.value?.fetchPageData({ ...queryParams, ...filterParams }, true);
   }
   // 新增
-  function handleAddClick() {
-    //显示添加表单
-    addModalRef.value?.setModalVisible();
+  function handleAddClick(RefImpl?: Ref<PageContentInstance>) {
+    if (RefImpl) {
+      RefImpl?.value.setModalVisible();
+      RefImpl?.value.handleDisabled(false);
+    } else {
+      addModalRef.value?.setModalVisible();
+      addModalRef.value?.handleDisabled(false);
+    }
   }
   // 编辑
-  async function handleEditClick(row: IObject, callback?: (result?: IObject) => IObject) {
-    editModalRef.value?.setModalVisible();
-    editModalRef.value?.handleDisabled(false);
-    let from = await (callback?.(row) ?? Promise.resolve(row));
-    editModalRef.value?.setFormData(from ? from : row);
+  async function handleEditClick(
+    row: IObject,
+    callback?: (result?: IObject) => IObject,
+    RefImpl?: Ref<PageContentInstance>
+  ) {
+    if (RefImpl) {
+      RefImpl.value?.setModalVisible();
+      RefImpl.value?.handleDisabled(false);
+      let from = await (callback?.(row) ?? Promise.resolve(row));
+      RefImpl.value?.setFormData(from ? from : row);
+    } else {
+      editModalRef.value?.setModalVisible();
+      editModalRef.value?.handleDisabled(false);
+      let from = await (callback?.(row) ?? Promise.resolve(row));
+      editModalRef.value?.setFormData(from ? from : row);
+    }
   }
-  // 编辑
-  async function handleViewClick(row: IObject, callback?: (result?: IObject) => IObject) {
-    editModalRef.value?.setModalVisible();
-    editModalRef.value?.handleDisabled(true);
-    let from = await (callback?.(row) ?? Promise.resolve(row));
-    editModalRef.value?.setFormData(from ? from : row);
+  // 查看
+  async function handleViewClick(
+    row: IObject,
+    callback?: (result?: IObject) => IObject,
+    RefImpl?: Ref<PageContentInstance>
+  ) {
+    if (RefImpl) {
+      RefImpl.value?.setModalVisible();
+      RefImpl.value?.handleDisabled(true);
+      let from = await (callback?.(row) ?? Promise.resolve(row));
+      RefImpl.value?.setFormData(from ? from : row);
+    } else {
+      editModalRef.value?.setModalVisible();
+      editModalRef.value?.handleDisabled(true);
+      let from = await (callback?.(row) ?? Promise.resolve(row));
+      editModalRef.value?.setFormData(from ? from : row);
+    }
   }
   // 表单提交
   function handleSubmitClick() {

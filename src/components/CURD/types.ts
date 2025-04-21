@@ -13,11 +13,11 @@ export type PageFormInstance = InstanceType<typeof PageForm>;
 
 export type IObject = Record<string, any>;
 
-type DataComponent = "date-picker" | "time-picker" | "time-select" | "custom-tag" | "input-tag";
+type DateComponent = "date-picker" | "time-picker" | "time-select" | "custom-tag" | "input-tag";
 type InputComponent = "input" | "select" | "input-number" | "cascader" | "tree-select";
 type OtherComponent = "text" | "radio" | "checkbox" | "switch" | "icon-select" | "custom";
-export type ISearchComponent = DataComponent | InputComponent;
-export type IComponentType = DataComponent | InputComponent | OtherComponent;
+export type ISearchComponent = DateComponent | InputComponent;
+export type IComponentType = DateComponent | InputComponent | OtherComponent;
 
 type ToolbarLeft = "add" | "delete" | "import" | "export";
 type ToolbarRight = "refresh" | "filter" | "imports" | "exports" | "search";
@@ -44,26 +44,7 @@ export interface ISearchConfig {
   // 标签冒号(默认：false)
   colon?: boolean;
   // 表单项(默认：[])
-  formItems?: Array<{
-    // 组件类型(如input,select等)
-    type?: ISearchComponent;
-    // 标签文本
-    label?: string;
-    // 标签提示
-    tips?: string | IObject;
-    // 键名
-    prop: string;
-    // 组件属性(input-tag组件支持join,btnText,size属性)
-    attrs?: IObject;
-    // 初始值
-    initialValue?: any;
-    // 可选项(适用于select组件)
-    options?: Array<{ label: string; value: any }>;
-    // 组件事件
-    events?: Record<string, (...args: any) => void>;
-    // 初始化数据函数扩展
-    initFn?: (formItem: IObject) => void;
-  }>;
+  formItems?: IFormItems;
   // 是否开启展开和收缩(默认：true)
   isExpandable?: boolean;
   // 默认展示的表单项数量(默认：3)
@@ -199,36 +180,36 @@ export interface IModalConfig<T = any> {
   // 提交之前处理
   beforeSubmit?: (data: T) => void;
   // 提交的网络请求函数(需返回promise)
-  formAction: (data: T) => Promise<any>;
+  formAction?: (data: T) => Promise<any>;
 }
 
 export type IForm = Partial<Omit<FormProps, "model" | "rules">>;
 
 // 表单项
 export type IFormItems = Array<{
-  // 组件类型(如input,select,radio,custom等，默认input)
+  // 组件类型(如input,select,radio,custom等)
   type: IComponentType;
+  // 标签提示
+  tips?: string | IObject;
+  // 标签文本
+  label: string;
+  // 键名
+  prop: string;
   // 组件属性
   attrs?: IObject;
-  // 组件可选项(适用于select,radio,checkbox组件)
+  // 组件可选项(只适用于select,radio,checkbox组件)
   options?: Array<{
     label: string;
     value: any;
     disabled?: boolean;
     [key: string]: any;
   }>;
-  // 插槽名(适用于组件类型为custom)
-  slotName?: string;
-  // 标签文本
-  label: string;
-  // 标签提示
-  tips?: string | IObject;
-  // 键名
-  prop: string;
   // 验证规则
   rules?: FormItemRule[];
   // 初始值
   initialValue?: any;
+  // 插槽名(适用于自定义组件，设置类型为custom)
+  slotName?: string;
   // 是否隐藏
   hidden?: boolean;
   // layout组件Col属性

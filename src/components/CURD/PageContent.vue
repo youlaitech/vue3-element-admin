@@ -503,19 +503,24 @@ function handleDelete(id?: number | string) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(function () {
-    if (props.contentConfig.deleteAction) {
-      props.contentConfig.deleteAction(ids).then(() => {
-        ElMessage.success("删除成功");
-        removeIds.value = [];
-        //清空选中项
-        tableRef.value?.clearSelection();
-        handleRefresh(true);
-      });
-    } else {
-      ElMessage.error("未配置deleteAction");
-    }
-  });
+  })
+    .then(function () {
+      if (props.contentConfig.deleteAction) {
+        props.contentConfig
+          .deleteAction(ids)
+          .then(() => {
+            ElMessage.success("删除成功");
+            removeIds.value = [];
+            //清空选中项
+            tableRef.value?.clearSelection();
+            handleRefresh(true);
+          })
+          .catch(() => {});
+      } else {
+        ElMessage.error("未配置deleteAction");
+      }
+    })
+    .catch(() => {});
 }
 
 // 导出表单
@@ -777,7 +782,14 @@ function handleToolbar(name: string) {
 
 // 操作列
 function handleOperate(data: IOperateData) {
-  emit("operateClick", data);
+  switch (data.name) {
+    case "delete":
+      props.contentConfig?.deleteAction && handleDelete(data.row[pk]);
+      break;
+    default:
+      emit("operateClick", data);
+      break;
+  }
 }
 
 // 属性修改

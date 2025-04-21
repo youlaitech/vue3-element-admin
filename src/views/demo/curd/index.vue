@@ -57,7 +57,17 @@
         @submit-click="handleSubmitClick"
       >
         <template #gender="scope">
-          <Dict v-model="scope.formData[scope.prop]" code="gender" />
+          <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
+        </template>
+        <template #openModal>
+          <el-button type="primary" @click="openSecondModal">打开二级弹窗</el-button>
+        </template>
+      </page-modal>
+
+      <!-- 二级弹窗 -->
+      <page-modal ref="addModalRef2" :modal-config="addModalConfig2" @custom-click="secondSubmit">
+        <template #gender="scope">
+          <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
         </template>
       </page-modal>
 
@@ -104,9 +114,10 @@
 
 <script setup lang="ts">
 import UserAPI from "@/api/system/user.api";
-import type { IObject, IOperateData } from "@/components/CURD/types";
+import type { IObject, IOperateData, PageContentInstance } from "@/components/CURD/types";
 import usePage from "@/components/CURD/usePage";
 import addModalConfig from "./config/add";
+import addModalConfig2 from "./config/add2";
 import contentConfig from "./config/content";
 import contentConfig2 from "./config/content2";
 import editModalConfig from "./config/edit";
@@ -121,7 +132,7 @@ const {
   editModalRef,
   handleQueryClick,
   handleResetClick,
-  // handleAddClick,
+  handleAddClick,
   handleEditClick,
   handleViewClick,
   handleSubmitClick,
@@ -130,12 +141,8 @@ const {
   handleFilterChange,
 } = usePage();
 
-// 新增
-async function handleAddClick() {
-  addModalRef.value?.setModalVisible();
-  // 加载下拉数据源，建议在初始化配置项 initFn 中加载，避免多次请求
-  // addModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
-}
+const addModalRef2 = ref();
+
 // 其他工具栏
 function handleToolbarClick(name: string) {
   console.log(name);
@@ -162,25 +169,14 @@ const handleOperateClick = (data: IObject) => {
     ElMessageBox.prompt("请输入用户「" + data.row.username + "」的新密码", "重置密码", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
-    }).then(({ value }) => {
-      if (!value || value.length < 6) {
-        ElMessage.warning("密码至少需要6位字符，请重新输入");
-        return false;
-      }
-      UserAPI.resetPassword(data.row.id, value).then(() => {
-        ElMessage.success("密码重置成功，新密码是：" + value);
-      });
-    });
-  } else if (data.name === "delete") {
-    ElMessageBox.confirm("确认删除?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
     })
-      .then(function () {
-        UserAPI.deleteByIds(data.row.id).then(() => {
-          ElMessage.success("删除成功");
-          contentRef.value?.handleRefresh(true); // 刷新列表
+      .then(({ value }) => {
+        if (!value || value.length < 6) {
+          ElMessage.warning("密码至少需要6位字符，请重新输入");
+          return false;
+        }
+        UserAPI.resetPassword(data.row.id, value).then(() => {
+          ElMessage.success("密码重置成功，新密码是：" + value);
         });
       })
       .catch(() => {});
@@ -196,6 +192,14 @@ const handleOperateClick2 = (data: IOperateData) => {
   } else if (data.name === "delete") {
     ElMessage.success("模拟删除成功");
   }
+};
+
+// 打开二级弹窗
+const openSecondModal = () => {
+  handleAddClick(addModalRef2 as Ref<PageContentInstance>);
+};
+const secondSubmit = () => {
+  ElMessage.success("二级弹窗提交成功");
 };
 
 // 切换示例
