@@ -18,7 +18,7 @@ function usePage() {
     contentRef.value?.fetchPageData({ ...queryParams, ...filterParams }, true);
   }
   // 新增
-  function handleAddClick(RefImpl?: Ref<PageContentInstance>) {
+  function handleAddClick(RefImpl?: Ref<PageModalInstance>) {
     if (RefImpl) {
       RefImpl?.value.setModalVisible();
       RefImpl?.value.handleDisabled(false);
@@ -31,7 +31,7 @@ function usePage() {
   async function handleEditClick(
     row: IObject,
     callback?: (result?: IObject) => IObject,
-    RefImpl?: Ref<PageContentInstance>
+    RefImpl?: Ref<PageModalInstance>
   ) {
     if (RefImpl) {
       RefImpl.value?.setModalVisible();
@@ -49,7 +49,7 @@ function usePage() {
   async function handleViewClick(
     row: IObject,
     callback?: (result?: IObject) => IObject,
-    RefImpl?: Ref<PageContentInstance>
+    RefImpl?: Ref<PageModalInstance>
   ) {
     if (RefImpl) {
       RefImpl.value?.setModalVisible();

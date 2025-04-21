@@ -114,7 +114,7 @@
 
 <script setup lang="ts">
 import UserAPI from "@/api/system/user.api";
-import type { IObject, IOperateData, PageContentInstance } from "@/components/CURD/types";
+import type { IObject, IOperateData, PageModalInstance } from "@/components/CURD/types";
 import usePage from "@/components/CURD/usePage";
 import addModalConfig from "./config/add";
 import addModalConfig2 from "./config/add2";
@@ -196,7 +196,7 @@ const handleOperateClick2 = (data: IOperateData) => {
 
 // 打开二级弹窗
 const openSecondModal = () => {
-  handleAddClick(addModalRef2 as Ref<PageContentInstance>);
+  handleAddClick(addModalRef2 as Ref<PageModalInstance>);
 };
 const secondSubmit = () => {
   ElMessage.success("二级弹窗提交成功");

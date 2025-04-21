@@ -26,7 +26,7 @@
               v-on="item.events || {}"
             />
             <component
-              :is="componentMap.get(item?.type ?? 'input')"
+              :is="componentMap.get(item.type)"
               v-else
               v-model.trim="queryParams[item.prop]"
               v-bind="{ style: { width: '100%' }, ...item.attrs }"
@@ -71,7 +71,7 @@ const emit = defineEmits<{
   resetClick: [queryParams: IObject];
 }>();
 // 组件映射表
-const componentMap = new Map<ISearchComponent, Component>([
+const componentMap = new Map<ISearchComponent, any>([
   /* eslint-disable */
   // @ts-ignore
   ["input", markRaw(ElInput)], // @ts-ignore
