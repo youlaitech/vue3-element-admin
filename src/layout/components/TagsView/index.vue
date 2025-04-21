@@ -416,27 +416,10 @@ onMounted(() => {
 <style lang="scss" scoped>
 .tags-container {
   width: 100%;
-  height: 34px;
+  height: $tags-view-height;
   background-color: var(--el-bg-color);
   border: 1px solid var(--el-border-color-light);
   box-shadow: 0 1px 1px var(--el-box-shadow-light);
-
-  /* 滚动容器样式 */
-  .scroll-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-
-    :deep(.el-scrollbar__bar) {
-      bottom: 0px;
-    }
-
-    :deep(.el-scrollbar__wrap) {
-      height: 49px;
-    }
-  }
 
   /* 标签项样式 */
   .tags-item {
