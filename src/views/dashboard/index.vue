@@ -81,8 +81,42 @@
 
     <!-- 数据统计 -->
     <el-row :gutter="10" class="mt-5">
+      <!-- 在线用户数量 -->
+      <el-col :span="8">
+        <el-card shadow="never">
+          <template #header>
+            <div class="flex-x-between">
+              <span class="text-gray">在线用户</span>
+              <el-tag type="danger" size="small">实时</el-tag>
+            </div>
+          </template>
+
+          <div class="flex-x-between mt-2">
+            <div class="flex-y-center">
+              <span class="text-lg transition-all duration-300 hover:scale-110">
+                {{ onlineUserCount }}
+              </span>
+              <span v-if="isConnected" class="ml-2 text-xs text-[#67c23a]">
+                <el-icon><Connection /></el-icon>
+                已连接
+              </span>
+              <span v-else class="ml-2 text-xs text-[#f56c6c]">
+                <el-icon><Failed /></el-icon>
+                未连接
+              </span>
+            </div>
+            <div class="i-svg:people w-8 h-8 animate-[pulse_2s_infinite]" />
+          </div>
+
+          <div class="flex-x-between mt-2 text-sm text-gray">
+            <span>更新时间</span>
+            <span>{{ formattedTime }}</span>
+          </div>
+        </el-card>
+      </el-col>
+
       <!-- 访客数(UV) -->
-      <el-col :span="12">
+      <el-col :span="8">
         <el-skeleton :loading="visitStatsLoading" :rows="5" animated>
           <template #template>
             <el-card>
@@ -142,7 +176,7 @@
       </el-col>
 
       <!-- 浏览量(PV) -->
-      <el-col :span="12">
+      <el-col :span="8">
         <el-skeleton :loading="visitStatsLoading" :rows="5" animated>
           <template #template>
             <el-card>
@@ -210,8 +244,8 @@
             <div class="flex-x-between">
               <span>访问趋势</span>
               <el-radio-group v-model="visitTrendDateRange" size="small">
-                <el-radio-button label="近7天" :value="7" />
-                <el-radio-button label="近30天" :value="30" />
+                <el-radio-button :value="7">近7天</el-radio-button>
+                <el-radio-button :value="30">近30天</el-radio-button>
               </el-radio-group>
             </div>
           </template>
@@ -288,7 +322,28 @@ import { dayjs } from "element-plus";
 import LogAPI, { VisitStatsVO, VisitTrendVO } from "@/api/system/log.api";
 import { useUserStore } from "@/store/modules/user.store";
 import { formatGrowthRate } from "@/utils";
-import { useTransition } from "@vueuse/core";
+import { useTransition, useDateFormat } from "@vueuse/core";
+import { Connection, Failed } from "@element-plus/icons-vue";
+import { useWebSocketOnlineUsers } from "@/hooks/useWebSocketOnlineUsers";
+
+// 在线用户数量组件相关
+const { onlineUserCount, lastUpdateTime, isConnected } = useWebSocketOnlineUsers();
+
+// 记录上一次的用户数量用于计算趋势
+const previousCount = ref(0);
+
+// 监听用户数量变化，计算趋势
+watch(onlineUserCount, (newCount, oldCount) => {
+  if (oldCount > 0) {
+    previousCount.value = oldCount;
+  }
+});
+
+// 格式化时间戳
+const formattedTime = computed(() => {
+  if (!lastUpdateTime.value) return "--";
+  return useDateFormat(lastUpdateTime, "HH:mm:ss").value;
+});
 
 interface VersionItem {
   id: string;
@@ -506,14 +561,14 @@ const updateVisitTrendChartOptions = (data: VisitTrendVO) => {
  */
 const computeGrowthRateClass = (growthRate?: number): string => {
   if (!growthRate) {
-    return "color-[--el-color-info]";
+    return "text-[--el-color-info]";
   }
   if (growthRate > 0) {
-    return "color-[--el-color-danger]";
+    return "text-[--el-color-danger]";
   } else if (growthRate < 0) {
-    return "color-[--el-color-success]";
+    return "text-[--el-color-success]";
   } else {
-    return "color-[--el-color-info]";
+    return "text-[--el-color-info]";
   }
 };
 

@@ -1,5 +1,6 @@
 import { Client, IMessage, StompSubscription } from "@stomp/stompjs";
 import { getAccessToken } from "@/utils/auth";
+import { ref, watch } from "vue";
 
 export interface UseStompOptions {
   /** WebSocket 地址，不传时使用 VITE_APP_WS_ENDPOINT 环境变量 */
@@ -30,43 +31,46 @@ export function useStomp(options: UseStompOptions = {}) {
 
   /**
    * 初始化 STOMP 客户端
-   * 只有在 brokerURL 非空时才会初始化客户端
    */
   const initializeClient = () => {
-    if (!brokerURL.value) {
-      console.warn(
-        "brokerURL is required. Please set the WebSocket URL in your .env file (VITE_APP_WS_ENDPOINT)."
-      );
+    if (client.value) {
       return;
     }
 
-    if (!client.value) {
-      client.value = new Client({
-        brokerURL: brokerURL.value,
-        reconnectDelay: options.reconnectDelay ?? 5000,
-        debug: options.debug ? (msg) => console.log("[STOMP]", msg) : () => {},
-        connectHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-        heartbeatIncoming: 4000,
-        heartbeatOutgoing: 4000,
-      });
+    // 创建 STOMP 客户端
+    client.value = new Client({
+      brokerURL: brokerURL.value,
+      connectHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+      debug: () => {},
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+    });
 
-      client.value.onConnect = (frame) => {
-        isConnected.value = true;
-        console.log("STOMP connected", frame);
-      };
+    // 设置连接监听器
+    client.value.onConnect = () => {
+      isConnected.value = true;
+      console.log("WebSocket连接已建立");
+    };
 
-      client.value.onStompError = (frame) => {
-        console.error("Broker reported error: " + frame.headers["message"]);
-        console.error("Additional details: " + frame.body);
-      };
+    // 设置断开连接监听器
+    client.value.onDisconnect = () => {
+      isConnected.value = false;
+      console.log("WebSocket连接已断开");
+    };
 
-      client.value.onWebSocketClose = (evt) => {
-        isConnected.value = false;
-        console.warn("WebSocket closed", evt);
-      };
-    }
+    // 设置 Web Socket 关闭监听器
+    client.value.onWebSocketClose = (event) => {
+      isConnected.value = false;
+      console.log(`WebSocket已关闭: ${event?.code} ${event?.reason}`);
+    };
+
+    // 设置错误监听器
+    client.value.onStompError = (frame) => {
+      console.error("STOMP错误:", frame.headers, frame.body);
+    };
   };
 
   // 监听 brokerURL 的变化，若地址改变则重新初始化
@@ -82,21 +86,27 @@ export function useStomp(options: UseStompOptions = {}) {
     }
   });
 
-  // 在组件挂载时检查并初始化客户端
-  onMounted(() => {
-    console.log("useStomp onMounted initializeClient");
-    initializeClient();
-  });
+  // 初始化客户端
+  initializeClient();
 
   /**
    * 激活连接（如果已经连接或正在激活则直接返回）
    */
   const connect = () => {
+    if (!client.value) {
+      initializeClient();
+    }
+
     if (client.value && (client.value.connected || client.value.active)) {
-      console.log("Already connected or connecting, skipping connect() call.");
       return;
     }
-    client.value?.activate();
+
+    if (!client.value) {
+      console.error("STOMP客户端初始化失败");
+      return;
+    }
+
+    client.value.activate();
   };
 
   /**
@@ -106,12 +116,23 @@ export function useStomp(options: UseStompOptions = {}) {
    * @returns 返回订阅 id，用于后续取消订阅
    */
   const subscribe = (destination: string, callback: (message: IMessage) => void): string => {
-    if (client.value) {
+    if (!client.value) {
+      return "";
+    }
+
+    if (!client.value.connected) {
+      return "";
+    }
+
+    try {
       const subscription = client.value.subscribe(destination, callback);
       subscriptions.set(subscription.id, subscription);
+      console.log(`订阅成功: ${destination}, ID: ${subscription.id}`);
       return subscription.id;
+    } catch (error) {
+      console.error(`订阅失败(${destination}):`, error);
+      return "";
     }
-    return "";
   };
 
   /**
