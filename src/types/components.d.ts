@@ -76,7 +76,6 @@ declare module "vue" {
     NoticeDropdown: (typeof import("./../components/Notice/NoticeDropdown.vue"))["default"];
     LayoutSelect: (typeof import("./../layout/components/Settings/components/LayoutSelect.vue"))["default"];
     PageContent: (typeof import("./../components/CURD/PageContent.vue"))["default"];
-    PageForm: (typeof import("./../components/CURD/PageForm.vue"))["default"];
     PageModal: (typeof import("./../components/CURD/PageModal.vue"))["default"];
     PageSearch: (typeof import("./../components/CURD/PageSearch.vue"))["default"];
     Pagination: (typeof import("./../components/Pagination/index.vue"))["default"];

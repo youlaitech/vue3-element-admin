@@ -65,7 +65,7 @@
       </page-modal>
 
       <!-- 二级弹窗 -->
-      <page-modal ref="addModalRef2" :modal-config="addModalConfig2" @custom-click="secondSubmit">
+      <page-modal ref="addModalRef2" :modal-config="addModalConfig2" @custom-submit="secondSubmit">
         <template #gender="scope">
           <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
         </template>
@@ -198,7 +198,8 @@ const handleOperateClick2 = (data: IOperateData) => {
 const openSecondModal = () => {
   handleAddClick(addModalRef2 as Ref<PageModalInstance>);
 };
-const secondSubmit = () => {
+const secondSubmit = (formData: any) => {
+  console.log("secondSubmit", formData);
   ElMessage.success("二级弹窗提交成功");
 };
 

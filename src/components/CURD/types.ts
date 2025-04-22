@@ -1,7 +1,6 @@
 import type { DialogProps, DrawerProps, FormItemRule, PaginationProps } from "element-plus";
 import type { FormProps, TableProps, ColProps, ButtonProps, CardProps } from "element-plus";
 import type PageContent from "./PageContent.vue";
-import type PageForm from "./PageForm.vue";
 import type PageModal from "./PageModal.vue";
 import type PageSearch from "./PageSearch.vue";
 import { CSSProperties } from "vue";
@@ -9,7 +8,6 @@ import { CSSProperties } from "vue";
 export type PageSearchInstance = InstanceType<typeof PageSearch>;
 export type PageContentInstance = InstanceType<typeof PageContent>;
 export type PageModalInstance = InstanceType<typeof PageModal>;
-export type PageFormInstance = InstanceType<typeof PageForm>;
 
 export type IObject = Record<string, any>;
 
