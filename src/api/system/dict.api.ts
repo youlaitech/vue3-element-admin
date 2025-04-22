@@ -303,12 +303,8 @@ export interface DictItemForm {
  * 字典项下拉选项
  */
 export interface DictItemOption {
-  /** 字典数据值 */
-  value: string;
-
-  /** 字典数据标签 */
+  value: number | string;
   label: string;
-
-  /** 标签类型 */
-  tagType: string;
+  tagType?: "" | "success" | "info" | "warning" | "danger";
+  [key: string]: any;
 }
