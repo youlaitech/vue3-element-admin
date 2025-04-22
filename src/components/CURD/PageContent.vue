@@ -1,5 +1,7 @@
 <template>
-  <el-card shadow="never">
+  <div
+    class="rounded bg-[var(--el-bg-color)] border border-[var(--el-border-color)] p-5 h-full md:flex flex-1 flex-col md:overflow-auto"
+  >
     <!-- 表格工具栏 -->
     <div class="flex flex-col md:flex-row justify-between gap-y-2.5 mb-2.5">
       <!-- 左侧工具栏 -->
@@ -37,6 +39,7 @@
         </template>
       </div>
     </div>
+
     <!-- 列表 -->
     <el-table
       ref="tableRef"
@@ -44,6 +47,7 @@
       v-bind="contentConfig.table"
       :data="pageData"
       :row-key="pk"
+      class="flex-1"
       @selection-change="handleSelectionChange"
       @filter-change="handleFilterChange"
     >
@@ -180,16 +184,18 @@
         </el-table-column>
       </template>
     </el-table>
+
     <!-- 分页 -->
-    <template v-if="showPagination">
-      <el-scrollbar :class="['mt-3', { 'flex-x-end': contentConfig?.pagePosition === 'right' }]">
+    <div v-if="showPagination" class="mt-4">
+      <el-scrollbar :class="['h-8!', { 'flex-x-end': contentConfig?.pagePosition === 'right' }]">
         <el-pagination
           v-bind="pagination"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
       </el-scrollbar>
-    </template>
+    </div>
+
     <!-- 导出弹窗 -->
     <el-dialog
       v-model="exportsModalVisible"
@@ -314,7 +320,7 @@
         </div>
       </template>
     </el-dialog>
-  </el-card>
+  </div>
 </template>
 
 <script setup lang="ts">
