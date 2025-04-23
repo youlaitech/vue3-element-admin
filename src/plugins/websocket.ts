@@ -8,6 +8,7 @@ export function setupWebSocket() {
 
   // 初始化字典WebSocket服务
   dictWebSocket.initWebSocket();
+  console.log("字典WebSocket初始化完成");
 
   // 在窗口关闭前断开WebSocket连接
   window.addEventListener("beforeunload", () => {
