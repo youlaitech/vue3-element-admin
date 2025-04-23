@@ -1,5 +1,5 @@
-import DeptAPI from "@/api/system/dept.api";
 import type { ISearchConfig } from "@/components/CURD/types";
+import { deptArr, stateArr } from "./options";
 
 const searchConfig: ISearchConfig = {
   permPrefix: "sys:user",
@@ -21,18 +21,17 @@ const searchConfig: ISearchConfig = {
       prop: "deptId",
       attrs: {
         placeholder: "请选择",
-        data: [],
+        data: deptArr,
         filterable: true,
         "check-strictly": true,
         "render-after-expand": false,
         clearable: true,
         style: { width: "200px" },
       },
-      async initFn(formItem) {
-        formItem.attrs.data = await DeptAPI.getOptions();
-        // 注意:如果initFn函数不是箭头函数,this会指向此配置项对象,那么也就可以用this来替代形参formItem
-        // this.attrs!.data = await DeptAPI.getOptions();
-      },
+      // async initFn(formItem) {
+      //   // 注意:如果initFn函数不是箭头函数,this会指向此配置项对象,那么也就可以用this来替代形参formItem
+      //   formItem.attrs.data = await DeptAPI.getOptions();
+      // },
     },
     {
       type: "select",
@@ -43,10 +42,7 @@ const searchConfig: ISearchConfig = {
         clearable: true,
         style: { width: "200px" },
       },
-      options: [
-        { label: "启用", value: 1 },
-        { label: "禁用", value: 0 },
-      ],
+      options: stateArr,
     },
     {
       type: "date-picker",

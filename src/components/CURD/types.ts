@@ -196,12 +196,7 @@ export type IFormItems<T = IComponentType> = Array<{
   // 组件属性
   attrs?: IObject;
   // 组件可选项(只适用于select,radio,checkbox组件)
-  options?: Array<{
-    label: string;
-    value: any;
-    disabled?: boolean;
-    [key: string]: any;
-  }>;
+  options?: Array<{ label: string; value: any; [key: string]: any }> | Ref<any[]>;
   // 验证规则
   rules?: FormItemRule[];
   // 初始值

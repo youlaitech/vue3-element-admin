@@ -1,6 +1,6 @@
 import { type UserForm } from "@/api/system/user.api";
 import type { IModalConfig } from "@/components/CURD/types";
-import DeptAPI from "@/api/system/dept.api";
+import { deptArr } from "../config/options";
 
 const modalConfig: IModalConfig<UserForm> = {
   colon: true,
@@ -35,14 +35,10 @@ const modalConfig: IModalConfig<UserForm> = {
       type: "tree-select",
       attrs: {
         placeholder: "请选择",
-        data: [],
+        data: deptArr,
         filterable: true,
         "check-strictly": true,
         "render-after-expand": false,
-      },
-      async initFn(formItem) {
-        // 注意:如果initFn函数不是箭头函数,this会指向此配置项对象,那么也就可以用this来替代形参formItem
-        formItem.attrs.data = await DeptAPI.getOptions();
       },
     },
     {

@@ -2,8 +2,7 @@ import UserAPI, { type UserForm } from "@/api/system/user.api";
 import type { IModalConfig } from "@/components/CURD/types";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 import { useAppStore } from "@/store";
-import DeptAPI from "@/api/system/dept.api";
-import RoleAPI from "@/api/system/role.api";
+import { deptArr, roleArr } from "./options";
 
 const modalConfig: IModalConfig<UserForm> = {
   permPrefix: "sys:user",
@@ -46,15 +45,15 @@ const modalConfig: IModalConfig<UserForm> = {
       type: "tree-select",
       attrs: {
         placeholder: "请选择所属部门",
-        data: [],
+        data: deptArr, // setup，Vue会自动解包ref，不需要.value
         filterable: true,
         "check-strictly": true,
         "render-after-expand": false,
       },
-      async initFn(formItem) {
-        // 注意:如果initFn函数不是箭头函数,this会指向此配置项对象,那么也就可以用this来替代形参formItem
-        formItem.attrs.data = await DeptAPI.getOptions();
-      },
+      // async initFn(formItem) {
+      //   // 注意:如果initFn函数不是箭头函数,this会指向此配置项对象,那么也就可以用this来替代形参formItem
+      //   formItem.attrs.data = await DeptAPI.getOptions();
+      // },
     },
     {
       type: "custom",
@@ -72,11 +71,11 @@ const modalConfig: IModalConfig<UserForm> = {
         placeholder: "请选择",
         multiple: true,
       },
-      options: [],
+      options: roleArr,
       initialValue: [],
-      async initFn(formItem) {
-        formItem.options = await RoleAPI.getOptions();
-      },
+      // async initFn(formItem) {
+      //   formItem.options = await RoleAPI.getOptions();
+      // },
     },
     {
       type: "input",

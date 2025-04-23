@@ -1,10 +1,5 @@
-import DeptAPI from "@/api/system/dept.api";
 import type { ISearchConfig } from "@/components/CURD/types";
-
-const selectOptions = reactive([
-  { label: "启用", value: 1 },
-  { label: "禁用", value: 0 },
-]);
+import { deptArr, stateArr } from "../config/options";
 
 const searchConfig: ISearchConfig = {
   grid: "right",
@@ -38,7 +33,7 @@ const searchConfig: ISearchConfig = {
       label: "下拉选择框",
       prop: "testSelect",
       attrs: { placeholder: "全部", clearable: true },
-      options: selectOptions,
+      options: stateArr as any,
       events: {
         change: function (e) {
           console.log("选中的值: ", e);
@@ -51,17 +46,16 @@ const searchConfig: ISearchConfig = {
       prop: "testTreeSelect",
       attrs: {
         placeholder: "请选择",
-        data: [],
+        data: deptArr,
         filterable: true,
         "check-strictly": true,
         "render-after-expand": false,
         clearable: true,
       },
-      async initFn(formItem) {
-        formItem.attrs.data = await DeptAPI.getOptions();
-        // 注意:如果initFn函数不是箭头函数,this会指向此配置项对象,那么也就可以用this来替代形参formItem
-        // this.attrs!.data = await DeptAPI.getOptions();
-      },
+      // async initFn(formItem) {
+      //   // 注意:如果initFn函数不是箭头函数,this会指向此配置项对象,那么也就可以用this来替代形参formItem
+      //   formItem.attrs.data = await DeptAPI.getOptions();
+      // },
     },
     {
       type: "cascader",

@@ -117,13 +117,15 @@ import UserAPI from "@/api/system/user.api";
 import type { IObject, IOperateData, PageModalInstance } from "@/components/CURD/types";
 import usePage from "@/components/CURD/usePage";
 import addModalConfig from "./config/add";
-import addModalConfig2 from "./config/add2";
 import contentConfig from "./config/content";
-import contentConfig2 from "./config/content2";
 import editModalConfig from "./config/edit";
-import editModalConfig2 from "./config/edit2";
 import searchConfig from "./config/search";
-import searchConfig2 from "./config/search2";
+import { initOptions } from "./config/options";
+
+import addModalConfig2 from "./config2/add";
+import contentConfig2 from "./config2/content";
+import editModalConfig2 from "./config2/edit";
+import searchConfig2 from "./config2/search";
 
 const {
   searchRef,
@@ -140,8 +142,6 @@ const {
   handleSearchClick,
   handleFilterChange,
 } = usePage();
-
-const addModalRef2 = ref();
 
 // 其他工具栏
 function handleToolbarClick(name: string) {
@@ -195,6 +195,7 @@ const handleOperateClick2 = (data: IOperateData) => {
 };
 
 // 打开二级弹窗
+const addModalRef2 = ref();
 const openSecondModal = () => {
   handleAddClick(addModalRef2 as Ref<PageModalInstance>);
 };
@@ -205,4 +206,8 @@ const secondSubmit = (formData: any) => {
 
 // 切换示例
 const isA = ref(true);
+
+onMounted(() => {
+  initOptions();
+});
 </script>

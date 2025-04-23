@@ -790,7 +790,11 @@ function handleToolbar(name: string) {
 function handleOperate(data: IOperateData) {
   switch (data.name) {
     case "delete":
-      props.contentConfig?.deleteAction && handleDelete(data.row[pk]);
+      if (props.contentConfig?.deleteAction) {
+        handleDelete(data.row[pk]);
+      } else {
+        emit("operateClick", data);
+      }
       break;
     default:
       emit("operateClick", data);
