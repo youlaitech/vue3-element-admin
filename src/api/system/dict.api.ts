@@ -40,7 +40,7 @@ const DictAPI = {
    * @returns 字典表单数据
    */
   getFormData(id: string) {
-    return request<any, ResponseData<DictForm>>({
+    return request<any, DictForm>({
       url: `${DICT_BASE_URL}/${id}/form`,
       method: "get",
     });
@@ -130,7 +130,7 @@ const DictAPI = {
    * @returns 字典项表单数据
    */
   getDictItemFormData(dictCode: string, id: string) {
-    return request<any, ResponseData<DictItemForm>>({
+    return request<any, DictItemForm>({
       url: `${DICT_BASE_URL}/${dictCode}/items/${id}/form`,
       method: "get",
     });
@@ -303,12 +303,8 @@ export interface DictItemForm {
  * 字典项下拉选项
  */
 export interface DictItemOption {
-  /** 字典数据值 */
-  value: string;
-
-  /** 字典数据标签 */
+  value: number | string;
   label: string;
-
-  /** 标签类型 */
-  tagType: string;
+  tagType?: "" | "success" | "info" | "warning" | "danger";
+  [key: string]: any;
 }

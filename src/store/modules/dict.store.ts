@@ -43,6 +43,16 @@ export const useDictStore = defineStore("dict", () => {
   };
 
   /**
+   * 移除指定字典项
+   * @param dictCode 字典编码
+   */
+  const removeDictItem = (dictCode: string) => {
+    if (dictCache.value[dictCode]) {
+      Reflect.deleteProperty(dictCache.value, dictCode);
+    }
+  };
+
+  /**
    * 清空字典缓存
    */
   const clearDictCache = () => {
@@ -52,6 +62,7 @@ export const useDictStore = defineStore("dict", () => {
   return {
     loadDictItems,
     getDictItems,
+    removeDictItem,
     clearDictCache,
   };
 });

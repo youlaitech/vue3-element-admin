@@ -56,4 +56,15 @@ const updateLabelAndTag = async () => {
 watch([() => props.code, () => props.modelValue], updateLabelAndTag);
 
 onMounted(updateLabelAndTag);
+
+// 监听WebSocket字典更新事件，强制刷新标签
+watch(
+  () => dictStore.getDictItems(props.code || ""),
+  async () => {
+    if (props.code) {
+      await updateLabelAndTag();
+    }
+  },
+  { deep: true }
+);
 </script>
