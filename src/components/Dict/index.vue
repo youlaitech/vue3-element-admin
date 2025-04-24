@@ -23,12 +23,7 @@
     :style="style"
     @change="handleChange"
   >
-    <el-radio
-      v-for="option in options"
-      :key="option.value"
-      :label="option.label"
-      :value="option.value"
-    >
+    <el-radio v-for="option in options" :key="option.value" :value="option.value">
       {{ option.label }}
     </el-radio>
   </el-radio-group>
@@ -40,12 +35,7 @@
     :style="style"
     @change="handleChange"
   >
-    <el-checkbox
-      v-for="option in options"
-      :key="option.value"
-      :label="option.label"
-      :value="option.value"
-    >
+    <el-checkbox v-for="option in options" :key="option.value" :value="option.value">
       {{ option.label }}
     </el-checkbox>
   </el-checkbox-group>

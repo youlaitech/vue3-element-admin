@@ -210,8 +210,8 @@
             <div class="flex-x-between">
               <span>访问趋势</span>
               <el-radio-group v-model="visitTrendDateRange" size="small">
-                <el-radio-button label="近7天" :value="7" />
-                <el-radio-button label="近30天" :value="30" />
+                <el-radio-button :value="7">近7天</el-radio-button>
+                <el-radio-button :value="30">近30天</el-radio-button>
               </el-radio-group>
             </div>
           </template>
