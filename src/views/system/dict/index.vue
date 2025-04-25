@@ -175,6 +175,7 @@ const computedRules = computed(() => {
 // 查询
 function handleQuery() {
   loading.value = true;
+  queryParams.pageNum = 1;
   DictAPI.getPage(queryParams)
     .then((data) => {
       tableData.value = data.list;

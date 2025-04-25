@@ -330,6 +330,7 @@ const currentNotice = ref<NoticeDetailVO>({});
 // 查询通知公告
 function handleQuery() {
   loading.value = true;
+  queryParams.pageNum = 1;
   NoticeAPI.getPage(queryParams)
     .then((data) => {
       pageData.value = data.list;

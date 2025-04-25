@@ -181,6 +181,7 @@ const rules = reactive({
 // 查询系统配置
 function handleQuery() {
   loading.value = true;
+  queryParams.pageNum = 1;
   ConfigAPI.getPage(queryParams)
     .then((data) => {
       pageData.value = data.list;

@@ -88,6 +88,7 @@ const pageData = ref<LogPageVO[]>();
 /** 查询 */
 function handleQuery() {
   loading.value = true;
+  queryParams.pageNum = 1;
   LogAPI.getPage(queryParams)
     .then((data) => {
       pageData.value = data.list;

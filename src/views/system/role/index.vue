@@ -280,6 +280,7 @@ const parentChildLinked = ref(true);
 // 查询
 function handleQuery() {
   loading.value = true;
+  queryParams.pageNum = 1;
   RoleAPI.getPage(queryParams)
     .then((data) => {
       roleList.value = data.list;
