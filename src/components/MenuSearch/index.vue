@@ -128,7 +128,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import router from "@/router";
 import { usePermissionStore } from "@/store";
 import { isExternal } from "@/utils";
-import { RouteRecordRaw } from "vue-router";
+import { RouteRecordRaw, LocationQueryRaw } from "vue-router";
 import { Clock, Close, Delete } from "@element-plus/icons-vue";
 
 const HISTORY_KEY = "menu_search_history";
@@ -150,6 +150,7 @@ interface SearchItem {
   name?: string;
   icon?: string;
   redirect?: string;
+  params?: LocationQueryRaw;
 }
 
 // 从本地存储加载搜索历史
@@ -284,7 +285,7 @@ function navigateToRoute(item: SearchItem) {
   if (isExternal(item.path)) {
     window.open(item.path, "_blank");
   } else {
-    router.push(item.path);
+    router.push({ path: item.path, query: item.params });
   }
 }
 
@@ -303,6 +304,7 @@ function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
         name: typeof route.name === "string" ? route.name : undefined,
         icon: route.meta.icon,
         redirect: typeof route.redirect === "string" ? route.redirect : undefined,
+        params: route.meta.params ? JSON.parse(JSON.stringify(toRaw(route.meta.params))) : undefined
       });
     }
   });
