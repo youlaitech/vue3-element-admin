@@ -324,10 +324,10 @@ import { useUserStore } from "@/store/modules/user.store";
 import { formatGrowthRate } from "@/utils";
 import { useTransition, useDateFormat } from "@vueuse/core";
 import { Connection, Failed } from "@element-plus/icons-vue";
-import { useWebSocketOnlineUsers } from "@/hooks/useWebSocketOnlineUsers";
+import { useOnlineCount } from "@/hooks/websocket/services/useOnlineCount";
 
 // 在线用户数量组件相关
-const { onlineUserCount, lastUpdateTime, isConnected } = useWebSocketOnlineUsers();
+const { onlineUserCount, lastUpdateTime, isConnected } = useOnlineCount();
 
 // 记录上一次的用户数量用于计算趋势
 const previousCount = ref(0);

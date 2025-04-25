@@ -142,7 +142,7 @@
 import { useDictStoreHook } from "@/store/modules/dict.store";
 import { useDateFormat } from "@vueuse/core";
 import DictAPI, { DictItemForm } from "@/api/system/dict.api";
-import { useWebSocketDict, DictMessage } from "@/hooks/useWebSocketDict";
+import { useDictSync, DictMessage } from "@/hooks/websocket/services/useDictSync";
 
 // 性别字典编码
 const DICT_CODE = "gender";
@@ -161,7 +161,7 @@ const dictForm = ref<DictItemForm | null>(null);
 const selectedGender = ref("");
 
 // 初始化WebSocket
-const dictWebSocket = useWebSocketDict();
+const dictWebSocket = useDictSync();
 
 // 获取连接状态
 const wsConnected = computed(() => dictWebSocket.isConnected);

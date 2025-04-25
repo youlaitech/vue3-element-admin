@@ -7,12 +7,24 @@ export interface UseStompOptions {
   brokerURL?: string;
   /** 用于鉴权的 token，不传时使用 getAccessToken() 的返回值 */
   token?: string;
-  /** 重连延迟，单位毫秒，默认为 5000 */
+  /** 重连延迟，单位毫秒，默认为 8000 */
   reconnectDelay?: number;
+  /** 连接超时时间，单位毫秒，默认为 10000 */
+  connectionTimeout?: number;
+  /** 是否开启指数退避重连策略 */
+  useExponentialBackoff?: boolean;
+  /** 最大重连次数，默认为 5 */
+  maxReconnectAttempts?: number;
+  /** 最大重连延迟，单位毫秒，默认为 60000 */
+  maxReconnectDelay?: number;
   /** 是否开启调试日志 */
   debug?: boolean;
 }
 
+/**
+ * STOMP WebSocket连接Hook
+ * 用于管理WebSocket连接的建立、断开、重连和消息订阅
+ */
 export function useStomp(options: UseStompOptions = {}) {
   // 默认值：brokerURL 从环境变量中获取，token 从 getAccessToken() 获取
   const defaultBrokerURL = import.meta.env.VITE_APP_WS_ENDPOINT || "";
@@ -20,9 +32,20 @@ export function useStomp(options: UseStompOptions = {}) {
 
   const brokerURL = ref(options.brokerURL ?? defaultBrokerURL);
   const token = options.token ?? defaultToken;
+  const reconnectDelay = options.reconnectDelay ?? 8000;
+  const connectionTimeout = options.connectionTimeout ?? 10000;
+  const useExponentialBackoff = options.useExponentialBackoff ?? false;
+  const maxReconnectAttempts = options.maxReconnectAttempts ?? 5;
+  const maxReconnectDelay = options.maxReconnectDelay ?? 60000;
 
   // 连接状态标记
   const isConnected = ref(false);
+  // 重连尝试次数
+  const reconnectCount = ref(0);
+  // 重连计时器
+  let reconnectTimer: any = null;
+  // 连接超时计时器
+  let connectionTimeoutTimer: any = null;
   // 存储所有订阅
   const subscriptions = new Map<string, StompSubscription>();
 
@@ -43,8 +66,8 @@ export function useStomp(options: UseStompOptions = {}) {
       connectHeaders: {
         Authorization: `Bearer ${token}`,
       },
-      debug: () => {},
-      reconnectDelay: 5000,
+      debug: options.debug ? console.log : () => {},
+      reconnectDelay: useExponentialBackoff ? 0 : reconnectDelay, // 使用自定义退避策略时禁用内置重连
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
     });
@@ -52,6 +75,8 @@ export function useStomp(options: UseStompOptions = {}) {
     // 设置连接监听器
     client.value.onConnect = () => {
       isConnected.value = true;
+      reconnectCount.value = 0;
+      clearTimeout(connectionTimeoutTimer);
       console.log("WebSocket连接已建立");
     };
 
@@ -59,6 +84,11 @@ export function useStomp(options: UseStompOptions = {}) {
     client.value.onDisconnect = () => {
       isConnected.value = false;
       console.log("WebSocket连接已断开");
+
+      // 如果使用自定义指数退避重连策略，则在这里处理
+      if (useExponentialBackoff && reconnectCount.value < maxReconnectAttempts) {
+        handleReconnect();
+      }
     };
 
     // 设置 Web Socket 关闭监听器
@@ -71,6 +101,36 @@ export function useStomp(options: UseStompOptions = {}) {
     client.value.onStompError = (frame) => {
       console.error("STOMP错误:", frame.headers, frame.body);
     };
+  };
+
+  /**
+   * 处理重连逻辑
+   */
+  const handleReconnect = () => {
+    if (reconnectCount.value >= maxReconnectAttempts) {
+      console.error(`已达到最大重连次数(${maxReconnectAttempts})，停止重连`);
+      return;
+    }
+
+    reconnectCount.value++;
+    console.log(`尝试重连(${reconnectCount.value}/${maxReconnectAttempts})...`);
+
+    // 使用指数退避策略增加重连间隔
+    const delay = useExponentialBackoff
+      ? Math.min(reconnectDelay * Math.pow(2, reconnectCount.value - 1), maxReconnectDelay)
+      : reconnectDelay;
+
+    // 清除之前的计时器
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer);
+    }
+
+    // 设置重连计时器
+    reconnectTimer = setTimeout(() => {
+      if (!isConnected.value && client.value) {
+        client.value.activate();
+      }
+    }, delay);
   };
 
   // 监听 brokerURL 的变化，若地址改变则重新初始化
@@ -105,6 +165,17 @@ export function useStomp(options: UseStompOptions = {}) {
       console.error("STOMP客户端初始化失败");
       return;
     }
+
+    // 设置连接超时
+    clearTimeout(connectionTimeoutTimer);
+    connectionTimeoutTimer = setTimeout(() => {
+      if (!isConnected.value) {
+        console.warn("WebSocket连接超时");
+        if (useExponentialBackoff) {
+          handleReconnect();
+        }
+      }
+    }, connectionTimeout);
 
     client.value.activate();
   };
@@ -155,13 +226,27 @@ export function useStomp(options: UseStompOptions = {}) {
       console.log("Already disconnected, skipping disconnect() call.");
       return;
     }
+
+    // 清除所有计时器
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    }
+
+    if (connectionTimeoutTimer) {
+      clearTimeout(connectionTimeoutTimer);
+      connectionTimeoutTimer = null;
+    }
+
     client.value?.deactivate();
     isConnected.value = false;
+    reconnectCount.value = 0;
   };
 
   return {
     client,
     isConnected,
+    reconnectCount,
     connect,
     subscribe,
     unsubscribe,

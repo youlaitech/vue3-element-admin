@@ -1,4 +1,4 @@
-import { useWebSocketDict } from "@/hooks/useWebSocketDict";
+import { useDictSync } from "@/hooks/websocket/services/useDictSync";
 import { getAccessToken } from "@/utils/auth";
 
 /**
@@ -19,7 +19,7 @@ export function setupWebSocket() {
   try {
     // 延迟初始化，确保应用完全启动
     setTimeout(() => {
-      const dictWebSocket = useWebSocketDict();
+      const dictWebSocket = useDictSync();
 
       // 初始化字典WebSocket服务
       dictWebSocket.initWebSocket();
