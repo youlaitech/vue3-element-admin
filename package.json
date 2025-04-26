@@ -1,7 +1,7 @@
 {
   "name": "vue3-element-admin",
   "description": "Vue3 + Vite + TypeScript + Element-Plus 的后台管理模板，vue-element-admin 的 Vue3 版本",
-  "version": "2.27.0",
+  "version": "2.28.0",
   "private": true,
   "type": "module",
   "scripts": {
