@@ -1,6 +1,7 @@
 import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useStomp } from "../core/useStomp";
 import { ElMessage } from "element-plus";
+import { getAccessToken } from "@/utils/auth";
 
 /**
  * 在线用户计数Hook
@@ -86,16 +87,35 @@ export function useOnlineCount() {
   const initWebSocket = () => {
     if (isConnecting.value) return;
 
+    // 检查是否有可用的令牌
+    const hasToken = !!getAccessToken();
+    if (!hasToken) {
+      console.log("没有检测到有效令牌，不尝试WebSocket连接");
+      return;
+    }
+
     isConnecting.value = true;
 
     // 连接WebSocket
     connect();
 
     // 设置连接超时显示UI提示
+    clearTimeout(connectionTimeoutTimer);
     connectionTimeoutTimer = setTimeout(() => {
       if (!isConnected.value) {
         console.warn("WebSocket连接超时，将自动尝试重连");
         ElMessage.warning("正在尝试连接服务器，请稍候...");
+
+        // 超时后尝试重新连接
+        closeWebSocket();
+        setTimeout(() => {
+          // 再次检查令牌有效性
+          if (getAccessToken()) {
+            initWebSocket();
+          } else {
+            console.log("令牌无效，放弃重连");
+          }
+        }, 3000);
       }
     }, 10000); // 较长的UI提示超时
 

@@ -28,10 +28,10 @@ export interface UseStompOptions {
 export function useStomp(options: UseStompOptions = {}) {
   // 默认值：brokerURL 从环境变量中获取，token 从 getAccessToken() 获取
   const defaultBrokerURL = import.meta.env.VITE_APP_WS_ENDPOINT || "";
-  const defaultToken = getAccessToken();
+  // 不再使用defaultToken，每次连接时直接获取最新token
 
   const brokerURL = ref(options.brokerURL ?? defaultBrokerURL);
-  const token = options.token ?? defaultToken;
+  // 不再存储token，改为在初始化时获取
   const reconnectDelay = options.reconnectDelay ?? 8000;
   const connectionTimeout = options.connectionTimeout ?? 10000;
   const useExponentialBackoff = options.useExponentialBackoff ?? false;
@@ -60,11 +60,20 @@ export function useStomp(options: UseStompOptions = {}) {
       return;
     }
 
+    // 每次连接前重新获取最新令牌，不依赖之前的token值
+    const currentToken = getAccessToken();
+
+    // 检查令牌是否为空，如果为空则不进行连接
+    if (!currentToken) {
+      console.error("WebSocket连接失败：授权令牌为空，请先登录");
+      return;
+    }
+
     // 创建 STOMP 客户端
     client.value = new Client({
       brokerURL: brokerURL.value,
       connectHeaders: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${currentToken}`,
       },
       debug: options.debug ? console.log : () => {},
       reconnectDelay: useExponentialBackoff ? 0 : reconnectDelay, // 使用自定义退避策略时禁用内置重连
@@ -95,11 +104,40 @@ export function useStomp(options: UseStompOptions = {}) {
     client.value.onWebSocketClose = (event) => {
       isConnected.value = false;
       console.log(`WebSocket已关闭: ${event?.code} ${event?.reason}`);
+
+      // 如果是授权问题导致的关闭，尝试重新获取令牌
+      if (event?.code === 1000 || event?.code === 1006 || event?.code === 1008) {
+        console.log("可能是授权问题导致连接关闭，尝试重新建立连接");
+
+        // 等待一段时间后再尝试重连，避免立即重连
+        setTimeout(() => {
+          // 强制重新初始化客户端，获取最新令牌
+          client.value = null;
+
+          // 检查当前是否有有效令牌
+          const freshToken = getAccessToken();
+          if (freshToken) {
+            initializeClient();
+            connect();
+          } else {
+            console.warn("没有有效令牌，暂不重连WebSocket");
+          }
+        }, 3000);
+      }
     };
 
     // 设置错误监听器
     client.value.onStompError = (frame) => {
       console.error("STOMP错误:", frame.headers, frame.body);
+
+      // 检查是否是授权错误
+      if (
+        frame.headers?.message?.includes("Unauthorized") ||
+        frame.body?.includes("Unauthorized") ||
+        frame.body?.includes("Token")
+      ) {
+        console.warn("WebSocket授权错误，请检查登录状态");
+      }
     };
   };
 
