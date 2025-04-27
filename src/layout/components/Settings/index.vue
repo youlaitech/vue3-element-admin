@@ -2,11 +2,11 @@
   <el-drawer
     v-model="drawerVisible"
     size="300"
-    :title="$t('settings.project')"
+    :title="t('settings.project')"
     :before-close="handleCloseDrawer"
   >
     <section class="config-section">
-      <el-divider>{{ $t("settings.theme") }}</el-divider>
+      <el-divider>{{ t("settings.theme") }}</el-divider>
 
       <div class="flex-center">
         <el-switch
@@ -20,10 +20,10 @@
 
     <!-- 界面设置 -->
     <section class="config-section">
-      <el-divider>{{ $t("settings.interface") }}</el-divider>
+      <el-divider>{{ t("settings.interface") }}</el-divider>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ $t("settings.themeColor") }}</span>
+        <span class="text-xs">{{ t("settings.themeColor") }}</span>
         <el-color-picker
           v-model="selectedThemeColor"
           :predefine="colorPresets"
@@ -32,27 +32,27 @@
       </div>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ $t("settings.tagsView") }}</span>
+        <span class="text-xs">{{ t("settings.tagsView") }}</span>
         <el-switch v-model="settingsStore.tagsView" />
       </div>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ $t("settings.sidebarLogo") }}</span>
+        <span class="text-xs">{{ t("settings.sidebarLogo") }}</span>
         <el-switch v-model="settingsStore.sidebarLogo" />
       </div>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ $t("settings.watermark") }}</span>
+        <span class="text-xs">{{ t("settings.watermark") }}</span>
         <el-switch v-model="settingsStore.watermarkEnabled" />
       </div>
       <div v-if="!isDark" class="config-item flex-x-between">
-        <span class="text-xs">{{ $t("settings.sidebarColorScheme") }}</span>
+        <span class="text-xs">{{ t("settings.sidebarColorScheme") }}</span>
         <el-radio-group v-model="sidebarColor" @change="changeSidebarColor">
           <el-radio :value="SidebarColor.CLASSIC_BLUE">
-            {{ $t("settings.classicBlue") }}
+            {{ t("settings.classicBlue") }}
           </el-radio>
           <el-radio :value="SidebarColor.MINIMAL_WHITE">
-            {{ $t("settings.minimalWhite") }}
+            {{ t("settings.minimalWhite") }}
           </el-radio>
         </el-radio-group>
       </div>
@@ -60,13 +60,14 @@
 
     <!-- 布局设置 -->
     <section class="config-section">
-      <el-divider>{{ $t("settings.navigation") }}</el-divider>
+      <el-divider>{{ t("settings.navigation") }}</el-divider>
       <LayoutSelect v-model="settingsStore.layout" @update:model-value="handleLayoutChange" />
     </section>
   </el-drawer>
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n();
 import { LayoutMode } from "@/enums/settings/layout.enum";
 import { ThemeMode } from "@/enums/settings/theme.enum";
 import { SidebarColor } from "@/enums/settings/theme.enum";

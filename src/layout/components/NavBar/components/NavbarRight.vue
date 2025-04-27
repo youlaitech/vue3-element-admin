@@ -27,10 +27,10 @@
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item @click="handleProfileClick">
-            {{ $t("navbar.profile") }}
+            {{ t("navbar.profile") }}
           </el-dropdown-item>
           <el-dropdown-item divided @click="logout">
-            {{ $t("navbar.logout") }}
+            {{ t("navbar.logout") }}
           </el-dropdown-item>
         </el-dropdown-menu>
       </template>
@@ -43,6 +43,7 @@
   </div>
 </template>
 <script setup lang="ts">
+const { t } = useI18n();
 import defaultSettings from "@/settings";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 import { useAppStore, useSettingsStore, useUserStore, useTagsViewStore } from "@/store";
