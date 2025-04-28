@@ -37,7 +37,7 @@
                   <el-link
                     type="primary"
                     icon="download"
-                    :underline="false"
+                    underline="never"
                     @click="handleDownloadTemplate"
                   >
                     下载模板
