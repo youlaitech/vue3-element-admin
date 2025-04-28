@@ -77,7 +77,7 @@
       <el-form-item>
         <div class="flex-y-center w-full gap-10px">
           <el-checkbox v-model="isRead">{{ t("login.agree") }}</el-checkbox>
-          <el-link type="primary" :underline="false">{{ t("login.userAgreement") }}</el-link>
+          <el-link type="primary" underline="never">{{ t("login.userAgreement") }}</el-link>
         </div>
       </el-form-item>
 
@@ -90,7 +90,7 @@
     </el-form>
     <div flex-center gap-10px>
       <el-text size="default">{{ t("login.haveAccount") }}</el-text>
-      <el-link type="primary" :underline="false" @click="toLogin">{{ t("login.login") }}</el-link>
+      <el-link type="primary" underline="never" @click="toLogin">{{ t("login.login") }}</el-link>
     </div>
   </div>
 </template>

@@ -19,7 +19,7 @@
 
     <div flex-center gap-10px>
       <el-text size="default">{{ t("login.thinkOfPasswd") }}</el-text>
-      <el-link type="primary" :underline="false" @click="toLogin">{{ t("login.login") }}</el-link>
+      <el-link type="primary" underline="never" @click="toLogin">{{ t("login.login") }}</el-link>
     </div>
   </div>
 </template>

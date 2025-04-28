@@ -59,7 +59,7 @@
 
       <div class="flex-x-between w-full">
         <el-checkbox v-model="loginFormData.rememberMe">{{ t("login.rememberMe") }}</el-checkbox>
-        <el-link type="primary" :underline="false" @click="toOtherForm('resetPwd')">
+        <el-link type="primary" underline="never" @click="toOtherForm('resetPwd')">
           {{ t("login.forgetPassword") }}
         </el-link>
       </div>
@@ -74,7 +74,7 @@
 
     <div flex-center gap-10px>
       <el-text size="default">{{ t("login.noAccount") }}</el-text>
-      <el-link type="primary" :underline="false" @click="toOtherForm('register')">
+      <el-link type="primary" underline="never" @click="toOtherForm('register')">
         {{ t("login.reg") }}
       </el-link>
     </div>

@@ -295,7 +295,7 @@
               <span class="header-title">最新动态</span>
               <el-link
                 type="primary"
-                :underline="false"
+                underline="never"
                 href="https://gitee.com/youlaiorg/vue3-element-admin/releases"
                 target="_blank"
               >
@@ -331,7 +331,7 @@
                       :type="index === 0 ? 'primary' : 'info'"
                       :href="item.link"
                       target="_blank"
-                      :underline="false"
+                      underline="never"
                     >
                       详情
                       <el-icon class="link-icon"><TopRight /></el-icon>
