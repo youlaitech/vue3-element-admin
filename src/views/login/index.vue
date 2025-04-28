@@ -2,7 +2,7 @@
   <div class="wh-full flex-center flex-col login">
     <!-- 右侧切换主题、语言按钮 -->
     <div class="flex flex-col gap-4px fixed top-40px right-40px text-lg">
-      <el-tooltip :content="t('login.theneToggle')" placement="left">
+      <el-tooltip :content="t('login.themeToggle')" placement="left">
         <CommonWrapper>
           <DarkModeSwitch />
         </CommonWrapper>

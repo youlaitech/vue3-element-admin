@@ -6,7 +6,7 @@ export default {
   },
   // 登录页面国际化
   login: {
-    theneToggle: "Theme Switch",
+    themeToggle: "Theme Switch",
     languageToggle: "Language Switch",
     dark: "Dark",
     light: "Light",
