@@ -91,6 +91,13 @@ export function useOnlineCount() {
   const initWebSocket = () => {
     if (isConnecting.value) return;
 
+    // 检查WebSocket端点是否配置
+    const wsEndpoint = import.meta.env.VITE_APP_WS_ENDPOINT;
+    if (!wsEndpoint) {
+      console.log("未配置WebSocket端点(VITE_APP_WS_ENDPOINT),跳过WebSocket连接");
+      return;
+    }
+
     // 检查是否有可用的令牌
     const hasToken = !!getAccessToken();
     if (!hasToken) {

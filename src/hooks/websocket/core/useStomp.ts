@@ -59,6 +59,12 @@ export function useStomp(options: UseStompOptions = {}) {
       return;
     }
 
+    // 检查WebSocket端点是否配置
+    if (!brokerURL.value) {
+      console.error("WebSocket连接失败: 未配置WebSocket端点URL");
+      return;
+    }
+
     // 每次连接前重新获取最新令牌，不依赖之前的token值
     const currentToken = getAccessToken();
 
@@ -190,6 +196,12 @@ export function useStomp(options: UseStompOptions = {}) {
    * 激活连接（如果已经连接或正在激活则直接返回）
    */
   const connect = () => {
+    // 检查是否有配置WebSocket端点
+    if (!brokerURL.value) {
+      console.error("WebSocket连接失败: 未配置WebSocket端点URL");
+      return;
+    }
+
     if (!client.value) {
       initializeClient();
     }

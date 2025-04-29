@@ -59,6 +59,13 @@ function createDictSyncHook() {
    */
   const initWebSocket = async () => {
     try {
+      // 检查是否配置了WebSocket端点
+      const wsEndpoint = import.meta.env.VITE_APP_WS_ENDPOINT;
+      if (!wsEndpoint) {
+        console.log("[WebSocket] 未配置WebSocket端点,跳过连接");
+        return;
+      }
+
       // 连接WebSocket
       connect();
 
