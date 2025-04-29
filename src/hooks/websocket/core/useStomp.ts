@@ -28,14 +28,13 @@ export interface UseStompOptions {
 export function useStomp(options: UseStompOptions = {}) {
   // 默认值：brokerURL 从环境变量中获取，token 从 getAccessToken() 获取
   const defaultBrokerURL = import.meta.env.VITE_APP_WS_ENDPOINT || "";
-  // 不再使用defaultToken，每次连接时直接获取最新token
 
   const brokerURL = ref(options.brokerURL ?? defaultBrokerURL);
-  // 不再存储token，改为在初始化时获取
-  const reconnectDelay = options.reconnectDelay ?? 8000;
+  // 默认配置参数
+  const reconnectDelay = options.reconnectDelay ?? 15000; // 默认15秒重连间隔
   const connectionTimeout = options.connectionTimeout ?? 10000;
   const useExponentialBackoff = options.useExponentialBackoff ?? false;
-  const maxReconnectAttempts = options.maxReconnectAttempts ?? 5;
+  const maxReconnectAttempts = options.maxReconnectAttempts ?? 3; // 最多重连3次
   const maxReconnectDelay = options.maxReconnectDelay ?? 60000;
 
   // 连接状态标记
@@ -76,7 +75,7 @@ export function useStomp(options: UseStompOptions = {}) {
         Authorization: `Bearer ${currentToken}`,
       },
       debug: options.debug ? console.log : () => {},
-      reconnectDelay: useExponentialBackoff ? 0 : reconnectDelay, // 使用自定义退避策略时禁用内置重连
+      reconnectDelay: useExponentialBackoff ? 0 : reconnectDelay, // 禁用内置重连机制
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
     });
@@ -195,12 +194,19 @@ export function useStomp(options: UseStompOptions = {}) {
       initializeClient();
     }
 
-    if (client.value && (client.value.connected || client.value.active)) {
+    if (!client.value) {
+      console.error("STOMP客户端初始化失败");
       return;
     }
 
-    if (!client.value) {
-      console.error("STOMP客户端初始化失败");
+    // 避免重复连接:检查是否已连接或正在连接
+    if (client.value.connected) {
+      console.log("WebSocket已经连接,跳过重复连接");
+      return;
+    }
+
+    if (client.value.active) {
+      console.log("WebSocket连接正在进行中,跳过重复连接请求");
       return;
     }
 

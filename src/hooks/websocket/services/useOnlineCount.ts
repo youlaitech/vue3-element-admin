@@ -28,9 +28,9 @@ export function useOnlineCount() {
     disconnect,
     isConnected: stompConnected,
   } = useStomp({
-    reconnectDelay: 5000, // 初始重连延迟5秒
-    maxReconnectAttempts: 3, // 最大重连3次
-    connectionTimeout: 10000, // 连接超时10秒
+    reconnectDelay: 15000, // 重连基础延迟
+    maxReconnectAttempts: 3, // 重连次数上限
+    connectionTimeout: 10000, // 连接超时
     useExponentialBackoff: true, // 启用指数退避
   });
 
@@ -56,7 +56,11 @@ export function useOnlineCount() {
    * 订阅在线用户计数主题
    */
   const subscribeToOnlineCount = () => {
-    if (!stompConnected.value) return;
+    if (!stompConnected.value) {
+      // 10秒后重试订阅
+      setTimeout(subscribeToOnlineCount, 10000);
+      return;
+    }
 
     // 如果已经订阅，先取消订阅
     if (subscriptionId) {

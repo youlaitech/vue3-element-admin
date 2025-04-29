@@ -24,9 +24,10 @@ function createDictSyncHook() {
 
   // 使用现有的useStomp，配置适合字典场景的重连参数
   const { isConnected, connect, subscribe, unsubscribe, disconnect } = useStomp({
-    reconnectDelay: 10000, // 使用更长的重连延迟 - 10秒
-    connectionTimeout: 15000, // 更长的连接超时时间 - 15秒
-    useExponentialBackoff: false, // 字典数据不需要指数退避策略
+    reconnectDelay: 20000, // 字典更新重连时间
+    connectionTimeout: 15000, // 连接超时阈值
+    useExponentialBackoff: false, // 使用固定间隔重连策略
+    maxReconnectAttempts: 3, // 最多重连3次
   });
 
   // 存储订阅ID
@@ -101,8 +102,8 @@ function createDictSyncHook() {
     const attemptSubscribe = () => {
       if (!isConnected.value) {
         console.log("等待WebSocket连接建立...");
-        // 3秒后再次尝试
-        setTimeout(attemptSubscribe, 3000);
+        // 10秒后再次尝试
+        setTimeout(attemptSubscribe, 10000);
         return;
       }
 
