@@ -209,7 +209,7 @@
 
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialog.visible = false">取消</el-button>
+          <el-button @click="handleCancel">取消</el-button>
           <el-button type="primary" @click="handleSubmit">确定</el-button>
         </span>
       </template>
@@ -244,6 +244,10 @@ const dialog = reactive({
   title: "",
   type: "" as DialogType, // 修改账号资料,修改密码、绑定手机、绑定邮箱
 });
+const userProfileFormRef = ref();
+const passwordChangeFormRef = ref();
+const mobileBindingFormRef = ref();
+const emailBindingFormRef = ref();
 
 const userProfileForm = reactive<UserProfileForm>({});
 const passwordChangeForm = reactive<PasswordChangeForm>({});
@@ -407,6 +411,22 @@ const handleSubmit = async () => {
       dialog.visible = false;
       loadUserProfile();
     });
+  }
+};
+
+/**
+ * 取消
+ */
+const handleCancel = () => {
+  dialog.visible = false;
+  if (dialog.type === DialogType.ACCOUNT) {
+    userProfileFormRef.value?.resetFields();
+  } else if (dialog.type === DialogType.PASSWORD) {
+    passwordChangeFormRef.value?.resetFields();
+  } else if (dialog.type === DialogType.MOBILE) {
+    mobileBindingFormRef.value?.resetFields();
+  } else if (dialog.type === DialogType.EMAIL) {
+    emailBindingFormRef.value?.resetFields();
   }
 };
 
