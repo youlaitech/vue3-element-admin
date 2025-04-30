@@ -4,7 +4,7 @@
 
   <img src="https://img.shields.io/badge/Vue-3.5.13-brightgreen.svg"/>
   <img src="https://img.shields.io/badge/Vite-6.2.2-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.9.7-blue.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.9.9-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -49,9 +49,14 @@
 
 ## 项目截图
 
+- 控制台
 ![](https://www.youlai.tech/storage/blog/2025/01/18/20250118160647.png)
 
+- API 接口文档
 ![](https://www.youlai.tech/storage/blog/2025/01/18/20250118183539.png)
+
+- APP 端
+![](https://www.youlai.tech/storage/blog/2025/04/30/app.jpg)
 
 ## 项目源码
 
