@@ -1,7 +1,7 @@
 <template>
   <div class="tags-container">
     <!-- 水平滚动容器 -->
-    <el-scrollbar class="scroll-container" :vertical="false" @wheel="handleScroll">
+    <el-scrollbar ref="scrollbarRef" class="scroll-container" @wheel="handleScroll">
       <router-link
         v-for="tag in visitedViews"
         ref="tagRef"
@@ -344,8 +344,16 @@ function closeContentMenu() {
 /**
  * 处理鼠标滚轮事件，实现水平滚动
  */
-function handleScroll() {
+const scrollbarRef = ref();
+function handleScroll(event: any) {
   closeContentMenu();
+  // 检查是否有横向滚动条
+  if (scrollbarRef.value.wrapRef.scrollWidth > scrollbarRef.value.wrapRef.clientWidth) {
+    const wheelDelta = event.wheelDelta || 0; // 向上滚动时为120，向下滚动时为-120
+    const scrollLeft = scrollbarRef.value.wrapRef.scrollLeft; // 当前滚动条到左边的距离
+    // 设置滚动条到左边的距离
+    scrollbarRef.value.setScrollLeft(scrollLeft - wheelDelta);
+  }
 }
 
 /**
@@ -420,6 +428,11 @@ onMounted(() => {
   background-color: var(--el-bg-color);
   border: 1px solid var(--el-border-color-light);
   box-shadow: 0 1px 1px var(--el-box-shadow-light);
+
+  /* 滚动容器样式 */
+  .scroll-container {
+    white-space: nowrap;
+  }
 
   /* 标签项样式 */
   .tags-item {
