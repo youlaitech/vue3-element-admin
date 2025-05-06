@@ -14,8 +14,8 @@
         </el-form-item>
 
         <el-form-item class="search-buttons">
-          <el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
-          <el-button icon="refresh" @click="handleResetQuery()">重置</el-button>
+          <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
+          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -89,7 +89,7 @@
         v-model:total="total"
         v-model:page="queryParams.pageNum"
         v-model:limit="queryParams.pageSize"
-        @pagination="handleQuery"
+        @pagination="fetchData"
       />
     </el-card>
 
@@ -172,10 +172,9 @@ const computedRules = computed(() => {
   return rules;
 });
 
-// 查询
-function handleQuery() {
+// 获取数据
+function fetchData() {
   loading.value = true;
-  queryParams.pageNum = 1;
   DictAPI.getPage(queryParams)
     .then((data) => {
       tableData.value = data.list;
@@ -186,11 +185,17 @@ function handleQuery() {
     });
 }
 
+// 查询（重置页码后获取数据）
+function handleQuery() {
+  queryParams.pageNum = 1;
+  fetchData();
+}
+
 // 重置查询
 function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
-  handleQuery();
+  fetchData();
 }
 
 // 行选择

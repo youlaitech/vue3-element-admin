@@ -157,7 +157,7 @@
             v-model:total="total"
             v-model:page="queryParams.pageNum"
             v-model:limit="queryParams.pageSize"
-            @pagination="handleQuery"
+            @pagination="fetchData"
           />
         </el-card>
       </el-col>
@@ -313,18 +313,22 @@ const roleOptions = ref<OptionType[]>();
 // 导入弹窗显示状态
 const importDialogVisible = ref(false);
 
-// 查询
-async function handleQuery() {
+// 获取数据
+async function fetchData() {
   loading.value = true;
+  try {
+    const data = await UserAPI.getPage(queryParams);
+    pageData.value = data.list;
+    total.value = data.total;
+  } finally {
+    loading.value = false;
+  }
+}
+
+// 查询（重置页码后获取数据）
+function handleQuery() {
   queryParams.pageNum = 1;
-  UserAPI.getPage(queryParams)
-    .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+  fetchData();
 }
 
 // 重置查询
@@ -333,7 +337,7 @@ function handleResetQuery() {
   queryParams.pageNum = 1;
   queryParams.deptId = undefined;
   queryParams.createTime = undefined;
-  handleQuery();
+  fetchData();
 }
 
 // 选中项发生变化

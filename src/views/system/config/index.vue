@@ -87,7 +87,7 @@
         v-model:total="total"
         v-model:page="queryParams.pageNum"
         v-model:limit="queryParams.pageSize"
-        @pagination="handleQuery"
+        @pagination="fetchData"
       />
     </el-card>
 
@@ -178,10 +178,9 @@ const rules = reactive({
   configValue: [{ required: true, message: "请输入系统配置值", trigger: "blur" }],
 });
 
-// 查询系统配置
-function handleQuery() {
+// 获取数据
+function fetchData() {
   loading.value = true;
-  queryParams.pageNum = 1;
   ConfigAPI.getPage(queryParams)
     .then((data) => {
       pageData.value = data.list;
@@ -192,11 +191,17 @@ function handleQuery() {
     });
 }
 
+// 查询（重置页码后获取数据）
+function handleQuery() {
+  queryParams.pageNum = 1;
+  fetchData();
+}
+
 // 重置查询
 function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
-  handleQuery();
+  fetchData();
 }
 
 // 行复选框选中项变化

@@ -56,7 +56,7 @@
         v-model:total="total"
         v-model:page="queryParams.pageNum"
         v-model:limit="queryParams.pageSize"
-        @pagination="handleQuery"
+        @pagination="fetchData"
       />
     </el-card>
   </div>
@@ -85,10 +85,9 @@ const queryParams = reactive<LogPageQuery>({
 // 日志表格数据
 const pageData = ref<LogPageVO[]>();
 
-/** 查询 */
-function handleQuery() {
+/** 获取数据 */
+function fetchData() {
   loading.value = true;
-  queryParams.pageNum = 1;
   LogAPI.getPage(queryParams)
     .then((data) => {
       pageData.value = data.list;
@@ -98,12 +97,19 @@ function handleQuery() {
       loading.value = false;
     });
 }
+
+/** 查询（重置页码后获取数据） */
+function handleQuery() {
+  queryParams.pageNum = 1;
+  fetchData();
+}
+
 /** 重置查询 */
 function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryParams.pageNum = 1;
   queryParams.createTime = undefined;
-  handleQuery();
+  fetchData();
 }
 
 onMounted(() => {
