@@ -120,13 +120,4 @@ onMounted(async () => {
   await dictStore.loadDictItems(props.code);
   options.value = dictStore.getDictItems(props.code);
 });
-
-// 监听字典数据变化，确保WebSocket更新时刷新选项
-watch(
-  () => dictStore.getDictItems(props.code),
-  (newItems) => {
-    options.value = newItems;
-  },
-  { deep: true }
-);
 </script>

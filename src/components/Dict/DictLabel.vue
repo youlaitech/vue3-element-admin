@@ -53,18 +53,14 @@ const updateLabelAndTag = async () => {
   tagType.value = newTagType as typeof tagType.value;
 };
 
-watch([() => props.code, () => props.modelValue], updateLabelAndTag);
-
-onMounted(updateLabelAndTag);
-
-// 监听WebSocket字典更新事件，强制刷新标签
+// 初始化或code变化时更新标签和标签样式
 watch(
-  () => dictStore.getDictItems(props.code || ""),
+  [() => props.code, () => props.modelValue],
   async () => {
     if (props.code) {
       await updateLabelAndTag();
     }
   },
-  { deep: true }
+  { immediate: true }
 );
 </script>
