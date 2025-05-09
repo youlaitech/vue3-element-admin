@@ -10,10 +10,11 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit",
-    "lint:eslint": "eslint --cache \"src/**/*.{vue,ts}\" --fix",
+    "lint:eslint": "eslint --cache \"src/**/*.{vue,ts,js}\" --fix",
     "lint:prettier": "prettier --write \"**/*.{js,cjs,ts,json,css,scss,vue,html,md}\"",
     "lint:stylelint": "stylelint --cache \"**/*.{css,scss,vue}\" --fix",
     "lint:lint-staged": "lint-staged",
+    "lint": "npm run lint:eslint && npm run lint:prettier && npm run lint:stylelint",
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky",
     "commit": "git-cz"

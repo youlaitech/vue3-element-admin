@@ -242,7 +242,7 @@ export function useStomp(options: UseStompOptions = {}) {
    * @param callback 接收到消息时的回调函数
    * @returns 返回订阅 id，用于后续取消订阅
    */
-  const subscribe = (destination: string, callback: (message: IMessage) => void): string => {
+  const subscribe = (destination: string, callback: (_message: IMessage) => void): string => {
     if (!client.value) {
       return "";
     }

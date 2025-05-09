@@ -55,7 +55,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
       vue(),
       env.VITE_MOCK_DEV_SERVER === "true" ? mockDevServerPlugin() : null,
       UnoCSS(),
-      // 自动导入配置 https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts
+      // API 导入
       AutoImport({
         // 导入 Vue 函数，如：ref, reactive, toRef 等
         imports: ["vue", "@vueuse/core", "pinia", "vue-router", "vue-i18n"],
@@ -74,10 +74,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         // dts: "src/types/auto-imports.d.ts",
       }),
       Components({
-        resolvers: [
-          // 导入 Element Plus 组件
-          ElementPlusResolver({ importStyle: "sass" }),
-        ],
+        resolvers: [ElementPlusResolver()],
         // 指定自定义组件位置(默认:src/components)
         dirs: ["src/components", "src/**/components"],
         // 导入组件类型声明文件路径 (false:关闭自动生成)

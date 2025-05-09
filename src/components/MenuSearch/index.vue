@@ -124,7 +124,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import router from "@/router";
 import { usePermissionStore } from "@/store";
 import { isExternal } from "@/utils";
@@ -304,7 +303,9 @@ function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
         name: typeof route.name === "string" ? route.name : undefined,
         icon: route.meta.icon,
         redirect: typeof route.redirect === "string" ? route.redirect : undefined,
-        params: route.meta.params ? JSON.parse(JSON.stringify(toRaw(route.meta.params))) : undefined
+        params: route.meta.params
+          ? JSON.parse(JSON.stringify(toRaw(route.meta.params)))
+          : undefined,
       });
     }
   });

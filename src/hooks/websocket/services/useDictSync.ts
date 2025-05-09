@@ -10,7 +10,7 @@ export interface DictMessage {
 }
 
 // 字典事件回调类型
-export type DictMessageCallback = (message: DictMessage) => void;
+export type DictMessageCallback = (_message: DictMessage) => void;
 
 // 全局单例实例
 let instance: ReturnType<typeof createDictSyncHook> | null = null;
