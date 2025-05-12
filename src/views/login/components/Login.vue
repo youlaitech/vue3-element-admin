@@ -1,7 +1,13 @@
 <template>
   <div>
     <h3 text-center m-0 mb-20px>{{ t("login.login") }}</h3>
-    <el-form ref="loginFormRef" :model="loginFormData" :rules="loginRules" size="large">
+    <el-form
+      ref="loginFormRef"
+      :model="loginFormData"
+      :rules="loginRules"
+      size="large"
+      :validate-on-rule-change="false"
+    >
       <!-- 用户名 -->
       <el-form-item prop="username">
         <el-input v-model.trim="loginFormData.username" :placeholder="t('login.username')">
