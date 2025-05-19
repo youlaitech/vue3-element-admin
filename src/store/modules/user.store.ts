@@ -94,9 +94,9 @@ export const useUserStore = defineStore("user", () => {
    */
   function clearSessionAndCache() {
     return new Promise<void>((resolve) => {
-      clearToken();
-      usePermissionStoreHook().resetRouter();
       useDictStoreHook().clearDictCache();
+      usePermissionStoreHook().resetRouter();
+      clearToken();
       userInfo.value = {} as UserInfo;
       resolve();
     });

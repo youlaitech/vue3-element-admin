@@ -18,7 +18,7 @@
       <NoticeDropdown />
     </template>
 
-    <!-- 用户头像（个人中心、注销登录等） -->
+    <!-- 用户头像（个人中心、退出登录等） -->
     <el-dropdown trigger="click">
       <div class="user-profile">
         <img class="user-profile__avatar" :src="userStore.userInfo.avatar" />
@@ -80,7 +80,7 @@ const navbarRightClass = computed(() => {
 });
 
 /**
- * 注销登录
+ * 退出登录
  */
 function logout() {
   ElMessageBox.confirm("确定注销并退出系统吗？", "提示", {
