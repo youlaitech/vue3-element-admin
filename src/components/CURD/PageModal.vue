@@ -7,7 +7,6 @@
         v-bind="{ destroyOnClose: true, ...modalConfig.drawer }"
         @close="handleClose"
       >
-        <!-- 表单 -->
         <el-form ref="formRef" v-bind="modalConfig.form" :model="formData" :rules="formRules">
           <el-row :gutter="20">
             <template v-for="item in formItems" :key="item.prop">
@@ -57,7 +56,7 @@
             </template>
           </el-row>
         </el-form>
-        <!-- 弹窗底部操作按钮 -->
+
         <template #footer>
           <el-button v-if="!formDisable" type="primary" @click="handleSubmit">确 定</el-button>
           <el-button @click="handleClose">{{ !formDisable ? "取 消" : "关闭" }}</el-button>
@@ -68,60 +67,60 @@
     <template v-else>
       <el-dialog
         v-model="modalVisible"
-        v-bind="{ destroyOnClose: true, ...modalConfig.dialog }"
+        v-bind="{ destroyOnClose: true, alignCenter: true, ...modalConfig.dialog }"
         @close="handleClose"
       >
-        <!-- 表单 -->
         <el-form ref="formRef" v-bind="modalConfig.form" :model="formData" :rules="formRules">
-          <el-row :gutter="20">
-            <template v-for="item in formItems" :key="item.prop">
-              <el-col v-show="!item.hidden" v-bind="item.col">
-                <el-form-item :label="item.label" :prop="item.prop">
-                  <!-- Label -->
-                  <template #label>
-                    <span>
-                      {{ item?.label || "" }}
-                      <el-tooltip v-if="item?.tips" v-bind="getTooltipProps(item.tips)">
-                        <QuestionFilled class="w-4 h-4 mx-1" />
-                      </el-tooltip>
-                      <span v-if="modalConfig.colon" class="ml-0.5">:</span>
-                    </span>
-                  </template>
-
-                  <!-- components -->
-                  <template v-if="item.type === 'custom'">
-                    <slot
-                      :name="item.slotName ?? item.prop"
-                      :prop="item.prop"
-                      :form-data="formData"
-                      :attrs="item.attrs"
-                    ></slot>
-                  </template>
-                  <component
-                    :is="componentMap.get(item.type)"
-                    v-else
-                    v-model.trim="formData[item.prop]"
-                    v-bind="{ style: { width: '100%' }, ...item.attrs }"
-                  >
-                    <template v-if="['select', 'radio', 'checkbox'].includes(item.type)">
-                      <component
-                        :is="childrenMap.get(item.type)"
-                        v-for="opt in item.options"
-                        :label="opt.label"
-                        :value="opt.value"
-                      ></component>
+          <el-scrollbar max-height="70vh" :view-style="{ overflowX: 'hidden' }">
+            <el-row :gutter="20">
+              <template v-for="item in formItems" :key="item.prop">
+                <el-col v-show="!item.hidden" v-bind="item.col">
+                  <el-form-item :label="item.label" :prop="item.prop">
+                    <template #label>
+                      <span>
+                        {{ item?.label || "" }}
+                        <el-tooltip v-if="item?.tips" v-bind="getTooltipProps(item.tips)">
+                          <QuestionFilled class="w-4 h-4 mx-1" />
+                        </el-tooltip>
+                        <span v-if="modalConfig.colon" class="ml-0.5">:</span>
+                      </span>
                     </template>
 
-                    <template v-if="item?.slotName && $slots[item.slotName]" #[item.slotName]>
-                      <slot :name="item.slotName" />
+                    <template v-if="item.type === 'custom'">
+                      <slot
+                        :name="item.slotName ?? item.prop"
+                        :prop="item.prop"
+                        :form-data="formData"
+                        :attrs="item.attrs"
+                      ></slot>
                     </template>
-                  </component>
-                </el-form-item>
-              </el-col>
-            </template>
-          </el-row>
+                    <component
+                      :is="componentMap.get(item.type)"
+                      v-else
+                      v-model.trim="formData[item.prop]"
+                      v-bind="{ style: { width: '100%' }, ...item.attrs }"
+                    >
+                      <template v-if="['select', 'radio', 'checkbox'].includes(item.type)">
+                        <component
+                          :is="childrenMap.get(item.type)"
+                          v-for="opt in item.options"
+                          :label="opt.label"
+                          :value="opt.value"
+                        ></component>
+                      </template>
+
+                      <template v-if="item?.slotName && $slots[item.slotName]" #[item.slotName]>
+                        <slot :name="item.slotName" />
+                      </template>
+                    </component>
+                  </el-form-item>
+                </el-col>
+              </template>
+            </el-row>
+            <slot name="bottom" :form-data="formData"></slot>
+          </el-scrollbar>
         </el-form>
-        <!-- 弹窗底部操作按钮 -->
+
         <template #footer>
           <el-button v-if="!formDisable" type="primary" @click="handleSubmit">确 定</el-button>
           <el-button @click="handleClose">{{ !formDisable ? "取 消" : "关闭" }}</el-button>
@@ -144,7 +143,7 @@ const props = defineProps<{ modalConfig: IModalConfig }>();
 // 自定义事件
 const emit = defineEmits<{ submitClick: []; customSubmit: [queryParams: IObject] }>();
 // 组件映射表
-/* eslint-disable */
+
 const componentMap = new Map<IComponentType, any>([
   // @ts-ignore
   ["input", markRaw(ElInput)], // @ts-ignore
@@ -170,7 +169,6 @@ const childrenMap = new Map<IComponentType, any>([
   ["radio", markRaw(ElRadio)], // @ts-ignore"
   ["checkbox", markRaw(ElCheckbox)],
 ]);
-/* eslint-enable */
 
 const pk = props.modalConfig.pk ?? "id"; // 主键名，用于表单数据处理
 const modalVisible = ref(false); // 弹窗显示状态
