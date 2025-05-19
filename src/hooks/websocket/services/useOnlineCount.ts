@@ -1,7 +1,8 @@
 import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useStomp } from "../core/useStomp";
 import { ElMessage } from "element-plus";
-import { getAccessToken } from "@/utils/auth";
+import { Storage } from "@/utils/storage";
+import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
 
 /**
  * 在线用户计数Hook
@@ -99,7 +100,7 @@ export function useOnlineCount() {
     }
 
     // 检查是否有可用的令牌
-    const hasToken = !!getAccessToken();
+    const hasToken = !!Storage.get(ACCESS_TOKEN_KEY, "");
     if (!hasToken) {
       console.log("没有检测到有效令牌，不尝试WebSocket连接");
       return;
@@ -121,7 +122,7 @@ export function useOnlineCount() {
         closeWebSocket();
         setTimeout(() => {
           // 再次检查令牌有效性
-          if (getAccessToken()) {
+          if (Storage.get(ACCESS_TOKEN_KEY, "")) {
             initWebSocket();
           } else {
             console.log("令牌无效，放弃重连");

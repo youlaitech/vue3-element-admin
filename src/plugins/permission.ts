@@ -1,6 +1,7 @@
 import type { NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from "vue-router";
 import NProgress from "@/utils/nprogress";
-import { getAccessToken } from "@/utils/auth";
+import { Storage } from "@/utils/storage";
+import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
 
@@ -11,7 +12,7 @@ export function setupPermission() {
   router.beforeEach(async (to, from, next) => {
     NProgress.start();
 
-    const isLogin = !!getAccessToken(); // 判断是否登录
+    const isLogin = !!Storage.get(ACCESS_TOKEN_KEY, ""); // 判断是否登录
     if (isLogin) {
       if (to.path === "/login") {
         // 已登录，访问登录页，跳转到首页

@@ -1,5 +1,6 @@
 import { Client, IMessage, StompSubscription } from "@stomp/stompjs";
-import { getAccessToken } from "@/utils/auth";
+import { Storage } from "@/utils/storage";
+import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
 import { ref, watch } from "vue";
 
 export interface UseStompOptions {
@@ -66,7 +67,7 @@ export function useStomp(options: UseStompOptions = {}) {
     }
 
     // 每次连接前重新获取最新令牌，不依赖之前的token值
-    const currentToken = getAccessToken();
+    const currentToken = Storage.get(ACCESS_TOKEN_KEY, "");
 
     // 检查令牌是否为空，如果为空则不进行连接
     if (!currentToken) {
@@ -120,7 +121,7 @@ export function useStomp(options: UseStompOptions = {}) {
           client.value = null;
 
           // 检查当前是否有有效令牌
-          const freshToken = getAccessToken();
+          const freshToken = Storage.get(ACCESS_TOKEN_KEY, "");
           if (freshToken) {
             initializeClient();
             connect();

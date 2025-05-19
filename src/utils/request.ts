@@ -2,7 +2,8 @@ import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from "axio
 import qs from "qs";
 import { useUserStoreHook } from "@/store/modules/user.store";
 import { ResultEnum } from "@/enums/api/result.enum";
-import { getAccessToken } from "@/utils/auth";
+import { Storage } from "@/utils/storage";
+import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
 import router from "@/router";
 
 // 创建 axios 实例
@@ -15,7 +16,7 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const accessToken = getAccessToken();
+    const accessToken = Storage.get(ACCESS_TOKEN_KEY, "");
     // 如果 Authorization 设置为 no-auth，则不携带 Token
     if (config.headers.Authorization !== "no-auth" && accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -69,7 +70,7 @@ async function handleTokenRefresh(config: InternalAxiosRequestConfig) {
   return new Promise((resolve) => {
     // 封装需要重试的请求
     const retryRequest = () => {
-      config.headers.Authorization = `Bearer ${getAccessToken()}`;
+      config.headers.Authorization = `Bearer ${Storage.get(ACCESS_TOKEN_KEY, "")}`;
       resolve(service(config));
     };
     waitingQueue.push(retryRequest);

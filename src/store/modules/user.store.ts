@@ -5,7 +5,8 @@ import { useDictStoreHook } from "@/store/modules/dict.store";
 import AuthAPI, { type LoginFormData } from "@/api/auth.api";
 import UserAPI, { type UserInfo } from "@/api/system/user.api";
 
-import { setAccessToken, setRefreshToken, getRefreshToken, clearToken } from "@/utils/auth";
+import { Storage } from "@/utils/storage";
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/cache-keys";
 
 export const useUserStore = defineStore("user", () => {
   const userInfo = useStorage<UserInfo>("userInfo", {} as UserInfo);
@@ -21,8 +22,8 @@ export const useUserStore = defineStore("user", () => {
       AuthAPI.login(LoginFormData)
         .then((data) => {
           const { accessToken, refreshToken } = data;
-          setAccessToken(accessToken); // eyJhbGciOiJIUzI1NiJ9.xxx.xxx
-          setRefreshToken(refreshToken);
+          Storage.set(ACCESS_TOKEN_KEY, accessToken);
+          Storage.set(REFRESH_TOKEN_KEY, refreshToken);
           resolve();
         })
         .catch((error) => {
@@ -73,13 +74,13 @@ export const useUserStore = defineStore("user", () => {
    * 刷新 token
    */
   function refreshToken() {
-    const refreshToken = getRefreshToken();
+    const refreshToken = Storage.get(REFRESH_TOKEN_KEY, "");
     return new Promise<void>((resolve, reject) => {
       AuthAPI.refreshToken(refreshToken)
         .then((data) => {
           const { accessToken, refreshToken } = data;
-          setAccessToken(accessToken);
-          setRefreshToken(refreshToken);
+          Storage.set(ACCESS_TOKEN_KEY, accessToken);
+          Storage.set(REFRESH_TOKEN_KEY, refreshToken);
           resolve();
         })
         .catch((error) => {
@@ -96,7 +97,8 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve) => {
       useDictStoreHook().clearDictCache();
       usePermissionStoreHook().resetRouter();
-      clearToken();
+      Storage.remove(ACCESS_TOKEN_KEY);
+      Storage.remove(REFRESH_TOKEN_KEY);
       userInfo.value = {} as UserInfo;
       resolve();
     });
