@@ -1,13 +1,13 @@
 <template>
   <div class="wh-full flex-center flex-col login">
-    <!-- 右侧切换主题、语言按钮 -->
-    <div class="flex flex-col gap-4px fixed top-40px right-40px text-lg">
-      <el-tooltip :content="t('login.themeToggle')" placement="left">
+    <!-- 右侧切换主题、语言按钮  -->
+    <div class="fixed flex-center gap-8px text-lg responsive-toggles">
+      <el-tooltip :content="t('login.themeToggle')" placement="bottom">
         <CommonWrapper>
           <DarkModeSwitch />
         </CommonWrapper>
       </el-tooltip>
-      <el-tooltip :content="t('login.languageToggle')" placement="left">
+      <el-tooltip :content="t('login.languageToggle')" placement="bottom">
         <CommonWrapper>
           <LangSelect size="text-20px" />
         </CommonWrapper>
@@ -16,7 +16,7 @@
     <!-- 登录页主体 -->
     <div flex-1 flex-center>
       <div
-        class="p-4xl h-full w-full sm:w-450px border-rd-10px sm:h-680px shadow-[var(--el-box-shadow-light)] backdrop-blur-3px"
+        class="p-4xl w-full h-auto sm:w-450px border-rd-10px sm:h-680px shadow-[var(--el-box-shadow-light)] backdrop-blur-3px"
       >
         <div w-full flex flex-col items-center>
           <!-- logo -->
@@ -66,6 +66,23 @@ const formComponents = {
 .login {
   background: url("@/assets/images/login-bg.svg");
   background-size: cover;
+}
+
+.responsive-toggles {
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+
+  @media (max-width: 480px) {
+    top: 10px;
+    right: auto;
+    left: 10px;
+  }
+
+  @media (min-width: 640px) {
+    top: 40px;
+    right: 40px;
+  }
 }
 
 /* fade-slide */

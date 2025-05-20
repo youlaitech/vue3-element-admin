@@ -1,71 +1,95 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="100%" height="100%" viewBox="0 0 1400 800">
-  <style>
-    :root {
-      --blue: rgba(64, 158, 255, 0.08);
-      --grey: rgba(144, 147, 153, 0.05);
-      --orange: rgba(230, 162, 60, 0.06);
-      --green: rgba(144, 238, 144, 0.06);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --blue: rgba(64, 158, 255, 0.04);
-        --grey: rgba(144, 147, 153, 0.03);
-        --orange: rgba(230, 162, 60, 0.04);
-        --green: rgba(144, 238, 144, 0.04);
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1400 800">
+  <defs>
+    <style>
+      @media (prefers-color-scheme: dark) {
+        #bg-rect { fill: #101a29; }
+        #blueGlow-rect { fill: url(#blueGlowDark); }
+        #blueGlow2-rect { fill: url(#blueGlow2Dark); }
+        #purpleGlow-rect { fill: url(#purpleGlowDark); }
+        #pinkGlow-rect { fill: url(#pinkGlowDark); }
+        #pinkPurpleGlow-rect { fill: url(#pinkPurpleGlowDark); }
       }
-    }
-  </style>
+    </style>
 
-  <!-- 左侧波浪 -->
-  <path d="M-50 550 Q200 500 450 550 T950 530"
-        fill="none"
-        stroke="#409EFF"
-        stroke-width="1.5"
-        stroke-opacity="0.05"
-        stroke-linecap="round">
-  </path>
+    <!-- 亮色主题渐变 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f7fbfe" />
+      <stop offset="100%" stop-color="#f2f7fc" />
+    </linearGradient>
+    
+    <!-- 主蓝白光晕 - 中间区域 -->
+    <radialGradient id="blueGlow" cx="50%" cy="40%" r="60%" fx="50%" fy="40%">
+      <stop offset="0%" stop-color="#eef7fd" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#eef7fd" stop-opacity="0" />
+    </radialGradient>
+    
+    <!-- 左上角蓝白光晕 - 增强优雅感 -->
+    <radialGradient id="blueGlow2" cx="12%" cy="12%" r="45%" fx="12%" fy="12%">
+      <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.75" />
+      <stop offset="40%" stop-color="#e9f5fd" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#e9f5fd" stop-opacity="0" />
+    </radialGradient>
+    
+    <!-- 右上角紫色光晕 - 保留但更淡 -->
+    <radialGradient id="purpleGlow" cx="85%" cy="20%" r="50%" fx="85%" fy="20%">
+      <stop offset="0%" stop-color="#f5f0fa" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#f5f0fa" stop-opacity="0" />
+    </radialGradient>
+    
+    <!-- 左下角粉色光晕 - 保留但更淡 -->
+    <radialGradient id="pinkGlow" cx="15%" cy="80%" r="45%" fx="15%" fy="80%">
+      <stop offset="0%" stop-color="#fdf1f5" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#fdf1f5" stop-opacity="0" />
+    </radialGradient>
+    
+    <!-- 右下角粉紫色光晕 - 增强效果 -->
+    <radialGradient id="pinkPurpleGlow" cx="88%" cy="78%" r="50%" fx="88%" fy="78%">
+      <stop offset="0%" stop-color="#f9eaf8" stop-opacity="0.7" />
+      <stop offset="35%" stop-color="#f8f0f8" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#f8f2f8" stop-opacity="0" />
+    </radialGradient>
 
-  <!-- 右侧波浪 -->
-  <path d="M450 650 Q800 620 1150 660 T1550 630"
-        fill="none"
-        stroke="#909399"
-        stroke-width="1"
-        stroke-opacity="0.03"
-        stroke-linecap="round">
-  </path>
-
-  <!-- 右下方圆形 -->
-  <circle cx="950" cy="400" r="70" 
-          fill="var(--blue)" 
-          stroke="#409EFF" 
-          stroke-width="1" 
-          stroke-opacity="0.05">
-  </circle>
-
-  <!-- 左上方半球形  -->
-  <g transform="rotate(-10, 300, 180)">
-    <path d="M 180 180 A 120 120 0 1 1 420 180 Q420 195 405 195 L 310 195 L 195 195 Q180 195 180 180" 
-          fill="var(--orange)" 
-          stroke="#E6A23C" 
-          stroke-width="1" 
-          stroke-opacity="0.05">
-    </path>
-  </g>
-
-  <!-- 左下方三角形 -->
-  <path d="M300 600 L380 520 L420 650 Z" 
-        fill="var(--green)" 
-        stroke="#909399" 
-        stroke-width="1" 
-        stroke-opacity="0.04">
-  </path>
-
-  <!-- 旋转方块 -->
- <rect x="1000" y="420" rx="10" ry="10" width="60" height="60" fill="rgba(169, 174, 184, 0.1)" stroke="rgba(169, 174, 184, 0.2)" stroke-width="1" opacity="0.5">
-    <animateTransform attributeType="XML" attributeName="transform"
-                      begin="0s" dur="30s" type="rotate"
-                      from="0 1450 550" to="360 1450 550"
-                      repeatCount="indefinite"/>
-  </rect>
+    <!-- 暗色主题渐变 -->
+    <radialGradient id="blueGlowDark" cx="50%" cy="40%" r="60%" fx="50%" fy="40%">
+      <stop offset="0%" stop-color="#1c314e" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#1a2d47" stop-opacity="0" />
+    </radialGradient>
+    
+    <!-- 左上角蓝白光晕 - 暗色模式 -->
+    <radialGradient id="blueGlow2Dark" cx="12%" cy="12%" r="45%" fx="12%" fy="12%">
+      <stop offset="0%" stop-color="#1e3554" stop-opacity="0.8" />
+      <stop offset="40%" stop-color="#172b45" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#172b45" stop-opacity="0" />
+    </radialGradient>
+    
+    <radialGradient id="purpleGlowDark" cx="85%" cy="20%" r="50%" fx="85%" fy="20%">
+      <stop offset="0%" stop-color="#2a243a" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#292236" stop-opacity="0" />
+    </radialGradient>
+    
+    <radialGradient id="pinkGlowDark" cx="15%" cy="80%" r="45%" fx="15%" fy="80%">
+      <stop offset="0%" stop-color="#2f1c27" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#2d1a24" stop-opacity="0" />
+    </radialGradient>
+    
+    <!-- 右下角粉紫色光晕 - 暗色模式 -->
+    <radialGradient id="pinkPurpleGlowDark" cx="88%" cy="78%" r="50%" fx="88%" fy="78%">
+      <stop offset="0%" stop-color="#2e2335" stop-opacity="0.8" />
+      <stop offset="35%" stop-color="#2a202d" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#2a202d" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- 背景层 -->
+  <rect id="bg-rect" width="100%" height="100%" fill="url(#bgGradient)" />
+  
+  <!-- 渐变光晕层 - 中间主要是蓝白色系 -->
+  <rect id="blueGlow-rect" width="100%" height="100%" fill="url(#blueGlow)" />
+  <rect id="blueGlow2-rect" width="100%" height="100%" fill="url(#blueGlow2)" />
+  
+  <!-- 边缘保留淡粉紫色 -->
+  <rect id="purpleGlow-rect" width="100%" height="100%" fill="url(#purpleGlow)" />
+  <rect id="pinkGlow-rect" width="100%" height="100%" fill="url(#pinkGlow)" />
+  <rect id="pinkPurpleGlow-rect" width="100%" height="100%" fill="url(#pinkPurpleGlow)" />
 </svg>
