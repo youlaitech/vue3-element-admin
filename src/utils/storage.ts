@@ -12,7 +12,14 @@ export class Storage {
 
   static get<T>(key: string, defaultValue?: T): T {
     const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : defaultValue;
+    if (!value) return defaultValue as T;
+
+    try {
+      return JSON.parse(value);
+    } catch {
+      // 如果解析失败，返回原始字符串
+      return value as unknown as T;
+    }
   }
 
   static remove(key: string): void {
@@ -28,7 +35,14 @@ export class Storage {
 
   static sessionGet<T>(key: string, defaultValue?: T): T {
     const value = sessionStorage.getItem(key);
-    return value ? JSON.parse(value) : defaultValue;
+    if (!value) return defaultValue as T;
+
+    try {
+      return JSON.parse(value);
+    } catch {
+      // 如果解析失败，返回原始字符串
+      return value as unknown as T;
+    }
   }
 
   static sessionRemove(key: string): void {
