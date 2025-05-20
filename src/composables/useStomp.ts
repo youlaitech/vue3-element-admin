@@ -23,7 +23,7 @@ export interface UseStompOptions {
 }
 
 /**
- * STOMP WebSocket连接Hook
+ * STOMP WebSocket连接组合式函数
  * 用于管理WebSocket连接的建立、断开、重连和消息订阅
  */
 export function useStomp(options: UseStompOptions = {}) {
@@ -244,70 +244,73 @@ export function useStomp(options: UseStompOptions = {}) {
    * @returns 返回订阅 id，用于后续取消订阅
    */
   const subscribe = (destination: string, callback: (_message: IMessage) => void): string => {
-    if (!client.value) {
-      return "";
-    }
-
-    if (!client.value.connected) {
+    if (!client.value || !client.value.connected) {
+      console.warn(`尝试订阅 ${destination} 失败: 客户端未连接`);
       return "";
     }
 
     try {
       const subscription = client.value.subscribe(destination, callback);
-      subscriptions.set(subscription.id, subscription);
-      console.log(`订阅成功: ${destination}, ID: ${subscription.id}`);
-      return subscription.id;
+      const subscriptionId = subscription.id;
+      subscriptions.set(subscriptionId, subscription);
+      console.log(`订阅成功: ${destination}, ID: ${subscriptionId}`);
+      return subscriptionId;
     } catch (error) {
-      console.error(`订阅失败(${destination}):`, error);
+      console.error(`订阅 ${destination} 失败:`, error);
       return "";
     }
   };
 
   /**
-   * 取消指定订阅
-   * @param subscriptionId 要取消的订阅 id
+   * 取消订阅
+   * @param subscriptionId 订阅 id
    */
   const unsubscribe = (subscriptionId: string) => {
     const subscription = subscriptions.get(subscriptionId);
     if (subscription) {
       subscription.unsubscribe();
       subscriptions.delete(subscriptionId);
+      console.log(`已取消订阅: ${subscriptionId}`);
     }
   };
 
   /**
-   * 主动断开连接（如果未连接则不执行）
+   * 断开WebSocket连接
    */
   const disconnect = () => {
-    if (client.value && !(client.value.connected || client.value.active)) {
-      console.log("Already disconnected, skipping disconnect() call.");
-      return;
+    if (client.value && client.value.connected) {
+      // 清除所有订阅
+      for (const [id, subscription] of subscriptions.entries()) {
+        subscription.unsubscribe();
+        subscriptions.delete(id);
+      }
+
+      // 断开连接
+      client.value.deactivate();
+      console.log("WebSocket连接已断开");
     }
 
-    // 清除所有计时器
+    // 清除重连计时器
     if (reconnectTimer) {
       clearTimeout(reconnectTimer);
       reconnectTimer = null;
     }
 
+    // 清除连接超时计时器
     if (connectionTimeoutTimer) {
       clearTimeout(connectionTimeoutTimer);
       connectionTimeoutTimer = null;
     }
 
-    client.value?.deactivate();
     isConnected.value = false;
     reconnectCount.value = 0;
   };
 
   return {
-    client,
     isConnected,
-    reconnectCount,
     connect,
     subscribe,
     unsubscribe,
     disconnect,
-    brokerURL,
   };
 }

@@ -1,11 +1,11 @@
 import { ref, onMounted, onUnmounted, watch } from "vue";
-import { useStomp } from "../core/useStomp";
+import { useStomp } from "./useStomp";
 import { ElMessage } from "element-plus";
 import { Storage } from "@/utils/storage";
 import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
 
 /**
- * 在线用户计数Hook
+ * 在线用户计数组合式函数
  * 用于订阅后端推送的在线用户数量变化
  */
 export function useOnlineCount() {

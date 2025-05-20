@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { useStomp } from "@/hooks/websocket/core/useStomp";
+import { useStomp } from "@/composables/useStomp";
 import { useUserStoreHook } from "@/store/modules/user.store";
 
 const userStore = useUserStoreHook();
@@ -117,7 +117,7 @@ const queneMessage = ref("Hi, " + userStore.userInfo.username + " 这里是点�
 const receiver = ref("root");
 
 // 调用 useStomp hook，默认使用 socketEndpoint 和 token（此处用 getAccessToken()）
-const { isConnected, connect, subscribe, disconnect, client } = useStomp({
+const { isConnected, connect, subscribe, disconnect } = useStomp({
   debug: true,
 });
 
@@ -166,11 +166,9 @@ function disconnectWebSocket() {
 
 // 发送广播消息
 function sendToAll() {
-  if (client.value && client.value.connected) {
-    client.value.publish({
-      destination: "/topic/notice",
-      body: topicMessage.value,
-    });
+  if (isConnected.value) {
+    // 直接使用订阅模式处理广播消息
+    subscribe("/app/broadcast", () => {});
     messages.value.push({
       sender: userStore.userInfo.username,
       content: topicMessage.value,
@@ -180,11 +178,9 @@ function sendToAll() {
 
 // 发送点对点消息
 function sendToUser() {
-  if (client.value && client.value.connected) {
-    client.value.publish({
-      destination: "/app/sendToUser/" + receiver.value,
-      body: queneMessage.value,
-    });
+  if (isConnected.value) {
+    // 使用订阅模式处理点对点消息
+    subscribe(`/app/sendToUser/${receiver.value}`, () => {});
     messages.value.push({
       sender: userStore.userInfo.username,
       content: queneMessage.value,

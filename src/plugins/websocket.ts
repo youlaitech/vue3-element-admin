@@ -1,4 +1,4 @@
-import { useDictSync } from "@/hooks/websocket/services/useDictSync";
+import { useDictSync } from "@/composables/useDictSync";
 import { Storage } from "@/utils/storage";
 import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
 

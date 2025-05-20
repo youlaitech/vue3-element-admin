@@ -1,5 +1,5 @@
 import { useDictStoreHook } from "@/store/modules/dict.store";
-import { useStomp } from "../core/useStomp";
+import { useStomp } from "./useStomp";
 import { IMessage } from "@stomp/stompjs";
 import { ref } from "vue";
 
@@ -16,7 +16,7 @@ export type DictMessageCallback = (_message: DictMessage) => void;
 let instance: ReturnType<typeof createDictSyncHook> | null = null;
 
 /**
- * 创建字典同步Hook
+ * 创建字典同步组合式函数
  * 负责监听后端字典变更并同步到前端
  */
 function createDictSyncHook() {
@@ -186,7 +186,7 @@ function createDictSyncHook() {
 }
 
 /**
- * 字典同步Hook
+ * 字典同步组合式函数
  * 用于监听后端字典变更并同步到前端
  */
 export function useDictSync() {

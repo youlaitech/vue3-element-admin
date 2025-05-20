@@ -94,7 +94,7 @@ const noticeList = ref<NoticePageVO[]>([]);
 const noticeDialogVisible = ref(false);
 const noticeDetail = ref<NoticeDetailVO | null>(null);
 
-import { useStomp } from "@/hooks/websocket/core/useStomp";
+import { useStomp } from "@/composables/useStomp";
 const { subscribe, unsubscribe, isConnected } = useStomp();
 
 watch(

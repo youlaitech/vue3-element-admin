@@ -4,6 +4,7 @@ import { Storage } from "@/utils/storage";
 import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
+import { ROLE_ROOT } from "@/constants";
 
 export function setupPermission() {
   // 白名单路由
@@ -78,7 +79,7 @@ export function hasAuth(value: string | string[], type: "button" | "role" = "but
   const { roles, perms } = useUserStore().userInfo;
 
   // 超级管理员 拥有所有权限
-  if (type === "button" && roles.includes("ROOT")) {
+  if (type === "button" && roles.includes(ROLE_ROOT)) {
     return true;
   }
 

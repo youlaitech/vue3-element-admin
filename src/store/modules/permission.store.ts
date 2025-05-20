@@ -103,8 +103,12 @@ const parseDynamicRoutes = (rawRoutes: RouteVO[]): RouteRecordRaw[] => {
 
   return parsedRoutes;
 };
+
 /**
- * 在组件外使用 Pinia store 实例 @see https://pinia.vuejs.org/core-concepts/outside-component-usage.html
+ * 导出此hook函数用于在非组件环境(如其他store、工具函数等)中获取权限store实例
+ *
+ * 在组件中可直接使用usePermissionStore()，但在组件外部需要传入store实例
+ * 此函数简化了这个过程，避免每次都手动传入store参数
  */
 export function usePermissionStoreHook() {
   return usePermissionStore(store);

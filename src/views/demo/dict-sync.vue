@@ -142,7 +142,7 @@
 import { useDictStoreHook } from "@/store/modules/dict.store";
 import { useDateFormat } from "@vueuse/core";
 import DictAPI, { DictItemForm } from "@/api/system/dict.api";
-import { useDictSync, DictMessage } from "@/hooks/websocket/services/useDictSync";
+import { useDictSync, DictMessage } from "@/composables/useDictSync";
 
 // 性别字典编码
 const DICT_CODE = "gender";

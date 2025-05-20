@@ -1,6 +1,7 @@
 import type { Directive, DirectiveBinding } from "vue";
 
 import { useUserStore } from "@/store";
+import { ROLE_ROOT } from "@/constants";
 
 /**
  * 按钮权限
@@ -18,8 +19,8 @@ export const hasPerm: Directive = {
 
     const { roles, perms } = useUserStore().userInfo;
 
-    // 超级管理员拥有所有权限，如果是”*:*:*”权限标识，则不需要进行权限校验
-    if (roles.includes("ROOT") || requiredPerms.includes("*:*:*")) {
+    // 超级管理员拥有所有权限，如果是"*:*:*"权限标识，则不需要进行权限校验
+    if (roles.includes(ROLE_ROOT) || requiredPerms.includes("*:*:*")) {
       return;
     }
 

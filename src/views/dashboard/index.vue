@@ -359,7 +359,7 @@ import { useUserStore } from "@/store/modules/user.store";
 import { formatGrowthRate } from "@/utils";
 import { useTransition, useDateFormat } from "@vueuse/core";
 import { Connection, Failed } from "@element-plus/icons-vue";
-import { useOnlineCount } from "@/hooks/websocket/services/useOnlineCount";
+import { useOnlineCount } from "@/composables/useOnlineCount";
 
 // 在线用户数量组件相关
 const { onlineUserCount, lastUpdateTime, isConnected } = useOnlineCount();
