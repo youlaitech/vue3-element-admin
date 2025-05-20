@@ -73,7 +73,7 @@ declare module "vue" {
     LangSelect: (typeof import("./../components/LangSelect/index.vue"))["default"];
     MenuSearch: (typeof import("./../components/MenuSearch/index.vue"))["default"];
     MultiImageUpload: (typeof import("./../components/Upload/MultiImageUpload.vue"))["default"];
-    NoticeDropdown: (typeof import("./../components/Notice/NoticeDropdown.vue"))["default"];
+    Notification: (typeof import("./../components/Notification/index.vue"))["default"];
     LayoutSelect: (typeof import("./../layout/components/Settings/components/LayoutSelect.vue"))["default"];
     PageContent: (typeof import("./../components/CURD/PageContent.vue"))["default"];
     PageModal: (typeof import("./../components/CURD/PageModal.vue"))["default"];

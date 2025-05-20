@@ -1,27 +1,21 @@
 <template>
-  <div class="notice">
-    <el-dropdown class="h-full items-center justify-center" trigger="click">
+  <div class="notification">
+    <el-dropdown class="h-full flex-center" trigger="click">
       <el-badge v-if="noticeList.length > 0" :offset="[0, 15]" :value="noticeList.length" :max="99">
-        <el-icon>
-          <Bell />
-        </el-icon>
+        <div class="i-svg:bell" />
       </el-badge>
 
-      <div v-else>
-        <el-icon>
-          <Bell />
-        </el-icon>
-      </div>
+      <div v-else class="i-svg:bell" />
 
       <template #dropdown>
         <div class="p-5">
           <template v-if="noticeList.length > 0">
-            <div v-for="(item, index) in noticeList" :key="index" class="w500px py-3">
+            <div v-for="(item, index) in noticeList" :key="index" class="w-500px py-3">
               <div class="flex-y-center">
                 <DictLabel v-model="item.type" code="notice_type" size="small" />
                 <el-text
                   size="small"
-                  class="w200px cursor-pointer !ml-2 !flex-1"
+                  class="w-200px cursor-pointer !ml-2 !flex-1"
                   truncated
                   @click="handleReadNotice(item.id)"
                 >
@@ -52,7 +46,7 @@
             </div>
           </template>
           <template v-else>
-            <div class="flex-center h150px w350px">
+            <div class="flex-center h-150px w-350px">
               <el-empty :image-size="50" description="暂无消息" />
             </div>
           </template>
@@ -64,21 +58,21 @@
       v-model="noticeDialogVisible"
       :title="noticeDetail?.title ?? '通知详情'"
       width="800px"
-      custom-class="notice-detail"
+      custom-class="notification-detail"
     >
-      <div v-if="noticeDetail" class="notice-detail__wrapper">
-        <div class="notice-detail__meta">
-          <span>
+      <div v-if="noticeDetail" class="p-x-20px">
+        <div class="flex-y-center mb-16px text-13px text-color-secondary">
+          <span class="flex-y-center">
             <el-icon><User /></el-icon>
             {{ noticeDetail.publisherName }}
           </span>
-          <span class="ml-2">
+          <span class="ml-2 flex-y-center">
             <el-icon><Timer /></el-icon>
             {{ noticeDetail.publishTime }}
           </span>
         </div>
 
-        <div class="notice-detail__content">
+        <div class="max-h-60vh pt-16px mb-24px overflow-y-auto border-t border-solid border-color">
           <div v-html="noticeDetail.content"></div>
         </div>
       </div>
@@ -169,47 +163,13 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-.notice {
+.notification {
   :deep(.el-badge) {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 100%;
-  }
-
-  .notice-detail {
-    &__wrapper {
-      padding: 0 20px;
-    }
-
-    &__meta {
-      display: flex;
-      align-items: center;
-      margin-bottom: 16px;
-      font-size: 13px;
-      color: var(--el-text-color-secondary);
-    }
-
-    &__publisher {
-      margin-right: 24px;
-
-      i {
-        margin-right: 4px;
-      }
-    }
-
-    &__content {
-      max-height: 60vh;
-      padding-top: 16px;
-      margin-bottom: 24px;
-      overflow-y: auto;
-      border-top: 1px solid var(--el-border-color);
-
-      &::-webkit-scrollbar {
-        width: 6px;
-      }
-    }
   }
 }
 </style>

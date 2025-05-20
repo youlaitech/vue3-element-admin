@@ -15,7 +15,7 @@
       <LangSelect />
 
       <!-- 通知下拉 -->
-      <NoticeDropdown />
+      <Notification />
     </template>
 
     <!-- 用户头像（个人中心、退出登录等） -->
