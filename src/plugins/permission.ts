@@ -16,12 +16,13 @@ export function setupPermission() {
     const isLogin = !!Storage.get(ACCESS_TOKEN_KEY, ""); // 判断是否登录
     if (isLogin) {
       if (to.path === "/login") {
-        // 已登录，访问登录页，跳转到首页
+        // 已登录，跳转到首页
         next({ path: "/" });
       } else {
+        // 未登录
         const permissionStore = usePermissionStore();
         // 判断路由是否加载完成
-        if (permissionStore.isRoutesLoaded) {
+        if (permissionStore.routesLoaded) {
           if (to.matched.length === 0) {
             // 路由未匹配，跳转到404
             next("/404");

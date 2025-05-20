@@ -78,9 +78,17 @@ appStore.activeTopMenu(activeTopMenuPath);
  */
 const handleMenuSelect = (routePath: string) => {
   appStore.activeTopMenu(routePath); // 设置激活的顶部菜单
-  permissionStore.setMixedLayoutLeftRoutes(routePath); // 更新左侧菜单
-  navigateToFirstLeftMenu(permissionStore.mixedLayoutLeftRoutes); // 跳转到左侧第一个菜单
+  activateFirstLevelMenu(routePath); // 激活一级菜单并设置左侧二级菜单
 };
+
+/**
+ * 激活一级菜单并设置左侧二级菜单
+ * @param routePath 点击的菜单路径
+ */
+function activateFirstLevelMenu(routePath: string) {
+  permissionStore.updateSideMenu(routePath); // 更新左侧菜单
+  navigateToFirstLeftMenu(permissionStore.sideMenuRoutes); // 跳转到左侧第一个菜单
+}
 
 /**
  * 跳转到左侧第一个可访问的菜单

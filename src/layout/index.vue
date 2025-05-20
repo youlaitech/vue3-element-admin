@@ -11,7 +11,7 @@
       <!-- 左侧菜单栏 -->
       <div class="layout__sidebar--left">
         <el-scrollbar>
-          <SidebarMenu :data="mixedLayoutLeftRoutes" :base-path="activeTopMenuPath" />
+          <SidebarMenu :data="sideMenuRoutes" :base-path="activeTopMenuPath" />
         </el-scrollbar>
         <!-- 侧边栏切换按钮 -->
         <div class="layout__sidebar-toggle">
@@ -72,13 +72,13 @@ const isSidebarOpen = computed(() => appStore.sidebar.opened); // 侧边栏是�
 const isShowTagsView = computed(() => settingsStore.tagsView); // 是否显示标签视图
 const layout = computed(() => settingsStore.layout); // 当前布局模式（left、top、mix）
 const activeTopMenuPath = computed(() => appStore.activeTopMenuPath); // 顶部菜单激活路径
-const mixedLayoutLeftRoutes = computed(() => permissionStore.mixedLayoutLeftRoutes); // 混合布局左侧菜单路由
+const sideMenuRoutes = computed(() => permissionStore.sideMenuRoutes); // 混合布局左侧菜单路由
 
 // 监听顶部菜单激活路径变化，更新混合布局左侧菜单路由
 watch(
   () => activeTopMenuPath.value,
   (newVal: string) => {
-    permissionStore.setMixedLayoutLeftRoutes(newVal);
+    permissionStore.updateSideMenu(newVal);
   },
   { deep: true, immediate: true }
 );
