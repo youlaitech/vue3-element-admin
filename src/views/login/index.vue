@@ -64,7 +64,21 @@ const formComponents = {
 
 <style lang="scss" scoped>
 .login {
+  position: relative;
+  z-index: 1;
+}
+
+// 添加伪元素作为背景层
+.login::before {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  content: "";
   background: url("@/assets/images/login-bg.svg");
+  background-position: center center;
   background-size: cover;
 }
 
