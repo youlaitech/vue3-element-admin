@@ -6,16 +6,16 @@
  * 项目地址：https://gitee.com/youlaiorg/vue3-element-admin
  *
  * 在使用时，请保留此注释，感谢您对开源的支持！
- -->
+-->
 
 <template>
-  <div style="z-index: 999; border: 1px solid #ccc">
+  <div style="z-index: 999; border: 1px solid var(--el-border-color)">
     <!-- 工具栏 -->
     <Toolbar
       :editor="editorRef"
       mode="simple"
       :default-config="toolbarConfig"
-      style="border-bottom: 1px solid #ccc"
+      style="border-bottom: 1px solid var(--el-border-color)"
     />
     <!-- 编辑器 -->
     <Editor
