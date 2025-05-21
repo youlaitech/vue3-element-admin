@@ -296,7 +296,7 @@ export interface DictItemForm {
   /**
    * 标签类型
    */
-  tagType?: "success" | "warning" | "info" | "primary" | "danger" | undefined;
+  tagType?: "success" | "warning" | "info" | "primary" | "danger" | "";
 }
 
 /**

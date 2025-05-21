@@ -100,27 +100,25 @@
       width="500px"
       @close="handleCloseDialog"
     >
-      <el-form ref="dataFormRef" :model="formData" :rules="computedRules" label-width="100px">
-        <el-card shadow="never">
-          <el-form-item label="字典名称" prop="name">
-            <el-input v-model="formData.name" placeholder="请输入字典名称" />
-          </el-form-item>
+      <el-form ref="dataFormRef" :model="formData" :rules="computedRules" label-width="80px">
+        <el-form-item label="字典名称" prop="name">
+          <el-input v-model="formData.name" placeholder="请输入字典名称" />
+        </el-form-item>
 
-          <el-form-item label="字典编码" prop="dictCode">
-            <el-input v-model="formData.dictCode" placeholder="请输入字典编码" />
-          </el-form-item>
+        <el-form-item label="字典编码" prop="dictCode">
+          <el-input v-model="formData.dictCode" placeholder="请输入字典编码" />
+        </el-form-item>
 
-          <el-form-item label="状态">
-            <el-radio-group v-model="formData.status">
-              <el-radio :value="1">启用</el-radio>
-              <el-radio :value="0">禁用</el-radio>
-            </el-radio-group>
-          </el-form-item>
+        <el-form-item label="状态">
+          <el-radio-group v-model="formData.status">
+            <el-radio :value="1">启用</el-radio>
+            <el-radio :value="0">禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
 
-          <el-form-item label="备注">
-            <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
-          </el-form-item>
-        </el-card>
+        <el-form-item label="备注">
+          <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
+        </el-form-item>
       </el-form>
 
       <template #footer>
