@@ -108,8 +108,11 @@ export const useUserStore = defineStore("user", () => {
    * 刷新 token
    */
   function refreshToken() {
-    // 获取刷新令牌
     const refreshToken = Auth.getRefreshToken();
+
+    if (!refreshToken) {
+      return Promise.reject(new Error("没有有效的刷新令牌"));
+    }
 
     return new Promise<void>((resolve, reject) => {
       AuthAPI.refreshToken(refreshToken)
