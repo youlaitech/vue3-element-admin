@@ -1,6 +1,5 @@
 import { useDictSync } from "@/composables/useDictSync";
-import { Storage } from "@/utils/storage";
-import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
+import { Auth } from "@/utils/auth";
 
 // 用于防止重复初始化的状态标记
 let isInitialized = false;
@@ -24,9 +23,8 @@ export function setupWebSocket() {
     return;
   }
 
-  // 检查token是否存在
-  const token = Storage.get(ACCESS_TOKEN_KEY, "");
-  if (!token) {
+  // 检查是否已登录
+  if (!Auth.isLoggedIn()) {
     console.warn(
       "[WebSocketPlugin] 未找到访问令牌，WebSocket初始化已跳过。用户登录后将自动重新连接。"
     );

@@ -46,14 +46,13 @@
 const { t } = useI18n();
 import defaultSettings from "@/settings";
 import { DeviceEnum } from "@/enums/settings/device.enum";
-import { useAppStore, useSettingsStore, useUserStore, useTagsViewStore } from "@/store";
+import { useAppStore, useSettingsStore, useUserStore } from "@/store";
 
 import { SidebarColor, ThemeMode } from "@/enums/settings/theme.enum";
 
 const appStore = useAppStore();
 const settingStore = useSettingsStore();
 const userStore = useUserStore();
-const tagsViewStore = useTagsViewStore();
 
 const route = useRoute();
 const router = useRouter();
@@ -89,14 +88,9 @@ function logout() {
     type: "warning",
     lockScroll: false,
   }).then(() => {
-    userStore
-      .logout()
-      .then(() => {
-        tagsViewStore.delAllViews();
-      })
-      .then(() => {
-        router.push(`/login?redirect=${route.fullPath}`);
-      });
+    userStore.logout().then(() => {
+      router.push(`/login?redirect=${route.fullPath}`);
+    });
   });
 }
 </script>
@@ -145,7 +139,6 @@ function logout() {
   color: #fff;
 }
 
-// 添加更强力的选择器，确保能影响到深层嵌套的图标
 .layout-top .navbar__right--white :deep([class^="i-svg:"]),
 .layout-mix .navbar__right--white :deep([class^="i-svg:"]) {
   color: #fff !important;

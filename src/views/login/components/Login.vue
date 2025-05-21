@@ -113,6 +113,7 @@ import AuthAPI, { type LoginFormData } from "@/api/auth.api";
 import router from "@/router";
 import { useUserStore } from "@/store";
 import CommonWrapper from "@/components/CommonWrapper/index.vue";
+import { Auth } from "@/utils/auth";
 
 const { t } = useI18n();
 const userStore = useUserStore();
@@ -124,13 +125,14 @@ const loginFormRef = ref<FormInstance>();
 const loading = ref(false); // 按钮 loading 状态
 const isCapsLock = ref(false); // 是否大写锁定
 const captchaBase64 = ref(); // 验证码图片Base64字符串
+const rememberMe = Auth.getRememberMe();
 
 const loginFormData = ref<LoginFormData>({
   username: "admin",
   password: "123456",
   captchaKey: "",
   captchaCode: "",
-  rememberMe: false,
+  rememberMe: rememberMe,
 });
 
 const loginRules = computed(() => {
@@ -195,9 +197,11 @@ async function handleLoginSubmit() {
     const redirect = resolveRedirectTarget(route.query);
     await router.push(redirect);
 
-    // TODO 5. 判断用户是否点击了记住我？采用明文保存或使用jsencrypt库？
+    // 5. 记住我功能已实现，根据用户选择决定token的存储方式:
+    // - 选中"记住我": token存储在localStorage中，浏览器关闭后仍然有效
+    // - 未选中"记住我": token存储在sessionStorage中，浏览器关闭后失效
   } catch (error) {
-    // 5. 统一错误处理
+    // 6. 统一错误处理
     getCaptcha(); // 刷新验证码
     console.error("登录失败:", error);
   } finally {

@@ -2,8 +2,7 @@ import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from "axio
 import qs from "qs";
 import { useUserStoreHook } from "@/store/modules/user.store";
 import { ResultEnum } from "@/enums/api/result.enum";
-import { Storage } from "@/utils/storage";
-import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
+import { Auth } from "@/utils/auth";
 import router from "@/router";
 
 // 创建 axios 实例
@@ -13,10 +12,11 @@ const service = axios.create({
   headers: { "Content-Type": "application/json;charset=utf-8" },
   paramsSerializer: (params) => qs.stringify(params),
 });
+
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const accessToken = Storage.get(ACCESS_TOKEN_KEY, "");
+    const accessToken = Auth.getAccessToken();
     // 如果 Authorization 设置为 no-auth，则不携带 Token
     if (config.headers.Authorization !== "no-auth" && accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -70,7 +70,7 @@ async function handleTokenRefresh(config: InternalAxiosRequestConfig) {
   return new Promise((resolve) => {
     // 封装需要重试的请求
     const retryRequest = () => {
-      config.headers.Authorization = `Bearer ${Storage.get(ACCESS_TOKEN_KEY, "")}`;
+      config.headers.Authorization = `Bearer ${Auth.getAccessToken()}`;
       resolve(service(config));
     };
     waitingQueue.push(retryRequest);
@@ -101,6 +101,6 @@ async function handleSessionExpired() {
     message: "您的会话已过期，请重新登录",
     type: "info",
   });
-  await useUserStoreHook().clearSessionAndCache();
+  await useUserStoreHook().resetAllState();
   router.push("/login");
 }

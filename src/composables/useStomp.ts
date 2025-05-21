@@ -1,7 +1,5 @@
 import { Client, IMessage, StompSubscription } from "@stomp/stompjs";
-import { Storage } from "@/utils/storage";
-import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
-import { ref, watch } from "vue";
+import { Auth } from "@/utils/auth";
 
 export interface UseStompOptions {
   /** WebSocket 地址，不传时使用 VITE_APP_WS_ENDPOINT 环境变量 */
@@ -67,7 +65,7 @@ export function useStomp(options: UseStompOptions = {}) {
     }
 
     // 每次连接前重新获取最新令牌，不依赖之前的token值
-    const currentToken = Storage.get(ACCESS_TOKEN_KEY, "");
+    const currentToken = Auth.getAccessToken();
 
     // 检查令牌是否为空，如果为空则不进行连接
     if (!currentToken) {
@@ -121,7 +119,7 @@ export function useStomp(options: UseStompOptions = {}) {
           client.value = null;
 
           // 检查当前是否有有效令牌
-          const freshToken = Storage.get(ACCESS_TOKEN_KEY, "");
+          const freshToken = Auth.getAccessToken();
           if (freshToken) {
             initializeClient();
             connect();

@@ -51,15 +51,18 @@ export const usePermissionStore = defineStore("permission", () => {
    * 重置路由
    */
   const resetRouter = () => {
-    //  从 router 实例中移除动态路由
+    // 创建常量路由名称集合，用于O(1)时间复杂度的查找
+    const constantRouteNames = new Set(constantRoutes.map((route) => route.name).filter(Boolean));
+
+    // 从 router 实例中移除动态路由
     routes.value.forEach((route) => {
-      if (route.name && !constantRoutes.find((r) => r.name === route.name)) {
+      if (route.name && !constantRouteNames.has(route.name)) {
         router.removeRoute(route.name);
       }
     });
 
-    // 清空本地存储的路由和菜单数据
-    routes.value = [];
+    // 重置为仅包含常量路由
+    routes.value = [...constantRoutes];
     sideMenuRoutes.value = [];
     routesLoaded.value = false;
   };
@@ -78,7 +81,7 @@ export const usePermissionStore = defineStore("permission", () => {
  * 解析后端返回的路由数据并转换为 Vue Router 兼容的路由配置
  *
  * @param rawRoutes 后端返回的原始路由数据
- * @returns 解析后的路由配置数组
+ * @returns 解析后的路由集合
  */
 const parseDynamicRoutes = (rawRoutes: RouteVO[]): RouteRecordRaw[] => {
   const parsedRoutes: RouteRecordRaw[] = [];

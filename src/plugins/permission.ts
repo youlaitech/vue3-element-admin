@@ -1,7 +1,6 @@
 import type { NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from "vue-router";
 import NProgress from "@/utils/nprogress";
-import { Storage } from "@/utils/storage";
-import { ACCESS_TOKEN_KEY } from "@/constants/cache-keys";
+import { Auth } from "@/utils/auth";
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
 import { ROLE_ROOT } from "@/constants";
@@ -12,15 +11,19 @@ export function setupPermission() {
 
   router.beforeEach(async (to, from, next) => {
     NProgress.start();
+    console.log("to.path", to.path);
 
-    const isLogin = !!Storage.get(ACCESS_TOKEN_KEY, ""); // 判断是否登录
+    const isLogin = Auth.isLoggedIn();
+    console.log("isLogin", isLogin);
     if (isLogin) {
+      console.log("to.path", to.path);
       if (to.path === "/login") {
-        // 已登录，跳转到首页
+        // 如果已登录，跳转到首页
         next({ path: "/" });
       } else {
         // 未登录
         const permissionStore = usePermissionStore();
+        console.log("permissionStore.routesLoaded", permissionStore.routesLoaded);
         // 判断路由是否加载完成
         if (permissionStore.routesLoaded) {
           if (to.matched.length === 0) {
@@ -43,7 +46,7 @@ export function setupPermission() {
           } catch (error) {
             console.error(error);
             // 路由加载失败，重置 token 并重定向到登录页
-            await useUserStore().clearSessionAndCache();
+            await useUserStore().resetAllState();
             redirectToLogin(to, next);
             NProgress.done();
           }

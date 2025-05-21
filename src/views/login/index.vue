@@ -1,7 +1,7 @@
 <template>
-  <div class="wh-full flex-center flex-col login">
+  <div class="login-container">
     <!-- 右侧切换主题、语言按钮  -->
-    <div class="fixed flex-center gap-8px text-lg responsive-toggles">
+    <div class="action-bar">
       <el-tooltip :content="t('login.themeToggle')" placement="bottom">
         <CommonWrapper>
           <DarkModeSwitch />
@@ -63,13 +63,19 @@ const formComponents = {
 </script>
 
 <style lang="scss" scoped>
-.login {
+.login-container {
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 // 添加伪元素作为背景层
-.login::before {
+.login-container::before {
   position: fixed;
   top: 0;
   left: 0;
@@ -82,10 +88,16 @@ const formComponents = {
   background-size: cover;
 }
 
-.responsive-toggles {
+.action-bar {
+  position: fixed;
   top: 10px;
   right: 10px;
   z-index: 10;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
 
   @media (max-width: 480px) {
     top: 10px;
