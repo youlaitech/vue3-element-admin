@@ -54,6 +54,29 @@ html.dark {
   --menu-hover: rgb(0 0 0 / 20%);
   --sidebar-logo-background: rgb(0 0 0 / 20%);
   --sidebar-logo-text-color: #fff;
+
+  /** WangEditor Dark */
+  /* Textarea - css vars */
+  --w-e-textarea-bg-color: var(--el-bg-color); /* 深色背景 */
+  --w-e-textarea-color: var(--el-text-color-primary); /* 浅色文字 */
+  --w-e-textarea-border-color: var(--el-border-color); /* 较深的边框颜色 */
+  --w-e-textarea-slight-border-color: var(--el-border-color-lighter); /* 更淡一些的边框颜色 */
+  --w-e-textarea-slight-color: var(--el-text-color-secondary); /* 浅灰色，用于不那么重要的元素 */
+  --w-e-textarea-slight-bg-color: var(--el-bg-color-overlay); /* 稍微亮一点的背景色 */
+  --w-e-textarea-selected-border-color: var(--el-color-info-light-5); /* 选中元素时的高亮边框 */
+  --w-e-textarea-handler-bg-color: var(--el-color-primary); /* 工具按钮或交互元素的背景色 */
+
+  /* Toolbar - css vars */
+  --w-e-toolbar-color: var(--el-text-color-regular); /* 工具栏文字颜色 */
+  --w-e-toolbar-bg-color: var(--el-bg-color); /* 工具栏背景颜色 */
+  --w-e-toolbar-active-color: var(--el-text-color-primary); /* 当前激活项的文字颜色 */
+  --w-e-toolbar-active-bg-color: var(--el-fill-color-light); /* 当前激活项的背景颜色 */
+  --w-e-toolbar-disabled-color: var(--el-text-color-secondary); /* 禁用项的颜色 */
+  --w-e-toolbar-border-color: var(--el-border-color-base); /* 工具栏边框颜色 */
+
+  /*  Modal - css vars */
+  --w-e-modal-button-bg-color: var(--el-bg-color-light-3); /* 弹出框按钮背景色 */
+  --w-e-modal-button-border-color: var(--el-border-color-light); /* 弹出框按钮边框颜色 */
 }
 
 $menu-background: var(--menu-background); // 菜单背景色

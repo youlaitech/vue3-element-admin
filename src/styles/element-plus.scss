@@ -1,0 +1,47 @@
+$border: 1px solid var(--el-border-color-light);
+
+/* el-dialog */
+.el-dialog {
+  padding: 0 !important;
+
+  .el-dialog__header {
+    padding: 15px 20px;
+    margin: 0;
+    border-bottom: $border;
+  }
+
+  .el-dialog__body {
+    padding: 20px;
+  }
+
+  .el-dialog__footer {
+    padding: 15px;
+    border-top: $border;
+  }
+}
+
+/** el-drawer */
+.el-drawer {
+  .el-drawer__header {
+    padding: 15px 20px;
+    margin: 0;
+    color: inherit;
+    border-bottom: $border;
+  }
+
+  .el-drawer__body {
+    padding: 20px;
+  }
+
+  .el-drawer__footer {
+    padding: 15px;
+    border-top: $border;
+  }
+}
+
+// 抽屉和对话框底部按钮区域
+.dialog-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
