@@ -143,12 +143,12 @@ function logout() {
 .layout-top .navbar__right--white > *,
 .layout-mix .navbar__right--white > * {
   color: #fff;
+}
 
-  // 强制所有svg图标为白色（包括通知图标）
-  :deep(svg) {
-    color: #fff;
-    fill: #fff;
-  }
+// 添加更强力的选择器，确保能影响到深层嵌套的图标
+.layout-top .navbar__right--white :deep([class^="i-svg:"]),
+.layout-mix .navbar__right--white :deep([class^="i-svg:"]) {
+  color: #fff !important;
 }
 
 .dark .navbar__right > *:hover {
