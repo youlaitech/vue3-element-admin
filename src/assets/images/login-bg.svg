@@ -6,77 +6,55 @@
         #bg-rect { fill: #101a29; }
         #blueGlow-rect { fill: url(#blueGlowDark); }
         #blueGlow2-rect { fill: url(#blueGlow2Dark); }
-        #purpleGlow-rect { fill: url(#purpleGlowDark); }
-        #pinkGlow-rect { fill: url(#pinkGlowDark); }
         #pinkPurpleGlow-rect { fill: url(#pinkPurpleGlowDark); }
       }
     </style>
 
     <!-- 亮色主题渐变 -->
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#f7fbfe" />
-      <stop offset="100%" stop-color="#f2f7fc" />
+      <stop offset="0%" stop-color="#f9fcff" />
+      <stop offset="100%" stop-color="#f5f9fd" />
     </linearGradient>
     
-    <!-- 主蓝白光晕 - 中间区域 -->
-    <radialGradient id="blueGlow" cx="50%" cy="40%" r="60%" fx="50%" fy="40%">
-      <stop offset="0%" stop-color="#eef7fd" stop-opacity="0.6" />
+    <!-- 中间区域淡蓝白光晕 -->
+    <radialGradient id="blueGlow" cx="50%" cy="50%" r="70%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#f0f8ff" stop-opacity="0.5" />
       <stop offset="100%" stop-color="#eef7fd" stop-opacity="0" />
     </radialGradient>
     
-    <!-- 左上角蓝白光晕 - 增强优雅感 -->
-    <radialGradient id="blueGlow2" cx="12%" cy="12%" r="45%" fx="12%" fy="12%">
-      <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.75" />
-      <stop offset="40%" stop-color="#e9f5fd" stop-opacity="0.5" />
+    <!-- 左上角蓝白光晕  -->
+    <radialGradient id="blueGlow2" cx="15%" cy="15%" r="40%" fx="15%" fy="15%">
+      <stop offset="0%" stop-color="#d9efff" stop-opacity="0.85" />
+      <stop offset="40%" stop-color="#e5f4fd" stop-opacity="0.6" />
       <stop offset="100%" stop-color="#e9f5fd" stop-opacity="0" />
     </radialGradient>
     
-    <!-- 右上角紫色光晕 - 保留但更淡 -->
-    <radialGradient id="purpleGlow" cx="85%" cy="20%" r="50%" fx="85%" fy="20%">
-      <stop offset="0%" stop-color="#f5f0fa" stop-opacity="0.6" />
-      <stop offset="100%" stop-color="#f5f0fa" stop-opacity="0" />
-    </radialGradient>
-    
-    <!-- 左下角粉色光晕 - 保留但更淡 -->
-    <radialGradient id="pinkGlow" cx="15%" cy="80%" r="45%" fx="15%" fy="80%">
-      <stop offset="0%" stop-color="#fdf1f5" stop-opacity="0.55" />
-      <stop offset="100%" stop-color="#fdf1f5" stop-opacity="0" />
-    </radialGradient>
-    
-    <!-- 右下角粉紫色光晕 - 增强效果 -->
-    <radialGradient id="pinkPurpleGlow" cx="88%" cy="78%" r="50%" fx="88%" fy="78%">
-      <stop offset="0%" stop-color="#f9eaf8" stop-opacity="0.7" />
-      <stop offset="35%" stop-color="#f8f0f8" stop-opacity="0.5" />
+    <!-- 右下角粉紫色光晕  -->
+    <radialGradient id="pinkPurpleGlow" cx="85%" cy="85%" r="40%" fx="85%" fy="85%">
+      <stop offset="0%" stop-color="#f7e6f9" stop-opacity="0.8" />
+      <stop offset="35%" stop-color="#f9edf8" stop-opacity="0.6" />
       <stop offset="100%" stop-color="#f8f2f8" stop-opacity="0" />
     </radialGradient>
 
     <!-- 暗色主题渐变 -->
-    <radialGradient id="blueGlowDark" cx="50%" cy="40%" r="60%" fx="50%" fy="40%">
-      <stop offset="0%" stop-color="#1c314e" stop-opacity="0.7" />
+    <radialGradient id="blueGlowDark" cx="50%" cy="50%" r="70%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#1e3a5e" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#1c314e" stop-opacity="0.3" />
       <stop offset="100%" stop-color="#1a2d47" stop-opacity="0" />
     </radialGradient>
     
     <!-- 左上角蓝白光晕 - 暗色模式 -->
-    <radialGradient id="blueGlow2Dark" cx="12%" cy="12%" r="45%" fx="12%" fy="12%">
-      <stop offset="0%" stop-color="#1e3554" stop-opacity="0.8" />
-      <stop offset="40%" stop-color="#172b45" stop-opacity="0.5" />
+    <radialGradient id="blueGlow2Dark" cx="15%" cy="15%" r="40%" fx="15%" fy="15%">
+      <stop offset="0%" stop-color="#1e3858" stop-opacity="0.85" />
+      <stop offset="40%" stop-color="#1a304f" stop-opacity="0.6" />
       <stop offset="100%" stop-color="#172b45" stop-opacity="0" />
     </radialGradient>
     
-    <radialGradient id="purpleGlowDark" cx="85%" cy="20%" r="50%" fx="85%" fy="20%">
-      <stop offset="0%" stop-color="#2a243a" stop-opacity="0.65" />
-      <stop offset="100%" stop-color="#292236" stop-opacity="0" />
-    </radialGradient>
-    
-    <radialGradient id="pinkGlowDark" cx="15%" cy="80%" r="45%" fx="15%" fy="80%">
-      <stop offset="0%" stop-color="#2f1c27" stop-opacity="0.55" />
-      <stop offset="100%" stop-color="#2d1a24" stop-opacity="0" />
-    </radialGradient>
-    
     <!-- 右下角粉紫色光晕 - 暗色模式 -->
-    <radialGradient id="pinkPurpleGlowDark" cx="88%" cy="78%" r="50%" fx="88%" fy="78%">
-      <stop offset="0%" stop-color="#2e2335" stop-opacity="0.8" />
-      <stop offset="35%" stop-color="#2a202d" stop-opacity="0.5" />
+    <radialGradient id="pinkPurpleGlowDark" cx="85%" cy="85%" r="40%" fx="85%" fy="85%">
+      <stop offset="0%" stop-color="#2e2335" stop-opacity="0.85" />
+      <stop offset="35%" stop-color="#2a2035" stop-opacity="0.6" />
       <stop offset="100%" stop-color="#2a202d" stop-opacity="0" />
     </radialGradient>
   </defs>
@@ -84,12 +62,12 @@
   <!-- 背景层 -->
   <rect id="bg-rect" width="100%" height="100%" fill="url(#bgGradient)" />
   
-  <!-- 渐变光晕层 - 中间主要是蓝白色系 -->
+  <!-- 中间淡蓝白光晕 -->
   <rect id="blueGlow-rect" width="100%" height="100%" fill="url(#blueGlow)" />
+  
+  <!-- 左上蓝白光晕 -->
   <rect id="blueGlow2-rect" width="100%" height="100%" fill="url(#blueGlow2)" />
   
-  <!-- 边缘保留淡粉紫色 -->
-  <rect id="purpleGlow-rect" width="100%" height="100%" fill="url(#purpleGlow)" />
-  <rect id="pinkGlow-rect" width="100%" height="100%" fill="url(#pinkGlow)" />
+  <!-- 右下粉紫光晕 -->
   <rect id="pinkPurpleGlow-rect" width="100%" height="100%" fill="url(#pinkPurpleGlow)" />
 </svg>
