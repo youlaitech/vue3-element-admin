@@ -122,9 +122,12 @@ const route = useRoute();
 onMounted(() => getCaptcha());
 
 const loginFormRef = ref<FormInstance>();
-const loading = ref(false); // 按钮 loading 状态
-const isCapsLock = ref(false); // 是否大写锁定
-const captchaBase64 = ref(); // 验证码图片Base64字符串
+const loading = ref(false);
+// 是否大写锁定
+const isCapsLock = ref(false);
+// 验证码图片Base64字符串
+const captchaBase64 = ref();
+// 记住我
 const rememberMe = Auth.getRememberMe();
 
 const loginFormData = ref<LoginFormData>({
@@ -178,7 +181,9 @@ function getCaptcha() {
     .finally(() => (codeLoading.value = false));
 }
 
-// 登录提交处理
+/**
+ * 登录提交
+ */
 async function handleLoginSubmit() {
   try {
     // 1. 表单验证
@@ -211,8 +216,9 @@ async function handleLoginSubmit() {
 
 /**
  * 解析重定向目标
+ *
  * @param query 路由查询参数
- * @returns 标准化后的路由地址对象
+ * @returns 标准化后的路由地址
  */
 function resolveRedirectTarget(query: LocationQuery): RouteLocationRaw {
   // 默认跳转路径

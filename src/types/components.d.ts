@@ -71,10 +71,11 @@ declare module "vue" {
     Hamburger: (typeof import("./../components/Hamburger/index.vue"))["default"];
     IconSelect: (typeof import("./../components/IconSelect/index.vue"))["default"];
     LangSelect: (typeof import("./../components/LangSelect/index.vue"))["default"];
+    LayoutSelect: (typeof import("./../layout/components/Settings/components/LayoutSelect.vue"))["default"];
     MenuSearch: (typeof import("./../components/MenuSearch/index.vue"))["default"];
     MultiImageUpload: (typeof import("./../components/Upload/MultiImageUpload.vue"))["default"];
+    NavbarActions: (typeof import("./../layout/components/NavBar/components/NavbarActions.vue"))["default"];
     Notification: (typeof import("./../components/Notification/index.vue"))["default"];
-    LayoutSelect: (typeof import("./../layout/components/Settings/components/LayoutSelect.vue"))["default"];
     PageContent: (typeof import("./../components/CURD/PageContent.vue"))["default"];
     PageModal: (typeof import("./../components/CURD/PageModal.vue"))["default"];
     PageSearch: (typeof import("./../components/CURD/PageSearch.vue"))["default"];

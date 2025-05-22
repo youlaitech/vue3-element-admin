@@ -4,7 +4,7 @@
     <div v-if="layout == LayoutMode.MIX" class="flex w-full">
       <SidebarLogo v-if="sidebarLogo" :collapse="isSidebarCollapsed" />
       <SidebarMixTopMenu class="flex-1" />
-      <NavbarRight />
+      <NavbarActions />
     </div>
 
     <!-- 顶部布局 || 左侧布局 -->
@@ -15,16 +15,16 @@
       </el-scrollbar>
 
       <!-- 顶部导航 -->
-      <NavbarRight v-if="layout == LayoutMode.TOP" />
+      <NavbarActions v-if="layout == LayoutMode.TOP" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { LayoutMode } from "@/enums/settings/layout.enum";
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
-
-import NavbarRight from "../NavBar/components/NavbarRight.vue";
+import NavbarActions from "../NavBar/components/NavbarActions.vue";
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
