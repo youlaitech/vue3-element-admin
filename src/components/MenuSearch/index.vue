@@ -290,7 +290,9 @@ function navigateToRoute(item: SearchItem) {
 
 function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
   routes.forEach((route) => {
-    const path = route.path.startsWith("/") ? route.path : `${parentPath}/${route.path}`;
+    const path = route.path.startsWith("/")
+      ? route.path
+      : `${parentPath}${parentPath.endsWith("/") ? "" : "/"}${route.path}`;
     if (excludedRoutes.value.includes(route.path) || isExternal(route.path)) return;
 
     if (route.children) {
