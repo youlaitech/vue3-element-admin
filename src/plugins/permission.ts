@@ -14,16 +14,13 @@ export function setupPermission() {
     console.log("to.path", to.path);
 
     const isLogin = Auth.isLoggedIn();
-    console.log("isLogin", isLogin);
     if (isLogin) {
-      console.log("to.path", to.path);
       if (to.path === "/login") {
         // 如果已登录，跳转到首页
         next({ path: "/" });
       } else {
         // 未登录
         const permissionStore = usePermissionStore();
-        console.log("permissionStore.routesLoaded", permissionStore.routesLoaded);
         // 判断路由是否加载完成
         if (permissionStore.routesLoaded) {
           if (to.matched.length === 0) {
@@ -39,7 +36,7 @@ export function setupPermission() {
           }
         } else {
           try {
-            // 生成动态路由
+            // 生成路由
             const dynamicRoutes = await permissionStore.generateRoutes();
             dynamicRoutes.forEach((route: RouteRecordRaw) => router.addRoute(route));
             next({ ...to, replace: true });
