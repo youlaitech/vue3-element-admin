@@ -138,15 +138,44 @@ function logout() {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 40px;
-    height: $navbar-height;
+    min-width: 36px;
+    height: 100%;
+    padding: 0 8px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s;
 
+    // 确保直接子元素也居中
+    > * {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    // 确保 el-dropdown 也居中
+    :deep(.el-dropdown) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    // 修复可能的 SVG 图标容器
+    :deep(.icon-container),
+    :deep(.action-icon) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
     // 默认图标样式（明亮模式 + 左侧布局）
     :deep([class^="i-svg:"]) {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       font-size: 18px;
+      line-height: 1;
       color: var(--el-text-color-regular);
       transition: color 0.3s;
     }
@@ -165,18 +194,20 @@ function logout() {
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 0 13px;
+    padding: 0 8px;
 
     &__avatar {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
+      flex-shrink: 0;
     }
 
     &__name {
-      margin-left: 10px;
+      margin-left: 8px;
       color: var(--el-text-color-regular);
       transition: color 0.3s;
+      white-space: nowrap;
     }
   }
 }

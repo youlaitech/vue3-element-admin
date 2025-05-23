@@ -2,10 +2,16 @@
   <BaseLayout>
     <!-- 顶部菜单栏 -->
     <div class="layout__header">
-      <Sidebar :show-logo="isShowLogo" :is-collapsed="false">
+      <div class="layout__header-left">
+        <!-- Logo -->
+        <SidebarLogo v-if="isShowLogo" :collapse="false" />
+        <!-- 菜单 -->
         <Menu :data="routes" menu-mode="horizontal" base-path="" />
+      </div>
+      <!-- 操作按钮 -->
+      <div class="layout__header-right">
         <NavbarActions />
-      </Sidebar>
+      </div>
     </div>
 
     <!-- 主内容区 -->
@@ -20,11 +26,11 @@
 import { useLayout } from "../composables/useLayout";
 import { useLayoutMenu } from "../composables/useLayoutMenu";
 import BaseLayout from "./BaseLayout.vue";
-import Sidebar from "../components/Sidebar/index.vue";
-import Menu from "../components/menu/index.vue";
-import NavbarActions from "../components/navbar/components/NavbarActions.vue";
-import TagsView from "../components/TagsView.vue";
-import AppMain from "../components/AppMain.vue";
+import SidebarLogo from "../components/Sidebar/components/SidebarLogo.vue";
+import Menu from "../components/Menu/index.vue";
+import NavbarActions from "../components/Navbar/components/NavbarActions.vue";
+import TagsView from "../components/TagsView/index.vue";
+import AppMain from "../components/AppMain/index.vue";
 
 // 布局相关参数
 const { isShowTagsView, isShowLogo } = useLayout();
@@ -39,14 +45,72 @@ const { routes } = useLayoutMenu();
     position: sticky;
     top: 0;
     z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
     height: $navbar-height;
+    padding: 0 20px;
     background-color: $menu-background;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
-    :deep(.layout-sidebar) {
+    &-left {
       display: flex;
-      width: 100% !important;
+      align-items: center;
+      height: 100%;
+      flex: 1;
+
+      // Logo 样式
+      :deep(.sidebar-logo) {
+        width: 200px;
+        height: $navbar-height;
+        padding: 0;
+        margin-right: 20px;
+        background: transparent;
+
+        .sidebar-logo__link {
+          height: 100%;
+        }
+
+        .logo {
+          width: 100%;
+          background-color: transparent;
+        }
+      }
+    }
+
+    &-right {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    // 限制菜单高度
+    :deep(.el-menu--horizontal) {
+      flex: 1;
       height: $navbar-height;
+      line-height: $navbar-height;
+      border: none;
+      background-color: transparent;
+
+      .el-menu-item {
+        height: $navbar-height;
+        line-height: $navbar-height;
+        padding: 0 20px;
+      }
+
+      .el-sub-menu {
+        .el-sub-menu__title {
+          height: $navbar-height;
+          line-height: $navbar-height;
+          padding: 0 20px;
+        }
+      }
+
+      // 修复子菜单弹出位置
+      .el-menu--popup {
+        min-width: 160px;
+      }
     }
   }
 
