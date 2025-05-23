@@ -42,7 +42,7 @@ const RoleAPI = {
     return request({
       url: `${ROLE_BASE_URL}/${roleId}/menus`,
       method: "put",
-      data: data,
+      data,
     });
   },
 
@@ -64,7 +64,7 @@ const RoleAPI = {
     return request({
       url: `${ROLE_BASE_URL}`,
       method: "post",
-      data: data,
+      data,
     });
   },
 
@@ -78,7 +78,7 @@ const RoleAPI = {
     return request({
       url: `${ROLE_BASE_URL}/${id}`,
       method: "put",
-      data: data,
+      data,
     });
   },
 

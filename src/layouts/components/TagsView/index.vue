@@ -6,19 +6,15 @@
         v-for="tag in visitedViews"
         ref="tagRef"
         :key="tag.fullPath"
-        :class="'tags-item ' + (tagsViewStore.isActive(tag) ? 'active' : '')"
+        :class="['tags-item', { active: tagsViewStore.isActive(tag) }]"
         :to="{ path: tag.path, query: tag.query }"
-        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
-        @contextmenu.prevent="openContentMenu(tag, $event)"
+        @click.middle="handleMiddleClick(tag)"
+        @contextmenu.prevent="(event: MouseEvent) => openContextMenu(tag, event)"
       >
         <!-- 标签文本 -->
         <span class="tag-text">{{ translateRouteTitle(tag.title) }}</span>
         <!-- 关闭按钮，固定标签不显示 -->
-        <span
-          v-if="!isAffix(tag)"
-          class="tag-close-icon"
-          @click.prevent.stop="closeSelectedTag(tag)"
-        >
+        <span v-if="!tag.affix" class="tag-close-btn" @click.prevent.stop="closeSelectedTag(tag)">
           ×
         </span>
       </router-link>
@@ -26,15 +22,15 @@
 
     <!-- 标签右键菜单 -->
     <ul
-      v-show="contentMenuVisible"
+      v-show="contextMenu.visible"
       class="contextmenu"
-      :style="{ left: left + 'px', top: top + 'px' }"
+      :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }"
     >
       <li @click="refreshSelectedTag(selectedTag)">
         <div class="i-svg:refresh" />
         刷新
       </li>
-      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
+      <li v-if="!selectedTag?.affix" @click="closeSelectedTag(selectedTag)">
         <div class="i-svg:close" />
         关闭
       </li>
@@ -42,11 +38,11 @@
         <div class="i-svg:close_other" />
         关闭其它
       </li>
-      <li v-if="!isFirstView()" @click="closeLeftTags">
+      <li v-if="!isFirstView" @click="closeLeftTags">
         <div class="i-svg:close_left" />
         关闭左侧
       </li>
-      <li v-if="!isLastView()" @click="closeRightTags">
+      <li v-if="!isLastView" @click="closeRightTags">
         <div class="i-svg:close_right" />
         关闭右侧
       </li>
@@ -59,366 +55,391 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter, RouteRecordRaw } from "vue-router";
+import { useRoute, useRouter, type RouteRecordRaw } from "vue-router";
 import { resolve } from "path-browserify";
 import { translateRouteTitle } from "@/utils/i18n";
-
 import { usePermissionStore, useTagsViewStore, useSettingsStore, useAppStore } from "@/store";
 
+// ========================= 类型定义 =========================
+interface ContextMenu {
+  visible: boolean;
+  x: number;
+  y: number;
+}
+
+// ========================= 组合式 API =========================
 const instance = getCurrentInstance();
 const proxy = instance?.proxy;
 const router = useRouter();
 const route = useRoute();
 
-// 权限、标签页状态管理
+// 状态管理
 const permissionStore = usePermissionStore();
 const tagsViewStore = useTagsViewStore();
+const settingsStore = useSettingsStore();
 const appStore = useAppStore();
 
-// 响应式引用访问已访问的标签视图列表
+// ========================= 响应式数据 =========================
 const { visitedViews } = storeToRefs(tagsViewStore);
-const settingsStore = useSettingsStore();
 const layout = computed(() => settingsStore.layout);
 
 // 当前选中的标签
-const selectedTag = ref<TagView>({
-  path: "",
-  fullPath: "",
-  name: "",
-  title: "",
-  affix: false,
-  keepAlive: false,
+const selectedTag = ref<TagView | null>(null);
+
+// 右键菜单状态
+const contextMenu = reactive<ContextMenu>({
+  visible: false,
+  x: 0,
+  y: 0,
 });
 
-// 固定标签列表
-const affixTags = ref<TagView[]>([]);
-// 右键菜单位置
-const left = ref(0);
-const top = ref(0);
+// 滚动条引用
+const scrollbarRef = ref();
 
-// 监听路由变化，添加标签并移动到当前标签位置
-watch(
-  route,
-  () => {
-    addTags();
-    moveToCurrentTag();
-  },
-  {
-    immediate: true, // 初始化立即执行
-  }
-);
-
-// 右键菜单显示状态
-const contentMenuVisible = ref(false);
-// 监听右键菜单显示状态，添加或移除点击事件监听器
-watch(contentMenuVisible, (value) => {
-  if (value) {
-    document.body.addEventListener("click", closeContentMenu);
-  } else {
-    document.body.removeEventListener("click", closeContentMenu);
-  }
-});
-
-/**
- * 过滤出需要固定的标签
- * @param routes 路由配置
- * @param basePath 基础路径
- * @returns 固定标签列表
- */
-function filterAffixTags(routes: RouteRecordRaw[], basePath = "/") {
-  let tags: TagView[] = [];
-  routes.forEach((route: RouteRecordRaw) => {
-    const tagPath = resolve(basePath, route.path);
-    // 当路由设置了meta.affix属性时，加入固定标签列表
-    if (route.meta?.affix) {
-      tags.push({
-        path: tagPath,
-        fullPath: tagPath,
-        name: String(route.name),
-        title: route.meta?.title || "no-name",
-        affix: route.meta?.affix,
-        keepAlive: route.meta?.keepAlive,
-      });
-    }
-    // 递归处理子路由
-    if (route.children) {
-      const tempTags = filterAffixTags(route.children, basePath + route.path);
-      if (tempTags.length >= 1) {
-        tags = [...tags, ...tempTags];
-      }
-    }
+// ========================= 计算属性 =========================
+// 路由映射缓存，提升查找性能
+const routePathMap = computed(() => {
+  const map = new Map<string, TagView>();
+  visitedViews.value.forEach((tag) => {
+    map.set(tag.path, tag);
   });
-  return tags;
-}
+  return map;
+});
+
+// 判断是否为第一个标签
+const isFirstView = computed(() => {
+  if (!selectedTag.value) return false;
+  return (
+    selectedTag.value.path === "/dashboard" ||
+    selectedTag.value.fullPath === visitedViews.value[1]?.fullPath
+  );
+});
+
+// 判断是否为最后一个标签
+const isLastView = computed(() => {
+  if (!selectedTag.value) return false;
+  return selectedTag.value.fullPath === visitedViews.value[visitedViews.value.length - 1]?.fullPath;
+});
+
+// ========================= 核心函数 =========================
+/**
+ * 递归提取固定标签
+ */
+const extractAffixTags = (routes: RouteRecordRaw[], basePath = "/"): TagView[] => {
+  const affixTags: TagView[] = [];
+
+  const traverse = (routeList: RouteRecordRaw[], currentBasePath: string) => {
+    routeList.forEach((route) => {
+      const fullPath = resolve(currentBasePath, route.path);
+
+      // 如果是固定标签，添加到列表
+      if (route.meta?.affix) {
+        affixTags.push({
+          path: fullPath,
+          fullPath,
+          name: String(route.name || ""),
+          title: route.meta.title || "no-name",
+          affix: true,
+          keepAlive: route.meta.keepAlive || false,
+        });
+      }
+
+      // 递归处理子路由
+      if (route.children?.length) {
+        traverse(route.children, fullPath);
+      }
+    });
+  };
+
+  traverse(routes, basePath);
+  return affixTags;
+};
 
 /**
- * 初始化标签列表，添加需要固定的标签
+ * 查找路由的顶级父节点
  */
-function initTags() {
-  const tags: TagView[] = filterAffixTags(permissionStore.routes);
-  affixTags.value = tags;
-  for (const tag of tags) {
-    // 必须有标签名称才添加
+const findTopLevelParent = (
+  routes: RouteRecordRaw[],
+  targetName: string
+): RouteRecordRaw | null => {
+  // 构建父子关系映射
+  const parentMap = new Map<string, RouteRecordRaw>();
+
+  const buildMap = (routeList: RouteRecordRaw[], parent: RouteRecordRaw | null = null) => {
+    routeList.forEach((route) => {
+      if (parent) {
+        parentMap.set(route.name as string, parent);
+      }
+
+      if (route.children?.length) {
+        buildMap(route.children, route);
+      }
+    });
+  };
+
+  buildMap(routes);
+
+  // 向上查找顶级父节点
+  let current = parentMap.get(targetName);
+  let topLevel = current;
+
+  while (current) {
+    const parent = parentMap.get(current.name as string);
+    if (!parent) break;
+    topLevel = current;
+    current = parent;
+  }
+
+  return topLevel || null;
+};
+
+// ========================= 标签操作 =========================
+/**
+ * 初始化固定标签
+ */
+const initAffixTags = () => {
+  const affixTags = extractAffixTags(permissionStore.routes);
+
+  affixTags.forEach((tag) => {
     if (tag.name) {
       tagsViewStore.addVisitedView(tag);
     }
-  }
-}
+  });
+};
 
 /**
- * 添加当前路由到标签列表
+ * 添加当前路由标签
  */
-function addTags() {
-  if (route.meta.title) {
-    tagsViewStore.addView({
-      name: route.name as string,
-      title: route.meta.title,
-      path: route.path,
-      fullPath: route.fullPath,
-      affix: route.meta?.affix,
-      keepAlive: route.meta?.keepAlive,
-      query: route.query,
-    });
-  }
-}
+const addCurrentTag = () => {
+  if (!route.meta?.title) return;
+
+  tagsViewStore.addView({
+    name: route.name as string,
+    title: route.meta.title,
+    path: route.path,
+    fullPath: route.fullPath,
+    affix: route.meta.affix || false,
+    keepAlive: route.meta.keepAlive || false,
+    query: route.query,
+  });
+};
 
 /**
- * the purpose of this function is make sure to move the current active tag into the view
+ * 更新当前标签（优化版本）
  */
-function moveToCurrentTag() {
-  // 使用 nextTick() 确保在更新 tagsView 组件之前滚动到正确位置
+const updateCurrentTag = () => {
   nextTick(() => {
-    for (const tag of visitedViews.value) {
-      if (tag.path === route.path) {
-        // 当查询参数不同时更新标签
-        if (tag.fullPath !== route.fullPath) {
-          tagsViewStore.updateVisitedView({
-            name: route.name as string,
-            title: route.meta.title || "",
-            path: route.path,
-            fullPath: route.fullPath,
-            affix: route.meta?.affix,
-            keepAlive: route.meta?.keepAlive,
-            query: route.query,
-          });
-        }
-      }
+    const currentTag = routePathMap.value.get(route.path);
+
+    if (currentTag && currentTag.fullPath !== route.fullPath) {
+      tagsViewStore.updateVisitedView({
+        name: route.name as string,
+        title: route.meta?.title || "",
+        path: route.path,
+        fullPath: route.fullPath,
+        affix: route.meta?.affix || false,
+        keepAlive: route.meta?.keepAlive || false,
+        query: route.query,
+      });
     }
   });
-}
+};
 
+// ========================= 事件处理 =========================
 /**
- * 判断标签是否为固定标签
- * @param tag 标签对象
- * @returns 是否为固定标签
+ * 处理中键点击
  */
-function isAffix(tag: TagView) {
-  return tag?.affix;
-}
-
-/**
- * 判断选中的标签是否为第一个可见标签
- * @returns 是否为第一个可见标签
- */
-function isFirstView() {
-  return (
-    selectedTag.value.path === "/dashboard" ||
-    selectedTag.value.fullPath === tagsViewStore.visitedViews[1]?.fullPath
-  );
-}
-
-/**
- * 判断选中的标签是否为最后一个可见标签
- * @returns 是否为最后一个可见标签
- */
-function isLastView() {
-  return (
-    selectedTag.value.fullPath ===
-    tagsViewStore.visitedViews[tagsViewStore.visitedViews.length - 1]?.fullPath
-  );
-}
-
-/**
- * 刷新选中的标签页
- * @param view 标签对象
- */
-function refreshSelectedTag(view: TagView) {
-  tagsViewStore.delCachedView(view);
-  const { fullPath } = view;
-  nextTick(() => {
-    router.replace("/redirect" + fullPath);
-  });
-}
-
-/**
- * 关闭选中的标签页
- * @param view 标签对象
- */
-function closeSelectedTag(view: TagView) {
-  tagsViewStore.delView(view).then((res: any) => {
-    if (tagsViewStore.isActive(view)) {
-      tagsViewStore.toLastView(res.visitedViews, view);
-    }
-  });
-}
-
-/**
- * 关闭选中标签左侧的所有标签
- */
-function closeLeftTags() {
-  tagsViewStore.delLeftViews(selectedTag.value).then((res: any) => {
-    if (!res.visitedViews.find((item: any) => item.path === route.path)) {
-      tagsViewStore.toLastView(res.visitedViews);
-    }
-  });
-}
-
-/**
- * 关闭选中标签右侧的所有标签
- */
-function closeRightTags() {
-  tagsViewStore.delRightViews(selectedTag.value).then((res: any) => {
-    if (!res.visitedViews.find((item: any) => item.path === route.path)) {
-      tagsViewStore.toLastView(res.visitedViews);
-    }
-  });
-}
-
-/**
- * 关闭除选中标签外的所有标签
- */
-function closeOtherTags() {
-  router.push(selectedTag.value);
-  tagsViewStore.delOtherViews(selectedTag.value).then(() => {
-    moveToCurrentTag();
-  });
-}
-
-/**
- * 关闭所有标签
- * @param view 标签对象
- */
-function closeAllTags(view: TagView) {
-  tagsViewStore.delAllViews().then((res: any) => {
-    tagsViewStore.toLastView(res.visitedViews, view);
-  });
-}
+const handleMiddleClick = (tag: TagView) => {
+  if (!tag.affix) {
+    closeSelectedTag(tag);
+  }
+};
 
 /**
  * 打开右键菜单
- * @param tag 标签对象
- * @param e 鼠标事件
  */
-function openContentMenu(tag: TagView, e: MouseEvent) {
-  const menuMinWidth = 105;
-  const offsetLeft = proxy?.$el.getBoundingClientRect().left; // 容器左边距
-  const offsetWidth = proxy?.$el.offsetWidth; // 容器宽度
-  const maxLeft = offsetWidth - menuMinWidth; // 左边界
-  const leftPosition = e.clientX - offsetLeft + 15; // 15: 右边距
+const openContextMenu = (tag: TagView, event: MouseEvent) => {
+  const MENU_MIN_WIDTH = 105;
+  const MENU_MARGIN = 15;
 
-  // 确保菜单不超出容器右边界
-  if (leftPosition > maxLeft) {
-    left.value = maxLeft;
-  } else {
-    left.value = leftPosition;
-  }
+  const containerRect = proxy?.$el.getBoundingClientRect();
+  const offsetLeft = containerRect?.left || 0;
+  const containerWidth = proxy?.$el.offsetWidth || 0;
 
-  // 混合模式下，需要减去顶部菜单(fixed)的高度
-  if (layout.value === "mix") {
-    top.value = e.clientY - 50;
-  } else {
-    top.value = e.clientY;
-  }
+  const maxLeft = containerWidth - MENU_MIN_WIDTH;
+  const leftPosition = event.clientX - offsetLeft + MENU_MARGIN;
 
-  contentMenuVisible.value = true;
+  contextMenu.x = Math.min(leftPosition, maxLeft);
+  contextMenu.y = layout.value === "mix" ? event.clientY - 50 : event.clientY;
+  contextMenu.visible = true;
+
   selectedTag.value = tag;
-}
+};
 
 /**
  * 关闭右键菜单
  */
-function closeContentMenu() {
-  contentMenuVisible.value = false;
-}
+const closeContextMenu = () => {
+  contextMenu.visible = false;
+};
 
 /**
- * 处理鼠标滚轮事件，实现水平滚动
+ * 处理滚轮事件
  */
-const scrollbarRef = ref();
-function handleScroll(event: any) {
-  closeContentMenu();
-  // 检查是否有横向滚动条
-  if (scrollbarRef.value.wrapRef.scrollWidth > scrollbarRef.value.wrapRef.clientWidth) {
-    const wheelDelta = event.wheelDelta || 0; // 向上滚动时为120，向下滚动时为-120
-    const scrollLeft = scrollbarRef.value.wrapRef.scrollLeft; // 当前滚动条到左边的距离
-    // 设置滚动条到左边的距离
-    scrollbarRef.value.setScrollLeft(scrollLeft - wheelDelta);
-  }
-}
+const handleScroll = (event: WheelEvent) => {
+  closeContextMenu();
+
+  const scrollWrapper = scrollbarRef.value?.wrapRef;
+  if (!scrollWrapper) return;
+
+  const hasHorizontalScroll = scrollWrapper.scrollWidth > scrollWrapper.clientWidth;
+  if (!hasHorizontalScroll) return;
+
+  const deltaY = event.deltaY || -(event as any).wheelDelta || 0;
+  const newScrollLeft = scrollWrapper.scrollLeft + deltaY;
+
+  scrollbarRef.value.setScrollLeft(newScrollLeft);
+};
+
+// ========================= 标签管理 =========================
+/**
+ * 刷新标签
+ */
+const refreshSelectedTag = (tag: TagView | null) => {
+  if (!tag) return;
+
+  tagsViewStore.delCachedView(tag);
+  nextTick(() => {
+    router.replace("/redirect" + tag.fullPath);
+  });
+};
 
 /**
- * 寻找最外层父节点
- * @param tree 路由树
- * @param findName 要查找的节点名称
- * @returns 最外层父节点
+ * 关闭标签
  */
-function findOutermostParent(tree: any[], findName: string) {
-  let parentMap: any = {};
+const closeSelectedTag = (tag: TagView | null) => {
+  if (!tag) return;
 
-  function buildParentMap(node: any, parent: any) {
-    parentMap[node.name] = parent;
-
-    if (node.children) {
-      for (let i = 0; i < node.children.length; i++) {
-        buildParentMap(node.children[i], node);
-      }
+  tagsViewStore.delView(tag).then((result: any) => {
+    if (tagsViewStore.isActive(tag)) {
+      tagsViewStore.toLastView(result.visitedViews, tag);
     }
-  }
-
-  for (let i = 0; i < tree.length; i++) {
-    buildParentMap(tree[i], null);
-  }
-
-  let currentNode = parentMap[findName];
-  while (currentNode) {
-    if (!parentMap[currentNode.name]) {
-      return currentNode;
-    }
-    currentNode = parentMap[currentNode.name];
-  }
-
-  return null;
-}
+  });
+};
 
 /**
- * 重新激活顶部菜单
- * @param newVal 新的路由名
+ * 关闭左侧标签
  */
-const againActiveTop = (newVal: string) => {
+const closeLeftTags = () => {
+  if (!selectedTag.value) return;
+
+  tagsViewStore.delLeftViews(selectedTag.value).then((result: any) => {
+    const hasCurrentRoute = result.visitedViews.some((item: TagView) => item.path === route.path);
+
+    if (!hasCurrentRoute) {
+      tagsViewStore.toLastView(result.visitedViews);
+    }
+  });
+};
+
+/**
+ * 关闭右侧标签
+ */
+const closeRightTags = () => {
+  if (!selectedTag.value) return;
+
+  tagsViewStore.delRightViews(selectedTag.value).then((result: any) => {
+    const hasCurrentRoute = result.visitedViews.some((item: TagView) => item.path === route.path);
+
+    if (!hasCurrentRoute) {
+      tagsViewStore.toLastView(result.visitedViews);
+    }
+  });
+};
+
+/**
+ * 关闭其他标签
+ */
+const closeOtherTags = () => {
+  if (!selectedTag.value) return;
+
+  router.push(selectedTag.value);
+  tagsViewStore.delOtherViews(selectedTag.value).then(() => {
+    updateCurrentTag();
+  });
+};
+
+/**
+ * 关闭所有标签
+ */
+const closeAllTags = (tag: TagView | null) => {
+  tagsViewStore.delAllViews().then((result: any) => {
+    tagsViewStore.toLastView(result.visitedViews, tag || undefined);
+  });
+};
+
+// ========================= 混合布局处理 =========================
+/**
+ * 更新顶部菜单激活状态（混合布局）
+ */
+const updateTopMenuActive = (routeName: string) => {
   if (layout.value !== "mix") return;
-  const parent = findOutermostParent(permissionStore.routes, newVal);
-  if (appStore.activeTopMenu !== parent.path) {
-    appStore.activeTopMenu(parent.path);
+
+  const topParent = findTopLevelParent(permissionStore.routes, routeName);
+  if (topParent && appStore.activeTopMenuPath !== topParent.path) {
+    appStore.activeTopMenu(topParent.path);
   }
 };
 
-// 如果是混合模式，更改selectedTag，需要对应高亮的activeTop
-watch(
-  () => route.name,
-  (newVal) => {
-    if (newVal) {
-      againActiveTop(newVal as string);
+// ========================= 组合式函数：右键菜单管理 =========================
+const useContextMenuManager = () => {
+  const handleOutsideClick = () => {
+    closeContextMenu();
+  };
+
+  watchEffect(() => {
+    if (contextMenu.visible) {
+      document.addEventListener("click", handleOutsideClick);
+    } else {
+      document.removeEventListener("click", handleOutsideClick);
     }
+  });
+
+  // 组件卸载时清理
+  onBeforeUnmount(() => {
+    document.removeEventListener("click", handleOutsideClick);
+  });
+};
+
+// ========================= 监听器和生命周期 =========================
+// 监听路由变化
+watch(
+  route,
+  () => {
+    addCurrentTag();
+    updateCurrentTag();
   },
-  {
-    deep: true,
-  }
+  { immediate: true }
 );
 
-// 组件挂载时初始化标签
+// 监听路由名变化（混合布局）
+watch(
+  () => route.name,
+  (newRouteName) => {
+    if (newRouteName) {
+      updateTopMenuActive(newRouteName as string);
+    }
+  },
+  { deep: true }
+);
+
+// 初始化
 onMounted(() => {
-  initTags();
+  initAffixTags();
 });
+
+// 启用右键菜单管理
+useContextMenuManager();
 </script>
 
 <style lang="scss" scoped>
@@ -429,12 +450,10 @@ onMounted(() => {
   border: 1px solid var(--el-border-color-light);
   box-shadow: 0 1px 1px var(--el-box-shadow-light);
 
-  /* 滚动容器样式 */
   .scroll-container {
     white-space: nowrap;
   }
 
-  /* 标签项样式 */
   .tags-item {
     position: relative;
     display: inline-flex;
@@ -448,8 +467,8 @@ onMounted(() => {
     color: var(--el-text-color-primary);
     background: var(--el-bg-color);
     border: 1px solid var(--el-border-color);
+    transition: all 0.2s ease;
 
-    /* 第一个和最后一个标签的边距调整 */
     &:first-of-type {
       margin-left: 15px;
     }
@@ -457,14 +476,12 @@ onMounted(() => {
       margin-right: 15px;
     }
 
-    /* 标签文本样式 */
     .tag-text {
       display: inline-block;
       vertical-align: middle;
     }
 
-    /* 关闭按钮样式 */
-    .tag-close-icon {
+    .tag-close-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -484,11 +501,11 @@ onMounted(() => {
       }
     }
 
-    /* 活动标签样式 */
     &.active {
       color: var(--el-color-white);
       background-color: var(--el-color-primary);
       border-color: var(--el-color-primary);
+
       &::before {
         position: relative;
         display: inline-block;
@@ -500,8 +517,7 @@ onMounted(() => {
         border-radius: 50%;
       }
 
-      /* 活动标签关闭按钮样式 */
-      .tag-close-icon {
+      .tag-close-btn {
         color: var(--el-color-white);
 
         &:hover {
@@ -512,7 +528,6 @@ onMounted(() => {
     }
   }
 
-  /* 右键菜单样式 */
   .contextmenu {
     position: absolute;
     z-index: 3000;
@@ -526,11 +541,15 @@ onMounted(() => {
     border-radius: 4px;
     box-shadow: var(--el-box-shadow-light);
 
-    /* 菜单项样式 */
     li {
+      display: flex;
+      gap: 8px;
+      align-items: center;
       padding: 7px 16px;
       margin: 0;
       cursor: pointer;
+      transition: background-color 0.2s;
+
       &:hover {
         background: var(--el-fill-color-light);
       }

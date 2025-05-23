@@ -547,7 +547,7 @@ const initSort = () => {
 
 const setNodeSort = (oldIndex: number, newIndex: number) => {
   // 使用arr复制一份表格数组数据
-  let arr = Object.assign([], genConfigFormData.value.fieldConfigs);
+  const arr = Object.assign([], genConfigFormData.value.fieldConfigs);
   const currentRow = arr.splice(oldIndex, 1)[0];
   arr.splice(newIndex, 0, currentRow);
   arr.forEach((item: FieldConfig, index) => {

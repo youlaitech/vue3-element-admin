@@ -35,7 +35,7 @@ const searchConfig: ISearchConfig = {
       attrs: { placeholder: "全部", clearable: true },
       options: stateArr as any,
       events: {
-        change: function (e) {
+        change (e) {
           console.log("选中的值: ", e);
         },
       },

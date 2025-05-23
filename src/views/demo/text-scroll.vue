@@ -13,7 +13,7 @@
     <TextScroll type="info" text="这是一条信息类型的滚动公告" />
 
     <!-- 自定义速度和方向 -->
-    <TextScroll text="这是一条速度较慢、向右滚动的公告" :speed="30" direction="right" showClose />
+    <TextScroll text="这是一条速度较慢、向右滚动的公告" :speed="30" direction="right" show-close />
   </div>
 </template>
 

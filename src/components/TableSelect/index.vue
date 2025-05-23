@@ -226,7 +226,7 @@ const queryParams = reactive<{
   [key: string]: any;
 }>({
   pageNum: 1,
-  pageSize: pageSize,
+  pageSize,
 });
 
 // 计算popover的宽度

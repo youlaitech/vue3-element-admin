@@ -62,7 +62,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { ElMessageBox } from "element-plus";
 import defaultSettings from "@/settings";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 import { useAppStore, useSettingsStore, useUserStore } from "@/store";

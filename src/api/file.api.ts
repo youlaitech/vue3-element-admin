@@ -42,7 +42,7 @@ const FileAPI = {
     return request({
       url: "/api/v1/files",
       method: "delete",
-      params: { filePath: filePath },
+      params: { filePath },
     });
   },
 
@@ -53,7 +53,7 @@ const FileAPI = {
    */
   download(url: string, fileName?: string) {
     return request({
-      url: url,
+      url,
       method: "get",
       responseType: "blob",
     }).then((res) => {

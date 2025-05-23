@@ -181,7 +181,7 @@ const handleLayoutChange = (layout: LayoutMode) => {
  * @param findName 查找的名称
  */
 function findTopLevelRoute(tree: any[], findName: string) {
-  let parentMap: any = {};
+  const parentMap: any = {};
 
   function buildParentMap(node: any, parent: any) {
     parentMap[node.name] = parent;

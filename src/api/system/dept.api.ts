@@ -48,7 +48,7 @@ const DeptAPI = {
     return request({
       url: `${DEPT_BASE_URL}`,
       method: "post",
-      data: data,
+      data,
     });
   },
 
@@ -63,7 +63,7 @@ const DeptAPI = {
     return request({
       url: `${DEPT_BASE_URL}/${id}`,
       method: "put",
-      data: data,
+      data,
     });
   },
 

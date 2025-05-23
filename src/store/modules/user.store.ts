@@ -90,6 +90,17 @@ export const useUserStore = defineStore("user", () => {
     // 清除标签视图
     useTagsViewStore().delAllViews();
 
+    // 3. 清理 WebSocket 连接
+    // 动态导入避免循环依赖
+    import("@/plugins/websocket")
+      .then(({ cleanupWebSocket }) => {
+        cleanupWebSocket();
+        console.log("[UserStore] WebSocket connections cleaned up");
+      })
+      .catch((error) => {
+        console.error("[UserStore] Failed to cleanup WebSocket:", error);
+      });
+
     return Promise.resolve();
   }
 

@@ -8,9 +8,10 @@
       <div class="toolbar-left flex gap-y-2.5 gap-x-2 md:gap-x-3 flex-wrap">
         <template v-for="btn in toolbarLeftBtn">
           <el-button
+            v-bind="btn.attrs"
+            :key="btn.name"
             v-hasPerm="btn.perm ?? '*:*:*'"
             :disabled="btn.name === 'delete' && removeIds.length === 0"
-            v-bind="btn.attrs"
             @click="handleToolbar(btn.name)"
           >
             {{ btn.text }}
@@ -546,7 +547,7 @@ const exportsFormRef = ref<FormInstance>();
 const exportsFormData = reactive({
   filename: "",
   sheetname: "",
-  fields: fields,
+  fields,
   origin: ExportsOriginEnum.CURRENT,
 });
 const exportsFormRules: FormRules = {
@@ -807,8 +808,8 @@ function handleModify(field: string, value: boolean | string | number, row: Reco
   if (props.contentConfig.modifyAction) {
     props.contentConfig.modifyAction({
       [pk]: row[pk],
-      field: field,
-      value: value,
+      field,
+      value,
     });
   } else {
     ElMessage.error("未配置modifyAction");

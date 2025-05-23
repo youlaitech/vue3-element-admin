@@ -50,7 +50,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}`,
       method: "post",
-      data: data,
+      data,
     });
   },
 
@@ -64,7 +64,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/${id}`,
       method: "put",
-      data: data,
+      data,
     });
   },
 
@@ -78,7 +78,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/${id}/password/reset`,
       method: "put",
-      params: { password: password },
+      params: { password },
     });
   },
 
@@ -129,7 +129,7 @@ const UserAPI = {
     return request<any, ExcelResult>({
       url: `${USER_BASE_URL}/import`,
       method: "post",
-      params: { deptId: deptId },
+      params: { deptId },
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -150,7 +150,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/profile`,
       method: "put",
-      data: data,
+      data,
     });
   },
 
@@ -159,7 +159,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/password`,
       method: "put",
-      data: data,
+      data,
     });
   },
 
@@ -168,7 +168,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/mobile/code`,
       method: "post",
-      params: { mobile: mobile },
+      params: { mobile },
     });
   },
 
@@ -177,7 +177,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/mobile`,
       method: "put",
-      data: data,
+      data,
     });
   },
 
@@ -186,7 +186,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/email/code`,
       method: "post",
-      params: { email: email },
+      params: { email },
     });
   },
 
@@ -195,7 +195,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/email`,
       method: "put",
-      data: data,
+      data,
     });
   },
 

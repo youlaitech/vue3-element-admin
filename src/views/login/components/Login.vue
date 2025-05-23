@@ -135,7 +135,7 @@ const loginFormData = ref<LoginFormData>({
   password: "123456",
   captchaKey: "",
   captchaCode: "",
-  rememberMe: rememberMe,
+  rememberMe,
 });
 
 const loginRules = computed(() => {
@@ -195,12 +195,16 @@ async function handleLoginSubmit() {
     // 2. 执行登录
     await userStore.login(loginFormData.value);
 
-    // 3. 获取用户信息
+    // 3. 获取用户信息（包含用户角色，用于路由生成）
     await userStore.getUserInfo();
 
-    // 4. 解析并跳转目标地址
+    // 4. 登录成功，让路由守卫处理跳转逻辑
+    // 解析目标地址，但不直接跳转
     const redirect = resolveRedirectTarget(route.query);
-    await router.push(redirect);
+    console.log("🎉 Login successful, target redirect:", redirect);
+
+    // 通过替换当前路由触发路由守卫，让守卫处理后续的路由生成和跳转
+    await router.replace(redirect);
 
     // 5. 记住我功能已实现，根据用户选择决定token的存储方式:
     // - 选中"记住我": token存储在localStorage中，浏览器关闭后仍然有效

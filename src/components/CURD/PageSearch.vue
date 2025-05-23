@@ -72,7 +72,7 @@ const emit = defineEmits<{
 }>();
 // 组件映射表
 const componentMap = new Map<ISearchComponent, any>([
-  /* eslint-disable */
+   
   // @ts-ignore
   ["input", markRaw(ElInput)], // @ts-ignore
   ["select", markRaw(ElSelect)], // @ts-ignore
@@ -84,7 +84,7 @@ const componentMap = new Map<ISearchComponent, any>([
   ["tree-select", markRaw(ElTreeSelect)], // @ts-ignore
   ["input-tag", markRaw(ElInputTag)], // @ts-ignore
   ["custom-tag", markRaw(InputTag)],
-  /* eslint-enable */
+   
 ]);
 
 // 存储表单实例

@@ -35,7 +35,7 @@ const NoticeAPI = {
     return request({
       url: `${NOTICE_BASE_URL}`,
       method: "post",
-      data: data,
+      data,
     });
   },
 
@@ -49,7 +49,7 @@ const NoticeAPI = {
     return request({
       url: `${NOTICE_BASE_URL}/${id}`,
       method: "put",
-      data: data,
+      data,
     });
   },
 

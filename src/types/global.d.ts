@@ -2,7 +2,7 @@ declare global {
   /**
    * 响应数据
    */
-  interface ResponseData<T = any> {
+  interface ApiResponse<T = any> {
     code: string;
     data: T;
     msg: string;

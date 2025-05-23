@@ -130,7 +130,7 @@ watch(
     fileList.value = value.map((item) => {
       const name = item.name ? item.name : item.url?.substring(item.url.lastIndexOf("/") + 1);
       return {
-        name: name,
+        name,
         url: item.url,
         status: "success",
         uid: getUid(),
@@ -199,11 +199,11 @@ const handleSuccess = (response: any, uploadFile: UploadFile, files: UploadFiles
       return file.status === "success" || file.status === "fail";
     })
   ) {
-    let fileInfos = [] as FileInfo[];
+    const fileInfos = [] as FileInfo[];
     files.map((file: UploadFile) => {
       if (file.status === "success") {
         //只取携带response的才是刚上传的
-        let res = file.response as FileInfo;
+        const res = file.response as FileInfo;
         if (res) {
           fileInfos.push({ name: res.name, url: res.url } as FileInfo);
         }

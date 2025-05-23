@@ -8,7 +8,7 @@ const GeneratorAPI = {
     return request<any, PageResult<TablePageVO[]>>({
       url: `${GENERATOR_BASE_URL}/table/page`,
       method: "get",
-      params: params,
+      params,
     });
   },
 
@@ -25,7 +25,7 @@ const GeneratorAPI = {
     return request({
       url: `${GENERATOR_BASE_URL}/${tableName}/config`,
       method: "post",
-      data: data,
+      data,
     });
   },
 

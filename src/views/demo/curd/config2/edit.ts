@@ -15,7 +15,7 @@ const modalConfig: IModalConfig = {
   beforeSubmit(data) {
     console.log("beforeSubmit", data);
   },
-  formAction: function (data) {
+  formAction (data) {
     // return UserAPI.update(data.id as string, data);
     // 模拟发起网络请求修改字段
     ElMessage.success(JSON.stringify(data));

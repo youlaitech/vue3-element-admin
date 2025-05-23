@@ -33,6 +33,6 @@ const linkProps = (to: any) => {
       rel: "noopener noreferrer",
     };
   }
-  return { to: to };
+  return { to };
 };
 </script>

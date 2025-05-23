@@ -21,7 +21,7 @@ const contentConfig: IContentConfig<UserPageQuery> = {
       list: res.list,
     };
   },
-  indexAction: function (params) {
+  indexAction (params) {
     return UserAPI.getPage(params);
   },
   deleteAction: UserAPI.deleteByIds,
@@ -35,7 +35,7 @@ const contentConfig: IContentConfig<UserPageQuery> = {
     console.log("importsAction", data);
     return Promise.resolve();
   },
-  exportsAction: async function (params) {
+  async exportsAction (params) {
     // 模拟获取到的是全量数据
     const res = await UserAPI.getPage(params);
     console.log("exportsAction", res.list);

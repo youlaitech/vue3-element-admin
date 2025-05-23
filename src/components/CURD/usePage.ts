@@ -36,12 +36,12 @@ function usePage() {
     if (RefImpl) {
       RefImpl.value?.setModalVisible();
       RefImpl.value?.handleDisabled(false);
-      let from = await (callback?.(row) ?? Promise.resolve(row));
+      const from = await (callback?.(row) ?? Promise.resolve(row));
       RefImpl.value?.setFormData(from ? from : row);
     } else {
       editModalRef.value?.setModalVisible();
       editModalRef.value?.handleDisabled(false);
-      let from = await (callback?.(row) ?? Promise.resolve(row));
+      const from = await (callback?.(row) ?? Promise.resolve(row));
       editModalRef.value?.setFormData(from ? from : row);
     }
   }
@@ -54,12 +54,12 @@ function usePage() {
     if (RefImpl) {
       RefImpl.value?.setModalVisible();
       RefImpl.value?.handleDisabled(true);
-      let from = await (callback?.(row) ?? Promise.resolve(row));
+      const from = await (callback?.(row) ?? Promise.resolve(row));
       RefImpl.value?.setFormData(from ? from : row);
     } else {
       editModalRef.value?.setModalVisible();
       editModalRef.value?.handleDisabled(true);
-      let from = await (callback?.(row) ?? Promise.resolve(row));
+      const from = await (callback?.(row) ?? Promise.resolve(row));
       editModalRef.value?.setFormData(from ? from : row);
     }
   }

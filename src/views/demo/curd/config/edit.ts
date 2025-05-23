@@ -15,7 +15,7 @@ const modalConfig: IModalConfig<UserForm> = {
   beforeSubmit(data) {
     console.log("beforeSubmit", data);
   },
-  formAction: function (data) {
+  formAction (data) {
     return UserAPI.update(data.id as string, data);
   },
   formItems: [
