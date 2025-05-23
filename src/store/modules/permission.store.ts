@@ -5,7 +5,7 @@ import router from "@/router";
 
 import MenuAPI, { type RouteVO } from "@/api/system/menu.api";
 const modules = import.meta.glob("../../views/**/**.vue");
-const Layout = () => import("@/layout/index.vue");
+const Layout = () => import("@/layouts/index.vue");
 
 export const usePermissionStore = defineStore("permission", () => {
   // 存储所有路由，包括静态路由和动态路由

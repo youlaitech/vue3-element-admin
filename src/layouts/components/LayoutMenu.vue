@@ -1,0 +1,130 @@
+<!-- 菜单组件 -->
+<template>
+  <el-menu
+    ref="menuRef"
+    :default-active="currentRoute.path"
+    :collapse="!appStore.sidebar.opened"
+    :background-color="
+      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
+        ? variables['menu-background']
+        : undefined
+    "
+    :text-color="
+      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
+        ? variables['menu-text']
+        : undefined
+    "
+    :active-text-color="
+      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
+        ? variables['menu-active-text']
+        : undefined
+    "
+    :popper-effect="theme"
+    :unique-opened="false"
+    :collapse-transition="false"
+    :mode="menuMode"
+    @open="onMenuOpen"
+    @close="onMenuClose"
+  >
+    <!-- 菜单项 -->
+    <SidebarMenuItem
+      v-for="route in data"
+      :key="route.path"
+      :item="route"
+      :base-path="resolveFullPath(route.path)"
+    />
+  </el-menu>
+</template>
+
+<script lang="ts" setup>
+import { ref, computed, watch, PropType } from "vue";
+import { useRoute } from "vue-router";
+import path from "path-browserify";
+import type { MenuInstance } from "element-plus";
+import type { RouteRecordRaw } from "vue-router";
+import { SidebarColor } from "@/enums/settings/theme.enum";
+import { useSettingsStore, useAppStore } from "@/store";
+import { isExternal } from "@/utils/index";
+import SidebarMenuItem from "@/layout/components/Sidebar/components/SidebarMenuItem.vue";
+import variables from "@/styles/variables.module.scss";
+
+const props = defineProps({
+  data: {
+    type: Array as PropType<RouteRecordRaw[]>,
+    default: () => [],
+  },
+  basePath: {
+    type: String,
+    required: true,
+    example: "/system",
+  },
+  menuMode: {
+    type: String as PropType<"vertical" | "horizontal">,
+    default: "vertical",
+    validator: (value: string) => ["vertical", "horizontal"].includes(value),
+  },
+});
+
+const menuRef = ref<MenuInstance>();
+const settingsStore = useSettingsStore();
+const appStore = useAppStore();
+const currentRoute = useRoute();
+
+// 存储已展开的菜单项索引
+const expandedMenuIndexes = ref<string[]>([]);
+
+// 获取主题
+const theme = computed(() => settingsStore.theme);
+
+// 获取浅色主题下的侧边栏配色方案
+const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
+
+/**
+ * 获取完整路径
+ *
+ * @param routePath 当前路由的相对路径  /user
+ * @returns 完整的绝对路径 D://vue3-element-admin/system/user
+ */
+function resolveFullPath(routePath: string) {
+  if (isExternal(routePath)) {
+    return routePath;
+  }
+  if (isExternal(props.basePath)) {
+    return props.basePath;
+  }
+
+  // 解析路径，生成完整的绝对路径
+  return path.resolve(props.basePath, routePath);
+}
+
+/**
+ * 打开菜单
+ *
+ * @param index 当前展开的菜单项索引
+ */
+const onMenuOpen = (index: string) => {
+  expandedMenuIndexes.value.push(index);
+};
+
+/**
+ * 关闭菜单
+ *
+ * @param index 当前收起的菜单项索引
+ */
+const onMenuClose = (index: string) => {
+  expandedMenuIndexes.value = expandedMenuIndexes.value.filter((item) => item !== index);
+};
+
+/**
+ * 监听菜单模式变化：当菜单模式切换为水平模式时，关闭所有展开的菜单项，
+ * 避免在水平模式下菜单项显示错位。
+ */
+watch(
+  () => props.menuMode,
+  (newMode) => {
+    if (newMode === "horizontal" && menuRef.value) {
+      expandedMenuIndexes.value.forEach((item) => menuRef.value!.close(item));
+    }
+  }
+);
+</script>
