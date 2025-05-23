@@ -2,10 +2,10 @@
   <BaseLayout>
     <!-- 顶部菜单栏 -->
     <div class="layout__header">
-      <LayoutSidebar :show-logo="isShowLogo" :is-collapsed="false">
-        <LayoutMenu :data="routes" menu-mode="horizontal" base-path="" />
+      <Sidebar :show-logo="isShowLogo" :is-collapsed="false">
+        <Menu :data="routes" menu-mode="horizontal" base-path="" />
         <NavbarActions />
-      </LayoutSidebar>
+      </Sidebar>
     </div>
 
     <!-- 主内容区 -->
@@ -17,14 +17,14 @@
 </template>
 
 <script setup lang="ts">
-import { useLayout } from "../../composables/useLayout";
-import { useLayoutMenu } from "../../composables/useLayoutMenu";
-import BaseLayout from "../BaseLayout.vue";
-import LayoutSidebar from "../common/LayoutSidebar.vue";
-import LayoutMenu from "../LayoutMenu.vue";
-import NavbarActions from "@/layouts/components/NavBar/components/NavbarActions.vue";
-import TagsView from "@/layouts/components/TagsView/index.vue";
-import AppMain from "@/layouts/components/AppMain/index.vue";
+import { useLayout } from "../composables/useLayout";
+import { useLayoutMenu } from "../composables/useLayoutMenu";
+import BaseLayout from "./BaseLayout.vue";
+import Sidebar from "../components/Sidebar/index.vue";
+import Menu from "../components/menu/index.vue";
+import NavbarActions from "../components/navbar/components/NavbarActions.vue";
+import TagsView from "../components/TagsView.vue";
+import AppMain from "../components/AppMain.vue";
 
 // 布局相关参数
 const { isShowTagsView, isShowLogo } = useLayout();

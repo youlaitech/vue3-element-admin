@@ -2,7 +2,7 @@
 <template>
   <el-menu
     mode="horizontal"
-    :default-active="activePath"
+    :default-active="activeTopMenuPath"
     :background-color="
       theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
         ? variables['menu-background']
@@ -21,26 +21,20 @@
     @select="handleMenuSelect"
   >
     <el-menu-item v-for="route in topMenus" :key="route.path" :index="route.path">
-      <template #title>
-        <template v-if="route.meta && route.meta.icon">
-          <el-icon v-if="route.meta.icon.startsWith('el-icon')" class="sub-el-icon">
-            <component :is="route.meta.icon.replace('el-icon-', '')" />
-          </el-icon>
-          <div v-else :class="`i-svg:${route.meta.icon}`" />
-        </template>
-        <span v-if="route.path === '/'">首页</span>
-        <span v-else-if="route.meta && route.meta.title" class="ml-1">
-          {{ translateRouteTitle(route.meta.title) }}
-        </span>
-      </template>
+      <MenuItemTitle v-if="route.meta" :icon="route.meta.icon" :title="route.meta.title" />
     </el-menu-item>
   </el-menu>
 </template>
 
 <script lang="ts" setup>
+import MenuItemTitle from "./MenuItemTitle.vue";
+
+defineOptions({
+  name: "MixTopMenu",
+});
+
 import { LocationQueryRaw, RouteRecordRaw } from "vue-router";
 import { usePermissionStore, useAppStore, useSettingsStore } from "@/store";
-import { translateRouteTitle } from "@/utils/i18n";
 import variables from "@/styles/variables.module.scss";
 import { SidebarColor } from "@/enums/settings/theme.enum";
 
@@ -48,9 +42,6 @@ const router = useRouter();
 const appStore = useAppStore();
 const permissionStore = usePermissionStore();
 const settingsStore = useSettingsStore();
-
-// 当前激活的顶部菜单路径
-const activePath = computed(() => appStore.activeTopMenuPath);
 
 // 获取主题
 const theme = computed(() => settingsStore.theme);

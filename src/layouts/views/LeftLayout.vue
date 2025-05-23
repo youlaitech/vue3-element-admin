@@ -2,11 +2,11 @@
   <BaseLayout>
     <!-- 左侧菜单栏 -->
     <div class="layout__sidebar" :class="{ 'layout__sidebar--collapsed': !isSidebarOpen }">
-      <LayoutSidebar :show-logo="isShowLogo" :is-collapsed="!isSidebarOpen">
+      <Sidebar :show-logo="isShowLogo" :is-collapsed="!isSidebarOpen">
         <el-scrollbar>
-          <SidebarMenu :data="routes" base-path="" />
+          <Menu :data="routes" base-path="" />
         </el-scrollbar>
-      </LayoutSidebar>
+      </Sidebar>
     </div>
 
     <!-- 主内容区 -->
@@ -25,14 +25,14 @@
 </template>
 
 <script setup lang="ts">
-import { useLayout } from "../../composables/useLayout";
-import { useLayoutMenu } from "../../composables/useLayoutMenu";
-import BaseLayout from "../BaseLayout.vue";
-import LayoutSidebar from "../common/LayoutSidebar.vue";
-import NavBar from "@/layouts/components/NavBar/index.vue";
-import TagsView from "@/layouts/components/TagsView/index.vue";
-import AppMain from "@/layouts/components/AppMain/index.vue";
-import SidebarMenu from "../LayoutMenu.vue";
+import { useLayout } from "../composables/useLayout";
+import { useLayoutMenu } from "../composables/useLayoutMenu";
+import BaseLayout from "./BaseLayout.vue";
+import Sidebar from "../components/Sidebar/index.vue";
+import NavBar from "../components/navbar/index.vue";
+import TagsView from "../components/TagsView.vue";
+import AppMain from "../components/AppMain.vue";
+import Menu from "../components/menu/index.vue";
 
 // 布局相关参数
 const { isShowTagsView, isShowLogo, isSidebarOpen, isMobile } = useLayout();

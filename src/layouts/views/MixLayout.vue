@@ -10,7 +10,7 @@
 
         <!-- 顶部菜单区域 -->
         <div class="layout__header-menu">
-          <SidebarMixTopMenu />
+          <MixTopMenu />
         </div>
 
         <!-- 右侧操作区域 -->
@@ -34,7 +34,7 @@
             :text-color="variables['menu-text']"
             :active-text-color="variables['menu-active-text']"
           >
-            <SidebarMenuItem
+            <MenuItem
               v-for="route in sideMenuRoutes"
               :key="route.path"
               :item="route"
@@ -60,15 +60,15 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { useLayout } from "../../composables/useLayout";
-import { useLayoutMenu } from "../../composables/useLayoutMenu";
-import BaseLayout from "../BaseLayout.vue";
-import SidebarLogo from "@/layouts/components/Sidebar/components/SidebarLogo.vue";
-import SidebarMixTopMenu from "@/layouts/components/Sidebar/components/SidebarMixTopMenu.vue";
-import NavbarActions from "@/layouts/components/NavBar/components/NavbarActions.vue";
-import TagsView from "@/layouts/components/TagsView/index.vue";
-import AppMain from "@/layouts/components/AppMain/index.vue";
-import SidebarMenuItem from "@/layouts/components/Sidebar/components/SidebarMenuItem.vue";
+import { useLayout } from "../composables/useLayout";
+import { useLayoutMenu } from "../composables/useLayoutMenu";
+import BaseLayout from "./BaseLayout.vue";
+import SidebarLogo from "../components/Sidebar/components/SidebarLogo.vue";
+import MixTopMenu from "../components/menu/components/MixTopMenu.vue";
+import NavbarActions from "../components/navbar/components/NavbarActions.vue";
+import TagsView from "../components/TagsView.vue";
+import AppMain from "../components/AppMain.vue";
+import MenuItem from "../components/menu/components/MenuItem.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
 import variables from "@/styles/variables.module.scss";
 

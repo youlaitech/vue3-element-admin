@@ -22,7 +22,7 @@
           :index="resolvePath(onlyOneChild.path)"
           :class="{ 'submenu-title-noDropdown': !isNest }"
         >
-          <SidebarMenuItemTitle
+          <MenuItemTitle
             :icon="onlyOneChild.meta.icon || item.meta?.icon"
             :title="onlyOneChild.meta.title"
           />
@@ -33,10 +33,10 @@
     <!--【非叶子节点】显示含多个子节点的父菜单，或始终显示的单子节点 -->
     <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
       <template #title>
-        <SidebarMenuItemTitle v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
+        <MenuItemTitle v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
       </template>
 
-      <SidebarMenuItem
+      <MenuItem
         v-for="child in item.children"
         :key="child.path"
         :is-nest="true"
@@ -48,8 +48,10 @@
 </template>
 
 <script setup lang="ts">
+import MenuItemTitle from "./MenuItemTitle.vue";
+
 defineOptions({
-  name: "SidebarMenuItem",
+  name: "MenuItem",
   inheritAttrs: false,
 });
 

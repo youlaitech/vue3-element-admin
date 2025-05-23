@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { useLayout } from "../composables/useLayout";
 import { useLayoutResponsive } from "../composables/useLayoutResponsive";
-import Settings from "@/layouts/components/Settings/index.vue";
+import Settings from "../components/Settings.vue";
 
 // 布局相关
 const { layoutClass, isShowSettings, isSidebarOpen, closeSidebar } = useLayout();

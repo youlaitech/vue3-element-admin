@@ -5,9 +5,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useLayout } from "./composables/useLayout";
-import LeftLayout from "./components/LeftLayout/index.vue";
-import TopLayout from "./components/TopLayout/index.vue";
-import MixLayout from "./components/MixLayout/index.vue";
+import LeftLayout from "./views/LeftLayout.vue";
+import TopLayout from "./views/TopLayout.vue";
+import MixLayout from "./views/MixLayout.vue";
 import { LayoutMode } from "@/enums/settings/layout.enum";
 
 const { currentLayout } = useLayout();

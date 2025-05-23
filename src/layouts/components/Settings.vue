@@ -61,7 +61,31 @@
     <!-- 布局设置 -->
     <section class="config-section">
       <el-divider>{{ t("settings.navigation") }}</el-divider>
-      <LayoutSelect v-model="settingsStore.layout" @update:model-value="handleLayoutChange" />
+
+      <!-- 整合的布局选择器 -->
+      <div class="layout-select">
+        <el-tooltip
+          v-for="item in layoutOptions"
+          :key="item.value"
+          :content="item.label"
+          placement="bottom"
+        >
+          <div
+            role="button"
+            tabindex="0"
+            :class="[
+              'layout-item',
+              item.className,
+              { 'is-active': settingsStore.layout === item.value },
+            ]"
+            @click="handleLayoutChange(item.value)"
+            @keydown.enter.space="handleLayoutChange(item.value)"
+          >
+            <div class="layout-item-part" />
+            <div class="layout-item-part" />
+          </div>
+        </el-tooltip>
+      </div>
     </section>
   </el-drawer>
 </template>
@@ -72,6 +96,20 @@ import { LayoutMode } from "@/enums/settings/layout.enum";
 import { ThemeMode } from "@/enums/settings/theme.enum";
 import { SidebarColor } from "@/enums/settings/theme.enum";
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
+
+// 布局选项配置
+interface LayoutOption {
+  value: LayoutMode;
+  label: string;
+  className: string;
+}
+
+const layoutOptions: LayoutOption[] = [
+  { value: LayoutMode.LEFT, label: "左侧模式", className: "left" },
+  { value: LayoutMode.TOP, label: "顶部模式", className: "top" },
+  { value: LayoutMode.MIX, label: "混合模式", className: "mix" },
+];
+
 // 颜色预设
 const colorPresets = [
   "#4080FF",
@@ -189,5 +227,98 @@ const handleCloseDrawer = () => {
       border-bottom: none;
     }
   }
+}
+
+/* 布局选择器样式 */
+.layout-select {
+  display: flex;
+  gap: 10px;
+  justify-content: space-evenly;
+  padding: 10px 0;
+  --layout-primary: #1b2a47;
+  --layout-background: #f0f2f5;
+  --layout-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  --layout-hover: #e3f1f9;
+}
+
+.layout-item {
+  position: relative;
+  width: 18%;
+  height: 50px;
+  cursor: pointer;
+  background: var(--layout-background);
+  border-radius: 8px;
+  box-shadow: var(--layout-shadow);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    background-color: var(--layout-hover);
+    transform: scale(1.02);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--el-color-primary);
+  }
+
+  &-part {
+    position: absolute;
+    background: var(--layout-primary);
+    border-radius: 4px;
+    box-shadow: var(--layout-shadow);
+    transition: all 0.3s ease;
+  }
+
+  &.left {
+    .layout-item-part {
+      &:first-child {
+        width: 30%;
+        height: 100%;
+        border-radius: 4px 0 0 4px;
+      }
+      &:last-child {
+        top: 0;
+        right: 0;
+        width: 70%;
+        height: 30%;
+        background: #fff;
+        border-radius: 0 4px 4px 0;
+      }
+    }
+  }
+
+  &.top {
+    .layout-item-part:first-child {
+      width: 100%;
+      height: 30%;
+      border-radius: 4px 4px 0 0;
+    }
+  }
+
+  &.mix {
+    .layout-item-part {
+      &:first-child {
+        width: 100%;
+        height: 30%;
+        border-radius: 4px 4px 0 0;
+      }
+      &:last-child {
+        bottom: 0;
+        left: 0;
+        width: 30%;
+        height: 70%;
+        border-radius: 0 0 4px 4px;
+      }
+    }
+  }
+}
+
+.is-active {
+  background-color: var(--layout-hover);
+  border: 2px solid var(--el-color-primary);
+  transform: scale(1.05);
 }
 </style>

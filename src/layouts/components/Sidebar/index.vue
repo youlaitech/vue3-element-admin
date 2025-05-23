@@ -8,6 +8,8 @@
 </template>
 
 <script setup lang="ts">
+import SidebarLogo from "./components/SidebarLogo.vue";
+
 defineProps({
   /**
    * 是否显示Logo

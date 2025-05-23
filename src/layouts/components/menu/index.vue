@@ -27,7 +27,7 @@
     @close="onMenuClose"
   >
     <!-- 菜单项 -->
-    <SidebarMenuItem
+    <MenuItem
       v-for="route in data"
       :key="route.path"
       :item="route"
@@ -37,26 +37,31 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, watch, PropType } from "vue";
+import { useRoute } from "vue-router";
 import path from "path-browserify";
 import type { MenuInstance } from "element-plus";
 import type { RouteRecordRaw } from "vue-router";
-
-import { LayoutMode } from "@/enums/settings/layout.enum";
 import { SidebarColor } from "@/enums/settings/theme.enum";
 import { useSettingsStore, useAppStore } from "@/store";
 import { isExternal } from "@/utils/index";
-
+import MenuItem from "./components/MenuItem.vue";
 import variables from "@/styles/variables.module.scss";
 
 const props = defineProps({
   data: {
-    type: Array<RouteRecordRaw>,
+    type: Array as PropType<RouteRecordRaw[]>,
     default: () => [],
   },
   basePath: {
     type: String,
     required: true,
     example: "/system",
+  },
+  menuMode: {
+    type: String as PropType<"vertical" | "horizontal">,
+    default: "vertical",
+    validator: (value: string) => ["vertical", "horizontal"].includes(value),
   },
 });
 
@@ -67,11 +72,6 @@ const currentRoute = useRoute();
 
 // 存储已展开的菜单项索引
 const expandedMenuIndexes = ref<string[]>([]);
-
-// 根据布局模式设置菜单的显示方式：顶部布局使用水平模式，其他使用垂直模式
-const menuMode = computed(() => {
-  return settingsStore.layout === LayoutMode.TOP ? "horizontal" : "vertical";
-});
 
 // 获取主题
 const theme = computed(() => settingsStore.theme);
@@ -118,13 +118,11 @@ const onMenuClose = (index: string) => {
 /**
  * 监听菜单模式变化：当菜单模式切换为水平模式时，关闭所有展开的菜单项，
  * 避免在水平模式下菜单项显示错位。
- *
- * @see https://gitee.com/youlaiorg/vue3-element-admin/issues/IAJ1DR
  */
 watch(
-  () => menuMode.value,
-  () => {
-    if (menuMode.value === "horizontal") {
+  () => props.menuMode,
+  (newMode) => {
+    if (newMode === "horizontal" && menuRef.value) {
       expandedMenuIndexes.value.forEach((item) => menuRef.value!.close(item));
     }
   }
