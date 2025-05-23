@@ -2,10 +2,22 @@
   <LayoutBase>
     <!-- 顶部菜单栏 -->
     <div class="layout__header">
-      <LayoutSidebar :show-logo="isShowLogo" :is-collapsed="false">
-        <SidebarMixTopMenu />
-        <NavbarActions />
-      </LayoutSidebar>
+      <div class="layout__header-content">
+        <!-- Logo区域 -->
+        <div v-if="isShowLogo" class="layout__header-logo">
+          <SidebarLogo :collapse="false" />
+        </div>
+
+        <!-- 顶部菜单区域 -->
+        <div class="layout__header-menu">
+          <SidebarMixTopMenu />
+        </div>
+
+        <!-- 右侧操作区域 -->
+        <div class="layout__header-actions">
+          <NavbarActions />
+        </div>
+      </div>
     </div>
 
     <!-- 主内容区容器 -->
@@ -13,7 +25,22 @@
       <!-- 左侧菜单栏 -->
       <div class="layout__sidebar--left" :class="{ 'layout__sidebar--collapsed': !isSidebarOpen }">
         <el-scrollbar>
-          <SidebarMenu :data="sideMenuRoutes" :base-path="activeTopMenuPath" />
+          <el-menu
+            :default-active="activeMenu"
+            :collapse="!isSidebarOpen"
+            :collapse-transition="false"
+            :unique-opened="false"
+            :background-color="variables['menu-background']"
+            :text-color="variables['menu-text']"
+            :active-text-color="variables['menu-active-text']"
+          >
+            <SidebarMenuItem
+              v-for="route in sideMenuRoutes"
+              :key="route.path"
+              :item="route"
+              :base-path="resolvePath(route.path)"
+            />
+          </el-menu>
         </el-scrollbar>
         <!-- 侧边栏切换按钮 -->
         <div class="layout__sidebar-toggle">
@@ -31,22 +58,52 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 import { useLayout } from "../../composables/useLayout";
 import { useLayoutMenu } from "../../composables/useLayoutMenu";
 import LayoutBase from "../LayoutBase.vue";
-import LayoutSidebar from "../common/LayoutSidebar.vue";
+import SidebarLogo from "@/layout/components/Sidebar/components/SidebarLogo.vue";
 import SidebarMixTopMenu from "@/layout/components/Sidebar/components/SidebarMixTopMenu.vue";
 import NavbarActions from "@/layout/components/NavBar/components/NavbarActions.vue";
 import TagsView from "@/layout/components/TagsView/index.vue";
 import AppMain from "@/layout/components/AppMain/index.vue";
-import SidebarMenu from "../LayoutMenu.vue";
+import SidebarMenuItem from "@/layout/components/Sidebar/components/SidebarMenuItem.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
+import variables from "@/styles/variables.module.scss";
+
+const route = useRoute();
 
 // 布局相关参数
 const { isShowTagsView, isShowLogo, isSidebarOpen, toggleSidebar } = useLayout();
 
 // 菜单相关
 const { sideMenuRoutes, activeTopMenuPath } = useLayoutMenu();
+
+// 当前激活的菜单
+const activeMenu = computed(() => {
+  const { meta, path } = route;
+  // 如果设置了activeMenu，则使用
+  if (meta?.activeMenu && typeof meta.activeMenu === "string") {
+    return meta.activeMenu;
+  }
+  return path;
+});
+
+/**
+ * 解析路径 - 混合模式下，左侧菜单是从顶级菜单下的子菜单开始的
+ * 所以需要拼接顶级菜单路径
+ */
+function resolvePath(routePath: string) {
+  // 如果已经是绝对路径，直接返回
+  if (routePath.startsWith("/")) {
+    return activeTopMenuPath.value + routePath;
+  }
+  // 否则拼接
+  return `${activeTopMenuPath.value}/${routePath}`;
+}
+
+console.log("🎨 MixMenuLayout rendered");
 </script>
 
 <style lang="scss" scoped>
@@ -57,12 +114,74 @@ const { sideMenuRoutes, activeTopMenuPath } = useLayoutMenu();
     z-index: 999;
     width: 100%;
     height: $navbar-height;
-    background-color: $menu-background;
+    background-color: var(--menu-background);
+    border-bottom: 1px solid var(--el-border-color-lighter);
 
-    :deep(.layout-sidebar) {
+    &-content {
       display: flex;
-      width: 100% !important;
-      height: $navbar-height;
+      align-items: center;
+      height: 100%;
+      padding: 0 16px;
+    }
+
+    &-logo {
+      flex-shrink: 0;
+      width: 200px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      :deep(.logo) {
+        height: 100%;
+
+        a {
+          height: 100%;
+        }
+      }
+    }
+
+    &-menu {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      margin: 0 16px;
+      overflow: hidden;
+
+      :deep(.el-menu) {
+        height: 100%;
+        border: none;
+        background-color: transparent;
+      }
+
+      :deep(.el-menu--horizontal) {
+        display: flex;
+        align-items: center;
+        height: 100%;
+
+        .el-menu-item {
+          height: 100%;
+          line-height: $navbar-height;
+          border-bottom: none;
+
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+          }
+
+          &.is-active {
+            background-color: rgba(255, 255, 255, 0.12);
+            border-bottom: 2px solid var(--el-color-primary);
+          }
+        }
+      }
+    }
+
+    &-actions {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      height: 100%;
     }
   }
 
@@ -78,7 +197,7 @@ const { sideMenuRoutes, activeTopMenuPath } = useLayoutMenu();
       background-color: var(--menu-background);
       transition: width 0.28s;
 
-      &--collapsed {
+      &.layout__sidebar--collapsed {
         width: $sidebar-width-collapsed !important;
       }
 

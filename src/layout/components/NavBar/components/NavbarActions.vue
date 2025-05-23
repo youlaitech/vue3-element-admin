@@ -88,15 +88,27 @@ function handleProfileClick() {
 
 // 根据主题和侧边栏配色方案选择样式类
 const navbarActionsClass = computed(() => {
-  // 暗黑主题
-  if (settingStore.theme === ThemeMode.DARK) {
+  const { theme, sidebarColorScheme, layout } = settingStore;
+
+  // 暗黑主题下，所有布局都使用白色文字
+  if (theme === ThemeMode.DARK) {
     return "navbar-actions--white-text";
   }
 
-  // 经典蓝侧边栏
-  if (settingStore.sidebarColorScheme === SidebarColor.CLASSIC_BLUE) {
-    return "navbar-actions--white-text";
+  // 明亮主题下
+  if (theme === ThemeMode.LIGHT) {
+    // 顶部布局和混合布局的顶部区域使用深色背景，需要白色文字
+    if (layout === "top" || layout === "mix") {
+      return "navbar-actions--white-text";
+    }
+
+    // 左侧布局下，如果侧边栏是经典蓝色，顶部导航栏仍使用默认颜色
+    if (layout === "left" && sidebarColorScheme === SidebarColor.CLASSIC_BLUE) {
+      return ""; // 使用默认的深色文字
+    }
   }
+
+  return "";
 });
 
 /**
@@ -130,18 +142,21 @@ function logout() {
     height: $navbar-height;
     text-align: center;
     cursor: pointer;
+    transition: all 0.3s;
 
+    // 默认图标样式（明亮模式 + 左侧布局）
     :deep([class^="i-svg:"]) {
-      color: var(--el-text-color);
-
-      &:hover {
-        color: var(--el-text-color-primary);
-      }
+      font-size: 18px;
+      color: var(--el-text-color-regular);
+      transition: color 0.3s;
     }
 
     &:hover {
-      color: var(--el-text-color-primary);
-      background: rgb(0 0 0 / 10%);
+      background: rgba(0, 0, 0, 0.04);
+
+      :deep([class^="i-svg:"]) {
+        color: var(--el-color-primary);
+      }
     }
   }
 
@@ -160,19 +175,41 @@ function logout() {
 
     &__name {
       margin-left: 10px;
+      color: var(--el-text-color-regular);
+      transition: color 0.3s;
     }
   }
 }
 
-.layout-top,
-.layout-mix {
+// 白色文字样式（用于深色背景：暗黑主题、顶部布局、混合布局）
+.navbar-actions--white-text {
+  .navbar-actions__item {
+    :deep([class^="i-svg:"]) {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+
+      :deep([class^="i-svg:"]) {
+        color: #fff;
+      }
+    }
+  }
+
   .user-profile__name {
-    color: #fff !important;
+    color: rgba(255, 255, 255, 0.85);
   }
 }
 
-.layout-top .navbar-actions--white-text :deep([class^="i-svg:"]),
-.layout-mix .navbar-actions--white-text :deep([class^="i-svg:"]) {
-  color: #fff !important;
+// 确保下拉菜单中的图标不受影响
+:deep(.el-dropdown-menu) {
+  [class^="i-svg:"] {
+    color: var(--el-text-color-regular) !important;
+
+    &:hover {
+      color: var(--el-color-primary) !important;
+    }
+  }
 }
 </style>

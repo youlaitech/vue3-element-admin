@@ -35,10 +35,14 @@ import AppMain from "@/layout/components/AppMain/index.vue";
 import SidebarMenu from "../LayoutMenu.vue";
 
 // 布局相关参数
-const { isShowTagsView, isShowLogo, isSidebarOpen } = useLayout();
+const { isShowTagsView, isShowLogo, isSidebarOpen, isMobile } = useLayout();
 
 // 菜单相关
 const { routes } = useLayoutMenu();
+
+// 添加调试日志
+console.log("🔍 LeftSideLayout - isSidebarOpen:", isSidebarOpen.value);
+console.log("🔍 LeftSideLayout - isMobile:", isMobile.value);
 </script>
 
 <style lang="scss" scoped>
@@ -78,32 +82,34 @@ const { routes } = useLayoutMenu();
   }
 }
 
-/* 移动端样式 */
-:deep(.mobile) {
+/* 移动端样式 - 注意这里需要正确应用到父元素 */
+.mobile {
   .layout__sidebar {
-    position: fixed;
-    left: 0;
-    transition: transform 0.28s;
+    width: $sidebar-width !important;
+    transition:
+      transform 0.28s,
+      width 0s;
   }
 
   &.hideSidebar {
     .layout__sidebar {
-      width: $sidebar-width !important;
       transform: translateX(-$sidebar-width);
     }
+  }
 
-    .layout__main {
-      margin-left: 0 !important;
+  &.openSidebar {
+    .layout__sidebar {
+      transform: translateX(0);
     }
   }
 
   .layout__main {
-    margin-left: 0;
+    margin-left: 0 !important;
   }
 }
 
-:deep(.hasTagsView) {
-  .app-main {
+.hasTagsView {
+  :deep(.app-main) {
     height: calc(100vh - $navbar-height - $tags-view-height) !important;
   }
 }

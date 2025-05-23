@@ -1,42 +1,40 @@
 <!-- 混合布局顶部菜单 -->
 <template>
-  <el-scrollbar>
-    <el-menu
-      mode="horizontal"
-      :default-active="activePath"
-      :background-color="
-        theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
-          ? variables['menu-background']
-          : undefined
-      "
-      :text-color="
-        theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
-          ? variables['menu-text']
-          : undefined
-      "
-      :active-text-color="
-        theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
-          ? variables['menu-active-text']
-          : undefined
-      "
-      @select="handleMenuSelect"
-    >
-      <el-menu-item v-for="route in topMenus" :key="route.path" :index="route.path">
-        <template #title>
-          <template v-if="route.meta && route.meta.icon">
-            <el-icon v-if="route.meta.icon.startsWith('el-icon')" class="sub-el-icon">
-              <component :is="route.meta.icon.replace('el-icon-', '')" />
-            </el-icon>
-            <div v-else :class="`i-svg:${route.meta.icon}`" />
-          </template>
-          <span v-if="route.path === '/'">首页</span>
-          <span v-else-if="route.meta && route.meta.title" class="ml-1">
-            {{ translateRouteTitle(route.meta.title) }}
-          </span>
+  <el-menu
+    mode="horizontal"
+    :default-active="activePath"
+    :background-color="
+      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
+        ? variables['menu-background']
+        : undefined
+    "
+    :text-color="
+      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
+        ? variables['menu-text']
+        : undefined
+    "
+    :active-text-color="
+      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
+        ? variables['menu-active-text']
+        : undefined
+    "
+    @select="handleMenuSelect"
+  >
+    <el-menu-item v-for="route in topMenus" :key="route.path" :index="route.path">
+      <template #title>
+        <template v-if="route.meta && route.meta.icon">
+          <el-icon v-if="route.meta.icon.startsWith('el-icon')" class="sub-el-icon">
+            <component :is="route.meta.icon.replace('el-icon-', '')" />
+          </el-icon>
+          <div v-else :class="`i-svg:${route.meta.icon}`" />
         </template>
-      </el-menu-item>
-    </el-menu>
-  </el-scrollbar>
+        <span v-if="route.path === '/'">首页</span>
+        <span v-else-if="route.meta && route.meta.title" class="ml-1">
+          {{ translateRouteTitle(route.meta.title) }}
+        </span>
+      </template>
+    </el-menu-item>
+  </el-menu>
 </template>
 
 <script lang="ts" setup>
@@ -117,3 +115,25 @@ onMounted(() => {
   topMenus.value = permissionStore.routes.filter((item) => !item.meta || !item.meta.hidden);
 });
 </script>
+
+<style lang="scss" scoped>
+.el-menu {
+  width: 100%;
+  height: 100%;
+
+  &--horizontal {
+    height: $navbar-height !important;
+
+    // 确保菜单项垂直居中
+    :deep(.el-menu-item) {
+      height: 100%;
+      line-height: $navbar-height;
+    }
+
+    // 移除默认的底部边框
+    &:after {
+      display: none;
+    }
+  }
+}
+</style>

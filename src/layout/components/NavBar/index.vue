@@ -26,7 +26,10 @@ const isSidebarOpened = computed(() => appStore.sidebar.opened);
 
 // 切换侧边栏展开/折叠状态
 function toggleSideBar() {
+  console.log("🔄 Hamburger clicked! Current state:", isSidebarOpened.value);
+  console.log("🔄 Device type:", appStore.device);
   appStore.toggleSidebar();
+  console.log("🔄 New state:", appStore.sidebar.opened);
 }
 </script>
 

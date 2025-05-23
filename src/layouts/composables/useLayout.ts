@@ -1,4 +1,4 @@
-import { computed, watchEffect } from "vue";
+import { computed } from "vue";
 import { useAppStore, useSettingsStore } from "@/store";
 import defaultSettings from "@/settings";
 
@@ -24,6 +24,9 @@ export function useLayout() {
   // 是否显示Logo
   const isShowLogo = computed(() => settingsStore.sidebarLogo);
 
+  // 是否移动设备
+  const isMobile = computed(() => appStore.device === "mobile");
+
   // 布局CSS类
   const layoutClass = computed(() => ({
     hideSidebar: !appStore.sidebar.opened,
@@ -46,12 +49,13 @@ export function useLayout() {
     appStore.closeSideBar();
   }
 
+  // 暂时注释掉这个逻辑，避免影响手动操作
   // 监听路由变化，在移动端自动关闭侧边栏
-  watchEffect(() => {
-    if (appStore.device === "mobile" && appStore.sidebar.opened) {
-      appStore.closeSideBar();
-    }
-  });
+  // watchEffect(() => {
+  //   if (appStore.device === "mobile" && appStore.sidebar.opened) {
+  //     appStore.closeSideBar();
+  //   }
+  // });
 
   return {
     currentLayout,
@@ -59,6 +63,7 @@ export function useLayout() {
     isShowTagsView,
     isShowSettings,
     isShowLogo,
+    isMobile,
     layoutClass,
     toggleSidebar,
     closeSidebar,
