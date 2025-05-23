@@ -1,5 +1,5 @@
 <template>
-  <LayoutBase>
+  <BaseLayout>
     <!-- 左侧菜单栏 -->
     <div class="layout__sidebar" :class="{ 'layout__sidebar--collapsed': !isSidebarOpen }">
       <LayoutSidebar :show-logo="isShowLogo" :is-collapsed="!isSidebarOpen">
@@ -21,17 +21,17 @@
       <TagsView v-if="isShowTagsView" />
       <AppMain />
     </div>
-  </LayoutBase>
+  </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import { useLayout } from "../../composables/useLayout";
 import { useLayoutMenu } from "../../composables/useLayoutMenu";
-import LayoutBase from "../LayoutBase.vue";
+import BaseLayout from "../BaseLayout.vue";
 import LayoutSidebar from "../common/LayoutSidebar.vue";
-import NavBar from "@/layout/components/NavBar/index.vue";
-import TagsView from "@/layout/components/TagsView/index.vue";
-import AppMain from "@/layout/components/AppMain/index.vue";
+import NavBar from "@/layouts/components/NavBar/index.vue";
+import TagsView from "@/layouts/components/TagsView/index.vue";
+import AppMain from "@/layouts/components/AppMain/index.vue";
 import SidebarMenu from "../LayoutMenu.vue";
 
 // 布局相关参数
@@ -41,8 +41,8 @@ const { isShowTagsView, isShowLogo, isSidebarOpen, isMobile } = useLayout();
 const { routes } = useLayoutMenu();
 
 // 添加调试日志
-console.log("🔍 LeftSideLayout - isSidebarOpen:", isSidebarOpen.value);
-console.log("🔍 LeftSideLayout - isMobile:", isMobile.value);
+console.log("🔍 LeftLayout - isSidebarOpen:", isSidebarOpen.value);
+console.log("🔍 LeftLayout - isMobile:", isMobile.value);
 </script>
 
 <style lang="scss" scoped>

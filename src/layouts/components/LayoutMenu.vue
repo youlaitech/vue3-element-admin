@@ -45,7 +45,7 @@ import type { RouteRecordRaw } from "vue-router";
 import { SidebarColor } from "@/enums/settings/theme.enum";
 import { useSettingsStore, useAppStore } from "@/store";
 import { isExternal } from "@/utils/index";
-import SidebarMenuItem from "@/layout/components/Sidebar/components/SidebarMenuItem.vue";
+import SidebarMenuItem from "@/layouts/components/Sidebar/components/SidebarMenuItem.vue";
 import variables from "@/styles/variables.module.scss";
 
 const props = defineProps({

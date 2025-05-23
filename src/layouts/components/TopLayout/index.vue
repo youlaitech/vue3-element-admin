@@ -1,11 +1,9 @@
 <template>
-  <LayoutBase>
+  <BaseLayout>
     <!-- 顶部菜单栏 -->
     <div class="layout__header">
       <LayoutSidebar :show-logo="isShowLogo" :is-collapsed="false">
-        <el-scrollbar>
-          <SidebarMenu :data="routes" base-path="" menu-mode="horizontal" />
-        </el-scrollbar>
+        <LayoutMenu :data="routes" menu-mode="horizontal" base-path="" />
         <NavbarActions />
       </LayoutSidebar>
     </div>
@@ -15,18 +13,18 @@
       <TagsView v-if="isShowTagsView" />
       <AppMain />
     </div>
-  </LayoutBase>
+  </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import { useLayout } from "../../composables/useLayout";
 import { useLayoutMenu } from "../../composables/useLayoutMenu";
-import LayoutBase from "../LayoutBase.vue";
+import BaseLayout from "../BaseLayout.vue";
 import LayoutSidebar from "../common/LayoutSidebar.vue";
-import NavbarActions from "@/layout/components/NavBar/components/NavbarActions.vue";
-import TagsView from "@/layout/components/TagsView/index.vue";
-import AppMain from "@/layout/components/AppMain/index.vue";
-import SidebarMenu from "../LayoutMenu.vue";
+import LayoutMenu from "../LayoutMenu.vue";
+import NavbarActions from "@/layouts/components/NavBar/components/NavbarActions.vue";
+import TagsView from "@/layouts/components/TagsView/index.vue";
+import AppMain from "@/layouts/components/AppMain/index.vue";
 
 // 布局相关参数
 const { isShowTagsView, isShowLogo } = useLayout();
@@ -49,37 +47,17 @@ const { routes } = useLayoutMenu();
       display: flex;
       width: 100% !important;
       height: $navbar-height;
-
-      .el-scrollbar {
-        flex: 1;
-        height: $navbar-height;
-      }
-
-      .el-menu-item,
-      .el-sub-menu__title,
-      .el-menu--horizontal {
-        height: $navbar-height;
-        line-height: $navbar-height;
-      }
     }
   }
 
   &__main {
-    position: relative;
     height: calc(100vh - $navbar-height);
-    margin-left: 0;
     overflow-y: auto;
-
-    .fixed-header {
-      position: sticky;
-      top: 0;
-      z-index: 9;
-    }
   }
 }
 
-:deep(.hasTagsView) {
-  .app-main {
+.hasTagsView {
+  :deep(.app-main) {
     height: calc(100vh - $navbar-height - $tags-view-height) !important;
   }
 }

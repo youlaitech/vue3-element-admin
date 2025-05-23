@@ -1,5 +1,5 @@
 <template>
-  <LayoutBase>
+  <BaseLayout>
     <!-- 顶部菜单栏 -->
     <div class="layout__header">
       <div class="layout__header-content">
@@ -54,7 +54,7 @@
         <AppMain />
       </div>
     </div>
-  </LayoutBase>
+  </BaseLayout>
 </template>
 
 <script setup lang="ts">
@@ -62,13 +62,13 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useLayout } from "../../composables/useLayout";
 import { useLayoutMenu } from "../../composables/useLayoutMenu";
-import LayoutBase from "../LayoutBase.vue";
-import SidebarLogo from "@/layout/components/Sidebar/components/SidebarLogo.vue";
-import SidebarMixTopMenu from "@/layout/components/Sidebar/components/SidebarMixTopMenu.vue";
-import NavbarActions from "@/layout/components/NavBar/components/NavbarActions.vue";
-import TagsView from "@/layout/components/TagsView/index.vue";
-import AppMain from "@/layout/components/AppMain/index.vue";
-import SidebarMenuItem from "@/layout/components/Sidebar/components/SidebarMenuItem.vue";
+import BaseLayout from "../BaseLayout.vue";
+import SidebarLogo from "@/layouts/components/Sidebar/components/SidebarLogo.vue";
+import SidebarMixTopMenu from "@/layouts/components/Sidebar/components/SidebarMixTopMenu.vue";
+import NavbarActions from "@/layouts/components/NavBar/components/NavbarActions.vue";
+import TagsView from "@/layouts/components/TagsView/index.vue";
+import AppMain from "@/layouts/components/AppMain/index.vue";
+import SidebarMenuItem from "@/layouts/components/Sidebar/components/SidebarMenuItem.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
 import variables from "@/styles/variables.module.scss";
 
@@ -103,7 +103,7 @@ function resolvePath(routePath: string) {
   return `${activeTopMenuPath.value}/${routePath}`;
 }
 
-console.log("🎨 MixMenuLayout rendered");
+console.log("🎨 MixLayout rendered");
 </script>
 
 <style lang="scss" scoped>

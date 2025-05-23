@@ -5,9 +5,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useLayout } from "./composables/useLayout";
-import LeftSideLayout from "./components/LeftSideLayout/index.vue";
-import TopMenuLayout from "./components/TopMenuLayout/index.vue";
-import MixMenuLayout from "./components/MixMenuLayout/index.vue";
+import LeftLayout from "./components/LeftLayout/index.vue";
+import TopLayout from "./components/TopLayout/index.vue";
+import MixLayout from "./components/MixLayout/index.vue";
 import { LayoutMode } from "@/enums/settings/layout.enum";
 
 const { currentLayout } = useLayout();
@@ -16,12 +16,12 @@ const { currentLayout } = useLayout();
 const currentLayoutComponent = computed(() => {
   switch (currentLayout.value) {
     case LayoutMode.TOP:
-      return TopMenuLayout;
+      return TopLayout;
     case LayoutMode.MIX:
-      return MixMenuLayout;
+      return MixLayout;
     case LayoutMode.LEFT:
     default:
-      return LeftSideLayout;
+      return LeftLayout;
   }
 });
 </script>
