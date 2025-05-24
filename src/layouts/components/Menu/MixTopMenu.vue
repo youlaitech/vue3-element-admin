@@ -20,8 +20,8 @@
     "
     @select="handleMenuSelect"
   >
-    <el-menu-item v-for="route in topMenus" :key="route.path" :index="route.path">
-      <MenuItemTitle v-if="route.meta" :icon="route.meta.icon" :title="route.meta.title" />
+    <el-menu-item v-for="menuItem in processedTopMenus" :key="menuItem.path" :index="menuItem.path">
+      <MenuItemTitle v-if="menuItem.meta" :icon="menuItem.meta.icon" :title="menuItem.meta.title" />
     </el-menu-item>
   </el-menu>
 </template>
@@ -51,6 +51,35 @@ const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
 
 // 顶部菜单列表
 const topMenus = ref<RouteRecordRaw[]>([]);
+
+// 处理后的顶部菜单列表 - 智能显示唯一子菜单的标题
+const processedTopMenus = computed(() => {
+  return topMenus.value.map((route) => {
+    // 如果路由设置了 alwaysShow=true，或者没有子菜单，直接返回原路由
+    if (route.meta?.alwaysShow || !route.children || route.children.length === 0) {
+      return route;
+    }
+
+    // 过滤出非隐藏的子菜单
+    const visibleChildren = route.children.filter((child) => !child.meta?.hidden);
+
+    // 如果只有一个非隐藏的子菜单，显示子菜单的信息
+    if (visibleChildren.length === 1) {
+      const onlyChild = visibleChildren[0];
+      return {
+        ...route,
+        meta: {
+          ...route.meta,
+          title: onlyChild.meta?.title || route.meta?.title,
+          icon: onlyChild.meta?.icon || route.meta?.icon,
+        },
+      };
+    }
+
+    // 其他情况返回原路由
+    return route;
+  });
+});
 
 // 获取当前路由路径的顶部菜单路径
 const activeTopMenuPath =
