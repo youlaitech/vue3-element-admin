@@ -33,7 +33,7 @@
               v-on="item.events || {}"
             >
               <template v-if="item.type === 'select'">
-                <template v-for="opt in item.options">
+                <template v-for="opt in item.options" :key="opt.value">
                   <el-option :label="opt.label" :value="opt.value" />
                 </template>
               </template>
@@ -72,7 +72,6 @@ const emit = defineEmits<{
 }>();
 // 组件映射表
 const componentMap = new Map<ISearchComponent, any>([
-   
   // @ts-ignore
   ["input", markRaw(ElInput)], // @ts-ignore
   ["select", markRaw(ElSelect)], // @ts-ignore
@@ -84,7 +83,6 @@ const componentMap = new Map<ISearchComponent, any>([
   ["tree-select", markRaw(ElTreeSelect)], // @ts-ignore
   ["input-tag", markRaw(ElInputTag)], // @ts-ignore
   ["custom-tag", markRaw(InputTag)],
-   
 ]);
 
 // 存储表单实例
@@ -131,7 +129,9 @@ const handleReset = () => {
 
 onMounted(() => {
   formItems.forEach((item) => {
-    item?.initFn && item.initFn(item);
+    if (item?.initFn) {
+      item.initFn(item);
+    }
     if (["input-tag", "custom-tag", "cascader"].includes(item?.type ?? "")) {
       queryParams[item.prop] = Array.isArray(item.initialValue) ? item.initialValue : [];
     } else if (item.type === "input-number") {

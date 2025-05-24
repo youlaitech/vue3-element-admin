@@ -6,11 +6,10 @@
     <div class="flex flex-col md:flex-row justify-between gap-y-2.5 mb-2.5">
       <!-- 左侧工具栏 -->
       <div class="toolbar-left flex gap-y-2.5 gap-x-2 md:gap-x-3 flex-wrap">
-        <template v-for="btn in toolbarLeftBtn">
+        <template v-for="(btn, index) in toolbarLeftBtn" :key="index">
           <el-button
-            v-bind="btn.attrs"
-            :key="btn.name"
             v-hasPerm="btn.perm ?? '*:*:*'"
+            v-bind="btn.attrs"
             :disabled="btn.name === 'delete' && removeIds.length === 0"
             @click="handleToolbar(btn.name)"
           >
@@ -20,13 +19,13 @@
       </div>
       <!-- 右侧工具栏 -->
       <div class="toolbar-right flex gap-y-2.5 gap-x-2 md:gap-x-3 flex-wrap">
-        <template v-for="btn in toolbarRightBtn">
+        <template v-for="(btn, index) in toolbarRightBtn" :key="index">
           <el-popover v-if="btn.name === 'filter'" placement="bottom" trigger="click">
             <template #reference>
               <el-button v-bind="btn.attrs"></el-button>
             </template>
             <el-scrollbar max-height="350px">
-              <template v-for="col in cols" :key="col">
+              <template v-for="col in cols" :key="col.prop">
                 <el-checkbox v-if="col.prop" v-model="col.show" :label="col.label" />
               </template>
             </el-scrollbar>
@@ -52,7 +51,7 @@
       @selection-change="handleSelectionChange"
       @filter-change="handleFilterChange"
     >
-      <template v-for="col in cols" :key="col">
+      <template v-for="col in cols" :key="col.prop">
         <el-table-column v-if="col.show" v-bind="col">
           <template #default="scope">
             <!-- 显示图片 -->
@@ -159,7 +158,7 @@
             </template>
             <!-- 列操作栏 -->
             <template v-else-if="col.templet === 'tool'">
-              <template v-for="btn in tableToolbarBtn">
+              <template v-for="(btn, index) in tableToolbarBtn" :key="index">
                 <el-button
                   v-if="btn.render === undefined || btn.render(scope.row)"
                   v-hasPerm="btn.perm ?? '*:*:*'"
@@ -239,7 +238,7 @@
           </el-form-item>
           <el-form-item label="字段" prop="fields">
             <el-checkbox-group v-model="exportsFormData.fields">
-              <template v-for="col in cols" :key="col">
+              <template v-for="col in cols" :key="col.prop">
                 <el-checkbox v-if="col.prop" :value="col.prop" :label="col.label" />
               </template>
             </el-checkbox-group>
@@ -433,7 +432,9 @@ const tableToolbarBtn = createToolbar(tableToolbar, { link: true, size: "small" 
 // 表格列
 const cols = ref(
   props.contentConfig.cols.map((col) => {
-    col.initFn && col.initFn(col);
+    if (col.initFn) {
+      col.initFn(col);
+    }
     if (col.show === undefined) {
       col.show = true;
     }

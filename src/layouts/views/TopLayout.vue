@@ -46,23 +46,22 @@ const { routes } = useLayoutMenu();
     top: 0;
     z-index: 999;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     width: 100%;
     height: $navbar-height;
-    padding: 0 20px;
     background-color: $menu-background;
     box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
     &-left {
       display: flex;
+      flex: 1;
       align-items: center;
       height: 100%;
-      flex: 1;
 
       // Logo 样式
       :deep(.sidebar-logo) {
-        width: 200px;
+        width: $sidebar-width;
         height: $navbar-height;
         padding: 0;
         margin-right: 20px;
@@ -90,20 +89,18 @@ const { routes } = useLayoutMenu();
       flex: 1;
       height: $navbar-height;
       line-height: $navbar-height;
-      border: none;
       background-color: transparent;
+      border: none;
 
       .el-menu-item {
         height: $navbar-height;
         line-height: $navbar-height;
-        padding: 0 20px;
       }
 
       .el-sub-menu {
         .el-sub-menu__title {
           height: $navbar-height;
           line-height: $navbar-height;
-          padding: 0 20px;
         }
       }
 

@@ -35,10 +35,10 @@
             :active-text-color="variables['menu-active-text']"
           >
             <MenuItem
-              v-for="route in sideMenuRoutes"
-              :key="route.path"
-              :item="route"
-              :base-path="resolvePath(route.path)"
+              v-for="item in sideMenuRoutes"
+              :key="item.path"
+              :item="item"
+              :base-path="resolvePath(item.path)"
             />
           </el-menu>
         </el-scrollbar>
@@ -121,16 +121,16 @@ console.log("🎨 MixLayout rendered");
       display: flex;
       align-items: center;
       height: 100%;
-      padding: 0 16px;
+      padding: 0;
     }
 
     &-logo {
-      flex-shrink: 0;
-      width: 200px;
-      height: 100%;
       display: flex;
+      flex-shrink: 0;
       align-items: center;
       justify-content: center;
+      width: $sidebar-width;
+      height: 100%;
 
       :deep(.logo) {
         height: 100%;
@@ -142,17 +142,17 @@ console.log("🎨 MixLayout rendered");
     }
 
     &-menu {
-      flex: 1;
-      height: 100%;
       display: flex;
+      flex: 1;
       align-items: center;
+      height: 100%;
       margin: 0 16px;
       overflow: hidden;
 
       :deep(.el-menu) {
         height: 100%;
-        border: none;
         background-color: transparent;
+        border: none;
       }
 
       :deep(.el-menu--horizontal) {
@@ -178,10 +178,11 @@ console.log("🎨 MixLayout rendered");
     }
 
     &-actions {
-      flex-shrink: 0;
       display: flex;
+      flex-shrink: 0;
       align-items: center;
       height: 100%;
+      padding: 0 16px;
     }
   }
 

@@ -66,6 +66,7 @@ import defaultSettings from "@/settings";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 import { useAppStore, useSettingsStore, useUserStore } from "@/store";
 import { SidebarColor, ThemeMode } from "@/enums/settings/theme.enum";
+import { LayoutMode } from "@/enums";
 
 const { t } = useI18n();
 const appStore = useAppStore();
@@ -96,18 +97,29 @@ const navbarActionsClass = computed(() => {
 
   // 明亮主题下
   if (theme === ThemeMode.LIGHT) {
-    // 顶部布局和混合布局的顶部区域使用深色背景，需要白色文字
-    if (layout === "top" || layout === "mix") {
+    // 顶部布局和混合布局的顶部区域：
+    // - 如果侧边栏是经典蓝色，使用白色文字
+    // - 如果侧边栏是极简白色，使用深色文字
+    if (layout === LayoutMode.TOP || layout === LayoutMode.MIX) {
+      if (sidebarColorScheme === SidebarColor.CLASSIC_BLUE) {
+        return "navbar-actions--white-text";
+      } else {
+        return "navbar-actions--dark-text";
+      }
+    }
+
+    // 左侧布局下，如果侧边栏是经典蓝色，顶部导航栏使用白色文字
+    if (layout === "left" && sidebarColorScheme === SidebarColor.CLASSIC_BLUE) {
       return "navbar-actions--white-text";
     }
 
-    // 左侧布局下，如果侧边栏是经典蓝色，顶部导航栏仍使用默认颜色
-    if (layout === "left" && sidebarColorScheme === SidebarColor.CLASSIC_BLUE) {
-      return ""; // 使用默认的深色文字
+    // 左侧布局下的其他情况（包括极简白），使用默认深色文字
+    if (layout === "left") {
+      return "navbar-actions--dark-text";
     }
   }
 
-  return "";
+  return "navbar-actions--dark-text";
 });
 
 /**
@@ -196,17 +208,17 @@ function logout() {
     padding: 0 8px;
 
     &__avatar {
+      flex-shrink: 0;
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      flex-shrink: 0;
     }
 
     &__name {
       margin-left: 8px;
       color: var(--el-text-color-regular);
-      transition: color 0.3s;
       white-space: nowrap;
+      transition: color 0.3s;
     }
   }
 }
@@ -229,6 +241,27 @@ function logout() {
 
   .user-profile__name {
     color: rgba(255, 255, 255, 0.85);
+  }
+}
+
+// 深色文字样式（用于浅色背景：明亮主题下的左侧布局）
+.navbar-actions--dark-text {
+  .navbar-actions__item {
+    :deep([class^="i-svg:"]) {
+      color: var(--el-text-color-regular) !important;
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.04);
+
+      :deep([class^="i-svg:"]) {
+        color: var(--el-color-primary) !important;
+      }
+    }
+  }
+
+  .user-profile__name {
+    color: var(--el-text-color-regular) !important;
   }
 }
 

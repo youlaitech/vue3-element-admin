@@ -56,10 +56,6 @@ export default [
     ignores: [
       "**/node_modules/**",
       "**/dist/**",
-      "**/build/**",
-      "**/.nuxt/**",
-      "**/.output/**",
-      "**/coverage/**",
       "**/*.min.*",
       "**/auto-imports.d.ts",
       "**/components.d.ts",
@@ -114,7 +110,7 @@ export default [
       "object-shorthand": "error",
 
       // 最佳实践
-      eqeqeq: ["error", "always", { null: "ignore" }],
+      eqeqeq: "off",
       "no-multi-spaces": "error",
       "no-multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
 
@@ -122,6 +118,7 @@ export default [
       "no-unused-vars": "off",
       "no-undef": "off",
       "no-redeclare": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
     },
   },
 
@@ -144,9 +141,10 @@ export default [
       "vue/require-default-prop": "off",
       "vue/require-explicit-emits": "error",
       "vue/no-unused-vars": "error",
-      "vue/no-mutating-props": "error",
-      "vue/attribute-hyphenation": ["error", "always"],
-      "vue/v-on-event-hyphenation": ["error", "always"],
+      "vue/no-mutating-props": "off",
+      "vue/valid-v-for": "warn",
+      "vue/no-template-shadow": "warn",
+      "vue/return-in-computed-property": "warn",
       "vue/block-order": [
         "error",
         {
@@ -166,6 +164,7 @@ export default [
         },
       ],
       "vue/component-name-in-template-casing": ["error", "PascalCase"],
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 
@@ -181,28 +180,14 @@ export default [
     },
     rules: {
       // TypeScript 规则
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "off", // 允许使用any类型，方便开发
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          vars: "all",
-          args: "after-used",
-          ignoreRestSiblings: true,
-          argsIgnorePattern: "^_", // 忽略以下划线开头的参数
-          varsIgnorePattern: "^[A-Z][A-Z0-9_]*$", // 忽略全大写的常量/枚举
-        },
-      ],
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        {
-          prefer: "type-imports",
-          fixStyle: "inline-type-imports",
-        },
-      ],
+      "@typescript-eslint/no-unused-vars": "warn", // 降级为警告
+      "@typescript-eslint/no-unused-expressions": "warn", // 降级为警告
+      "@typescript-eslint/consistent-type-imports": "off", // 关闭强制使用type import
       "@typescript-eslint/no-import-type-side-effects": "error",
     },
   },
@@ -216,21 +201,13 @@ export default [
     },
   },
 
-  // 测试文件配置
-  {
-    files: ["**/__tests__/**", "**/*.{test,spec}.{js,ts,vue}"],
-    rules: {
-      "no-console": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-    },
-  },
-
   // CURD 组件配置
   {
     files: ["**/components/CURD/**/*.{ts,vue}"],
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 

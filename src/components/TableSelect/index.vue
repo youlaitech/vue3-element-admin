@@ -284,7 +284,7 @@ const selectedItems = ref<IObject[]>([]);
 const confirmText = computed(() => {
   return selectedItems.value.length > 0 ? `已选(${selectedItems.value.length})` : "确 定";
 });
-function handleSelect(selection: any[], _row: any) {
+function handleSelect(selection: any[]) {
   if (isMultiple || selection.length === 0) {
     // 多选
     selectedItems.value = selection;
