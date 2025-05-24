@@ -5,7 +5,7 @@
       <div class="layout__header-content">
         <!-- Logo区域 -->
         <div v-if="isShowLogo" class="layout__header-logo">
-          <SidebarLogo :collapse="false" />
+          <AppLogo :collapse="false" />
         </div>
 
         <!-- 顶部菜单区域 -->
@@ -63,7 +63,7 @@ import { useRoute } from "vue-router";
 import { useLayout } from "../composables/useLayout";
 import { useLayoutMenu } from "../composables/useLayoutMenu";
 import BaseLayout from "./BaseLayout.vue";
-import SidebarLogo from "../components/Sidebar/components/SidebarLogo.vue";
+import AppLogo from "../components/AppLogo/index.vue";
 import MixTopMenu from "../components/NavMenu/components/MixTopMenu.vue";
 import NavbarActions from "../components/NavBar/components/NavbarActions.vue";
 import TagsView from "../components/TagsView/index.vue";

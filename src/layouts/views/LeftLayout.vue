@@ -2,11 +2,14 @@
   <BaseLayout>
     <!-- 左侧菜单栏 -->
     <div class="layout__sidebar" :class="{ 'layout__sidebar--collapsed': !isSidebarOpen }">
-      <Sidebar :show-logo="isShowLogo" :is-collapsed="!isSidebarOpen">
+      <div :class="{ 'has-logo': isShowLogo }" class="layout-sidebar">
+        <!-- Logo -->
+        <AppLogo v-if="isShowLogo" :collapse="!isSidebarOpen" />
+        <!-- 主菜单内容 -->
         <el-scrollbar>
           <Menu :data="routes" base-path="" />
         </el-scrollbar>
-      </Sidebar>
+      </div>
     </div>
 
     <!-- 主内容区 -->
@@ -28,7 +31,7 @@
 import { useLayout } from "../composables/useLayout";
 import { useLayoutMenu } from "../composables/useLayoutMenu";
 import BaseLayout from "./BaseLayout.vue";
-import Sidebar from "../components/Sidebar/index.vue";
+import AppLogo from "../components/AppLogo/index.vue";
 import NavBar from "../components/NavBar/index.vue";
 import TagsView from "../components/TagsView/index.vue";
 import AppMain from "../components/AppMain/index.vue";
@@ -59,6 +62,23 @@ console.log("🔍 LeftLayout - isMobile:", isMobile.value);
 
     &--collapsed {
       width: $sidebar-width-collapsed;
+    }
+
+    .layout-sidebar {
+      position: relative;
+      height: 100%;
+      background-color: var(--menu-background);
+      transition: width 0.28s;
+
+      &.has-logo {
+        .el-scrollbar {
+          height: calc(100vh - $navbar-height);
+        }
+      }
+
+      :deep(.el-menu) {
+        border: none;
+      }
     }
   }
 

@@ -4,7 +4,7 @@
     <div class="layout__header">
       <div class="layout__header-left">
         <!-- Logo -->
-        <SidebarLogo v-if="isShowLogo" :collapse="false" />
+        <AppLogo v-if="isShowLogo" :collapse="false" />
         <!-- 菜单 -->
         <Menu :data="routes" menu-mode="horizontal" base-path="" />
       </div>
@@ -26,7 +26,7 @@
 import { useLayout } from "../composables/useLayout";
 import { useLayoutMenu } from "../composables/useLayoutMenu";
 import BaseLayout from "./BaseLayout.vue";
-import SidebarLogo from "../components/Sidebar/components/SidebarLogo.vue";
+import AppLogo from "../components/AppLogo/index.vue";
 import Menu from "../components/NavMenu/index.vue";
 import NavbarActions from "../components/NavBar/components/NavbarActions.vue";
 import TagsView from "../components/TagsView/index.vue";
