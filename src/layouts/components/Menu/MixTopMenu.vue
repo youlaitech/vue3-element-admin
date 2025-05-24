@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import MenuItemTitle from "./MenuItemTitle.vue";
+import MenuItemTitle from "./components/MenuItemTitle.vue";
 
 defineOptions({
   name: "MixTopMenu",

@@ -7,7 +7,7 @@
         <AppLogo v-if="isShowLogo" :collapse="!isSidebarOpen" />
         <!-- 主菜单内容 -->
         <el-scrollbar>
-          <Menu :data="routes" base-path="" />
+          <BasicMenu :data="routes" base-path="" />
         </el-scrollbar>
       </div>
     </div>
@@ -35,7 +35,7 @@ import AppLogo from "../components/AppLogo/index.vue";
 import NavBar from "../components/NavBar/index.vue";
 import TagsView from "../components/TagsView/index.vue";
 import AppMain from "../components/AppMain/index.vue";
-import Menu from "../components/NavMenu/index.vue";
+import BasicMenu from "../components/Menu/BasicMenu.vue";
 
 // 布局相关参数
 const { isShowTagsView, isShowLogo, isSidebarOpen, isMobile } = useLayout();

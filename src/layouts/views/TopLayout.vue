@@ -6,7 +6,7 @@
         <!-- Logo -->
         <AppLogo v-if="isShowLogo" :collapse="false" />
         <!-- 菜单 -->
-        <Menu :data="routes" menu-mode="horizontal" base-path="" />
+        <BasicMenu :data="routes" menu-mode="horizontal" base-path="" />
       </div>
       <!-- 操作按钮 -->
       <div class="layout__header-right">
@@ -27,7 +27,7 @@ import { useLayout } from "../composables/useLayout";
 import { useLayoutMenu } from "../composables/useLayoutMenu";
 import BaseLayout from "./BaseLayout.vue";
 import AppLogo from "../components/AppLogo/index.vue";
-import Menu from "../components/NavMenu/index.vue";
+import BasicMenu from "../components/Menu/BasicMenu.vue";
 import NavbarActions from "../components/NavBar/components/NavbarActions.vue";
 import TagsView from "../components/TagsView/index.vue";
 import AppMain from "../components/AppMain/index.vue";

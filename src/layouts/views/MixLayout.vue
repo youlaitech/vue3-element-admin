@@ -64,11 +64,11 @@ import { useLayout } from "../composables/useLayout";
 import { useLayoutMenu } from "../composables/useLayoutMenu";
 import BaseLayout from "./BaseLayout.vue";
 import AppLogo from "../components/AppLogo/index.vue";
-import MixTopMenu from "../components/NavMenu/components/MixTopMenu.vue";
+import MixTopMenu from "../components/Menu/MixTopMenu.vue";
 import NavbarActions from "../components/NavBar/components/NavbarActions.vue";
 import TagsView from "../components/TagsView/index.vue";
 import AppMain from "../components/AppMain/index.vue";
-import MenuItem from "../components/NavMenu/components/MenuItem.vue";
+import MenuItem from "../components/Menu/components/MenuItem.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
 import variables from "@/styles/variables.module.scss";
 
