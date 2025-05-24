@@ -107,16 +107,6 @@ const navbarActionsClass = computed(() => {
         return "navbar-actions--dark-text";
       }
     }
-
-    // 左侧布局下，如果侧边栏是经典蓝色，顶部导航栏使用白色文字
-    if (layout === "left" && sidebarColorScheme === SidebarColor.CLASSIC_BLUE) {
-      return "navbar-actions--white-text";
-    }
-
-    // 左侧布局下的其他情况（包括极简白），使用默认深色文字
-    if (layout === "left") {
-      return "navbar-actions--dark-text";
-    }
   }
 
   return "navbar-actions--dark-text";

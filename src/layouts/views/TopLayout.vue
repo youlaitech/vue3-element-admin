@@ -27,8 +27,8 @@ import { useLayout } from "../composables/useLayout";
 import { useLayoutMenu } from "../composables/useLayoutMenu";
 import BaseLayout from "./BaseLayout.vue";
 import SidebarLogo from "../components/Sidebar/components/SidebarLogo.vue";
-import Menu from "../components/Menu/index.vue";
-import NavbarActions from "../components/Navbar/components/NavbarActions.vue";
+import Menu from "../components/NavMenu/index.vue";
+import NavbarActions from "../components/NavBar/components/NavbarActions.vue";
 import TagsView from "../components/TagsView/index.vue";
 import AppMain from "../components/AppMain/index.vue";
 
