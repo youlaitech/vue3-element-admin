@@ -1,6 +1,5 @@
 import { ref, onMounted, onUnmounted, watch, getCurrentInstance } from "vue";
 import { useStomp } from "./useStomp";
-import { ElMessage } from "element-plus";
 import { registerWebSocketInstance } from "@/plugins/websocket";
 import { Auth } from "@/utils/auth";
 

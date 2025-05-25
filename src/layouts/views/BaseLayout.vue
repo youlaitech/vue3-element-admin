@@ -6,9 +6,6 @@
     <!-- 布局内容插槽 -->
     <slot></slot>
 
-    <!-- 设置面板 -->
-    <Settings v-if="isShowSettings" />
-
     <!-- 返回顶部按钮 -->
     <el-backtop target=".app-main">
       <div class="i-svg:backtop w-6 h-6" />
@@ -19,10 +16,9 @@
 <script setup lang="ts">
 import { useLayout } from "../composables/useLayout";
 import { useLayoutResponsive } from "../composables/useLayoutResponsive";
-import Settings from "../components/Settings/index.vue";
 
 // 布局相关
-const { layoutClass, isShowSettings, isSidebarOpen, closeSidebar } = useLayout();
+const { layoutClass, isSidebarOpen, closeSidebar } = useLayout();
 
 // 响应式处理
 const { isMobile } = useLayoutResponsive();

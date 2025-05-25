@@ -34,6 +34,6 @@ const theneList = [
 ];
 
 const handleDarkChange = (theme: ThemeMode) => {
-  settingsStore.changeTheme(theme);
+  settingsStore.updateTheme(theme);
 };
 </script>

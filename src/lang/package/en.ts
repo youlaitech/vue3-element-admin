@@ -76,5 +76,21 @@ export default {
     showWatermark: "Show Watermark",
     classicBlue: "Classic Blue",
     minimalWhite: "Minimal White",
+    copyConfig: "Copy Config",
+    resetConfig: "Reset Default",
+    copySuccess: "Configuration copied to clipboard",
+    resetSuccess: "Reset to default configuration",
+    copyDescription:
+      "Copy config will generate current settings code, reset will restore all settings to default",
+    confirmReset: "Are you sure to reset all settings to default? This operation cannot be undone.",
+    applyToFile: "Apply to File",
+    onlyCopy: "Only Copy",
+    leftLayout: "Left Mode",
+    topLayout: "Top Mode",
+    mixLayout: "Mix Mode",
+    configManagement: "Config Management",
+    copyConfigDescription:
+      "Generate current settings code and copy to clipboard, then overwrite src/settings.ts file",
+    resetConfigDescription: "Restore all settings to system default values",
   },
 };
