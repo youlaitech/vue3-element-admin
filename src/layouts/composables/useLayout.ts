@@ -16,13 +16,13 @@ export function useLayout() {
   const isSidebarOpen = computed(() => appStore.sidebar.opened);
 
   // 是否显示标签视图
-  const isShowTagsView = computed(() => settingsStore.tagsView);
+  const isShowTagsView = computed(() => settingsStore.showTagsView);
 
   // 是否显示设置面板
   const isShowSettings = computed(() => defaultSettings.showSettings);
 
   // 是否显示Logo
-  const isShowLogo = computed(() => settingsStore.sidebarLogo);
+  const isShowLogo = computed(() => settingsStore.showAppLogo);
 
   // 是否移动设备
   const isMobile = computed(() => appStore.device === "mobile");

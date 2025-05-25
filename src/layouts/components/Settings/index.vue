@@ -32,18 +32,18 @@
       </div>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ t("settings.tagsView") }}</span>
-        <el-switch v-model="settingsStore.tagsView" />
+        <span class="text-xs">{{ t("settings.showTagsView") }}</span>
+        <el-switch v-model="settingsStore.showTagsView" />
       </div>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ t("settings.sidebarLogo") }}</span>
-        <el-switch v-model="settingsStore.sidebarLogo" />
+        <span class="text-xs">{{ t("settings.showAppLogo") }}</span>
+        <el-switch v-model="settingsStore.showAppLogo" />
       </div>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ t("settings.watermark") }}</span>
-        <el-switch v-model="settingsStore.watermarkEnabled" />
+        <span class="text-xs">{{ t("settings.showWatermark") }}</span>
+        <el-switch v-model="settingsStore.showWatermark" />
       </div>
       <div v-if="!isDark" class="config-item flex-x-between">
         <span class="text-xs">{{ t("settings.sidebarColorScheme") }}</span>
@@ -133,7 +133,7 @@ const sidebarColor = ref(settingsStore.sidebarColorScheme);
 
 const selectedThemeColor = computed({
   get: () => settingsStore.themeColor,
-  set: (value) => settingsStore.changeThemeColor(value),
+  set: (value) => settingsStore.updateThemeColor(value),
 });
 
 const drawerVisible = computed({
@@ -147,7 +147,7 @@ const drawerVisible = computed({
  * @param isDark 是否启用暗黑模式
  */
 const handleThemeChange = (isDark: string | number | boolean) => {
-  settingsStore.changeTheme(isDark ? ThemeMode.DARK : ThemeMode.LIGHT);
+  settingsStore.updateTheme(isDark ? ThemeMode.DARK : ThemeMode.LIGHT);
 };
 
 /**
@@ -156,7 +156,7 @@ const handleThemeChange = (isDark: string | number | boolean) => {
  * @param val 颜色方案名称
  */
 const changeSidebarColor = (val: any) => {
-  settingsStore.changeSidebarColor(val);
+  settingsStore.updateSidebarColorScheme(val);
 };
 
 /**
@@ -165,7 +165,7 @@ const changeSidebarColor = (val: any) => {
  * @param layout - 布局模式
  */
 const handleLayoutChange = (layout: LayoutMode) => {
-  settingsStore.changeLayout(layout);
+  settingsStore.updateLayout(layout);
   if (layout === LayoutMode.MIX && route.name) {
     const topLevelRoute = findTopLevelRoute(permissionStore.routes, route.name as string);
     if (appStore.activeTopMenuPath !== topLevelRoute.path) {
