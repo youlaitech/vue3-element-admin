@@ -127,7 +127,6 @@ console.log("🎨 MixLayout rendered");
     &-content {
       display: flex;
       align-items: center;
-      min-width: 768px;
       height: 100%;
       padding: 0;
     }

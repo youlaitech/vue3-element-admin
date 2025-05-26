@@ -42,12 +42,12 @@ const iconComponent = computed(() => props.icon?.replace("el-icon-", ""));
   .el-sub-menu,
   .el-menu-item {
     .el-icon {
-      margin: 0 10px;
+      margin: 0 auto;
     }
   }
 
   [class^="i-svg:"] {
-    margin: 0 10px;
+    margin: 0 auto;
   }
 }
 </style>

@@ -57,7 +57,6 @@ const isLogoCollapsed = computed(() => width.value < 768);
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    min-width: 768px; // 设置最小宽度，防止过度压缩
     height: $navbar-height;
     background-color: $menu-background;
     box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
@@ -181,7 +180,6 @@ const isLogoCollapsed = computed(() => width.value < 768);
 @media (max-width: 767px) {
   .layout {
     &__header {
-      min-width: 600px; // 小屏设备的最小宽度
       padding: 0 4px;
     }
   }
