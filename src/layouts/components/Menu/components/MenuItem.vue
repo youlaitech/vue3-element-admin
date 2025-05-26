@@ -139,11 +139,8 @@ function resolvePath(routePath: string) {
 .hideSidebar {
   .submenu-title-noDropdown {
     position: relative;
-    padding: 0 !important;
 
     .el-tooltip {
-      padding: 0 !important;
-
       .sub-el-icon {
         margin-left: 19px;
       }
@@ -162,8 +159,6 @@ function resolvePath(routePath: string) {
     overflow: hidden;
 
     & > .el-sub-menu__title {
-      padding: 0 !important;
-
       .sub-el-icon {
         margin-left: 19px;
       }
