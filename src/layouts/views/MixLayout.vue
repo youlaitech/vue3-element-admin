@@ -5,7 +5,7 @@
       <div class="layout__header-content">
         <!-- Logo区域 -->
         <div v-if="isShowLogo" class="layout__header-logo">
-          <AppLogo :collapse="false" />
+          <AppLogo :collapse="isLogoCollapsed" />
         </div>
 
         <!-- 顶部菜单区域 -->
@@ -60,6 +60,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import { useWindowSize } from "@vueuse/core";
 import { useLayout } from "../composables/useLayout";
 import { useLayoutMenu } from "../composables/useLayoutMenu";
 import BaseLayout from "./BaseLayout.vue";
@@ -79,6 +80,12 @@ const { isShowTagsView, isShowLogo, isSidebarOpen, toggleSidebar } = useLayout()
 
 // 菜单相关
 const { sideMenuRoutes, activeTopMenuPath } = useLayoutMenu();
+
+// 响应式窗口尺寸
+const { width } = useWindowSize();
+
+// 只有在小屏设备（移动设备）时才折叠Logo（只显示图标，隐藏文字）
+const isLogoCollapsed = computed(() => width.value < 768);
 
 // 当前激活的菜单
 const activeMenu = computed(() => {
@@ -120,6 +127,7 @@ console.log("🎨 MixLayout rendered");
     &-content {
       display: flex;
       align-items: center;
+      min-width: 768px;
       height: 100%;
       padding: 0;
     }
@@ -129,8 +137,18 @@ console.log("🎨 MixLayout rendered");
       flex-shrink: 0;
       align-items: center;
       justify-content: center;
-      width: $sidebar-width;
+      width: $sidebar-width; // 默认宽度：显示logo+文字
       height: 100%;
+
+      // 中屏设备优化（800px-1100px）：适度缩小但保持显示文字
+      @media (min-width: 768px) and (max-width: 1100px) {
+        width: 180px; // 缩小到180px，为菜单腾出空间
+      }
+
+      // 小屏设备：只显示logo，使用收缩宽度
+      @media (max-width: 767px) {
+        width: $sidebar-width-collapsed; // 只显示logo：54px
+      }
 
       :deep(.logo) {
         height: 100%;
@@ -145,9 +163,18 @@ console.log("🎨 MixLayout rendered");
       display: flex;
       flex: 1;
       align-items: center;
+      min-width: 0;
       height: 100%;
       margin: 0 16px;
       overflow: hidden;
+
+      @media (min-width: 768px) and (max-width: 1200px) {
+        margin: 0 12px;
+      }
+
+      @media (max-width: 767px) {
+        margin: 0 8px;
+      }
 
       :deep(.el-menu) {
         height: 100%;
@@ -164,6 +191,16 @@ console.log("🎨 MixLayout rendered");
           height: 100%;
           line-height: $navbar-height;
           border-bottom: none;
+
+          @media (min-width: 768px) and (max-width: 1200px) {
+            padding: 0 12px;
+            font-size: 14px;
+          }
+
+          @media (max-width: 767px) {
+            padding: 0 8px;
+            font-size: 13px;
+          }
 
           &:hover {
             background-color: rgba(255, 255, 255, 0.08);
@@ -183,6 +220,14 @@ console.log("🎨 MixLayout rendered");
       align-items: center;
       height: 100%;
       padding: 0 16px;
+
+      @media (min-width: 768px) and (max-width: 1200px) {
+        padding: 0 12px;
+      }
+
+      @media (max-width: 767px) {
+        padding: 0 8px;
+      }
     }
   }
 
