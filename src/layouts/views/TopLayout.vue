@@ -71,7 +71,7 @@ const isLogoCollapsed = computed(() => width.value < 768);
       overflow: hidden; // 防止溢出
 
       // Logo 样式 - 使用SCSS变量管理宽度
-      :deep(.sidebar-logo) {
+      :deep(.logo) {
         flex-shrink: 0; // 防止Logo被压缩
         width: $sidebar-width; // 默认宽度：显示logo+文字
         height: $navbar-height;
@@ -91,13 +91,8 @@ const isLogoCollapsed = computed(() => width.value < 768);
           margin-right: 12px; // 减少右边距
         }
 
-        .sidebar-logo__link {
+        a {
           height: 100%;
-        }
-
-        .logo {
-          width: 100%;
-          background-color: transparent;
         }
       }
     }

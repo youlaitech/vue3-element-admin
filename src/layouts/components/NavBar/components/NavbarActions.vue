@@ -52,7 +52,7 @@
     <div
       v-if="defaultSettings.showSettings"
       class="navbar-actions__item"
-      @click="settingStore.settingsVisible = true"
+      @click="handleSettingsClick"
     >
       <div class="i-svg:setting" />
     </div>
@@ -67,6 +67,13 @@ import { DeviceEnum } from "@/enums/settings/device.enum";
 import { useAppStore, useSettingsStore, useUserStore } from "@/store";
 import { SidebarColor, ThemeMode } from "@/enums/settings/theme.enum";
 import { LayoutMode } from "@/enums";
+
+// 导入子组件
+import MenuSearch from "@/components/MenuSearch/index.vue";
+import Fullscreen from "@/components/Fullscreen/index.vue";
+import SizeSelect from "@/components/SizeSelect/index.vue";
+import LangSelect from "@/components/LangSelect/index.vue";
+import Notification from "@/components/Notification/index.vue";
 
 const { t } = useI18n();
 const appStore = useAppStore();
@@ -127,6 +134,13 @@ function logout() {
     });
   });
 }
+
+/**
+ * 打开系统设置页面
+ */
+function handleSettingsClick() {
+  settingStore.settingsVisible = true;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -136,45 +150,37 @@ function logout() {
   height: 100%;
 
   &__item {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 36px;
+    min-width: 44px; /* 增加最小点击区域到44px，符合人机交互标准 */
     height: 100%;
+    min-height: 44px;
     padding: 0 8px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s;
 
-    // 确保直接子元素也居中
+    // 确保子元素居中
     > * {
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    // 确保 el-dropdown 也居中
-    :deep(.el-dropdown) {
+    // 确保 Element Plus 组件可以正常工作
+    :deep(.el-dropdown),
+    :deep(.el-tooltip) {
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
       height: 100%;
     }
 
-    // 修复可能的 SVG 图标容器
-    :deep(.icon-container),
-    :deep(.action-icon) {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
-
-    // 默认图标样式（明亮模式 + 左侧布局）
+    // 图标样式
     :deep([class^="i-svg:"]) {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       font-size: 18px;
       line-height: 1;
       color: var(--el-text-color-regular);

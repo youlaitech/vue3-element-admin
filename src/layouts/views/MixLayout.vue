@@ -165,16 +165,7 @@ console.log("🎨 MixLayout rendered");
       align-items: center;
       min-width: 0;
       height: 100%;
-      margin: 0 16px;
       overflow: hidden;
-
-      @media (min-width: 768px) and (max-width: 1200px) {
-        margin: 0 12px;
-      }
-
-      @media (max-width: 767px) {
-        margin: 0 8px;
-      }
 
       :deep(.el-menu) {
         height: 100%;
