@@ -140,12 +140,6 @@ function resolvePath(routePath: string) {
   .submenu-title-noDropdown {
     position: relative;
 
-    .el-tooltip {
-      .sub-el-icon {
-        margin-left: 19px;
-      }
-    }
-
     & > span {
       display: inline-block;
       visibility: hidden;

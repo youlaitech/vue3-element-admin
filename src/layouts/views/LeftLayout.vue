@@ -102,7 +102,7 @@ console.log("🔍 LeftLayout - isMobile:", isMobile.value);
   }
 }
 
-/* 移动端样式 - 注意这里需要正确应用到父元素 */
+/* 移动端样式 */
 .mobile {
   .layout__sidebar {
     width: $sidebar-width !important;

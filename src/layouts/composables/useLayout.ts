@@ -1,4 +1,3 @@
-import { computed } from "vue";
 import { useAppStore, useSettingsStore } from "@/store";
 import defaultSettings from "@/settings";
 
@@ -48,14 +47,6 @@ export function useLayout() {
   function closeSidebar() {
     appStore.closeSideBar();
   }
-
-  // 暂时注释掉这个逻辑，避免影响手动操作
-  // 监听路由变化，在移动端自动关闭侧边栏
-  // watchEffect(() => {
-  //   if (appStore.device === "mobile" && appStore.sidebar.opened) {
-  //     appStore.closeSideBar();
-  //   }
-  // });
 
   return {
     currentLayout,

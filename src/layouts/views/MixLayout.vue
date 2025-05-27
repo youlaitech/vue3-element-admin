@@ -136,26 +136,7 @@ console.log("🎨 MixLayout rendered");
       flex-shrink: 0;
       align-items: center;
       justify-content: center;
-      width: $sidebar-width; // 默认宽度：显示logo+文字
       height: 100%;
-
-      // 中屏设备优化（800px-1100px）：适度缩小但保持显示文字
-      @media (min-width: 768px) and (max-width: 1100px) {
-        width: 180px; // 缩小到180px，为菜单腾出空间
-      }
-
-      // 小屏设备：只显示logo，使用收缩宽度
-      @media (max-width: 767px) {
-        width: $sidebar-width-collapsed; // 只显示logo：54px
-      }
-
-      :deep(.logo) {
-        height: 100%;
-
-        a {
-          height: 100%;
-        }
-      }
     }
 
     &-menu {
@@ -182,20 +163,6 @@ console.log("🎨 MixLayout rendered");
           line-height: $navbar-height;
           border-bottom: none;
 
-          @media (min-width: 768px) and (max-width: 1200px) {
-            padding: 0 12px;
-            font-size: 14px;
-          }
-
-          @media (max-width: 767px) {
-            padding: 0 8px;
-            font-size: 13px;
-          }
-
-          &:hover {
-            background-color: rgba(255, 255, 255, 0.08);
-          }
-
           &.is-active {
             background-color: rgba(255, 255, 255, 0.12);
             border-bottom: 2px solid var(--el-color-primary);
@@ -210,14 +177,6 @@ console.log("🎨 MixLayout rendered");
       align-items: center;
       height: 100%;
       padding: 0 16px;
-
-      @media (min-width: 768px) and (max-width: 1200px) {
-        padding: 0 12px;
-      }
-
-      @media (max-width: 767px) {
-        padding: 0 8px;
-      }
     }
   }
 
@@ -255,6 +214,7 @@ console.log("🎨 MixLayout rendered");
         width: 100%;
         height: 50px;
         line-height: 50px;
+        background-color: var(--menu-background);
         box-shadow: 0 0 6px -2px var(--el-color-primary);
       }
     }

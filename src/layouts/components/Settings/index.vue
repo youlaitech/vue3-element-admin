@@ -146,7 +146,6 @@
 
 <script setup lang="ts">
 import { DocumentCopy, RefreshLeft, Check } from "@element-plus/icons-vue";
-import { markRaw } from "vue";
 
 const { t } = useI18n();
 import { LayoutMode } from "@/enums/settings/layout.enum";
@@ -154,7 +153,7 @@ import { ThemeMode } from "@/enums/settings/theme.enum";
 import { SidebarColor } from "@/enums/settings/theme.enum";
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
 
-// 按钮图标 - 使用markRaw避免响应式警告
+// 按钮图标
 const copyIcon = markRaw(DocumentCopy);
 const resetIcon = markRaw(RefreshLeft);
 
