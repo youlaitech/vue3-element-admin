@@ -15,7 +15,7 @@ import TopLayout from "./views/TopLayout.vue";
 import MixLayout from "./views/MixLayout.vue";
 import Settings from "./components/Settings/index.vue";
 import { LayoutMode } from "@/enums/settings/layout.enum";
-import defaultSettings from "@/settings";
+import { defaultSettings } from "@/settings";
 
 const { currentLayout } = useLayout();
 

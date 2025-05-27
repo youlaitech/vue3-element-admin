@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import defaultSettings from "@/settings";
+import { defaultSettings } from "@/settings";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 import { useAppStore, useSettingsStore, useUserStore } from "@/store";
 import { SidebarColor, ThemeMode } from "@/enums/settings/theme.enum";

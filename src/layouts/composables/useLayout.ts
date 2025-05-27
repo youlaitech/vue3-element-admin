@@ -1,5 +1,5 @@
 import { useAppStore, useSettingsStore } from "@/store";
-import defaultSettings from "@/settings";
+import { defaultSettings } from "@/settings";
 
 /**
  * 布局相关的通用逻辑

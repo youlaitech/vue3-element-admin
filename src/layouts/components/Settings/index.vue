@@ -148,10 +148,9 @@
 import { DocumentCopy, RefreshLeft, Check } from "@element-plus/icons-vue";
 
 const { t } = useI18n();
-import { LayoutMode } from "@/enums/settings/layout.enum";
-import { ThemeMode } from "@/enums/settings/theme.enum";
-import { SidebarColor } from "@/enums/settings/theme.enum";
+import { LayoutMode, SidebarColor, ThemeMode } from "@/enums";
 import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
+import { themeColorPresets } from "@/settings";
 
 // 按钮图标
 const copyIcon = markRaw(DocumentCopy);
@@ -174,18 +173,8 @@ const layoutOptions: LayoutOption[] = [
   { value: LayoutMode.MIX, label: t("settings.mixLayout"), className: "mix" },
 ];
 
-// 颜色预设
-const colorPresets = [
-  "#4080FF",
-  "#626AEF",
-  "#ff4500",
-  "#ff8c00",
-  "#00ced1",
-  "#1e90ff",
-  "#c71585",
-  "rgb(255, 120, 0)",
-  "hsva(120, 40, 94)",
-];
+// 使用统一的颜色预设配置
+const colorPresets = themeColorPresets;
 
 const route = useRoute();
 const appStore = useAppStore();

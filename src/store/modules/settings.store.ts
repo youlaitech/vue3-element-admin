@@ -1,4 +1,4 @@
-import defaultSettings from "@/settings";
+import { defaultSettings } from "@/settings";
 import { SidebarColor, ThemeMode } from "@/enums/settings/theme.enum";
 import type { LayoutMode } from "@/enums/settings/layout.enum";
 import { applyTheme, generateThemeColors, toggleDarkMode, toggleSidebarColor } from "@/utils/theme";
