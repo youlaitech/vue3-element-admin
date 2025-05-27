@@ -37,7 +37,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, PropType } from "vue";
 import { useRoute } from "vue-router";
 import path from "path-browserify";
 import type { MenuInstance } from "element-plus";

@@ -21,13 +21,17 @@
     @select="handleMenuSelect"
   >
     <el-menu-item v-for="menuItem in processedTopMenus" :key="menuItem.path" :index="menuItem.path">
-      <MenuItemTitle v-if="menuItem.meta" :icon="menuItem.meta.icon" :title="menuItem.meta.title" />
+      <MenuItemContent
+        v-if="menuItem.meta"
+        :icon="menuItem.meta.icon"
+        :title="menuItem.meta.title"
+      />
     </el-menu-item>
   </el-menu>
 </template>
 
 <script lang="ts" setup>
-import MenuItemTitle from "./components/MenuItemTitle.vue";
+import MenuItemContent from "./components/MenuItemContent.vue";
 
 defineOptions({
   name: "MixTopMenu",

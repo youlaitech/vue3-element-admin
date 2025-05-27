@@ -34,52 +34,7 @@ const iconComponent = computed(() => props.icon?.replace("el-icon-", ""));
   width: 18px;
   height: 18px;
   margin-right: 5px;
+  font-size: 18px;
   color: currentcolor;
-}
-
-.el-icon {
-  width: 18px !important;
-  height: 18px !important;
-  color: currentcolor;
-}
-
-[class^="i-svg:"] {
-  width: 18px;
-  height: 18px;
-  color: currentcolor !important;
-}
-
-// 收缩状态下的样式优化
-.hideSidebar {
-  .el-sub-menu,
-  .el-menu-item {
-    // 确保菜单项内容居中
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    .menu-icon {
-      width: 20px;
-      height: 20px;
-      margin: 0 auto;
-    }
-
-    .el-icon {
-      width: 20px !important;
-      height: 20px !important;
-      margin: 0 auto;
-    }
-
-    [class^="i-svg:"] {
-      width: 20px;
-      height: 20px;
-      margin: 0 auto;
-    }
-
-    // 隐藏文字标题
-    .menu-title {
-      display: none;
-    }
-  }
 }
 </style>

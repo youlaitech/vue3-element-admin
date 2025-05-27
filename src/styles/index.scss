@@ -10,6 +10,67 @@
   background-color: var(--el-color-primary);
 }
 
+// 混合布局左侧菜单的hover样式
+.layout-mix .layout__sidebar--left .el-menu {
+  .el-menu-item {
+    &:hover {
+      // 极简白主题：使用浅灰色背景
+      background-color: var(--el-fill-color-light) !important;
+    }
+  }
+
+  .el-sub-menu__title {
+    &:hover {
+      // 极简白主题：使用浅灰色背景
+      background-color: var(--el-fill-color-light) !important;
+    }
+  }
+}
+
+// 深色主题或深蓝色侧边栏配色下的左侧菜单hover样式
+html.dark .layout-mix .layout__sidebar--left .el-menu,
+html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
+  .el-menu-item {
+    &:hover {
+      // 深色背景：使用CSS变量
+      background-color: var(--menu-hover) !important;
+    }
+  }
+
+  .el-sub-menu__title {
+    &:hover {
+      // 深色背景：使用CSS变量
+      background-color: var(--menu-hover) !important;
+    }
+  }
+}
+
+// 窄屏时隐藏菜单文字，只显示图标
+.hideSidebar {
+  // Top布局和Mix布局的水平菜单
+  &.layout-top .layout__header .el-menu--horizontal,
+  &.layout-mix .layout__header .el-menu--horizontal {
+    .el-menu-item,
+    .el-sub-menu__title {
+      .menu-title,
+      span:not([class*="i-svg"]):not(.el-icon) {
+        display: none !important;
+      }
+    }
+  }
+
+  // Mix布局的左侧菜单
+  &.layout-mix .layout__sidebar--left .el-menu {
+    .el-menu-item,
+    .el-sub-menu__title {
+      .menu-title,
+      span:not([class*="i-svg"]):not(.el-icon) {
+        display: none !important;
+      }
+    }
+  }
+}
+
 // 全局搜索区域样式
 .search-container {
   padding: 18px 16px 0;
