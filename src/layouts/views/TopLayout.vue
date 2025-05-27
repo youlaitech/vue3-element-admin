@@ -59,7 +59,6 @@ const isLogoCollapsed = computed(() => width.value < 768);
     width: 100%;
     height: $navbar-height;
     background-color: $menu-background;
-    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
     &-left {
       display: flex;
@@ -74,24 +73,10 @@ const isLogoCollapsed = computed(() => width.value < 768);
         flex-shrink: 0; // 防止Logo被压缩
         width: $sidebar-width; // 默认宽度：显示logo+文字
         height: $navbar-height;
-        padding: 0;
-        margin-right: 20px;
-        background: transparent;
-
-        // 中屏设备优化（800px-1100px）：适度缩小但保持显示文字
-        @media (min-width: 768px) and (max-width: 1100px) {
-          width: 180px; // 缩小到180px，为菜单腾出空间
-          margin-right: 16px; // 减少右边距
-        }
 
         // 小屏设备：只显示logo，使用收缩宽度
-        @media (max-width: 767px) {
+        @media (max-width: 768px) {
           width: $sidebar-width-collapsed; // 只显示logo：54px
-          margin-right: 12px; // 减少右边距
-        }
-
-        a {
-          height: 100%;
         }
       }
     }
@@ -134,22 +119,7 @@ const isLogoCollapsed = computed(() => width.value < 768);
         .el-sub-menu__title {
           height: $navbar-height;
           line-height: $navbar-height;
-
-          @media (min-width: 768px) and (max-width: 1200px) {
-            padding: 0 12px;
-            font-size: 14px;
-          }
-
-          @media (max-width: 767px) {
-            padding: 0 8px;
-            font-size: 13px;
-          }
         }
-      }
-
-      // 修复子菜单弹出位置
-      .el-menu--popup {
-        min-width: 160px;
       }
     }
   }
@@ -164,24 +134,6 @@ const isLogoCollapsed = computed(() => width.value < 768);
 .hasTagsView {
   :deep(.app-main) {
     height: calc(100vh - $navbar-height - $tags-view-height) !important;
-  }
-}
-
-// 中屏设备的特殊优化
-@media (min-width: 768px) and (max-width: 1200px) {
-  .layout {
-    &__header {
-      padding: 0 8px; // 添加少量内边距
-    }
-  }
-}
-
-// 小屏设备的特殊优化
-@media (max-width: 767px) {
-  .layout {
-    &__header {
-      padding: 0 4px;
-    }
   }
 }
 </style>

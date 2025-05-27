@@ -139,16 +139,6 @@ console.log("🎨 MixLayout rendered");
       width: $sidebar-width; // 默认宽度：显示logo+文字
       height: 100%;
 
-      // 中屏设备优化（800px-1100px）：适度缩小但保持显示文字
-      @media (min-width: 768px) and (max-width: 1100px) {
-        width: 180px; // 缩小到180px，为菜单腾出空间
-      }
-
-      // 小屏设备：只显示logo，使用收缩宽度
-      @media (max-width: 767px) {
-        width: $sidebar-width-collapsed; // 只显示logo：54px
-      }
-
       :deep(.logo) {
         height: 100%;
 
