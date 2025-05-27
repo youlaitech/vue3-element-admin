@@ -139,6 +139,11 @@ console.log("🎨 MixLayout rendered");
       width: $sidebar-width; // 默认宽度：显示logo+文字
       height: 100%;
 
+      // 小屏设备：只显示logo，使用收缩宽度
+      @media (max-width: 767px) {
+        width: $sidebar-width-collapsed; // 只显示logo：54px
+      }
+
       :deep(.logo) {
         height: 100%;
 
