@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import logo from "@/assets/logo.png";
-import defaultSettings from "@/settings";
+import { defaultSettings } from "@/settings";
 import CommonWrapper from "@/components/CommonWrapper/index.vue";
 import DarkModeSwitch from "@/components/DarkModeSwitch/index.vue";
 

@@ -21,13 +21,17 @@
     @select="handleMenuSelect"
   >
     <el-menu-item v-for="menuItem in processedTopMenus" :key="menuItem.path" :index="menuItem.path">
-      <MenuItemTitle v-if="menuItem.meta" :icon="menuItem.meta.icon" :title="menuItem.meta.title" />
+      <MenuItemContent
+        v-if="menuItem.meta"
+        :icon="menuItem.meta.icon"
+        :title="menuItem.meta.title"
+      />
     </el-menu-item>
   </el-menu>
 </template>
 
 <script lang="ts" setup>
-import MenuItemTitle from "./components/MenuItemTitle.vue";
+import MenuItemContent from "./components/MenuItemContent.vue";
 
 defineOptions({
   name: "MixTopMenu",
@@ -81,14 +85,25 @@ const processedTopMenus = computed(() => {
   });
 });
 
-// 获取当前路由路径的顶部菜单路径
-const activeTopMenuPath =
-  useRoute().path.split("/").filter(Boolean).length > 1
-    ? useRoute().path.match(/^\/[^/]+/)?.[0] || "/"
-    : "/";
+const route = useRoute();
 
-// 设置当前激活的顶部菜单路径
-appStore.activeTopMenu(activeTopMenuPath);
+// 获取当前路由路径的顶部菜单路径
+const getActiveTopMenuPath = () => {
+  const pathSegments = route.path.split("/").filter(Boolean);
+  return pathSegments.length > 0 ? `/${pathSegments[0]}` : "/";
+};
+
+// 监听路由变化，更新活跃的顶部菜单
+watch(
+  () => route.path,
+  () => {
+    const newActiveTopMenuPath = getActiveTopMenuPath();
+    if (newActiveTopMenuPath !== appStore.activeTopMenuPath) {
+      appStore.activeTopMenu(newActiveTopMenuPath);
+    }
+  },
+  { immediate: true }
+);
 
 /**
  * 处理菜单点击事件，切换顶部菜单并加载对应的左侧菜单
@@ -105,7 +120,11 @@ const handleMenuSelect = (routePath: string) => {
  */
 function activateFirstLevelMenu(routePath: string) {
   permissionStore.updateSideMenu(routePath); // 更新左侧菜单
-  navigateToFirstLeftMenu(permissionStore.sideMenuRoutes); // 跳转到左侧第一个菜单
+
+  // 使用 nextTick 确保侧边菜单更新完成后再跳转
+  nextTick(() => {
+    navigateToFirstLeftMenu(permissionStore.sideMenuRoutes); // 跳转到左侧第一个菜单
+  });
 }
 
 /**
@@ -115,21 +134,40 @@ function activateFirstLevelMenu(routePath: string) {
 const navigateToFirstLeftMenu = (menus: RouteRecordRaw[]) => {
   if (menus.length === 0) return;
 
-  const [firstMenu] = menus;
+  // 查找第一个可访问的菜单项
+  const findFirstAccessibleRoute = (routes: RouteRecordRaw[]): RouteRecordRaw | null => {
+    for (const route of routes) {
+      // 跳过隐藏的菜单项
+      if (route.meta?.hidden) continue;
 
-  // 如果第一个菜单有子菜单，递归跳转到第一个子菜单
-  if (firstMenu.children && firstMenu.children.length > 0) {
-    navigateToFirstLeftMenu(firstMenu.children as RouteRecordRaw[]);
-  } else if (firstMenu.name) {
+      // 如果有子菜单，递归查找
+      if (route.children && route.children.length > 0) {
+        const childRoute = findFirstAccessibleRoute(route.children);
+        if (childRoute) return childRoute;
+      } else if (route.name && route.path) {
+        // 找到第一个有名称和路径的菜单项
+        return route;
+      }
+    }
+    return null;
+  };
+
+  const firstRoute = findFirstAccessibleRoute(menus);
+
+  if (firstRoute && firstRoute.name) {
+    console.log("🎯 Navigating to first menu:", firstRoute.name, firstRoute.path);
     router.push({
-      name: firstMenu.name,
+      name: firstRoute.name,
       query:
-        typeof firstMenu.meta?.params === "object"
-          ? (firstMenu.meta.params as LocationQueryRaw)
+        typeof firstRoute.meta?.params === "object"
+          ? (firstRoute.meta.params as LocationQueryRaw)
           : undefined,
     });
   }
 };
+
+// 当前激活的顶部菜单路径
+const activeTopMenuPath = computed(() => appStore.activeTopMenuPath);
 
 onMounted(() => {
   topMenus.value = permissionStore.routes.filter((item) => !item.meta || !item.meta.hidden);

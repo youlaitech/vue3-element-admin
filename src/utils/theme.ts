@@ -77,6 +77,12 @@ export function applyTheme(colors: Record<string, string>) {
   Object.entries(colors).forEach(([key, value]) => {
     el.style.setProperty(`--el-color-${key}`, value);
   });
+
+  // 确保主题色立即生效，强制重新渲染
+  requestAnimationFrame(() => {
+    // 触发样式重新计算
+    el.style.setProperty("--theme-update-trigger", Date.now().toString());
+  });
 }
 
 /**
