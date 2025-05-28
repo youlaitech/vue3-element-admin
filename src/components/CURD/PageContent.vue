@@ -210,7 +210,6 @@
         <!-- 表单 -->
         <el-form
           ref="exportsFormRef"
-          label-width="auto"
           style="padding-right: var(--el-dialog-padding-primary)"
           :model="exportsFormData"
           :rules="exportsFormRules"
@@ -267,7 +266,6 @@
         <!-- 表单 -->
         <el-form
           ref="importFormRef"
-          label-width="auto"
           style="padding-right: var(--el-dialog-padding-primary)"
           :model="importFormData"
           :rules="importFormRules"

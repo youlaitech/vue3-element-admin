@@ -2,13 +2,7 @@
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
-      <el-form
-        ref="queryFormRef"
-        :model="queryParams"
-        :inline="true"
-        label-suffix=":"
-        label-width="auto"
-      >
+      <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-suffix=":">
         <el-form-item label="标题" prop="title">
           <el-input
             v-model="queryParams.title"

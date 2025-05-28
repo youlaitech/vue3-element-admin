@@ -3,7 +3,7 @@
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
+      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
             v-model="queryParams.keywords"
@@ -142,6 +142,8 @@ defineOptions({
 });
 
 import ConfigAPI, { ConfigPageVO, ConfigForm, ConfigPageQuery } from "@/api/system/config.api";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { useDebounceFn } from "@vueuse/core";
 
 const queryFormRef = ref();
 const dataFormRef = ref();

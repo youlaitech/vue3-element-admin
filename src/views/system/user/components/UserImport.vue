@@ -10,7 +10,6 @@
       <el-scrollbar max-height="60vh">
         <el-form
           ref="importFormRef"
-          label-width="auto"
           style="padding-right: var(--el-dialog-padding-primary)"
           :model="importFormData"
           :rules="importFormRules"
