@@ -7,7 +7,6 @@ export {}
 declare module "vue" {
   export interface GlobalComponents {
     AppLink: (typeof import("./../components/AppLink/index.vue"))["default"];
-    AppMain: (typeof import("./../layout/components/AppMain/index.vue"))["default"];
     Breadcrumb: (typeof import("./../components/Breadcrumb/index.vue"))["default"];
     CopyButton: (typeof import("./../components/CopyButton/index.vue"))["default"];
     CURD: (typeof import("./../components/CURD/index.vue"))["default"];
@@ -74,24 +73,15 @@ declare module "vue" {
     MenuSearch: (typeof import("./../components/MenuSearch/index.vue"))["default"];
     MultiImageUpload: (typeof import("./../components/Upload/MultiImageUpload.vue"))["default"];
     Notification: (typeof import("./../components/Notification/index.vue"))["default"];
-    LayoutSelect: (typeof import("./../layout/components/Settings/components/LayoutSelect.vue"))["default"];
     PageContent: (typeof import("./../components/CURD/PageContent.vue"))["default"];
     PageModal: (typeof import("./../components/CURD/PageModal.vue"))["default"];
     PageSearch: (typeof import("./../components/CURD/PageSearch.vue"))["default"];
     Pagination: (typeof import("./../components/Pagination/index.vue"))["default"];
     RouterLink: (typeof import("vue-router"))["RouterLink"];
     RouterView: (typeof import("vue-router"))["RouterView"];
-    Settings: (typeof import("./../layout/components/Settings/index.vue"))["default"];
-    Sidebar: (typeof import("./../layout/components/Sidebar/index.vue"))["default"];
-    SidebarLogo: (typeof import("./../layout/components/Sidebar/components/SidebarLogo.vue"))["default"];
-    SidebarMenu: (typeof import("./../layout/components/Sidebar/components/SidebarMenu.vue"))["default"];
-    SidebarMenuItem: (typeof import("./../layout/components/Sidebar/components/SidebarMenuItem.vue"))["default"];
-    SidebarMenuItemTitle: (typeof import("./../layout/components/Sidebar/components/SidebarMenuItemTitle.vue"))["default"];
-    SidebarMixTopMenu: (typeof import("./../layout/components/Sidebar/components/SidebarMixTopMenu.vue"))["default"];
     SingleImageUpload: (typeof import("./../components/Upload/SingleImageUpload.vue"))["default"];
     SizeSelect: (typeof import("./../components/SizeSelect/index.vue"))["default"];
     TableSelect: (typeof import("./../components/TableSelect/index.vue"))["default"];
-    TagsView: (typeof import("./../layout/components/TagsView/index.vue"))["default"];
     WangEditor: (typeof import("./../components/WangEditor/index.vue"))["default"];
   }
   export interface ComponentCustomProperties {

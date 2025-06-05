@@ -22,7 +22,8 @@
           :index="resolvePath(onlyOneChild.path)"
           :class="{ 'submenu-title-noDropdown': !isNest }"
         >
-          <SidebarMenuItemTitle
+          <MenuItemContent
+            v-if="onlyOneChild.meta"
             :icon="onlyOneChild.meta.icon || item.meta?.icon"
             :title="onlyOneChild.meta.title"
           />
@@ -33,10 +34,10 @@
     <!--【非叶子节点】显示含多个子节点的父菜单，或始终显示的单子节点 -->
     <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
       <template #title>
-        <SidebarMenuItemTitle v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
+        <MenuItemContent v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
       </template>
 
-      <SidebarMenuItem
+      <MenuItem
         v-for="child in item.children"
         :key="child.path"
         :is-nest="true"
@@ -48,8 +49,10 @@
 </template>
 
 <script setup lang="ts">
+import MenuItemContent from "./MenuItemContent.vue";
+
 defineOptions({
-  name: "SidebarMenuItem",
+  name: "MenuItem",
   inheritAttrs: false,
 });
 
@@ -137,15 +140,6 @@ function resolvePath(routePath: string) {
 .hideSidebar {
   .submenu-title-noDropdown {
     position: relative;
-    padding: 0 !important;
-
-    .el-tooltip {
-      padding: 0 !important;
-
-      .sub-el-icon {
-        margin-left: 19px;
-      }
-    }
 
     & > span {
       display: inline-block;
@@ -160,8 +154,6 @@ function resolvePath(routePath: string) {
     overflow: hidden;
 
     & > .el-sub-menu__title {
-      padding: 0 !important;
-
       .sub-el-icon {
         margin-left: 19px;
       }
@@ -196,6 +188,43 @@ html.dark {
 html.sidebar-color-blue {
   .el-menu-item:hover {
     background-color: $menu-hover;
+  }
+}
+
+// 父菜单激活状态样式 - 当子菜单激活时，父菜单显示激活状态
+.el-sub-menu {
+  // 当父菜单包含激活子菜单时的样式
+  &.has-active-child .el-sub-menu__title {
+    color: var(--el-color-primary) !important;
+    background-color: var(--el-color-primary-light-9) !important;
+
+    .menu-icon {
+      color: var(--el-color-primary) !important;
+    }
+  }
+
+  // 深色主题下的父菜单激活状态
+  html.dark & {
+    &.has-active-child .el-sub-menu__title {
+      color: var(--el-color-primary-light-3) !important;
+      background-color: rgba(64, 128, 255, 0.15) !important;
+
+      .menu-icon {
+        color: var(--el-color-primary-light-3) !important;
+      }
+    }
+  }
+
+  // 深蓝色侧边栏配色下的父菜单激活状态
+  html.sidebar-color-blue & {
+    &.has-active-child .el-sub-menu__title {
+      color: var(--el-color-primary-light-3) !important;
+      background-color: rgba(64, 128, 255, 0.2) !important;
+
+      .menu-icon {
+        color: var(--el-color-primary-light-3) !important;
+      }
+    }
   }
 }
 </style>

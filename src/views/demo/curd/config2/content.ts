@@ -7,7 +7,7 @@ const contentConfig: IContentConfig = {
   },
   pagePosition: "right",
   toolbar: [],
-  indexAction: function (params) {
+  indexAction(params) {
     // 模拟发起网络请求获取列表数据
     console.log("indexAction:", params);
     return Promise.resolve({

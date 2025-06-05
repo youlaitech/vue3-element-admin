@@ -1,11 +1,4 @@
 <!-- 图标选择器示例 -->
-<script setup lang="ts">
-// element-plus 图标格式以el-icon-开头
-const iconName = ref("el-icon-edit");
-// 本地SVG图标格式取 src/assets/icons 下的文件名，不需要svg后缀
-// const iconName = ref("api");
-</script>
-
 <template>
   <div class="app-container">
     <el-link
@@ -19,3 +12,10 @@ const iconName = ref("el-icon-edit");
     <icon-select v-model="iconName" />
   </div>
 </template>
+
+<script setup lang="ts">
+// element-plus 图标格式以el-icon-开头
+const iconName = ref("el-icon-edit");
+// 本地SVG图标格式取 src/assets/icons 下的文件名，不需要svg后缀
+// const iconName = ref("api");
+</script>

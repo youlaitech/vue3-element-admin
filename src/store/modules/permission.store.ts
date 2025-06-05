@@ -5,7 +5,7 @@ import router from "@/router";
 
 import MenuAPI, { type RouteVO } from "@/api/system/menu.api";
 const modules = import.meta.glob("../../views/**/**.vue");
-const Layout = () => import("@/layout/index.vue");
+const Layout = () => import("@/layouts/index.vue");
 
 export const usePermissionStore = defineStore("permission", () => {
   // 存储所有路由，包括静态路由和动态路由
@@ -22,14 +22,24 @@ export const usePermissionStore = defineStore("permission", () => {
    */
   function generateRoutes() {
     return new Promise<RouteRecordRaw[]>((resolve, reject) => {
+      console.log("🔧 Starting to generate routes...");
+
       MenuAPI.getRoutes()
         .then((data) => {
           const dynamicRoutes = parseDynamicRoutes(data);
+
           routes.value = [...constantRoutes, ...dynamicRoutes];
           routesLoaded.value = true;
+
+          console.log("✅ Routes generation completed successfully");
           resolve(dynamicRoutes);
         })
         .catch((error) => {
+          console.error("❌ Failed to generate routes:", error);
+
+          // 即使失败也要设置状态，避免无限重试
+          routesLoaded.value = false;
+
           reject(error);
         });
     });

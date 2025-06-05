@@ -81,7 +81,7 @@ const selectConfig: ISelectConfig = {
       },
     },
   ],
-  indexAction: function (params) {
+  indexAction(params) {
     if ("createAt" in params) {
       const createAt = params.createAt as string[];
       if (createAt?.length > 1) {

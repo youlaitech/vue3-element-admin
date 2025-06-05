@@ -55,7 +55,7 @@ const DictAPI = {
     return request({
       url: `${DICT_BASE_URL}`,
       method: "post",
-      data: data,
+      data,
     });
   },
 
@@ -69,7 +69,7 @@ const DictAPI = {
     return request({
       url: `${DICT_BASE_URL}/${id}`,
       method: "put",
-      data: data,
+      data,
     });
   },
 
@@ -119,7 +119,7 @@ const DictAPI = {
     return request({
       url: `${DICT_BASE_URL}/${dictCode}/items`,
       method: "post",
-      data: data,
+      data,
     });
   },
 
@@ -143,7 +143,7 @@ const DictAPI = {
     return request({
       url: `${DICT_BASE_URL}/${dictCode}/items/${id}`,
       method: "put",
-      data: data,
+      data,
     });
   },
 

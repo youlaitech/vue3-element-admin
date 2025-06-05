@@ -9,9 +9,9 @@ interface OptionType {
 }
 
 // 明确指定类型为 OptionType[]
-export let deptArr = ref<OptionType[]>([]);
-export let roleArr = ref<OptionType[]>([]);
-export let stateArr = ref<OptionType[]>([
+export const deptArr = ref<OptionType[]>([]);
+export const roleArr = ref<OptionType[]>([]);
+export const stateArr = ref<OptionType[]>([
   { label: "启用", value: 1 },
   { label: "禁用", value: 0 },
 ]);

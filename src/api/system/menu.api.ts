@@ -40,7 +40,7 @@ const MenuAPI = {
     return request<any, OptionType[]>({
       url: `${MENU_BASE_URL}/options`,
       method: "get",
-      params: { onlyParent: onlyParent },
+      params: { onlyParent },
     });
   },
 
@@ -66,7 +66,7 @@ const MenuAPI = {
     return request({
       url: `${MENU_BASE_URL}`,
       method: "post",
-      data: data,
+      data,
     });
   },
 
@@ -81,7 +81,7 @@ const MenuAPI = {
     return request({
       url: `${MENU_BASE_URL}/${id}`,
       method: "put",
-      data: data,
+      data,
     });
   },
 

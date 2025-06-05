@@ -1,6 +1,6 @@
 import { useDictStoreHook } from "@/store/modules/dict.store";
 import { useStomp } from "./useStomp";
-import { IMessage } from "@stomp/stompjs";
+import type { IMessage } from "@stomp/stompjs";
 import { ref } from "vue";
 
 // 字典消息类型
@@ -39,6 +39,9 @@ function createDictSyncHook() {
   // 消息回调函数列表
   const messageCallbacks = ref<DictMessageCallback[]>([]);
 
+  // 重试定时器
+  let retryTimer: any = null;
+
   /**
    * 注册字典消息回调
    * @param callback 回调函数
@@ -62,7 +65,7 @@ function createDictSyncHook() {
       // 检查是否配置了WebSocket端点
       const wsEndpoint = import.meta.env.VITE_APP_WS_ENDPOINT;
       if (!wsEndpoint) {
-        console.log("[WebSocket] 未配置WebSocket端点,跳过连接");
+        console.log("[DictSync] 未配置WebSocket端点,跳过连接");
         return;
       }
 
@@ -72,7 +75,7 @@ function createDictSyncHook() {
       // 设置字典订阅
       setupDictSubscription();
     } catch (error) {
-      console.error("[WebSocket] 初始化失败:", error);
+      console.error("[DictSync] 初始化失败:", error);
     }
   };
 
@@ -80,6 +83,12 @@ function createDictSyncHook() {
    * 关闭WebSocket
    */
   const closeWebSocket = () => {
+    // 清理重试定时器
+    if (retryTimer) {
+      clearTimeout(retryTimer);
+      retryTimer = null;
+    }
+
     // 取消所有订阅
     subscriptionIds.value.forEach((id) => {
       unsubscribe(id);
@@ -99,19 +108,32 @@ function createDictSyncHook() {
 
     // 防止重复订阅
     if (subscribedTopics.value.has(topic)) {
-      console.log(`跳过重复订阅: ${topic}`);
+      console.log(`[DictSync] 跳过重复订阅: ${topic}`);
       return;
     }
 
-    console.log(`开始尝试订阅字典主题: ${topic}`);
+    console.log(`[DictSync] 开始尝试订阅字典主题: ${topic}`);
 
     // 使用简化的重试逻辑，依赖useStomp的连接管理
     const attemptSubscribe = () => {
       if (!isConnected.value) {
-        console.log("等待WebSocket连接建立...");
+        console.log("[DictSync] 等待WebSocket连接建立...");
+        // 清理之前的定时器，防止重复
+        if (retryTimer) {
+          clearTimeout(retryTimer);
+        }
         // 10秒后再次尝试
-        setTimeout(attemptSubscribe, 10000);
+        retryTimer = setTimeout(() => {
+          retryTimer = null;
+          attemptSubscribe();
+        }, 10000);
         return;
+      }
+
+      // 清理重试定时器
+      if (retryTimer) {
+        clearTimeout(retryTimer);
+        retryTimer = null;
       }
 
       // 检查是否已订阅
@@ -119,7 +141,7 @@ function createDictSyncHook() {
         return;
       }
 
-      console.log(`连接已建立，开始订阅: ${topic}`);
+      console.log(`[DictSync] 连接已建立，开始订阅: ${topic}`);
 
       // 订阅字典更新
       const subId = subscribe(topic, (message: IMessage) => {
@@ -129,9 +151,9 @@ function createDictSyncHook() {
       if (subId) {
         subscriptionIds.value.push(subId);
         subscribedTopics.value.add(topic);
-        console.log(`字典主题订阅成功: ${topic}`);
+        console.log(`[DictSync] 字典主题订阅成功: ${topic}`);
       } else {
-        console.warn(`字典主题订阅失败: ${topic}`);
+        console.warn(`[DictSync] 字典主题订阅失败: ${topic}`);
       }
     };
 
@@ -148,7 +170,7 @@ function createDictSyncHook() {
 
     try {
       // 记录接收到的消息
-      console.log(`收到字典更新消息: ${message.body}`);
+      console.log(`[DictSync] 收到字典更新消息: ${message.body}`);
 
       // 尝试解析消息
       const parsedData = JSON.parse(message.body) as DictMessage;
@@ -158,21 +180,21 @@ function createDictSyncHook() {
 
       // 清除缓存，等待按需加载
       dictStore.removeDictItem(dictCode);
-      console.log(`字典缓存已清除: ${dictCode}`);
+      console.log(`[DictSync] 字典缓存已清除: ${dictCode}`);
 
       // 调用所有注册的回调函数
       messageCallbacks.value.forEach((callback) => {
         try {
           callback(parsedData);
         } catch (callbackError) {
-          console.error("[WebSocket] 回调执行失败:", callbackError);
+          console.error("[DictSync] 回调执行失败:", callbackError);
         }
       });
 
       // 显示提示消息
-      console.info(`字典 ${dictCode} 已变更，将在下次使用时自动加载`);
+      console.info(`[DictSync] 字典 ${dictCode} 已变更，将在下次使用时自动加载`);
     } catch (error) {
-      console.error("[WebSocket] 解析消息失败:", error);
+      console.error("[DictSync] 解析消息失败:", error);
     }
   };
 

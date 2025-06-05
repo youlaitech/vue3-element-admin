@@ -1,16 +1,16 @@
 <template>
   <!-- 菜单图标 -->
   <template v-if="icon">
-    <el-icon v-if="isElIcon" class="el-icon">
+    <el-icon v-if="isElIcon" class="menu-icon">
       <component :is="iconComponent" />
     </el-icon>
-    <div v-else :class="`i-svg:${icon}`" />
+    <div v-else :class="`i-svg:${icon}`" class="menu-icon" />
   </template>
   <template v-else>
-    <div class="i-svg:menu" />
+    <div class="i-svg:menu menu-icon" />
   </template>
   <!-- 菜单标题 -->
-  <span v-if="title" class="ml-1">{{ translateRouteTitle(title) }}</span>
+  <span v-if="title" class="menu-title ml-1">{{ translateRouteTitle(title) }}</span>
 </template>
 
 <script setup lang="ts">
@@ -26,28 +26,15 @@ const iconComponent = computed(() => props.icon?.replace("el-icon-", ""));
 </script>
 
 <style lang="scss" scoped>
-.el-icon {
-  width: 14px !important;
-  margin-right: 0 !important;
+.menu-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  font-size: 18px;
   color: currentcolor;
-}
-
-[class^="i-svg:"] {
-  width: 14px;
-  height: 14px;
-  color: currentcolor !important;
-}
-
-.hideSidebar {
-  .el-sub-menu,
-  .el-menu-item {
-    .el-icon {
-      margin-left: 20px;
-    }
-  }
-
-  [class^="i-svg:"] {
-    margin-left: 20px;
-  }
 }
 </style>

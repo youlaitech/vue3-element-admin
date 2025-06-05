@@ -1,3 +1,25 @@
+<template>
+  <div class="canvas-dom">
+    <h3>基于canvas实现的签名组件</h3>
+    <header>
+      <el-button type="primary" @click="handleSaveImg">保存为图片</el-button>
+      <el-button @click="handleToFile">保存到后端</el-button>
+      <el-button @click="handleClearSign">清空签名</el-button>
+    </header>
+    <canvas
+      ref="canvas"
+      height="200"
+      width="500"
+      @mousedown="onEventStart"
+      @mousemove.stop.prevent="onEventMove"
+      @mouseup="onEventEnd"
+      @touchstart="onEventStart"
+      @touchmove.stop.prevent="onEventMove"
+      @touchend="onEventEnd"
+    />
+    <img v-if="imgUrl" :src="imgUrl" alt="签名" />
+  </div>
+</template>
 <script setup lang="ts">
 import FileAPI from "@/api/file.api";
 
@@ -133,28 +155,6 @@ function paint(
   ctx.stroke();
 }
 </script>
-<template>
-  <div class="canvas-dom">
-    <h3>基于canvas实现的签名组件</h3>
-    <header>
-      <el-button type="primary" @click="handleSaveImg">保存为图片</el-button>
-      <el-button @click="handleToFile">保存到后端</el-button>
-      <el-button @click="handleClearSign">清空签名</el-button>
-    </header>
-    <canvas
-      ref="canvas"
-      height="200"
-      width="500"
-      @mousedown="onEventStart"
-      @mousemove.stop.prevent="onEventMove"
-      @mouseup="onEventEnd"
-      @touchstart="onEventStart"
-      @touchmove.stop.prevent="onEventMove"
-      @touchend="onEventEnd"
-    />
-    <img v-if="imgUrl" :src="imgUrl" alt="签名" />
-  </div>
-</template>
 <style scoped lang="scss">
 .canvas-dom {
   width: 100%;

@@ -2,8 +2,7 @@
 
 import eslint from "@eslint/js";
 import pluginVue from "eslint-plugin-vue";
-import pluginTypeScript from "@typescript-eslint/eslint-plugin";
-import parserTypeScript from "@typescript-eslint/parser";
+import * as typescriptEslint from "typescript-eslint";
 import vueParser from "vue-eslint-parser";
 import globals from "globals";
 import configPrettier from "eslint-config-prettier";
@@ -52,73 +51,106 @@ const elementPlusComponents = {
 };
 
 export default [
+  // 忽略文件配置
+  {
+    ignores: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/*.min.*",
+      "**/auto-imports.d.ts",
+      "**/components.d.ts",
+    ],
+  },
+
+  // 基础 JavaScript 配置
+  eslint.configs.recommended,
+
+  // Vue 推荐配置
+  ...pluginVue.configs["flat/recommended"],
+
+  // TypeScript 推荐配置
+  ...typescriptEslint.configs.recommended,
+
   // 全局配置
   {
     // 指定要检查的文件
-    files: ["**/*.js", "**/*.ts", "**/*.vue"],
-    ignores: ["node_modules/**", "dist/**", "build/**"],
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts,vue}"],
     languageOptions: {
-      ecmaVersion: 2022,
+      ecmaVersion: "latest",
       sourceType: "module",
       globals: {
         ...globals.browser, // 浏览器环境全局变量
         ...globals.node, // Node.js 环境全局变量
+        ...globals.es2022, // ES2022 全局对象
         ...autoImportGlobals, // 自动导入的 API 函数
         ...elementPlusComponents, // Element Plus 组件
         // 全局类型定义，解决 TypeScript 中定义但 ESLint 不识别的问题
         PageQuery: "readonly",
         PageResult: "readonly",
         OptionType: "readonly",
-        ResponseData: "readonly",
+        ApiResponse: "readonly",
         ExcelResult: "readonly",
         TagView: "readonly",
         AppSettings: "readonly",
         __APP_INFO__: "readonly",
       },
-      parser: parserTypeScript,
-      parserOptions: {
-        sourceType: "module",
-      },
+    },
+    plugins: {
+      vue: pluginVue,
+      "@typescript-eslint": typescriptEslint.plugin,
     },
     rules: {
-      // 全局规则
-      "no-unused-vars": [
-        "error",
-        {
-          vars: "all",
-          args: "after-used",
-          ignoreRestSiblings: true,
-          argsIgnorePattern: "^_", // 忽略以下划线开头的参数
-          varsIgnorePattern: "^[A-Z][A-Z0-9_]*$", // 忽略全大写的常量/枚举
-        },
-      ],
-      // 禁用未定义变量检查，TypeScript 已处理类型检查
+      // 基础规则
+      "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
+      "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+
+      // ES6+ 规则
+      "prefer-const": "error",
+      "no-var": "error",
+      "object-shorthand": "error",
+
+      // 最佳实践
+      eqeqeq: "off",
+      "no-multi-spaces": "error",
+      "no-multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
+
+      // 禁用与 TypeScript 冲突的规则
+      "no-unused-vars": "off",
       "no-undef": "off",
+      "no-redeclare": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
     },
   },
 
-  // 基础 JavaScript 配置
-  eslint.configs.recommended,
-
-  // Vue 配置
+  // Vue 文件特定配置
   {
     files: ["**/*.vue"],
-    plugins: {
-      vue: pluginVue,
-    },
     languageOptions: {
       parser: vueParser,
       parserOptions: {
-        ecmaVersion: 2022,
+        ecmaVersion: "latest",
         sourceType: "module",
-        parser: parserTypeScript,
+        parser: typescriptEslint.parser,
+        extraFileExtensions: [".vue"],
       },
     },
-    processor: pluginVue.processors[".vue"],
     rules: {
+      // Vue 规则
       "vue/multi-word-component-names": "off",
       "vue/no-v-html": "off",
       "vue/require-default-prop": "off",
+      "vue/require-explicit-emits": "error",
+      "vue/no-unused-vars": "error",
+      "vue/no-mutating-props": "off",
+      "vue/valid-v-for": "warn",
+      "vue/no-template-shadow": "warn",
+      "vue/return-in-computed-property": "warn",
+      "vue/block-order": [
+        "error",
+        {
+          order: ["template", "script", "style"],
+        },
+      ],
       "vue/html-self-closing": [
         "error",
         {
@@ -127,34 +159,45 @@ export default [
             normal: "never",
             component: "always",
           },
+          svg: "always",
+          math: "always",
         },
       ],
-      "vue/no-unused-vars": "off",
+      "vue/component-name-in-template-casing": ["error", "PascalCase"],
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 
-  // TypeScript 配置
+  // TypeScript 文件特定配置
   {
-    files: ["**/*.ts", "**/*.tsx", "**/*.vue"],
-    plugins: {
-      "@typescript-eslint": pluginTypeScript,
+    files: ["**/*.{ts,tsx,mts,cts}"],
+    languageOptions: {
+      parser: typescriptEslint.parser,
+      parserOptions: {
+        project: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
+      // TypeScript 规则
+      "@typescript-eslint/no-explicit-any": "off", // 允许使用any类型，方便开发
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          vars: "all",
-          args: "after-used",
-          ignoreRestSiblings: true,
-          argsIgnorePattern: "^_", // 忽略以下划线开头的参数
-          varsIgnorePattern: "^[A-Z][A-Z0-9_]*$", // 忽略全大写的常量/枚举
-        },
-      ],
+      "@typescript-eslint/no-unused-vars": "warn", // 降级为警告
+      "@typescript-eslint/no-unused-expressions": "warn", // 降级为警告
+      "@typescript-eslint/consistent-type-imports": "off", // 关闭强制使用type import
+      "@typescript-eslint/no-import-type-side-effects": "error",
+    },
+  },
+
+  // .d.ts 文件配置
+  {
+    files: ["**/*.d.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
 
@@ -164,13 +207,10 @@ export default [
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 
-  // Prettier 集成
-  {
-    rules: {
-      ...configPrettier.rules,
-    },
-  },
+  // Prettier 集成（必须放在最后）
+  configPrettier,
 ];

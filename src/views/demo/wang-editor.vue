@@ -1,10 +1,4 @@
 <!-- wangEditor富文本编辑器示例 -->
-<script setup lang="ts">
-import WangEditor from "@/components/WangEditor/index.vue";
-
-const value = ref("初始化内容");
-</script>
-
 <template>
   <div class="app-container">
     <el-link
@@ -22,3 +16,9 @@ const value = ref("初始化内容");
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import WangEditor from "@/components/WangEditor/index.vue";
+
+const value = ref("初始化内容");
+</script>

@@ -22,6 +22,8 @@ const pathSrc = resolve(__dirname, "src");
 // Vite配置  https://cn.vitejs.dev/config
 export default defineConfig(({ mode }: ConfigEnv) => {
   const env = loadEnv(mode, process.cwd());
+  const isProduction = mode === "production";
+
   return {
     resolve: {
       alias: {
@@ -189,17 +191,20 @@ export default defineConfig(({ mode }: ConfigEnv) => {
     // 构建配置
     build: {
       chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告
-      minify: "terser", // Vite 2.6.x 以上需要配置 minify: "terser", terserOptions 才能生效
-      terserOptions: {
-        compress: {
-          keep_infinity: true, // 防止 Infinity 被压缩成 1/0，这可能会导致 Chrome 上的性能问题
-          drop_console: true, // 生产环境去除 console
-          drop_debugger: true, // 生产环境去除 debugger
-        },
-        format: {
-          comments: false, // 删除注释
-        },
-      },
+      minify: isProduction ? "terser" : false, // 只在生产环境启用压缩
+      terserOptions: isProduction
+        ? {
+            compress: {
+              keep_infinity: true, // 防止 Infinity 被压缩成 1/0，这可能会导致 Chrome 上的性能问题
+              drop_console: true, // 生产环境去除 console.log, console.warn, console.error 等
+              drop_debugger: true, // 生产环境去除 debugger
+              pure_funcs: ["console.log", "console.info"], // 移除指定的函数调用
+            },
+            format: {
+              comments: false, // 删除注释
+            },
+          }
+        : {},
       rollupOptions: {
         output: {
           // manualChunks: {

@@ -1,6 +1,7 @@
 @forward "element-plus/theme-chalk/src/common/var.scss" with (
   $colors: (
     "primary": (
+      // 默认主题色 - 修改此值时需同步修改 src/settings.ts 中的 themeColor
       "base": #4080ff,
     ),
     "success": (

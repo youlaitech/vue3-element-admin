@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import defaultSettings from "@/settings";
+import { defaultSettings } from "@/settings";
 import logo from "@/assets/logo.png";
 
 defineProps({
@@ -30,24 +30,46 @@ defineProps({
   background-color: $sidebar-logo-background;
 
   .title {
-    flex-shrink: 0; /* 防止容器在空间不足时缩小 */
+    flex-shrink: 0;
     margin-left: 10px;
     font-size: 14px;
     font-weight: bold;
     color: $sidebar-logo-text-color;
   }
 }
+</style>
 
+<style lang="scss">
+// 顶部布局和混合布局的特殊处理
 .layout-top,
 .layout-mix {
   .logo {
-    width: $sidebar-width;
+    background-color: transparent !important;
+
+    .title {
+      color: var(--menu-text);
+    }
+  }
+}
+
+// 宽屏时：openSidebar 状态下显示完整Logo+文字
+.openSidebar {
+  &.layout-top .layout__header-left .logo,
+  &.layout-mix .layout__header-logo .logo {
+    width: $sidebar-width; // 210px，显示logo+文字
+  }
+}
+
+// 窄屏时：hideSidebar 状态下只显示Logo图标
+.hideSidebar {
+  &.layout-top .layout__header-left .logo,
+  &.layout-mix .layout__header-logo .logo {
+    width: $sidebar-width-collapsed; // 54px，只显示logo
   }
 
-  &.hideSidebar {
-    .logo {
-      width: $sidebar-width-collapsed;
-    }
+  // 隐藏文字，只显示图标
+  .logo .title {
+    display: none;
   }
 }
 </style>

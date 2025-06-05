@@ -25,7 +25,7 @@ const ConfigAPI = {
     return request({
       url: `${CONFIG_BASE_URL}`,
       method: "post",
-      data: data,
+      data,
     });
   },
 
@@ -34,7 +34,7 @@ const ConfigAPI = {
     return request({
       url: `${CONFIG_BASE_URL}/${id}`,
       method: "put",
-      data: data,
+      data,
     });
   },
 

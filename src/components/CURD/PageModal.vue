@@ -42,6 +42,7 @@
                       <component
                         :is="childrenMap.get(item.type)"
                         v-for="opt in item.options"
+                        :key="opt.value"
                         :label="opt.label"
                         :value="opt.value"
                       ></component>
@@ -104,6 +105,7 @@
                         <component
                           :is="childrenMap.get(item.type)"
                           v-for="opt in item.options"
+                          :key="opt.value"
                           :label="opt.label"
                           :value="opt.value"
                         ></component>
@@ -224,7 +226,9 @@ const handleSubmit = useThrottleFn(() => {
 
 onMounted(() => {
   formItems.forEach((item) => {
-    item.initFn && item.initFn(item);
+    if (item.initFn) {
+      item.initFn(item);
+    }
     formRules[item.prop] = item?.rules ?? [];
     props.modalConfig.form = { labelWidth: "auto", ...props.modalConfig?.form };
 

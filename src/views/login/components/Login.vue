@@ -86,22 +86,26 @@
     </div>
 
     <!-- 第三方登录 -->
-    <el-divider>
-      <el-text size="small">{{ t("login.otherLoginMethods") }}</el-text>
-    </el-divider>
-    <div class="flex-center gap-x-5 w-full text-[var(--el-text-color-secondary)]">
-      <CommonWrapper>
-        <div text-20px class="i-svg:wechat" />
-      </CommonWrapper>
-      <CommonWrapper>
-        <div text-20px cursor-pointer class="i-svg:qq" />
-      </CommonWrapper>
-      <CommonWrapper>
-        <div text-20px cursor-pointer class="i-svg:github" />
-      </CommonWrapper>
-      <CommonWrapper>
-        <div text-20px cursor-pointer class="i-svg:gitee" />
-      </CommonWrapper>
+    <div class="third-party-login">
+      <div class="divider-container">
+        <div class="divider-line"></div>
+        <span class="divider-text">{{ t("login.otherLoginMethods") }}</span>
+        <div class="divider-line"></div>
+      </div>
+      <div class="flex-center gap-x-5 w-full text-[var(--el-text-color-secondary)]">
+        <CommonWrapper>
+          <div text-20px class="i-svg:wechat" />
+        </CommonWrapper>
+        <CommonWrapper>
+          <div text-20px cursor-pointer class="i-svg:qq" />
+        </CommonWrapper>
+        <CommonWrapper>
+          <div text-20px cursor-pointer class="i-svg:github" />
+        </CommonWrapper>
+        <CommonWrapper>
+          <div text-20px cursor-pointer class="i-svg:gitee" />
+        </CommonWrapper>
+      </div>
     </div>
   </div>
 </template>
@@ -122,9 +126,12 @@ const route = useRoute();
 onMounted(() => getCaptcha());
 
 const loginFormRef = ref<FormInstance>();
-const loading = ref(false); // 按钮 loading 状态
-const isCapsLock = ref(false); // 是否大写锁定
-const captchaBase64 = ref(); // 验证码图片Base64字符串
+const loading = ref(false);
+// 是否大写锁定
+const isCapsLock = ref(false);
+// 验证码图片Base64字符串
+const captchaBase64 = ref();
+// 记住我
 const rememberMe = Auth.getRememberMe();
 
 const loginFormData = ref<LoginFormData>({
@@ -132,7 +139,7 @@ const loginFormData = ref<LoginFormData>({
   password: "123456",
   captchaKey: "",
   captchaCode: "",
-  rememberMe: rememberMe,
+  rememberMe,
 });
 
 const loginRules = computed(() => {
@@ -178,7 +185,9 @@ function getCaptcha() {
     .finally(() => (codeLoading.value = false));
 }
 
-// 登录提交处理
+/**
+ * 登录提交
+ */
 async function handleLoginSubmit() {
   try {
     // 1. 表单验证
@@ -190,12 +199,16 @@ async function handleLoginSubmit() {
     // 2. 执行登录
     await userStore.login(loginFormData.value);
 
-    // 3. 获取用户信息
+    // 3. 获取用户信息（包含用户角色，用于路由生成）
     await userStore.getUserInfo();
 
-    // 4. 解析并跳转目标地址
+    // 4. 登录成功，让路由守卫处理跳转逻辑
+    // 解析目标地址，但不直接跳转
     const redirect = resolveRedirectTarget(route.query);
-    await router.push(redirect);
+    console.log("🎉 Login successful, target redirect:", redirect);
+
+    // 通过替换当前路由触发路由守卫，让守卫处理后续的路由生成和跳转
+    await router.replace(redirect);
 
     // 5. 记住我功能已实现，根据用户选择决定token的存储方式:
     // - 选中"记住我": token存储在localStorage中，浏览器关闭后仍然有效
@@ -211,8 +224,9 @@ async function handleLoginSubmit() {
 
 /**
  * 解析重定向目标
+ *
  * @param query 路由查询参数
- * @returns 标准化后的路由地址对象
+ * @returns 标准化后的路由地址
  */
 function resolveRedirectTarget(query: LocationQuery): RouteLocationRaw {
   // 默认跳转路径
@@ -247,3 +261,26 @@ function toOtherForm(type: "register" | "resetPwd") {
   emit("update:modelValue", type);
 }
 </script>
+
+<style lang="scss" scoped>
+.third-party-login {
+  .divider-container {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--el-border-color-light), transparent);
+    }
+
+    .divider-text {
+      padding: 0 16px;
+      font-size: 12px;
+      color: var(--el-text-color-regular);
+      white-space: nowrap;
+    }
+  }
+}
+</style>
