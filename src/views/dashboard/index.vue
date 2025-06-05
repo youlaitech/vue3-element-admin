@@ -395,6 +395,14 @@ const userStore = useUserStore();
 const vesionList = ref<VersionItem[]>([
   {
     id: "1",
+    title: "v3.0.0",
+    date: "2025-06-06 00:00:00",
+    content: "布局重写，代码规范重构。",
+    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
+    tag: "里程碑",
+  },
+  {
+    id: "2",
     title: "v2.4.0",
     date: "2021-09-01 00:00:00",
     content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
@@ -402,15 +410,7 @@ const vesionList = ref<VersionItem[]>([
     tag: "里程碑",
   },
   {
-    id: "1",
-    title: "v2.4.0",
-    date: "2021-09-01 00:00:00",
-    content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
-    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
-    tag: "里程碑",
-  },
-  {
-    id: "1",
+    id: "3",
     title: "v2.4.0",
     date: "2021-09-01 00:00:00",
     content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
