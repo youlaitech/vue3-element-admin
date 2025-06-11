@@ -1,7 +1,6 @@
 import { useDictSync } from "@/composables/useDictSync";
 import { Auth } from "@/utils/auth";
-import { useUserStore } from "@/store";
-import { watch } from "vue";
+// 不直接导入 store 或 userStore
 
 // 全局 WebSocket 实例管理
 const websocketInstances = new Map<string, any>();
@@ -73,9 +72,6 @@ export function setupWebSocket() {
       // 在窗口关闭前断开WebSocket连接
       window.addEventListener("beforeunload", handleWindowClose);
 
-      // 监听用户注销事件
-      watchUserLogout();
-
       console.log("[WebSocketPlugin] WebSocket服务初始化完成");
       isInitialized = true;
     }, 1000); // 延迟1秒初始化
@@ -90,26 +86,6 @@ export function setupWebSocket() {
 function handleWindowClose() {
   console.log("[WebSocketPlugin] 窗口即将关闭，断开WebSocket连接");
   cleanupWebSocket();
-}
-
-/**
- * 监听用户注销
- */
-function watchUserLogout() {
-  const userStore = useUserStore();
-
-  // 监听用户信息变化，当用户信息被清空时断开连接
-  watch(
-    () => userStore.userInfo,
-    (newUserInfo, oldUserInfo) => {
-      // 从有用户信息变为无用户信息，说明用户注销了
-      if (oldUserInfo?.username && !newUserInfo?.username) {
-        console.log("[WebSocketPlugin] 检测到用户注销，断开WebSocket连接");
-        cleanupWebSocket();
-      }
-    },
-    { deep: true }
-  );
 }
 
 /**

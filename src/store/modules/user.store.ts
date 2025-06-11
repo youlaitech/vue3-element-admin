@@ -7,6 +7,7 @@ import { Auth } from "@/utils/auth";
 import { usePermissionStoreHook } from "@/store/modules/permission.store";
 import { useDictStoreHook } from "@/store/modules/dict.store";
 import { useTagsViewStore } from "@/store";
+import { cleanupWebSocket } from "@/plugins/websocket";
 
 export const useUserStore = defineStore("user", () => {
   const userInfo = useStorage<UserInfo>("userInfo", {} as UserInfo);
@@ -91,15 +92,8 @@ export const useUserStore = defineStore("user", () => {
     useTagsViewStore().delAllViews();
 
     // 3. 清理 WebSocket 连接
-    // 动态导入避免循环依赖
-    import("@/plugins/websocket")
-      .then(({ cleanupWebSocket }) => {
-        cleanupWebSocket();
-        console.log("[UserStore] WebSocket connections cleaned up");
-      })
-      .catch((error) => {
-        console.error("[UserStore] Failed to cleanup WebSocket:", error);
-      });
+    cleanupWebSocket();
+    console.log("[UserStore] WebSocket connections cleaned up");
 
     return Promise.resolve();
   }
