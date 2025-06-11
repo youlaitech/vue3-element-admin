@@ -1,5 +1,8 @@
 @use "./reset";
 @use "./element-plus";
+// Vxe Table
+@use "./vxe-table";
+@import url("./vxe-table.css");
 
 .app-container {
   padding: 15px;
