@@ -69,7 +69,8 @@
     "vue": "^3.5.16",
     "vue-draggable-plus": "^0.6.0",
     "vue-i18n": "^11.1.5",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vxe-table": "~4.6.25"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

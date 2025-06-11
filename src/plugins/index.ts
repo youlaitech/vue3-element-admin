@@ -8,6 +8,7 @@ import { setupElIcons } from "./icons";
 import { setupPermission } from "./permission";
 import { setupWebSocket } from "./websocket";
 import { InstallCodeMirror } from "codemirror-editor-vue3";
+import { setupVxeTable } from "./vxeTable";
 
 export default {
   install(app: App<Element>) {
@@ -25,6 +26,8 @@ export default {
     setupPermission();
     // WebSocket服务
     setupWebSocket();
+    // vxe-table
+    setupVxeTable(app);
     // 注册 CodeMirror
     app.use(InstallCodeMirror);
   },

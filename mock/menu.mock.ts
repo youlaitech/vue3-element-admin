@@ -473,6 +473,19 @@ export default defineMock([
           },
           children: [
             {
+              path: "vxe-table",
+              component: "demo/vxe-table/index",
+              name: "VxeTable",
+              meta: {
+                title: "VxeTable",
+                icon: "el-icon-MagicStick",
+                hidden: false,
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
+            {
               path: "icon-demo",
               component: "demo/icons",
               name: "IconDemo",
