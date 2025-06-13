@@ -4,21 +4,9 @@
     ref="menuRef"
     :default-active="activeMenuIndex"
     :collapse="!appStore.sidebar.opened"
-    :background-color="
-      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
-        ? variables['menu-background']
-        : undefined
-    "
-    :text-color="
-      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
-        ? variables['menu-text']
-        : undefined
-    "
-    :active-text-color="
-      theme === 'dark' || sidebarColorScheme === SidebarColor.CLASSIC_BLUE
-        ? variables['menu-active-text']
-        : undefined
-    "
+    :background-color="menuThemeProps.backgroundColor"
+    :text-color="menuThemeProps.textColor"
+    :active-text-color="menuThemeProps.activeTextColor"
     :popper-effect="theme"
     :unique-opened="false"
     :collapse-transition="false"
@@ -77,6 +65,18 @@ const theme = computed(() => settingsStore.theme);
 
 // 获取浅色主题下的侧边栏配色方案
 const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
+
+// 菜单主题属性
+const menuThemeProps = computed(() => {
+  const isDarkOrClassicBlue =
+    theme.value === "dark" || sidebarColorScheme.value === SidebarColor.CLASSIC_BLUE;
+
+  return {
+    backgroundColor: isDarkOrClassicBlue ? variables["menu-background"] : undefined,
+    textColor: isDarkOrClassicBlue ? variables["menu-text"] : undefined,
+    activeTextColor: isDarkOrClassicBlue ? variables["menu-active-text"] : undefined,
+  };
+});
 
 // 计算当前激活的菜单项
 const activeMenuIndex = computed(() => {
@@ -228,34 +228,41 @@ watch(
 function updateParentMenuStyles() {
   if (!menuRef.value?.$el) return;
 
-  const menuEl = menuRef.value.$el as HTMLElement;
+  // 使用 nextTick 确保 DOM 已更新
+  nextTick(() => {
+    try {
+      const menuEl = menuRef.value?.$el as HTMLElement;
+      if (!menuEl) return;
 
-  // 移除所有现有的 has-active-child 类
-  const allSubMenus = menuEl.querySelectorAll(".el-sub-menu");
-  allSubMenus.forEach((subMenu) => {
-    subMenu.classList.remove("has-active-child");
-  });
+      // 移除所有现有的 has-active-child 类
+      const allSubMenus = menuEl.querySelectorAll(".el-sub-menu");
+      allSubMenus.forEach((subMenu) => {
+        subMenu.classList.remove("has-active-child");
+      });
 
-  // 查找当前激活的菜单项
-  const activeMenuItem = menuEl.querySelector(".el-menu-item.is-active");
-  if (activeMenuItem) {
-    // 向上查找父级 el-sub-menu 元素
-    let parent = activeMenuItem.parentElement;
-    while (parent && parent !== menuEl) {
-      if (parent.classList.contains("el-sub-menu")) {
-        parent.classList.add("has-active-child");
+      // 查找当前激活的菜单项
+      const activeMenuItem = menuEl.querySelector(".el-menu-item.is-active");
+      if (activeMenuItem) {
+        // 向上查找父级 el-sub-menu 元素
+        let parent = activeMenuItem.parentElement;
+        while (parent && parent !== menuEl) {
+          if (parent.classList.contains("el-sub-menu")) {
+            parent.classList.add("has-active-child");
+          }
+          parent = parent.parentElement;
+        }
       }
-      parent = parent.parentElement;
+    } catch (error) {
+      console.error("Error updating parent menu styles:", error);
     }
-  }
+  });
 }
 
 /**
  * 组件挂载后立即更新父菜单样式
  */
 onMounted(() => {
-  nextTick(() => {
-    updateParentMenuStyles();
-  });
+  // 确保在组件挂载后更新样式，不依赖于异步操作
+  updateParentMenuStyles();
 });
 </script>
