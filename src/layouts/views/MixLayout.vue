@@ -26,7 +26,7 @@
       <div class="layout__sidebar--left" :class="{ 'layout__sidebar--collapsed': !isSidebarOpen }">
         <el-scrollbar>
           <el-menu
-            :default-active="activeMenu"
+            :default-active="activeLeftMenuPath"
             :collapse="!isSidebarOpen"
             :collapse-transition="false"
             :unique-opened="false"
@@ -71,6 +71,9 @@ import AppMain from "../components/AppMain/index.vue";
 import MenuItem from "../components/Menu/components/MenuItem.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
 import variables from "@/styles/variables.module.scss";
+import { isExternal } from "@/utils/index";
+import { computed, watch } from "vue";
+import { useAppStore, usePermissionStore } from "@/store";
 
 const route = useRoute();
 
@@ -87,7 +90,7 @@ const { width } = useWindowSize();
 const isLogoCollapsed = computed(() => width.value < 768);
 
 // 当前激活的菜单
-const activeMenu = computed(() => {
+const activeLeftMenuPath = computed(() => {
   const { meta, path } = route;
   // 如果设置了activeMenu，则使用
   if (meta?.activeMenu && typeof meta.activeMenu === "string") {
@@ -101,13 +104,49 @@ const activeMenu = computed(() => {
  * 所以需要拼接顶级菜单路径
  */
 function resolvePath(routePath: string) {
-  // 如果已经是绝对路径，直接返回
+  if (isExternal(routePath)) {
+    return routePath;
+  }
+
   if (routePath.startsWith("/")) {
     return activeTopMenuPath.value + routePath;
   }
-  // 否则拼接
   return `${activeTopMenuPath.value}/${routePath}`;
 }
+
+// 监听路由变化，确保左侧菜单能随TagsView切换而正确激活
+watch(
+  () => route.path,
+  (newPath) => {
+    console.log("📍 Route changed in MixLayout:", newPath);
+
+    // 获取顶级路径
+    const topMenuPath =
+      newPath.split("/").filter(Boolean).length > 1 ? newPath.match(/^\/[^/]+/)?.[0] || "/" : "/";
+
+    // 如果当前路径属于当前激活的顶部菜单
+    if (newPath.startsWith(activeTopMenuPath.value)) {
+      console.log("📍 Route is under active top menu, ensuring menu item is activated");
+    }
+    // 如果路径改变了顶级菜单，确保顶部菜单和左侧菜单都更新
+    else if (topMenuPath !== activeTopMenuPath.value) {
+      console.log(
+        "📍 Top menu changed, updating active menu from:",
+        activeTopMenuPath.value,
+        "to:",
+        topMenuPath
+      );
+
+      // 主动更新顶部菜单和左侧菜单
+      const appStore = useAppStore();
+      const permissionStore = usePermissionStore();
+
+      appStore.activeTopMenu(topMenuPath);
+      permissionStore.updateSideMenu(topMenuPath);
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>

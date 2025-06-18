@@ -90,9 +90,25 @@ const processedTopMenus = computed(() => {
  * @param routePath 点击的菜单路径
  */
 const handleMenuSelect = (routePath: string) => {
-  appStore.activeTopMenu(routePath); // 设置激活的顶部菜单
-  permissionStore.updateSideMenu(routePath); // 更新左侧菜单
-  navigateToFirstLeftMenu(permissionStore.sideMenuRoutes); // 跳转到左侧第一个菜单
+  updateMenuState(routePath);
+};
+
+/**
+ * 更新菜单状态 - 同时处理点击和路由变化情况
+ * @param topMenuPath 顶级菜单路径
+ * @param skipNavigation 是否跳过导航（路由变化时为true，点击菜单时为false）
+ */
+const updateMenuState = (topMenuPath: string, skipNavigation = false) => {
+  // 不相同才更新，避免重复操作
+  if (topMenuPath !== appStore.activeTopMenuPath) {
+    appStore.activeTopMenu(topMenuPath); // 设置激活的顶部菜单
+    permissionStore.updateSideMenu(topMenuPath); // 更新左侧菜单
+  }
+
+  // 如果是点击菜单且状态已变更，才进行导航
+  if (!skipNavigation) {
+    navigateToFirstLeftMenu(permissionStore.sideMenuRoutes); // 跳转到左侧第一个菜单
+  }
 };
 
 /**
@@ -131,6 +147,21 @@ onMounted(() => {
   appStore.activeTopMenu(currentTopMenuPath); // 设置激活的顶部菜单
   permissionStore.updateSideMenu(currentTopMenuPath); // 更新左侧菜单
 });
+
+// 监听路由变化，同步更新顶部菜单和左侧菜单的激活状态
+watch(
+  () => router.currentRoute.value.path,
+  (newPath) => {
+    if (newPath) {
+      // 提取顶级路径
+      const topMenuPath =
+        newPath.split("/").filter(Boolean).length > 1 ? newPath.match(/^\/[^/]+/)?.[0] || "/" : "/";
+
+      // 使用公共方法更新菜单状态，但跳过导航（因为路由已经变化）
+      updateMenuState(topMenuPath, true);
+    }
+  }
+);
 </script>
 
 <style lang="scss" scoped>
