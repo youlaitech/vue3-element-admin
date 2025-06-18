@@ -58,16 +58,15 @@
 import { useRoute, useRouter, type RouteRecordRaw } from "vue-router";
 import { resolve } from "path-browserify";
 import { translateRouteTitle } from "@/utils/i18n";
-import { usePermissionStore, useTagsViewStore, useSettingsStore, useAppStore } from "@/store";
+import { usePermissionStore, useTagsViewStore, useSettingsStore } from "@/store";
+import { LayoutMode } from "@/enums";
 
-// ========================= 类型定义 =========================
 interface ContextMenu {
   visible: boolean;
   x: number;
   y: number;
 }
 
-// ========================= 组合式 API =========================
 const instance = getCurrentInstance();
 const proxy = instance?.proxy;
 const router = useRouter();
@@ -77,9 +76,7 @@ const route = useRoute();
 const permissionStore = usePermissionStore();
 const tagsViewStore = useTagsViewStore();
 const settingsStore = useSettingsStore();
-const appStore = useAppStore();
 
-// ========================= 响应式数据 =========================
 const { visitedViews } = storeToRefs(tagsViewStore);
 const layout = computed(() => settingsStore.layout);
 
@@ -96,7 +93,6 @@ const contextMenu = reactive<ContextMenu>({
 // 滚动条引用
 const scrollbarRef = ref();
 
-// ========================= 计算属性 =========================
 // 路由映射缓存，提升查找性能
 const routePathMap = computed(() => {
   const map = new Map<string, TagView>();
@@ -121,7 +117,6 @@ const isLastView = computed(() => {
   return selectedTag.value.fullPath === visitedViews.value[visitedViews.value.length - 1]?.fullPath;
 });
 
-// ========================= 核心函数 =========================
 /**
  * 递归提取固定标签
  */
@@ -156,45 +151,6 @@ const extractAffixTags = (routes: RouteRecordRaw[], basePath = "/"): TagView[] =
 };
 
 /**
- * 查找路由的顶级父节点
- */
-const findTopLevelParent = (
-  routes: RouteRecordRaw[],
-  targetName: string
-): RouteRecordRaw | null => {
-  // 构建父子关系映射
-  const parentMap = new Map<string, RouteRecordRaw>();
-
-  const buildMap = (routeList: RouteRecordRaw[], parent: RouteRecordRaw | null = null) => {
-    routeList.forEach((route) => {
-      if (parent) {
-        parentMap.set(route.name as string, parent);
-      }
-
-      if (route.children?.length) {
-        buildMap(route.children, route);
-      }
-    });
-  };
-
-  buildMap(routes);
-
-  // 向上查找顶级父节点
-  let current = parentMap.get(targetName);
-  let topLevel = current;
-
-  while (current) {
-    const parent = parentMap.get(current.name as string);
-    if (!parent) break;
-    topLevel = current;
-    current = parent;
-  }
-
-  return topLevel || null;
-};
-
-// ========================= 标签操作 =========================
-/**
  * 初始化固定标签
  */
 const initAffixTags = () => {
@@ -225,7 +181,7 @@ const addCurrentTag = () => {
 };
 
 /**
- * 更新当前标签（优化版本）
+ * 更新当前标签
  */
 const updateCurrentTag = () => {
   nextTick(() => {
@@ -245,7 +201,6 @@ const updateCurrentTag = () => {
   });
 };
 
-// ========================= 事件处理 =========================
 /**
  * 处理中键点击
  */
@@ -270,7 +225,8 @@ const openContextMenu = (tag: TagView, event: MouseEvent) => {
   const leftPosition = event.clientX - offsetLeft + MENU_MARGIN;
 
   contextMenu.x = Math.min(leftPosition, maxLeft);
-  contextMenu.y = layout.value === "mix" ? event.clientY - 50 : event.clientY;
+  // 混合模式下，需要减去顶部菜单(fixed)的高度
+  contextMenu.y = layout.value === LayoutMode.MIX ? event.clientY - 50 : event.clientY;
   contextMenu.visible = true;
 
   selectedTag.value = tag;
@@ -301,7 +257,6 @@ const handleScroll = (event: WheelEvent) => {
   scrollbarRef.value.setScrollLeft(newScrollLeft);
 };
 
-// ========================= 标签管理 =========================
 /**
  * 刷新标签
  */
@@ -378,20 +333,7 @@ const closeAllTags = (tag: TagView | null) => {
   });
 };
 
-// ========================= 混合布局处理 =========================
-/**
- * 更新顶部菜单激活状态（混合布局）
- */
-const updateTopMenuActive = (routeName: string) => {
-  if (layout.value !== "mix") return;
-
-  const topParent = findTopLevelParent(permissionStore.routes, routeName);
-  if (topParent && appStore.activeTopMenuPath !== topParent.path) {
-    appStore.activeTopMenu(topParent.path);
-  }
-};
-
-// ========================= 组合式函数：右键菜单管理 =========================
+// 右键菜单管理
 const useContextMenuManager = () => {
   const handleOutsideClick = () => {
     closeContextMenu();
@@ -411,7 +353,6 @@ const useContextMenuManager = () => {
   });
 };
 
-// ========================= 监听器和生命周期 =========================
 // 监听路由变化
 watch(
   route,
@@ -420,17 +361,6 @@ watch(
     updateCurrentTag();
   },
   { immediate: true }
-);
-
-// 监听路由名变化（混合布局）
-watch(
-  () => route.name,
-  (newRouteName) => {
-    if (newRouteName) {
-      updateTopMenuActive(newRouteName as string);
-    }
-  },
-  { deep: true }
 );
 
 // 初始化

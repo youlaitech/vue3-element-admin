@@ -525,8 +525,6 @@ const fetchVisitTrendData = () => {
  * @param data - 访问趋势数据
  */
 const updateVisitTrendChartOptions = (data: VisitTrendVO) => {
-  console.log("Updating visit trend chart options");
-
   visitTrendChartOptions.value = {
     tooltip: {
       trigger: "axis",
@@ -610,8 +608,7 @@ const computeGrowthRateClass = (growthRate?: number): string => {
 // 监听访问趋势日期范围的变化，重新获取趋势数据
 watch(
   () => visitTrendDateRange.value,
-  (newVal) => {
-    console.log("Visit trend date range changed:", newVal);
+  () => {
     fetchVisitTrendData();
   },
   { immediate: true }

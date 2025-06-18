@@ -149,7 +149,7 @@ import { DocumentCopy, RefreshLeft, Check } from "@element-plus/icons-vue";
 
 const { t } = useI18n();
 import { LayoutMode, SidebarColor, ThemeMode } from "@/enums";
-import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
+import { useSettingsStore } from "@/store";
 import { themeColorPresets } from "@/settings";
 
 // 按钮图标
@@ -176,10 +176,7 @@ const layoutOptions: LayoutOption[] = [
 // 使用统一的颜色预设配置
 const colorPresets = themeColorPresets;
 
-const route = useRoute();
-const appStore = useAppStore();
 const settingsStore = useSettingsStore();
-const permissionStore = usePermissionStore();
 
 const isDark = ref<boolean>(settingsStore.theme === ThemeMode.DARK);
 const sidebarColor = ref(settingsStore.sidebarColorScheme);
@@ -221,13 +218,6 @@ const handleLayoutChange = (layout: LayoutMode) => {
   if (settingsStore.layout === layout) return;
 
   settingsStore.updateLayout(layout);
-
-  if (layout === LayoutMode.MIX && route.name) {
-    const topLevelRoute = findTopLevelRoute(permissionStore.routes, route.name as string);
-    if (appStore.activeTopMenuPath !== topLevelRoute.path) {
-      appStore.activeTopMenu(topLevelRoute.path);
-    }
-  }
 };
 
 /**
@@ -312,39 +302,6 @@ const generateSettingsCode = (): string => {
   sidebarColorScheme: ${settings.sidebarColorScheme},
 };`;
 };
-
-/**
- * 查找路由的顶层父路由
- *
- * @param tree 树形数据
- * @param findName 查找的名称
- */
-function findTopLevelRoute(tree: any[], findName: string) {
-  const parentMap: any = {};
-
-  function buildParentMap(node: any, parent: any) {
-    parentMap[node.name] = parent;
-
-    if (node.children) {
-      for (let i = 0; i < node.children.length; i++) {
-        buildParentMap(node.children[i], node);
-      }
-    }
-  }
-
-  for (let i = 0; i < tree.length; i++) {
-    buildParentMap(tree[i], null);
-  }
-
-  let currentNode = parentMap[findName];
-  while (currentNode) {
-    if (!parentMap[currentNode.name]) {
-      return currentNode;
-    }
-    currentNode = parentMap[currentNode.name];
-  }
-  return null;
-}
 
 /**
  * 关闭抽屉前的回调

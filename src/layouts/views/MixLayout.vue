@@ -108,8 +108,6 @@ function resolvePath(routePath: string) {
   // 否则拼接
   return `${activeTopMenuPath.value}/${routePath}`;
 }
-
-console.log("🎨 MixLayout rendered");
 </script>
 
 <style lang="scss" scoped>

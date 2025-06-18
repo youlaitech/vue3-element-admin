@@ -65,7 +65,7 @@ export function useStomp(options: UseStompOptions = {}) {
 
     // 检查WebSocket端点是否配置
     if (!brokerURL.value) {
-      console.error("WebSocket连接失败: 未配置WebSocket端点URL");
+      console.warn("WebSocket连接失败: 未配置WebSocket端点URL");
       return;
     }
 
@@ -74,7 +74,7 @@ export function useStomp(options: UseStompOptions = {}) {
 
     // 检查令牌是否为空，如果为空则不进行连接
     if (!currentToken) {
-      console.error("WebSocket连接失败：授权令牌为空，请先登录");
+      console.warn("WebSocket连接失败：授权令牌为空，请先登录");
       return;
     }
 

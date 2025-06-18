@@ -31,28 +31,10 @@ export function useLayoutMenu() {
     return path;
   });
 
-  // 监听顶部菜单路径变化，更新侧边菜单
-  watch(
-    () => activeTopMenuPath.value,
-    (newPath) => {
-      permissionStore.updateSideMenu(newPath);
-    },
-    { immediate: true }
-  );
-
-  /**
-   * 处理顶部菜单点击
-   * @param path 菜单路径
-   */
-  function handleTopMenuClick(path: string) {
-    appStore.activeTopMenu(path);
-  }
-
   return {
     routes,
     sideMenuRoutes,
     activeMenu,
     activeTopMenuPath,
-    handleTopMenuClick,
   };
 }

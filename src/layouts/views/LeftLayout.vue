@@ -38,14 +38,10 @@ import AppMain from "../components/AppMain/index.vue";
 import BasicMenu from "../components/Menu/BasicMenu.vue";
 
 // 布局相关参数
-const { isShowTagsView, isShowLogo, isSidebarOpen, isMobile } = useLayout();
+const { isShowTagsView, isShowLogo, isSidebarOpen } = useLayout();
 
 // 菜单相关
 const { routes } = useLayoutMenu();
-
-// 添加调试日志
-console.log("🔍 LeftLayout - isSidebarOpen:", isSidebarOpen.value);
-console.log("🔍 LeftLayout - isMobile:", isMobile.value);
 </script>
 
 <style lang="scss" scoped>

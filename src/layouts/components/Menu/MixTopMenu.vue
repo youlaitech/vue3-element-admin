@@ -85,47 +85,15 @@ const processedTopMenus = computed(() => {
   });
 });
 
-const route = useRoute();
-
-// 获取当前路由路径的顶部菜单路径
-const getActiveTopMenuPath = () => {
-  const pathSegments = route.path.split("/").filter(Boolean);
-  return pathSegments.length > 0 ? `/${pathSegments[0]}` : "/";
-};
-
-// 监听路由变化，更新活跃的顶部菜单
-watch(
-  () => route.path,
-  () => {
-    const newActiveTopMenuPath = getActiveTopMenuPath();
-    if (newActiveTopMenuPath !== appStore.activeTopMenuPath) {
-      appStore.activeTopMenu(newActiveTopMenuPath);
-    }
-  },
-  { immediate: true }
-);
-
 /**
  * 处理菜单点击事件，切换顶部菜单并加载对应的左侧菜单
  * @param routePath 点击的菜单路径
  */
 const handleMenuSelect = (routePath: string) => {
   appStore.activeTopMenu(routePath); // 设置激活的顶部菜单
-  activateFirstLevelMenu(routePath); // 激活一级菜单并设置左侧二级菜单
-};
-
-/**
- * 激活一级菜单并设置左侧二级菜单
- * @param routePath 点击的菜单路径
- */
-function activateFirstLevelMenu(routePath: string) {
   permissionStore.updateSideMenu(routePath); // 更新左侧菜单
-
-  // 使用 nextTick 确保侧边菜单更新完成后再跳转
-  nextTick(() => {
-    navigateToFirstLeftMenu(permissionStore.sideMenuRoutes); // 跳转到左侧第一个菜单
-  });
-}
+  navigateToFirstLeftMenu(permissionStore.sideMenuRoutes); // 跳转到左侧第一个菜单
+};
 
 /**
  * 跳转到左侧第一个可访问的菜单
@@ -134,43 +102,34 @@ function activateFirstLevelMenu(routePath: string) {
 const navigateToFirstLeftMenu = (menus: RouteRecordRaw[]) => {
   if (menus.length === 0) return;
 
-  // 查找第一个可访问的菜单项
-  const findFirstAccessibleRoute = (routes: RouteRecordRaw[]): RouteRecordRaw | null => {
-    for (const route of routes) {
-      // 跳过隐藏的菜单项
-      if (route.meta?.hidden) continue;
+  const [firstMenu] = menus;
 
-      // 如果有子菜单，递归查找
-      if (route.children && route.children.length > 0) {
-        const childRoute = findFirstAccessibleRoute(route.children);
-        if (childRoute) return childRoute;
-      } else if (route.name && route.path) {
-        // 找到第一个有名称和路径的菜单项
-        return route;
-      }
-    }
-    return null;
-  };
-
-  const firstRoute = findFirstAccessibleRoute(menus);
-
-  if (firstRoute && firstRoute.name) {
-    console.log("🎯 Navigating to first menu:", firstRoute.name, firstRoute.path);
+  // 如果第一个菜单有子菜单，递归跳转到第一个子菜单
+  if (firstMenu.children && firstMenu.children.length > 0) {
+    navigateToFirstLeftMenu(firstMenu.children as RouteRecordRaw[]);
+  } else if (firstMenu.name) {
     router.push({
-      name: firstRoute.name,
+      name: firstMenu.name,
       query:
-        typeof firstRoute.meta?.params === "object"
-          ? (firstRoute.meta.params as LocationQueryRaw)
+        typeof firstMenu.meta?.params === "object"
+          ? (firstMenu.meta.params as LocationQueryRaw)
           : undefined,
     });
   }
 };
 
-// 当前激活的顶部菜单路径
+// 获取当前路由路径的顶部菜单路径
 const activeTopMenuPath = computed(() => appStore.activeTopMenuPath);
 
 onMounted(() => {
   topMenus.value = permissionStore.routes.filter((item) => !item.meta || !item.meta.hidden);
+  // 初始化顶部菜单
+  const currentTopMenuPath =
+    useRoute().path.split("/").filter(Boolean).length > 1
+      ? useRoute().path.match(/^\/[^/]+/)?.[0] || "/"
+      : "/";
+  appStore.activeTopMenu(currentTopMenuPath); // 设置激活的顶部菜单
+  permissionStore.updateSideMenu(currentTopMenuPath); // 更新左侧菜单
 });
 </script>
 

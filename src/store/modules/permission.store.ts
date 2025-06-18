@@ -22,8 +22,6 @@ export const usePermissionStore = defineStore("permission", () => {
    */
   function generateRoutes() {
     return new Promise<RouteRecordRaw[]>((resolve, reject) => {
-      console.log("🔧 Starting to generate routes...");
-
       MenuAPI.getRoutes()
         .then((data) => {
           const dynamicRoutes = parseDynamicRoutes(data);
@@ -31,7 +29,6 @@ export const usePermissionStore = defineStore("permission", () => {
           routes.value = [...constantRoutes, ...dynamicRoutes];
           routesLoaded.value = true;
 
-          console.log("✅ Routes generation completed successfully");
           resolve(dynamicRoutes);
         })
         .catch((error) => {
