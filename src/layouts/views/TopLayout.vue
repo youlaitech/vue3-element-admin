@@ -102,6 +102,18 @@ const isLogoCollapsed = computed(() => width.value < 768);
           height: $navbar-height;
           line-height: $navbar-height;
         }
+
+        // 父菜单激活状态 - 水平布局专用
+        &.has-active-child {
+          .el-sub-menu__title {
+            color: var(--el-color-primary) !important;
+            border-bottom: 2px solid var(--el-color-primary) !important;
+
+            .menu-icon {
+              color: var(--el-color-primary) !important;
+            }
+          }
+        }
       }
 
       // 修复子菜单弹出位置

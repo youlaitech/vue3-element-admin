@@ -163,9 +163,7 @@ watch(
  */
 watch(
   () => currentRoute.path,
-  (newPath) => {
-    console.log("🔍 Route changed in BasicMenu:", newPath);
-
+  () => {
     nextTick(() => {
       updateParentMenuStyles();
     });
@@ -178,7 +176,6 @@ watch(
 function updateParentMenuStyles() {
   if (!menuRef.value?.$el) return;
 
-  // 使用 nextTick 确保 DOM 已更新
   nextTick(() => {
     try {
       const menuEl = menuRef.value?.$el as HTMLElement;
@@ -192,6 +189,7 @@ function updateParentMenuStyles() {
 
       // 查找当前激活的菜单项
       const activeMenuItem = menuEl.querySelector(".el-menu-item.is-active");
+
       if (activeMenuItem) {
         // 向上查找父级 el-sub-menu 元素
         let parent = activeMenuItem.parentElement;
@@ -200,6 +198,25 @@ function updateParentMenuStyles() {
             parent.classList.add("has-active-child");
           }
           parent = parent.parentElement;
+        }
+      } else {
+        // 水平模式下可能需要特殊处理
+        if (props.menuMode === "horizontal") {
+          // 对于水平菜单，使用路径匹配来找到父菜单
+          const currentPath = activeMenuPath.value;
+
+          // 查找所有父菜单项，检查哪个包含当前路径
+          allSubMenus.forEach((subMenu) => {
+            const subMenuEl = subMenu as HTMLElement;
+            const subMenuPath =
+              subMenuEl.getAttribute("data-path") ||
+              subMenuEl.querySelector(".el-sub-menu__title")?.getAttribute("data-path");
+
+            // 如果找到包含当前路径的父菜单，则添加激活类
+            if (subMenuPath && currentPath.startsWith(subMenuPath)) {
+              subMenuEl.classList.add("has-active-child");
+            }
+          });
         }
       }
     } catch (error) {

@@ -32,7 +32,7 @@
     </template>
 
     <!--【非叶子节点】显示含多个子节点的父菜单，或始终显示的单子节点 -->
-    <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
+    <el-sub-menu v-else :index="resolvePath(item.path)" :data-path="item.path" teleported>
       <template #title>
         <MenuItemContent v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
       </template>
