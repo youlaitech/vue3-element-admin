@@ -49,7 +49,7 @@ const ConfigAPI = {
       method: "delete",
     });
   },
-
+  /** 刷新系统配置缓存 */
   refreshCache() {
     return request({
       url: `${CONFIG_BASE_URL}/refresh`,
