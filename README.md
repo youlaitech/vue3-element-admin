@@ -4,7 +4,7 @@
 
   <img src="https://img.shields.io/badge/Vue-3.5.16-brightgreen.svg"/>
   <img src="https://img.shields.io/badge/Vite-6.3.5-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.9.11-blue.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.10.2-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
