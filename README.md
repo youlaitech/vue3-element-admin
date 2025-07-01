@@ -203,6 +203,7 @@ server {
 
 
 Thanks to all the contributors!
+感谢所有的贡献者！
 
 [![contributors](https://contrib.rocks/image?repo=youlaitech/vue3-element-admin)](https://github.com/youlaitech/vue3-element-admin/graphs/contributors)
 
