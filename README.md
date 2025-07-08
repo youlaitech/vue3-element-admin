@@ -4,7 +4,7 @@
 
   <img src="https://img.shields.io/badge/Vue-3.5.16-brightgreen.svg"/>
   <img src="https://img.shields.io/badge/Vite-6.3.5-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.9.11-blue.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.10.2-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -40,7 +40,7 @@
 - **简洁易用**：基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本，无过渡封装 ，易上手。
 - **数据交互**： 支持 `Mock` 数据和[线上接口文档](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)，并提供配套的 [Java](https://gitee.com/youlaiorg/youlai-boot) 和 [Node](https://gitee.com/youlaiorg/youlai-nest) 后端源码。
 
-- **系统功能：** 提供用户管理、角色管理、菜单管理、部门管理、字典管理等功能模块。
+- **系统功能：** 提供用户管理、角色管理、菜单管理、部门管理、字典管理、系统配置、通知公告等功能模块。
 - **权限管理：** 支持动态路由、按钮权限、角色权限和数据权限等多种权限管理方式。
 
 - **基础设施：** 提供国际化、多布局、暗黑模式、全屏、水印、接口文档和代码生成器等功能。
@@ -73,7 +73,6 @@
 | Node 后端 | [youlai-nest](https://gitee.com/youlaiorg/youlai-nest)       | [youlai-nest](https://github.com/haoxianrui/youlai-nest.git) |[youlai-nest](https://gitcode.com/youlai/youlai-nest.git)|
 
 
-
 ## 开发指南
 
 | 名称          | 地址     |
@@ -88,7 +87,6 @@
 
 
 ## 项目启动
-
 
 - **环境准备**
 
@@ -203,6 +201,7 @@ server {
 
 
 Thanks to all the contributors!
+感谢所有的贡献者！
 
 [![contributors](https://contrib.rocks/image?repo=youlaitech/vue3-element-admin)](https://github.com/youlaitech/vue3-element-admin/graphs/contributors)
 
