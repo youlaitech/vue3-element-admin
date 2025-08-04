@@ -2,9 +2,9 @@
   <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/logo.png">
   <h1>vue3-element-admin</h1>
 
-  <img src="https://img.shields.io/badge/Vue-3.5.17-brightgreen.svg"/>
-  <img src="https://img.shields.io/badge/Vite-6.3.5-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.10.3-blue.svg"/>
+  <img src="https://img.shields.io/badge/Vue-3.5.18-brightgreen.svg"/>
+  <img src="https://img.shields.io/badge/Vite-7.0.6-green.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.10.5-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -90,11 +90,10 @@
 
 - **环境准备**
 
-| 环境类型       | 名称                     |
-|----------------|-----------------------------|
+| 环境类型       | 名称                     |     备注          |
+|----------------|---------------|----------- |
 | **开发工具**   | [Visual Studio Code](https://code.visualstudio.com/Download) |
-| **运行环境**   | Node 18 + (推荐[22.9.0](https://npmmirror.com/mirrors/node/v22.9.0/))  |
-> ⚠️ 注意：Node.js 20.6.0版本存在兼容性问题，请勿使用
+| **运行环境**   | ^20.19.0 || >=22.12.0  |    20.19.0+ 或 22.12.0 及以上版本   |
 
 
 - **快速开始**
