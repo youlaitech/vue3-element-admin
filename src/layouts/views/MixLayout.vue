@@ -142,7 +142,7 @@ watch(
       const permissionStore = usePermissionStore();
 
       appStore.activeTopMenu(topMenuPath);
-      permissionStore.updateSideMenu(topMenuPath);
+      permissionStore.setMixLayoutSideMenus(topMenuPath);
     }
   },
   { immediate: true }

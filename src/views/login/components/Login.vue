@@ -111,8 +111,6 @@
 </template>
 <script setup lang="ts">
 import type { FormInstance } from "element-plus";
-import { LocationQuery, RouteLocationRaw, useRoute } from "vue-router";
-import { useI18n } from "vue-i18n";
 import AuthAPI, { type LoginFormData } from "@/api/auth.api";
 import router from "@/router";
 import { useUserStore } from "@/store";
@@ -202,42 +200,17 @@ async function handleLoginSubmit() {
     // 3. 获取用户信息（包含用户角色，用于路由生成）
     await userStore.getUserInfo();
 
-    // 4. 登录成功，让路由守卫处理跳转逻辑
-    const redirect = resolveRedirectTarget(route.query);
+    // 4. 登录成功，简单跳转，让路由守卫处理后续逻辑
+    const redirectPath = (route.query.redirect as string) || "/";
 
-    await router.replace(redirect);
+    // 使用push而不是replace，避免与路由守卫冲突
+    await router.push(decodeURIComponent(redirectPath));
   } catch (error) {
     // 5. 统一错误处理
     getCaptcha(); // 刷新验证码
     console.error("登录失败:", error);
   } finally {
     loading.value = false;
-  }
-}
-
-/**
- * 解析重定向目标
- *
- * @param query 路由查询参数
- * @returns 标准化后的路由地址
- */
-function resolveRedirectTarget(query: LocationQuery): RouteLocationRaw {
-  // 默认跳转路径
-  const defaultPath = "/";
-
-  // 获取原始重定向路径
-  const rawRedirect = (query.redirect as string) || defaultPath;
-
-  try {
-    // 6. 使用Vue Router解析路径
-    const resolved = router.resolve(rawRedirect);
-    return {
-      path: resolved.path,
-      query: resolved.query,
-    };
-  } catch {
-    // 7. 异常处理：返回安全路径
-    return { path: defaultPath };
   }
 }
 

@@ -1,4 +1,3 @@
-import { computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useAppStore, usePermissionStore } from "@/store";
 
@@ -17,7 +16,7 @@ export function useLayoutMenu() {
   const routes = computed(() => permissionStore.routes);
 
   // 混合布局左侧菜单路由
-  const sideMenuRoutes = computed(() => permissionStore.sideMenuRoutes);
+  const sideMenuRoutes = computed(() => permissionStore.mixLayoutSideMenus);
 
   // 当前激活的菜单
   const activeMenu = computed(() => {
