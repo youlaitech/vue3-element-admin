@@ -2,9 +2,9 @@
   <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/logo.png">
   <h1>vue3-element-admin</h1>
 
-  <img src="https://img.shields.io/badge/Vue-3.5.17-brightgreen.svg"/>
-  <img src="https://img.shields.io/badge/Vite-6.3.5-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.10.3-blue.svg"/>
+  <img src="https://img.shields.io/badge/Vue-3.5.18-brightgreen.svg"/>
+  <img src="https://img.shields.io/badge/Vite-7.0.6-green.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.10.5-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -32,7 +32,7 @@
 
 ## Introduction
 
-[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) is a minimalist enterprise-level backend management frontend template built with Vue3, Vite, TypeScript, and Element-Plus. It comes with complementary Java backend [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) and Node backend [youlai-nest](https://gitee.com/youlaiorg/youlai-nest). A simplified version [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) and a JavaScript version [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin) are also available for developers to quickly start development.
+[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) is a minimalist enterprise-level backend management frontend template built with Vue3, Vite7, TypeScript, and Element-Plus. It comes with complementary Java backend [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) and Node backend [youlai-nest](https://gitee.com/youlaiorg/youlai-nest). A simplified version [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) and a JavaScript version [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin) are also available for developers to quickly start development.
 
 
 ## Project Features
@@ -95,8 +95,8 @@
 | Environment Type | Name                     |
 |----------------|-----------------------------|
 | **Development Tool**   | [Visual Studio Code](https://code.visualstudio.com/Download) |
-| **Runtime Environment**   | Node 18 + (Recommended [22.9.0](https://npmmirror.com/mirrors/node/v22.9.0/))  |
-> ⚠️ Note: Node.js version 20.6.0 has compatibility issues, please don't use it
+| **Runtime Environment**   |  ^20.19.0 || >=22.12.0  |
+
 
 
 - **Quick Start**
