@@ -1,5 +1,5 @@
 import vue from "@vitejs/plugin-vue";
-import { type ConfigEnv, loadEnv, defineConfig } from "vite";
+import { type ConfigEnv, type UserConfig, loadEnv, defineConfig, PluginOption } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
@@ -20,7 +20,7 @@ const __APP_INFO__ = {
 const pathSrc = resolve(__dirname, "src");
 
 // Vite配置  https://cn.vitejs.dev/config
-export default defineConfig(({ mode }: ConfigEnv) => {
+export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
   const isProduction = mode === "production";
 
@@ -49,13 +49,13 @@ export default defineConfig(({ mode }: ConfigEnv) => {
           changeOrigin: true,
           // 代理目标地址：https://api.youlai.tech
           target: env.VITE_APP_API_URL,
-          rewrite: (path) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
+          rewrite: (path: string) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
       },
     },
     plugins: [
       vue(),
-      env.VITE_MOCK_DEV_SERVER === "true" ? mockDevServerPlugin() : null,
+      ...(env.VITE_MOCK_DEV_SERVER === "true" ? [mockDevServerPlugin()] : []),
       UnoCSS(),
       // API 自动导入
       AutoImport({
@@ -87,7 +87,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         dts: false,
         // dts: "src/types/components.d.ts",
       }),
-    ],
+    ] as PluginOption[],
     // 预加载项目必需的组件
     optimizeDeps: {
       include: [
