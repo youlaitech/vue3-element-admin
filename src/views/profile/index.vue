@@ -6,7 +6,7 @@
         <el-card class="user-card">
           <div class="user-info">
             <div class="avatar-wrapper">
-              <el-avatar :src="userProfile.avatar" :size="100" />
+              <el-avatar :src="userStore.userInfo.avatar" :size="100" />
               <el-button
                 type="info"
                 class="avatar-edit-btn"
@@ -227,8 +227,11 @@ import UserAPI, {
 } from "@/api/system/user.api";
 
 import FileAPI from "@/api/file.api";
+import { useUserStoreHook } from "@/store";
 
 import { Camera } from "@element-plus/icons-vue";
+
+const userStore = useUserStoreHook();
 
 const userProfile = ref<UserProfileVO>({});
 
@@ -443,12 +446,12 @@ const handleFileChange = async (event: Event) => {
     // 调用文件上传API
     try {
       const data = await FileAPI.uploadFile(file);
-      // 更新用户头像
-      userProfile.value.avatar = data.url;
       // 更新用户信息
       await UserAPI.updateProfile({
         avatar: data.url,
       });
+      // 更新用户头像
+      userStore.userInfo.avatar = data.url;
     } catch (error) {
       console.error("头像上传失败：" + error);
       ElMessage.error("头像上传失败");

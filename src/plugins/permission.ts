@@ -35,13 +35,11 @@ export function setupPermission() {
       const permissionStore = usePermissionStore();
       const userStore = useUserStore();
 
-      // 确保用户信息已加载
-      if (!userStore.userInfo.username) {
-        await userStore.getUserInfo();
-      }
-
       // 确保动态路由已生成
       if (!permissionStore.isDynamicRoutesGenerated) {
+        /** 先获取最新的用户信息 */
+        await userStore.getUserInfo();
+
         const dynamicRoutes = await permissionStore.generateRoutes();
         dynamicRoutes.forEach((route: RouteRecordRaw) => {
           router.addRoute(route);
