@@ -121,6 +121,7 @@ function resolveFullPath(routePath: string) {
  */
 const onMenuOpen = (index: string) => {
   expandedMenuIndexes.value.push(index);
+  updateParentMenuStyles();
 };
 
 /**
@@ -130,6 +131,7 @@ const onMenuOpen = (index: string) => {
  */
 const onMenuClose = (index: string) => {
   expandedMenuIndexes.value = expandedMenuIndexes.value.filter((item) => item !== index);
+  updateParentMenuStyles();
 };
 
 /**
@@ -164,9 +166,9 @@ watch(
 watch(
   () => currentRoute.path,
   () => {
-    nextTick(() => {
-      updateParentMenuStyles();
-    });
+    // nextTick(() => {
+    //   updateParentMenuStyles();
+    // });
   }
 );
 
@@ -189,12 +191,13 @@ function updateParentMenuStyles() {
 
       // 查找当前激活的菜单项
       const activeMenuItem = menuEl.querySelector(".el-menu-item.is-active");
-
+      console.log("activeMenuItem", activeMenuItem);
       if (activeMenuItem) {
         // 向上查找父级 el-sub-menu 元素
         let parent = activeMenuItem.parentElement;
         while (parent && parent !== menuEl) {
-          if (parent.classList.contains("el-sub-menu")) {
+          if (parent.classList.contains("el-sub-menu") && parent.classList.contains("is-active")) {
+            console.log("parent", parent);
             parent.classList.add("has-active-child");
           }
           parent = parent.parentElement;
