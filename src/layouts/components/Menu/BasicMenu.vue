@@ -121,7 +121,6 @@ function resolveFullPath(routePath: string) {
  */
 const onMenuOpen = (index: string) => {
   expandedMenuIndexes.value.push(index);
-  updateParentMenuStyles();
 };
 
 /**
@@ -131,8 +130,17 @@ const onMenuOpen = (index: string) => {
  */
 const onMenuClose = (index: string) => {
   expandedMenuIndexes.value = expandedMenuIndexes.value.filter((item) => item !== index);
-  updateParentMenuStyles();
 };
+
+/**
+ * 监听展开的菜单项变化，更新父菜单样式
+ */
+watch(
+  () => expandedMenuIndexes.value,
+  () => {
+    updateParentMenuStyles();
+  }
+);
 
 /**
  * 监听菜单模式变化：当菜单模式切换为水平模式时，关闭所有展开的菜单项，
@@ -166,9 +174,9 @@ watch(
 watch(
   () => currentRoute.path,
   () => {
-    // nextTick(() => {
-    //   updateParentMenuStyles();
-    // });
+    nextTick(() => {
+      updateParentMenuStyles();
+    });
   }
 );
 
@@ -191,13 +199,12 @@ function updateParentMenuStyles() {
 
       // 查找当前激活的菜单项
       const activeMenuItem = menuEl.querySelector(".el-menu-item.is-active");
-      console.log("activeMenuItem", activeMenuItem);
+
       if (activeMenuItem) {
         // 向上查找父级 el-sub-menu 元素
         let parent = activeMenuItem.parentElement;
         while (parent && parent !== menuEl) {
-          if (parent.classList.contains("el-sub-menu") && parent.classList.contains("is-active")) {
-            console.log("parent", parent);
+          if (parent.classList.contains("el-sub-menu")) {
             parent.classList.add("has-active-child");
           }
           parent = parent.parentElement;
