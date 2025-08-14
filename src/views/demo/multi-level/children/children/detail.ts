@@ -19,7 +19,7 @@ export default defineComponent({
             type: "primary",
             onClick: () => navigateToDetail(1),
           },
-          "跳转详情1"
+          { default: () => "跳转详情1" }
         ),
         h(
           ElButton,
@@ -27,7 +27,7 @@ export default defineComponent({
             type: "success",
             onClick: () => navigateToDetail(2),
           },
-          "跳转详情2"
+          { default: () => "跳转详情2" }
         ),
       ]);
   },
