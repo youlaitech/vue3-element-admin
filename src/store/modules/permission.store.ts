@@ -15,6 +15,8 @@ export const usePermissionStore = defineStore("permission", () => {
   // 动态路由是否已生成
   const isDynamicRoutesGenerated = ref(false);
 
+  const allCacheRoutes = ref<string[][]>([]);
+
   /**
    * 生成动态路由
    */
@@ -24,6 +26,8 @@ export const usePermissionStore = defineStore("permission", () => {
       const dynamicRoutes = parseDynamicRoutes(data);
 
       routes.value = [...constantRoutes, ...dynamicRoutes];
+
+      setAllCacheRoutes(routes.value);
       isDynamicRoutesGenerated.value = true;
 
       return dynamicRoutes;
@@ -60,10 +64,33 @@ export const usePermissionStore = defineStore("permission", () => {
     isDynamicRoutesGenerated.value = false;
   };
 
+  /**
+   * 获取所有的缓存路由
+   * @param userRoutes 用户路由配置
+   */
+  const setAllCacheRoutes = (userRoutes: RouteRecordRaw[]) => {
+    if (!userRoutes?.length) {
+      allCacheRoutes.value = [];
+
+      return;
+    }
+
+    const result: string[][] = [];
+
+    userRoutes.forEach((route) => {
+      if (route.children?.length) {
+        traverseRoutes(route.children, [], result);
+      }
+    });
+
+    allCacheRoutes.value = result;
+  };
+
   return {
     routes,
     mixLayoutSideMenus,
     isDynamicRoutesGenerated,
+    allCacheRoutes,
     generateRoutes,
     setMixLayoutSideMenus,
     resetRouter,
@@ -98,6 +125,28 @@ const parseDynamicRoutes = (rawRoutes: RouteVO[]): RouteRecordRaw[] => {
   });
 
   return parsedRoutes;
+};
+
+/**
+ * 遍历路由树收集缓存路由
+ * @param nodes 路由节点
+ * @param path 当前路径
+ * @param result 结果数组
+ */
+const traverseRoutes = (nodes: RouteRecordRaw[], path: string[], result: string[][]) => {
+  nodes.forEach((node) => {
+    const newPath: string[] = node.name ? [...path, String(node.name)] : [...path];
+
+    // 叶子节点且需要缓存
+    if (!node.children?.length && node.meta?.keepAlive) {
+      result.push(newPath);
+    }
+
+    // 递归处理子节点
+    if (node.children?.length) {
+      traverseRoutes(node.children, newPath, result);
+    }
+  });
 };
 
 /**

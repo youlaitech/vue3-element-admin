@@ -77,7 +77,17 @@ const permissionStore = usePermissionStore();
 const tagsViewStore = useTagsViewStore();
 const settingsStore = useSettingsStore();
 
-const { visitedViews } = storeToRefs(tagsViewStore);
+// const { visitedViews } = storeToRefs(tagsViewStore);
+
+const visitedViews = ref<TagView[]>([]);
+
+watchEffect(() => {
+  visitedViews.value = tagsViewStore.visitedViews;
+  const names = visitedViews.value.map((item) => item.name).filter(Boolean);
+
+  tagsViewStore.setCacheRoutes(names, permissionStore.allCacheRoutes);
+});
+
 const layout = computed(() => settingsStore.layout);
 
 // 当前选中的标签
