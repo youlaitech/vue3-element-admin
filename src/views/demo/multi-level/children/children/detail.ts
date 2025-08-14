@@ -8,7 +8,7 @@ export default defineComponent({
     const navigateToDetail = async (id: number) => {
       await router.push({
         path: "/detail/" + id,
-        query: { mes: `msg${id}` },
+        query: { message: `msg${id}` },
       });
     };
     return () =>
