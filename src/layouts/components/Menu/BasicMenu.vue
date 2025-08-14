@@ -133,6 +133,16 @@ const onMenuClose = (index: string) => {
 };
 
 /**
+ * 监听展开的菜单项变化，更新父菜单样式
+ */
+watch(
+  () => expandedMenuIndexes.value,
+  () => {
+    updateParentMenuStyles();
+  }
+);
+
+/**
  * 监听菜单模式变化：当菜单模式切换为水平模式时，关闭所有展开的菜单项，
  * 避免在水平模式下菜单项显示错位。
  */
