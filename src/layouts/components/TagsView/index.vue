@@ -1,56 +1,69 @@
 <template>
   <div class="tags-container">
     <!-- 水平滚动容器 -->
-    <el-scrollbar ref="scrollbarRef" class="scroll-container" @wheel="handleScroll">
-      <router-link
-        v-for="tag in visitedViews"
-        ref="tagRef"
-        :key="tag.fullPath"
-        :class="['tags-item', { active: tagsViewStore.isActive(tag) }]"
-        :to="{ path: tag.path, query: tag.query }"
-        @click.middle="handleMiddleClick(tag)"
-        @contextmenu.prevent="(event: MouseEvent) => openContextMenu(tag, event)"
-      >
-        <!-- 标签文本 -->
-        <span class="tag-text">{{ translateRouteTitle(tag.title) }}</span>
-        <!-- 关闭按钮，固定标签不显示 -->
-        <span v-if="!tag.affix" class="tag-close-btn" @click.prevent.stop="closeSelectedTag(tag)">
-          ×
-        </span>
-      </router-link>
+    <el-scrollbar
+      ref="scrollbarRef"
+      class="scroll-container"
+      :view-style="{ height: '100%' }"
+      @wheel="handleScroll"
+    >
+      <div h-full flex-y-center gap-8px>
+        <el-tag
+          v-for="tag in visitedViews"
+          :key="tag.fullPath"
+          h-26px
+          cursor-pointer
+          :closable="!tag.affix"
+          :effect="tagsViewStore.isActive(tag) ? 'dark' : 'light'"
+          :type="tagsViewStore.isActive(tag) ? 'primary' : 'info'"
+          @click.middle="handleMiddleClick(tag)"
+          @contextmenu.prevent="(event: MouseEvent) => openContextMenu(tag, event)"
+          @close="closeSelectedTag(tag)"
+          @click="
+            router.push({
+              path: tag.fullPath,
+              query: tag.query,
+            })
+          "
+        >
+          {{ translateRouteTitle(tag.title) }}
+        </el-tag>
+      </div>
     </el-scrollbar>
 
     <!-- 标签右键菜单 -->
-    <ul
-      v-show="contextMenu.visible"
-      class="contextmenu"
-      :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }"
-    >
-      <li @click="refreshSelectedTag(selectedTag)">
-        <div class="i-svg:refresh" />
-        刷新
-      </li>
-      <li v-if="!selectedTag?.affix" @click="closeSelectedTag(selectedTag)">
-        <div class="i-svg:close" />
-        关闭
-      </li>
-      <li @click="closeOtherTags">
-        <div class="i-svg:close_other" />
-        关闭其它
-      </li>
-      <li v-if="!isFirstView" @click="closeLeftTags">
-        <div class="i-svg:close_left" />
-        关闭左侧
-      </li>
-      <li v-if="!isLastView" @click="closeRightTags">
-        <div class="i-svg:close_right" />
-        关闭右侧
-      </li>
-      <li @click="closeAllTags(selectedTag)">
-        <div class="i-svg:close_all" />
-        关闭所有
-      </li>
-    </ul>
+    <Teleport to="body">
+      <ul
+        v-show="contextMenu.visible"
+        class="contextmenu"
+        :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }"
+      >
+        <li @click="refreshSelectedTag(selectedTag)">
+          <div class="i-svg:refresh" />
+          刷新
+        </li>
+        <li v-if="!selectedTag?.affix" @click="closeSelectedTag(selectedTag)">
+          <div class="i-svg:close" />
+          关闭
+        </li>
+        <li @click="closeOtherTags">
+          <div class="i-svg:close_other" />
+          关闭其它
+        </li>
+        <li v-if="!isFirstView" @click="closeLeftTags">
+          <div class="i-svg:close_left" />
+          关闭左侧
+        </li>
+        <li v-if="!isLastView" @click="closeRightTags">
+          <div class="i-svg:close_right" />
+          关闭右侧
+        </li>
+        <li @click="closeAllTags(selectedTag)">
+          <div class="i-svg:close_all" />
+          关闭所有
+        </li>
+      </ul>
+    </Teleport>
   </div>
 </template>
 
@@ -58,8 +71,7 @@
 import { useRoute, useRouter, type RouteRecordRaw } from "vue-router";
 import { resolve } from "path-browserify";
 import { translateRouteTitle } from "@/utils/i18n";
-import { usePermissionStore, useTagsViewStore, useSettingsStore } from "@/store";
-import { LayoutMode } from "@/enums";
+import { usePermissionStore, useTagsViewStore } from "@/store";
 
 interface ContextMenu {
   visible: boolean;
@@ -67,17 +79,12 @@ interface ContextMenu {
   y: number;
 }
 
-const instance = getCurrentInstance();
-const proxy = instance?.proxy;
 const router = useRouter();
 const route = useRoute();
 
 // 状态管理
 const permissionStore = usePermissionStore();
 const tagsViewStore = useTagsViewStore();
-const settingsStore = useSettingsStore();
-
-// const { visitedViews } = storeToRefs(tagsViewStore);
 
 const visitedViews = ref<TagView[]>([]);
 
@@ -87,8 +94,6 @@ watchEffect(() => {
 
   tagsViewStore.setCacheRoutes(names, permissionStore.allCacheRoutes);
 });
-
-const layout = computed(() => settingsStore.layout);
 
 // 当前选中的标签
 const selectedTag = ref<TagView | null>(null);
@@ -224,19 +229,8 @@ const handleMiddleClick = (tag: TagView) => {
  * 打开右键菜单
  */
 const openContextMenu = (tag: TagView, event: MouseEvent) => {
-  const MENU_MIN_WIDTH = 105;
-  const MENU_MARGIN = 15;
-
-  const containerRect = proxy?.$el.getBoundingClientRect();
-  const offsetLeft = containerRect?.left || 0;
-  const containerWidth = proxy?.$el.offsetWidth || 0;
-
-  const maxLeft = containerWidth - MENU_MIN_WIDTH;
-  const leftPosition = event.clientX - offsetLeft + MENU_MARGIN;
-
-  contextMenu.x = Math.min(leftPosition, maxLeft);
-  // 混合模式下，需要减去顶部菜单(fixed)的高度
-  contextMenu.y = layout.value === LayoutMode.MIX ? event.clientY - 50 : event.clientY;
+  contextMenu.x = event.clientX;
+  contextMenu.y = event.clientY;
   contextMenu.visible = true;
 
   selectedTag.value = tag;
@@ -386,113 +380,37 @@ useContextMenuManager();
 .tags-container {
   width: 100%;
   height: $tags-view-height;
-  background-color: var(--el-bg-color);
-  border: 1px solid var(--el-border-color-light);
-  box-shadow: 0 1px 1px var(--el-box-shadow-light);
+  padding: 0 15px;
+  border-top: 1px solid var(--el-border-color-light);
 
   .scroll-container {
     white-space: nowrap;
   }
+}
+.contextmenu {
+  position: absolute;
+  z-index: 3000;
+  padding: 5px 0;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--el-text-color-primary);
+  list-style-type: none;
+  background: var(--el-bg-color);
+  border-radius: 4px;
+  box-shadow: var(--el-box-shadow-light);
 
-  .tags-item {
-    position: relative;
-    display: inline-flex;
+  li {
+    display: flex;
+    gap: 8px;
     align-items: center;
-    height: 26px;
-    padding: 0 8px;
-    margin-top: 4px;
-    margin-left: 5px;
-    font-size: 12px;
-    line-height: 26px;
-    color: var(--el-text-color-primary);
-    background: var(--el-bg-color);
-    border: 1px solid var(--el-border-color);
-    transition: all 0.2s ease;
-
-    &:first-of-type {
-      margin-left: 15px;
-    }
-    &:last-of-type {
-      margin-right: 15px;
-    }
-
-    .tag-text {
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    .tag-close-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px;
-      height: 16px;
-      margin-left: 5px;
-      font-size: 12px;
-      font-weight: bold;
-      color: var(--el-text-color-secondary);
-      cursor: pointer;
-      border-radius: 50%;
-      transition: all 0.2s ease;
-
-      &:hover {
-        color: var(--el-color-white);
-        background-color: var(--el-text-color-placeholder);
-      }
-    }
-
-    &.active {
-      color: var(--el-color-white);
-      background-color: var(--el-color-primary);
-      border-color: var(--el-color-primary);
-
-      &::before {
-        position: relative;
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        margin-right: 2px;
-        content: "";
-        background: var(--el-color-white);
-        border-radius: 50%;
-      }
-
-      .tag-close-btn {
-        color: var(--el-color-white);
-
-        &:hover {
-          color: var(--el-color-white);
-          background-color: rgba(255, 255, 255, 0.3);
-        }
-      }
-    }
-  }
-
-  .contextmenu {
-    position: absolute;
-    z-index: 3000;
-    padding: 5px 0;
+    padding: 7px 16px;
     margin: 0;
-    font-size: 12px;
-    font-weight: 400;
-    color: var(--el-text-color-primary);
-    list-style-type: none;
-    background: var(--el-bg-color);
-    border-radius: 4px;
-    box-shadow: var(--el-box-shadow-light);
+    cursor: pointer;
+    transition: background-color 0.2s;
 
-    li {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      padding: 7px 16px;
-      margin: 0;
-      cursor: pointer;
-      transition: background-color 0.2s;
-
-      &:hover {
-        background: var(--el-fill-color-light);
-      }
+    &:hover {
+      background: var(--el-fill-color-light);
     }
   }
 }
