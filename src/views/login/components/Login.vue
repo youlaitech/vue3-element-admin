@@ -197,16 +197,11 @@ async function handleLoginSubmit() {
     // 2. 执行登录
     await userStore.login(loginFormData.value);
 
-    // 3. 获取用户信息（包含用户角色，用于路由生成）
-    await userStore.getUserInfo();
-
-    // 4. 登录成功，简单跳转，让路由守卫处理后续逻辑
     const redirectPath = (route.query.redirect as string) || "/";
 
-    // 使用push而不是replace，避免与路由守卫冲突
     await router.push(decodeURIComponent(redirectPath));
   } catch (error) {
-    // 5. 统一错误处理
+    // 4. 统一错误处理
     getCaptcha(); // 刷新验证码
     console.error("登录失败:", error);
   } finally {

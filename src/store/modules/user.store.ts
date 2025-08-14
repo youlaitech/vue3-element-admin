@@ -137,6 +137,7 @@ export const useUserStore = defineStore("user", () => {
   return {
     userInfo,
     rememberMe,
+    isLoggedIn: () => !!Auth.getAccessToken(),
     getUserInfo,
     login,
     logout,

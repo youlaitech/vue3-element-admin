@@ -10,14 +10,6 @@ import { AUTH_KEYS } from "@/constants";
  */
 export class Auth {
   /**
-   * 判断用户是否已登录
-   * @returns 是否已登录
-   */
-  static isLoggedIn(): boolean {
-    return !!Auth.getAccessToken();
-  }
-
-  /**
    * 获取当前有效的访问令牌
    * 会根据"记住我"状态从适当的存储位置获取
    * @returns 当前有效的访问令牌

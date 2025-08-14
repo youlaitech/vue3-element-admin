@@ -1,6 +1,5 @@
 import type { RouteRecordRaw } from "vue-router";
 import NProgress from "@/utils/nprogress";
-import { Auth } from "@/utils/auth";
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
 import { ROLE_ROOT } from "@/constants";
@@ -12,7 +11,8 @@ export function setupPermission() {
     NProgress.start();
 
     try {
-      const isLoggedIn = Auth.isLoggedIn();
+      // 使用 store 暴露的登录态，便于后续扩展（如基于过期时间等）
+      const isLoggedIn = useUserStore().isLoggedIn();
 
       // 未登录处理
       if (!isLoggedIn) {
@@ -35,16 +35,17 @@ export function setupPermission() {
       const permissionStore = usePermissionStore();
       const userStore = useUserStore();
 
-      // 确保动态路由已生成
+      // 路由未生成则生成
       if (!permissionStore.isDynamicRoutesGenerated) {
-        /** 先获取最新的用户信息 */
-        await userStore.getUserInfo();
+        if (!userStore.userInfo?.roles?.length) {
+          await userStore.getUserInfo();
+        }
 
         const dynamicRoutes = await permissionStore.generateRoutes();
         dynamicRoutes.forEach((route: RouteRecordRaw) => {
           router.addRoute(route);
         });
-        // 路由刚生成，重新导航
+
         next({ ...to, replace: true });
         return;
       }
