@@ -15,7 +15,13 @@
                 size="small"
                 @click="triggerFileUpload"
               />
-              <input ref="fileInput" type="file" style="display: none" @change="handleFileChange" />
+              <input
+                ref="fileInput"
+                type="file"
+                style="display: none"
+                accept="image/*"
+                @change="handleFileChange"
+              />
             </div>
             <div class="user-name">
               <span class="nickname">{{ userProfile.nickname }}</span>
