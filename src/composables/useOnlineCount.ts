@@ -1,7 +1,7 @@
 import { ref, onMounted, onUnmounted, watch, getCurrentInstance } from "vue";
 import { useStomp } from "./useStomp";
 import { registerWebSocketInstance } from "@/plugins/websocket";
-import { Auth } from "@/utils/auth";
+import { AuthStorage } from "@/utils/auth";
 
 // 全局单例实例
 let globalInstance: ReturnType<typeof createOnlineCountHook> | null = null;

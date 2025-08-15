@@ -1,5 +1,5 @@
 import { useDictSync } from "@/composables/useDictSync";
-import { Auth } from "@/utils/auth";
+import { AuthStorage } from "@/utils/auth";
 // 不直接导入 store 或 userStore
 
 // 全局 WebSocket 实例管理

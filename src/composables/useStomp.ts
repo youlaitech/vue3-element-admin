@@ -1,5 +1,5 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
-import { Auth } from "@/utils/auth";
+import { AuthStorage } from "@/utils/auth";
 
 export interface UseStompOptions {
   /** WebSocket 地址，不传时使用 VITE_APP_WS_ENDPOINT 环境变量 */

@@ -3,16 +3,17 @@ import { store } from "@/store";
 import AuthAPI, { type LoginFormData } from "@/api/auth.api";
 import UserAPI, { type UserInfo } from "@/api/system/user.api";
 
-import { Auth } from "@/utils/auth";
+import { AuthStorage } from "@/utils/auth";
 import { usePermissionStoreHook } from "@/store/modules/permission.store";
 import { useDictStoreHook } from "@/store/modules/dict.store";
 import { useTagsViewStore } from "@/store";
 import { cleanupWebSocket } from "@/plugins/websocket";
 
 export const useUserStore = defineStore("user", () => {
-  const userInfo = useStorage<UserInfo>("userInfo", {} as UserInfo);
+  // 用户信息
+  const userInfo = ref<UserInfo>({} as UserInfo);
   // 记住我状态
-  const rememberMe = ref(Auth.getRememberMe());
+  const rememberMe = ref(AuthStorage.getRememberMe());
 
   /**
    * 登录
@@ -27,7 +28,7 @@ export const useUserStore = defineStore("user", () => {
           const { accessToken, refreshToken } = data;
           // 保存记住我状态和token
           rememberMe.value = LoginFormData.rememberMe;
-          Auth.setTokens(accessToken, refreshToken, rememberMe.value);
+          AuthStorage.setTokens(accessToken, refreshToken, rememberMe.value);
           resolve();
         })
         .catch((error) => {
@@ -104,7 +105,7 @@ export const useUserStore = defineStore("user", () => {
    */
   function resetUserState() {
     // 清除用户凭证
-    Auth.clearAuth();
+    AuthStorage.clearAuth();
     // 重置用户信息
     userInfo.value = {} as UserInfo;
   }
@@ -113,7 +114,7 @@ export const useUserStore = defineStore("user", () => {
    * 刷新 token
    */
   function refreshToken() {
-    const refreshToken = Auth.getRefreshToken();
+    const refreshToken = AuthStorage.getRefreshToken();
 
     if (!refreshToken) {
       return Promise.reject(new Error("没有有效的刷新令牌"));
@@ -124,7 +125,7 @@ export const useUserStore = defineStore("user", () => {
         .then((data) => {
           const { accessToken, refreshToken: newRefreshToken } = data;
           // 更新令牌，保持当前记住我状态
-          Auth.setTokens(accessToken, newRefreshToken, Auth.getRememberMe());
+          AuthStorage.setTokens(accessToken, newRefreshToken, AuthStorage.getRememberMe());
           resolve();
         })
         .catch((error) => {
@@ -137,7 +138,7 @@ export const useUserStore = defineStore("user", () => {
   return {
     userInfo,
     rememberMe,
-    isLoggedIn: () => !!Auth.getAccessToken(),
+    isLoggedIn: () => !!AuthStorage.getAccessToken(),
     getUserInfo,
     login,
     logout,

@@ -115,7 +115,7 @@ import AuthAPI, { type LoginFormData } from "@/api/auth.api";
 import router from "@/router";
 import { useUserStore } from "@/store";
 import CommonWrapper from "@/components/CommonWrapper/index.vue";
-import { Auth } from "@/utils/auth";
+import { AuthStorage } from "@/utils/auth";
 
 const { t } = useI18n();
 const userStore = useUserStore();
@@ -130,7 +130,7 @@ const isCapsLock = ref(false);
 // 验证码图片Base64字符串
 const captchaBase64 = ref();
 // 记住我
-const rememberMe = Auth.getRememberMe();
+const rememberMe = AuthStorage.getRememberMe();
 
 const loginFormData = ref<LoginFormData>({
   username: "admin",
