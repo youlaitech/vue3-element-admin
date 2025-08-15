@@ -43,8 +43,8 @@ export function setupWebSocket() {
     return;
   }
 
-  // 检查是否已登录
-  if (!Auth.isLoggedIn()) {
+  // 检查是否已登录（基于是否存在访问令牌）
+  if (!AuthStorage.getAccessToken()) {
     console.warn(
       "[WebSocketPlugin] 未找到访问令牌，WebSocket初始化已跳过。用户登录后将自动重新连接。"
     );

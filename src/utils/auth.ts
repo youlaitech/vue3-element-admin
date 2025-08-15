@@ -1,7 +1,7 @@
 import { Storage } from "./storage";
 import { AUTH_KEYS } from "@/constants";
 
-// 更语义化的命名：仅负责本地凭证与偏好的读写
+// 负责本地凭证与偏好的读写
 export const AuthStorage = {
   getAccessToken(): string {
     const isRememberMe = Storage.get<boolean>(AUTH_KEYS.REMEMBER_ME, false);

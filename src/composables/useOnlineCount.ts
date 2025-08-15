@@ -105,8 +105,8 @@ function createOnlineCountHook() {
       return;
     }
 
-    // 使用 Auth.getAccessToken() 获取令牌，确保获取到最新的
-    const accessToken = Auth.getAccessToken();
+    // 使用 AuthStorage.getAccessToken() 获取令牌，确保获取到最新的
+    const accessToken = AuthStorage.getAccessToken();
     if (!accessToken) {
       console.log("[useOnlineCount] 没有检测到有效令牌，不尝试WebSocket连接");
       return;
@@ -129,7 +129,7 @@ function createOnlineCountHook() {
         closeWebSocket();
         setTimeout(() => {
           // 再次检查令牌有效性
-          if (Auth.getAccessToken()) {
+          if (AuthStorage.getAccessToken()) {
             initWebSocket();
           } else {
             console.log("[useOnlineCount] 令牌无效，放弃重连");
