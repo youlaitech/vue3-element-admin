@@ -1,5 +1,5 @@
 import { store } from "@/store";
-import DictAPI, { type DictItemOption } from "@/api/system/dict.api";
+import DictAPI, { type DictItemOption } from "@/api/system/dict-api";
 
 export const useDictStore = defineStore("dict", () => {
   // 字典数据缓存

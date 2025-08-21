@@ -1,4 +1,4 @@
-import { useDictStoreHook } from "@/store/modules/dict.store";
+import { useDictStoreHook } from "@/store/modules/dict-store";
 import { useStomp } from "./useStomp";
 import type { IMessage } from "@stomp/stompjs";
 import { ref } from "vue";

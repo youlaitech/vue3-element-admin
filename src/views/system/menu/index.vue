@@ -340,10 +340,10 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/modules/app.store";
+import { useAppStore } from "@/store/modules/app-store";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 
-import MenuAPI, { MenuQuery, MenuForm, MenuVO } from "@/api/system/menu.api";
+import MenuAPI, { MenuQuery, MenuForm, MenuVO } from "@/api/system/menu-api";
 import { MenuTypeEnum } from "@/enums/system/menu.enum";
 
 defineOptions({

@@ -1,11 +1,11 @@
 import { store } from "@/store";
 
-import AuthAPI, { type LoginFormData } from "@/api/auth.api";
-import UserAPI, { type UserInfo } from "@/api/system/user.api";
+import AuthAPI, { type LoginFormData } from "@/api/auth-api";
+import UserAPI, { type UserInfo } from "@/api/system/user-api";
 
 import { AuthStorage } from "@/utils/auth";
-import { usePermissionStoreHook } from "@/store/modules/permission.store";
-import { useDictStoreHook } from "@/store/modules/dict.store";
+import { usePermissionStoreHook } from "@/store/modules/permission-store";
+import { useDictStoreHook } from "@/store/modules/dict-store";
 import { useTagsViewStore } from "@/store";
 import { cleanupWebSocket } from "@/plugins/websocket";
 

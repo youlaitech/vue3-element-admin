@@ -212,11 +212,11 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/modules/app.store";
+import { useAppStore } from "@/store/modules/app-store";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 
-import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/system/role.api";
-import MenuAPI from "@/api/system/menu.api";
+import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/system/role-api";
+import MenuAPI from "@/api/system/menu-api";
 
 defineOptions({
   name: "Role",

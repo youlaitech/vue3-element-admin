@@ -3,7 +3,7 @@ import request from "@/utils/request";
 const CONFIG_BASE_URL = "/api/v1/config";
 
 const ConfigAPI = {
-  /** 系统配置分页 */
+  /** 获取配置分页数据 */
   getPage(queryParams?: ConfigPageQuery) {
     return request<any, PageResult<ConfigPageVO[]>>({
       url: `${CONFIG_BASE_URL}/page`,
@@ -11,62 +11,38 @@ const ConfigAPI = {
       params: queryParams,
     });
   },
-
-  /** 系统配置表单数据 */
+  /** 获取配置表单数据 */
   getFormData(id: string) {
     return request<any, ConfigForm>({
       url: `${CONFIG_BASE_URL}/${id}/form`,
       method: "get",
     });
   },
-
-  /** 新增系统配置 */
+  /** 新增配置 */
   create(data: ConfigForm) {
-    return request({
-      url: `${CONFIG_BASE_URL}`,
-      method: "post",
-      data,
-    });
+    return request({ url: `${CONFIG_BASE_URL}`, method: "post", data });
   },
-
-  /** 更新系统配置 */
+  /** 修改配置 */
   update(id: string, data: ConfigForm) {
-    return request({
-      url: `${CONFIG_BASE_URL}/${id}`,
-      method: "put",
-      data,
-    });
+    return request({ url: `${CONFIG_BASE_URL}/${id}`, method: "put", data });
   },
-
-  /**
-   * 删除系统配置
-   *
-   * @param ids 系统配置ID
-   */
+  /** 删除配置 */
   deleteById(id: string) {
-    return request({
-      url: `${CONFIG_BASE_URL}/${id}`,
-      method: "delete",
-    });
+    return request({ url: `${CONFIG_BASE_URL}/${id}`, method: "delete" });
   },
-  /** 刷新系统配置缓存 */
+  /** 刷新配置缓存 */
   refreshCache() {
-    return request({
-      url: `${CONFIG_BASE_URL}/refresh`,
-      method: "PUT",
-    });
+    return request({ url: `${CONFIG_BASE_URL}/refresh`, method: "PUT" });
   },
 };
 
 export default ConfigAPI;
 
-/** $系统配置分页查询参数 */
 export interface ConfigPageQuery extends PageQuery {
   /** 搜索关键字 */
   keywords?: string;
 }
 
-/** 系统配置表单对象 */
 export interface ConfigForm {
   /** 主键 */
   id?: string;
@@ -80,7 +56,6 @@ export interface ConfigForm {
   remark?: string;
 }
 
-/** 系统配置分页对象 */
 export interface ConfigPageVO {
   /** 主键 */
   id?: string;

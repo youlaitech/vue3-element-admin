@@ -1,6 +1,6 @@
 /** 公共下载数据，减少重复请求次数 */
-import DeptAPI from "@/api/system/dept.api";
-import RoleAPI from "@/api/system/role.api";
+import DeptAPI from "@/api/system/dept-api";
+import RoleAPI from "@/api/system/role-api";
 
 interface OptionType {
   label: string;

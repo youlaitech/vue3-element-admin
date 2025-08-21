@@ -244,12 +244,12 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/modules/app.store";
+import { useAppStore } from "@/store/modules/app-store";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 
-import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user.api";
-import DeptAPI from "@/api/system/dept.api";
-import RoleAPI from "@/api/system/role.api";
+import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user-api";
+import DeptAPI from "@/api/system/dept-api";
+import RoleAPI from "@/api/system/role-api";
 
 import DeptTree from "./components/DeptTree.vue";
 import UserImport from "./components/UserImport.vue";

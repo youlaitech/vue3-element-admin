@@ -1,6 +1,6 @@
 import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from "axios";
 import qs from "qs";
-import { useUserStoreHook } from "@/store/modules/user.store";
+import { useUserStoreHook } from "@/store/modules/user-store";
 import { ResultEnum } from "@/enums/api/result.enum";
 import { AuthStorage } from "@/utils/auth";
 import router from "@/router";

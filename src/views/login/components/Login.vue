@@ -111,7 +111,7 @@
 </template>
 <script setup lang="ts">
 import type { FormInstance } from "element-plus";
-import AuthAPI, { type LoginFormData } from "@/api/auth.api";
+import AuthAPI, { type LoginFormData } from "@/api/auth-api";
 import router from "@/router";
 import { useUserStore } from "@/store";
 import CommonWrapper from "@/components/CommonWrapper/index.vue";

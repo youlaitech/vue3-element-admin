@@ -3,11 +3,7 @@ import request from "@/utils/request";
 const LOG_BASE_URL = "/api/v1/logs";
 
 const LogAPI = {
-  /**
-   * 获取日志分页列表
-   *
-   * @param queryParams 查询参数
-   */
+  /** 获取日志分页列表 */
   getPage(queryParams: LogPageQuery) {
     return request<any, PageResult<LogPageVO[]>>({
       url: `${LOG_BASE_URL}/page`,
@@ -15,13 +11,7 @@ const LogAPI = {
       params: queryParams,
     });
   },
-
-  /**
-   * 获取访问趋势
-   *
-   * @param queryParams
-   * @returns
-   */
+  /** 获取访问趋势 */
   getVisitTrend(queryParams: VisitTrendQuery) {
     return request<any, VisitTrendVO>({
       url: `${LOG_BASE_URL}/visit-trend`,
@@ -29,36 +19,20 @@ const LogAPI = {
       params: queryParams,
     });
   },
-
-  /**
-   * 获取访问统计
-   *
-   * @param queryParams
-   * @returns
-   */
+  /** 获取访问统计 */
   getVisitStats() {
-    return request<any, VisitStatsVO>({
-      url: `${LOG_BASE_URL}/visit-stats`,
-      method: "get",
-    });
+    return request<any, VisitStatsVO>({ url: `${LOG_BASE_URL}/visit-stats`, method: "get" });
   },
 };
 
 export default LogAPI;
 
-/**
- * 日志分页查询对象
- */
 export interface LogPageQuery extends PageQuery {
   /** 搜索关键字 */
   keywords?: string;
   /** 操作时间 */
   createTime?: [string, string];
 }
-
-/**
- * 系统日志分页VO
- */
 export interface LogPageVO {
   /** 主键 */
   id: string;
@@ -83,8 +57,6 @@ export interface LogPageVO {
   /** 操作人 */
   operator: string;
 }
-
-/**  访问趋势视图对象 */
 export interface VisitTrendVO {
   /** 日期列表 */
   dates: string[];
@@ -95,16 +67,12 @@ export interface VisitTrendVO {
   /** IP数 */
   ipList: number[];
 }
-
-/** 访问趋势查询参数 */
 export interface VisitTrendQuery {
   /** 开始日期 */
   startDate: string;
   /** 结束日期 */
   endDate: string;
 }
-
-/**  访问统计 */
 export interface VisitStatsVO {
   /** 今日访客数(UV) */
   todayUvCount: number;

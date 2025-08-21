@@ -51,7 +51,7 @@ import {
   UploadRequestOptions,
 } from "element-plus";
 
-import FileAPI, { FileInfo } from "@/api/file.api";
+import FileAPI, { FileInfo } from "@/api/file-api";
 
 const props = defineProps({
   /**

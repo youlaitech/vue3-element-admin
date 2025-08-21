@@ -115,7 +115,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import NoticeAPI, { NoticePageVO, NoticePageQuery, NoticeDetailVO } from "@/api/system/notice.api";
+import NoticeAPI, { NoticePageVO, NoticePageQuery, NoticeDetailVO } from "@/api/system/notice-api";
 
 const queryFormRef = ref();
 const pageData = ref<NoticePageVO[]>([]);

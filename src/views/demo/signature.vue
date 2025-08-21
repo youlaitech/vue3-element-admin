@@ -21,7 +21,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import FileAPI from "@/api/file.api";
+import FileAPI from "@/api/file-api";
 
 const imgUrl = ref("");
 const canvas = ref();

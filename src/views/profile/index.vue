@@ -230,9 +230,9 @@ import UserAPI, {
   MobileUpdateForm,
   EmailUpdateForm,
   UserProfileForm,
-} from "@/api/system/user.api";
+} from "@/api/system/user-api";
 
-import FileAPI from "@/api/file.api";
+import FileAPI from "@/api/file-api";
 import { useUserStoreHook } from "@/store";
 
 import { Camera } from "@element-plus/icons-vue";

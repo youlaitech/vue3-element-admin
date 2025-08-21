@@ -30,10 +30,11 @@ const GeneratorAPI = {
   },
 
   /** 获取代码生成预览数据 */
-  getPreviewData(tableName: string) {
+  getPreviewData(tableName: string, pageType?: "classic" | "curd") {
     return request<any, GeneratorPreviewVO[]>({
       url: `${GENERATOR_BASE_URL}/${tableName}/preview`,
       method: "get",
+      params: pageType ? { pageType } : undefined,
     });
   },
 
@@ -50,10 +51,11 @@ const GeneratorAPI = {
    * @param url
    * @param fileName
    */
-  download(tableName: string) {
+  download(tableName: string, pageType?: "classic" | "curd") {
     return request({
       url: `${GENERATOR_BASE_URL}/${tableName}/download`,
       method: "get",
+      params: pageType ? { pageType } : undefined,
       responseType: "blob",
     }).then((response) => {
       const fileName = decodeURI(
@@ -140,6 +142,12 @@ export interface GenConfigForm {
 
   /** 字段配置列表 */
   fieldConfigs?: FieldConfig[];
+
+  /** 页面类型 classic|curd */
+  pageType?: "classic" | "curd";
+
+  /** 要移除的表前缀，如 sys_ */
+  removeTablePrefix?: string;
 }
 
 /** 字段配置 */

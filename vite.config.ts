@@ -185,6 +185,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/tree/style/index",
         "element-plus/es/components/upload/style/index",
         "element-plus/es/components/watermark/style/index",
+        "element-plus/es/components/checkbox-button/style/index",
+        "element-plus/es/components/space/style/index",
       ],
     },
     // 构建配置

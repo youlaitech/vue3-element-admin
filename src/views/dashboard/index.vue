@@ -354,8 +354,8 @@ defineOptions({
 });
 
 import { dayjs } from "element-plus";
-import LogAPI, { VisitStatsVO, VisitTrendVO } from "@/api/system/log.api";
-import { useUserStore } from "@/store/modules/user.store";
+import LogAPI, { VisitStatsVO, VisitTrendVO } from "@/api/system/log-api";
+import { useUserStore } from "@/store/modules/user-store";
 import { formatGrowthRate } from "@/utils";
 import { useTransition, useDateFormat } from "@vueuse/core";
 import { Connection, Failed } from "@element-plus/icons-vue";
