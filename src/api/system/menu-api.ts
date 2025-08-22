@@ -42,7 +42,7 @@ export interface MenuQuery {
   /** 搜索关键字 */
   keywords?: string;
 }
-export type MenuTypeEnum = 0 | 1 | 2;
+import type { MenuTypeEnum } from "@/enums/system/menu.enum";
 export interface MenuVO {
   /** 子菜单 */
   children?: MenuVO[];
