@@ -27,16 +27,15 @@ export const useTagsViewStore = defineStore("tagsView", () => {
   /**
    * 添加缓存视图到缓存视图列表中
    */
-  function addCachedView(view: TagView) {
-    const viewName = view.name;
+  function addCachedView({ fullPath, keepAlive }: TagView) {
     // 如果缓存视图名称已经存在于缓存视图列表中，则不再添加
-    if (cachedViews.value.includes(viewName)) {
+    if (cachedViews.value.includes(fullPath)) {
       return;
     }
 
     // 如果视图需要缓存（keepAlive），则将其路由名称添加到缓存视图列表中
-    if (view.keepAlive) {
-      cachedViews.value.push(viewName);
+    if (keepAlive) {
+      cachedViews.value.push(fullPath);
     }
   }
 
@@ -57,9 +56,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
   }
 
   function delCachedView(view: TagView) {
-    const viewName = view.name;
+    const { fullPath } = view;
     return new Promise((resolve) => {
-      const index = cachedViews.value.indexOf(viewName);
+      const index = cachedViews.value.indexOf(fullPath);
       if (index > -1) {
         cachedViews.value.splice(index, 1);
       }
@@ -76,9 +75,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
   }
 
   function delOtherCachedViews(view: TagView) {
-    const viewName = view.name as string;
+    const { fullPath } = view;
     return new Promise((resolve) => {
-      const index = cachedViews.value.indexOf(viewName);
+      const index = cachedViews.value.indexOf(fullPath);
       if (index > -1) {
         cachedViews.value = cachedViews.value.slice(index, index + 1);
       } else {
@@ -136,7 +135,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
           return true;
         }
 
-        const cacheIndex = cachedViews.value.indexOf(item.name);
+        const cacheIndex = cachedViews.value.indexOf(item.fullPath);
         if (cacheIndex > -1) {
           cachedViews.value.splice(cacheIndex, 1);
         }
@@ -158,6 +157,11 @@ export const useTagsViewStore = defineStore("tagsView", () => {
         if (index <= currIndex || item?.affix) {
           return true;
         }
+        const cacheIndex = cachedViews.value.indexOf(item.fullPath);
+        if (cacheIndex > -1) {
+          cachedViews.value.splice(cacheIndex, 1);
+        }
+        return false;
       });
       resolve({
         visitedViews: [...visitedViews.value],
@@ -232,37 +236,6 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     }
   }
 
-  const setCacheRoutes = (names: string[], allCacheRoutes: string[][]) => {
-    if (!names?.length) {
-      cachedViews.value = [];
-
-      return;
-    }
-
-    cachedViews.value = findAndMergeRouteArrays(allCacheRoutes, names);
-  };
-
-  /**
-   * 查找并合并路由数组
-   * @param data 所有缓存路由数据
-   * @param elements 目标元素
-   * @returns 合并后的路由数组
-   */
-  const findAndMergeRouteArrays = (data: string[][], elements: string[]): string[] => {
-    const foundArrays = elements
-      .map((element) => data.find((arr) => arr.includes(element)))
-      .filter(Boolean) as string[][];
-
-    // 使用Set去重并合并
-    const mergedSet = new Set<string>();
-
-    foundArrays.forEach((arr) => {
-      arr.forEach((item) => mergedSet.add(item));
-    });
-
-    return Array.from(mergedSet);
-  };
-
   return {
     visitedViews,
     cachedViews,
@@ -284,6 +257,5 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     closeCurrentView,
     isActive,
     toLastView,
-    setCacheRoutes,
   };
 });

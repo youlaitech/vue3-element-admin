@@ -1,10 +1,13 @@
 <template>
-  <div flex flex-col gap-20px>
-    <el-alert :closable="false" title="菜单二级" type="success" />
-    <KeepCache />
-  </div>
+  <el-alert :closable="false" title="菜单二级" type="success" />
+  <el-input v-model="value" placeholder="缓存测试" />
 </template>
 <script setup lang="ts">
-import KeepCache from "@/components/KeepCache/index.vue";
 defineOptions({ name: "MultiLevel2" });
+
+const value = ref("");
+
+onMounted(() => {
+  console.log("MultiLevel2 mounted");
+});
 </script>

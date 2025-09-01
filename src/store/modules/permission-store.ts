@@ -15,20 +15,19 @@ export const usePermissionStore = defineStore("permission", () => {
   // 动态路由是否已生成
   const isDynamicRoutesGenerated = ref(false);
 
-  const allCacheRoutes = ref<string[][]>([]);
-
   /**
    * 生成动态路由
    */
   async function generateRoutes(): Promise<RouteRecordRaw[]> {
     try {
       const data = await MenuAPI.getRoutes(); // 获取当前登录人拥有的菜单路由
-      const dynamicRoutes = parseDynamicRoutes(data);
+      const dynamicRoutes = parseDynamicRoutes(processRoutes(data));
 
       routes.value = [...constantRoutes, ...dynamicRoutes];
 
-      setAllCacheRoutes(routes.value);
       isDynamicRoutesGenerated.value = true;
+
+      console.log("dynamicRoutes", dynamicRoutes);
 
       return dynamicRoutes;
     } catch (error) {
@@ -64,33 +63,10 @@ export const usePermissionStore = defineStore("permission", () => {
     isDynamicRoutesGenerated.value = false;
   };
 
-  /**
-   * 获取所有的缓存路由
-   * @param userRoutes 用户路由配置
-   */
-  const setAllCacheRoutes = (userRoutes: RouteRecordRaw[]) => {
-    if (!userRoutes?.length) {
-      allCacheRoutes.value = [];
-
-      return;
-    }
-
-    const result: string[][] = [];
-
-    userRoutes.forEach((route) => {
-      if (route.children?.length) {
-        traverseRoutes(route.children, [], result);
-      }
-    });
-
-    allCacheRoutes.value = result;
-  };
-
   return {
     routes,
     mixLayoutSideMenus,
     isDynamicRoutesGenerated,
-    allCacheRoutes,
     generateRoutes,
     setMixLayoutSideMenus,
     resetRouter,
@@ -109,12 +85,13 @@ const parseDynamicRoutes = (rawRoutes: RouteVO[]): RouteRecordRaw[] => {
   rawRoutes.forEach((route) => {
     const normalizedRoute = { ...route } as RouteRecordRaw;
 
+    // console.log();
+
     // 处理组件路径
     normalizedRoute.component =
       normalizedRoute.component?.toString() === "Layout"
         ? Layout
-        : modules[`../../views/${normalizedRoute.component}.vue`] ||
-          modules["../../views/error-page/404.vue"];
+        : modules[`../../views/${normalizedRoute.component}.vue`];
 
     // 递归解析子路由
     if (normalizedRoute.children) {
@@ -128,24 +105,31 @@ const parseDynamicRoutes = (rawRoutes: RouteVO[]): RouteRecordRaw[] => {
 };
 
 /**
- * 遍历路由树收集缓存路由
- * @param nodes 路由节点
- * @param path 当前路径
- * @param result 结果数组
+ * 去除中间层的路由 `component` 属性
+ * @param routes 路由数组
+ * @param isTopLevel 是否是顶层路由
  */
-const traverseRoutes = (nodes: RouteRecordRaw[], path: string[], result: string[][]) => {
-  nodes.forEach((node) => {
-    const newPath: string[] = node.name ? [...path, String(node.name)] : [...path];
+const processRoutes = (routes: RouteVO[], isTopLevel: boolean = true): RouteVO[] => {
+  return routes.map((route) => {
+    // 创建新对象
+    const newRoute: RouteVO = {
+      path: route.path,
+      name: route.name,
+      children: route.children,
+      meta: { ...route.meta },
+    };
 
-    // 叶子节点且需要缓存
-    if (!node.children?.length && node.meta?.keepAlive) {
-      result.push(newPath);
+    // 如果是顶层或者component不是"Layout"，保留component属性
+    if (isTopLevel || route.component !== "Layout") {
+      newRoute.component = route.component;
     }
 
-    // 递归处理子节点
-    if (node.children?.length) {
-      traverseRoutes(node.children, newPath, result);
+    // 递归处理children，标记为非顶层
+    if (route.children && route.children.length > 0) {
+      newRoute.children = processRoutes(route.children, false);
     }
+
+    return newRoute;
   });
 };
 
