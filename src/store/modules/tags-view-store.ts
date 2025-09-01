@@ -97,6 +97,19 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     }
   }
 
+  /**
+   * 根据路径更新标签名称
+   * @param fullPath 路径
+   * @param title 标签名称
+   */
+  function updateTagName(fullPath: string, title: string) {
+    const tag = visitedViews.value.find((tag: TagView) => tag.fullPath === fullPath);
+
+    if (tag) {
+      tag.title = title;
+    }
+  }
+
   function addView(view: TagView) {
     addVisitedView(view);
     addCachedView(view);
@@ -257,5 +270,6 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     closeCurrentView,
     isActive,
     toLastView,
+    updateTagName,
   };
 });

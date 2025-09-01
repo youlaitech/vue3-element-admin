@@ -27,8 +27,6 @@ export const usePermissionStore = defineStore("permission", () => {
 
       isDynamicRoutesGenerated.value = true;
 
-      console.log("dynamicRoutes", dynamicRoutes);
-
       return dynamicRoutes;
     } catch (error) {
       console.error("❌ Failed to generate routes:", error);
@@ -85,13 +83,17 @@ const parseDynamicRoutes = (rawRoutes: RouteVO[]): RouteRecordRaw[] => {
   rawRoutes.forEach((route) => {
     const normalizedRoute = { ...route } as RouteRecordRaw;
 
-    // console.log();
-
-    // 处理组件路径
-    normalizedRoute.component =
-      normalizedRoute.component?.toString() === "Layout"
-        ? Layout
-        : modules[`../../views/${normalizedRoute.component}.vue`];
+    if (!normalizedRoute.component) {
+      // 如果没有组件，则将组件设置为 undefined 防止404 例如(多级菜单的父菜单)
+      normalizedRoute.component = undefined;
+    } else {
+      // 处理组件路径
+      normalizedRoute.component =
+        normalizedRoute.component?.toString() === "Layout"
+          ? Layout
+          : modules[`../../views/${normalizedRoute.component}.vue`] ||
+            modules[`../../views/error/404.vue`]; // 找不到页面时，返回404页面
+    }
 
     // 递归解析子路由
     if (normalizedRoute.children) {
