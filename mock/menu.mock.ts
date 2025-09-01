@@ -244,7 +244,7 @@ export default defineMock([
           children: [
             {
               path: "multi-level1",
-              component: "demo/multi-level/level1",
+              component: "Layout",
               name: "MultiLevel1",
               meta: {
                 title: "菜单一级",
@@ -256,7 +256,7 @@ export default defineMock([
               children: [
                 {
                   path: "multi-level2",
-                  component: "demo/multi-level/children/level2",
+                  component: "Layout",
                   name: "MultiLevel2",
                   meta: {
                     title: "菜单二级",
@@ -1317,10 +1317,10 @@ export default defineMock([
               id: 21,
               parentId: 20,
               name: "菜单一级",
-              type: "MENU",
+              type: "CATALOG",
               routeName: null,
               routePath: "multi-level1",
-              component: "demo/multi-level/level1",
+              component: "Layout",
               sort: 1,
               visible: 1,
               icon: "",
@@ -1331,10 +1331,10 @@ export default defineMock([
                   id: 22,
                   parentId: 21,
                   name: "菜单二级",
-                  type: "MENU",
+                  type: "CATALOG",
                   routeName: null,
                   routePath: "multi-level2",
-                  component: "demo/multi-level/children/level2",
+                  component: "Layout",
                   sort: 1,
                   visible: 1,
                   icon: "",
