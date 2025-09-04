@@ -5,8 +5,14 @@
     :title="t('settings.project')"
     :before-close="handleCloseDrawer"
     class="settings-drawer"
+    :class="{ 'inside-mode': settingsStore.actionFooterMode === ActionFooterMode.INSIDE_DRAWER }"
   >
-    <div class="settings-content">
+    <div
+      class="settings-content"
+      :class="{
+        'no-footer-offset': settingsStore.actionFooterMode === ActionFooterMode.INSIDE_DRAWER,
+      }"
+    >
       <section class="config-section">
         <el-divider>{{ t("settings.theme") }}</el-divider>
 
@@ -97,7 +103,46 @@
                 <div class="layout-name">{{ item.label }}</div>
                 <!-- 选中状态指示器 -->
                 <div v-if="settingsStore.layout === item.value" class="layout-check">
-                  <el-icon><Check /></el-icon>
+                  <el-icon>
+                    <Check />
+                  </el-icon>
+                </div>
+              </div>
+            </el-tooltip>
+          </div>
+        </div>
+      </section>
+
+      <!-- 操作区域布局设置 -->
+      <section class="config-section">
+        <el-divider>{{ t("settings.operationArea") }}</el-divider>
+        <div class="layout-select">
+          <div class="layout-grid">
+            <el-tooltip
+              v-for="opt in actionFooterOptions"
+              :key="opt.value"
+              :content="opt.label"
+              placement="bottom"
+            >
+              <div
+                role="button"
+                tabindex="0"
+                :class="[
+                  'layout-item',
+                  opt.className,
+                  { 'is-active': settingsStore.actionFooterMode === opt.value },
+                ]"
+                @click="handleActionFooterChange(opt.value)"
+                @keydown.enter.space="handleActionFooterChange(opt.value)"
+              >
+                <div class="layout-preview">
+                  <div class="layout-main"></div>
+                </div>
+                <div class="layout-name">{{ opt.label }}</div>
+                <div v-if="settingsStore.actionFooterMode === opt.value" class="layout-check">
+                  <el-icon>
+                    <Check />
+                  </el-icon>
                 </div>
               </div>
             </el-tooltip>
@@ -107,7 +152,10 @@
     </div>
 
     <!-- 操作按钮区域 - 固定到底部 -->
-    <div class="action-footer">
+    <div
+      class="action-footer"
+      :class="{ inside: settingsStore.actionFooterMode === ActionFooterMode.INSIDE_DRAWER }"
+    >
       <div class="action-divider"></div>
       <div class="action-card">
         <div class="action-buttons">
@@ -148,7 +196,7 @@
 import { DocumentCopy, RefreshLeft, Check } from "@element-plus/icons-vue";
 
 const { t } = useI18n();
-import { LayoutMode, SidebarColor, ThemeMode } from "@/enums";
+import { LayoutMode, SidebarColor, ThemeMode, ActionFooterMode } from "@/enums";
 import { useSettingsStore } from "@/store";
 import { themeColorPresets } from "@/settings";
 
@@ -171,6 +219,25 @@ const layoutOptions: LayoutOption[] = [
   { value: LayoutMode.LEFT, label: t("settings.leftLayout"), className: "left" },
   { value: LayoutMode.TOP, label: t("settings.topLayout"), className: "top" },
   { value: LayoutMode.MIX, label: t("settings.mixLayout"), className: "mix" },
+];
+
+interface ActionFooterOption {
+  value: ActionFooterMode;
+  label: string;
+  className: string;
+}
+
+const actionFooterOptions: ActionFooterOption[] = [
+  {
+    value: ActionFooterMode.FIXED_BOTTOM,
+    label: t("settings.actionFooterFixed"),
+    className: "fixed",
+  },
+  {
+    value: ActionFooterMode.INSIDE_DRAWER,
+    label: t("settings.actionFooterInside"),
+    className: "inside",
+  },
 ];
 
 // 使用统一的颜色预设配置
@@ -218,6 +285,14 @@ const handleLayoutChange = (layout: LayoutMode) => {
   if (settingsStore.layout === layout) return;
 
   settingsStore.updateLayout(layout);
+};
+
+/**
+ * 切换操作区布局
+ */
+const handleActionFooterChange = (mode: ActionFooterMode) => {
+  if (settingsStore.actionFooterMode === mode) return;
+  settingsStore.updateActionFooterMode(mode);
 };
 
 /**
@@ -284,6 +359,7 @@ const generateSettingsCode = (): string => {
     showWatermark: settingsStore.showWatermark,
     watermarkContent: "pkg.name",
     sidebarColorScheme: `SidebarColor.${settingsStore.sidebarColorScheme.toUpperCase().replace("-", "_")}`,
+    actionFooterMode: `ActionFooterMode.${settingsStore.actionFooterMode.toUpperCase()}`,
   };
 
   return `const defaultSettings: AppSettings = {
@@ -300,6 +376,7 @@ const generateSettingsCode = (): string => {
   showWatermark: ${settings.showWatermark},
   watermarkContent: ${settings.watermarkContent},
   sidebarColorScheme: ${settings.sidebarColorScheme},
+  actionFooterMode: ${settings.actionFooterMode},
 };`;
 };
 
@@ -319,6 +396,13 @@ const handleCloseDrawer = () => {
     height: 100%;
     padding: 0;
     overflow: hidden;
+  }
+}
+
+.settings-drawer.inside-mode {
+  :deep(.el-drawer__body) {
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -369,6 +453,12 @@ const handleCloseDrawer = () => {
       }
     }
   }
+}
+
+.action-footer.inside {
+  position: static;
+  margin-top: -45px;
+  border-top: none;
 }
 
 /* 主题切换器优化 */

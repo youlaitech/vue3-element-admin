@@ -1,4 +1,11 @@
-import { LayoutMode, ComponentSize, SidebarColor, ThemeMode, LanguageEnum } from "./enums";
+import {
+  LayoutMode,
+  ComponentSize,
+  SidebarColor,
+  ThemeMode,
+  LanguageEnum,
+  ActionFooterMode,
+} from "./enums";
 
 const { pkg } = __APP_INFO__;
 
@@ -32,6 +39,8 @@ export const defaultSettings: AppSettings = {
   watermarkContent: pkg.name,
   // 侧边栏配色方案
   sidebarColorScheme: SidebarColor.CLASSIC_BLUE,
+  // 抽屉底部操作区域布局模式
+  actionFooterMode: ActionFooterMode.FIXED_BOTTOM,
 };
 
 // 主题色预设 - 经典配色方案

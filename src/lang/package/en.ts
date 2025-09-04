@@ -69,6 +69,7 @@ export default {
     theme: "Theme",
     interface: "Interface",
     navigation: "Navigation",
+    operationArea: "Operation Area",
     themeColor: "Theme Color",
     showTagsView: "Show Tags View",
     showAppLogo: "Show App Logo",
@@ -92,5 +93,7 @@ export default {
     copyConfigDescription:
       "Generate current settings code and copy to clipboard, then overwrite src/settings.ts file",
     resetConfigDescription: "Restore all settings to system default values",
+    actionFooterFixed: "Fixed Bottom",
+    actionFooterInside: "Inside Drawer",
   },
 };

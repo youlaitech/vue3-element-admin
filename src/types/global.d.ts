@@ -78,6 +78,8 @@ declare global {
     watermarkContent: string;
     /** 侧边栏配色方案 */
     sidebarColorScheme: "classic-blue" | "minimal-white";
+    /** 操作区布局模式 */
+    actionFooterMode: import("@/enums").ActionFooterMode;
   }
 
   /**

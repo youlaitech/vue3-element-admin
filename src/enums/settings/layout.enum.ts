@@ -51,3 +51,18 @@ export const enum ComponentSize {
    */
   SMALL = "small",
 }
+
+/**
+ * 设置抽屉底部操作区域布局模式
+ */
+export const enum ActionFooterMode {
+  /**
+   * 固定到底部（抽屉外层，覆盖）
+   */
+  FIXED_BOTTOM = "fixed_bottom",
+
+  /**
+   * 抽屉之内（随内容滚动，保持布局）
+   */
+  INSIDE_DRAWER = "inside_drawer",
+}

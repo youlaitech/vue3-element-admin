@@ -1,6 +1,7 @@
 import { defaultSettings } from "@/settings";
 import { SidebarColor, ThemeMode } from "@/enums/settings/theme.enum";
 import type { LayoutMode } from "@/enums/settings/layout.enum";
+import { ActionFooterMode } from "@/enums";
 import { applyTheme, generateThemeColors, toggleDarkMode, toggleSidebarColor } from "@/utils/theme";
 import { SETTINGS_KEYS } from "@/constants";
 
@@ -15,6 +16,7 @@ interface SettingsState {
   // 布局设置
   layout: LayoutMode;
   sidebarColorScheme: string;
+  actionFooterMode: ActionFooterMode;
 
   // 主题设置
   theme: ThemeMode;
@@ -53,6 +55,11 @@ export const useSettingsStore = defineStore("setting", () => {
 
   const theme = useStorage<ThemeMode>(SETTINGS_KEYS.THEME, defaultSettings.theme);
 
+  const actionFooterMode = useStorage<ActionFooterMode>(
+    SETTINGS_KEYS.ACTION_FOOTER_MODE,
+    defaultSettings.actionFooterMode
+  );
+
   // 🎯 设置项映射
   const settingsMap = {
     showTagsView,
@@ -60,6 +67,7 @@ export const useSettingsStore = defineStore("setting", () => {
     showWatermark,
     sidebarColorScheme,
     layout,
+    actionFooterMode,
   } as const;
 
   // 🎯 监听器 - 主题变化
@@ -107,6 +115,10 @@ export const useSettingsStore = defineStore("setting", () => {
     layout.value = newLayout;
   }
 
+  function updateActionFooterMode(newMode: ActionFooterMode): void {
+    actionFooterMode.value = newMode;
+  }
+
   // 🎯 设置面板显示控制
   function toggleSettingsPanel(): void {
     settingsVisible.value = !settingsVisible.value;
@@ -129,6 +141,7 @@ export const useSettingsStore = defineStore("setting", () => {
     layout.value = defaultSettings.layout as LayoutMode;
     themeColor.value = defaultSettings.themeColor;
     theme.value = defaultSettings.theme;
+    actionFooterMode.value = defaultSettings.actionFooterMode;
   }
 
   return {
@@ -141,6 +154,7 @@ export const useSettingsStore = defineStore("setting", () => {
     layout,
     themeColor,
     theme,
+    actionFooterMode,
 
     // 更新方法
     updateSetting,
@@ -148,6 +162,7 @@ export const useSettingsStore = defineStore("setting", () => {
     updateThemeColor,
     updateSidebarColorScheme,
     updateLayout,
+    updateActionFooterMode,
 
     // 面板控制
     toggleSettingsPanel,

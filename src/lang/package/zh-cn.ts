@@ -69,6 +69,7 @@ export default {
     theme: "主题设置",
     interface: "界面设置",
     navigation: "导航设置",
+    operationArea: "操作区域",
     themeColor: "主题颜色",
     themeColorTip: "主题颜色",
     darkMode: "暗黑模式",
@@ -93,5 +94,7 @@ export default {
     configManagement: "配置管理",
     copyConfigDescription: "生成当前设置的代码并复制到剪贴板，然后覆盖 src/settings.ts 文件",
     resetConfigDescription: "恢复所有设置为系统默认值",
+    actionFooterFixed: "固定底部",
+    actionFooterInside: "抽屉之内",
   },
 };

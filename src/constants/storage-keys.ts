@@ -19,6 +19,7 @@ export const LAYOUT_KEY = "layout";
 export const SIDEBAR_COLOR_SCHEME_KEY = "sidebarColorScheme";
 export const THEME_KEY = "theme";
 export const THEME_COLOR_KEY = "themeColor";
+export const ACTION_FOOTER_MODE_KEY = "actionFooterMode";
 
 // 🎯 功能分组的键映射对象
 
@@ -43,6 +44,7 @@ export const SETTINGS_KEYS = {
   LAYOUT: LAYOUT_KEY,
   THEME_COLOR: THEME_COLOR_KEY,
   THEME: THEME_KEY,
+  ACTION_FOOTER_MODE: ACTION_FOOTER_MODE_KEY,
 } as const;
 
 // 📦 所有存储键的统一集合
