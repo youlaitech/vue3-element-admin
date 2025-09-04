@@ -63,19 +63,9 @@
     "**/dist/**": true,
     "**/yarn.lock": true
   },
-  "i18n-ally.keystyle": "nested",
-  "i18n-ally.sortKeys": true,
-  "i18n-ally.namespace": false,
-  "i18n-ally.pathMatcher": "{namespaces}/{locale}.{ext}",
-  "i18n-ally.enabledParsers": ["ts"],
-  "i18n-ally.sourceLanguage": "en",
-  "i18n-ally.displayLanguage": "zh-CN",
-  "i18n-ally.enabledFrameworks": [
-    "vue",
-    "react"
-  ],
   "i18n-ally.localesPaths": [
-    "src/lang"
+    "src/lang/package"
   ],
-  "scss.lint.unknownAtRules": "ignore"
+  "scss.lint.unknownAtRules": "ignore",
+  "i18n-ally.keystyle": "nested"
 }
