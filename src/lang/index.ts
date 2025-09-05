@@ -8,12 +8,8 @@ import zhCnLocale from "./package/zh-cn.json";
 const appStore = useAppStoreHook();
 
 const messages = {
-  "zh-cn": {
-    ...zhCnLocale,
-  },
-  en: {
-    ...enLocale,
-  },
+  "zh-cn": zhCnLocale,
+  en: enLocale,
 };
 
 const i18n = createI18n({
