@@ -66,6 +66,5 @@
   "i18n-ally.localesPaths": [
     "src/lang/package"
   ],
-  "scss.lint.unknownAtRules": "ignore",
-  "i18n-ally.keystyle": "nested"
+  "scss.lint.unknownAtRules": "ignore"
 }
