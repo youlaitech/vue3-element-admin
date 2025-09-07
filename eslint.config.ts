@@ -1,11 +1,16 @@
 // https://eslint.org/docs/latest/use/configure/configuration-files-new
 
+// 基础ESLint配置
 import eslint from "@eslint/js";
-import pluginVue from "eslint-plugin-vue";
-import * as typescriptEslint from "typescript-eslint";
-import vueParser from "vue-eslint-parser";
 import globals from "globals";
+// TypeScript支持
+import * as typescriptEslint from "typescript-eslint";
+// Vue支持
+import pluginVue from "eslint-plugin-vue";
+import vueParser from "vue-eslint-parser";
+// 代码风格与格式化
 import configPrettier from "eslint-config-prettier";
+import prettierPlugin from "eslint-plugin-prettier";
 
 // 解析自动导入配置
 import fs from "node:fs";
@@ -132,6 +137,7 @@ export default [
         sourceType: "module",
         parser: typescriptEslint.parser,
         extraFileExtensions: [".vue"],
+        tsconfigRootDir: __dirname,
       },
     },
     rules: {
@@ -174,8 +180,10 @@ export default [
     languageOptions: {
       parser: typescriptEslint.parser,
       parserOptions: {
-        project: true,
-        tsconfigRootDir: import.meta.dirname,
+        ecmaVersion: "latest",
+        sourceType: "module",
+        project: "./tsconfig.json",
+        tsconfigRootDir: __dirname,
       },
     },
     rules: {
@@ -212,5 +220,15 @@ export default [
   },
 
   // Prettier 集成（必须放在最后）
-  configPrettier,
+  {
+    plugins: {
+      prettier: prettierPlugin, // 将 Prettier 的输出作为 ESLint 的问题来报告
+    },
+    rules: {
+      ...configPrettier.rules,
+      "prettier/prettier": ["error", {}, { usePrettierrc: true }],
+      "arrow-body-style": "off",
+      "prefer-arrow-callback": "off",
+    },
+  },
 ];

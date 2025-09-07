@@ -2,18 +2,14 @@ import type { App } from "vue";
 import { createI18n } from "vue-i18n";
 import { useAppStoreHook } from "@/store/modules/app-store";
 // 本地语言包
-import enLocale from "./package/en";
-import zhCnLocale from "./package/zh-cn";
+import enLocale from "./package/en.json";
+import zhCnLocale from "./package/zh-cn.json";
 
 const appStore = useAppStoreHook();
 
 const messages = {
-  "zh-cn": {
-    ...zhCnLocale,
-  },
-  en: {
-    ...enLocale,
-  },
+  "zh-cn": zhCnLocale,
+  en: enLocale,
 };
 
 const i18n = createI18n({

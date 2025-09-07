@@ -107,31 +107,19 @@ const parseDynamicRoutes = (rawRoutes: RouteVO[]): RouteRecordRaw[] => {
 };
 
 /**
- * 去除中间层的路由 `component` 属性
+ * 路由处理函数
+ *  - 去除中间层路由 `component: Layout` 的 `component` 属性
  * @param routes 路由数组
  * @param isTopLevel 是否是顶层路由
  */
 const processRoutes = (routes: RouteVO[], isTopLevel: boolean = true): RouteVO[] => {
-  return routes.map((route) => {
-    // 创建新对象
-    const newRoute: RouteVO = {
-      path: route.path,
-      name: route.name,
-      children: route.children,
-      meta: { ...route.meta },
+  return routes.map(({ component, children, ...args }) => {
+    return {
+      ...args,
+      component: isTopLevel || component !== "Layout" ? component : undefined,
+      // 递归处理children，标记为非顶层
+      children: children && children.length > 0 ? processRoutes(children, false) : [],
     };
-
-    // 如果是顶层或者component不是"Layout"，保留component属性
-    if (isTopLevel || route.component !== "Layout") {
-      newRoute.component = route.component;
-    }
-
-    // 递归处理children，标记为非顶层
-    if (route.children && route.children.length > 0) {
-      newRoute.children = processRoutes(route.children, false);
-    }
-
-    return newRoute;
   });
 };
 
