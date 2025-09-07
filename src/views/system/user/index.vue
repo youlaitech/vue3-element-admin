@@ -253,7 +253,8 @@ import RoleAPI from "@/api/system/role-api";
 
 import DeptTree from "./components/DeptTree.vue";
 import UserImport from "./components/UserImport.vue";
-
+import { useUserStore } from "@/store";
+const userStore = useUserStore();
 defineOptions({
   name: "User",
   inheritAttrs: false,
@@ -426,6 +427,33 @@ const handleSubmit = useDebounceFn(() => {
 }, 1000);
 
 /**
+ * 检查是否删除当前登录用户
+ * @param singleId 单个删除的用户ID
+ * @param selectedIds 批量删除的用户ID数组
+ * @param currentUserInfo 当前用户信息
+ * @returns 是否包含当前用户
+ */
+function isDeletingCurrentUser(
+  singleId?: number,
+  selectedIds: number[] = [],
+  currentUserInfo?: any
+): boolean {
+  if (!currentUserInfo?.userId) return false;
+
+  // 单个删除检查
+  if (singleId && singleId.toString() === currentUserInfo.userId) {
+    return true;
+  }
+
+  // 批量删除检查
+  if (!singleId && selectedIds.length > 0) {
+    return selectedIds.map(String).includes(currentUserInfo.userId);
+  }
+
+  return false;
+}
+
+/**
  * 删除用户
  *
  * @param id  用户ID
@@ -437,12 +465,19 @@ function handleDelete(id?: number) {
     return;
   }
 
+  // 安全检查：防止删除当前登录用户
+  const currentUserInfo = userStore.userInfo;
+  if (isDeletingCurrentUser(id, selectIds.value, currentUserInfo)) {
+    ElMessage.error("不能删除当前登录用户");
+    return;
+  }
+
   ElMessageBox.confirm("确认删除用户?", "警告", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
   }).then(
-    function () {
+    () => {
       loading.value = true;
       UserAPI.deleteByIds(userIds)
         .then(() => {
@@ -451,7 +486,7 @@ function handleDelete(id?: number) {
         })
         .finally(() => (loading.value = false));
     },
-    function () {
+    () => {
       ElMessage.info("已取消删除");
     }
   );
