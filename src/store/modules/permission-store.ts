@@ -21,7 +21,8 @@ export const usePermissionStore = defineStore("permission", () => {
   async function generateRoutes(): Promise<RouteRecordRaw[]> {
     try {
       const data = await MenuAPI.getRoutes(); // 获取当前登录人拥有的菜单路由
-      const dynamicRoutes = parseDynamicRoutes(processRoutes(data));
+      const processRouteList = processRoutes(data); // 处理后的路由数据
+      const dynamicRoutes = parseDynamicRoutes(processRouteList);
 
       routes.value = [...constantRoutes, ...dynamicRoutes];
 
@@ -117,8 +118,8 @@ const processRoutes = (routes: RouteVO[], isTopLevel: boolean = true): RouteVO[]
     return {
       ...args,
       component: isTopLevel || component !== "Layout" ? component : undefined,
-      // 递归处理children，标记为非顶层
-      children: children && children.length > 0 ? processRoutes(children, false) : [],
+      //  递归处理children，标记为非顶层  todo 原样返回 children（undefined）
+      children: children && children.length > 0 ? processRoutes(children, false) : children,
     };
   });
 };
