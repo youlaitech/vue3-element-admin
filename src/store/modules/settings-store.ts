@@ -2,7 +2,7 @@ import { defaultSettings } from "@/settings";
 import { SidebarColor, ThemeMode } from "@/enums/settings/theme.enum";
 import type { LayoutMode } from "@/enums/settings/layout.enum";
 import { applyTheme, generateThemeColors, toggleDarkMode, toggleSidebarColor } from "@/utils/theme";
-import { SETTINGS_KEYS } from "@/constants";
+import { STORAGE_KEYS } from "@/constants";
 
 // 🎯 设置项类型定义
 interface SettingsState {
@@ -26,34 +26,40 @@ type MutableSetting = Exclude<keyof SettingsState, "settingsVisible">;
 type SettingValue<K extends MutableSetting> = SettingsState[K];
 
 export const useSettingsStore = defineStore("setting", () => {
-  // 🎯 基础设置 - 非持久化
+  // 设置面板可见性
   const settingsVisible = ref<boolean>(false);
 
-  // 🎯 持久化设置 - 使用分组常量
+  // 是否显示标签页视图
   const showTagsView = useStorage<boolean>(
-    SETTINGS_KEYS.SHOW_TAGS_VIEW,
+    STORAGE_KEYS.SHOW_TAGS_VIEW,
     defaultSettings.showTagsView
   );
 
-  const showAppLogo = useStorage<boolean>(SETTINGS_KEYS.SHOW_APP_LOGO, defaultSettings.showAppLogo);
+  // 是否显示应用Logo
+  const showAppLogo = useStorage<boolean>(STORAGE_KEYS.SHOW_APP_LOGO, defaultSettings.showAppLogo);
 
+  // 是否显示水印
   const showWatermark = useStorage<boolean>(
-    SETTINGS_KEYS.SHOW_WATERMARK,
+    STORAGE_KEYS.SHOW_WATERMARK,
     defaultSettings.showWatermark
   );
 
+  // 侧边栏配色方案
   const sidebarColorScheme = useStorage<string>(
-    SETTINGS_KEYS.SIDEBAR_COLOR_SCHEME,
+    STORAGE_KEYS.SIDEBAR_COLOR_SCHEME,
     defaultSettings.sidebarColorScheme
   );
 
-  const layout = useStorage<LayoutMode>(SETTINGS_KEYS.LAYOUT, defaultSettings.layout as LayoutMode);
+  // 布局模式
+  const layout = useStorage<LayoutMode>(STORAGE_KEYS.LAYOUT, defaultSettings.layout as LayoutMode);
 
-  const themeColor = useStorage<string>(SETTINGS_KEYS.THEME_COLOR, defaultSettings.themeColor);
+  // 主题颜色
+  const themeColor = useStorage<string>(STORAGE_KEYS.THEME_COLOR, defaultSettings.themeColor);
 
-  const theme = useStorage<ThemeMode>(SETTINGS_KEYS.THEME, defaultSettings.theme);
+  // 主题模式（亮色/暗色）
+  const theme = useStorage<ThemeMode>(STORAGE_KEYS.THEME, defaultSettings.theme);
 
-  // 🎯 设置项映射
+  // 设置项映射，用于统一管理
   const settingsMap = {
     showTagsView,
     showAppLogo,
@@ -62,7 +68,7 @@ export const useSettingsStore = defineStore("setting", () => {
     layout,
   } as const;
 
-  // 🎯 监听器 - 主题变化
+  // 监听主题变化，自动应用样式
   watch(
     [theme, themeColor],
     ([newTheme, newThemeColor]) => {
@@ -73,7 +79,7 @@ export const useSettingsStore = defineStore("setting", () => {
     { immediate: true }
   );
 
-  // 🎯 监听器 - 侧边栏配色方案变化
+  // 监听侧边栏配色变化
   watch(
     [sidebarColorScheme],
     ([newSidebarColorScheme]) => {
@@ -82,7 +88,7 @@ export const useSettingsStore = defineStore("setting", () => {
     { immediate: true }
   );
 
-  // 🎯 统一的设置更新方法 - 类型安全
+  // 通用设置更新方法
   function updateSetting<K extends keyof typeof settingsMap>(key: K, value: SettingValue<K>): void {
     const setting = settingsMap[key];
     if (setting) {
@@ -90,7 +96,7 @@ export const useSettingsStore = defineStore("setting", () => {
     }
   }
 
-  // 🎯 主题相关的专用更新方法
+  // 主题更新方法
   function updateTheme(newTheme: ThemeMode): void {
     theme.value = newTheme;
   }
@@ -107,7 +113,7 @@ export const useSettingsStore = defineStore("setting", () => {
     layout.value = newLayout;
   }
 
-  // 🎯 设置面板显示控制
+  // 设置面板控制
   function toggleSettingsPanel(): void {
     settingsVisible.value = !settingsVisible.value;
   }
@@ -120,7 +126,7 @@ export const useSettingsStore = defineStore("setting", () => {
     settingsVisible.value = false;
   }
 
-  // 🎯 批量重置设置
+  // 重置所有设置
   function resetSettings(): void {
     showTagsView.value = defaultSettings.showTagsView;
     showAppLogo.value = defaultSettings.showAppLogo;

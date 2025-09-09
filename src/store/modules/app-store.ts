@@ -6,23 +6,24 @@ import en from "element-plus/es/locale/lang/en";
 import { store } from "@/store";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 import { SidebarStatus } from "@/enums/settings/layout.enum";
+import { STORAGE_KEYS } from "@/constants";
 
 export const useAppStore = defineStore("app", () => {
   // 设备类型
-  const device = useStorage("device", DeviceEnum.DESKTOP);
+  const device = useStorage(STORAGE_KEYS.DEVICE, DeviceEnum.DESKTOP);
   // 布局大小
-  const size = useStorage("size", defaultSettings.size);
+  const size = useStorage(STORAGE_KEYS.SIZE, defaultSettings.size);
   // 语言
-  const language = useStorage("language", defaultSettings.language);
+  const language = useStorage(STORAGE_KEYS.LANGUAGE, defaultSettings.language);
   // 侧边栏状态
-  const sidebarStatus = useStorage("sidebarStatus", SidebarStatus.CLOSED);
+  const sidebarStatus = useStorage(STORAGE_KEYS.SIDEBAR_STATUS, SidebarStatus.CLOSED);
   const sidebar = reactive({
     opened: sidebarStatus.value === SidebarStatus.OPENED,
     withoutAnimation: false,
   });
 
   // 顶部菜单激活路径
-  const activeTopMenuPath = useStorage("activeTopMenuPath", "");
+  const activeTopMenuPath = useStorage(STORAGE_KEYS.ACTIVE_TOP_MENU_PATH, "");
 
   /**
    * 根据语言标识读取对应的语言包

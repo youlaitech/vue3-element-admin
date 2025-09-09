@@ -1,9 +1,10 @@
 import { store } from "@/store";
 import DictAPI, { type DictItemOption } from "@/api/system/dict-api";
+import { STORAGE_KEYS } from "@/constants";
 
 export const useDictStore = defineStore("dict", () => {
   // 字典数据缓存
-  const dictCache = useStorage<Record<string, DictItemOption[]>>("dict_cache", {});
+  const dictCache = useStorage<Record<string, DictItemOption[]>>(STORAGE_KEYS.DICT_CACHE, {});
 
   // 请求队列（防止重复请求）
   const requestQueue: Record<string, Promise<void>> = {};
