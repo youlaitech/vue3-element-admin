@@ -9,7 +9,8 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useLayout } from "./composables/useLayout";
+import { useRoute } from "vue-router";
+import { useLayout } from "@/composables/layout/useLayout";
 import LeftLayout from "./views/LeftLayout.vue";
 import TopLayout from "./views/TopLayout.vue";
 import MixLayout from "./views/MixLayout.vue";
@@ -18,10 +19,13 @@ import { LayoutMode } from "@/enums/settings/layout.enum";
 import { defaultSettings } from "@/settings";
 
 const { currentLayout } = useLayout();
+const route = useRoute();
 
 // 根据当前布局模式选择对应的组件
 const currentLayoutComponent = computed(() => {
-  switch (currentLayout.value) {
+  const override = route.meta?.layout as LayoutMode | undefined;
+  const layoutToUse = override ?? currentLayout.value;
+  switch (layoutToUse) {
     case LayoutMode.TOP:
       return TopLayout;
     case LayoutMode.MIX:

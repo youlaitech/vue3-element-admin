@@ -25,8 +25,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useWindowSize } from "@vueuse/core";
-import { useLayout } from "../composables/useLayout";
-import { useLayoutMenu } from "../composables/useLayoutMenu";
+import { useLayout } from "@/composables/layout/useLayout";
+import { useLayoutMenu } from "@/composables/layout/useLayoutMenu";
 import BaseLayout from "./BaseLayout.vue";
 import AppLogo from "../components/AppLogo/index.vue";
 import BasicMenu from "../components/Menu/BasicMenu.vue";

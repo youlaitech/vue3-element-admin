@@ -14,13 +14,12 @@
 </template>
 
 <script setup lang="ts">
-import { useLayout } from "../composables/useLayout";
-import { useLayoutResponsive } from "../composables/useLayoutResponsive";
+import { useLayout, useLayoutResponsive } from "@/composables";
 
 // 布局相关
 const { layoutClass, isSidebarOpen, closeSidebar } = useLayout();
 
-// 响应式处理
+// 响应式布局
 const { isMobile } = useLayoutResponsive();
 </script>
 

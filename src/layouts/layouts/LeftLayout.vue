@@ -28,8 +28,8 @@
 </template>
 
 <script setup lang="ts">
-import { useLayout } from "../composables/useLayout";
-import { useLayoutMenu } from "../composables/useLayoutMenu";
+import { useLayout } from "@/composables/layout/useLayout";
+import { useLayoutMenu } from "@/composables/layout/useLayoutMenu";
 import BaseLayout from "./BaseLayout.vue";
 import AppLogo from "../components/AppLogo/index.vue";
 import NavBar from "../components/NavBar/index.vue";

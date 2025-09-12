@@ -1,7 +1,7 @@
+import { ref } from "vue";
 import { useDictStoreHook } from "@/store/modules/dict-store";
 import { useStomp } from "./useStomp";
 import type { IMessage } from "@stomp/stompjs";
-import { ref } from "vue";
 
 // 字典消息类型
 export interface DictMessage {

@@ -86,14 +86,14 @@ const noticeList = ref<NoticePageVO[]>([]);
 const noticeDialogVisible = ref(false);
 const noticeDetail = ref<NoticeDetailVO | null>(null);
 
-import { useStomp } from "@/composables/useStomp";
+import { useStomp } from "@/composables/websocket/useStomp";
 const { subscribe, unsubscribe, isConnected } = useStomp();
 
 watch(
   () => isConnected.value,
   (connected) => {
     if (connected) {
-      subscribe("/user/queue/message", (message) => {
+      subscribe("/user/queue/message", (message: any) => {
         console.log("收到通知消息：", message);
         const data = JSON.parse(message.body);
         const id = data.id;

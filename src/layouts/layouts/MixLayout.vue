@@ -60,8 +60,7 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { useWindowSize } from "@vueuse/core";
-import { useLayout } from "../composables/useLayout";
-import { useLayoutMenu } from "../composables/useLayoutMenu";
+import { useLayout, useLayoutMenu } from "@/composables";
 import BaseLayout from "./BaseLayout.vue";
 import AppLogo from "../components/AppLogo/index.vue";
 import MixTopMenu from "../components/Menu/MixTopMenu.vue";
@@ -72,7 +71,6 @@ import MenuItem from "../components/Menu/components/MenuItem.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
 import variables from "@/styles/variables.module.scss";
 import { isExternal } from "@/utils/index";
-import { computed, watch } from "vue";
 import { useAppStore, usePermissionStore } from "@/store";
 
 const route = useRoute();

@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { useStomp } from "@/composables/useStomp";
+import { useStomp } from "@/composables/websocket/useStomp";
 import { useUserStoreHook } from "@/store/modules/user-store";
 
 const userStore = useUserStoreHook();

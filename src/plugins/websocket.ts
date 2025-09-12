@@ -1,4 +1,4 @@
-import { useDictSync } from "@/composables/useDictSync";
+import { useDictSync } from "@/composables";
 import { AuthStorage } from "@/utils/auth";
 // 不直接导入 store 或 userStore
 
@@ -63,7 +63,7 @@ export function setupWebSocket() {
       console.log("[WebSocketPlugin] 字典WebSocket初始化完成");
 
       // 初始化在线用户计数WebSocket
-      import("@/composables/useOnlineCount").then(({ useOnlineCount }) => {
+      import("@/composables").then(({ useOnlineCount }) => {
         const onlineCountInstance = useOnlineCount({ autoInit: false });
         onlineCountInstance.initWebSocket();
         console.log("[WebSocketPlugin] 在线用户计数WebSocket初始化完成");
