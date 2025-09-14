@@ -58,16 +58,17 @@
 </template>
 
 <script setup lang="ts">
+import { computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useWindowSize } from "@vueuse/core";
 import { useLayout, useLayoutMenu } from "@/composables";
-import BaseLayout from "./BaseLayout.vue";
-import AppLogo from "../components/AppLogo/index.vue";
-import MixTopMenu from "../components/Menu/MixTopMenu.vue";
-import NavbarActions from "../components/NavBar/components/NavbarActions.vue";
-import TagsView from "../components/TagsView/index.vue";
-import AppMain from "../components/AppMain/index.vue";
-import MenuItem from "../components/Menu/components/MenuItem.vue";
+import BaseLayout from "@/layouts/index.vue";
+import AppLogo from "../../components/AppLogo/index.vue";
+import MixTopMenu from "../../components/Menu/MixTopMenu.vue";
+import NavbarActions from "../../components/NavBar/components/NavbarActions.vue";
+import TagsView from "../../components/TagsView/index.vue";
+import AppMain from "../../components/AppMain/index.vue";
+import MenuItem from "../../components/Menu/components/MenuItem.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
 import variables from "@/styles/variables.module.scss";
 import { isExternal } from "@/utils/index";
@@ -91,8 +92,8 @@ const isLogoCollapsed = computed(() => width.value < 768);
 const activeLeftMenuPath = computed(() => {
   const { meta, path } = route;
   // 如果设置了activeMenu，则使用
-  if (meta?.activeMenu && typeof meta.activeMenu === "string") {
-    return meta.activeMenu;
+  if ((meta?.activeMenu as unknown as string) && typeof meta.activeMenu === "string") {
+    return meta.activeMenu as unknown as string;
   }
   return path;
 });
@@ -116,26 +117,16 @@ function resolvePath(routePath: string) {
 watch(
   () => route.path,
   (newPath) => {
-    console.log("📍 Route changed in MixLayout:", newPath);
-
     // 获取顶级路径
     const topMenuPath =
       newPath.split("/").filter(Boolean).length > 1 ? newPath.match(/^\/[^/]+/)?.[0] || "/" : "/";
 
     // 如果当前路径属于当前激活的顶部菜单
     if (newPath.startsWith(activeTopMenuPath.value)) {
-      console.log("📍 Route is under active top menu, ensuring menu item is activated");
+      // no-op
     }
     // 如果路径改变了顶级菜单，确保顶部菜单和左侧菜单都更新
     else if (topMenuPath !== activeTopMenuPath.value) {
-      console.log(
-        "📍 Top menu changed, updating active menu from:",
-        activeTopMenuPath.value,
-        "to:",
-        topMenuPath
-      );
-
-      // 主动更新顶部菜单和左侧菜单
       const appStore = useAppStore();
       const permissionStore = usePermissionStore();
 
@@ -283,7 +274,6 @@ watch(
     }
   }
 }
-
 :deep(.hasTagsView) {
   .app-main {
     height: calc(100vh - $navbar-height - $tags-view-height) !important;

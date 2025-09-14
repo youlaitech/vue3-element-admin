@@ -9,6 +9,11 @@
         </transition>
       </template>
     </router-view>
+
+    <!-- 返回顶部按钮 -->
+    <el-backtop target=".app-main">
+      <div class="i-svg:backtop w-6 h-6" />
+    </el-backtop>
   </section>
 </template>
 

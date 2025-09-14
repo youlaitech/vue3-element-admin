@@ -30,12 +30,12 @@
 <script setup lang="ts">
 import { useLayout } from "@/composables/layout/useLayout";
 import { useLayoutMenu } from "@/composables/layout/useLayoutMenu";
-import BaseLayout from "./BaseLayout.vue";
-import AppLogo from "../components/AppLogo/index.vue";
-import NavBar from "../components/NavBar/index.vue";
-import TagsView from "../components/TagsView/index.vue";
-import AppMain from "../components/AppMain/index.vue";
-import BasicMenu from "../components/Menu/BasicMenu.vue";
+import BaseLayout from "@/layouts/index.vue";
+import AppLogo from "../../components/AppLogo/index.vue";
+import NavBar from "../../components/NavBar/index.vue";
+import TagsView from "../../components/TagsView/index.vue";
+import AppMain from "../../components/AppMain/index.vue";
+import BasicMenu from "../../components/Menu/BasicMenu.vue";
 
 // 布局相关参数
 const { isShowTagsView, isShowLogo, isSidebarOpen } = useLayout();

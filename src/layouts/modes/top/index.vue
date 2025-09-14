@@ -23,16 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useWindowSize } from "@vueuse/core";
 import { useLayout } from "@/composables/layout/useLayout";
 import { useLayoutMenu } from "@/composables/layout/useLayoutMenu";
-import BaseLayout from "./BaseLayout.vue";
-import AppLogo from "../components/AppLogo/index.vue";
-import BasicMenu from "../components/Menu/BasicMenu.vue";
-import NavbarActions from "../components/NavBar/components/NavbarActions.vue";
-import TagsView from "../components/TagsView/index.vue";
-import AppMain from "../components/AppMain/index.vue";
+import BaseLayout from "@/layouts/index.vue";
+import AppLogo from "../../components/AppLogo/index.vue";
+import BasicMenu from "../../components/Menu/BasicMenu.vue";
+import NavbarActions from "../../components/NavBar/components/NavbarActions.vue";
+import TagsView from "../../components/TagsView/index.vue";
+import AppMain from "../../components/AppMain/index.vue";
 
 // 布局相关参数
 const { isShowTagsView, isShowLogo } = useLayout();
