@@ -1,36 +1,47 @@
 <template>
-  <div class="layout" :class="layoutClass">
-    <!-- 移动端遮罩层 -->
-    <div v-if="isMobile && isSidebarOpen" class="layout__overlay" @click="closeSidebar" />
+  <div class="layout-wrapper">
+    <component :is="currentLayoutComponent" />
 
-    <!-- 布局内容插槽 -->
-    <slot></slot>
+    <!-- 设置面板 - 独立于布局组件 -->
+    <Settings v-if="isShowSettings" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useLayout, useLayoutResponsive } from "@/composables";
+import { useRoute } from "vue-router";
+import { useLayout } from "@/composables/layout/useLayout";
+import LeftLayout from "@/layouts/modes/left/index.vue";
+import TopLayout from "@/layouts/modes/top/index.vue";
+import MixLayout from "@/layouts/modes/mix/index.vue";
+import Settings from "./components/Settings/index.vue";
+import { LayoutMode } from "@/enums/settings/layout.enum";
+import { defaultSettings } from "@/settings";
 
-// 布局相关
-const { layoutClass, isSidebarOpen, closeSidebar } = useLayout();
+const { currentLayout } = useLayout();
+const route = useRoute();
 
-// 响应式布局
-const { isMobile } = useLayoutResponsive();
+/// Select the corresponding component based on the current layout mode
+const currentLayoutComponent = computed(() => {
+  const override = route.meta?.layout as LayoutMode | undefined;
+  const layoutToUse = override ?? currentLayout.value;
+  switch (layoutToUse) {
+    case LayoutMode.TOP:
+      return TopLayout;
+    case LayoutMode.MIX:
+      return MixLayout;
+    case LayoutMode.LEFT:
+    default:
+      return LeftLayout;
+  }
+});
+
+/// Whether to show the settings panel
+const isShowSettings = computed(() => defaultSettings.showSettings);
 </script>
 
 <style lang="scss" scoped>
-.layout {
+.layout-wrapper {
   width: 100%;
   height: 100%;
-
-  &__overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 999;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-  }
 }
 </style>

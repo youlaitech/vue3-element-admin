@@ -58,11 +58,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useWindowSize } from "@vueuse/core";
 import { useLayout, useLayoutMenu } from "@/composables";
-import BaseLayout from "@/layouts/index.vue";
+import BaseLayout from "../base/index.vue";
 import AppLogo from "../../components/AppLogo/index.vue";
 import MixTopMenu from "../../components/Menu/MixTopMenu.vue";
 import NavbarActions from "../../components/NavBar/components/NavbarActions.vue";

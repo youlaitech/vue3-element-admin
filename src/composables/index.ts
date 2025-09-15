@@ -4,4 +4,4 @@ export { useOnlineCount } from "./websocket/useOnlineCount";
 
 export { useLayout } from "./layout/useLayout";
 export { useLayoutMenu } from "./layout/useLayoutMenu";
-export { useLayoutResponsive } from "./layout/useLayoutResponsive";
+export { useDeviceDetection } from "./layout/useDeviceDetection";

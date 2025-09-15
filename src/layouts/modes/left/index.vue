@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { useLayout } from "@/composables/layout/useLayout";
 import { useLayoutMenu } from "@/composables/layout/useLayoutMenu";
-import BaseLayout from "@/layouts/index.vue";
+import BaseLayout from "../base/index.vue";
 import AppLogo from "../../components/AppLogo/index.vue";
 import NavBar from "../../components/NavBar/index.vue";
 import TagsView from "../../components/TagsView/index.vue";
