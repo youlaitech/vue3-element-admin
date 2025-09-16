@@ -71,7 +71,7 @@ export const useSettingsStore = defineStore("setting", () => {
   // 监听主题变化，自动应用样式
   watch(
     [theme, themeColor],
-    ([newTheme, newThemeColor]) => {
+    ([newTheme, newThemeColor]: [ThemeMode, string]) => {
       toggleDarkMode(newTheme === ThemeMode.DARK);
       const colors = generateThemeColors(newThemeColor, newTheme);
       applyTheme(colors);
