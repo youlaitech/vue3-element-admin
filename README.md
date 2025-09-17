@@ -79,10 +79,10 @@
 |---------------|--------------------|
 | 视频教程 | [https://www.bilibili.com/video/BV1eFUuYyEFj](https://www.bilibili.com/video/BV1eFUuYyEFj)  |
 | 项目搭建  | [基于 Vue3 + Vite + TypeScript + Element-Plus 从0到1搭建后台管理系统](https://blog.csdn.net/u013737132/article/details/130191394)  |
-| 官方文档 | [https://www.youlai.tech/vue3-element-admin/](https://www.youlai.tech/vue3-element-admin/)  |
+| 官方文档 | [https://www.youlai.tech/vue3-element-admin](https://www.youlai.tech/vue3-element-admin/)  |
 | 代码规范     | [ESLint V9 + Prettier + Stylelint + EditorConfig 约束和统一前端代码规范](https://youlai.blog.csdn.net/article/details/145608723) |
 | 提交规范 | [Husky + Lint-staged + Commitlint + Commitizen + cz-git 配置 Git 提交规范](https://youlai.blog.csdn.net/article/details/145615236) |
-| 接口文档 | [https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5) |
+| 接口文档 | [https://www.apifox.cn](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5) |
 
 
 
@@ -90,10 +90,11 @@
 
 - **环境准备**
 
-| 环境类型       | 名称                     |     备注          |
-|----------------|---------------|----------- |
-| **开发工具**   | [Visual Studio Code](https://code.visualstudio.com/Download) |
-| **运行环境**   | ^20.19.0 || >=22.12.0  |    20.19.0+ 或 22.12.0 及以上版本   |
+| 环境类型 | 版本要求 | 备注 |
+|---------|---------|------|
+| **Node.js** | `^20.19.0` 或 `>=22.12.0` | 推荐使用 LTS 版本（主版本为偶数） |
+| **包管理器** | `pnpm >= 8.0.0` | 项目使用 pnpm 作为包管理器 |
+| **开发工具** | [Visual Studio Code](https://code.visualstudio.com/Download) | 推荐安装 Vue、TypeScript 相关插件 |
 
 
 - **快速开始**
