@@ -19,8 +19,16 @@
               </span>
             </template>
 
+            <!-- 自定义插槽 -->
+            <slot
+              v-if="item.type === 'custom'"
+              :name="item.slotName"
+              :form-data="queryParams"
+              :prop="item.prop"
+              :attrs="{ style: { width: '100%' }, ...item.attrs }"
+            />
             <el-cascader
-              v-if="item.type === 'cascader'"
+              v-else-if="item.type === 'cascader'"
               v-model.trim="queryParams[item.prop]"
               v-bind="{ style: { width: '100%' }, ...item.attrs }"
               v-on="item.events || {}"
