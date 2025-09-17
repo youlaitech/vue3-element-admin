@@ -115,7 +115,7 @@ function resolvePath(routePath: string) {
 // 监听路由变化，确保左侧菜单能随TagsView切换而正确激活
 watch(
   () => route.path,
-  (newPath) => {
+  (newPath: string) => {
     // 获取顶级路径
     const topMenuPath =
       newPath.split("/").filter(Boolean).length > 1 ? newPath.match(/^\/[^/]+/)?.[0] || "/" : "/";
