@@ -2,9 +2,9 @@
   <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/logo.png">
   <h1>vue3-element-admin</h1>
 
-  <img src="https://img.shields.io/badge/Vue-3.5.18-brightgreen.svg"/>
-  <img src="https://img.shields.io/badge/Vite-7.0.6-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.10.5-blue.svg"/>
+  <img src="https://img.shields.io/badge/Vue-3.5.21-brightgreen.svg"/>
+  <img src="https://img.shields.io/badge/Vite-7.1.5-green.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.11.2-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
