@@ -1,5 +1,6 @@
 export { useStomp } from "./websocket/useStomp";
-export { useDictSync, DictMessage } from "./websocket/useDictSync";
+export { useDictSync } from "./websocket/useDictSync";
+export type { DictMessage } from "./websocket/useDictSync";
 export { useOnlineCount } from "./websocket/useOnlineCount";
 
 export { useLayout } from "./layout/useLayout";

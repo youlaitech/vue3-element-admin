@@ -89,7 +89,7 @@ function createDictSyncHook() {
     }
 
     // 取消所有订阅
-    subscriptionIds.value.forEach((id) => {
+    subscriptionIds.value.forEach((id: string) => {
       unsubscribe(id);
     });
     subscriptionIds.value = [];
@@ -182,7 +182,7 @@ function createDictSyncHook() {
       console.log(`[DictSync] 字典缓存已清除: ${dictCode}`);
 
       // 调用所有注册的回调函数
-      messageCallbacks.value.forEach((callback) => {
+      messageCallbacks.value.forEach((callback: DictMessageCallback) => {
         try {
           callback(parsedData);
         } catch (callbackError) {
