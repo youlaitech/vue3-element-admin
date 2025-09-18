@@ -12,13 +12,22 @@
     :on-error="onError"
   >
     <template #default>
-      <el-image v-if="modelValue" :src="modelValue" />
-      <el-icon v-if="modelValue" class="single-upload__delete-btn" @click.stop="handleDelete">
-        <CircleCloseFilled />
-      </el-icon>
-      <el-icon v-else class="single-upload__add-btn">
-        <Plus />
-      </el-icon>
+      <template v-if="modelValue">
+        <el-image
+          class="single-upload__image"
+          :src="modelValue"
+          :preview-src-list="[modelValue]"
+          @click.stop="handlePreview"
+        />
+        <el-icon class="single-upload__delete-btn" @click.stop="handleDelete">
+          <CircleCloseFilled />
+        </el-icon>
+      </template>
+      <template v-else>
+        <el-icon>
+          <Plus />
+        </el-icon>
+      </template>
     </template>
   </el-upload>
 </template>
@@ -139,6 +148,13 @@ function handleUpload(options: UploadRequestOptions) {
 }
 
 /**
+ * 预览图片
+ */
+function handlePreview() {
+  console.log("预览图片,停止冒泡");
+}
+
+/**
  * 删除图片
  */
 function handleDelete() {
@@ -166,21 +182,14 @@ const onError = (error: any) => {
 
 <style scoped lang="scss">
 :deep(.el-upload--picture-card) {
-  width: v-bind("props.style.width");
-  height: v-bind("props.style.height");
+  position: relative;
+  width: v-bind("props.style.width ?? '150px'");
+  height: v-bind("props.style.height ?? '150px'");
 }
 
 .single-upload {
-  position: relative;
-  width: v-bind("props.style.width");
-  height: v-bind("props.style.height");
-  overflow: hidden;
-  cursor: pointer;
-  border: 1px var(--el-border-color) solid;
-  border-radius: 5px;
-
-  &:hover {
-    border-color: var(--el-color-primary);
+  &__image {
+    border-radius: 6px;
   }
 
   &__delete-btn {
