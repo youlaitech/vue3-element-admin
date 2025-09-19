@@ -1,6 +1,6 @@
 import type { App } from "vue";
 
-import { setupDirective } from "@/directive";
+import { setupDirective } from "@/directives";
 import { setupI18n } from "@/lang";
 import { setupRouter } from "@/router";
 import { setupStore } from "@/store";
