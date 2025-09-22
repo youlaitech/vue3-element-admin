@@ -522,8 +522,8 @@ import Codemirror from "codemirror-editor-vue3";
 import type { CmComponentRef } from "codemirror-editor-vue3";
 import type { EditorConfiguration } from "codemirror";
 
-import { FormTypeEnum } from "@/enums/codegen/form.enum";
-import { QueryTypeEnum } from "@/enums/codegen/query.enum";
+import { FormTypeEnum } from "@/enums/codegen/form-enum";
+import { QueryTypeEnum } from "@/enums/codegen/query-enum";
 
 import GeneratorAPI, {
   TablePageVO,

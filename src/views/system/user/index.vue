@@ -245,7 +245,7 @@
 
 <script setup lang="ts">
 import { useAppStore } from "@/store/modules/app-store";
-import { DeviceEnum } from "@/enums/settings/device.enum";
+import { DeviceEnum } from "@/enums/settings/device-enum";
 
 import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user-api";
 import DeptAPI from "@/api/system/dept-api";

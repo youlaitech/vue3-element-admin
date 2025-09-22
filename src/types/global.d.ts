@@ -67,7 +67,7 @@ declare global {
     /** 主题颜色 */
     themeColor: string;
     /** 主题模式(dark|light) */
-    theme: import("@/enums/settings/theme.enum").ThemeMode;
+    theme: import("@/enums/settings/theme-enum").ThemeMode;
     /** 布局大小(default |large |small) */
     size: string;
     /** 语言( zh-cn| en) */

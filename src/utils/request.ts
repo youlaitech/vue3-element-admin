@@ -1,7 +1,7 @@
 import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from "axios";
 import qs from "qs";
 import { useUserStoreHook } from "@/store/modules/user-store";
-import { ResultEnum } from "@/enums/api/result.enum";
+import { ApiCodeEnum } from "@/enums/api/code-enum";
 import { AuthStorage } from "@/utils/auth";
 import router from "@/router";
 
@@ -50,7 +50,7 @@ httpRequest.interceptors.response.use(
     const { code, data, msg } = response.data;
 
     // 请求成功
-    if (code === ResultEnum.SUCCESS) {
+    if (code === ApiCodeEnum.SUCCESS) {
       return data;
     }
 
@@ -72,11 +72,11 @@ httpRequest.interceptors.response.use(
     const { code, msg } = response.data as ApiResponse;
 
     switch (code) {
-      case ResultEnum.ACCESS_TOKEN_INVALID:
+      case ApiCodeEnum.ACCESS_TOKEN_INVALID:
         // Access Token 过期，尝试刷新
         return refreshTokenAndRetry(config);
 
-      case ResultEnum.REFRESH_TOKEN_INVALID:
+      case ApiCodeEnum.REFRESH_TOKEN_INVALID:
         // Refresh Token 过期，跳转登录页
         await redirectToLogin("登录已过期，请重新登录");
         return Promise.reject(new Error(msg || "Refresh Token Invalid"));

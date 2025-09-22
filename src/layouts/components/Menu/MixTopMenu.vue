@@ -40,7 +40,7 @@ defineOptions({
 import { LocationQueryRaw, RouteRecordRaw } from "vue-router";
 import { usePermissionStore, useAppStore, useSettingsStore } from "@/store";
 import variables from "@/styles/variables.module.scss";
-import { SidebarColor } from "@/enums/settings/theme.enum";
+import { SidebarColor } from "@/enums/settings/theme-enum";
 
 const router = useRouter();
 const appStore = useAppStore();
