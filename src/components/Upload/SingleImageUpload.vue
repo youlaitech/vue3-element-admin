@@ -1,7 +1,6 @@
 <!-- 单图上传组件 -->
 <template>
   <el-upload
-    v-model="modelValue"
     class="single-upload"
     list-type="picture-card"
     :show-file-list="false"
