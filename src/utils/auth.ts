@@ -1,5 +1,7 @@
 import { Storage } from "./storage";
 import { AUTH_KEYS } from "@/constants";
+import { useUserStoreHook } from "@/store/modules/user-store";
+import router from "@/router";
 
 // 负责本地凭证与偏好的读写
 export const AuthStorage = {
@@ -41,3 +43,25 @@ export const AuthStorage = {
     return Storage.get<boolean>(AUTH_KEYS.REMEMBER_ME, false);
   },
 };
+
+/**
+ * 重定向到登录页面
+ */
+export async function redirectToLogin(message: string = "请重新登录"): Promise<void> {
+  try {
+    ElNotification({
+      title: "提示",
+      message,
+      type: "warning",
+      duration: 3000,
+    });
+
+    await useUserStoreHook().resetAllState();
+
+    // 跳转到登录页，保留当前路由用于登录后跳转
+    const currentPath = router.currentRoute.value.fullPath;
+    await router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+  } catch (error) {
+    console.error("Redirect to login error:", error);
+  }
+}

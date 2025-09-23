@@ -1,9 +1,12 @@
 import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from "axios";
 import qs from "qs";
-import { useUserStoreHook } from "@/store/modules/user-store";
 import { ApiCodeEnum } from "@/enums/api/code-enum";
-import { AuthStorage } from "@/utils/auth";
-import router from "@/router";
+import { AuthStorage, redirectToLogin } from "@/utils/auth";
+import { useTokenRefresh } from "@/composables/auth/useTokenRefresh";
+import { authConfig } from "@/settings";
+
+// 初始化token刷新组合式函数
+const { refreshTokenAndRetry } = useTokenRefresh();
 
 /**
  * 创建 HTTP 请求实例
@@ -42,8 +45,8 @@ httpRequest.interceptors.request.use(
  */
 httpRequest.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
-    // 如果响应是二进制流，则直接返回（用于文件下载、Excel 导出等）
-    if (response.config.responseType === "blob") {
+    // 如果响应是二进制数据，则直接返回response对象（用于文件下载、Excel导出、图片显示等）
+    if (response.config.responseType === "blob" || response.config.responseType === "arraybuffer") {
       return response;
     }
 
@@ -73,8 +76,15 @@ httpRequest.interceptors.response.use(
 
     switch (code) {
       case ApiCodeEnum.ACCESS_TOKEN_INVALID:
-        // Access Token 过期，尝试刷新
-        return refreshTokenAndRetry(config);
+        // Access Token 过期
+        if (authConfig.enableTokenRefresh) {
+          // 启用了token刷新，尝试刷新
+          return refreshTokenAndRetry(config, httpRequest);
+        } else {
+          // 未启用token刷新，直接跳转登录页
+          await redirectToLogin("登录已过期，请重新登录");
+          return Promise.reject(new Error(msg || "Access Token Invalid"));
+        }
 
       case ApiCodeEnum.REFRESH_TOKEN_INVALID:
         // Refresh Token 过期，跳转登录页
@@ -87,88 +97,5 @@ httpRequest.interceptors.response.use(
     }
   }
 );
-
-/**
- * 重试请求的回调函数类型
- */
-type RetryCallback = () => void;
-
-// Token 刷新相关状态
-let isRefreshingToken = false;
-const pendingRequests: RetryCallback[] = [];
-
-/**
- * 刷新 Token 并重试请求
- */
-async function refreshTokenAndRetry(config: InternalAxiosRequestConfig): Promise<any> {
-  return new Promise((resolve, reject) => {
-    // 封装需要重试的请求
-    const retryRequest = () => {
-      const newToken = AuthStorage.getAccessToken();
-      if (newToken && config.headers) {
-        config.headers.Authorization = `Bearer ${newToken}`;
-      }
-      httpRequest(config).then(resolve).catch(reject);
-    };
-
-    // 将请求加入等待队列
-    pendingRequests.push(retryRequest);
-
-    // 如果没有正在刷新，则开始刷新流程
-    if (!isRefreshingToken) {
-      isRefreshingToken = true;
-
-      useUserStoreHook()
-        .refreshToken()
-        .then(() => {
-          // 刷新成功，重试所有等待的请求
-          pendingRequests.forEach((callback) => {
-            try {
-              callback();
-            } catch (error) {
-              console.error("Retry request error:", error);
-            }
-          });
-          // 清空队列
-          pendingRequests.length = 0;
-        })
-        .catch(async (error) => {
-          console.error("Token refresh failed:", error);
-          // 刷新失败，清空队列并跳转登录页
-          pendingRequests.length = 0;
-          await redirectToLogin("登录状态已失效，请重新登录");
-          // 拒绝所有等待的请求
-          pendingRequests.forEach(() => {
-            reject(new Error("Token refresh failed"));
-          });
-        })
-        .finally(() => {
-          isRefreshingToken = false;
-        });
-    }
-  });
-}
-
-/**
- * 重定向到登录页面
- */
-async function redirectToLogin(message: string = "请重新登录"): Promise<void> {
-  try {
-    ElNotification({
-      title: "提示",
-      message,
-      type: "warning",
-      duration: 3000,
-    });
-
-    await useUserStoreHook().resetAllState();
-
-    // 跳转到登录页，保留当前路由用于登录后跳转
-    const currentPath = router.currentRoute.value.fullPath;
-    await router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
-  } catch (error) {
-    console.error("Redirect to login error:", error);
-  }
-}
 
 export default httpRequest;
