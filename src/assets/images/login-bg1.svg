@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="100%" height="100%" viewBox="0 0 1400 800">
+  <style>
+    :root {
+      --blue: rgba(64, 158, 255, 0.08);
+      --grey: rgba(144, 147, 153, 0.05);
+      --orange: rgba(230, 162, 60, 0.06);
+      --green: rgba(144, 238, 144, 0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --blue: rgba(64, 158, 255, 0.04);
+        --grey: rgba(144, 147, 153, 0.03);
+        --orange: rgba(230, 162, 60, 0.04);
+        --green: rgba(144, 238, 144, 0.04);
+      }
+    }
+  </style>
+
+  <!-- 左侧波浪 -->
+  <path d="M-50 550 Q200 500 450 550 T950 530"
+        fill="none"
+        stroke="#409EFF"
+        stroke-width="1.5"
+        stroke-opacity="0.05"
+        stroke-linecap="round">
+  </path>
+
+  <!-- 右侧波浪 -->
+  <path d="M450 650 Q800 620 1150 660 T1550 630"
+        fill="none"
+        stroke="#909399"
+        stroke-width="1"
+        stroke-opacity="0.03"
+        stroke-linecap="round">
+  </path>
+
+  <!-- 右下方圆形 -->
+  <circle cx="950" cy="400" r="70" 
+          fill="var(--blue)" 
+          stroke="#409EFF" 
+          stroke-width="1" 
+          stroke-opacity="0.05">
+  </circle>
+
+  <!-- 左上方半球形  -->
+  <g transform="rotate(-10, 300, 180)">
+    <path d="M 180 180 A 120 120 0 1 1 420 180 Q420 195 405 195 L 310 195 L 195 195 Q180 195 180 180" 
+          fill="var(--orange)" 
+          stroke="#E6A23C" 
+          stroke-width="1" 
+          stroke-opacity="0.05">
+    </path>
+  </g>
+
+  <!-- 左下方三角形 -->
+  <path d="M300 600 L380 520 L420 650 Z" 
+        fill="var(--green)" 
+        stroke="#909399" 
+        stroke-width="1" 
+        stroke-opacity="0.04">
+  </path>
+
+  <!-- 旋转方块 -->
+ <rect x="1000" y="420" rx="10" ry="10" width="60" height="60" fill="rgba(169, 174, 184, 0.1)" stroke="rgba(169, 174, 184, 0.2)" stroke-width="1" opacity="0.5">
+    <animateTransform attributeType="XML" attributeName="transform"
+                      begin="0s" dur="30s" type="rotate"
+                      from="0 1450 550" to="360 1450 550"
+                      repeatCount="indefinite"/>
+  </rect>
+</svg>
