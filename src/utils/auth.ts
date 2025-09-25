@@ -1,5 +1,5 @@
 import { Storage } from "./storage";
-import { AUTH_KEYS } from "@/constants";
+import { AUTH_KEYS, ROLE_ROOT } from "@/constants";
 import { useUserStoreHook } from "@/store/modules/user-store";
 import router from "@/router";
 
@@ -43,6 +43,23 @@ export const AuthStorage = {
     return Storage.get<boolean>(AUTH_KEYS.REMEMBER_ME, false);
   },
 };
+
+/**
+ * 权限判断
+ */
+export function hasPerm(value: string | string[], type: "button" | "role" = "button"): boolean {
+  const { roles, perms } = useUserStoreHook().userInfo;
+
+  // 超级管理员拥有所有权限
+  if (type === "button" && roles.includes(ROLE_ROOT)) {
+    return true;
+  }
+
+  const auths = type === "button" ? perms : roles;
+  return typeof value === "string"
+    ? auths.includes(value)
+    : value.some((perm) => auths.includes(perm));
+}
 
 /**
  * 重定向到登录页面

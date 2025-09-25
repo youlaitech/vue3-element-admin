@@ -5,7 +5,7 @@ import router from "@/router";
 
 import MenuAPI, { type RouteVO } from "@/api/system/menu-api";
 const modules = import.meta.glob("../../views/**/**.vue");
-const Layout = () => import("@/layouts/index.vue");
+const Layout = () => import("../../layouts/index.vue");
 
 export const usePermissionStore = defineStore("permission", () => {
   // 所有路由（静态路由 + 动态路由）
@@ -13,42 +13,34 @@ export const usePermissionStore = defineStore("permission", () => {
   // 混合布局的左侧菜单路由
   const mixLayoutSideMenus = ref<RouteRecordRaw[]>([]);
   // 动态路由是否已生成
-  const isDynamicRoutesGenerated = ref(false);
+  const isRouteGenerated = ref(false);
 
-  /**
-   * 生成动态路由
-   */
+  /** 生成动态路由 */
   async function generateRoutes(): Promise<RouteRecordRaw[]> {
     try {
-      const data = await MenuAPI.getRoutes(); // 获取当前登录人拥有的菜单路由
-      const processRouteList = processRoutes(data); // 处理后的路由数据
-      const dynamicRoutes = parseDynamicRoutes(processRouteList);
+      const data = await MenuAPI.getRoutes(); // 获取当前登录人的菜单路由
+      const dynamicRoutes = transformRoutes(data);
 
       routes.value = [...constantRoutes, ...dynamicRoutes];
-
-      isDynamicRoutesGenerated.value = true;
+      isRouteGenerated.value = true;
 
       return dynamicRoutes;
     } catch (error) {
-      console.error("❌ Failed to generate routes:", error);
-      isDynamicRoutesGenerated.value = false;
+      // 路由生成失败，重置状态
+      isRouteGenerated.value = false;
       throw error;
     }
   }
 
-  /**
-   * 设置混合布局的左侧菜单
-   */
+  /** 设置混合布局左侧菜单 */
   const setMixLayoutSideMenus = (parentPath: string) => {
     const parentMenu = routes.value.find((item) => item.path === parentPath);
     mixLayoutSideMenus.value = parentMenu?.children || [];
   };
 
-  /**
-   * 重置路由状态
-   */
+  /** 重置路由状态 */
   const resetRouter = () => {
-    // 移除动态路由
+    // 移除动态添加的路由
     const constantRouteNames = new Set(constantRoutes.map((route) => route.name).filter(Boolean));
     routes.value.forEach((route) => {
       if (route.name && !constantRouteNames.has(route.name)) {
@@ -56,16 +48,16 @@ export const usePermissionStore = defineStore("permission", () => {
       }
     });
 
-    // 重置状态
+    // 重置所有状态
     routes.value = [...constantRoutes];
     mixLayoutSideMenus.value = [];
-    isDynamicRoutesGenerated.value = false;
+    isRouteGenerated.value = false;
   };
 
   return {
     routes,
     mixLayoutSideMenus,
-    isDynamicRoutesGenerated,
+    isRouteGenerated,
     generateRoutes,
     setMixLayoutSideMenus,
     resetRouter,
@@ -73,63 +65,40 @@ export const usePermissionStore = defineStore("permission", () => {
 });
 
 /**
- * 解析后端返回的路由数据并转换为 Vue Router 兼容的路由配置
- *
- * @param rawRoutes 后端返回的原始路由数据
- * @returns 解析后的路由集合
+ * 转换后端路由数据为Vue Router配置
+ * 处理组件路径映射和Layout层级嵌套
  */
-const parseDynamicRoutes = (rawRoutes: RouteVO[]): RouteRecordRaw[] => {
-  const parsedRoutes: RouteRecordRaw[] = [];
+const transformRoutes = (routes: RouteVO[], isTopLevel: boolean = true): RouteRecordRaw[] => {
+  return routes.map((route) => {
+    const { component, children, ...args } = route;
 
-  rawRoutes.forEach((route) => {
-    const normalizedRoute = { ...route } as RouteRecordRaw;
+    // 处理组件：顶层或非Layout保留组件，中间层Layout设为undefined
+    const processedComponent = isTopLevel || component !== "Layout" ? component : undefined;
 
-    if (!normalizedRoute.component) {
-      // 如果没有组件，则将组件设置为 undefined 防止404 例如(多级菜单的父菜单)
+    const normalizedRoute = { ...args } as RouteRecordRaw;
+
+    if (!processedComponent) {
+      // 多级菜单的父级菜单，不需要组件
       normalizedRoute.component = undefined;
     } else {
-      // 处理组件路径
+      // 动态导入组件，Layout特殊处理，找不到组件时返回404
       normalizedRoute.component =
-        normalizedRoute.component?.toString() === "Layout"
+        processedComponent === "Layout"
           ? Layout
-          : modules[`../../views/${normalizedRoute.component}.vue`] ||
-            modules[`../../views/error/404.vue`]; // 找不到页面时，返回404页面
+          : modules[`../../views/${processedComponent}.vue`] ||
+            modules[`../../views/error/404.vue`];
     }
 
-    // 递归解析子路由
-    if (normalizedRoute.children) {
-      normalizedRoute.children = parseDynamicRoutes(route.children);
+    // 递归处理子路由
+    if (children && children.length > 0) {
+      normalizedRoute.children = transformRoutes(children, false);
     }
 
-    parsedRoutes.push(normalizedRoute);
-  });
-
-  return parsedRoutes;
-};
-
-/**
- * 路由处理函数
- *  - 去除中间层路由 `component: Layout` 的 `component` 属性
- * @param routes 路由数组
- * @param isTopLevel 是否是顶层路由
- */
-const processRoutes = (routes: RouteVO[], isTopLevel: boolean = true): RouteVO[] => {
-  return routes.map(({ component, children, ...args }) => {
-    return {
-      ...args,
-      component: isTopLevel || component !== "Layout" ? component : undefined,
-      //  递归处理children，标记为非顶层  todo 原样返回 children（undefined）
-      children: children && children.length > 0 ? processRoutes(children, false) : children,
-    };
+    return normalizedRoute;
   });
 };
 
-/**
- * 导出此hook函数用于在非组件环境(如其他store、工具函数等)中获取权限store实例
- *
- * 在组件中可直接使用usePermissionStore()，但在组件外部需要传入store实例
- * 此函数简化了这个过程，避免每次都手动传入store参数
- */
+/** 非组件环境使用权限store */
 export function usePermissionStoreHook() {
   return usePermissionStore(store);
 }

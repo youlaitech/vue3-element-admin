@@ -322,7 +322,7 @@
 </template>
 
 <script setup lang="ts">
-import { hasAuth } from "@/plugins/permission";
+import { hasPerm } from "@/utils/auth";
 import { useDateFormat, useThrottleFn } from "@vueuse/core";
 import {
   genFileId,
@@ -387,7 +387,7 @@ function hasButtonPerm(action: string): boolean {
   const perm = getButtonPerm(action);
   // 如果没有设置权限标识，则默认具有权限
   if (!perm) return true;
-  return hasAuth(perm);
+  return hasPerm(perm);
 }
 
 // 创建工具栏按钮
