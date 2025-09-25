@@ -16,7 +16,7 @@
     <!-- 登录页主体 -->
     <div flex-1 flex-center>
       <div
-        class="p-4xl w-full h-auto sm:w-450px border-rd-10px sm:h-680px shadow-[var(--el-box-shadow-light)] backdrop-blur-3px"
+        class="p-4xl w-full h-auto sm:w-450px sm:h-700px shadow-[var(--el-box-shadow-light)] border-rd-2"
       >
         <div w-full flex flex-col items-center>
           <!-- logo -->

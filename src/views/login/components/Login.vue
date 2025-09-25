@@ -37,28 +37,29 @@
 
       <!-- 验证码 -->
       <el-form-item prop="captchaCode">
-        <div flex>
+        <div flex items-center gap-10px>
           <el-input
             v-model.trim="loginFormData.captchaCode"
             :placeholder="t('login.captchaCode')"
+            clearable
+            class="flex-1"
             @keyup.enter="handleLoginSubmit"
           >
             <template #prefix>
               <div class="i-svg:captcha" />
             </template>
           </el-input>
-          <div cursor-pointer h="[40px]" w="[120px]" flex-center ml-10px @click="getCaptcha">
-            <el-icon v-if="codeLoading" class="is-loading"><Loading /></el-icon>
-
+          <div cursor-pointer h-40px w-120px flex-center @click="getCaptcha">
+            <el-icon v-if="codeLoading" class="is-loading" size="20"><Loading /></el-icon>
             <img
-              v-else
-              object-cover
+              v-else-if="captchaBase64"
               border-rd-4px
-              p-1px
+              object-cover
               shadow="[0_0_0_1px_var(--el-border-color)_inset]"
               :src="captchaBase64"
-              alt="code"
+              alt="captchaCode"
             />
+            <el-text v-else type="info" size="small">点击获取验证码</el-text>
           </div>
         </div>
       </el-form-item>
@@ -228,7 +229,7 @@ function toOtherForm(type: "register" | "resetPwd") {
   .divider-container {
     display: flex;
     align-items: center;
-    margin: 20px 0;
+    margin: 40px 0;
 
     .divider-line {
       flex: 1;
