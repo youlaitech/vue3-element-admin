@@ -3,7 +3,7 @@
     <!-- 搜索区域 -->
     <div class="search-container">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-suffix=":">
-        <el-form-item label="标题" prop="title">
+        <el-form-item label="标题123" prop="title">
           <el-input
             v-model="queryParams.title"
             placeholder="标题"
@@ -161,7 +161,7 @@
         v-model:total="total"
         v-model:page="queryParams.pageNum"
         v-model:limit="queryParams.pageSize"
-        @pagination="handleQuery()"
+        @pagination="fetchData()"
       />
     </el-card>
 
@@ -323,8 +323,13 @@ const currentNotice = ref<NoticeDetailVO>({});
 
 // 查询通知公告
 function handleQuery() {
-  loading.value = true;
   queryParams.pageNum = 1;
+  fetchData();
+}
+
+//发送请求接口
+function fetchData() {
+  loading.value = true;
   NoticeAPI.getPage(queryParams)
     .then((data) => {
       pageData.value = data.list;
