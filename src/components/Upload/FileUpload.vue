@@ -8,6 +8,7 @@
       :http-request="handleUpload"
       :on-success="handleSuccess"
       :on-error="handleError"
+      :on-exceed="handleExceed"
       :accept="props.accept"
       :limit="props.limit"
       multiple
@@ -22,10 +23,14 @@
         <template v-if="file.status === 'success'">
           <div class="el-upload-list__item-info">
             <a class="el-upload-list__item-name" @click="handleDownload(file)">
-              <el-icon><Document /></el-icon>
+              <el-icon>
+                <Document />
+              </el-icon>
               <span class="el-upload-list__item-file-name">{{ file.name }}</span>
               <span class="el-icon--close" @click.stop="handleRemove(file.url!)">
-                <el-icon><Close /></el-icon>
+                <el-icon>
+                  <Close />
+                </el-icon>
               </span>
             </a>
           </div>
@@ -174,6 +179,13 @@ function handleUpload(options: UploadRequestOptions) {
         reject(err);
       });
   });
+}
+
+/**
+ * 上传文件超出限制
+ */
+function handleExceed() {
+  ElMessage.warning(`最多只能上传${props.limit}个文件`);
 }
 
 /**
