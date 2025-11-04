@@ -41,9 +41,9 @@ export function useStomp(options: UseStompOptions = {}) {
   // 重连尝试次数
   const reconnectCount = ref(0);
   // 重连计时器
-  let reconnectTimer: any = null;
+  let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   // 连接超时计时器
-  let connectionTimeoutTimer: any = null;
+  let connectionTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
   // 存储所有订阅
   const subscriptions = new Map<string, StompSubscription>();
 
@@ -105,8 +105,8 @@ export function useStomp(options: UseStompOptions = {}) {
       isConnected.value = true;
       isConnecting = false;
       reconnectCount.value = 0;
-      clearTimeout(connectionTimeoutTimer);
-      clearTimeout(reconnectTimer);
+      if (connectionTimeoutTimer) clearTimeout(connectionTimeoutTimer);
+      if (reconnectTimer) clearTimeout(reconnectTimer);
       console.log("WebSocket连接已建立");
     };
 
@@ -255,7 +255,7 @@ export function useStomp(options: UseStompOptions = {}) {
     isConnecting = true;
 
     // 设置连接超时
-    clearTimeout(connectionTimeoutTimer);
+    if (connectionTimeoutTimer) clearTimeout(connectionTimeoutTimer);
     connectionTimeoutTimer = setTimeout(() => {
       if (!isConnected.value && isConnecting) {
         console.warn("WebSocket连接超时");
