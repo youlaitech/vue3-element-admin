@@ -50,6 +50,10 @@ export const AuthStorage = {
 export function hasPerm(value: string | string[], type: "button" | "role" = "button"): boolean {
   const { roles, perms } = useUserStoreHook().userInfo;
 
+  if (!roles || !perms) {
+    return false;
+  }
+
   // 超级管理员拥有所有权限
   if (type === "button" && roles.includes(ROLE_ROOT)) {
     return true;
@@ -65,20 +69,22 @@ export function hasPerm(value: string | string[], type: "button" | "role" = "but
  * 重定向到登录页面
  */
 export async function redirectToLogin(message: string = "请重新登录"): Promise<void> {
+  ElNotification({
+    title: "提示",
+    message,
+    type: "warning",
+    duration: 3000,
+  });
+
+  await useUserStoreHook().resetAllState();
+
   try {
-    ElNotification({
-      title: "提示",
-      message,
-      type: "warning",
-      duration: 3000,
-    });
-
-    await useUserStoreHook().resetAllState();
-
     // 跳转到登录页，保留当前路由用于登录后跳转
     const currentPath = router.currentRoute.value.fullPath;
     await router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
   } catch (error) {
     console.error("Redirect to login error:", error);
+    // 强制跳转，即使路由重定向失败
+    window.location.href = "/login";
   }
 }
