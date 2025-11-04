@@ -39,7 +39,7 @@ function createDictSyncHook() {
   const messageCallbacks = ref<DictMessageCallback[]>([]);
 
   // 重试定时器
-  let retryTimer: any = null;
+  let retryTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * 注册字典消息回调

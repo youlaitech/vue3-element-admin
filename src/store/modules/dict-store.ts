@@ -26,10 +26,16 @@ export const useDictStore = defineStore("dict", () => {
     if (dictCache.value[dictCode]) return;
     // 防止重复请求
     if (!requestQueue[dictCode]) {
-      requestQueue[dictCode] = DictAPI.getDictItems(dictCode).then((data) => {
-        cacheDictItems(dictCode, data);
-        Reflect.deleteProperty(requestQueue, dictCode);
-      });
+      requestQueue[dictCode] = DictAPI.getDictItems(dictCode)
+        .then((data) => {
+          cacheDictItems(dictCode, data);
+          Reflect.deleteProperty(requestQueue, dictCode);
+        })
+        .catch((error) => {
+          // 请求失败，清理队列，允许重试
+          Reflect.deleteProperty(requestQueue, dictCode);
+          throw error;
+        });
     }
     await requestQueue[dictCode];
   };
