@@ -55,13 +55,17 @@ export function useTokenRefresh() {
           })
           .catch(async (error) => {
             console.error("Token refresh failed:", error);
-            // 刷新失败，清空队列并跳转登录页
+            // 刷新失败，先 reject 所有等待的请求，再清空队列
+            const failedRequests = [...pendingRequests];
             pendingRequests.length = 0;
-            await redirectToLogin("登录状态已失效，请重新登录");
+
             // 拒绝所有等待的请求
-            pendingRequests.forEach(() => {
+            failedRequests.forEach(() => {
               reject(new Error("Token refresh failed"));
             });
+
+            // 跳转登录页
+            await redirectToLogin("登录状态已失效，请重新登录");
           })
           .finally(() => {
             isRefreshingToken = false;
