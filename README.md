@@ -3,8 +3,8 @@
   <h1>vue3-element-admin</h1>
 
   <img src="https://img.shields.io/badge/Vue-3.5.22-brightgreen.svg"/>
-  <img src="https://img.shields.io/badge/Vite-7.1.5-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.11.4-blue.svg"/>
+  <img src="https://img.shields.io/badge/Vite-7.1.12-green.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.11.7-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
