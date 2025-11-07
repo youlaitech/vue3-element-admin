@@ -2,212 +2,210 @@ import { ref, watch, onMounted, onUnmounted, getCurrentInstance } from "vue";
 import { useStomp } from "./useStomp";
 import { registerWebSocketInstance } from "@/plugins/websocket";
 import { AuthStorage } from "@/utils/auth";
-import { ElMessage } from "element-plus";
-
-// 全局单例实例
-let globalInstance: ReturnType<typeof createOnlineCountHook> | null = null;
 
 /**
- * 创建在线用户计数的核心逻辑
+ * 在线用户数量消息结构
  */
-function createOnlineCountHook() {
-  // 在线用户数量
-  const onlineUserCount = ref(0);
+interface OnlineCountMessage {
+  count?: number;
+  timestamp?: number;
+}
 
-  // 最后更新时间戳
+/**
+ * 全局单例实例
+ */
+let globalInstance: ReturnType<typeof createOnlineCountComposable> | null = null;
+
+/**
+ * 创建在线用户计数组合式函数（内部工厂函数）
+ */
+function createOnlineCountComposable() {
+  // ==================== 状态管理 ====================
+  const onlineUserCount = ref(0);
   const lastUpdateTime = ref(0);
 
-  // 连接状态
-  const isConnected = ref(false);
-
-  // 连接正在尝试中
-  const isConnecting = ref(false);
-
-  // 使用Stomp客户端 - 配置使用指数退避策略
-  const stompInstance = useStomp({
-    reconnectDelay: 15000, // 重连基础延迟
-    maxReconnectAttempts: 3, // 重连次数上限
-    connectionTimeout: 10000, // 连接超时
-    useExponentialBackoff: true, // 启用指数退避
+  // ==================== WebSocket 客户端 ====================
+  const stomp = useStomp({
+    reconnectDelay: 15000,
+    maxReconnectAttempts: 3,
+    connectionTimeout: 10000,
+    useExponentialBackoff: true,
+    autoRestoreSubscriptions: true, // 自动恢复订阅
+    debug: false,
   });
 
-  const {
-    connect,
-    subscribe,
-    unsubscribe,
-    disconnect,
-    isConnected: stompConnected,
-  } = stompInstance;
+  // 在线用户计数主题
+  const ONLINE_COUNT_TOPIC = "/topic/online-count";
+
+  // 订阅 ID
+  let subscriptionId: string | null = null;
 
   // 注册到全局实例管理器
-  registerWebSocketInstance("onlineCount", stompInstance);
+  registerWebSocketInstance("onlineCount", stomp);
 
-  // 订阅ID
-  let subscriptionId = "";
+  /**
+   * 处理在线用户数量消息
+   */
+  const handleOnlineCountMessage = (message: any) => {
+    try {
+      const data = message.body;
+      const jsonData = JSON.parse(data) as OnlineCountMessage;
 
-  // 连接超时计时器
-  let connectionTimeoutTimer: any = null;
+      // 支持两种消息格式
+      // 1. 直接是数字: 42
+      // 2. 对象格式: { count: 42, timestamp: 1234567890 }
+      const count = typeof jsonData === "number" ? jsonData : jsonData.count;
 
-  // 监听Stomp连接状态
-  watch(stompConnected, (connected) => {
-    if (connected && isConnecting.value) {
-      isConnected.value = true;
-      isConnecting.value = false;
-
-      // 一旦连接成功，立即订阅主题
-      subscribeToOnlineCount();
-      console.log("[useOnlineCount] WebSocket连接成功，已订阅在线用户计数主题");
+      if (count !== undefined && !isNaN(count)) {
+        onlineUserCount.value = count;
+        lastUpdateTime.value = Date.now();
+        console.log(`[useOnlineCount] 在线用户数更新: ${count}`);
+      } else {
+        console.warn("[useOnlineCount] 收到无效的在线用户数:", data);
+      }
+    } catch (error) {
+      console.error("[useOnlineCount] 解析在线用户数失败:", error);
     }
-  });
+  };
 
   /**
    * 订阅在线用户计数主题
    */
   const subscribeToOnlineCount = () => {
-    if (!stompConnected.value) {
-      // 10秒后重试订阅
-      setTimeout(subscribeToOnlineCount, 10000);
+    if (subscriptionId) {
+      console.log("[useOnlineCount] 已存在订阅，跳过");
       return;
     }
 
-    // 如果已经订阅，先取消订阅
+    // 订阅在线用户计数主题（useStomp 会处理重连后的订阅恢复）
+    subscriptionId = stomp.subscribe(ONLINE_COUNT_TOPIC, handleOnlineCountMessage);
+
     if (subscriptionId) {
-      unsubscribe(subscriptionId);
+      console.log(`[useOnlineCount] 已订阅主题: ${ONLINE_COUNT_TOPIC}`);
+    } else {
+      console.log(`[useOnlineCount] 暂存订阅配置，等待连接建立后自动订阅`);
     }
-
-    // 订阅在线用户计数主题
-    subscriptionId = subscribe("/topic/online-count", (message) => {
-      try {
-        const data = message.body;
-
-        const jsonData = JSON.parse(data);
-        const count = typeof jsonData === "number" ? jsonData : jsonData.count;
-
-        if (!isNaN(count)) {
-          onlineUserCount.value = count;
-          lastUpdateTime.value = Date.now();
-        }
-      } catch (error) {
-        console.error("[useOnlineCount] 解析在线用户数量失败:", error);
-      }
-    });
   };
 
   /**
-   * 初始化WebSocket连接并订阅在线用户主题
+   * 初始化 WebSocket 连接并订阅在线用户主题
    */
-  const initWebSocket = () => {
-    if (isConnecting.value) return;
-
-    // 检查WebSocket端点是否配置
+  const initialize = () => {
+    // 检查 WebSocket 端点是否配置
     const wsEndpoint = import.meta.env.VITE_APP_WS_ENDPOINT;
     if (!wsEndpoint) {
-      console.log("[useOnlineCount] 未配置WebSocket端点(VITE_APP_WS_ENDPOINT),跳过WebSocket连接");
+      console.log("[useOnlineCount] 未配置 WebSocket 端点，跳过初始化");
       return;
     }
 
-    // 使用 AuthStorage.getAccessToken() 获取令牌，确保获取到最新的
+    // 检查令牌有效性
     const accessToken = AuthStorage.getAccessToken();
     if (!accessToken) {
-      console.log("[useOnlineCount] 没有检测到有效令牌，不尝试WebSocket连接");
+      console.log("[useOnlineCount] 未检测到有效令牌，跳过初始化");
       return;
     }
 
-    isConnecting.value = true;
-    console.log("[useOnlineCount] 开始建立WebSocket连接...");
+    console.log("[useOnlineCount] 初始化在线用户计数服务...");
 
-    // 连接WebSocket
-    connect();
+    // 建立 WebSocket 连接
+    stomp.connect();
 
-    // 设置连接超时显示UI提示
-    clearTimeout(connectionTimeoutTimer);
-    connectionTimeoutTimer = setTimeout(() => {
-      if (!isConnected.value) {
-        console.warn("[useOnlineCount] WebSocket连接超时，将自动尝试重连");
-        ElMessage.warning("正在尝试连接服务器，请稍候...");
-
-        // 超时后尝试重新连接
-        closeWebSocket();
-        setTimeout(() => {
-          // 再次检查令牌有效性
-          if (AuthStorage.getAccessToken()) {
-            initWebSocket();
-          } else {
-            console.log("[useOnlineCount] 令牌无效，放弃重连");
-          }
-        }, 3000);
-      }
-    }, 10000); // 较长的UI提示超时
-
-    // 监听连接状态变化，连接成功后清除超时计时器
-    const unwatch = watch(stompConnected, (connected) => {
-      if (connected) {
-        clearTimeout(connectionTimeoutTimer);
-        unwatch();
-      }
-    });
+    // 订阅主题
+    subscribeToOnlineCount();
   };
 
   /**
-   * 关闭WebSocket连接
+   * 关闭 WebSocket 连接并清理资源
    */
-  const closeWebSocket = () => {
+  const cleanup = () => {
+    console.log("[useOnlineCount] 清理在线用户计数服务...");
+
+    // 取消订阅
     if (subscriptionId) {
-      unsubscribe(subscriptionId);
-      subscriptionId = "";
+      stomp.unsubscribe(subscriptionId);
+      subscriptionId = null;
     }
 
-    // 清除连接超时计时器
-    if (connectionTimeoutTimer) {
-      clearTimeout(connectionTimeoutTimer);
-      connectionTimeoutTimer = null;
-    }
+    // 也可以通过主题地址取消订阅
+    stomp.unsubscribeDestination(ONLINE_COUNT_TOPIC);
 
-    disconnect();
-    isConnected.value = false;
-    isConnecting.value = false;
+    // 断开连接
+    stomp.disconnect();
+
+    // 重置状态
+    onlineUserCount.value = 0;
+    lastUpdateTime.value = 0;
   };
 
+  // 监听连接状态变化
+  watch(
+    stomp.isConnected,
+    (connected) => {
+      if (connected) {
+        console.log("[useOnlineCount] WebSocket 已连接");
+      } else {
+        console.log("[useOnlineCount] WebSocket 已断开");
+      }
+    },
+    { immediate: false }
+  );
+
   return {
-    onlineUserCount,
-    lastUpdateTime,
-    isConnected,
-    isConnecting,
-    initWebSocket,
-    closeWebSocket,
+    // 状态
+    onlineUserCount: readonly(onlineUserCount),
+    lastUpdateTime: readonly(lastUpdateTime),
+    isConnected: stomp.isConnected,
+    connectionState: stomp.connectionState,
+
+    // 方法
+    initialize,
+    cleanup,
   };
 }
 
 /**
- * 在线用户计数组合式函数
- * 使用单例模式，避免重复创建 WebSocket 连接
+ * 在线用户计数组合式函数（单例模式）
+ *
+ * 用于实时显示系统在线用户数量
+ *
  * @param options 配置选项
  * @param options.autoInit 是否在组件挂载时自动初始化（默认 true）
+ *
+ * @example
+ * ```ts
+ * // 在组件中使用
+ * const { onlineUserCount, isConnected } = useOnlineCount();
+ *
+ * // 手动控制初始化
+ * const { onlineUserCount, initialize, cleanup } = useOnlineCount({ autoInit: false });
+ * onMounted(() => initialize());
+ * onUnmounted(() => cleanup());
+ * ```
  */
 export function useOnlineCount(options: { autoInit?: boolean } = {}) {
   const { autoInit = true } = options;
 
+  // 获取或创建单例实例
   if (!globalInstance) {
-    globalInstance = createOnlineCountHook();
+    globalInstance = createOnlineCountComposable();
   }
 
-  // 只有在组件上下文中且 autoInit 为 true 时才使用生命周期钩子
-  if (autoInit && getCurrentInstance()) {
-    // 组件挂载时检查是否需要初始化WebSocket
+  // 只在组件上下文中且 autoInit 为 true 时使用生命周期钩子
+  const instance = getCurrentInstance();
+  if (autoInit && instance) {
     onMounted(() => {
-      // 只有在未连接且未连接中时才尝试初始化
-      if (!globalInstance!.isConnected.value && !globalInstance!.isConnecting.value) {
-        console.log("[useOnlineCount] 组件挂载，尝试初始化WebSocket连接");
-        globalInstance!.initWebSocket();
+      // 只有在未连接时才尝试初始化
+      if (!globalInstance!.isConnected.value) {
+        console.log("[useOnlineCount] 组件挂载，初始化 WebSocket 连接");
+        globalInstance!.initialize();
       } else {
-        console.log("[useOnlineCount] WebSocket已连接或正在连接，跳过初始化");
+        console.log("[useOnlineCount] WebSocket 已连接，跳过初始化");
       }
     });
 
-    // 组件卸载时不关闭连接，保持全局连接
+    // 注意：不在卸载时关闭连接，保持全局连接
     onUnmounted(() => {
-      // 不关闭连接，让其他组件继续使用
-      console.log("[useOnlineCount] Component unmounted, keeping WebSocket connection");
+      console.log("[useOnlineCount] 组件卸载（保持 WebSocket 连接）");
     });
   }
 

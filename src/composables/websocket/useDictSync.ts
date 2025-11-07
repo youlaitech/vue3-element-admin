@@ -2,53 +2,145 @@ import { useDictStoreHook } from "@/store/modules/dict-store";
 import { useStomp } from "./useStomp";
 import type { IMessage } from "@stomp/stompjs";
 
-// 字典消息类型
-export interface DictMessage {
+/**
+ * 字典变更消息结构
+ */
+export interface DictChangeMessage {
+  /** 字典编码 */
   dictCode: string;
+  /** 时间戳 */
   timestamp: number;
 }
 
-// 字典事件回调类型
-export type DictMessageCallback = (_message: DictMessage) => void;
-
-// 全局单例实例
-let instance: ReturnType<typeof createDictSyncHook> | null = null;
+/**
+ * 字典变更事件回调函数类型
+ */
+export type DictChangeCallback = (message: DictChangeMessage) => void;
 
 /**
- * 创建字典同步组合式函数
- * 负责监听后端字典变更并同步到前端
+ * 全局单例实例
  */
-function createDictSyncHook() {
+let singletonInstance: ReturnType<typeof createDictSyncComposable> | null = null;
+
+/**
+ * 创建字典同步组合式函数（内部工厂函数）
+ */
+function createDictSyncComposable() {
   const dictStore = useDictStoreHook();
 
-  // 使用现有的useStomp，配置适合字典场景的重连参数
-  const { isConnected, connect, subscribe, unsubscribe, disconnect } = useStomp({
-    reconnectDelay: 20000, // 字典更新重连时间
-    connectionTimeout: 15000, // 连接超时阈值
-    useExponentialBackoff: false, // 使用固定间隔重连策略
-    maxReconnectAttempts: 3, // 最多重连3次
+  // 使用优化后的 useStomp
+  const stomp = useStomp({
+    reconnectDelay: 20000,
+    connectionTimeout: 15000,
+    useExponentialBackoff: false,
+    maxReconnectAttempts: 3,
+    autoRestoreSubscriptions: true, // 自动恢复订阅
+    debug: false,
   });
 
-  // 存储订阅ID
-  const subscriptionIds = ref<string[]>([]);
-
-  // 已订阅的主题
-  const subscribedTopics = ref<Set<string>>(new Set());
+  // 字典主题地址
+  const DICT_TOPIC = "/topic/dict";
 
   // 消息回调函数列表
-  const messageCallbacks = ref<DictMessageCallback[]>([]);
+  const messageCallbacks = ref<DictChangeCallback[]>([]);
 
-  // 重试定时器
-  let retryTimer: ReturnType<typeof setTimeout> | null = null;
+  // 订阅 ID（用于取消订阅）
+  let subscriptionId: string | null = null;
 
   /**
-   * 注册字典消息回调
-   * @param callback 回调函数
+   * 处理字典变更事件
    */
-  const onDictMessage = (callback: DictMessageCallback) => {
+  const handleDictChangeMessage = (message: IMessage) => {
+    if (!message.body) {
+      return;
+    }
+
+    try {
+      const data = JSON.parse(message.body) as DictChangeMessage;
+      const { dictCode } = data;
+
+      if (!dictCode) {
+        console.warn("[DictSync] 收到无效的字典变更消息：缺少 dictCode");
+        return;
+      }
+
+      console.log(`[DictSync] 字典 "${dictCode}" 已更新，清除本地缓存`);
+
+      // 清除缓存，等待按需加载
+      dictStore.removeDictItem(dictCode);
+
+      // 执行所有注册的回调函数
+      messageCallbacks.value.forEach((callback) => {
+        try {
+          callback(data);
+        } catch (error) {
+          console.error("[DictSync] 回调函数执行失败:", error);
+        }
+      });
+    } catch (error) {
+      console.error("[DictSync] 解析字典变更消息失败:", error);
+    }
+  };
+
+  /**
+   * 初始化 WebSocket 连接并订阅字典主题
+   */
+  const initialize = () => {
+    // 检查是否配置了 WebSocket 端点
+    const wsEndpoint = import.meta.env.VITE_APP_WS_ENDPOINT;
+    if (!wsEndpoint) {
+      console.log("[DictSync] 未配置 WebSocket 端点，跳过字典同步功能");
+      return;
+    }
+
+    console.log("[DictSync] 初始化字典同步服务...");
+
+    // 建立 WebSocket 连接
+    stomp.connect();
+
+    // 订阅字典主题（useStomp 会自动处理重连后的订阅恢复）
+    subscriptionId = stomp.subscribe(DICT_TOPIC, handleDictChangeMessage);
+
+    if (subscriptionId) {
+      console.log(`[DictSync] 已订阅字典主题: ${DICT_TOPIC}`);
+    } else {
+      console.log(`[DictSync] 暂存字典主题订阅，等待连接建立后自动订阅`);
+    }
+  };
+
+  /**
+   * 关闭 WebSocket 连接并清理资源
+   */
+  const cleanup = () => {
+    console.log("[DictSync] 清理字典同步服务...");
+
+    // 取消订阅（如果有的话）
+    if (subscriptionId) {
+      stomp.unsubscribe(subscriptionId);
+      subscriptionId = null;
+    }
+
+    // 也可以通过主题地址取消订阅
+    stomp.unsubscribeDestination(DICT_TOPIC);
+
+    // 断开连接
+    stomp.disconnect();
+
+    // 清空回调列表
+    messageCallbacks.value = [];
+  };
+
+  /**
+   * 注册字典变更回调函数
+   *
+   * @param callback 回调函数
+   * @returns 返回一个取消注册的函数
+   */
+  const onDictChange = (callback: DictChangeCallback) => {
     messageCallbacks.value.push(callback);
+
+    // 返回取消注册的函数
     return () => {
-      // 返回取消注册的函数
       const index = messageCallbacks.value.indexOf(callback);
       if (index !== -1) {
         messageCallbacks.value.splice(index, 1);
@@ -56,163 +148,48 @@ function createDictSyncHook() {
     };
   };
 
-  /**
-   * 初始化WebSocket
-   */
-  const initWebSocket = async () => {
-    try {
-      // 检查是否配置了WebSocket端点
-      const wsEndpoint = import.meta.env.VITE_APP_WS_ENDPOINT;
-      if (!wsEndpoint) {
-        console.log("[DictSync] 未配置WebSocket端点,跳过连接");
-        return;
-      }
-
-      // 连接WebSocket
-      connect();
-
-      // 设置字典订阅
-      setupDictSubscription();
-    } catch (error) {
-      console.error("[DictSync] 初始化失败:", error);
-    }
-  };
-
-  /**
-   * 关闭WebSocket
-   */
-  const closeWebSocket = () => {
-    // 清理重试定时器
-    if (retryTimer) {
-      clearTimeout(retryTimer);
-      retryTimer = null;
-    }
-
-    // 取消所有订阅
-    subscriptionIds.value.forEach((id: string) => {
-      unsubscribe(id);
-    });
-    subscriptionIds.value = [];
-    subscribedTopics.value.clear();
-
-    // 断开连接
-    disconnect();
-  };
-
-  /**
-   * 设置字典订阅
-   */
-  const setupDictSubscription = () => {
-    const topic = "/topic/dict";
-
-    // 防止重复订阅
-    if (subscribedTopics.value.has(topic)) {
-      console.log(`[DictSync] 跳过重复订阅: ${topic}`);
-      return;
-    }
-
-    console.log(`[DictSync] 开始尝试订阅字典主题: ${topic}`);
-
-    // 使用简化的重试逻辑，依赖useStomp的连接管理
-    const attemptSubscribe = () => {
-      if (!isConnected.value) {
-        console.log("[DictSync] 等待WebSocket连接建立...");
-        // 清理之前的定时器，防止重复
-        if (retryTimer) {
-          clearTimeout(retryTimer);
-        }
-        // 10秒后再次尝试
-        retryTimer = setTimeout(() => {
-          retryTimer = null;
-          attemptSubscribe();
-        }, 10000);
-        return;
-      }
-
-      // 清理重试定时器
-      if (retryTimer) {
-        clearTimeout(retryTimer);
-        retryTimer = null;
-      }
-
-      // 检查是否已订阅
-      if (subscribedTopics.value.has(topic)) {
-        return;
-      }
-
-      console.log(`[DictSync] 连接已建立，开始订阅: ${topic}`);
-
-      // 订阅字典更新
-      const subId = subscribe(topic, (message: IMessage) => {
-        handleDictEvent(message);
-      });
-
-      if (subId) {
-        subscriptionIds.value.push(subId);
-        subscribedTopics.value.add(topic);
-        console.log(`[DictSync] 字典主题订阅成功: ${topic}`);
-      } else {
-        console.warn(`[DictSync] 字典主题订阅失败: ${topic}`);
-      }
-    };
-
-    // 开始尝试订阅
-    attemptSubscribe();
-  };
-
-  /**
-   * 处理字典事件
-   * @param message STOMP消息
-   */
-  const handleDictEvent = (message: IMessage) => {
-    if (!message.body) return;
-
-    try {
-      // 记录接收到的消息
-      console.log(`[DictSync] 收到字典更新消息: ${message.body}`);
-
-      // 尝试解析消息
-      const parsedData = JSON.parse(message.body) as DictMessage;
-      const dictCode = parsedData.dictCode;
-
-      if (!dictCode) return;
-
-      // 清除缓存，等待按需加载
-      dictStore.removeDictItem(dictCode);
-      console.log(`[DictSync] 字典缓存已清除: ${dictCode}`);
-
-      // 调用所有注册的回调函数
-      messageCallbacks.value.forEach((callback: DictMessageCallback) => {
-        try {
-          callback(parsedData);
-        } catch (callbackError) {
-          console.error("[DictSync] 回调执行失败:", callbackError);
-        }
-      });
-
-      // 显示提示消息
-      console.info(`[DictSync] 字典 ${dictCode} 已变更，将在下次使用时自动加载`);
-    } catch (error) {
-      console.error("[DictSync] 解析消息失败:", error);
-    }
-  };
-
   return {
-    isConnected,
-    initWebSocket,
-    closeWebSocket,
-    handleDictEvent,
-    onDictMessage,
+    // 状态
+    isConnected: stomp.isConnected,
+    connectionState: stomp.connectionState,
+
+    // 方法
+    initialize,
+    cleanup,
+    onDictChange,
+
+    // 用于测试和调试
+    handleDictChangeMessage,
   };
 }
 
 /**
- * 字典同步组合式函数
- * 用于监听后端字典变更并同步到前端
+ * 字典同步组合式函数（单例模式）
+ *
+ * 用于监听后端字典变更并自动同步到前端缓存
+ *
+ * @example
+ * ```ts
+ * const dictSync = useDictSync();
+ *
+ * // 初始化（在应用启动时调用）
+ * dictSync.initialize();
+ *
+ * // 注册回调
+ * const unsubscribe = dictSync.onDictChange((message) => {
+ *   console.log('字典已更新:', message.dictCode);
+ * });
+ *
+ * // 取消注册
+ * unsubscribe();
+ *
+ * // 清理（在应用退出时调用）
+ * dictSync.cleanup();
+ * ```
  */
 export function useDictSync() {
-  if (!instance) {
-    instance = createDictSyncHook();
+  if (!singletonInstance) {
+    singletonInstance = createDictSyncComposable();
   }
-  return instance;
+  return singletonInstance;
 }
