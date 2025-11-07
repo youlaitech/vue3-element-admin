@@ -1,4 +1,27 @@
 <div align="center">
+
+## 🎉 正在参加 Gitee 2025 最受欢迎开源软件评选
+
+<table>
+<tr>
+<td align="center" style="padding: 20px;">
+<a href="https://gitee.com/activity/2025opensource?ident=I6VXEH" target="_blank">
+<img src="https://img.shields.io/badge/🗳️_立即投票-支持本项目-ff6b35?style=for-the-badge&logo=gitee" alt="投票" height="40"/>
+</a>
+
+### [>>> 👉 点击这里为我们投票 👈 <<<](https://gitee.com/activity/2025opensource?ident=I6VXEH)
+
+**一票就够，不用每天投** 🙏
+您的支持是我们持续更新的最大动力！❤️
+</td>
+</tr>
+</table>
+
+</div>
+
+---
+
+<div align="center">
   <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/logo.png">
   <h1>vue3-element-admin</h1>
 
@@ -23,7 +46,6 @@
 </div>
 
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
-
 
 <div align="center">
   <a target="_blank" href="https://vue.youlai.tech">🖥️ 在线预览</a> | <a target="_blank" href="https://app.youlai.tech">📲 移动端预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📑 阅读文档</a>|  <a target="_blank" href="https://www.youlai.tech//vue3-element-admin">🌐 官网</a> | <a href="./README.en-US.md">💬 English
