@@ -3,16 +3,22 @@
 ## 🎉 正在参加 Gitee 2025 最受欢迎开源软件评选
 
 <a href="https://gitee.com/activity/2025opensource?ident=I6VXEH" target="_blank">
-<img src="https://img.shields.io/badge/🗳️_立即投票-支持本项目-ff6b35?style=for-the-badge&logo=gitee" alt="投票" height="45"/>
+  <img src="https://img.shields.io/badge/🗳️_立即投票-支持本项目-ff6b35?style=for-the-badge&logo=gitee" alt="投票" height="50"/>
 </a>
 
-<h3><a href="https://gitee.com/activity/2025opensource?ident=I6VXEH" target="_blank">>>> 👉 点击这里为我们投票 👈 <<<</a></h3>
+<p>
+  <strong>一票就够，不用每天投 🙏 您的支持是我们持续更新的最大动力！</strong>
+</p>
 
-**一票就够，不用每天投** 🙏
-**您的支持是我们持续更新的最大动力**❤️
+<p>
+  <a href="https://gitee.com/activity/2025opensource?ident=I6VXEH" target="_blank">
+    <strong>👉 点击徽章或这里投票 👈</strong>
+  </a>
+</p>
 
 </div>
 
+![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
 
 <div align="center">
   <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/logo.png">
