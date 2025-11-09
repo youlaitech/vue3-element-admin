@@ -13,6 +13,11 @@ export interface DictChangeMessage {
 }
 
 /**
+ * 字典消息别名（向后兼容）
+ */
+export type DictMessage = DictChangeMessage;
+
+/**
  * 字典变更事件回调函数类型
  */
 export type DictChangeCallback = (message: DictChangeMessage) => void;
@@ -157,6 +162,11 @@ function createDictSyncComposable() {
     initialize,
     cleanup,
     onDictChange,
+
+    // 别名方法（向后兼容）
+    initWebSocket: initialize,
+    closeWebSocket: cleanup,
+    onDictMessage: onDictChange,
 
     // 用于测试和调试
     handleDictChangeMessage,

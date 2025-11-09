@@ -160,6 +160,10 @@ function createOnlineCountComposable() {
     // 方法
     initialize,
     cleanup,
+
+    // 别名方法（向后兼容）
+    initWebSocket: initialize,
+    closeWebSocket: cleanup,
   };
 }
 
