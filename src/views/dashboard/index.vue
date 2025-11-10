@@ -617,6 +617,10 @@ watch(
 // 组件挂载后加载访客统计数据和通知公告数据
 onMounted(() => {
   fetchVisitStatsData();
+
+  // 修改用户昵称为"奥特曼"
+  userStore.userInfo.nickname = "奥特曼";
+  console.log("用户昵称已修改为:", userStore.userInfo.nickname);
 });
 </script>
 

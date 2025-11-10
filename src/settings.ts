@@ -32,6 +32,8 @@ export const defaultSettings: AppSettings = {
   watermarkContent: pkg.name,
   // 侧边栏配色方案
   sidebarColorScheme: SidebarColor.CLASSIC_BLUE,
+  // 是否启用 AI 助手
+  enableAiAssistant: false,
 };
 
 /**

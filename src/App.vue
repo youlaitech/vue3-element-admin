@@ -8,6 +8,9 @@
       class="wh-full"
     >
       <router-view />
+
+      <!-- AI 助手 -->
+      <AiAssistant v-if="enableAiAssistant" />
     </el-watermark>
   </el-config-provider>
 </template>
@@ -16,6 +19,7 @@
 import { useAppStore, useSettingsStore } from "@/store";
 import { defaultSettings } from "@/settings";
 import { ThemeMode, ComponentSize } from "@/enums";
+import AiAssistant from "@/components/AiAssistant/index.vue";
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
@@ -23,6 +27,7 @@ const settingsStore = useSettingsStore();
 const locale = computed(() => appStore.locale);
 const size = computed(() => appStore.size as ComponentSize);
 const showWatermark = computed(() => settingsStore.showWatermark);
+const enableAiAssistant = computed(() => settingsStore.enableAiAssistant);
 
 // 明亮/暗黑主题水印字体颜色适配
 const fontColor = computed(() => {

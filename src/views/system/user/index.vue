@@ -246,6 +246,8 @@
 <script setup lang="ts">
 import { useAppStore } from "@/store/modules/app-store";
 import { DeviceEnum } from "@/enums/settings/device-enum";
+import { useRoute } from "vue-router";
+import { ElMessage } from "element-plus";
 
 import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user-api";
 import DeptAPI from "@/api/system/dept-api";
@@ -261,6 +263,7 @@ defineOptions({
 });
 
 const appStore = useAppStore();
+const route = useRoute();
 
 const queryFormRef = ref();
 const userFormRef = ref();
@@ -521,6 +524,21 @@ function handleExport() {
 }
 
 onMounted(() => {
-  handleQuery();
+  // 检查是否有 AI 助手传递的搜索参数
+  const keywords = route.query.keywords as string;
+  const autoSearch = route.query.autoSearch as string;
+
+  if (autoSearch === "true" && keywords) {
+    // 自动填充搜索关键字
+    queryParams.keywords = keywords;
+    // 延迟一下，让用户看到自动填充的效果
+    setTimeout(() => {
+      handleQuery();
+      // 显示提示
+      ElMessage.success(`AI 助手已为您自动搜索：${keywords}`);
+    }, 300);
+  } else {
+    handleQuery();
+  }
 });
 </script>

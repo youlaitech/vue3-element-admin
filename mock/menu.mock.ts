@@ -512,6 +512,19 @@ export default defineMock([
               },
             },
             {
+              path: "/function/ai-command",
+              component: "demo/ai-command",
+              name: "/function/ai-command",
+              meta: {
+                title: "AI 命令助手",
+                icon: "el-icon-MagicStick",
+                hidden: false,
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
+            {
               path: "other/:id",
               component: "demo/other",
               name: "Other/:id",

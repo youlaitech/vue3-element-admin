@@ -11,6 +11,7 @@ interface SettingsState {
   showTagsView: boolean;
   showAppLogo: boolean;
   showWatermark: boolean;
+  enableAiAssistant: boolean;
 
   // 布局设置
   layout: LayoutMode;
@@ -44,6 +45,12 @@ export const useSettingsStore = defineStore("setting", () => {
     defaultSettings.showWatermark
   );
 
+  // 是否启用 AI 助手
+  const enableAiAssistant = useStorage<boolean>(
+    STORAGE_KEYS.ENABLE_AI_ASSISTANT,
+    defaultSettings.enableAiAssistant
+  );
+
   // 侧边栏配色方案
   const sidebarColorScheme = useStorage<string>(
     STORAGE_KEYS.SIDEBAR_COLOR_SCHEME,
@@ -64,6 +71,7 @@ export const useSettingsStore = defineStore("setting", () => {
     showTagsView,
     showAppLogo,
     showWatermark,
+    enableAiAssistant,
     sidebarColorScheme,
     layout,
   } as const;
@@ -131,6 +139,7 @@ export const useSettingsStore = defineStore("setting", () => {
     showTagsView.value = defaultSettings.showTagsView;
     showAppLogo.value = defaultSettings.showAppLogo;
     showWatermark.value = defaultSettings.showWatermark;
+    enableAiAssistant.value = defaultSettings.enableAiAssistant;
     sidebarColorScheme.value = defaultSettings.sidebarColorScheme;
     layout.value = defaultSettings.layout as LayoutMode;
     themeColor.value = defaultSettings.themeColor;
@@ -143,6 +152,7 @@ export const useSettingsStore = defineStore("setting", () => {
     showTagsView,
     showAppLogo,
     showWatermark,
+    enableAiAssistant,
     sidebarColorScheme,
     layout,
     themeColor,
