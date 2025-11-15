@@ -30,6 +30,8 @@ export interface FunctionCall {
  * AI 命令解析响应
  */
 export interface AiCommandResponse {
+  /** 解析日志ID（用于关联执行记录） */
+  parseLogId?: string;
   /** 是否成功解析 */
   success: boolean;
   /** 解析后的函数调用列表 */
@@ -48,6 +50,10 @@ export interface AiCommandResponse {
  * AI 命令执行请求
  */
 export interface AiExecuteRequest {
+  /** 关联的解析日志ID */
+  parseLogId?: string;
+  /** 原始命令（用于审计） */
+  originalCommand?: string;
   /** 要执行的函数调用 */
   functionCall: FunctionCall;
   /** 确认模式：auto=自动执行, manual=需要用户确认 */
@@ -56,6 +62,8 @@ export interface AiExecuteRequest {
   userConfirmed?: boolean;
   /** 幂等性令牌（防止重复执行） */
   idempotencyKey?: string;
+  /** 当前页面路由 */
+  currentRoute?: string;
 }
 
 /**
@@ -72,12 +80,58 @@ export interface AiExecuteResponse {
   affectedRows?: number;
   /** 错误信息 */
   error?: string;
-  /** 审计ID（用于追踪） */
-  auditId?: string;
+  /** 记录ID（用于追踪） */
+  recordId?: string;
   /** 需要用户确认 */
   requiresConfirmation?: boolean;
   /** 确认提示信息 */
   confirmationPrompt?: string;
+}
+
+export interface AiCommandRecordPageQuery extends PageQuery {
+  keywords?: string;
+  executeStatus?: string;
+  parseSuccess?: boolean;
+  userId?: number;
+  isDangerous?: boolean;
+  provider?: string;
+  model?: string;
+  functionName?: string;
+  createTime?: [string, string];
+}
+
+export interface AiCommandRecordVO {
+  id: string;
+  userId: number;
+  username: string;
+  originalCommand: string;
+  provider?: string;
+  model?: string;
+  parseSuccess?: boolean;
+  functionCalls?: string;
+  explanation?: string;
+  confidence?: number;
+  parseErrorMessage?: string;
+  inputTokens?: number;
+  outputTokens?: number;
+  totalTokens?: number;
+  parseTime?: number;
+  functionName?: string;
+  functionArguments?: string;
+  executeStatus?: string;
+  executeResult?: string;
+  executeErrorMessage?: string;
+  affectedRows?: number;
+  isDangerous?: boolean;
+  requiresConfirmation?: boolean;
+  userConfirmed?: boolean;
+  executionTime?: number;
+  ipAddress?: string;
+  userAgent?: string;
+  currentRoute?: string;
+  createTime?: string;
+  updateTime?: string;
+  remark?: string;
 }
 
 /**
@@ -102,10 +156,10 @@ class AiCommandApi {
    * 执行已解析的命令
    *
    * @param data 执行请求参数
-   * @returns 执行结果
+   * @returns 执行结果数据（成功时返回，失败时抛出异常）
    */
-  static executeCommand(data: AiExecuteRequest): Promise<AiExecuteResponse> {
-    return request<any, AiExecuteResponse>({
+  static executeCommand(data: AiExecuteRequest): Promise<any> {
+    return request<any, any>({
       url: "/api/v1/ai/command/execute",
       method: "post",
       data,
@@ -113,45 +167,22 @@ class AiCommandApi {
   }
 
   /**
-   * 获取命令执行历史
-   *
-   * @param params 查询参数
-   * @returns 历史记录列表
+   * 获取命令记录分页列表
    */
-  static getCommandHistory(params?: {
-    page?: number;
-    size?: number;
-    startTime?: string;
-    endTime?: string;
-  }) {
-    return request({
-      url: "/api/v1/ai/command/history",
+  static getCommandRecordPage(queryParams: AiCommandRecordPageQuery) {
+    return request<any, PageResult<AiCommandRecordVO[]>>({
+      url: "/api/v1/ai/command/records",
       method: "get",
-      params,
-    });
-  }
-
-  /**
-   * 获取可用的函数列表（用于展示或调试）
-   *
-   * @returns 函数列表
-   */
-  static getAvailableFunctions() {
-    return request({
-      url: "/api/v1/ai/command/functions",
-      method: "get",
+      params: queryParams,
     });
   }
 
   /**
    * 撤销命令执行（如果支持）
-   *
-   * @param auditId 审计ID
-   * @returns 撤销结果
    */
-  static rollbackCommand(auditId: string) {
+  static rollbackCommand(recordId: string) {
     return request({
-      url: `/api/v1/ai/command/rollback/${auditId}`,
+      url: `/api/v1/ai/command/rollback/${recordId}`,
       method: "post",
     });
   }

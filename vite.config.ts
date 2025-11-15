@@ -11,10 +11,6 @@ import UnoCSS from "unocss/vite";
 import { resolve } from "path";
 import { name, version, engines, dependencies, devDependencies } from "./package.json";
 
-// MCP 插件：为项目开启 MCP Server（仅开发环境）
-// 使用前请先安装：pnpm add -D vite-plugin-vue-mcp
-import { VueMcp } from "vite-plugin-vue-mcp";
-
 // 平台的名称、版本、运行所需的 node 版本、依赖、构建时间的类型提示
 const __APP_INFO__ = {
   pkg: { name, version, engines, dependencies, devDependencies },
@@ -59,8 +55,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     plugins: [
       vue(),
       ...(env.VITE_MOCK_DEV_SERVER === "true" ? [mockDevServerPlugin()] : []),
-      // MCP 插件：仅在开发环境启用，用于 AI 工具集成，让 Cursor AI 能够读取应用运行时的 Store 状态，帮助调试和理解代码
-      ...(!isProduction ? [VueMcp()] : []),
       UnoCSS(),
       // API 自动导入
       AutoImport({

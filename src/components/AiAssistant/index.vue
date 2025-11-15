@@ -35,7 +35,7 @@
           v-model="command"
           type="textarea"
           :rows="3"
-          placeholder="试试说：查询姓名为张三用户&#10;或者：跳转到用户管理&#10;按 Ctrl+Enter 快速发送"
+          placeholder="试试说：修改test用户的姓名为测试人员&#10;或者：跳转到用户管理&#10;按 Ctrl+Enter 快速发送"
           :disabled="loading"
           @keydown.ctrl.enter="handleExecute"
         />
@@ -71,6 +71,19 @@
                 <el-tag type="warning" size="small">{{ response.action.query }}</el-tag>
               </span>
             </div>
+            <div v-if="response.action.type === 'navigate-and-execute'">
+              <el-icon><Position /></el-icon>
+              跳转至：
+              <strong>{{ response.action.pageName }}</strong>
+              <span v-if="response.action.query" class="query-info">
+                并搜索：
+                <el-tag type="warning" size="small">{{ response.action.query }}</el-tag>
+              </span>
+              <el-divider direction="vertical" />
+              <el-icon><Tools /></el-icon>
+              执行：
+              <strong>{{ response.action.functionCall.name }}</strong>
+            </div>
             <div v-if="response.action.type === 'execute'">
               <el-icon><Tools /></el-icon>
               执行：
@@ -94,10 +107,41 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import AiCommandApi from "@/api/ai";
+
+type ToolFunctionCall = {
+  name: string;
+  arguments: Record<string, any>;
+};
+
+// 统一的动作描述（区分“跳转”、“跳转+执行”、“仅执行”三种场景）
+type AiAction =
+  | {
+      type: "navigate";
+      path: string;
+      pageName: string;
+      query?: string;
+    }
+  | {
+      type: "navigate-and-execute";
+      path: string;
+      pageName: string;
+      query?: string;
+      functionCall: ToolFunctionCall;
+    }
+  | {
+      type: "execute";
+      functionName: string;
+      functionCall: ToolFunctionCall;
+    };
+
+type AiResponse = {
+  explanation: string;
+  action: AiAction | null;
+};
 
 const router = useRouter();
 
@@ -105,10 +149,15 @@ const router = useRouter();
 const dialogVisible = ref(false);
 const command = ref("");
 const loading = ref(false);
-const response = ref<any>(null);
+const response = ref<AiResponse | null>(null);
 
 // 快捷命令示例
-const examples = ["查询姓名为张三的用户", "跳转到用户管理", "打开角色管理页面", "查看系统日志"];
+const examples = [
+  "修改test用户的姓名为测试人员",
+  "获取姓名为张三的用户信息",
+  "跳转到用户管理",
+  "打开角色管理页面",
+];
 
 // 打开对话框
 const handleOpen = () => {
@@ -126,8 +175,17 @@ const handleClose = () => {
 
 // 执行命令
 const handleExecute = async () => {
-  if (!command.value.trim()) {
+  const rawCommand = command.value.trim();
+  if (!rawCommand) {
     ElMessage.warning("请输入命令");
+    return;
+  }
+
+  // 优先检测无需调用 AI 的纯跳转命令
+  const directNavigation = tryDirectNavigate(rawCommand);
+  if (directNavigation) {
+    response.value = directNavigation;
+    await executeAction(directNavigation.action);
     return;
   }
 
@@ -136,7 +194,7 @@ const handleExecute = async () => {
   try {
     // 调用 AI API 解析命令
     const result = await AiCommandApi.parseCommand({
-      command: command.value,
+      command: rawCommand,
       currentRoute: router.currentRoute.value.path,
       currentComponent: router.currentRoute.value.name as string,
       context: {
@@ -150,9 +208,9 @@ const handleExecute = async () => {
     }
 
     // 解析 AI 返回的操作类型
-    const action = parseAction(result);
+    const action = parseAction(result, rawCommand);
     response.value = {
-      explanation: result.explanation,
+      explanation: result.explanation ?? "命令解析成功，准备执行操作",
       action,
     };
 
@@ -168,74 +226,257 @@ const handleExecute = async () => {
   }
 };
 
-// 解析 AI 返回的操作类型
-const parseAction = (result: any) => {
-  const cmd = command.value.toLowerCase();
+// 路由配置映射表（支持扩展）
+const routeConfig = [
+  { keywords: ["用户", "user", "user list"], path: "/system/user", name: "用户管理" },
+  { keywords: ["角色", "role"], path: "/system/role", name: "角色管理" },
+  { keywords: ["菜单", "menu"], path: "/system/menu", name: "菜单管理" },
+  { keywords: ["部门", "dept"], path: "/system/dept", name: "部门管理" },
+  { keywords: ["字典", "dict"], path: "/system/dict", name: "字典管理" },
+  { keywords: ["日志", "log"], path: "/system/log", name: "系统日志" },
+];
 
-  // 判断是否是导航命令
-  if (
-    cmd.includes("跳转") ||
-    cmd.includes("打开") ||
-    cmd.includes("进入") ||
-    cmd.includes("查询")
-  ) {
-    // 提取关键字
-    let keyword = "";
-    let routePath = "";
-    let pageName = "";
+// 根据函数名推断路由（如 getUserInfo -> /system/user）
+const normalizeText = (text: string) => text.replace(/\s+/g, " ").trim().toLowerCase();
 
-    if (cmd.includes("用户")) {
-      routePath = "/system/user";
-      pageName = "用户管理";
-
-      // 提取查询关键字
-      const match = cmd.match(/查询.*?([^\s]+).*?用户|用户.*?([^\s]+)/);
-      if (match) {
-        keyword = match[1] || match[2] || "";
-        // 去掉常见的修饰词
-        keyword = keyword.replace(/姓名为|名字叫|叫做|为/g, "");
-      }
-    } else if (cmd.includes("角色")) {
-      routePath = "/system/role";
-      pageName = "角色管理";
-    } else if (cmd.includes("菜单")) {
-      routePath = "/system/menu";
-      pageName = "菜单管理";
-    } else if (cmd.includes("部门")) {
-      routePath = "/system/dept";
-      pageName = "部门管理";
-    } else if (cmd.includes("字典")) {
-      routePath = "/system/dict";
-      pageName = "字典管理";
-    } else if (cmd.includes("日志")) {
-      routePath = "/system/log";
-      pageName = "系统日志";
-    }
-
-    if (routePath) {
-      return {
-        type: "navigate",
-        path: routePath,
-        pageName,
-        query: keyword || undefined,
-      };
+const inferRouteFromFunction = (functionName: string) => {
+  const fnLower = normalizeText(functionName);
+  for (const config of routeConfig) {
+    // 检查函数名是否包含关键词（如 getUserInfo 包含 user）
+    if (config.keywords.some((kw) => fnLower.includes(kw.toLowerCase()))) {
+      return { path: config.path, name: config.name };
     }
   }
+  return null;
+};
 
-  // 如果不是导航命令，则是执行命令
-  if (result.functionCalls && result.functionCalls.length > 0) {
+// 根据命令文本匹配路由
+const matchRouteFromCommand = (cmd: string) => {
+  const normalized = normalizeText(cmd);
+  for (const config of routeConfig) {
+    if (config.keywords.some((kw) => normalized.includes(kw.toLowerCase()))) {
+      return { path: config.path, name: config.name };
+    }
+  }
+  return null;
+};
+
+const extractKeywordFromCommand = (cmd: string): string => {
+  const normalized = normalizeText(cmd);
+  // 从 routeConfig 动态获取所有数据类型关键词
+  const allKeywords = routeConfig.flatMap((config) =>
+    config.keywords.map((kw) => kw.toLowerCase())
+  );
+  const keywordsPattern = allKeywords.join("|");
+
+  const patterns = [
+    new RegExp(`(?:查询|获取|搜索|查找|找).*?([^\\s，,。]+?)(?:的)?(?:${keywordsPattern})`, "i"),
+    new RegExp(`(?:${keywordsPattern}).*?([^\\s，,。]+?)(?:的|信息|详情)?`, "i"),
+    new RegExp(
+      `(?:姓名为|名字叫|叫做|名称为|名是|为)([^\\s，,。]+?)(?:的)?(?:${keywordsPattern})?`,
+      "i"
+    ),
+    new RegExp(`([^\\s，,。]+?)(?:的)?(?:${keywordsPattern})(?:信息|详情)?`, "i"),
+  ];
+
+  for (const pattern of patterns) {
+    const match = normalized.match(pattern);
+    if (match && match[1]) {
+      let extracted = match[1].trim();
+      extracted = extracted.replace(/姓名为|名字叫|叫做|名称为|名是|为|的|信息|详情/g, "");
+      if (
+        extracted &&
+        !allKeywords.some((type) => extracted.toLowerCase().includes(type.toLowerCase()))
+      ) {
+        return extracted;
+      }
+    }
+  }
+  return "";
+};
+
+const tryDirectNavigate = (rawCommand: string): AiResponse | null => {
+  const navigationIntents = ["跳转", "打开", "进入", "前往", "去", "浏览", "查看"];
+  const operationIntents = [
+    "修改",
+    "更新",
+    "变更",
+    "删除",
+    "添加",
+    "创建",
+    "设置",
+    "获取",
+    "查询",
+    "搜索",
+  ];
+
+  const hasNavigationIntent = navigationIntents.some((keyword) => rawCommand.includes(keyword));
+  const hasOperationIntent = operationIntents.some((keyword) => rawCommand.includes(keyword));
+
+  if (!hasNavigationIntent || hasOperationIntent) {
+    return null;
+  }
+
+  const routeInfo = matchRouteFromCommand(rawCommand);
+  if (!routeInfo) {
+    return null;
+  }
+
+  const keyword = extractKeywordFromCommand(rawCommand);
+  const action: AiAction = {
+    type: "navigate",
+    path: routeInfo.path,
+    pageName: routeInfo.name,
+    query: keyword || undefined,
+  };
+
+  return {
+    explanation: `检测到跳转命令，正在前往 ${routeInfo.name}`,
+    action,
+  };
+};
+
+// 解析 AI 返回的操作类型
+const parseAction = (result: any, rawCommand: string): AiAction | null => {
+  const cmd = normalizeText(rawCommand);
+  const primaryCall = result.functionCalls?.[0];
+  const functionName = primaryCall?.name;
+
+  // 优先从函数名推断路由，其次从命令文本匹配
+  let routeInfo = functionName ? inferRouteFromFunction(functionName) : null;
+  if (!routeInfo) {
+    routeInfo = matchRouteFromCommand(cmd);
+  }
+
+  const routePath = routeInfo?.path || "";
+  const pageName = routeInfo?.name || "";
+  const keyword = extractKeywordFromCommand(cmd);
+
+  if (primaryCall && functionName) {
+    const fnNameLower = functionName.toLowerCase();
+
+    // 1) 查询类函数（query/search/list/get）-> 跳转并执行筛选操作
+    const isQueryFunction =
+      fnNameLower.includes("query") ||
+      fnNameLower.includes("search") ||
+      fnNameLower.includes("list") ||
+      fnNameLower.includes("get");
+
+    if (isQueryFunction) {
+      // 统一使用 keywords 参数（约定大于配置）
+      const args = (primaryCall.arguments || {}) as Record<string, unknown>;
+      const keywords =
+        typeof args.keywords === "string" && args.keywords.trim().length > 0
+          ? args.keywords
+          : keyword;
+
+      if (routePath) {
+        return {
+          type: "navigate-and-execute",
+          path: routePath,
+          pageName,
+          functionCall: primaryCall,
+          query: keywords || undefined,
+        };
+      }
+    }
+
+    // 2) 其他操作类函数（修改/删除/创建/更新等）-> 跳转并执行
+    const isModifyFunction =
+      fnNameLower.includes("update") ||
+      fnNameLower.includes("modify") ||
+      fnNameLower.includes("edit") ||
+      fnNameLower.includes("delete") ||
+      fnNameLower.includes("remove") ||
+      fnNameLower.includes("create") ||
+      fnNameLower.includes("add") ||
+      fnNameLower.includes("save");
+
+    if (isModifyFunction && routePath) {
+      return {
+        type: "navigate-and-execute",
+        path: routePath,
+        pageName,
+        functionCall: primaryCall,
+      };
+    }
+
+    // 3) 其他未匹配的函数，如果有路由则跳转，否则执行
+    if (routePath) {
+      return {
+        type: "navigate-and-execute",
+        path: routePath,
+        pageName,
+        functionCall: primaryCall,
+      };
+    }
+
     return {
       type: "execute",
-      functionName: result.functionCalls[0].name,
-      functionCall: result.functionCalls[0],
+      functionName,
+      functionCall: primaryCall,
+    };
+  }
+
+  // 4) 无函数调用，仅跳转
+  if (routePath) {
+    return {
+      type: "navigate",
+      path: routePath,
+      pageName,
+      query: keyword || undefined,
     };
   }
 
   return null;
 };
 
+// 定时器引用（用于清理）
+let navigationTimer: ReturnType<typeof setTimeout> | null = null;
+let executeTimer: ReturnType<typeof setTimeout> | null = null;
+
 // 执行操作
-const executeAction = async (action: any) => {
+const executeAction = async (action: AiAction) => {
+  // 🎯 新增：跳转并执行操作
+  if (action.type === "navigate-and-execute") {
+    ElMessage.success(`正在跳转到 ${action.pageName} 并执行操作...`);
+
+    // 清理之前的定时器
+    if (navigationTimer) {
+      clearTimeout(navigationTimer);
+    }
+
+    // 跳转并传递待执行的操作信息
+    navigationTimer = setTimeout(() => {
+      navigationTimer = null;
+      const queryParams: any = {
+        // 通过 URL 参数传递 AI 操作信息
+        aiAction: encodeURIComponent(
+          JSON.stringify({
+            functionName: action.functionCall.name,
+            arguments: action.functionCall.arguments,
+            timestamp: Date.now(),
+          })
+        ),
+      };
+
+      // 如果有查询关键字，也一并传递
+      if (action.query) {
+        queryParams.keywords = action.query;
+        queryParams.autoSearch = "true";
+      }
+
+      router.push({
+        path: action.path,
+        query: queryParams,
+      });
+
+      // 关闭对话框
+      handleClose();
+    }, 800);
+    return;
+  }
+
   if (action.type === "navigate") {
     // 检查是否已经在目标页面
     const currentPath = router.currentRoute.value.path;
@@ -268,8 +509,14 @@ const executeAction = async (action: any) => {
     // 不在目标页面，正常跳转
     ElMessage.success(`正在跳转到 ${action.pageName}...`);
 
+    // 清理之前的定时器
+    if (navigationTimer) {
+      clearTimeout(navigationTimer);
+    }
+
     // 延迟一下让用户看到提示
-    setTimeout(() => {
+    navigationTimer = setTimeout(() => {
+      navigationTimer = null;
       // 跳转并传递查询参数
       router.push({
         path: action.path,
@@ -288,13 +535,31 @@ const executeAction = async (action: any) => {
     // 执行函数调用
     ElMessage.info("功能开发中，请前往 AI 命令助手页面体验完整功能");
 
+    // 清理之前的定时器
+    if (executeTimer) {
+      clearTimeout(executeTimer);
+    }
+
     // 可以跳转到完整的 AI 命令页面
-    setTimeout(() => {
+    executeTimer = setTimeout(() => {
+      executeTimer = null;
       router.push("/function/ai-command");
       handleClose();
     }, 1000);
   }
 };
+
+// 组件卸载时清理定时器
+onBeforeUnmount(() => {
+  if (navigationTimer) {
+    clearTimeout(navigationTimer);
+    navigationTimer = null;
+  }
+  if (executeTimer) {
+    clearTimeout(executeTimer);
+    executeTimer = null;
+  }
+});
 </script>
 
 <style scoped lang="scss">

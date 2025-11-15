@@ -95,6 +95,7 @@
             stripe
             highlight-current-row
             class="data-table__content"
+            row-key="id"
             @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="50" align="center" />
@@ -244,10 +245,13 @@
 </template>
 
 <script setup lang="ts">
+import { nextTick } from "vue";
 import { useAppStore } from "@/store/modules/app-store";
 import { DeviceEnum } from "@/enums/settings/device-enum";
 import { useRoute } from "vue-router";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { useAiAction } from "@/composables";
+import AiCommandApi from "@/api/ai";
 
 import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user-api";
 import DeptAPI from "@/api/system/dept-api";
@@ -329,19 +333,83 @@ async function fetchData() {
   }
 }
 
+// ==================== AI 助手相关 ====================
+
+// 使用 AI 操作 Composable
+useAiAction({
+  actionHandlers: {
+    /** AI 修改用户昵称 */
+    updateUserNickname: async (args: any) => {
+      const username = args?.username;
+      const nickname = args?.nickname;
+
+      try {
+        await ElMessageBox.confirm(
+          `AI 助手将执行以下操作：<br/>
+          <strong>修改用户：</strong> ${username}<br/>
+          <strong>新昵称：</strong> ${nickname}<br/><br/>
+          确认执行吗？`,
+          "AI 助手操作确认",
+          {
+            confirmButtonText: "确认执行",
+            cancelButtonText: "取消",
+            type: "warning",
+            dangerouslyUseHTMLString: true,
+          }
+        );
+
+        const result = await AiCommandApi.executeCommand({
+          originalCommand: `修改用户 ${username} 的昵称为 ${nickname}`,
+          confirmMode: "manual",
+          userConfirmed: true,
+          currentRoute: route.path,
+          functionCall: {
+            name: "updateUserNickname",
+            arguments: { username, nickname },
+          },
+        });
+
+        ElMessage.success(result?.message || "修改用户昵称成功");
+      } catch (error: any) {
+        if (error !== "cancel") {
+          ElMessage.error(error?.message || "操作失败");
+        } else {
+          ElMessage.info("已取消操作");
+        }
+      }
+    },
+    /** AI 查询用户（在列表中筛选） */
+    queryUser: async (args: any) => {
+      const keywords = args?.keywords;
+      if (keywords) {
+        queryParams.keywords = keywords;
+        await handleQuery();
+        ElMessage.success(`已搜索：${keywords}`);
+      }
+    },
+  },
+  onRefresh: fetchData,
+  onAutoSearch: (keywords: string) => {
+    queryParams.keywords = keywords;
+    setTimeout(() => {
+      handleQuery();
+      ElMessage.success(`AI 助手已为您自动搜索：${keywords}`);
+    }, 300);
+  },
+});
+
 // 查询（重置页码后获取数据）
 function handleQuery() {
   queryParams.pageNum = 1;
-  fetchData();
+  return fetchData();
 }
 
 // 重置查询
 function handleResetQuery() {
   queryFormRef.value.resetFields();
-  queryParams.pageNum = 1;
   queryParams.deptId = undefined;
   queryParams.createTime = undefined;
-  fetchData();
+  handleQuery();
 }
 
 // 选中项发生变化
@@ -524,21 +592,18 @@ function handleExport() {
 }
 
 onMounted(() => {
-  // 检查是否有 AI 助手传递的搜索参数
-  const keywords = route.query.keywords as string;
+  // 检查是否有自动搜索参数
   const autoSearch = route.query.autoSearch as string;
 
-  if (autoSearch === "true" && keywords) {
-    // 自动填充搜索关键字
-    queryParams.keywords = keywords;
-    // 延迟一下，让用户看到自动填充的效果
-    setTimeout(() => {
+  // 如果有自动搜索，由 onAutoSearch 回调处理（会调用 handleQuery）
+  // 如果有 AI 操作，先加载数据，然后由 useAiAction 处理操作（操作完成后会刷新）
+  // 如果都没有，正常加载数据
+  if (autoSearch !== "true") {
+    // 延迟一下，确保 useAiAction 先初始化
+    nextTick(() => {
       handleQuery();
-      // 显示提示
-      ElMessage.success(`AI 助手已为您自动搜索：${keywords}`);
-    }, 300);
-  } else {
-    handleQuery();
+    });
   }
+  // 注意：autoSearch === "true" 时，onAutoSearch 回调会调用 handleQuery，所以这里不需要再调用
 });
 </script>
