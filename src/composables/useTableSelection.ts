@@ -12,11 +12,11 @@ import { computed, ref } from "vue";
  * const { selectedIds, handleSelectionChange, clearSelection } = useTableSelection<UserVO>();
  * ```
  */
-export function useTableSelection<T extends { id: number }>() {
+export function useTableSelection<T extends { id: string | number }>() {
   /**
    * 选中的数据项ID列表
    */
-  const selectedIds = ref<number[]>([]);
+  const selectedIds = ref<(string | number)[]>([]);
 
   /**
    * 表格选中项变化处理
@@ -38,7 +38,7 @@ export function useTableSelection<T extends { id: number }>() {
    * @param id 要检查的ID
    * @returns 是否被选中
    */
-  function isSelected(id: number): boolean {
+  function isSelected(id: string | number): boolean {
     return selectedIds.value.includes(id);
   }
 

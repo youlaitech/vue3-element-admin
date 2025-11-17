@@ -1,5 +1,6 @@
 import { useRoute } from "vue-router";
 import AiCommandApi from "@/api/ai";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 /**
  * AI 操作处理器（简化版）
@@ -57,8 +58,6 @@ export function useAiAction(options: UseAiActionOptions = {}) {
 
   // 用于跟踪是否已卸载，防止在卸载后执行回调
   let isUnmounted = false;
-  // 存储待清理的 nextTick 回调
-  let pendingCallbacks: (() => void)[] = [];
 
   /**
    * 执行 AI 操作（统一处理确认、执行、反馈流程）
@@ -174,7 +173,6 @@ export function useAiAction(options: UseAiActionOptions = {}) {
 
     // 如果需要确认，先显示确认对话框
     if (needConfirm && confirmMessage) {
-      const { ElMessageBox } = await import("element-plus");
       try {
         await ElMessageBox.confirm(confirmMessage, "AI 助手操作确认", {
           confirmButtonText: "确认执行",
@@ -222,7 +220,7 @@ export function useAiAction(options: UseAiActionOptions = {}) {
   /**
    * 初始化：处理 URL 参数中的 AI 操作
    */
-  function init() {
+  async function init() {
     if (isUnmounted) return;
 
     // 检查是否有 AI 助手传递的搜索参数
@@ -230,47 +228,35 @@ export function useAiAction(options: UseAiActionOptions = {}) {
     const autoSearch = route.query.autoSearch as string;
     const aiActionParam = route.query.aiAction as string;
 
-    // 判断是否有 AI 相关参数
-    const hasAiParams = (autoSearch === "true" && keywords) || aiActionParam;
+    // 在 nextTick 中执行，确保 DOM 已更新
+    nextTick(async () => {
+      if (isUnmounted) return;
 
-    // 处理自动搜索
-    if (autoSearch === "true" && keywords) {
-      const callback = () => {
-        if (!isUnmounted) {
-          handleAutoSearch(keywords);
+      // 1. 优先执行 onInit 初始化数据（如果配置了）
+      if (onInit) {
+        try {
+          await onInit();
+        } catch (error) {
+          console.error("初始化数据失败:", error);
         }
-      };
-      pendingCallbacks.push(callback);
-      nextTick(callback);
-    }
+      }
 
-    // 处理 AI 操作
-    if (aiActionParam) {
-      const callback = () => {
-        if (!isUnmounted) {
-          try {
-            const aiAction = JSON.parse(decodeURIComponent(aiActionParam));
-            executeAiAction(aiAction);
-          } catch (error) {
-            console.error("解析 AI 操作失败:", error);
-            ElMessage.error("AI 操作参数解析失败");
-          }
-        }
-      };
-      pendingCallbacks.push(callback);
-      nextTick(callback);
-    }
+      // 2. 处理自动搜索
+      if (autoSearch === "true" && keywords) {
+        handleAutoSearch(keywords);
+      }
 
-    // 如果没有 AI 参数，调用 onInit 回调（适合初始加载数据）
-    if (!hasAiParams && onInit) {
-      const callback = () => {
-        if (!isUnmounted) {
-          onInit();
+      // 3. 处理 AI 操作（在数据加载后执行）
+      if (aiActionParam) {
+        try {
+          const aiAction = JSON.parse(decodeURIComponent(aiActionParam));
+          await executeAiAction(aiAction);
+        } catch (error) {
+          console.error("解析 AI 操作失败:", error);
+          ElMessage.error("AI 操作参数解析失败");
         }
-      };
-      pendingCallbacks.push(callback);
-      nextTick(callback);
-    }
+      }
+    });
   }
 
   // 组件挂载时自动初始化
@@ -281,8 +267,6 @@ export function useAiAction(options: UseAiActionOptions = {}) {
   // 组件卸载时清理
   onBeforeUnmount(() => {
     isUnmounted = true;
-    // 清理待执行的回调（虽然 nextTick 的回调无法直接取消，但至少标记为已卸载）
-    pendingCallbacks = [];
   });
 
   return {

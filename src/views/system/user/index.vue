@@ -394,56 +394,10 @@ async function fetchUserList(): Promise<void> {
 // ==================== 表格选择 ====================
 const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<UserPageVO>();
 
-// ==================== AI 助手相关 ====================
-useAiAction({
-  actionHandlers: {
-    /**
-     * AI 修改用户昵称
-     * 使用配置对象方式：自动处理确认、执行、反馈
-     */
-    updateUserNickname: {
-      needConfirm: true,
-      callBackendApi: true, // 自动调用后端 API
-      confirmMessage: (args: any) =>
-        `AI 助手将执行以下操作：<br/>
-        <strong>修改用户：</strong> ${args.username}<br/>
-        <strong>新昵称：</strong> ${args.nickname}<br/><br/>
-        确认执行吗？`,
-      successMessage: (args: any) => `已将用户 ${args.username} 的昵称修改为 ${args.nickname}`,
-      execute: async () => {
-        // callBackendApi=true 时，execute 可以为空
-        // Composable 会自动调用后端 API
-      },
-    },
-
-    /**
-     * AI 查询用户
-     * 使用配置对象方式：查询操作不需要确认
-     */
-    queryUser: {
-      needConfirm: false, // 查询操作无需确认
-      successMessage: (args: any) => `已搜索：${args.keywords}`,
-      execute: async (args: any) => {
-        queryParams.keywords = args.keywords;
-        await handleQuery();
-      },
-    },
-  },
-  onRefresh: fetchData,
-  onAutoSearch: (keywords: string) => {
-    queryParams.keywords = keywords;
-    setTimeout(() => {
-      handleQuery();
-      ElMessage.success(`AI 助手已为您自动搜索：${keywords}`);
-    }, 300);
-  },
-  onInit: handleQuery,
-});
-
 // ==================== 查询操作 ====================
 
 /**
- * 查询用户列表（重置到第一页）
+ * 查询用户列表
  */
 function handleQuery(): Promise<void> {
   queryParams.pageNum = 1;
@@ -459,9 +413,6 @@ function handleResetQuery(): void {
   queryParams.createTime = undefined;
   handleQuery();
 }
-
-// handleSelectionChange 已由 useTableSelection 提供
-
 // ==================== 用户操作 ====================
 
 /**
@@ -569,8 +520,8 @@ const handleSubmit = useDebounceFn(async () => {
  * 删除用户
  * @param id 用户ID（单个删除时传入）
  */
-function handleDelete(id?: number): void {
-  const userIds = id ? String(id) : selectedIds.value.join(",");
+function handleDelete(id?: string): void {
+  const userIds = id ? id : selectedIds.value.join(",");
 
   if (!userIds) {
     ElMessage.warning("请勾选删除项");
@@ -578,9 +529,16 @@ function handleDelete(id?: number): void {
   }
 
   // 安全检查：防止删除当前登录用户
-  if (isCurrentUserInDeleteList(id)) {
-    ElMessage.error("不能删除当前登录用户");
-    return;
+  const currentUserId = userStore.userInfo?.userId;
+  if (currentUserId) {
+    const isCurrentUserInList = id
+      ? id === currentUserId
+      : selectedIds.value.some((selectedId) => String(selectedId) === currentUserId);
+
+    if (isCurrentUserInList) {
+      ElMessage.error("不能删除当前登录用户");
+      return;
+    }
   }
 
   ElMessageBox.confirm("确认删除选中的用户吗？", "警告", {
@@ -604,23 +562,6 @@ function handleDelete(id?: number): void {
     .catch(() => {
       // 用户取消操作，无需处理
     });
-}
-
-/**
- * 检查删除列表中是否包含当前登录用户
- * @param singleId 单个删除的用户ID
- */
-function isCurrentUserInDeleteList(singleId?: number): boolean {
-  const currentUserId = userStore.userInfo?.userId;
-  if (!currentUserId) return false;
-
-  // 单个删除检查
-  if (singleId) {
-    return String(singleId) === currentUserId;
-  }
-
-  // 批量删除检查
-  return selectedIds.value.some((id) => String(id) === currentUserId);
 }
 
 // ==================== 导入导出 ====================
@@ -666,6 +607,49 @@ async function handleExport(): Promise<void> {
   }
 }
 
-// 初始化数据加载由 useAiAction 的 onInit 回调统一处理
-// 无需手动在 onMounted 中调用 handleQuery()
+// ==================== AI 助手相关 ====================
+useAiAction({
+  actionHandlers: {
+    /**
+     * AI 修改用户昵称
+     * 使用配置对象方式：自动处理确认、执行、反馈
+     */
+    updateUserNickname: {
+      needConfirm: true,
+      callBackendApi: true, // 自动调用后端 API
+      confirmMessage: (args: any) =>
+        `AI 助手将执行以下操作：<br/>
+        <strong>修改用户：</strong> ${args.username}<br/>
+        <strong>新昵称：</strong> ${args.nickname}<br/><br/>
+        确认执行吗？`,
+      successMessage: (args: any) => `已将用户 ${args.username} 的昵称修改为 ${args.nickname}`,
+      execute: async () => {
+        // callBackendApi=true 时，execute 可以为空
+        // Composable 会自动调用后端 API
+      },
+    },
+
+    /**
+     * AI 查询用户
+     * 使用配置对象方式：查询操作不需要确认
+     */
+    queryUser: {
+      needConfirm: false, // 查询操作无需确认
+      successMessage: (args: any) => `已搜索：${args.keywords}`,
+      execute: async (args: any) => {
+        queryParams.keywords = args.keywords;
+        await handleQuery();
+      },
+    },
+  },
+  onRefresh: fetchUserList,
+  onAutoSearch: (keywords: string) => {
+    queryParams.keywords = keywords;
+    setTimeout(() => {
+      handleQuery();
+      ElMessage.success(`AI 助手已为您自动搜索：${keywords}`);
+    }, 300);
+  },
+  onInit: handleQuery,
+});
 </script>
