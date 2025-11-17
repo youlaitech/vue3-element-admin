@@ -67,7 +67,7 @@
                 v-hasPerm="'sys:user:delete'"
                 type="danger"
                 icon="delete"
-                :disabled="selectIds.length === 0"
+                :disabled="!hasSelection"
                 @click="handleDelete()"
               >
                 删除
@@ -125,7 +125,7 @@
                   icon="RefreshLeft"
                   size="small"
                   link
-                  @click="hancleResetPassword(scope.row)"
+                  @click="handleResetPassword(scope.row)"
                 >
                   重置密码
                 </el-button>
@@ -158,7 +158,7 @@
             v-model:total="total"
             v-model:page="queryParams.pageNum"
             v-model:limit="queryParams.pageSize"
-            @pagination="fetchData"
+            @pagination="fetchUserList"
           />
         </el-card>
       </el-col>
@@ -245,57 +245,117 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick } from "vue";
-import { useAppStore } from "@/store/modules/app-store";
-import { DeviceEnum } from "@/enums/settings/device-enum";
-import { useRoute } from "vue-router";
-import { ElMessage, ElMessageBox } from "element-plus";
-import { useAiAction } from "@/composables";
-import AiCommandApi from "@/api/ai";
+// ==================== 1. Vue 核心 API ====================
+import { computed, reactive, ref } from "vue";
+import { useDebounceFn } from "@vueuse/core";
 
-import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user-api";
+// ==================== 2. Element Plus ====================
+import { ElMessage, ElMessageBox } from "element-plus";
+
+// ==================== 3. 类型定义 ====================
+import type { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user-api";
+// ==================== 4. API 服务 ====================
+import UserAPI from "@/api/system/user-api";
 import DeptAPI from "@/api/system/dept-api";
 import RoleAPI from "@/api/system/role-api";
 
+// ==================== 5. Store ====================
+import { useAppStore } from "@/store/modules/app-store";
+import { useUserStore } from "@/store";
+
+// ==================== 6. Enums ====================
+import { DeviceEnum } from "@/enums/settings/device-enum";
+
+// ==================== 7. Composables ====================
+import { useAiAction, useTableSelection } from "@/composables";
+
+// ==================== 8. 组件 ====================
 import DeptTree from "./components/DeptTree.vue";
 import UserImport from "./components/UserImport.vue";
-import { useUserStore } from "@/store";
-const userStore = useUserStore();
+
+// ==================== 组件配置 ====================
 defineOptions({
-  name: "User",
+  name: "SystemUser",
   inheritAttrs: false,
 });
 
+// ==================== Store 实例 ====================
 const appStore = useAppStore();
-const route = useRoute();
+const userStore = useUserStore();
 
+// ==================== 响应式状态 ====================
+
+// DOM 引用
 const queryFormRef = ref();
 const userFormRef = ref();
 
+// 列表查询参数
 const queryParams = reactive<UserPageQuery>({
   pageNum: 1,
   pageSize: 10,
 });
 
+// 列表数据
 const pageData = ref<UserPageVO[]>();
 const total = ref(0);
 const loading = ref(false);
 
+// 弹窗状态
 const dialog = reactive({
   visible: false,
   title: "新增用户",
 });
-const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
 
+// 表单数据
 const formData = reactive<UserForm>({
   status: 1,
 });
 
+// 下拉选项数据
+const deptOptions = ref<OptionType[]>();
+const roleOptions = ref<OptionType[]>();
+
+// 导入弹窗
+const importDialogVisible = ref(false);
+
+// ==================== 计算属性 ====================
+
+/**
+ * 抽屉尺寸（响应式）
+ */
+const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
+
+// ==================== 表单验证规则 ====================
+
 const rules = reactive({
-  username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
-  nickname: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
-  deptId: [{ required: true, message: "所属部门不能为空", trigger: "blur" }],
-  roleIds: [{ required: true, message: "用户角色不能为空", trigger: "blur" }],
+  username: [
+    {
+      required: true,
+      message: "用户名不能为空",
+      trigger: "blur",
+    },
+  ],
+  nickname: [
+    {
+      required: true,
+      message: "用户昵称不能为空",
+      trigger: "blur",
+    },
+  ],
+  deptId: [
+    {
+      required: true,
+      message: "所属部门不能为空",
+      trigger: "blur",
+    },
+  ],
+  roleIds: [
+    {
+      required: true,
+      message: "用户角色不能为空",
+      trigger: "blur",
+    },
+  ],
   email: [
     {
       pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
@@ -312,80 +372,61 @@ const rules = reactive({
   ],
 });
 
-// 选中的用户ID
-const selectIds = ref<number[]>([]);
-// 部门下拉数据源
-const deptOptions = ref<OptionType[]>();
-// 角色下拉数据源
-const roleOptions = ref<OptionType[]>();
-// 导入弹窗显示状态
-const importDialogVisible = ref(false);
+// ==================== 数据加载 ====================
 
-// 获取数据
-async function fetchData() {
+/**
+ * 获取用户列表数据
+ */
+async function fetchUserList(): Promise<void> {
   loading.value = true;
   try {
     const data = await UserAPI.getPage(queryParams);
     pageData.value = data.list;
     total.value = data.total;
+  } catch (error) {
+    ElMessage.error("获取用户列表失败");
+    console.error("获取用户列表失败:", error);
   } finally {
     loading.value = false;
   }
 }
 
-// ==================== AI 助手相关 ====================
+// ==================== 表格选择 ====================
+const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<UserPageVO>();
 
-// 使用 AI 操作 Composable
+// ==================== AI 助手相关 ====================
 useAiAction({
   actionHandlers: {
-    /** AI 修改用户昵称 */
-    updateUserNickname: async (args: any) => {
-      const username = args?.username;
-      const nickname = args?.nickname;
-
-      try {
-        await ElMessageBox.confirm(
-          `AI 助手将执行以下操作：<br/>
-          <strong>修改用户：</strong> ${username}<br/>
-          <strong>新昵称：</strong> ${nickname}<br/><br/>
-          确认执行吗？`,
-          "AI 助手操作确认",
-          {
-            confirmButtonText: "确认执行",
-            cancelButtonText: "取消",
-            type: "warning",
-            dangerouslyUseHTMLString: true,
-          }
-        );
-
-        const result = await AiCommandApi.executeCommand({
-          originalCommand: `修改用户 ${username} 的昵称为 ${nickname}`,
-          confirmMode: "manual",
-          userConfirmed: true,
-          currentRoute: route.path,
-          functionCall: {
-            name: "updateUserNickname",
-            arguments: { username, nickname },
-          },
-        });
-
-        ElMessage.success(result?.message || "修改用户昵称成功");
-      } catch (error: any) {
-        if (error !== "cancel") {
-          ElMessage.error(error?.message || "操作失败");
-        } else {
-          ElMessage.info("已取消操作");
-        }
-      }
+    /**
+     * AI 修改用户昵称
+     * 使用配置对象方式：自动处理确认、执行、反馈
+     */
+    updateUserNickname: {
+      needConfirm: true,
+      callBackendApi: true, // 自动调用后端 API
+      confirmMessage: (args: any) =>
+        `AI 助手将执行以下操作：<br/>
+        <strong>修改用户：</strong> ${args.username}<br/>
+        <strong>新昵称：</strong> ${args.nickname}<br/><br/>
+        确认执行吗？`,
+      successMessage: (args: any) => `已将用户 ${args.username} 的昵称修改为 ${args.nickname}`,
+      execute: async () => {
+        // callBackendApi=true 时，execute 可以为空
+        // Composable 会自动调用后端 API
+      },
     },
-    /** AI 查询用户（在列表中筛选） */
-    queryUser: async (args: any) => {
-      const keywords = args?.keywords;
-      if (keywords) {
-        queryParams.keywords = keywords;
+
+    /**
+     * AI 查询用户
+     * 使用配置对象方式：查询操作不需要确认
+     */
+    queryUser: {
+      needConfirm: false, // 查询操作无需确认
+      successMessage: (args: any) => `已搜索：${args.keywords}`,
+      execute: async (args: any) => {
+        queryParams.keywords = args.keywords;
         await handleQuery();
-        ElMessage.success(`已搜索：${keywords}`);
-      }
+      },
     },
   },
   onRefresh: fetchData,
@@ -396,214 +437,235 @@ useAiAction({
       ElMessage.success(`AI 助手已为您自动搜索：${keywords}`);
     }, 300);
   },
+  onInit: handleQuery,
 });
 
-// 查询（重置页码后获取数据）
-function handleQuery() {
+// ==================== 查询操作 ====================
+
+/**
+ * 查询用户列表（重置到第一页）
+ */
+function handleQuery(): Promise<void> {
   queryParams.pageNum = 1;
-  return fetchData();
+  return fetchUserList();
 }
 
-// 重置查询
-function handleResetQuery() {
+/**
+ * 重置查询条件
+ */
+function handleResetQuery(): void {
   queryFormRef.value.resetFields();
   queryParams.deptId = undefined;
   queryParams.createTime = undefined;
   handleQuery();
 }
 
-// 选中项发生变化
-function handleSelectionChange(selection: any[]) {
-  selectIds.value = selection.map((item) => item.id);
-}
+// handleSelectionChange 已由 useTableSelection 提供
 
-// 重置密码
-function hancleResetPassword(row: UserPageVO) {
-  ElMessageBox.prompt("请输入用户【" + row.username + "】的新密码", "重置密码", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-  }).then(
-    ({ value }) => {
-      if (!value || value.length < 6) {
-        ElMessage.warning("密码至少需要6位字符，请重新输入");
-        return false;
-      }
-      UserAPI.resetPassword(row.id, value).then(() => {
-        ElMessage.success("密码重置成功，新密码是：" + value);
-      });
-    },
-    () => {
-      ElMessage.info("已取消重置密码");
-    }
-  );
-}
+// ==================== 用户操作 ====================
 
 /**
- * 打开弹窗
- *
- * @param id 用户ID
+ * 重置用户密码
+ * @param row 用户数据
  */
-async function handleOpenDialog(id?: string) {
-  dialog.visible = true;
-  // 加载角色下拉数据源
-  roleOptions.value = await RoleAPI.getOptions();
-  // 加载部门下拉数据源
-  deptOptions.value = await DeptAPI.getOptions();
+function handleResetPassword(row: UserPageVO): void {
+  ElMessageBox.prompt(`请输入用户【${row.username}】的新密码`, "重置密码", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    inputPattern: /.{6,}/,
+    inputErrorMessage: "密码至少需要6位字符",
+  })
+    .then(({ value }) => {
+      return UserAPI.resetPassword(row.id, value);
+    })
+    .then(() => {
+      ElMessage.success("密码重置成功");
+    })
+    .catch((error) => {
+      if (error !== "cancel") {
+        ElMessage.error("密码重置失败");
+      }
+    });
+}
 
+// ==================== 弹窗操作 ====================
+
+/**
+ * 打开用户表单弹窗
+ * @param id 用户ID（编辑时传入）
+ */
+async function handleOpenDialog(id?: string): Promise<void> {
+  dialog.visible = true;
+
+  // 并行加载下拉选项数据
+  try {
+    [roleOptions.value, deptOptions.value] = await Promise.all([
+      RoleAPI.getOptions(),
+      DeptAPI.getOptions(),
+    ]);
+  } catch (error) {
+    ElMessage.error("加载选项数据失败");
+    console.error("加载选项数据失败:", error);
+  }
+
+  // 编辑：加载用户数据
   if (id) {
     dialog.title = "修改用户";
-    UserAPI.getFormData(id).then((data) => {
-      Object.assign(formData, { ...data });
-    });
+    try {
+      const data = await UserAPI.getFormData(id);
+      Object.assign(formData, data);
+    } catch (error) {
+      ElMessage.error("加载用户数据失败");
+      console.error("加载用户数据失败:", error);
+    }
   } else {
+    // 新增：设置默认值
     dialog.title = "新增用户";
   }
 }
 
-// 关闭弹窗
-function handleCloseDialog() {
+/**
+ * 关闭用户表单弹窗
+ */
+function handleCloseDialog(): void {
   dialog.visible = false;
   userFormRef.value.resetFields();
   userFormRef.value.clearValidate();
 
+  // 重置表单数据
   formData.id = undefined;
   formData.status = 1;
 }
 
-// 提交用户表单（防抖）
-const handleSubmit = useDebounceFn(() => {
-  userFormRef.value.validate((valid: boolean) => {
-    if (valid) {
-      const userId = formData.id;
-      loading.value = true;
-      if (userId) {
-        UserAPI.update(userId, formData)
-          .then(() => {
-            ElMessage.success("修改用户成功");
-            handleCloseDialog();
-            handleResetQuery();
-          })
-          .finally(() => (loading.value = false));
-      } else {
-        UserAPI.create(formData)
-          .then(() => {
-            ElMessage.success("新增用户成功");
-            handleCloseDialog();
-            handleResetQuery();
-          })
-          .finally(() => (loading.value = false));
-      }
+/**
+ * 提交用户表单（防抖）
+ */
+const handleSubmit = useDebounceFn(async () => {
+  const valid = await userFormRef.value.validate().catch(() => false);
+  if (!valid) return;
+
+  const userId = formData.id;
+  loading.value = true;
+
+  try {
+    if (userId) {
+      await UserAPI.update(userId, formData);
+      ElMessage.success("修改用户成功");
+    } else {
+      await UserAPI.create(formData);
+      ElMessage.success("新增用户成功");
     }
-  });
+    handleCloseDialog();
+    handleResetQuery();
+  } catch (error) {
+    ElMessage.error(userId ? "修改用户失败" : "新增用户失败");
+    console.error("提交用户表单失败:", error);
+  } finally {
+    loading.value = false;
+  }
 }, 1000);
 
 /**
- * 检查是否删除当前登录用户
- * @param singleId 单个删除的用户ID
- * @param selectedIds 批量删除的用户ID数组
- * @param currentUserInfo 当前用户信息
- * @returns 是否包含当前用户
- */
-function isDeletingCurrentUser(
-  singleId?: number,
-  selectedIds: number[] = [],
-  currentUserInfo?: any
-): boolean {
-  if (!currentUserInfo?.userId) return false;
-
-  // 单个删除检查
-  if (singleId && singleId.toString() === currentUserInfo.userId) {
-    return true;
-  }
-
-  // 批量删除检查
-  if (!singleId && selectedIds.length > 0) {
-    return selectedIds.map(String).includes(currentUserInfo.userId);
-  }
-
-  return false;
-}
-
-/**
  * 删除用户
- *
- * @param id  用户ID
+ * @param id 用户ID（单个删除时传入）
  */
-function handleDelete(id?: number) {
-  const userIds = [id || selectIds.value].join(",");
+function handleDelete(id?: number): void {
+  const userIds = id ? String(id) : selectedIds.value.join(",");
+
   if (!userIds) {
     ElMessage.warning("请勾选删除项");
     return;
   }
 
   // 安全检查：防止删除当前登录用户
-  const currentUserInfo = userStore.userInfo;
-  if (isDeletingCurrentUser(id, selectIds.value, currentUserInfo)) {
+  if (isCurrentUserInDeleteList(id)) {
     ElMessage.error("不能删除当前登录用户");
     return;
   }
 
-  ElMessageBox.confirm("确认删除用户?", "警告", {
+  ElMessageBox.confirm("确认删除选中的用户吗？", "警告", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(
-    () => {
+  })
+    .then(async () => {
       loading.value = true;
-      UserAPI.deleteByIds(userIds)
-        .then(() => {
-          ElMessage.success("删除成功");
-          handleResetQuery();
-        })
-        .finally(() => (loading.value = false));
-    },
-    () => {
-      ElMessage.info("已取消删除");
-    }
-  );
+      try {
+        await UserAPI.deleteByIds(userIds);
+        ElMessage.success("删除成功");
+        handleResetQuery();
+      } catch (error) {
+        ElMessage.error("删除失败");
+        console.error("删除用户失败:", error);
+      } finally {
+        loading.value = false;
+      }
+    })
+    .catch(() => {
+      // 用户取消操作，无需处理
+    });
 }
 
-// 打开导入弹窗
-function handleOpenImportDialog() {
+/**
+ * 检查删除列表中是否包含当前登录用户
+ * @param singleId 单个删除的用户ID
+ */
+function isCurrentUserInDeleteList(singleId?: number): boolean {
+  const currentUserId = userStore.userInfo?.userId;
+  if (!currentUserId) return false;
+
+  // 单个删除检查
+  if (singleId) {
+    return String(singleId) === currentUserId;
+  }
+
+  // 批量删除检查
+  return selectedIds.value.some((id) => String(id) === currentUserId);
+}
+
+// ==================== 导入导出 ====================
+
+/**
+ * 打开导入弹窗
+ */
+function handleOpenImportDialog(): void {
   importDialogVisible.value = true;
 }
 
-// 导出用户
-function handleExport() {
-  UserAPI.export(queryParams).then((response: any) => {
+/**
+ * 导出用户列表
+ */
+async function handleExport(): Promise<void> {
+  try {
+    const response = await UserAPI.export(queryParams);
     const fileData = response.data;
-    const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
+    const contentDisposition = response.headers["content-disposition"];
+    const fileName = decodeURI(contentDisposition.split(";")[1].split("=")[1]);
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
 
+    // 创建下载链接
     const blob = new Blob([fileData], { type: fileType });
     const downloadUrl = window.URL.createObjectURL(blob);
-
     const downloadLink = document.createElement("a");
     downloadLink.href = downloadUrl;
     downloadLink.download = fileName;
 
+    // 触发下载
     document.body.appendChild(downloadLink);
     downloadLink.click();
 
+    // 清理
     document.body.removeChild(downloadLink);
     window.URL.revokeObjectURL(downloadUrl);
-  });
+
+    ElMessage.success("导出成功");
+  } catch (error) {
+    ElMessage.error("导出失败");
+    console.error("导出用户列表失败:", error);
+  }
 }
 
-onMounted(() => {
-  // 检查是否有自动搜索参数
-  const autoSearch = route.query.autoSearch as string;
-
-  // 如果有自动搜索，由 onAutoSearch 回调处理（会调用 handleQuery）
-  // 如果有 AI 操作，先加载数据，然后由 useAiAction 处理操作（操作完成后会刷新）
-  // 如果都没有，正常加载数据
-  if (autoSearch !== "true") {
-    // 延迟一下，确保 useAiAction 先初始化
-    nextTick(() => {
-      handleQuery();
-    });
-  }
-  // 注意：autoSearch === "true" 时，onAutoSearch 回调会调用 handleQuery，所以这里不需要再调用
-});
+// 初始化数据加载由 useAiAction 的 onInit 回调统一处理
+// 无需手动在 onMounted 中调用 handleQuery()
 </script>

@@ -10,3 +10,5 @@ export { useDeviceDetection } from "./layout/useDeviceDetection";
 
 export { useAiAction } from "./useAiAction";
 export type { UseAiActionOptions, AiActionHandler } from "./useAiAction";
+
+export { useTableSelection } from "./useTableSelection";

@@ -183,7 +183,7 @@ const handleExecute = async () => {
 
   // 优先检测无需调用 AI 的纯跳转命令
   const directNavigation = tryDirectNavigate(rawCommand);
-  if (directNavigation) {
+  if (directNavigation && directNavigation.action) {
     response.value = directNavigation;
     await executeAction(directNavigation.action);
     return;

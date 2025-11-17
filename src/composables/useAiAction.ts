@@ -1,12 +1,25 @@
 import { useRoute } from "vue-router";
-import { ElMessage } from "element-plus";
-import { onMounted, onBeforeUnmount, nextTick } from "vue";
 import AiCommandApi from "@/api/ai";
 
 /**
- * AI 操作处理器类型
+ * AI 操作处理器（简化版）
+ *
+ * 可以是简单函数，也可以是配置对象
  */
-export type AiActionHandler = (args: any) => Promise<void> | void;
+export type AiActionHandler<T = any> =
+  | ((args: T) => Promise<void> | void)
+  | {
+      /** 执行函数 */
+      execute: (args: T) => Promise<void> | void;
+      /** 是否需要确认（默认 true） */
+      needConfirm?: boolean;
+      /** 确认消息（支持函数或字符串） */
+      confirmMessage?: string | ((args: T) => string);
+      /** 成功消息（支持函数或字符串） */
+      successMessage?: string | ((args: T) => string);
+      /** 是否调用后端 API（默认 false，如果为 true 则自动调用 executeCommand） */
+      callBackendApi?: boolean;
+    };
 
 /**
  * AI 操作配置
@@ -18,6 +31,8 @@ export interface UseAiActionOptions {
   onRefresh?: () => Promise<void> | void;
   /** 自动搜索处理函数 */
   onAutoSearch?: (keywords: string) => void;
+  /** 初始化回调（在没有 AI 参数时调用，适合初始加载数据） */
+  onInit?: () => Promise<void> | void;
   /** 当前路由路径（用于执行命令时传递） */
   currentRoute?: string;
 }
@@ -32,7 +47,13 @@ export interface UseAiActionOptions {
  */
 export function useAiAction(options: UseAiActionOptions = {}) {
   const route = useRoute();
-  const { actionHandlers = {}, onRefresh, onAutoSearch, currentRoute = route.path } = options;
+  const {
+    actionHandlers = {},
+    onRefresh,
+    onAutoSearch,
+    onInit,
+    currentRoute = route.path,
+  } = options;
 
   // 用于跟踪是否已卸载，防止在卸载后执行回调
   let isUnmounted = false;
@@ -40,10 +61,11 @@ export function useAiAction(options: UseAiActionOptions = {}) {
   let pendingCallbacks: (() => void)[] = [];
 
   /**
-   * 执行 AI 操作
+   * 执行 AI 操作（统一处理确认、执行、反馈流程）
    */
   async function executeAiAction(action: any) {
     if (isUnmounted) return;
+
     // 兼容两种入参：{ functionName, arguments } 或 { functionCall: { name, arguments } }
     const fnCall = action.functionCall ?? {
       name: action.functionName,
@@ -63,12 +85,68 @@ export function useAiAction(options: UseAiActionOptions = {}) {
     }
 
     try {
-      await handler(fnCall.arguments);
-      // 操作成功后刷新数据
+      // 判断处理器类型（函数 or 配置对象）
+      const isSimpleFunction = typeof handler === "function";
+
+      if (isSimpleFunction) {
+        // 简单函数形式：直接执行
+        await handler(fnCall.arguments);
+      } else {
+        // 配置对象形式：统一处理确认、执行、反馈
+        const config = handler;
+
+        // 1. 确认阶段（默认需要确认）
+        if (config.needConfirm !== false) {
+          const confirmMsg =
+            typeof config.confirmMessage === "function"
+              ? config.confirmMessage(fnCall.arguments)
+              : config.confirmMessage || "确认执行此操作吗？";
+
+          await ElMessageBox.confirm(confirmMsg, "AI 助手操作确认", {
+            confirmButtonText: "确认执行",
+            cancelButtonText: "取消",
+            type: "warning",
+            dangerouslyUseHTMLString: true,
+          });
+        }
+
+        // 2. 执行阶段
+        if (config.callBackendApi) {
+          // 自动调用后端 API
+          await AiCommandApi.executeCommand({
+            originalCommand: action.originalCommand || "",
+            confirmMode: "manual",
+            userConfirmed: true,
+            currentRoute,
+            functionCall: {
+              name: fnCall.name,
+              arguments: fnCall.arguments,
+            },
+          });
+        } else {
+          // 执行自定义函数
+          await config.execute(fnCall.arguments);
+        }
+
+        // 3. 成功反馈
+        const successMsg =
+          typeof config.successMessage === "function"
+            ? config.successMessage(fnCall.arguments)
+            : config.successMessage || "操作执行成功";
+        ElMessage.success(successMsg);
+      }
+
+      // 4. 刷新数据
       if (onRefresh) {
         await onRefresh();
       }
     } catch (error: any) {
+      // 处理取消操作
+      if (error === "cancel") {
+        ElMessage.info("已取消操作");
+        return;
+      }
+
       console.error("AI 操作执行失败:", error);
       ElMessage.error(error.message || "操作执行失败");
     }
@@ -152,6 +230,9 @@ export function useAiAction(options: UseAiActionOptions = {}) {
     const autoSearch = route.query.autoSearch as string;
     const aiActionParam = route.query.aiAction as string;
 
+    // 判断是否有 AI 相关参数
+    const hasAiParams = (autoSearch === "true" && keywords) || aiActionParam;
+
     // 处理自动搜索
     if (autoSearch === "true" && keywords) {
       const callback = () => {
@@ -174,6 +255,17 @@ export function useAiAction(options: UseAiActionOptions = {}) {
             console.error("解析 AI 操作失败:", error);
             ElMessage.error("AI 操作参数解析失败");
           }
+        }
+      };
+      pendingCallbacks.push(callback);
+      nextTick(callback);
+    }
+
+    // 如果没有 AI 参数，调用 onInit 回调（适合初始加载数据）
+    if (!hasAiParams && onInit) {
+      const callback = () => {
+        if (!isUnmounted) {
+          onInit();
         }
       };
       pendingCallbacks.push(callback);
