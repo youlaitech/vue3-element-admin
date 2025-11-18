@@ -72,3 +72,91 @@ export const ALL_STORAGE_KEYS = {
 } as const;
 
 export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
+
+/**
+ * 表单验证规则常量
+ * 提供常用的验证规则，减少重复代码
+ *
+ * @example
+ * ```ts
+ * const rules = reactive({
+ *   username: [VALIDATORS.required("用户名不能为空")],
+ *   email: [VALIDATORS.email],
+ *   mobile: [VALIDATORS.mobile],
+ * });
+ * ```
+ */
+export const VALIDATORS = {
+  /**
+   * 必填验证
+   * @param message 错误提示信息
+   */
+  required: (message: string) => ({
+    required: true,
+    message,
+    trigger: "blur",
+  }),
+
+  /**
+   * 邮箱格式验证
+   */
+  email: {
+    pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
+    message: "请输入正确的邮箱地址",
+    trigger: "blur",
+  },
+
+  /**
+   * 手机号码验证（中国大陆）
+   */
+  mobile: {
+    pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+    message: "请输入正确的手机号码",
+    trigger: "blur",
+  },
+
+  /**
+   * 身份证号码验证（中国大陆）
+   */
+  idCard: {
+    pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+    message: "请输入正确的身份证号码",
+    trigger: "blur",
+  },
+
+  /**
+   * URL 格式验证
+   */
+  url: {
+    pattern: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i,
+    message: "请输入正确的URL地址",
+    trigger: "blur",
+  },
+
+  /**
+   * 数字验证
+   */
+  number: {
+    pattern: /^\d+$/,
+    message: "请输入数字",
+    trigger: "blur",
+  },
+
+  /**
+   * 整数验证（正整数、负整数、0）
+   */
+  integer: {
+    pattern: /^-?\d+$/,
+    message: "请输入整数",
+    trigger: "blur",
+  },
+
+  /**
+   * 正整数验证
+   */
+  positiveInteger: {
+    pattern: /^[1-9]\d*$/,
+    message: "请输入正整数",
+    trigger: "blur",
+  },
+} as const;
