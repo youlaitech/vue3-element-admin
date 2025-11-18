@@ -1,6 +1,7 @@
 import { useRoute } from "vue-router";
-import AiCommandApi from "@/api/ai";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { onMounted, onBeforeUnmount, nextTick } from "vue";
+import AiCommandApi from "@/api/ai";
 
 /**
  * AI 操作处理器（简化版）
@@ -32,8 +33,6 @@ export interface UseAiActionOptions {
   onRefresh?: () => Promise<void> | void;
   /** 自动搜索处理函数 */
   onAutoSearch?: (keywords: string) => void;
-  /** 初始化回调（在没有 AI 参数时调用，适合初始加载数据） */
-  onInit?: () => Promise<void> | void;
   /** 当前路由路径（用于执行命令时传递） */
   currentRoute?: string;
 }
@@ -48,13 +47,7 @@ export interface UseAiActionOptions {
  */
 export function useAiAction(options: UseAiActionOptions = {}) {
   const route = useRoute();
-  const {
-    actionHandlers = {},
-    onRefresh,
-    onAutoSearch,
-    onInit,
-    currentRoute = route.path,
-  } = options;
+  const { actionHandlers = {}, onRefresh, onAutoSearch, currentRoute = route.path } = options;
 
   // 用于跟踪是否已卸载，防止在卸载后执行回调
   let isUnmounted = false;
@@ -219,34 +212,33 @@ export function useAiAction(options: UseAiActionOptions = {}) {
 
   /**
    * 初始化：处理 URL 参数中的 AI 操作
+   *
+   * 注意：此方法只处理 AI 相关参数，不负责页面数据的初始加载
+   * 页面数据加载应由组件的 onMounted 钩子自行处理
    */
   async function init() {
     if (isUnmounted) return;
 
-    // 检查是否有 AI 助手传递的搜索参数
+    // 检查是否有 AI 助手传递的参数
     const keywords = route.query.keywords as string;
     const autoSearch = route.query.autoSearch as string;
     const aiActionParam = route.query.aiAction as string;
 
-    // 在 nextTick 中执行，确保 DOM 已更新
+    // 如果没有任何 AI 参数，直接返回
+    if (!keywords && !autoSearch && !aiActionParam) {
+      return;
+    }
+
+    // 在 nextTick 中执行，确保页面数据已加载
     nextTick(async () => {
       if (isUnmounted) return;
 
-      // 1. 优先执行 onInit 初始化数据（如果配置了）
-      if (onInit) {
-        try {
-          await onInit();
-        } catch (error) {
-          console.error("初始化数据失败:", error);
-        }
-      }
-
-      // 2. 处理自动搜索
+      // 1. 处理自动搜索
       if (autoSearch === "true" && keywords) {
         handleAutoSearch(keywords);
       }
 
-      // 3. 处理 AI 操作（在数据加载后执行）
+      // 2. 处理 AI 操作
       if (aiActionParam) {
         try {
           const aiAction = JSON.parse(decodeURIComponent(aiActionParam));

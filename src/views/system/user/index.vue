@@ -246,7 +246,7 @@
 
 <script setup lang="ts">
 // ==================== 1. Vue 核心 API ====================
-import { computed, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 
 // ==================== 2. Element Plus ====================
@@ -650,6 +650,17 @@ useAiAction({
       ElMessage.success(`AI 助手已为您自动搜索：${keywords}`);
     }, 300);
   },
-  onInit: handleQuery,
+});
+
+// ==================== 生命周期 ====================
+
+/**
+ * 组件挂载时初始化数据
+ *
+ * 注意：这里会先加载列表数据，如果 URL 中有 AI 参数（如搜索关键字），
+ * useAiAction 会在 nextTick 中再次执行搜索，这是预期行为
+ */
+onMounted(() => {
+  handleQuery();
 });
 </script>
