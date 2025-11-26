@@ -45,7 +45,7 @@
           <copy-button
             v-if="scope.row[scope.prop]"
             :text="scope.row[scope.prop]"
-            style="margin-left: 2px"
+            :style="{ marginLeft: '2px' }"
           />
         </template>
       </page-content>
