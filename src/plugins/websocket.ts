@@ -1,20 +1,29 @@
 import { useDictSync } from "@/composables";
 import { AuthStorage } from "@/utils/auth";
-// 不直接导入 store 或 userStore
+
+/**
+ * WebSocket 服务实例约定接口
+ * 至少包含 disconnect/closeWebSocket/cleanup 三者之一
+ */
+type WebSocketService = {
+  disconnect?: () => void;
+  closeWebSocket?: () => void;
+  cleanup?: () => void;
+  [key: string]: any;
+};
 
 // 全局 WebSocket 实例管理
-const websocketInstances = new Map<string, any>();
+const websocketInstances = new Map<string, WebSocketService>();
 
 // 用于防止重复初始化的状态标记
 let isInitialized = false;
 let dictWebSocketInstance: ReturnType<typeof useDictSync> | null = null;
 
 /**
- * 注册 WebSocket 实例
+ * 注册 WebSocket 实例，便于统一清理
  */
-export function registerWebSocketInstance(key: string, instance: any) {
+export function registerWebSocketInstance(key: string, instance: WebSocketService) {
   websocketInstances.set(key, instance);
-  console.log(`[WebSocketPlugin] Registered WebSocket instance: ${key}`);
 }
 
 /**
@@ -28,11 +37,8 @@ export function getWebSocketInstance(key: string) {
  * 初始化WebSocket服务
  */
 export function setupWebSocket() {
-  console.log("[WebSocketPlugin] 开始初始化WebSocket服务...");
-
   // 检查是否已经初始化
   if (isInitialized) {
-    console.log("[WebSocketPlugin] WebSocket服务已经初始化,跳过重复初始化");
     return;
   }
 
@@ -60,19 +66,14 @@ export function setupWebSocket() {
 
       // 初始化字典WebSocket服务
       dictWebSocketInstance.initWebSocket();
-      console.log("[WebSocketPlugin] 字典WebSocket初始化完成");
-
       // 初始化在线用户计数WebSocket
       import("@/composables").then(({ useOnlineCount }) => {
         const onlineCountInstance = useOnlineCount({ autoInit: false });
         onlineCountInstance.initWebSocket();
-        console.log("[WebSocketPlugin] 在线用户计数WebSocket初始化完成");
       });
 
       // 在窗口关闭前断开WebSocket连接
       window.addEventListener("beforeunload", handleWindowClose);
-
-      console.log("[WebSocketPlugin] WebSocket服务初始化完成");
       isInitialized = true;
     }, 1000); // 延迟1秒初始化
   } catch (error) {
@@ -84,7 +85,6 @@ export function setupWebSocket() {
  * 处理窗口关闭
  */
 function handleWindowClose() {
-  console.log("[WebSocketPlugin] 窗口即将关闭，断开WebSocket连接");
   cleanupWebSocket();
 }
 
@@ -96,7 +96,6 @@ export function cleanupWebSocket() {
   if (dictWebSocketInstance) {
     try {
       dictWebSocketInstance.closeWebSocket();
-      console.log("[WebSocketPlugin] 字典WebSocket连接已断开");
     } catch (error) {
       console.error("[WebSocketPlugin] 断开字典WebSocket连接失败:", error);
     }
@@ -107,10 +106,10 @@ export function cleanupWebSocket() {
     try {
       if (instance && typeof instance.disconnect === "function") {
         instance.disconnect();
-        console.log(`[WebSocketPlugin] ${key} WebSocket连接已断开`);
       } else if (instance && typeof instance.closeWebSocket === "function") {
         instance.closeWebSocket();
-        console.log(`[WebSocketPlugin] ${key} WebSocket连接已断开`);
+      } else if (instance && typeof instance.cleanup === "function") {
+        instance.cleanup();
       }
     } catch (error) {
       console.error(`[WebSocketPlugin] 断开 ${key} WebSocket连接失败:`, error);

@@ -20,6 +20,16 @@ export interface UseStompOptions {
   debug?: boolean;
   /** 是否在重连时自动恢复订阅，默认为 true */
   autoRestoreSubscriptions?: boolean;
+  /**
+   * 心跳接收间隔，单位毫秒，默认为 4000
+   * 注意：标签页失活时，浏览器会节流定时器，建议设置较长的间隔（如 10000）以减少失活影响
+   */
+  heartbeatIncoming?: number;
+  /**
+   * 心跳发送间隔，单位毫秒，默认为 4000
+   * 注意：标签页失活时，浏览器会节流定时器，建议设置较长的间隔（如 10000）以减少失活影响
+   */
+  heartbeatOutgoing?: number;
 }
 
 /**
@@ -65,6 +75,8 @@ export function useStomp(options: UseStompOptions = {}) {
     maxReconnectDelay: options.maxReconnectDelay ?? 60000,
     autoRestoreSubscriptions: options.autoRestoreSubscriptions ?? true,
     debug: options.debug ?? false,
+    heartbeatIncoming: options.heartbeatIncoming ?? 4000,
+    heartbeatOutgoing: options.heartbeatOutgoing ?? 4000,
   };
 
   // ==================== 状态管理 ====================
@@ -179,8 +191,8 @@ export function useStomp(options: UseStompOptions = {}) {
       },
       debug: config.debug ? (msg) => console.log("[STOMP]", msg) : () => {},
       reconnectDelay: 0, // 禁用内置重连，使用自定义重连逻辑
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
+      heartbeatIncoming: config.heartbeatIncoming,
+      heartbeatOutgoing: config.heartbeatOutgoing,
     });
 
     // ==================== 事件监听器 ====================
@@ -311,6 +323,41 @@ export function useStomp(options: UseStompOptions = {}) {
 
   // 初始化客户端
   initializeClient();
+
+  // ==================== 标签页可见性监听 ====================
+
+  /**
+   * 处理标签页可见性变化
+   * 当标签页从失活变为激活时，检查连接状态并尝试重连
+   */
+  const handleVisibilityChange = () => {
+    if (document.hidden) {
+      log("标签页已失活");
+    } else {
+      log("标签页已激活，检查WebSocket连接状态...");
+
+      // 标签页激活时，检查连接状态
+      if (stompClient.value && !stompClient.value.connected && !isManualDisconnect) {
+        logWarn("检测到WebSocket连接已断开，尝试重新连接...");
+        // 重置重连次数，给予更多重连机会
+        reconnectAttempts.value = 0;
+        connect();
+      }
+    }
+  };
+
+  // 监听标签页可见性变化
+  if (typeof document !== "undefined") {
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+  }
+
+  // 清理函数：移除事件监听器
+  const cleanup = () => {
+    if (typeof document !== "undefined") {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    }
+    disconnect();
+  };
 
   // ==================== 公共接口 ====================
 
@@ -517,6 +564,7 @@ export function useStomp(options: UseStompOptions = {}) {
     // 连接管理
     connect,
     disconnect,
+    cleanup, // 清理资源（包括移除事件监听器）
 
     // 订阅管理
     subscribe,

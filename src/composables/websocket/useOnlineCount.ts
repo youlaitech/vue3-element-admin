@@ -1,4 +1,4 @@
-import { ref, watch, onMounted, onUnmounted, getCurrentInstance } from "vue";
+import { ref, onMounted, onUnmounted, getCurrentInstance } from "vue";
 import { useStomp } from "./useStomp";
 import { registerWebSocketInstance } from "@/plugins/websocket";
 import { AuthStorage } from "@/utils/auth";
@@ -59,7 +59,6 @@ function createOnlineCountComposable() {
       if (count !== undefined && !isNaN(count)) {
         onlineUserCount.value = count;
         lastUpdateTime.value = Date.now();
-        console.log(`[useOnlineCount] 在线用户数更新: ${count}`);
       } else {
         console.warn("[useOnlineCount] 收到无效的在线用户数:", data);
       }
@@ -73,18 +72,11 @@ function createOnlineCountComposable() {
    */
   const subscribeToOnlineCount = () => {
     if (subscriptionId) {
-      console.log("[useOnlineCount] 已存在订阅，跳过");
       return;
     }
 
     // 订阅在线用户计数主题（useStomp 会处理重连后的订阅恢复）
     subscriptionId = stomp.subscribe(ONLINE_COUNT_TOPIC, handleOnlineCountMessage);
-
-    if (subscriptionId) {
-      console.log(`[useOnlineCount] 已订阅主题: ${ONLINE_COUNT_TOPIC}`);
-    } else {
-      console.log(`[useOnlineCount] 暂存订阅配置，等待连接建立后自动订阅`);
-    }
   };
 
   /**
@@ -105,8 +97,6 @@ function createOnlineCountComposable() {
       return;
     }
 
-    console.log("[useOnlineCount] 初始化在线用户计数服务...");
-
     // 建立 WebSocket 连接
     stomp.connect();
 
@@ -118,8 +108,6 @@ function createOnlineCountComposable() {
    * 关闭 WebSocket 连接并清理资源
    */
   const cleanup = () => {
-    console.log("[useOnlineCount] 清理在线用户计数服务...");
-
     // 取消订阅
     if (subscriptionId) {
       stomp.unsubscribe(subscriptionId);
@@ -136,19 +124,6 @@ function createOnlineCountComposable() {
     onlineUserCount.value = 0;
     lastUpdateTime.value = 0;
   };
-
-  // 监听连接状态变化
-  watch(
-    stomp.isConnected,
-    (connected) => {
-      if (connected) {
-        console.log("[useOnlineCount] WebSocket 已连接");
-      } else {
-        console.log("[useOnlineCount] WebSocket 已断开");
-      }
-    },
-    { immediate: false }
-  );
 
   return {
     // 状态
@@ -200,17 +175,12 @@ export function useOnlineCount(options: { autoInit?: boolean } = {}) {
     onMounted(() => {
       // 只有在未连接时才尝试初始化
       if (!globalInstance!.isConnected.value) {
-        console.log("[useOnlineCount] 组件挂载，初始化 WebSocket 连接");
         globalInstance!.initialize();
-      } else {
-        console.log("[useOnlineCount] WebSocket 已连接，跳过初始化");
       }
     });
 
     // 注意：不在卸载时关闭连接，保持全局连接
-    onUnmounted(() => {
-      console.log("[useOnlineCount] 组件卸载（保持 WebSocket 连接）");
-    });
+    onUnmounted(() => {});
   }
 
   return globalInstance;
