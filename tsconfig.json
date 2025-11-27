@@ -28,6 +28,13 @@
     "types": ["node", "vite/client", "element-plus/global"]
   },
 
-  "include": ["mock/**/*.ts", "src/**/*.ts", "src/**/*.vue", "vite.config.ts", "eslint.config.ts"],
+  "include": [
+    "mock/**/*.ts",
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "vite.config.ts",
+    "eslint.config.ts",
+    "uno.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }
