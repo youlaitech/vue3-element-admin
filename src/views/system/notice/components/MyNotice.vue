@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 搜索区域 -->
-    <div class="search-container">
+    <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="通知标题" prop="title">
           <el-input
@@ -29,13 +29,13 @@
       </el-form>
     </div>
 
-    <el-card shadow="hover" class="data-table">
+    <el-card shadow="hover" class="table-section">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
         :data="pageData"
         highlight-current-row
-        class="data-table__content"
+        class="table-section__content"
       >
         <el-table-column type="index" label="序号" width="60" />
         <el-table-column label="通知标题" prop="title" min-width="200" />

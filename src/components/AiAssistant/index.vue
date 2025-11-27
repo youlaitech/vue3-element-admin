@@ -530,7 +530,7 @@ const executeAction = async (action: AiAction) => {
 
       // 关闭对话框
       handleClose();
-    }, 800);
+    }, 1000);
   } else if (action.type === "execute") {
     // 执行函数调用
     ElMessage.info("功能开发中，请前往 AI 命令助手页面体验完整功能");

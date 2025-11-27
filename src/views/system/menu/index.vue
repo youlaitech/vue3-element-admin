@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 搜索区域 -->
-    <div class="search-container">
+    <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -19,9 +19,9 @@
       </el-form>
     </div>
 
-    <el-card shadow="hover" class="data-table">
-      <div class="data-table__toolbar">
-        <div class="data-table__toolbar--actions">
+    <el-card shadow="hover" class="table-section">
+      <div class="table-section__toolbar">
+        <div class="table-section__toolbar--actions">
           <el-button
             v-hasPerm="['sys:menu:add']"
             type="success"
@@ -42,7 +42,7 @@
           children: 'children',
           hasChildren: 'hasChildren',
         }"
-        class="data-table__content"
+        class="table-section__content"
         @row-click="handleRowClick"
       >
         <el-table-column label="菜单名称" min-width="200">

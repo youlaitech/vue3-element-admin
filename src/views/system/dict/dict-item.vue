@@ -1,7 +1,7 @@
 <!-- 字典项 -->
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -19,9 +19,9 @@
       </el-form>
     </div>
 
-    <el-card shadow="never" class="data-table">
-      <div class="data-table__toolbar">
-        <div class="data-table__toolbar--actions">
+    <el-card shadow="never" class="table-section">
+      <div class="table-section__toolbar">
+        <div class="table-section__toolbar--actions">
           <el-button type="success" icon="plus" @click="handleOpenDialog()">新增</el-button>
           <el-button
             type="danger"
