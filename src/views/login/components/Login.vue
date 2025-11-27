@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h3 text-center m-0 mb-20px>{{ t("login.login") }}</h3>
+  <div class="auth-panel-form">
+    <h3 class="auth-panel-form__title" text-center>{{ t("login.login") }}</h3>
     <el-form
       ref="loginFormRef"
       :model="loginFormData"
@@ -225,11 +225,23 @@ function toOtherForm(type: "register" | "resetPwd") {
 </script>
 
 <style lang="scss" scoped>
+.auth-panel-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-panel-form__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
 .third-party-login {
   .divider-container {
     display: flex;
     align-items: center;
-    margin: 40px 0;
+    margin: 24px 0;
 
     .divider-line {
       flex: 1;
