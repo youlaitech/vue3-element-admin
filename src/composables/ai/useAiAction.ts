@@ -265,6 +265,5 @@ export function useAiAction(options: UseAiActionOptions = {}) {
     executeAiAction,
     executeCommand,
     handleAutoSearch,
-    init,
   };
 }

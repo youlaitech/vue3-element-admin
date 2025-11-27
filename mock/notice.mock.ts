@@ -211,7 +211,7 @@ export default defineMock([
 
   // 我的通知分页列表
   {
-    url: "notices/my-page",
+    url: "notices/my",
     method: ["GET"],
     body: {
       code: "00000",

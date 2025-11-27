@@ -323,7 +323,8 @@ onBeforeUnmount(() => {
   flex-direction: column;
   gap: 1.5rem;
   justify-content: flex-start;
-  width: min(560px, 100%);
+  justify-self: end;
+  width: min(520px, 100%);
   padding: clamp(2rem, 3vw, 2.75rem);
   margin-inline: auto;
   background: rgba(255, 255, 255, 0.95);

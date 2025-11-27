@@ -8,18 +8,18 @@
             v-model="queryParams.title"
             placeholder="关键字"
             clearable
-            @keyup.enter="handleQuery()"
+            @keyup.enter="handleQuery"
           />
         </el-form-item>
 
         <el-form-item class="search-buttons">
-          <el-button type="primary" @click="handleQuery()">
+          <el-button type="primary" @click="handleQuery">
             <template #icon>
               <Search />
             </template>
             搜索
           </el-button>
-          <el-button @click="handleResetQuery()">
+          <el-button @click="handleResetQuery">
             <template #icon>
               <Refresh />
             </template>
@@ -44,7 +44,6 @@
             <DictLabel v-model="scope.row.type" code="notice_type" />
           </template>
         </el-table-column>
-        <el-table-column align="center" label="发布人" prop="publisherName" width="100" />
         <el-table-column align="center" label="通知等级" width="100">
           <template #default="scope">
             <DictLabel v-model="scope.row.level" code="notice_level" />
@@ -57,7 +56,6 @@
           prop="publishTime"
           width="150"
         />
-
         <el-table-column align="center" label="发布人" prop="publisherName" width="150" />
         <el-table-column align="center" label="状态" width="100">
           <template #default="scope">
@@ -79,7 +77,7 @@
         v-model:total="total"
         v-model:page="queryParams.pageNum"
         v-model:limit="queryParams.pageSize"
-        @pagination="handleQuery()"
+        @pagination="handleQuery"
       />
     </el-card>
 
@@ -115,11 +113,16 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import NoticeAPI, { NoticePageVO, NoticePageQuery, NoticeDetailVO } from "@/api/system/notice-api";
+import { onMounted, reactive, ref } from "vue";
+import { ElMessage } from "element-plus";
+import NoticeAPI, {
+  type NoticePageVO,
+  type NoticePageQuery,
+  type NoticeDetailVO,
+} from "@/api/system/notice-api";
 
 const queryFormRef = ref();
 const pageData = ref<NoticePageVO[]>([]);
-
 const loading = ref(false);
 const total = ref(0);
 
@@ -131,32 +134,35 @@ const queryParams = reactive<NoticePageQuery>({
 const noticeDialogVisible = ref(false);
 const noticeDetail = ref<NoticeDetailVO | null>(null);
 
-// 查询通知公告
-function handleQuery() {
+async function handleQuery() {
   loading.value = true;
-  NoticeAPI.getMyNoticePage(queryParams)
-    .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+  try {
+    const data = await NoticeAPI.getMyNoticePage(queryParams);
+    pageData.value = data.list;
+    total.value = data.total;
+  } catch (error) {
+    ElMessage.error("获取通知列表失败");
+    console.error("获取我的通知失败", error);
+  } finally {
+    loading.value = false;
+  }
 }
 
-// 重置通知公告查询
 function handleResetQuery() {
-  queryFormRef.value!.resetFields();
+  queryFormRef.value?.resetFields();
   queryParams.pageNum = 1;
   handleQuery();
 }
 
-// 阅读通知公告
-function handleReadNotice(id: string) {
-  NoticeAPI.getDetail(id).then((data) => {
-    noticeDialogVisible.value = true;
+async function handleReadNotice(id: string) {
+  try {
+    const data = await NoticeAPI.getDetail(id);
     noticeDetail.value = data;
-  });
+    noticeDialogVisible.value = true;
+  } catch (error) {
+    ElMessage.error("获取通知详情失败");
+    console.error("获取通知详情失败", error);
+  }
 }
 
 onMounted(() => {
@@ -168,6 +174,7 @@ onMounted(() => {
 :deep(.el-dialog__header) {
   text-align: center;
 }
+
 .notice-detail {
   &__wrapper {
     padding: 0 20px;
