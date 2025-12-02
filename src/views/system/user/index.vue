@@ -197,7 +197,7 @@
         </el-form-item>
 
         <el-form-item label="性别" prop="gender">
-          <Dict v-model="formData.gender" code="gender" />
+          <DictSelect v-model="formData.gender" code="gender" />
         </el-form-item>
 
         <el-form-item label="角色" prop="roleIds">

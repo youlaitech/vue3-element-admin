@@ -6,6 +6,7 @@
     <span>{{ label }}</span>
   </template>
 </template>
+
 <script setup lang="ts">
 import { useDictStore } from "@/store";
 
@@ -17,11 +18,13 @@ const props = defineProps({
     default: "default", // 标签大小
   },
 });
+
 const label = ref("");
 const tagType = ref<"success" | "warning" | "info" | "primary" | "danger" | undefined>(); // 标签类型
 const tagSize = ref<"default" | "large" | "small">(props.size as "default" | "large" | "small"); // 标签大小
 
 const dictStore = useDictStore();
+
 /**
  * 根据字典项的值获取对应的 label 和 tagType
  * @param dictCode 字典编码
@@ -40,6 +43,7 @@ const getLabelAndTagByValue = async (dictCode: string, value: any) => {
     tagType: dictItem?.tagType,
   };
 };
+
 /**
  * 更新 label 和 tagType
  */

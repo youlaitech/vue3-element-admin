@@ -57,7 +57,7 @@
         @submit-click="handleSubmitClick"
       >
         <template #gender="scope">
-          <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
+          <DictSelect v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
         </template>
         <template #openModal>
           <el-button type="primary" @click="openSecondModal">打开二级弹窗</el-button>
@@ -67,7 +67,7 @@
       <!-- 二级弹窗 -->
       <page-modal ref="addModalRef2" :modal-config="addModalConfig2" @custom-submit="secondSubmit">
         <template #gender="scope">
-          <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
+          <DictSelect v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
         </template>
       </page-modal>
 
@@ -78,7 +78,7 @@
         @submit-click="handleSubmitClick"
       >
         <template #gender="scope">
-          <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
+          <DictSelect v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
         </template>
       </page-modal>
     </template>
@@ -105,7 +105,7 @@
           <span>$</span>
         </template>
         <template #gender="scope">
-          <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
+          <DictSelect v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
         </template>
       </page-modal>
     </template>

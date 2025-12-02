@@ -179,10 +179,10 @@
         </el-form-item>
 
         <el-form-item label="通知类型" prop="type">
-          <Dict v-model="formData.type" code="notice_type" />
+          <DictSelect v-model="formData.type" code="notice_type" />
         </el-form-item>
         <el-form-item label="通知等级" prop="level">
-          <Dict v-model="formData.level" code="notice_level" />
+          <DictSelect v-model="formData.level" code="notice_level" />
         </el-form-item>
         <el-form-item label="目标类型" prop="targetType">
           <el-radio-group v-model="formData.targetType">

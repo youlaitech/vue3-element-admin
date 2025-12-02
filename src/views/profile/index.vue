@@ -146,7 +146,7 @@
           <el-input v-model="userProfileForm.nickname" />
         </el-form-item>
         <el-form-item label="性别">
-          <Dict v-model="userProfileForm.gender" code="gender" />
+          <DictSelect v-model="userProfileForm.gender" code="gender" />
         </el-form-item>
       </el-form>
 

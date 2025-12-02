@@ -50,7 +50,7 @@
     <!-- 新增 -->
     <page-modal ref="addModalRef" :modal-config="addModalConfig" @submit-click="handleSubmitClick">
       <template #gender="scope">
-        <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
+        <DictSelect v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
       </template>
     </page-modal>
 
@@ -61,7 +61,7 @@
       @submit-click="handleSubmitClick"
     >
       <template #gender="scope">
-        <Dict v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
+        <DictSelect v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
       </template>
     </page-modal>
   </div>
