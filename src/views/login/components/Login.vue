@@ -23,18 +23,13 @@
           <el-input
             v-model.trim="loginFormData.password"
             :placeholder="t('login.password')"
-            :type="showPasswordRef ? 'text' : 'password'"
+            type="password"
+            show-password
             @keyup="checkCapsLock"
             @keyup.enter="handleLoginSubmit"
           >
             <template #prefix>
               <el-icon><Lock /></el-icon>
-            </template>
-            <template #suffix>
-              <el-icon v-if="!showPasswordRef" cursor-pointer @click="showPassword">
-                <View />
-              </el-icon>
-              <el-icon v-else cursor-pointer @click="showPassword"><Hide /></el-icon>
             </template>
           </el-input>
         </el-form-item>
@@ -137,8 +132,6 @@ const isCapsLock = ref(false);
 const captchaBase64 = ref();
 // 记住我
 const rememberMe = AuthStorage.getRememberMe();
-// 是否显示密码
-const showPasswordRef = ref(false);
 
 const loginFormData = ref<LoginFormData>({
   username: "admin",
@@ -223,10 +216,6 @@ function checkCapsLock(event: KeyboardEvent) {
   if (event instanceof KeyboardEvent) {
     isCapsLock.value = event.getModifierState("CapsLock");
   }
-}
-// 切换密码显示
-function showPassword() {
-  showPasswordRef.value = !showPasswordRef.value;
 }
 
 const emit = defineEmits(["update:modelValue"]);
