@@ -7,10 +7,13 @@
       <div class="flex flex-wrap">
         <!-- 左侧问候语区域 -->
         <div class="flex-1 flex items-start">
-          <img
-            class="w80px h80px rounded-full"
-            :src="userStore.userInfo.avatar + '?imageView2/1/w/80/h/80'"
-          />
+          <div style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%">
+            <img
+              :src="userStore.userInfo.avatar + '?imageView2/1/w/80/h/80'"
+              class="w80px h80px rounded-full"
+              style="width: 100%; height: 100%; object-fit: cover; object-position: center"
+            />
+          </div>
           <div class="ml-5">
             <p>{{ greetings }}</p>
             <p class="text-sm text-gray">今日天气晴朗，气温在15℃至25℃之间，东南风。</p>
