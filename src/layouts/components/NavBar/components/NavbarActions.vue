@@ -32,7 +32,13 @@
     <div class="navbar-actions__item">
       <el-dropdown trigger="click">
         <div class="user-profile">
-          <img class="user-profile__avatar" :src="userStore.userInfo.avatar" />
+          <div style="width: 28px; height: 28px; overflow: hidden; border-radius: 50%">
+            <img
+              :src="userStore.userInfo.avatar"
+              class="user-profile__avatar"
+              style="width: 100%; height: 100%; object-fit: cover; object-position: center"
+            />
+          </div>
           <span class="user-profile__name">{{ userStore.userInfo.username }}</span>
         </div>
         <template #dropdown>

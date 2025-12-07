@@ -55,7 +55,6 @@
     "axios": "^1.13.2",
     "codemirror": "^5.65.20",
     "codemirror-editor-vue3": "^2.8.0",
-    "default-passive-events": "^2.0.0",
     "echarts": "^6.0.0",
     "element-plus": "^2.11.8",
     "exceljs": "^4.4.0",
