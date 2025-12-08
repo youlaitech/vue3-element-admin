@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-const CONFIG_BASE_URL = "/api/v1/config";
+const CONFIG_BASE_URL = "/api/v1/configs";
 
 const ConfigAPI = {
   /** 获取配置分页数据 */
