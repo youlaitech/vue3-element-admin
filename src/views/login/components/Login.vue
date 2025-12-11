@@ -86,6 +86,9 @@
       </el-link>
     </div>
 
+    <!-- 租户选择对话框 -->
+    <TenantSelectDialog v-model="tenantDialogVisible" @confirm="handleTenantSelected" />
+
     <!-- 第三方登录 -->
     <div class="third-party-login">
       <div class="divider-container">
@@ -115,8 +118,10 @@ import type { FormInstance } from "element-plus";
 import AuthAPI, { type LoginFormData } from "@/api/auth-api";
 import router from "@/router";
 import { useUserStore } from "@/store";
+import { useTenantStoreHook } from "@/store/modules/tenant-store";
 import CommonWrapper from "@/components/CommonWrapper/index.vue";
 import { AuthStorage } from "@/utils/auth";
+import TenantSelectDialog from "@/components/TenantSelectDialog/index.vue";
 
 const { t } = useI18n();
 const userStore = useUserStore();
@@ -132,6 +137,9 @@ const isCapsLock = ref(false);
 const captchaBase64 = ref();
 // 记住我
 const rememberMe = AuthStorage.getRememberMe();
+// 租户选择对话框
+const tenantDialogVisible = ref(false);
+const tenantStore = useTenantStoreHook();
 
 const loginFormData = ref<LoginFormData>({
   username: "admin",
@@ -198,16 +206,44 @@ async function handleLoginSubmit() {
     // 2. 执行登录
     await userStore.login(loginFormData.value);
 
-    const redirectPath = (route.query.redirect as string) || "/";
+    // 3. 登录成功后，检查是否需要选择租户
+    try {
+      await tenantStore.fetchTenantList();
+      const tenantList = tenantStore.tenantList;
 
+      // 如果用户有多个租户，且没有当前租户，显示租户选择对话框
+      if (tenantList.length > 1 && !tenantStore.currentTenantId) {
+        tenantDialogVisible.value = true;
+        return; // 等待用户选择租户
+      }
+
+      // 如果只有一个租户，自动设置
+      if (tenantList.length === 1 && !tenantStore.currentTenantId) {
+        await tenantStore.switchTenant(tenantList[0].id);
+      }
+    } catch (error) {
+      // 如果获取租户列表失败，不影响登录流程（可能是单租户模式）
+      console.warn("获取租户列表失败（可能是单租户模式）:", error);
+    }
+
+    // 4. 跳转到目标页面
+    const redirectPath = (route.query.redirect as string) || "/";
     await router.push(decodeURIComponent(redirectPath));
   } catch (error) {
-    // 4. 统一错误处理
+    // 统一错误处理
     getCaptcha(); // 刷新验证码
     console.error("登录失败:", error);
   } finally {
     loading.value = false;
   }
+}
+
+/**
+ * 租户选择确认后的处理
+ */
+async function handleTenantSelected() {
+  const redirectPath = (route.query.redirect as string) || "/";
+  await router.push(decodeURIComponent(redirectPath));
 }
 
 // 检查输入大小写

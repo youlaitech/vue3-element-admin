@@ -31,7 +31,7 @@
       <div class="table-section__toolbar">
         <div class="table-section__toolbar--actions">
           <el-button
-            v-hasPerm="['sys:dept:add']"
+            v-hasPerm="['sys:dept:create']"
             type="success"
             icon="plus"
             @click="handleOpenDialog()"
@@ -74,7 +74,7 @@
         <el-table-column label="操作" fixed="right" align="left" width="200">
           <template #default="scope">
             <el-button
-              v-hasPerm="['sys:dept:add']"
+              v-hasPerm="['sys:dept:create']"
               type="primary"
               link
               size="small"
@@ -84,7 +84,7 @@
               新增
             </el-button>
             <el-button
-              v-hasPerm="['sys:dept:edit']"
+              v-hasPerm="['sys:dept:update']"
               type="primary"
               link
               size="small"

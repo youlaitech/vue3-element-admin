@@ -23,7 +23,7 @@
       <div class="table-section__toolbar">
         <div class="table-section__toolbar--actions">
           <el-button
-            v-hasPerm="['sys:menu:add']"
+            v-hasPerm="['sys:menu:create']"
             type="success"
             icon="plus"
             @click="handleOpenDialog('0')"
@@ -64,7 +64,6 @@
             <el-tag v-if="scope.row.type === MenuTypeEnum.CATALOG" type="warning">目录</el-tag>
             <el-tag v-if="scope.row.type === MenuTypeEnum.MENU" type="success">菜单</el-tag>
             <el-tag v-if="scope.row.type === MenuTypeEnum.BUTTON" type="danger">按钮</el-tag>
-            <el-tag v-if="scope.row.type === MenuTypeEnum.EXTLINK" type="info">外链</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="路由名称" align="left" width="150" prop="routeName" />
@@ -82,7 +81,7 @@
           <template #default="scope">
             <el-button
               v-if="scope.row.type == MenuTypeEnum.CATALOG || scope.row.type == MenuTypeEnum.MENU"
-              v-hasPerm="['sys:menu:add']"
+              v-hasPerm="['sys:menu:create']"
               type="primary"
               link
               size="small"
@@ -93,7 +92,7 @@
             </el-button>
 
             <el-button
-              v-hasPerm="['sys:menu:edit']"
+              v-hasPerm="['sys:menu:update']"
               type="primary"
               link
               size="small"
@@ -144,15 +143,10 @@
             <el-radio :value="MenuTypeEnum.CATALOG">目录</el-radio>
             <el-radio :value="MenuTypeEnum.MENU">菜单</el-radio>
             <el-radio :value="MenuTypeEnum.BUTTON">按钮</el-radio>
-            <el-radio :value="MenuTypeEnum.EXTLINK">外链</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="formData.type == MenuTypeEnum.EXTLINK" label="外链地址" prop="path">
-          <el-input v-model="formData.routePath" placeholder="请输入外链完整路径" />
-        </el-form-item>
-
-        <el-form-item v-if="formData.type == MenuTypeEnum.MENU" prop="routeName">
+        <el-form-item v-if="formData.type == MenuTypeEnum.MENU && !isExternalLink" prop="routeName">
           <template #label>
             <div class="flex-y-center">
               路由名称
@@ -192,10 +186,10 @@
             v-model="formData.routePath"
             placeholder="system"
           />
-          <el-input v-else v-model="formData.routePath" placeholder="user" />
+          <el-input v-else v-model="formData.routePath" placeholder="user 或 https://example.com" />
         </el-form-item>
 
-        <el-form-item v-if="formData.type == MenuTypeEnum.MENU" prop="component">
+        <el-form-item v-if="formData.type == MenuTypeEnum.MENU && !isExternalLink" prop="component">
           <template #label>
             <div class="flex-y-center">
               组件路径
@@ -216,7 +210,7 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item v-if="formData.type == MenuTypeEnum.MENU">
+        <el-form-item v-if="formData.type == MenuTypeEnum.MENU && !isExternalLink">
           <template #label>
             <div class="flex-y-center">
               路由参数
@@ -298,7 +292,10 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="formData.type === MenuTypeEnum.MENU" label="缓存页面">
+        <el-form-item
+          v-if="formData.type === MenuTypeEnum.MENU && !isExternalLink"
+          label="缓存页面"
+        >
           <el-radio-group v-model="formData.keepAlive">
             <el-radio :value="1">开启</el-radio>
             <el-radio :value="0">关闭</el-radio>
@@ -316,7 +313,7 @@
 
         <!-- 权限标识 -->
         <el-form-item v-if="formData.type == MenuTypeEnum.BUTTON" label="权限标识" prop="perm">
-          <el-input v-model="formData.perm" placeholder="sys:user:add" />
+          <el-input v-model="formData.perm" placeholder="sys:user:create" />
         </el-form-item>
 
         <el-form-item v-if="formData.type !== MenuTypeEnum.BUTTON" label="图标" prop="icon">
@@ -382,14 +379,34 @@ const initialMenuFormData = ref<MenuForm>({
 });
 // 菜单表单数据
 const formData = ref({ ...initialMenuFormData.value });
+const isExternalLink = computed(
+  () =>
+    formData.value.type === MenuTypeEnum.MENU &&
+    !!formData.value.routePath &&
+    /^https?:\/\//.test(formData.value.routePath)
+);
+const validateRouteName = (_: unknown, value: string, callback: (error?: Error) => void) => {
+  if (formData.value.type === MenuTypeEnum.MENU && !isExternalLink.value && !value) {
+    callback(new Error("请输入路由名称"));
+    return;
+  }
+  callback();
+};
+const validateComponent = (_: unknown, value: string, callback: (error?: Error) => void) => {
+  if (formData.value.type === MenuTypeEnum.MENU && !isExternalLink.value && !value) {
+    callback(new Error("请输入组件路径"));
+    return;
+  }
+  callback();
+};
 // 表单验证规则
 const rules = reactive({
   parentId: [{ required: true, message: "请选择父级菜单", trigger: "blur" }],
   name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
   type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
-  routeName: [{ required: true, message: "请输入路由名称", trigger: "blur" }],
+  routeName: [{ validator: validateRouteName, trigger: "blur" }],
   routePath: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
-  component: [{ required: true, message: "请输入组件路径", trigger: "blur" }],
+  component: [{ validator: validateComponent, trigger: "blur" }],
   visible: [{ required: true, message: "请选择显示状态", trigger: "change" }],
 });
 

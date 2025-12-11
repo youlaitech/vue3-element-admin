@@ -26,6 +26,11 @@
       <div class="navbar-actions__item">
         <Notification />
       </div>
+
+      <!-- 租户选择（如果启用多租户） -->
+      <div v-if="showTenantSelect" class="navbar-actions__item">
+        <TenantSelect />
+      </div>
     </template>
 
     <!-- 用户菜单 -->
@@ -74,17 +79,25 @@ import Fullscreen from "@/components/Fullscreen/index.vue";
 import SizeSelect from "@/components/SizeSelect/index.vue";
 import LangSelect from "@/components/LangSelect/index.vue";
 import Notification from "@/components/Notification/index.vue";
+import TenantSelect from "@/components/TenantSelect/index.vue";
+import { useTenantStoreHook } from "@/store/modules/tenant-store";
 
 const { t } = useI18n();
 const appStore = useAppStore();
 const settingStore = useSettingsStore();
 const userStore = useUserStore();
+const tenantStore = useTenantStoreHook();
 
 const route = useRoute();
 const router = useRouter();
 
 // 是否为桌面设备
 const isDesktop = computed(() => appStore.device === DeviceEnum.DESKTOP);
+
+// 是否显示租户选择（如果用户有多个租户或已选择租户）
+const showTenantSelect = computed(() => {
+  return tenantStore.tenantList.length > 0 || tenantStore.currentTenantId !== null;
+});
 
 /**
  * 打开个人中心页面

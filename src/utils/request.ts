@@ -4,6 +4,7 @@ import { ApiCodeEnum } from "@/enums/api/code-enum";
 import { AuthStorage, redirectToLogin } from "@/utils/auth";
 import { useTokenRefresh } from "@/composables/auth/useTokenRefresh";
 import { authConfig } from "@/settings";
+import { useTenantStoreHook } from "@/store/modules/tenant-store";
 
 // 初始化token刷新组合式函数
 const { refreshTokenAndRetry } = useTokenRefresh();
@@ -19,7 +20,7 @@ const httpRequest = axios.create({
 });
 
 /**
- * 请求拦截器 - 添加 Authorization 头
+ * 请求拦截器 - 添加 Authorization 头和租户ID
  */
 httpRequest.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -30,6 +31,18 @@ httpRequest.interceptors.request.use(
       config.headers.Authorization = `Bearer ${accessToken}`;
     } else {
       delete config.headers.Authorization;
+    }
+
+    // 添加租户ID到请求头（如果存在）
+    try {
+      const tenantStore = useTenantStoreHook();
+      const tenantId = tenantStore.currentTenantId;
+      if (tenantId) {
+        config.headers["tenant-id"] = String(tenantId);
+      }
+    } catch (error) {
+      // 如果租户 store 未初始化，忽略错误
+      console.debug("Tenant store not available:", error);
     }
 
     return config;

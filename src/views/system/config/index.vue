@@ -24,7 +24,7 @@
       <div class="table-section__toolbar">
         <div class="table-section__toolbar--actions">
           <el-button
-            v-hasPerm="['sys:config:add']"
+            v-hasPerm="['sys:config:create']"
             type="success"
             icon="plus"
             @click="handleOpenDialog()"
