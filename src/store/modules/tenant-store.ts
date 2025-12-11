@@ -1,6 +1,9 @@
 import { store } from "@/store";
 import TenantAPI, { type TenantInfo } from "@/api/system/tenant-api";
 
+// 前端多租户开关；默认开启，若后端未启用多租户可在 .env 设置 VITE_APP_TENANT_ENABLED=false
+const TENANT_ENABLED = import.meta.env.VITE_APP_TENANT_ENABLED !== "false";
+
 const TENANT_ID_KEY = "current_tenant_id";
 const TENANT_INFO_KEY = "current_tenant_info";
 
@@ -50,6 +53,39 @@ export const useTenantStore = defineStore("tenant", () => {
           reject(error);
         });
     });
+  }
+
+  /**
+   * 登录后初始化租户：获取列表并尽量确定当前租户
+   * - 忽略错误，以便单租户模式不受影响
+   */
+  // 登录后准备租户上下文：先取租户列表，再用后端返回的当前租户；若单租户则自动选中
+  async function prepareTenantContextAfterLogin() {
+    if (!TENANT_ENABLED) {
+      return;
+    }
+
+    try {
+      await fetchTenantList();
+
+      if (tenantList.value.length > 0 && !currentTenantId.value) {
+        try {
+          const currentTenantInfo = await TenantAPI.getCurrentTenant();
+          if (currentTenantInfo) {
+            setCurrentTenant(currentTenantInfo);
+          } else if (tenantList.value.length === 1) {
+            setCurrentTenant(tenantList.value[0]);
+          }
+        } catch (error) {
+          if (tenantList.value.length === 1) {
+            setCurrentTenant(tenantList.value[0]);
+          }
+          console.debug("获取当前租户信息失败（可能是单租户模式）:", error);
+        }
+      }
+    } catch (error) {
+      console.debug("获取租户列表失败（可能是单租户模式）:", error);
+    }
   }
 
   /**
@@ -120,6 +156,7 @@ export const useTenantStore = defineStore("tenant", () => {
     currentTenantId,
     currentTenant,
     tenantList,
+    prepareTenantContextAfterLogin,
     fetchTenantList,
     setCurrentTenant,
     switchTenant,

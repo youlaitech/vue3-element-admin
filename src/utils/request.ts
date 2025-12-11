@@ -34,6 +34,7 @@ httpRequest.interceptors.request.use(
     }
 
     // 添加租户ID到请求头（如果存在）
+    // 注意：只有在登录成功后，tenantStore 才会初始化，所以这里需要 try-catch
     try {
       const tenantStore = useTenantStoreHook();
       const tenantId = tenantStore.currentTenantId;
@@ -41,8 +42,8 @@ httpRequest.interceptors.request.use(
         config.headers["tenant-id"] = String(tenantId);
       }
     } catch (error) {
-      // 如果租户 store 未初始化，忽略错误
-      console.debug("Tenant store not available:", error);
+      // 如果租户 store 未初始化（如登录前），忽略错误
+      // 这是正常的，因为多租户功能是可选的，未启用时不会初始化 tenantStore
     }
 
     return config;
@@ -68,6 +69,15 @@ httpRequest.interceptors.response.use(
     // 请求成功
     if (code === ApiCodeEnum.SUCCESS) {
       return data;
+    }
+
+    // 特殊处理：需要选择租户（不显示错误提示，返回特殊对象供业务层处理）
+    if (code === ApiCodeEnum.CHOOSE_TENANT) {
+      return Promise.reject({
+        code: ApiCodeEnum.CHOOSE_TENANT,
+        data,
+        msg,
+      });
     }
 
     // 业务错误

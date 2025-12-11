@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-const TENANT_BASE_URL = "/api/v1/tenant";
+const TENANT_BASE_URL = "/api/v1/tenants";
 
 /**
  * 租户信息
@@ -37,7 +37,7 @@ const TenantAPI = {
    */
   getTenantList() {
     return request<any, TenantInfo[]>({
-      url: `${TENANT_BASE_URL}/list`,
+      url: `${TENANT_BASE_URL}`,
       method: "get",
     });
   },
@@ -59,7 +59,7 @@ const TenantAPI = {
    */
   switchTenant(tenantId: number) {
     return request<any, TenantInfo>({
-      url: `${TENANT_BASE_URL}/switch/${tenantId}`,
+      url: `${TENANT_BASE_URL}/${tenantId}/switch`,
       method: "post",
     });
   },

@@ -35,7 +35,17 @@ const tenantStore = useTenantStoreHook();
 
 // 当前租户名称
 const currentTenantName = computed(() => {
-  return tenantStore.currentTenant?.name || "未选择租户";
+  if (tenantStore.currentTenant?.name) {
+    return tenantStore.currentTenant.name;
+  }
+  // 如果当前租户信息不存在，尝试从租户列表中查找
+  if (tenantStore.currentTenantId) {
+    const tenant = tenantStore.tenantList.find((t) => t.id === tenantStore.currentTenantId);
+    if (tenant) {
+      return tenant.name;
+    }
+  }
+  return "未选择租户";
 });
 
 // 当前租户ID
@@ -74,30 +84,35 @@ onMounted(() => {
 .tenant-select {
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  height: 100%;
+  padding: 0 8px;
   cursor: pointer;
+  border-radius: 4px;
   transition: all 0.3s;
 
   &__icon {
     margin-right: 6px;
     font-size: 18px;
-    color: var(--el-text-color-regular);
+    color: inherit;
+    transition: color 0.3s;
   }
 
   &__name {
-    max-width: 120px;
+    max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 14px;
-    color: var(--el-text-color-regular);
+    color: inherit;
     white-space: nowrap;
+    transition: color 0.3s;
   }
 
   &__arrow {
     margin-left: 6px;
     font-size: 12px;
-    color: var(--el-text-color-secondary);
-    transition: transform 0.3s;
+    color: inherit;
+    opacity: 0.7;
+    transition: all 0.3s;
   }
 
   &:hover {
@@ -106,6 +121,11 @@ onMounted(() => {
     .tenant-select__icon,
     .tenant-select__name {
       color: var(--el-color-primary);
+    }
+
+    .tenant-select__arrow {
+      color: var(--el-color-primary);
+      opacity: 1;
     }
   }
 }
