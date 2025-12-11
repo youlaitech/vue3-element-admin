@@ -90,12 +90,11 @@ export interface AiExecuteResponse {
 
 export interface AiCommandRecordPageQuery extends PageQuery {
   keywords?: string;
-  executeStatus?: string;
-  parseSuccess?: boolean;
+  executeStatus?: number;
+  parseStatus?: number;
   userId?: number;
-  isDangerous?: boolean;
-  provider?: string;
-  model?: string;
+  aiProvider?: string;
+  aiModel?: string;
   functionName?: string;
   createTime?: [string, string];
 }
@@ -105,33 +104,23 @@ export interface AiCommandRecordVO {
   userId: number;
   username: string;
   originalCommand: string;
-  provider?: string;
-  model?: string;
-  parseSuccess?: boolean;
+  aiProvider?: string;
+  aiModel?: string;
+  parseStatus?: number;
   functionCalls?: string;
   explanation?: string;
   confidence?: number;
   parseErrorMessage?: string;
   inputTokens?: number;
   outputTokens?: number;
-  totalTokens?: number;
-  parseTime?: number;
+  parseDurationMs?: number;
   functionName?: string;
   functionArguments?: string;
-  executeStatus?: string;
-  executeResult?: string;
+  executeStatus?: number;
   executeErrorMessage?: string;
-  affectedRows?: number;
-  isDangerous?: boolean;
-  requiresConfirmation?: boolean;
-  userConfirmed?: boolean;
-  executionTime?: number;
   ipAddress?: string;
-  userAgent?: string;
-  currentRoute?: string;
   createTime?: string;
   updateTime?: string;
-  remark?: string;
 }
 
 /**
@@ -180,9 +169,9 @@ class AiCommandApi {
   /**
    * 撤销命令执行（如果支持）
    */
-  static rollbackCommand(recordId: string) {
+  static rollbackCommand(logId: string) {
     return request({
-      url: `/api/v1/ai/command/rollback/${recordId}`,
+      url: `/api/v1/ai/command/rollback/${logId}`,
       method: "post",
     });
   }

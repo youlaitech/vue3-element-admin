@@ -26,6 +26,11 @@
       <div class="navbar-actions__item">
         <Notification />
       </div>
+
+      <!-- 租户选择（如果启用多租户） -->
+      <div v-if="showTenantSelect" class="navbar-actions__item">
+        <TenantSelect />
+      </div>
     </template>
 
     <!-- 用户菜单 -->
@@ -80,17 +85,35 @@ import Fullscreen from "@/components/Fullscreen/index.vue";
 import SizeSelect from "@/components/SizeSelect/index.vue";
 import LangSelect from "@/components/LangSelect/index.vue";
 import Notification from "@/components/Notification/index.vue";
+import TenantSelect from "@/components/TenantSelect/index.vue";
+import { useTenantStoreHook } from "@/store/modules/tenant-store";
 
 const { t } = useI18n();
 const appStore = useAppStore();
 const settingStore = useSettingsStore();
 const userStore = useUserStore();
+const tenantStore = useTenantStoreHook();
 
 const route = useRoute();
 const router = useRouter();
 
 // 是否为桌面设备
 const isDesktop = computed(() => appStore.device === DeviceEnum.DESKTOP);
+
+// 是否显示租户选择（如果用户有多个租户，则显示租户选择器）
+// 最小侵入：只有在多租户模式下（租户列表长度 > 1）才显示
+const showTenantSelect = computed(() => {
+  // 如果租户列表为空，不显示
+  if (tenantStore.tenantList.length === 0) {
+    return false;
+  }
+  // 如果只有一个租户，也不显示（单租户模式，用户无感知）
+  if (tenantStore.tenantList.length === 1) {
+    return false;
+  }
+  // 多个租户时才显示
+  return true;
+});
 
 /**
  * 打开个人中心页面
@@ -244,6 +267,16 @@ function handleSettingsClick() {
   .user-profile__name {
     color: rgba(255, 255, 255, 0.85);
   }
+
+  // 租户选择器在白色文字模式下的样式
+  :deep(.tenant-select) {
+    color: rgba(255, 255, 255, 0.85);
+
+    &:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
 }
 
 // 深色文字样式（用于浅色背景：明亮主题下的左侧布局）
@@ -264,6 +297,16 @@ function handleSettingsClick() {
 
   .user-profile__name {
     color: var(--el-text-color-regular) !important;
+  }
+
+  // 租户选择器在深色文字模式下的样式
+  :deep(.tenant-select) {
+    color: var(--el-text-color-regular) !important;
+
+    &:hover {
+      color: var(--el-color-primary) !important;
+      background: rgba(0, 0, 0, 0.04);
+    }
   }
 }
 

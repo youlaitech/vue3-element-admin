@@ -4,18 +4,16 @@ const AUTH_BASE_URL = "/api/v1/auth";
 
 const AuthAPI = {
   /** 登录接口*/
-  login(data: LoginFormData) {
-    const formData = new FormData();
-    formData.append("username", data.username);
-    formData.append("password", data.password);
-    formData.append("captchaKey", data.captchaKey);
-    formData.append("captchaCode", data.captchaCode);
+  login(data: LoginRequest) {
     return request<any, LoginResult>({
       url: `${AUTH_BASE_URL}/login`,
       method: "post",
-      data: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
+      data: {
+        username: data.username,
+        password: data.password,
+        captchaId: data.captchaId,
+        captchaCode: data.captchaCode,
+        tenantId: data.tenantId,
       },
     });
   },
@@ -51,18 +49,20 @@ const AuthAPI = {
 
 export default AuthAPI;
 
-/** 登录表单数据 */
-export interface LoginFormData {
+/** 登录请求参数 */
+export interface LoginRequest {
   /** 用户名 */
   username: string;
   /** 密码 */
   password: string;
-  /** 验证码缓存key */
-  captchaKey: string;
+  /** 验证码缓存ID */
+  captchaId?: string;
   /** 验证码 */
-  captchaCode: string;
-  /** 记住我 */
-  rememberMe: boolean;
+  captchaCode?: string;
+  /** 记住我（前端使用，不发送到后端） */
+  rememberMe?: boolean;
+  /** 租户ID（可选，多租户模式下用于指定租户） */
+  tenantId?: number;
 }
 
 /** 登录响应 */
@@ -79,8 +79,8 @@ export interface LoginResult {
 
 /** 验证码信息 */
 export interface CaptchaInfo {
-  /** 验证码缓存key */
-  captchaKey: string;
+  /** 验证码缓存ID */
+  captchaId: string;
   /** 验证码图片Base64字符串 */
   captchaBase64: string;
 }

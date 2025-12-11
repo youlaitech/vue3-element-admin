@@ -23,7 +23,7 @@ type ToolbarTable = "edit" | "view" | "delete";
 export type IToolsButton = {
   name: string; // 按钮名称
   text?: string; // 按钮文本
-  perm?: Array<string> | string; // 权限标识(可以是完整权限字符串如'sys:user:add'或操作权限如'add')
+  perm?: Array<string> | string; // 权限标识(可以是完整权限字符串如'sys:user:create'或操作权限如'create')
   attrs?: Partial<ButtonProps> & { style?: CSSProperties }; // 按钮属性
   render?: (row: IObject) => boolean; // 条件渲染
 };

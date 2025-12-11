@@ -56,7 +56,7 @@
           <div class="table-section__toolbar">
             <div class="table-section__toolbar--actions">
               <el-button
-                v-hasPerm="['sys:user:add']"
+                v-hasPerm="['sys:user:create']"
                 type="success"
                 icon="plus"
                 @click="handleOpenDialog()"
@@ -130,7 +130,7 @@
                   重置密码
                 </el-button>
                 <el-button
-                  v-hasPerm="'sys:user:edit'"
+                  v-hasPerm="'sys:user:update'"
                   type="primary"
                   icon="edit"
                   link

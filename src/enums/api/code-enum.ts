@@ -20,4 +20,9 @@ export const enum ApiCodeEnum {
    * 刷新令牌无效或过期
    */
   REFRESH_TOKEN_INVALID = "A0231",
+
+  /**
+   * 需要选择租户
+   */
+  CHOOSE_TENANT = "A0250",
 }

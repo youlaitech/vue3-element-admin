@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from "vue-router";
 import NProgress from "@/utils/nprogress";
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
+import { useTenantStoreHook } from "@/store/modules/tenant-store";
 
 export function setupPermission() {
   const whiteList = ["/login"];
@@ -37,6 +38,12 @@ export function setupPermission() {
         if (!userStore.userInfo?.roles?.length) {
           await userStore.getUserInfo();
         }
+
+        // 登录成功后，尝试获取租户列表和当前租户信息（如果启用多租户）
+        // 最小侵入：如果接口失败，不影响正常流程（可能是单租户模式）
+        const tenantStore = useTenantStoreHook();
+        // 由 tenantStore 内部自行判断前端多租户开关（VITE_APP_TENANT_ENABLED）
+        await tenantStore.prepareTenantContextAfterLogin();
 
         const dynamicRoutes = await permissionStore.generateRoutes();
         dynamicRoutes.forEach((route: RouteRecordRaw) => {

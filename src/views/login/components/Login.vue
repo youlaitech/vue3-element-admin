@@ -86,6 +86,36 @@
       </el-link>
     </div>
 
+    <!-- 租户选择对话框 -->
+    <el-dialog
+      v-model="tenantDialogVisible"
+      title="选择登录租户"
+      width="500px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+    >
+      <div class="tenant-select-content">
+        <p class="tenant-select-tip">检测到你的账号属于多个租户，请选择登录租户：</p>
+        <el-radio-group v-model="selectedTenantId" class="tenant-radio-group">
+          <el-radio
+            v-for="tenant in pendingTenants"
+            :key="tenant.id"
+            :label="tenant.id"
+            class="tenant-radio"
+          >
+            {{ tenant.name }}
+          </el-radio>
+        </el-radio-group>
+      </div>
+      <template #footer>
+        <el-button @click="tenantDialogVisible = false">取消</el-button>
+        <el-button type="primary" :disabled="!selectedTenantId" @click="handleTenantSelected">
+          继续
+        </el-button>
+      </template>
+    </el-dialog>
+
     <!-- 第三方登录 -->
     <div class="third-party-login">
       <div class="divider-container">
@@ -112,11 +142,12 @@
 </template>
 <script setup lang="ts">
 import type { FormInstance } from "element-plus";
-import AuthAPI, { type LoginFormData } from "@/api/auth-api";
+import AuthAPI, { type LoginRequest } from "@/api/auth-api";
 import router from "@/router";
 import { useUserStore } from "@/store";
 import CommonWrapper from "@/components/CommonWrapper/index.vue";
 import { AuthStorage } from "@/utils/auth";
+import { ApiCodeEnum } from "@/enums/api/code-enum";
 
 const { t } = useI18n();
 const userStore = useUserStore();
@@ -132,11 +163,14 @@ const isCapsLock = ref(false);
 const captchaBase64 = ref();
 // 记住我
 const rememberMe = AuthStorage.getRememberMe();
+// 租户选择对话框
+const tenantDialogVisible = ref(false);
+const selectedTenantId = ref<number | null>(null);
 
-const loginFormData = ref<LoginFormData>({
+const loginFormData = ref<LoginRequest>({
   username: "admin",
   password: "123456",
-  captchaKey: "",
+  captchaId: "",
   captchaCode: "",
   rememberMe,
 });
@@ -178,11 +212,14 @@ function getCaptcha() {
   codeLoading.value = true;
   AuthAPI.getCaptcha()
     .then((data) => {
-      loginFormData.value.captchaKey = data.captchaKey;
+      loginFormData.value.captchaId = data.captchaId;
       captchaBase64.value = data.captchaBase64;
     })
     .finally(() => (codeLoading.value = false));
 }
+
+// 待选择的租户列表
+const pendingTenants = ref<Array<{ id: number; name: string }>>([]);
 
 /**
  * 登录提交
@@ -196,14 +233,52 @@ async function handleLoginSubmit() {
     loading.value = true;
 
     // 2. 执行登录
-    await userStore.login(loginFormData.value);
+    try {
+      await userStore.login(loginFormData.value);
+      // 登录成功，跳转到目标页面
+      const redirectPath = (route.query.redirect as string) || "/";
+      await router.push(decodeURIComponent(redirectPath));
+    } catch (error: any) {
+      // 检查是否是 choose_tenant 响应
+      if (error?.code === ApiCodeEnum.CHOOSE_TENANT && error?.data?.tenants) {
+        // 需要选择租户
+        pendingTenants.value = error.data.tenants;
+        tenantDialogVisible.value = true;
+        return; // 等待用户选择租户
+      }
+      // 其他错误，刷新验证码并显示错误
+      getCaptcha();
+      throw error;
+    }
+  } catch (error) {
+    // 统一错误处理
+    console.error("登录失败:", error);
+  } finally {
+    loading.value = false;
+  }
+}
 
+/**
+ * 租户选择确认后的处理
+ */
+async function handleTenantSelected() {
+  if (!selectedTenantId.value) {
+    ElMessage.warning("请选择租户");
+    return;
+  }
+
+  try {
+    loading.value = true;
+    // 使用选中的租户ID重新登录（将 tenantId 设置到表单数据中）
+    const loginData = { ...loginFormData.value, tenantId: selectedTenantId.value };
+    await userStore.login(loginData);
+    // 登录成功，关闭对话框并跳转
+    tenantDialogVisible.value = false;
     const redirectPath = (route.query.redirect as string) || "/";
-
     await router.push(decodeURIComponent(redirectPath));
   } catch (error) {
-    // 4. 统一错误处理
-    getCaptcha(); // 刷新验证码
+    // 登录失败，刷新验证码
+    getCaptcha();
     console.error("登录失败:", error);
   } finally {
     loading.value = false;
@@ -254,6 +329,44 @@ function toOtherForm(type: "register" | "resetPwd") {
       font-size: 12px;
       color: var(--el-text-color-regular);
       white-space: nowrap;
+    }
+  }
+}
+
+.tenant-select-content {
+  padding: 20px 0;
+
+  .tenant-select-tip {
+    margin: 0 0 20px;
+    font-size: 14px;
+    color: var(--el-text-color-regular);
+  }
+
+  .tenant-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+
+    .tenant-radio {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border: 1px solid var(--el-border-color);
+      border-radius: 8px;
+      transition: all 0.3s;
+
+      &:hover {
+        background-color: var(--el-color-primary-light-9);
+        border-color: var(--el-color-primary);
+      }
+
+      :deep(.el-radio__input.is-checked) {
+        + .el-radio__label {
+          font-weight: 500;
+          color: var(--el-color-primary);
+        }
+      }
     }
   }
 }

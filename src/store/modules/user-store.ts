@@ -1,6 +1,6 @@
 import { store } from "@/store";
 
-import AuthAPI, { type LoginFormData } from "@/api/auth-api";
+import AuthAPI, { type LoginRequest } from "@/api/auth-api";
 import UserAPI, { type UserInfo } from "@/api/system/user-api";
 
 import { AuthStorage } from "@/utils/auth";
@@ -18,16 +18,16 @@ export const useUserStore = defineStore("user", () => {
   /**
    * 登录
    *
-   * @param {LoginFormData}
+   * @param {LoginRequest}
    * @returns
    */
-  function login(LoginFormData: LoginFormData) {
+  function login(loginRequest: LoginRequest) {
     return new Promise<void>((resolve, reject) => {
-      AuthAPI.login(LoginFormData)
+      AuthAPI.login(loginRequest)
         .then((data) => {
           const { accessToken, refreshToken } = data;
           // 保存记住我状态和token
-          rememberMe.value = LoginFormData.rememberMe;
+          rememberMe.value = loginRequest.rememberMe ?? false;
           AuthStorage.setTokens(accessToken, refreshToken, rememberMe.value);
           resolve();
         })
