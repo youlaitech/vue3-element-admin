@@ -1,7 +1,7 @@
 import { watchEffect, computed } from "vue";
 import { useWindowSize } from "@vueuse/core";
 import { useAppStore } from "@/store";
-import { DeviceEnum } from "@/enums/settings/device-enum";
+import { DeviceEnum } from "@/enums/settings";
 
 /**
  * 设备检测和响应式处理

@@ -338,10 +338,10 @@
 
 <script setup lang="ts">
 import { useAppStore } from "@/store/modules/app-store";
-import { DeviceEnum } from "@/enums/settings/device-enum";
+import { DeviceEnum } from "@/enums/settings";
 
 import MenuAPI, { MenuQuery, MenuForm, MenuVO } from "@/api/system/menu";
-import { MenuTypeEnum } from "@/enums/system/menu-enum";
+import { MenuTypeEnum } from "@/enums/business";
 
 defineOptions({
   name: "SysMenu",

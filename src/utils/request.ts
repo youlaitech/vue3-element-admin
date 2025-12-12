@@ -1,6 +1,6 @@
 import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from "axios";
 import qs from "qs";
-import { ApiCodeEnum } from "@/enums/api/code-enum";
+import { ApiCodeEnum } from "@/enums/api";
 import { AuthStorage, redirectToLogin } from "@/utils/auth";
 import { useTokenRefresh } from "@/composables/auth/useTokenRefresh";
 import { authConfig } from "@/settings";

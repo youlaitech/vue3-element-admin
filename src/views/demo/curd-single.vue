@@ -73,7 +73,7 @@ import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
 import type { UserForm, UserPageQuery } from "@/api/system/user";
 import type { IObject, IModalConfig, IContentConfig, ISearchConfig } from "@/components/CURD/types";
-import { DeviceEnum } from "@/enums/settings/device-enum";
+import { DeviceEnum } from "@/enums/settings";
 import { useAppStore } from "@/store";
 import usePage from "@/components/CURD/usePage";
 

@@ -1,6 +1,6 @@
 import { ref, onMounted, onUnmounted, getCurrentInstance } from "vue";
 import { useStomp } from "./useStomp";
-import { registerWebSocketInstance } from "@/plugins/websocket";
+import { registerWebSocketInstance } from "@/utils/websocket";
 import { AuthStorage } from "@/utils/auth";
 
 /**

@@ -69,7 +69,7 @@ import TagsView from "../../components/TagsView/index.vue";
 import AppMain from "../../components/AppMain/index.vue";
 import MenuItem from "../../components/Menu/components/MenuItem.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
-import variables from "@/styles/variables.module.scss";
+import variables from "@/styles/variables.scss";
 import { isExternal } from "@/utils/index";
 import { useAppStore, usePermissionStore } from "@/store";
 

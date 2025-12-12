@@ -1,9 +1,10 @@
 /**
- * @description 所有主题模式下的 Vxe Table CSS 变量
- * @description 用 Element Plus 的 CSS 变量来覆写 Vxe Table 的 CSS 变量，目的是使 Vxe Table 支持多主题模式且样式统一
- * @description 在此查阅所有可自定义的变量：https://github.com/x-extends/vxe-table/blob/master/styles/css-variable.scss
+ * Vxe Table 主题统一：
+ * 1) 用 Element Plus 的 CSS 变量覆写 Vxe Table 的 CSS 变量
+ * 2) 自定义局部样式
  */
 
+/* 变量覆写 */
 :root {
   /* color */
   --vxe-font-color: var(--el-text-color-regular);
@@ -89,4 +90,43 @@
   /* select */
   --vxe-select-option-hover-background-color: var(--el-bg-color-overlay);
   --vxe-select-panel-background-color: var(--el-bg-color);
+}
+
+/* 自定义组件样式 */
+.vxe-grid {
+  /* 表单 */
+  &--form-wrapper {
+    .vxe-form {
+      padding: 10px 20px;
+      margin-bottom: 20px;
+    }
+  }
+
+  /* 工具栏 */
+  &--toolbar-wrapper {
+    .vxe-toolbar {
+      padding: 20px;
+    }
+  }
+
+  /* 分页 */
+  &--pager-wrapper {
+    .vxe-pager {
+      height: 70px;
+      padding: 0 20px;
+
+      &--wrapper {
+        /* 参考 Bootstrap 的响应式设计 WIDTH = 768 */
+        @media screen and (width <= 768px) {
+          .vxe-pager--total,
+          .vxe-pager--sizes,
+          .vxe-pager--jump,
+          .vxe-pager--jump-prev,
+          .vxe-pager--jump-next {
+            display: none;
+          }
+        }
+      }
+    }
+  }
 }

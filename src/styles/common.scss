@@ -1,56 +1,42 @@
-@use "./reset";
-@use "./element-plus";
-// Vxe Table
-@use "./vxe-table";
-@import url("./vxe-table.css");
+/* 全局业务通用样式 */
 
 .app-container {
   padding: 15px;
 }
 
-// 进度条颜色
+/* 进度条颜色 */
 #nprogress .bar {
   background-color: var(--el-color-primary);
 }
 
-// 混合布局左侧菜单的hover样式
+/* 混合布局左侧菜单 hover 样式 */
 .layout-mix .layout__sidebar--left .el-menu {
   .el-menu-item {
     &:hover {
-      // 极简白主题：使用浅灰色背景
       background-color: var(--el-fill-color-light) !important;
     }
   }
 
   .el-sub-menu__title {
     &:hover {
-      // 极简白主题：使用浅灰色背景
       background-color: var(--el-fill-color-light) !important;
     }
   }
 }
 
-// 深色主题或深蓝色侧边栏配色下的左侧菜单hover样式
+/* 深色或深蓝侧边栏的 hover 样式 */
 html.dark .layout-mix .layout__sidebar--left .el-menu,
 html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
-  .el-menu-item {
-    &:hover {
-      // 深色背景：使用CSS变量
-      background-color: var(--menu-hover) !important;
-    }
-  }
-
+  .el-menu-item,
   .el-sub-menu__title {
     &:hover {
-      // 深色背景：使用CSS变量
       background-color: var(--menu-hover) !important;
     }
   }
 }
 
-// 窄屏时隐藏菜单文字，只显示图标
+/* 窄屏隐藏菜单文字，仅保留图标 */
 .hideSidebar {
-  // Top布局和Mix布局的水平菜单
   &.layout-top .layout__header .el-menu--horizontal,
   &.layout-mix .layout__header .el-menu--horizontal {
     .el-menu-item,
@@ -62,7 +48,6 @@ html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
     }
   }
 
-  // Mix布局的左侧菜单
   &.layout-mix .layout__sidebar--left .el-menu {
     .el-menu-item,
     .el-sub-menu__title {
@@ -74,7 +59,7 @@ html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
   }
 }
 
-// 全局筛选区域样式
+/* 全局筛选区域 */
 .filter-section {
   padding: 8px 12px 0;
   margin-bottom: 8px;
@@ -91,11 +76,10 @@ html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
   }
 }
 
-// 表格区域样式
+/* 表格区域 */
 .table-section {
   margin-bottom: 12px;
 
-  // 表格工具栏区域
   &__toolbar {
     display: flex;
     justify-content: space-between;
@@ -108,12 +92,10 @@ html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
     }
   }
 
-  // 表格内容区域
   &__content {
     margin: 8px 0;
   }
 
-  // 分页区域
   .el-pagination {
     justify-content: flex-end;
     margin-top: 12px;

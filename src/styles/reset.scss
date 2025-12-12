@@ -1,12 +1,3 @@
-*,
-::before,
-::after {
-  box-sizing: border-box;
-  border-color: currentcolor;
-  border-style: solid;
-  border-width: 0;
-}
-
 #app {
   width: 100%;
   height: 100%;
@@ -19,6 +10,17 @@ html {
   line-height: 1.5;
   tab-size: 4;
   text-size-adjust: 100%;
+}
+
+#app,
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 body {
@@ -54,12 +56,6 @@ li {
   padding: 0;
   margin: 0;
   list-style: none;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
 }
 
 a,
