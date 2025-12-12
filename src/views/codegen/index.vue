@@ -530,11 +530,11 @@ import GeneratorAPI, {
   GenConfigForm,
   TablePageQuery,
   FieldConfig,
-} from "@/api/codegen-api";
+} from "@/api/codegen";
 import { ElLoading } from "element-plus";
 
-import DictAPI from "@/api/system/dict-api";
-import MenuAPI from "@/api/system/menu-api";
+import DictAPI from "@/api/system/dict";
+import MenuAPI from "@/api/system/menu";
 
 interface TreeNode {
   label: string;

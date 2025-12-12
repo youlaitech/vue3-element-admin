@@ -3,7 +3,7 @@ import NoticeAPI, {
   type NoticePageVO,
   type NoticeDetailVO,
   type NoticePageQuery,
-} from "@/api/system/notice-api";
+} from "@/api/system/notice";
 import { useStomp } from "@/composables/websocket/useStomp";
 import router from "@/router";
 

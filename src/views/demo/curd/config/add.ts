@@ -1,4 +1,4 @@
-import UserAPI, { type UserForm } from "@/api/system/user-api";
+import UserAPI, { type UserForm } from "@/api/system/user";
 import type { IModalConfig } from "@/components/CURD/types";
 import { deptArr, roleArr } from "./options";
 

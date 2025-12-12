@@ -142,12 +142,13 @@
 </template>
 <script setup lang="ts">
 import type { FormInstance } from "element-plus";
-import AuthAPI, { type LoginRequest } from "@/api/auth-api";
+import AuthAPI from "@/api/auth";
+import type { LoginRequest } from "@/types/api";
 import router from "@/router";
 import { useUserStore } from "@/store";
 import CommonWrapper from "@/components/CommonWrapper/index.vue";
 import { AuthStorage } from "@/utils/auth";
-import { ApiCodeEnum } from "@/enums/api/code-enum";
+import { ApiCodeEnum } from "@/enums";
 
 const { t } = useI18n();
 const userStore = useUserStore();

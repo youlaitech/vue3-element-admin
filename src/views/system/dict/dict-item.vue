@@ -155,7 +155,7 @@
 
 <script setup lang="ts">
 import type { TagProps } from "element-plus";
-import DictAPI, { DictItemPageQuery, DictItemPageVO, DictItemForm } from "@/api/system/dict-api";
+import DictAPI, { DictItemPageQuery, DictItemPageVO, DictItemForm } from "@/api/system/dict";
 
 const route = useRoute();
 

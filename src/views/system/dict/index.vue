@@ -137,7 +137,7 @@ defineOptions({
   inherititems: false,
 });
 
-import DictAPI, { DictPageQuery, DictPageVO, DictForm } from "@/api/system/dict-api";
+import DictAPI, { DictPageQuery, DictPageVO, DictForm } from "@/api/system/dict";
 
 import router from "@/router";
 

@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import UserAPI from "@/api/system/user-api";
+import UserAPI from "@/api/system/user";
 import type { IObject, IOperateData, PageModalInstance } from "@/components/CURD/types";
 import usePage from "@/components/CURD/usePage";
 import addModalConfig from "./config/add";

@@ -1,5 +1,5 @@
 import { store } from "@/store";
-import TenantAPI, { type TenantInfo } from "@/api/system/tenant-api";
+import TenantAPI, { type TenantInfo } from "@/api/system/tenant";
 import { STORAGE_KEYS } from "@/constants";
 
 /**

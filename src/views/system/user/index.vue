@@ -253,15 +253,15 @@ import { useDebounceFn } from "@vueuse/core";
 import { ElMessage, ElMessageBox, type FormInstance } from "element-plus";
 
 // ==================== 3. 类型定义 ====================
-import type { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user-api";
+import type { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user";
 
 // ==================== 3.5 工具函数 ====================
 import { downloadFile } from "@/utils";
 import { VALIDATORS } from "@/constants";
 // ==================== 4. API 服务 ====================
-import UserAPI from "@/api/system/user-api";
-import DeptAPI from "@/api/system/dept-api";
-import RoleAPI from "@/api/system/role-api";
+import UserAPI from "@/api/system/user";
+import DeptAPI from "@/api/system/dept";
+import RoleAPI from "@/api/system/role";
 
 // ==================== 5. Store ====================
 import { useUserStore, useAppStore } from "@/store";

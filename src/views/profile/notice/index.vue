@@ -119,7 +119,7 @@ import NoticeAPI, {
   type NoticePageVO,
   type NoticePageQuery,
   type NoticeDetailVO,
-} from "@/api/system/notice-api";
+} from "@/api/system/notice";
 
 const queryFormRef = ref();
 const pageData = ref<NoticePageVO[]>([]);

@@ -265,8 +265,8 @@ import NoticeAPI, {
   NoticeForm,
   NoticePageQuery,
   NoticeDetailVO,
-} from "@/api/system/notice-api";
-import UserAPI from "@/api/system/user-api";
+} from "@/api/system/notice";
+import UserAPI from "@/api/system/user";
 
 const queryFormRef = ref();
 const dataFormRef = ref();

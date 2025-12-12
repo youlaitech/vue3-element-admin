@@ -1,13 +1,14 @@
 import { store } from "@/store";
 
-import AuthAPI, { type LoginRequest } from "@/api/auth-api";
-import UserAPI, { type UserInfo } from "@/api/system/user-api";
+import AuthAPI from "@/api/auth";
+import UserAPI from "@/api/system/user";
+import type { LoginRequest } from "@/types/api";
 
 import { AuthStorage } from "@/utils/auth";
 import { usePermissionStoreHook } from "@/store/modules/permission-store";
 import { useDictStoreHook } from "@/store/modules/dict-store";
 import { useTagsViewStore } from "@/store";
-import { cleanupWebSocket } from "@/plugins/websocket";
+import { cleanupWebSocket } from "@/utils/websocket";
 
 export const useUserStore = defineStore("user", () => {
   // 用户信息

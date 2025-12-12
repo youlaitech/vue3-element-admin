@@ -98,7 +98,8 @@
 import type { FormInstance } from "element-plus";
 import { Lock } from "@element-plus/icons-vue";
 import { useI18n } from "vue-i18n";
-import AuthAPI, { type LoginRequest } from "@/api/auth-api";
+import AuthAPI from "@/api/auth";
+import type { LoginRequest } from "@/types/api";
 
 const { t } = useI18n();
 

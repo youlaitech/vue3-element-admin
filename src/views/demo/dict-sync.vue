@@ -141,7 +141,7 @@
 <script setup lang="ts">
 import { useDictStoreHook } from "@/store/modules/dict-store";
 import { useDateFormat } from "@vueuse/core";
-import DictAPI, { DictItemForm } from "@/api/system/dict-api";
+import DictAPI, { DictItemForm } from "@/api/system/dict";
 import { useDictSync, DictMessage } from "@/composables";
 
 // 性别字典编码
