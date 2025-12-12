@@ -1,5 +1,12 @@
 /**
- * API响应码枚举
+ * API 相关枚举
+ *
+ * @description
+ * 包含 API 响应码、请求状态等枚举定义
+ */
+
+/**
+ * API 响应码枚举
  */
 export const enum ApiCodeEnum {
   /**

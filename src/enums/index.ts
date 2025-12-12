@@ -1,15 +1,12 @@
-export * from "./api/code-enum";
+/**
+ * 枚举统一导出
+ *
+ * @description
+ * 按业务域分组的枚举定义
+ */
 
-export * from "./codegen/form-enum";
-export * from "./codegen/query-enum";
-
-export * from "./settings/layout-enum";
-export * from "./settings/theme-enum";
-export * from "./settings/locale-enum";
-export * from "./settings/device-enum";
-
-export * from "./common/dialog-enum";
-export * from "./common/status-enum";
-
-export * from "./system/menu-enum";
-export * from "./system/user-enum";
+export * from "./api";
+export * from "./business";
+export * from "./codegen";
+export * from "./common";
+export * from "./settings";

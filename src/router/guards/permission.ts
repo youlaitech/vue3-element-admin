@@ -33,7 +33,7 @@ async function initTenantContextIfEnabled(): Promise<void> {
   }
 }
 
-export function setupPermission() {
+export function setupPermissionGuard() {
   const whiteList = ["/login"];
 
   router.beforeEach(async (to, from, next) => {
