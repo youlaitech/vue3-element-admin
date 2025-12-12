@@ -4,6 +4,35 @@ import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
 import { useTenantStoreHook } from "@/store/modules/tenant-store";
 
+/**
+ * 多租户功能是否启用
+ * 通过环境变量控制，实现零侵入的可插拔设计
+ */
+const TENANT_ENABLED = import.meta.env.VITE_APP_TENANT_ENABLED === "true";
+
+/**
+ * 初始化多租户上下文（插件式设计）
+ * - 仅在启用多租户时执行
+ * - 失败不影响主流程（优雅降级）
+ * - 完全解耦，可随时移除
+ */
+async function initTenantContextIfEnabled(): Promise<void> {
+  if (!TENANT_ENABLED) {
+    console.debug("[Tenant] 多租户功能未启用，跳过初始化");
+    return;
+  }
+
+  try {
+    console.debug("[Tenant] 开始加载租户...");
+    const tenantStore = useTenantStoreHook();
+    await tenantStore.loadTenant();
+    console.debug("[Tenant] 租户加载成功");
+  } catch (error) {
+    // 优雅降级：后端未启用多租户或接口不存在时，不影响正常流程
+    console.debug("[Tenant] 租户上下文初始化失败（可能后端未启用多租户）:", error);
+  }
+}
+
 export function setupPermission() {
   const whiteList = ["/login"];
 
@@ -39,11 +68,11 @@ export function setupPermission() {
           await userStore.getUserInfo();
         }
 
-        // 登录成功后，尝试获取租户列表和当前租户信息（如果启用多租户）
-        // 最小侵入：如果接口失败，不影响正常流程（可能是单租户模式）
-        const tenantStore = useTenantStoreHook();
-        // 由 tenantStore 内部自行判断前端多租户开关（VITE_APP_TENANT_ENABLED）
-        await tenantStore.prepareTenantContextAfterLogin();
+        // 【多租户插件】初始化租户上下文（零侵入设计）
+        // - 通过 VITE_APP_TENANT_ENABLED 环境变量控制
+        // - 失败不影响主流程，优雅降级
+        // - 可通过设置环境变量为 false 完全移除此功能
+        await initTenantContextIfEnabled();
 
         const dynamicRoutes = await permissionStore.generateRoutes();
         dynamicRoutes.forEach((route: RouteRecordRaw) => {

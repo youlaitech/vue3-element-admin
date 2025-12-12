@@ -11,6 +11,10 @@ export const STORAGE_KEYS = {
   REFRESH_TOKEN: `${APP_PREFIX}:auth:refresh_token`, // JWT刷新令牌
   REMEMBER_ME: `${APP_PREFIX}:auth:remember_me`, // 记住登录状态
 
+  // 租户相关
+  TENANT_ID: `${APP_PREFIX}:tenant:id`, // 当前租户ID
+  TENANT_INFO: `${APP_PREFIX}:tenant:info`, // 当前租户信息
+
   // 系统核心相关
   DICT_CACHE: `${APP_PREFIX}:system:dict_cache`, // 字典数据缓存
 
@@ -41,6 +45,11 @@ export const AUTH_KEYS = {
   REMEMBER_ME: STORAGE_KEYS.REMEMBER_ME,
 } as const;
 
+export const TENANT_KEYS = {
+  TENANT_ID: STORAGE_KEYS.TENANT_ID,
+  TENANT_INFO: STORAGE_KEYS.TENANT_INFO,
+} as const;
+
 export const SYSTEM_KEYS = {
   DICT_CACHE: STORAGE_KEYS.DICT_CACHE,
 } as const;
@@ -66,6 +75,7 @@ export const APP_KEYS = {
 
 export const ALL_STORAGE_KEYS = {
   ...AUTH_KEYS,
+  ...TENANT_KEYS,
   ...SYSTEM_KEYS,
   ...SETTINGS_KEYS,
   ...APP_KEYS,

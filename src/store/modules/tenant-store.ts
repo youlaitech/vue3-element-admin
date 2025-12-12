@@ -1,11 +1,6 @@
 import { store } from "@/store";
 import TenantAPI, { type TenantInfo } from "@/api/system/tenant-api";
-
-// 前端多租户开关；默认开启，若后端未启用多租户可在 .env 设置 VITE_APP_TENANT_ENABLED=false
-const TENANT_ENABLED = import.meta.env.VITE_APP_TENANT_ENABLED !== "false";
-
-const TENANT_ID_KEY = "current_tenant_id";
-const TENANT_INFO_KEY = "current_tenant_info";
+import { STORAGE_KEYS } from "@/constants";
 
 /**
  * 租户 Store
@@ -19,12 +14,12 @@ export const useTenantStore = defineStore("tenant", () => {
   const tenantList = ref<TenantInfo[]>([]);
 
   /**
-   * 初始化租户信息
+   * 恢复租户信息
    * 从 localStorage 恢复上次使用的租户
    */
-  function initTenant() {
-    const savedTenantId = localStorage.getItem(TENANT_ID_KEY);
-    const savedTenantInfo = localStorage.getItem(TENANT_INFO_KEY);
+  function restoreTenant() {
+    const savedTenantId = localStorage.getItem(STORAGE_KEYS.TENANT_ID);
+    const savedTenantInfo = localStorage.getItem(STORAGE_KEYS.TENANT_INFO);
 
     if (savedTenantId) {
       currentTenantId.value = Number(savedTenantId);
@@ -56,35 +51,41 @@ export const useTenantStore = defineStore("tenant", () => {
   }
 
   /**
-   * 登录后初始化租户：获取列表并尽量确定当前租户
-   * - 忽略错误，以便单租户模式不受影响
+   * 加载租户
+   *
+   * 执行流程：
+   * 1. 获取用户可访问的租户列表
+   * 2. 尝试获取后端当前租户
+   * 3. 如果只有一个租户，自动选中
+   * 4. 否则等待用户手动选择
+   *
+   * @remarks
+   * 此方法由路由守卫调用，仅在启用多租户时执行
    */
-  // 登录后准备租户上下文：先取租户列表，再用后端返回的当前租户；若单租户则自动选中
-  async function prepareTenantContextAfterLogin() {
-    if (!TENANT_ENABLED) {
-      return;
-    }
+  async function loadTenant() {
+    // 1. 获取租户列表
+    await fetchTenantList();
 
-    try {
-      await fetchTenantList();
-
-      if (tenantList.value.length > 0 && !currentTenantId.value) {
-        try {
-          const currentTenantInfo = await TenantAPI.getCurrentTenant();
-          if (currentTenantInfo) {
-            setCurrentTenant(currentTenantInfo);
-          } else if (tenantList.value.length === 1) {
-            setCurrentTenant(tenantList.value[0]);
-          }
-        } catch (error) {
-          if (tenantList.value.length === 1) {
-            setCurrentTenant(tenantList.value[0]);
-          }
-          console.debug("获取当前租户信息失败（可能是单租户模式）:", error);
+    // 2. 如果已有租户列表且未设置当前租户
+    if (tenantList.value.length > 0 && !currentTenantId.value) {
+      try {
+        // 尝试从后端获取当前租户
+        const currentTenantInfo = await TenantAPI.getCurrentTenant();
+        if (currentTenantInfo) {
+          setCurrentTenant(currentTenantInfo);
+          return;
         }
+      } catch (error) {
+        console.debug("[Tenant] 获取当前租户失败，尝试自动选择:", error);
       }
-    } catch (error) {
-      console.debug("获取租户列表失败（可能是单租户模式）:", error);
+
+      // 3. 如果只有一个租户，自动选中
+      if (tenantList.value.length === 1) {
+        setCurrentTenant(tenantList.value[0]);
+        console.debug("[Tenant] 自动选中唯一租户:", tenantList.value[0].name);
+      } else {
+        console.debug("[Tenant] 多个租户可用，等待用户选择");
+      }
     }
   }
 
@@ -98,8 +99,8 @@ export const useTenantStore = defineStore("tenant", () => {
     currentTenant.value = tenant;
 
     // 保存到 localStorage
-    localStorage.setItem(TENANT_ID_KEY, String(tenant.id));
-    localStorage.setItem(TENANT_INFO_KEY, JSON.stringify(tenant));
+    localStorage.setItem(STORAGE_KEYS.TENANT_ID, String(tenant.id));
+    localStorage.setItem(STORAGE_KEYS.TENANT_INFO, JSON.stringify(tenant));
   }
 
   /**
@@ -145,18 +146,18 @@ export const useTenantStore = defineStore("tenant", () => {
     currentTenantId.value = null;
     currentTenant.value = null;
     tenantList.value = [];
-    localStorage.removeItem(TENANT_ID_KEY);
-    localStorage.removeItem(TENANT_INFO_KEY);
+    localStorage.removeItem(STORAGE_KEYS.TENANT_ID);
+    localStorage.removeItem(STORAGE_KEYS.TENANT_INFO);
   }
 
-  // 初始化
-  initTenant();
+  // 恢复本地租户信息
+  restoreTenant();
 
   return {
     currentTenantId,
     currentTenant,
     tenantList,
-    prepareTenantContextAfterLogin,
+    loadTenant,
     fetchTenantList,
     setCurrentTenant,
     switchTenant,
