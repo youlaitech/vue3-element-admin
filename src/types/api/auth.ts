@@ -23,7 +23,7 @@ export interface LoginRequest {
 /**
  * 登录响应
  */
-export interface LoginResult {
+export interface LoginResponse {
   /** 访问令牌 */
   accessToken: string;
   /** 刷新令牌 */
