@@ -1,7 +1,7 @@
 import type { Directive, DirectiveBinding } from "vue";
 
 import { useUserStore } from "@/store";
-import { ROLE_ROOT } from "@/constants";
+import { ROLE_ROOT } from "@/enums";
 
 /**
  * 按钮权限

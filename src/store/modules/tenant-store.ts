@@ -1,6 +1,6 @@
 import { store } from "@/store";
 import TenantAPI, { type TenantInfo } from "@/api/system/tenant";
-import { STORAGE_KEYS } from "@/constants";
+import { STORAGE_KEYS } from "@/config/storage";
 
 /**
  * 租户 Store

@@ -1,8 +1,8 @@
 import { defaultSettings } from "@/settings";
-import { SidebarColor, ThemeMode } from "@/enums/settings/theme-enum";
-import type { LayoutMode } from "@/enums/settings/layout-enum";
+import { SidebarColor, ThemeMode } from "@/enums";
+import type { LayoutMode } from "@/enums";
 import { applyTheme, generateThemeColors, toggleDarkMode, toggleSidebarColor } from "@/utils/theme";
-import { STORAGE_KEYS } from "@/constants";
+import { STORAGE_KEYS } from "@/config/storage";
 
 // 🎯 设置项类型定义
 interface SettingsState {

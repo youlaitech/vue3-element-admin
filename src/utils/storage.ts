@@ -1,4 +1,4 @@
-import { STORAGE_KEYS, APP_PREFIX } from "@/constants";
+import { STORAGE_KEYS, APP_PREFIX } from "@/config/storage";
 
 /**
  * 存储工具类

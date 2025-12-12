@@ -1,6 +1,6 @@
 import { store } from "@/store";
 import DictAPI, { type DictItemOption } from "@/api/system/dict";
-import { STORAGE_KEYS } from "@/constants";
+import { STORAGE_KEYS } from "@/config/storage";
 
 export const useDictStore = defineStore("dict", () => {
   // 字典数据缓存

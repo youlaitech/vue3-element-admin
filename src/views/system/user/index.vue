@@ -257,7 +257,7 @@ import type { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user";
 
 // ==================== 3.5 工具函数 ====================
 import { downloadFile } from "@/utils";
-import { VALIDATORS } from "@/constants";
+import { VALIDATORS } from "@/utils/validators";
 // ==================== 4. API 服务 ====================
 import UserAPI from "@/api/system/user";
 import DeptAPI from "@/api/system/dept";
