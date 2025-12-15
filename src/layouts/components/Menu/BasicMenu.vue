@@ -33,7 +33,7 @@ import { SidebarColor } from "@/enums/settings";
 import { useSettingsStore, useAppStore } from "@/store";
 import { isExternal } from "@/utils/index";
 import MenuItem from "./components/MenuItem.vue";
-import variables from "@/styles/variables.scss";
+import variables from "@/styles/variables.module.scss";
 
 const props = defineProps({
   data: {

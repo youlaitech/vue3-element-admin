@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { type RouteLocationNormalized } from "vue-router";
 import { useSettingsStore, useTagsViewStore } from "@/store";
-import variables from "@/styles/variables.scss";
+import variables from "@/styles/variables.module.scss";
 import Error404 from "@/views/error/404.vue";
 
 const { cachedViews } = toRefs(useTagsViewStore());

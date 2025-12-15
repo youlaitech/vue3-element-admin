@@ -123,9 +123,7 @@ onBeforeUnmount(() => {
   height: 100%;
   padding: clamp(1rem, 3vw, 2rem);
   overflow: hidden;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(64, 128, 255, 0.18), transparent 55%),
-    radial-gradient(circle at 80% 80%, rgba(22, 93, 255, 0.16), transparent 50%);
+  background-color: #f5f7ff;
 
   &::before {
     position: fixed;
@@ -201,13 +199,11 @@ onBeforeUnmount(() => {
   flex-direction: column;
   justify-content: center;
   padding: clamp(1.5rem, 3vw, 3rem);
-  color: rgba(20, 40, 80, 0.95);
-  text-shadow: 0 4px 16px rgba(15, 60, 110, 0.12);
+  color: var(--el-text-color-primary);
   animation: featureFade 0.8s ease-out;
 
   @media (prefers-color-scheme: dark) {
     color: rgba(236, 242, 255, 0.92);
-    text-shadow: none;
   }
 }
 
@@ -272,7 +268,7 @@ onBeforeUnmount(() => {
   margin-bottom: 1.5rem;
   font-size: 1rem;
   line-height: 1.7;
-  color: rgba(35, 40, 65, 0.85);
+  color: var(--el-text-color-regular);
 
   @media (prefers-color-scheme: dark) {
     color: rgba(220, 230, 255, 0.75);
@@ -292,8 +288,8 @@ onBeforeUnmount(() => {
     align-items: flex-start;
     padding: 0.75rem 1rem;
     font-weight: 500;
-    color: rgba(32, 37, 60, 0.9);
-    background: rgba(255, 255, 255, 0.55);
+    color: var(--el-text-color-primary);
+    background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(64, 128, 255, 0.08);
     border-radius: 12px;
     backdrop-filter: blur(6px);
@@ -321,11 +317,12 @@ onBeforeUnmount(() => {
 .auth-panel {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
+  align-self: center;
   justify-content: flex-start;
   justify-self: end;
-  width: min(520px, 100%);
-  padding: clamp(2rem, 3vw, 2.75rem);
+  width: min(420px, 100%);
+  padding: clamp(1.5rem, 3vw, 2rem);
   margin-inline: auto;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(22, 93, 255, 0.1);
@@ -359,11 +356,11 @@ onBeforeUnmount(() => {
 
 .auth-panel__brand {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 1.25rem;
-  margin-bottom: 1.5rem;
+  padding-bottom: 0.875rem;
+  margin-bottom: 1rem;
   border-bottom: 1px solid rgba(22, 93, 255, 0.06);
 
   @media (prefers-color-scheme: dark) {
@@ -449,7 +446,7 @@ onBeforeUnmount(() => {
   margin-inline: auto;
 
   :deep(.el-form-item) {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
   }
 
   :deep(.el-input__wrapper) {
@@ -472,8 +469,8 @@ onBeforeUnmount(() => {
 }
 
 .auth-panel__footer {
-  padding-top: 1.25rem;
-  margin-top: 0.25rem;
+  padding-top: 0.875rem;
+  margin-top: 0.125rem;
   font-size: 0.875rem;
   text-align: center;
   border-top: 1px solid rgba(22, 93, 255, 0.06);

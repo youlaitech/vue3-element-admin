@@ -1,12 +1,12 @@
-// 基础变量与主题色
-@use "./variables";
-
-// 基础重置与组件细化样式
+// 1. 基础重置（补充 UnoCSS 预设未覆盖的全局样式）
 @use "./reset";
-@use "./element-plus";
 
-// Vxe Table 主题覆写（CSS 变量 + 自定义样式）
+// 2. 项目自定义主题变量（CSS 变量 / SCSS 变量 / JS 导出）
+@use "./variables" as *;
+
+// 3. UI 框架适配：Element Plus & Vxe Table
+@use "./element-plus";
 @use "./vxe-table";
 
-// 业务通用样式
+// 4. 业务通用样式
 @use "./common";

@@ -29,7 +29,7 @@
 
       <!-- 租户选择（如果启用多租户） -->
       <div v-if="showTenantSelect" class="navbar-actions__item">
-        <TenantSelect />
+        <TenantSwitcher @change="handleTenantChange" />
       </div>
     </template>
 
@@ -83,7 +83,7 @@ import Fullscreen from "@/components/Fullscreen/index.vue";
 import SizeSelect from "@/components/SizeSelect/index.vue";
 import LangSelect from "@/components/LangSelect/index.vue";
 import Notification from "@/components/Notification/index.vue";
-import TenantSelect from "@/components/TenantSelect/index.vue";
+import TenantSwitcher from "@/components/TenantSwitcher/index.vue";
 import { useTenantStoreHook } from "@/store/modules/tenant-store";
 
 const { t } = useI18n();
@@ -112,6 +112,18 @@ const showTenantSelect = computed(() => {
   // 多个租户时才显示
   return true;
 });
+
+function handleTenantChange(tenantId: number) {
+  tenantStore
+    .switchTenant(tenantId)
+    .then(() => {
+      ElMessage.success("切换租户成功");
+      window.location.reload();
+    })
+    .catch((error: any) => {
+      ElMessage.error(error?.message || "切换租户失败");
+    });
+}
 
 /**
  * 打开个人中心页面

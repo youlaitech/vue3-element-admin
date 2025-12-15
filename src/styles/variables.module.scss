@@ -1,0 +1,16 @@
+/* stylelint-disable property-no-unknown */
+
+// 通过 SCSS 变量导出给 JS/TS 使用的模块文件
+// 注意：依赖 src/styles/variables.scss 中定义的 SCSS 变量
+
+:export {
+  sidebar-width: $sidebar-width;
+  navbar-height: $navbar-height;
+  tags-view-height: $tags-view-height;
+  menu-background: $menu-background;
+  menu-text: $menu-text;
+  menu-active-text: $menu-active-text;
+  menu-hover: $menu-hover;
+}
+
+/* stylelint-enable property-no-unknown */

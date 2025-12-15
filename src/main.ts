@@ -11,7 +11,6 @@ import App from "./App.vue";
 // ===== 样式导入 =====
 import "element-plus/theme-chalk/dark/css-vars.css";
 import "vxe-table/lib/style.css";
-import "@/styles/dark/css-vars.css";
 import "@/styles/index.scss";
 import "uno.css";
 import "animate.css";

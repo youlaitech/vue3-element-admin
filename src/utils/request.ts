@@ -4,7 +4,6 @@ import { ApiCodeEnum } from "@/enums/api";
 import { AuthStorage, redirectToLogin } from "@/utils/auth";
 import { useTokenRefresh } from "@/composables/auth/useTokenRefresh";
 import { authConfig } from "@/settings";
-import { useTenantStoreHook } from "@/store/modules/tenant-store";
 
 // 初始化token刷新组合式函数
 const { refreshTokenAndRetry } = useTokenRefresh();
@@ -20,7 +19,7 @@ const httpRequest = axios.create({
 });
 
 /**
- * 请求拦截器 - 添加 Authorization 头和租户ID
+ * 请求拦截器 - 添加 Authorization 头
  */
 httpRequest.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -31,19 +30,6 @@ httpRequest.interceptors.request.use(
       config.headers.Authorization = `Bearer ${accessToken}`;
     } else {
       delete config.headers.Authorization;
-    }
-
-    // 添加租户ID到请求头（如果存在）
-    // 注意：只有在登录成功后，tenantStore 才会初始化，所以这里需要 try-catch
-    try {
-      const tenantStore = useTenantStoreHook();
-      const tenantId = tenantStore.currentTenantId;
-      if (tenantId) {
-        config.headers["tenant-id"] = String(tenantId);
-      }
-    } catch (error) {
-      // 如果租户 store 未初始化（如登录前），忽略错误
-      // 这是正常的，因为多租户功能是可选的，未启用时不会初始化 tenantStore
     }
 
     return config;

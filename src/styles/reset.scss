@@ -1,3 +1,5 @@
+// 全局基础重置：补充 UnoCSS 预设未覆盖的项目级样式
+
 #app {
   width: 100%;
   height: 100%;
@@ -34,11 +36,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizelegibility;
-}
-
-a {
-  color: inherit;
-  text-decoration: inherit;
 }
 
 img,

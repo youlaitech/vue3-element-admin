@@ -1,3 +1,6 @@
+// Element Plus 变量覆盖（必须在最前面）
+@use "./element-plus-vars";
+
 $border: 1px solid var(--el-border-color-light);
 
 /* el-dialog */

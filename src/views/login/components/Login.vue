@@ -97,16 +97,7 @@
     >
       <div class="tenant-select-content">
         <p class="tenant-select-tip">检测到你的账号属于多个租户，请选择登录租户：</p>
-        <el-radio-group v-model="selectedTenantId" class="tenant-radio-group">
-          <el-radio
-            v-for="tenant in pendingTenants"
-            :key="tenant.id"
-            :label="tenant.id"
-            class="tenant-radio"
-          >
-            {{ tenant.name }}
-          </el-radio>
-        </el-radio-group>
+        <TenantSwitcher @change="(id: number) => (selectedTenantId = id)" />
       </div>
       <template #footer>
         <el-button @click="tenantDialogVisible = false">取消</el-button>
@@ -146,12 +137,15 @@ import AuthAPI from "@/api/auth";
 import type { LoginRequest } from "@/types/api";
 import router from "@/router";
 import { useUserStore } from "@/store";
+import { useTenantStoreHook } from "@/store/modules/tenant-store";
 import CommonWrapper from "@/components/CommonWrapper/index.vue";
+import TenantSwitcher from "@/components/TenantSwitcher/index.vue";
 import { AuthStorage } from "@/utils/auth";
 import { ApiCodeEnum } from "@/enums";
 
 const { t } = useI18n();
 const userStore = useUserStore();
+const tenantStore = useTenantStoreHook();
 const route = useRoute();
 
 onMounted(() => getCaptcha());
@@ -219,9 +213,6 @@ function getCaptcha() {
     .finally(() => (codeLoading.value = false));
 }
 
-// 待选择的租户列表
-const pendingTenants = ref<Array<{ id: number; name: string }>>([]);
-
 /**
  * 登录提交
  */
@@ -243,7 +234,8 @@ async function handleLoginSubmit() {
       // 检查是否是 choose_tenant 响应
       if (error?.code === ApiCodeEnum.CHOOSE_TENANT && error?.data?.tenants) {
         // 需要选择租户
-        pendingTenants.value = error.data.tenants;
+        tenantStore.setTenantList(error.data.tenants);
+        selectedTenantId.value = error.data.tenants[0]?.id || null;
         tenantDialogVisible.value = true;
         return; // 等待用户选择租户
       }
@@ -304,12 +296,12 @@ function toOtherForm(type: "register" | "resetPwd") {
 .auth-panel-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .auth-panel-form__title {
-  margin: 0 0 0.75rem;
-  font-size: 1.25rem;
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
   font-weight: 600;
 }
 
@@ -317,7 +309,7 @@ function toOtherForm(type: "register" | "resetPwd") {
   .divider-container {
     display: flex;
     align-items: center;
-    margin: 24px 0;
+    margin: 16px 0;
 
     .divider-line {
       flex: 1;
@@ -341,34 +333,6 @@ function toOtherForm(type: "register" | "resetPwd") {
     margin: 0 0 20px;
     font-size: 14px;
     color: var(--el-text-color-regular);
-  }
-
-  .tenant-radio-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-
-    .tenant-radio {
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-      border: 1px solid var(--el-border-color);
-      border-radius: 8px;
-      transition: all 0.3s;
-
-      &:hover {
-        background-color: var(--el-color-primary-light-9);
-        border-color: var(--el-color-primary);
-      }
-
-      :deep(.el-radio__input.is-checked) {
-        + .el-radio__label {
-          font-weight: 500;
-          color: var(--el-color-primary);
-        }
-      }
-    }
   }
 }
 </style>

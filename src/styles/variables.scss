@@ -1,29 +1,9 @@
-@forward "element-plus/theme-chalk/src/common/var.scss" with (
-  $colors: (
-    "primary": (
-      // 默认主题色 - 修改此值时需同步修改 src/settings.ts 中的 themeColor
-      "base": #4080ff,
-    ),
-    "success": (
-      "base": #23c343,
-    ),
-    "warning": (
-      "base": #ff9a2e,
-    ),
-    "danger": (
-      "base": #f76560,
-    ),
-    "info": (
-      "base": #a9aeb8,
-    ),
-  ),
-
-  $bg-color: (
-    "page": #f5f8fd,
-  )
-);
-
-/** 全局SCSS变量 */
+/**
+ * 项目自定义主题变量（CSS 变量 / SCSS 变量 / JS 导出）
+ * 与 Element Plus 主题变量覆盖（element-plus-vars.scss）职责分离
+ * 
+ * 注意：此文件以下划线开头，是 Sass partial，不会被单独编译，只能被其他文件导入
+ */
 
 :root {
   --menu-background: #fff; // 菜单背景色
@@ -55,6 +35,11 @@ html.dark {
   --menu-hover: rgb(0 0 0 / 20%);
   --sidebar-logo-background: rgb(0 0 0 / 20%);
   --sidebar-logo-text-color: #fff;
+
+  .el-table {
+    /* 自定义表格选中高亮时当前行的背景颜色（暗黑模式） */
+    --el-table-current-row-bg-color: var(--el-fill-color-light);
+  }
 
   /** WangEditor Dark */
   /* Textarea - css vars */
@@ -92,7 +77,7 @@ $sidebar-width-collapsed: 54px; // 侧边栏收缩宽度
 $navbar-height: 50px; // 导航栏高度
 $tags-view-height: 34px; // TagsView 高度
 
-/* 供 JS/TS 侧按需读取的变量导出（保持与原 module 一致） */
+/* 供 JS/TS 侧按需读取的变量导出 */
 /* stylelint-disable property-no-unknown */
 :export {
   sidebar-width: $sidebar-width;
