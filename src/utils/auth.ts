@@ -1,6 +1,6 @@
 import { Storage } from "./storage";
-import { AUTH_KEYS } from "@/config/storage";
-import { ROLE_ROOT } from "@/enums";
+import { AUTH_KEYS } from "@/constants";
+import { ROLE_ROOT } from "@/constants";
 import { useUserStoreHook } from "@/store/modules/user-store";
 import router from "@/router";
 

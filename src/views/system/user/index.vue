@@ -253,7 +253,7 @@ import { useDebounceFn } from "@vueuse/core";
 import { ElMessage, ElMessageBox, type FormInstance } from "element-plus";
 
 // ==================== 3. 类型定义 ====================
-import type { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user";
+import type { UserForm, UserPageQuery, UserPageVo } from "@/api/types";
 
 // ==================== 3.5 工具函数 ====================
 import { downloadFile } from "@/utils";
@@ -299,7 +299,7 @@ const queryParams = reactive<UserPageQuery>({
 });
 
 // 列表数据
-const userList = ref<UserPageVO[]>([]);
+const userList = ref<UserPageVo[]>([]);
 const total = ref(0);
 const loading = ref(false);
 
@@ -363,7 +363,7 @@ async function fetchUserList(): Promise<void> {
 }
 
 // ==================== 表格选择 ====================
-const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<UserPageVO>();
+const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<UserPageVo>();
 
 // ==================== 查询操作 ====================
 
@@ -390,7 +390,7 @@ function handleResetQuery(): void {
  * 重置用户密码
  * @param row 用户数据
  */
-function handleResetPassword(row: UserPageVO): void {
+function handleResetPassword(row: UserPageVo): void {
   ElMessageBox.prompt(`请输入用户【${row.username}】的新密码`, "重置密码", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",

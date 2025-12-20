@@ -1,39 +1,22 @@
 import request from "@/utils/request";
+import type {
+  TenantCreateForm,
+  TenantCreateResultVo,
+  TenantForm,
+  TenantInfo,
+  TenantPageQuery,
+  TenantPageVo,
+} from "@/types/api";
 
 const TENANT_BASE_URL = "/api/v1/tenants";
 
 /**
  * 租户信息
  */
-export interface TenantInfo {
-  /** 租户ID */
-  id: number;
-  /** 租户名称 */
-  name: string;
-  /** 租户编码 */
-  code?: string;
-  /** 租户状态(1-正常 0-禁用) */
-  status?: number;
-  /** 联系人姓名 */
-  contactName?: string;
-  /** 联系人电话 */
-  contactPhone?: string;
-  /** 联系人邮箱 */
-  contactEmail?: string;
-  /** 租户域名 */
-  domain?: string;
-  /** 租户Logo */
-  logo?: string;
-  /** 是否默认租户 */
-  isDefault?: boolean;
-}
 
-/**
- * 租户 API
- */
 const TenantAPI = {
   /**
-   * 获取当前用户的租户列表
+   * 获取当前用户可访问的租户列表
    */
   getTenantList() {
     return request<any, TenantInfo[]>({
@@ -61,6 +44,58 @@ const TenantAPI = {
     return request<any, TenantInfo>({
       url: `${TENANT_BASE_URL}/${tenantId}/switch`,
       method: "post",
+    });
+  },
+
+  /** 获取租户分页数据（平台租户管理） */
+  getPage(queryParams?: TenantPageQuery) {
+    return request<any, PageResult<TenantPageVo[]>>({
+      url: `${TENANT_BASE_URL}/page`,
+      method: "get",
+      params: queryParams,
+    });
+  },
+
+  /** 获取租户表单数据 */
+  getFormData(tenantId: string) {
+    return request<any, TenantForm>({
+      url: `${TENANT_BASE_URL}/${tenantId}/form`,
+      method: "get",
+    });
+  },
+
+  /** 新增租户并初始化默认数据 */
+  create(data: TenantCreateForm) {
+    return request<any, TenantCreateResultVo>({
+      url: `${TENANT_BASE_URL}`,
+      method: "post",
+      data,
+    });
+  },
+
+  /** 修改租户 */
+  update(tenantId: string, data: TenantForm) {
+    return request({
+      url: `${TENANT_BASE_URL}/${tenantId}`,
+      method: "put",
+      data,
+    });
+  },
+
+  /** 删除租户（批量） */
+  deleteByIds(ids: string) {
+    return request({
+      url: `${TENANT_BASE_URL}/${ids}`,
+      method: "delete",
+    });
+  },
+
+  /** 修改租户状态 */
+  updateStatus(tenantId: string, status: number) {
+    return request({
+      url: `${TENANT_BASE_URL}/${tenantId}/status`,
+      method: "put",
+      params: { status },
     });
   },
 };

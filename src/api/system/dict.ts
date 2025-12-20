@@ -1,11 +1,20 @@
 import request from "@/utils/request";
+import type {
+  DictPageQuery,
+  DictPageVo,
+  DictForm,
+  DictItemPageQuery,
+  DictItemPageVo,
+  DictItemForm,
+  DictItemOption,
+} from "@/types/api";
 
 const DICT_BASE_URL = "/api/v1/dicts";
 
 const DictAPI = {
   /** 字典分页列表 */
   getPage(queryParams: DictPageQuery) {
-    return request<any, PageResult<DictPageVO[]>>({
+    return request<any, PageResult<DictPageVo[]>>({
       url: `${DICT_BASE_URL}/page`,
       method: "get",
       params: queryParams,
@@ -34,7 +43,7 @@ const DictAPI = {
 
   /** 获取字典项分页列表 */
   getDictItemPage(dictCode: string, queryParams: DictItemPageQuery) {
-    return request<any, PageResult<DictItemPageVO[]>>({
+    return request<any, PageResult<DictItemPageVo[]>>({
       url: `${DICT_BASE_URL}/${dictCode}/items/page`,
       method: "get",
       params: queryParams,
@@ -69,77 +78,3 @@ const DictAPI = {
 };
 
 export default DictAPI;
-
-export interface DictPageQuery extends PageQuery {
-  /** 搜索关键字 */
-  keywords?: string;
-  /** 状态(1:启用;0:禁用) */
-  status?: number;
-}
-export interface DictPageVO {
-  /** 字典ID */
-  id: string;
-  /** 字典名称 */
-  name: string;
-  /** 字典编码 */
-  dictCode: string;
-  /** 状态(1:启用;0:禁用) */
-  status: number;
-}
-export interface DictForm {
-  /** 字典ID(新增不填) */
-  id?: string;
-  /** 字典名称 */
-  name?: string;
-  /** 字典编码 */
-  dictCode?: string;
-  /** 状态(1:启用;0:禁用) */
-  status?: number;
-  /** 备注 */
-  remark?: string;
-}
-export interface DictItemPageQuery extends PageQuery {
-  /** 搜索关键字 */
-  keywords?: string;
-  /** 字典编码 */
-  dictCode?: string;
-}
-export interface DictItemPageVO {
-  /** 字典项ID */
-  id: string;
-  /** 字典编码 */
-  dictCode: string;
-  /** 字典项值 */
-  value: string;
-  /** 字典项标签 */
-  label: string;
-  /** 状态(1:启用;0:禁用) */
-  status: number;
-  /** 排序 */
-  sort?: number;
-}
-export interface DictItemForm {
-  /** 字典项ID(新增不填) */
-  id?: string;
-  /** 字典编码 */
-  dictCode?: string;
-  /** 字典项值 */
-  value?: string;
-  /** 字典项标签 */
-  label?: string;
-  /** 状态(1:启用;0:禁用) */
-  status?: number;
-  /** 排序 */
-  sort?: number;
-  /** 标签类型 */
-  tagType?: "success" | "warning" | "info" | "primary" | "danger" | "";
-}
-export interface DictItemOption {
-  /** 值 */
-  value: number | string;
-  /** 标签 */
-  label: string;
-  /** 标签类型 */
-  tagType?: "" | "success" | "info" | "warning" | "danger";
-  [key: string]: any;
-}

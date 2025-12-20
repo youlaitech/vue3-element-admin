@@ -76,16 +76,3 @@ $sidebar-width: 210px; // 侧边栏宽度
 $sidebar-width-collapsed: 54px; // 侧边栏收缩宽度
 $navbar-height: 50px; // 导航栏高度
 $tags-view-height: 34px; // TagsView 高度
-
-/* 供 JS/TS 侧按需读取的变量导出 */
-/* stylelint-disable property-no-unknown */
-:export {
-  sidebar-width: $sidebar-width;
-  navbar-height: $navbar-height;
-  tags-view-height: $tags-view-height;
-  menu-background: $menu-background;
-  menu-text: $menu-text;
-  menu-active-text: $menu-active-text;
-  menu-hover: $menu-hover;
-}
-/* stylelint-enable property-no-unknown */

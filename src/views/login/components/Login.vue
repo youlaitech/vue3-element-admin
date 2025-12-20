@@ -90,14 +90,17 @@
     <el-dialog
       v-model="tenantDialogVisible"
       title="选择登录租户"
-      width="500px"
+      :width="isSmallScreen ? '92vw' : '500px'"
+      :fullscreen="isSmallScreen"
+      append-to-body
+      :teleported="true"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :show-close="false"
     >
-      <div class="tenant-select-content">
+      <div class="tenant-select-content" :style="tenantDialogBodyStyle">
         <p class="tenant-select-tip">检测到你的账号属于多个租户，请选择登录租户：</p>
-        <TenantSwitcher @change="(id: number) => (selectedTenantId = id)" />
+        <TenantSwitcher @change="handleTenantSwitcherChange" />
       </div>
       <template #footer>
         <el-button @click="tenantDialogVisible = false">取消</el-button>
@@ -154,6 +157,7 @@ const loginFormRef = ref<FormInstance>();
 const loading = ref(false);
 // 是否大写锁定
 const isCapsLock = ref(false);
+const isSmallScreen = useMediaQuery("(max-width: 768px)");
 // 验证码图片Base64字符串
 const captchaBase64 = ref();
 // 记住我
@@ -161,6 +165,26 @@ const rememberMe = AuthStorage.getRememberMe();
 // 租户选择对话框
 const tenantDialogVisible = ref(false);
 const selectedTenantId = ref<number | null>(null);
+
+function handleTenantSwitcherChange(id: number) {
+  selectedTenantId.value = id;
+  tenantStore.currentTenantId = id;
+  const matched = tenantStore.tenantList?.find((t) => t.id === id) || null;
+  tenantStore.currentTenant = matched;
+}
+
+const tenantDialogBodyStyle = computed(() => {
+  if (isSmallScreen.value) {
+    return {
+      maxHeight: "calc(100vh - 160px)",
+      overflow: "auto",
+    };
+  }
+  return {
+    maxHeight: "60vh",
+    overflow: "auto",
+  };
+});
 
 const loginFormData = ref<LoginRequest>({
   username: "admin",
@@ -232,10 +256,19 @@ async function handleLoginSubmit() {
       await router.push(decodeURIComponent(redirectPath));
     } catch (error: any) {
       // 检查是否是 choose_tenant 响应
-      if (error?.code === ApiCodeEnum.CHOOSE_TENANT && error?.data?.tenants) {
+      if (
+        error?.code === ApiCodeEnum.CHOOSE_TENANT &&
+        Array.isArray(error?.data) &&
+        error.data.length > 0
+      ) {
         // 需要选择租户
-        tenantStore.setTenantList(error.data.tenants);
-        selectedTenantId.value = error.data.tenants[0]?.id || null;
+        tenantStore.setTenantList(error.data);
+        selectedTenantId.value = error.data[0]?.id || null;
+        if (selectedTenantId.value) {
+          tenantStore.currentTenantId = selectedTenantId.value;
+          tenantStore.currentTenant =
+            error.data.find((t: any) => t.id === selectedTenantId.value) || null;
+        }
         tenantDialogVisible.value = true;
         return; // 等待用户选择租户
       }
@@ -263,7 +296,10 @@ async function handleTenantSelected() {
   try {
     loading.value = true;
     // 使用选中的租户ID重新登录（将 tenantId 设置到表单数据中）
-    const loginData = { ...loginFormData.value, tenantId: selectedTenantId.value };
+    const loginData = {
+      ...loginFormData.value,
+      tenantId: selectedTenantId.value,
+    };
     await userStore.login(loginData);
     // 登录成功，关闭对话框并跳转
     tenantDialogVisible.value = false;

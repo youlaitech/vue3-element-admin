@@ -279,13 +279,18 @@ function handleSettingsClick() {
   }
 
   // 租户选择器在白色文字模式下的样式
-  :deep(.tenant-select) {
+  ::v-deep(.tenant-switcher__trigger) {
     color: rgba(255, 255, 255, 0.85);
-
-    &:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.1);
-    }
+  }
+  ::v-deep(.tenant-switcher__trigger .tenant-switcher__icon) {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  ::v-deep(.tenant-switcher__trigger:hover) {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  ::v-deep(.tenant-switcher__trigger:hover .tenant-switcher__icon) {
+    color: #fff;
   }
 }
 
@@ -310,18 +315,23 @@ function handleSettingsClick() {
   }
 
   // 租户选择器在深色文字模式下的样式
-  :deep(.tenant-select) {
+  ::v-deep(.tenant-switcher__trigger) {
     color: var(--el-text-color-regular) !important;
-
-    &:hover {
-      color: var(--el-color-primary) !important;
-      background: rgba(0, 0, 0, 0.04);
-    }
+  }
+  ::v-deep(.tenant-switcher__trigger .tenant-switcher__icon) {
+    color: var(--el-text-color-regular) !important;
+  }
+  ::v-deep(.tenant-switcher__trigger:hover) {
+    color: var(--el-color-primary) !important;
+    background: rgba(0, 0, 0, 0.04);
+  }
+  ::v-deep(.tenant-switcher__trigger:hover .tenant-switcher__icon) {
+    color: var(--el-color-primary) !important;
   }
 }
 
 // 确保下拉菜单中的图标不受影响
-:deep(.el-dropdown-menu) {
+::v-deep(.el-dropdown-menu) {
   [class^="i-svg:"] {
     color: var(--el-text-color-regular) !important;
 

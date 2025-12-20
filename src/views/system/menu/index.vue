@@ -47,15 +47,19 @@
       >
         <el-table-column label="菜单名称" min-width="200">
           <template #default="scope">
-            <template v-if="scope.row.icon && scope.row.icon.startsWith('el-icon')">
-              <el-icon style="vertical-align: -0.15em">
-                <component :is="scope.row.icon.replace('el-icon-', '')" />
-              </el-icon>
-            </template>
-            <template v-else-if="scope.row.icon">
-              <div :class="`i-svg:${scope.row.icon}`" />
-            </template>
-            {{ scope.row.name }}
+            <div class="menu-name-cell">
+              <span class="menu-name-cell__icon">
+                <template v-if="scope.row.icon && scope.row.icon.startsWith('el-icon')">
+                  <el-icon style="vertical-align: -0.15em">
+                    <component :is="scope.row.icon.replace('el-icon-', '')" />
+                  </el-icon>
+                </template>
+                <template v-else-if="scope.row.icon">
+                  <span :class="`i-svg:${scope.row.icon}`" />
+                </template>
+              </span>
+              <span class="menu-name-cell__text">{{ scope.row.name }}</span>
+            </div>
           </template>
         </el-table-column>
 
@@ -340,7 +344,8 @@
 import { useAppStore } from "@/store/modules/app-store";
 import { DeviceEnum } from "@/enums/settings";
 
-import MenuAPI, { MenuQuery, MenuForm, MenuVO } from "@/api/system/menu";
+import MenuAPI from "@/api/system/menu";
+import type { MenuQuery, MenuForm, MenuVo } from "@/api/types";
 import { MenuTypeEnum } from "@/enums/business";
 
 defineOptions({
@@ -363,7 +368,7 @@ const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600
 // 查询参数
 const queryParams = reactive<MenuQuery>({});
 // 菜单表格数据
-const menuTableData = ref<MenuVO[]>([]);
+const menuTableData = ref<MenuVo[]>([]);
 // 顶级菜单下拉选项
 const menuOptions = ref<OptionType[]>([]);
 // 初始菜单表单数据
@@ -432,7 +437,7 @@ function handleResetQuery() {
 }
 
 // 行点击事件
-function handleRowClick(row: MenuVO) {
+function handleRowClick(row: MenuVo) {
   selectedMenuId.value = row.id;
 }
 
@@ -562,3 +567,26 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+
+<style scoped>
+.menu-name-cell {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+}
+
+.menu-name-cell__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  min-width: 18px;
+  margin-right: 6px;
+}
+
+.menu-name-cell__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

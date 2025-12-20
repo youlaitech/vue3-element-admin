@@ -137,7 +137,8 @@ defineOptions({
   inherititems: false,
 });
 
-import DictAPI, { DictPageQuery, DictPageVO, DictForm } from "@/api/system/dict";
+import DictAPI from "@/api/system/dict";
+import type { DictPageQuery, DictPageVo, DictForm } from "@/api/types";
 
 import router from "@/router";
 
@@ -153,7 +154,7 @@ const queryParams = reactive<DictPageQuery>({
   pageSize: 10,
 });
 
-const tableData = ref<DictPageVO[]>();
+const tableData = ref<DictPageVo[]>();
 
 const dialog = reactive({
   title: "",
@@ -285,7 +286,7 @@ function handleDelete(id?: number) {
 }
 
 // 打开字典项
-function handleOpenDictData(row: DictPageVO) {
+function handleOpenDictData(row: DictPageVo) {
   router.push({
     path: "/system/dict-item",
     query: { dictCode: row.dictCode, title: "【" + row.name + "】字典数据" },

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 搜索区域 -->
-    <div class="search-container">
+    <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -83,13 +83,13 @@
     </div>
 
     <!-- 数据表格 -->
-    <el-card shadow="hover" class="data-table">
+    <el-card shadow="hover" class="table-section">
       <el-table
         v-loading="loading"
         :data="pageData"
         highlight-current-row
         border
-        class="data-table__content"
+        class="table-section__content"
       >
         <el-table-column label="创建时间" prop="createTime" width="180" />
         <el-table-column label="用户名" prop="username" width="120" />
@@ -263,7 +263,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import AiCommandApi, { AiCommandRecordVO, AiCommandRecordPageQuery } from "@/api/ai";
+import AiCommandApi from "@/api/ai";
+import type { AiCommandRecordVo, AiCommandRecordPageQuery } from "@/types/api";
 import { onMounted, reactive, ref } from "vue";
 
 const queryFormRef = ref();
@@ -282,10 +283,10 @@ const queryParams = reactive<AiCommandRecordPageQuery>({
   createTime: ["", ""],
 });
 
-const pageData = ref<AiCommandRecordVO[]>([]);
+const pageData = ref<AiCommandRecordVo[]>([]);
 
 const detailDialogVisible = ref(false);
-const currentRow = ref<AiCommandRecordVO>();
+const currentRow = ref<AiCommandRecordVo>();
 
 function getExecuteStatusText(status: number): string {
   switch (status) {
@@ -315,7 +316,7 @@ function getExecuteStatusTagType(status: number): "info" | "success" | "danger" 
 
 function fetchData() {
   loading.value = true;
-  AiCommandApi.getCommandRecordPage(queryParams)
+  AiCommandApi.getPage(queryParams)
     .then((data) => {
       pageData.value = data.list || [];
       total.value = data.total || 0;
@@ -336,7 +337,7 @@ function handleResetQuery() {
   fetchData();
 }
 
-function handleViewDetail(row: AiCommandRecordVO) {
+function handleViewDetail(row: AiCommandRecordVo) {
   currentRow.value = row;
   detailDialogVisible.value = true;
 }
@@ -363,7 +364,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.search-container {
+.filter-section {
   margin-bottom: 20px;
 }
 

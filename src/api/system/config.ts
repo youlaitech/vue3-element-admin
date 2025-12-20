@@ -1,11 +1,12 @@
 import request from "@/utils/request";
+import type { ConfigPageQuery, ConfigForm, ConfigPageVo } from "@/types/api";
 
 const CONFIG_BASE_URL = "/api/v1/configs";
 
 const ConfigAPI = {
   /** 获取配置分页数据 */
   getPage(queryParams?: ConfigPageQuery) {
-    return request<any, PageResult<ConfigPageVO[]>>({
+    return request<any, PageResult<ConfigPageVo[]>>({
       url: `${CONFIG_BASE_URL}/page`,
       method: "get",
       params: queryParams,
@@ -37,34 +38,3 @@ const ConfigAPI = {
 };
 
 export default ConfigAPI;
-
-export interface ConfigPageQuery extends PageQuery {
-  /** 搜索关键字 */
-  keywords?: string;
-}
-
-export interface ConfigForm {
-  /** 主键 */
-  id?: string;
-  /** 配置名称 */
-  configName?: string;
-  /** 配置键 */
-  configKey?: string;
-  /** 配置值 */
-  configValue?: string;
-  /** 描述、备注 */
-  remark?: string;
-}
-
-export interface ConfigPageVO {
-  /** 主键 */
-  id?: string;
-  /** 配置名称 */
-  configName?: string;
-  /** 配置键 */
-  configKey?: string;
-  /** 配置值 */
-  configValue?: string;
-  /** 描述、备注 */
-  remark?: string;
-}

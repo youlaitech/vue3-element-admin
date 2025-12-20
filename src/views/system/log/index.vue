@@ -68,7 +68,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import LogAPI, { LogPageVO, LogPageQuery } from "@/api/system/log";
+import LogAPI from "@/api/system/log";
+import type { LogPageVo, LogPageQuery } from "@/api/types";
 
 const queryFormRef = ref();
 
@@ -83,7 +84,7 @@ const queryParams = reactive<LogPageQuery>({
 });
 
 // 日志表格数据
-const pageData = ref<LogPageVO[]>();
+const pageData = ref<LogPageVo[]>();
 
 /** 获取数据 */
 function fetchData() {

@@ -2,6 +2,7 @@ import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from "axio
 import qs from "qs";
 import { ApiCodeEnum } from "@/enums/api";
 import { AuthStorage, redirectToLogin } from "@/utils/auth";
+import { STORAGE_KEYS } from "@/constants";
 import { useTokenRefresh } from "@/composables/auth/useTokenRefresh";
 import { authConfig } from "@/settings";
 
@@ -28,8 +29,14 @@ httpRequest.interceptors.request.use(
     // 如果 Authorization 设置为 no-auth，则不携带 Token
     if (config.headers.Authorization !== "no-auth" && accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
+
+      const tenantId = localStorage.getItem(STORAGE_KEYS.TENANT_ID);
+      if (tenantId) {
+        config.headers["tenant-id"] = tenantId;
+      }
     } else {
       delete config.headers.Authorization;
+      delete config.headers["tenant-id"];
     }
 
     return config;

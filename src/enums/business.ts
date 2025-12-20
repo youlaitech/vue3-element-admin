@@ -25,23 +25,3 @@ export enum UserGender {
   /** 女 */
   FEMALE = 2,
 }
-
-/**
- * 超级管理员角色标识
- *
- * @description
- * 拥有系统最高权限，可以访问所有资源
- */
-export const ROLE_ROOT = "ROOT";
-
-/**
- * 角色类型枚举
- */
-export enum RoleType {
-  /** 超级管理员 */
-  ROOT = "ROOT",
-  /** 管理员 */
-  ADMIN = "ADMIN",
-  /** 普通用户 */
-  USER = "USER",
-}

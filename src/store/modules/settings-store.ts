@@ -2,7 +2,7 @@ import { defaultSettings } from "@/settings";
 import { SidebarColor, ThemeMode } from "@/enums";
 import type { LayoutMode } from "@/enums";
 import { applyTheme, generateThemeColors, toggleDarkMode, toggleSidebarColor } from "@/utils/theme";
-import { STORAGE_KEYS } from "@/config/storage";
+import { STORAGE_KEYS } from "@/constants";
 
 // 🎯 设置项类型定义
 interface SettingsState {

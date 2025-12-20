@@ -141,7 +141,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import ConfigAPI, { ConfigPageVO, ConfigForm, ConfigPageQuery } from "@/api/system/config";
+import ConfigAPI from "@/api/system/config";
+import type { ConfigPageVo, ConfigForm, ConfigPageQuery } from "@/api/types";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useDebounceFn } from "@vueuse/core";
 
@@ -159,7 +160,7 @@ const queryParams = reactive<ConfigPageQuery>({
 });
 
 // 系统配置表格数据
-const pageData = ref<ConfigPageVO[]>([]);
+const pageData = ref<ConfigPageVo[]>([]);
 
 const dialog = reactive({
   title: "",

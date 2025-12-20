@@ -1,6 +1,7 @@
 import { store } from "@/store";
-import TenantAPI, { type TenantInfo } from "@/api/system/tenant";
-import { STORAGE_KEYS } from "@/config/storage";
+import TenantAPI from "@/api/system/tenant";
+import type { TenantInfo } from "@/types/api";
+import { STORAGE_KEYS } from "@/constants";
 
 /**
  * 租户 Store
@@ -63,28 +64,52 @@ export const useTenantStore = defineStore("tenant", () => {
    * 此方法由路由守卫调用，仅在启用多租户时执行
    */
   async function loadTenant() {
+    restoreTenant();
+
     // 1. 获取租户列表
     await fetchTenantList();
 
-    // 2. 如果已有租户列表且未设置当前租户
-    if (tenantList.value.length > 0 && !currentTenantId.value) {
-      try {
-        // 尝试从后端获取当前租户
-        const currentTenantInfo = await TenantAPI.getCurrentTenant();
-        if (currentTenantInfo) {
-          setCurrentTenant(currentTenantInfo);
-          return;
+    // 2. 校验本地恢复的租户是否仍然可用（避免 tenantId 不在列表导致无默认选中）
+    if (
+      currentTenantId.value &&
+      tenantList.value.length > 0 &&
+      !tenantList.value.some((t) => t.id === currentTenantId.value)
+    ) {
+      console.debug("[Tenant] 本地租户已不可用，清除并重新选择:", currentTenantId.value);
+      currentTenantId.value = null;
+      currentTenant.value = null;
+      localStorage.removeItem(STORAGE_KEYS.TENANT_ID);
+      localStorage.removeItem(STORAGE_KEYS.TENANT_INFO);
+    }
+
+    // 3. 如果已有租户列表，则保证一定有一个默认租户被选中
+    if (tenantList.value.length > 0) {
+      // 3.1 优先后端当前租户
+      if (!currentTenantId.value) {
+        try {
+          const currentTenantInfo = await TenantAPI.getCurrentTenant();
+          if (currentTenantInfo) {
+            setCurrentTenant(currentTenantInfo);
+            return;
+          }
+        } catch (error) {
+          console.debug("[Tenant] 获取当前租户失败，尝试本地/默认选择:", error);
         }
-      } catch (error) {
-        console.debug("[Tenant] 获取当前租户失败，尝试自动选择:", error);
       }
 
-      // 3. 如果只有一个租户，自动选中
-      if (tenantList.value.length === 1) {
+      // 3.2 本地已有 tenantId，但 currentTenant 为空时，从列表补全 tenantInfo（保持展示名称一致）
+      if (currentTenantId.value && !currentTenant.value) {
+        const matched = tenantList.value.find((t) => t.id === currentTenantId.value);
+        if (matched) {
+          setCurrentTenant(matched);
+          return;
+        }
+      }
+
+      // 3.3 兜底：默认选中第一个（即使有多个租户，也保证 TenantSwitcher 有默认选中）
+      if (!currentTenantId.value) {
         setCurrentTenant(tenantList.value[0]);
-        console.debug("[Tenant] 自动选中唯一租户:", tenantList.value[0].name);
-      } else {
-        console.debug("[Tenant] 多个租户可用，等待用户选择");
+        console.debug("[Tenant] 默认选中第一个租户:", tenantList.value[0].name);
       }
     }
   }

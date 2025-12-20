@@ -31,6 +31,10 @@
           </li>
           <li>
             <span>⦿</span>
+            支持多租户模式与租户隔离
+          </li>
+          <li>
+            <span>⦿</span>
             数据安全与操作审计
           </li>
           <li>
@@ -49,9 +53,14 @@
             <div class="auth-panel__title-row">
               <span class="auth-panel__title">{{ defaultSettings.title }}</span>
             </div>
-            <div v-if="defaultSettings.version" class="auth-panel__version-row">
-              <span class="auth-panel__version-label">Version</span>
-              <span class="auth-panel__version-pill">v{{ defaultSettings.version }}</span>
+            <div v-if="defaultSettings.version || tenantEnabled" class="auth-panel__version-row">
+              <el-text size="small" type="info">VERSION</el-text>
+              <el-tag v-if="defaultSettings.version" size="small" effect="light" round>
+                {{ `v${defaultSettings.version}` }}
+              </el-tag>
+              <el-tag v-if="tenantEnabled" type="success" size="small" effect="light" round>
+                多租户
+              </el-tag>
             </div>
           </div>
         </div>
@@ -81,6 +90,8 @@ type LayoutMap = "login" | "register" | "resetPwd";
 
 const { t } = useI18n();
 const component = ref<LayoutMap>("login");
+
+const tenantEnabled = import.meta.env.VITE_APP_TENANT_ENABLED === "true";
 
 const formComponents = {
   login: defineAsyncComponent(() => import("./components/Login.vue")),
@@ -423,21 +434,6 @@ onBeforeUnmount(() => {
   gap: 0.5rem;
   align-items: center;
   font-size: 0.78rem;
-}
-
-.auth-panel__version-label {
-  color: var(--el-text-color-placeholder);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.auth-panel__version-pill {
-  padding: 0.1rem 0.55rem;
-  font-weight: 500;
-  color: var(--el-color-primary);
-  background: linear-gradient(135deg, rgba(22, 93, 255, 0.12), rgba(64, 150, 255, 0.18));
-  border: 1px solid rgba(22, 93, 255, 0.18);
-  border-radius: 999px;
 }
 
 .auth-panel__form {

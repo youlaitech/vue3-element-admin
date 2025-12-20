@@ -5,7 +5,7 @@ import zhCn from "element-plus/es/locale/lang/zh-cn";
 import en from "element-plus/es/locale/lang/en";
 import { store } from "@/store";
 import { DeviceEnum, SidebarStatus } from "@/enums";
-import { STORAGE_KEYS } from "@/config/storage";
+import { STORAGE_KEYS } from "@/constants";
 
 export const useAppStore = defineStore("app", () => {
   // 设备类型

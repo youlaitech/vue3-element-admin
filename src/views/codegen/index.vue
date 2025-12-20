@@ -524,12 +524,8 @@ import type { EditorConfiguration } from "codemirror";
 
 import { FormTypeEnum, QueryTypeEnum } from "@/enums/codegen";
 
-import GeneratorAPI, {
-  TablePageVO,
-  GenConfigForm,
-  TablePageQuery,
-  FieldConfig,
-} from "@/api/codegen";
+import GeneratorAPI from "@/api/codegen";
+import type { FieldConfig, GenConfigForm, TablePageQuery, TablePageVo } from "@/api/types";
 import { ElLoading } from "element-plus";
 
 import DictAPI from "@/api/system/dict";
@@ -586,7 +582,7 @@ const queryParams = reactive<TablePageQuery>({
 const loading = ref(false);
 const loadingText = ref("loading...");
 
-const pageData = ref<TablePageVO[]>([]);
+const pageData = ref<TablePageVo[]>([]);
 const total = ref(0);
 
 const formTypeOptions: Record<string, OptionType> = FormTypeEnum;
@@ -630,7 +626,7 @@ watch(
 );
 
 const { copy, copied } = useClipboard();
-const code = ref();
+const code = ref<string>("");
 const cmRef = ref<CmComponentRef>();
 const cmOptions: EditorConfiguration = {
   mode: "text/javascript",
@@ -640,7 +636,7 @@ const prevBtnText = ref("");
 const nextBtnText = ref("下一步，字段配置");
 const active = ref(0);
 const currentTableName = ref("");
-const sortFlag = ref<object>();
+const sortFlag = ref<Sortable | null>(null);
 
 // ================= 本地写盘（可选） =================
 const supportsFSAccess = typeof (window as any).showDirectoryPicker === "function";
@@ -677,11 +673,23 @@ watch(active, (val) => {
   } else if (val === 1) {
     prevBtnText.value = "上一步，基础配置";
     nextBtnText.value = "下一步，确认生成";
+    nextTick(() => {
+      initSort();
+    });
   } else if (val === 2) {
     prevBtnText.value = "上一步，字段配置";
     nextBtnText.value = "下载代码";
   }
 });
+
+watch(
+  () => dialog.visible,
+  (visible) => {
+    if (!visible) {
+      destroySort();
+    }
+  }
+);
 
 watch(copied, () => {
   if (copied.value) {
@@ -696,7 +704,8 @@ watch(
       if (
         fieldConfig.fieldType &&
         fieldConfig.fieldType.includes("Date") &&
-        fieldConfig.isShowInQuery === 1
+        fieldConfig.isShowInQuery === 1 &&
+        fieldConfig.queryType == null
       ) {
         fieldConfig.queryType = QueryTypeEnum.BETWEEN.value as number;
       }
@@ -705,12 +714,17 @@ watch(
   { deep: true, immediate: true }
 );
 
+function destroySort() {
+  if (!sortFlag.value) return;
+  sortFlag.value.destroy();
+  sortFlag.value = null;
+}
+
 const initSort = () => {
-  if (sortFlag.value) {
-    return;
-  }
+  if (sortFlag.value) return;
   const table = document.querySelector(".elTableCustom .el-table__body-wrapper tbody");
-  sortFlag.value = Sortable.create(<HTMLElement>table, {
+  if (!table) return;
+  sortFlag.value = Sortable.create(table as HTMLElement, {
     group: "shared",
     animation: 150,
     ghostClass: "sortable-ghost", //拖拽样式
@@ -721,20 +735,6 @@ const initSort = () => {
     onEnd: (item: any) => {
       setNodeSort(item.oldIndex, item.newIndex);
     },
-  });
-};
-
-const setNodeSort = (oldIndex: number, newIndex: number) => {
-  // 使用arr复制一份表格数组数据
-  const arr = Object.assign([], genConfigFormData.value.fieldConfigs);
-  const currentRow = arr.splice(oldIndex, 1)[0];
-  arr.splice(newIndex, 0, currentRow);
-  arr.forEach((item: FieldConfig, index) => {
-    item.fieldSort = index + 1;
-  });
-  genConfigFormData.value.fieldConfigs = [];
-  nextTick(async () => {
-    genConfigFormData.value.fieldConfigs = arr;
   });
 };
 
@@ -755,7 +755,6 @@ function handlePrevClick() {
           loading.value = false;
         });
     });
-    initSort();
   }
   if (active.value-- <= 0) active.value = 0;
 }
@@ -770,7 +769,6 @@ function handleNextClick() {
       ElMessage.error("表名、业务名、包名、模块名、实体名不能为空");
       return;
     }
-    initSort();
   }
   if (active.value === 1) {
     // 保存生成配置
@@ -783,7 +781,7 @@ function handleNextClick() {
     loadingText.value = "代码生成中，请稍后...";
     GeneratorAPI.saveGenConfig(tableName, genConfigFormData.value)
       .then(() => {
-        handlePreview(tableName);
+        return handlePreview(tableName);
       })
       .then(() => {
         if (active.value++ >= 2) active.value = 2;
@@ -833,36 +831,34 @@ function handleResetQuery() {
 async function handleOpenDialog(tableName: string) {
   dialog.visible = true;
   active.value = 0;
-
-  menuOptions.value = await MenuAPI.getOptions(true);
-
   currentTableName.value = tableName;
-  // 获取字典数据
-  DictAPI.getList().then((data) => {
-    dictOptions.value = data;
-    loading.value = true;
-    GeneratorAPI.getGenConfig(tableName)
-      .then((data) => {
-        dialog.title = `${tableName} 代码生成`;
-        genConfigFormData.value = data;
+  loading.value = true;
+  try {
+    const [menuList, dictList, config] = await Promise.all([
+      MenuAPI.getOptions(true),
+      DictAPI.getList(),
+      GeneratorAPI.getGenConfig(tableName),
+    ]);
 
-        checkAllSelected("isShowInQuery", isCheckAllQuery);
-        checkAllSelected("isShowInList", isCheckAllList);
-        checkAllSelected("isShowInForm", isCheckAllForm);
+    menuOptions.value = menuList;
+    dictOptions.value = dictList;
+    dialog.title = `${tableName} 代码生成`;
+    genConfigFormData.value = config;
 
-        // 如果已经配置过，直接跳转到预览页面
-        if (genConfigFormData.value.id) {
-          active.value = 2;
-          handlePreview(tableName);
-        } else {
-          // 如果没有配置过，跳转到基础配置页面
-          active.value = 0;
-        }
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  });
+    checkAllSelected("isShowInQuery", isCheckAllQuery);
+    checkAllSelected("isShowInList", isCheckAllList);
+    checkAllSelected("isShowInForm", isCheckAllForm);
+
+    if (genConfigFormData.value.id) {
+      active.value = 2;
+      await handlePreview(tableName);
+    }
+  } catch {
+    ElMessage.error("获取生成配置失败");
+    dialog.visible = false;
+  } finally {
+    loading.value = false;
+  }
 }
 
 /** 重置配置 */
@@ -896,27 +892,26 @@ const checkAllSelected = (key: keyof FieldConfig, isCheckAllRef: any) => {
 };
 
 /** 获取生成预览 */
-function handlePreview(tableName: string) {
+async function handlePreview(tableName: string) {
   treeData.value = [];
-  GeneratorAPI.getPreviewData(tableName, (genConfigFormData.value.pageType as any) || "classic")
-    .then((data) => {
-      dialog.title = `代码生成 ${tableName}`;
-      // 组装树形结构完善代码
-      const tree = buildTree(data);
-      // 缓存原始数据用于写盘
-      lastPreviewFiles.value = data || [];
-      // 去掉根节点“前后端代码”，直接展示其 children 作为一级目录
-      treeData.value = tree?.children ? [...tree.children] : [];
+  try {
+    const data = await GeneratorAPI.getPreviewData(
+      tableName,
+      (genConfigFormData.value.pageType as any) || "classic"
+    );
+    dialog.title = `代码生成 ${tableName}`;
+    const tree = buildTree(data);
+    lastPreviewFiles.value = data || [];
+    treeData.value = tree?.children ? [...tree.children] : [];
 
-      // 默认选中第一个叶子节点并设置 code 值
-      const firstLeafNode = findFirstLeafNode(tree);
-      if (firstLeafNode) {
-        code.value = firstLeafNode.content || "";
-      }
-    })
-    .catch(() => {
-      active.value = 0;
-    });
+    const firstLeafNode = findFirstLeafNode(tree);
+    if (firstLeafNode) {
+      code.value = firstLeafNode.content || "";
+    }
+  } catch {
+    active.value = 0;
+    throw new Error("preview_failed");
+  }
 }
 
 /**
@@ -1065,27 +1060,11 @@ const pickBackendDir = async () => {
   }
 };
 
-async function ensureDir(root: any, path: string[], force = true) {
+async function ensureDir(root: any, path: string[], create = true) {
   let current = root;
   for (const segment of path) {
-    try {
-      // @ts-ignore
-      current = await current.getDirectoryHandle(segment, { create: true });
-    } catch (err: any) {
-      // 若同名文件阻塞目录创建，尝试强制删除后重建
-      if (force && err?.name === "TypeMismatchError") {
-        try {
-          // @ts-ignore
-          await current.removeEntry(segment, { recursive: true });
-          // @ts-ignore
-          current = await current.getDirectoryHandle(segment, { create: true });
-        } catch {
-          throw err;
-        }
-      } else {
-        throw err;
-      }
-    }
+    // @ts-ignore
+    current = await current.getDirectoryHandle(segment, { create });
   }
   return current;
 }
@@ -1103,15 +1082,8 @@ async function writeFile(dirHandle: any, filePath: string, content: string) {
     fileHandle = await targetDir.getFileHandle(fileName, { create: true });
   } catch (err: any) {
     if (err?.name === "TypeMismatchError") {
-      // 存在同名目录，尝试删除后重建文件
-      try {
-        // @ts-ignore
-        await targetDir.removeEntry(fileName, { recursive: true });
-        // @ts-ignore
-        fileHandle = await targetDir.getFileHandle(fileName, { create: true });
-      } catch {
-        throw err;
-      }
+      // 存在同名目录(或其它类型冲突)，为安全起见不自动删除
+      throw err;
     } else {
       throw err;
     }
@@ -1319,6 +1291,10 @@ async function confirmWrite() {
 /** 组件挂载后执行 */
 onMounted(() => {
   handleQuery();
+});
+
+onBeforeUnmount(() => {
   cmRef.value?.destroy();
+  destroySort();
 });
 </script>

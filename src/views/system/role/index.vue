@@ -215,7 +215,8 @@
 import { useAppStore } from "@/store/modules/app-store";
 import { DeviceEnum } from "@/enums/settings";
 
-import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/system/role";
+import RoleAPI from "@/api/system/role";
+import type { RolePageVo, RoleForm, RolePageQuery } from "@/api/types";
 import MenuAPI from "@/api/system/menu";
 
 defineOptions({
@@ -239,7 +240,7 @@ const queryParams = reactive<RolePageQuery>({
 });
 
 // 角色表格数据
-const roleList = ref<RolePageVO[]>();
+const roleList = ref<RolePageVo[]>();
 // 菜单权限下拉
 const menuPermOptions = ref<OptionType[]>([]);
 
@@ -389,7 +390,7 @@ function handleDelete(roleId?: number) {
 }
 
 // 打开分配菜单权限弹窗
-async function handleOpenAssignPermDialog(row: RolePageVO) {
+async function handleOpenAssignPermDialog(row: RolePageVo) {
   const roleId = row.id;
   if (roleId) {
     assignPermDialogVisible.value = true;

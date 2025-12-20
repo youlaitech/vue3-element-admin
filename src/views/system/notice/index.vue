@@ -260,12 +260,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import NoticeAPI, {
-  NoticePageVO,
-  NoticeForm,
-  NoticePageQuery,
-  NoticeDetailVO,
-} from "@/api/system/notice";
+import NoticeAPI from "@/api/system/notice";
+import type { NoticePageVo, NoticeForm, NoticePageQuery, NoticeDetailVo } from "@/api/types";
 import UserAPI from "@/api/system/user";
 
 const queryFormRef = ref();
@@ -282,7 +278,7 @@ const queryParams = reactive<NoticePageQuery>({
 
 const userOptions = ref<OptionType[]>([]);
 // 通知公告表格数据
-const pageData = ref<NoticePageVO[]>([]);
+const pageData = ref<NoticePageVo[]>([]);
 
 // 弹窗
 const dialog = reactive({
@@ -319,7 +315,7 @@ const rules = reactive({
 const detailDialog = reactive({
   visible: false,
 });
-const currentNotice = ref<NoticeDetailVO>({});
+const currentNotice = ref<NoticeDetailVo>({});
 
 // 查询通知公告
 function handleQuery() {

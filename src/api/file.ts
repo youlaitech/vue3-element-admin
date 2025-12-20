@@ -1,4 +1,5 @@
 import request from "@/utils/request";
+import type { FileInfo } from "@/types/api";
 
 const FileAPI = {
   /** 上传文件 （传入 FormData，上传进度回调） */
@@ -57,8 +58,3 @@ const FileAPI = {
 };
 
 export default FileAPI;
-
-export interface FileInfo {
-  name: string;
-  url: string;
-}
