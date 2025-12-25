@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { useSettingsStore } from "@/store";
 import { ThemeMode } from "@/enums";
-import { Moon, Sunny } from "@element-plus/icons-vue";
+import { Moon, Sunny, Monitor } from "@element-plus/icons-vue";
 
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
@@ -31,6 +31,7 @@ const settingsStore = useSettingsStore();
 const theneList = [
   { label: t("login.light"), value: ThemeMode.LIGHT, component: Sunny },
   { label: t("login.dark"), value: ThemeMode.DARK, component: Moon },
+  { label: t("login.auto"), value: ThemeMode.AUTO, component: Monitor },
 ];
 
 const handleDarkChange = (theme: ThemeMode) => {

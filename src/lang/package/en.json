@@ -8,6 +8,7 @@
     "languageToggle": "Language Switch",
     "dark": "Dark",
     "light": "Light",
+    "auto": "Follow System",
     "username": "Username",
     "password": "Password",
     "login": "Login",

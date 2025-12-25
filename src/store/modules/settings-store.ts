@@ -66,6 +66,35 @@ export const useSettingsStore = defineStore("setting", () => {
   // 主题模式（亮色/暗色）
   const theme = useStorage<ThemeMode>(STORAGE_KEYS.THEME, defaultSettings.theme);
 
+  // 系统主题媒体查询（用于 ThemeMode.AUTO）
+  const prefersDarkMedia =
+    typeof window !== "undefined" && typeof window.matchMedia === "function"
+      ? window.matchMedia("(prefers-color-scheme: dark)")
+      : null;
+
+  function getSystemTheme(): ThemeMode {
+    return prefersDarkMedia && prefersDarkMedia.matches ? ThemeMode.DARK : ThemeMode.LIGHT;
+  }
+
+  function handleSystemThemeChange(e: MediaQueryListEvent | MediaQueryList) {
+    // 仅在用户选择自动（跟随系统）时响应系统主题变化
+    if (theme.value === ThemeMode.AUTO) {
+      const effectiveTheme = (e as MediaQueryList).matches ? ThemeMode.DARK : ThemeMode.LIGHT;
+      toggleDarkMode(effectiveTheme === ThemeMode.DARK);
+      const colors = generateThemeColors(themeColor.value, effectiveTheme);
+      applyTheme(colors);
+    }
+  }
+
+  if (prefersDarkMedia) {
+    // 兼容旧浏览器和新浏览器的监听方式
+    if (typeof prefersDarkMedia.addEventListener === "function") {
+      prefersDarkMedia.addEventListener("change", handleSystemThemeChange);
+    } else if (typeof (prefersDarkMedia as any).addListener === "function") {
+      (prefersDarkMedia as any).addListener(handleSystemThemeChange);
+    }
+  }
+
   // 设置项映射，用于统一管理
   const settingsMap = {
     showTagsView,
@@ -80,8 +109,11 @@ export const useSettingsStore = defineStore("setting", () => {
   watch(
     [theme, themeColor],
     ([newTheme, newThemeColor]: [ThemeMode, string]) => {
-      toggleDarkMode(newTheme === ThemeMode.DARK);
-      const colors = generateThemeColors(newThemeColor, newTheme);
+      // 计算实际生效的主题：若为 AUTO 则使用系统当前偏好
+      const effectiveTheme: ThemeMode = newTheme === ThemeMode.AUTO ? getSystemTheme() : newTheme;
+
+      toggleDarkMode(effectiveTheme === ThemeMode.DARK);
+      const colors = generateThemeColors(newThemeColor, effectiveTheme);
       applyTheme(colors);
     },
     { immediate: true }
