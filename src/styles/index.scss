@@ -1,12 +1,13 @@
-// 1. 基础重置（补充 UnoCSS 预设未覆盖的全局样式）
+// 1. 基础重置
 @use "./reset";
 
-// 2. 项目自定义主题变量（CSS 变量 / SCSS 变量 / JS 导出）
+// 2. 主题变量
 @use "./variables" as *;
 
-// 3. UI 框架适配：Element Plus & Vxe Table
+// 3. UI 框架适配
 @use "./element-plus";
 @use "./vxe-table";
+@use "./wangeditor";
 
 // 4. 业务通用样式
 @use "./common";

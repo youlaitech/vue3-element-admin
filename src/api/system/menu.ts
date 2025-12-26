@@ -1,6 +1,5 @@
 import request from "@/utils/request";
-import type { MenuTypeEnum } from "@/enums/business";
-import type { MenuQuery, MenuVo, MenuForm, MenuOption, RouteVo, Meta } from "@/types/api";
+import type { MenuQuery, MenuVo, MenuForm, RouteVo, OptionType } from "@/types/api";
 
 const MENU_BASE_URL = "/api/v1/menus";
 

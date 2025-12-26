@@ -1,5 +1,5 @@
 <div align="center">
-  <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/logo.png">
+  <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/images/logo.png">
   <h1>vue3-element-admin</h1>
 
   <img src="https://img.shields.io/badge/Vue-3.5.21-brightgreen.svg"/>

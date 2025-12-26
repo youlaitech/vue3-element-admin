@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { ArrowDown } from "@element-plus/icons-vue";
-import { useTenantStoreHook } from "@/store/modules/tenant-store";
+import { useTenantStoreHook } from "@/store/modules/tenant";
 
 const emit = defineEmits<{
   (e: "change", tenantId: number): void;

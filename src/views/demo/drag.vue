@@ -62,11 +62,11 @@
 import { VueDraggable } from "vue-draggable-plus";
 
 const userList = ref([
-  { name: "路飞", roles: "船长·格斗家·D之一族" },
-  { name: "索隆", roles: "剑豪·战斗员·三刀流大师" },
+  { name: "路飞", roles: "船长·格斗家" },
+  { name: "索隆", roles: "剑豪·战斗员·三刀流" },
   { name: "娜美", roles: "航海士·气象学家·财务官" },
   { name: "山治", roles: "厨师·格斗家·黑足" },
-  { name: "罗宾", roles: "考古学家·历史正文解读者" },
+  { name: "罗宾", roles: "考古学家·历史学家" },
 ]);
 </script>
 

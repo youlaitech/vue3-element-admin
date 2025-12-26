@@ -1,4 +1,4 @@
-<!-- 字典项 -->
+﻿<!-- 字典值 -->
 <template>
   <div class="app-container">
     <div class="filter-section">
@@ -86,7 +86,7 @@
       />
     </el-card>
 
-    <!--字典项弹窗-->
+    <!-- 字典项弹窗 -->
     <el-dialog
       v-model="dialog.visible"
       :title="dialog.title"
@@ -146,7 +146,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmitClick">确 定</el-button>
-          <el-button @click="handleCloseDialog">取 消</el-button>
+          <el-button @click="handleCloseDialog">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -156,7 +156,7 @@
 <script setup lang="ts">
 import type { TagProps } from "element-plus";
 import DictAPI from "@/api/system/dict";
-import type { DictItemPageQuery, DictItemPageVo, DictItemForm } from "@/api/types";
+import type { DictItemPageQuery, DictItemPageVo, DictItemForm } from "@/types/api";
 
 const route = useRoute();
 
@@ -229,7 +229,7 @@ function handleSelectionChange(selection: any) {
 // 打开弹窗
 function handleOpenDialog(row?: DictItemPageVo) {
   dialog.visible = true;
-  dialog.title = row ? "编辑字典项" : "新增字典项";
+  dialog.title = row ? "编辑字典值" : "新增字典值";
 
   if (row?.id) {
     DictAPI.getDictItemFormData(dictCode.value, row.id).then((data) => {

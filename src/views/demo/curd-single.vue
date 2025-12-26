@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container h-full flex flex-1 flex-col">
     <div class="mb-10">
       <el-link
@@ -6,7 +6,7 @@
         type="primary"
         target="_blank"
       >
-        整合版示例源码 请点击>>>>
+        整合版示例源码 请点击 >>>
       </el-link>
     </div>
 
@@ -35,7 +35,7 @@
         </el-tag>
       </template>
       <template #gender="scope">
-        <DictLabel v-model="scope.row[scope.prop]" code="gender" />
+        <DictTag v-model="scope.row[scope.prop]" code="gender" />
       </template>
       <template #mobile="scope">
         <el-text>{{ scope.row[scope.prop] }}</el-text>
@@ -71,7 +71,7 @@
 import UserAPI from "@/api/system/user";
 import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
-import type { UserForm, UserPageQuery } from "@/api/system/user";
+import type { UserForm, UserPageQuery } from "@/types/api";
 import type { IObject, IModalConfig, IContentConfig, ISearchConfig } from "@/components/CURD/types";
 import { DeviceEnum } from "@/enums/settings";
 import { useAppStore } from "@/store";
@@ -118,7 +118,7 @@ const searchConfig: ISearchConfig = reactive({
       label: "关键字",
       prop: "keywords",
       attrs: {
-        placeholder: "用户名/昵称/手机号",
+        placeholder: "用户名/昵称/手机",
         clearable: true,
         style: { width: "200px" },
       },
@@ -209,7 +209,7 @@ const contentConfig: IContentConfig<UserPageQuery> = reactive({
     "export",
     {
       name: "custom1",
-      text: "自定义1",
+      text: "自定义",
       perm: "add",
       attrs: { icon: "plus", color: "#626AEF" },
     },
@@ -542,7 +542,7 @@ const {
   handleFilterChange,
 } = usePage();
 
-// 其他工具栏
+// 其他工具
 function handleToolbarClick(name: string) {
   console.log(name);
   if (name === "custom1") {
@@ -550,7 +550,7 @@ function handleToolbarClick(name: string) {
   }
 }
 
-// 表格工具栏
+// 表格工具
 const handleOperateClick = (data: IObject) => {
   if (data.name === "detail") {
     editModalConfig.drawer = { ...editModalConfig.drawer, title: "查看" };
@@ -563,13 +563,13 @@ const handleOperateClick = (data: IObject) => {
       return await UserAPI.getFormData(data.row.id);
     });
   } else if (data.name === "reset_pwd") {
-    ElMessageBox.prompt("请输入用户「" + data.row.username + "」的新密码", "重置密码", {
+    ElMessageBox.prompt("请输入用户名" + data.row.username + "」的新密码", "重置密码", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
     })
       .then(({ value }: any) => {
         if (!value || value.length < 6) {
-          ElMessage.warning("密码至少需要6位字符，请重新输入");
+          ElMessage.warning("密码至少需6位字符，请重新输入");
           return false;
         }
         UserAPI.resetPassword(data.row.id, value).then(() => {

@@ -59,7 +59,7 @@ export interface IContentConfig<T = any> {
   // 权限前缀(如sys:user，用于组成权限标识)，不提供则不进行权限校验
   permPrefix?: string;
   // table组件属性
-  table?: Omit<TableProps<any>, "data">;
+  table?: Partial<Omit<TableProps<any>, "data">>;
   // 分页组件位置(默认：left)
   pagePosition?: "left" | "right";
   // pagination组件属性

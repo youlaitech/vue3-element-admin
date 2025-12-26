@@ -117,19 +117,19 @@
         <span class="divider-text">{{ t("login.otherLoginMethods") }}</span>
         <div class="divider-line"></div>
       </div>
-      <div class="flex-center gap-x-5 w-full text-[var(--el-text-color-secondary)]">
-        <CommonWrapper>
-          <div text-20px class="i-svg:wechat" />
-        </CommonWrapper>
-        <CommonWrapper>
-          <div text-20px cursor-pointer class="i-svg:qq" />
-        </CommonWrapper>
-        <CommonWrapper>
-          <div text-20px cursor-pointer class="i-svg:github" />
-        </CommonWrapper>
-        <CommonWrapper>
-          <div text-20px cursor-pointer class="i-svg:gitee" />
-        </CommonWrapper>
+      <div class="social-login">
+        <div class="social-login__item">
+          <div class="i-svg:wechat" />
+        </div>
+        <div class="social-login__item">
+          <div class="i-svg:qq" />
+        </div>
+        <div class="social-login__item">
+          <div class="i-svg:github" />
+        </div>
+        <div class="social-login__item">
+          <div class="i-svg:gitee" />
+        </div>
       </div>
     </div>
   </div>
@@ -140,8 +140,7 @@ import AuthAPI from "@/api/auth";
 import type { LoginRequest } from "@/types/api";
 import router from "@/router";
 import { useUserStore } from "@/store";
-import { useTenantStoreHook } from "@/store/modules/tenant-store";
-import CommonWrapper from "@/components/CommonWrapper/index.vue";
+import { useTenantStoreHook } from "@/store/modules/tenant";
 import TenantSwitcher from "@/components/TenantSwitcher/index.vue";
 import { AuthStorage } from "@/utils/auth";
 import { ApiCodeEnum } from "@/enums";
@@ -158,7 +157,7 @@ const loading = ref(false);
 // 是否大写锁定
 const isCapsLock = ref(false);
 const isSmallScreen = useMediaQuery("(max-width: 768px)");
-// 验证码图片Base64字符串
+// 验证码图片 Base64
 const captchaBase64 = ref();
 // 记住我
 const rememberMe = AuthStorage.getRememberMe();
@@ -272,7 +271,7 @@ async function handleLoginSubmit() {
         tenantDialogVisible.value = true;
         return; // 等待用户选择租户
       }
-      // 其他错误，刷新验证码并显示错误
+      // 其他错误，刷新验证码
       getCaptcha();
       throw error;
     }
@@ -295,7 +294,7 @@ async function handleTenantSelected() {
 
   try {
     loading.value = true;
-    // 使用选中的租户ID重新登录（将 tenantId 设置到表单数据中）
+    // 使用选中的租户ID重新登录
     const loginData = {
       ...loginFormData.value,
       tenantId: selectedTenantId.value,
@@ -358,6 +357,30 @@ function toOtherForm(type: "register" | "resetPwd") {
       font-size: 12px;
       color: var(--el-text-color-regular);
       white-space: nowrap;
+    }
+  }
+
+  .social-login {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    color: var(--el-text-color-secondary);
+
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      font-size: 20px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: var(--el-fill-color);
+      }
     }
   }
 }

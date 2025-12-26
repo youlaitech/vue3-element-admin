@@ -1,4 +1,4 @@
-<!-- 用户管理 -->
+﻿<!-- 用户管理 -->
 <template>
   <div class="app-container">
     <el-row :gutter="20">
@@ -103,7 +103,7 @@
             <el-table-column label="昵称" width="150" align="center" prop="nickname" />
             <el-table-column label="性别" width="100" align="center">
               <template #default="scope">
-                <DictLabel v-model="scope.row.gender" code="gender" />
+                <DictTag v-model="scope.row.gender" code="gender" />
               </template>
             </el-table-column>
             <el-table-column label="部门" width="120" align="center" prop="deptName" />
@@ -253,11 +253,10 @@ import { useDebounceFn } from "@vueuse/core";
 import { ElMessage, ElMessageBox, type FormInstance } from "element-plus";
 
 // ==================== 3. 类型定义 ====================
-import type { UserForm, UserPageQuery, UserPageVo } from "@/api/types";
+import type { UserForm, UserPageQuery, UserPageVo } from "@/types/api";
 
 // ==================== 3.5 工具函数 ====================
-import { downloadFile } from "@/utils";
-import { VALIDATORS } from "@/utils/validators";
+import { downloadFile, VALIDATORS } from "@/utils";
 // ==================== 4. API 服务 ====================
 import UserAPI from "@/api/system/user";
 import DeptAPI from "@/api/system/dept";
@@ -570,7 +569,7 @@ useAiAction({
      */
     updateUserNickname: {
       needConfirm: true,
-      callBackendApi: true, // 自动调用后端 API
+      callBackendApi: true,
       confirmMessage: (args: any) =>
         `AI 助手将执行以下操作：<br/>
         <strong>修改用户：</strong> ${args.username}<br/>

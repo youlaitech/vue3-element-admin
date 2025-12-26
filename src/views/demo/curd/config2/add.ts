@@ -1,4 +1,4 @@
-import type { UserForm } from "@/api/system/user";
+import type { UserForm } from "@/types/api";
 import type { IModalConfig } from "@/components/CURD/types";
 import { deptArr } from "../config/options";
 

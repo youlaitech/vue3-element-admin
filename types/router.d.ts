@@ -12,5 +12,6 @@ declare module "vue-router" {
     affix?: boolean;
     keepAlive?: boolean;
     breadcrumb?: boolean;
+    activeMenu?: string;
   }
 }

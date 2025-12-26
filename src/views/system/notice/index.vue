@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="filter-section">
@@ -68,13 +68,13 @@
         <el-table-column label="通知标题" prop="title" min-width="200" />
         <el-table-column align="center" label="通知类型" width="150">
           <template #default="scope">
-            <DictLabel v-model="scope.row.type" :code="'notice_type'" />
+            <DictTag v-model="scope.row.type" :code="'notice_type'" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="发布人" prop="publisherName" width="150" />
         <el-table-column align="center" label="通知等级" width="100">
           <template #default="scope">
-            <DictLabel v-model="scope.row.level" code="notice_level" />
+            <DictTag v-model="scope.row.level" code="notice_level" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="通告目标类型" prop="targetType" min-width="100">
@@ -260,8 +260,9 @@ defineOptions({
   inheritAttrs: false,
 });
 
+import { ref, reactive } from "vue";
 import NoticeAPI from "@/api/system/notice";
-import type { NoticePageVo, NoticeForm, NoticePageQuery, NoticeDetailVo } from "@/api/types";
+import type { NoticePageVo, NoticeForm, NoticePageQuery, NoticeDetailVo } from "@/types/api";
 import UserAPI from "@/api/system/user";
 
 const queryFormRef = ref();
@@ -288,8 +289,8 @@ const dialog = reactive({
 
 // 通知公告表单数据
 const formData = reactive<NoticeForm>({
-  level: "L", // 默认优先级为低
-  targetType: 1, // 默认目标类型为全体
+  level: "L", // 默认优先级为 L（低）
+  targetType: 1, // 默认目标类型为全部
 });
 
 // 通知公告表单校验规则
@@ -431,7 +432,7 @@ function handleDelete(id?: number) {
     return;
   }
 
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+  ElMessageBox.confirm("确认删除已选中的数据项吗？", "警告", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",

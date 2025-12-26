@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container h-full flex flex-1 flex-col">
     <div class="flex-x-between mb-10">
       <el-link
@@ -6,7 +6,7 @@
         type="primary"
         target="_blank"
       >
-        示例源码 请点击>>>>
+        示例源码 请点击>>>
       </el-link>
       <el-button type="primary" plain round size="small" @click="isA = !isA">切换示例</el-button>
     </div>
@@ -38,7 +38,7 @@
           </el-tag>
         </template>
         <template #gender="scope">
-          <DictLabel v-model="scope.row[scope.prop]" code="gender" />
+          <DictTag v-model="scope.row[scope.prop]" code="gender" />
         </template>
         <template #mobile="scope">
           <el-text>{{ scope.row[scope.prop] }}</el-text>
@@ -143,7 +143,7 @@ const {
   handleFilterChange,
 } = usePage();
 
-// 其他工具栏
+// 其他工具
 function handleToolbarClick(name: string) {
   console.log(name);
   if (name === "custom1") {
@@ -151,12 +151,12 @@ function handleToolbarClick(name: string) {
   }
 }
 
-// 表格工具栏
+// 表格工具
 const handleOperateClick = (data: IObject) => {
   if (data.name === "detail") {
     editModalConfig.drawer = { ...editModalConfig.drawer, title: "查看" };
     handleViewClick(data.row, async () => {
-      // 加载下拉数据源，建议在初始化配置项 initFn 中加载，避免多次请求
+      // 加载下拉数据源，建议在初始化配置项"initFn 中加载，避免多次请求
       // editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
       return await UserAPI.getFormData(data.row.id); // 根据ID获取详情
     });
@@ -166,13 +166,13 @@ const handleOperateClick = (data: IObject) => {
       return await UserAPI.getFormData(data.row.id); // 根据ID获取详情
     });
   } else if (data.name === "reset_pwd") {
-    ElMessageBox.prompt("请输入用户「" + data.row.username + "」的新密码", "重置密码", {
+    ElMessageBox.prompt("请输入用户名" + data.row.username + "」的新密码", "重置密码", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
     })
       .then(({ value }) => {
         if (!value || value.length < 6) {
-          ElMessage.warning("密码至少需要6位字符，请重新输入");
+          ElMessage.warning("密码至少需6位字符，请重新输入");
           return false;
         }
         UserAPI.resetPassword(data.row.id, value).then(() => {

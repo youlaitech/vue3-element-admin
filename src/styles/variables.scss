@@ -1,33 +1,61 @@
 /**
- * 项目自定义主题变量（CSS 变量 / SCSS 变量 / JS 导出）
- * 与 Element Plus 主题变量覆盖（element-plus-vars.scss）职责分离
+ * 项目主题变量
  * 
- * 注意：此文件以下划线开头，是 Sass partial，不会被单独编译，只能被其他文件导入
+ * 结构：
+ * 1. SCSS 变量 - 布局尺寸（供 JS 导出和组件使用）
+ * 2. CSS 变量 - 侧边栏/菜单主题色
+ * 3. 主题模式 - 深蓝侧边栏、暗黑模式
+ * 4. 无障碍模式 - 色弱模式
  */
 
+// ============================================
+// 1. SCSS 变量 - 布局尺寸
+// ============================================
+
+$sidebar-width: 210px;
+$sidebar-width-collapsed: 54px;
+$navbar-height: 50px;
+$tags-view-height: 34px;
+
+// ============================================
+// 2. CSS 变量 - 默认主题（浅色 + 白色侧边栏）
+// ============================================
+
 :root {
-  --menu-background: #fff; // 菜单背景色
-  --menu-text: #212121; // 菜单文字颜色 浅色主题-白色侧边栏配色下仅占位，实际颜色由 el-menu-item 组件决定
-  --menu-active-text: var(
-    --el-menu-active-color
-  ); // 菜单激活文字颜色 浅色主题-白色侧边栏配色下仅占位，实际颜色由 el-menu-item 组件决定
+  // 菜单
+  --menu-background: #fff;
+  --menu-text: #212121;
+  --menu-active-text: var(--el-menu-active-color);
+  --menu-hover: #e6f4ff;
 
-  --menu-hover: #e6f4ff; // 菜单悬停背景色 浅色主题-白色侧边栏配色下仅占位，实际颜色由 el-menu-item 组件决定
-  --sidebar-logo-background: #f5f5f5; // 侧边栏 Logo 背景色
-  --sidebar-logo-text-color: #333; // 侧边栏 Logo 文字颜色
+  // 侧边栏 Logo
+  --sidebar-logo-background: #f5f5f5;
+  --sidebar-logo-text-color: #333;
 }
 
-/** 浅色主题-深蓝色侧边栏配色 */
+// SCSS 变量映射（供组件使用）
+$menu-background: var(--menu-background);
+$menu-text: var(--menu-text);
+$menu-active-text: var(--menu-active-text);
+$menu-hover: var(--menu-hover);
+$sidebar-logo-background: var(--sidebar-logo-background);
+$sidebar-logo-text-color: var(--sidebar-logo-text-color);
+
+// ============================================
+// 3. 主题模式
+// ============================================
+
+// 浅色主题 - 深蓝色侧边栏
 html.sidebar-color-blue {
-  --menu-background: #304156; // 菜单背景色
-  --menu-text: #bfcbd9; // 菜单文字颜色
-  --menu-active-text: var(--el-menu-active-color); // 菜单激活文字颜色
-  --menu-hover: #263445; // 菜单悬停背景色
-  --sidebar-logo-background: #2d3748; // 侧边栏 Logo 背景色
-  --sidebar-logo-text-color: #fff; // 侧边栏 Logo 文字颜色
+  --menu-background: #304156;
+  --menu-text: #bfcbd9;
+  --menu-active-text: var(--el-menu-active-color);
+  --menu-hover: #263445;
+  --sidebar-logo-background: #2d3748;
+  --sidebar-logo-text-color: #fff;
 }
 
-/** 暗黑主题 */
+// 暗黑主题
 html.dark {
   --menu-background: var(--el-bg-color-overlay);
   --menu-text: #fff;
@@ -36,43 +64,17 @@ html.dark {
   --sidebar-logo-background: rgb(0 0 0 / 20%);
   --sidebar-logo-text-color: #fff;
 
+  // Element Plus 表格选中行背景色
   .el-table {
-    /* 自定义表格选中高亮时当前行的背景颜色（暗黑模式） */
     --el-table-current-row-bg-color: var(--el-fill-color-light);
   }
-
-  /** WangEditor Dark */
-  /* Textarea - css vars */
-  --w-e-textarea-bg-color: var(--el-bg-color); /* 深色背景 */
-  --w-e-textarea-color: var(--el-text-color-primary); /* 浅色文字 */
-  --w-e-textarea-border-color: var(--el-border-color); /* 较深的边框颜色 */
-  --w-e-textarea-slight-border-color: var(--el-border-color-lighter); /* 更淡一些的边框颜色 */
-  --w-e-textarea-slight-color: var(--el-text-color-secondary); /* 浅灰色，用于不那么重要的元素 */
-  --w-e-textarea-slight-bg-color: var(--el-bg-color-overlay); /* 稍微亮一点的背景色 */
-  --w-e-textarea-selected-border-color: var(--el-color-info-light-5); /* 选中元素时的高亮边框 */
-  --w-e-textarea-handler-bg-color: var(--el-color-primary); /* 工具按钮或交互元素的背景色 */
-
-  /* Toolbar - css vars */
-  --w-e-toolbar-color: var(--el-text-color-regular); /* 工具栏文字颜色 */
-  --w-e-toolbar-bg-color: var(--el-bg-color); /* 工具栏背景颜色 */
-  --w-e-toolbar-active-color: var(--el-text-color-primary); /* 当前激活项的文字颜色 */
-  --w-e-toolbar-active-bg-color: var(--el-fill-color-light); /* 当前激活项的背景颜色 */
-  --w-e-toolbar-disabled-color: var(--el-text-color-secondary); /* 禁用项的颜色 */
-  --w-e-toolbar-border-color: var(--el-border-color-base); /* 工具栏边框颜色 */
-
-  /*  Modal - css vars */
-  --w-e-modal-button-bg-color: var(--el-bg-color-light-3); /* 弹出框按钮背景色 */
-  --w-e-modal-button-border-color: var(--el-border-color-light); /* 弹出框按钮边框颜色 */
 }
 
-$menu-background: var(--menu-background); // 菜单背景色
-$menu-text: var(--menu-text); // 菜单文字颜色
-$menu-active-text: var(--menu-active-text); // 菜单激活文字颜色
-$menu-hover: var(--menu-hover); // 菜单悬停背景色
-$sidebar-logo-background: var(--sidebar-logo-background); // 侧边栏 Logo 背景色
-$sidebar-logo-text-color: var(--sidebar-logo-text-color); // 侧边栏 Logo 文字颜色
+// ============================================
+// 4. 无障碍模式
+// ============================================
 
-$sidebar-width: 210px; // 侧边栏宽度
-$sidebar-width-collapsed: 54px; // 侧边栏收缩宽度
-$navbar-height: 50px; // 导航栏高度
-$tags-view-height: 34px; // TagsView 高度
+// 色弱模式
+html.color-weak {
+  filter: invert(80%);
+}

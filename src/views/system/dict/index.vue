@@ -1,4 +1,4 @@
-<!-- 字典 -->
+﻿<!-- 字典 -->
 <template>
   <div class="app-container">
     <!-- 搜索区域 -->
@@ -124,7 +124,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmitClick">确 定</el-button>
-          <el-button @click="handleCloseDialog">取 消</el-button>
+          <el-button @click="handleCloseDialog">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -137,8 +137,9 @@ defineOptions({
   inherititems: false,
 });
 
+import { ref, reactive } from "vue";
 import DictAPI from "@/api/system/dict";
-import type { DictPageQuery, DictPageVo, DictForm } from "@/api/types";
+import type { DictPageQuery, DictPageVo, DictForm } from "@/types/api";
 
 import router from "@/router";
 
@@ -285,11 +286,11 @@ function handleDelete(id?: number) {
   );
 }
 
-// 打开字典项
+// 打开字典值"
 function handleOpenDictData(row: DictPageVo) {
   router.push({
     path: "/system/dict-item",
-    query: { dictCode: row.dictCode, title: "【" + row.name + "】字典数据" },
+    query: { dictCode: row.dictCode, title: `【${row.name}】字典数据` },
   });
 }
 

@@ -117,19 +117,9 @@ export function useStomp(options: UseStompOptions = {}) {
   /**
    * 日志输出（支持调试模式控制）
    */
-  const log = (...args: any[]) => {
-    if (config.debug) {
-      console.log("[useStomp]", ...args);
-    }
-  };
-
-  const logWarn = (...args: any[]) => {
-    console.warn("[useStomp]", ...args);
-  };
-
-  const logError = (...args: any[]) => {
-    console.error("[useStomp]", ...args);
-  };
+  const log = config.debug ? (...args: any[]) => console.log("[useStomp]", ...args) : () => {};
+  const logWarn = (...args: any[]) => console.warn("[useStomp]", ...args);
+  const logError = (...args: any[]) => console.error("[useStomp]", ...args);
 
   /**
    * 恢复所有订阅

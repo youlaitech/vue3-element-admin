@@ -1,10 +1,10 @@
-<!--
+﻿<!--
   TextScroll 组件 - 文本滚动公告
   
-  功能：
+  功能:
   - 支持水平方向文本滚动
   - 提供多种预设样式（默认、成功、警告、危险、信息）
-  - 支持自定义滚动速度和方向
+  - 支持自定义滚动速度和方式
   - 可选的打字机输入效果
   - 鼠标悬停时暂停滚动
   - 可选的关闭按钮
@@ -20,7 +20,7 @@
     <div class="left-icon">
       <el-icon><Bell /></el-icon>
     </div>
-    <!-- 滚动内容包装器 -->
+    <!-- 滚动内容容器 -->
     <div class="scroll-wrapper">
       <div
         ref="scrollContent"
@@ -48,7 +48,7 @@ const emit = defineEmits(["close"]);
 interface Props {
   /** 滚动文本内容（必填） */
   text: string;
-  /** 滚动速度，数值越小滚动越慢 */
+  /** 滚动速度，数值越小滚动越快 */
   speed?: number;
   /** 滚动方向：左侧或右侧 */
   direction?: "left" | "right";
@@ -82,7 +82,7 @@ const scrollContent = ref<HTMLElement | null>(null);
 const animationDuration = ref(0);
 
 /**
- * 打字机效果相关状态
+ * 打字机效果相关状态"
  */
 // 当前已显示的文本内容
 const currentText = ref("");
@@ -143,7 +143,7 @@ const handleRightIconClick = () => {
   emit("close");
   // 获取当前组件的DOM元素
   if (containerRef.value) {
-    // 从DOM中移除元素
+    // 从 DOM 中移除元素
     containerRef.value.remove();
   }
 };
@@ -155,7 +155,7 @@ const handleRightIconClick = () => {
 const startTypewriter = () => {
   let index = 0;
   currentText.value = "";
-  isTypewriterComplete.value = false; // 重置状态
+  isTypewriterComplete.value = false; // 重置状态"
 
   // 递归函数，逐字添加文本
   const type = () => {
@@ -166,7 +166,7 @@ const startTypewriter = () => {
       // 设置下一个字符的延迟
       typewriterTimer = setTimeout(type, props.typewriterSpeed);
     } else {
-      // 所有字符都已添加，设置完成状态
+      // 所有字符都已添加，设置完成状态"
       isTypewriterComplete.value = true;
     }
   };

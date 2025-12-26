@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="filter-section">
@@ -41,12 +41,12 @@
         <el-table-column label="通知标题" prop="title" min-width="200" />
         <el-table-column align="center" label="通知类型" width="150">
           <template #default="scope">
-            <DictLabel v-model="scope.row.type" code="notice_type" />
+            <DictTag v-model="scope.row.type" code="notice_type" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="通知等级" width="100">
           <template #default="scope">
-            <DictLabel v-model="scope.row.level" code="notice_level" />
+            <DictTag v-model="scope.row.level" code="notice_level" />
           </template>
         </el-table-column>
         <el-table-column
@@ -115,14 +115,11 @@ defineOptions({
 
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import NoticeAPI, {
-  type NoticePageVO,
-  type NoticePageQuery,
-  type NoticeDetailVO,
-} from "@/api/system/notice";
+import NoticeAPI from "@/api/system/notice";
+import type { NoticePageVo, NoticePageQuery } from "@/types/api";
 
 const queryFormRef = ref();
-const pageData = ref<NoticePageVO[]>([]);
+const pageData = ref<NoticePageVo[]>([]);
 const loading = ref(false);
 const total = ref(0);
 
@@ -132,7 +129,7 @@ const queryParams = reactive<NoticePageQuery>({
 });
 
 const noticeDialogVisible = ref(false);
-const noticeDetail = ref<NoticeDetailVO | null>(null);
+const noticeDetail = ref<any>(null);
 
 async function handleQuery() {
   loading.value = true;

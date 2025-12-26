@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="filter-section">
@@ -129,7 +129,7 @@
           <el-input v-model="formData.name" placeholder="请输入部门名称" />
         </el-form-item>
         <el-form-item label="部门编号" prop="code">
-          <el-input v-model="formData.code" placeholder="请输入部门编号" />
+          <el-input v-model="formData.code" placeholder="请输入部门编码" />
         </el-form-item>
         <el-form-item label="显示排序" prop="sort">
           <el-input-number
@@ -149,8 +149,8 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="handleCloseDialog">取 消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
+          <el-button @click="handleCloseDialog">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -164,7 +164,7 @@ defineOptions({
 });
 
 import DeptAPI from "@/api/system/dept";
-import type { DeptVo, DeptForm, DeptQuery } from "@/api/types";
+import type { DeptVo, DeptForm, DeptQuery } from "@/types/api";
 
 const queryFormRef = ref();
 const deptFormRef = ref();

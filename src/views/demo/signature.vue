@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="canvas-dom">
     <h3>基于canvas实现的签名组件</h3>
     <header>
@@ -34,7 +34,7 @@ let painting = false;
 const getOffset = (event: MouseEvent | TouchEvent) => {
   let offset: [number, number];
   if ((event as MouseEvent).offsetX) {
-    // pc端
+    // PC端
     const { offsetX, offsetY } = event as MouseEvent;
     offset = [offsetX, offsetY];
   } else {
@@ -60,11 +60,11 @@ const onEventStart = (event: MouseEvent | TouchEvent) => {
 
 const onEventMove = (event: MouseEvent | TouchEvent) => {
   if (painting) {
-    // 鼠标/触摸 移动时，保存 移动点相对 被触发dom的左、上 距离
+    // 鼠标/触摸 移动时，保存移动点相对被触发 DOM 的左、上距离
     const [endX, endY] = getOffset(event);
     paint(startX, startY, endX, endY, ctx);
 
-    // 每次绘制 或 清除结束后，起点要重置为上次的终点
+    // 每次绘制或清除结束后，起点要重置为上次的终点
     startX = endX;
     startY = endY;
   }

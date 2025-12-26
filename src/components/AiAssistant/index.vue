@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <!-- 悬浮按钮 -->
   <div class="ai-assistant">
     <!-- AI 助手图标按钮 -->
@@ -343,7 +343,7 @@ const handleExecute = async () => {
   }
 };
 
-// 路由配置映射表（支持扩展）
+// 路由配置映射表
 const routeConfig = [
   { keywords: ["用户", "user", "user list"], path: "/system/user", name: "用户管理" },
   { keywords: ["角色", "role"], path: "/system/role", name: "角色管理" },
@@ -387,13 +387,13 @@ const extractKeywordFromCommand = (cmd: string): string => {
   const keywordsPattern = allKeywords.join("|");
 
   const patterns = [
-    new RegExp(`(?:查询|获取|搜索|查找|找).*?([^\\s，,。]+?)(?:的)?(?:${keywordsPattern})`, "i"),
-    new RegExp(`(?:${keywordsPattern}).*?([^\\s，,。]+?)(?:的|信息|详情)?`, "i"),
+    new RegExp(`(?:查询|获取|搜索|查找|找).*?([^\\s，。]+?)(?:的)?(?:${keywordsPattern})`, "i"),
+    new RegExp(`(?:${keywordsPattern}).*?([^\\s，。]+?)(?:的|信息|详情)?`, "i"),
     new RegExp(
-      `(?:姓名为|名字叫|叫做|名称为|名是|为)([^\\s，,。]+?)(?:的)?(?:${keywordsPattern})?`,
+      `(?:姓名为|名字叫|叫做|名称为|名是|为)([^\\s，。]+?)(?:的)?(?:${keywordsPattern})?`,
       "i"
     ),
-    new RegExp(`([^\\s，,。]+?)(?:的)?(?:${keywordsPattern})(?:信息|详情)?`, "i"),
+    new RegExp(`([^\\s，。]+?)(?:的)?(?:${keywordsPattern})(?:信息|详情)?`, "i"),
   ];
 
   for (const pattern of patterns) {

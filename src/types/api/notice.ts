@@ -28,6 +28,8 @@ export interface NoticeForm {
   publishStatus?: number;
   /** 目标用户ID(多个以英文逗号(,)分割) */
   targetUserIds?: string;
+  /** 目标类型 (1:全部,2:指定用户等) */
+  targetType?: number;
 }
 
 /** 通知分页对象 */
@@ -68,4 +70,8 @@ export interface NoticeDetailVo {
   publishStatus?: number;
   /** 目标用户ID */
   targetUserIds?: string;
+  /** 发布人名称 */
+  publisherName?: string;
+  /** 发布时间 */
+  publishTime?: Date;
 }

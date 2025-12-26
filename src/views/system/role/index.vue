@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="filter-section">
@@ -142,8 +142,8 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="handleCloseDialog">取 消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
+          <el-button @click="handleCloseDialog">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -203,8 +203,8 @@
       </el-tree>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleAssignPermSubmit">确 定</el-button>
-          <el-button @click="assignPermDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleAssignPermSubmit">确定</el-button>
+          <el-button @click="assignPermDialogVisible = false">取消</el-button>
         </div>
       </template>
     </el-drawer>
@@ -212,11 +212,11 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/modules/app-store";
+import { useAppStore } from "@/store/modules/app";
 import { DeviceEnum } from "@/enums/settings";
 
 import RoleAPI from "@/api/system/role";
-import type { RolePageVo, RoleForm, RolePageQuery } from "@/api/types";
+import type { RolePageVo, RoleForm, RolePageQuery } from "@/types/api";
 import MenuAPI from "@/api/system/menu";
 
 defineOptions({

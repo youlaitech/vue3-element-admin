@@ -1,0 +1,28 @@
+/**
+ * WangEditor 暗黑模式适配
+ * 使用 Element Plus CSS 变量实现主题统一
+ */
+
+html.dark {
+  /* Textarea */
+  --w-e-textarea-bg-color: var(--el-bg-color);
+  --w-e-textarea-color: var(--el-text-color-primary);
+  --w-e-textarea-border-color: var(--el-border-color);
+  --w-e-textarea-slight-border-color: var(--el-border-color-lighter);
+  --w-e-textarea-slight-color: var(--el-text-color-secondary);
+  --w-e-textarea-slight-bg-color: var(--el-bg-color-overlay);
+  --w-e-textarea-selected-border-color: var(--el-color-info-light-5);
+  --w-e-textarea-handler-bg-color: var(--el-color-primary);
+
+  /* Toolbar */
+  --w-e-toolbar-color: var(--el-text-color-regular);
+  --w-e-toolbar-bg-color: var(--el-bg-color);
+  --w-e-toolbar-active-color: var(--el-text-color-primary);
+  --w-e-toolbar-active-bg-color: var(--el-fill-color-light);
+  --w-e-toolbar-disabled-color: var(--el-text-color-secondary);
+  --w-e-toolbar-border-color: var(--el-border-color-base);
+
+  /* Modal */
+  --w-e-modal-button-bg-color: var(--el-bg-color-light-3);
+  --w-e-modal-button-border-color: var(--el-border-color-light);
+}

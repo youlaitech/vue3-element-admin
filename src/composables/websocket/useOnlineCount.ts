@@ -1,6 +1,5 @@
 import { ref, onMounted, onUnmounted, getCurrentInstance } from "vue";
 import { useStomp } from "./useStomp";
-import { registerWebSocketInstance } from "@/utils/websocket";
 import { AuthStorage } from "@/utils/auth";
 
 /**
@@ -39,9 +38,6 @@ function createOnlineCountComposable() {
 
   // 订阅 ID
   let subscriptionId: string | null = null;
-
-  // 注册到全局实例管理器
-  registerWebSocketInstance("onlineCount", stomp);
 
   /**
    * 处理在线用户数量消息
@@ -135,10 +131,6 @@ function createOnlineCountComposable() {
     // 方法
     initialize,
     cleanup,
-
-    // 别名方法（向后兼容）
-    initWebSocket: initialize,
-    closeWebSocket: cleanup,
   };
 }
 
@@ -147,15 +139,12 @@ function createOnlineCountComposable() {
  *
  * 用于实时显示系统在线用户数量
  *
- * @param options 配置选项
- * @param options.autoInit 是否在组件挂载时自动初始化（默认 true）
- *
  * @example
  * ```ts
- * // 在组件中使用
+ * // 在组件中使用（推荐）
  * const { onlineUserCount, isConnected } = useOnlineCount();
  *
- * // 手动控制初始化
+ * // 手动控制初始化（高级用法）
  * const { onlineUserCount, initialize, cleanup } = useOnlineCount({ autoInit: false });
  * onMounted(() => initialize());
  * onUnmounted(() => cleanup());
@@ -169,18 +158,20 @@ export function useOnlineCount(options: { autoInit?: boolean } = {}) {
     globalInstance = createOnlineCountComposable();
   }
 
-  // 只在组件上下文中且 autoInit 为 true 时使用生命周期钩子
+  // 组件级自动初始化（仅在组件上下文中生效）
   const instance = getCurrentInstance();
   if (autoInit && instance) {
     onMounted(() => {
-      // 只有在未连接时才尝试初始化
+      // 防止重复初始化：只有在未连接时才尝试初始化
       if (!globalInstance!.isConnected.value) {
         globalInstance!.initialize();
       }
     });
 
-    // 注意：不在卸载时关闭连接，保持全局连接
-    onUnmounted(() => {});
+    // 注意：组件卸载时不关闭连接，保持全局连接
+    onUnmounted(() => {
+      // 全局连接由 cleanupWebSocket() 统一管理
+    });
   }
 
   return globalInstance;

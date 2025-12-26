@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <!-- 基础用法 -->
-    <TextScroll text="这是一条基础的滚动公告，默认向左滚动。" typewriter />
+    <TextScroll text="这是一条基础的滚动公告，默认向左滚动" typewriter />
 
-    <!-- 使用不同的类型 -->
+    <!-- 使用不同的类名 -->
     <TextScroll type="success" text="这是一条成功类型的滚动公告" typewriter />
 
     <TextScroll type="warning" text="这是一条警告类型的滚动公告" />

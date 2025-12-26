@@ -1,6 +1,6 @@
 import UserAPI from "@/api/system/user";
 import RoleAPI from "@/api/system/role";
-import type { UserPageQuery } from "@/api/system/user";
+import type { UserPageQuery } from "@/types/api";
 import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig<UserPageQuery> = {

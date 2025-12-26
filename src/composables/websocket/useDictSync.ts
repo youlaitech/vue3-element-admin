@@ -1,4 +1,4 @@
-import { useDictStoreHook } from "@/store/modules/dict-store";
+import { useDictStoreHook } from "@/store/modules/dict";
 import { useStomp } from "./useStomp";
 import type { IMessage } from "@stomp/stompjs";
 
@@ -158,14 +158,6 @@ function createDictSyncComposable() {
     initialize,
     cleanup,
     onDictChange,
-
-    // 别名方法（向后兼容）
-    initWebSocket: initialize,
-    closeWebSocket: cleanup,
-    onDictMessage: onDictChange,
-
-    // 用于测试和调试
-    handleDictChangeMessage,
   };
 }
 
@@ -178,7 +170,7 @@ function createDictSyncComposable() {
  * ```ts
  * const dictSync = useDictSync();
  *
- * // 初始化（在应用启动时调用）
+ * // 初始化（通常在应用启动时调用）
  * dictSync.initialize();
  *
  * // 注册回调

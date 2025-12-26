@@ -2,14 +2,14 @@
   <div class="auth-view">
     <div class="auth-view__toolbar">
       <el-tooltip :content="t('login.themeToggle')" placement="bottom">
-        <CommonWrapper>
-          <DarkModeSwitch />
-        </CommonWrapper>
+        <div class="toolbar-item">
+          <ThemeSwitch />
+        </div>
       </el-tooltip>
       <el-tooltip :content="t('login.languageToggle')" placement="bottom">
-        <CommonWrapper>
+        <div class="toolbar-item">
           <LangSelect size="text-20px" />
-        </CommonWrapper>
+        </div>
       </el-tooltip>
     </div>
 
@@ -26,19 +26,19 @@
         </p>
         <ul class="auth-feature__highlights">
           <li>
-            <span>⦿</span>
+            <span>✓</span>
             统一身份认证与权限管理
           </li>
           <li>
-            <span>⦿</span>
+            <span>✓</span>
             支持多租户模式与租户隔离
           </li>
           <li>
-            <span>⦿</span>
+            <span>✓</span>
             数据安全与操作审计
           </li>
           <li>
-            <span>⦿</span>
+            <span>✓</span>
             灵活扩展与高可用架构
           </li>
         </ul>
@@ -51,15 +51,15 @@
           </div>
           <div class="auth-panel__meta">
             <div class="auth-panel__title-row">
-              <span class="auth-panel__title">{{ defaultSettings.title }}</span>
+              <span class="auth-panel__title">{{ appConfig.title }}</span>
             </div>
-            <div v-if="defaultSettings.version || tenantEnabled" class="auth-panel__version-row">
+            <div v-if="appConfig.version || tenantEnabled" class="auth-panel__version-row">
               <el-text size="small" type="info">VERSION</el-text>
-              <el-tag v-if="defaultSettings.version" size="small" effect="light" round>
-                {{ `v${defaultSettings.version}` }}
+              <el-tag v-if="appConfig.version" size="small" effect="light" round>
+                {{ `v${appConfig.version}` }}
               </el-tag>
               <el-tag v-if="tenantEnabled" type="success" size="small" effect="light" round>
-                多租户
+                多租�?
               </el-tag>
             </div>
           </div>
@@ -72,7 +72,7 @@
         <footer class="auth-panel__footer">
           <el-text size="small">
             Copyright © 2021 - 2025 youlai.tech
-            <a href="http://beian.miit.gov.cn/" target="_blank">皖ICP备20006496号-2</a>
+            <a href="http://beian.miit.gov.cn/" target="_blank">皖ICP备00064962号</a>
           </el-text>
         </footer>
       </section>
@@ -81,17 +81,16 @@
 </template>
 
 <script setup lang="ts">
-import logo from "@/assets/logo.png";
-import { defaultSettings } from "@/settings";
-import CommonWrapper from "@/components/CommonWrapper/index.vue";
-import DarkModeSwitch from "@/components/DarkModeSwitch/index.vue";
+import logo from "@/assets/images/logo.png";
+import { appConfig } from "@/settings";
+import ThemeSwitch from "@/components/ThemeSwitch/index.vue";
 
 type LayoutMap = "login" | "register" | "resetPwd";
 
 const { t } = useI18n();
 const component = ref<LayoutMap>("login");
 
-const tenantEnabled = import.meta.env.VITE_APP_TENANT_ENABLED === "true";
+const tenantEnabled = appConfig.tenantEnabled;
 
 const formComponents = {
   login: defineAsyncComponent(() => import("./components/Login.vue")),
@@ -103,8 +102,8 @@ let notificationInstance: ReturnType<typeof ElNotification> | null = null;
 
 const showVoteNotification = () => {
   notificationInstance = ElNotification({
-    title: "⭐ Gitee 2025 开源评选 · 诚邀您的支持！ 🙏",
-    message: `我正在参加 Gitee 2025 最受欢迎的开源软件投票活动，快来给我投票吧！<br/><a href="https://gitee.com/activity/2025opensource?ident=I6VXEH" target="_blank" style="color: var(--el-color-primary); text-decoration: none; font-weight: 500;">点击投票 →</a>`,
+    title: "Gitee 2025 开源评选 · 诚邀支持",
+    message: `我正在参与 Gitee 2025 最受欢迎开源软件投票活动，欢迎支持！<br/><a href="https://gitee.com/activity/2025opensource?ident=I6VXEH" target="_blank" style="color: var(--el-color-primary); text-decoration: none; font-weight: 500;">点击投票</a>`,
     type: "success",
     position: "bottom-left",
     duration: 0,
@@ -172,6 +171,20 @@ onBeforeUnmount(() => {
     transform: translateY(-2px);
   }
 
+  .toolbar-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: var(--el-fill-color);
+    }
+  }
+
   @media (max-width: 640px) {
     position: fixed;
     top: 12px;
@@ -187,7 +200,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* 应用内暗黑主题下顶部设置面板的深色样式 */
+/* 应用内暗黑主题下顶部设置面板的深色样�?*/
 .dark .auth-view__toolbar {
   background-color: rgba(24, 28, 43, 0.9);
   border-color: rgba(64, 128, 255, 0.35);

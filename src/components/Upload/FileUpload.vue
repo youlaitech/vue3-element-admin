@@ -53,11 +53,12 @@ import {
   UploadRequestOptions,
 } from "element-plus";
 
-import FileAPI, { FileInfo } from "@/api/file";
+import FileAPI from "@/api/file";
+import type { FileInfo } from "@/types/api";
 
 const props = defineProps({
   /**
-   * 请求携带的额外参数
+   * 请求携带的额外参�?
    */
   data: {
     type: Object,
@@ -121,7 +122,7 @@ const modelValue = defineModel("modelValue", {
 
 const fileList = ref([] as UploadFile[]);
 
-// 监听 modelValue 转换用于显示的 fileList
+// 监听 modelValue 转换用于显示�?fileList
 watch(
   modelValue,
   (value) => {
@@ -141,7 +142,7 @@ watch(
 );
 
 /**
- * 上传前校验
+ * 上传前校�?
  */
 function handleBeforeUpload(file: UploadRawFile) {
   // 限制文件大小
@@ -185,7 +186,7 @@ function handleUpload(options: UploadRequestOptions) {
  * 上传文件超出限制
  */
 function handleExceed() {
-  ElMessage.warning(`最多只能上传${props.limit}个文件`);
+  ElMessage.warning("最多只能上传 " + props.limit + " 个文件");
 }
 
 /**
@@ -193,7 +194,7 @@ function handleExceed() {
  */
 const handleSuccess = (response: any, uploadFile: UploadFile, files: UploadFiles) => {
   ElMessage.success("上传成功");
-  //只有当状态为success或者fail，代表文件上传全部完成了，失败也算完成
+  //只有当状态为success或者fail，代表文件上传全部完成了，失败也算完�?
   if (
     files.every((file: UploadFile) => {
       return file.status === "success" || file.status === "fail";
@@ -202,7 +203,7 @@ const handleSuccess = (response: any, uploadFile: UploadFile, files: UploadFiles
     const fileInfos = [] as FileInfo[];
     files.map((file: UploadFile) => {
       if (file.status === "success") {
-        //只取携带response的才是刚上传的
+        //只取携带response的才是刚上传�?
         const res = file.response as FileInfo;
         if (res) {
           fileInfos.push({ name: res.name, url: res.url } as FileInfo);
@@ -250,7 +251,7 @@ function handleDownload(file: UploadUserFile) {
 
 /** 获取一个不重复的id */
 function getUid(): number {
-  // 时间戳左移13位（相当于乘以8192） + 4位随机数
+  // 时间戳左�?3位（相当于乘�?192�?+ 4位随机数
   return (Date.now() << 13) | Math.floor(Math.random() * 8192);
 }
 </script>

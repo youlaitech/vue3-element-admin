@@ -1,10 +1,10 @@
-<template>
+﻿<template>
   <div
     class="rounded bg-[var(--el-bg-color)] border border-[var(--el-border-color)] p-5 h-full md:flex flex-1 flex-col md:overflow-auto"
   >
-    <!-- 表格工具栏 -->
+    <!-- 表格工具 -->
     <div class="flex flex-col md:flex-row justify-between gap-y-2.5 mb-2.5">
-      <!-- 左侧工具栏 -->
+      <!-- 左侧工具 -->
       <div class="toolbar-left flex gap-y-2.5 gap-x-2 md:gap-x-3 flex-wrap">
         <template v-for="(btn, index) in toolbarLeftBtn" :key="index">
           <el-button
@@ -17,7 +17,7 @@
           </el-button>
         </template>
       </div>
-      <!-- 右侧工具栏 -->
+      <!-- 右侧工具 -->
       <div class="toolbar-right flex gap-y-2.5 gap-x-2 md:gap-x-3 flex-wrap">
         <template v-for="(btn, index) in toolbarRightBtn" :key="index">
           <el-popover v-if="btn.name === 'filter'" placement="bottom" trigger="click">
@@ -62,7 +62,7 @@
                     <el-image
                       :src="item"
                       :preview-src-list="scope.row[col.prop]"
-                      :initial-index="index"
+                      :initial-index="Number(index)"
                       :preview-teleported="true"
                       :style="`width: ${col.imageWidth ?? 40}px; height: ${col.imageHeight ?? 40}px`"
                     />
@@ -78,7 +78,7 @@
                 </template>
               </template>
             </template>
-            <!-- 根据行的selectList属性返回对应列表值 -->
+            <!-- 根据行的selectList属性返回对应列表 -->
             <template v-else-if="col.templet === 'list'">
               <template v-if="col.prop">
                 {{ (col.selectList ?? {})[scope.row[col.prop]] }}
@@ -92,7 +92,7 @@
                 </el-link>
               </template>
             </template>
-            <!-- 生成开关组件 -->
+            <!-- 生成开关组 -->
             <template v-else-if="col.templet === 'switch'">
               <template v-if="col.prop">
                 <!-- pageData.length>0: 解决el-switch组件会在表格初始化的时候触发一次change事件 -->
@@ -111,7 +111,7 @@
                 />
               </template>
             </template>
-            <!-- 生成输入框组件 -->
+            <!-- 生成输入框组 -->
             <template v-else-if="col.templet === 'input'">
               <template v-if="col.prop">
                 <el-input
@@ -125,7 +125,7 @@
             <!-- 格式化为价格 -->
             <template v-else-if="col.templet === 'price'">
               <template v-if="col.prop">
-                {{ `${col.priceFormat ?? "￥"}${scope.row[col.prop]}` }}
+                {{ `${col.priceFormat ?? ""}${scope.row[col.prop]}` }}
               </template>
             </template>
             <!-- 格式化为百分比 -->
@@ -220,7 +220,7 @@
           <el-form-item label="工作表名" prop="sheetname">
             <el-input v-model="exportsFormData.sheetname" clearable />
           </el-form-item>
-          <el-form-item label="数据源" prop="origin">
+          <el-form-item label="数据来源" prop="origin">
             <el-select v-model="exportsFormData.origin">
               <el-option label="当前数据 (当前页的数据)" :value="ExportsOriginEnum.CURRENT" />
               <el-option
@@ -247,8 +247,8 @@
       <!-- 弹窗底部操作按钮 -->
       <template #footer>
         <div style="padding-right: var(--el-dialog-padding-primary)">
-          <el-button type="primary" @click="handleExportsSubmit">确 定</el-button>
-          <el-button @click="handleCloseExportsModal">取 消</el-button>
+          <el-button type="primary" @click="handleExportsSubmit">确定</el-button>
+          <el-button @click="handleCloseExportsModal">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -270,7 +270,7 @@
           :model="importFormData"
           :rules="importFormRules"
         >
-          <el-form-item label="文件名" prop="files">
+          <el-form-item label="文件" prop="files">
             <el-upload
               ref="uploadRef"
               v-model:file-list="importFormData.files"
@@ -283,7 +283,7 @@
             >
               <el-icon class="el-icon--upload"><upload-filled /></el-icon>
               <div class="el-upload__text">
-                <span>将文件拖到此处，或</span>
+                <span>将文件拖到此处，或点击上传</span>
                 <em>点击上传</em>
               </div>
               <template #tip>
@@ -312,9 +312,9 @@
             :disabled="importFormData.files.length === 0"
             @click="handleImportSubmit"
           >
-            确 定
+            确定
           </el-button>
-          <el-button @click="handleCloseImportModal">取 消</el-button>
+          <el-button @click="handleCloseImportModal">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -427,7 +427,7 @@ const toolbarRightBtn = computed(() => {
 const tableToolbar = config.value.cols[config.value.cols.length - 1].operat ?? ["edit", "delete"];
 const tableToolbarBtn = createToolbar(tableToolbar, { link: true, size: "small" });
 
-// 表格列
+// 表格相关
 const cols = ref(
   props.contentConfig.cols.map((col) => {
     if (col.initFn) {
@@ -517,7 +517,7 @@ function handleDelete(id?: number | string) {
           .then(() => {
             ElMessage.success("删除成功");
             removeIds.value = [];
-            //清空选中项
+            // 清空选中项
             tableRef.value?.clearSelection();
             handleRefresh(true);
           })
@@ -551,7 +551,7 @@ const exportsFormData = reactive({
 });
 const exportsFormRules: FormRules = {
   fields: [{ required: true, message: "请选择字段" }],
-  origin: [{ required: true, message: "请选择数据源" }],
+  origin: [{ required: true, message: "请选择数据来源" }],
 };
 // 打开导出弹窗
 function handleOpenExportsModal() {
@@ -709,7 +709,7 @@ function handleImports() {
   fileReader.onload = (ev) => {
     if (ev.target !== null && ev.target.result !== null) {
       const result = ev.target.result as ArrayBuffer;
-      // 从 buffer中加载数据解析
+      // 从 buffer 中加载并解析数据
       workbook.xlsx
         .load(result)
         .then((workbook) => {
@@ -753,7 +753,7 @@ function handleImports() {
   };
 }
 
-// 操作栏
+// 操作人"
 function handleToolbar(name: string) {
   switch (name) {
     case "refresh":
@@ -786,7 +786,7 @@ function handleToolbar(name: string) {
   }
 }
 
-// 操作列
+// 操作人"
 function handleOperate(data: IOperateData) {
   switch (data.name) {
     case "delete":

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
@@ -484,7 +484,7 @@
             <el-radio-group v-model="overwriteMode">
               <el-radio-button label="overwrite">覆盖</el-radio-button>
               <el-radio-button label="skip">跳过已存在</el-radio-button>
-              <el-radio-button label="ifChanged">仅变更覆盖</el-radio-button>
+              <el-radio-button label="ifChanged">仅在变更时覆盖</el-radio-button>
             </el-radio-group>
           </el-form-item>
         </el-form>
@@ -498,13 +498,13 @@
       </div>
 
       <template #footer>
-        <el-button @click="writeDialog.visible = false">取 消</el-button>
+        <el-button @click="writeDialog.visible = false">取消</el-button>
         <el-button
           type="primary"
           :disabled="!canWriteToLocal || writeRunning"
           @click="confirmWrite"
         >
-          写 入
+          写入
         </el-button>
       </template>
     </el-dialog>
@@ -543,7 +543,7 @@ const previewTypes = ref<string[]>([...previewTypeOptions]);
 
 const filteredTreeData = computed<TreeNode[]>(() => {
   if (!treeData.value.length) return [];
-  // 基于原树按 scope/types 过滤叶子节点
+  // 基于原树 scope/types 过滤叶子节点
   const match = (label: string, parentPath: string[]): boolean => {
     // scope 过滤：根据路径初步判断
     const pathStr = parentPath.join("/");
@@ -720,6 +720,13 @@ function destroySort() {
   sortFlag.value = null;
 }
 
+function setNodeSort(oldIndex: number, newIndex: number) {
+  const list = genConfigFormData.value?.fieldConfigs ?? [];
+  if (!list || oldIndex === newIndex) return;
+  const [item] = list.splice(oldIndex, 1);
+  list.splice(newIndex, 0, item);
+}
+
 const initSort = () => {
   if (sortFlag.value) return;
   const table = document.querySelector(".elTableCustom .el-table__body-wrapper tbody");
@@ -738,7 +745,7 @@ const initSort = () => {
   });
 };
 
-/** 上一步 */
+/** 上一页 */
 function handlePrevClick() {
   if (active.value === 2) {
     //这里需要重新获取一次数据，如果第一次生成代码后，再次点击上一步，数据不重新获取，再次点击下一步，会再次插入数据，导致索引重复报错
@@ -778,7 +785,7 @@ function handleNextClick() {
       return;
     }
     loading.value = true;
-    loadingText.value = "代码生成中，请稍后...";
+    loadingText.value = "代码生成中，请稍候...";
     GeneratorAPI.saveGenConfig(tableName, genConfigFormData.value)
       .then(() => {
         return handlePreview(tableName);
@@ -876,7 +883,7 @@ function handleResetConfig(tableName: string) {
 type FieldConfigKey = "isShowInQuery" | "isShowInList" | "isShowInForm";
 
 /** 全选 */
-// 单列全选开关已移除，改为顶部“批量设置”入口；保留方法时会触发未使用告警，故删除。
+// 单列全选开关已移除，改为顶部“批量设置”入口；保留方法时会触发未使用告警，故删除注释
 
 function bulkSet(key: FieldConfigKey, value: 0 | 1) {
   const list = genConfigFormData.value?.fieldConfigs || [];
@@ -954,7 +961,7 @@ function buildTree(data: { path: string; fileName: string; content: string }[]):
       }
     });
 
-    // 将 mergedParts 路径中的分隔符\替换为/
+    // 将 mergedParts 路径中的分隔符 \ 替换为 /
     mergedParts.forEach((part, index) => {
       mergedParts[index] = part.replace(/\\/g, "/");
     });
@@ -1125,7 +1132,7 @@ async function isSameFile(dirHandle: any, filePath: string, content: string): Pr
   }
 }
 
-// 将模板中的 path 映射到前端/后端根目录
+// 将模板中 path 映射到前/后端根目录
 function resolveRootForPath(p: string) {
   const normalized = p.replace(/\\/g, "/");
   const frontApp = genConfigFormData.value.frontendAppName;
@@ -1174,7 +1181,7 @@ const writeGeneratedCode = async () => {
     (needFrontend.value && !frontendDirHandle.value) ||
     (needBackend.value && !backendDirHandle.value)
   ) {
-    ElMessage.warning("请先选择所需的前端/后端目录");
+    ElMessage.warning("请先选择所需的前/后端目录");
     return;
   }
   if (!lastPreviewFiles.value.length) {
@@ -1216,7 +1223,7 @@ const writeGeneratedCode = async () => {
           const targetRoot = root === "frontend" ? frontendDirHandle.value : backendDirHandle.value;
           const existsSame = await isSameFile(targetRoot, relativePath, item.content || "");
           if (existsSame) {
-            // 视作成功但不写
+            // 视作成功但不处理
             writeProgress.done++;
             writeProgress.percent = Math.round((writeProgress.done / writeProgress.total) * 100);
             continue;
@@ -1258,7 +1265,7 @@ const writeGeneratedCode = async () => {
   writeRunning.value = false;
   if (failed.length) {
     ElMessage.warning(
-      `部分文件写入失败：${failed.length} 个，成功 前端 ${frontCount} 个/后端 ${backCount} 个。打开控制台查看详情`
+      `部分文件写入失败 ${failed.length} 个，成功 前端 ${frontCount} 个，后端 ${backCount} 个。打开控制台查看详情`
     );
   } else {
     ElMessage.success(`写入完成：前端 ${frontCount} 个文件，后端 ${backCount} 个文件`);
@@ -1273,7 +1280,7 @@ const overwriteMode = ref<"overwrite" | "skip" | "ifChanged">("overwrite");
 const writeProgress = reactive({ total: 0, done: 0, percent: 0, current: "" });
 const writeRunning = ref(false);
 
-// 提示文本已取消展示，保留逻辑意义不大，移除。
+// 提示文本已取消展示，保留逻辑意义不大，移除注释
 
 function openWriteDialog() {
   writeDialog.visible = true;

@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { GeneratorPreviewVo, TablePageQuery, TablePageVo, GenConfigForm } from "@/api/types";
+import type { GeneratorPreviewVo, TablePageQuery, TablePageVo, GenConfigForm } from "@/types/api";
 
 const GENERATOR_BASE_URL = "/api/v1/codegen";
 

@@ -1,42 +1,19 @@
 import type { RouteRecordRaw } from "vue-router";
-import NProgress from "@/utils/nprogress";
+import NProgress from "@/plugins/nprogress";
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
-import { useTenantStoreHook } from "@/store/modules/tenant-store";
+import { useTenantStoreHook } from "@/store/modules/tenant";
+import { appConfig } from "@/settings";
 
 /**
- * 多租户功能是否启用
- * 通过环境变量控制，实现零侵入的可插拔设计
+ * 路由权限守卫
+ *
+ * 处理登录验证、动态路由生成、404检测等
  */
-const TENANT_ENABLED = import.meta.env.VITE_APP_TENANT_ENABLED === "true";
-
-/**
- * 初始化多租户上下文（插件式设计）
- * - 仅在启用多租户时执行
- * - 失败不影响主流程（优雅降级）
- * - 完全解耦，可随时移除
- */
-async function initTenantContextIfEnabled(): Promise<void> {
-  if (!TENANT_ENABLED) {
-    console.debug("[Tenant] 多租户功能未启用，跳过初始化");
-    return;
-  }
-
-  try {
-    console.debug("[Tenant] 开始加载租户...");
-    const tenantStore = useTenantStoreHook();
-    await tenantStore.loadTenant();
-    console.debug("[Tenant] 租户加载成功");
-  } catch (error) {
-    // 优雅降级：后端未启用多租户或接口不存在时，不影响正常流程
-    console.debug("[Tenant] 租户上下文初始化失败（可能后端未启用多租户）:", error);
-  }
-}
-
 export function setupPermissionGuard() {
   const whiteList = ["/login"];
 
-  router.beforeEach(async (to, from, next) => {
+  router.beforeEach(async (to, _from, next) => {
     NProgress.start();
 
     try {
@@ -53,7 +30,7 @@ export function setupPermissionGuard() {
         return;
       }
 
-      // 已登录登录页重定向
+      // 已登录访问登录页，重定向到首页
       if (to.path === "/login") {
         next({ path: "/" });
         return;
@@ -68,11 +45,8 @@ export function setupPermissionGuard() {
           await userStore.getUserInfo();
         }
 
-        // 【多租户插件】初始化租户上下文（零侵入设计）
-        // - 通过 VITE_APP_TENANT_ENABLED 环境变量控制
-        // - 失败不影响主流程，优雅降级
-        // - 可通过设置环境变量为 false 完全移除此功能
-        await initTenantContextIfEnabled();
+        // 加载用户租户列表（VITE_APP_TENANT_ENABLED=true 时生效）
+        await initTenantContext();
 
         const dynamicRoutes = await permissionStore.generateRoutes();
         dynamicRoutes.forEach((route: RouteRecordRaw) => {
@@ -83,13 +57,13 @@ export function setupPermissionGuard() {
         return;
       }
 
-      // 路由404检查
+      // 路由 404 检查
       if (to.matched.length === 0) {
         next("/404");
         return;
       }
 
-      // 动态标题设置
+      // 动态标题
       const title = (to.params.title as string) || (to.query.title as string);
       if (title) {
         to.meta.title = title;
@@ -97,7 +71,6 @@ export function setupPermissionGuard() {
 
       next();
     } catch (error) {
-      // 错误处理：重置状态并跳转登录
       console.error("Route guard error:", error);
       await useUserStore().resetAllState();
       next("/login");
@@ -108,4 +81,19 @@ export function setupPermissionGuard() {
   router.afterEach(() => {
     NProgress.done();
   });
+}
+
+// ============================================
+// 多租户支持（可选）
+// ============================================
+
+/** 初始化多租户上下文，未启用或失败时静默跳过 */
+async function initTenantContext(): Promise<void> {
+  if (!appConfig.tenantEnabled) return;
+
+  try {
+    await useTenantStoreHook().loadTenant();
+  } catch {
+    // 静默失败，不影响主流程
+  }
 }

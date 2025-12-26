@@ -1,42 +1,35 @@
 <template>
   <div class="layout-wrapper">
     <component :is="currentLayoutComponent" />
-
-    <!-- 设置面板 - 独立于布局组件 -->
-    <Settings v-if="isShowSettings" />
+    <Settings v-if="showSettings" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { useLayout } from "@/composables/layout/useLayout";
-import LeftLayout from "@/layouts/modes/left/index.vue";
-import TopLayout from "@/layouts/modes/top/index.vue";
-import MixLayout from "@/layouts/modes/mix/index.vue";
-import Settings from "./components/Settings/index.vue";
+import { useLayout } from "./useLayout";
 import { LayoutMode } from "@/enums/settings";
-import { defaultSettings } from "@/settings";
+import LeftLayout from "./LeftLayout.vue";
+import TopLayout from "./TopLayout.vue";
+import MixLayout from "./MixLayout.vue";
+import Settings from "./components/LayoutSettings.vue";
 
-const { currentLayout } = useLayout();
 const route = useRoute();
+const { currentLayout, showSettings } = useLayout();
 
-/// Select the corresponding component based on the current layout mode
 const currentLayoutComponent = computed(() => {
   const override = route.meta?.layout as LayoutMode | undefined;
-  const layoutToUse = override ?? currentLayout.value;
-  switch (layoutToUse) {
+  const layout = override ?? currentLayout.value;
+
+  switch (layout) {
     case LayoutMode.TOP:
       return TopLayout;
     case LayoutMode.MIX:
       return MixLayout;
-    case LayoutMode.LEFT:
     default:
       return LeftLayout;
   }
 });
-
-/// Whether to show the settings panel
-const isShowSettings = computed(() => defaultSettings.showSettings);
 </script>
 
 <style lang="scss" scoped>

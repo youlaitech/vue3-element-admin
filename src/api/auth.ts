@@ -1,20 +1,27 @@
 import request from "@/utils/request";
+import type { LoginRequest, LoginResponse, CaptchaInfo } from "@/types/api/auth";
 
 const AUTH_BASE_URL = "/api/v1/auth";
 
 const AuthAPI = {
   /** 登录接口*/
   login(data: LoginRequest) {
-    return request<any, LoginResult>({
+    const payload: Record<string, any> = {
+      username: data.username,
+      password: data.password,
+      captchaId: data.captchaId,
+      captchaCode: data.captchaCode,
+    };
+
+    // tenantId is optional — include only when provided (multi-tenant feature)
+    if (typeof data.tenantId !== "undefined") {
+      payload.tenantId = data.tenantId;
+    }
+
+    return request<any, LoginResponse>({
       url: `${AUTH_BASE_URL}/login`,
       method: "post",
-      data: {
-        username: data.username,
-        password: data.password,
-        captchaId: data.captchaId,
-        captchaCode: data.captchaCode,
-        tenantId: data.tenantId,
-      },
+      data: payload,
     });
   },
 

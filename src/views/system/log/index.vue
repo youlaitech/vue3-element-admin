@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
@@ -69,7 +69,7 @@ defineOptions({
 });
 
 import LogAPI from "@/api/system/log";
-import type { LogPageVo, LogPageQuery } from "@/api/types";
+import type { LogPageVo, LogPageQuery } from "@/types/api";
 
 const queryFormRef = ref();
 
@@ -99,7 +99,7 @@ function fetchData() {
     });
 }
 
-/** 查询（重置页码后获取数据） */
+/** 查询（重置页码后获取数据）*/
 function handleQuery() {
   queryParams.pageNum = 1;
   fetchData();

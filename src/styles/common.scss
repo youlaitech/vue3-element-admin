@@ -9,7 +9,9 @@
   background-color: var(--el-color-primary);
 }
 
-/* 混合布局左侧菜单 hover 样式 */
+/* ============================================
+   混合布局左侧菜单 hover 样式
+   ============================================ */
 .layout-mix .layout__sidebar--left .el-menu {
   .el-menu-item {
     &:hover {

@@ -22,18 +22,18 @@ import { setupRouter } from "@/router";
 import { setupStore } from "@/store";
 
 // ===== 全局组件 =====
-import { registerElementIcons } from "@/utils/register-components";
+import * as ElementPlusIcons from "@element-plus/icons-vue";
 
 // ===== 第三方插件 =====
 import VXETable from "vxe-table";
 import { InstallCodeMirror } from "codemirror-editor-vue3";
-import { configureVxeTable } from "@/config/vxe-table";
+import { configureVxeTable } from "@/plugins/vxe-table";
 
 // ===== 路由守卫 =====
 import { setupPermissionGuard } from "@/router/guards/permission";
 
 // ===== 业务服务 =====
-import { setupWebSocket } from "@/utils/websocket";
+import { setupWebSocket } from "@/composables";
 
 // 创建 Vue 应用实例
 const app = createApp(App);
@@ -44,8 +44,8 @@ setupRouter(app);
 setupStore(app);
 setupI18n(app);
 
-// 2️⃣ 全局组件
-registerElementIcons(app);
+// 2️⃣ 全局组件（Element Plus 图标）
+Object.entries(ElementPlusIcons).forEach(([name, comp]) => app.component(name, comp));
 
 // 3️⃣ 第三方插件
 configureVxeTable();

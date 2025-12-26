@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="filter-section">
@@ -13,7 +13,7 @@
           />
         </el-form-item>
 
-        <el-form-item prop="aiProvider" label="AI提供商">
+        <el-form-item prop="aiProvider" label="AI提供方">
           <el-select
             v-model="queryParams.aiProvider"
             placeholder="请选择"
@@ -30,7 +30,7 @@
         <el-form-item prop="aiModel" label="AI模型">
           <el-input
             v-model="queryParams.aiModel"
-            placeholder="如 qwen-plus"
+            placeholder="如: qwen-plus"
             clearable
             style="width: 160px"
             @keyup.enter="handleQuery"
@@ -105,7 +105,7 @@
           min-width="160"
           show-overflow-tooltip
         />
-        <el-table-column label="AI提供商" prop="aiProvider" width="120" />
+        <el-table-column label="AI提供方" prop="aiProvider" width="120" />
         <el-table-column label="AI模型" prop="aiModel" width="160" show-overflow-tooltip />
         <el-table-column label="解析状态" width="110" align="center">
           <template #default="{ row }">
@@ -164,7 +164,7 @@
           {{ currentRow.username }}
         </el-descriptions-item>
 
-        <el-descriptions-item label="AI提供商">
+        <el-descriptions-item label="AI提供方">
           {{ currentRow.aiProvider || "-" }}
         </el-descriptions-item>
         <el-descriptions-item label="AI模型">

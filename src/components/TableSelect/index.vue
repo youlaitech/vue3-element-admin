@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div ref="tableSelectRef" :style="'width:' + width">
     <el-popover
       :visible="popoverVisible"
@@ -30,13 +30,13 @@
           </slot>
         </div>
       </template>
-      <!-- 弹出框内容 -->
+      <!-- 弹出框内 -->
       <div ref="popoverContentRef">
         <!-- 表单 -->
         <el-form ref="formRef" :model="queryParams" :inline="true">
           <template v-for="item in selectConfig.formItems" :key="item.prop">
             <el-form-item :label="item.label" :prop="item.prop">
-              <!-- Input 输入框 -->
+              <!-- Input 输入 -->
               <template v-if="item.type === 'input'">
                 <template v-if="item.attrs?.type === 'number'">
                   <el-input
@@ -53,7 +53,7 @@
                   />
                 </template>
               </template>
-              <!-- Select 选择器 -->
+              <!-- Select 选择 -->
               <template v-else-if="item.type === 'select'">
                 <el-select v-model="queryParams[item.prop]" v-bind="item.attrs">
                   <template v-for="option in item.options" :key="option.value">
@@ -65,11 +65,11 @@
               <template v-else-if="item.type === 'tree-select'">
                 <el-tree-select v-model="queryParams[item.prop]" v-bind="item.attrs" />
               </template>
-              <!-- DatePicker 日期选择器 -->
+              <!-- DatePicker 日期选择 -->
               <template v-else-if="item.type === 'date-picker'">
                 <el-date-picker v-model="queryParams[item.prop]" v-bind="item.attrs" />
               </template>
-              <!-- Input 输入框 -->
+              <!-- Input 输入 -->
               <template v-else>
                 <template v-if="item.attrs?.type === 'number'">
                   <el-input
@@ -133,8 +133,8 @@
           <el-button type="primary" size="small" @click="handleConfirm">
             {{ confirmText }}
           </el-button>
-          <el-button size="small" @click="handleClear">清 空</el-button>
-          <el-button size="small" @click="handleClose">关 闭</el-button>
+          <el-button size="small" @click="handleClear">清空</el-button>
+          <el-button size="small" @click="handleClose">关闭</el-button>
         </div>
       </div>
     </el-popover>
@@ -156,15 +156,15 @@ export interface ISelectConfig<T = any> {
   placeholder?: string;
   // popover组件属性
   popover?: Partial<Omit<PopoverProps, "visible" | "v-model:visible">>;
-  // 列表的网络请求函数(需返回promise)
+  // 列表的网络请求函数 (需返回 Promise)
   indexAction: (_queryParams: T) => Promise<any>;
-  // 主键名(跨页选择必填,默认为id)
+  // 主键 (跨页选择必填, 默认为 id)
   pk?: string;
-  // 多选
+  // 是否多选
   multiple?: boolean;
   // 表单项
   formItems: Array<{
-    // 组件类型(如input,select等)
+    // 组件类型(如 input, select 等)
     type?: "input" | "select" | "tree-select" | "date-picker";
     // 标签文本
     label: string;
@@ -282,7 +282,7 @@ for (const item of props.selectConfig.tableColumns) {
 // 选择
 const selectedItems = ref<IObject[]>([]);
 const confirmText = computed(() => {
-  return selectedItems.value.length > 0 ? `已选(${selectedItems.value.length})` : "确 定";
+  return selectedItems.value.length > 0 ? `已选${selectedItems.value.length}条` : "请选择";
 });
 function handleSelect(selection: any[]) {
   if (isMultiple || selection.length === 0) {

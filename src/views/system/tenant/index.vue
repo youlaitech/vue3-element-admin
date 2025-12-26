@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="filter-section">
@@ -204,7 +204,7 @@ import { useDebounceFn } from "@vueuse/core";
 import { hasPerm } from "@/utils/auth";
 
 import TenantAPI from "@/api/system/tenant";
-import type { TenantCreateForm, TenantForm, TenantPageQuery, TenantPageVo } from "@/api/types";
+import type { TenantCreateForm, TenantForm, TenantPageQuery, TenantPageVo } from "@/types/api";
 
 const queryFormRef = ref();
 const dataFormRef = ref();

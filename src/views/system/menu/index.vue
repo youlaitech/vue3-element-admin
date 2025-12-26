@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="filter-section">
@@ -156,7 +156,7 @@
               路由名称
               <el-tooltip placement="bottom" effect="light">
                 <template #content>
-                  如果需要开启缓存，需保证页面 defineOptions 中的 name 与此处一致，建议使用驼峰。
+                  如果需要开启缓存，需保证页面 defineOptions 中的 name 与此处一致，建议使用驼峰式
                 </template>
                 <el-icon class="ml-1 cursor-pointer">
                   <QuestionFilled />
@@ -241,7 +241,7 @@
 
               <span class="mx-1">=</span>
 
-              <el-input v-model="item.value" placeholder="参数值" style="width: 100px" />
+              <el-input v-model="item.value" placeholder="参数名" style="width: 100px" />
 
               <el-icon
                 v-if="formData.params.indexOf(item) === formData.params.length - 1"
@@ -332,8 +332,8 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="handleCloseDialog">取 消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
+          <el-button @click="handleCloseDialog">取消</el-button>
         </div>
       </template>
     </el-drawer>
@@ -341,11 +341,11 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/modules/app-store";
+import { useAppStore } from "@/store/modules/app";
 import { DeviceEnum } from "@/enums/settings";
 
 import MenuAPI from "@/api/system/menu";
-import type { MenuQuery, MenuForm, MenuVo } from "@/api/types";
+import type { MenuQuery, MenuForm, MenuVo } from "@/types/api";
 import { MenuTypeEnum } from "@/enums/business";
 
 defineOptions({
@@ -472,7 +472,7 @@ function handleMenuTypeChange() {
   // 如果菜单类型改变
   if (formData.value.type !== initialMenuFormData.value.type) {
     if (formData.value.type === MenuTypeEnum.MENU) {
-      // 目录切换到菜单时，清空组件路径
+      // 目录切换到菜单时，清空组件路径"
       if (initialMenuFormData.value.type === MenuTypeEnum.CATALOG) {
         formData.value.component = "";
       } else {

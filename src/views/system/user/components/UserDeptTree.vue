@@ -1,5 +1,4 @@
-<!-- 部门树 -->
-<template>
+﻿<template>
   <el-card shadow="never">
     <el-input v-model="deptName" placeholder="部门名称" clearable>
       <template #prefix>
