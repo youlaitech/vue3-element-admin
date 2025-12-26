@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="filter-section">
