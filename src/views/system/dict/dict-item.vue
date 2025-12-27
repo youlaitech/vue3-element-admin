@@ -1,7 +1,7 @@
-<!-- 字典项 -->
+﻿<!-- 字典值 -->
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -19,9 +19,9 @@
       </el-form>
     </div>
 
-    <el-card shadow="never" class="data-table">
-      <div class="data-table__toolbar">
-        <div class="data-table__toolbar--actions">
+    <el-card shadow="never" class="table-section">
+      <div class="table-section__toolbar">
+        <div class="table-section__toolbar--actions">
           <el-button type="success" icon="plus" @click="handleOpenDialog()">新增</el-button>
           <el-button
             type="danger"
@@ -86,7 +86,7 @@
       />
     </el-card>
 
-    <!--字典项弹窗-->
+    <!-- 字典项弹窗 -->
     <el-dialog
       v-model="dialog.visible"
       :title="dialog.title"
@@ -146,7 +146,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmitClick">确 定</el-button>
-          <el-button @click="handleCloseDialog">取 消</el-button>
+          <el-button @click="handleCloseDialog">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -155,7 +155,8 @@
 
 <script setup lang="ts">
 import type { TagProps } from "element-plus";
-import DictAPI, { DictItemPageQuery, DictItemPageVO, DictItemForm } from "@/api/system/dict-api";
+import DictAPI from "@/api/system/dict";
+import type { DictItemPageQuery, DictItemPageVo, DictItemForm } from "@/types/api";
 
 const route = useRoute();
 
@@ -173,7 +174,7 @@ const queryParams = reactive<DictItemPageQuery>({
   pageSize: 10,
 });
 
-const tableData = ref<DictItemPageVO[]>();
+const tableData = ref<DictItemPageVo[]>();
 
 const dialog = reactive({
   title: "",
@@ -226,9 +227,9 @@ function handleSelectionChange(selection: any) {
 }
 
 // 打开弹窗
-function handleOpenDialog(row?: DictItemPageVO) {
+function handleOpenDialog(row?: DictItemPageVo) {
   dialog.visible = true;
-  dialog.title = row ? "编辑字典项" : "新增字典项";
+  dialog.title = row ? "编辑字典值" : "新增字典值";
 
   if (row?.id) {
     DictAPI.getDictItemFormData(dictCode.value, row.id).then((data) => {

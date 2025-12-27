@@ -1,20 +1,43 @@
-node_modules
-.DS_Store
-dist
-dist-ssr
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+stats.html
+
+# Local env files
 *.local
-.history
+.env.local
+.env.*.local
 
 # Editor directories and files
-.idea
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.local
 
-stats.html
-pnpm-lock.yaml
-package-lock.json
-.stylelintcache
+# OS files
+.DS_Store
+Thumbs.db
+
+# Lint cache
 .eslintcache
+.stylelintcache
+
+# Test coverage
+coverage/
+*.lcov
+.vitest/
+test-results/
+
+# Lock files (use pnpm)
+package-lock.json
+yarn.lock
+
+# Local history
+.history

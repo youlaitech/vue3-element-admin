@@ -1,0 +1,105 @@
+/* 全局业务通用样式 */
+
+.app-container {
+  padding: 15px;
+}
+
+/* 进度条颜色 */
+#nprogress .bar {
+  background-color: var(--el-color-primary);
+}
+
+/* ============================================
+   混合布局左侧菜单 hover 样式
+   ============================================ */
+.layout-mix .layout__sidebar--left .el-menu {
+  .el-menu-item {
+    &:hover {
+      background-color: var(--el-fill-color-light) !important;
+    }
+  }
+
+  .el-sub-menu__title {
+    &:hover {
+      background-color: var(--el-fill-color-light) !important;
+    }
+  }
+}
+
+/* 深色或深蓝侧边栏的 hover 样式 */
+html.dark .layout-mix .layout__sidebar--left .el-menu,
+html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
+  .el-menu-item,
+  .el-sub-menu__title {
+    &:hover {
+      background-color: var(--menu-hover) !important;
+    }
+  }
+}
+
+/* 窄屏隐藏菜单文字，仅保留图标 */
+.hideSidebar {
+  &.layout-top .layout__header .el-menu--horizontal,
+  &.layout-mix .layout__header .el-menu--horizontal {
+    .el-menu-item,
+    .el-sub-menu__title {
+      .menu-title,
+      span:not([class*="i-svg"]):not(.el-icon) {
+        display: none !important;
+      }
+    }
+  }
+
+  &.layout-mix .layout__sidebar--left .el-menu {
+    .el-menu-item,
+    .el-sub-menu__title {
+      .menu-title,
+      span:not([class*="i-svg"]):not(.el-icon) {
+        display: none !important;
+      }
+    }
+  }
+}
+
+/* 全局筛选区域 */
+.filter-section {
+  padding: 8px 12px 0;
+  margin-bottom: 8px;
+  background-color: var(--el-bg-color-overlay);
+  border: 1px solid var(--el-border-color-light);
+  border-radius: 4px;
+
+  .search-buttons {
+    margin-right: 0;
+  }
+
+  .el-form-item {
+    margin-bottom: 8px;
+  }
+}
+
+/* 表格区域 */
+.table-section {
+  margin-bottom: 12px;
+
+  &__toolbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+
+    &--actions,
+    &--tools {
+      display: flex;
+      gap: 4px;
+    }
+  }
+
+  &__content {
+    margin: 8px 0;
+  }
+
+  .el-pagination {
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+}

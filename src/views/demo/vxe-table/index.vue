@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 表格 -->
     <vxe-grid ref="xGrid" v-bind="gridOptions" v-on="gridEvents">
@@ -30,7 +30,7 @@
           批量删除
         </vxe-button>
       </template>
-      <!-- 展开列 -->
+      <!-- 展开行 -->
       <template #column-expand="{ row }">
         <div style="padding: 20px">
           <ul>
@@ -39,11 +39,11 @@
               <span>{{ row.id }}</span>
             </li>
             <li>
-              <span>UserName：</span>
+              <span>用户名：</span>
               <span>{{ row.username }}</span>
             </li>
             <li>
-              <span>CreateTime：</span>
+              <span>创建时间：</span>
               <span>{{ row.createTime }}</span>
             </li>
           </ul>
@@ -75,20 +75,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted } from "vue";
-import type {
-  VxeGridInstance,
-  VxeGridProps,
-  VxeGridListeners,
-  VxeModalInstance,
-  VxeModalProps,
-  VxeFormInstance,
-  VxeFormProps,
-} from "vxe-table";
+import { ref, reactive, onMounted } from "vue";
+import type { VxeGridInstance, VxeGridProps, VxeGridListeners } from "vxe-table";
 import { VXETable } from "vxe-table";
 
 const options = [
-  { label: "管理员", value: "admin" },
+  { label: "管理", value: "admin" },
   { label: "用户", value: "user" },
   { label: "访客", value: "guest" },
 ];
@@ -125,7 +117,7 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
   //     roles: "-",
   //     phone: "-",
   //     email: "-",
-  //     status: "启用：7条",
+  //     status: "启用/禁用",
   //     createTime: "-",
   //   },
   // ],
@@ -136,7 +128,7 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
         if (columnIndex === 0 || column.field === undefined) {
           return "";
         } else if (column.field === "status") {
-          return `启用：${data.reduce((sum, row) => sum + (row.status ? 1 : 0), 0)}条`;
+          return `启用 ${data.reduce((sum, row) => sum + (row.status ? 1 : 0), 0)} 条`;
         }
         return "-";
       }),
@@ -186,7 +178,7 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
   ],
   // 列配置信息
   columnConfig: {
-    // 每一列是否启用列宽调整
+    // 每一列是否启用列宽拖动
     resizable: true,
   },
   // 自定义列配置项
@@ -225,7 +217,7 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
         titlePrefix: {
           useHTML: true,
           content:
-            '点击链接：<a class="link" href="https://vxetable.cn" target="_blank">vxe-table官网</a>',
+            '点击链接 <a class="link" href="https://vxetable.cn" target="_blank">vxe-table官网</a>',
           icon: "vxe-icon-question-circle-fill",
         },
         // 项渲染器配置项
@@ -335,7 +327,7 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
     enabled: true,
     pageSize: 10,
   },
-  // 数据代理配置项
+  // 数据代理配置项"
   proxyConfig: {
     // 是否自动加载查询数据
     autoLoad: true,
@@ -349,9 +341,9 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
     sort: true,
     // 获取响应的值配置
     response: {
-      // 只对 pager-config 配置了有效，响应结果中获取数据列表的属性（分页场景）
+      // 只对 pager-config 配置时有效，响应结果中获取数据列表的属性（分页场景）
       result: "result",
-      // 只对 pager-config 配置了有效，响应结果中获取分页的属性（分页场景）
+      // 只对 pager-config 配置时有效，响应结果中获取分页的属性（分页场景）
       total: "total",
     },
     ajax: {
@@ -480,8 +472,8 @@ const gridEvents: VxeGridListeners<RowMeta> = {
 // #endregion
 
 // #region vxe-modal
-const xModal = ref<VxeModalInstance>();
-const modalOptions = reactive<VxeModalProps>({
+const xModal = ref();
+const modalOptions = reactive({
   // 窗口的标题
   title: "",
   // 是否允许点击遮罩层关闭窗口
@@ -497,8 +489,8 @@ const modalOptions = reactive<VxeModalProps>({
 // #endregion
 
 // #region vxe-form
-const xForm = ref<VxeFormInstance>();
-const formOptions = reactive<VxeFormProps>({
+const xForm = ref();
+const formOptions = reactive({
   // 所有项的栅格占据的列数
   span: 24,
   // 所有项的标题宽度
@@ -508,7 +500,7 @@ const formOptions = reactive<VxeFormProps>({
     username: "",
     password: "",
   },
-  // 项列表
+  // 项配置
   items: [
     {
       field: "username",
@@ -531,7 +523,7 @@ const formOptions = reactive<VxeFormProps>({
       },
     },
     {
-      align: "right",
+      align: "right" as const,
       itemRender: {
         name: "$buttons",
         children: [
@@ -562,7 +554,7 @@ const formOptions = reactive<VxeFormProps>({
     username: [
       {
         required: true,
-        validator: ({ itemValue }) => {
+        validator: ({ itemValue }: { itemValue: string }) => {
           switch (true) {
             case !itemValue:
               return new Error("请输入");
@@ -575,7 +567,7 @@ const formOptions = reactive<VxeFormProps>({
     password: [
       {
         required: true,
-        validator: ({ itemValue }) => {
+        validator: ({ itemValue }: { itemValue: string }) => {
           switch (true) {
             case !itemValue:
               return new Error("请输入");
@@ -622,7 +614,7 @@ const curd = {
     VXETable.modal.confirm("确定要删除吗？").then((type) => {
       if (type === "confirm") {
         // 执行删除操作
-        console.log("删除的ID：", ids);
+        console.log("删除的ID", ids);
       }
     });
   },

@@ -1,8 +1,8 @@
-<!-- 字典 -->
+﻿<!-- 字典 -->
 <template>
   <div class="app-container">
     <!-- 搜索区域 -->
-    <div class="search-container">
+    <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -20,9 +20,9 @@
       </el-form>
     </div>
 
-    <el-card shadow="hover" class="data-table">
-      <div class="data-table__toolbar">
-        <div class="data-table__toolbar--actions">
+    <el-card shadow="hover" class="table-section">
+      <div class="table-section__toolbar">
+        <div class="table-section__toolbar--actions">
           <el-button type="success" icon="plus" @click="handleAddClick()">新增</el-button>
           <el-button
             type="danger"
@@ -40,7 +40,7 @@
         highlight-current-row
         :data="tableData"
         border
-        class="data-table__content"
+        class="table-section__content"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
@@ -124,7 +124,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmitClick">确 定</el-button>
-          <el-button @click="handleCloseDialog">取 消</el-button>
+          <el-button @click="handleCloseDialog">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -137,7 +137,9 @@ defineOptions({
   inherititems: false,
 });
 
-import DictAPI, { DictPageQuery, DictPageVO, DictForm } from "@/api/system/dict-api";
+import { ref, reactive } from "vue";
+import DictAPI from "@/api/system/dict";
+import type { DictPageQuery, DictPageVo, DictForm } from "@/types/api";
 
 import router from "@/router";
 
@@ -153,7 +155,7 @@ const queryParams = reactive<DictPageQuery>({
   pageSize: 10,
 });
 
-const tableData = ref<DictPageVO[]>();
+const tableData = ref<DictPageVo[]>();
 
 const dialog = reactive({
   title: "",
@@ -284,11 +286,11 @@ function handleDelete(id?: number) {
   );
 }
 
-// 打开字典项
-function handleOpenDictData(row: DictPageVO) {
+// 打开字典值"
+function handleOpenDictData(row: DictPageVo) {
   router.push({
     path: "/system/dict-item",
-    query: { dictCode: row.dictCode, title: "【" + row.name + "】字典数据" },
+    query: { dictCode: row.dictCode, title: `【${row.name}】字典数据` },
   });
 }
 

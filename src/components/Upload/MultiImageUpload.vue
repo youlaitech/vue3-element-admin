@@ -40,7 +40,8 @@
 </template>
 <script setup lang="ts">
 import { UploadRawFile, UploadRequestOptions, UploadUserFile } from "element-plus";
-import FileAPI, { FileInfo } from "@/api/file-api";
+import FileAPI from "@/api/file";
+import type { FileInfo } from "@/types/api";
 
 const props = defineProps({
   /**
@@ -67,7 +68,7 @@ const props = defineProps({
     default: 10,
   },
   /**
-   * 单个文件的最大允许大小
+   * 单个文件的最大允许大�?
    */
   maxFileSize: {
     type: Number,
@@ -78,12 +79,12 @@ const props = defineProps({
    */
   accept: {
     type: String,
-    default: "image/*", //  默认支持所有图片格式 ，如果需要指定格式，格式如下：'.png,.jpg,.jpeg,.gif,.bmp'
+    default: "image/*", // 默认支持所有图片格式，如果需要指定格式，格式如下：.png,.jpg,.jpeg,.gif,.bmp
   },
 });
 
 const previewVisible = ref(false); // 是否显示预览
-const previewImageIndex = ref(0); // 预览图片的索引
+const previewImageIndex = ref(0); // 预览图片的索�?
 
 const modelValue = defineModel("modelValue", {
   type: [Array] as PropType<string[]>,
@@ -107,28 +108,28 @@ function handleRemove(imageUrl: string) {
 }
 
 /**
- * 上传前校验
+ * 上传前校�?
  */
 function handleBeforeUpload(file: UploadRawFile) {
-  // 校验文件类型：虽然 accept 属性限制了用户在文件选择器中可选的文件类型，但仍需在上传时再次校验文件实际类型，确保符合 accept 的规则
+  // 校验文件类型：虽�?accept 属性限制了用户在文件选择器中可选的文件类型，但仍需在上传时再次校验文件实际类型，确保符�?accept 的规�?
   const acceptTypes = props.accept.split(",").map((type) => type.trim());
 
   // 检查文件格式是否符合 accept
   const isValidType = acceptTypes.some((type) => {
     if (type === "image/*") {
-      // 如果是 image/*，检查 MIME 类型是否以 "image/" 开头
+      // 如果�?image/*，检�?MIME 类型是否�?"image/" 开�?
       return file.type.startsWith("image/");
     } else if (type.startsWith(".")) {
       // 如果是扩展名 (.png, .jpg)，检查文件名是否以指定扩展名结尾
       return file.name.toLowerCase().endsWith(type);
     } else {
-      // 如果是具体的 MIME 类型 (image/png, image/jpeg)，检查是否完全匹配
+      // 如果是具体的 MIME 类型 (image/png, image/jpeg)，检查是否完全匹�?
       return file.type === type;
     }
   });
 
   if (!isValidType) {
-    ElMessage.warning(`上传文件的格式不正确，仅支持：${props.accept}`);
+    ElMessage.warning("上传文件的格式不正确，仅支持 " + props.accept);
     return false;
   }
 
@@ -169,7 +170,7 @@ function handleUpload(options: UploadRequestOptions) {
  * 上传文件超出限制
  */
 function handleExceed() {
-  ElMessage.warning("最多只能上传" + props.limit + "张图片");
+  ElMessage.warning("最多只能上传 " + props.limit + " 张图片");
 }
 
 /**

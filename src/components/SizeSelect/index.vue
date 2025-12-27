@@ -20,8 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import { ComponentSize } from "@/enums/settings/layout-enum";
-import { useAppStore } from "@/store/modules/app-store";
+import { ComponentSize } from "@/enums/settings";
+import { useAppStore } from "@/store/modules/app";
 
 const { t } = useI18n();
 const sizeOptions = computed(() => {

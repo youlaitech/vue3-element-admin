@@ -1,9 +1,9 @@
 <template>
   <el-config-provider :locale="locale" :size="size">
-    <!-- 开启水印 -->
+    <!-- 开启水�?-->
     <el-watermark
       :font="{ color: fontColor }"
-      :content="showWatermark ? defaultSettings.watermarkContent : ''"
+      :content="showWatermark ? watermarkContent : ''"
       :z-index="9999"
       class="wh-full"
     >
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { useAppStore, useSettingsStore, useUserStore } from "@/store";
-import { defaultSettings } from "@/settings";
+import { appConfig } from "@/settings";
 import { ThemeMode, ComponentSize } from "@/enums";
 import AiAssistant from "@/components/AiAssistant/index.vue";
 
@@ -28,9 +28,10 @@ const userStore = useUserStore();
 const locale = computed(() => appStore.locale);
 const size = computed(() => appStore.size as ComponentSize);
 const showWatermark = computed(() => settingsStore.showWatermark);
+const watermarkContent = appConfig.name;
 
-// 只有在启用 AI 助手且用户已登录时才显示
-// 使用 userInfo 作为响应式依赖，当用户退出登录时会自动更新
+// 只有在启�?AI 助手且用户已登录时才显示
+// 使用 userInfo 作为响应式依赖，当用户退出登录时会自动更�?
 const enableAiAssistant = computed(() => {
   const isEnabled = settingsStore.enableAiAssistant;
   const isLoggedIn = userStore.userInfo && Object.keys(userStore.userInfo).length > 0;

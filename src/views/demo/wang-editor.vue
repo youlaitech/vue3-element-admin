@@ -7,7 +7,7 @@
       target="_blank"
       class="mb-[20px]"
     >
-      示例源码 请点击>>>>
+      示例源码 请点击>>>
     </el-link>
     <WangEditor v-model="value" height="400px" />
 

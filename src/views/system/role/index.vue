@@ -1,7 +1,7 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
-    <div class="search-container">
+    <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -19,9 +19,9 @@
       </el-form>
     </div>
 
-    <el-card shadow="hover" class="data-table">
-      <div class="data-table__toolbar">
-        <div class="data-table__toolbar--actions">
+    <el-card shadow="hover" class="table-section">
+      <div class="table-section__toolbar">
+        <div class="table-section__toolbar--actions">
           <el-button type="success" icon="plus" @click="handleOpenDialog()">新增</el-button>
           <el-button
             type="danger"
@@ -40,7 +40,7 @@
         :data="roleList"
         highlight-current-row
         border
-        class="data-table__content"
+        class="table-section__content"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
@@ -142,8 +142,8 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="handleCloseDialog">取 消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
+          <el-button @click="handleCloseDialog">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -203,8 +203,8 @@
       </el-tree>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleAssignPermSubmit">确 定</el-button>
-          <el-button @click="assignPermDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleAssignPermSubmit">确定</el-button>
+          <el-button @click="assignPermDialogVisible = false">取消</el-button>
         </div>
       </template>
     </el-drawer>
@@ -212,11 +212,12 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/modules/app-store";
-import { DeviceEnum } from "@/enums/settings/device-enum";
+import { useAppStore } from "@/store/modules/app";
+import { DeviceEnum } from "@/enums/settings";
 
-import RoleAPI, { RolePageVO, RoleForm, RolePageQuery } from "@/api/system/role-api";
-import MenuAPI from "@/api/system/menu-api";
+import RoleAPI from "@/api/system/role";
+import type { RolePageVo, RoleForm, RolePageQuery } from "@/types/api";
+import MenuAPI from "@/api/system/menu";
 
 defineOptions({
   name: "Role",
@@ -239,7 +240,7 @@ const queryParams = reactive<RolePageQuery>({
 });
 
 // 角色表格数据
-const roleList = ref<RolePageVO[]>();
+const roleList = ref<RolePageVo[]>();
 // 菜单权限下拉
 const menuPermOptions = ref<OptionType[]>([]);
 
@@ -389,7 +390,7 @@ function handleDelete(roleId?: number) {
 }
 
 // 打开分配菜单权限弹窗
-async function handleOpenAssignPermDialog(row: RolePageVO) {
+async function handleOpenAssignPermDialog(row: RolePageVo) {
   const roleId = row.id;
   if (roleId) {
     assignPermDialogVisible.value = true;

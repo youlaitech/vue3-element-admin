@@ -64,6 +64,7 @@ export default [
       "**/*.min.*",
       "**/auto-imports.d.ts",
       "**/components.d.ts",
+      "types/**/*.d.ts",
     ],
   },
 
@@ -182,7 +183,7 @@ export default [
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
-        project: "./tsconfig.json",
+        project: "./tsconfig.eslint.json",
         tsconfigRootDir: __dirname,
       },
     },

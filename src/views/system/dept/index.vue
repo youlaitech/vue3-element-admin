@@ -1,7 +1,7 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
-    <div class="search-container">
+    <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -27,11 +27,11 @@
       </el-form>
     </div>
 
-    <el-card shadow="hover" class="data-table">
-      <div class="data-table__toolbar">
-        <div class="data-table__toolbar--actions">
+    <el-card shadow="hover" class="table-section">
+      <div class="table-section__toolbar">
+        <div class="table-section__toolbar--actions">
           <el-button
-            v-hasPerm="['sys:dept:add']"
+            v-hasPerm="['sys:dept:create']"
             type="success"
             icon="plus"
             @click="handleOpenDialog()"
@@ -56,7 +56,7 @@
         row-key="id"
         default-expand-all
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-        class="data-table__content"
+        class="table-section__content"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
@@ -74,7 +74,7 @@
         <el-table-column label="操作" fixed="right" align="left" width="200">
           <template #default="scope">
             <el-button
-              v-hasPerm="['sys:dept:add']"
+              v-hasPerm="['sys:dept:create']"
               type="primary"
               link
               size="small"
@@ -84,7 +84,7 @@
               新增
             </el-button>
             <el-button
-              v-hasPerm="['sys:dept:edit']"
+              v-hasPerm="['sys:dept:update']"
               type="primary"
               link
               size="small"
@@ -129,7 +129,7 @@
           <el-input v-model="formData.name" placeholder="请输入部门名称" />
         </el-form-item>
         <el-form-item label="部门编号" prop="code">
-          <el-input v-model="formData.code" placeholder="请输入部门编号" />
+          <el-input v-model="formData.code" placeholder="请输入部门编码" />
         </el-form-item>
         <el-form-item label="显示排序" prop="sort">
           <el-input-number
@@ -149,8 +149,8 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="handleCloseDialog">取 消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
+          <el-button @click="handleCloseDialog">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -163,7 +163,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import DeptAPI, { DeptVO, DeptForm, DeptQuery } from "@/api/system/dept-api";
+import DeptAPI from "@/api/system/dept";
+import type { DeptVo, DeptForm, DeptQuery } from "@/types/api";
 
 const queryFormRef = ref();
 const deptFormRef = ref();
@@ -177,7 +178,7 @@ const dialog = reactive({
   visible: false,
 });
 
-const deptList = ref<DeptVO[]>();
+const deptList = ref<DeptVo[]>();
 const deptOptions = ref<OptionType[]>();
 const formData = reactive<DeptForm>({
   status: 1,

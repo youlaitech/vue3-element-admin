@@ -1,17 +1,29 @@
-<template>
+﻿<template>
   <!-- 悬浮按钮 -->
   <div class="ai-assistant">
     <!-- AI 助手图标按钮 -->
     <el-button
-      v-if="!dialogVisible"
+      v-if="!dialogVisible && !fabCollapsed"
       class="ai-fab-button"
       type="primary"
       circle
       size="large"
+      :style="fabStyle"
+      @contextmenu.prevent="fabCollapsed = true"
       @click="handleOpen"
     >
       <div class="i-svg:ai ai-icon" />
     </el-button>
+
+    <!-- 收缩态：贴边小标签，避免遮挡表单控件 -->
+    <div
+      v-if="!dialogVisible && fabCollapsed"
+      class="ai-fab-tab"
+      :style="fabStyle"
+      @click="fabCollapsed = false"
+    >
+      AI
+    </div>
 
     <!-- AI 对话框 -->
     <el-dialog
@@ -107,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount } from "vue";
+import { onBeforeUnmount, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import AiCommandApi from "@/api/ai";
@@ -150,6 +162,111 @@ const dialogVisible = ref(false);
 const command = ref("");
 const loading = ref(false);
 const response = ref<AiResponse | null>(null);
+
+const fabCollapsed = useStorage<boolean>("vea:ui:ai_assistant_fab_collapsed", false);
+
+const fabRight = ref(30);
+const fabBottom = ref(80);
+const fabStyle = computed(() => ({
+  right: `${fabRight.value}px`,
+  bottom: `${fabBottom.value}px`,
+}));
+
+const isElementVisible = (el: Element) => {
+  const style = window.getComputedStyle(el);
+  if (style.display === "none" || style.visibility === "hidden") {
+    return false;
+  }
+  return (el as HTMLElement).getClientRects().length > 0;
+};
+
+const getActiveRightDrawerWidth = (): number => {
+  const drawers = Array.from(document.querySelectorAll(".el-drawer"));
+  for (let i = drawers.length - 1; i >= 0; i--) {
+    const drawer = drawers[i] as HTMLElement;
+    if (!isElementVisible(drawer)) {
+      continue;
+    }
+    const rect = drawer.getBoundingClientRect();
+    if (rect.width > 0 && rect.right >= window.innerWidth - 1) {
+      return rect.width;
+    }
+  }
+  return 0;
+};
+
+const updateFabPosition = () => {
+  const safeMargin = 24;
+  const drawerWidth = getActiveRightDrawerWidth() || 0;
+  const baseRight = drawerWidth + 30;
+
+  // base position
+  const nextRight = baseRight;
+  let nextBottom = 80;
+
+  // Avoid Element Plus popper overlays (select dropdown, icon picker, date picker, etc.)
+  // If the FAB would overlap any visible popper, push it upward.
+  const fabSize = fabCollapsed.value ? 42 : 60;
+  const computeFabRect = (rightPx: number, bottomPx: number) => {
+    const right = window.innerWidth - rightPx;
+    const left = right - fabSize;
+    const bottom = window.innerHeight - bottomPx;
+    const top = bottom - fabSize;
+    return { left, right, top, bottom };
+  };
+
+  const intersects = (
+    a: { left: number; right: number; top: number; bottom: number },
+    b: DOMRect
+  ) => {
+    return !(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom);
+  };
+
+  const poppers = Array.from(document.querySelectorAll(".el-popper"));
+  for (const popper of poppers) {
+    if (!isElementVisible(popper)) {
+      continue;
+    }
+    const rect = (popper as HTMLElement).getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) {
+      continue;
+    }
+
+    const candidateFabRect = computeFabRect(nextRight, nextBottom);
+    if (intersects(candidateFabRect, rect)) {
+      const requiredBottom = Math.ceil(window.innerHeight - rect.top + safeMargin);
+      nextBottom = Math.max(nextBottom, requiredBottom);
+    }
+  }
+
+  // clamp so the button doesn't get pushed off-screen
+  const maxBottom = window.innerHeight - fabSize - safeMargin;
+  nextBottom = Math.min(nextBottom, Math.max(0, maxBottom));
+
+  fabRight.value = nextRight + (drawerWidth > 0 ? safeMargin : 0);
+  fabBottom.value = nextBottom;
+};
+
+watch(
+  fabCollapsed,
+  () => {
+    updateFabPosition();
+  },
+  { flush: "post" }
+);
+
+let domObserver: MutationObserver | null = null;
+let rafId: number | null = null;
+
+const scheduleUpdateFabPosition = () => {
+  if (rafId != null) {
+    return;
+  }
+  rafId = window.requestAnimationFrame(() => {
+    rafId = null;
+    updateFabPosition();
+  });
+};
 
 // 快捷命令示例
 const examples = [
@@ -226,7 +343,7 @@ const handleExecute = async () => {
   }
 };
 
-// 路由配置映射表（支持扩展）
+// 路由配置映射表
 const routeConfig = [
   { keywords: ["用户", "user", "user list"], path: "/system/user", name: "用户管理" },
   { keywords: ["角色", "role"], path: "/system/role", name: "角色管理" },
@@ -270,13 +387,13 @@ const extractKeywordFromCommand = (cmd: string): string => {
   const keywordsPattern = allKeywords.join("|");
 
   const patterns = [
-    new RegExp(`(?:查询|获取|搜索|查找|找).*?([^\\s，,。]+?)(?:的)?(?:${keywordsPattern})`, "i"),
-    new RegExp(`(?:${keywordsPattern}).*?([^\\s，,。]+?)(?:的|信息|详情)?`, "i"),
+    new RegExp(`(?:查询|获取|搜索|查找|找).*?([^\\s，。]+?)(?:的)?(?:${keywordsPattern})`, "i"),
+    new RegExp(`(?:${keywordsPattern}).*?([^\\s，。]+?)(?:的|信息|详情)?`, "i"),
     new RegExp(
-      `(?:姓名为|名字叫|叫做|名称为|名是|为)([^\\s，,。]+?)(?:的)?(?:${keywordsPattern})?`,
+      `(?:姓名为|名字叫|叫做|名称为|名是|为)([^\\s，。]+?)(?:的)?(?:${keywordsPattern})?`,
       "i"
     ),
-    new RegExp(`([^\\s，,。]+?)(?:的)?(?:${keywordsPattern})(?:信息|详情)?`, "i"),
+    new RegExp(`([^\\s，。]+?)(?:的)?(?:${keywordsPattern})(?:信息|详情)?`, "i"),
   ];
 
   for (const pattern of patterns) {
@@ -530,7 +647,7 @@ const executeAction = async (action: AiAction) => {
 
       // 关闭对话框
       handleClose();
-    }, 800);
+    }, 1000);
   } else if (action.type === "execute") {
     // 执行函数调用
     ElMessage.info("功能开发中，请前往 AI 命令助手页面体验完整功能");
@@ -550,7 +667,32 @@ const executeAction = async (action: AiAction) => {
 };
 
 // 组件卸载时清理定时器
+onMounted(() => {
+  updateFabPosition();
+  window.addEventListener("resize", updateFabPosition);
+
+  domObserver = new MutationObserver(() => {
+    scheduleUpdateFabPosition();
+  });
+  domObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["class", "style"],
+  });
+});
+
 onBeforeUnmount(() => {
+  window.removeEventListener("resize", updateFabPosition);
+  if (domObserver) {
+    domObserver.disconnect();
+    domObserver = null;
+  }
+  if (rafId != null) {
+    window.cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
   if (navigationTimer) {
     clearTimeout(navigationTimer);
     navigationTimer = null;
@@ -566,8 +708,6 @@ onBeforeUnmount(() => {
 .ai-assistant {
   .ai-fab-button {
     position: fixed;
-    right: 30px;
-    bottom: 80px;
     z-index: 9999;
     width: 60px;
     height: 60px;
@@ -583,6 +723,24 @@ onBeforeUnmount(() => {
       width: 32px;
       height: 32px;
     }
+  }
+
+  .ai-fab-tab {
+    position: fixed;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+    background: var(--el-color-primary);
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(2, 119, 252, 0.35);
   }
 }
 

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <!-- drawer -->
     <template v-if="modalConfig.component === 'drawer'">
@@ -59,8 +59,8 @@
         </el-form>
 
         <template #footer>
-          <el-button v-if="!formDisable" type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="handleClose">{{ !formDisable ? "取 消" : "关闭" }}</el-button>
+          <el-button v-if="!formDisable" type="primary" @click="handleSubmit">确定</el-button>
+          <el-button @click="handleClose">关闭</el-button>
         </template>
       </el-drawer>
     </template>
@@ -124,8 +124,8 @@
         </el-form>
 
         <template #footer>
-          <el-button v-if="!formDisable" type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="handleClose">{{ !formDisable ? "取 消" : "关闭" }}</el-button>
+          <el-button v-if="!formDisable" type="primary" @click="handleSubmit">确定</el-button>
+          <el-button @click="handleClose">关闭</el-button>
         </template>
       </el-dialog>
     </template>
@@ -144,7 +144,7 @@ defineSlots<{ [key: string]: (_args: any) => any }>();
 const props = defineProps<{ modalConfig: IModalConfig }>();
 // 自定义事件
 const emit = defineEmits<{ submitClick: []; customSubmit: [queryParams: IObject] }>();
-// 组件映射表
+// 组件映射
 
 const componentMap = new Map<IComponentType, any>([
   // @ts-ignore
@@ -173,14 +173,14 @@ const childrenMap = new Map<IComponentType, any>([
 ]);
 
 const pk = props.modalConfig.pk ?? "id"; // 主键名，用于表单数据处理
-const modalVisible = ref(false); // 弹窗显示状态
+const modalVisible = ref(false); // 弹窗显示状态"
 const formRef = ref<FormInstance>(); // 表单实例
-const formItems = reactive(props.modalConfig.formItems ?? []); // 表单配置项
+const formItems = reactive(props.modalConfig.formItems ?? []); // 表单配置项"
 const formData = reactive<IObject>({}); // 表单数据
 const formRules: FormRules = {}; // 表单验证规则
-const formDisable = ref(false); // 表单禁用状态
+const formDisable = ref(false); // 表单禁用状态"
 
-// 获取tooltip提示框属性
+// 获取 tooltip 提示框属性
 const getTooltipProps = (tips: string | IObject) => {
   return typeof tips === "string" ? { content: tips } : tips;
 };
@@ -189,7 +189,7 @@ const handleClose = () => {
   modalVisible.value = false;
   formRef.value?.resetFields();
 };
-// 设置表单值
+// 设置表单项
 const setFormData = (data: IObject) => {
   for (const key in formData) {
     if (Object.prototype.hasOwnProperty.call(formData, key) && key in data) {
@@ -245,11 +245,11 @@ onMounted(() => {
 // 暴露的属性和方法
 defineExpose({
   setFormData,
-  // 展示/因此 modal
+  // 展示/隐藏 modal
   setModalVisible: (visible: boolean = true) => (modalVisible.value = visible),
   // 获取表单数据
   getFormData: (key: string) => formData[key] ?? formData,
-  // 设置表单项值
+  // 设置表单项
   setFormItemData: (key: string, value: any) => (formData[key] = value),
   // 禁用表单
   handleDisabled: (disable: boolean) => {

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <el-link
       href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/websocket.vue"
@@ -6,7 +6,7 @@
       target="_blank"
       class="mb-[20px]"
     >
-      示例源码 请点击>>>>
+      示例源码 请点击>>>
     </el-link>
     <el-row :gutter="10">
       <el-col :span="12">
@@ -98,12 +98,12 @@
 
 <script setup lang="ts">
 import { useStomp } from "@/composables/websocket/useStomp";
-import { useUserStoreHook } from "@/store/modules/user-store";
+import { useUserStoreHook } from "@/store/modules/user";
 
 const userStore = useUserStoreHook();
 // 用于手动调整 WebSocket 地址
 const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT);
-// 同步连接状态
+// 同步连接状态"
 interface MessageType {
   type?: string;
   sender?: string;

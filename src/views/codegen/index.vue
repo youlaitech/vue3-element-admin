@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
@@ -484,7 +484,7 @@
             <el-radio-group v-model="overwriteMode">
               <el-radio-button label="overwrite">覆盖</el-radio-button>
               <el-radio-button label="skip">跳过已存在</el-radio-button>
-              <el-radio-button label="ifChanged">仅变更覆盖</el-radio-button>
+              <el-radio-button label="ifChanged">仅在变更时覆盖</el-radio-button>
             </el-radio-group>
           </el-form-item>
         </el-form>
@@ -498,13 +498,13 @@
       </div>
 
       <template #footer>
-        <el-button @click="writeDialog.visible = false">取 消</el-button>
+        <el-button @click="writeDialog.visible = false">取消</el-button>
         <el-button
           type="primary"
           :disabled="!canWriteToLocal || writeRunning"
           @click="confirmWrite"
         >
-          写 入
+          写入
         </el-button>
       </template>
     </el-dialog>
@@ -522,19 +522,14 @@ import Codemirror from "codemirror-editor-vue3";
 import type { CmComponentRef } from "codemirror-editor-vue3";
 import type { EditorConfiguration } from "codemirror";
 
-import { FormTypeEnum } from "@/enums/codegen/form-enum";
-import { QueryTypeEnum } from "@/enums/codegen/query-enum";
+import { FormTypeEnum, QueryTypeEnum } from "@/enums/codegen";
 
-import GeneratorAPI, {
-  TablePageVO,
-  GenConfigForm,
-  TablePageQuery,
-  FieldConfig,
-} from "@/api/codegen-api";
+import GeneratorAPI from "@/api/codegen";
+import type { FieldConfig, GenConfigForm, TablePageQuery, TablePageVo } from "@/api/types";
 import { ElLoading } from "element-plus";
 
-import DictAPI from "@/api/system/dict-api";
-import MenuAPI from "@/api/system/menu-api";
+import DictAPI from "@/api/system/dict";
+import MenuAPI from "@/api/system/menu";
 
 interface TreeNode {
   label: string;
@@ -548,7 +543,7 @@ const previewTypes = ref<string[]>([...previewTypeOptions]);
 
 const filteredTreeData = computed<TreeNode[]>(() => {
   if (!treeData.value.length) return [];
-  // 基于原树按 scope/types 过滤叶子节点
+  // 基于原树 scope/types 过滤叶子节点
   const match = (label: string, parentPath: string[]): boolean => {
     // scope 过滤：根据路径初步判断
     const pathStr = parentPath.join("/");
@@ -587,7 +582,7 @@ const queryParams = reactive<TablePageQuery>({
 const loading = ref(false);
 const loadingText = ref("loading...");
 
-const pageData = ref<TablePageVO[]>([]);
+const pageData = ref<TablePageVo[]>([]);
 const total = ref(0);
 
 const formTypeOptions: Record<string, OptionType> = FormTypeEnum;
@@ -631,7 +626,7 @@ watch(
 );
 
 const { copy, copied } = useClipboard();
-const code = ref();
+const code = ref<string>("");
 const cmRef = ref<CmComponentRef>();
 const cmOptions: EditorConfiguration = {
   mode: "text/javascript",
@@ -641,7 +636,7 @@ const prevBtnText = ref("");
 const nextBtnText = ref("下一步，字段配置");
 const active = ref(0);
 const currentTableName = ref("");
-const sortFlag = ref<object>();
+const sortFlag = ref<Sortable | null>(null);
 
 // ================= 本地写盘（可选） =================
 const supportsFSAccess = typeof (window as any).showDirectoryPicker === "function";
@@ -678,11 +673,23 @@ watch(active, (val) => {
   } else if (val === 1) {
     prevBtnText.value = "上一步，基础配置";
     nextBtnText.value = "下一步，确认生成";
+    nextTick(() => {
+      initSort();
+    });
   } else if (val === 2) {
     prevBtnText.value = "上一步，字段配置";
     nextBtnText.value = "下载代码";
   }
 });
+
+watch(
+  () => dialog.visible,
+  (visible) => {
+    if (!visible) {
+      destroySort();
+    }
+  }
+);
 
 watch(copied, () => {
   if (copied.value) {
@@ -697,7 +704,8 @@ watch(
       if (
         fieldConfig.fieldType &&
         fieldConfig.fieldType.includes("Date") &&
-        fieldConfig.isShowInQuery === 1
+        fieldConfig.isShowInQuery === 1 &&
+        fieldConfig.queryType == null
       ) {
         fieldConfig.queryType = QueryTypeEnum.BETWEEN.value as number;
       }
@@ -706,12 +714,24 @@ watch(
   { deep: true, immediate: true }
 );
 
+function destroySort() {
+  if (!sortFlag.value) return;
+  sortFlag.value.destroy();
+  sortFlag.value = null;
+}
+
+function setNodeSort(oldIndex: number, newIndex: number) {
+  const list = genConfigFormData.value?.fieldConfigs ?? [];
+  if (!list || oldIndex === newIndex) return;
+  const [item] = list.splice(oldIndex, 1);
+  list.splice(newIndex, 0, item);
+}
+
 const initSort = () => {
-  if (sortFlag.value) {
-    return;
-  }
+  if (sortFlag.value) return;
   const table = document.querySelector(".elTableCustom .el-table__body-wrapper tbody");
-  sortFlag.value = Sortable.create(<HTMLElement>table, {
+  if (!table) return;
+  sortFlag.value = Sortable.create(table as HTMLElement, {
     group: "shared",
     animation: 150,
     ghostClass: "sortable-ghost", //拖拽样式
@@ -725,21 +745,7 @@ const initSort = () => {
   });
 };
 
-const setNodeSort = (oldIndex: number, newIndex: number) => {
-  // 使用arr复制一份表格数组数据
-  const arr = Object.assign([], genConfigFormData.value.fieldConfigs);
-  const currentRow = arr.splice(oldIndex, 1)[0];
-  arr.splice(newIndex, 0, currentRow);
-  arr.forEach((item: FieldConfig, index) => {
-    item.fieldSort = index + 1;
-  });
-  genConfigFormData.value.fieldConfigs = [];
-  nextTick(async () => {
-    genConfigFormData.value.fieldConfigs = arr;
-  });
-};
-
-/** 上一步 */
+/** 上一页 */
 function handlePrevClick() {
   if (active.value === 2) {
     //这里需要重新获取一次数据，如果第一次生成代码后，再次点击上一步，数据不重新获取，再次点击下一步，会再次插入数据，导致索引重复报错
@@ -756,7 +762,6 @@ function handlePrevClick() {
           loading.value = false;
         });
     });
-    initSort();
   }
   if (active.value-- <= 0) active.value = 0;
 }
@@ -771,7 +776,6 @@ function handleNextClick() {
       ElMessage.error("表名、业务名、包名、模块名、实体名不能为空");
       return;
     }
-    initSort();
   }
   if (active.value === 1) {
     // 保存生成配置
@@ -781,10 +785,10 @@ function handleNextClick() {
       return;
     }
     loading.value = true;
-    loadingText.value = "代码生成中，请稍后...";
+    loadingText.value = "代码生成中，请稍候...";
     GeneratorAPI.saveGenConfig(tableName, genConfigFormData.value)
       .then(() => {
-        handlePreview(tableName);
+        return handlePreview(tableName);
       })
       .then(() => {
         if (active.value++ >= 2) active.value = 2;
@@ -834,36 +838,34 @@ function handleResetQuery() {
 async function handleOpenDialog(tableName: string) {
   dialog.visible = true;
   active.value = 0;
-
-  menuOptions.value = await MenuAPI.getOptions(true);
-
   currentTableName.value = tableName;
-  // 获取字典数据
-  DictAPI.getList().then((data) => {
-    dictOptions.value = data;
-    loading.value = true;
-    GeneratorAPI.getGenConfig(tableName)
-      .then((data) => {
-        dialog.title = `${tableName} 代码生成`;
-        genConfigFormData.value = data;
+  loading.value = true;
+  try {
+    const [menuList, dictList, config] = await Promise.all([
+      MenuAPI.getOptions(true),
+      DictAPI.getList(),
+      GeneratorAPI.getGenConfig(tableName),
+    ]);
 
-        checkAllSelected("isShowInQuery", isCheckAllQuery);
-        checkAllSelected("isShowInList", isCheckAllList);
-        checkAllSelected("isShowInForm", isCheckAllForm);
+    menuOptions.value = menuList;
+    dictOptions.value = dictList;
+    dialog.title = `${tableName} 代码生成`;
+    genConfigFormData.value = config;
 
-        // 如果已经配置过，直接跳转到预览页面
-        if (genConfigFormData.value.id) {
-          active.value = 2;
-          handlePreview(tableName);
-        } else {
-          // 如果没有配置过，跳转到基础配置页面
-          active.value = 0;
-        }
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  });
+    checkAllSelected("isShowInQuery", isCheckAllQuery);
+    checkAllSelected("isShowInList", isCheckAllList);
+    checkAllSelected("isShowInForm", isCheckAllForm);
+
+    if (genConfigFormData.value.id) {
+      active.value = 2;
+      await handlePreview(tableName);
+    }
+  } catch {
+    ElMessage.error("获取生成配置失败");
+    dialog.visible = false;
+  } finally {
+    loading.value = false;
+  }
 }
 
 /** 重置配置 */
@@ -881,7 +883,7 @@ function handleResetConfig(tableName: string) {
 type FieldConfigKey = "isShowInQuery" | "isShowInList" | "isShowInForm";
 
 /** 全选 */
-// 单列全选开关已移除，改为顶部“批量设置”入口；保留方法时会触发未使用告警，故删除。
+// 单列全选开关已移除，改为顶部“批量设置”入口；保留方法时会触发未使用告警，故删除注释
 
 function bulkSet(key: FieldConfigKey, value: 0 | 1) {
   const list = genConfigFormData.value?.fieldConfigs || [];
@@ -897,27 +899,26 @@ const checkAllSelected = (key: keyof FieldConfig, isCheckAllRef: any) => {
 };
 
 /** 获取生成预览 */
-function handlePreview(tableName: string) {
+async function handlePreview(tableName: string) {
   treeData.value = [];
-  GeneratorAPI.getPreviewData(tableName, (genConfigFormData.value.pageType as any) || "classic")
-    .then((data) => {
-      dialog.title = `代码生成 ${tableName}`;
-      // 组装树形结构完善代码
-      const tree = buildTree(data);
-      // 缓存原始数据用于写盘
-      lastPreviewFiles.value = data || [];
-      // 去掉根节点“前后端代码”，直接展示其 children 作为一级目录
-      treeData.value = tree?.children ? [...tree.children] : [];
+  try {
+    const data = await GeneratorAPI.getPreviewData(
+      tableName,
+      (genConfigFormData.value.pageType as any) || "classic"
+    );
+    dialog.title = `代码生成 ${tableName}`;
+    const tree = buildTree(data);
+    lastPreviewFiles.value = data || [];
+    treeData.value = tree?.children ? [...tree.children] : [];
 
-      // 默认选中第一个叶子节点并设置 code 值
-      const firstLeafNode = findFirstLeafNode(tree);
-      if (firstLeafNode) {
-        code.value = firstLeafNode.content || "";
-      }
-    })
-    .catch(() => {
-      active.value = 0;
-    });
+    const firstLeafNode = findFirstLeafNode(tree);
+    if (firstLeafNode) {
+      code.value = firstLeafNode.content || "";
+    }
+  } catch {
+    active.value = 0;
+    throw new Error("preview_failed");
+  }
 }
 
 /**
@@ -960,7 +961,7 @@ function buildTree(data: { path: string; fileName: string; content: string }[]):
       }
     });
 
-    // 将 mergedParts 路径中的分隔符\替换为/
+    // 将 mergedParts 路径中的分隔符 \ 替换为 /
     mergedParts.forEach((part, index) => {
       mergedParts[index] = part.replace(/\\/g, "/");
     });
@@ -1066,27 +1067,11 @@ const pickBackendDir = async () => {
   }
 };
 
-async function ensureDir(root: any, path: string[], force = true) {
+async function ensureDir(root: any, path: string[], create = true) {
   let current = root;
   for (const segment of path) {
-    try {
-      // @ts-ignore
-      current = await current.getDirectoryHandle(segment, { create: true });
-    } catch (err: any) {
-      // 若同名文件阻塞目录创建，尝试强制删除后重建
-      if (force && err?.name === "TypeMismatchError") {
-        try {
-          // @ts-ignore
-          await current.removeEntry(segment, { recursive: true });
-          // @ts-ignore
-          current = await current.getDirectoryHandle(segment, { create: true });
-        } catch {
-          throw err;
-        }
-      } else {
-        throw err;
-      }
-    }
+    // @ts-ignore
+    current = await current.getDirectoryHandle(segment, { create });
   }
   return current;
 }
@@ -1104,15 +1089,8 @@ async function writeFile(dirHandle: any, filePath: string, content: string) {
     fileHandle = await targetDir.getFileHandle(fileName, { create: true });
   } catch (err: any) {
     if (err?.name === "TypeMismatchError") {
-      // 存在同名目录，尝试删除后重建文件
-      try {
-        // @ts-ignore
-        await targetDir.removeEntry(fileName, { recursive: true });
-        // @ts-ignore
-        fileHandle = await targetDir.getFileHandle(fileName, { create: true });
-      } catch {
-        throw err;
-      }
+      // 存在同名目录(或其它类型冲突)，为安全起见不自动删除
+      throw err;
     } else {
       throw err;
     }
@@ -1154,7 +1132,7 @@ async function isSameFile(dirHandle: any, filePath: string, content: string): Pr
   }
 }
 
-// 将模板中的 path 映射到前端/后端根目录
+// 将模板中 path 映射到前/后端根目录
 function resolveRootForPath(p: string) {
   const normalized = p.replace(/\\/g, "/");
   const frontApp = genConfigFormData.value.frontendAppName;
@@ -1203,7 +1181,7 @@ const writeGeneratedCode = async () => {
     (needFrontend.value && !frontendDirHandle.value) ||
     (needBackend.value && !backendDirHandle.value)
   ) {
-    ElMessage.warning("请先选择所需的前端/后端目录");
+    ElMessage.warning("请先选择所需的前/后端目录");
     return;
   }
   if (!lastPreviewFiles.value.length) {
@@ -1245,7 +1223,7 @@ const writeGeneratedCode = async () => {
           const targetRoot = root === "frontend" ? frontendDirHandle.value : backendDirHandle.value;
           const existsSame = await isSameFile(targetRoot, relativePath, item.content || "");
           if (existsSame) {
-            // 视作成功但不写
+            // 视作成功但不处理
             writeProgress.done++;
             writeProgress.percent = Math.round((writeProgress.done / writeProgress.total) * 100);
             continue;
@@ -1287,7 +1265,7 @@ const writeGeneratedCode = async () => {
   writeRunning.value = false;
   if (failed.length) {
     ElMessage.warning(
-      `部分文件写入失败：${failed.length} 个，成功 前端 ${frontCount} 个/后端 ${backCount} 个。打开控制台查看详情`
+      `部分文件写入失败 ${failed.length} 个，成功 前端 ${frontCount} 个，后端 ${backCount} 个。打开控制台查看详情`
     );
   } else {
     ElMessage.success(`写入完成：前端 ${frontCount} 个文件，后端 ${backCount} 个文件`);
@@ -1302,7 +1280,7 @@ const overwriteMode = ref<"overwrite" | "skip" | "ifChanged">("overwrite");
 const writeProgress = reactive({ total: 0, done: 0, percent: 0, current: "" });
 const writeRunning = ref(false);
 
-// 提示文本已取消展示，保留逻辑意义不大，移除。
+// 提示文本已取消展示，保留逻辑意义不大，移除注释
 
 function openWriteDialog() {
   writeDialog.visible = true;
@@ -1320,6 +1298,10 @@ async function confirmWrite() {
 /** 组件挂载后执行 */
 onMounted(() => {
   handleQuery();
+});
+
+onBeforeUnmount(() => {
   cmRef.value?.destroy();
+  destroySort();
 });
 </script>

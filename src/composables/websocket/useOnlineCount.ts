@@ -1,6 +1,5 @@
-import { ref, watch, onMounted, onUnmounted, getCurrentInstance } from "vue";
+import { ref, onMounted, onUnmounted, getCurrentInstance } from "vue";
 import { useStomp } from "./useStomp";
-import { registerWebSocketInstance } from "@/plugins/websocket";
 import { AuthStorage } from "@/utils/auth";
 
 /**
@@ -40,9 +39,6 @@ function createOnlineCountComposable() {
   // 订阅 ID
   let subscriptionId: string | null = null;
 
-  // 注册到全局实例管理器
-  registerWebSocketInstance("onlineCount", stomp);
-
   /**
    * 处理在线用户数量消息
    */
@@ -59,7 +55,6 @@ function createOnlineCountComposable() {
       if (count !== undefined && !isNaN(count)) {
         onlineUserCount.value = count;
         lastUpdateTime.value = Date.now();
-        console.log(`[useOnlineCount] 在线用户数更新: ${count}`);
       } else {
         console.warn("[useOnlineCount] 收到无效的在线用户数:", data);
       }
@@ -73,18 +68,11 @@ function createOnlineCountComposable() {
    */
   const subscribeToOnlineCount = () => {
     if (subscriptionId) {
-      console.log("[useOnlineCount] 已存在订阅，跳过");
       return;
     }
 
     // 订阅在线用户计数主题（useStomp 会处理重连后的订阅恢复）
     subscriptionId = stomp.subscribe(ONLINE_COUNT_TOPIC, handleOnlineCountMessage);
-
-    if (subscriptionId) {
-      console.log(`[useOnlineCount] 已订阅主题: ${ONLINE_COUNT_TOPIC}`);
-    } else {
-      console.log(`[useOnlineCount] 暂存订阅配置，等待连接建立后自动订阅`);
-    }
   };
 
   /**
@@ -105,8 +93,6 @@ function createOnlineCountComposable() {
       return;
     }
 
-    console.log("[useOnlineCount] 初始化在线用户计数服务...");
-
     // 建立 WebSocket 连接
     stomp.connect();
 
@@ -118,8 +104,6 @@ function createOnlineCountComposable() {
    * 关闭 WebSocket 连接并清理资源
    */
   const cleanup = () => {
-    console.log("[useOnlineCount] 清理在线用户计数服务...");
-
     // 取消订阅
     if (subscriptionId) {
       stomp.unsubscribe(subscriptionId);
@@ -137,19 +121,6 @@ function createOnlineCountComposable() {
     lastUpdateTime.value = 0;
   };
 
-  // 监听连接状态变化
-  watch(
-    stomp.isConnected,
-    (connected) => {
-      if (connected) {
-        console.log("[useOnlineCount] WebSocket 已连接");
-      } else {
-        console.log("[useOnlineCount] WebSocket 已断开");
-      }
-    },
-    { immediate: false }
-  );
-
   return {
     // 状态
     onlineUserCount: readonly(onlineUserCount),
@@ -160,10 +131,6 @@ function createOnlineCountComposable() {
     // 方法
     initialize,
     cleanup,
-
-    // 别名方法（向后兼容）
-    initWebSocket: initialize,
-    closeWebSocket: cleanup,
   };
 }
 
@@ -172,15 +139,12 @@ function createOnlineCountComposable() {
  *
  * 用于实时显示系统在线用户数量
  *
- * @param options 配置选项
- * @param options.autoInit 是否在组件挂载时自动初始化（默认 true）
- *
  * @example
  * ```ts
- * // 在组件中使用
+ * // 在组件中使用（推荐）
  * const { onlineUserCount, isConnected } = useOnlineCount();
  *
- * // 手动控制初始化
+ * // 手动控制初始化（高级用法）
  * const { onlineUserCount, initialize, cleanup } = useOnlineCount({ autoInit: false });
  * onMounted(() => initialize());
  * onUnmounted(() => cleanup());
@@ -194,22 +158,19 @@ export function useOnlineCount(options: { autoInit?: boolean } = {}) {
     globalInstance = createOnlineCountComposable();
   }
 
-  // 只在组件上下文中且 autoInit 为 true 时使用生命周期钩子
+  // 组件级自动初始化（仅在组件上下文中生效）
   const instance = getCurrentInstance();
   if (autoInit && instance) {
     onMounted(() => {
-      // 只有在未连接时才尝试初始化
+      // 防止重复初始化：只有在未连接时才尝试初始化
       if (!globalInstance!.isConnected.value) {
-        console.log("[useOnlineCount] 组件挂载，初始化 WebSocket 连接");
         globalInstance!.initialize();
-      } else {
-        console.log("[useOnlineCount] WebSocket 已连接，跳过初始化");
       }
     });
 
-    // 注意：不在卸载时关闭连接，保持全局连接
+    // 注意：组件卸载时不关闭连接，保持全局连接
     onUnmounted(() => {
-      console.log("[useOnlineCount] 组件卸载（保持 WebSocket 连接）");
+      // 全局连接由 cleanupWebSocket() 统一管理
     });
   }
 

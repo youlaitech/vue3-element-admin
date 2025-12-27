@@ -1,8 +1,8 @@
-<template>
+﻿<template>
   <div>
     <h3 text-center m-0 mb-20px>{{ t("login.resetPassword") }}</h3>
     <el-form ref="formRef" :model="model" :rules="rules" size="large">
-      <!-- 用户名 -->
+      <!-- 用户名"-->
       <el-form-item prop="username">
         <el-input v-model.trim="model.username" :placeholder="t('login.username')">
           <template #prefix>

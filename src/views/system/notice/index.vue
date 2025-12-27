@@ -1,7 +1,7 @@
-<template>
+﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
-    <div class="search-container">
+    <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-suffix=":">
         <el-form-item label="标题123" prop="title">
           <el-input
@@ -32,11 +32,11 @@
       </el-form>
     </div>
 
-    <el-card shadow="hover" class="data-table">
-      <div class="data-table__toolbar">
-        <div class="data-table__toolbar--actions">
+    <el-card shadow="hover" class="table-section">
+      <div class="table-section__toolbar">
+        <div class="table-section__toolbar--actions">
           <el-button
-            v-hasPerm="['sys:notice:add']"
+            v-hasPerm="['sys:notice:create']"
             type="success"
             icon="plus"
             @click="handleOpenDialog()"
@@ -60,7 +60,7 @@
         v-loading="loading"
         :data="pageData"
         highlight-current-row
-        class="data-table__content"
+        class="table-section__content"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
@@ -68,13 +68,13 @@
         <el-table-column label="通知标题" prop="title" min-width="200" />
         <el-table-column align="center" label="通知类型" width="150">
           <template #default="scope">
-            <DictLabel v-model="scope.row.type" :code="'notice_type'" />
+            <DictTag v-model="scope.row.type" :code="'notice_type'" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="发布人" prop="publisherName" width="150" />
         <el-table-column align="center" label="通知等级" width="100">
           <template #default="scope">
-            <DictLabel v-model="scope.row.level" code="notice_level" />
+            <DictTag v-model="scope.row.level" code="notice_level" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="通告目标类型" prop="targetType" min-width="100">
@@ -134,7 +134,7 @@
             </el-button>
             <el-button
               v-if="scope.row.publishStatus != 1"
-              v-hasPerm="['sys:notice:edit']"
+              v-hasPerm="['sys:notice:update']"
               type="primary"
               size="small"
               link
@@ -179,10 +179,10 @@
         </el-form-item>
 
         <el-form-item label="通知类型" prop="type">
-          <Dict v-model="formData.type" code="notice_type" />
+          <DictSelect v-model="formData.type" code="notice_type" />
         </el-form-item>
         <el-form-item label="通知等级" prop="level">
-          <Dict v-model="formData.level" code="notice_level" />
+          <DictSelect v-model="formData.level" code="notice_level" />
         </el-form-item>
         <el-form-item label="目标类型" prop="targetType">
           <el-radio-group v-model="formData.targetType">
@@ -260,13 +260,10 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import NoticeAPI, {
-  NoticePageVO,
-  NoticeForm,
-  NoticePageQuery,
-  NoticeDetailVO,
-} from "@/api/system/notice-api";
-import UserAPI from "@/api/system/user-api";
+import { ref, reactive } from "vue";
+import NoticeAPI from "@/api/system/notice";
+import type { NoticePageVo, NoticeForm, NoticePageQuery, NoticeDetailVo } from "@/types/api";
+import UserAPI from "@/api/system/user";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -282,7 +279,7 @@ const queryParams = reactive<NoticePageQuery>({
 
 const userOptions = ref<OptionType[]>([]);
 // 通知公告表格数据
-const pageData = ref<NoticePageVO[]>([]);
+const pageData = ref<NoticePageVo[]>([]);
 
 // 弹窗
 const dialog = reactive({
@@ -292,8 +289,8 @@ const dialog = reactive({
 
 // 通知公告表单数据
 const formData = reactive<NoticeForm>({
-  level: "L", // 默认优先级为低
-  targetType: 1, // 默认目标类型为全体
+  level: "L", // 默认优先级为 L（低）
+  targetType: 1, // 默认目标类型为全部
 });
 
 // 通知公告表单校验规则
@@ -319,7 +316,7 @@ const rules = reactive({
 const detailDialog = reactive({
   visible: false,
 });
-const currentNotice = ref<NoticeDetailVO>({});
+const currentNotice = ref<NoticeDetailVo>({});
 
 // 查询通知公告
 function handleQuery() {
@@ -435,7 +432,7 @@ function handleDelete(id?: number) {
     return;
   }
 
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+  ElMessageBox.confirm("确认删除已选中的数据项吗？", "警告", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",

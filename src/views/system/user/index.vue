@@ -1,16 +1,16 @@
-<!-- 用户管理 -->
+﻿<!-- 用户管理 -->
 <template>
   <div class="app-container">
     <el-row :gutter="20">
       <!-- 部门树 -->
       <el-col :lg="4" :xs="24" class="mb-[12px]">
-        <DeptTree v-model="queryParams.deptId" @node-click="handleQuery" />
+        <UserDeptTree v-model="queryParams.deptId" @node-click="handleQuery" />
       </el-col>
 
       <!-- 用户列表 -->
       <el-col :lg="20" :xs="24">
         <!-- 搜索区域 -->
-        <div class="search-container">
+        <div class="filter-section">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
             <el-form-item label="关键字" prop="keywords">
               <el-input
@@ -52,11 +52,11 @@
           </el-form>
         </div>
 
-        <el-card shadow="hover" class="data-table">
-          <div class="data-table__toolbar">
-            <div class="data-table__toolbar--actions">
+        <el-card shadow="hover" class="table-section">
+          <div class="table-section__toolbar">
+            <div class="table-section__toolbar--actions">
               <el-button
-                v-hasPerm="['sys:user:add']"
+                v-hasPerm="['sys:user:create']"
                 type="success"
                 icon="plus"
                 @click="handleOpenDialog()"
@@ -73,7 +73,7 @@
                 删除
               </el-button>
             </div>
-            <div class="data-table__toolbar--tools">
+            <div class="table-section__toolbar--tools">
               <el-button
                 v-hasPerm="'sys:user:import'"
                 icon="upload"
@@ -90,11 +90,11 @@
 
           <el-table
             v-loading="loading"
-            :data="pageData"
+            :data="userList"
             border
             stripe
             highlight-current-row
-            class="data-table__content"
+            class="table-section__content"
             row-key="id"
             @selection-change="handleSelectionChange"
           >
@@ -103,7 +103,7 @@
             <el-table-column label="昵称" width="150" align="center" prop="nickname" />
             <el-table-column label="性别" width="100" align="center">
               <template #default="scope">
-                <DictLabel v-model="scope.row.gender" code="gender" />
+                <DictTag v-model="scope.row.gender" code="gender" />
               </template>
             </el-table-column>
             <el-table-column label="部门" width="120" align="center" prop="deptName" />
@@ -111,8 +111,8 @@
             <el-table-column label="邮箱" align="center" prop="email" width="160" />
             <el-table-column label="状态" align="center" prop="status" width="80">
               <template #default="scope">
-                <el-tag :type="scope.row.status == 1 ? 'success' : 'info'">
-                  {{ scope.row.status == 1 ? "正常" : "禁用" }}
+                <el-tag :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'info'">
+                  {{ scope.row.status === CommonStatus.ENABLED ? "正常" : "禁用" }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -130,7 +130,7 @@
                   重置密码
                 </el-button>
                 <el-button
-                  v-hasPerm="'sys:user:edit'"
+                  v-hasPerm="'sys:user:update'"
                   type="primary"
                   icon="edit"
                   link
@@ -166,8 +166,8 @@
 
     <!-- 用户表单 -->
     <el-drawer
-      v-model="dialog.visible"
-      :title="dialog.title"
+      v-model="dialogState.visible"
+      :title="dialogState.title"
       append-to-body
       :size="drawerSize"
       @close="handleCloseDialog"
@@ -197,7 +197,7 @@
         </el-form-item>
 
         <el-form-item label="性别" prop="gender">
-          <Dict v-model="formData.gender" code="gender" />
+          <DictSelect v-model="formData.gender" code="gender" />
         </el-form-item>
 
         <el-form-item label="角色" prop="roleIds">
@@ -225,8 +225,8 @@
             inline-prompt
             active-text="正常"
             inactive-text="禁用"
-            :active-value="1"
-            :inactive-value="0"
+            :active-value="CommonStatus.ENABLED"
+            :inactive-value="CommonStatus.DISABLED"
           />
         </el-form-item>
       </el-form>
@@ -240,7 +240,7 @@
     </el-drawer>
 
     <!-- 用户导入 -->
-    <UserImport v-model="importDialogVisible" @import-success="handleQuery()" />
+    <UserImportDialog v-model="importDialogVisible" @import-success="handleQuery()" />
   </div>
 </template>
 
@@ -250,32 +250,34 @@ import { computed, onMounted, reactive, ref } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 
 // ==================== 2. Element Plus ====================
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage, ElMessageBox, type FormInstance } from "element-plus";
 
 // ==================== 3. 类型定义 ====================
-import type { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user-api";
+import type { UserForm, UserPageQuery, UserPageVo } from "@/types/api";
+
+// ==================== 3.5 工具函数 ====================
+import { downloadFile, VALIDATORS } from "@/utils";
 // ==================== 4. API 服务 ====================
-import UserAPI from "@/api/system/user-api";
-import DeptAPI from "@/api/system/dept-api";
-import RoleAPI from "@/api/system/role-api";
+import UserAPI from "@/api/system/user";
+import DeptAPI from "@/api/system/dept";
+import RoleAPI from "@/api/system/role";
 
 // ==================== 5. Store ====================
-import { useAppStore } from "@/store/modules/app-store";
-import { useUserStore } from "@/store";
+import { useUserStore, useAppStore } from "@/store";
 
 // ==================== 6. Enums ====================
-import { DeviceEnum } from "@/enums/settings/device-enum";
+import { DeviceEnum, DialogMode, CommonStatus } from "@/enums";
 
 // ==================== 7. Composables ====================
 import { useAiAction, useTableSelection } from "@/composables";
 
 // ==================== 8. 组件 ====================
-import DeptTree from "./components/DeptTree.vue";
-import UserImport from "./components/UserImport.vue";
+import UserDeptTree from "./components/UserDeptTree.vue";
+import UserImportDialog from "./components/UserImportDialog.vue";
 
 // ==================== 组件配置 ====================
 defineOptions({
-  name: "SystemUser",
+  name: "User",
   inheritAttrs: false,
 });
 
@@ -286,8 +288,8 @@ const userStore = useUserStore();
 // ==================== 响应式状态 ====================
 
 // DOM 引用
-const queryFormRef = ref();
-const userFormRef = ref();
+const queryFormRef = ref<FormInstance>();
+const userFormRef = ref<FormInstance>();
 
 // 列表查询参数
 const queryParams = reactive<UserPageQuery>({
@@ -296,20 +298,24 @@ const queryParams = reactive<UserPageQuery>({
 });
 
 // 列表数据
-const pageData = ref<UserPageVO[]>();
+const userList = ref<UserPageVo[]>([]);
 const total = ref(0);
 const loading = ref(false);
 
 // 弹窗状态
-const dialog = reactive({
+const dialogState = reactive({
   visible: false,
   title: "新增用户",
+  mode: DialogMode.CREATE,
 });
 
+// 初始表单数据
+const initialFormData: UserForm = {
+  status: CommonStatus.ENABLED,
+};
+
 // 表单数据
-const formData = reactive<UserForm>({
-  status: 1,
-});
+const formData = reactive<UserForm>({ ...initialFormData });
 
 // 下拉选项数据
 const deptOptions = ref<OptionType[]>();
@@ -328,48 +334,12 @@ const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600
 // ==================== 表单验证规则 ====================
 
 const rules = reactive({
-  username: [
-    {
-      required: true,
-      message: "用户名不能为空",
-      trigger: "blur",
-    },
-  ],
-  nickname: [
-    {
-      required: true,
-      message: "用户昵称不能为空",
-      trigger: "blur",
-    },
-  ],
-  deptId: [
-    {
-      required: true,
-      message: "所属部门不能为空",
-      trigger: "blur",
-    },
-  ],
-  roleIds: [
-    {
-      required: true,
-      message: "用户角色不能为空",
-      trigger: "blur",
-    },
-  ],
-  email: [
-    {
-      pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
-      message: "请输入正确的邮箱地址",
-      trigger: "blur",
-    },
-  ],
-  mobile: [
-    {
-      pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-      message: "请输入正确的手机号码",
-      trigger: "blur",
-    },
-  ],
+  username: [VALIDATORS.required("用户名不能为空")],
+  nickname: [VALIDATORS.required("用户昵称不能为空")],
+  deptId: [VALIDATORS.required("所属部门不能为空")],
+  roleIds: [VALIDATORS.required("用户角色不能为空")],
+  email: [VALIDATORS.email],
+  mobile: [VALIDATORS.mobile],
 });
 
 // ==================== 数据加载 ====================
@@ -381,7 +351,7 @@ async function fetchUserList(): Promise<void> {
   loading.value = true;
   try {
     const data = await UserAPI.getPage(queryParams);
-    pageData.value = data.list;
+    userList.value = data.list;
     total.value = data.total;
   } catch (error) {
     ElMessage.error("获取用户列表失败");
@@ -392,7 +362,7 @@ async function fetchUserList(): Promise<void> {
 }
 
 // ==================== 表格选择 ====================
-const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<UserPageVO>();
+const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<UserPageVo>();
 
 // ==================== 查询操作 ====================
 
@@ -408,7 +378,7 @@ function handleQuery(): Promise<void> {
  * 重置查询条件
  */
 function handleResetQuery(): void {
-  queryFormRef.value.resetFields();
+  queryFormRef.value?.resetFields();
   queryParams.deptId = undefined;
   queryParams.createTime = undefined;
   handleQuery();
@@ -419,7 +389,7 @@ function handleResetQuery(): void {
  * 重置用户密码
  * @param row 用户数据
  */
-function handleResetPassword(row: UserPageVO): void {
+function handleResetPassword(row: UserPageVo): void {
   ElMessageBox.prompt(`请输入用户【${row.username}】的新密码`, "重置密码", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
@@ -446,7 +416,7 @@ function handleResetPassword(row: UserPageVO): void {
  * @param id 用户ID（编辑时传入）
  */
 async function handleOpenDialog(id?: string): Promise<void> {
-  dialog.visible = true;
+  dialogState.visible = true;
 
   // 并行加载下拉选项数据
   try {
@@ -461,7 +431,8 @@ async function handleOpenDialog(id?: string): Promise<void> {
 
   // 编辑：加载用户数据
   if (id) {
-    dialog.title = "修改用户";
+    dialogState.title = "修改用户";
+    dialogState.mode = DialogMode.EDIT;
     try {
       const data = await UserAPI.getFormData(id);
       Object.assign(formData, data);
@@ -471,7 +442,8 @@ async function handleOpenDialog(id?: string): Promise<void> {
     }
   } else {
     // 新增：设置默认值
-    dialog.title = "新增用户";
+    dialogState.title = "新增用户";
+    dialogState.mode = DialogMode.CREATE;
   }
 }
 
@@ -479,20 +451,21 @@ async function handleOpenDialog(id?: string): Promise<void> {
  * 关闭用户表单弹窗
  */
 function handleCloseDialog(): void {
-  dialog.visible = false;
-  userFormRef.value.resetFields();
-  userFormRef.value.clearValidate();
+  dialogState.visible = false;
 
-  // 重置表单数据
-  formData.id = undefined;
-  formData.status = 1;
+  // 安全地重置表单
+  userFormRef.value?.resetFields();
+  userFormRef.value?.clearValidate();
+
+  // 完全重置表单数据
+  Object.assign(formData, initialFormData);
 }
 
 /**
  * 提交用户表单（防抖）
  */
 const handleSubmit = useDebounceFn(async () => {
-  const valid = await userFormRef.value.validate().catch(() => false);
+  const valid = await userFormRef.value?.validate().catch(() => false);
   if (!valid) return;
 
   const userId = formData.id;
@@ -514,14 +487,14 @@ const handleSubmit = useDebounceFn(async () => {
   } finally {
     loading.value = false;
   }
-}, 1000);
+}, 300);
 
 /**
  * 删除用户
  * @param id 用户ID（单个删除时传入）
  */
 function handleDelete(id?: string): void {
-  const userIds = id ? id : selectedIds.value.join(",");
+  const userIds = id ?? selectedIds.value.join(",");
 
   if (!userIds) {
     ElMessage.warning("请勾选删除项");
@@ -579,27 +552,7 @@ function handleOpenImportDialog(): void {
 async function handleExport(): Promise<void> {
   try {
     const response = await UserAPI.export(queryParams);
-    const fileData = response.data;
-    const contentDisposition = response.headers["content-disposition"];
-    const fileName = decodeURI(contentDisposition.split(";")[1].split("=")[1]);
-    const fileType =
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
-
-    // 创建下载链接
-    const blob = new Blob([fileData], { type: fileType });
-    const downloadUrl = window.URL.createObjectURL(blob);
-    const downloadLink = document.createElement("a");
-    downloadLink.href = downloadUrl;
-    downloadLink.download = fileName;
-
-    // 触发下载
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-
-    // 清理
-    document.body.removeChild(downloadLink);
-    window.URL.revokeObjectURL(downloadUrl);
-
+    downloadFile(response);
     ElMessage.success("导出成功");
   } catch (error) {
     ElMessage.error("导出失败");
@@ -616,7 +569,7 @@ useAiAction({
      */
     updateUserNickname: {
       needConfirm: true,
-      callBackendApi: true, // 自动调用后端 API
+      callBackendApi: true,
       confirmMessage: (args: any) =>
         `AI 助手将执行以下操作：<br/>
         <strong>修改用户：</strong> ${args.username}<br/>
@@ -656,11 +609,10 @@ useAiAction({
 
 /**
  * 组件挂载时初始化数据
- *
- * 注意：这里会先加载列表数据，如果 URL 中有 AI 参数（如搜索关键字），
- * useAiAction 会在 nextTick 中再次执行搜索，这是预期行为
  */
 onMounted(() => {
   handleQuery();
 });
 </script>
+
+<style scoped lang="scss"></style>

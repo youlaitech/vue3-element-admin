@@ -36,7 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
 const count = ref(0);
 const operationWidth = ref(props.minWidth || 80);
 
-// 计算操作列宽度
+// 计算操作列宽�?
 const calculateWidth = () => {
   count.value++;
 
@@ -46,7 +46,7 @@ const calculateWidth = () => {
   count.value = 0;
 };
 
-// 计算最终宽度
+// 计算最终宽�?
 const finalWidth = computed(() => {
   return props.width || operationWidth.value || props.minWidth;
 });
@@ -54,32 +54,32 @@ const finalWidth = computed(() => {
 // 自适应宽度指令
 const vAutoWidth = {
   mounted() {
-    // 初次挂载的时候计算一次
+    // 初次挂载的时候计算一�?
     calculateWidth();
   },
   updated() {
-    // 数据更新时重新计算一次
+    // 数据更新时重新计算一�?
     calculateWidth();
   },
 };
 
 /**
- * 获取按钮数量和宽带来获取操作组的最大宽度
- * 注意使用时需要使用 `class="operation-buttons"` 的标签包裹操作按钮
- * @returns {number} 返回操作组的最大宽度
+ * 获取按钮数量和宽带来获取操作组的最大宽�?
+ * 注意使用时需要使�?`class="operation-buttons"` 的标签包裹操作按�?
+ * @returns {number} 返回操作组的最大宽�?
  */
 const getOperationMaxWidth = () => {
   const el = document.getElementsByClassName("operation-buttons");
 
-  // 取操作组的最大宽度
+  // 取操作组的最大宽�?
   let maxWidth = 0;
   let totalWidth: any = 0;
   Array.prototype.forEach.call(el, (item) => {
     // 获取每个item的dom
     const buttons = item.querySelectorAll(".el-button");
-    // 获取每行按钮的总宽度
+    // 获取每行按钮的总宽�?
     totalWidth = Array.from(buttons).reduce((acc, button: any) => {
-      return acc + button.scrollWidth + 22; // 每个按钮的宽度加上预留宽度
+      return acc + button.scrollWidth + 22; // 每个按钮的宽度加上预留宽�?
     }, 0);
 
     // 获取最大的宽度

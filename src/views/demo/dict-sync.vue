@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <el-card class="box-card">
       <template #header>
@@ -19,7 +19,7 @@
           <el-card shadow="hover" class="dict-card">
             <template #header>
               <div class="flex justify-between items-center">
-                <span>性别字典项 - 男</span>
+                <span>性别字典值 - 男</span>
                 <el-button type="warning" size="small" @click="loadMaleDict">重新加载</el-button>
               </div>
             </template>
@@ -69,7 +69,7 @@
           </el-card>
         </el-col>
 
-        <!-- 列2: 字典组件展示 -->
+        <!-- 卡2: 字典组件展示 -->
         <el-col :span="8">
           <el-card shadow="hover" class="dict-card">
             <template #header>
@@ -105,14 +105,14 @@
               </div>
 
               <div class="mt-4 pt-3 border-top">
-                <div class="text-muted mb-2">已选择值: {{ selectedGender }}</div>
-                <div class="text-muted">最后更新: {{ lastUpdateTime }}</div>
+                <div class="text-muted mb-2">已选择： {{ selectedGender }}</div>
+                <div class="text-muted">最后更新： {{ lastUpdateTime }}</div>
               </div>
             </div>
           </el-card>
         </el-col>
 
-        <!-- 列3: 字典缓存数据 -->
+        <!-- 卡3: 字典缓存数据 -->
         <el-col :span="8">
           <el-card shadow="hover" class="dict-card">
             <template #header>
@@ -139,9 +139,10 @@
 </template>
 
 <script setup lang="ts">
-import { useDictStoreHook } from "@/store/modules/dict-store";
+import { useDictStoreHook } from "@/store/modules/dict";
 import { useDateFormat } from "@vueuse/core";
-import DictAPI, { DictItemForm } from "@/api/system/dict-api";
+import DictAPI from "@/api/system/dict";
+import type { DictItemForm } from "@/types/api";
 import { useDictSync, DictMessage } from "@/composables";
 
 // 性别字典编码
@@ -181,10 +182,10 @@ const dictCacheStatus = computed(() => {
 // 设置WebSocket
 const setupWebSocket = () => {
   // 初始化WebSocket连接
-  dictWebSocket.initWebSocket();
+  dictWebSocket.initialize();
 
   // 注册字典消息回调
-  unregisterCallback = dictWebSocket.onDictMessage((message: DictMessage) => {
+  unregisterCallback = dictWebSocket.onDictChange((message: DictMessage) => {
     // 只有当消息是关于性别字典的更新时才处理
     if (message.dictCode === DICT_CODE) {
       // 更新最后更新时间
@@ -212,13 +213,13 @@ const loadMaleDict = async () => {
   dictForm.value = data;
 };
 
-// 保存字典项
+// 保存字典值
 const saveDict = async () => {
   if (!dictForm.value) return;
 
   saving.value = true;
   try {
-    // dictForm的类型已经是DictItemForm，直接传入
+    // dictForm的类型已经是DictItemForm，直接传递
     await DictAPI.updateDictItem(DICT_CODE, MALE_ITEM_ID, dictForm.value);
 
     // 更新时间
@@ -226,7 +227,7 @@ const saveDict = async () => {
 
     ElMessage.success("保存成功，后端将通过WebSocket通知所有客户端");
   } catch (error) {
-    console.error("保存字典项失败:", error);
+    console.error("保存字典项失败", error);
     ElMessage.error("保存失败");
   } finally {
     saving.value = false;
@@ -278,7 +279,7 @@ onUnmounted(() => {
 pre {
   padding: 8px;
   overflow-y: auto;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   white-space: pre-wrap;
   background-color: #f8f9fa;
   border-radius: 4px;

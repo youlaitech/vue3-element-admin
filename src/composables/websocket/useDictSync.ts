@@ -1,4 +1,4 @@
-import { useDictStoreHook } from "@/store/modules/dict-store";
+import { useDictStoreHook } from "@/store/modules/dict";
 import { useStomp } from "./useStomp";
 import type { IMessage } from "@stomp/stompjs";
 
@@ -69,8 +69,6 @@ function createDictSyncComposable() {
         return;
       }
 
-      console.log(`[DictSync] 字典 "${dictCode}" 已更新，清除本地缓存`);
-
       // 清除缓存，等待按需加载
       dictStore.removeDictItem(dictCode);
 
@@ -98,7 +96,7 @@ function createDictSyncComposable() {
       return;
     }
 
-    console.log("[DictSync] 初始化字典同步服务...");
+    // console.log("[DictSync] 初始化字典同步服务..."); // 高频日志已禁用
 
     // 建立 WebSocket 连接
     stomp.connect();
@@ -106,19 +104,17 @@ function createDictSyncComposable() {
     // 订阅字典主题（useStomp 会自动处理重连后的订阅恢复）
     subscriptionId = stomp.subscribe(DICT_TOPIC, handleDictChangeMessage);
 
-    if (subscriptionId) {
-      console.log(`[DictSync] 已订阅字典主题: ${DICT_TOPIC}`);
-    } else {
-      console.log(`[DictSync] 暂存字典主题订阅，等待连接建立后自动订阅`);
-    }
+    // if (subscriptionId) {
+    //   console.log(`[DictSync] 已订阅字典主题: ${DICT_TOPIC}`);
+    // } else {
+    //   console.log(`[DictSync] 暂存字典主题订阅，等待连接建立后自动订阅`);
+    // }
   };
 
   /**
    * 关闭 WebSocket 连接并清理资源
    */
   const cleanup = () => {
-    console.log("[DictSync] 清理字典同步服务...");
-
     // 取消订阅（如果有的话）
     if (subscriptionId) {
       stomp.unsubscribe(subscriptionId);
@@ -162,14 +158,6 @@ function createDictSyncComposable() {
     initialize,
     cleanup,
     onDictChange,
-
-    // 别名方法（向后兼容）
-    initWebSocket: initialize,
-    closeWebSocket: cleanup,
-    onDictMessage: onDictChange,
-
-    // 用于测试和调试
-    handleDictChangeMessage,
   };
 }
 
@@ -182,7 +170,7 @@ function createDictSyncComposable() {
  * ```ts
  * const dictSync = useDictSync();
  *
- * // 初始化（在应用启动时调用）
+ * // 初始化（通常在应用启动时调用）
  * dictSync.initialize();
  *
  * // 注册回调

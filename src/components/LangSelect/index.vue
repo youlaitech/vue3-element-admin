@@ -17,8 +17,8 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/modules/app-store";
-import { LanguageEnum } from "@/enums/settings/locale-enum";
+import { useAppStore } from "@/store/modules/app";
+import { LanguageEnum } from "@/enums/settings";
 
 defineProps({
   size: {
@@ -38,7 +38,7 @@ const { locale, t } = useI18n();
 /**
  * 处理语言切换
  *
- * @param lang  语言（zh-cn、en）
+ * @param lang  语言（zh-cn、en�?
  */
 function handleLanguageChange(lang: string) {
   locale.value = lang;

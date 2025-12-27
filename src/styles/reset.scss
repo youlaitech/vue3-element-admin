@@ -1,11 +1,4 @@
-*,
-::before,
-::after {
-  box-sizing: border-box;
-  border-color: currentcolor;
-  border-style: solid;
-  border-width: 0;
-}
+// 全局基础重置：补充 UnoCSS 预设未覆盖的项目级样式
 
 #app {
   width: 100%;
@@ -21,6 +14,17 @@ html {
   text-size-adjust: 100%;
 }
 
+#app,
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
 body {
   width: 100%;
   height: 100%;
@@ -32,11 +36,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizelegibility;
-}
-
-a {
-  color: inherit;
-  text-decoration: inherit;
 }
 
 img,
@@ -54,12 +53,6 @@ li {
   padding: 0;
   margin: 0;
   list-style: none;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
 }
 
 a,

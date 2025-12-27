@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="profile-container">
     <el-row :gutter="20">
       <!-- 左侧个人信息卡片 -->
@@ -146,7 +146,7 @@
           <el-input v-model="userProfileForm.nickname" />
         </el-form-item>
         <el-form-item label="性别">
-          <Dict v-model="userProfileForm.gender" code="gender" />
+          <DictSelect v-model="userProfileForm.gender" code="gender" />
         </el-form-item>
       </el-form>
 
@@ -224,22 +224,24 @@
 </template>
 
 <script lang="ts" setup>
-import UserAPI, {
-  UserProfileVO,
+import UserAPI from "@/api/system/user";
+import type {
+  UserProfileVo,
   PasswordChangeForm,
   MobileUpdateForm,
   EmailUpdateForm,
   UserProfileForm,
-} from "@/api/system/user-api";
+} from "@/types/api";
 
-import FileAPI from "@/api/file-api";
+import { ref, reactive } from "vue";
+import FileAPI from "@/api/file";
 import { useUserStoreHook } from "@/store";
 
 import { Camera } from "@element-plus/icons-vue";
 
 const userStore = useUserStoreHook();
 
-const userProfile = ref<UserProfileVO>({});
+const userProfile = ref<UserProfileVo>({});
 
 const enum DialogType {
   ACCOUNT = "account",
@@ -251,7 +253,7 @@ const enum DialogType {
 const dialog = reactive({
   visible: false,
   title: "",
-  type: "" as DialogType, // 修改账号资料,修改密码、绑定手机、绑定邮箱
+  type: "" as DialogType, // 修改账号资料,修改密码、绑定手机、绑定邮箱"
 });
 const userProfileFormRef = ref();
 const passwordChangeFormRef = ref();

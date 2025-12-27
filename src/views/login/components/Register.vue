@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h3 text-center m-0 mb-20px>{{ t("login.reg") }}</h3>
     <el-form ref="formRef" :model="model" :rules="rules" size="large">
@@ -98,7 +98,8 @@
 import type { FormInstance } from "element-plus";
 import { Lock } from "@element-plus/icons-vue";
 import { useI18n } from "vue-i18n";
-import AuthAPI, { type LoginFormData } from "@/api/auth-api";
+import AuthAPI from "@/api/auth";
+import type { LoginRequest } from "@/types/api";
 
 const { t } = useI18n();
 
@@ -113,7 +114,7 @@ const isCapsLock = ref(false); // 是否大写锁定
 const captchaBase64 = ref(); // 验证码图片Base64字符串
 const isRead = ref(false);
 
-interface Model extends LoginFormData {
+interface Model extends LoginRequest {
   confirmPassword: string;
 }
 
@@ -121,7 +122,7 @@ const model = ref<Model>({
   username: "admin",
   password: "123456",
   confirmPassword: "",
-  captchaKey: "",
+  captchaId: "",
   captchaCode: "",
   rememberMe: false,
 });
@@ -182,7 +183,7 @@ function getCaptcha() {
   codeLoading.value = true;
   AuthAPI.getCaptcha()
     .then((data) => {
-      model.value.captchaKey = data.captchaKey;
+      model.value.captchaId = data.captchaId;
       captchaBase64.value = data.captchaBase64;
     })
     .finally(() => (codeLoading.value = false));
