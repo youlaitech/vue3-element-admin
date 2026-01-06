@@ -65,19 +65,27 @@ export function useCommandPalette() {
     results.value = menuItems.value.filter((item) => item.title.toLowerCase().includes(kw));
   }
 
+  function getDisplayList() {
+    return results.value.length ? results.value : history.value;
+  }
+
   function onSelect() {
-    if (results.value.length > 0 && activeIndex.value >= 0) {
-      onGo(results.value[activeIndex.value]);
-    }
+    const list = getDisplayList();
+    if (list.length === 0) return;
+    if (activeIndex.value < 0) return;
+    const item = list[activeIndex.value];
+    if (!item) return;
+    onGo(item);
   }
 
   function onNavigate(direction: "up" | "down") {
-    if (results.value.length === 0) return;
+    const list = getDisplayList();
+    if (list.length === 0) return;
 
     if (direction === "up") {
-      activeIndex.value = activeIndex.value <= 0 ? results.value.length - 1 : activeIndex.value - 1;
+      activeIndex.value = activeIndex.value <= 0 ? list.length - 1 : activeIndex.value - 1;
     } else {
-      activeIndex.value = activeIndex.value >= results.value.length - 1 ? 0 : activeIndex.value + 1;
+      activeIndex.value = activeIndex.value >= list.length - 1 ? 0 : activeIndex.value + 1;
     }
   }
 

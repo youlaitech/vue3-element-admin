@@ -13,10 +13,6 @@ export const enum ApiCodeEnum {
    * 成功
    */
   SUCCESS = "00000",
-  /**
-   * 错误
-   */
-  ERROR = "B0001",
 
   /**
    * 访问令牌无效或过期

@@ -119,10 +119,11 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, watch } from "vue";
+import { nextTick, onBeforeUnmount, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import AiCommandApi from "@/api/ai";
+import { useSettingsStore } from "@/store";
 
 type ToolFunctionCall = {
   name: string;
@@ -156,6 +157,7 @@ type AiResponse = {
 };
 
 const router = useRouter();
+const settingsStore = useSettingsStore();
 
 // 状态管理
 const dialogVisible = ref(false);
@@ -188,7 +190,7 @@ const getActiveRightDrawerWidth = (): number => {
       continue;
     }
     const rect = drawer.getBoundingClientRect();
-    if (rect.width > 0 && rect.right >= window.innerWidth - 1) {
+    if (rect.width > 0 && rect.right >= window.innerWidth - 8) {
       return rect.width;
     }
   }
@@ -255,6 +257,16 @@ watch(
   { flush: "post" }
 );
 
+watch(
+  () => settingsStore.settingsVisible,
+  () => {
+    nextTick(() => {
+      scheduleUpdateFabPositionBurst();
+    });
+  },
+  { flush: "post" }
+);
+
 let domObserver: MutationObserver | null = null;
 let rafId: number | null = null;
 
@@ -266,6 +278,18 @@ const scheduleUpdateFabPosition = () => {
     rafId = null;
     updateFabPosition();
   });
+};
+
+const scheduleUpdateFabPositionBurst = (frames = 18) => {
+  let count = 0;
+  const tick = () => {
+    scheduleUpdateFabPosition();
+    count += 1;
+    if (count < frames) {
+      window.requestAnimationFrame(tick);
+    }
+  };
+  tick();
 };
 
 // 快捷命令示例

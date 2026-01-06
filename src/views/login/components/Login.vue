@@ -49,12 +49,14 @@
               <div class="i-svg:captcha" />
             </template>
           </el-input>
-          <div cursor-pointer h-40px w-120px flex-center @click="getCaptcha">
+          <div cursor-pointer h-44px w-140px flex-center @click="getCaptcha">
             <el-icon v-if="codeLoading" class="is-loading" size="20"><Loading /></el-icon>
             <img
               v-else-if="captchaBase64"
               border-rd-4px
-              object-cover
+              w-full
+              h-full
+              object-contain
               shadow="[0_0_0_1px_var(--el-border-color)_inset]"
               :src="captchaBase64"
               alt="captchaCode"
