@@ -2,6 +2,8 @@
  * AI 模块类型定义
  */
 
+import type { BaseQueryParams } from "./common";
+
 /** AI命令请求参数 */
 export interface AiCommandRequest {
   /** 用户输入的自然语言命令 */
@@ -81,10 +83,12 @@ export interface AiExecuteResponse {
 }
 
 /** AI命令记录分页查询参数 */
-export interface AiCommandRecordPageQuery extends PageQuery {
+export interface AiAssistantRecordQueryParams extends BaseQueryParams {
   /** 搜索关键字 */
   keywords?: string;
   /** 执行状态 */
+  status?: string;
+  /** 执行状态(0:待执行;1:成功;-1:失败) */
   executeStatus?: number;
   /** 解析状态 */
   parseStatus?: number;
@@ -101,7 +105,7 @@ export interface AiCommandRecordPageQuery extends PageQuery {
 }
 
 /** AI命令记录视图对象 */
-export interface AiCommandRecordVo {
+export interface AiAssistantRecordItem {
   /** 记录ID */
   id: string;
   /** 用户ID */

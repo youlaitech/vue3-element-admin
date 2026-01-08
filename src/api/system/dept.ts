@@ -1,16 +1,20 @@
 import request from "@/utils/request";
-import type { DeptQuery, DeptVo, DeptForm } from "@/types/api";
+import type { DeptQueryParams, DeptItem, DeptForm, OptionItem } from "@/types/api";
 
 const DEPT_BASE_URL = "/api/v1/depts";
 
 const DeptAPI = {
   /** 获取部门树形列表 */
-  getList(queryParams?: DeptQuery) {
-    return request<any, DeptVo[]>({ url: `${DEPT_BASE_URL}`, method: "get", params: queryParams });
+  getList(queryParams?: DeptQueryParams) {
+    return request<any, DeptItem[]>({
+      url: `${DEPT_BASE_URL}`,
+      method: "get",
+      params: queryParams,
+    });
   },
   /** 获取部门下拉数据源 */
   getOptions() {
-    return request<any, OptionType[]>({ url: `${DEPT_BASE_URL}/options`, method: "get" });
+    return request<any, OptionItem[]>({ url: `${DEPT_BASE_URL}/options`, method: "get" });
   },
   /** 获取部门表单数据 */
   getFormData(id: string) {

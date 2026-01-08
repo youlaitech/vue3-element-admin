@@ -1,20 +1,20 @@
 import request from "@/utils/request";
-import type { RolePageQuery, RolePageVo, RoleForm } from "@/types/api";
+import type { RoleQueryParams, RoleItem, RoleForm, OptionItem } from "@/types/api";
 
 const ROLE_BASE_URL = "/api/v1/roles";
 
 const RoleAPI = {
   /** 获取角色分页数据 */
-  getPage(queryParams?: RolePageQuery) {
-    return request<any, PageResult<RolePageVo[]>>({
-      url: `${ROLE_BASE_URL}/page`,
+  getPage(queryParams?: RoleQueryParams) {
+    return request<any, PageResult<RoleItem>>({
+      url: `${ROLE_BASE_URL}`,
       method: "get",
       params: queryParams,
     });
   },
   /** 获取角色下拉数据源 */
   getOptions() {
-    return request<any, OptionType[]>({ url: `${ROLE_BASE_URL}/options`, method: "get" });
+    return request<any, OptionItem[]>({ url: `${ROLE_BASE_URL}/options`, method: "get" });
   },
   /** 获取角色的菜单ID集合 */
   getRoleMenuIds(roleId: string) {

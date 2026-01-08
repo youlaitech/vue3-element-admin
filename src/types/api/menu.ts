@@ -3,15 +3,15 @@
  */
 
 /** 菜单查询参数 */
-export interface MenuQuery {
+export interface MenuQueryParams {
   /** 搜索关键字 */
   keywords?: string;
 }
 
 /** 菜单视图对象 */
-export interface MenuVo {
+export interface MenuItem {
   /** 子菜单 */
-  children?: MenuVo[];
+  children?: MenuItem[];
   /** 组件路径 */
   component?: string;
   /** ICON */
@@ -79,9 +79,9 @@ export interface MenuOption {
 }
 
 /** 路由对象 */
-export interface RouteVo {
+export interface RouteItem {
   /** 子路由列表 */
-  children: RouteVo[];
+  children: RouteItem[];
   /** 组件路径 */
   component?: string;
   /** 路由名称 */

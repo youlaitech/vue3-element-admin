@@ -870,13 +870,11 @@ function fetchPageData(formData: IObject = {}, isRestart = false) {
     )
     .then((data) => {
       if (showPagination) {
-        if (props.contentConfig.parseData) {
-          data = props.contentConfig.parseData(data);
-        }
-        pagination.total = data.total;
-        pageData.value = data.list;
+        const pageResult = Array.isArray(data) ? { data, page: null } : data;
+        pagination.total = pageResult.page?.total ?? 0;
+        pageData.value = pageResult.data ?? [];
       } else {
-        pageData.value = data;
+        pageData.value = Array.isArray(data) ? data : (data.data ?? []);
       }
     })
     .finally(() => {

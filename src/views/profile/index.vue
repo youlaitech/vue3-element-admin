@@ -226,7 +226,7 @@
 <script lang="ts" setup>
 import UserAPI from "@/api/system/user";
 import type {
-  UserProfileVo,
+  UserProfileDetail,
   PasswordChangeForm,
   MobileUpdateForm,
   EmailUpdateForm,
@@ -241,7 +241,7 @@ import { Camera } from "@element-plus/icons-vue";
 
 const userStore = useUserStoreHook();
 
-const userProfile = ref<UserProfileVo>({});
+const userProfile = ref<UserProfileDetail>({});
 
 const enum DialogType {
   ACCOUNT = "account",

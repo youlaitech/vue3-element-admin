@@ -345,7 +345,7 @@ import { useAppStore } from "@/store/modules/app";
 import { DeviceEnum } from "@/enums/settings";
 
 import MenuAPI from "@/api/system/menu";
-import type { MenuQuery, MenuForm, MenuVo } from "@/types/api";
+import type { MenuQueryParams, MenuForm, MenuItem } from "@/types/api";
 import { MenuTypeEnum } from "@/enums/business";
 
 defineOptions({
@@ -366,11 +366,11 @@ const dialog = reactive({
 
 const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
 // 查询参数
-const queryParams = reactive<MenuQuery>({});
+const queryParams = reactive<MenuQueryParams>({});
 // 菜单表格数据
-const menuTableData = ref<MenuVo[]>([]);
+const menuTableData = ref<MenuItem[]>([]);
 // 顶级菜单下拉选项
-const menuOptions = ref<OptionType[]>([]);
+const menuOptions = ref<OptionItem[]>([]);
 // 初始菜单表单数据
 const initialMenuFormData = ref<MenuForm>({
   id: undefined,
@@ -437,7 +437,7 @@ function handleResetQuery() {
 }
 
 // 行点击事件
-function handleRowClick(row: MenuVo) {
+function handleRowClick(row: MenuItem) {
   selectedMenuId.value = row.id;
 }
 

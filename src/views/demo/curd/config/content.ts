@@ -1,9 +1,9 @@
 import UserAPI from "@/api/system/user";
 import RoleAPI from "@/api/system/role";
-import type { UserPageQuery } from "@/types/api";
+import type { UserQueryParams, UserItem } from "@/types/api";
 import type { IContentConfig } from "@/components/CURD/types";
 
-const contentConfig: IContentConfig<UserPageQuery> = {
+const contentConfig: IContentConfig<UserQueryParams, UserItem> = {
   permPrefix: "sys:user", // 不写不进行按钮权限校验
   table: {
     border: true,
@@ -14,12 +14,6 @@ const contentConfig: IContentConfig<UserPageQuery> = {
     layout: "prev,pager,next,jumper,total,sizes",
     pageSize: 20,
     pageSizes: [10, 20, 30, 50],
-  },
-  parseData(res) {
-    return {
-      total: res.total,
-      list: res.list,
-    };
   },
   indexAction(params) {
     return UserAPI.getPage(params);
@@ -38,8 +32,8 @@ const contentConfig: IContentConfig<UserPageQuery> = {
   async exportsAction(params) {
     // 模拟获取到的是全量数据
     const res = await UserAPI.getPage(params);
-    console.log("exportsAction", res.list);
-    return res.list;
+    console.log("exportsAction", res.data);
+    return res.data;
   },
   pk: "id",
   toolbar: [

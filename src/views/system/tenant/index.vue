@@ -204,7 +204,7 @@ import { useDebounceFn } from "@vueuse/core";
 import { hasPerm } from "@/utils/auth";
 
 import TenantAPI from "@/api/system/tenant";
-import type { TenantCreateForm, TenantForm, TenantPageQuery, TenantPageVo } from "@/types/api";
+import type { TenantCreateForm, TenantForm, TenantQueryParams, TenantItem } from "@/types/api";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -213,13 +213,13 @@ const loading = ref(false);
 const ids = ref<number[]>([]);
 const total = ref(0);
 
-const queryParams = reactive<TenantPageQuery>({
+const queryParams = reactive<TenantQueryParams>({
   pageNum: 1,
   pageSize: 10,
   keywords: "",
 });
 
-const pageData = ref<TenantPageVo[]>([]);
+const pageData = ref<TenantItem[]>([]);
 
 const dialog = reactive({
   title: "",
@@ -250,9 +250,9 @@ const hasPermChangeStatus = computed(() => hasPerm("sys:tenant:change-status"));
 function fetchData() {
   loading.value = true;
   TenantAPI.getPage(queryParams)
-    .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
+    .then((res) => {
+      pageData.value = res.data;
+      total.value = res.page?.total ?? 0;
     })
     .finally(() => {
       loading.value = false;

@@ -2,8 +2,10 @@
  * Config 配置类型定义
  */
 
+import type { BaseQueryParams } from "./common";
+
 /** 配置分页查询参数 */
-export interface ConfigPageQuery extends PageQuery {
+export interface ConfigQueryParams extends BaseQueryParams {
   /** 搜索关键字 */
   keywords?: string;
 }
@@ -23,7 +25,7 @@ export interface ConfigForm {
 }
 
 /** 配置分页对象 */
-export interface ConfigPageVo {
+export interface ConfigItem {
   /** 配置ID */
   id?: string;
   /** 配置名称 */

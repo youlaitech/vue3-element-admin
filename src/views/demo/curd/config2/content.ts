@@ -1,6 +1,27 @@
 import type { IContentConfig } from "@/components/CURD/types";
 
-const contentConfig: IContentConfig = {
+interface DemoQueryParams {
+  pageNum?: number;
+  pageSize?: number;
+  [key: string]: any;
+}
+
+interface DemoItem {
+  id: number;
+  username: string;
+  avatar: string;
+  percent: number;
+  price: number;
+  url: string;
+  icon: string;
+  gender: number;
+  status: number;
+  status2: number;
+  sort: number;
+  createTime: number;
+}
+
+const contentConfig: IContentConfig<DemoQueryParams, DemoItem> = {
   // permPrefix: "sys:demo", // 不写不进行按钮权限校验
   table: {
     showOverflowTooltip: true,
@@ -10,38 +31,49 @@ const contentConfig: IContentConfig = {
   indexAction(params) {
     // 模拟发起网络请求获取列表数据
     console.log("indexAction:", params);
+    const list = [
+      {
+        id: 1,
+        username: "root",
+        avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
+        percent: 99,
+        price: 10,
+        url: "https://www.baidu.com",
+        icon: "el-icon-setting",
+        gender: 1,
+        status: 1,
+        status2: 1,
+        sort: 99,
+        createTime: 1715647982437,
+      },
+      {
+        id: 2,
+        username: "jerry",
+        avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
+        percent: 88,
+        price: 999,
+        url: "https://www.google.com",
+        icon: "el-icon-user",
+        gender: 0,
+        status: 0,
+        status2: 0,
+        sort: 0,
+        createTime: 1715648977426,
+      },
+    ];
+
+    const pageNum = Number(params?.pageNum ?? 1) || 1;
+    const pageSize = Number(params?.pageSize ?? list.length) || list.length;
+    const start = (pageNum - 1) * pageSize;
+    const end = start + pageSize;
+
     return Promise.resolve({
-      total: 2,
-      list: [
-        {
-          id: 1,
-          username: "root",
-          avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
-          percent: 99,
-          price: 10,
-          url: "https://www.baidu.com",
-          icon: "el-icon-setting",
-          gender: 1,
-          status: 1,
-          status2: 1,
-          sort: 99,
-          createTime: 1715647982437,
-        },
-        {
-          id: 2,
-          username: "jerry",
-          avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
-          percent: 88,
-          price: 999,
-          url: "https://www.google.com",
-          icon: "el-icon-user",
-          gender: 0,
-          status: 0,
-          status2: 0,
-          sort: 0,
-          createTime: 1715648977426,
-        },
-      ],
+      data: list.slice(start, end),
+      page: {
+        pageNum,
+        pageSize,
+        total: list.length,
+      },
     });
   },
   modifyAction(data) {

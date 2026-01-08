@@ -1,14 +1,15 @@
 import request from "@/utils/request";
 import type {
   UserInfo,
-  UserPageQuery,
-  UserPageVo,
   UserForm,
-  UserProfileVo,
+  UserQueryParams,
+  UserItem,
+  UserProfileDetail,
   UserProfileForm,
   PasswordChangeForm,
   MobileUpdateForm,
   EmailUpdateForm,
+  OptionItem,
 } from "@/types/api";
 
 const USER_BASE_URL = "/api/v1/users";
@@ -31,9 +32,9 @@ const UserAPI = {
    *
    * @param queryParams 查询参数
    */
-  getPage(queryParams: UserPageQuery) {
-    return request<any, PageResult<UserPageVo[]>>({
-      url: `${USER_BASE_URL}/page`,
+  getPage(queryParams: UserQueryParams) {
+    return request<any, PageResult<UserItem>>({
+      url: `${USER_BASE_URL}`,
       method: "get",
       params: queryParams,
     });
@@ -119,7 +120,7 @@ const UserAPI = {
    *
    * @param queryParams 查询参数
    */
-  export(queryParams: UserPageQuery) {
+  export(queryParams: UserQueryParams) {
     return request({
       url: `${USER_BASE_URL}/export`,
       method: "get",
@@ -150,7 +151,7 @@ const UserAPI = {
 
   /** 获取个人中心用户信息 */
   getProfile() {
-    return request<any, UserProfileVo>({
+    return request<any, UserProfileDetail>({
       url: `${USER_BASE_URL}/profile`,
       method: "get",
     });
@@ -214,7 +215,7 @@ const UserAPI = {
    *  获取用户下拉列表
    */
   getOptions() {
-    return request<any, OptionType[]>({
+    return request<any, OptionItem[]>({
       url: `${USER_BASE_URL}/options`,
       method: "get",
     });

@@ -227,7 +227,8 @@ onBeforeUnmount(() => {
   animation: featureFade 0.8s ease-out;
 
   @media (prefers-color-scheme: dark) {
-    color: rgba(236, 242, 255, 0.92);
+    /* use theme variable so dark mode colors follow theme variables */
+    color: var(--el-text-color-primary);
   }
 }
 

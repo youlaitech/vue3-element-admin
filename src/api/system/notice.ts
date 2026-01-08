@@ -1,13 +1,13 @@
 import request from "@/utils/request";
-import type { NoticePageQuery, NoticeForm, NoticePageVo, NoticeDetailVo } from "@/types/api";
+import type { NoticeQueryParams, NoticeForm, NoticeItem, NoticeDetail } from "@/types/api";
 
 const NOTICE_BASE_URL = "/api/v1/notices";
 
 const NoticeAPI = {
   /** 获取通知公告分页数据 */
-  getPage(queryParams?: NoticePageQuery) {
-    return request<any, PageResult<NoticePageVo[]>>({
-      url: `${NOTICE_BASE_URL}/page`,
+  getPage(queryParams?: NoticeQueryParams) {
+    return request<any, PageResult<NoticeItem>>({
+      url: `${NOTICE_BASE_URL}`,
       method: "get",
       params: queryParams,
     });
@@ -38,15 +38,15 @@ const NoticeAPI = {
   },
   /** 查看通知 */
   getDetail(id: string) {
-    return request<any, NoticeDetailVo>({ url: `${NOTICE_BASE_URL}/${id}/detail`, method: "get" });
+    return request<any, NoticeDetail>({ url: `${NOTICE_BASE_URL}/${id}/detail`, method: "get" });
   },
   /** 全部已读 */
   readAll() {
     return request({ url: `${NOTICE_BASE_URL}/read-all`, method: "put" });
   },
   /** 获取我的通知分页列表 */
-  getMyNoticePage(queryParams?: NoticePageQuery) {
-    return request<any, PageResult<NoticePageVo[]>>({
+  getMyNoticePage(queryParams?: NoticeQueryParams) {
+    return request<any, PageResult<NoticeItem>>({
       url: `${NOTICE_BASE_URL}/my`,
       method: "get",
       params: queryParams,

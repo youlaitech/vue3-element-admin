@@ -164,22 +164,22 @@ defineOptions({
 });
 
 import DeptAPI from "@/api/system/dept";
-import type { DeptVo, DeptForm, DeptQuery } from "@/types/api";
+import type { DeptItem, DeptForm, DeptQueryParams } from "@/types/api";
 
 const queryFormRef = ref();
 const deptFormRef = ref();
 
 const loading = ref(false);
 const selectIds = ref<number[]>([]);
-const queryParams = reactive<DeptQuery>({});
+const queryParams = reactive<DeptQueryParams>({});
 
 const dialog = reactive({
   title: "",
   visible: false,
 });
 
-const deptList = ref<DeptVo[]>();
-const deptOptions = ref<OptionType[]>();
+const deptList = ref<DeptItem[]>();
+const deptOptions = ref<OptionItem[]>();
 const formData = reactive<DeptForm>({
   status: 1,
   parentId: "0",

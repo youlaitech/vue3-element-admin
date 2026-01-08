@@ -56,10 +56,13 @@
               border-rd-4px
               w-full
               h-full
-              object-contain
+              block
+              object-cover
               shadow="[0_0_0_1px_var(--el-border-color)_inset]"
               :src="captchaBase64"
               alt="captchaCode"
+              title="点击刷新验证码"
+              @error="getCaptcha"
             />
             <el-text v-else type="info" size="small">点击获取验证码</el-text>
           </div>

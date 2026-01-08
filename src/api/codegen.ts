@@ -1,13 +1,13 @@
 import request from "@/utils/request";
-import type { GeneratorPreviewVo, TablePageQuery, TablePageVo, GenConfigForm } from "@/types/api";
+import type { GeneratorPreviewItem, TableQueryParams, TableItem, GenConfigForm } from "@/types/api";
 
 const GENERATOR_BASE_URL = "/api/v1/codegen";
 
 const GeneratorAPI = {
   /** 获取数据表分页列表 */
-  getTablePage(params: TablePageQuery) {
-    return request<any, PageResult<TablePageVo[]>>({
-      url: `${GENERATOR_BASE_URL}/table/page`,
+  getTablePage(params: TableQueryParams) {
+    return request<any, PageResult<TableItem>>({
+      url: `${GENERATOR_BASE_URL}/table`,
       method: "get",
       params,
     });
@@ -32,7 +32,7 @@ const GeneratorAPI = {
 
   /** 获取代码生成预览数据 */
   getPreviewData(tableName: string, pageType?: "classic" | "curd") {
-    return request<any, GeneratorPreviewVo[]>({
+    return request<any, GeneratorPreviewItem[]>({
       url: `${GENERATOR_BASE_URL}/${tableName}/preview`,
       method: "get",
       params: pageType ? { pageType } : undefined,

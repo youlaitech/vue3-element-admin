@@ -359,7 +359,7 @@ defineOptions({
 import { dayjs } from "element-plus";
 import { ref } from "vue";
 import StatisticsAPI from "@/api/system/statistics";
-import type { VisitStatsVo, VisitTrendVo } from "@/types/api";
+import type { VisitStatsDetail, VisitTrendDetail } from "@/types/api";
 import { useUserStore } from "@/store/modules/user";
 import { formatGrowthRate } from "@/utils";
 import { useTransition, useDateFormat } from "@vueuse/core";
@@ -447,7 +447,7 @@ const greetings = computed(() => {
 // 访客统计数据加载状态
 const visitStatsLoading = ref(true);
 // 访客统计数据
-const visitStatsData = ref<VisitStatsVo>({
+const visitStatsData = ref<VisitStatsDetail>({
   todayUvCount: 0,
   uvGrowthRate: 0,
   totalUvCount: 0,
@@ -543,7 +543,7 @@ const fetchVisitTrendData = () => {
  *
  * @param data - 访问趋势数据
  */
-const updateVisitTrendChartOptions = (data: VisitTrendVo) => {
+const updateVisitTrendChartOptions = (data: VisitTrendDetail) => {
   visitTrendChartOptions.value = {
     tooltip: {
       trigger: "axis",

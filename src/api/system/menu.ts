@@ -1,20 +1,24 @@
 import request from "@/utils/request";
-import type { MenuQuery, MenuVo, MenuForm, RouteVo, OptionType } from "@/types/api";
+import type { MenuQueryParams, MenuItem, MenuForm, RouteItem, OptionItem } from "@/types/api";
 
 const MENU_BASE_URL = "/api/v1/menus";
 
 const MenuAPI = {
   /** 获取当前用户的路由列表 */
   getRoutes() {
-    return request<any, RouteVo[]>({ url: `${MENU_BASE_URL}/routes`, method: "get" });
+    return request<any, RouteItem[]>({ url: `${MENU_BASE_URL}/routes`, method: "get" });
   },
   /** 获取菜单树形列表 */
-  getList(queryParams: MenuQuery) {
-    return request<any, MenuVo[]>({ url: `${MENU_BASE_URL}`, method: "get", params: queryParams });
+  getList(queryParams: MenuQueryParams) {
+    return request<any, MenuItem[]>({
+      url: `${MENU_BASE_URL}`,
+      method: "get",
+      params: queryParams,
+    });
   },
   /** 获取菜单下拉数据源 */
   getOptions(onlyParent?: boolean) {
-    return request<any, OptionType[]>({
+    return request<any, OptionItem[]>({
       url: `${MENU_BASE_URL}/options`,
       method: "get",
       params: { onlyParent },

@@ -2,14 +2,16 @@
  * Role 角色类型定义
  */
 
+import type { BaseQueryParams } from "./common";
+
 /** 角色分页查询参数 */
-export interface RolePageQuery extends PageQuery {
+export interface RoleQueryParams extends BaseQueryParams {
   /** 搜索关键字 */
   keywords?: string;
 }
 
 /** 角色分页对象 */
-export interface RolePageVo {
+export interface RoleItem {
   /** 角色ID */
   id?: string;
   /** 角色编码 */

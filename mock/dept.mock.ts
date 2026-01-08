@@ -2,7 +2,7 @@ import { defineMock } from "./base";
 
 export default defineMock([
   {
-    url: "dept/options",
+    url: "depts/options",
     method: ["GET"],
     body: {
       code: "00000",
@@ -27,7 +27,7 @@ export default defineMock([
   },
 
   {
-    url: "dept",
+    url: "depts",
     method: ["GET"],
     body: {
       code: "00000",
@@ -73,7 +73,7 @@ export default defineMock([
 
   // 新增部门
   {
-    url: "dept",
+    url: "depts",
     method: ["POST"],
     body({ body }) {
       return {
@@ -86,7 +86,7 @@ export default defineMock([
 
   // 获取部门表单数据
   {
-    url: "dept/:id/form",
+    url: "depts/:id/form",
     method: ["GET"],
     body: ({ params }) => {
       return {
@@ -99,7 +99,7 @@ export default defineMock([
 
   // 修改部门
   {
-    url: "dept/:id",
+    url: "depts/:id",
     method: ["PUT"],
     body({ body }) {
       return {
@@ -112,7 +112,7 @@ export default defineMock([
 
   // 删除部门
   {
-    url: "dept/:id",
+    url: "depts/:id",
     method: ["DELETE"],
     body({ params }) {
       return {

@@ -71,7 +71,7 @@
 import UserAPI from "@/api/system/user";
 import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
-import type { UserForm, UserPageQuery } from "@/types/api";
+import type { UserForm, UserQueryParams, UserItem } from "@/types/api";
 import type { IObject, IModalConfig, IContentConfig, ISearchConfig } from "@/components/CURD/types";
 import { DeviceEnum } from "@/enums/settings";
 import { useAppStore } from "@/store";
@@ -83,16 +83,16 @@ defineOptions({
 });
 
 // ========================= 选项数据管理 =========================
-interface OptionType {
+interface OptionItem {
   label: string;
   value: any;
   [key: string]: any;
 }
 
 // 共享选项数据
-const deptArr = ref<OptionType[]>([]);
-const roleArr = ref<OptionType[]>([]);
-const stateArr = ref<OptionType[]>([
+const deptArr = ref<OptionItem[]>([]);
+const roleArr = ref<OptionItem[]>([]);
+const stateArr = ref<OptionItem[]>([
   { label: "启用", value: 1 },
   { label: "禁用", value: 0 },
 ]);
@@ -165,7 +165,7 @@ const searchConfig: ISearchConfig = reactive({
 });
 
 // ========================= 内容配置 =========================
-const contentConfig: IContentConfig<UserPageQuery> = reactive({
+const contentConfig: IContentConfig<UserQueryParams, UserItem> = reactive({
   permPrefix: "sys:user",
   table: {
     border: true,
@@ -176,12 +176,6 @@ const contentConfig: IContentConfig<UserPageQuery> = reactive({
     layout: "prev,pager,next,jumper,total,sizes",
     pageSize: 20,
     pageSizes: [10, 20, 30, 50],
-  },
-  parseData(res: any) {
-    return {
-      total: res.total,
-      list: res.list,
-    };
   },
   indexAction(params: any) {
     return UserAPI.getPage(params);
@@ -198,8 +192,8 @@ const contentConfig: IContentConfig<UserPageQuery> = reactive({
   },
   async exportsAction(params: any) {
     const res = await UserAPI.getPage(params);
-    console.log("exportsAction", res.list);
-    return res.list;
+    console.log("exportsAction", res.data);
+    return res.data;
   },
   pk: "id",
   toolbar: [

@@ -1,4 +1,4 @@
-﻿<!-- 字典 -->
+<!-- 字典 -->
 <template>
   <div class="app-container">
     <!-- 搜索区域 -->
@@ -139,7 +139,7 @@ defineOptions({
 
 import { ref, reactive } from "vue";
 import DictAPI from "@/api/system/dict";
-import type { DictPageQuery, DictPageVo, DictForm } from "@/types/api";
+import type { DictTypeQueryParams, DictTypeItem, DictTypeForm } from "@/types/api";
 
 import router from "@/router";
 
@@ -150,19 +150,19 @@ const loading = ref(false);
 const ids = ref<number[]>([]);
 const total = ref(0);
 
-const queryParams = reactive<DictPageQuery>({
+const queryParams = reactive<DictTypeQueryParams>({
   pageNum: 1,
   pageSize: 10,
 });
 
-const tableData = ref<DictPageVo[]>();
+const tableData = ref<DictTypeItem[]>();
 
 const dialog = reactive({
   title: "",
   visible: false,
 });
 
-const formData = reactive<DictForm>({});
+const formData = reactive<DictTypeForm>({});
 
 const computedRules = computed(() => {
   const rules: Partial<Record<string, any>> = {
@@ -176,9 +176,9 @@ const computedRules = computed(() => {
 function fetchData() {
   loading.value = true;
   DictAPI.getPage(queryParams)
-    .then((data) => {
-      tableData.value = data.list;
-      total.value = data.total;
+    .then((res) => {
+      tableData.value = res.data;
+      total.value = res.page?.total ?? 0;
     })
     .finally(() => {
       loading.value = false;
@@ -287,7 +287,7 @@ function handleDelete(id?: number) {
 }
 
 // 打开字典值"
-function handleOpenDictData(row: DictPageVo) {
+function handleOpenDictData(row: DictTypeItem) {
   router.push({
     path: "/system/dict-item",
     query: { dictCode: row.dictCode, title: `【${row.name}】字典数据` },

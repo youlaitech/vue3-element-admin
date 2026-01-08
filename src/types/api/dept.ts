@@ -3,7 +3,7 @@
  */
 
 /** 部门查询参数 */
-export interface DeptQuery {
+export interface DeptQueryParams {
   /** 搜索关键字 */
   keywords?: string;
   /** 状态 */
@@ -11,9 +11,9 @@ export interface DeptQuery {
 }
 
 /** 部门视图对象 */
-export interface DeptVo {
+export interface DeptItem {
   /** 子部门 */
-  children?: DeptVo[];
+  children?: DeptItem[];
   /** 创建时间 */
   createTime?: Date;
   /** 部门ID */

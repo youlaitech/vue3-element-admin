@@ -2,8 +2,10 @@
  * CodeGen 代码生成类型定义
  */
 
+import type { BaseQueryParams } from "./common";
+
 /** 代码生成预览对象 */
-export interface GeneratorPreviewVo {
+export interface GeneratorPreviewItem {
   /** 文件生成路径 */
   path: string;
   /** 文件名称 */
@@ -13,13 +15,13 @@ export interface GeneratorPreviewVo {
 }
 
 /** 数据表分页查询参数 */
-export interface TablePageQuery extends PageQuery {
+export interface TableQueryParams extends BaseQueryParams {
   /** 搜索关键字(表名) */
   keywords?: string;
 }
 
 /** 数据表分页对象 */
-export interface TablePageVo {
+export interface TableItem {
   /** 表名称 */
   tableName: string;
   /** 表描述 */

@@ -2,9 +2,11 @@
  * Dict 字典类型定义
  */
 
+import type { BaseQueryParams } from "./common";
+
 /** 字典分页查询参数 */
 
-export interface DictPageQuery extends PageQuery {
+export interface DictTypeQueryParams extends BaseQueryParams {
   /** 搜索关键字 */
   keywords?: string;
   /** 状态(1:启用;0:禁用) */
@@ -12,7 +14,7 @@ export interface DictPageQuery extends PageQuery {
 }
 
 /** 字典分页对象 */
-export interface DictPageVo {
+export interface DictTypeItem {
   /** 字典ID */
   id: string;
   /** 字典名称 */
@@ -24,7 +26,7 @@ export interface DictPageVo {
 }
 
 /** 字典表单对象 */
-export interface DictForm {
+export interface DictTypeForm {
   /** 字典ID */
   id?: string;
   /** 字典名称 */
@@ -38,7 +40,7 @@ export interface DictForm {
 }
 
 /** 字典项分页查询参数 */
-export interface DictItemPageQuery extends PageQuery {
+export interface DictItemQueryParams extends BaseQueryParams {
   /** 搜索关键字 */
   keywords?: string;
   /** 字典编码 */
@@ -46,7 +48,7 @@ export interface DictItemPageQuery extends PageQuery {
 }
 
 /** 字典项分页对象 */
-export interface DictItemPageVo {
+export interface DictItem {
   /** 字典项ID */
   id: string;
   /** 字典编码 */

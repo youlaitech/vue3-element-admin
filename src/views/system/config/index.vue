@@ -142,7 +142,7 @@ defineOptions({
 });
 
 import ConfigAPI from "@/api/system/config";
-import type { ConfigPageVo, ConfigForm, ConfigPageQuery } from "@/types/api";
+import type { ConfigItem, ConfigForm, ConfigQueryParams } from "@/types/api";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useDebounceFn } from "@vueuse/core";
 
@@ -153,14 +153,14 @@ const loading = ref(false);
 const selectIds = ref<number[]>([]);
 const total = ref(0);
 
-const queryParams = reactive<ConfigPageQuery>({
+const queryParams = reactive<ConfigQueryParams>({
   pageNum: 1,
   pageSize: 10,
   keywords: "",
 });
 
 // 系统配置表格数据
-const pageData = ref<ConfigPageVo[]>([]);
+const pageData = ref<ConfigItem[]>([]);
 
 const dialog = reactive({
   title: "",
@@ -185,9 +185,9 @@ const rules = reactive({
 function fetchData() {
   loading.value = true;
   ConfigAPI.getPage(queryParams)
-    .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
+    .then((res) => {
+      pageData.value = res.data;
+      total.value = res.page?.total ?? 0;
     })
     .finally(() => {
       loading.value = false;

@@ -4,8 +4,8 @@ import type {
   AiCommandResponse,
   AiExecuteRequest,
   AiExecuteResponse,
-  AiCommandRecordPageQuery,
-  AiCommandRecordVo,
+  AiAssistantRecordQueryParams,
+  AiAssistantRecordItem,
 } from "@/types/api";
 
 const AI_BASE_URL = "/api/v1/ai/assistant";
@@ -48,8 +48,8 @@ const AiCommandApi = {
    * @param queryParams 查询参数
    * @returns AI 命令记录分页列表
    */
-  getPage(queryParams: AiCommandRecordPageQuery) {
-    return request<any, PageResult<AiCommandRecordVo[]>>({
+  getPage(queryParams: AiAssistantRecordQueryParams) {
+    return request<any, PageResult<AiAssistantRecordItem>>({
       url: `${AI_BASE_URL}/records`,
       method: "get",
       params: queryParams,

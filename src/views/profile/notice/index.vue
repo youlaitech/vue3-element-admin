@@ -116,27 +116,27 @@ defineOptions({
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
 import NoticeAPI from "@/api/system/notice";
-import type { NoticePageVo, NoticePageQuery } from "@/types/api";
+import type { NoticeDetail, NoticeItem, NoticeQueryParams } from "@/types/api";
 
 const queryFormRef = ref();
-const pageData = ref<NoticePageVo[]>([]);
+const pageData = ref<NoticeItem[]>([]);
 const loading = ref(false);
 const total = ref(0);
 
-const queryParams = reactive<NoticePageQuery>({
+const queryParams = reactive<NoticeQueryParams>({
   pageNum: 1,
   pageSize: 10,
 });
 
 const noticeDialogVisible = ref(false);
-const noticeDetail = ref<any>(null);
+const noticeDetail = ref<NoticeDetail | null>(null);
 
 async function handleQuery() {
   loading.value = true;
   try {
-    const data = await NoticeAPI.getMyNoticePage(queryParams);
-    pageData.value = data.list;
-    total.value = data.total;
+    const res = await NoticeAPI.getMyNoticePage(queryParams);
+    pageData.value = res.data;
+    total.value = res.page?.total ?? 0;
   } catch (error) {
     ElMessage.error("获取通知列表失败");
     console.error("获取我的通知失败", error);

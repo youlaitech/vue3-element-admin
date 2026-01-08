@@ -156,7 +156,7 @@
 <script setup lang="ts">
 import type { TagProps } from "element-plus";
 import DictAPI from "@/api/system/dict";
-import type { DictItemPageQuery, DictItemPageVo, DictItemForm } from "@/types/api";
+import type { DictItemQueryParams, DictItem, DictItemForm } from "@/types/api";
 
 const route = useRoute();
 
@@ -169,12 +169,12 @@ const loading = ref(false);
 const ids = ref<number[]>([]);
 const total = ref(0);
 
-const queryParams = reactive<DictItemPageQuery>({
+const queryParams = reactive<DictItemQueryParams>({
   pageNum: 1,
   pageSize: 10,
 });
 
-const tableData = ref<DictItemPageVo[]>();
+const tableData = ref<DictItem[]>();
 
 const dialog = reactive({
   title: "",
@@ -199,9 +199,9 @@ const computedRules = computed(() => {
 function fetchData() {
   loading.value = true;
   DictAPI.getDictItemPage(dictCode.value, queryParams)
-    .then((data) => {
-      tableData.value = data.list;
-      total.value = data.total;
+    .then((res) => {
+      tableData.value = res.data;
+      total.value = res.page?.total ?? 0;
     })
     .finally(() => {
       loading.value = false;
@@ -227,7 +227,7 @@ function handleSelectionChange(selection: any) {
 }
 
 // 打开弹窗
-function handleOpenDialog(row?: DictItemPageVo) {
+function handleOpenDialog(row?: DictItem) {
   dialog.visible = true;
   dialog.title = row ? "编辑字典值" : "新增字典值";
 

@@ -55,7 +55,7 @@ export interface ISearchConfig {
   grid?: boolean | "left" | "right";
 }
 
-export interface IContentConfig<T = any> {
+export interface IContentConfig<TQuery = any, TItem = any> {
   // 权限前缀(如sys:user，用于组成权限标识)，不提供则不进行权限校验
   permPrefix?: string;
   // table组件属性
@@ -72,18 +72,13 @@ export interface IContentConfig<T = any> {
         >
       >;
   // 列表的网络请求函数(需返回promise)
-  indexAction: (queryParams: T) => Promise<any>;
+  indexAction: (queryParams: TQuery) => Promise<PageResult<TItem> | TItem[]>;
   // 默认的分页相关的请求参数
   request?: {
     pageName: string;
     limitName: string;
   };
-  // 数据格式解析的回调函数
-  parseData?: (res: any) => {
-    total: number;
-    list: IObject[];
-    [key: string]: any;
-  };
+  // 分页接口统一返回 PageResult { data, page }
   // 修改属性的网络请求函数(需返回promise)
   modifyAction?: (data: {
     [key: string]: any;
@@ -93,9 +88,9 @@ export interface IContentConfig<T = any> {
   // 删除的网络请求函数(需返回promise)
   deleteAction?: (ids: string) => Promise<any>;
   // 后端导出的网络请求函数(需返回promise)
-  exportAction?: (queryParams: T) => Promise<any>;
+  exportAction?: (queryParams: TQuery) => Promise<any>;
   // 前端全量导出的网络请求函数(需返回promise)
-  exportsAction?: (queryParams: T) => Promise<IObject[]>;
+  exportsAction?: (queryParams: TQuery) => Promise<TItem[]>;
   // 导入模板
   importTemplate?: string | (() => Promise<any>);
   // 后端导入的网络请求函数(需返回promise)

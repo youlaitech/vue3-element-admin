@@ -3,7 +3,7 @@
  */
 
 /** 访问趋势查询参数 */
-export interface VisitTrendQuery {
+export interface VisitTrendQueryParams {
   /** 开始日期 */
   startDate: string;
   /** 结束日期 */
@@ -11,7 +11,7 @@ export interface VisitTrendQuery {
 }
 
 /** 访问趋势视图对象 */
-export interface VisitTrendVo {
+export interface VisitTrendDetail {
   /** 日期列表 */
   dates: string[];
   /** 浏览量(PV)列表 */
@@ -23,7 +23,7 @@ export interface VisitTrendVo {
 }
 
 /** 访问量统计视图对象 */
-export interface VisitStatsVo {
+export interface VisitStatsDetail {
   /** 今日独立访客数(UV) */
   todayUvCount: number;
   /** 累计独立访客数(UV) */

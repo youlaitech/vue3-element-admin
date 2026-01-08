@@ -28,7 +28,7 @@ const props = defineProps({
   },
 });
 
-const deptList = ref<OptionType[]>(); // 部门列表
+const deptList = ref<OptionItem[]>(); // 部门列表
 const deptTreeRef = ref(); // 部门树
 const deptName = ref(); // 部门名称
 

@@ -332,6 +332,8 @@ const handleCloseDrawer = () => {
 .settings-drawer {
   :deep(.el-drawer__body) {
     position: relative;
+    display: flex;
+    flex-direction: column;
     height: 100%;
     padding: 0;
     overflow: hidden;
@@ -340,7 +342,8 @@ const handleCloseDrawer = () => {
 
 /* 设置内容区域 */
 .settings-content {
-  max-height: calc(100vh - 120px);
+  /* let drawer body control height with flex and make this area scrollable */
+  flex: 1 1 auto;
   padding: 20px;
   overflow-y: auto;
 }

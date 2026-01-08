@@ -259,12 +259,12 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "AiCommandRecord",
+  name: "AiAssistantRecord",
   inheritAttrs: false,
 });
 
 import AiCommandApi from "@/api/ai";
-import type { AiCommandRecordVo, AiCommandRecordPageQuery } from "@/types/api";
+import type { AiAssistantRecordItem, AiAssistantRecordQueryParams } from "@/types/api";
 import { onMounted, reactive, ref } from "vue";
 
 const queryFormRef = ref();
@@ -272,7 +272,7 @@ const queryFormRef = ref();
 const loading = ref(false);
 const total = ref(0);
 
-const queryParams = reactive<AiCommandRecordPageQuery>({
+const queryParams = reactive<AiAssistantRecordQueryParams>({
   pageNum: 1,
   pageSize: 10,
   keywords: "",
@@ -283,10 +283,10 @@ const queryParams = reactive<AiCommandRecordPageQuery>({
   createTime: ["", ""],
 });
 
-const pageData = ref<AiCommandRecordVo[]>([]);
+const pageData = ref<AiAssistantRecordItem[]>([]);
 
 const detailDialogVisible = ref(false);
-const currentRow = ref<AiCommandRecordVo>();
+const currentRow = ref<AiAssistantRecordItem>();
 
 function getExecuteStatusText(status: number): string {
   switch (status) {
@@ -317,9 +317,9 @@ function getExecuteStatusTagType(status: number): "info" | "success" | "danger" 
 function fetchData() {
   loading.value = true;
   AiCommandApi.getPage(queryParams)
-    .then((data) => {
-      pageData.value = data.list || [];
-      total.value = data.total || 0;
+    .then((res) => {
+      pageData.value = res.data || [];
+      total.value = res.page?.total ?? 0;
     })
     .finally(() => {
       loading.value = false;
@@ -337,7 +337,7 @@ function handleResetQuery() {
   fetchData();
 }
 
-function handleViewDetail(row: AiCommandRecordVo) {
+function handleViewDetail(row: AiAssistantRecordItem) {
   currentRow.value = row;
   detailDialogVisible.value = true;
 }

@@ -4,7 +4,7 @@ import { store } from "@/store";
 import router from "@/router";
 
 import MenuAPI from "@/api/system/menu";
-import { RouteVo } from "@/types";
+import { RouteItem } from "@/types";
 const modules = import.meta.glob("../../views/**/**.vue");
 const Layout = () => import("../../layouts/index.vue");
 
@@ -69,7 +69,7 @@ export const usePermissionStore = defineStore("permission", () => {
  * 转换后端路由数据为Vue Router配置
  * 处理组件路径映射和Layout层级嵌套
  */
-const transformRoutes = (routes: RouteVo[], isTopLevel: boolean = true): RouteRecordRaw[] => {
+const transformRoutes = (routes: RouteItem[], isTopLevel: boolean = true): RouteRecordRaw[] => {
   return routes.map((route) => {
     const { component, children, ...args } = route;
 

@@ -116,7 +116,7 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="创建时间" align="center" prop="createTime" width="150" />
+            <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
             <el-table-column label="操作" fixed="right" width="220">
               <template #default="scope">
                 <el-button
@@ -253,7 +253,7 @@ import { useDebounceFn } from "@vueuse/core";
 import { ElMessage, ElMessageBox, type FormInstance } from "element-plus";
 
 // ==================== 3. 类型定义 ====================
-import type { UserForm, UserPageQuery, UserPageVo } from "@/types/api";
+import type { UserForm, UserQueryParams, UserItem } from "@/types/api";
 
 // ==================== 3.5 工具函数 ====================
 import { downloadFile, VALIDATORS } from "@/utils";
@@ -292,13 +292,13 @@ const queryFormRef = ref<FormInstance>();
 const userFormRef = ref<FormInstance>();
 
 // 列表查询参数
-const queryParams = reactive<UserPageQuery>({
+const queryParams = reactive<UserQueryParams>({
   pageNum: 1,
   pageSize: 10,
 });
 
 // 列表数据
-const userList = ref<UserPageVo[]>([]);
+const userList = ref<UserItem[]>([]);
 const total = ref(0);
 const loading = ref(false);
 
@@ -318,8 +318,8 @@ const initialFormData: UserForm = {
 const formData = reactive<UserForm>({ ...initialFormData });
 
 // 下拉选项数据
-const deptOptions = ref<OptionType[]>();
-const roleOptions = ref<OptionType[]>();
+const deptOptions = ref<OptionItem[]>();
+const roleOptions = ref<OptionItem[]>();
 
 // 导入弹窗
 const importDialogVisible = ref(false);
@@ -350,9 +350,9 @@ const rules = reactive({
 async function fetchUserList(): Promise<void> {
   loading.value = true;
   try {
-    const data = await UserAPI.getPage(queryParams);
-    userList.value = data.list;
-    total.value = data.total;
+    const res = await UserAPI.getPage(queryParams);
+    userList.value = res.data;
+    total.value = res.page?.total ?? 0;
   } catch (error) {
     ElMessage.error("获取用户列表失败");
     console.error("获取用户列表失败:", error);
@@ -362,7 +362,7 @@ async function fetchUserList(): Promise<void> {
 }
 
 // ==================== 表格选择 ====================
-const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<UserPageVo>();
+const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<UserItem>();
 
 // ==================== 查询操作 ====================
 
@@ -389,7 +389,7 @@ function handleResetQuery(): void {
  * 重置用户密码
  * @param row 用户数据
  */
-function handleResetPassword(row: UserPageVo): void {
+function handleResetPassword(row: UserItem): void {
   ElMessageBox.prompt(`请输入用户【${row.username}】的新密码`, "重置密码", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",

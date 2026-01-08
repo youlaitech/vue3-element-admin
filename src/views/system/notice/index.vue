@@ -262,7 +262,7 @@ defineOptions({
 
 import { ref, reactive } from "vue";
 import NoticeAPI from "@/api/system/notice";
-import type { NoticePageVo, NoticeForm, NoticePageQuery, NoticeDetailVo } from "@/types/api";
+import type { NoticeItem, NoticeForm, NoticeQueryParams, NoticeDetail } from "@/types/api";
 import UserAPI from "@/api/system/user";
 
 const queryFormRef = ref();
@@ -272,14 +272,14 @@ const loading = ref(false);
 const selectIds = ref<number[]>([]);
 const total = ref(0);
 
-const queryParams = reactive<NoticePageQuery>({
+const queryParams = reactive<NoticeQueryParams>({
   pageNum: 1,
   pageSize: 10,
 });
 
-const userOptions = ref<OptionType[]>([]);
+const userOptions = ref<OptionItem[]>([]);
 // 通知公告表格数据
-const pageData = ref<NoticePageVo[]>([]);
+const pageData = ref<NoticeItem[]>([]);
 
 // 弹窗
 const dialog = reactive({
@@ -316,7 +316,7 @@ const rules = reactive({
 const detailDialog = reactive({
   visible: false,
 });
-const currentNotice = ref<NoticeDetailVo>({});
+const currentNotice = ref<NoticeDetail>({});
 
 // 查询通知公告
 function handleQuery() {
@@ -328,9 +328,9 @@ function handleQuery() {
 function fetchData() {
   loading.value = true;
   NoticeAPI.getPage(queryParams)
-    .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
+    .then((res) => {
+      pageData.value = res.data;
+      total.value = res.page?.total ?? 0;
     })
     .finally(() => {
       loading.value = false;

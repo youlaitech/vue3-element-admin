@@ -1,11 +1,11 @@
 import request from "@/utils/request";
 import type {
   TenantCreateForm,
-  TenantCreateResultVo,
   TenantForm,
   TenantInfo,
-  TenantPageQuery,
-  TenantPageVo,
+  TenantCreateResult,
+  TenantQueryParams,
+  TenantItem,
 } from "@/types/api";
 
 const TENANT_BASE_URL = "/api/v1/tenants";
@@ -20,7 +20,7 @@ const TenantAPI = {
    */
   getTenantList() {
     return request<any, TenantInfo[]>({
-      url: `${TENANT_BASE_URL}`,
+      url: `${TENANT_BASE_URL}/options`,
       method: "get",
     });
   },
@@ -48,9 +48,9 @@ const TenantAPI = {
   },
 
   /** 获取租户分页数据（平台租户管理） */
-  getPage(queryParams?: TenantPageQuery) {
-    return request<any, PageResult<TenantPageVo[]>>({
-      url: `${TENANT_BASE_URL}/page`,
+  getPage(queryParams?: TenantQueryParams) {
+    return request<any, PageResult<TenantItem>>({
+      url: `${TENANT_BASE_URL}`,
       method: "get",
       params: queryParams,
     });
@@ -66,7 +66,7 @@ const TenantAPI = {
 
   /** 新增租户并初始化默认数据 */
   create(data: TenantCreateForm) {
-    return request<any, TenantCreateResultVo>({
+    return request<any, TenantCreateResult>({
       url: `${TENANT_BASE_URL}`,
       method: "post",
       data,

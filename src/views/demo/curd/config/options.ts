@@ -2,16 +2,16 @@
 import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
 
-interface OptionType {
+interface OptionItem {
   label: string;
   value: any;
   [key: string]: any; // 允许其他属性
 }
 
-// 明确指定类型为 OptionType[]
-export const deptArr = ref<OptionType[]>([]);
-export const roleArr = ref<OptionType[]>([]);
-export const stateArr = ref<OptionType[]>([
+// 明确指定类型为 OptionItem[]
+export const deptArr = ref<OptionItem[]>([]);
+export const roleArr = ref<OptionItem[]>([]);
+export const stateArr = ref<OptionItem[]>([
   { label: "启用", value: 1 },
   { label: "禁用", value: 0 },
 ]);

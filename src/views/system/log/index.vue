@@ -69,14 +69,14 @@ defineOptions({
 });
 
 import LogAPI from "@/api/system/log";
-import type { LogPageVo, LogPageQuery } from "@/types/api";
+import type { LogItem, LogQueryParams } from "@/types/api";
 
 const queryFormRef = ref();
 
 const loading = ref(false);
 const total = ref(0);
 
-const queryParams = reactive<LogPageQuery>({
+const queryParams = reactive<LogQueryParams>({
   pageNum: 1,
   pageSize: 10,
   keywords: "",
@@ -84,15 +84,15 @@ const queryParams = reactive<LogPageQuery>({
 });
 
 // 日志表格数据
-const pageData = ref<LogPageVo[]>();
+const pageData = ref<LogItem[]>();
 
 /** 获取数据 */
 function fetchData() {
   loading.value = true;
   LogAPI.getPage(queryParams)
-    .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
+    .then((res) => {
+      pageData.value = res.data;
+      total.value = res.page?.total ?? 0;
     })
     .finally(() => {
       loading.value = false;

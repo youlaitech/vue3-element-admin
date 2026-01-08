@@ -15,6 +15,21 @@ const http = axios.create({
   paramsSerializer: (params) => qs.stringify(params),
 });
 
+type PageMeta = { pageNum: number; pageSize: number; total: number };
+type PagedApiResponse<T = any> = ApiResponse<T> & { page: PageMeta | null };
+
+function isPagedApiResponse<T>(payload: ApiResponse<T>): payload is PagedApiResponse<T> {
+  // Treat as paged response only when `page` is a non-null object (contains pagination meta).
+  // Some APIs return `page: null` for non-paged endpoints; checking for the presence
+  // of the `page` property alone causes unintended branching (e.g. captcha endpoint).
+  return (
+    payload != null &&
+    typeof payload === "object" &&
+    payload.page != null &&
+    typeof (payload as any).page === "object"
+  );
+}
+
 // ============================================
 // 请求拦截器
 // ============================================
@@ -49,6 +64,11 @@ http.interceptors.response.use(
     const { code, data, msg } = response.data;
 
     if (code === ApiCodeEnum.SUCCESS) {
+      // 分页接口需要同时返回 data 与 page 元信息
+      if (isPagedApiResponse(response.data)) {
+        const { page } = response.data;
+        return { data, page: page ?? null };
+      }
       return data;
     }
 

@@ -2,6 +2,8 @@
  * User 用户类型定义
  */
 
+import type { BaseQueryParams } from "./common";
+
 /** 登录用户信息 */
 export interface UserInfo {
   /** 用户ID */
@@ -19,7 +21,7 @@ export interface UserInfo {
 }
 
 /** 用户分页查询参数 */
-export interface UserPageQuery extends PageQuery {
+export interface UserQueryParams extends BaseQueryParams {
   /** 搜索关键字 */
   keywords?: string;
   /** 用户状态 */
@@ -31,7 +33,7 @@ export interface UserPageQuery extends PageQuery {
 }
 
 /** 用户分页对象 */
-export interface UserPageVo {
+export interface UserItem {
   /** 用户ID */
   id: string;
   /** 用户头像地址 */
@@ -81,7 +83,7 @@ export interface UserForm {
 }
 
 /** 个人中心用户信息 */
-export interface UserProfileVo {
+export interface UserProfileDetail {
   /** 用户ID */
   id?: string;
   /** 用户名 */

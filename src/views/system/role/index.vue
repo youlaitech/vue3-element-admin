@@ -63,7 +63,7 @@
               size="small"
               link
               icon="position"
-              @click="handleOpenAssignPermDialog(scope.row)"
+              @click="openRolePermissionAssignment(scope.row)"
             >
               分配权限
             </el-button>
@@ -216,7 +216,7 @@ import { useAppStore } from "@/store/modules/app";
 import { DeviceEnum } from "@/enums/settings";
 
 import RoleAPI from "@/api/system/role";
-import type { RolePageVo, RoleForm, RolePageQuery } from "@/types/api";
+import type { RoleItem, RoleForm, RoleQueryParams } from "@/types/api";
 import MenuAPI from "@/api/system/menu";
 
 defineOptions({
@@ -234,15 +234,15 @@ const loading = ref(false);
 const ids = ref<number[]>([]);
 const total = ref(0);
 
-const queryParams = reactive<RolePageQuery>({
+const queryParams = reactive<RoleQueryParams>({
   pageNum: 1,
   pageSize: 10,
 });
 
 // 角色表格数据
-const roleList = ref<RolePageVo[]>();
+const roleList = ref<RoleItem[]>();
 // 菜单权限下拉
-const menuPermOptions = ref<OptionType[]>([]);
+const menuPermOptions = ref<OptionItem[]>([]);
 
 // 弹窗
 const dialog = reactive({
@@ -282,9 +282,9 @@ const parentChildLinked = ref(true);
 function fetchData() {
   loading.value = true;
   RoleAPI.getPage(queryParams)
-    .then((data) => {
-      roleList.value = data.list;
-      total.value = data.total;
+    .then((res) => {
+      roleList.value = res.data;
+      total.value = res.page?.total ?? 0;
     })
     .finally(() => {
       loading.value = false;
@@ -390,7 +390,7 @@ function handleDelete(roleId?: number) {
 }
 
 // 打开分配菜单权限弹窗
-async function handleOpenAssignPermDialog(row: RolePageVo) {
+async function openRolePermissionAssignment(row: RoleItem) {
   const roleId = row.id;
   if (roleId) {
     assignPermDialogVisible.value = true;

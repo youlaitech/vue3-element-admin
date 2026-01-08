@@ -2,8 +2,10 @@
  * Notice 通知类型定义
  */
 
+import type { BaseQueryParams } from "./common";
+
 /** 通知分页查询参数 */
-export interface NoticePageQuery extends PageQuery {
+export interface NoticeQueryParams extends BaseQueryParams {
   /** 通知标题 */
   title?: string;
   /** 发布状态(0:草稿;1:已发布;2:已撤回) */
@@ -33,7 +35,7 @@ export interface NoticeForm {
 }
 
 /** 通知分页对象 */
-export interface NoticePageVo {
+export interface NoticeItem {
   /** 通知ID */
   id: string;
   /** 通知标题 */
@@ -55,7 +57,7 @@ export interface NoticePageVo {
 }
 
 /** 通知详情对象 */
-export interface NoticeDetailVo {
+export interface NoticeDetail {
   /** 通知ID */
   id?: string;
   /** 通知标题 */
