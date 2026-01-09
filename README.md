@@ -22,9 +22,6 @@
   <img src="https://img.shields.io/badge/Vite-7.3.0-green.svg"/>
   <img src="https://img.shields.io/badge/Element Plus-2.3.2-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
-  <a href="https://gitee.com/youlaiorg" target="_blank">
-      <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
-  </a>
 
   <a href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
     <img alt="有来技术" src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
