@@ -225,11 +225,6 @@ onBeforeUnmount(() => {
   padding: clamp(1.5rem, 3vw, 3rem);
   color: var(--el-text-color-primary);
   animation: featureFade 0.8s ease-out;
-
-  @media (prefers-color-scheme: dark) {
-    /* use theme variable so dark mode colors follow theme variables */
-    color: var(--el-text-color-primary);
-  }
 }
 
 @media (max-width: 768px) {

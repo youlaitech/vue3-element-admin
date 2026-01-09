@@ -3,17 +3,11 @@
 ## 🎉 正在参加 Gitee 2025 最受欢迎开源软件评选
 
 <a href="https://gitee.com/activity/2025opensource?ident=I6VXEH" target="_blank">
-  <img src="https://img.shields.io/badge/🗳️_立即投票-支持本项目-ff6b35?style=for-the-badge&logo=gitee" alt="投票" height="50"/>
+  <img src="https://img.shields.io/badge/VUE3--ELEMENT--ADMIN-点击投票支持-f97316?style=for-the-badge&logo=gitee&logoColor=white&labelColor=111827" alt="投票" height="50"/>
 </a>
 
 <p>
-  <strong>一票就够，不用每天投 🙏 您的支持是我们持续更新的最大动力！</strong>
-</p>
-
-<p>
-  <a href="https://gitee.com/activity/2025opensource?ident=I6VXEH" target="_blank">
-    <strong>👉 点击徽章或这里投票 👈</strong>
-  </a>
+  <strong>📢 投票最后1天！恳请助力一票 🙏 无需重复投，您的支持是我们前行的最大动力！</strong>
 </p>
 
 </div>
@@ -25,8 +19,8 @@
   <h1>vue3-element-admin</h1>
 
   <img src="https://img.shields.io/badge/Vue-3.5.22-brightgreen.svg"/>
-  <img src="https://img.shields.io/badge/Vite-7.1.12-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.11.7-blue.svg"/>
+  <img src="https://img.shields.io/badge/Vite-7.3.0-green.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.3.2-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
   <a href="https://gitee.com/youlaiorg" target="_blank">
       <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
@@ -42,6 +36,9 @@
     <img alt="有来技术" src="https://gitcode.com/youlai/vue3-element-admin/star/badge.svg"/>
   </a>
 
+  <a href="https://atomgit.com/youlai/vue3-element-admin" target="_blank">
+    <img alt="有来技术" src="https://atomgit.com/youlai/vue3-element-admin/star/2025top.svg"/>
+  </a>
 </div>
 
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
