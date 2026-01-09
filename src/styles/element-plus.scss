@@ -1,6 +1,50 @@
 // Element Plus 变量覆盖（必须在最前面）
 @use "./element-plus-vars";
 
+:root {
+  --el-color-primary: #4080ff;
+  --el-color-primary-dark-2: color-mix(in srgb, var(--el-color-primary) 80%, #000);
+  --el-color-primary-light-3: color-mix(in srgb, var(--el-color-primary) 30%, #fff);
+  --el-color-primary-light-5: color-mix(in srgb, var(--el-color-primary) 50%, #fff);
+  --el-color-primary-light-7: color-mix(in srgb, var(--el-color-primary) 70%, #fff);
+  --el-color-primary-light-8: color-mix(in srgb, var(--el-color-primary) 80%, #fff);
+  --el-color-primary-light-9: color-mix(in srgb, var(--el-color-primary) 90%, #fff);
+
+  --el-color-success: #23c343;
+  --el-color-success-dark-2: color-mix(in srgb, var(--el-color-success) 80%, #000);
+  --el-color-success-light-3: color-mix(in srgb, var(--el-color-success) 30%, #fff);
+  --el-color-success-light-5: color-mix(in srgb, var(--el-color-success) 50%, #fff);
+  --el-color-success-light-7: color-mix(in srgb, var(--el-color-success) 70%, #fff);
+  --el-color-success-light-8: color-mix(in srgb, var(--el-color-success) 80%, #fff);
+  --el-color-success-light-9: color-mix(in srgb, var(--el-color-success) 90%, #fff);
+
+  --el-color-warning: #ff9a2e;
+  --el-color-warning-dark-2: color-mix(in srgb, var(--el-color-warning) 80%, #000);
+  --el-color-warning-light-3: color-mix(in srgb, var(--el-color-warning) 30%, #fff);
+  --el-color-warning-light-5: color-mix(in srgb, var(--el-color-warning) 50%, #fff);
+  --el-color-warning-light-7: color-mix(in srgb, var(--el-color-warning) 70%, #fff);
+  --el-color-warning-light-8: color-mix(in srgb, var(--el-color-warning) 80%, #fff);
+  --el-color-warning-light-9: color-mix(in srgb, var(--el-color-warning) 90%, #fff);
+
+  --el-color-danger: #f76560;
+  --el-color-danger-dark-2: color-mix(in srgb, var(--el-color-danger) 80%, #000);
+  --el-color-danger-light-3: color-mix(in srgb, var(--el-color-danger) 30%, #fff);
+  --el-color-danger-light-5: color-mix(in srgb, var(--el-color-danger) 50%, #fff);
+  --el-color-danger-light-7: color-mix(in srgb, var(--el-color-danger) 70%, #fff);
+  --el-color-danger-light-8: color-mix(in srgb, var(--el-color-danger) 80%, #fff);
+  --el-color-danger-light-9: color-mix(in srgb, var(--el-color-danger) 90%, #fff);
+
+  --el-color-info: #a9aeb8;
+  --el-color-info-dark-2: color-mix(in srgb, var(--el-color-info) 80%, #000);
+  --el-color-info-light-3: color-mix(in srgb, var(--el-color-info) 30%, #fff);
+  --el-color-info-light-5: color-mix(in srgb, var(--el-color-info) 50%, #fff);
+  --el-color-info-light-7: color-mix(in srgb, var(--el-color-info) 70%, #fff);
+  --el-color-info-light-8: color-mix(in srgb, var(--el-color-info) 80%, #fff);
+  --el-color-info-light-9: color-mix(in srgb, var(--el-color-info) 90%, #fff);
+
+  --el-bg-color-page: #f5f8fd;
+}
+
 $border: 1px solid var(--el-border-color-light);
 
 /* el-dialog */

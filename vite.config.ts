@@ -83,7 +83,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         // 指定自定义组件位置(默认:src/components)
         dirs: ["src/components", "src/**/components"],
         // 导入组件类型声明文件路径 (false:关闭自动生成)
-        dts: "src/types/components.d.ts",
+        dts: false,
+        //dts: "src/types/components.d.ts",
       }),
     ] as PluginOption[],
     // 预加载项目必需的组件
@@ -188,23 +189,16 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/space/style/index",
       ],
     },
+    esbuild: isProduction
+      ? {
+          drop: ["console", "debugger"],
+        }
+      : undefined,
     // 构建配置
     build: {
       chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告
-      minify: isProduction ? "terser" : false, // 只在生产环境启用压缩
-      terserOptions: isProduction
-        ? {
-            compress: {
-              keep_infinity: true, // 防止 Infinity 被压缩成 1/0，这可能会导致 Chrome 上的性能问题
-              drop_console: true, // 生产环境去除 console.log, console.warn, console.error 等
-              drop_debugger: true, // 生产环境去除 debugger
-              pure_funcs: ["console.log", "console.info"], // 移除指定的函数调用
-            },
-            format: {
-              comments: false, // 删除注释
-            },
-          }
-        : {},
+      reportCompressedSize: false,
+      minify: isProduction ? "esbuild" : false, // 只在生产环境启用压缩
       rollupOptions: {
         output: {
           // manualChunks: {
