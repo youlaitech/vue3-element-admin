@@ -286,10 +286,10 @@ function handleDelete(id?: number) {
   );
 }
 
-// 打开字典值"
+// 打开字典数据
 function handleOpenDictData(row: DictTypeItem) {
   router.push({
-    path: "/system/dict-item",
+    name: "DictItem",
     query: { dictCode: row.dictCode, title: `【${row.name}】字典数据` },
   });
 }

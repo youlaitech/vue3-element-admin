@@ -1,6 +1,6 @@
 <template>
   <el-config-provider :locale="locale" :size="size">
-    <!-- 开启水�?-->
+    <!-- 开启水印-->
     <el-watermark
       :font="{ color: fontColor }"
       :content="showWatermark ? watermarkContent : ''"
@@ -30,8 +30,8 @@ const size = computed(() => appStore.size as ComponentSize);
 const showWatermark = computed(() => settingsStore.showWatermark);
 const watermarkContent = appConfig.name;
 
-// 只有在启�?AI 助手且用户已登录时才显示
-// 使用 userInfo 作为响应式依赖，当用户退出登录时会自动更�?
+// 只有在启�?AI 助手且用户已登录时才显示
+// 使用 userInfo 作为响应式依赖，当用户退出登录时会自动更�?
 const enableAiAssistant = computed(() => {
   const isEnabled = settingsStore.enableAiAssistant;
   const isLoggedIn = userStore.userInfo && Object.keys(userStore.userInfo).length > 0;

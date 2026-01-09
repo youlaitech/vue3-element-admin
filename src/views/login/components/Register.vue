@@ -66,6 +66,7 @@
               border-rd-4px
               w-full
               h-full
+              block
               object-contain
               shadow="[0_0_0_1px_var(--el-border-color)_inset]"
               :src="captchaBase64"
