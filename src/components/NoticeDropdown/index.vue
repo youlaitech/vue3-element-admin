@@ -1,10 +1,12 @@
 <template>
-  <el-dropdown trigger="click">
-    <el-badge v-if="list.length > 0" :value="list.length" :max="99">
-      <div class="i-svg:bell" />
-    </el-badge>
+  <el-dropdown class="notice__dropdown" trigger="click">
+    <div class="notice__trigger">
+      <el-badge v-if="list.length > 0" :value="list.length" :max="99">
+        <div class="i-svg:bell" />
+      </el-badge>
 
-    <div v-else class="i-svg:bell" />
+      <div v-else class="i-svg:bell" />
+    </div>
 
     <template #dropdown>
       <div class="p-5">
@@ -79,4 +81,22 @@ import { useNotice } from "./useNotice";
 const { list, detail, dialogVisible, read, readAll, goMore } = useNotice();
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.notice {
+  &__dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+}
+</style>

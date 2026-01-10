@@ -182,7 +182,7 @@ function handleSettingsClick() {
 .navbar-actions {
   display: flex;
   align-items: center;
-  height: 100%;
+  min-height: 44px;
 
   &__item {
     position: relative;
@@ -190,8 +190,7 @@ function handleSettingsClick() {
     align-items: center;
     justify-content: center;
     min-width: 44px; /* 增加最小点击区域到44px，符合人机交互标�?*/
-    height: 100%;
-    min-height: 44px;
+    height: 44px;
     padding: 0 8px;
     text-align: center;
     cursor: pointer;
@@ -211,7 +210,16 @@ function handleSettingsClick() {
       align-items: center;
       justify-content: center;
       width: 100%;
-      height: 100%;
+      height: 44px;
+    }
+
+    :deep(.i-svg\:language) {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      line-height: 18px;
+      background-size: 18px 18px;
     }
 
     // 图标样式
@@ -235,7 +243,7 @@ function handleSettingsClick() {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    height: 44px;
     padding: 0 8px;
 
     &__avatar {

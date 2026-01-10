@@ -1,5 +1,5 @@
 <template>
-  <div @click="toggle">
+  <div class="fullscreen-trigger" @click="toggle">
     <div :class="`i-svg:` + (isFullscreen ? 'fullscreen-exit' : 'fullscreen')" />
   </div>
 </template>
@@ -8,4 +8,12 @@
 const { isFullscreen, toggle } = useFullscreen();
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.fullscreen-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+</style>

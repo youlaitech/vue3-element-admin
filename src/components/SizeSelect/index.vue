@@ -2,7 +2,9 @@
   <!-- 布局大小 -->
   <el-tooltip :content="t('sizeSelect.tooltip')" effect="dark" placement="bottom">
     <el-dropdown trigger="click" @command="handleSizeChange">
-      <div class="i-svg:size" />
+      <div class="size-trigger">
+        <div class="i-svg:size" />
+      </div>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item
@@ -38,3 +40,13 @@ function handleSizeChange(size: string) {
   ElMessage.success(t("sizeSelect.message.success"));
 }
 </script>
+
+<style lang="scss" scoped>
+.size-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+</style>
