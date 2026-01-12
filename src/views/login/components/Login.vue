@@ -109,7 +109,11 @@
       </div>
       <template #footer>
         <el-button @click="tenantDialogVisible = false">取消</el-button>
-        <el-button type="primary" :disabled="!selectedTenantId" @click="handleTenantSelected">
+        <el-button
+          type="primary"
+          :disabled="selectedTenantId == null"
+          @click="handleTenantSelected"
+        >
           继续
         </el-button>
       </template>
@@ -268,7 +272,7 @@ async function handleLoginSubmit() {
         // 需要选择租户
         tenantStore.setTenantList(error.data);
         selectedTenantId.value = error.data[0]?.id || null;
-        if (selectedTenantId.value) {
+        if (selectedTenantId.value != null) {
           tenantStore.currentTenantId = selectedTenantId.value;
           tenantStore.currentTenant =
             error.data.find((t: any) => t.id === selectedTenantId.value) || null;
@@ -292,7 +296,7 @@ async function handleLoginSubmit() {
  * 租户选择确认后的处理
  */
 async function handleTenantSelected() {
-  if (!selectedTenantId.value) {
+  if (selectedTenantId.value == null) {
     ElMessage.warning("请选择租户");
     return;
   }

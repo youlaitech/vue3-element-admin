@@ -59,7 +59,7 @@
                 {{ `v${appConfig.version}` }}
               </el-tag>
               <el-tag v-if="tenantEnabled" type="success" size="small" effect="light" round>
-                多租�?
+                多租户
               </el-tag>
             </div>
           </div>
