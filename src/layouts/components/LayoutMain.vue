@@ -2,7 +2,7 @@
   <section class="app-main" :style="{ height: appMainHeight }">
     <router-view>
       <template #default="{ Component, route }">
-        <transition enter-active-class="animate__animated animate__fadeIn" mode="out-in">
+        <transition :name="transitionName" mode="out-in">
           <keep-alive :include="cachedViews">
             <component :is="currentComponent(Component, route)" :key="route.fullPath" />
           </keep-alive>
@@ -24,6 +24,8 @@ import variables from "@/styles/variables.module.scss";
 import Error404 from "@/views/error/404.vue";
 
 const { cachedViews } = toRefs(useTagsViewStore());
+
+const settingsStore = useSettingsStore();
 
 // 当前组件
 const wrapperMap = new Map<string, Component>();
@@ -60,11 +62,16 @@ const currentComponent = (component: Component, route: RouteLocationNormalized) 
 };
 
 const appMainHeight = computed(() => {
-  if (useSettingsStore().showTagsView) {
+  if (settingsStore.showTagsView) {
     return `calc(100vh - ${variables["navbar-height"]} - ${variables["tags-view-height"]})`;
   } else {
     return `calc(100vh - ${variables["navbar-height"]})`;
   }
+});
+
+// 页面切换动画名称
+const transitionName = computed(() => {
+  return settingsStore.pageSwitchingAnimation ?? "";
 });
 </script>
 
@@ -74,18 +81,42 @@ const appMainHeight = computed(() => {
   overflow-y: auto;
   background-color: var(--el-bg-color-page);
 
-  /* 布局切换动画优化 */
-  &.animate__animated {
-    animation-duration: 0.4s;
-    animation-fill-mode: forwards;
+  /* fade */
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.3s ease-in-out;
+  }
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
   }
 
-  &.animate__fadeOut {
-    animation-timing-function: ease-in;
+  /* fade-slide */
+  .fade-slide-leave-active,
+  .fade-slide-enter-active {
+    transition: all 0.3s;
+  }
+  .fade-slide-enter-from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  .fade-slide-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
   }
 
-  &.animate__fadeIn {
-    animation-timing-function: ease-out;
+  /* fade-scale */
+  .fade-scale-leave-active,
+  .fade-scale-enter-active {
+    transition: all 0.28s;
+  }
+  .fade-scale-enter-from {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+  .fade-scale-leave-to {
+    opacity: 0;
+    transform: scale(0.8);
   }
 }
 </style>

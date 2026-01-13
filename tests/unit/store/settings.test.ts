@@ -160,6 +160,38 @@ describe("useSettingsStore", () => {
     });
   });
 
+  describe("页面切换动画", () => {
+    it("应该修改页面切换动画", () => {
+      const store = useSettingsStore();
+
+      store.pageSwitchingAnimation = "fade";
+      expect(store.pageSwitchingAnimation).toBe("fade");
+
+      store.pageSwitchingAnimation = "fade-slide";
+      expect(store.pageSwitchingAnimation).toBe("fade-slide");
+
+      store.pageSwitchingAnimation = "fade-scale";
+      expect(store.pageSwitchingAnimation).toBe("fade-scale");
+
+      store.pageSwitchingAnimation = "none";
+      expect(store.pageSwitchingAnimation).toBe("none");
+    });
+
+    it("应该持久化页面切换动画设置", () => {
+      const store = useSettingsStore();
+      store.pageSwitchingAnimation = "fade-scale";
+
+      const newStore = useSettingsStore();
+      expect(newStore.pageSwitchingAnimation).toBe("fade-scale");
+    });
+
+    it("应该使用默认的页面切换动画", () => {
+      const store = useSettingsStore();
+      // 默认值应该是 "fade-slide"
+      expect(store.pageSwitchingAnimation).toBe("fade-slide");
+    });
+  });
+
   describe("重置设置", () => {
     it("应该重置所有设置为默认值", () => {
       const store = useSettingsStore();
@@ -168,6 +200,7 @@ describe("useSettingsStore", () => {
       store.showTagsView = false;
       store.showAppLogo = false;
       store.showWatermark = false;
+      store.pageSwitchingAnimation = "fade-slide";
       store.userEnableAi = true;
       store.grayMode = true;
       store.colorWeak = true;
@@ -181,6 +214,7 @@ describe("useSettingsStore", () => {
       expect(store.userEnableAi).toBe(false);
       expect(store.grayMode).toBe(false);
       expect(store.colorWeak).toBe(false);
+      expect(store.pageSwitchingAnimation).toBe("fade-slide");
     });
   });
 });
