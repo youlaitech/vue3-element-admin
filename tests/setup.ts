@@ -41,6 +41,14 @@ global.ResizeObserver = class ResizeObserver {
 // Mock Element.scrollIntoView
 Element.prototype.scrollIntoView = vi.fn();
 
+// Mock __APP_INFO__
+(globalThis as any).__APP_INFO__ = {
+  pkg: {
+    name: "vue3-element-admin",
+    version: "4.0.0",
+  },
+};
+
 // Mock console methods to reduce noise in tests
 global.console = {
   ...console,
