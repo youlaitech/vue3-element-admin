@@ -59,7 +59,7 @@
                 {{ `v${appConfig.version}` }}
               </el-tag>
               <el-tag v-if="tenantEnabled" type="success" size="small" effect="light" round>
-                多租�?
+                多租户
               </el-tag>
             </div>
           </div>
@@ -102,8 +102,8 @@ let notificationInstance: ReturnType<typeof ElNotification> | null = null;
 
 const showVoteNotification = () => {
   notificationInstance = ElNotification({
-    title: "Gitee 2025 开源评选 · 诚邀支持",
-    message: `我正在参与 Gitee 2025 最受欢迎开源软件投票活动，欢迎支持！<br/><a href="https://gitee.com/activity/2025opensource?ident=I6VXEH" target="_blank" style="color: var(--el-color-primary); text-decoration: none; font-weight: 500;">点击投票</a>`,
+    title: "2025 CSDN 博客之星评选，诚邀支持！",
+    message: `文章整理了 youlai 全栈开源矩阵，并同步了 2026 路线图与年度计划。欢迎<strong> 点赞 / 收藏 </strong>支持～<br/><a href="https://blog.csdn.net/u013737132/article/details/156545189" target="_blank" rel="noopener noreferrer" style="color: var(--el-color-primary); text-decoration: none; font-weight: 500;">点击查看评选文章</a>`,
     type: "success",
     position: "bottom-left",
     duration: 0,
@@ -200,7 +200,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* 应用内暗黑主题下顶部设置面板的深色样�?*/
+/* 应用内暗黑主题下顶部设置面板的深色样式 */
 .dark .auth-view__toolbar {
   background-color: rgba(24, 28, 43, 0.9);
   border-color: rgba(64, 128, 255, 0.35);
