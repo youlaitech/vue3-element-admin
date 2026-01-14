@@ -40,7 +40,7 @@ defineProps({
 </style>
 
 <style lang="scss">
-// 顶部布局和混合布局的特殊处�?
+// 顶部布局和混合布局的特殊处理
 .layout-top,
 .layout-mix {
   .logo {

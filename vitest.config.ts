@@ -1,9 +1,25 @@
 import { defineConfig } from "vitest/config";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
+import AutoImport from "unplugin-auto-import/vite";
+import Components from "unplugin-vue-components/vite";
+import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    // API 自动导入
+    AutoImport({
+      imports: ["vue", "@vueuse/core", "pinia", "vue-router", "vue-i18n"],
+      resolvers: [ElementPlusResolver()],
+      dts: false,
+    }),
+    // 组件自动导入
+    Components({
+      resolvers: [ElementPlusResolver()],
+      dts: false,
+    }),
+  ],
   test: {
     // 使用 happy-dom 作为测试环境（比 jsdom 快）
     environment: "happy-dom",

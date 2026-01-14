@@ -38,7 +38,7 @@ import type { FileInfo } from "@/types/api";
 
 const props = defineProps({
   /**
-   * 请求携带的额外参�?
+   * 请求携带的额外参数
    */
   data: {
     type: Object,
@@ -54,7 +54,7 @@ const props = defineProps({
     default: "file",
   },
   /**
-   * 最大文件大小（单位：M�?
+   * 最大文件大小（单位：MB）
    */
   maxFileSize: {
     type: Number,
@@ -62,7 +62,7 @@ const props = defineProps({
   },
 
   /**
-   * 上传图片格式，默认支持所有图�?image/*)，指定格式示例：'.png,.jpg,.jpeg,.gif,.bmp'
+   * 上传图片格式，默认支持所有图片 (image/*)，指定格式示例：'.png,.jpg,.jpeg,.gif,.bmp'
    */
   accept: {
     type: String,
@@ -70,7 +70,7 @@ const props = defineProps({
   },
 
   /**
-   * 自定义样式，用于设置组件的宽度和高度等其他样�?
+   * 自定义样式，用于设置组件的宽度和高度等其他样式
    */
   style: {
     type: Object,
@@ -92,19 +92,19 @@ const modelValue = defineModel("modelValue", {
  * 限制用户上传文件的格式和大小
  */
 function handleBeforeUpload(file: UploadRawFile) {
-  // 校验文件类型：虽�?accept 属性限制了用户在文件选择器中可选的文件类型，但仍需在上传时再次校验文件实际类型，确保符�?accept 的规�?
+  // 校验文件类型：虽然 accept 属性限制了用户在文件选择器中可选的文件类型，但仍需在上传时再次校验文件实际类型，确保符合 accept 的规则
   const acceptTypes = props.accept.split(",").map((type) => type.trim());
 
-  // 检查文件格式是否符�?accept
+  // 检查文件格式是否符合 accept
   const isValidType = acceptTypes.some((type) => {
     if (type === "image/*") {
-      // 如果�?image/*，检�?MIME 类型是否�?"image/" 开�?
+      // 如果是 image/*，检查 MIME 类型是否以 "image/" 开头
       return file.type.startsWith("image/");
     } else if (type.startsWith(".")) {
       // 如果是扩展名 (.png, .jpg)，检查文件名是否以指定扩展名结尾
       return file.name.toLowerCase().endsWith(type);
     } else {
-      // 如果是具体的 MIME 类型 (image/png, image/jpeg)，检查是否完全匹�?
+      // 如果是具体的 MIME 类型 (image/png, image/jpeg)，检查是否完全匹配
       return file.type === type;
     }
   });

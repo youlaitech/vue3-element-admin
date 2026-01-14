@@ -34,6 +34,7 @@ export const defaults = {
   showTagsView: true,
   showAppLogo: true,
   showWatermark: false,
+  pageSwitchingAnimation: "fade-slide",
   showSettings: true,
   watermarkContent: pkg.name,
 } as const;
