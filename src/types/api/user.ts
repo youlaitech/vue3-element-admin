@@ -108,20 +108,12 @@ export interface UserProfileDetail {
 
 /** 个人中心用户信息表单 */
 export interface UserProfileForm {
-  /** 用户ID */
-  id?: string;
-  /** 用户名 */
-  username?: string;
   /** 用户昵称 */
   nickname?: string;
   /** 头像URL */
   avatar?: string;
   /** 性别 */
   gender?: number;
-  /** 手机号 */
-  mobile?: string;
-  /** 邮箱 */
-  email?: string;
 }
 
 /** 修改密码表单 */
@@ -134,12 +126,20 @@ export interface PasswordChangeForm {
   confirmPassword?: string;
 }
 
+/** 密码校验表单 */
+export interface PasswordVerifyForm {
+  /** 当前密码 */
+  password?: string;
+}
+
 /** 修改手机表单 */
 export interface MobileUpdateForm {
   /** 手机号 */
   mobile?: string;
   /** 验证码 */
   code?: string;
+  /** 当前密码 */
+  password?: string;
 }
 
 /** 修改邮箱表单 */
@@ -148,4 +148,6 @@ export interface EmailUpdateForm {
   email?: string;
   /** 验证码 */
   code?: string;
+  /** 当前密码 */
+  password?: string;
 }

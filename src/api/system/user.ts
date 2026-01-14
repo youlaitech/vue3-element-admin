@@ -7,6 +7,7 @@ import type {
   UserProfileDetail,
   UserProfileForm,
   PasswordChangeForm,
+  PasswordVerifyForm,
   MobileUpdateForm,
   EmailUpdateForm,
   OptionItem,
@@ -193,6 +194,15 @@ const UserAPI = {
     });
   },
 
+  /** 解绑手机号 */
+  unbindMobile(data: PasswordVerifyForm) {
+    return request({
+      url: `${USER_BASE_URL}/mobile`,
+      method: "delete",
+      data,
+    });
+  },
+
   /** 发送邮箱验证码（绑定或更换邮箱）*/
   sendEmailCode(email: string) {
     return request({
@@ -207,6 +217,15 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/email`,
       method: "put",
+      data,
+    });
+  },
+
+  /** 解绑邮箱 */
+  unbindEmail(data: PasswordVerifyForm) {
+    return request({
+      url: `${USER_BASE_URL}/email`,
+      method: "delete",
       data,
     });
   },

@@ -1,20 +1,4 @@
 <div align="center">
-
-## 🎉 正在参加 Gitee 2025 最受欢迎开源软件评选
-
-<a href="https://gitee.com/activity/2025opensource?ident=I6VXEH" target="_blank">
-  <img src="https://img.shields.io/badge/VUE3--ELEMENT--ADMIN-点击投票支持-f97316?style=for-the-badge&logo=gitee&logoColor=white&labelColor=111827" alt="投票" height="50"/>
-</a>
-
-<p>
-  <strong>📢 投票最后1天！恳请助力一票 🙏 无需重复投，您的支持是我们前行的最大动力！</strong>
-</p>
-
-</div>
-
-![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
-
-<div align="center">
   <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/images/logo.png">
   <h1>vue3-element-admin</h1>
 

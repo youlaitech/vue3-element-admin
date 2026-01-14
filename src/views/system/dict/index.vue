@@ -134,7 +134,7 @@
 <script setup lang="ts">
 defineOptions({
   name: "Dict",
-  inherititems: false,
+  inheritAttrs: false,
 });
 
 import { ref, reactive } from "vue";
