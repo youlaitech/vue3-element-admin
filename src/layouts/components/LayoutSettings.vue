@@ -50,6 +50,18 @@
         </div>
 
         <div class="config-item flex-x-between">
+          <span class="text-xs">{{ t("settings.pageSwitchingAnimation") }}</span>
+          <el-select v-model="settingsStore.pageSwitchingAnimation" style="width: 150px">
+            <el-option
+              v-for="(item, key) in pageSwitchingAnimationOptions"
+              :key
+              :label="t(`settings.${item.value}`)"
+              :value="item.value"
+            />
+          </el-select>
+        </div>
+
+        <div class="config-item flex-x-between">
           <span class="text-xs">灰色模式</span>
           <el-switch v-model="settingsStore.grayMode" />
         </div>
@@ -159,9 +171,12 @@
 import { DocumentCopy, RefreshLeft, Check } from "@element-plus/icons-vue";
 
 const { t } = useI18n();
-import { LayoutMode, SidebarColor, ThemeMode } from "@/enums";
+import { LayoutMode, PageSwitchingAnimationOptions, SidebarColor, ThemeMode } from "@/enums";
 import { useSettingsStore } from "@/store";
 import { themeColorPresets, appConfig } from "@/settings";
+
+// 页面切换动画选项
+const pageSwitchingAnimationOptions: Record<string, OptionItem> = PageSwitchingAnimationOptions;
 
 // 按钮图标
 const copyIcon = markRaw(DocumentCopy);

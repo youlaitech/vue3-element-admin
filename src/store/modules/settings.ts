@@ -10,6 +10,10 @@ export const useSettingsStore = defineStore("setting", () => {
   const showTagsView = useStorage(STORAGE_KEYS.SHOW_TAGS_VIEW, defaults.showTagsView);
   const showAppLogo = useStorage(STORAGE_KEYS.SHOW_APP_LOGO, defaults.showAppLogo);
   const showWatermark = useStorage(STORAGE_KEYS.SHOW_WATERMARK, defaults.showWatermark);
+  const pageSwitchingAnimation = useStorage(
+    STORAGE_KEYS.PAGE_SWITCHING_ANIMATION,
+    defaults.pageSwitchingAnimation
+  );
 
   // 布局
   const layout = useStorage<LayoutMode>(STORAGE_KEYS.LAYOUT, defaults.layout as LayoutMode);
@@ -66,6 +70,7 @@ export const useSettingsStore = defineStore("setting", () => {
     showTagsView.value = defaults.showTagsView;
     showAppLogo.value = defaults.showAppLogo;
     showWatermark.value = defaults.showWatermark;
+    pageSwitchingAnimation.value = defaults.pageSwitchingAnimation;
     userEnableAi.value = false;
     grayMode.value = false;
     colorWeak.value = false;
@@ -80,6 +85,7 @@ export const useSettingsStore = defineStore("setting", () => {
     showTagsView,
     showAppLogo,
     showWatermark,
+    pageSwitchingAnimation,
     enableAiAssistant,
     userEnableAi,
     grayMode,
