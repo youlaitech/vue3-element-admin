@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <el-select
     v-if="type === 'select'"
     v-model="selectedValue"
@@ -90,7 +90,7 @@ const selectedValue = ref<any>(
       : undefined
 );
 
-// 监听 modelValue �?options 的变�?
+// 监听 modelValue 和 options 的变化
 watch(
   [() => props.modelValue, () => options.value],
   ([newValue, newOptions]) => {

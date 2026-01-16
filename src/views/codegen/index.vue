@@ -540,6 +540,7 @@ const treeData = ref<TreeNode[]>([]);
 const previewScope = ref<"all" | "frontend" | "backend">("all");
 const previewTypeOptions = ["ts", "vue", "java", "xml"];
 const previewTypes = ref<string[]>([...previewTypeOptions]);
+const frontendType = "ts";
 
 const filteredTreeData = computed<TreeNode[]>(() => {
   if (!treeData.value.length) return [];
@@ -808,7 +809,11 @@ function handleNextClick() {
         return;
       }
       if (outputMode.value === "zip" || !supportsFSAccess) {
-        GeneratorAPI.download(tableName, (genConfigFormData.value.pageType as any) || "classic");
+        GeneratorAPI.download(
+          tableName,
+          (genConfigFormData.value.pageType as any) || "classic",
+          frontendType
+        );
       }
     }
   }
@@ -904,7 +909,8 @@ async function handlePreview(tableName: string) {
   try {
     const data = await GeneratorAPI.getPreviewData(
       tableName,
-      (genConfigFormData.value.pageType as any) || "classic"
+      (genConfigFormData.value.pageType as any) || "classic",
+      frontendType
     );
     dialog.title = `代码生成 ${tableName}`;
     const tree = buildTree(data);

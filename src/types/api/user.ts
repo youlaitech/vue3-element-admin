@@ -14,6 +14,8 @@ export interface UserInfo {
   nickname?: string;
   /** 头像URL */
   avatar?: string;
+  /** 租户身份标识(PLATFORM/TENANT) */
+  tenantScope?: string;
   /** 角色集合 */
   roles: string[];
   /** 权限集合 */

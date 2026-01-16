@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <template v-if="tagType">
     <el-tag :type="tagType" :size="tagSize">{{ label }}</el-tag>
   </template>
@@ -12,7 +12,7 @@ import { useDictStore } from "@/store";
 
 const props = defineProps({
   code: String, // 字典编码
-  modelValue: [String, Number], // 字典项的�?
+  modelValue: [String, Number], // 字典项的值
   size: {
     type: String,
     default: "default", // 标签大小
@@ -26,10 +26,10 @@ const tagSize = ref<"default" | "large" | "small">(props.size as "default" | "la
 const dictStore = useDictStore();
 
 /**
- * 根据字典项的值获取对应的 label �?tagType
+ * 根据字典项的值获取对应的 label 和 tagType
  * @param dictCode 字典编码
- * @param value 字典项的�?
- * @returns 包含 label �?tagType 的对�?
+ * @param value 字典项的值
+ * @returns 包含 label 和 tagType 的对象
  */
 const getLabelAndTagByValue = async (dictCode: string, value: any) => {
   // 按需加载字典数据
@@ -45,7 +45,7 @@ const getLabelAndTagByValue = async (dictCode: string, value: any) => {
 };
 
 /**
- * 更新 label �?tagType
+ * 更新 label 和 tagType
  */
 const updateLabelAndTag = async () => {
   if (!props.code || props.modelValue === undefined) return;

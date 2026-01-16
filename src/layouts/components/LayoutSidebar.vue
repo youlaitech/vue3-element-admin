@@ -14,7 +14,7 @@
     @open="onMenuOpen"
     @close="onMenuClose"
   >
-    <!-- 菜单�?-->
+    <!-- 菜单项 -->
     <LayoutSidebarItem
       v-for="route in data"
       :key="route.path"
@@ -63,10 +63,10 @@ const expandedMenuIndexes = ref<string[]>([]);
 // 获取主题
 const theme = computed(() => settingsStore.theme);
 
-// 获取浅色主题下的侧边栏配色方�?
+// 获取浅色主题下的侧边栏配色方案
 const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
 
-// 菜单主题属�?
+// 菜单主题属性
 const menuThemeProps = computed(() => {
   const isDarkOrClassicBlue =
     theme.value === "dark" || sidebarColorScheme.value === SidebarColor.CLASSIC_BLUE;
@@ -78,11 +78,11 @@ const menuThemeProps = computed(() => {
   };
 });
 
-// 计算当前激活的菜单�?
+// 计算当前激活的菜单项
 const activeMenuPath = computed((): string => {
   const { meta, path } = currentRoute;
 
-  // 如果路由meta中设置了activeMenu，则使用它（用于处理一些特殊情况，如详情页�?
+  // 如果路由 meta 中设置了 activeMenu，则使用它（用于处理一些特殊情况，如详情页等）
   if (meta?.activeMenu && typeof meta.activeMenu === "string") {
     return meta.activeMenu;
   }
@@ -94,8 +94,8 @@ const activeMenuPath = computed((): string => {
 /**
  * 获取完整路径
  *
- * @param routePath 当前路由的相对路�? /user
- * @returns 完整的绝对路�?D://vue3-element-admin/system/user
+ * @param routePath 当前路由的相对路径 /user
+ * @returns 完整的绝对路径 D://vue3-element-admin/system/user
  */
 function resolveFullPath(routePath: string) {
   if (isExternal(routePath)) {
@@ -143,8 +143,8 @@ watch(
 );
 
 /**
- * 监听菜单模式变化：当菜单模式切换为水平模式时，关闭所有展开的菜单项�?
- * 避免在水平模式下菜单项显示错位�?
+ * 监听菜单模式变化：当菜单模式切换为水平模式时，关闭所有展开的菜单项
+ * 避免在水平模式下菜单项显示错位
  */
 watch(
   () => props.menuMode,
@@ -156,7 +156,7 @@ watch(
 );
 
 /**
- * 监听激活菜单变化，为包含激活子菜单的父菜单添加样式�?
+ * 监听激活菜单变化，为包含激活子菜单的父菜单添加样式
  */
 watch(
   () => activeMenuPath.value,
@@ -169,7 +169,7 @@ watch(
 );
 
 /**
- * 监听路由变化，确保菜单能随TagsView切换而正确激�?
+ * 监听路由变化，确保菜单能随 TagsView 切换而正确激活
  */
 watch(
   () => currentRoute.path,
@@ -181,7 +181,7 @@ watch(
 );
 
 /**
- * 更新父菜单样�?- 为包含激活子菜单的父菜单添加 has-active-child �?
+ * 更新父菜单样式 - 为包含激活子菜单的父菜单添加 has-active-child 类
  */
 function updateParentMenuStyles() {
   if (!menuRef.value?.$el) return;
@@ -191,13 +191,13 @@ function updateParentMenuStyles() {
       const menuEl = menuRef.value?.$el as HTMLElement;
       if (!menuEl) return;
 
-      // 移除所有现有的 has-active-child �?
+      // 移除所有现有的 has-active-child 类
       const allSubMenus = menuEl.querySelectorAll(".el-sub-menu");
       allSubMenus.forEach((subMenu) => {
         subMenu.classList.remove("has-active-child");
       });
 
-      // 查找当前激活的菜单�?
+      // 查找当前激活的菜单项
       const activeMenuItem = menuEl.querySelector(".el-menu-item.is-active");
 
       if (activeMenuItem) {
@@ -210,12 +210,12 @@ function updateParentMenuStyles() {
           parent = parent.parentElement;
         }
       } else {
-        // 水平模式下可能需要特殊处�?
+        // 水平模式下可能需要特殊处理
         if (props.menuMode === "horizontal") {
-          // 对于水平菜单，使用路径匹配来找到父菜�?
+          // 对于水平菜单，使用路径匹配来找到父菜单
           const currentPath = activeMenuPath.value;
 
-          // 查找所有父菜单项，检查哪个包含当前路�?
+          // 查找所有父菜单项，检查哪个包含当前路径
           allSubMenus.forEach((subMenu) => {
             const subMenuEl = subMenu as HTMLElement;
             const subMenuPath =
@@ -239,7 +239,7 @@ function updateParentMenuStyles() {
  * 组件挂载后立即更新父菜单样式
  */
 onMounted(() => {
-  // 确保在组件挂载后更新样式，不依赖于异步操�?
+  // 确保在组件挂载后更新样式，不依赖于异步操作
   updateParentMenuStyles();
 });
 </script>

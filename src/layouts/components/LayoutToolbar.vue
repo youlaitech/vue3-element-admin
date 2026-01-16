@@ -94,18 +94,18 @@ const router = useRouter();
 // 是否为桌面设备
 const isDesktop = computed(() => appStore.device === DeviceEnum.DESKTOP);
 
-// 是否显示租户选择（如果用户有多个租户，则显示租户选择器）
-// 最小侵入：只有在多租户模式下（租户列表长度 > 1）才显示
+const isPlatformUser = computed(() => {
+  return (userStore.userInfo?.tenantScope || "").toUpperCase() === "PLATFORM";
+});
+
+// 是否显示租户选择（仅平台用户可显式切换租户）
 const showTenantSelect = computed(() => {
-  // 如果租户列表为空，不显示
-  if (tenantStore.tenantList.length === 0) {
+  if (!isPlatformUser.value) {
     return false;
   }
-  // 如果只有一个租户，也不显示（单租户模式，用户无感知）
-  if (tenantStore.tenantList.length === 1) {
+  if (tenantStore.tenantList.length <= 1) {
     return false;
   }
-  // 多个租户时才显示
   return true;
 });
 

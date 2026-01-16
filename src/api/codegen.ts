@@ -31,11 +31,18 @@ const GeneratorAPI = {
   },
 
   /** 获取代码生成预览数据 */
-  getPreviewData(tableName: string, pageType?: "classic" | "curd") {
+  getPreviewData(tableName: string, pageType?: "classic" | "curd", type?: "ts" | "js") {
+    const params: Record<string, string> = {};
+    if (pageType) {
+      params.pageType = pageType;
+    }
+    if (type) {
+      params.type = type;
+    }
     return request<any, GeneratorPreviewItem[]>({
       url: `${GENERATOR_BASE_URL}/${tableName}/preview`,
       method: "get",
-      params: pageType ? { pageType } : undefined,
+      params: Object.keys(params).length ? params : undefined,
     });
   },
 
@@ -52,11 +59,18 @@ const GeneratorAPI = {
    * @param url
    * @param fileName
    */
-  download(tableName: string, pageType?: "classic" | "curd") {
+  download(tableName: string, pageType?: "classic" | "curd", type?: "ts" | "js") {
+    const params: Record<string, string> = {};
+    if (pageType) {
+      params.pageType = pageType;
+    }
+    if (type) {
+      params.type = type;
+    }
     return request({
       url: `${GENERATOR_BASE_URL}/${tableName}/download`,
       method: "get",
-      params: pageType ? { pageType } : undefined,
+      params: Object.keys(params).length ? params : undefined,
       responseType: "blob",
     }).then((response) => {
       const contentDisposition = response?.headers?.["content-disposition"] as string | undefined;

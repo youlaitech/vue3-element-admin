@@ -91,30 +91,6 @@
       </el-link>
     </div>
 
-    <!-- 租户选择对话框 -->
-    <el-dialog
-      v-model="tenantDialogVisible"
-      title="选择登录租户"
-      :width="isSmallScreen ? '92vw' : '500px'"
-      :fullscreen="isSmallScreen"
-      append-to-body
-      :teleported="true"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      :show-close="false"
-    >
-      <div class="tenant-select-content" :style="tenantDialogBodyStyle">
-        <p class="tenant-select-tip">检测到你的账号属于多个租户，请选择登录租户：</p>
-        <TenantSwitcher @change="handleTenantSwitcherChange" />
-      </div>
-      <template #footer>
-        <el-button @click="tenantDialogVisible = false">取消</el-button>
-        <el-button type="primary" :disabled="!selectedTenantId" @click="handleTenantSelected">
-          继续
-        </el-button>
-      </template>
-    </el-dialog>
-
     <!-- 第三方登录 -->
     <div class="third-party-login">
       <div class="divider-container">
@@ -145,14 +121,10 @@ import AuthAPI from "@/api/auth";
 import type { LoginRequest } from "@/types/api";
 import router from "@/router";
 import { useUserStore } from "@/store";
-import { useTenantStoreHook } from "@/store/modules/tenant";
-import TenantSwitcher from "@/components/TenantSwitcher/index.vue";
 import { AuthStorage } from "@/utils/auth";
-import { ApiCodeEnum } from "@/enums";
 
 const { t } = useI18n();
 const userStore = useUserStore();
-const tenantStore = useTenantStoreHook();
 const route = useRoute();
 
 onMounted(() => getCaptcha());
@@ -161,35 +133,10 @@ const loginFormRef = ref<FormInstance>();
 const loading = ref(false);
 // 是否大写锁定
 const isCapsLock = ref(false);
-const isSmallScreen = useMediaQuery("(max-width: 768px)");
 // 验证码图片 Base64
 const captchaBase64 = ref();
 // 记住我
 const rememberMe = AuthStorage.getRememberMe();
-// 租户选择对话框
-const tenantDialogVisible = ref(false);
-const selectedTenantId = ref<number | null>(null);
-
-function handleTenantSwitcherChange(id: number) {
-  selectedTenantId.value = id;
-  tenantStore.currentTenantId = id;
-  const matched = tenantStore.tenantList?.find((t) => t.id === id) || null;
-  tenantStore.currentTenant = matched;
-}
-
-const tenantDialogBodyStyle = computed(() => {
-  if (isSmallScreen.value) {
-    return {
-      maxHeight: "calc(100vh - 160px)",
-      overflow: "auto",
-    };
-  }
-  return {
-    maxHeight: "60vh",
-    overflow: "auto",
-  };
-});
-
 const loginFormData = ref<LoginRequest>({
   username: "admin",
   password: "123456",
@@ -258,60 +205,13 @@ async function handleLoginSubmit() {
       // 登录成功，跳转到目标页面
       const redirectPath = (route.query.redirect as string) || "/";
       await router.push(decodeURIComponent(redirectPath));
-    } catch (error: any) {
-      // 检查是否是 choose_tenant 响应
-      if (
-        error?.code === ApiCodeEnum.CHOOSE_TENANT &&
-        Array.isArray(error?.data) &&
-        error.data.length > 0
-      ) {
-        // 需要选择租户
-        tenantStore.setTenantList(error.data);
-        selectedTenantId.value = error.data[0]?.id || null;
-        if (selectedTenantId.value) {
-          tenantStore.currentTenantId = selectedTenantId.value;
-          tenantStore.currentTenant =
-            error.data.find((t: any) => t.id === selectedTenantId.value) || null;
-        }
-        tenantDialogVisible.value = true;
-        return; // 等待用户选择租户
-      }
-      // 其他错误，刷新验证码
+    } catch (error) {
+      // 登录失败，刷新验证码
       getCaptcha();
       throw error;
     }
   } catch (error) {
     // 统一错误处理
-    console.error("登录失败:", error);
-  } finally {
-    loading.value = false;
-  }
-}
-
-/**
- * 租户选择确认后的处理
- */
-async function handleTenantSelected() {
-  if (!selectedTenantId.value) {
-    ElMessage.warning("请选择租户");
-    return;
-  }
-
-  try {
-    loading.value = true;
-    // 使用选中的租户ID重新登录
-    const loginData = {
-      ...loginFormData.value,
-      tenantId: selectedTenantId.value,
-    };
-    await userStore.login(loginData);
-    // 登录成功，关闭对话框并跳转
-    tenantDialogVisible.value = false;
-    const redirectPath = (route.query.redirect as string) || "/";
-    await router.push(decodeURIComponent(redirectPath));
-  } catch (error) {
-    // 登录失败，刷新验证码
-    getCaptcha();
     console.error("登录失败:", error);
   } finally {
     loading.value = false;
@@ -387,16 +287,6 @@ function toOtherForm(type: "register" | "resetPwd") {
         background-color: var(--el-fill-color);
       }
     }
-  }
-}
-
-.tenant-select-content {
-  padding: 20px 0;
-
-  .tenant-select-tip {
-    margin: 0 0 20px;
-    font-size: 14px;
-    color: var(--el-text-color-regular);
   }
 }
 </style>
