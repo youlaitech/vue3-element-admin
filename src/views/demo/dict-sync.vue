@@ -281,7 +281,7 @@ pre {
   overflow-y: auto;
   overflow-wrap: break-word;
   white-space: pre-wrap;
-  background-color: #f8f9fa;
+  background-color: var(--el-fill-color-light);
   border-radius: 4px;
 }
 
@@ -290,7 +290,7 @@ pre {
   padding: 8px;
   overflow-y: auto;
   font-size: 12px;
-  background-color: #f8f9fa;
+  background-color: var(--el-fill-color-light);
   border-radius: 4px;
 }
 
@@ -300,10 +300,10 @@ pre {
 
 .text-muted {
   font-size: 0.9em;
-  color: #909399;
+  color: var(--el-text-color-secondary);
 }
 
 .border-top {
-  border-top: 1px solid #ebeef5;
+  border-top: 1px solid var(--el-border-color-light);
 }
 </style>

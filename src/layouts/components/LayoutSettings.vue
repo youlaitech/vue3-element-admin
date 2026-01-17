@@ -429,14 +429,18 @@ const handleCloseDrawer = () => {
   height: 80px;
   overflow: hidden;
   cursor: pointer;
-  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-  border: 2px solid var(--el-border-color-light);
+  background: linear-gradient(145deg, var(--el-bg-color) 0%, var(--el-bg-color-page) 100%);
+  border: 2px solid var(--el-border-color);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    background: linear-gradient(145deg, #ffffff 0%, var(--el-color-primary-light-9) 100%);
+    background: linear-gradient(
+      145deg,
+      var(--el-bg-color) 0%,
+      var(--el-color-primary-light-9) 100%
+    );
     border-color: var(--el-color-primary-light-3);
     transform: translateY(-4px) scale(1.05);
   }
@@ -480,7 +484,7 @@ const handleCloseDrawer = () => {
 
   .layout-main {
     position: absolute;
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    background: linear-gradient(135deg, var(--el-fill-color-light) 0%, var(--el-fill-color) 100%);
     border: 1px solid var(--el-border-color-lighter);
     border-radius: 2px;
   }
@@ -568,43 +572,6 @@ const handleCloseDrawer = () => {
     .layout-name {
       font-weight: 600;
       color: var(--el-color-primary);
-    }
-  }
-}
-
-/* 深色模式适配 */
-.dark {
-  .action-footer {
-    background: var(--el-bg-color);
-    border-top-color: var(--el-border-color);
-  }
-
-  .action-card {
-    background: var(--el-fill-color-extra-light);
-  }
-
-  .layout-item {
-    background: linear-gradient(145deg, var(--el-bg-color) 0%, var(--el-bg-color-page) 100%);
-    border-color: var(--el-border-color);
-
-    &:hover {
-      background: linear-gradient(
-        145deg,
-        var(--el-bg-color-page) 0%,
-        var(--el-color-primary-light-9) 100%
-      );
-    }
-
-    &.is-active {
-      background: linear-gradient(
-        145deg,
-        var(--el-color-primary-light-9) 0%,
-        var(--el-color-primary-light-8) 100%
-      );
-    }
-
-    .layout-main {
-      background: linear-gradient(135deg, var(--el-fill-color) 0%, var(--el-fill-color-light) 100%);
     }
   }
 }

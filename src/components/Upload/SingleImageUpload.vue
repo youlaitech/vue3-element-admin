@@ -199,7 +199,7 @@ const onError = (error: any) => {
     font-size: 16px;
     color: #ff7901;
     cursor: pointer;
-    background: #fff;
+    background: var(--el-bg-color);
     border-radius: 100%;
 
     :hover {
