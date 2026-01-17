@@ -2,6 +2,8 @@ import { store } from "@/store";
 import TenantAPI from "@/api/system/tenant";
 import type { TenantInfo } from "@/types/api";
 import { STORAGE_KEYS } from "@/constants";
+import AuthAPI from "@/api/auth";
+import { AuthStorage } from "@/utils/auth";
 
 /**
  * 租户 Store
@@ -71,7 +73,7 @@ export const useTenantStore = defineStore("tenant", () => {
 
     // 2. 校验本地恢复的租户是否仍然可用（避免 tenantId 不在列表导致无默认选中）
     if (
-      currentTenantId.value &&
+      currentTenantId.value != null &&
       tenantList.value.length > 0 &&
       !tenantList.value.some((t) => t.id === currentTenantId.value)
     ) {
@@ -85,7 +87,7 @@ export const useTenantStore = defineStore("tenant", () => {
     // 3. 如果已有租户列表，则保证一定有一个默认租户被选中
     if (tenantList.value.length > 0) {
       // 3.1 优先后端当前租户
-      if (!currentTenantId.value) {
+      if (currentTenantId.value == null) {
         try {
           const currentTenantInfo = await TenantAPI.getCurrentTenant();
           if (currentTenantInfo) {
@@ -98,7 +100,7 @@ export const useTenantStore = defineStore("tenant", () => {
       }
 
       // 3.2 本地已有 tenantId，但 currentTenant 为空时，从列表补全 tenantInfo（保持展示名称一致）
-      if (currentTenantId.value && !currentTenant.value) {
+      if (currentTenantId.value != null && !currentTenant.value) {
         const matched = tenantList.value.find((t) => t.id === currentTenantId.value);
         if (matched) {
           setCurrentTenant(matched);
@@ -107,7 +109,7 @@ export const useTenantStore = defineStore("tenant", () => {
       }
 
       // 3.3 兜底：默认选中第一个（即使有多个租户，也保证 TenantSwitcher 有默认选中）
-      if (!currentTenantId.value) {
+      if (currentTenantId.value == null) {
         setCurrentTenant(tenantList.value[0]);
         console.debug("[Tenant] 默认选中第一个租户:", tenantList.value[0].name);
       }
@@ -135,7 +137,17 @@ export const useTenantStore = defineStore("tenant", () => {
    */
   async function switchTenant(tenantId: number): Promise<void> {
     try {
-      // 调用后端切换接口
+      // 优先使用“切换租户并返回新 token”的接口（平台管理员跨租户切换需要更新 token 的 tenantId）
+      try {
+        const token = await AuthAPI.switchTenant(tenantId);
+        if (token?.accessToken && token?.refreshToken) {
+          AuthStorage.setTokens(token.accessToken, token.refreshToken, AuthStorage.getRememberMe());
+        }
+      } catch {
+        // 忽略：非平台用户或后端未启用该接口时，回退到旧接口
+      }
+
+      // 调用后端切换接口（用于获取当前租户信息/兼容旧逻辑）
       const tenantInfo = await TenantAPI.switchTenant(tenantId);
 
       // 后端返回切换后的租户信息

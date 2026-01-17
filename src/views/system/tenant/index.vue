@@ -137,7 +137,7 @@
           <el-input
             v-model="formData.code"
             placeholder="请输入租户编码"
-            :disabled="!!formData.id"
+            :disabled="formData.id != null && String(formData.id) !== ''"
           />
         </el-form-item>
 
@@ -167,11 +167,19 @@
           />
         </el-form-item>
 
-        <el-form-item v-if="!formData.id" label="管理员账号" prop="adminUsername">
+        <el-form-item
+          v-if="formData.id == null || String(formData.id) === ''"
+          label="管理员账号"
+          prop="adminUsername"
+        >
           <el-input v-model="formData.adminUsername" placeholder="为空则系统生成" />
         </el-form-item>
 
-        <el-form-item v-if="formData.id" label="状态" prop="status">
+        <el-form-item
+          v-if="formData.id != null && String(formData.id) !== ''"
+          label="状态"
+          prop="status"
+        >
           <el-radio-group v-model="formData.status">
             <el-radio :value="1">正常</el-radio>
             <el-radio :value="0">禁用</el-radio>
@@ -276,7 +284,7 @@ function handleSelectionChange(selection: any) {
 
 async function handleOpenDialog(tenantId?: string) {
   dialog.visible = true;
-  if (tenantId) {
+  if (tenantId != null && tenantId !== "") {
     dialog.title = "修改租户";
     const data = await TenantAPI.getFormData(tenantId);
     Object.assign(formData, data);
@@ -325,7 +333,7 @@ const handleSubmit = useDebounceFn(async () => {
   loading.value = true;
   try {
     const tenantId = formData.id;
-    if (tenantId) {
+    if (tenantId != null && String(tenantId) !== "") {
       const payload: TenantForm = {
         id: formData.id,
         name: formData.name,
@@ -359,14 +367,14 @@ const handleSubmit = useDebounceFn(async () => {
     handleCloseDialog();
     handleResetQuery();
   } catch {
-    ElMessage.error(formData.id ? "修改失败" : "新增失败");
+    ElMessage.error(formData.id != null && String(formData.id) !== "" ? "修改失败" : "新增失败");
   } finally {
     loading.value = false;
   }
 }, 300);
 
 function handleDelete(tenantId?: string) {
-  const tenantIds = tenantId ? tenantId : ids.value.join(",");
+  const tenantIds = tenantId != null && tenantId !== "" ? tenantId : ids.value.join(",");
   if (!tenantIds) {
     ElMessage.warning("请勾选删除项");
     return;
@@ -393,7 +401,7 @@ function handleDelete(tenantId?: string) {
 }
 
 async function handleChangeStatus(id: string | undefined, status: number) {
-  if (!id) return;
+  if (id == null || id === "") return;
   try {
     await TenantAPI.updateStatus(String(id), status);
     ElMessage.success("状态更新成功");
