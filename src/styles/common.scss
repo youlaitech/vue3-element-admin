@@ -37,6 +37,17 @@ html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
   }
 }
 
+/* Top layout: let horizontal menu fill the remaining header space */
+.layout-top .layout__header-left .el-menu--horizontal,
+.layout-mix .layout__header-menu .el-menu--horizontal {
+  display: flex;
+  flex: 1 1 0% !important;
+  align-items: center;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden;
+}
+
 /* 窄屏隐藏菜单文字，仅保留图标 */
 .hideSidebar {
   &.layout-top .layout__header .el-menu--horizontal,
