@@ -158,6 +158,10 @@ const handleInputKeydown: (evt: KeyboardEvent | Event) => any = (evt) => {
   align-items: center;
 }
 
+.command-palette-trigger__left :deep([class^="i-svg:"]) {
+  color: var(--el-text-color-secondary) !important;
+}
+
 .command-palette-trigger__text {
   font-size: 12px;
   color: var(--el-text-color-secondary);
