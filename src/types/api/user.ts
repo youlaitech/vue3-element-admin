@@ -66,6 +66,8 @@ export interface UserForm {
   id?: string;
   /** 用户头像 */
   avatar?: string;
+  /** 租户身份标识(PLATFORM/TENANT) */
+  tenantScope?: string;
   /** 部门ID */
   deptId?: string;
   /** 用户邮箱 */

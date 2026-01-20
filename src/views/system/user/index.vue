@@ -100,7 +100,7 @@
           >
             <el-table-column type="selection" width="50" align="center" />
             <el-table-column label="用户名" prop="username" />
-            <el-table-column label="昵称" width="150" align="center" prop="nickname" />
+            <el-table-column label="昵称" width="200" align="center" prop="nickname" />
             <el-table-column label="性别" width="100" align="center">
               <template #default="scope">
                 <DictTag v-model="scope.row.gender" code="gender" />
@@ -185,6 +185,17 @@
           <el-input v-model="formData.nickname" placeholder="请输入用户昵称" />
         </el-form-item>
 
+        <el-form-item v-if="canManageTenantScope" label="租户身份" prop="tenantScope">
+          <el-select v-model="formData.tenantScope" placeholder="请选择租户身份">
+            <el-option
+              v-for="item in tenantScopeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="所属部门" prop="deptId">
           <el-tree-select
             v-model="formData.deptId"
@@ -257,6 +268,7 @@ import type { UserForm, UserQueryParams, UserItem } from "@/types/api";
 
 // ==================== 3.5 工具函数 ====================
 import { downloadFile, VALIDATORS } from "@/utils";
+import { hasPerm } from "@/utils/auth";
 // ==================== 4. API 服务 ====================
 import UserAPI from "@/api/system/user";
 import DeptAPI from "@/api/system/dept";
@@ -312,6 +324,7 @@ const dialogState = reactive({
 // 初始表单数据
 const initialFormData: UserForm = {
   status: CommonStatus.ENABLED,
+  tenantScope: undefined,
 };
 
 // 表单数据
@@ -330,6 +343,19 @@ const importDialogVisible = ref(false);
  * 抽屉尺寸（响应式）
  */
 const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
+
+const isPlatformUser = computed(() => {
+  return (userStore.userInfo?.tenantScope || "").toUpperCase() === "PLATFORM";
+});
+
+const canManageTenantScope = computed(
+  () => isPlatformUser.value && hasPerm("sys:tenant:switch", "button")
+);
+
+const tenantScopeOptions = [
+  { label: "平台", value: "PLATFORM" },
+  { label: "租户", value: "TENANT" },
+];
 
 // ==================== 表单验证规则 ====================
 
@@ -444,6 +470,13 @@ async function handleOpenDialog(id?: string): Promise<void> {
     // 新增：设置默认值
     dialogState.title = "新增用户";
     dialogState.mode = DialogMode.CREATE;
+  }
+
+  // 仅平台用户可设置租户身份；无权限时避免提交该字段
+  if (canManageTenantScope.value) {
+    formData.tenantScope = formData.tenantScope || "TENANT";
+  } else {
+    formData.tenantScope = undefined;
   }
 }
 

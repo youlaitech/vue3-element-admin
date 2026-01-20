@@ -72,6 +72,7 @@ import { useRoute, useRouter } from "vue-router";
 import { defaults } from "@/settings";
 import { DeviceEnum, SidebarColor, ThemeMode, LayoutMode } from "@/enums/settings";
 import { useAppStore, useSettingsStore, useUserStore } from "@/store";
+import { hasPerm } from "@/utils/auth";
 
 // 导入子组件
 import CommandPalette from "@/components/CommandPalette/index.vue";
@@ -98,9 +99,11 @@ const isPlatformUser = computed(() => {
   return (userStore.userInfo?.tenantScope || "").toUpperCase() === "PLATFORM";
 });
 
+const canSwitchTenant = computed(() => hasPerm("sys:tenant:switch", "button"));
+
 // 是否显示租户选择（仅平台用户可显式切换租户）
 const showTenantSelect = computed(() => {
-  if (!isPlatformUser.value) {
+  if (!isPlatformUser.value || !canSwitchTenant.value) {
     return false;
   }
   if (tenantStore.tenantList.length <= 1) {
