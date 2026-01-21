@@ -18,7 +18,6 @@ export const appConfig = {
 
   // 功能开关
   tenantEnabled: env.VITE_APP_TENANT_ENABLED === "true",
-  aiEnabled: env.VITE_ENABLE_AI_ASSISTANT === "true",
 } as const;
 
 // ============================================

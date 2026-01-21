@@ -2,7 +2,7 @@ import { SidebarColor, ThemeMode } from "@/enums";
 import type { LayoutMode } from "@/enums";
 import { applyTheme, generateThemeColors, toggleDarkMode, toggleSidebarColor } from "@/utils/theme";
 import { STORAGE_KEYS } from "@/constants";
-import { appConfig, defaults } from "@/settings";
+import { defaults } from "@/settings";
 
 export const useSettingsStore = defineStore("setting", () => {
   // 界面显示
@@ -30,9 +30,9 @@ export const useSettingsStore = defineStore("setting", () => {
   const grayMode = useStorage(STORAGE_KEYS.GRAY_MODE, false);
   const colorWeak = useStorage(STORAGE_KEYS.COLOR_WEAK, false);
 
-  // AI 助手：系统级 && 用户级
-  const userEnableAi = useStorage(STORAGE_KEYS.ENABLE_AI_ASSISTANT, false);
-  const enableAiAssistant = computed(() => appConfig.aiEnabled && userEnableAi.value);
+  // AI 助手：用户级开关（默认开启）
+  const userEnableAi = useStorage(STORAGE_KEYS.ENABLE_AI_ASSISTANT, true);
+  const enableAiAssistant = computed(() => userEnableAi.value);
 
   // 主题变化监听
   watch(

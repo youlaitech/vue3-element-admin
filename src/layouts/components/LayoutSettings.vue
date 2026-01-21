@@ -71,7 +71,7 @@
           <el-switch v-model="settingsStore.colorWeak" />
         </div>
 
-        <div v-if="aiSystemEnabled" class="config-item flex-x-between">
+        <div class="config-item flex-x-between">
           <span class="text-xs">AI 助手</span>
           <el-switch v-model="settingsStore.userEnableAi" />
         </div>
@@ -173,7 +173,7 @@ import { DocumentCopy, RefreshLeft, Check } from "@element-plus/icons-vue";
 const { t } = useI18n();
 import { LayoutMode, PageSwitchingAnimationOptions, SidebarColor, ThemeMode } from "@/enums";
 import { useSettingsStore } from "@/store";
-import { themeColorPresets, appConfig } from "@/settings";
+import { themeColorPresets } from "@/settings";
 
 // 页面切换动画选项
 const pageSwitchingAnimationOptions: Record<string, OptionItem> = PageSwitchingAnimationOptions;
@@ -181,9 +181,6 @@ const pageSwitchingAnimationOptions: Record<string, OptionItem> = PageSwitchingA
 // 按钮图标
 const copyIcon = markRaw(DocumentCopy);
 const resetIcon = markRaw(RefreshLeft);
-
-// AI 系统级开关
-const aiSystemEnabled = appConfig.aiEnabled;
 
 // 加载状态
 const copyLoading = ref(false);
