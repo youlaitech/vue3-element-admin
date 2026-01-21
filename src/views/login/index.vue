@@ -97,30 +97,6 @@ const formComponents = {
   register: defineAsyncComponent(() => import("./components/Register.vue")),
   resetPwd: defineAsyncComponent(() => import("./components/ResetPwd.vue")),
 };
-
-let notificationInstance: ReturnType<typeof ElNotification> | null = null;
-
-const showVoteNotification = () => {
-  notificationInstance = ElNotification({
-    title: "2025 CSDN 博客之星评选，诚邀支持！",
-    message: `文章整理了 youlai 全栈开源矩阵，并同步了 2026 路线图与年度计划。欢迎<strong> 点赞 / 收藏 </strong>支持～<br/><a href="https://blog.csdn.net/u013737132/article/details/156545189" target="_blank" rel="noopener noreferrer" style="color: var(--el-color-primary); text-decoration: none; font-weight: 500;">点击查看评选文章</a>`,
-    type: "success",
-    position: "bottom-left",
-    duration: 0,
-    dangerouslyUseHTMLString: true,
-  });
-};
-
-onMounted(() => {
-  setTimeout(showVoteNotification, 500);
-});
-
-onBeforeUnmount(() => {
-  if (notificationInstance) {
-    notificationInstance.close();
-    notificationInstance = null;
-  }
-});
 </script>
 
 <style lang="scss" scoped>
