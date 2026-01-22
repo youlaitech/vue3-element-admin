@@ -9,6 +9,32 @@
   background-color: var(--el-color-primary);
 }
 
+/* 弹出菜单统一使用主题变量（简化 hover 色） */
+.el-menu--popup {
+  --el-menu-bg-color: var(--menu-background);
+  --el-menu-text-color: var(--menu-text);
+  --el-menu-active-color: var(--menu-active-text);
+  --el-menu-hover-bg-color: var(--menu-hover);
+
+  background-color: var(--menu-background);
+
+  .el-menu-item,
+  .el-sub-menu__title {
+    color: var(--menu-text) !important;
+  }
+
+  .el-menu-item:hover,
+  .el-sub-menu__title:hover {
+    color: var(--menu-active-text) !important;
+    background-color: var(--menu-hover) !important;
+  }
+
+  .el-menu-item.is-active {
+    color: var(--menu-active-text) !important;
+    background-color: var(--menu-hover) !important;
+  }
+}
+
 /* ============================================
    混合布局左侧菜单 hover 样式
    ============================================ */
