@@ -15,6 +15,14 @@ export enum MenuTypeEnum {
 }
 
 /**
+ * 菜单范围枚举
+ */
+export enum MenuScopeEnum {
+  PLATFORM = 1, // 平台菜单
+  TENANT = 2, // 业务菜单
+}
+
+/**
  * 用户性别枚举
  */
 export enum UserGender {

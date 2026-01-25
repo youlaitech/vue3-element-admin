@@ -32,6 +32,7 @@ export interface TenantItem {
   contactEmail?: string;
   domain?: string;
   logo?: string;
+  planId?: number;
   status?: number;
   remark?: string;
   expireTime?: string;
@@ -49,6 +50,7 @@ export interface TenantForm {
   contactEmail?: string;
   domain?: string;
   logo?: string;
+  planId?: number;
   status?: number;
   remark?: string;
   expireTime?: string;
@@ -63,6 +65,7 @@ export interface TenantCreateForm {
   contactEmail?: string;
   domain?: string;
   logo?: string;
+  planId?: number;
   remark?: string;
   expireTime?: string;
   adminUsername?: string;

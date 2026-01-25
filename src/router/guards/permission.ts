@@ -3,7 +3,7 @@ import NProgress from "@/plugins/nprogress";
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
 import { useTenantStoreHook } from "@/store/modules/tenant";
-import { appConfig } from "@/settings";
+import { isTenantEnabled } from "@/utils/tenant";
 
 /**
  * 路由权限守卫
@@ -89,7 +89,8 @@ export function setupPermissionGuard() {
 
 /** 初始化多租户上下文，未启用或失败时静默跳过 */
 async function initTenantContext(): Promise<void> {
-  if (!appConfig.tenantEnabled) return;
+  // 多租户关闭时不初始化租户上下文
+  if (!isTenantEnabled()) return;
 
   try {
     await useTenantStoreHook().loadTenant();

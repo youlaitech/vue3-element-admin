@@ -17,11 +17,11 @@ const MenuAPI = {
     });
   },
   /** 获取菜单下拉数据源 */
-  getOptions(onlyParent?: boolean) {
+  getOptions(onlyParent?: boolean, scope?: number) {
     return request<any, OptionItem[]>({
       url: `${MENU_BASE_URL}/options`,
       method: "get",
-      params: { onlyParent },
+      params: { onlyParent, scope },
     });
   },
   /** 获取菜单表单数据 */

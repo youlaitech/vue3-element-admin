@@ -19,6 +19,14 @@ export const APP_PREFIX = "vea";
 export const ROLE_ROOT = "ROOT";
 
 /**
+ * 平台租户ID
+ *
+ * @description
+ * 用于前端识别平台租户（不参与套餐/菜单配置）
+ */
+export const PLATFORM_TENANT_ID = 0;
+
+/**
  * 存储键名常量
  *
  * @description

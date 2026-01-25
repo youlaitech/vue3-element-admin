@@ -38,7 +38,7 @@ const tenantStore = useTenantStoreHook();
 
 const tenantList = computed(() => tenantStore.tenantList);
 
-const currentTenantIdRef = computed<number | null>({
+const currentTenantId = computed<number | null>({
   get: () => tenantStore.currentTenantId,
   set: (val) => {
     tenantStore.currentTenantId = val;
@@ -46,13 +46,13 @@ const currentTenantIdRef = computed<number | null>({
 });
 
 const currentTenantName = computed(() => {
-  const currentId = currentTenantIdRef.value;
+  const currentId = currentTenantId.value;
   const fromList = tenantList.value.find((t) => t.id === currentId)?.name;
   return fromList || tenantStore.currentTenant?.name || "切换租户";
 });
 
 function onCommand(tenantId: number) {
-  if (tenantId === currentTenantIdRef.value) {
+  if (tenantId === currentTenantId.value) {
     return;
   }
   emit("change", tenantId);

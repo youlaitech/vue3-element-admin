@@ -28,7 +28,7 @@
       </div>
 
       <!-- 租户选择（如果启用多租户）-->
-      <div v-if="showTenantSelect" class="navbar-actions__item">
+      <div v-if="showTenantSwitcher" class="navbar-actions__item">
         <TenantSwitcher @change="handleTenantChange" />
       </div>
     </template>
@@ -72,7 +72,6 @@ import { useRoute, useRouter } from "vue-router";
 import { defaults } from "@/settings";
 import { DeviceEnum, SidebarColor, ThemeMode, LayoutMode } from "@/enums/settings";
 import { useAppStore, useSettingsStore, useUserStore } from "@/store";
-import { hasPerm } from "@/utils/auth";
 
 // 导入子组件
 import CommandPalette from "@/components/CommandPalette/index.vue";
@@ -95,21 +94,14 @@ const router = useRouter();
 // 是否为桌面设备
 const isDesktop = computed(() => appStore.device === DeviceEnum.DESKTOP);
 
-const isPlatformUser = computed(() => {
-  return (userStore.userInfo?.tenantScope || "").toUpperCase() === "PLATFORM";
-});
+const canSwitchTenant = computed(() => userStore.userInfo?.canSwitchTenant === true);
 
-const canSwitchTenant = computed(() => hasPerm("sys:tenant:switch", "button"));
-
-// 是否显示租户选择（仅平台用户可显式切换租户）
-const showTenantSelect = computed(() => {
-  if (!isPlatformUser.value || !canSwitchTenant.value) {
+// 是否显示租户选择
+const showTenantSwitcher = computed(() => {
+  if (!canSwitchTenant.value) {
     return false;
   }
-  if (tenantStore.tenantList.length <= 1) {
-    return false;
-  }
-  return true;
+  return tenantStore.tenantList.length > 1;
 });
 
 function handleTenantChange(tenantId: number) {
@@ -117,10 +109,10 @@ function handleTenantChange(tenantId: number) {
     .switchTenant(tenantId)
     .then(() => {
       ElMessage.success("切换租户成功");
-      window.location.reload();
+      window.location.href = "/";
     })
     .catch((error: any) => {
-      ElMessage.error(error?.message || "切换租户失败");
+      ElMessage.error(error.message || "切换租户失败");
     });
 }
 
@@ -234,7 +226,7 @@ function handleSettingsClick() {
     }
 
     &:hover {
-      background: rgba(0, 0, 0, 0.04);
+      background: var(--el-fill-color-light);
 
       :deep([class^="i-svg:"]) {
         color: var(--el-color-primary);
@@ -269,35 +261,35 @@ function handleSettingsClick() {
 .navbar-actions--white-text {
   .navbar-actions__item {
     :deep([class^="i-svg:"]) {
-      color: rgba(255, 255, 255, 0.85);
+      color: color-mix(in srgb, var(--el-color-white) 85%, transparent);
     }
 
     &:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: color-mix(in srgb, var(--el-color-white) 10%, transparent);
 
       :deep([class^="i-svg:"]) {
-        color: #fff;
+        color: var(--el-color-white);
       }
     }
   }
 
   .user-profile__name {
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--el-color-white) 85%, transparent);
   }
 
   // 租户选择器在白色文字模式下的样式
   ::v-deep(.tenant-switcher__trigger) {
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--el-color-white) 85%, transparent);
   }
   ::v-deep(.tenant-switcher__trigger .tenant-switcher__icon) {
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--el-color-white) 85%, transparent);
   }
   ::v-deep(.tenant-switcher__trigger:hover) {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+    color: var(--el-color-white);
+    background: color-mix(in srgb, var(--el-color-white) 10%, transparent);
   }
   ::v-deep(.tenant-switcher__trigger:hover .tenant-switcher__icon) {
-    color: #fff;
+    color: var(--el-color-white);
   }
 }
 
@@ -330,7 +322,7 @@ function handleSettingsClick() {
   }
   ::v-deep(.tenant-switcher__trigger:hover) {
     color: var(--el-color-primary) !important;
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--el-fill-color-light);
   }
   ::v-deep(.tenant-switcher__trigger:hover .tenant-switcher__icon) {
     color: var(--el-color-primary) !important;

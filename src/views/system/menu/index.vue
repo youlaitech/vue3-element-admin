@@ -74,6 +74,13 @@
         <el-table-column label="路由路径" align="left" width="150" prop="routePath" />
         <el-table-column label="组件路径" align="left" width="250" prop="component" />
         <el-table-column label="权限标识" align="center" width="200" prop="perm" />
+        <el-table-column v-if="showMenuScope" label="范围" align="center" width="100">
+          <template #default="scope">
+            <el-tag v-if="scope.row.scope === MenuScopeEnum.PLATFORM" type="danger">平台</el-tag>
+            <el-tag v-else type="success">业务</el-tag>
+          </template>
+        </el-table-column>
+
         <el-table-column label="状态" align="center" width="80">
           <template #default="scope">
             <el-tag v-if="scope.row.visible === 1" type="success">显示</el-tag>
@@ -262,6 +269,17 @@
           </div>
         </el-form-item>
 
+        <el-form-item
+          v-if="formData.type !== MenuTypeEnum.BUTTON && showMenuScope"
+          prop="scope"
+          label="菜单范围"
+        >
+          <el-radio-group v-model="formData.scope">
+            <el-radio :value="MenuScopeEnum.PLATFORM">平台菜单</el-radio>
+            <el-radio :value="MenuScopeEnum.TENANT">业务菜单</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
         <el-form-item v-if="formData.type !== MenuTypeEnum.BUTTON" prop="visible" label="显示状态">
           <el-radio-group v-model="formData.visible">
             <el-radio :value="1">显示</el-radio>
@@ -346,7 +364,8 @@ import { DeviceEnum } from "@/enums/settings";
 
 import MenuAPI from "@/api/system/menu";
 import type { MenuQueryParams, MenuForm, MenuItem } from "@/types/api";
-import { MenuTypeEnum } from "@/enums/business";
+import { MenuScopeEnum, MenuTypeEnum } from "@/enums/business";
+import { isTenantEnabled } from "@/utils/tenant";
 
 defineOptions({
   name: "SysMenu",
@@ -367,6 +386,8 @@ const dialog = reactive({
 const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
 // 查询参数
 const queryParams = reactive<MenuQueryParams>({});
+// 多租户关闭时，隐藏菜单范围（避免单租户误配置）
+const showMenuScope = computed(() => isTenantEnabled());
 // 菜单表格数据
 const menuTableData = ref<MenuItem[]>([]);
 // 顶级菜单下拉选项
@@ -376,6 +397,7 @@ const initialMenuFormData = ref<MenuForm>({
   id: undefined,
   parentId: "0",
   visible: 1,
+  scope: MenuScopeEnum.TENANT,
   sort: 1,
   type: MenuTypeEnum.MENU, // 默认菜单
   alwaysShow: 0,
@@ -549,6 +571,7 @@ function resetForm() {
     id: undefined,
     parentId: "0",
     visible: 1,
+    scope: MenuScopeEnum.TENANT,
     sort: 1,
     type: MenuTypeEnum.MENU, // 默认菜单
     alwaysShow: 0,

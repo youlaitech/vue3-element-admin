@@ -40,17 +40,10 @@ export const useTenantStore = defineStore("tenant", () => {
   /**
    * 获取用户租户列表
    */
-  function fetchTenantList() {
-    return new Promise<TenantInfo[]>((resolve, reject) => {
-      TenantAPI.getTenantList()
-        .then((data) => {
-          tenantList.value = data || [];
-          resolve(data || []);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  async function fetchTenantList(): Promise<TenantInfo[]> {
+    const data = await TenantAPI.getTenantList();
+    tenantList.value = data || [];
+    return data || [];
   }
 
   /**
@@ -78,24 +71,17 @@ export const useTenantStore = defineStore("tenant", () => {
       !tenantList.value.some((t) => t.id === currentTenantId.value)
     ) {
       console.debug("[Tenant] 本地租户已不可用，清除并重新选择:", currentTenantId.value);
-      currentTenantId.value = null;
-      currentTenant.value = null;
-      localStorage.removeItem(STORAGE_KEYS.TENANT_ID);
-      localStorage.removeItem(STORAGE_KEYS.TENANT_INFO);
+      clearLocalTenant();
     }
 
     // 3. 如果已有租户列表，则保证一定有一个默认租户被选中
     if (tenantList.value.length > 0) {
       // 3.1 优先后端当前租户
       if (currentTenantId.value == null) {
-        try {
-          const currentTenantInfo = await TenantAPI.getCurrentTenant();
-          if (currentTenantInfo) {
-            setCurrentTenant(currentTenantInfo);
-            return;
-          }
-        } catch (error) {
-          console.debug("[Tenant] 获取当前租户失败，尝试本地/默认选择:", error);
+        const currentTenantInfo = await safeGetCurrentTenant();
+        if (currentTenantInfo) {
+          setCurrentTenant(currentTenantInfo);
+          return;
         }
       }
 
@@ -136,47 +122,27 @@ export const useTenantStore = defineStore("tenant", () => {
    * @param tenantId 目标租户ID
    */
   async function switchTenant(tenantId: number): Promise<void> {
-    try {
-      // 优先使用“切换租户并返回新 token”的接口（平台管理员跨租户切换需要更新 token 的 tenantId）
-      try {
-        const token = await AuthAPI.switchTenant(tenantId);
-        if (token?.accessToken && token?.refreshToken) {
-          AuthStorage.setTokens(token.accessToken, token.refreshToken, AuthStorage.getRememberMe());
-        }
-      } catch {
-        // 忽略：非平台用户或后端未启用该接口时，回退到旧接口
-      }
+    await refreshTokenIfSupported(tenantId);
 
-      // 调用后端切换接口（用于获取当前租户信息/兼容旧逻辑）
-      const tenantInfo = await TenantAPI.switchTenant(tenantId);
-
-      // 后端返回切换后的租户信息
-      if (tenantInfo) {
-        setCurrentTenant(tenantInfo);
-      } else {
-        // 如果后端未返回，从租户列表中找到对应的租户信息
-        const tenant = tenantList.value.find((t) => t.id === tenantId);
-        if (tenant) {
-          setCurrentTenant(tenant);
-        } else {
-          // 如果列表中没有，重新获取租户信息
-          try {
-            const info = await TenantAPI.getCurrentTenant();
-            if (info) {
-              setCurrentTenant(info);
-            } else {
-              throw new Error("无法获取租户信息");
-            }
-          } catch (error) {
-            console.error("获取租户信息失败:", error);
-            throw new Error("切换租户后无法获取租户信息");
-          }
-        }
-      }
-    } catch (error) {
-      console.error("切换租户失败:", error);
-      throw error;
+    const tenantInfo = await TenantAPI.switchTenant(tenantId);
+    if (tenantInfo) {
+      setCurrentTenant(tenantInfo);
+      return;
     }
+
+    const matched = tenantList.value.find((t) => t.id === tenantId);
+    if (matched) {
+      setCurrentTenant(matched);
+      return;
+    }
+
+    const fallback = await safeGetCurrentTenant();
+    if (fallback) {
+      setCurrentTenant(fallback);
+      return;
+    }
+
+    throw new Error("切换租户后无法获取租户信息");
   }
 
   /**
@@ -186,8 +152,32 @@ export const useTenantStore = defineStore("tenant", () => {
     currentTenantId.value = null;
     currentTenant.value = null;
     tenantList.value = [];
+    clearLocalTenant();
+  }
+
+  function clearLocalTenant() {
     localStorage.removeItem(STORAGE_KEYS.TENANT_ID);
     localStorage.removeItem(STORAGE_KEYS.TENANT_INFO);
+  }
+
+  async function safeGetCurrentTenant(): Promise<TenantInfo | null> {
+    try {
+      return await TenantAPI.getCurrentTenant();
+    } catch (error) {
+      console.debug("[Tenant] 获取当前租户失败，尝试本地/默认选择:", error);
+      return null;
+    }
+  }
+
+  async function refreshTokenIfSupported(tenantId: number): Promise<void> {
+    try {
+      const token = await AuthAPI.switchTenant(tenantId);
+      if (token?.accessToken && token?.refreshToken) {
+        AuthStorage.setTokens(token.accessToken, token.refreshToken, AuthStorage.getRememberMe());
+      }
+    } catch {
+      // 忽略：非平台用户或后端未启用该接口时，回退到旧接口
+    }
   }
 
   /**

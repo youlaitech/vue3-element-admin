@@ -34,6 +34,8 @@ export interface MenuItem {
   type?: string;
   /** 菜单是否可见(1:显示;0:隐藏) */
   visible?: number;
+  /** 菜单范围(1=平台 2=业务) */
+  scope?: number;
 }
 
 /** 菜单表单对象 */
@@ -62,6 +64,8 @@ export interface MenuForm {
   sort?: number;
   /** 菜单是否可见 */
   visible?: number;
+  /** 菜单范围(1=平台 2=业务) */
+  scope?: number;
   /** 按钮权限标识 */
   perm?: string;
   /** 路由参数（用于表单编辑 params） */
