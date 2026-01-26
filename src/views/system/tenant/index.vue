@@ -96,14 +96,14 @@
           <template #default="scope">
             <el-button
               v-if="!isPlatformTenantId(scope.row.id)"
-              v-hasPerm="['sys:tenant:update']"
+              v-hasPerm="['sys:tenant:assign']"
               type="primary"
               size="small"
               link
               icon="menu"
-              @click="handleOpenPlanMenuDialog(scope.row)"
+              @click="handleOpenTenantMenuDialog(scope.row)"
             >
-              方案菜单
+              租户菜单
             </el-button>
             <el-button
               v-hasPerm="['sys:tenant:update']"
@@ -230,10 +230,10 @@
 
     <!-- 方案菜单配置 -->
     <el-drawer
-      v-model="planMenuDialogVisible"
-      :title="'【' + checkedPlan.name + '】方案菜单配置'"
+      v-model="tenantMenuDialogVisible"
+      :title="'【' + checkedTenant.name + '】租户菜单配置'"
       size="600px"
-      @close="handleClosePlanMenuDialog"
+      @close="handleCloseTenantMenuDialog"
     >
       <div class="flex-x-between">
         <el-input v-model="menuKeywords" clearable class="w-[150px]" placeholder="菜单名称">
@@ -282,13 +282,13 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button
-            v-hasPerm="['sys:tenant-plan:assign']"
+            v-hasPerm="['sys:tenant:assign']"
             type="primary"
-            @click="handlePlanMenuSubmit"
+            @click="handleTenantMenuSubmit"
           >
             确定
           </el-button>
-          <el-button @click="planMenuDialogVisible = false">取消</el-button>
+          <el-button @click="tenantMenuDialogVisible = false">取消</el-button>
         </div>
       </template>
     </el-drawer>
@@ -308,7 +308,13 @@ import { hasPerm } from "@/utils/auth";
 import TenantAPI from "@/api/system/tenant";
 import TenantPlanAPI from "@/api/system/tenant-plan";
 import MenuAPI from "@/api/system/menu";
-import type { TenantCreateForm, TenantForm, TenantQueryParams, TenantItem } from "@/types/api";
+import type {
+  OptionItem,
+  TenantCreateForm,
+  TenantForm,
+  TenantQueryParams,
+  TenantItem,
+} from "@/types/api";
 import { MenuScopeEnum } from "@/enums/business";
 import { isPlatformTenantId } from "@/utils/tenant";
 
@@ -335,8 +341,8 @@ const dialog = reactive({
   visible: false,
 });
 
-const planMenuDialogVisible = ref(false);
-const checkedPlan = ref<{ id?: number; name?: string }>({});
+const tenantMenuDialogVisible = ref(false);
+const checkedTenant = ref<{ id?: number; name?: string; planId?: number }>({});
 const menuKeywords = ref("");
 const menuExpanded = ref(true);
 const menuParentChildLinked = ref(true);
@@ -409,8 +415,10 @@ function fetchData() {
     });
 }
 
-async function handleOpenPlanMenuDialog(row: TenantItem) {
-  if (isPlatformTenantId(row.id)) {
+async function handleOpenTenantMenuDialog(row: TenantItem) {
+  const tenantId = row.id;
+  if (tenantId == null || tenantId === "") return;
+  if (isPlatformTenantId(tenantId)) {
     return;
   }
   const planId = row.planId;
@@ -419,29 +427,48 @@ async function handleOpenPlanMenuDialog(row: TenantItem) {
     return;
   }
 
-  planMenuDialogVisible.value = true;
+  tenantMenuDialogVisible.value = true;
   loading.value = true;
-  checkedPlan.value = { id: planId, name: resolvePlanLabel(planId) };
+  checkedTenant.value = {
+    id: Number(tenantId),
+    name: row.name || String(tenantId),
+    planId,
+  };
 
   try {
-    // 套餐菜单只允许配置业务菜单
-    const menuOptions = await MenuAPI.getOptions(false, MenuScopeEnum.TENANT);
-    menuPermOptions.value = menuOptions;
-    const menuIds = await TenantPlanAPI.getPlanMenuIds(planId);
+    const [menuOptions, planMenuIds, menuIds] = await Promise.all([
+      MenuAPI.getOptions(false, MenuScopeEnum.TENANT),
+      TenantPlanAPI.getPlanMenuIds(planId),
+      TenantAPI.getTenantMenuIds(Number(tenantId)),
+    ]);
+    const normalizedPlanMenuIds = planMenuIds
+      .map((menuId) => Number(menuId))
+      .filter((menuId) => !Number.isNaN(menuId));
+    const allowedMenuIdSet = new Set(normalizedPlanMenuIds);
+    menuPermOptions.value = allowedMenuIdSet.size
+      ? filterMenuOptionsByIds(menuOptions, allowedMenuIdSet)
+      : menuOptions;
+    const normalizedMenuIds = menuIds
+      .map((menuId) => Number(menuId))
+      .filter((menuId) => !Number.isNaN(menuId));
     await nextTick();
     menuTreeRef.value?.setCheckedKeys([], false);
-    menuIds.forEach((menuId) => menuTreeRef.value?.setChecked(menuId, true, false));
+    const checkedMenuIds = allowedMenuIdSet.size
+      ? normalizedMenuIds.filter((menuId) => allowedMenuIdSet.has(menuId))
+      : normalizedMenuIds;
+    checkedMenuIds.forEach((menuId) => menuTreeRef.value?.setChecked(menuId, true, false));
   } finally {
     loading.value = false;
   }
 }
 
-function handleClosePlanMenuDialog() {
-  planMenuDialogVisible.value = false;
+function handleCloseTenantMenuDialog() {
+  tenantMenuDialogVisible.value = false;
   menuKeywords.value = "";
   menuExpanded.value = true;
   menuParentChildLinked.value = true;
   menuTreeRef.value?.setCheckedKeys([], false);
+  checkedTenant.value = {};
 }
 
 function toggleMenuTree() {
@@ -470,9 +497,28 @@ function handleMenuFilter(value: string, data: { [key: string]: any }) {
   return data.label.includes(value);
 }
 
-async function handlePlanMenuSubmit() {
-  const planId = checkedPlan.value.id;
-  if (!planId) return;
+function filterMenuOptionsByIds(
+  options: OptionItem[],
+  allowedMenuIdSet: Set<number>
+): OptionItem[] {
+  return options.reduce<OptionItem[]>((acc, option) => {
+    const children = option.children
+      ? filterMenuOptionsByIds(option.children, allowedMenuIdSet)
+      : [];
+    const allowed = allowedMenuIdSet.has(Number(option.value));
+    if (allowed || children.length > 0) {
+      acc.push({
+        ...option,
+        children: children.length > 0 ? children : undefined,
+      });
+    }
+    return acc;
+  }, []);
+}
+
+async function handleTenantMenuSubmit() {
+  const tenantId = checkedTenant.value.id;
+  if (!tenantId) return;
 
   const checkedMenuIds: number[] = menuTreeRef
     .value!.getCheckedNodes(false, true)
@@ -480,9 +526,11 @@ async function handlePlanMenuSubmit() {
 
   loading.value = true;
   try {
-    await TenantPlanAPI.updatePlanMenus(planId, checkedMenuIds);
-    ElMessage.success("方案菜单配置成功");
-    planMenuDialogVisible.value = false;
+    await TenantAPI.updateTenantMenus(tenantId, checkedMenuIds);
+    ElMessage.success("租户菜单配置成功");
+    tenantMenuDialogVisible.value = false;
+  } catch {
+    ElMessage.error("租户菜单配置失败");
   } finally {
     loading.value = false;
   }
