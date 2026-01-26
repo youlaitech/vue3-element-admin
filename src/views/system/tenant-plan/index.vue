@@ -415,8 +415,8 @@ function toggleMenuTree() {
   }
 }
 
-function handleMenuLinkChange(val: boolean) {
-  menuParentChildLinked.value = val;
+function handleMenuLinkChange(val: string | number | boolean) {
+  menuParentChildLinked.value = Boolean(val);
 }
 
 watch(menuKeywords, (val) => {

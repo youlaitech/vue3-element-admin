@@ -16,7 +16,7 @@
           v-for="item in tenantList"
           :key="item.id"
           :command="item.id"
-          :class="{ 'is-active': item.id === currentTenantIdRef }"
+          :class="{ 'is-active': item.id === currentTenantId }"
         >
           {{ item.name }}
         </el-dropdown-item>
