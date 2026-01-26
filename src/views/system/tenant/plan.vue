@@ -274,6 +274,7 @@ const menuKeywords = ref("");
 const menuExpanded = ref(true);
 const menuParentChildLinked = ref(true);
 
+// 获取租户套餐分页数据
 function fetchData() {
   loading.value = true;
   TenantPlanAPI.getPage(queryParams)
@@ -286,17 +287,20 @@ function fetchData() {
     });
 }
 
+// 查询
 function handleQuery() {
   queryParams.pageNum = 1;
   fetchData();
 }
 
+// 重置查询条件
 function handleResetQuery() {
   queryFormRef.value?.resetFields();
   queryParams.pageNum = 1;
   fetchData();
 }
 
+// 打开新增/编辑弹窗
 async function handleOpenDialog(planId?: number) {
   dialog.visible = true;
   if (planId) {
@@ -322,6 +326,7 @@ async function handleOpenDialog(planId?: number) {
   }
 }
 
+// 关闭弹窗并重置表单
 function handleCloseDialog() {
   dialog.visible = false;
   dataFormRef.value?.resetFields();
@@ -336,6 +341,7 @@ function handleCloseDialog() {
   });
 }
 
+// 提交新增/编辑
 const handleSubmit = useDebounceFn(async () => {
   const valid = await dataFormRef.value?.validate().catch(() => false);
   if (!valid) return;
@@ -356,6 +362,7 @@ const handleSubmit = useDebounceFn(async () => {
   }
 }, 300);
 
+// 删除
 function handleDelete(planId?: number) {
   if (!planId) return;
   ElMessageBox.confirm("确认删除该租户套餐吗？", "警告", {
@@ -375,6 +382,7 @@ function handleDelete(planId?: number) {
   });
 }
 
+// 打开方案菜单配置抽屉
 async function handleOpenPlanMenuDialog(row: TenantPlanItem) {
   if (!row.id) return;
   planMenuDialogVisible.value = true;
@@ -394,6 +402,7 @@ async function handleOpenPlanMenuDialog(row: TenantPlanItem) {
   }
 }
 
+// 关闭方案菜单配置抽屉并重置状态
 function handleClosePlanMenuDialog() {
   planMenuDialogVisible.value = false;
   menuKeywords.value = "";
@@ -402,6 +411,7 @@ function handleClosePlanMenuDialog() {
   menuTreeRef.value?.setCheckedKeys([], false);
 }
 
+// 展开/收缩菜单树
 function toggleMenuTree() {
   menuExpanded.value = !menuExpanded.value;
   if (menuTreeRef.value) {
@@ -415,19 +425,23 @@ function toggleMenuTree() {
   }
 }
 
+// 切换父子联动
 function handleMenuLinkChange(val: string | number | boolean) {
   menuParentChildLinked.value = Boolean(val);
 }
 
+// 菜单树关键字过滤
 watch(menuKeywords, (val) => {
   menuTreeRef.value?.filter(val);
 });
 
+// 菜单树过滤逻辑
 function handleMenuFilter(value: string, data: { [key: string]: any }) {
   if (!value) return true;
   return data.label.includes(value);
 }
 
+// 提交方案菜单配置
 async function handlePlanMenuSubmit() {
   const planId = checkedPlan.value.id;
   if (!planId) return;
@@ -446,6 +460,7 @@ async function handlePlanMenuSubmit() {
   }
 }
 
+// 初始化
 onMounted(() => {
   fetchData();
 });
