@@ -12,6 +12,10 @@ export interface GeneratorPreviewItem {
   fileName: string;
   /** 文件内容 */
   content: string;
+  /** 文件范围(frontend/backend) */
+  scope: "frontend" | "backend";
+  /** 文件语言(扩展名) */
+  language: string;
 }
 
 /** 数据表分页查询参数 */

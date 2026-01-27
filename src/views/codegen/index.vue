@@ -388,7 +388,7 @@
                 @node-click="handleFileTreeNodeClick"
               >
                 <template #default="{ data }">
-                  <div :class="`i-svg:${getFileTreeNodeIcon(data.label)}`" />
+                  <div :class="`i-svg:${getFileTreeNodeIcon(data)}`" />
                   <span class="ml-1">{{ data.label }}</span>
                 </template>
               </el-tree>
@@ -525,7 +525,13 @@ import type { EditorConfiguration } from "codemirror";
 import { FormTypeEnum, QueryTypeEnum } from "@/enums/codegen";
 
 import GeneratorAPI from "@/api/codegen";
-import type { FieldConfig, GenConfigForm, TableQueryParams, TableItem } from "@/api/types";
+import type {
+  FieldConfig,
+  GenConfigForm,
+  TableQueryParams,
+  TableItem,
+  GeneratorPreviewItem,
+} from "@/api/types";
 import { ElLoading } from "element-plus";
 
 import DictAPI from "@/api/system/dict";
@@ -535,43 +541,37 @@ interface TreeNode {
   label: string;
   content?: string;
   children?: TreeNode[];
+  scope?: "frontend" | "backend";
+  language?: string;
 }
 const treeData = ref<TreeNode[]>([]);
 const previewScope = ref<"all" | "frontend" | "backend">("all");
-const previewTypeOptions = ["ts", "vue", "java", "xml"];
-const previewTypes = ref<string[]>([...previewTypeOptions]);
+const previewTypeOptions = ref<string[]>([]);
+const previewTypes = ref<string[]>([]);
 const frontendType = "ts";
 
 const filteredTreeData = computed<TreeNode[]>(() => {
   if (!treeData.value.length) return [];
   // 基于原树 scope/types 过滤叶子节点
-  const match = (label: string, parentPath: string[]): boolean => {
-    // scope 过滤：根据路径初步判断
-    const pathStr = parentPath.join("/");
+  const match = (node: TreeNode): boolean => {
     if (previewScope.value !== "all") {
-      const isBackend = /(^|\/)src\/main\//.test(pathStr) || /(^|\/)java\//.test(pathStr);
-      const scopeOfNode = isBackend ? "backend" : "frontend";
-      if (scopeOfNode !== previewScope.value) return false;
+      if (node.scope !== previewScope.value) return false;
     }
-    // 类型过滤：根据后缀
-    const ext = label.split(".").pop() || "";
-    return previewTypes.value.includes(ext);
+    if (!previewTypes.value.length) return true;
+    const language = node.language || node.label.split(".").pop() || "";
+    return previewTypes.value.includes(language);
   };
 
-  const cloneFilter = (node: TreeNode, parents: string[] = []): TreeNode | null => {
+  const cloneFilter = (node: TreeNode): TreeNode | null => {
     if (!node.children || node.children.length === 0) {
-      return match(node.label, parents) ? { ...node } : null;
+      return match(node) ? { ...node } : null;
     }
-    const nextParents = [...parents, node.label];
-    const children = (node.children || [])
-      .map((c) => cloneFilter(c, nextParents))
-      .filter(Boolean) as TreeNode[];
+    const children = (node.children || []).map((c) => cloneFilter(c)).filter(Boolean) as TreeNode[];
     if (!children.length) return null;
     return { label: node.label, children };
   };
 
-  const filtered = treeData.value.map((n) => cloneFilter(n)).filter(Boolean) as TreeNode[];
-  return filtered;
+  return treeData.value.map((n) => cloneFilter(n)).filter(Boolean) as TreeNode[];
 });
 
 const queryFormRef = ref();
@@ -647,12 +647,12 @@ const backendDirHandle = ref<any>(null);
 const frontendDirName = ref("");
 const backendDirName = ref("");
 // 预览的原始文件列表（用于写盘）
-const lastPreviewFiles = ref<{ path: string; fileName: string; content: string }[]>([]);
+const lastPreviewFiles = ref<GeneratorPreviewItem[]>([]);
 const needFrontend = computed(() =>
-  lastPreviewFiles.value.some((f) => resolveRootForPath(f.path) === "frontend")
+  lastPreviewFiles.value.some((f) => resolveRootForItem(f) === "frontend")
 );
 const needBackend = computed(() =>
-  lastPreviewFiles.value.some((f) => resolveRootForPath(f.path) === "backend")
+  lastPreviewFiles.value.some((f) => resolveRootForItem(f) === "backend")
 );
 const canWriteToLocal = computed(() => {
   if (!lastPreviewFiles.value.length) return false;
@@ -913,8 +913,19 @@ async function handlePreview(tableName: string) {
       frontendType
     );
     dialog.title = `代码生成 ${tableName}`;
-    const tree = buildTree(data);
-    lastPreviewFiles.value = data || [];
+    const previewList = data || [];
+    const typeOptions = Array.from(
+      new Set(
+        previewList
+          .map((item) => item.language || item.fileName.split(".").pop() || "")
+          .filter(Boolean)
+      )
+    );
+    previewTypeOptions.value = typeOptions;
+    previewTypes.value = [...typeOptions];
+
+    const tree = buildTree(previewList);
+    lastPreviewFiles.value = previewList;
     treeData.value = tree?.children ? [...tree.children] : [];
 
     const firstLeafNode = findFirstLeafNode(tree);
@@ -933,52 +944,17 @@ async function handlePreview(tableName: string) {
  * @param data - 数据数组
  * @returns 树形结构根节点
  */
-function buildTree(data: { path: string; fileName: string; content: string }[]): TreeNode {
+function buildTree(data: GeneratorPreviewItem[]): TreeNode {
   // 动态获取根节点
   const root: TreeNode = { label: "前后端代码", children: [] };
 
   data.forEach((item) => {
-    // 将路径分成数组
-    const separator = item.path.includes("/") ? "/" : "\\";
-    const parts = item.path.split(separator);
-
-    // 定义特殊路径
-    const specialPaths = [
-      "src" + separator + "main",
-      "java",
-      genConfigFormData.value.backendAppName,
-      genConfigFormData.value.frontendAppName,
-      (genConfigFormData.value.packageName + "." + genConfigFormData.value.moduleName).replace(
-        /\./g,
-        separator
-      ),
-    ];
-
-    // 检查路径中的特殊部分并合并它们
-    const mergedParts: string[] = [];
-    let buffer: string[] = [];
-
-    parts.forEach((part) => {
-      buffer.push(part);
-      const currentPath = buffer.join(separator);
-      if (specialPaths.includes(currentPath)) {
-        mergedParts.push(currentPath);
-        buffer = [];
-      }
-    });
-
-    // 将 mergedParts 路径中的分隔符 \ 替换为 /
-    mergedParts.forEach((part, index) => {
-      mergedParts[index] = part.replace(/\\/g, "/");
-    });
-
-    if (buffer.length > 0) {
-      mergedParts.push(...buffer);
-    }
+    const normalizedPath = item.path.replace(/\\/g, "/");
+    const parts = normalizedPath.split("/").filter(Boolean);
 
     let currentNode = root;
 
-    mergedParts.forEach((part) => {
+    parts.forEach((part) => {
       // 查找或创建当前部分的子节点
       let node = currentNode.children?.find((child) => child.label === part);
       if (!node) {
@@ -992,6 +968,8 @@ function buildTree(data: { path: string; fileName: string; content: string }[]):
     currentNode.children?.push({
       label: item.fileName,
       content: item?.content,
+      scope: item.scope,
+      language: item.language,
     });
   });
 
@@ -1024,21 +1002,25 @@ function handleFileTreeNodeClick(data: TreeNode) {
 }
 
 /** 获取文件树节点图标 */
-function getFileTreeNodeIcon(label: string) {
-  if (label.endsWith(".java")) {
+function getFileTreeNodeIcon(node: TreeNode) {
+  const ext = (node.language || node.label.split(".").pop() || "").toLowerCase();
+  if (ext === "java") {
     return "java";
   }
-  if (label.endsWith(".html")) {
+  if (ext === "html") {
     return "html";
   }
-  if (label.endsWith(".vue")) {
+  if (ext === "vue") {
     return "vue";
   }
-  if (label.endsWith(".ts")) {
+  if (ext === "ts") {
     return "typescript";
   }
-  if (label.endsWith(".xml")) {
+  if (ext === "xml") {
     return "xml";
+  }
+  if (["cs", "go", "py", "php", "js"].includes(ext)) {
+    return "code";
   }
   return "file";
 }
@@ -1138,23 +1120,11 @@ async function isSameFile(dirHandle: any, filePath: string, content: string): Pr
   }
 }
 
-// 将模板中 path 映射到前/后端根目录
-function resolveRootForPath(p: string) {
-  const normalized = p.replace(/\\/g, "/");
-  const frontApp = genConfigFormData.value.frontendAppName;
-  const backApp = genConfigFormData.value.backendAppName;
-  if (
-    (backApp && normalized.startsWith(`${backApp}/`)) ||
-    normalized.includes("/src/main/") ||
-    normalized.startsWith("src/main/") ||
-    normalized.startsWith("java/")
-  ) {
+// 将预览条目映射到前/后端根目录（由后端给出 scope）
+function resolveRootForItem(item: GeneratorPreviewItem) {
+  if (item.scope === "backend") {
     return "backend" as const;
   }
-  if ((frontApp && normalized.startsWith(`${frontApp}/`)) || normalized.startsWith("src/")) {
-    return "frontend" as const;
-  }
-  // 默认前端
   return "frontend" as const;
 }
 
@@ -1204,7 +1174,7 @@ const writeGeneratedCode = async () => {
   let backCount = 0;
   const failed: string[] = [];
   const files = lastPreviewFiles.value.filter((f) => {
-    const root = resolveRootForPath(f.path);
+    const root = resolveRootForItem(f);
     return writeScope.value === "all" || root === writeScope.value;
   });
   writeProgress.total = files.length;
@@ -1220,7 +1190,7 @@ const writeGeneratedCode = async () => {
     while (queue.length) {
       const item = queue.shift()!;
       try {
-        const root = resolveRootForPath(item.path);
+        const root = resolveRootForItem(item);
         const relativePath = stripProjectRoot(`${item.path}/${item.fileName}`);
         writeProgress.current = relativePath;
         if (overwriteMode.value === "ifChanged") {
