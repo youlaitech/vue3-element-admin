@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <!-- drawer -->
     <template v-if="modalConfig.component === 'drawer'">

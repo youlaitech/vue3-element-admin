@@ -1,12 +1,12 @@
 <!--
- * 基于 ECharts �?Vue3 图表组件
- * 版权所�?© 2021-present 有来开源组�?
+ * 基于 ECharts 的 Vue3 图表组件
+ * 版权所有 © 2021-present 有来开源组织
  *
  * 开源协议：https://opensource.org/licenses/MIT
  * 项目地址：https://gitee.com/youlaiorg/vue3-element-admin
  * 参考：https://echarts.apache.org/handbook/zh/basics/import/#%E6%8C%89%E9%9C%80%E5%BC%95%E5%85%A5-echarts-%E5%9B%BE%E8%A1%A8%E5%92%8C%E7%BB%84%E4%BB%B6
  *
- * 在使用时，请保留此注释，感谢您对开源的支持�?
+ * 在使用时，请保留此注释，感谢您对开源的支持！
  -->
 
 <template>
@@ -14,13 +14,13 @@
 </template>
 
 <script setup lang="ts">
-// 引入 echarts 核心模块，核心模块提供了 echarts 使用必须要的接口�?
+// 引入 echarts 核心模块，核心模块提供了 echarts 使用必须要的接口。
 import * as echarts from "echarts/core";
 // 引入柱状、折线和饼图常用图表
 import { BarChart, LineChart, PieChart } from "echarts/charts";
-// 引入标题，提示框，直角坐标系，数据集，内置数据转换器组件�?
+// 引入标题，提示框，直角坐标系，数据集，内置数据转换器组件，
 import { GridComponent, TooltipComponent, LegendComponent } from "echarts/components";
-// 引入 Canvas 渲染器，注意引入 CanvasRenderer 或�?SVGRenderer 是必须的一�?
+// 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
 import { CanvasRenderer } from "echarts/renderers";
 
 import { useResizeObserver } from "@vueuse/core";
@@ -45,7 +45,7 @@ const props = defineProps<{
 const chartRef = ref<HTMLDivElement | null>(null);
 let chartInstance: echarts.ECharts | null = null;
 
-// 初始化图�?
+// 初始化图表
 const initChart = () => {
   if (chartRef.value) {
     chartInstance = echarts.init(chartRef.value);
@@ -55,12 +55,12 @@ const initChart = () => {
   }
 };
 
-// 监听尺寸变化，自动调�?
+// 监听尺寸变化，自动调整
 useResizeObserver(chartRef, () => {
   chartInstance?.resize();
 });
 
-// 监听 options 变化，更新图�?
+// 监听 options 变化，更新图表
 watch(
   () => props.options,
   (newOptions) => {

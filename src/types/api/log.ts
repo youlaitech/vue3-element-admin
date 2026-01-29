@@ -21,9 +21,9 @@ export interface LogItem {
   /** 日志内容 */
   content: string;
   /** 请求路径 */
-  requestUri: string;
+  requestUri?: string;
   /** 请求方法 */
-  method: string;
+  method?: string;
   /** IP地址 */
   ip: string;
   /** 地区 */
@@ -34,6 +34,10 @@ export interface LogItem {
   os: string;
   /** 执行时间(毫秒) */
   executionTime: number;
+  /** 创建人ID */
+  createBy?: string;
+  /** 操作时间 */
+  createTime?: string;
   /** 操作人 */
   operator: string;
 }

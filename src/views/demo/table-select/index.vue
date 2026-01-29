@@ -1,4 +1,4 @@
-<!-- 列表选择器示�?-->
+<!-- 列表选择器示例 -->
 <template>
   <div class="app-container">
     <el-link
@@ -7,7 +7,7 @@
       target="_blank"
       class="mb-10"
     >
-      示例源码 请点�?>>>
+      示例源码 请点击>>>
     </el-link>
     <table-select :text="text" :select-config="selectConfig" @confirm-click="handleConfirm">
       <template #status="scope">

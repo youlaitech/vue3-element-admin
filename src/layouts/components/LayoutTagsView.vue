@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="tags-container">
     <!-- 水平滚动容器 -->
     <el-scrollbar

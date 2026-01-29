@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <el-select
     v-if="type === 'select'"
     v-model="selectedValue"

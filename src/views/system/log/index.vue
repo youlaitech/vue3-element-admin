@@ -1,8 +1,8 @@
 ﻿<template>
   <div class="app-container">
     <!-- 搜索区域 -->
-    <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+    <div class="filter-section">
+      <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
         <el-form-item prop="keywords" label="关键字">
           <el-input
             v-model="queryParams.keywords"
@@ -21,7 +21,7 @@
             start-placeholder="开始时间"
             end-placeholder="截止时间"
             value-format="YYYY-MM-DD"
-            style="width: 200px"
+            style="width: 260px"
           />
         </el-form-item>
 
@@ -40,7 +40,7 @@
         border
         class="data-table__content"
       >
-        <el-table-column label="操作时间" prop="createTime" width="180" />
+        <el-table-column label="操作时间" prop="createTime" width="220" />
         <el-table-column label="操作人" prop="operator" width="120" />
         <el-table-column label="日志模块" prop="module" width="100" />
         <el-table-column label="日志内容" prop="content" min-width="200" />
@@ -80,7 +80,7 @@ const queryParams = reactive<LogQueryParams>({
   pageNum: 1,
   pageSize: 10,
   keywords: "",
-  createTime: ["", ""],
+  createTime: undefined as [string, string] | undefined,
 });
 
 // 日志表格数据

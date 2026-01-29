@@ -19,7 +19,7 @@
               </span>
             </template>
 
-            <!-- 自定义插�?-->
+            <!-- 自定义插槽 -->
             <slot
               v-if="item.type === 'custom'"
               :name="item.slotName"
@@ -71,14 +71,14 @@ import { ArrowUp, ArrowDown } from "@element-plus/icons-vue";
 import type { FormInstance } from "element-plus";
 import InputTag from "@/components/InputTag/index.vue";
 
-// 定义接收的属�?
+// 定义接收的属性
 const props = defineProps<{ searchConfig: ISearchConfig }>();
-// 自定义事�?
+// 自定义事件
 const emit = defineEmits<{
   queryClick: [queryParams: IObject];
   resetClick: [queryParams: IObject];
 }>();
-// 组件映射�?
+// 组件映射表
 const componentMap = new Map<ISearchComponent, any>([
   // @ts-ignore
   ["input", markRaw(ElInput)], // @ts-ignore
@@ -105,7 +105,7 @@ const formItems = reactive(props.searchConfig?.formItems ?? []);
 const isExpandable = ref(props.searchConfig?.isExpandable ?? true);
 // 是否已展开
 const isExpand = ref(false);
-// 表单项展示数量，若可展开，超出展示数量的表单项隐�?
+// 表单项展示数量，若可展开，超出展示数量的表单项隐藏
 const showNumber = computed(() =>
   isExpandable.value ? (props.searchConfig?.showNumber ?? 3) : formItems.length
 );
@@ -113,7 +113,7 @@ const showNumber = computed(() =>
 const cardAttrs = computed<IObject>(() => {
   return { shadow: "never", style: { "margin-bottom": "12px" }, ...props.searchConfig?.cardAttrs };
 });
-// 表单组件自定义属性（label位置、宽度、对齐方式等�?
+// 表单组件自定义属性（label位置、宽度、对齐方式等）
 const formAttrs = computed<IForm>(() => {
   return { inline: true, ...props.searchConfig?.form };
 });
@@ -124,7 +124,7 @@ const isGrid = computed(() =>
     : "flex flex-wrap gap-x-8 gap-y-4"
 );
 
-// 获取tooltip提示框属�?
+// 获取tooltip提示框属性
 const getTooltipProps = (tips: string | IObject) => {
   return typeof tips === "string" ? { content: tips } : tips;
 };

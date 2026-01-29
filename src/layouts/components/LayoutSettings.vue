@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <el-drawer
     v-model="drawerVisible"
     size="380"

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <!-- 悬浮按钮 -->
   <div class="ai-assistant">
     <!-- AI 助手图标按钮 -->

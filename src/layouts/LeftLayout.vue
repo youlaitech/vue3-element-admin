@@ -1,6 +1,6 @@
 <template>
   <BaseLayout>
-    <!-- 左侧菜单�?-->
+    <!-- 左侧菜单 -->
     <div class="layout__sidebar" :class="{ 'layout__sidebar--collapsed': !isSidebarOpen }">
       <div :class="{ 'has-logo': showLogo }" class="layout-sidebar">
         <LayoutLogo v-if="showLogo" :collapse="!isSidebarOpen" />
@@ -91,7 +91,7 @@ const { showTagsView, showLogo, isSidebarOpen, routes } = useLayout();
   }
 }
 
-/* 移动端样�?*/
+/* 移动端样式*/
 .mobile {
   .layout__sidebar {
     width: $sidebar-width !important;

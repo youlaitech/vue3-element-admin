@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="!item.meta || !item.meta.hidden">
     <!--【叶子节点】显示叶子节点或唯一子节点且父节点未配置始终显示 -->
     <template

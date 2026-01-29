@@ -12,7 +12,7 @@ const http = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 50000,
   headers: { "Content-Type": "application/json;charset=utf-8" },
-  paramsSerializer: (params) => qs.stringify(params),
+  paramsSerializer: (params) => qs.stringify(params, { arrayFormat: "repeat" }),
 });
 
 // ============================================
@@ -54,12 +54,6 @@ http.interceptors.response.use(
       if (page != null) return { data, page };
       return data;
     }
-
-    // 需要选择租户（特殊业务码，传递给调用方处理）
-    if (code === ApiCodeEnum.CHOOSE_TENANT) {
-      return Promise.reject({ code, data, msg });
-    }
-
     ElMessage.error(msg || "系统出错");
     return Promise.reject(new Error(msg || "Error"));
   },

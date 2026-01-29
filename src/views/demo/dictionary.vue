@@ -7,7 +7,7 @@
       target="_blank"
       class="mb-[20px]"
     >
-      示例源码 请点�?>>>
+      示例源码 请点击>>>
     </el-link>
     <el-form>
       <el-form-item label="性别">
