@@ -76,7 +76,23 @@ const editorConfig = ref<Partial<IEditorConfig>>({
 // 记录 editor 实例，重要！
 const handleCreated = (editor: any) => {
   editorRef.value = editor;
+  const value = modelValue.value ?? "";
+  if (value) {
+    editor.setHtml(value);
+  }
 };
+
+watch(
+  () => modelValue.value,
+  (value) => {
+    const editor = editorRef.value;
+    if (!editor) return;
+    const nextValue = value ?? "";
+    if (nextValue !== editor.getHtml()) {
+      editor.setHtml(nextValue);
+    }
+  }
+);
 
 // 组件销毁时，也及时销毁编辑器，重要！
 onBeforeUnmount(() => {
