@@ -424,6 +424,7 @@ function resetForm() {
   formData.id = undefined;
   formData.targetType = 1;
   formData.targetUsers = [];
+  formData.content = "";
 }
 
 function normalizeTargetUsers(value?: unknown) {
