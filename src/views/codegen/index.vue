@@ -153,8 +153,8 @@
             <el-col :span="12">
               <el-form-item label="页面类型">
                 <el-radio-group v-model="genConfigFormData.pageType">
-                  <el-radio-button label="classic">普通</el-radio-button>
-                  <el-radio-button label="curd">封装(CURD)</el-radio-button>
+                  <el-radio-button value="classic">普通</el-radio-button>
+                  <el-radio-button value="curd">封装(CURD)</el-radio-button>
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -367,13 +367,13 @@
             <div class="flex-y-center gap-3">
               <span class="text-sm color-#909399">预览范围</span>
               <el-radio-group v-model="previewScope" size="small">
-                <el-radio-button label="all">全部</el-radio-button>
-                <el-radio-button label="frontend">前端</el-radio-button>
-                <el-radio-button label="backend">后端</el-radio-button>
+                <el-radio-button value="all">全部</el-radio-button>
+                <el-radio-button value="frontend">前端</el-radio-button>
+                <el-radio-button value="backend">后端</el-radio-button>
               </el-radio-group>
               <span class="ml-3 text-sm color-#909399">类型</span>
               <el-checkbox-group v-model="previewTypes" size="small">
-                <el-checkbox-button v-for="t in previewTypeOptions" :key="t" :label="t">
+                <el-checkbox-button v-for="t in previewTypeOptions" :key="t" :value="t">
                   {{ t }}
                 </el-checkbox-button>
               </el-checkbox-group>
@@ -475,16 +475,16 @@
           </el-form-item>
           <el-form-item label="写入范围">
             <el-radio-group v-model="writeScope">
-              <el-radio-button label="all">全部</el-radio-button>
-              <el-radio-button label="frontend">仅前端</el-radio-button>
-              <el-radio-button label="backend">仅后端</el-radio-button>
+              <el-radio-button value="all">全部</el-radio-button>
+              <el-radio-button value="frontend">仅前端</el-radio-button>
+              <el-radio-button value="backend">仅后端</el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="覆盖策略">
             <el-radio-group v-model="overwriteMode">
-              <el-radio-button label="overwrite">覆盖</el-radio-button>
-              <el-radio-button label="skip">跳过已存在</el-radio-button>
-              <el-radio-button label="ifChanged">仅在变更时覆盖</el-radio-button>
+              <el-radio-button value="overwrite">覆盖</el-radio-button>
+              <el-radio-button value="skip">跳过已存在</el-radio-button>
+              <el-radio-button value="ifChanged">仅在变更时覆盖</el-radio-button>
             </el-radio-group>
           </el-form-item>
         </el-form>

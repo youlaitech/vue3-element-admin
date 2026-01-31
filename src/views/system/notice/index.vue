@@ -359,11 +359,12 @@ function handleOpenDialog(id?: string) {
   if (id) {
     dialog.title = "修改公告";
     NoticeAPI.getFormData(id).then((data) => {
-      const normalized = {
+      Object.assign(formData, {
         ...data,
-        targetUsers: normalizeTargetUsers(data?.targetUsers),
-      };
-      Object.assign(formData, normalized);
+        targetUsers: normalizeTargetUsers(
+          (data as NoticeForm & { targetUserIds?: unknown }).targetUserIds
+        ),
+      });
     });
   } else {
     Object.assign(formData, { level: "L", targetType: 1, targetUsers: [] });
@@ -392,12 +393,14 @@ function handleSubmit() {
   dataFormRef.value.validate((valid: any) => {
     if (valid) {
       loading.value = true;
-      if (formData.targetType !== 2) {
-        formData.targetUsers = [];
-      }
+      const payload = {
+        ...formData,
+        targetUserIds: formData.targetType === 2 ? (formData.targetUsers ?? []) : [],
+      } as NoticeForm & { targetUserIds: number[] };
+      delete (payload as NoticeForm).targetUsers;
       const id = formData.id;
       if (id) {
-        NoticeAPI.update(id, formData)
+        NoticeAPI.update(id, payload)
           .then(() => {
             ElMessage.success("修改成功");
             handleCloseDialog();
@@ -405,7 +408,7 @@ function handleSubmit() {
           })
           .finally(() => (loading.value = false));
       } else {
-        NoticeAPI.create(formData)
+        NoticeAPI.create(payload)
           .then(() => {
             ElMessage.success("新增成功");
             handleCloseDialog();
