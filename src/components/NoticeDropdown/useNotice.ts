@@ -46,6 +46,7 @@ export function useNotice() {
   async function readAll() {
     await NoticeAPI.readAll();
     list.value = [];
+    ElMessage.success("已全部标记为已读");
   }
 
   function goMore() {
