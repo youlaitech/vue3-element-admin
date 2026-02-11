@@ -270,7 +270,7 @@ import { useUserStore, useAppStore } from "@/store";
 import { DeviceEnum, DialogMode, CommonStatus } from "@/enums";
 
 // ==================== 7. Composables ====================
-import { useAiAction, useTableSelection } from "@/composables";
+import { useTableSelection } from "@/composables";
 
 // ==================== 8. 组件 ====================
 import UserDeptTree from "./components/UserDeptTree.vue";
@@ -560,51 +560,6 @@ async function handleExport(): Promise<void> {
     console.error("导出用户列表失败:", error);
   }
 }
-
-// ==================== AI 助手相关 ====================
-useAiAction({
-  actionHandlers: {
-    /**
-     * AI 修改用户昵称
-     * 使用配置对象方式：自动处理确认、执行、反馈
-     */
-    updateUserNickname: {
-      needConfirm: true,
-      callBackendApi: true,
-      confirmMessage: (args: any) =>
-        `AI 助手将执行以下操作：<br/>
-        <strong>修改用户：</strong> ${args.username}<br/>
-        <strong>新昵称：</strong> ${args.nickname}<br/><br/>
-        确认执行吗？`,
-      successMessage: (args: any) => `已将用户 ${args.username} 的昵称修改为 ${args.nickname}`,
-      execute: async () => {
-        // callBackendApi=true 时，execute 可以为空
-        // Composable 会自动调用后端 API
-      },
-    },
-
-    /**
-     * AI 查询用户
-     * 使用配置对象方式：查询操作不需要确认
-     */
-    queryUser: {
-      needConfirm: false, // 查询操作无需确认
-      successMessage: (args: any) => `已搜索：${args.keywords}`,
-      execute: async (args: any) => {
-        queryParams.keywords = args.keywords;
-        await handleQuery();
-      },
-    },
-  },
-  onRefresh: fetchUserList,
-  onAutoSearch: (keywords: string) => {
-    queryParams.keywords = keywords;
-    setTimeout(() => {
-      handleQuery();
-      ElMessage.success(`AI 助手已为您自动搜索：${keywords}`);
-    }, 300);
-  },
-});
 
 // ==================== 生命周期 ====================
 

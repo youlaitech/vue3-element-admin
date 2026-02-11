@@ -30,10 +30,6 @@ export const useSettingsStore = defineStore("setting", () => {
   const grayMode = useStorage(STORAGE_KEYS.GRAY_MODE, false);
   const colorWeak = useStorage(STORAGE_KEYS.COLOR_WEAK, false);
 
-  // AI 助手：用户级开关（默认开启）
-  const userEnableAi = useStorage(STORAGE_KEYS.ENABLE_AI_ASSISTANT, true);
-  const enableAiAssistant = computed(() => userEnableAi.value);
-
   // 主题变化监听
   watch(
     [theme, themeColor],
@@ -71,7 +67,6 @@ export const useSettingsStore = defineStore("setting", () => {
     showAppLogo.value = defaults.showAppLogo;
     showWatermark.value = defaults.showWatermark;
     pageSwitchingAnimation.value = defaults.pageSwitchingAnimation;
-    userEnableAi.value = false;
     grayMode.value = false;
     colorWeak.value = false;
     sidebarColorScheme.value = defaults.sidebarColorScheme;
@@ -86,8 +81,6 @@ export const useSettingsStore = defineStore("setting", () => {
     showAppLogo,
     showWatermark,
     pageSwitchingAnimation,
-    enableAiAssistant,
-    userEnableAi,
     grayMode,
     colorWeak,
     sidebarColorScheme,

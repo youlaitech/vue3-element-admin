@@ -51,7 +51,6 @@ export const STORAGE_KEYS = {
   SHOW_APP_LOGO: `${APP_PREFIX}:ui:show_app_logo`,
   SHOW_WATERMARK: `${APP_PREFIX}:ui:show_watermark`,
   PAGE_SWITCHING_ANIMATION: `${APP_PREFIX}:ui:page_switching_animation`,
-  ENABLE_AI_ASSISTANT: `${APP_PREFIX}:ui:enable_ai_assistant`,
   LAYOUT: `${APP_PREFIX}:ui:layout`,
   SIDEBAR_COLOR_SCHEME: `${APP_PREFIX}:ui:sidebar_color_scheme`,
   THEME: `${APP_PREFIX}:ui:theme`,

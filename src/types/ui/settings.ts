@@ -18,5 +18,4 @@ export interface AppSettings {
   showWatermark: boolean;
   watermarkContent: string;
   sidebarColorScheme: "classic-blue" | "minimal-white";
-  enableAiAssistant: boolean;
 }
