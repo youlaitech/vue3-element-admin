@@ -31,9 +31,9 @@ const contentConfig: IContentConfig<UserQueryParams, UserItem> = {
   },
   async exportsAction(params) {
     // 模拟获取到的是全量数据
-    const res = await UserAPI.getPage(params);
-    console.log("exportsAction", res.data);
-    return res.data;
+    const data = await UserAPI.getPage(params);
+    console.log("exportsAction", data.list);
+    return data.list;
   },
   pk: "id",
   toolbar: [

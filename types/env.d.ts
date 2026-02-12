@@ -10,7 +10,6 @@ interface ImportMetaEnv {
   readonly VITE_APP_API_URL: string;
   readonly VITE_APP_TITLE?: string;
   readonly VITE_APP_TENANT_ENABLED?: string;
-  readonly VITE_ENABLE_AI_ASSISTANT?: string;
   readonly VITE_MOCK_DEV_SERVER: boolean;
 }
 

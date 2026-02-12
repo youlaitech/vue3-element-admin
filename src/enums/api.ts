@@ -25,6 +25,11 @@ export const enum ApiCodeEnum {
   REFRESH_TOKEN_INVALID = "A0231",
 
   /**
+   * 权限不足
+   */
+  PERMISSION_DENIED = "A0301",
+
+  /**
    * 需要选择租户
    */
   CHOOSE_TENANT = "A0250",

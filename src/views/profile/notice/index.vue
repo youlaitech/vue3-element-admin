@@ -114,7 +114,6 @@ defineOptions({
 });
 
 import { onMounted, reactive, ref } from "vue";
-import { ElMessage } from "element-plus";
 import NoticeAPI from "@/api/system/notice";
 import type { NoticeDetail, NoticeItem, NoticeQueryParams } from "@/types/api";
 
@@ -134,12 +133,9 @@ const noticeDetail = ref<NoticeDetail | null>(null);
 async function handleQuery() {
   loading.value = true;
   try {
-    const res = await NoticeAPI.getMyNoticePage(queryParams);
-    pageData.value = res.data;
-    total.value = res.page?.total ?? 0;
-  } catch (error) {
-    ElMessage.error("获取通知列表失败");
-    console.error("获取我的通知失败", error);
+    const data = await NoticeAPI.getMyNoticePage(queryParams);
+    pageData.value = data.list;
+    total.value = data.total ?? 0;
   } finally {
     loading.value = false;
   }
@@ -152,14 +148,9 @@ function handleResetQuery() {
 }
 
 async function handleReadNotice(id: string) {
-  try {
-    const data = await NoticeAPI.getDetail(id);
-    noticeDetail.value = data;
-    noticeDialogVisible.value = true;
-  } catch (error) {
-    ElMessage.error("获取通知详情失败");
-    console.error("获取通知详情失败", error);
-  }
+  const data = await NoticeAPI.getDetail(id);
+  noticeDetail.value = data;
+  noticeDialogVisible.value = true;
 }
 
 onMounted(() => {

@@ -172,13 +172,14 @@ function handleUpload(options: UploadRequestOptions) {
       if (fileItem) {
         fileItem.percentage = percent;
       }
-    })
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
+    }).then(
+      (data) => {
+        resolve(data);
+      },
+      (err) => {
         reject(err);
-      });
+      }
+    );
   });
 }
 

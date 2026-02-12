@@ -94,9 +94,9 @@ const DictAPI = {
       url: `${DICT_BASE_URL}/${dictCode}/items`,
       method: "get",
       params: queryParams,
-    }).then((res) => ({
-      ...res,
-      data: (res.data ?? []).map((item) => ({
+    }).then((data) => ({
+      ...data,
+      list: (data.list ?? []).map((item) => ({
         ...item,
         tagType: decodeDictTagType((item as any).tagType),
       })),

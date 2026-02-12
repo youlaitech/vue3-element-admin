@@ -51,14 +51,20 @@ function isDashboard(route: RouteLocationMatched) {
 function handleLink(item: any) {
   const { redirect, path } = item;
   if (redirect) {
-    router.push(redirect).catch((err) => {
-      console.warn(err);
-    });
+    router.push(redirect).then(
+      () => {},
+      (err) => {
+        console.warn(err);
+      }
+    );
     return;
   }
-  router.push(pathCompile(path)).catch((err) => {
-    console.warn(err);
-  });
+  router.push(pathCompile(path)).then(
+    () => {},
+    (err) => {
+      console.warn(err);
+    }
+  );
 }
 
 watch(

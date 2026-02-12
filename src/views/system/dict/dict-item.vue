@@ -199,9 +199,9 @@ const computedRules = computed(() => {
 function fetchData() {
   loading.value = true;
   DictAPI.getDictItemPage(dictCode.value, queryParams)
-    .then((res) => {
-      tableData.value = res.data;
-      total.value = res.page?.total ?? 0;
+    .then((data) => {
+      tableData.value = data.list;
+      total.value = data.total ?? 0;
     })
     .finally(() => {
       loading.value = false;

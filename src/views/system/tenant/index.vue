@@ -491,12 +491,12 @@ function resolvePlanLabel(planId?: number) {
 function fetchData() {
   loading.value = true;
   TenantAPI.getPage(queryParams)
-    .then((res) => {
-      pageData.value = res.data.map((item) => ({
+    .then((data) => {
+      pageData.value = data.list.map((item) => ({
         ...item,
         planId: item.planId != null ? Number(item.planId) : undefined,
       }));
-      total.value = res.page?.total ?? 0;
+      total.value = data.total ?? 0;
     })
     .finally(() => {
       loading.value = false;
@@ -881,7 +881,10 @@ function handleCloseDialog() {
 
 // 提交租户表单（新增/编辑）
 const handleSubmit = useDebounceFn(async () => {
-  const valid = await dataFormRef.value?.validate().catch(() => false);
+  const valid = await dataFormRef.value?.validate().then(
+    () => true,
+    () => false
+  );
   if (!valid) return;
 
   loading.value = true;
@@ -922,8 +925,6 @@ const handleSubmit = useDebounceFn(async () => {
 
     handleCloseDialog();
     handleResetQuery();
-  } catch {
-    ElMessage.error(formData.id != null && String(formData.id) !== "" ? "修改失败" : "新增失败");
   } finally {
     loading.value = false;
   }
@@ -941,8 +942,8 @@ function handleDelete(tenantId?: string) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  })
-    .then(async () => {
+  }).then(
+    async () => {
       loading.value = true;
       try {
         await TenantAPI.deleteByIds(tenantIds);
@@ -951,10 +952,11 @@ function handleDelete(tenantId?: string) {
       } finally {
         loading.value = false;
       }
-    })
-    .catch(() => {
+    },
+    () => {
       // 用户取消
-    });
+    }
+  );
 }
 
 // 页面初始化
@@ -965,15 +967,11 @@ onMounted(() => {
 
 // 拉取租户套餐选项
 async function fetchPlanOptions() {
-  try {
-    const options = await TenantPlanAPI.getOptions();
-    planOptions.value = options.map((item) => ({
-      ...item,
-      value: item.value != null ? Number(item.value) : item.value,
-    }));
-  } catch {
-    planOptions.value = [];
-  }
+  const options = await TenantPlanAPI.getOptions();
+  planOptions.value = options.map((item) => ({
+    ...item,
+    value: item.value != null ? Number(item.value) : item.value,
+  }));
 }
 </script>
 

@@ -99,13 +99,9 @@ const stateArr = ref<OptionItem[]>([
 
 // 初始化选项数据
 const initOptions = async () => {
-  try {
-    const [dept, roles] = await Promise.all([DeptAPI.getOptions(), RoleAPI.getOptions()]);
-    deptArr.value = dept;
-    roleArr.value = roles;
-  } catch (error) {
-    console.error("初始化选项失败:", error);
-  }
+  const [dept, roles] = await Promise.all([DeptAPI.getOptions(), RoleAPI.getOptions()]);
+  deptArr.value = dept;
+  roleArr.value = roles;
 };
 
 // ========================= 搜索配置 =========================
@@ -191,9 +187,9 @@ const contentConfig: IContentConfig<UserQueryParams, UserItem> = reactive({
     return Promise.resolve();
   },
   async exportsAction(params: any) {
-    const res = await UserAPI.getPage(params);
-    console.log("exportsAction", res.data);
-    return res.data;
+    const data = await UserAPI.getPage(params);
+    console.log("exportsAction", data.list);
+    return data.list;
   },
   pk: "id",
   toolbar: [
@@ -560,8 +556,8 @@ const handleOperateClick = (data: IObject) => {
     ElMessageBox.prompt("请输入用户名" + data.row.username + "」的新密码", "重置密码", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
-    })
-      .then(({ value }: any) => {
+    }).then(
+      ({ value }: any) => {
         if (!value || value.length < 6) {
           ElMessage.warning("密码至少需6位字符，请重新输入");
           return false;
@@ -569,8 +565,11 @@ const handleOperateClick = (data: IObject) => {
         UserAPI.resetPassword(data.row.id, value).then(() => {
           ElMessage.success("密码重置成功，新密码是：" + value);
         });
-      })
-      .catch(() => {});
+      },
+      () => {
+        // 用户取消
+      }
+    );
   }
 };
 

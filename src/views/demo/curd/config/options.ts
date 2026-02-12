@@ -18,14 +18,10 @@ export const stateArr = ref<OptionItem[]>([
 
 // 初始化逻辑，在 onMounted 钩子中调用
 export const initOptions = async () => {
-  try {
-    // 使用Promise.all并行请求
-    const [dept, roles] = await Promise.all([DeptAPI.getOptions(), RoleAPI.getOptions()]);
-    // 获取部门选项并赋值
-    deptArr.value = dept;
-    // 获取角色选项并赋值
-    roleArr.value = roles;
-  } catch (error) {
-    console.error("初始化选项失败:", error);
-  }
+  // 使用Promise.all并行请求
+  const [dept, roles] = await Promise.all([DeptAPI.getOptions(), RoleAPI.getOptions()]);
+  // 获取部门选项并赋值
+  deptArr.value = dept;
+  // 获取角色选项并赋值
+  roleArr.value = roles;
 };

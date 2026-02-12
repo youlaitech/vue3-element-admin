@@ -64,9 +64,9 @@ const editorConfig = ref<Partial<IEditorConfig>>({
     uploadImage: {
       customUpload(file: File, insertFn: InsertFnType) {
         // 上传图片
-        FileAPI.uploadFile(file).then((res) => {
+        FileAPI.uploadFile(file).then((data) => {
           // 插入图片
-          insertFn(res.url, res.name, res.url);
+          insertFn(data.url, data.name, data.url);
         });
       },
     } as any,

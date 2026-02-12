@@ -4,6 +4,7 @@ import type PageContent from "./PageContent.vue";
 import type PageModal from "./PageModal.vue";
 import type PageSearch from "./PageSearch.vue";
 import type { CSSProperties } from "vue";
+import type { PageResult } from "@/types/api/common";
 
 export type PageSearchInstance = InstanceType<typeof PageSearch>;
 export type PageContentInstance = InstanceType<typeof PageContent>;
@@ -78,7 +79,7 @@ export interface IContentConfig<TQuery = any, TItem = any> {
     pageName: string;
     limitName: string;
   };
-  // 分页接口统一返回 PageResult { data, page }
+  // 分页接口统一返回 PageResult { list, total }
   // 修改属性的网络请求函数(需返回promise)
   modifyAction?: (data: {
     [key: string]: any;

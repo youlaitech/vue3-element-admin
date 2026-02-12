@@ -192,27 +192,28 @@ function getCaptcha() {
  * 登录提交
  */
 async function handleLoginSubmit() {
+  // 1. 表单验证
+  const valid = await loginFormRef.value?.validate().then(
+    () => true,
+    () => false
+  );
+  if (!valid) return;
+
+  loading.value = true;
   try {
-    // 1. 表单验证
-    const valid = await loginFormRef.value?.validate();
-    if (!valid) return;
-
-    loading.value = true;
-
     // 2. 执行登录
-    try {
-      await userStore.login(loginFormData.value);
-      // 登录成功，跳转到目标页面
-      const redirectPath = (route.query.redirect as string) || "/";
-      await router.push(decodeURIComponent(redirectPath));
-    } catch (error) {
-      // 登录失败，刷新验证码
-      getCaptcha();
-      throw error;
-    }
-  } catch (error) {
-    // 统一错误处理
-    console.error("登录失败:", error);
+    await userStore.login(loginFormData.value).then(
+      async () => {
+        // 登录成功，跳转到目标页面
+        const redirectPath = (route.query.redirect as string) || "/";
+        await router.push(decodeURIComponent(redirectPath));
+      },
+      (error) => {
+        // 登录失败，刷新验证码
+        getCaptcha();
+        throw error;
+      }
+    );
   } finally {
     loading.value = false;
   }

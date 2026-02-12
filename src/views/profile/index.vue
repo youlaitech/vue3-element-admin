@@ -586,18 +586,13 @@ const handleFileChange = async (event: Event) => {
   const file = target.files ? target.files[0] : null;
   if (file) {
     // 调用文件上传API
-    try {
-      const data = await FileAPI.uploadFile(file);
-      // 更新用户信息
-      await UserAPI.updateProfile({
-        avatar: data.url,
-      });
-      // 更新用户头像
-      userStore.userInfo.avatar = data.url;
-    } catch (error) {
-      console.error("头像上传失败：" + error);
-      ElMessage.error("头像上传失败");
-    }
+    const data = await FileAPI.uploadFile(file);
+    // 更新用户信息
+    await UserAPI.updateProfile({
+      avatar: data.url,
+    });
+    // 更新用户头像
+    userStore.userInfo.avatar = data.url;
   }
 };
 

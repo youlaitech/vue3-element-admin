@@ -105,15 +105,15 @@ const showTenantSwitcher = computed(() => {
 });
 
 function handleTenantChange(tenantId: number) {
-  tenantStore
-    .switchTenant(tenantId)
-    .then(() => {
+  tenantStore.switchTenant(tenantId).then(
+    () => {
       ElMessage.success("切换租户成功");
       window.location.href = "/";
-    })
-    .catch((error: any) => {
+    },
+    (error: any) => {
       ElMessage.error(error.message || "切换租户失败");
-    });
+    }
+  );
 }
 
 /**

@@ -509,24 +509,29 @@ function handleDelete(id?: number | string) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  })
-    .then(function () {
+  }).then(
+    function () {
       if (props.contentConfig.deleteAction) {
-        props.contentConfig
-          .deleteAction(ids)
-          .then(() => {
+        props.contentConfig.deleteAction(ids).then(
+          () => {
             ElMessage.success("删除成功");
             removeIds.value = [];
             // 清空选中项
             tableRef.value?.clearSelection();
             handleRefresh(true);
-          })
-          .catch(() => {});
+          },
+          () => {
+            // 交由全局错误处理
+          }
+        );
       } else {
         ElMessage.error("未配置deleteAction");
       }
-    })
-    .catch(() => {});
+    },
+    () => {
+      // 用户取消
+    }
+  );
 }
 
 // 导出表单
@@ -591,14 +596,14 @@ function handleExports() {
   worksheet.columns = columns;
   if (exportsFormData.origin === ExportsOriginEnum.REMOTE) {
     if (props.contentConfig.exportsAction) {
-      props.contentConfig.exportsAction(lastFormData).then((res) => {
-        worksheet.addRows(res);
-        workbook.xlsx
-          .writeBuffer()
-          .then((buffer) => {
+      props.contentConfig.exportsAction(lastFormData).then((data) => {
+        worksheet.addRows(data);
+        workbook.xlsx.writeBuffer().then(
+          (buffer) => {
             saveXlsx(buffer, filename as string);
-          })
-          .catch((error) => console.log(error));
+          },
+          (error) => console.log(error)
+        );
       });
     } else {
       ElMessage.error("未配置exportsAction");
@@ -607,12 +612,12 @@ function handleExports() {
     worksheet.addRows(
       exportsFormData.origin === ExportsOriginEnum.SELECTED ? selectionData.value : pageData.value
     );
-    workbook.xlsx
-      .writeBuffer()
-      .then((buffer) => {
+    workbook.xlsx.writeBuffer().then(
+      (buffer) => {
         saveXlsx(buffer, filename as string);
-      })
-      .catch((error) => console.log(error));
+      },
+      (error) => console.log(error)
+    );
   }
 }
 
@@ -710,9 +715,8 @@ function handleImports() {
     if (ev.target !== null && ev.target.result !== null) {
       const result = ev.target.result as ArrayBuffer;
       // 从 buffer 中加载并解析数据
-      workbook.xlsx
-        .load(result)
-        .then((workbook) => {
+      workbook.xlsx.load(result).then(
+        (workbook) => {
           // 解析后的数据
           const data = [];
           // 获取第一个worksheet内容
@@ -745,14 +749,14 @@ function handleImports() {
             handleCloseImportModal();
             handleRefresh(true);
           });
-        })
-        .catch((error) => console.log(error));
+        },
+        (error) => console.log(error)
+      );
     } else {
       ElMessage.error("读取文件失败");
     }
   };
 }
-
 // 操作人"
 function handleToolbar(name: string) {
   switch (name) {
@@ -864,17 +868,21 @@ function fetchPageData(formData: IObject = {}, isRestart = false) {
         ? {
             [request.pageName]: pagination.currentPage,
             [request.limitName]: pagination.pageSize,
+            ...getFilterParams(),
             ...formData,
           }
-        : formData
+        : {
+            ...getFilterParams(),
+            ...formData,
+          }
     )
     .then((data) => {
       if (showPagination) {
-        const pageResult = Array.isArray(data) ? { data, page: null } : data;
-        pagination.total = pageResult.page?.total ?? 0;
-        pageData.value = pageResult.data ?? [];
+        const pageResult = Array.isArray(data) ? { list: data, total: 0 } : data;
+        pagination.total = pageResult?.total ?? 0;
+        pageData.value = pageResult?.list ?? [];
       } else {
-        pageData.value = Array.isArray(data) ? data : (data.data ?? []);
+        pageData.value = Array.isArray(data) ? data : (data?.list ?? data?.data ?? []);
       }
     })
     .finally(() => {

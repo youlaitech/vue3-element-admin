@@ -10,9 +10,6 @@ export interface ApiResponse<T = any> {
   data: T;
   /** 响应消息 */
   msg: string;
-
-  /** 分页信息（非列表接口通常不存在该字段） */
-  page?: PageMeta | null;
 }
 
 /** 基础查询参数 */
@@ -29,20 +26,12 @@ export interface BaseQueryParams {
   order?: string;
 }
 
-/** 分页元信息 */
-export interface PageMeta {
-  pageNum: number;
-  pageSize: number;
-  total: number;
-}
-
-/** 列表响应结构（统一） */
+/** 分页数据结构（仅分页接口） */
 export interface PageResult<T> {
   /** 数据列表 */
-  data: T[];
-
-  /** 分页信息，不分页时为 null */
-  page: PageMeta | null;
+  list: T[];
+  /** 总记录数 */
+  total: number;
 }
 
 /** 下拉选项 */

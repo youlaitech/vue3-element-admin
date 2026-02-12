@@ -169,8 +169,8 @@ const handleOperateClick = (data: IObject) => {
     ElMessageBox.prompt("请输入用户名" + data.row.username + "」的新密码", "重置密码", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
-    })
-      .then(({ value }) => {
+    }).then(
+      ({ value }) => {
         if (!value || value.length < 6) {
           ElMessage.warning("密码至少需6位字符，请重新输入");
           return false;
@@ -178,8 +178,11 @@ const handleOperateClick = (data: IObject) => {
         UserAPI.resetPassword(data.row.id, value).then(() => {
           ElMessage.success("密码重置成功，新密码是：" + value);
         });
-      })
-      .catch(() => {});
+      },
+      () => {
+        // 用户取消
+      }
+    );
   }
 };
 const handleOperateClick2 = (data: IOperateData) => {

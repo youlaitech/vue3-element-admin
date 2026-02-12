@@ -351,12 +351,9 @@ const rules = reactive({
 async function fetchUserList(): Promise<void> {
   loading.value = true;
   try {
-    const res = await UserAPI.getPage(queryParams);
-    userList.value = res.data;
-    total.value = res.page?.total ?? 0;
-  } catch (error) {
-    ElMessage.error("获取用户列表失败");
-    console.error("获取用户列表失败:", error);
+    const data = await UserAPI.getPage(queryParams);
+    userList.value = data.list;
+    total.value = data.total ?? 0;
   } finally {
     loading.value = false;
   }
@@ -400,14 +397,14 @@ function handleResetPassword(row: UserItem): void {
     .then(({ value }) => {
       return UserAPI.resetPassword(row.id, value);
     })
-    .then(() => {
-      ElMessage.success("密码重置成功");
-    })
-    .catch((error) => {
-      if (error !== "cancel") {
-        ElMessage.error("密码重置失败");
+    .then(
+      () => {
+        ElMessage.success("密码重置成功");
+      },
+      () => {
+        // 用户取消
       }
-    });
+    );
 }
 
 // ==================== 弹窗操作 ====================
@@ -420,27 +417,17 @@ async function handleOpenDialog(id?: string): Promise<void> {
   dialogState.visible = true;
 
   // 并行加载下拉选项数据
-  try {
-    [roleOptions.value, deptOptions.value] = await Promise.all([
-      RoleAPI.getOptions(),
-      DeptAPI.getOptions(),
-    ]);
-  } catch (error) {
-    ElMessage.error("加载选项数据失败");
-    console.error("加载选项数据失败:", error);
-  }
+  [roleOptions.value, deptOptions.value] = await Promise.all([
+    RoleAPI.getOptions(),
+    DeptAPI.getOptions(),
+  ]);
 
   // 编辑：加载用户数据
   if (id) {
     dialogState.title = "修改用户";
     dialogState.mode = DialogMode.EDIT;
-    try {
-      const data = await UserAPI.getFormData(id);
-      Object.assign(formData, data);
-    } catch (error) {
-      ElMessage.error("加载用户数据失败");
-      console.error("加载用户数据失败:", error);
-    }
+    const data = await UserAPI.getFormData(id);
+    Object.assign(formData, data);
   } else {
     // 新增：设置默认值
     dialogState.title = "新增用户";
@@ -466,7 +453,10 @@ function handleCloseDialog(): void {
  * 提交用户表单（防抖）
  */
 const handleSubmit = useDebounceFn(async () => {
-  const valid = await userFormRef.value?.validate().catch(() => false);
+  const valid = await userFormRef.value?.validate().then(
+    () => true,
+    () => false
+  );
   if (!valid) return;
 
   const userId = formData.id;
@@ -482,9 +472,6 @@ const handleSubmit = useDebounceFn(async () => {
     }
     handleCloseDialog();
     handleResetQuery();
-  } catch (error) {
-    ElMessage.error(userId ? "修改用户失败" : "新增用户失败");
-    console.error("提交用户表单失败:", error);
   } finally {
     loading.value = false;
   }
@@ -519,23 +506,21 @@ function handleDelete(id?: string): void {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  })
-    .then(async () => {
+  }).then(
+    async () => {
       loading.value = true;
       try {
         await UserAPI.deleteByIds(userIds);
         ElMessage.success("删除成功");
         handleResetQuery();
-      } catch (error) {
-        ElMessage.error("删除失败");
-        console.error("删除用户失败:", error);
       } finally {
         loading.value = false;
       }
-    })
-    .catch(() => {
+    },
+    () => {
       // 用户取消操作，无需处理
-    });
+    }
+  );
 }
 
 // ==================== 导入导出 ====================
@@ -551,14 +536,9 @@ function handleOpenImportDialog(): void {
  * 导出用户列表
  */
 async function handleExport(): Promise<void> {
-  try {
-    const response = await UserAPI.export(queryParams);
-    downloadFile(response);
-    ElMessage.success("导出成功");
-  } catch (error) {
-    ElMessage.error("导出失败");
-    console.error("导出用户列表失败:", error);
-  }
+  const response = await UserAPI.export(queryParams);
+  downloadFile(response);
+  ElMessage.success("导出成功");
 }
 
 // ==================== 生命周期 ====================

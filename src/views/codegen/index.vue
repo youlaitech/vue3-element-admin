@@ -823,9 +823,9 @@ function handleNextClick() {
 function handleQuery() {
   loading.value = true;
   GeneratorAPI.getTablePage(queryParams)
-    .then((res) => {
-      pageData.value = res.data;
-      total.value = res.page?.total ?? 0;
+    .then((data) => {
+      pageData.value = data.list;
+      total.value = data.total ?? 0;
     })
     .finally(() => {
       loading.value = false;
@@ -1071,18 +1071,16 @@ async function writeFile(dirHandle: any, filePath: string, content: string) {
   const folderSegments = parts;
   const targetDir = await ensureDir(dirHandle, folderSegments, true);
   // @ts-ignore
-  let fileHandle;
-  try {
-    // @ts-ignore
-    fileHandle = await targetDir.getFileHandle(fileName, { create: true });
-  } catch (err: any) {
-    if (err?.name === "TypeMismatchError") {
-      // 存在同名目录(或其它类型冲突)，为安全起见不自动删除
-      throw err;
-    } else {
+  const fileHandle = await targetDir.getFileHandle(fileName, { create: true }).then(
+    (handle: any) => handle,
+    (err: any) => {
+      if (err?.name === "TypeMismatchError") {
+        // 存在同名目录(或其它类型冲突)，为安全起见不自动删除
+        throw err;
+      }
       throw err;
     }
-  }
+  );
   // @ts-ignore
   const writable = await fileHandle.createWritable();
   await writable.write(content ?? "");
@@ -1190,41 +1188,43 @@ const writeGeneratedCode = async () => {
     while (queue.length) {
       const item = queue.shift()!;
       try {
-        const root = resolveRootForItem(item);
-        const relativePath = stripProjectRoot(`${item.path}/${item.fileName}`);
-        writeProgress.current = relativePath;
-        if (overwriteMode.value === "ifChanged") {
-          // 简单差异：已有文件内容与待写内容相同则跳过
-          // @ts-ignore
-          const targetRoot = root === "frontend" ? frontendDirHandle.value : backendDirHandle.value;
-          const existsSame = await isSameFile(targetRoot, relativePath, item.content || "");
-          if (existsSame) {
-            // 视作成功但不处理
-            writeProgress.done++;
-            writeProgress.percent = Math.round((writeProgress.done / writeProgress.total) * 100);
-            continue;
+        await (async () => {
+          const root = resolveRootForItem(item);
+          const relativePath = stripProjectRoot(`${item.path}/${item.fileName}`);
+          writeProgress.current = relativePath;
+          if (overwriteMode.value === "ifChanged") {
+            // 简单差异：已有文件内容与待写内容相同则跳过
+            // @ts-ignore
+            const targetRoot =
+              root === "frontend" ? frontendDirHandle.value : backendDirHandle.value;
+            const existsSame = await isSameFile(targetRoot, relativePath, item.content || "");
+            if (existsSame) {
+              return;
+            }
           }
-        }
-        if (overwriteMode.value === "skip") {
-          // @ts-ignore
-          const targetRoot = root === "frontend" ? frontendDirHandle.value : backendDirHandle.value;
-          const exists = await pathExists(targetRoot, relativePath);
-          if (exists) {
-            writeProgress.done++;
-            writeProgress.percent = Math.round((writeProgress.done / writeProgress.total) * 100);
-            continue;
+          if (overwriteMode.value === "skip") {
+            // @ts-ignore
+            const targetRoot =
+              root === "frontend" ? frontendDirHandle.value : backendDirHandle.value;
+            const exists = await pathExists(targetRoot, relativePath);
+            if (exists) {
+              return;
+            }
           }
-        }
-        if (root === "frontend") {
-          await writeFile(frontendDirHandle.value, relativePath, item.content || "");
-          frontCount++;
-        } else {
-          await writeFile(backendDirHandle.value, relativePath, item.content || "");
-          backCount++;
-        }
-      } catch (err) {
-        console.error("写入失败:", item.path, err);
-        failed.push(item.path);
+          if (root === "frontend") {
+            await writeFile(frontendDirHandle.value, relativePath, item.content || "");
+            frontCount++;
+          } else {
+            await writeFile(backendDirHandle.value, relativePath, item.content || "");
+            backCount++;
+          }
+        })().then(
+          () => {},
+          (err) => {
+            console.error("写入失败:", item.path, err);
+            failed.push(item.path);
+          }
+        );
       } finally {
         writeProgress.done++;
         writeProgress.percent = Math.round((writeProgress.done / writeProgress.total) * 100);

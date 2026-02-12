@@ -18,7 +18,7 @@ const RoleAPI = {
   },
   /** 获取角色的菜单ID集合 */
   getRoleMenuIds(roleId: string) {
-    return request<any, string[]>({ url: `${ROLE_BASE_URL}/${roleId}/menuIds`, method: "get" });
+    return request<any, string[]>({ url: `${ROLE_BASE_URL}/${roleId}/menu-ids`, method: "get" });
   },
   /** 分配菜单权限 */
   updateRoleMenus(roleId: string, data: number[]) {
@@ -27,6 +27,10 @@ const RoleAPI = {
   /** 获取角色表单数据 */
   getFormData(id: string) {
     return request<any, RoleForm>({ url: `${ROLE_BASE_URL}/${id}/form`, method: "get" });
+  },
+  /** 获取角色的部门ID集合(自定义数据权限) */
+  getRoleDeptIds(roleId: string) {
+    return request<any, number[]>({ url: `${ROLE_BASE_URL}/${roleId}/dept-ids`, method: "get" });
   },
   /** 新增角色 */
   create(data: RoleForm) {

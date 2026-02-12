@@ -218,20 +218,14 @@ const saveDict = async () => {
   if (!dictForm.value) return;
 
   saving.value = true;
-  try {
-    // dictForm的类型已经是DictItemForm，直接传递
-    await DictAPI.updateDictItem(DICT_CODE, MALE_ITEM_ID, dictForm.value);
+  // dictForm的类型已经是DictItemForm，直接传递
+  await DictAPI.updateDictItem(DICT_CODE, MALE_ITEM_ID, dictForm.value);
 
-    // 更新时间
-    lastUpdateTime.value = useDateFormat(new Date(), "YYYY-MM-DD HH:mm:ss").value;
+  // 更新时间
+  lastUpdateTime.value = useDateFormat(new Date(), "YYYY-MM-DD HH:mm:ss").value;
 
-    ElMessage.success("保存成功，后端将通过WebSocket通知所有客户端");
-  } catch (error) {
-    console.error("保存字典项失败", error);
-    ElMessage.error("保存失败");
-  } finally {
-    saving.value = false;
-  }
+  ElMessage.success("保存成功，后端将通过WebSocket通知所有客户端");
+  saving.value = false;
 };
 
 // 组件挂载时加载性别字典

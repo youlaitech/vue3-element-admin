@@ -161,22 +161,17 @@ const handleUpload = async () => {
     return;
   }
 
-  try {
-    const result = await UserAPI.import("1", importFormData.files[0].raw as File);
-    if (result.code === ApiCodeEnum.SUCCESS && result.invalidCount === 0) {
-      ElMessage.success("导入成功，导入数据：" + result.validCount + "条");
-      emit("import-success");
-      handleClose();
-    } else {
-      ElMessage.error("上传失败");
-      resultVisible.value = true;
-      resultData.value = result.messageList;
-      invalidCount.value = result.invalidCount;
-      validCount.value = result.validCount;
-    }
-  } catch (error: any) {
-    console.error(error);
-    ElMessage.error("上传失败：" + error);
+  const result = await UserAPI.import("1", importFormData.files[0].raw as File);
+  if (result.code === ApiCodeEnum.SUCCESS && result.invalidCount === 0) {
+    ElMessage.success("导入成功，导入数据：" + result.validCount + "条");
+    emit("import-success");
+    handleClose();
+  } else {
+    ElMessage.error("上传失败");
+    resultVisible.value = true;
+    resultData.value = result.messageList;
+    invalidCount.value = result.invalidCount;
+    validCount.value = result.validCount;
   }
 };
 

@@ -6,17 +6,15 @@ export default defineMock([
     method: ["GET"],
     body: {
       code: "00000",
-      data: [
-        {
-          id: 1,
-          name: "性别",
-          dictCode: "gender",
-          status: 1,
-        },
-      ],
-      page: {
-        pageNum: 1,
-        pageSize: 10,
+      data: {
+        list: [
+          {
+            id: 1,
+            name: "性别",
+            dictCode: "gender",
+            status: 1,
+          },
+        ],
         total: 1,
       },
       msg: "一切ok",
@@ -103,38 +101,36 @@ export default defineMock([
     method: ["GET"],
     body: {
       code: "00000",
-      data: [
-        {
-          id: 1,
-          dictCode: "gender",
-          label: "男",
-          value: "1",
-          sort: 1,
-          status: 1,
-          tagType: "P",
-        },
-        {
-          id: 2,
-          dictCode: "gender",
-          label: "女",
-          value: "2",
-          sort: 2,
-          status: 1,
-          tagType: "D",
-        },
-        {
-          id: 3,
-          dictCode: "gender",
-          label: "保密",
-          value: "0",
-          sort: 3,
-          status: 1,
-          tagType: "I",
-        },
-      ],
-      page: {
-        pageNum: 1,
-        pageSize: 10,
+      data: {
+        list: [
+          {
+            id: 1,
+            dictCode: "gender",
+            label: "男",
+            value: "1",
+            sort: 1,
+            status: 1,
+            tagType: "P",
+          },
+          {
+            id: 2,
+            dictCode: "gender",
+            label: "女",
+            value: "2",
+            sort: 2,
+            status: 1,
+            tagType: "D",
+          },
+          {
+            id: 3,
+            dictCode: "gender",
+            label: "保密",
+            value: "0",
+            sort: 3,
+            status: 1,
+            tagType: "I",
+          },
+        ],
         total: 3,
       },
       msg: "一切ok",

@@ -156,13 +156,14 @@ function handleUpload(options: UploadRequestOptions) {
       formData.append(key, props.data[key]);
     });
 
-    FileAPI.upload(formData)
-      .then((data) => {
+    FileAPI.upload(formData).then(
+      (data) => {
         resolve(data);
-      })
-      .catch((error) => {
+      },
+      (error) => {
         reject(error);
-      });
+      }
+    );
   });
 }
 

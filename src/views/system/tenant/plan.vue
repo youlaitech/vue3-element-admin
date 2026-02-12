@@ -278,9 +278,9 @@ const menuParentChildLinked = ref(true);
 function fetchData() {
   loading.value = true;
   TenantPlanAPI.getPage(queryParams)
-    .then((res) => {
-      pageData.value = res.data;
-      total.value = res.page?.total ?? 0;
+    .then((data) => {
+      pageData.value = data.list;
+      total.value = data.total ?? 0;
     })
     .finally(() => {
       loading.value = false;
@@ -343,7 +343,10 @@ function handleCloseDialog() {
 
 // 提交新增/编辑
 const handleSubmit = useDebounceFn(async () => {
-  const valid = await dataFormRef.value?.validate().catch(() => false);
+  const valid = await dataFormRef.value?.validate().then(
+    () => true,
+    () => false
+  );
   if (!valid) return;
 
   loading.value = true;

@@ -2,6 +2,7 @@ import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from "axio
 import qs from "qs";
 import { ApiCodeEnum } from "@/enums/api";
 import { useUserStoreHook } from "@/store/modules/user";
+import { usePermissionStoreHook } from "@/store/modules/permission";
 import { AuthStorage, redirectToLogin } from "@/utils/auth";
 
 // ============================================
@@ -49,13 +50,9 @@ http.interceptors.response.use(
     const { code, data, msg } = response.data;
 
     if (code === ApiCodeEnum.SUCCESS) {
-      // 分页接口需要同时返回 data 与 page 元信息
-      const page = (response.data as any)?.page;
-      if (page != null) return { data, page };
       return data;
     }
-    ElMessage.error(msg || "系统出错");
-    return Promise.reject(new Error(msg || "Error"));
+    return rejectWithMessage(msg, "系统出错");
   },
 
   async (error) => {
@@ -68,54 +65,78 @@ http.interceptors.response.use(
 
     const { code, msg } = response.data as ApiResponse;
 
-    // Token 过期处理
+    // Token 过期：尝试刷新 token 后自动重试一次
     if (code === ApiCodeEnum.ACCESS_TOKEN_INVALID) {
       return retryWithRefresh(config);
     }
 
+    // Refresh token 失效：无法续期，跳转登录
     if (code === ApiCodeEnum.REFRESH_TOKEN_INVALID) {
       await redirectToLogin("登录已过期，请重新登录");
       return Promise.reject(new Error(msg || "Token Invalid"));
     }
 
-    ElMessage.error(msg || "请求失败");
-    return Promise.reject(new Error(msg || "Error"));
+    // 权限不足：刷新权限快照（用户信息 + 动态路由）后提示
+    if (code === ApiCodeEnum.PERMISSION_DENIED) {
+      return handlePermissionDenied(msg);
+    }
+
+    return rejectWithMessage(msg, "请求失败");
   }
 );
 
-export default http;
-
-// ============================================
-// Token 刷新重试
-// ============================================
-
-type Pending = { resolve: (v: unknown) => void; reject: (e: Error) => void };
-
-let refreshing = false;
-const queue: Pending[] = [];
-
-async function retryWithRefresh(config: InternalAxiosRequestConfig): Promise<unknown> {
-  return new Promise((resolve, reject) => {
-    queue.push({ resolve, reject });
-
-    if (refreshing) return;
-    refreshing = true;
-
-    useUserStoreHook()
-      .refreshToken()
-      .then(() => {
-        const token = AuthStorage.getAccessToken();
-        if (token) config.headers.Authorization = `Bearer ${token}`;
-
-        queue.forEach(({ resolve }) => http(config).then(resolve).catch(reject));
-      })
-      .catch(async () => {
-        queue.forEach(({ reject }) => reject(new Error("Token refresh failed")));
-        await redirectToLogin("登录已过期，请重新登录");
-      })
-      .finally(() => {
-        queue.length = 0;
-        refreshing = false;
-      });
-  });
+/**
+ * 权限不足处理：刷新权限快照（用户信息 + 动态路由），并给出提示
+ *
+ * 刷新完成后仍然按失败处理，交由调用方的错误流处理
+ */
+async function handlePermissionDenied(msg?: string): Promise<never> {
+  const permissionStore = usePermissionStoreHook();
+  await permissionStore.reloadPermissionSnapshotOnce();
+  return rejectWithMessage(msg, "权限不足");
 }
+
+/**
+ * access token 过期后的自动续期与重试
+ *
+ * - 刷新 token 走单飞（userStore.refreshTokenOnce）
+ * - 当前请求最多重试一次（__isTokenRetry 标记）
+ */
+async function retryWithRefresh(config: InternalAxiosRequestConfig): Promise<unknown> {
+  const retryConfig = config as InternalAxiosRequestConfig & { __isTokenRetry?: boolean };
+  if (retryConfig.__isTokenRetry) {
+    await redirectToLogin("登录已过期，请重新登录");
+    return Promise.reject(new Error("Token Invalid"));
+  }
+  retryConfig.__isTokenRetry = true;
+
+  try {
+    const userStore = useUserStoreHook();
+    await userStore.refreshTokenOnce();
+
+    const token = AuthStorage.getAccessToken();
+    if (token) {
+      retryConfig.headers = retryConfig.headers || ({} as any);
+      (retryConfig.headers as any).Authorization = `Bearer ${token}`;
+    }
+
+    return http(retryConfig);
+  } catch {
+    await redirectToLogin("登录已过期，请重新登录");
+    return Promise.reject(new Error("Token refresh failed"));
+  }
+}
+
+/**
+ * 统一处理业务错误提示并拒绝 Promise
+ *
+ * @param msg 错误消息内容
+ * @param fallback 默认兜底消息
+ */
+function rejectWithMessage(msg: string | undefined, fallback: string): Promise<never> {
+  const message = msg || fallback;
+  ElMessage.error(message);
+  return Promise.reject(new Error(message));
+}
+
+export default http;

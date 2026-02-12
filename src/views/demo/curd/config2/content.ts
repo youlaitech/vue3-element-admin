@@ -68,12 +68,8 @@ const contentConfig: IContentConfig<DemoQueryParams, DemoItem> = {
     const end = start + pageSize;
 
     return Promise.resolve({
-      data: list.slice(start, end),
-      page: {
-        pageNum,
-        pageSize,
-        total: list.length,
-      },
+      list: list.slice(start, end),
+      total: list.length,
     });
   },
   modifyAction(data) {

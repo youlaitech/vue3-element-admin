@@ -27,15 +27,15 @@ const props = defineProps({
 function handleClipboard() {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     // 使用 Clipboard API
-    navigator.clipboard
-      .writeText(props.text)
-      .then(() => {
+    navigator.clipboard.writeText(props.text).then(
+      () => {
         ElMessage.success("Copy successfully");
-      })
-      .catch((error) => {
+      },
+      (error) => {
         ElMessage.warning("Copy failed");
         console.log("[CopyButton] Copy failed", error);
-      });
+      }
+    );
   } else {
     // 兼容性处理（useClipboard 有兼容性问题）
     const input = document.createElement("input");
@@ -44,18 +44,17 @@ function handleClipboard() {
     input.setAttribute("value", props.text);
     document.body.appendChild(input);
     input.select();
+    let successful = false;
     try {
-      const successful = document.execCommand("copy");
-      if (successful) {
-        ElMessage.success("Copy successfully!");
-      } else {
-        ElMessage.warning("Copy failed!");
-      }
-    } catch (err) {
-      ElMessage.error("Copy failed.");
-      console.log("[CopyButton] Copy failed.", err);
+      successful = document.execCommand("copy");
     } finally {
       document.body.removeChild(input);
+    }
+
+    if (successful) {
+      ElMessage.success("Copy successfully!");
+    } else {
+      ElMessage.warning("Copy failed!");
     }
   }
 }
