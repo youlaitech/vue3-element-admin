@@ -422,7 +422,7 @@ const handleOpenDialog = (type: DialogType) => {
 async function handleUnbindMobile() {
   if (!userProfile.value.mobile) return;
   try {
-    const { value } = await ElMessageBox.prompt("请输入当前密码以解绑手机号", "解绑手机号", {
+    const result = await ElMessageBox.prompt("请输入当前密码以解绑手机号", "解绑手机号", {
       type: "warning",
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -430,6 +430,7 @@ async function handleUnbindMobile() {
       inputPlaceholder: "当前密码",
       inputValidator: (val) => !!val || "请输入当前密码",
     });
+    const value = (result as any).value;
     await UserAPI.unbindMobile({ password: value });
     ElMessage.success("手机号解绑成功");
     await loadUserProfile();
@@ -441,7 +442,7 @@ async function handleUnbindMobile() {
 async function handleUnbindEmail() {
   if (!userProfile.value.email) return;
   try {
-    const { value } = await ElMessageBox.prompt("请输入当前密码以解绑邮箱", "解绑邮箱", {
+    const result = await ElMessageBox.prompt("请输入当前密码以解绑邮箱", "解绑邮箱", {
       type: "warning",
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -449,6 +450,7 @@ async function handleUnbindEmail() {
       inputPlaceholder: "当前密码",
       inputValidator: (val) => !!val || "请输入当前密码",
     });
+    const value = (result as any).value;
     await UserAPI.unbindEmail({ password: value });
     ElMessage.success("邮箱解绑成功");
     await loadUserProfile();

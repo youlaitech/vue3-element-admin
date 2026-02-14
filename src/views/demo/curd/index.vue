@@ -170,7 +170,8 @@ const handleOperateClick = (data: IObject) => {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
     }).then(
-      ({ value }) => {
+      (result: any) => {
+        const value = result.value;
         if (!value || value.length < 6) {
           ElMessage.warning("密码至少需6位字符，请重新输入");
           return false;

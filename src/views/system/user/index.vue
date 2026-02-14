@@ -394,7 +394,8 @@ function handleResetPassword(row: UserItem): void {
     inputPattern: /.{6,}/,
     inputErrorMessage: "密码至少需要6位字符",
   })
-    .then(({ value }) => {
+    .then((result: any) => {
+      const value = result.value;
       return UserAPI.resetPassword(row.id, value);
     })
     .then(

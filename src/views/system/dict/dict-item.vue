@@ -133,7 +133,7 @@
               </el-tag>
             </template>
             <!-- <el-option label="默认文本" value="" /> -->
-            <el-option v-for="type in tagType" :key="type" :label="type" :value="type">
+            <el-option v-for="type in tagType" :key="type" :label="type" :value="type as string">
               <div flex-y-center gap-10px>
                 <el-tag :type="type">{{ formData.label ?? "字典标签" }}</el-tag>
                 <span>{{ type }}</span>
@@ -154,7 +154,6 @@
 </template>
 
 <script setup lang="ts">
-import type { TagProps } from "element-plus";
 import DictAPI from "@/api/system/dict";
 import type { DictItemQueryParams, DictItem, DictItemForm } from "@/types/api";
 
@@ -184,7 +183,7 @@ const dialog = reactive({
 const formData = reactive<DictItemForm>({});
 
 // 标签类型
-const tagType: TagProps["type"][] = ["primary", "success", "info", "warning", "danger"];
+const tagType = ["primary", "success", "info", "warning", "danger"] as const;
 
 const computedRules = computed(() => {
   const rules: Partial<Record<string, any>> = {
