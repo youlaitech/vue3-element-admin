@@ -47,13 +47,7 @@
         <el-table-column label="角色名称" prop="name" min-width="100" />
         <el-table-column label="角色编码" prop="code" width="150" />
 
-        <el-table-column label="数据权限" align="center" width="140">
-          <template #default="scope">
-            <el-tag :type="getDataScopeTagType(scope.row.dataScope)">
-              {{ getDataScopeLabel(scope.row.dataScope) }}
-            </el-tag>
-          </template>
-        </el-table-column>
+        <el-table-column label="数据权限" align="center" width="140" prop="dataScopeLabel" />
 
         <el-table-column label="状态" align="center" width="100">
           <template #default="scope">
@@ -305,25 +299,6 @@ const permKeywords = ref("");
 const isExpanded = ref(true);
 
 const parentChildLinked = ref(true);
-
-// 数据权限标签
-const dataScopeOptions = [
-  { value: 1, label: "全部数据", type: "danger" },
-  { value: 2, label: "部门及子部门数据", type: "warning" },
-  { value: 3, label: "本部门数据", type: "primary" },
-  { value: 4, label: "本人数据", type: "info" },
-  { value: 5, label: "自定义部门数据", type: "success" },
-];
-
-function getDataScopeLabel(value: number): string {
-  const option = dataScopeOptions.find((item) => item.value === value);
-  return option ? option.label : "未知";
-}
-
-function getDataScopeTagType(value: number): string {
-  const option = dataScopeOptions.find((item) => item.value === value);
-  return option ? option.type : "info";
-}
 
 // 获取数据
 function fetchData() {
