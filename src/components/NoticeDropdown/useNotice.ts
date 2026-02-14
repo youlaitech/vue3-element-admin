@@ -14,6 +14,7 @@ export function useNotice() {
 
   // 状态
   const list = ref<NoticeItem[]>([]);
+  const unreadTotal = ref(0);
   const detail = ref<NoticeDetail | null>(null);
   const dialogVisible = ref(false);
 
@@ -32,6 +33,7 @@ export function useNotice() {
     };
     const page = await NoticeAPI.getMyNoticePage(query);
     list.value = page.list || [];
+    unreadTotal.value = page.total ?? 0;
   }
 
   async function read(id: string) {
@@ -41,11 +43,15 @@ export function useNotice() {
     // 从列表中移除已读项
     const idx = list.value.findIndex((item: NoticeItem) => item.id === id);
     if (idx >= 0) list.value.splice(idx, 1);
+    if (unreadTotal.value > 0) unreadTotal.value -= 1;
+
+    await fetchList();
   }
 
   async function readAll() {
     await NoticeAPI.readAll();
     list.value = [];
+    unreadTotal.value = 0;
     ElMessage.success("已全部标记为已读");
   }
 
@@ -68,12 +74,18 @@ export function useNotice() {
         // 避免重复
         if (list.value.some((item: NoticeItem) => item.id === data.id)) return;
 
+        unreadTotal.value += 1;
+
         list.value.unshift({
           id: data.id,
           title: data.title,
           type: data.type,
           publishTime: data.publishTime,
         } as NoticeItem);
+
+        if (list.value.length > PAGE_SIZE) {
+          list.value.length = PAGE_SIZE;
+        }
 
         ElNotification({
           title: "您收到一条新的通知消息！",
@@ -105,6 +117,7 @@ export function useNotice() {
 
   return {
     list,
+    unreadTotal,
     detail,
     dialogVisible,
     fetchList,

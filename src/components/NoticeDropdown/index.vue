@@ -1,7 +1,7 @@
 <template>
   <el-dropdown class="notice__dropdown" trigger="click">
     <div class="notice__trigger">
-      <el-badge v-if="list.length > 0" :value="list.length" :max="99">
+      <el-badge v-if="unreadTotal > 0" :value="unreadTotal" :max="99">
         <div class="i-svg:bell" />
       </el-badge>
 
@@ -78,7 +78,7 @@
 <script setup lang="ts">
 import { useNotice } from "./useNotice";
 
-const { list, detail, dialogVisible, read, readAll, goMore } = useNotice();
+const { list, unreadTotal, detail, dialogVisible, read, readAll, goMore } = useNotice();
 </script>
 
 <style lang="scss" scoped>
