@@ -882,7 +882,7 @@ function fetchPageData(formData: IObject = {}, isRestart = false) {
         pagination.total = pageResult?.total ?? 0;
         pageData.value = pageResult?.list ?? [];
       } else {
-        pageData.value = Array.isArray(data) ? data : (data?.list ?? data?.data ?? []);
+        pageData.value = Array.isArray(data) ? data : (data?.list ?? (data as any)?.data ?? []);
       }
     })
     .finally(() => {
