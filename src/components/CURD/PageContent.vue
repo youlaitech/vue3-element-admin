@@ -878,9 +878,8 @@ function fetchPageData(formData: IObject = {}, isRestart = false) {
     )
     .then((data) => {
       if (showPagination) {
-        const pageResult = Array.isArray(data) ? { list: data, total: 0 } : data;
-        pagination.total = pageResult?.total ?? 0;
-        pageData.value = pageResult?.list ?? [];
+        pagination.total = (data as any)?.total ?? 0;
+        pageData.value = (data as any)?.list ?? [];
       } else {
         pageData.value = Array.isArray(data) ? data : (data?.list ?? (data as any)?.data ?? []);
       }
