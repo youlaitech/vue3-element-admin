@@ -4,6 +4,7 @@ import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
 import { useTenantStoreHook } from "@/store/modules/tenant";
 import { isTenantEnabled } from "@/utils/tenant";
+import { addRecentMenu } from "@/composables/useRecentMenus";
 
 /**
  * 路由权限守卫
@@ -78,8 +79,14 @@ export function setupPermissionGuard() {
     }
   });
 
-  router.afterEach(() => {
+  router.afterEach((to) => {
     NProgress.done();
+
+    // 记录最近访问
+    if (to.meta?.title && to.path) {
+      const icon = typeof to.meta.icon === "string" ? to.meta.icon : undefined;
+      addRecentMenu(to.path, to.meta.title as string, icon);
+    }
   });
 }
 

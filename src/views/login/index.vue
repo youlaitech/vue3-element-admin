@@ -203,6 +203,10 @@ const formComponents = {
   animation: featureFade 0.8s ease-out;
 }
 
+.dark .auth-feature {
+  color: rgba(240, 245, 255, 0.92);
+}
+
 @media (max-width: 768px) {
   .auth-view__wrapper {
     display: block;

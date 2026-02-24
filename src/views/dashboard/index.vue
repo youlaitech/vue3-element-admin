@@ -319,68 +319,63 @@
           <ECharts :options="visitTrendChartOptions" height="400px" />
         </el-card>
       </el-col>
-      <!-- 最新动态-->
+      <!-- 最近访问 -->
       <el-col :xs="24" :span="8">
         <el-card>
           <template #header>
             <div class="flex-x-between">
-              <span class="font-semibold">最新动态</span>
-              <el-link
+              <span class="font-semibold">最近访问</span>
+              <el-button
+                v-if="recentMenus.length > 0"
                 type="primary"
-                underline="never"
-                href="https://gitee.com/youlaiorg/vue3-element-admin/releases"
-                target="_blank"
+                link
+                size="small"
+                @click="clearRecentMenus"
               >
-                完整记录
-                <el-icon class="ml-0.5"><TopRight /></el-icon>
-              </el-link>
+                清空
+              </el-button>
             </div>
           </template>
 
-          <el-scrollbar height="400px">
-            <el-timeline class="p-3">
-              <el-timeline-item
-                v-for="(item, index) in vesionList"
-                :key="index"
-                :timestamp="item.date"
-                placement="top"
-                :color="index === 0 ? '#67C23A' : '#909399'"
-                :hollow="index !== 0"
-                size="large"
+          <div class="min-h-[400px] flex flex-col">
+            <!-- 宫格显示 -->
+            <div v-if="recentMenus.length > 0" class="grid grid-cols-2 gap-3">
+              <div
+                v-for="item in recentMenus"
+                :key="item.path"
+                class="group flex items-center gap-2 px-3 py-2.5 bg-[--el-fill-color-lighter] rounded-lg cursor-pointer transition-all duration-200 hover:bg-[--el-color-primary-light-8]"
+                @click="router.push(item.path)"
               >
-                <div
-                  class="p-4 mb-3 bg-[--el-fill-color-lighter] rounded-lg transition-all duration-200 hover:translate-x-1"
-                  :class="{
-                    'bg-[--el-color-primary-light-9]! border border-[--el-color-primary-light-5]':
-                      index === 0,
-                  }"
-                >
-                  <div class="flex items-center gap-2">
-                    <el-text tag="strong">{{ item.title }}</el-text>
-                    <el-tag v-if="item.tag" :type="index === 0 ? 'success' : 'info'" size="small">
-                      {{ item.tag }}
-                    </el-tag>
-                  </div>
-
-                  <el-text class="mb-3 text-xs leading-relaxed text-[--el-text-color-secondary]">
-                    {{ item.content }}
-                  </el-text>
-
-                  <div v-if="item.link">
-                    <el-link
-                      :type="index === 0 ? 'primary' : 'info'"
-                      :href="item.link"
-                      target="_blank"
-                      underline="never"
-                    >
-                      详情
-                      <el-icon class="ml-0.5"><TopRight /></el-icon>
-                    </el-link>
-                  </div>
+                <!-- 图标 -->
+                <div class="shrink-0 w-8 h-8 flex items-center justify-center">
+                  <el-icon
+                    v-if="item.icon?.startsWith('el-icon-')"
+                    class="text-lg text-[--el-color-primary]"
+                  >
+                    <component :is="item.icon.replace('el-icon-', '')" />
+                  </el-icon>
+                  <div
+                    v-else-if="item.icon"
+                    :class="`i-svg:${item.icon} text-lg text-[--el-color-primary]`"
+                  />
+                  <el-icon v-else class="text-lg text-[--el-color-primary]"><Menu /></el-icon>
                 </div>
-              </el-timeline-item>
-            </el-timeline>
-          </el-scrollbar>
+                <!-- 标题 -->
+                <span class="text-sm truncate flex-1 leading-tight">
+                  {{ item.title }}
+                </span>
+              </div>
+            </div>
+
+            <!-- 空状态 -->
+            <div v-else class="flex flex-col items-center justify-center flex-1 py-16">
+              <el-icon :size="48" class="text-[--el-text-color-placeholder] mb-4">
+                <Clock />
+              </el-icon>
+              <p class="text-sm text-[--el-text-color-secondary] mb-2">暂无访问记录</p>
+              <p class="text-xs text-[--el-text-color-placeholder]">访问的页面会自动记录在这里</p>
+            </div>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -395,16 +390,22 @@ defineOptions({
 
 import { dayjs } from "element-plus";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import StatisticsAPI from "@/api/system/statistics";
 import type { VisitStatsDetail, VisitTrendDetail } from "@/types/api";
 import { useUserStore } from "@/store/modules/user";
 import { formatGrowthRate } from "@/utils";
 import { useTransition, useDateFormat } from "@vueuse/core";
-import { CircleCheck, CircleClose, Loading } from "@element-plus/icons-vue";
-import { useOnlineCount } from "@/composables";
+import { CircleCheck, CircleClose, Loading, Clock, Menu } from "@element-plus/icons-vue";
+import { useOnlineCount, useRecentMenus } from "@/composables";
+
+const router = useRouter();
 
 // 在线用户数量组件相关
 const { onlineUserCount, lastUpdateTime, isConnected, connectionState } = useOnlineCount();
+
+// 最近访问菜单
+const { recentMenus, clearRecentMenus } = useRecentMenus();
 
 // 格式化时间戳
 const formattedTime = computed(() => {
@@ -429,44 +430,7 @@ const wsStatusClass = computed(() => {
     : "text-[--el-color-danger] bg-[--el-color-danger-light-9] border-[--el-color-danger-light-7]";
 });
 
-interface VersionItem {
-  id: string;
-  title: string; // 版本标题（如：v2.4.0）
-  date: string; // 发布时间
-  content: string; // 版本描述
-  link: string; // 详情链接
-  tag?: string; // 版本标签（可选）
-}
-
 const userStore = useUserStore();
-
-// 当前通知公告列表
-const vesionList = ref<VersionItem[]>([
-  {
-    id: "1",
-    title: "v2.4.0",
-    date: "2021-09-01 00:00:00",
-    content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
-    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
-    tag: "里程碑",
-  },
-  {
-    id: "2",
-    title: "v2.4.0",
-    date: "2021-09-01 00:00:00",
-    content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
-    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
-    tag: "里程碑",
-  },
-  {
-    id: "3",
-    title: "v2.4.0",
-    date: "2021-09-01 00:00:00",
-    content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
-    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
-    tag: "里程碑",
-  },
-]);
 
 // 当前时间（用于计算问候语）
 const currentDate = new Date();
