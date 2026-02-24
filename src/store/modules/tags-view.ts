@@ -89,9 +89,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
   }
 
   function updateVisitedView(view: TagView) {
-    for (let v of visitedViews.value) {
+    for (const v of visitedViews.value) {
       if (v.path === view.path) {
-        v = Object.assign(v, view);
+        Object.assign(v, view);
         break;
       }
     }

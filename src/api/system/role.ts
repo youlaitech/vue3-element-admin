@@ -30,7 +30,7 @@ const RoleAPI = {
   },
   /** 获取角色的部门ID集合(自定义数据权限) */
   getRoleDeptIds(roleId: string) {
-    return request<any, number[]>({ url: `${ROLE_BASE_URL}/${roleId}/dept-ids`, method: "get" });
+    return request<any, string[]>({ url: `${ROLE_BASE_URL}/${roleId}/dept-ids`, method: "get" });
   },
   /** 新增角色 */
   create(data: RoleForm) {

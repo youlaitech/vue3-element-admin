@@ -31,9 +31,8 @@ function handleClipboard() {
       () => {
         ElMessage.success("Copy successfully");
       },
-      (error) => {
+      () => {
         ElMessage.warning("Copy failed");
-        console.log("[CopyButton] Copy failed", error);
       }
     );
   } else {
@@ -44,17 +43,16 @@ function handleClipboard() {
     input.setAttribute("value", props.text);
     document.body.appendChild(input);
     input.select();
-    let successful = false;
     try {
-      successful = document.execCommand("copy");
+      const successful = document.execCommand("copy");
+
+      if (successful) {
+        ElMessage.success("Copy successfully!");
+      } else {
+        ElMessage.warning("Copy failed!");
+      }
     } finally {
       document.body.removeChild(input);
-    }
-
-    if (successful) {
-      ElMessage.success("Copy successfully!");
-    } else {
-      ElMessage.warning("Copy failed!");
     }
   }
 }
