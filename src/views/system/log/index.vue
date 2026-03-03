@@ -1,6 +1,5 @@
-﻿<template>
+<template>
   <div class="app-container">
-    <!-- 搜索区域 -->
     <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
         <el-form-item prop="keywords" label="关键字">
@@ -70,12 +69,12 @@ defineOptions({
 
 import LogAPI from "@/api/system/log";
 import type { LogItem, LogQueryParams } from "@/types/api";
+import type { FormInstance } from "element-plus";
 
-const queryFormRef = ref();
+// 表单引用
+const queryFormRef = ref<FormInstance>();
 
-const loading = ref(false);
-const total = ref(0);
-
+// 查询参数
 const queryParams = reactive<LogQueryParams>({
   pageNum: 1,
   pageSize: 10,
@@ -83,11 +82,15 @@ const queryParams = reactive<LogQueryParams>({
   createTime: undefined as [string, string] | undefined,
 });
 
-// 日志表格数据
+// 列表数据
 const pageData = ref<LogItem[]>();
+const total = ref(0);
+const loading = ref(false);
 
-/** 获取数据 */
-function fetchData() {
+/**
+ * 加载日志列表数据
+ */
+function fetchData(): void {
   loading.value = true;
   LogAPI.getPage(queryParams)
     .then((data) => {
@@ -99,15 +102,19 @@ function fetchData() {
     });
 }
 
-/** 查询（重置页码后获取数据）*/
-function handleQuery() {
+/**
+ * 查询按钮点击事件
+ */
+function handleQuery(): void {
   queryParams.pageNum = 1;
   fetchData();
 }
 
-/** 重置查询 */
-function handleResetQuery() {
-  queryFormRef.value.resetFields();
+/**
+ * 重置查询
+ */
+function handleResetQuery(): void {
+  queryFormRef.value?.resetFields();
   queryParams.pageNum = 1;
   queryParams.createTime = undefined;
   fetchData();

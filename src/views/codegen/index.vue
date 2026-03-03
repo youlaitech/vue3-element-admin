@@ -87,10 +87,10 @@
     </el-card>
 
     <el-drawer
-      v-model="dialog.visible"
-      :title="dialog.title"
+      v-model="dialogState.visible"
+      :title="dialogState.title"
       size="80%"
-      @close="dialog.visible = false"
+      @close="dialogState.visible = false"
     >
       <el-steps :active="active" align-center finish-status="success" simple>
         <el-step title="基础配置" />
@@ -603,7 +603,7 @@ const genConfigFormRules = {
   entityName: [{ required: true, message: "请输入实体名", trigger: "blur" }],
 };
 
-const dialog = reactive({
+const dialogState = reactive({
   visible: false,
   title: "",
 });
@@ -684,7 +684,7 @@ watch(active, (val) => {
 });
 
 watch(
-  () => dialog.visible,
+  () => dialogState.visible,
   (visible) => {
     if (!visible) {
       destroySort();
@@ -841,7 +841,7 @@ function handleResetQuery() {
 
 /** 打开弹窗 */
 async function handleOpenDialog(tableName: string) {
-  dialog.visible = true;
+  dialogState.visible = true;
   active.value = 0;
   currentTableName.value = tableName;
   loading.value = true;
@@ -854,7 +854,7 @@ async function handleOpenDialog(tableName: string) {
 
     menuOptions.value = menuList;
     dictOptions.value = dictList;
-    dialog.title = `${tableName} 代码生成`;
+    dialogState.title = `${tableName} 代码生成`;
     genConfigFormData.value = config;
 
     checkAllSelected("isShowInQuery", isCheckAllQuery);
@@ -867,7 +867,7 @@ async function handleOpenDialog(tableName: string) {
     }
   } catch {
     ElMessage.error("获取生成配置失败");
-    dialog.visible = false;
+    dialogState.visible = false;
   } finally {
     loading.value = false;
   }
@@ -912,7 +912,7 @@ async function handlePreview(tableName: string) {
       (genConfigFormData.value.pageType as any) || "classic",
       frontendType
     );
-    dialog.title = `代码生成 ${tableName}`;
+    dialogState.title = `代码生成 ${tableName}`;
     const previewList = data || [];
     const typeOptions = Array.from(
       new Set(

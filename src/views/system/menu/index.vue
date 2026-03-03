@@ -1,6 +1,5 @@
-﻿<template>
+<template>
   <div class="app-container">
-    <!-- 搜索区域 -->
     <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
@@ -26,7 +25,7 @@
             v-hasPerm="['sys:menu:create']"
             type="success"
             icon="plus"
-            @click="handleOpenDialog('0')"
+            @click="openDialog('0')"
           >
             新增
           </el-button>
@@ -97,7 +96,7 @@
               link
               size="small"
               icon="plus"
-              @click.stop="handleOpenDialog(scope.row.id)"
+              @click.stop="openDialog(scope.row.id)"
             >
               新增
             </el-button>
@@ -108,7 +107,7 @@
               link
               size="small"
               icon="edit"
-              @click.stop="handleOpenDialog(undefined, scope.row.id)"
+              @click.stop="openDialog(undefined, scope.row.id)"
             >
               编辑
             </el-button>
@@ -128,10 +127,10 @@
     </el-card>
 
     <el-drawer
-      v-model="dialog.visible"
-      :title="dialog.title"
+      v-model="dialogState.visible"
+      :title="dialogState.title"
       :size="drawerSize"
-      @close="handleCloseDialog"
+      @close="closeDialog"
     >
       <el-form ref="menuFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="父级菜单" prop="parentId">
@@ -351,7 +350,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmit">确定</el-button>
-          <el-button @click="handleCloseDialog">取消</el-button>
+          <el-button @click="closeDialog">取消</el-button>
         </div>
       </template>
     </el-drawer>
@@ -361,9 +360,9 @@
 <script setup lang="ts">
 import { useAppStore } from "@/store/modules/app";
 import { DeviceEnum } from "@/enums/settings";
-
 import MenuAPI from "@/api/system/menu";
 import type { MenuQueryParams, MenuForm, MenuItem } from "@/types/api";
+import type { FormInstance, FormRules } from "element-plus";
 import { MenuScopeEnum, MenuTypeEnum } from "@/enums/business";
 import { isTenantEnabled } from "@/utils/tenant";
 
@@ -374,44 +373,54 @@ defineOptions({
 
 const appStore = useAppStore();
 
-const queryFormRef = ref();
-const menuFormRef = ref();
+// 表单引用
+const queryFormRef = ref<FormInstance>();
+const menuFormRef = ref<FormInstance>();
 
+// 查询参数
+const queryParams = reactive<MenuQueryParams>({});
+
+// 列表数据
+const menuTableData = ref<MenuItem[]>([]);
+const menuOptions = ref<OptionItem[]>([]);
 const loading = ref(false);
-const dialog = reactive({
+
+// 弹窗状态
+const dialogState = reactive({
   title: "新增菜单",
   visible: false,
 });
 
-const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
-// 查询参数
-const queryParams = reactive<MenuQueryParams>({});
-// 多租户关闭时，隐藏菜单范围（避免单租户误配置）
-const showMenuScope = computed(() => isTenantEnabled());
-// 菜单表格数据
-const menuTableData = ref<MenuItem[]>([]);
-// 顶级菜单下拉选项
-const menuOptions = ref<OptionItem[]>([]);
-// 初始菜单表单数据
+// 表单数据
 const initialMenuFormData = ref<MenuForm>({
   id: undefined,
   parentId: "0",
   visible: 1,
   scope: MenuScopeEnum.TENANT,
   sort: 1,
-  type: MenuTypeEnum.MENU, // 默认菜单
+  type: MenuTypeEnum.MENU,
   alwaysShow: 0,
   keepAlive: 1,
   params: [],
 });
-// 菜单表单数据
 const formData = ref({ ...initialMenuFormData.value });
+const selectedMenuId = ref<string | undefined>();
+
+// 多租户关闭时，隐藏菜单范围
+const showMenuScope = computed(() => isTenantEnabled());
+
+// 抽屉宽度
+const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
+
+// 是否外链
 const isExternalLink = computed(
   () =>
     formData.value.type === MenuTypeEnum.MENU &&
     !!formData.value.routePath &&
     /^https?:\/\//.test(formData.value.routePath)
 );
+
+// 验证规则
 const validateRouteName = (_: unknown, value: string, callback: (error?: Error) => void) => {
   if (formData.value.type === MenuTypeEnum.MENU && !isExternalLink.value && !value) {
     callback(new Error("请输入路由名称"));
@@ -426,8 +435,7 @@ const validateComponent = (_: unknown, value: string, callback: (error?: Error) 
   }
   callback();
 };
-// 表单验证规则
-const rules = reactive({
+const rules: FormRules = {
   parentId: [{ required: true, message: "请选择父级菜单", trigger: "blur" }],
   name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
   type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
@@ -435,13 +443,12 @@ const rules = reactive({
   routePath: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
   component: [{ validator: validateComponent, trigger: "blur" }],
   visible: [{ required: true, message: "请选择显示状态", trigger: "change" }],
-});
+};
 
-// 选择表格的行菜单ID
-const selectedMenuId = ref<string | undefined>();
-
-// 查询菜单
-function handleQuery() {
+/**
+ * 加载菜单列表数据
+ */
+function fetchData(): void {
   loading.value = true;
   MenuAPI.getList(queryParams)
     .then((data) => {
@@ -452,53 +459,62 @@ function handleQuery() {
     });
 }
 
-// 重置查询
-function handleResetQuery() {
-  queryFormRef.value.resetFields();
-  handleQuery();
+/**
+ * 查询按钮点击事件
+ */
+function handleQuery(): void {
+  fetchData();
 }
 
-// 行点击事件
-function handleRowClick(row: MenuItem) {
+/**
+ * 重置查询
+ */
+function handleResetQuery(): void {
+  queryFormRef.value?.resetFields();
+  fetchData();
+}
+
+/**
+ * 行点击事件
+ */
+function handleRowClick(row: MenuItem): void {
   selectedMenuId.value = row.id;
 }
 
 /**
- * 打开表单弹窗
- *
+ * 打开弹窗
  * @param parentId 父菜单ID
- * @param menuId 菜单ID
+ * @param menuId 菜单ID（编辑时传入）
  */
-function handleOpenDialog(parentId?: string, menuId?: string) {
+function openDialog(parentId?: string, menuId?: string): void {
   MenuAPI.getOptions(true)
     .then((data) => {
       menuOptions.value = [{ value: "0", label: "顶级菜单", children: data }];
     })
     .then(() => {
-      dialog.visible = true;
+      dialogState.visible = true;
       if (menuId) {
-        dialog.title = "编辑菜单";
+        dialogState.title = "编辑菜单";
         MenuAPI.getFormData(menuId).then((data) => {
           initialMenuFormData.value = { ...data };
           formData.value = data;
         });
       } else {
-        dialog.title = "新增菜单";
+        dialogState.title = "新增菜单";
         formData.value.parentId = parentId?.toString();
       }
     });
 }
 
-// 菜单类型切换
-function handleMenuTypeChange() {
-  // 如果菜单类型改变
+/**
+ * 菜单类型切换事件
+ */
+function handleMenuTypeChange(): void {
   if (formData.value.type !== initialMenuFormData.value.type) {
     if (formData.value.type === MenuTypeEnum.MENU) {
-      // 目录切换到菜单时，清空组件路径"
       if (initialMenuFormData.value.type === MenuTypeEnum.CATALOG) {
         formData.value.component = "";
       } else {
-        // 其他情况，保留原有的组件路径
         formData.value.routePath = initialMenuFormData.value.routePath;
         formData.value.component = initialMenuFormData.value.component;
       }
@@ -509,37 +525,39 @@ function handleMenuTypeChange() {
 /**
  * 提交表单
  */
-function handleSubmit() {
-  menuFormRef.value.validate((isValid: boolean) => {
+function handleSubmit(): void {
+  menuFormRef.value?.validate((isValid) => {
     if (isValid) {
       const menuId = formData.value.id;
       if (menuId) {
-        //修改时父级菜单不能为当前菜单
         if (formData.value.parentId == menuId) {
           ElMessage.error("父级菜单不能为当前菜单");
           return;
         }
         MenuAPI.update(menuId, formData.value).then(() => {
           ElMessage.success("修改成功");
-          handleCloseDialog();
-          handleQuery();
+          closeDialog();
+          fetchData();
         });
       } else {
         MenuAPI.create(formData.value).then(() => {
           ElMessage.success("新增成功");
-          handleCloseDialog();
-          handleQuery();
+          closeDialog();
+          fetchData();
         });
       }
     }
   });
 }
 
-// 删除菜单
-function handleDelete(menuId: string) {
+/**
+ * 删除菜单
+ * @param menuId 菜单ID
+ */
+function handleDelete(menuId: string): void {
   if (!menuId) {
     ElMessage.warning("请勾选删除项");
-    return false;
+    return;
   }
 
   ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
@@ -552,7 +570,7 @@ function handleDelete(menuId: string) {
       MenuAPI.deleteById(menuId)
         .then(() => {
           ElMessage.success("删除成功");
-          handleQuery();
+          fetchData();
         })
         .finally(() => {
           loading.value = false;
@@ -564,30 +582,28 @@ function handleDelete(menuId: string) {
   );
 }
 
-function resetForm() {
-  menuFormRef.value.resetFields();
-  menuFormRef.value.clearValidate();
+/**
+ * 关闭弹窗
+ */
+function closeDialog(): void {
+  dialogState.visible = false;
+  menuFormRef.value?.resetFields();
+  menuFormRef.value?.clearValidate();
   formData.value = {
     id: undefined,
     parentId: "0",
     visible: 1,
     scope: MenuScopeEnum.TENANT,
     sort: 1,
-    type: MenuTypeEnum.MENU, // 默认菜单
+    type: MenuTypeEnum.MENU,
     alwaysShow: 0,
     keepAlive: 1,
     params: [],
   };
 }
 
-// 关闭弹窗
-function handleCloseDialog() {
-  dialog.visible = false;
-  resetForm();
-}
-
 onMounted(() => {
-  handleQuery();
+  fetchData();
 });
 </script>
 

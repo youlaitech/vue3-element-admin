@@ -162,10 +162,10 @@
     </el-row>
 
     <!-- 弹窗 -->
-    <el-dialog v-model="dialog.visible" :title="dialog.title" :width="500">
+    <el-dialog v-model="dialogState.visible" :title="dialogState.title" :width="500">
       <!-- 账号资料 -->
       <el-form
-        v-if="dialog.type === DialogType.ACCOUNT"
+        v-if="dialogState.type === DialogType.ACCOUNT"
         ref="userProfileFormRef"
         :model="userProfileForm"
         :label-width="100"
@@ -180,7 +180,7 @@
 
       <!-- 修改密码 -->
       <el-form
-        v-if="dialog.type === DialogType.PASSWORD"
+        v-if="dialogState.type === DialogType.PASSWORD"
         ref="passwordChangeFormRef"
         :model="passwordChangeForm"
         :rules="passwordChangeRules"
@@ -199,7 +199,7 @@
 
       <!-- 绑定手机 -->
       <el-form
-        v-else-if="dialog.type === DialogType.MOBILE"
+        v-else-if="dialogState.type === DialogType.MOBILE"
         ref="mobileBindingFormRef"
         :model="mobileUpdateForm"
         :rules="mobileBindingRules"
@@ -229,7 +229,7 @@
 
       <!-- 绑定邮箱 -->
       <el-form
-        v-else-if="dialog.type === DialogType.EMAIL"
+        v-else-if="dialogState.type === DialogType.EMAIL"
         ref="emailBindingFormRef"
         :model="emailUpdateForm"
         :rules="emailBindingRules"
@@ -295,7 +295,7 @@ const enum DialogType {
   EMAIL = "email",
 }
 
-const dialog = reactive({
+const dialogState = reactive({
   visible: false,
   title: "",
   type: "" as DialogType, // 修改账号资料,修改密码、绑定手机、绑定邮箱"
@@ -391,27 +391,27 @@ const emailSecurityDesc = computed(() => {
  * @param type 弹窗类型 ACCOUNT: 账号资料 PASSWORD: 修改密码 MOBILE: 绑定手机 EMAIL: 绑定邮箱
  */
 const handleOpenDialog = (type: DialogType) => {
-  dialog.type = type;
-  dialog.visible = true;
+  dialogState.type = type;
+  dialogState.visible = true;
   switch (type) {
     case DialogType.ACCOUNT:
-      dialog.title = "账号资料";
+      dialogState.title = "账号资料";
       // 初始化表单数据
       userProfileForm.nickname = userProfile.value.nickname;
       userProfileForm.avatar = userProfile.value.avatar;
       userProfileForm.gender = userProfile.value.gender;
       break;
     case DialogType.PASSWORD:
-      dialog.title = "修改密码";
+      dialogState.title = "修改密码";
       break;
     case DialogType.MOBILE:
-      dialog.title = userProfile.value.mobile ? "更换手机号" : "绑定手机号";
+      dialogState.title = userProfile.value.mobile ? "更换手机号" : "绑定手机号";
       mobileUpdateForm.mobile = "";
       mobileUpdateForm.code = "";
       mobileUpdateForm.password = "";
       break;
     case DialogType.EMAIL:
-      dialog.title = userProfile.value.email ? "更换邮箱" : "绑定邮箱";
+      dialogState.title = userProfile.value.email ? "更换邮箱" : "绑定邮箱";
       emailUpdateForm.email = "";
       emailUpdateForm.code = "";
       emailUpdateForm.password = "";
@@ -524,36 +524,36 @@ function handleSendEmailCode() {
  */
 const handleSubmit = async () => {
   try {
-    if (dialog.type === DialogType.ACCOUNT) {
+    if (dialogState.type === DialogType.ACCOUNT) {
       const valid = await userProfileFormRef.value?.validate();
       if (!valid) return;
 
       await UserAPI.updateProfile(userProfileForm);
       ElMessage.success("账号资料修改成功");
-      dialog.visible = false;
+      dialogState.visible = false;
       await loadUserProfile();
-    } else if (dialog.type === DialogType.PASSWORD) {
+    } else if (dialogState.type === DialogType.PASSWORD) {
       const valid = await passwordChangeFormRef.value?.validate();
       if (!valid) return;
 
       await UserAPI.changePassword(passwordChangeForm);
-      dialog.visible = false;
+      dialogState.visible = false;
       await redirectToLogin("密码已修改，请重新登录");
-    } else if (dialog.type === DialogType.MOBILE) {
+    } else if (dialogState.type === DialogType.MOBILE) {
       const valid = await mobileBindingFormRef.value?.validate();
       if (!valid) return;
 
       await UserAPI.bindOrChangeMobile(mobileUpdateForm);
       ElMessage.success(userProfile.value.mobile ? "手机号更换成功" : "手机号绑定成功");
-      dialog.visible = false;
+      dialogState.visible = false;
       await loadUserProfile();
-    } else if (dialog.type === DialogType.EMAIL) {
+    } else if (dialogState.type === DialogType.EMAIL) {
       const valid = await emailBindingFormRef.value?.validate();
       if (!valid) return;
 
       await UserAPI.bindOrChangeEmail(emailUpdateForm);
       ElMessage.success(userProfile.value.email ? "邮箱更换成功" : "邮箱绑定成功");
-      dialog.visible = false;
+      dialogState.visible = false;
       await loadUserProfile();
     }
   } catch {
@@ -565,14 +565,14 @@ const handleSubmit = async () => {
  * 取消
  */
 const handleCancel = () => {
-  dialog.visible = false;
-  if (dialog.type === DialogType.ACCOUNT) {
+  dialogState.visible = false;
+  if (dialogState.type === DialogType.ACCOUNT) {
     userProfileFormRef.value?.resetFields();
-  } else if (dialog.type === DialogType.PASSWORD) {
+  } else if (dialogState.type === DialogType.PASSWORD) {
     passwordChangeFormRef.value?.resetFields();
-  } else if (dialog.type === DialogType.MOBILE) {
+  } else if (dialogState.type === DialogType.MOBILE) {
     mobileBindingFormRef.value?.resetFields();
-  } else if (dialog.type === DialogType.EMAIL) {
+  } else if (dialogState.type === DialogType.EMAIL) {
     emailBindingFormRef.value?.resetFields();
   }
 };

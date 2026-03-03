@@ -1,6 +1,5 @@
-﻿<template>
+<template>
   <div class="app-container">
-    <!-- 搜索区域 -->
     <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
@@ -34,7 +33,7 @@
             v-hasPerm="['sys:dept:create']"
             type="success"
             icon="plus"
-            @click="handleOpenDialog()"
+            @click="openDialog()"
           >
             新增
           </el-button>
@@ -79,7 +78,7 @@
               link
               size="small"
               icon="plus"
-              @click.stop="handleOpenDialog(scope.row.id, undefined)"
+              @click.stop="openDialog(scope.row.id, undefined)"
             >
               新增
             </el-button>
@@ -89,7 +88,7 @@
               link
               size="small"
               icon="edit"
-              @click.stop="handleOpenDialog(scope.row.parentId, scope.row.id)"
+              @click.stop="openDialog(scope.row.parentId, scope.row.id)"
             >
               编辑
             </el-button>
@@ -109,10 +108,10 @@
     </el-card>
 
     <el-dialog
-      v-model="dialog.visible"
-      :title="dialog.title"
+      v-model="dialogState.visible"
+      :title="dialogState.title"
       width="600px"
-      @closed="handleCloseDialog"
+      @closed="closeDialog"
     >
       <el-form ref="deptFormRef" :model="formData" :rules="rules" label-width="80px">
         <el-form-item label="上级部门" prop="parentId">
@@ -150,7 +149,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmit">确定</el-button>
-          <el-button @click="handleCloseDialog">取消</el-button>
+          <el-button @click="closeDialog">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -165,62 +164,84 @@ defineOptions({
 
 import DeptAPI from "@/api/system/dept";
 import type { DeptItem, DeptForm, DeptQueryParams } from "@/types/api";
+import type { FormInstance, FormRules } from "element-plus";
 
-const queryFormRef = ref();
-const deptFormRef = ref();
+// 表单引用
+const queryFormRef = ref<FormInstance>();
+const deptFormRef = ref<FormInstance>();
 
-const loading = ref(false);
-const selectIds = ref<number[]>([]);
+// 查询参数
 const queryParams = reactive<DeptQueryParams>({});
 
-const dialog = reactive({
+// 列表数据
+const deptList = ref<DeptItem[]>();
+const deptOptions = ref<OptionItem[]>();
+const loading = ref(false);
+const selectIds = ref<string[]>([]);
+
+// 弹窗状态
+const dialogState = reactive({
   title: "",
   visible: false,
 });
 
-const deptList = ref<DeptItem[]>();
-const deptOptions = ref<OptionItem[]>();
+// 表单数据
 const formData = reactive<DeptForm>({
   status: 1,
   parentId: "0",
   sort: 1,
 });
 
-const rules = reactive({
+// 验证规则
+const rules: FormRules = {
   parentId: [{ required: true, message: "上级部门不能为空", trigger: "change" }],
   name: [{ required: true, message: "部门名称不能为空", trigger: "blur" }],
   code: [{ required: true, message: "部门编号不能为空", trigger: "blur" }],
   sort: [{ required: true, message: "显示排序不能为空", trigger: "blur" }],
-});
+};
 
-// 查询部门
-function handleQuery() {
+/**
+ * 加载部门列表数据
+ */
+function fetchData(): void {
   loading.value = true;
-  DeptAPI.getList(queryParams).then((data) => {
-    deptList.value = data;
-    loading.value = false;
-  });
-}
-
-// 重置查询
-function handleResetQuery() {
-  queryFormRef.value.resetFields();
-  handleQuery();
-}
-
-// 处理选中项变化
-function handleSelectionChange(selection: any) {
-  selectIds.value = selection.map((item: any) => item.id);
+  DeptAPI.getList(queryParams)
+    .then((data) => {
+      deptList.value = data;
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 }
 
 /**
- * 打开部门弹窗
- *
- * @param parentId 父部门ID
- * @param deptId 部门ID
+ * 查询按钮点击事件
  */
-async function handleOpenDialog(parentId?: string, deptId?: string) {
-  // 加载部门下拉数据
+function handleQuery(): void {
+  fetchData();
+}
+
+/**
+ * 重置查询
+ */
+function handleResetQuery(): void {
+  queryFormRef.value?.resetFields();
+  fetchData();
+}
+
+/**
+ * 表格选择变化事件
+ */
+function handleSelectionChange(selection: DeptItem[]): void {
+  selectIds.value = selection.map((item) => item.id).filter(Boolean) as string[];
+}
+
+/**
+ * 打开弹窗
+ * @param parentId 父部门ID
+ * @param deptId 部门ID（编辑时传入）
+ */
+async function openDialog(parentId?: string, deptId?: string): Promise<void> {
   const data = await DeptAPI.getOptions();
   deptOptions.value = [
     {
@@ -230,21 +251,23 @@ async function handleOpenDialog(parentId?: string, deptId?: string) {
     },
   ];
 
-  dialog.visible = true;
+  dialogState.visible = true;
   if (deptId) {
-    dialog.title = "修改部门";
+    dialogState.title = "修改部门";
     DeptAPI.getFormData(deptId).then((data) => {
       Object.assign(formData, data);
     });
   } else {
-    dialog.title = "新增部门";
+    dialogState.title = "新增部门";
     formData.parentId = parentId || "0";
   }
 }
 
-// 提交部门表单
-function handleSubmit() {
-  deptFormRef.value.validate((valid: any) => {
+/**
+ * 提交表单
+ */
+function handleSubmit(): void {
+  deptFormRef.value?.validate((valid) => {
     if (valid) {
       loading.value = true;
       const deptId = formData.id;
@@ -252,16 +275,16 @@ function handleSubmit() {
         DeptAPI.update(deptId, formData)
           .then(() => {
             ElMessage.success("修改成功");
-            handleCloseDialog();
-            handleQuery();
+            closeDialog();
+            fetchData();
           })
           .finally(() => (loading.value = false));
       } else {
         DeptAPI.create(formData)
           .then(() => {
             ElMessage.success("新增成功");
-            handleCloseDialog();
-            handleQuery();
+            closeDialog();
+            fetchData();
           })
           .finally(() => (loading.value = false));
       }
@@ -269,8 +292,11 @@ function handleSubmit() {
   });
 }
 
-// 删除部门
-function handleDelete(deptId?: number) {
+/**
+ * 删除部门
+ * @param deptId 部门ID
+ */
+function handleDelete(deptId?: number): void {
   const deptIds = [deptId || selectIds.value].join(",");
 
   if (!deptIds) {
@@ -298,24 +324,20 @@ function handleDelete(deptId?: number) {
   );
 }
 
-// 重置表单
-function resetForm() {
-  deptFormRef.value.resetFields();
-  deptFormRef.value.clearValidate();
-
+/**
+ * 关闭弹窗
+ */
+function closeDialog(): void {
+  dialogState.visible = false;
+  deptFormRef.value?.resetFields();
+  deptFormRef.value?.clearValidate();
   formData.id = undefined;
   formData.parentId = "0";
   formData.status = 1;
   formData.sort = 1;
 }
 
-// 关闭弹窗
-function handleCloseDialog() {
-  dialog.visible = false;
-  resetForm();
-}
-
 onMounted(() => {
-  handleQuery();
+  fetchData();
 });
 </script>

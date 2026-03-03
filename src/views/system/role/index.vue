@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="filter-section">
@@ -22,12 +22,12 @@
     <el-card shadow="hover" class="table-section">
       <div class="table-section__toolbar">
         <div class="table-section__toolbar--actions">
-          <el-button type="success" icon="plus" @click="handleOpenDialog()">新增</el-button>
+          <el-button type="success" icon="plus" @click="handleCreateClick()">新增</el-button>
           <el-button
             type="danger"
             :disabled="ids.length === 0"
             icon="delete"
-            @click="handleDelete()"
+            @click="handleBatchDelete()"
           >
             删除
           </el-button>
@@ -66,7 +66,7 @@
               size="small"
               link
               icon="position"
-              @click="openRolePermissionAssignment(scope.row)"
+              @click="handleAssignPermClick(scope.row)"
             >
               分配权限
             </el-button>
@@ -75,7 +75,7 @@
               size="small"
               link
               icon="edit"
-              @click="handleOpenDialog(scope.row.id)"
+              @click="handleEditClick(scope.row.id)"
             >
               编辑
             </el-button>
@@ -97,16 +97,16 @@
         v-model:total="total"
         v-model:page="queryParams.pageNum"
         v-model:limit="queryParams.pageSize"
-        @pagination="fetchData"
+        @pagination="fetchList"
       />
     </el-card>
 
     <!-- 角色表单弹窗 -->
     <el-dialog
-      v-model="dialog.visible"
-      :title="dialog.title"
+      v-model="dialogState.visible"
+      :title="dialogState.title"
       width="600px"
-      @close="handleCloseDialog"
+      @close="closeDialog"
     >
       <el-form ref="roleFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="角色名称" prop="name">
@@ -159,7 +159,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmit">确定</el-button>
-          <el-button @click="handleCloseDialog">取消</el-button>
+          <el-button @click="closeDialog">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -187,7 +187,7 @@
           <el-checkbox
             v-model="parentChildLinked"
             class="ml-5"
-            @change="handleparentChildLinkedChange"
+            @change="handleParentChildLinkedChange"
           >
             父子联动
           </el-checkbox>
@@ -266,7 +266,7 @@ const menuPermOptions = ref<OptionItem[]>([]);
 const deptOptions = ref<OptionItem[]>([]);
 
 // 弹窗
-const dialog = reactive({
+const dialogState = reactive({
   title: "",
   visible: false,
 });
@@ -300,94 +300,67 @@ const isExpanded = ref(true);
 
 const parentChildLinked = ref(true);
 
-// 获取数据
-function fetchData() {
+/**
+ * 加载角色列表数据
+ */
+async function fetchList(): Promise<void> {
   loading.value = true;
-  RoleAPI.getPage(queryParams)
-    .then((data) => {
-      roleList.value = data.list;
-      total.value = data.total ?? 0;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+  try {
+    const data = await RoleAPI.getPage(queryParams);
+    roleList.value = data.list;
+    total.value = data.total ?? 0;
+  } finally {
+    loading.value = false;
+  }
 }
 
 // 查询（重置页码后获取数据）
-function handleQuery() {
+function handleQuery(): void {
   queryParams.pageNum = 1;
-  fetchData();
+  fetchList();
 }
 
-// 重置查询
-function handleResetQuery() {
-  queryFormRef.value.resetFields();
-  queryParams.pageNum = 1;
-  fetchData();
+/**
+ * 重置查询条件
+ */
+function resetQuery(): void {
+  queryFormRef.value?.resetFields();
+}
+
+/**
+ * 重置查询条件并重新查询
+ */
+function handleResetQuery(): void {
+  resetQuery();
+  handleQuery();
 }
 
 // 行复选框选中
-function handleSelectionChange(selection: any) {
+function handleSelectionChange(selection: any): void {
   ids.value = selection.map((item: any) => item.id);
 }
 
-// 打开角色弹窗
-async function handleOpenDialog(roleId?: string) {
-  dialog.visible = true;
-  // 获取部门下拉选项
-  if (deptOptions.value.length === 0) {
-    deptOptions.value = await DeptAPI.getOptions();
-  }
-
-  if (roleId) {
-    dialog.title = "修改角色";
-    RoleAPI.getFormData(roleId).then((data) => {
-      Object.assign(formData, data);
-    });
-  } else {
-    dialog.title = "新增角色";
-  }
+/**
+ * 打开表单弹窗
+ */
+function openDialog(): void {
+  dialogState.visible = true;
 }
 
-// 提交角色表单
-function handleSubmit() {
-  roleFormRef.value.validate((valid: any) => {
-    if (valid) {
-      // 如果不是自定义数据权限，清空部门ID列表
-      const submitData = { ...formData };
-      if (submitData.dataScope !== 5) {
-        submitData.deptIds = undefined;
-      }
-
-      loading.value = true;
-      const roleId = formData.id;
-      if (roleId) {
-        RoleAPI.update(roleId, submitData)
-          .then(() => {
-            ElMessage.success("修改成功");
-            handleCloseDialog();
-            handleResetQuery();
-          })
-          .finally(() => (loading.value = false));
-      } else {
-        RoleAPI.create(submitData)
-          .then(() => {
-            ElMessage.success("新增成功");
-            handleCloseDialog();
-            handleResetQuery();
-          })
-          .finally(() => (loading.value = false));
-      }
-    }
-  });
+/**
+ * 关闭表单弹窗
+ */
+function closeDialog(): void {
+  dialogState.visible = false;
+  resetForm();
 }
 
-// 关闭弹窗
-function handleCloseDialog() {
-  dialog.visible = false;
-
-  roleFormRef.value.resetFields();
-  roleFormRef.value.clearValidate();
+/**
+ * 重置表单数据和验证状态
+ */
+function resetForm(): void {
+  roleFormRef.value?.resetFields();
+  roleFormRef.value?.clearValidate();
 
   formData.id = undefined;
   formData.sort = 1;
@@ -396,9 +369,64 @@ function handleCloseDialog() {
   formData.deptIds = undefined;
 }
 
+/**
+ * 新增按钮点击事件
+ */
+async function handleCreateClick(): Promise<void> {
+  dialogState.title = "新增角色";
+  if (deptOptions.value.length === 0) {
+    deptOptions.value = await DeptAPI.getOptions();
+  }
+  openDialog();
+}
+
+/**
+ * 编辑按钮点击事件
+ * @param roleId 角色ID
+ */
+async function handleEditClick(roleId: string): Promise<void> {
+  dialogState.title = "修改角色";
+  if (deptOptions.value.length === 0) {
+    deptOptions.value = await DeptAPI.getOptions();
+  }
+  const data = await RoleAPI.getFormData(roleId);
+  Object.assign(formData, data);
+  openDialog();
+}
+
+// 提交角色表单
+async function handleSubmit(): Promise<void> {
+  const valid = await roleFormRef.value?.validate().then(
+    () => true,
+    () => false
+  );
+  if (!valid) return;
+
+  const submitData = { ...formData };
+  if (submitData.dataScope !== 5) {
+    submitData.deptIds = undefined;
+  }
+
+  loading.value = true;
+  try {
+    const roleId = formData.id;
+    if (roleId) {
+      await RoleAPI.update(roleId, submitData);
+      ElMessage.success("修改成功");
+    } else {
+      await RoleAPI.create(submitData);
+      ElMessage.success("新增成功");
+    }
+    closeDialog();
+    handleResetQuery();
+  } finally {
+    loading.value = false;
+  }
+}
+
 // 删除角色
-function handleDelete(roleId?: number) {
-  const roleIds = [roleId || ids.value].join(",");
+function handleDelete(roleId?: number): void {
+  const roleIds = roleId ? String(roleId) : ids.value.join(",");
   if (!roleIds) {
     ElMessage.warning("请勾选删除项");
     return;
@@ -424,8 +452,15 @@ function handleDelete(roleId?: number) {
   );
 }
 
+/**
+ * 批量删除按钮点击事件
+ */
+function handleBatchDelete(): void {
+  handleDelete();
+}
+
 // 打开分配菜单权限弹窗
-async function openRolePermissionAssignment(row: RoleItem) {
+async function handleAssignPermClick(row: RoleItem): Promise<void> {
   const roleId = row.id;
   if (roleId) {
     assignPermDialogVisible.value = true;
@@ -471,7 +506,7 @@ function handleAssignPermSubmit() {
 }
 
 // 展开/收缩 菜单权限树
-function togglePermTree() {
+function togglePermTree(): void {
   isExpanded.value = !isExpanded.value;
   if (permTreeRef.value) {
     Object.values(permTreeRef.value.store.nodesMap).forEach((node: any) => {
@@ -500,7 +535,7 @@ function handlePermFilter(
 }
 
 // 父子菜单节点是否联动
-function handleparentChildLinkedChange(val: any) {
+function handleParentChildLinkedChange(val: any): void {
   parentChildLinked.value = val;
 }
 

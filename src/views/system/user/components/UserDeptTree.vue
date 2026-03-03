@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <el-card shadow="never">
     <el-input v-model="deptName" placeholder="部门名称" clearable>
       <template #prefix>
@@ -21,6 +21,7 @@
 
 <script setup lang="ts">
 import DeptAPI from "@/api/system/dept";
+
 const props = defineProps({
   modelValue: {
     type: [String, Number],
@@ -28,9 +29,10 @@ const props = defineProps({
   },
 });
 
-const deptList = ref<OptionItem[]>(); // 部门列表
-const deptTreeRef = ref(); // 部门树
-const deptName = ref(); // 部门名称
+// 部门树数据
+const deptList = ref<OptionItem[]>();
+const deptTreeRef = ref();
+const deptName = ref();
 
 const emits = defineEmits(["node-click"]);
 
@@ -41,22 +43,24 @@ watchEffect(
     deptTreeRef.value.filter(deptName.value);
   },
   {
-    flush: "post", // watchEffect会在DOM挂载或者更新之前就会触发，此属性控制在DOM元素更新后运行
+    flush: "post",
   }
 );
 
 /**
  * 部门筛选
  */
-function handleFilter(value: string, data: any) {
+function handleFilter(value: string, data: any): boolean {
   if (!value) {
     return true;
   }
   return data.label.indexOf(value) !== -1;
 }
 
-/** 部门树节点 Click */
-function handleNodeClick(data: { [key: string]: any }) {
+/**
+ * 部门树节点点击事件
+ */
+function handleNodeClick(data: { [key: string]: any }): void {
   deptId.value = data.value;
   emits("node-click");
 }

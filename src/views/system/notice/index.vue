@@ -1,6 +1,5 @@
 ﻿<template>
   <div class="app-container">
-    <!-- 搜索区域 -->
     <div class="filter-section">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-suffix=":">
         <el-form-item label="标题" prop="title">
@@ -39,7 +38,7 @@
             v-hasPerm="['sys:notice:create']"
             type="success"
             icon="plus"
-            @click="handleOpenDialog()"
+            @click="openDialog()"
           >
             新增通知
           </el-button>
@@ -138,7 +137,7 @@
               type="primary"
               size="small"
               link
-              @click="handleOpenDialog(scope.row.id)"
+              @click="openDialog(scope.row.id)"
             >
               编辑
             </el-button>
@@ -165,27 +164,26 @@
       />
     </el-card>
 
-    <!-- 通知公告表单弹窗 -->
     <el-dialog
-      v-model="dialog.visible"
+      v-model="dialogState.visible"
       :show-close="false"
-      :fullscreen="dialog.fullscreen"
+      :fullscreen="dialogState.fullscreen"
       top="6vh"
       width="70%"
       custom-class="notice-dialog"
-      @close="handleCloseDialog"
+      @close="closeDialog"
     >
       <template #header>
         <div class="flex-x-between">
-          <span>{{ dialog.title }}</span>
+          <span>{{ dialogState.title }}</span>
           <div class="dialog-toolbar">
             <el-button circle @click="toggleDialogFullscreen">
               <template #icon>
-                <FullScreen v-if="!dialog.fullscreen" />
+                <FullScreen v-if="!dialogState.fullscreen" />
                 <CopyDocument v-else />
               </template>
             </el-button>
-            <el-button circle @click="handleCloseDialog">
+            <el-button circle @click="closeDialog">
               <template #icon>
                 <Close />
               </template>
@@ -227,11 +225,10 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSubmit()">确定</el-button>
-          <el-button @click="handleCloseDialog()">取消</el-button>
+          <el-button @click="closeDialog()">取消</el-button>
         </div>
       </template>
     </el-dialog>
-    <!-- 通知公告详情 -->
     <el-dialog
       v-model="detailDialog.visible"
       :show-close="false"
@@ -280,49 +277,50 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import { ref, reactive } from "vue";
 import NoticeAPI from "@/api/system/notice";
 import type { NoticeItem, NoticeForm, NoticeQueryParams, NoticeDetail } from "@/types/api";
 import UserAPI from "@/api/system/user";
+import type { FormInstance, FormRules } from "element-plus";
 
-const queryFormRef = ref();
-const dataFormRef = ref();
+// 表单引用
+const queryFormRef = ref<FormInstance>();
+const dataFormRef = ref<FormInstance>();
 
-const loading = ref(false);
-const selectIds = ref<number[]>([]);
-const total = ref(0);
-
+// 查询参数
 const queryParams = reactive<NoticeQueryParams>({
   pageNum: 1,
   pageSize: 10,
 });
 
-const userOptions = ref<OptionItem[]>([]);
-// 通知公告表格数据
+// 列表数据
 const pageData = ref<NoticeItem[]>([]);
+const userOptions = ref<OptionItem[]>([]);
+const total = ref(0);
+const loading = ref(false);
+const selectIds = ref<number[]>([]);
 
-// 弹窗
-const dialog = reactive({
+// 弹窗状态
+const dialogState = reactive({
   title: "",
   visible: false,
   fullscreen: false,
 });
 
-// 通知公告表单数据
+// 表单数据
 const formData = reactive<NoticeForm>({
-  level: "L", // 默认优先级为 L（低）
-  targetType: 1, // 默认目标类型为全部
+  level: "L",
+  targetType: 1,
 });
 
-// 通知公告表单校验规则
-const rules = reactive({
+// 验证规则
+const rules: FormRules = {
   title: [{ required: true, message: "请输入通知标题", trigger: "blur" }],
   content: [
     {
       required: true,
       message: "请输入通知内容",
       trigger: "blur",
-      validator: (rule: any, value: string, callback: any) => {
+      validator: (rule, value: string, callback) => {
         if (!value.replace(/<[^>]+>/g, "").trim()) {
           callback(new Error("请输入通知内容"));
         } else {
@@ -332,21 +330,26 @@ const rules = reactive({
     },
   ],
   type: [{ required: true, message: "请选择通知类型", trigger: "change" }],
-});
+};
 
+// 详情弹窗状态
 const detailDialog = reactive({
   visible: false,
 });
 const currentNotice = ref<NoticeDetail>({});
 
-// 查询通知公告
-function handleQuery() {
+/**
+ * 查询按钮点击事件
+ */
+function handleQuery(): void {
   queryParams.pageNum = 1;
   fetchData();
 }
 
-//发送请求接口
-function fetchData() {
+/**
+ * 加载通知公告列表数据
+ */
+function fetchData(): void {
   loading.value = true;
   NoticeAPI.getPage(queryParams)
     .then((data) => {
@@ -358,28 +361,35 @@ function fetchData() {
     });
 }
 
-// 重置查询
-function handleResetQuery() {
-  queryFormRef.value!.resetFields();
+/**
+ * 重置查询
+ */
+function handleResetQuery(): void {
+  queryFormRef.value?.resetFields();
   queryParams.pageNum = 1;
-  handleQuery();
+  fetchData();
 }
 
-// 行复选框选中项变化
-function handleSelectionChange(selection: any) {
-  selectIds.value = selection.map((item: any) => item.id);
+/**
+ * 表格选择变化事件
+ */
+function handleSelectionChange(selection: NoticeItem[]): void {
+  selectIds.value = selection.map((item) => item.id);
 }
 
-// 打开通知公告弹窗
-function handleOpenDialog(id?: string) {
-  dialog.fullscreen = false;
+/**
+ * 打开弹窗
+ * @param id 通知ID（编辑时传入）
+ */
+function openDialog(id?: string): void {
+  dialogState.fullscreen = false;
   UserAPI.getOptions().then((data) => {
     userOptions.value = data;
   });
 
-  dialog.visible = true;
+  dialogState.visible = true;
   if (id) {
-    dialog.title = "修改公告";
+    dialogState.title = "修改公告";
     NoticeAPI.getFormData(id).then((data) => {
       Object.assign(formData, {
         ...data,
@@ -390,29 +400,37 @@ function handleOpenDialog(id?: string) {
     });
   } else {
     Object.assign(formData, { level: "L", targetType: 1, targetUsers: [] });
-    dialog.title = "新增公告";
+    dialogState.title = "新增公告";
   }
 }
 
-// 发布通知公告
-function handlePublish(id: string) {
+/**
+ * 发布通知公告
+ * @param id 通知ID
+ */
+function handlePublish(id: string): void {
   NoticeAPI.publish(id).then(() => {
     ElMessage.success("发布成功");
-    handleQuery();
+    fetchData();
   });
 }
 
-// 撤回通知公告
-function handleRevoke(id: string) {
+/**
+ * 撤回通知公告
+ * @param id 通知ID
+ */
+function handleRevoke(id: string): void {
   NoticeAPI.revoke(id).then(() => {
     ElMessage.success("撤回成功");
-    handleQuery();
+    fetchData();
   });
 }
 
-// 通知公告表单提交
-function handleSubmit() {
-  dataFormRef.value.validate((valid: any) => {
+/**
+ * 提交表单
+ */
+function handleSubmit(): void {
+  dataFormRef.value?.validate((valid) => {
     if (valid) {
       loading.value = true;
       const payload = {
@@ -425,7 +443,7 @@ function handleSubmit() {
         NoticeAPI.update(id, payload)
           .then(() => {
             ElMessage.success("修改成功");
-            handleCloseDialog();
+            closeDialog();
             handleResetQuery();
           })
           .finally(() => (loading.value = false));
@@ -433,7 +451,7 @@ function handleSubmit() {
         NoticeAPI.create(payload)
           .then(() => {
             ElMessage.success("新增成功");
-            handleCloseDialog();
+            closeDialog();
             handleResetQuery();
           })
           .finally(() => (loading.value = false));
@@ -442,17 +460,24 @@ function handleSubmit() {
   });
 }
 
-// 重置表单
-function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+/**
+ * 关闭弹窗
+ */
+function closeDialog(): void {
+  dialogState.visible = false;
+  dialogState.fullscreen = false;
+  dataFormRef.value?.resetFields();
+  dataFormRef.value?.clearValidate();
   formData.id = undefined;
   formData.targetType = 1;
   formData.targetUsers = [];
   formData.content = "";
 }
 
-function normalizeTargetUsers(value?: unknown) {
+/**
+ * 标准化目标用户数据
+ */
+function normalizeTargetUsers(value?: unknown): number[] {
   if (!value) {
     return [];
   }
@@ -470,20 +495,18 @@ function normalizeTargetUsers(value?: unknown) {
   return [];
 }
 
-// 关闭通知公告弹窗
-function handleCloseDialog() {
-  dialog.visible = false;
-  dialog.fullscreen = false;
-  resetForm();
+/**
+ * 弹窗全屏切换
+ */
+function toggleDialogFullscreen(): void {
+  dialogState.fullscreen = !dialogState.fullscreen;
 }
 
-// 弹窗全屏切换
-function toggleDialogFullscreen() {
-  dialog.fullscreen = !dialog.fullscreen;
-}
-
-// 删除通知公告
-function handleDelete(id?: number) {
+/**
+ * 删除通知公告
+ * @param id 通知ID
+ */
+function handleDelete(id?: number): void {
   const deleteIds = [id || selectIds.value].join(",");
   if (!deleteIds) {
     ElMessage.warning("请勾选删除项");
@@ -510,17 +533,21 @@ function handleDelete(id?: number) {
   );
 }
 
-// 关闭通知详情弹窗
-const closeDetailDialog = () => {
-  detailDialog.visible = false;
-};
-
-// 打开通知详情弹窗
-const openDetailDialog = async (id: string) => {
+/**
+ * 打开详情弹窗
+ */
+async function openDetailDialog(id: string): Promise<void> {
   const noticeDetail = await NoticeAPI.getDetail(id);
   currentNotice.value = noticeDetail;
   detailDialog.visible = true;
-};
+}
+
+/**
+ * 关闭详情弹窗
+ */
+function closeDetailDialog(): void {
+  detailDialog.visible = false;
+}
 
 onMounted(() => {
   handleQuery();
