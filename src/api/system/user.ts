@@ -133,16 +133,14 @@ const UserAPI = {
   /**
    * 导入用户
    *
-   * @param deptId 部门ID
    * @param file 导入文件
    */
-  import(deptId: string, file: File) {
+  import(file: File) {
     const formData = new FormData();
     formData.append("file", file);
     return request<any, ExcelResult>({
       url: `${USER_BASE_URL}/import`,
       method: "post",
-      params: { deptId },
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",

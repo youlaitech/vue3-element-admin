@@ -288,10 +288,20 @@ function handleDelete(id?: number) {
 
 // 打开字典数据
 function handleOpenDictData(row: DictTypeItem) {
-  router.push({
-    name: "DictItem",
-    query: { dictCode: row.dictCode, title: `【${row.name}】字典数据` },
-  });
+  try {
+    const route = router.resolve({
+      name: "DictItem",
+      query: { dictCode: row.dictCode, title: `【${row.name}】字典数据` },
+    });
+    if (route.matched.length === 0) {
+      ElMessage.error("路由未注册，请刷新页面后重试");
+      return;
+    }
+    router.push(route);
+  } catch (error) {
+    console.error("路由跳转失败:", error);
+    ElMessage.error("页面跳转失败，请刷新页面后重试");
+  }
 }
 
 onMounted(() => {

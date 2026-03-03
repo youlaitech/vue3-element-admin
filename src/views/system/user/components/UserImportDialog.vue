@@ -91,6 +91,7 @@
 import { ElMessage, type UploadUserFile } from "element-plus";
 import UserAPI from "@/api/system/user";
 import { ApiCodeEnum } from "@/enums/api";
+import { downloadFile } from "@/utils/download";
 
 const emit = defineEmits(["import-success"]);
 const visible = defineModel("modelValue", {
@@ -134,23 +135,7 @@ const handleFileExceed = () => {
 // 下载导入模板
 const handleDownloadTemplate = () => {
   UserAPI.downloadTemplate().then((response: any) => {
-    const fileData = response.data;
-    const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
-    const fileType =
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
-
-    const blob = new Blob([fileData], { type: fileType });
-    const downloadUrl = window.URL.createObjectURL(blob);
-
-    const downloadLink = document.createElement("a");
-    downloadLink.href = downloadUrl;
-    downloadLink.download = fileName;
-
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-
-    document.body.removeChild(downloadLink);
-    window.URL.revokeObjectURL(downloadUrl);
+    downloadFile(response);
   });
 };
 
@@ -161,7 +146,7 @@ const handleUpload = async () => {
     return;
   }
 
-  const result = await UserAPI.import("1", importFormData.files[0].raw as File);
+  const result = await UserAPI.import(importFormData.files[0].raw as File);
   if (result.code === ApiCodeEnum.SUCCESS && result.invalidCount === 0) {
     ElMessage.success("导入成功，导入数据：" + result.validCount + "条");
     emit("import-success");
