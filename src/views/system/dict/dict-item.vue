@@ -184,7 +184,11 @@ const dialogState = reactive({
 });
 
 // 表单数据
-const formData = reactive<DictItemForm>({});
+const formData = reactive<DictItemForm>({
+  sort: 1,
+  status: 1,
+  tagType: "",
+});
 
 // 标签类型选项
 const tagType = ["primary", "success", "info", "warning", "danger"] as const;
@@ -239,6 +243,7 @@ function handleSelectionChange(selection: DictItem[]): void {
  * @param row 字典项数据（编辑时传入）
  */
 function openDialog(row?: DictItem): void {
+  resetForm();
   dialogState.visible = true;
   dialogState.title = row ? "编辑字典值" : "新增字典值";
 
@@ -247,6 +252,17 @@ function openDialog(row?: DictItem): void {
       Object.assign(formData, data);
     });
   }
+}
+
+function resetForm(): void {
+  dataFormRef.value?.clearValidate();
+  formData.id = undefined;
+  formData.dictCode = dictCode.value;
+  formData.label = undefined;
+  formData.value = undefined;
+  formData.sort = 1;
+  formData.status = 1;
+  formData.tagType = "";
 }
 
 /**
@@ -286,11 +302,7 @@ function handleSubmit(): void {
 function closeDialog(): void {
   dialogState.visible = false;
   dataFormRef.value?.resetFields();
-  dataFormRef.value?.clearValidate();
-  formData.id = undefined;
-  formData.sort = 1;
-  formData.status = 1;
-  formData.tagType = "";
+  resetForm();
 }
 
 /**

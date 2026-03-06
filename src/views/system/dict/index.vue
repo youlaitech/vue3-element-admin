@@ -162,7 +162,9 @@ const dialogState = reactive({
 });
 
 // 表单数据
-const formData = reactive<DictTypeForm>({});
+const formData = reactive<DictTypeForm>({
+  status: 1,
+});
 
 // 验证规则
 const rules: FormRules = {
@@ -213,6 +215,7 @@ function handleSelectionChange(selection: DictTypeItem[]): void {
  * 新增按钮点击事件
  */
 function handleCreateClick(): void {
+  resetForm();
   dialogState.visible = true;
   dialogState.title = "新增字典";
 }
@@ -222,11 +225,21 @@ function handleCreateClick(): void {
  * @param id 字典ID
  */
 function handleEditClick(id: string): void {
+  resetForm();
   dialogState.visible = true;
   dialogState.title = "修改字典";
   DictAPI.getFormData(id).then((data) => {
     Object.assign(formData, data);
   });
+}
+
+function resetForm(): void {
+  dataFormRef.value?.clearValidate();
+  formData.id = undefined;
+  formData.name = undefined;
+  formData.dictCode = undefined;
+  formData.status = 1;
+  formData.remark = undefined;
 }
 
 /**
@@ -264,8 +277,7 @@ function handleSubmit(): void {
 function closeDialog(): void {
   dialogState.visible = false;
   dataFormRef.value?.resetFields();
-  dataFormRef.value?.clearValidate();
-  formData.id = undefined;
+  resetForm();
 }
 
 /**

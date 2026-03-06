@@ -78,8 +78,7 @@ http.interceptors.response.use(
 
         const token = AuthStorage.getAccessToken();
         if (token) {
-          config.headers = config.headers || ({} as any);
-          (config.headers as any).Authorization = `Bearer ${token}`;
+          config.headers.set("Authorization", `Bearer ${token}`);
         }
 
         return http(config);

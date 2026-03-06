@@ -18,37 +18,24 @@ export const useUserStore = defineStore("user", () => {
 
   /**
    * 登录
-   *
-   * @param {LoginRequest}
-   * @returns
    */
-  function login(loginRequest: LoginRequest) {
-    return new Promise<void>((resolve, reject) => {
-      AuthAPI.login(loginRequest)
-        .then((data) => {
-          const { accessToken, refreshToken } = data;
-          // 保存记住我状态和token
-          rememberMe.value = loginRequest.rememberMe ?? false;
-          AuthStorage.setTokens(accessToken, refreshToken, rememberMe.value);
-          resolve();
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  async function login(loginRequest: LoginRequest): Promise<void> {
+    const { accessToken, refreshToken } = await AuthAPI.login(loginRequest);
+    rememberMe.value = loginRequest.rememberMe ?? false;
+    AuthStorage.setTokens(accessToken, refreshToken, rememberMe.value);
   }
 
   let refreshPromise: Promise<void> | null = null;
 
   /**
-   * 刷新 token（单飞）。
+   * 刷新 token（单飞模式）
    *
    * 多个并发请求遇到 token 过期时，共享同一次 refresh 请求。
    */
-  function refreshTokenOnce() {
+  function refreshTokenOnce(): Promise<void> {
     if (refreshPromise) return refreshPromise;
 
-    refreshPromise = refreshToken().finally(() => {
+    refreshPromise = doRefreshToken().finally(() => {
       refreshPromise = null;
     });
 
@@ -57,118 +44,84 @@ export const useUserStore = defineStore("user", () => {
 
   /**
    * 获取用户信息
-   *
-   * @returns {UserInfo} 用户信息
    */
-  function getUserInfo() {
-    return new Promise<UserInfo>((resolve, reject) => {
-      UserAPI.getInfo()
-        .then((data) => {
-          if (!data) {
-            reject("Verification failed, please Login again.");
-            return;
-          }
-          Object.assign(userInfo.value, { ...data });
-          resolve(data);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  async function getUserInfo(): Promise<UserInfo> {
+    const data = await UserAPI.getInfo();
+    if (!data) {
+      throw new Error("Verification failed, please Login again.");
+    }
+    Object.assign(userInfo.value, data);
+    return data;
   }
 
   /**
    * 登出
    */
-  function logout() {
-    return new Promise<void>((resolve, reject) => {
-      AuthAPI.logout()
-        .then(() => {
-          // 重置所有系统状态
-          resetAllState();
-          resolve();
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  async function logout(): Promise<void> {
+    await AuthAPI.logout();
+    resetAllState();
   }
 
   /**
    * 重置所有系统状态
+   *
    * 统一处理所有清理工作，包括用户凭证、路由、缓存等
    */
-  function resetAllState() {
+  function resetAllState(): void {
     // 1. 重置用户状态
     resetUserState();
 
     // 2. 重置其他模块状态
-    // 重置路由
     usePermissionStoreHook().resetRouter();
-    // 清除字典缓存
     useDictStoreHook().clearDictCache();
-    // 清除标签视图
     useTagsViewStore().delAllViews();
 
     // 3. 清理 WebSocket 连接
     cleanupWebSocket();
-    console.log("[UserStore] WebSocket connections cleaned up");
-
-    return Promise.resolve();
   }
 
   /**
    * 重置用户状态
+   *
    * 仅处理用户模块内的状态
    */
-  function resetUserState() {
-    // 清除用户凭证
+  function resetUserState(): void {
     AuthStorage.clearAuth();
-    // 重置用户信息
     userInfo.value = {} as UserInfo;
   }
 
   /**
    * 刷新 token
    */
-  function refreshToken() {
-    const refreshToken = AuthStorage.getRefreshToken();
+  async function doRefreshToken(): Promise<void> {
+    const currentRefreshToken = AuthStorage.getRefreshToken();
 
-    if (!refreshToken) {
-      return Promise.reject(new Error("没有有效的刷新令牌"));
+    if (!currentRefreshToken) {
+      throw new Error("没有有效的刷新令牌");
     }
 
-    return new Promise<void>((resolve, reject) => {
-      AuthAPI.refreshToken(refreshToken)
-        .then((data) => {
-          const { accessToken, refreshToken: newRefreshToken } = data;
-          // 更新令牌，保持当前记住我状态
-          AuthStorage.setTokens(accessToken, newRefreshToken, AuthStorage.getRememberMe());
-          resolve();
-        })
-        .catch((error) => {
-          console.log(" refreshToken  刷新失败", error);
-          reject(error);
-        });
-    });
+    const { accessToken, refreshToken: newRefreshToken } =
+      await AuthAPI.refreshToken(currentRefreshToken);
+    AuthStorage.setTokens(accessToken, newRefreshToken, AuthStorage.getRememberMe());
   }
 
   return {
     userInfo,
     rememberMe,
     isLoggedIn: () => !!AuthStorage.getAccessToken(),
-    getUserInfo,
     login,
     logout,
+    getUserInfo,
     resetAllState,
     resetUserState,
-    refreshToken,
+    refreshToken: doRefreshToken,
     refreshTokenOnce,
   };
 });
 
 /**
- * 在组件外部使用UserStore的钩子函数
+ * 在组件外部使用 UserStore 的钩子函数
+ *
  * @see https://pinia.vuejs.org/core-concepts/outside-component-usage.html
  */
 export function useUserStoreHook() {

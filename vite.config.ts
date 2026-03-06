@@ -97,7 +97,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "axios",
         "@vueuse/core",
         "codemirror-editor-vue3",
-        "default-passive-events",
         "exceljs",
         "path-to-regexp",
         "echarts/core",
