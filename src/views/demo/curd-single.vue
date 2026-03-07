@@ -178,7 +178,7 @@ const contentConfig: IContentConfig<UserQueryParams, UserItem> = reactive({
   },
   deleteAction: UserAPI.deleteByIds,
   importAction(file: File) {
-    return UserAPI.import("1", file);
+    return UserAPI.import(file);
   },
   exportAction: UserAPI.export,
   importTemplate: UserAPI.downloadTemplate,

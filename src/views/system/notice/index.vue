@@ -374,7 +374,7 @@ function handleResetQuery(): void {
  * 表格选择变化事件
  */
 function handleSelectionChange(selection: NoticeItem[]): void {
-  selectIds.value = selection.map((item) => item.id);
+  selectIds.value = selection.map((item) => Number(item.id)).filter((id) => Number.isFinite(id));
 }
 
 /**
@@ -481,15 +481,28 @@ function normalizeTargetUsers(value?: unknown): number[] {
   if (!value) {
     return [];
   }
+  const toNumberArray = (arr: unknown[]): number[] =>
+    arr.map((v) => Number(v)).filter((v) => Number.isFinite(v));
   if (Array.isArray(value)) {
-    return value;
+    return toNumberArray(value);
   }
   if (typeof value === "string") {
     try {
       const parsed = JSON.parse(value);
-      return Array.isArray(parsed) ? parsed : value.split(",").filter(Boolean);
+      if (Array.isArray(parsed)) {
+        return toNumberArray(parsed);
+      }
+      return value
+        .split(",")
+        .filter(Boolean)
+        .map((v) => Number(v))
+        .filter((v) => Number.isFinite(v));
     } catch {
-      return value.split(",").filter(Boolean);
+      return value
+        .split(",")
+        .filter(Boolean)
+        .map((v) => Number(v))
+        .filter((v) => Number.isFinite(v));
     }
   }
   return [];
