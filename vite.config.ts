@@ -188,16 +188,19 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/space/style/index",
       ],
     },
-    esbuild: isProduction
-      ? {
-          drop: ["console", "debugger"],
-        }
-      : undefined,
     // 构建配置
     build: {
       chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告
       reportCompressedSize: false,
-      minify: isProduction ? "esbuild" : false, // 只在生产环境启用压缩
+      minify: isProduction ? "terser" : false, // Vite 8 推荐使用 terser 进行生产压缩
+      terserOptions: isProduction
+        ? {
+            compress: {
+              drop_console: true, // 生产环境移除 console
+              drop_debugger: true, // 生产环境移除 debugger
+            },
+          }
+        : undefined,
       rollupOptions: {
         output: {
           // manualChunks: {
@@ -209,6 +212,10 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           chunkFileNames: "js/[name].[hash].js",
           // 用于输出静态资源的命名，[ext]表示文件扩展名
           assetFileNames: (assetInfo: any) => {
+            // Vite 8 / Rolldown: 添加空值保护
+            if (!assetInfo.name) {
+              return "assets/[name].[hash][extname]";
+            }
             const info = assetInfo.name.split(".");
             let extType = info[info.length - 1];
             // console.log('文件信息', assetInfo.name)

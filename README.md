@@ -2,9 +2,9 @@
   <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/images/logo.png">
   <h1>vue3-element-admin</h1>
 
-  <img src="https://img.shields.io/badge/Vue-3.5.22-brightgreen.svg"/>
-  <img src="https://img.shields.io/badge/Vite-7.3.0-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.3.2-blue.svg"/>
+  <img src="https://img.shields.io/badge/Vue-3.5.30-brightgreen.svg"/>
+  <img src="https://img.shields.io/badge/Vite-8.0.0-green.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.13.5-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
 
   <a href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
@@ -30,7 +30,7 @@
 
 ## 项目简介
 
-[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) 基于 Vue3、Vite7、TypeScript 和 Element-Plus 搭建的极简开箱即用企业级后台管理前端模板。 配套 Java 后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)、多租户后端 [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant) 和 Node 后端 [youlai-nest](https://gitee.com/youlaiorg/youlai-nest) 。 提供开发简版[vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) 和 JS 版本[vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin) 供开发者快速开发。
+[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) 基于 Vue3、Vite、TypeScript 和 Element-Plus 搭建的极简开箱即用企业级后台管理前端模板。 配套 Java 后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)、多租户后端 [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant) 和 Node 后端 [youlai-nest](https://gitee.com/youlaiorg/youlai-nest) 。 提供开发简版[vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) 和 JS 版本[vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin) 供开发者快速开发。
 
 ## 项目特色
 
