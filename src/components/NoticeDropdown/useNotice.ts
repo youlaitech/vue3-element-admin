@@ -4,13 +4,16 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import type { NoticeItem, NoticeDetail, NoticeQueryParams } from "@/types/api";
 import NoticeAPI from "@/api/system/notice";
-import { useStomp } from "@/composables";
+import { useSse } from "@/composables";
 import router from "@/router";
 
 const PAGE_SIZE = 5;
 
+// SSE 事件名称：通知消息
+const NOTICE_EVENT = "notice";
+
 export function useNotice() {
-  const { subscribe, unsubscribe, isConnected } = useStomp();
+  const { on, isConnected } = useSse();
 
   // 状态
   const list = ref<NoticeItem[]>([]);
@@ -18,7 +21,7 @@ export function useNotice() {
   const detail = ref<NoticeDetail | null>(null);
   const dialogVisible = ref(false);
 
-  let subscribed = false;
+  let unsubscribe: (() => void) | null = null;
 
   // ============================================
   // 数据获取
@@ -60,15 +63,15 @@ export function useNotice() {
   }
 
   // ============================================
-  // WebSocket 订阅
+  // SSE 订阅
   // ============================================
 
   function setupSubscription() {
-    if (subscribed || !isConnected.value) return;
+    if (unsubscribe || !isConnected.value) return;
 
-    subscribe("/user/queue/message", (message: any) => {
+    // 订阅新通知事件
+    unsubscribe = on(NOTICE_EVENT, (data: any) => {
       try {
-        const data = JSON.parse(message.body || "{}");
         if (!data.id) return;
 
         // 避免重复
@@ -98,7 +101,21 @@ export function useNotice() {
       }
     });
 
-    subscribed = true;
+    // 订阅撤回通知事件
+    on("notice-revoke", (data: any) => {
+      try {
+        if (!data.id) return;
+
+        // 从列表中移除已撤回的通知
+        const idx = list.value.findIndex((item: NoticeItem) => item.id === data.id);
+        if (idx >= 0) {
+          list.value.splice(idx, 1);
+          if (unreadTotal.value > 0) unreadTotal.value -= 1;
+        }
+      } catch (e) {
+        console.error("处理撤回通知失败", e);
+      }
+    });
   }
 
   // ============================================
@@ -111,8 +128,10 @@ export function useNotice() {
   });
 
   onBeforeUnmount(() => {
-    unsubscribe("/user/queue/message");
-    subscribed = false;
+    if (unsubscribe) {
+      unsubscribe();
+      unsubscribe = null;
+    }
   });
 
   return {

@@ -19,6 +19,13 @@ module.exports = {
       files: ["**/*.{css,scss}"],
       customSyntax: "postcss-scss",
     },
+    {
+      // :export 是 CSS Modules 导出语法，禁用属性检查
+      files: ["**/variables.module.scss"],
+      rules: {
+        "property-no-unknown": null,
+      },
+    },
   ],
   rules: {
     "prettier/prettier": true, // 强制执行 Prettier 格式化规则（需配合 .prettierrc 配置文件）

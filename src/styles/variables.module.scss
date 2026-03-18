@@ -1,7 +1,12 @@
-/* stylelint-disable property-no-unknown */
+/**
+ * 导出变量供 JS/TS 使用
+ * 
+ * 使用方式：
+ * import styles from "@/styles/variables.module.scss"
+ * console.log(styles['sidebar-width']) // "210px"
+ */
 
-// 通过 SCSS 变量导出给 JS/TS 使用的模块文件
-// 注意：依赖 src/styles/variables.scss 中定义的 SCSS 变量
+@use "./variables" as *;
 
 :export {
   sidebar-width: $sidebar-width;
@@ -12,5 +17,3 @@
   menu-active-text: $menu-active-text;
   menu-hover: $menu-hover;
 }
-
-/* stylelint-enable property-no-unknown */

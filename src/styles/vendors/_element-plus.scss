@@ -1,0 +1,81 @@
+/**
+ * Element Plus 变量覆盖和样式适配
+ */
+
+// ============================================
+// 1. 变量覆盖（必须在最前面）
+// ============================================
+
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+  $colors: (
+    "primary": (
+      // 默认主题色 - 修改此值时需同步修改 src/settings.ts 中的 themeColor
+      "base": #4080ff,
+    ),
+    "success": (
+      "base": #23c343,
+    ),
+    "warning": (
+      "base": #ff9a2e,
+    ),
+    "danger": (
+      "base": #f76560,
+    ),
+    "info": (
+      "base": #a9aeb8,
+    ),
+  ),
+  $bg-color: (
+    "page": #f5f8fd,
+  )
+);
+
+// ============================================
+// 2. 样式覆盖
+// ============================================
+
+$border: 1px solid var(--el-border-color-light);
+
+/* el-dialog */
+.el-dialog {
+  .el-dialog__header {
+    padding: 15px 20px;
+    margin: 0;
+    border-bottom: $border;
+  }
+
+  .el-dialog__body {
+    padding: 20px;
+  }
+
+  .el-dialog__footer {
+    padding: 15px;
+    border-top: $border;
+  }
+}
+
+/* el-drawer */
+.el-drawer {
+  .el-drawer__header {
+    padding: 15px 20px;
+    margin: 0;
+    color: inherit;
+    border-bottom: $border;
+  }
+
+  .el-drawer__body {
+    padding: 20px;
+  }
+
+  .el-drawer__footer {
+    padding: 15px;
+    border-top: $border;
+  }
+}
+
+/* 抽屉和对话框底部按钮区域 */
+.dialog-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

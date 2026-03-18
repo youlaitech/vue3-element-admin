@@ -1,10 +1,12 @@
 /**
- * Vxe Table 主题统一：
- * 1) 用 Element Plus 的 CSS 变量覆写 Vxe Table 的 CSS 变量
- * 2) 自定义局部样式
+ * Vxe Table 主题适配
+ * 使用 Element Plus CSS 变量实现主题统一
  */
 
-/* 变量覆写 */
+// ============================================
+// 变量覆写
+// ============================================
+
 :root {
   /* color */
   --vxe-font-color: var(--el-text-color-regular);
@@ -92,7 +94,10 @@
   --vxe-select-panel-background-color: var(--el-bg-color);
 }
 
-/* 自定义组件样式 */
+// ============================================
+// 自定义组件样式
+// ============================================
+
 .vxe-grid {
   /* 表单 */
   &--form-wrapper {

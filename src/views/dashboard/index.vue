@@ -133,20 +133,15 @@
               <div class="flex items-center gap-2">
                 <span
                   class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs leading-5 rounded-full border select-none"
-                  :class="wsStatusClass"
+                  :class="sseStatusClass"
                 >
                   <el-icon class="text-sm">
-                    <Loading
-                      v-if="
-                        !isConnected &&
-                        (connectionState === 'CONNECTING' || connectionState === 'RECONNECTING')
-                      "
-                    />
+                    <Loading v-if="!isConnected && connectionState === 'CONNECTING'" />
                     <CircleCheck v-else-if="isConnected" />
                     <CircleClose v-else />
                   </el-icon>
-                  <span class="text-[--el-text-color-secondary]">WebSocket</span>
-                  <span class="font-medium">{{ wsStatusText }}</span>
+                  <span class="text-[--el-text-color-secondary]">SSE</span>
+                  <span class="font-medium">{{ sseStatusText }}</span>
                 </span>
               </div>
             </div>
@@ -413,19 +408,17 @@ const formattedTime = computed(() => {
   return useDateFormat(lastUpdateTime, "HH:mm:ss").value;
 });
 
-const wsStatusText = computed(() => {
+const sseStatusText = computed(() => {
   if (!isConnected.value) {
-    return connectionState.value === "CONNECTING" || connectionState.value === "RECONNECTING"
-      ? "连接中"
-      : "未连接";
+    return connectionState.value === "CONNECTING" ? "连接中" : "未连接";
   }
   return "已连接";
 });
 
-const wsStatusClass = computed(() => {
+const sseStatusClass = computed(() => {
   if (isConnected.value)
     return "text-[--el-color-success] bg-[--el-color-success-light-9] border-[--el-color-success-light-7]";
-  return connectionState.value === "CONNECTING" || connectionState.value === "RECONNECTING"
+  return connectionState.value === "CONNECTING"
     ? "text-[--el-color-warning] bg-[--el-color-warning-light-9] border-[--el-color-warning-light-7]"
     : "text-[--el-color-danger] bg-[--el-color-danger-light-9] border-[--el-color-danger-light-7]";
 });

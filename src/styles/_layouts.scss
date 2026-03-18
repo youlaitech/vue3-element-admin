@@ -1,15 +1,27 @@
-/* 全局业务通用样式 */
+/**
+ * 布局相关样式
+ */
+
+// ============================================
+// 通用容器
+// ============================================
 
 .app-container {
   padding: 15px;
 }
 
-/* 进度条颜色 */
+// ============================================
+// 进度条
+// ============================================
+
 #nprogress .bar {
   background-color: var(--el-color-primary);
 }
 
-/* 弹出菜单统一使用主题变量（简化 hover 色） */
+// ============================================
+// 弹出菜单
+// ============================================
+
 .el-menu--popup {
   --el-menu-bg-color: var(--menu-background);
   --el-menu-text-color: var(--menu-text);
@@ -35,9 +47,10 @@
   }
 }
 
-/* ============================================
-   混合布局左侧菜单 hover 样式
-   ============================================ */
+// ============================================
+// 混合布局左侧菜单 hover 样式
+// ============================================
+
 .layout-mix .layout__sidebar--left .el-menu {
   .el-menu-item {
     &:hover {
@@ -52,7 +65,7 @@
   }
 }
 
-/* 深色或深蓝侧边栏的 hover 样式 */
+// 深色或深蓝侧边栏的 hover 样式
 html.dark .layout-mix .layout__sidebar--left .el-menu,
 html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
   .el-menu-item,
@@ -63,7 +76,10 @@ html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
   }
 }
 
-/* Top layout: let horizontal menu fill the remaining header space */
+// ============================================
+// 顶部布局菜单
+// ============================================
+
 .layout-top .layout__header-left .el-menu--horizontal,
 .layout-mix .layout__header-menu .el-menu--horizontal {
   display: flex;
@@ -74,7 +90,7 @@ html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
   overflow: hidden;
 }
 
-/* 窄屏隐藏菜单文字，仅保留图标 */
+// 窄屏隐藏菜单文字，仅保留图标
 .hideSidebar {
   &.layout-top .layout__header .el-menu--horizontal,
   &.layout-mix .layout__header .el-menu--horizontal {
@@ -98,7 +114,10 @@ html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
   }
 }
 
-/* 全局筛选区域 */
+// ============================================
+// 全局筛选区域
+// ============================================
+
 .filter-section {
   padding: 8px 12px 0;
   margin-bottom: 8px;
@@ -115,7 +134,10 @@ html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
   }
 }
 
-/* 表格区域 */
+// ============================================
+// 表格区域
+// ============================================
+
 .table-section {
   margin-bottom: 12px;
 
