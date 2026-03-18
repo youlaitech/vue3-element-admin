@@ -61,7 +61,12 @@
       @submit-click="handleSubmitClick"
     >
       <template #gender="scope">
-        <DictSelect v-model="scope.formData[scope.prop]" code="gender" v-bind="scope.attrs" />
+        <DictSelect
+          v-model="scope.formData[scope.prop]"
+          code="gender"
+          v-bind="scope.attrs"
+          :disabled="editModalConfig.form?.disabled"
+        />
       </template>
     </page-modal>
   </div>
