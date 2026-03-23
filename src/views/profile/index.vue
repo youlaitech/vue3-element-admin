@@ -1,163 +1,195 @@
 ﻿<template>
-  <div class="profile-container">
+  <div class="p-4">
     <el-row :gutter="20">
       <!-- 左侧个人信息卡片 -->
-      <el-col :span="8">
-        <el-card class="user-card">
-          <div class="user-info">
-            <div class="avatar-wrapper">
-              <el-avatar :src="userStore.userInfo.avatar" :size="100" />
-              <el-button
-                type="info"
-                class="avatar-edit-btn"
-                circle
-                :icon="Camera"
-                size="small"
-                @click="triggerFileUpload"
-              />
-              <input
-                ref="fileInput"
-                type="file"
-                style="display: none"
-                accept="image/*"
-                @change="handleFileChange"
-              />
+      <el-col :xs="24" :sm="24" :md="8" :lg="6">
+        <div class="left-column">
+          <!-- 用户信息卡片 -->
+          <el-card class="user-card">
+            <div class="user-info">
+              <div class="avatar-wrapper">
+                <el-avatar :src="userStore.userInfo.avatar" :size="100" />
+                <el-button
+                  type="info"
+                  class="avatar-edit-btn"
+                  circle
+                  :icon="Camera"
+                  size="small"
+                  @click="triggerFileUpload"
+                />
+                <input
+                  ref="fileInput"
+                  type="file"
+                  style="display: none"
+                  accept="image/*"
+                  @change="handleFileChange"
+                />
+              </div>
+              <div class="user-name">
+                <span class="nickname">{{ userProfile.nickname }}</span>
+                <el-icon class="edit-icon" @click="handleOpenDialog(DialogType.ACCOUNT)">
+                  <Edit />
+                </el-icon>
+              </div>
+              <div class="user-role">{{ userProfile.roleNames }}</div>
+
+              <el-descriptions :column="1" size="small" border class="profile-desc">
+                <el-descriptions-item>
+                  <template #label>
+                    <div class="cell-item">
+                      <el-icon><User /></el-icon>
+                      用户名
+                    </div>
+                  </template>
+                  <span>{{ userProfile.username }}</span>
+                  <el-icon v-if="userProfile.gender === 1" class="gender-icon male">
+                    <Male />
+                  </el-icon>
+                  <el-icon v-else class="gender-icon female"><Female /></el-icon>
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template #label>
+                    <div class="cell-item">
+                      <el-icon><Iphone /></el-icon>
+                      手机号码
+                    </div>
+                  </template>
+                  <span :class="{ 'text-muted': !userProfile.mobile }">
+                    {{ userProfile.mobile || "未绑定" }}
+                  </span>
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template #label>
+                    <div class="cell-item">
+                      <el-icon><Message /></el-icon>
+                      邮箱
+                    </div>
+                  </template>
+                  <span :class="{ 'text-muted': !userProfile.email }">
+                    {{ userProfile.email || "未绑定" }}
+                  </span>
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template #label>
+                    <div class="cell-item">
+                      <el-icon><OfficeBuilding /></el-icon>
+                      部门
+                    </div>
+                  </template>
+                  {{ userProfile.deptName || "-" }}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template #label>
+                    <div class="cell-item">
+                      <el-icon><Timer /></el-icon>
+                      创建时间
+                    </div>
+                  </template>
+                  {{ userProfile.createTime }}
+                </el-descriptions-item>
+              </el-descriptions>
             </div>
-            <div class="user-name">
-              <span class="nickname">{{ userProfile.nickname }}</span>
-              <el-icon class="edit-icon" @click="handleOpenDialog(DialogType.ACCOUNT)">
-                <Edit />
-              </el-icon>
-            </div>
-            <div class="user-role">{{ userProfile.roleNames }}</div>
-          </div>
-          <el-divider />
-          <div class="user-stats">
-            <div class="stat-item">
-              <div class="stat-value">0</div>
-              <div class="stat-label">待办</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-value">0</div>
-              <div class="stat-label">消息</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-value">0</div>
-              <div class="stat-label">通知</div>
-            </div>
-          </div>
-        </el-card>
+          </el-card>
+        </div>
       </el-col>
 
       <!-- 右侧信息卡片 -->
-      <el-col :span="16">
-        <el-card class="info-card">
-          <template #header>
-            <div class="card-header">
-              <span>账号信息</span>
-            </div>
-          </template>
-          <el-descriptions :column="1" border>
-            <el-descriptions-item label="用户名">
-              {{ userProfile.username }}
-              <el-icon v-if="userProfile.gender === 1" class="gender-icon male">
-                <Male />
-              </el-icon>
-              <el-icon v-else class="gender-icon female">
-                <Female />
-              </el-icon>
-            </el-descriptions-item>
-            <el-descriptions-item label="手机号码">
-              {{ userProfile.mobile || "未绑定" }}
-            </el-descriptions-item>
-            <el-descriptions-item label="邮箱">
-              {{ userProfile.email || "未绑定" }}
-            </el-descriptions-item>
-            <el-descriptions-item label="部门">
-              {{ userProfile.deptName }}
-            </el-descriptions-item>
-            <el-descriptions-item label="创建时间">
-              {{ userProfile.createTime }}
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-card>
+      <el-col :xs="24" :sm="24" :md="16" :lg="18">
+        <div class="right-column">
+          <!-- 安全设置卡片 -->
+          <el-card class="security-card">
+            <template #header>
+              <div class="card-header">
+                <span class="card-header-title">
+                  <el-icon><Key /></el-icon>
+                  安全设置
+                </span>
+              </div>
+            </template>
+            <div class="security-list">
+              <div class="security-item">
+                <div class="security-left">
+                  <div class="security-icon password">
+                    <el-icon><Lock /></el-icon>
+                  </div>
+                  <div class="security-content">
+                    <div class="security-title">账户密码</div>
+                    <div class="security-desc">定期修改密码有助于保护账户安全</div>
+                  </div>
+                </div>
+                <el-button type="primary" link @click="handleOpenDialog(DialogType.PASSWORD)">
+                  修改
+                </el-button>
+              </div>
 
-        <el-card class="security-card">
-          <template #header>
-            <div class="card-header">
-              <span>安全设置</span>
-            </div>
-          </template>
-          <div class="security-item">
-            <div class="security-info">
-              <div class="security-title">账户密码</div>
-              <div class="security-desc">定期修改密码有助于保护账户安全</div>
-            </div>
-            <el-button type="primary" link @click="() => handleOpenDialog(DialogType.PASSWORD)">
-              修改
-            </el-button>
-          </div>
+              <div class="security-item">
+                <div class="security-left">
+                  <div class="security-icon mobile">
+                    <el-icon><Iphone /></el-icon>
+                  </div>
+                  <div class="security-content">
+                    <div class="security-title">手机号</div>
+                    <div class="security-desc">{{ mobileSecurityDesc }}</div>
+                  </div>
+                </div>
+                <div class="security-actions">
+                  <el-button
+                    v-if="userProfile.mobile"
+                    type="primary"
+                    link
+                    @click="handleOpenDialog(DialogType.MOBILE)"
+                  >
+                    更换
+                  </el-button>
+                  <el-button
+                    v-if="userProfile.mobile"
+                    type="danger"
+                    link
+                    @click="handleUnbindMobile"
+                  >
+                    解绑
+                  </el-button>
+                  <el-button
+                    v-else
+                    type="primary"
+                    link
+                    @click="handleOpenDialog(DialogType.MOBILE)"
+                  >
+                    绑定
+                  </el-button>
+                </div>
+              </div>
 
-          <div class="security-item">
-            <div class="security-info">
-              <div class="security-title">手机号</div>
-              <div class="security-desc">
-                {{ mobileSecurityDesc }}
+              <div class="security-item">
+                <div class="security-left">
+                  <div class="security-icon email">
+                    <el-icon><Message /></el-icon>
+                  </div>
+                  <div class="security-content">
+                    <div class="security-title">邮箱</div>
+                    <div class="security-desc">{{ emailSecurityDesc }}</div>
+                  </div>
+                </div>
+                <div class="security-actions">
+                  <el-button
+                    v-if="userProfile.email"
+                    type="primary"
+                    link
+                    @click="handleOpenDialog(DialogType.EMAIL)"
+                  >
+                    更换
+                  </el-button>
+                  <el-button v-if="userProfile.email" type="danger" link @click="handleUnbindEmail">
+                    解绑
+                  </el-button>
+                  <el-button v-else type="primary" link @click="handleOpenDialog(DialogType.EMAIL)">
+                    绑定
+                  </el-button>
+                </div>
               </div>
             </div>
-            <div class="flex items-center gap-2">
-              <el-button
-                v-if="userProfile.mobile"
-                type="primary"
-                link
-                @click="() => handleOpenDialog(DialogType.MOBILE)"
-              >
-                更换
-              </el-button>
-              <el-button v-if="userProfile.mobile" type="danger" link @click="handleUnbindMobile">
-                解绑
-              </el-button>
-              <el-button
-                v-else
-                type="primary"
-                link
-                @click="() => handleOpenDialog(DialogType.MOBILE)"
-              >
-                绑定
-              </el-button>
-            </div>
-          </div>
-
-          <div class="security-item">
-            <div class="security-info">
-              <div class="security-title">邮箱</div>
-              <div class="security-desc">
-                {{ emailSecurityDesc }}
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <el-button
-                v-if="userProfile.email"
-                type="primary"
-                link
-                @click="() => handleOpenDialog(DialogType.EMAIL)"
-              >
-                更换
-              </el-button>
-              <el-button v-if="userProfile.email" type="danger" link @click="handleUnbindEmail">
-                解绑
-              </el-button>
-              <el-button
-                v-else
-                type="primary"
-                link
-                @click="() => handleOpenDialog(DialogType.EMAIL)"
-              >
-                绑定
-              </el-button>
-            </div>
-          </div>
-        </el-card>
+          </el-card>
+        </div>
       </el-col>
     </el-row>
 
@@ -282,7 +314,19 @@ import FileAPI from "@/api/file";
 import { useUserStoreHook } from "@/store";
 import { redirectToLogin } from "@/utils/auth";
 
-import { Camera } from "@element-plus/icons-vue";
+import {
+  Camera,
+  Edit,
+  Lock,
+  Iphone,
+  Message,
+  User,
+  Male,
+  Female,
+  OfficeBuilding,
+  Timer,
+  Key,
+} from "@element-plus/icons-vue";
 
 const userStore = useUserStoreHook();
 
@@ -298,8 +342,9 @@ const enum DialogType {
 const dialogState = reactive({
   visible: false,
   title: "",
-  type: "" as DialogType, // 修改账号资料,修改密码、绑定手机、绑定邮箱"
+  type: "" as DialogType,
 });
+
 const userProfileFormRef = ref();
 const passwordChangeFormRef = ref();
 const mobileBindingFormRef = ref();
@@ -316,7 +361,6 @@ const mobileTimer = ref();
 const emailCountdown = ref(0);
 const emailTimer = ref();
 
-// 修改密码校验规则
 const passwordChangeRules = {
   oldPassword: [{ required: true, message: "请输入原密码", trigger: "blur" }],
   newPassword: [{ required: true, message: "请输入新密码", trigger: "blur" }],
@@ -379,24 +423,21 @@ function maskEmail(email?: string) {
 const mobileSecurityDesc = computed(() => {
   return userProfile.value.mobile
     ? `已绑定：${maskMobile(userProfile.value.mobile)}`
-    : "未绑定手机号";
+    : "未绑定手机号，建议立即绑定";
 });
 
 const emailSecurityDesc = computed(() => {
-  return userProfile.value.email ? `已绑定：${maskEmail(userProfile.value.email)}` : "未绑定邮箱";
+  return userProfile.value.email
+    ? `已绑定：${maskEmail(userProfile.value.email)}`
+    : "未绑定邮箱，建议立即绑定";
 });
 
-/**
- * 打开弹窗
- * @param type 弹窗类型 ACCOUNT: 账号资料 PASSWORD: 修改密码 MOBILE: 绑定手机 EMAIL: 绑定邮箱
- */
 const handleOpenDialog = (type: DialogType) => {
   dialogState.type = type;
   dialogState.visible = true;
   switch (type) {
     case DialogType.ACCOUNT:
-      dialogState.title = "账号资料";
-      // 初始化表单数据
+      dialogState.title = "编辑资料";
       userProfileForm.nickname = userProfile.value.nickname;
       userProfileForm.avatar = userProfile.value.avatar;
       userProfileForm.gender = userProfile.value.gender;
@@ -459,25 +500,18 @@ async function handleUnbindEmail() {
   }
 }
 
-/**
- * 发送手机验证码
- */
 function handleSendMobileCode() {
   if (!mobileUpdateForm.mobile) {
     ElMessage.error("请输入手机号");
     return;
   }
-  // 验证手机号格式
   const reg = /^1[3-9]\d{9}$/;
   if (!reg.test(mobileUpdateForm.mobile)) {
     ElMessage.error("手机号格式不正确");
     return;
   }
-  // 发送短信验证码
   UserAPI.sendMobileCode(mobileUpdateForm.mobile).then(() => {
     ElMessage.success("验证码发送成功");
-
-    // 倒计时 60s 重新发送
     mobileCountdown.value = 60;
     mobileTimer.value = setInterval(() => {
       if (mobileCountdown.value > 0) {
@@ -489,25 +523,19 @@ function handleSendMobileCode() {
   });
 }
 
-/**
- * 发送邮箱验证码
- */
 function handleSendEmailCode() {
   if (!emailUpdateForm.email) {
     ElMessage.error("请输入邮箱");
     return;
   }
-  // 验证邮箱格式
   const reg = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
   if (!reg.test(emailUpdateForm.email)) {
     ElMessage.error("邮箱格式不正确");
     return;
   }
 
-  // 发送邮箱验证码
   UserAPI.sendEmailCode(emailUpdateForm.email).then(() => {
     ElMessage.success("验证码发送成功");
-    // 倒计时 60s 重新发送
     emailCountdown.value = 60;
     emailTimer.value = setInterval(() => {
       if (emailCountdown.value > 0) {
@@ -519,9 +547,6 @@ function handleSendEmailCode() {
   });
 }
 
-/**
- * 提交表单
- */
 const handleSubmit = async () => {
   try {
     if (dialogState.type === DialogType.ACCOUNT) {
@@ -561,9 +586,6 @@ const handleSubmit = async () => {
   }
 };
 
-/**
- * 取消
- */
 const handleCancel = () => {
   dialogState.visible = false;
   if (dialogState.type === DialogType.ACCOUNT) {
@@ -587,18 +609,14 @@ const handleFileChange = async (event: Event) => {
   const target = event.target as HTMLInputElement;
   const file = target.files ? target.files[0] : null;
   if (file) {
-    // 调用文件上传API
     const data = await FileAPI.uploadFile(file);
-    // 更新用户信息
     await UserAPI.updateProfile({
       avatar: data.url,
     });
-    // 更新用户头像
     userStore.userInfo.avatar = data.url;
   }
 };
 
-/** 加载用户信息 */
 const loadUserProfile = async () => {
   const data = await UserAPI.getProfile();
   userProfile.value = data;
@@ -625,21 +643,27 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-.profile-container {
-  min-height: calc(100vh - 84px);
-  padding: 20px;
-  background: var(--el-fill-color-blank);
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// 用户信息卡片
 .user-card {
   .user-info {
-    padding: 20px 0;
     text-align: center;
 
     .avatar-wrapper {
       position: relative;
       display: inline-block;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
 
       .avatar-edit-btn {
         position: absolute;
@@ -656,7 +680,7 @@ onBeforeUnmount(() => {
     }
 
     .user-name {
-      margin-bottom: 8px;
+      margin-bottom: 4px;
 
       .nickname {
         font-size: 18px;
@@ -665,10 +689,10 @@ onBeforeUnmount(() => {
       }
 
       .edit-icon {
-        margin-left: 8px;
+        margin-left: 6px;
         color: var(--el-text-color-secondary);
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: color 0.2s;
 
         &:hover {
           color: var(--el-color-primary);
@@ -677,115 +701,128 @@ onBeforeUnmount(() => {
     }
 
     .user-role {
-      font-size: 14px;
+      margin-bottom: 16px;
+      font-size: 13px;
       color: var(--el-text-color-secondary);
     }
-  }
 
-  .user-stats {
-    display: flex;
-    justify-content: space-around;
-    padding: 16px 0;
+    .profile-desc {
+      text-align: left;
 
-    .stat-item {
-      text-align: center;
-
-      .stat-value {
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--el-text-color-primary);
+      .cell-item {
+        display: flex;
+        gap: 6px;
+        align-items: center;
       }
 
-      .stat-label {
-        margin-top: 4px;
-        font-size: 12px;
-        color: var(--el-text-color-secondary);
+      .text-muted {
+        color: var(--el-text-color-placeholder);
+      }
+
+      .gender-icon {
+        font-size: 16px;
+
+        &.male {
+          color: var(--el-color-primary);
+        }
+
+        &.female {
+          color: #f56c6c;
+        }
       }
     }
   }
 }
 
-.info-card,
+// 右侧卡片通用样式
 .security-card {
-  margin-bottom: 20px;
-
   .card-header {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--el-text-color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .card-header-title {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--el-text-color-primary);
+    }
   }
+}
+
+// 安全设置
+.security-list {
+  display: flex;
+  flex-direction: column;
 }
 
 .security-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 0;
+  padding: 16px;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+  transition: background 0.2s ease;
 
-  .security-info {
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--el-fill-color-light);
+    border-radius: 8px;
+  }
+
+  .security-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .security-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 8px;
+
+    &.password {
+      color: var(--el-color-primary);
+      background: var(--el-color-primary-light-9);
+    }
+
+    &.mobile {
+      color: var(--el-color-success);
+      background: var(--el-color-success-light-9);
+    }
+
+    &.email {
+      color: var(--el-color-warning);
+      background: var(--el-color-warning-light-9);
+    }
+  }
+
+  .security-content {
     .security-title {
       margin-bottom: 4px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 500;
       color: var(--el-text-color-primary);
     }
 
     .security-desc {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--el-text-color-secondary);
     }
   }
-}
 
-.el-descriptions {
-  .el-descriptions__label {
-    font-weight: 500;
-    color: var(--el-text-color-regular);
-  }
-
-  .el-descriptions__content {
-    color: var(--el-text-color-primary);
-  }
-
-  .gender-icon {
-    margin-left: 8px;
-    font-size: 16px;
-
-    &.male {
-      color: #409eff;
-    }
-
-    &.female {
-      color: #f56c6c;
-    }
-  }
-}
-
-.el-dialog {
-  .el-dialog__header {
-    padding: 20px;
-    margin: 0;
-    border-bottom: 1px solid var(--el-border-color-light);
-  }
-
-  .el-dialog__body {
-    padding: 30px 20px;
-  }
-
-  .el-dialog__footer {
-    padding: 20px;
-    border-top: 1px solid var(--el-border-color-light);
-  }
-}
-
-// 响应式适配
-@media (max-width: 768px) {
-  .profile-container {
-    padding: 10px;
-  }
-
-  .el-col {
-    width: 100%;
+  .security-actions {
+    display: flex;
+    gap: 8px;
   }
 }
 </style>
