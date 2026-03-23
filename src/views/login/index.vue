@@ -106,10 +106,10 @@ const formComponents = {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: auto;
   min-height: 100vh;
   padding: clamp(1rem, 3vw, 2rem);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: #f5f7ff;
 
   &::before {

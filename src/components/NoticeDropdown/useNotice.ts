@@ -67,7 +67,7 @@ export function useNotice() {
   // ============================================
 
   function setupSubscription() {
-    if (unsubscribe || !isConnected.value) return;
+    if (unsubscribe) return;
 
     // 订阅新通知事件
     unsubscribe = on(NOTICE_EVENT, (data: any) => {
