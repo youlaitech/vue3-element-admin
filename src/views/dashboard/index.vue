@@ -130,25 +130,19 @@
           <template #header>
             <div class="flex-x-between">
               <span class="text-xs font-medium text-[--el-text-color-secondary]">在线用户</span>
-              <div class="flex items-center gap-2">
-                <span
-                  class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs leading-5 rounded-full border select-none"
-                  :class="wsStatusClass"
-                >
-                  <el-icon class="text-sm">
-                    <Loading
-                      v-if="
-                        !isConnected &&
-                        (connectionState === 'CONNECTING' || connectionState === 'RECONNECTING')
-                      "
-                    />
-                    <CircleCheck v-else-if="isConnected" />
-                    <CircleClose v-else />
-                  </el-icon>
-                  <span class="text-[--el-text-color-secondary]">WebSocket</span>
-                  <span class="font-medium">{{ wsStatusText }}</span>
-                </span>
-              </div>
+              <el-tag
+                :type="
+                  isConnected ? 'success' : connectionState === 'CONNECTING' ? 'warning' : 'danger'
+                "
+                size="small"
+              >
+                <el-icon class="mr-1">
+                  <Loading v-if="!isConnected && connectionState === 'CONNECTING'" />
+                  <CircleCheck v-else-if="isConnected" />
+                  <CircleClose v-else />
+                </el-icon>
+                SSE {{ sseStatusText }}
+              </el-tag>
             </div>
           </template>
 
@@ -391,7 +385,7 @@ defineOptions({
 import { dayjs } from "element-plus";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import StatisticsAPI from "@/api/system/statistics";
+import LogAPI from "@/api/system/log";
 import type { VisitStatsDetail, VisitTrendDetail } from "@/types/api";
 import { useUserStore } from "@/store/modules/user";
 import { formatGrowthRate } from "@/utils";
@@ -413,21 +407,11 @@ const formattedTime = computed(() => {
   return useDateFormat(lastUpdateTime, "HH:mm:ss").value;
 });
 
-const wsStatusText = computed(() => {
+const sseStatusText = computed(() => {
   if (!isConnected.value) {
-    return connectionState.value === "CONNECTING" || connectionState.value === "RECONNECTING"
-      ? "连接中"
-      : "未连接";
+    return connectionState.value === "CONNECTING" ? "连接中" : "未连接";
   }
   return "已连接";
-});
-
-const wsStatusClass = computed(() => {
-  if (isConnected.value)
-    return "text-[--el-color-success] bg-[--el-color-success-light-9] border-[--el-color-success-light-7]";
-  return connectionState.value === "CONNECTING" || connectionState.value === "RECONNECTING"
-    ? "text-[--el-color-warning] bg-[--el-color-warning-light-9] border-[--el-color-warning-light-7]"
-    : "text-[--el-color-danger] bg-[--el-color-danger-light-9] border-[--el-color-danger-light-7]";
 });
 
 const userStore = useUserStore();
@@ -540,7 +524,7 @@ const visitTrendChartOptions = ref();
  * 获取访客统计数据
  */
 const fetchVisitStatsData = () => {
-  StatisticsAPI.getVisitOverview()
+  LogAPI.getVisitOverview()
     .then((data) => {
       visitStatsData.value = data;
     })
@@ -558,7 +542,7 @@ const fetchVisitTrendData = () => {
     .toDate();
   const endDate = new Date();
 
-  StatisticsAPI.getVisitTrend({
+  LogAPI.getVisitTrend({
     startDate: dayjs(startDate).format("YYYY-MM-DD"),
     endDate: dayjs(endDate).format("YYYY-MM-DD"),
   }).then((data) => {

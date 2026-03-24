@@ -34,7 +34,7 @@ import { configureVxeTable } from "@/plugins/vxe-table";
 import { setupPermissionGuard } from "@/router/guards/permission";
 
 // ===== 业务服务 =====
-import { setupWebSocket } from "@/composables";
+import { setupSse } from "@/composables";
 
 // 创建 Vue 应用实例
 const app = createApp(App);
@@ -56,8 +56,8 @@ app.use(InstallCodeMirror);
 // 4️⃣ 路由守卫
 setupPermissionGuard();
 
-// 5️⃣ WebSocket 初始化
-setupWebSocket();
+// 5️⃣ SSE 初始化
+setupSse();
 
 // 6️⃣ 挂载应用
 app.mount("#app");
