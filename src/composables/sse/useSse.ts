@@ -135,6 +135,13 @@ function createSseConnection(options: UseSseOptions = {}) {
     eventSource.onerror = handleError;
     eventSource.onmessage = handleMessage;
 
+    // 注册所有已订阅的事件处理器
+    eventHandlers.forEach((_, eventName) => {
+      if (eventName !== "message") {
+        eventSource!.addEventListener(eventName, handleCustomEvent(eventName) as EventListener);
+      }
+    });
+
     log("正在建立 SSE 连接...");
   };
 

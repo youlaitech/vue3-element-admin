@@ -131,16 +131,13 @@
             <div class="flex-x-between">
               <span class="text-xs font-medium text-[--el-text-color-secondary]">在线用户</span>
               <el-tag
+                size="small"
                 :type="
                   isConnected ? 'success' : connectionState === 'CONNECTING' ? 'warning' : 'danger'
                 "
-                size="small"
+                effect="plain"
+                class="inline-flex"
               >
-                <el-icon class="mr-1">
-                  <Loading v-if="!isConnected && connectionState === 'CONNECTING'" />
-                  <CircleCheck v-else-if="isConnected" />
-                  <CircleClose v-else />
-                </el-icon>
                 SSE {{ sseStatusText }}
               </el-tag>
             </div>
@@ -390,7 +387,7 @@ import type { VisitStatsDetail, VisitTrendDetail } from "@/types/api";
 import { useUserStore } from "@/store/modules/user";
 import { formatGrowthRate } from "@/utils";
 import { useTransition, useDateFormat } from "@vueuse/core";
-import { CircleCheck, CircleClose, Loading, Clock, Menu } from "@element-plus/icons-vue";
+import { Clock, Menu } from "@element-plus/icons-vue";
 import { useOnlineCount, useRecentMenus } from "@/composables";
 
 const router = useRouter();
