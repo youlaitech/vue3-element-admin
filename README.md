@@ -4,7 +4,7 @@
 
   <img src="https://img.shields.io/badge/Vue-3.5.30-brightgreen.svg"/>
   <img src="https://img.shields.io/badge/Vite-8.0.0-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.13.5-blue.svg"/>
+  <img src="https://img.shields.io/badge/Element Plus-2.13.6-blue.svg"/>
   <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
 
   <a href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">

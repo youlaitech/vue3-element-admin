@@ -194,7 +194,14 @@ export default [
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/no-unused-vars": "warn", // 降级为警告
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "@typescript-eslint/no-unused-expressions": "warn", // 降级为警告
       "@typescript-eslint/consistent-type-imports": "off", // 关闭强制使用type import
       "@typescript-eslint/no-import-type-side-effects": "error",
