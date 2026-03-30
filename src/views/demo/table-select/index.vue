@@ -1,6 +1,6 @@
 <!-- 列表选择器示例 -->
 <template>
-  <div class="app-container">
+  <div class="page-container">
     <el-link
       href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/table-select/index.vue"
       type="primary"

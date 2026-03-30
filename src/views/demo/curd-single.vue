@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="app-container h-full flex flex-1 flex-col">
+  <div class="page-container h-full flex flex-1 flex-col">
     <div class="mb-10">
       <el-link
         href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/curd-demo.vue"
@@ -76,7 +76,7 @@
 import UserAPI from "@/api/system/user";
 import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
-import type { UserForm, UserQueryParams, UserItem } from "@/types/api";
+import type { UserForm, UserQueryParams, UserItem } from "@/api/system/user";
 import type { IObject, IModalConfig, IContentConfig, ISearchConfig } from "@/components/CURD/types";
 import { DeviceEnum } from "@/enums/settings";
 import { useAppStore } from "@/store";
@@ -585,7 +585,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.app-container {
+.page-container {
   padding: 20px;
 }
 </style>

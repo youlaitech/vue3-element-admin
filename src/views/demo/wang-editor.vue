@@ -1,6 +1,6 @@
 <!-- wangEditor富文本编辑器示例 -->
 <template>
-  <div class="app-container">
+  <div class="page-container">
     <el-link
       href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/wang-editor.vue"
       type="primary"

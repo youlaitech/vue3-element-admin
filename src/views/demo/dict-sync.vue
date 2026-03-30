@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="app-container">
+  <div class="page-container">
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
@@ -143,7 +143,7 @@
 import { useDictStoreHook } from "@/store/modules/dict";
 import { useDateFormat } from "@vueuse/core";
 import DictAPI from "@/api/system/dict";
-import type { DictItemForm } from "@/types/api";
+import type { DictItemForm } from "@/api/system/dict";
 import { useDictSync, DictMessage } from "@/composables";
 
 // 性别字典编码

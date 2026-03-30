@@ -4,7 +4,7 @@ import type PageContent from "./PageContent.vue";
 import type PageModal from "./PageModal.vue";
 import type PageSearch from "./PageSearch.vue";
 import type { CSSProperties } from "vue";
-import type { PageResult } from "@/types/api/common";
+import type { PageResult } from "@/api/common";
 
 export type PageSearchInstance = InstanceType<typeof PageSearch>;
 export type PageContentInstance = InstanceType<typeof PageContent>;

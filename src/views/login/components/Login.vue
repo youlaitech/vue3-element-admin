@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import type { FormInstance } from "element-plus";
 import AuthAPI from "@/api/auth";
-import type { LoginRequest } from "@/types/api";
+import type { LoginRequest } from "@/api/auth";
 import router from "@/router";
 import { useUserStore } from "@/store";
 import { AuthStorage } from "@/utils/auth";

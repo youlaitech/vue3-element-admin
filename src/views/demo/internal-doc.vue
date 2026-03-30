@@ -1,18 +1,18 @@
 <template>
-  <div class="app-container">
+  <div class="page-container">
     <iframe src="https://juejin.cn/post/7228990409909108793" frameborder="0" />
   </div>
 </template>
 <style lang="scss" scoped>
 /** 关闭tag标签  */
-.app-container {
+.page-container {
   /* 50px = navbar = 50px */
   height: calc(100vh - 50px);
 }
 
 /** 开启tag标签  */
 .hasTagsView {
-  .app-container {
+  .page-container {
     /* 84px = navbar + tags-view = 50px + 34px */
     height: calc(100vh - 84px);
   }

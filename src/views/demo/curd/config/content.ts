@@ -1,6 +1,6 @@
 import UserAPI from "@/api/system/user";
 import RoleAPI from "@/api/system/role";
-import type { UserQueryParams, UserItem } from "@/types/api";
+import type { UserQueryParams, UserItem } from "@/api/system/user";
 import type { IContentConfig } from "@/components/CURD/types";
 
 const contentConfig: IContentConfig<UserQueryParams, UserItem> = {

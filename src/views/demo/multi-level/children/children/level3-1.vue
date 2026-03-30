@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="page-container">
     <div flex flex-col gap-20px>
       <MultiLevel1 />
       <MultiLevel2 />

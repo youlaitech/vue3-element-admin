@@ -1,7 +1,7 @@
 ﻿<template>
-  <div class="app-container">
+  <div class="page-container">
     <!-- 搜索区域 -->
-    <div class="filter-section">
+    <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="通知标题" prop="title">
           <el-input
@@ -12,7 +12,7 @@
           />
         </el-form-item>
 
-        <el-form-item class="search-buttons">
+        <el-form-item>
           <el-button type="primary" @click="handleQuery">
             <template #icon>
               <Search />
@@ -27,15 +27,14 @@
           </el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
 
-    <el-card shadow="hover" class="table-section">
+    <el-card class="page-content" shadow="never">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
         :data="pageData"
         highlight-current-row
-        class="table-section__content"
       >
         <el-table-column type="index" label="序号" width="60" />
         <el-table-column label="通知标题" prop="title" min-width="200" />
@@ -115,7 +114,7 @@ defineOptions({
 
 import { onMounted, reactive, ref } from "vue";
 import NoticeAPI from "@/api/system/notice";
-import type { NoticeDetail, NoticeItem, NoticeQueryParams } from "@/types/api";
+import type { NoticeDetail, NoticeItem, NoticeQueryParams } from "@/api/system/notice";
 
 const queryFormRef = ref();
 const pageData = ref<NoticeItem[]>([]);

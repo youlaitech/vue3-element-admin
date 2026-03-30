@@ -1,0 +1,28 @@
+/**
+ * Element Plus 主题变量覆盖
+ * 必须在组件样式之前导入
+ */
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+  $colors: (
+    "primary": (
+      // 默认主题色 - 修改此值时需同步修改 src/settings.ts 中的 themeColor
+      "base": #4080ff,
+    ),
+    "success": (
+      "base": #23c343,
+    ),
+    "warning": (
+      "base": #ff9a2e,
+    ),
+    "danger": (
+      "base": #f76560,
+    ),
+    "info": (
+      "base": #a9aeb8,
+    ),
+  ),
+
+  $bg-color: (
+    "page": #f5f8fd,
+  )
+);

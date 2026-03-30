@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <div class="filter-section">
+  <div class="page-container">
+    <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -11,16 +11,16 @@
           />
         </el-form-item>
 
-        <el-form-item class="search-buttons">
+        <el-form-item>
           <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
           <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
 
-    <el-card shadow="hover" class="table-section">
-      <div class="table-section__toolbar">
-        <div class="table-section__toolbar--actions">
+    <el-card class="page-content" shadow="never">
+      <div class="page-toolbar">
+        <div class="page-toolbar__left">
           <el-button
             v-hasPerm="['sys:config:create']"
             type="success"
@@ -45,7 +45,6 @@
         v-loading="loading"
         :data="pageData"
         highlight-current-row
-        class="table-section__content"
         border
         @selection-change="handleSelectionChange"
       >
@@ -139,7 +138,7 @@ defineOptions({
 });
 
 import ConfigAPI from "@/api/system/config";
-import type { ConfigItem, ConfigForm, ConfigQueryParams } from "@/types/api";
+import type { ConfigItem, ConfigForm, ConfigQueryParams } from "@/api/system/config";
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "element-plus";
 import { useDebounceFn } from "@vueuse/core";
 

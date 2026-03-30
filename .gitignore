@@ -29,12 +29,6 @@ Thumbs.db
 .eslintcache
 .stylelintcache
 
-# Test coverage
-coverage/
-*.lcov
-.vitest/
-test-results/
-
 # Lock files (use pnpm)
 package-lock.json
 yarn.lock

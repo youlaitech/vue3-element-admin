@@ -1,13 +1,19 @@
-// 1. 基础重置
-@use "./reset";
+/**
+ * 样式总入口
+ * 严格按照 ITCSS 架构顺序导入
+ */
 
-// 2. 主题变量
-@use "./variables" as *;
+// 1. 基础层
+@use "./base/variables" as *;
+@use "./base/theme";
+@use "./base/reset";
 
-// 3. UI 框架适配
-@use "./element-plus";
-@use "./vxe-table";
-@use "./wangeditor";
+// 2. 第三方适配层
+@use "./vendors/element-plus";
+@use "./vendors/element-plus-override";
+@use "./vendors/vxe-table";
+@use "./vendors/wangeditor";
+@use "./vendors/nprogress";
 
-// 4. 业务通用样式
-@use "./common";
+// 3. 布局层
+@use "./layout/layout";

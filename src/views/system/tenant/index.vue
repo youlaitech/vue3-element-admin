@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <div class="filter-section">
+  <div class="page-container">
+    <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -18,16 +18,16 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item class="search-buttons">
+        <el-form-item>
           <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
           <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
 
-    <el-card shadow="hover" class="table-section">
-      <div class="table-section__toolbar">
-        <div class="table-section__toolbar--actions">
+    <el-card class="page-content" shadow="never">
+      <div class="page-toolbar">
+        <div class="page-toolbar__left">
           <el-button
             v-hasPerm="['sys:tenant:create']"
             type="success"
@@ -53,7 +53,6 @@
         :data="pageData"
         highlight-current-row
         border
-        class="table-section__content"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -362,12 +361,12 @@ import TenantAPI from "@/api/system/tenant";
 import TenantPlanAPI from "@/api/system/tenant-plan";
 import MenuAPI from "@/api/system/menu";
 import type {
-  OptionItem,
   TenantCreateForm,
   TenantForm,
   TenantQueryParams,
   TenantItem,
-} from "@/types/api";
+} from "@/api/system/tenant";
+import type { OptionItem } from "@/api/common";
 import { MenuScopeEnum } from "@/enums/business";
 import { isPlatformTenantId } from "@/utils/tenant";
 
@@ -487,7 +486,7 @@ function fetchData(): void {
   loading.value = true;
   TenantAPI.getPage(queryParams)
     .then((data) => {
-      pageData.value = data.list.map((item) => ({
+      pageData.value = data.list.map((item: TenantItem) => ({
         ...item,
         planId: item.planId != null ? Number(item.planId) : undefined,
       }));

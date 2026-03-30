@@ -307,7 +307,7 @@ import type {
   MobileUpdateForm,
   EmailUpdateForm,
   UserProfileForm,
-} from "@/types/api";
+} from "@/api/system/user";
 
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import FileAPI from "@/api/file";

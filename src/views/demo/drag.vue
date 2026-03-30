@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="page-container">
     <el-row :gutter="24">
       <el-col :span="12">
         <el-card shadow="never">
@@ -71,7 +71,7 @@ const userList = ref([
 </script>
 
 <style lang="scss" scoped>
-.app-container {
+.page-container {
   padding: 20px;
 
   .el-card {

@@ -54,7 +54,7 @@ import {
 } from "element-plus";
 
 import FileAPI from "@/api/file";
-import type { FileInfo } from "@/types/api";
+import type { FileInfo } from "@/api/file";
 
 const props = defineProps({
   /**

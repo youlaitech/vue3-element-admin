@@ -1,0 +1,103 @@
+/**
+ * 全局标准布局样式
+ */
+ 
+.page-container {
+  padding: 16px;
+}
+
+.page-aside {
+  margin-bottom: 16px;
+
+  @media (min-width: 992px) {
+    margin-bottom: 0;
+  }
+}
+
+.page-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-search {
+  margin-bottom: 16px;
+
+  /* 覆盖 el-card 内部 padding */
+  .el-card__body {
+    padding: 12px 12px 0;
+  }
+
+}
+
+.page-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  &__left,
+  &__right {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+
+/* 混合布局左侧菜单 hover 样式 */
+.layout-mix .layout__sidebar--left .el-menu {
+  .el-menu-item:hover,
+  .el-sub-menu__title:hover {
+    background-color: var(--el-fill-color-light) !important;
+  }
+}
+
+/* 深色或深蓝侧边栏的 hover 样式 */
+html.dark .layout-mix .layout__sidebar--left .el-menu,
+html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
+  .el-menu-item:hover,
+  .el-sub-menu__title:hover {
+    background-color: var(--menu-hover) !important;
+  }
+}
+
+/* 顶部布局菜单填充空间 */
+.layout-top .layout__header-left .el-menu--horizontal,
+.layout-mix .layout__header-menu .el-menu--horizontal {
+  display: flex;
+  flex: 1 1 0% !important;
+  align-items: center;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden;
+}
+
+/* 窄屏隐藏菜单文字，仅保留图标 */
+.hideSidebar {
+  &.layout-top .layout__header .el-menu--horizontal,
+  &.layout-mix .layout__header .el-menu--horizontal {
+    .el-menu-item,
+    .el-sub-menu__title {
+      .menu-title,
+      span:not([class*="i-svg"]):not(.el-icon) {
+        display: none !important;
+      }
+    }
+  }
+
+  &.layout-mix .layout__sidebar--left .el-menu {
+    .el-menu-item,
+    .el-sub-menu__title {
+      .menu-title,
+      span:not([class*="i-svg"]):not(.el-icon) {
+        display: none !important;
+      }
+    }
+  }
+}

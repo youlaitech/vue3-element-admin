@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <div class="filter-section">
+  <div class="page-container">
+    <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
@@ -11,16 +11,16 @@
           />
         </el-form-item>
 
-        <el-form-item class="search-buttons">
+        <el-form-item>
           <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
           <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
 
-    <el-card shadow="hover" class="table-section">
-      <div class="table-section__toolbar">
-        <div class="table-section__toolbar--actions">
+    <el-card class="page-content" shadow="never">
+      <div class="page-toolbar">
+        <div class="page-toolbar__left">
           <el-button
             v-hasPerm="['sys:menu:create']"
             type="success"
@@ -41,7 +41,6 @@
           children: 'children',
           hasChildren: 'hasChildren',
         }"
-        class="table-section__content"
         @row-click="handleRowClick"
       >
         <el-table-column label="菜单名称" min-width="200">
@@ -361,7 +360,7 @@
 import { useAppStore } from "@/store/modules/app";
 import { DeviceEnum } from "@/enums/settings";
 import MenuAPI from "@/api/system/menu";
-import type { MenuQueryParams, MenuForm, MenuItem } from "@/types/api";
+import type { MenuQueryParams, MenuForm, MenuItem } from "@/api/system/menu";
 import type { FormInstance, FormRules } from "element-plus";
 import { MenuScopeEnum, MenuTypeEnum } from "@/enums/business";
 import { isTenantEnabled } from "@/utils/tenant";

@@ -5,7 +5,7 @@ import router from "@/router";
 import { useUserStoreHook } from "@/store/modules/user";
 
 import MenuAPI from "@/api/system/menu";
-import { RouteItem } from "@/types";
+import type { RouteItem } from "@/api/system/menu";
 const modules = import.meta.glob("../../views/**/**.vue");
 const Layout = () => import("../../layouts/index.vue");
 

@@ -1,6 +1,6 @@
 ﻿<template>
-  <div class="app-container">
-    <div class="filter-section">
+  <div class="page-container">
+    <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-suffix=":">
         <el-form-item label="标题" prop="title">
           <el-input
@@ -24,16 +24,16 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item class="search-buttons">
+        <el-form-item>
           <el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
           <el-button icon="refresh" @click="handleResetQuery()">重置</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
 
-    <el-card shadow="hover" class="table-section">
-      <div class="table-section__toolbar">
-        <div class="table-section__toolbar--actions">
+    <el-card class="page-content" shadow="never">
+      <div class="page-toolbar">
+        <div class="page-toolbar__left">
           <el-button
             v-hasPerm="['sys:notice:create']"
             type="success"
@@ -59,7 +59,6 @@
         v-loading="loading"
         :data="pageData"
         highlight-current-row
-        class="table-section__content"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
@@ -278,7 +277,7 @@ defineOptions({
 });
 
 import NoticeAPI from "@/api/system/notice";
-import type { NoticeItem, NoticeForm, NoticeQueryParams, NoticeDetail } from "@/types/api";
+import type { NoticeItem, NoticeForm, NoticeQueryParams, NoticeDetail } from "@/api/system/notice";
 import UserAPI from "@/api/system/user";
 import type { FormInstance, FormRules } from "element-plus";
 

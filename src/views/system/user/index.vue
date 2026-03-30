@@ -1,16 +1,16 @@
 <!-- 用户管理 -->
 <template>
-  <div class="app-container">
+  <div class="page-container">
     <el-row :gutter="20">
       <!-- 部门树 -->
-      <el-col :lg="4" :xs="24" class="mb-[12px]">
+      <el-col :lg="4" :xs="24" class="page-aside">
         <UserDeptTree v-model="queryParams.deptId" @node-click="handleQuery" />
       </el-col>
 
       <!-- 用户列表 -->
-      <el-col :lg="20" :xs="24">
+      <el-col :lg="20" :xs="24" class="page-main">
         <!-- 搜索区域 -->
-        <div class="filter-section">
+        <el-card shadow="never" class="page-search">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
             <el-form-item label="关键字" prop="keywords">
               <el-input
@@ -45,16 +45,16 @@
               />
             </el-form-item>
 
-            <el-form-item class="search-buttons">
+            <el-form-item>
               <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
               <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
             </el-form-item>
           </el-form>
-        </div>
+        </el-card>
 
-        <el-card shadow="hover" class="table-section">
-          <div class="table-section__toolbar">
-            <div class="table-section__toolbar--actions">
+        <el-card shadow="never" class="page-content">
+          <div class="page-toolbar">
+            <div class="page-toolbar__left">
               <el-button
                 v-hasPerm="['sys:user:create']"
                 type="success"
@@ -73,7 +73,7 @@
                 删除
               </el-button>
             </div>
-            <div class="table-section__toolbar--tools">
+            <div class="page-toolbar__right">
               <el-button v-hasPerm="'sys:user:import'" icon="upload" @click="openImportDialog">
                 导入
               </el-button>
@@ -90,7 +90,6 @@
             border
             stripe
             highlight-current-row
-            class="table-section__content"
             row-key="id"
             @selection-change="handleSelectionChange"
           >
@@ -245,7 +244,7 @@
 import { computed, onMounted, reactive, ref } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "element-plus";
-import type { UserForm, UserQueryParams, UserItem } from "@/types/api";
+import type { UserForm, UserQueryParams, UserItem } from "@/api/system/user";
 import { downloadFile } from "@/utils";
 import UserAPI from "@/api/system/user";
 import DeptAPI from "@/api/system/dept";

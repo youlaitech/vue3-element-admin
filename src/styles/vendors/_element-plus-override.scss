@@ -1,0 +1,75 @@
+/**
+ * Element Plus 组件样式定制
+ */
+
+$border: 1px solid var(--el-border-color-light);
+
+/* el-dialog */
+.el-dialog {
+  .el-dialog__header {
+    padding: 15px 20px;
+    margin: 0;
+    border-bottom: $border;
+  }
+
+  .el-dialog__body {
+    padding: 20px;
+  }
+
+  .el-dialog__footer {
+    padding: 15px;
+    border-top: $border;
+  }
+}
+
+/* el-drawer */
+.el-drawer {
+  .el-drawer__header {
+    padding: 15px 20px;
+    margin: 0;
+    color: inherit;
+    border-bottom: $border;
+  }
+
+  .el-drawer__body {
+    padding: 20px;
+  }
+
+  .el-drawer__footer {
+    padding: 15px;
+    border-top: $border;
+  }
+}
+
+/* 抽屉和对话框底部按钮区域 */
+.dialog-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* 弹出菜单统一使用主题变量 */
+.el-menu--popup {
+  --el-menu-bg-color: var(--menu-background);
+  --el-menu-text-color: var(--menu-text);
+  --el-menu-active-color: var(--menu-active-text);
+  --el-menu-hover-bg-color: var(--menu-hover);
+
+  background-color: var(--menu-background);
+
+  .el-menu-item,
+  .el-sub-menu__title {
+    color: var(--menu-text) !important;
+  }
+
+  .el-menu-item:hover,
+  .el-sub-menu__title:hover {
+    color: var(--menu-active-text) !important;
+    background-color: var(--menu-hover) !important;
+  }
+
+  .el-menu-item.is-active {
+    color: var(--menu-active-text) !important;
+    background-color: var(--menu-hover) !important;
+  }
+}

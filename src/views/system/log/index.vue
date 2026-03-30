@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <div class="filter-section">
+  <div class="page-container">
+    <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -24,20 +24,19 @@
           />
         </el-form-item>
 
-        <el-form-item class="search-buttons">
+        <el-form-item>
           <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
           <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
 
-    <el-card shadow="hover" class="data-table">
+    <el-card class="page-content" shadow="never">
       <el-table
         v-loading="loading"
         :data="pageData"
         highlight-current-row
         border
-        class="data-table__content"
       >
         <el-table-column label="操作标题" prop="title" min-width="180" show-overflow-tooltip />
         <el-table-column label="状态" prop="status" width="80" align="center">
@@ -117,7 +116,7 @@ defineOptions({
 });
 
 import LogAPI from "@/api/system/log";
-import type { LogItem, LogQueryParams } from "@/types/api";
+import type { LogItem, LogQueryParams } from "@/api/system/log";
 import type { FormInstance, TagProps } from "element-plus";
 
 function getMethodTagType(method: string): TagProps["type"] {

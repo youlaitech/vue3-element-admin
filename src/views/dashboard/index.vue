@@ -1,9 +1,9 @@
 ﻿<template>
-  <div class="relative p-6">
+  <div class="relative p-5">
     <!-- github 角标 -->
     <github-corner class="absolute top-0 right-0 z-1 border-0" />
 
-    <el-card shadow="never" class="mt-2">
+    <el-card shadow="never">
       <div class="flex flex-wrap">
         <!-- 左侧问候语区域 -->
         <div class="flex-1 flex items-start">
@@ -383,7 +383,7 @@ import { dayjs } from "element-plus";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import LogAPI from "@/api/system/log";
-import type { VisitStatsDetail, VisitTrendDetail } from "@/types/api";
+import type { VisitStatsDetail, VisitTrendDetail } from "@/api/system/log";
 import { useUserStore } from "@/store/modules/user";
 import { formatGrowthRate } from "@/utils";
 import { useTransition, useDateFormat } from "@vueuse/core";

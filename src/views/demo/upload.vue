@@ -1,6 +1,6 @@
 <!-- 文件上传组件示例 -->
 <template>
-  <div class="app-container">
+  <div class="page-container">
     <el-link
       href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/upload.vue"
       type="primary"

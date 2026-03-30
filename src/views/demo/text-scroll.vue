@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="page-container">
     <!-- 基础用法 -->
     <TextScroll text="这是一条基础的滚动公告，默认向左滚动" typewriter />
 
@@ -22,7 +22,7 @@ import TextScroll from "@/components/TextScroll/index.vue";
 </script>
 
 <style lang="scss" scoped>
-.app-container {
+.page-container {
   :deep(.text-scroll-container) {
     margin-bottom: 20px;
   }

@@ -1,7 +1,7 @@
 ﻿<template>
-  <div class="app-container">
+  <div class="page-container">
     <!-- 搜索区域 -->
-    <div class="search-container">
+    <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -12,7 +12,7 @@
           />
         </el-form-item>
 
-        <el-form-item class="search-buttons">
+        <el-form-item>
           <el-button type="primary" @click="handleQuery">
             <template #icon>
               <Search />
@@ -27,16 +27,15 @@
           </el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
 
-    <el-card shadow="hover" class="table-card">
+    <el-card class="page-content" shadow="never">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
         :data="pageData"
         highlight-current-row
         border
-        class="data-table__content"
       >
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="表名" prop="tableName" min-width="100" />
@@ -531,7 +530,7 @@ import type {
   TableQueryParams,
   TableItem,
   GeneratorPreviewItem,
-} from "@/api/types";
+} from "@/api/codegen";
 import { ElLoading } from "element-plus";
 
 import DictAPI from "@/api/system/dict";

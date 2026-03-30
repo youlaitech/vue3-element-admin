@@ -1,7 +1,7 @@
 <template>
-  <div class="app-container">
+  <div class="page-container">
     <!-- 搜索区域 -->
-    <div class="filter-section">
+    <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
@@ -12,16 +12,16 @@
           />
         </el-form-item>
 
-        <el-form-item class="search-buttons">
+        <el-form-item>
           <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
           <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
 
-    <el-card shadow="hover" class="table-section">
-      <div class="table-section__toolbar">
-        <div class="table-section__toolbar--actions">
+    <el-card class="page-content" shadow="never">
+      <div class="page-toolbar">
+        <div class="page-toolbar__left">
           <el-button type="success" icon="plus" @click="handleCreateClick()">新增</el-button>
           <el-button
             type="danger"
@@ -40,7 +40,6 @@
         :data="roleList"
         highlight-current-row
         border
-        class="table-section__content"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
@@ -234,7 +233,7 @@ import { useAppStore } from "@/store/modules/app";
 import { DeviceEnum } from "@/enums/settings";
 
 import RoleAPI from "@/api/system/role";
-import type { RoleItem, RoleForm, RoleQueryParams } from "@/types/api";
+import type { RoleItem, RoleForm, RoleQueryParams } from "@/api/system/role";
 import MenuAPI from "@/api/system/menu";
 import DeptAPI from "@/api/system/dept";
 

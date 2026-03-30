@@ -1,6 +1,6 @@
 <!-- 接口文档 -->
 <template>
-  <div class="app-container">
+  <div class="page-container">
     <iframe
       src="https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5"
       width="100%"
@@ -12,14 +12,14 @@
 
 <style lang="scss" scoped>
 /** 关闭tag标签  */
-.app-container {
+.page-container {
   /* 50px = navbar = 50px */
   height: calc(100vh - 50px);
 }
 
 /** 开启tag标签  */
 .hasTagsView {
-  .app-container {
+  .page-container {
     /* 84px = navbar + tags-view = 50px + 34px */
     height: calc(100vh - 84px);
   }

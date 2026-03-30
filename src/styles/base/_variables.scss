@@ -1,0 +1,24 @@
+/**
+ * SCSS 变量定义
+ * 只放数学变量和 CSS 变量映射
+ */
+
+// ============================================
+// 布局尺寸变量
+// ============================================
+
+$sidebar-width: 210px;
+$sidebar-width-collapsed: 54px;
+$navbar-height: 50px;
+$tags-view-height: 34px;
+
+// ============================================
+// CSS 变量映射（供组件和 SCSS 使用）
+// ============================================
+
+$menu-background: var(--menu-background);
+$menu-text: var(--menu-text);
+$menu-active-text: var(--menu-active-text);
+$menu-hover: var(--menu-hover);
+$sidebar-logo-background: var(--sidebar-logo-background);
+$sidebar-logo-text-color: var(--sidebar-logo-text-color);

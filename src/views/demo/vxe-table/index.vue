@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="app-container">
+  <div class="page-container">
     <!-- 表格 -->
     <vxe-grid ref="xGrid" v-bind="gridOptions" v-on="gridEvents">
       <!-- 搜索 -->

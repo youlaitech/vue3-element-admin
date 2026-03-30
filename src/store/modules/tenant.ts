@@ -1,6 +1,6 @@
 import { store } from "@/store";
 import TenantAPI from "@/api/system/tenant";
-import type { TenantInfo } from "@/types/api";
+import type { TenantInfo } from "@/api/system/tenant";
 import { STORAGE_KEYS } from "@/constants";
 import AuthAPI from "@/api/auth";
 import { AuthStorage } from "@/utils/auth";
