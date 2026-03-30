@@ -32,12 +32,7 @@
     </el-card>
 
     <el-card class="page-content" shadow="never">
-      <el-table
-        v-loading="loading"
-        :data="pageData"
-        highlight-current-row
-        border
-      >
+      <el-table v-loading="loading" :data="pageData" highlight-current-row border>
         <el-table-column label="操作标题" prop="title" min-width="180" show-overflow-tooltip />
         <el-table-column label="状态" prop="status" width="80" align="center">
           <template #default="{ row }">

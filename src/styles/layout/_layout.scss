@@ -1,7 +1,7 @@
 /**
  * 全局标准布局样式
  */
- 
+
 .page-container {
   padding: 16px;
 }
@@ -27,19 +27,18 @@
   .el-card__body {
     padding: 12px 12px 0;
   }
-
 }
 
 .page-content {
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: column;
 }
 
 .page-toolbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 16px;
 
   &__left,
@@ -48,7 +47,6 @@
     gap: 8px;
   }
 }
-
 
 /* 混合布局左侧菜单 hover 样式 */
 .layout-mix .layout__sidebar--left .el-menu {

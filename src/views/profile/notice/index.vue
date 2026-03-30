@@ -30,12 +30,7 @@
     </el-card>
 
     <el-card class="page-content" shadow="never">
-      <el-table
-        ref="dataTableRef"
-        v-loading="loading"
-        :data="pageData"
-        highlight-current-row
-      >
+      <el-table ref="dataTableRef" v-loading="loading" :data="pageData" highlight-current-row>
         <el-table-column type="index" label="序号" width="60" />
         <el-table-column label="通知标题" prop="title" min-width="200" />
         <el-table-column align="center" label="通知类型" width="150">
