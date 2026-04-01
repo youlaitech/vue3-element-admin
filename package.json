@@ -114,6 +114,7 @@
     "unplugin-vue-components": "^32.0.0",
     "vite": "^8.0.0",
     "vite-plugin-mock-dev-server": "^2.1.1",
+    "vue-eslint-parser": "^10.4.0",
     "vue-tsc": "^3.2.5"
   },
   "engines": {
