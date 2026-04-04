@@ -165,7 +165,7 @@ export default defineMock([
     },
   },
   {
-    url: "logs/views/trend",
+    url: "logs/analytics/trend",
     method: ["GET"],
     body: {
       code: "00000",
@@ -188,7 +188,7 @@ export default defineMock([
     },
   },
   {
-    url: "logs/views",
+    url: "logs/analytics/overview",
     method: ["GET"],
     body: {
       code: "00000",

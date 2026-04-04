@@ -36,10 +36,13 @@ const AuthAPI = {
 
   /** 刷新 token 接口*/
   refreshToken(refreshToken: string) {
+    const params = new URLSearchParams();
+    params.append("refresh_token", refreshToken);
+
     return request<any, LoginResponse>({
       url: `${AUTH_BASE_URL}/refresh-token`,
       method: "post",
-      params: { refreshToken },
+      data: params,
       headers: {
         Authorization: "no-auth",
       },
