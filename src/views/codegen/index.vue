@@ -381,9 +381,12 @@
           <el-col :span="6">
             <el-scrollbar max-height="72vh">
               <el-tree
+                ref="fileTreeRef"
                 :data="filteredTreeData"
+                node-key="key"
                 default-expand-all
                 highlight-current
+                :current-node-key="currentFileKey"
                 @node-click="handleFileTreeNodeClick"
               >
                 <template #default="{ data }">
@@ -538,6 +541,7 @@ import MenuAPI from "@/api/system/menu";
 
 interface TreeNode {
   label: string;
+  key?: string;
   content?: string;
   children?: TreeNode[];
   scope?: "frontend" | "backend";
@@ -628,9 +632,17 @@ watch(
 const { copy, copied } = useClipboard();
 const code = ref<string>("");
 const cmRef = ref<CmComponentRef>();
+const fileTreeRef = ref();
+const currentFileKey = ref<string>("");
 const cmOptions: EditorConfiguration = {
   mode: "text/javascript",
 };
+
+function refreshPreviewEditor() {
+  const inst: any = cmRef.value as any;
+  const editor = inst?.cminstance || inst?.cm || inst?.editor;
+  editor?.refresh?.();
+}
 
 const prevBtnText = ref("");
 const nextBtnText = ref("下一步，字段配置");
@@ -679,6 +691,10 @@ watch(active, (val) => {
   } else if (val === 2) {
     prevBtnText.value = "上一步，字段配置";
     nextBtnText.value = "下载代码";
+
+    nextTick(() => {
+      refreshPreviewEditor();
+    });
   }
 });
 
@@ -930,6 +946,9 @@ async function handlePreview(tableName: string) {
     const firstLeafNode = findFirstLeafNode(tree);
     if (firstLeafNode) {
       code.value = firstLeafNode.content || "";
+      currentFileKey.value = firstLeafNode.key || "";
+      await nextTick();
+      fileTreeRef.value?.setCurrentKey?.(currentFileKey.value);
     }
   } catch {
     active.value = 0;
@@ -945,20 +964,24 @@ async function handlePreview(tableName: string) {
  */
 function buildTree(data: GeneratorPreviewItem[]): TreeNode {
   // 动态获取根节点
-  const root: TreeNode = { label: "前后端代码", children: [] };
+  const root: TreeNode = { label: "前后端代码", key: "root", children: [] };
 
   data.forEach((item) => {
     const normalizedPath = item.path.replace(/\\/g, "/");
     const parts = normalizedPath.split("/").filter(Boolean);
 
     let currentNode = root;
+    let currentKey = root.key || "root";
 
     parts.forEach((part) => {
       // 查找或创建当前部分的子节点
       let node = currentNode.children?.find((child) => child.label === part);
       if (!node) {
-        node = { label: part, children: [] };
+        currentKey = `${currentKey}/${part}`;
+        node = { label: part, key: currentKey, children: [] };
         currentNode.children?.push(node);
+      } else {
+        currentKey = node.key || `${currentKey}/${part}`;
       }
       currentNode = node;
     });
@@ -966,6 +989,7 @@ function buildTree(data: GeneratorPreviewItem[]): TreeNode {
     // 添加文件节点
     currentNode.children?.push({
       label: item.fileName,
+      key: `${item.scope || ""}:${normalizedPath}/${item.fileName}`,
       content: item?.content,
       scope: item.scope,
       language: item.language,
@@ -997,8 +1021,54 @@ function findFirstLeafNode(node: TreeNode): TreeNode | null {
 function handleFileTreeNodeClick(data: TreeNode) {
   if (!data.children || data.children.length === 0) {
     code.value = data.content || "";
+    currentFileKey.value = data.key || "";
+
+    nextTick(() => {
+      refreshPreviewEditor();
+    });
   }
 }
+
+function findLeafByKey(nodes: TreeNode[], key: string): TreeNode | null {
+  for (const node of nodes) {
+    if (!node.children || node.children.length === 0) {
+      if (node.key === key) return node;
+      continue;
+    }
+    const found = findLeafByKey(node.children || [], key);
+    if (found) return found;
+  }
+  return null;
+}
+
+watch(
+  () => filteredTreeData.value,
+  async (nodes) => {
+    if (!nodes.length) {
+      currentFileKey.value = "";
+      code.value = "";
+      return;
+    }
+
+    if (currentFileKey.value) {
+      const leaf = findLeafByKey(nodes, currentFileKey.value);
+      if (leaf) {
+        await nextTick();
+        fileTreeRef.value?.setCurrentKey?.(currentFileKey.value);
+        return;
+      }
+    }
+
+    const first = findFirstLeafNode({ label: "root", key: "root", children: nodes });
+    if (first) {
+      code.value = first.content || "";
+      currentFileKey.value = first.key || "";
+      await nextTick();
+      fileTreeRef.value?.setCurrentKey?.(currentFileKey.value);
+    }
+  },
+  { immediate: true }
+);
 
 /** 获取文件树节点图标 */
 function getFileTreeNodeIcon(node: TreeNode) {
