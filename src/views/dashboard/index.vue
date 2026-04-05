@@ -159,7 +159,7 @@
 
       <!-- 访客量UV) -->
       <el-col :span="8" :xs="24" class="mb-xs-3">
-        <el-skeleton :loading="visitStatsLoading" :rows="5" animated>
+        <el-skeleton :loading="visitOverviewLoading" :rows="5" animated>
           <template #template>
             <el-card>
               <template #header>
@@ -179,7 +179,7 @@
               </div>
             </el-card>
           </template>
-          <template v-if="!visitStatsLoading">
+          <template v-if="!visitOverviewLoading">
             <el-card
               shadow="never"
               class="h-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
@@ -200,16 +200,16 @@
                   </span>
                   <span
                     v-if="uvGrowthText !== null"
-                    :class="['text-xs', computeGrowthRateClass(visitStatsData.uvGrowthRate)]"
+                    :class="['text-xs', computeGrowthRateClass(visitOverviewData.uvGrowthRate)]"
                   >
                     <el-icon
                       v-if="
-                        visitStatsData.uvGrowthRate !== undefined &&
-                        visitStatsData.uvGrowthRate !== null
+                        visitOverviewData.uvGrowthRate !== undefined &&
+                        visitOverviewData.uvGrowthRate !== null
                       "
                     >
-                      <Top v-if="visitStatsData.uvGrowthRate > 0" />
-                      <Bottom v-else-if="visitStatsData.uvGrowthRate < 0" />
+                      <Top v-if="visitOverviewData.uvGrowthRate > 0" />
+                      <Bottom v-else-if="visitOverviewData.uvGrowthRate < 0" />
                     </el-icon>
                     {{ uvGrowthText }}
                   </span>
@@ -227,7 +227,7 @@
 
       <!-- 浏览量(PV) -->
       <el-col :span="8" :xs="24">
-        <el-skeleton :loading="visitStatsLoading" :rows="5" animated>
+        <el-skeleton :loading="visitOverviewLoading" :rows="5" animated>
           <template #template>
             <el-card>
               <template #header>
@@ -247,7 +247,7 @@
               </div>
             </el-card>
           </template>
-          <template v-if="!visitStatsLoading">
+          <template v-if="!visitOverviewLoading">
             <el-card
               shadow="never"
               class="h-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
@@ -268,16 +268,16 @@
                   </span>
                   <span
                     v-if="pvGrowthText !== null"
-                    :class="['text-xs', computeGrowthRateClass(visitStatsData.pvGrowthRate)]"
+                    :class="['text-xs', computeGrowthRateClass(visitOverviewData.pvGrowthRate)]"
                   >
                     <el-icon
                       v-if="
-                        visitStatsData.pvGrowthRate !== undefined &&
-                        visitStatsData.pvGrowthRate !== null
+                        visitOverviewData.pvGrowthRate !== undefined &&
+                        visitOverviewData.pvGrowthRate !== null
                       "
                     >
-                      <Top v-if="visitStatsData.pvGrowthRate > 0" />
-                      <Bottom v-else-if="visitStatsData.pvGrowthRate < 0" />
+                      <Top v-if="visitOverviewData.pvGrowthRate > 0" />
+                      <Bottom v-else-if="visitOverviewData.pvGrowthRate < 0" />
                     </el-icon>
                     {{ pvGrowthText }}
                   </span>
@@ -383,7 +383,7 @@ import { dayjs } from "element-plus";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import LogAPI from "@/api/system/log";
-import type { VisitStatsDetail, VisitTrendDetail } from "@/api/system/log";
+import type { VisitOverviewDetail, VisitTrendDetail } from "@/api/system/log";
 import { useUserStore } from "@/store/modules/user";
 import { formatGrowthRate } from "@/utils";
 import { useTransition, useDateFormat } from "@vueuse/core";
@@ -434,9 +434,9 @@ const greetings = computed(() => {
 });
 
 // 访客统计数据加载状态
-const visitStatsLoading = ref(true);
+const visitOverviewLoading = ref(true);
 // 访客统计数据
-const visitStatsData = ref<VisitStatsDetail>({
+const visitOverviewData = ref<VisitOverviewDetail>({
   todayUvCount: 0,
   uvGrowthRate: 0,
   totalUvCount: 0,
@@ -447,27 +447,27 @@ const visitStatsData = ref<VisitStatsDetail>({
 
 const uvGrowthText = computed(() => {
   if (
-    visitStatsData.value.uvGrowthRate === undefined ||
-    visitStatsData.value.uvGrowthRate === null
+    visitOverviewData.value.uvGrowthRate === undefined ||
+    visitOverviewData.value.uvGrowthRate === null
   ) {
     return "--";
   }
-  return formatGrowthRate(visitStatsData.value.uvGrowthRate);
+  return formatGrowthRate(visitOverviewData.value.uvGrowthRate);
 });
 
 const pvGrowthText = computed(() => {
   if (
-    visitStatsData.value.pvGrowthRate === undefined ||
-    visitStatsData.value.pvGrowthRate === null
+    visitOverviewData.value.pvGrowthRate === undefined ||
+    visitOverviewData.value.pvGrowthRate === null
   ) {
     return "--";
   }
-  return formatGrowthRate(visitStatsData.value.pvGrowthRate);
+  return formatGrowthRate(visitOverviewData.value.pvGrowthRate);
 });
 
 // 数字过渡动画
 const transitionUvCount = useTransition(
-  computed(() => visitStatsData.value.todayUvCount),
+  computed(() => visitOverviewData.value.todayUvCount),
   {
     duration: 1000,
     transition: [0.25, 0.1, 0.25, 1.0], // CSS cubic-bezier
@@ -475,7 +475,7 @@ const transitionUvCount = useTransition(
 );
 
 const transitionTotalUvCount = useTransition(
-  computed(() => visitStatsData.value.totalUvCount),
+  computed(() => visitOverviewData.value.totalUvCount),
   {
     duration: 1200,
     transition: [0.25, 0.1, 0.25, 1.0],
@@ -483,7 +483,7 @@ const transitionTotalUvCount = useTransition(
 );
 
 const transitionPvCount = useTransition(
-  computed(() => visitStatsData.value.todayPvCount),
+  computed(() => visitOverviewData.value.todayPvCount),
   {
     duration: 1000,
     transition: [0.25, 0.1, 0.25, 1.0],
@@ -491,7 +491,7 @@ const transitionPvCount = useTransition(
 );
 
 const transitionTotalPvCount = useTransition(
-  computed(() => visitStatsData.value.totalPvCount),
+  computed(() => visitOverviewData.value.totalPvCount),
   {
     duration: 1200,
     transition: [0.25, 0.1, 0.25, 1.0],
@@ -520,13 +520,13 @@ const visitTrendChartOptions = ref();
 /**
  * 获取访客统计数据
  */
-const fetchVisitStatsData = () => {
+const fetchVisitOverviewData = () => {
   LogAPI.getVisitOverview()
     .then((data) => {
-      visitStatsData.value = data;
+      visitOverviewData.value = data;
     })
     .finally(() => {
-      visitStatsLoading.value = false;
+      visitOverviewLoading.value = false;
     });
 };
 
@@ -558,7 +558,7 @@ const updateVisitTrendChartOptions = (data: VisitTrendDetail) => {
       trigger: "axis",
     },
     legend: {
-      data: ["浏览量(PV)", "访客量UV)"],
+      data: ["浏览量(PV)", "访客数(UV)"],
       bottom: 0,
     },
     grid: {
@@ -597,9 +597,9 @@ const updateVisitTrendChartOptions = (data: VisitTrendDetail) => {
         },
       },
       {
-        name: "访客量UV)",
+        name: "访客量(UV)",
         type: "line",
-        data: data.ipList,
+        data: data.uvList,
         areaStyle: {
           color: "rgba(103, 194, 58, 0.1)",
         },
@@ -644,7 +644,7 @@ watch(
 
 // 组件挂载后加载访客统计数据和通知公告数据
 onMounted(() => {
-  fetchVisitStatsData();
+  fetchVisitOverviewData();
 });
 </script>
 

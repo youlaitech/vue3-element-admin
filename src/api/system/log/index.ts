@@ -4,7 +4,7 @@ import type {
   LogItem,
   VisitTrendQueryParams,
   VisitTrendDetail,
-  VisitStatsDetail,
+  VisitOverviewDetail,
 } from "./types";
 
 const LOG_BASE_URL = "/api/v1/logs";
@@ -30,7 +30,7 @@ const LogAPI = {
 
   /** 获取访问概览统计 */
   getVisitOverview() {
-    return request<any, VisitStatsDetail>({
+    return request<any, VisitOverviewDetail>({
       url: `${LOG_BASE_URL}/analytics/overview`,
       method: "get",
     });

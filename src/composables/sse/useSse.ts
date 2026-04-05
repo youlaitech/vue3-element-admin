@@ -132,6 +132,8 @@ function createSseConnection(options: UseSseOptions = {}) {
         reader = r;
         const decoder = new TextDecoder();
         let buffer = "";
+        let currentEvent = "message";
+        let currentData = "";
 
         // SSE 文本协议解析：event / data / 空行分隔
         const processChunk = ({
@@ -148,15 +150,13 @@ function createSseConnection(options: UseSseOptions = {}) {
           const lines = buffer.split("\n");
           buffer = lines.pop() || "";
 
-          let currentEvent = "message";
-          let currentData = "";
-
           for (const line of lines) {
             if (line.startsWith(":")) continue;
             if (line.startsWith("event:")) {
               currentEvent = line.slice(6).trim();
             } else if (line.startsWith("data:")) {
-              currentData = line.slice(5).trim();
+              const dataLine = line.slice(5).trim();
+              currentData = currentData ? `${currentData}\n${dataLine}` : dataLine;
             } else if (line === "") {
               if (currentData) {
                 const handlers = eventHandlers.get(currentEvent);

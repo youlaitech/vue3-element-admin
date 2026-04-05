@@ -68,12 +68,10 @@ export interface VisitTrendDetail {
   pvList: number[];
   /** 访客数(UV)列表 */
   uvList: number[];
-  /** IP数列表 */
-  ipList: number[];
 }
 
-/** 访问量统计视图对象 */
-export interface VisitStatsDetail {
+/** 访问概览视图对象 */
+export interface VisitOverviewDetail {
   /** 今日独立访客数(UV) */
   todayUvCount: number;
   /** 累计独立访客数(UV) */

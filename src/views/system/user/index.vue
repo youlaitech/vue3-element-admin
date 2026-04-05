@@ -94,7 +94,7 @@
             @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="50" align="center" />
-            <el-table-column label="用户名" prop="username" />
+            <el-table-column label="用户名" prop="username" min-width="120" show-overflow-tooltip />
             <el-table-column label="昵称" width="200" align="center" prop="nickname" />
             <el-table-column label="性别" width="100" align="center">
               <template #default="scope">

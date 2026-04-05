@@ -205,6 +205,9 @@ devDependencies:
   vite-plugin-mock-dev-server:
     specifier: ^2.1.1
     version: 2.1.1(vite@8.0.3)
+  vue-eslint-parser:
+    specifier: ^10.4.0
+    version: 10.4.0(eslint@10.1.0)
   vue-tsc:
     specifier: ^3.2.5
     version: 3.2.6(typescript@5.9.3)
