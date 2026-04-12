@@ -90,8 +90,8 @@ http.interceptors.response.use(
 
     // Refresh token 失效：无法续期，跳转登录
     if (code === ApiCodeEnum.REFRESH_TOKEN_INVALID) {
-      await redirectToLogin("登录已过期，请重新登录");
-      return Promise.reject(new Error(msg || "Token Invalid"));
+      await redirectToLogin("登录已过期，请重新登录", false);
+      return Promise.reject(new Error("Token Invalid"));
     }
 
     // 权限不足：刷新权限快照后提示

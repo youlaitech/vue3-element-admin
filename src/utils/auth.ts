@@ -65,16 +65,26 @@ export function hasPerm(value: string | string[], type: "button" | "role" = "but
     : value.some((perm) => auths.includes(perm));
 }
 
+let redirectingToLogin = false;
+
 /**
  * 重定向到登录页面
  */
-export async function redirectToLogin(message: string = "请重新登录"): Promise<void> {
-  ElNotification({
-    title: "提示",
-    message,
-    type: "warning",
-    duration: 3000,
-  });
+export async function redirectToLogin(
+  message: string = "请重新登录",
+  notify: boolean = true
+): Promise<void> {
+  if (redirectingToLogin) return;
+  redirectingToLogin = true;
+
+  if (notify) {
+    ElNotification({
+      title: "提示",
+      message,
+      type: "warning",
+      duration: 3000,
+    });
+  }
 
   await useUserStoreHook().resetAllState();
 
@@ -86,5 +96,7 @@ export async function redirectToLogin(message: string = "请重新登录"): Prom
     console.error("Redirect to login error:", error);
     // 强制跳转，即使路由重定向失败
     window.location.href = "/login";
+  } finally {
+    redirectingToLogin = false;
   }
 }
