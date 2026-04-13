@@ -9,7 +9,7 @@ export default defineMock([
       data: {
         list: [
           {
-            id: 1,
+            id: "1",
             name: "基础版",
             code: "BASIC",
             status: 1,
@@ -19,7 +19,7 @@ export default defineMock([
             updateTime: "2026-03-01 10:00:00",
           },
           {
-            id: 2,
+            id: "2",
             name: "专业版",
             code: "PRO",
             status: 1,
@@ -40,8 +40,8 @@ export default defineMock([
     body: {
       code: "00000",
       data: [
-        { value: 1, label: "基础版" },
-        { value: 2, label: "专业版" },
+        { value: "1", label: "基础版" },
+        { value: "2", label: "专业版" },
       ],
       msg: "一切ok",
     },
@@ -54,7 +54,7 @@ export default defineMock([
       const form =
         planId === 2
           ? {
-              id: 2,
+              id: "2",
               name: "专业版",
               code: "PRO",
               status: 1,
@@ -62,7 +62,7 @@ export default defineMock([
               remark: "",
             }
           : {
-              id: 1,
+              id: "1",
               name: "基础版",
               code: "BASIC",
               status: 1,

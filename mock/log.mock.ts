@@ -9,7 +9,7 @@ export default defineMock([
       data: {
         list: [
           {
-            id: 36192,
+            id: "36192",
             module: "菜单",
             content: "菜单列表",
             requestUri: "/api/v1/menus",
@@ -24,7 +24,7 @@ export default defineMock([
             operator: "系统管理员",
           },
           {
-            id: 36190,
+            id: "36190",
             module: "字典",
             content: "字典分页列表",
             requestUri: "/api/v1/dicts",
@@ -39,7 +39,7 @@ export default defineMock([
             operator: "系统管理员",
           },
           {
-            id: 36193,
+            id: "36193",
             module: "部门",
             content: "部门列表",
             requestUri: "/api/v1/depts",
@@ -54,7 +54,7 @@ export default defineMock([
             operator: "系统管理员",
           },
           {
-            id: 36191,
+            id: "36191",
             module: "菜单",
             content: "菜单列表",
             requestUri: "/api/v1/menus",
@@ -69,7 +69,7 @@ export default defineMock([
             operator: "系统管理员",
           },
           {
-            id: 36189,
+            id: "36189",
             module: "角色",
             content: "角色分页列表",
             requestUri: "/api/v1/roles",
@@ -84,7 +84,7 @@ export default defineMock([
             operator: "系统管理员",
           },
           {
-            id: 36188,
+            id: "36188",
             module: "用户",
             content: "用户分页列表",
             requestUri: "/api/v1/users",
@@ -99,7 +99,7 @@ export default defineMock([
             operator: "系统管理员",
           },
           {
-            id: 36187,
+            id: "36187",
             module: "登录",
             content: "登录",
             requestUri: "/api/v1/auth/login",
@@ -114,7 +114,7 @@ export default defineMock([
             operator: "系统管理员",
           },
           {
-            id: 36186,
+            id: "36186",
             module: "登录",
             content: "登录",
             requestUri: "/api/v1/auth/login",
@@ -129,7 +129,7 @@ export default defineMock([
             operator: "系统管理员",
           },
           {
-            id: 36185,
+            id: "36185",
             module: "登录",
             content: "登录",
             requestUri: "/api/v1/auth/login",
@@ -144,7 +144,7 @@ export default defineMock([
             operator: "系统管理员",
           },
           {
-            id: 36184,
+            id: "36184",
             module: "登录",
             content: "登录",
             requestUri: "/api/v1/auth/login",

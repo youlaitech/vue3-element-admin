@@ -9,20 +9,20 @@ import { mockDevServerPlugin } from "vite-plugin-mock-dev-server";
 
 import UnoCSS from "unocss/vite";
 import { resolve } from "path";
-import { name, version, engines, dependencies, devDependencies } from "./package.json";
+import { name, version } from "./package.json";
 
-// 平台的名称、版本、运行所需的 node 版本、依赖、构建时间的类型提示
+// 平台名称、版本信息
 const __APP_INFO__ = {
-  pkg: { name, version, engines, dependencies, devDependencies },
+  pkg: { name, version },
   buildTimestamp: Date.now(),
 };
 
-const pathSrc = resolve(__dirname, "src");
+// ESM 模式下使用 import.meta.dirname（Node 20.11+）
+const pathSrc = resolve(import.meta.dirname, "src");
 
 // Vite配置  https://cn.vitejs.dev/config
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
-  const isProduction = mode === "production";
 
   return {
     resolve: {
@@ -85,7 +85,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         //dts: "src/types/components.d.ts",
       }),
     ] as PluginOption[],
-    // 预加载项目必需的组件
+    // 预加载项目必需的依赖
     optimizeDeps: {
       include: [
         "vue",
@@ -111,112 +111,103 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es",
         "element-plus/es/locale/lang/en",
         "element-plus/es/locale/lang/zh-cn",
-        "element-plus/es/components/alert/style/index",
-        "element-plus/es/components/avatar/style/index",
-        "element-plus/es/components/backtop/style/index",
-        "element-plus/es/components/badge/style/index",
-        "element-plus/es/components/base/style/index",
-        "element-plus/es/components/breadcrumb-item/style/index",
-        "element-plus/es/components/breadcrumb/style/index",
-        "element-plus/es/components/button/style/index",
-        "element-plus/es/components/card/style/index",
-        "element-plus/es/components/cascader/style/index",
-        "element-plus/es/components/checkbox-group/style/index",
-        "element-plus/es/components/checkbox/style/index",
-        "element-plus/es/components/col/style/index",
-        "element-plus/es/components/color-picker/style/index",
-        "element-plus/es/components/config-provider/style/index",
-        "element-plus/es/components/date-picker/style/index",
-        "element-plus/es/components/descriptions-item/style/index",
-        "element-plus/es/components/descriptions/style/index",
-        "element-plus/es/components/dialog/style/index",
-        "element-plus/es/components/divider/style/index",
-        "element-plus/es/components/drawer/style/index",
-        "element-plus/es/components/dropdown-item/style/index",
-        "element-plus/es/components/dropdown-menu/style/index",
-        "element-plus/es/components/dropdown/style/index",
-        "element-plus/es/components/empty/style/index",
-        "element-plus/es/components/form-item/style/index",
-        "element-plus/es/components/form/style/index",
-        "element-plus/es/components/icon/style/index",
-        "element-plus/es/components/image-viewer/style/index",
-        "element-plus/es/components/image/style/index",
-        "element-plus/es/components/input-number/style/index",
-        "element-plus/es/components/input-tag/style/index",
-        "element-plus/es/components/input/style/index",
-        "element-plus/es/components/link/style/index",
-        "element-plus/es/components/loading/style/index",
-        "element-plus/es/components/menu-item/style/index",
-        "element-plus/es/components/menu/style/index",
-        "element-plus/es/components/message-box/style/index",
-        "element-plus/es/components/message/style/index",
-        "element-plus/es/components/notification/style/index",
-        "element-plus/es/components/option/style/index",
-        "element-plus/es/components/pagination/style/index",
-        "element-plus/es/components/popover/style/index",
-        "element-plus/es/components/progress/style/index",
-        "element-plus/es/components/radio-button/style/index",
-        "element-plus/es/components/radio-group/style/index",
-        "element-plus/es/components/radio/style/index",
-        "element-plus/es/components/row/style/index",
-        "element-plus/es/components/scrollbar/style/index",
-        "element-plus/es/components/select/style/index",
-        "element-plus/es/components/skeleton-item/style/index",
-        "element-plus/es/components/skeleton/style/index",
-        "element-plus/es/components/step/style/index",
-        "element-plus/es/components/steps/style/index",
-        "element-plus/es/components/sub-menu/style/index",
-        "element-plus/es/components/switch/style/index",
-        "element-plus/es/components/tab-pane/style/index",
-        "element-plus/es/components/table-column/style/index",
-        "element-plus/es/components/table/style/index",
-        "element-plus/es/components/tabs/style/index",
-        "element-plus/es/components/tag/style/index",
-        "element-plus/es/components/text/style/index",
-        "element-plus/es/components/time-picker/style/index",
-        "element-plus/es/components/time-select/style/index",
-        "element-plus/es/components/timeline-item/style/index",
-        "element-plus/es/components/timeline/style/index",
-        "element-plus/es/components/tooltip/style/index",
-        "element-plus/es/components/tree-select/style/index",
-        "element-plus/es/components/tree/style/index",
-        "element-plus/es/components/upload/style/index",
-        "element-plus/es/components/watermark/style/index",
-        "element-plus/es/components/checkbox-button/style/index",
-        "element-plus/es/components/space/style/index",
+        // Element Plus 组件样式预构建（避免按需发现时触发页面重载）
+        ...[
+          "alert",
+          "avatar",
+          "backtop",
+          "badge",
+          "base",
+          "breadcrumb",
+          "breadcrumb-item",
+          "button",
+          "card",
+          "cascader",
+          "checkbox",
+          "checkbox-group",
+          "checkbox-button",
+          "col",
+          "color-picker",
+          "config-provider",
+          "date-picker",
+          "descriptions",
+          "descriptions-item",
+          "dialog",
+          "divider",
+          "drawer",
+          "dropdown",
+          "dropdown-item",
+          "dropdown-menu",
+          "empty",
+          "form",
+          "form-item",
+          "icon",
+          "image",
+          "image-viewer",
+          "input",
+          "input-number",
+          "input-tag",
+          "link",
+          "loading",
+          "menu",
+          "menu-item",
+          "message",
+          "message-box",
+          "notification",
+          "option",
+          "pagination",
+          "popover",
+          "progress",
+          "radio",
+          "radio-button",
+          "radio-group",
+          "row",
+          "scrollbar",
+          "select",
+          "skeleton",
+          "skeleton-item",
+          "space",
+          "step",
+          "steps",
+          "sub-menu",
+          "switch",
+          "tab-pane",
+          "table",
+          "table-column",
+          "tabs",
+          "tag",
+          "text",
+          "time-picker",
+          "time-select",
+          "timeline",
+          "timeline-item",
+          "tooltip",
+          "tree",
+          "tree-select",
+          "upload",
+          "watermark",
+        ].map((c) => `element-plus/es/components/${c}/style/index`),
       ],
     },
-    // 构建配置
+    // 构建配置（Vite 8 使用 Rolldown + Oxc）
     build: {
-      chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告
+      chunkSizeWarningLimit: 1200, // chunk 大小警告阈值
       reportCompressedSize: false,
-      minify: isProduction ? "terser" : false, // Vite 8 推荐使用 terser 进行生产压缩
-      terserOptions: isProduction
-        ? {
-            compress: {
-              drop_console: true, // 生产环境移除 console
-              drop_debugger: true, // 生产环境移除 debugger
-            },
-          }
-        : undefined,
-      rollupOptions: {
+      cssMinify: "lightningcss", // Vite 8 默认使用 Lightning CSS 压缩
+      // minify 默认使用 'oxc'，压缩速度比 terser 快 30-90 倍
+      rolldownOptions: {
         output: {
-          // manualChunks: {
-          //   "vue-i18n": ["vue-i18n"],
-          // },
-          // 用于从入口点创建的块的打包输出格式[name]表示文件名,[hash]表示该文件内容hash值
+          // 用于从入口点创建的块的打包输出格式
           entryFileNames: "js/[name].[hash].js",
           // 用于命名代码拆分时创建的共享块的输出命名
           chunkFileNames: "js/[name].[hash].js",
-          // 用于输出静态资源的命名，[ext]表示文件扩展名
+          // 用于输出静态资源的命名
           assetFileNames: (assetInfo: any) => {
-            // Vite 8 / Rolldown: 添加空值保护
             if (!assetInfo.name) {
               return "assets/[name].[hash][extname]";
             }
             const info = assetInfo.name.split(".");
             let extType = info[info.length - 1];
-            // console.log('文件信息', assetInfo.name)
             if (/\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/i.test(assetInfo.name)) {
               extType = "media";
             } else if (/\.(png|jpe?g|gif|svg)(\?.*)?$/.test(assetInfo.name)) {

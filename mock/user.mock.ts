@@ -7,7 +7,7 @@ export default defineMock([
     body: {
       code: "00000",
       data: {
-        userId: 2,
+        userId: "2",
         username: "admin",
         nickname: "系统管理员",
         avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
@@ -72,7 +72,7 @@ export default defineMock([
       data: {
         list: [
           {
-            id: 2,
+            id: "2",
             username: "admin",
             nickname: "系统管理员",
             mobile: "17621210366",
@@ -80,11 +80,11 @@ export default defineMock([
             avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
             email: "",
             status: 1,
-            deptId: 1,
+            deptId: "1",
             roleIds: [2],
           },
           {
-            id: 3,
+            id: "3",
             username: "test",
             nickname: "测试小用户",
             mobile: "17621210366",
@@ -92,7 +92,7 @@ export default defineMock([
             avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
             email: "youlaitech@163.com",
             status: 1,
-            deptId: 3,
+            deptId: "3",
             roleIds: [3],
           },
         ],
@@ -182,7 +182,7 @@ export default defineMock([
     body: {
       code: "00000",
       data: {
-        id: 2,
+        id: "2",
         username: "admin",
         nickname: "系统管理员",
         avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
@@ -224,7 +224,7 @@ export default defineMock([
 // 用户映射表数据
 const userMap: Record<string, any> = {
   2: {
-    id: 2,
+    id: "2",
     username: "admin",
     nickname: "系统管理员",
     mobile: "17621210366",
@@ -232,11 +232,11 @@ const userMap: Record<string, any> = {
     avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
     email: "",
     status: 1,
-    deptId: 1,
+    deptId: "1",
     roleIds: [2],
   },
   3: {
-    id: 3,
+    id: "3",
     username: "test",
     nickname: "测试小用户",
     mobile: "17621210366",
@@ -244,7 +244,7 @@ const userMap: Record<string, any> = {
     avatar: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
     email: "youlaitech@163.com",
     status: 1,
-    deptId: 3,
+    deptId: "3",
     roleIds: [3],
   },
 };

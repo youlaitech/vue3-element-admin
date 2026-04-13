@@ -8,7 +8,7 @@ export default defineMock([
       code: "00000",
       data: [
         {
-          id: 1,
+          id: "1",
           name: "默认租户",
           code: "default",
           contactName: "管理员",
@@ -16,14 +16,14 @@ export default defineMock([
           contactEmail: "",
           domain: "default",
           logo: "",
-          planId: 1,
+          planId: "1",
           status: 1,
           remark: "",
           expireTime: null,
           isDefault: true,
         },
         {
-          id: 2,
+          id: "2",
           name: "演示租户",
           code: "demo",
           contactName: "演示用户",
@@ -31,7 +31,7 @@ export default defineMock([
           contactEmail: "",
           domain: "demo",
           logo: "",
-          planId: 2,
+          planId: "2",
           status: 1,
           remark: "",
           expireTime: null,
@@ -47,7 +47,7 @@ export default defineMock([
     body: {
       code: "00000",
       data: {
-        id: 1,
+        id: "1",
         name: "默认租户",
         code: "default",
         contactName: "管理员",
@@ -55,7 +55,7 @@ export default defineMock([
         contactEmail: "",
         domain: "default",
         logo: "",
-        planId: 1,
+        planId: "1",
         status: 1,
         remark: "",
         expireTime: null,
@@ -72,7 +72,7 @@ export default defineMock([
       data: {
         list: [
           {
-            id: 1,
+            id: "1",
             name: "默认租户",
             code: "default",
             contactName: "管理员",
@@ -80,7 +80,7 @@ export default defineMock([
             contactEmail: "",
             domain: "default",
             logo: "",
-            planId: 1,
+            planId: "1",
             status: 1,
             remark: "",
             expireTime: null,
@@ -88,7 +88,7 @@ export default defineMock([
             updateTime: "2026-03-01 10:00:00",
           },
           {
-            id: 2,
+            id: "2",
             name: "演示租户",
             code: "demo",
             contactName: "演示用户",
@@ -96,7 +96,7 @@ export default defineMock([
             contactEmail: "",
             domain: "demo",
             logo: "",
-            planId: 2,
+            planId: "2",
             status: 1,
             remark: "",
             expireTime: null,
@@ -117,7 +117,7 @@ export default defineMock([
       const form =
         tenantId === 2
           ? {
-              id: 2,
+              id: "2",
               name: "演示租户",
               code: "demo",
               domain: "demo",
@@ -125,13 +125,13 @@ export default defineMock([
               contactPhone: "17621210366",
               contactEmail: "",
               logo: "",
-              planId: 2,
+              planId: "2",
               status: 1,
               remark: "",
               expireTime: null,
             }
           : {
-              id: 1,
+              id: "1",
               name: "默认租户",
               code: "default",
               domain: "default",
@@ -139,7 +139,7 @@ export default defineMock([
               contactPhone: "17621210366",
               contactEmail: "",
               logo: "",
-              planId: 1,
+              planId: "1",
               status: 1,
               remark: "",
               expireTime: null,
@@ -158,7 +158,7 @@ export default defineMock([
     body: {
       code: "00000",
       data: {
-        tenantId: 3,
+        tenantId: "3",
         tenantCode: "test",
         tenantName: "测试租户",
         adminUsername: "admin",
@@ -221,7 +221,7 @@ export default defineMock([
 
       const allTenants = [
         {
-          id: 1,
+          id: "1",
           name: "默认租户",
           code: "default",
           contactName: "管理员",
@@ -229,14 +229,14 @@ export default defineMock([
           contactEmail: "",
           domain: "default",
           logo: "",
-          planId: 1,
+          planId: "1",
           status: 1,
           remark: "",
           expireTime: null,
           isDefault: true,
         },
         {
-          id: 2,
+          id: "2",
           name: "演示租户",
           code: "demo",
           contactName: "演示用户",
@@ -244,7 +244,7 @@ export default defineMock([
           contactEmail: "",
           domain: "demo",
           logo: "",
-          planId: 2,
+          planId: "2",
           status: 1,
           remark: "",
           expireTime: null,
