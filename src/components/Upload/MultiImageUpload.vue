@@ -213,5 +213,12 @@ const handlePreviewClose = () => {
 onMounted(() => {
   fileList.value = modelValue.value.map((url) => ({ url }) as UploadUserFile);
 });
+
+watch(
+  () => modelValue.value,
+  (newVal) => {
+    fileList.value = newVal.map((url) => ({ url }) as UploadUserFile);
+  }
+);
 </script>
 <style lang="scss" scoped></style>
