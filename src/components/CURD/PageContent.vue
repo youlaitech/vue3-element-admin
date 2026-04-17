@@ -354,17 +354,17 @@ const emit = defineEmits<{
 // 表格工具栏按钮配置
 const config = computed(() => props.contentConfig);
 const buttonConfig = reactive<Record<string, IObject>>({
-  add: { text: "新增", attrs: { icon: "plus", type: "success" }, perm: "add" },
+  add: { text: "新增", attrs: { icon: "plus", type: "success" }, perm: "create" },
   delete: { text: "删除", attrs: { icon: "delete", type: "danger" }, perm: "delete" },
   import: { text: "导入", attrs: { icon: "upload", type: "" }, perm: "import" },
   export: { text: "导出", attrs: { icon: "download", type: "" }, perm: "export" },
   refresh: { text: "刷新", attrs: { icon: "refresh", type: "" }, perm: "*:*:*" },
   filter: { text: "筛选列", attrs: { icon: "operation", type: "" }, perm: "*:*:*" },
-  search: { text: "搜索", attrs: { icon: "search", type: "" }, perm: "search" },
+  search: { text: "搜索", attrs: { icon: "search", type: "" }, perm: "list" },
   imports: { text: "批量导入", attrs: { icon: "upload", type: "" }, perm: "imports" },
   exports: { text: "批量导出", attrs: { icon: "download", type: "" }, perm: "exports" },
   view: { text: "查看", attrs: { icon: "view", type: "primary" }, perm: "view" },
-  edit: { text: "编辑", attrs: { icon: "edit", type: "primary" }, perm: "edit" },
+  edit: { text: "编辑", attrs: { icon: "edit", type: "primary" }, perm: "update" },
 });
 
 // 主键
