@@ -191,8 +191,8 @@ function handleSettingsClick() {
     cursor: pointer;
     transition: all 0.3s;
 
-    // 确保子元素居中
-    > * {
+    // 只对需要居中的子元素生效，不使用通配符避免影响选择器组件
+    > [class^="i-svg:"] {
       display: flex;
       align-items: center;
       justify-content: center;
