@@ -1,4 +1,4 @@
-import { store } from "@/store";
+import { store } from "@/stores";
 import TenantAPI from "@/api/system/tenant";
 import type { TenantInfo } from "@/api/system/tenant";
 import { STORAGE_KEYS } from "@/constants";

@@ -1,6 +1,6 @@
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import en from "element-plus/es/locale/lang/en";
-import { store } from "@/store";
+import { store } from "@/stores";
 import { DeviceEnum, SidebarStatus } from "@/enums";
 import { STORAGE_KEYS } from "@/constants";
 import { defaults } from "@/settings";

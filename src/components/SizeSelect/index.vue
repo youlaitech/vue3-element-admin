@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { ComponentSize } from "@/enums/settings";
-import { useAppStore } from "@/store/modules/app";
+import { useAppStore } from "@/stores/app";
 
 const { t } = useI18n();
 const sizeOptions = computed(() => {

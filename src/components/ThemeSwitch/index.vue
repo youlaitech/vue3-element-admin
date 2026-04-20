@@ -21,7 +21,7 @@
   </el-dropdown>
 </template>
 <script setup lang="ts">
-import { useSettingsStore } from "@/store";
+import { useSettingsStore } from "@/stores";
 import { ThemeMode } from "@/enums";
 import { Moon, Sunny, Monitor } from "@element-plus/icons-vue";
 

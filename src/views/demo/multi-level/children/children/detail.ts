@@ -1,6 +1,6 @@
 import router from "@/router";
 import { ElButton } from "element-plus";
-import { useTagsViewStore } from "@/store";
+import { useTagsViewStore } from "@/stores";
 
 export default defineComponent({
   name: "ToDetail",

@@ -20,7 +20,7 @@ import "animate.css";
 import { setupDirective } from "@/directives";
 import { setupI18n } from "@/lang";
 import { setupRouter } from "@/router";
-import { setupStore } from "@/store";
+import { setupStore } from "@/stores";
 
 // ===== 全局组件 =====
 import * as ElementPlusIcons from "@element-plus/icons-vue";

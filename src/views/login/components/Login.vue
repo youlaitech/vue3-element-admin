@@ -120,7 +120,7 @@ import type { FormInstance } from "element-plus";
 import AuthAPI from "@/api/auth";
 import type { LoginRequest } from "@/api/auth";
 import router from "@/router";
-import { useUserStore } from "@/store";
+import { useUserStore } from "@/stores";
 import { AuthStorage } from "@/utils/auth";
 
 const { t } = useI18n();

@@ -229,7 +229,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/modules/app";
+import { useAppStore } from "@/stores/app";
 import { DeviceEnum } from "@/enums/settings";
 
 import RoleAPI from "@/api/system/role";

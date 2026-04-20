@@ -71,7 +71,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { defaults } from "@/settings";
 import { DeviceEnum, SidebarColor, ThemeMode, LayoutMode } from "@/enums/settings";
-import { useAppStore, useSettingsStore, useUserStore } from "@/store";
+import { useAppStore, useSettingsStore, useUserStore } from "@/stores";
 
 // 导入子组件
 import CommandPalette from "@/components/CommandPalette/index.vue";
@@ -80,7 +80,7 @@ import SizeSelect from "@/components/SizeSelect/index.vue";
 import LangSelect from "@/components/LangSelect/index.vue";
 import NoticeDropdown from "@/components/NoticeDropdown/index.vue";
 import TenantSwitcher from "@/components/TenantSwitcher/index.vue";
-import { useTenantStoreHook } from "@/store/modules/tenant";
+import { useTenantStoreHook } from "@/stores/tenant";
 
 const { t } = useI18n();
 const appStore = useAppStore();

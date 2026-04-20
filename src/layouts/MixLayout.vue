@@ -74,7 +74,7 @@
 import type { LocationQueryRaw, RouteRecordRaw } from "vue-router";
 import { useWindowSize } from "@vueuse/core";
 import { useLayout } from "./useLayout";
-import { useAppStore, usePermissionStore, useSettingsStore } from "@/store";
+import { useAppStore, usePermissionStore, useSettingsStore } from "@/stores";
 import { isExternal } from "@/utils/index";
 import { translateRouteTitle } from "@/lang/utils";
 import { SidebarColor } from "@/enums/settings";

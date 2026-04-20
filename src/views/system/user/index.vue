@@ -249,7 +249,7 @@ import { downloadFile } from "@/utils";
 import UserAPI from "@/api/system/user";
 import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
-import { useUserStore, useAppStore } from "@/store";
+import { useUserStore, useAppStore } from "@/stores";
 import { DeviceEnum, DialogMode, CommonStatus } from "@/enums";
 import { useTableSelection } from "@/composables";
 import UserDeptTree from "./components/UserDeptTree.vue";

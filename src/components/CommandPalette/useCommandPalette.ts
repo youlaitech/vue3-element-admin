@@ -4,7 +4,7 @@
 import { ref, onMounted, onBeforeUnmount, toRaw } from "vue";
 import { RouteRecordRaw, LocationQueryRaw } from "vue-router";
 import router from "@/router";
-import { usePermissionStore } from "@/store";
+import { usePermissionStore } from "@/stores";
 import { isExternal } from "@/utils";
 
 /** 搜索项类型 */

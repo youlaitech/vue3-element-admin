@@ -140,7 +140,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDictStoreHook } from "@/store/modules/dict";
+import { useDictStoreHook } from "@/stores/dict";
 import { useDateFormat } from "@vueuse/core";
 import DictAPI from "@/api/system/dict";
 import type { DictItemForm } from "@/api/system/dict";
