@@ -134,7 +134,7 @@ const visible = defineModel<boolean>("visible", { required: true });
 defineProps<{ title: string }>();
 defineEmits<{ success: [] }>();
 
-const currentStep = ref(STEP.BASIC_CONFIG);
+const currentStep = ref<number>(STEP.BASIC_CONFIG);
 const currentTableName = ref("");
 const loading = ref(false);
 const loadingText = ref("loading...");

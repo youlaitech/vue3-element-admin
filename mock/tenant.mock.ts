@@ -252,7 +252,7 @@ export default defineMock([
         },
       ];
 
-      const tenant = allTenants.find((t) => t.id === tenantId) || null;
+      const tenant = allTenants.find((t) => t.id === String(tenantId)) || null;
 
       return {
         code: tenant ? "00000" : "A0400",
