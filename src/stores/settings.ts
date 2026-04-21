@@ -1,6 +1,13 @@
 import { SidebarColor, ThemeMode } from "@/enums";
 import type { LayoutMode } from "@/enums";
-import { applyTheme, generateThemeColors, toggleDarkMode, toggleSidebarColor } from "@/utils/theme";
+import {
+  applyTheme,
+  generateThemeColors,
+  resolveThemeMode,
+  toggleDarkMode,
+  toggleSidebarColor,
+  watchSystemTheme,
+} from "@/utils/theme";
 import { STORAGE_KEYS } from "@/constants";
 import { defaults } from "@/settings";
 
@@ -25,14 +32,34 @@ export const useSettingsStore = defineStore("setting", () => {
   // 主题
   const theme = useStorage<ThemeMode>(STORAGE_KEYS.THEME, defaults.theme);
   const themeColor = useStorage(STORAGE_KEYS.THEME_COLOR, defaults.themeColor);
+  const resolvedTheme = ref<ThemeMode>(resolveThemeMode(theme.value));
 
   // 特殊模式
   const grayMode = useStorage(STORAGE_KEYS.GRAY_MODE, false);
   const colorWeak = useStorage(STORAGE_KEYS.COLOR_WEAK, false);
 
   // 主题变化监听
+  let stopWatchingSystemTheme: (() => void) | undefined;
+
   watch(
-    [theme, themeColor],
+    theme,
+    (value) => {
+      stopWatchingSystemTheme?.();
+      resolvedTheme.value = resolveThemeMode(value);
+
+      if (value === ThemeMode.AUTO) {
+        stopWatchingSystemTheme = watchSystemTheme((systemTheme) => {
+          resolvedTheme.value = systemTheme;
+        });
+      } else {
+        stopWatchingSystemTheme = undefined;
+      }
+    },
+    { immediate: true }
+  );
+
+  watch(
+    [resolvedTheme, themeColor],
     ([t, c]: [ThemeMode, string]) => {
       toggleDarkMode(t === ThemeMode.DARK);
       applyTheme(generateThemeColors(c, t));
@@ -87,6 +114,7 @@ export const useSettingsStore = defineStore("setting", () => {
     layout,
     themeColor,
     theme,
+    resolvedTheme,
     resetSettings,
   };
 });

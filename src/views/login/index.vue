@@ -101,6 +101,55 @@ const formComponents = {
 
 <style lang="scss" scoped>
 .auth-view {
+  --auth-page-bg: #f5f7ff;
+  --auth-overlay: linear-gradient(120deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+  --auth-toolbar-bg: rgba(255, 255, 255, 0.85);
+  --auth-toolbar-border: rgba(22, 93, 255, 0.15);
+  --auth-toolbar-shadow: 0 10px 30px rgba(22, 93, 255, 0.12);
+  --auth-toolbar-hover-shadow: 0 16px 40px rgba(22, 93, 255, 0.18);
+  --auth-toolbar-inner-hover-bg: var(--el-fill-color);
+  --auth-feature-text: var(--el-text-color-primary);
+  --auth-badge-text: rgba(22, 93, 255, 0.95);
+  --auth-badge-bg: rgba(22, 93, 255, 0.1);
+  --auth-dot-bg: #165dff;
+  --auth-dot-shadow: 0 0 12px rgba(22, 93, 255, 0.7);
+  --auth-subtitle-text: var(--el-text-color-regular);
+  --auth-highlight-text: var(--el-text-color-primary);
+  --auth-highlight-bg: rgba(255, 255, 255, 0.9);
+  --auth-highlight-border: rgba(64, 128, 255, 0.08);
+  --auth-highlight-accent: rgba(22, 93, 255, 0.8);
+  --auth-panel-bg: rgba(255, 255, 255, 0.95);
+  --auth-panel-border: rgba(22, 93, 255, 0.1);
+  --auth-panel-shadow:
+    0 16px 48px rgba(22, 93, 255, 0.12), 0 4px 16px rgba(22, 93, 255, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  --auth-brand-border: rgba(22, 93, 255, 0.06);
+  --auth-panel-title: var(--el-text-color-primary);
+  --auth-version-label: var(--el-text-color-secondary);
+  --auth-version-tag-bg: rgba(22, 93, 255, 0.1);
+  --auth-version-tag-border: rgba(22, 93, 255, 0.12);
+  --auth-version-tag-text: rgba(22, 93, 255, 0.9);
+  --auth-logo-bg: radial-gradient(circle at 30% 20%, #ffffff, #e6efff);
+  --auth-logo-shadow: 0 8px 20px rgba(22, 93, 255, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  --auth-footer-border: rgba(22, 93, 255, 0.06);
+  --auth-link: rgba(22, 93, 255, 0.85);
+  --auth-link-hover: rgba(22, 93, 255, 1);
+  --auth-inline-text: var(--el-text-color-regular);
+  --auth-input-bg: rgba(255, 255, 255, 0.92);
+  --auth-input-border: var(--el-border-color);
+  --auth-input-border-hover: var(--el-border-color-hover);
+  --auth-input-border-focus: var(--el-color-primary);
+  --auth-input-text: var(--el-text-color-primary);
+  --auth-input-placeholder: var(--el-text-color-placeholder);
+  --auth-input-icon: var(--el-text-color-secondary);
+  --auth-checkbox-text: var(--el-text-color-regular);
+  --auth-divider: var(--el-border-color-light);
+  --auth-social-text: var(--el-text-color-secondary);
+  --auth-social-hover-bg: var(--el-fill-color);
+  --auth-captcha-shadow: 0 0 0 1px var(--el-border-color) inset;
+  --auth-button-shadow: 0 12px 24px rgba(22, 93, 255, 0.12);
+  --auth-button-success-shadow: 0 12px 24px rgba(35, 166, 111, 0.2);
+  --auth-button-warning-shadow: 0 12px 24px rgba(230, 162, 60, 0.2);
   position: relative;
   z-index: 1;
   display: flex;
@@ -110,7 +159,7 @@ const formComponents = {
   padding: clamp(1rem, 3vw, 2rem);
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #f5f7ff;
+  background-color: var(--auth-page-bg);
 
   &::before {
     position: fixed;
@@ -126,7 +175,62 @@ const formComponents = {
     z-index: -1;
     pointer-events: none;
     content: "";
-    background: linear-gradient(120deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+    background: var(--auth-overlay);
+  }
+}
+
+.dark .auth-view {
+  --auth-page-bg: #08101f;
+  --auth-overlay: linear-gradient(120deg, rgba(7, 12, 24, 0.4), rgba(7, 12, 24, 0));
+  --auth-toolbar-bg: rgba(24, 28, 43, 0.9);
+  --auth-toolbar-border: rgba(64, 128, 255, 0.35);
+  --auth-toolbar-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(90, 140, 255, 0.25) inset;
+  --auth-toolbar-hover-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(96, 148, 255, 0.28) inset;
+  --auth-feature-text: rgba(240, 245, 255, 0.92);
+  --auth-badge-text: rgba(160, 190, 255, 0.95);
+  --auth-badge-bg: rgba(64, 128, 255, 0.12);
+  --auth-dot-bg: #7aa2ff;
+  --auth-subtitle-text: rgba(220, 230, 255, 0.75);
+  --auth-highlight-text: rgba(230, 236, 255, 0.85);
+  --auth-highlight-bg: rgba(18, 22, 36, 0.7);
+  --auth-highlight-border: rgba(98, 149, 255, 0.18);
+  --auth-highlight-accent: rgba(122, 162, 255, 0.9);
+  --auth-panel-bg: rgba(26, 32, 48, 0.9);
+  --auth-panel-border: rgba(86, 140, 255, 0.28);
+  --auth-panel-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.58), 0 4px 16px rgba(0, 0, 0, 0.36),
+    0 0 0 1px rgba(110, 150, 255, 0.16) inset;
+  --auth-brand-border: rgba(64, 128, 255, 0.12);
+  --auth-panel-title: rgba(245, 248, 255, 0.95);
+  --auth-version-label: rgba(186, 202, 236, 0.78);
+  --auth-version-tag-bg: rgba(86, 140, 255, 0.16);
+  --auth-version-tag-border: rgba(104, 156, 255, 0.2);
+  --auth-version-tag-text: rgba(214, 226, 255, 0.96);
+  --auth-logo-bg: radial-gradient(circle at 30% 20%, #1f2438, #141827);
+  --auth-logo-shadow: 0 8px 20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(90, 140, 255, 0.3) inset;
+  --auth-footer-border: rgba(64, 128, 255, 0.12);
+  --auth-link: rgba(140, 170, 255, 0.88);
+  --auth-link-hover: rgba(160, 190, 255, 1);
+  --auth-inline-text: rgba(208, 220, 244, 0.76);
+  --auth-input-bg: rgba(14, 19, 33, 0.92);
+  --auth-input-border: rgba(104, 132, 194, 0.28);
+  --auth-input-border-hover: rgba(122, 154, 224, 0.4);
+  --auth-input-border-focus: rgba(122, 162, 255, 0.92);
+  --auth-input-text: rgba(240, 245, 255, 0.96);
+  --auth-input-placeholder: rgba(168, 185, 221, 0.56);
+  --auth-input-icon: rgba(168, 186, 227, 0.74);
+  --auth-checkbox-text: rgba(208, 220, 244, 0.78);
+  --auth-divider: rgba(98, 128, 191, 0.24);
+  --auth-social-text: rgba(176, 192, 224, 0.72);
+  --auth-social-hover-bg: rgba(36, 49, 79, 0.78);
+  --auth-captcha-shadow: 0 0 0 1px rgba(104, 132, 194, 0.28) inset;
+  --auth-button-shadow: 0 14px 26px rgba(51, 100, 214, 0.22);
+  --auth-button-success-shadow: 0 14px 26px rgba(34, 149, 108, 0.24);
+  --auth-button-warning-shadow: 0 14px 26px rgba(211, 142, 38, 0.24);
+
+  &::before {
+    background-image: url("@/assets/images/login-bg-dark.svg");
   }
 }
 
@@ -135,16 +239,16 @@ const formComponents = {
   gap: 0.75rem;
   align-self: flex-end;
   padding: 0.5rem 0.75rem;
-  background-color: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(22, 93, 255, 0.15);
+  background-color: var(--auth-toolbar-bg);
+  border: 1px solid var(--auth-toolbar-border);
   border-radius: 999px;
-  box-shadow: 0 10px 30px rgba(22, 93, 255, 0.12);
+  box-shadow: var(--auth-toolbar-shadow);
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
 
   &:hover {
-    box-shadow: 0 16px 40px rgba(22, 93, 255, 0.18);
+    box-shadow: var(--auth-toolbar-hover-shadow);
     transform: translateY(-2px);
   }
 
@@ -158,7 +262,7 @@ const formComponents = {
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: var(--el-fill-color);
+      background-color: var(--auth-toolbar-inner-hover-bg);
     }
   }
 
@@ -170,20 +274,6 @@ const formComponents = {
     align-self: flex-end;
     justify-content: center;
   }
-
-  @media (prefers-color-scheme: dark) {
-    background-color: rgba(24, 28, 43, 0.8);
-    border-color: rgba(64, 128, 255, 0.3);
-  }
-}
-
-/* 应用内暗黑主题下顶部设置面板的深色样式 */
-.dark .auth-view__toolbar {
-  background-color: rgba(24, 28, 43, 0.9);
-  border-color: rgba(64, 128, 255, 0.35);
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(90, 140, 255, 0.25) inset;
 }
 
 .auth-view__wrapper {
@@ -200,12 +290,8 @@ const formComponents = {
   flex-direction: column;
   justify-content: center;
   padding: clamp(1.5rem, 3vw, 3rem);
-  color: var(--el-text-color-primary);
+  color: var(--auth-feature-text);
   animation: featureFade 0.8s ease-out;
-}
-
-.dark .auth-feature {
-  color: rgba(240, 245, 255, 0.92);
 }
 
 @media (max-width: 768px) {
@@ -234,28 +320,19 @@ const formComponents = {
   width: fit-content;
   padding: 0.3rem 0.9rem;
   font-size: 0.875rem;
-  color: rgba(22, 93, 255, 0.95);
+  color: var(--auth-badge-text);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  background: rgba(22, 93, 255, 0.1);
+  background: var(--auth-badge-bg);
   border-radius: 999px;
-
-  @media (prefers-color-scheme: dark) {
-    color: rgba(160, 190, 255, 0.95);
-    background: rgba(64, 128, 255, 0.12);
-  }
 }
 
 .auth-feature__dot {
   width: 0.5rem;
   height: 0.5rem;
-  background: #165dff;
+  background: var(--auth-dot-bg);
   border-radius: 50%;
-  box-shadow: 0 0 12px rgba(22, 93, 255, 0.7);
-
-  @media (prefers-color-scheme: dark) {
-    background: #7aa2ff;
-  }
+  box-shadow: var(--auth-dot-shadow);
 }
 
 .auth-feature__title {
@@ -269,11 +346,7 @@ const formComponents = {
   margin-bottom: 1.5rem;
   font-size: 1rem;
   line-height: 1.7;
-  color: var(--el-text-color-regular);
-
-  @media (prefers-color-scheme: dark) {
-    color: rgba(220, 230, 255, 0.75);
-  }
+  color: var(--auth-subtitle-text);
 }
 
 .auth-feature__highlights {
@@ -289,28 +362,16 @@ const formComponents = {
     align-items: flex-start;
     padding: 0.75rem 1rem;
     font-weight: 500;
-    color: var(--el-text-color-primary);
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(64, 128, 255, 0.08);
+    color: var(--auth-highlight-text);
+    background: var(--auth-highlight-bg);
+    border: 1px solid var(--auth-highlight-border);
     border-radius: 12px;
     backdrop-filter: blur(6px);
 
     span {
       font-size: 0.75rem;
       line-height: 1.6;
-      color: rgba(22, 93, 255, 0.8);
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    li {
-      color: rgba(230, 236, 255, 0.85);
-      background: rgba(18, 22, 36, 0.7);
-      border-color: rgba(98, 149, 255, 0.18);
-
-      span {
-        color: rgba(122, 162, 255, 0.9);
-      }
+      color: var(--auth-highlight-accent);
     }
   }
 }
@@ -326,34 +387,12 @@ const formComponents = {
   min-height: 560px;
   padding: clamp(1.5rem, 3vw, 2rem);
   margin-inline: auto;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(22, 93, 255, 0.1);
+  background: var(--auth-panel-bg);
+  border: 1px solid var(--auth-panel-border);
   border-radius: 24px;
-  box-shadow:
-    0 16px 48px rgba(22, 93, 255, 0.12),
-    0 4px 16px rgba(22, 93, 255, 0.08),
-    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  box-shadow: var(--auth-panel-shadow);
   backdrop-filter: blur(20px);
   animation: panelLift 0.7s ease;
-
-  @media (prefers-color-scheme: dark) {
-    background: rgba(18, 20, 32, 0.88);
-    border-color: rgba(64, 128, 255, 0.25);
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.6),
-      0 4px 16px rgba(0, 0, 0, 0.4),
-      0 0 0 1px rgba(90, 140, 255, 0.12) inset;
-  }
-}
-
-/* 应用内暗黑主题（例如 html/body 上挂 .dark 类）下的登录表单样式 */
-.dark .auth-panel {
-  background: rgba(26, 32, 48, 0.9);
-  border-color: rgba(86, 140, 255, 0.28);
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.58),
-    0 4px 16px rgba(0, 0, 0, 0.36),
-    0 0 0 1px rgba(110, 150, 255, 0.16) inset;
 }
 
 .auth-panel__brand {
@@ -363,11 +402,7 @@ const formComponents = {
   justify-content: space-between;
   padding-bottom: 0.875rem;
   margin-bottom: 1rem;
-  border-bottom: 1px solid rgba(22, 93, 255, 0.06);
-
-  @media (prefers-color-scheme: dark) {
-    border-color: rgba(64, 128, 255, 0.12);
-  }
+  border-bottom: 1px solid var(--auth-brand-border);
 }
 
 .auth-panel__logo-wrap {
@@ -376,18 +411,9 @@ const formComponents = {
   justify-content: center;
   width: 52px;
   height: 52px;
-  background: radial-gradient(circle at 30% 20%, #ffffff, #e6efff);
+  background: var(--auth-logo-bg);
   border-radius: 18px;
-  box-shadow:
-    0 8px 20px rgba(22, 93, 255, 0.16),
-    0 0 0 1px rgba(255, 255, 255, 0.8) inset;
-
-  @media (prefers-color-scheme: dark) {
-    background: radial-gradient(circle at 30% 20%, #1f2438, #141827);
-    box-shadow:
-      0 8px 20px rgba(0, 0, 0, 0.7),
-      0 0 0 1px rgba(90, 140, 255, 0.3) inset;
-  }
+  box-shadow: var(--auth-logo-shadow);
 }
 
 .auth-panel__logo {
@@ -416,7 +442,7 @@ const formComponents = {
   font-size: 1.2rem;
   font-weight: 650;
   line-height: 1.4;
-  color: var(--el-text-color-primary);
+  color: var(--auth-panel-title);
   white-space: nowrap;
 }
 
@@ -425,6 +451,16 @@ const formComponents = {
   gap: 0.5rem;
   align-items: center;
   font-size: 0.78rem;
+
+  :deep(.el-text) {
+    color: var(--auth-version-label);
+  }
+
+  :deep(.el-tag) {
+    color: var(--auth-version-tag-text);
+    background-color: var(--auth-version-tag-bg);
+    border-color: var(--auth-version-tag-border);
+  }
 }
 
 .auth-panel__form {
@@ -438,21 +474,90 @@ const formComponents = {
   }
 
   :deep(.el-input__wrapper) {
-    box-shadow: 0 0 0 1px var(--el-border-color) inset;
+    background-color: var(--auth-input-bg);
+    box-shadow: 0 0 0 1px var(--auth-input-border) inset;
     transition: all 0.2s ease;
 
     &:hover {
-      box-shadow: 0 0 0 1px var(--el-border-color-hover) inset;
+      box-shadow: 0 0 0 1px var(--auth-input-border-hover) inset;
     }
 
     &.is-focus {
-      box-shadow: 0 0 0 1px var(--el-color-primary) inset;
+      box-shadow: 0 0 0 1px var(--auth-input-border-focus) inset;
     }
+  }
+
+  :deep(.el-input__inner) {
+    color: var(--auth-input-text);
+
+    &::placeholder {
+      color: var(--auth-input-placeholder);
+    }
+  }
+
+  :deep(.el-input__prefix),
+  :deep(.el-input__suffix),
+  :deep(.el-input__prefix-inner),
+  :deep(.el-input__suffix-inner) {
+    color: var(--auth-input-icon);
+  }
+
+  :deep(.el-text) {
+    color: var(--auth-inline-text);
+  }
+
+  :deep(.el-link) {
+    color: var(--auth-link);
+
+    &:hover {
+      color: var(--auth-link-hover);
+    }
+  }
+
+  :deep(.el-checkbox) {
+    color: var(--auth-checkbox-text);
+  }
+
+  :deep(.el-checkbox__label) {
+    color: inherit;
+  }
+
+  :deep(.el-button) {
+    box-shadow: var(--auth-button-shadow);
+  }
+
+  :deep(.el-button--success) {
+    box-shadow: var(--auth-button-success-shadow);
+  }
+
+  :deep(.el-button--warning) {
+    box-shadow: var(--auth-button-warning-shadow);
   }
 
   :deep(.el-card) {
     background: transparent;
     box-shadow: none;
+  }
+
+  :deep(img[alt="captchaCode"]),
+  :deep(img[alt="code"]) {
+    box-shadow: var(--auth-captcha-shadow);
+  }
+
+  :deep(.third-party-login .divider-line) {
+    background: linear-gradient(to right, transparent, var(--auth-divider), transparent);
+  }
+
+  :deep(.third-party-login .divider-text) {
+    color: var(--auth-inline-text);
+  }
+
+  :deep(.third-party-login .social-login) {
+    color: var(--auth-social-text);
+  }
+
+  :deep(.third-party-login .social-login__item:hover) {
+    background-color: var(--auth-social-hover-bg);
   }
 }
 
@@ -461,28 +566,16 @@ const formComponents = {
   margin-top: 0.125rem;
   font-size: 0.875rem;
   text-align: center;
-  border-top: 1px solid rgba(22, 93, 255, 0.06);
+  border-top: 1px solid var(--auth-footer-border);
 
   a {
     margin-left: 0.25rem;
-    color: rgba(22, 93, 255, 0.85);
+    color: var(--auth-link);
     text-decoration: none;
     transition: color 0.2s ease;
 
     &:hover {
-      color: rgba(22, 93, 255, 1);
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    border-color: rgba(64, 128, 255, 0.12);
-
-    a {
-      color: rgba(140, 170, 255, 0.88);
-
-      &:hover {
-        color: rgba(160, 190, 255, 1);
-      }
+      color: var(--auth-link-hover);
     }
   }
 }
