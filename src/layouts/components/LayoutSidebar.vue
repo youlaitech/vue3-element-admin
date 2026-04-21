@@ -29,7 +29,7 @@ import { useRoute } from "vue-router";
 import path from "path-browserify";
 import type { MenuInstance } from "element-plus";
 import type { RouteRecordRaw } from "vue-router";
-import { SidebarColor } from "@/enums/settings";
+import { SidebarColor, ThemeMode } from "@/enums/settings";
 import { useSettingsStore, useAppStore } from "@/stores";
 import { isExternal } from "@/utils/index";
 import LayoutSidebarItem from "./LayoutSidebarItem.vue";
@@ -61,7 +61,7 @@ const currentRoute = useRoute();
 const expandedMenuIndexes = ref<string[]>([]);
 
 // 获取主题
-const theme = computed(() => settingsStore.theme);
+const theme = computed(() => settingsStore.resolvedTheme);
 
 // 获取浅色主题下的侧边栏配色方案
 const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
@@ -69,7 +69,7 @@ const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
 // 菜单主题属性
 const menuThemeProps = computed(() => {
   const isDarkOrClassicBlue =
-    theme.value === "dark" || sidebarColorScheme.value === SidebarColor.CLASSIC_BLUE;
+    theme.value === ThemeMode.DARK || sidebarColorScheme.value === SidebarColor.CLASSIC_BLUE;
 
   return {
     backgroundColor: isDarkOrClassicBlue ? variables["menu-background"] : undefined,

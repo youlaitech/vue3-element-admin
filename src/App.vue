@@ -27,6 +27,8 @@ const watermarkContent = appConfig.name;
 
 // 明亮/暗黑主题水印字体颜色适配
 const fontColor = computed(() => {
-  return settingsStore.theme === ThemeMode.DARK ? "rgba(255, 255, 255, .15)" : "rgba(0, 0, 0, .15)";
+  return settingsStore.resolvedTheme === ThemeMode.DARK
+    ? "rgba(255, 255, 255, .15)"
+    : "rgba(0, 0, 0, .15)";
 });
 </script>
