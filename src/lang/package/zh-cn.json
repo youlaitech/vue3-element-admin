@@ -1,100 +1,109 @@
 {
-  "route": {
-    "dashboard": "首页",
-    "document": "项目文档"
-  },
-  "login": {
-    "themeToggle": "主题切换",
-    "languageToggle": "语言切换",
-    "dark": "暗黑",
-    "light": "明亮",
-    "auto": "跟随系统",
-    "username": "用户名",
-    "password": "密码",
-    "login": "登 录",
-    "captchaCode": "验证码",
-    "capsLock": "大写锁定已打开",
-    "rememberMe": "记住我",
-    "forgetPassword": "忘记密码？",
-    "message": {
-      "username": {
-        "required": "请输入用户名"
-      },
-      "password": {
-        "required": "请输入密码",
-        "min": "密码不能少于6位",
-        "confirm": "请再次确认密码",
-        "inconformity": "两次密码输入不一致"
-      },
-      "captchaCode": {
-        "required": "请输入验证码"
-      }
-    },
-    "otherLoginMethods": "其他",
-    "resetPassword": "重置密码",
-    "thinkOfPasswd": "想起密码？",
-    "register": "注册账号",
-    "agree": "我已同意并阅读",
-    "userAgreement": "用户协议",
-    "haveAccount": "已有账号？",
-    "noAccount": "您没有账号？",
-    "quickFill": "快速填写",
-    "reg": "注 册"
-  },
-  "navbar": {
-    "dashboard": "首页",
-    "logout": "退出登录",
-    "document": "项目文档",
-    "gitee": "项目地址",
-    "profile": "个人中心"
-  },
-  "sizeSelect": {
-    "tooltip": "布局大小",
-    "default": "默认",
-    "large": "大型",
-    "small": "小型",
-    "message": {
-      "success": "切换布局大小成功！"
-    }
-  },
   "langSelect": {
     "message": {
       "success": "切换语言成功！"
     }
   },
+  "login": {
+    "agree": "我已同意并阅读",
+    "auto": "跟随系统",
+    "capsLock": "大写锁定已打开",
+    "captchaCode": "验证码",
+    "dark": "暗黑",
+    "forgetPassword": "忘记密码？",
+    "haveAccount": "已有账号？",
+    "languageToggle": "语言切换",
+    "light": "明亮",
+    "login": "登 录",
+    "message": {
+      "captchaCode": {
+        "required": "请输入验证码"
+      },
+      "password": {
+        "confirm": "请再次确认密码",
+        "inconformity": "两次密码输入不一致",
+        "min": "密码不能少于6位",
+        "required": "请输入密码"
+      },
+      "username": {
+        "required": "请输入用户名"
+      }
+    },
+    "noAccount": "您没有账号？",
+    "otherLoginMethods": "其他",
+    "password": "密码",
+    "quickFill": "快速填写",
+    "reg": "注 册",
+    "register": "注册账号",
+    "rememberMe": "记住我",
+    "resetPassword": "重置密码",
+    "themeToggle": "主题切换",
+    "thinkOfPasswd": "想起密码？",
+    "userAgreement": "用户协议",
+    "username": "用户名"
+  },
+  "navbar": {
+    "dashboard": "首页",
+    "document": "项目文档",
+    "gitee": "项目地址",
+    "logout": "退出登录",
+    "profile": "个人中心"
+  },
+  "route": {
+    "dashboard": "首页",
+    "document": "项目文档"
+  },
   "settings": {
-    "project": "项目配置",
-    "theme": "主题设置",
+    "applyToFile": "应用到文件",
+    "classicBlue": "经典蓝",
+    "configManagement": "配置管理",
+    "confirmReset": "确定要重置所有设置为默认值吗？此操作不可恢复。",
+    "copyConfig": "复制配置",
+    "copyConfigDescription": "生成当前设置的代码并复制到剪贴板，然后覆盖 src/settings.ts 文件",
+    "copyDescription": "复制配置将生成当前设置的代码，重置将恢复所有设置为默认值",
+    "copySuccess": "配置已复制到剪贴板",
+    "darkMode": "暗黑模式",
+    "fade": "淡入淡出",
+    "fade-scale": "缩放切换",
+    "fade-slide": "平滑切换",
     "interface": "界面设置",
+    "layoutSetting": "布局设置",
+    "leftLayout": "左侧模式",
+    "minimalWhite": "极简白",
+    "mixLayout": "混合模式",
     "navigation": "导航设置",
+    "none": "无动画",
+    "onlyCopy": "仅复制",
+    "pageSwitchingAnimation": "页面切换动画",
+    "project": "项目配置",
+    "resetConfig": "重置默认",
+    "resetConfigDescription": "恢复所有设置为系统默认值",
+    "resetSuccess": "已重置为默认配置",
+    "showAppLogo": "显示Logo",
+    "showTagsView": "显示页签",
+    "showWatermark": "显示水印",
+    "sidebarColorScheme": "侧边栏配色",
+    "theme": "主题设置",
     "themeColor": "主题颜色",
     "themeColorTip": "主题颜色",
-    "darkMode": "暗黑模式",
-    "layoutSetting": "布局设置",
-    "sidebarColorScheme": "侧边栏配色",
-    "showTagsView": "显示页签",
-    "showAppLogo": "显示Logo",
-    "showWatermark": "显示水印",
-    "pageSwitchingAnimation": "页面切换动画",
-    "none": "无动画",
-    "fade": "淡入淡出",
-    "fade-slide": "平滑切换",
-    "fade-scale": "缩放切换",
-    "classicBlue": "经典蓝",
-    "minimalWhite": "极简白",
-    "copyConfig": "复制配置",
-    "resetConfig": "重置默认",
-    "copySuccess": "配置已复制到剪贴板",
-    "resetSuccess": "已重置为默认配置",
-    "copyDescription": "复制配置将生成当前设置的代码，重置将恢复所有设置为默认值",
-    "confirmReset": "确定要重置所有设置为默认值吗？此操作不可恢复。",
-    "applyToFile": "应用到文件",
-    "onlyCopy": "仅复制",
-    "leftLayout": "左侧模式",
-    "topLayout": "顶部模式",
-    "mixLayout": "混合模式",
-    "configManagement": "配置管理",
-    "copyConfigDescription": "生成当前设置的代码并复制到剪贴板，然后覆盖 src/settings.ts 文件",
-    "resetConfigDescription": "恢复所有设置为系统默认值"
+    "topLayout": "顶部模式"
+  },
+  "sizeSelect": {
+    "default": "默认",
+    "large": "大型",
+    "message": {
+      "success": "切换布局大小成功！"
+    },
+    "small": "小型",
+    "tooltip": "布局大小"
+  },
+  "vxetable": {
+    "cancel": "取消",
+    "confirm": "确定",
+    "create": "新增",
+    "delete": "删除",
+    "edit": "编辑",
+    "reset": "重置",
+    "search": "搜索"
   }
 }
