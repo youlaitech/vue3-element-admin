@@ -51,6 +51,8 @@
       </template>
       <!-- 角色列 -->
       <template #column-roles="{ row, column }">
+        <!-- BUG: 不清楚为啥！在当前框架中，保存时下面代码会自动格式化成这个鬼样子 ... -->
+        <!-- eslint-disable -->
         <el-tag
           v-for="(role, index) in row[column.field].split(',')"
           :key="index"
@@ -77,7 +79,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import type { VxeGridInstance, VxeGridProps, VxeGridListeners } from "vxe-table";
-import { VXETable } from "vxe-table";
+import { VxeUI } from "vxe-pc-ui";
 
 const options = [
   { label: "管理", value: "admin" },
@@ -271,9 +273,9 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
               type: "submit",
               status: "primary",
               icon: "vxe-icon-search",
-              content: "搜索",
+              content: "vxetable.search",
             },
-            { type: "reset", icon: "vxe-icon-refresh", content: "重置" },
+            { type: "reset", icon: "vxe-icon-refresh", content: "vxetable.reset" },
           ],
         },
       },
@@ -601,7 +603,7 @@ const curd = {
       // 获取当前已选中的行数据
       const selected = xGrid.value?.getCheckboxRecords();
       if (!selected || selected.length === 0) {
-        VXETable.modal.message({
+        VxeUI.modal.message({
           content: "请至少选择一条数据",
           status: "warning",
         });
@@ -611,7 +613,7 @@ const curd = {
     } else {
       ids = [row.id];
     }
-    VXETable.modal.confirm("确定要删除吗？").then((type) => {
+    VxeUI.modal.confirm("确定要删除吗？").then((type) => {
       if (type === "confirm") {
         // 执行删除操作
         console.log("删除的ID", ids);

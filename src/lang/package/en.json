@@ -1,97 +1,106 @@
 {
-  "route": {
-    "dashboard": "Dashboard",
-    "document": "Document"
-  },
-  "login": {
-    "themeToggle": "Theme Switch",
-    "languageToggle": "Language Switch",
-    "dark": "Dark",
-    "light": "Light",
-    "auto": "Follow System",
-    "username": "Username",
-    "password": "Password",
-    "login": "Login",
-    "captchaCode": "Verify Code",
-    "capsLock": "Caps Lock is On",
-    "rememberMe": "Remember Me",
-    "forgetPassword": "Forget Password?",
-    "message": {
-      "username": {
-        "required": "Please enter Username"
-      },
-      "password": {
-        "required": "Please enter Password",
-        "min": "The password can not be less than 6 digits",
-        "confirm": "Please confirm the password again",
-        "inconformity": "The two password entries are inconsistent"
-      },
-      "captchaCode": {
-        "required": "Please enter Verify Code"
-      }
-    },
-    "otherLoginMethods": "Other",
-    "resetPassword": "Reset password",
-    "thinkOfPasswd": "Remember your password?",
-    "register": "Register account",
-    "agree": "I have read and agree to the",
-    "userAgreement": "User Agreement",
-    "haveAccount": "Already have an account?",
-    "noAccount": "Don't have an account?",
-    "quickFill": "Quick fill",
-    "reg": "Register"
-  },
-  "navbar": {
-    "dashboard": "Dashboard",
-    "logout": "Logout",
-    "document": "Document",
-    "gitee": "Gitee",
-    "profile": "User Profile"
-  },
-  "sizeSelect": {
-    "tooltip": "Layout Size",
-    "default": "Default",
-    "large": "Large",
-    "small": "Small",
-    "message": {
-      "success": "Switch Layout Size Successful!"
-    }
-  },
   "langSelect": {
     "message": {
       "success": "Switch Language Successful!"
     }
   },
+  "login": {
+    "agree": "I have read and agree to the",
+    "auto": "Follow System",
+    "capsLock": "Caps Lock is On",
+    "captchaCode": "Verify Code",
+    "dark": "Dark",
+    "forgetPassword": "Forget Password?",
+    "haveAccount": "Already have an account?",
+    "languageToggle": "Language Switch",
+    "light": "Light",
+    "login": "Login",
+    "message": {
+      "captchaCode": {
+        "required": "Please enter Verify Code"
+      },
+      "password": {
+        "confirm": "Please confirm the password again",
+        "inconformity": "The two password entries are inconsistent",
+        "min": "The password can not be less than 6 digits",
+        "required": "Please enter Password"
+      },
+      "username": {
+        "required": "Please enter Username"
+      }
+    },
+    "noAccount": "Don't have an account?",
+    "otherLoginMethods": "Other",
+    "password": "Password",
+    "quickFill": "Quick fill",
+    "reg": "Register",
+    "register": "Register account",
+    "rememberMe": "Remember Me",
+    "resetPassword": "Reset password",
+    "themeToggle": "Theme Switch",
+    "thinkOfPasswd": "Remember your password?",
+    "userAgreement": "User Agreement",
+    "username": "Username"
+  },
+  "navbar": {
+    "dashboard": "Dashboard",
+    "document": "Document",
+    "gitee": "Gitee",
+    "logout": "Logout",
+    "profile": "User Profile"
+  },
+  "route": {
+    "dashboard": "Dashboard",
+    "document": "Document"
+  },
   "settings": {
-    "project": "Project Settings",
-    "theme": "Theme",
-    "interface": "Interface",
-    "navigation": "Navigation",
-    "themeColor": "Theme Color",
-    "showTagsView": "Show Tags View",
-    "showAppLogo": "Show App Logo",
-    "sidebarColorScheme": "Sidebar Color Scheme",
-    "showWatermark": "Show Watermark",
-    "pageSwitchingAnimation": "Page Switching Animation",
-    "none": "None",
-    "fade": "Fade",
-    "fade-slide": "Fade Slide",
-    "fade-scale": "Fade Scale",
-    "classicBlue": "Classic Blue",
-    "minimalWhite": "Minimal White",
-    "copyConfig": "Copy Config",
-    "resetConfig": "Reset Default",
-    "copySuccess": "Configuration copied to clipboard",
-    "resetSuccess": "Reset to default configuration",
-    "copyDescription": "Copy config will generate current settings code, reset will restore all settings to default",
-    "confirmReset": "Are you sure to reset all settings to default? This operation cannot be undone.",
     "applyToFile": "Apply to File",
-    "onlyCopy": "Only Copy",
-    "leftLayout": "Left Mode",
-    "topLayout": "Top Mode",
-    "mixLayout": "Mix Mode",
+    "classicBlue": "Classic Blue",
     "configManagement": "Config Management",
+    "confirmReset": "Are you sure to reset all settings to default? This operation cannot be undone.",
+    "copyConfig": "Copy Config",
     "copyConfigDescription": "Generate current settings code and copy to clipboard, then overwrite src/settings.ts file",
-    "resetConfigDescription": "Restore all settings to system default values"
+    "copyDescription": "Copy config will generate current settings code, reset will restore all settings to default",
+    "copySuccess": "Configuration copied to clipboard",
+    "fade": "Fade",
+    "fade-scale": "Fade Scale",
+    "fade-slide": "Fade Slide",
+    "interface": "Interface",
+    "leftLayout": "Left Mode",
+    "minimalWhite": "Minimal White",
+    "mixLayout": "Mix Mode",
+    "navigation": "Navigation",
+    "none": "None",
+    "onlyCopy": "Only Copy",
+    "pageSwitchingAnimation": "Page Switching Animation",
+    "project": "Project Settings",
+    "resetConfig": "Reset Default",
+    "resetConfigDescription": "Restore all settings to system default values",
+    "resetSuccess": "Reset to default configuration",
+    "showAppLogo": "Show App Logo",
+    "showTagsView": "Show Tags View",
+    "showWatermark": "Show Watermark",
+    "sidebarColorScheme": "Sidebar Color Scheme",
+    "theme": "Theme",
+    "themeColor": "Theme Color",
+    "topLayout": "Top Mode"
+  },
+  "sizeSelect": {
+    "default": "Default",
+    "large": "Large",
+    "message": {
+      "success": "Switch Layout Size Successful!"
+    },
+    "small": "Small",
+    "tooltip": "Layout Size"
+  },
+  "vxetable": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "reset": "Reset",
+    "search": "Search"
   }
 }
