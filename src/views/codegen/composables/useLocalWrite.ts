@@ -93,7 +93,8 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
   ) {
     const normalized = filePath.replace(/\\/g, "/");
     const parts = normalized.split("/").filter(Boolean);
-    const fileName = parts.pop()!;
+    const fileName = parts.pop();
+    if (!fileName) return;
     const targetDir = await ensureDir(dirHandle, parts, true);
     const fileHandle = await targetDir.getFileHandle(fileName, { create: true });
     const writable = await fileHandle.createWritable();
@@ -108,7 +109,8 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     try {
       const normalized = filePath.replace(/\\/g, "/");
       const parts = normalized.split("/").filter(Boolean);
-      const fileName = parts.pop()!;
+      const fileName = parts.pop();
+      if (!fileName) return false;
       const targetDir = await ensureDir(dirHandle, parts, false);
       await targetDir.getFileHandle(fileName, { create: false });
       return true;
@@ -125,7 +127,8 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     try {
       const normalized = filePath.replace(/\\/g, "/");
       const parts = normalized.split("/").filter(Boolean);
-      const fileName = parts.pop()!;
+      const fileName = parts.pop();
+      if (!fileName) return false;
       const targetDir = await ensureDir(dirHandle, parts, false);
       const fileHandle = await targetDir.getFileHandle(fileName, { create: false });
       const file = await fileHandle.getFile();
@@ -172,7 +175,8 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
 
     async function worker() {
       while (queue.length) {
-        const item = queue.shift()!;
+        const item = queue.shift();
+        if (!item) break;
         try {
           await (async () => {
             const root = resolveRootForItem(item);
@@ -180,7 +184,9 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
             writeProgress.current = relativePath;
 
             const targetRoot =
-              root === "frontend" ? frontendDirHandle.value! : backendDirHandle.value!;
+              root === "frontend" ? frontendDirHandle.value : backendDirHandle.value;
+
+            if (!targetRoot) return;
 
             if (overwriteMode.value === "ifChanged") {
               const same = await isSameFile(targetRoot, relativePath, item.content || "");

@@ -162,10 +162,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "update:previewScope", val: "all" | "frontend" | "backend"): void;
-  (e: "update:previewTypes", val: string[]): void;
-  (e: "file-click", data: any): void;
-  (e: "copy"): void;
+  (_e: "update:previewScope", _val: "all" | "frontend" | "backend"): void;
+  (_e: "update:previewTypes", _val: string[]): void;
+  (_e: "file-click", _data: any): void;
+  (_e: "copy"): void;
 }>();
 
 const cmRef = ref<CmComponentRef>();

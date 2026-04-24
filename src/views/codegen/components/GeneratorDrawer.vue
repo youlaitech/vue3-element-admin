@@ -88,6 +88,8 @@
       :overwrite-mode="overwriteMode"
       :write-progress="writeProgress"
       :write-running="writeRunning"
+      @update:write-scope="writeScope = $event"
+      @update:overwrite-mode="overwriteMode = $event"
       @pick-frontend-dir="pickFrontendDir"
       @pick-backend-dir="pickBackendDir"
       @confirm-write="confirmWrite"
