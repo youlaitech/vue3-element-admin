@@ -32,6 +32,7 @@ module.exports = {
       },
     ],
     // 允许使用未知伪元素
+    "no-invalid-position-declaration": null, // Vue 模板内联 style 误报
     "at-rule-no-unknown": null, // 禁用默认的未知 at-rule 检查
     "scss/at-rule-no-unknown": true, // 启用 SCSS 特定的 at-rule 检查
   },

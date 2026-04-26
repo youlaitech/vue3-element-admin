@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import selectConfig from "./config/select";
-import { useDictStore } from "@/store";
+import { useDictStore } from "@/stores";
 const dictStore = useDictStore();
 interface IUser {
   id: string;

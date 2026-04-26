@@ -311,7 +311,7 @@ import type {
 
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import FileAPI from "@/api/file";
-import { useUserStoreHook } from "@/store";
+import { useUserStoreHook } from "@/stores";
 import { redirectToLogin } from "@/utils/auth";
 
 import {

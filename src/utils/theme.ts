@@ -1,5 +1,7 @@
 import { ThemeMode } from "@/enums";
 
+const SYSTEM_DARK_MEDIA = "(prefers-color-scheme: dark)";
+
 // 辅助函数：将十六进制颜色转换为 RGB
 function hexToRgb(hex: string): [number, number, number] {
   const bigint = parseInt(hex.slice(1), 16);
@@ -52,6 +54,7 @@ export const getLightColor = (color: string, level: number): string => {
  * @param theme 主题类型
  */
 export function generateThemeColors(primary: string, theme: ThemeMode) {
+  const resolvedTheme = resolveThemeMode(theme);
   const colors: Record<string, string> = {
     primary,
   };
@@ -59,16 +62,37 @@ export function generateThemeColors(primary: string, theme: ThemeMode) {
   // 生成浅色变体
   for (let i = 1; i <= 9; i++) {
     colors[`primary-light-${i}`] =
-      theme === ThemeMode.LIGHT
+      resolvedTheme === ThemeMode.LIGHT
         ? `${getLightColor(primary, i / 10)}`
         : `${getDarkColor(primary, i / 10)}`;
   }
 
   // 生成深色变体
   colors["primary-dark-2"] =
-    theme === ThemeMode.LIGHT ? `${getLightColor(primary, 0.2)}` : `${getDarkColor(primary, 0.3)}`;
+    resolvedTheme === ThemeMode.LIGHT
+      ? `${getLightColor(primary, 0.2)}`
+      : `${getDarkColor(primary, 0.3)}`;
 
   return colors;
+}
+
+export function getSystemTheme() {
+  return window.matchMedia(SYSTEM_DARK_MEDIA).matches ? ThemeMode.DARK : ThemeMode.LIGHT;
+}
+
+export function resolveThemeMode(theme: ThemeMode) {
+  return theme === ThemeMode.AUTO ? getSystemTheme() : theme;
+}
+
+export function watchSystemTheme(callback: (theme: ThemeMode) => void) {
+  const mediaQuery = window.matchMedia(SYSTEM_DARK_MEDIA);
+  const handler = () => callback(mediaQuery.matches ? ThemeMode.DARK : ThemeMode.LIGHT);
+
+  mediaQuery.addEventListener("change", handler);
+
+  return () => {
+    mediaQuery.removeEventListener("change", handler);
+  };
 }
 
 export function applyTheme(colors: Record<string, string>) {

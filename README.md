@@ -1,25 +1,18 @@
 <div align="center">
-  <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/images/logo.png">
-  <h1>vue3-element-admin</h1>
 
-  <img src="https://img.shields.io/badge/Vue-3.5.30-brightgreen.svg"/>
-  <img src="https://img.shields.io/badge/Vite-8.0.0-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.13.6-blue.svg"/>
-  <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
+<img alt="vue3-element-admin" width="80" src="./src/assets/images/logo.png">
 
-  <a href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
-    <img alt="有来技术" src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
-   </a>
-  <a href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
-    <img alt="有来技术" src="https://img.shields.io/github/stars/youlaitech/vue3-element-admin.svg?style=social&label=Stars"/>
-  </a>
-  <a href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
-    <img alt="有来技术" src="https://gitcode.com/youlai/vue3-element-admin/star/badge.svg"/>
-  </a>
+# vue3-element-admin
 
-  <a href="https://atomgit.com/youlai/vue3-element-admin" target="_blank">
-    <img alt="有来技术" src="https://atomgit.com/youlai/vue3-element-admin/star/2025top.svg"/>
-  </a>
+**Vue3 + Vite + TypeScript 企业级后台管理前端**
+
+[![Vue](https://img.shields.io/badge/Vue-3.5.30-brightgreen.svg)](https://vuejs.org/)
+[![Element Plus](https://img.shields.io/badge/Element%20Plus-2.13.6-blue.svg)](https://element-plus.org/)
+[![Gitee Star](https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg)](https://gitee.com/youlaiorg/vue3-element-admin/stargazers)
+[![GitHub Star](https://img.shields.io/github/stars/youlaitech/vue3-element-admin?style=social)](https://github.com/youlaitech/vue3-element-admin)
+[![GitCode Star](https://gitcode.com/youlai/vue3-element-admin/star/badge.svg)](https://gitcode.com/youlai/vue3-element-admin/stargazers)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 </div>
 
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
@@ -45,31 +38,61 @@
 - **基础设施：** 提供国际化、多布局、暗黑模式、全屏、水印、接口文档和代码生成器等功能。
 - **持续更新**：项目持续开源更新，实时更新工具和依赖。
 
-## 项目截图
+## 系统预览
 
-🖥️ **控制台**
+**PC 端**
 
-![](https://www.youlai.tech/storage/blog/2025/04/30/20250430085342.png)
+<table align="center">
+  <tr>
+    <td><img alt="PC预览1" width="400" src="./src/assets/images/preview/pc-01.png"></td>
+    <td><img alt="PC预览2" width="400" src="./src/assets/images/preview/pc-02.png"></td>
+  </tr>
+  <tr>
+    <td><img alt="PC预览3" width="400" src="./src/assets/images/preview/pc-03.png"></td>
+    <td><img alt="PC预览4" width="400" src="./src/assets/images/preview/pc-04.png"></td>
+  </tr>
+  <tr>
+    <td><img alt="PC预览5" width="400" src="./src/assets/images/preview/pc-05.png"></td>
+    <td><img alt="PC预览6" width="400" src="./src/assets/images/preview/pc-06.png"></td>
+  </tr>
+</table>
 
-⚡**接口文档**
+**移动端**
 
-![](https://www.youlai.tech/storage/blog/2025/01/18/20250118183539.png)
+<table align="center">
+  <tr>
+    <td><img alt="APP预览1" width="200" src="./src/assets/images/preview/app-01.png"></td>
+    <td><img alt="APP预览2" width="200" src="./src/assets/images/preview/app-02.png"></td>
+    <td><img alt="APP预览3" width="200" src="./src/assets/images/preview/app-03.png"></td>
+    <td><img alt="APP预览4" width="200" src="./src/assets/images/preview/app-04.png"></td>
+  </tr>
+</table>
 
-📲 **移动端**
+## 生态矩阵
 
-![](https://www.youlai.tech/storage/blog/2025/04/30/app.jpg)
+**前端**
 
-## 项目源码
+| 项目 | 技术栈 | 说明 |
+|:-----|:-------|:-----|
+| [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | Vue 3 + Vite + TS + Element Plus | PC 管理前端（主推） |
+| [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js) | Vue 3 + Vite + JS + Element Plus | JavaScript 版本 |
+| [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) | Vue 3 + Vite + TS + Element Plus | 精简模板 |
+| [youlai-app](https://gitee.com/youlaiorg/youlai-app) | Vue 3 + UniApp | 移动端 App |
 
-| 项目                      | Gitee                                                                      | Github                                                                       | GitCode                                                                   |
-| ------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| vue3-element-admin ✅     | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin)       | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin)       | [vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin)       |
-| vue3-element-admin JS版   | [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js) | [vue3-element-admin-js](https://github.com/youlaitech/vue3-element-admin-js) | [vue3-element-admin-js](https://gitcode.com/youlai/vue3-element-admin-js) |
-| vue3-element-admin 精简版 | [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) | [vue3-element-template](https://github.com/youlaitech/vue3-element-template) | [vue3-element-template](https://gitcode.com/youlai/vue3-element-template) |
-| vue-uniapp-admin 移动版   | [vue-uniapp-admin](https://gitee.com/youlaiorg/vue-uniapp-admin)           | [vue-uniapp-admin](https://github.com/youlaitech/vue-uniapp-admin)           | [vue-uniapp-admin](https://gitcode.com/youlai/vue-uniapp-admin)           |
-| Java 后端                 | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)                     | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git)                 | [youlai-boot](https://gitcode.com/youlai/youlai-boot.git)                 |
-| Java 多租户后端           | [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant)       | -                                                                            | -                                                                         |
-| Node 后端                 | [youlai-nest](https://gitee.com/youlaiorg/youlai-nest)                     | [youlai-nest](https://github.com/haoxianrui/youlai-nest.git)                 | [youlai-nest](https://gitcode.com/youlai/youlai-nest.git)                 |
+**后端**
+
+| 项目 | 技术栈 | 说明 |
+|:-----|:-------|:-----|
+| [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | Spring Boot + MyBatis-Plus | Java 后端（主推） |
+| [youlai-nest](https://gitee.com/youlaiorg/youlai-nest) | NestJS + TypeORM | Node.js |
+| [youlai-gin](https://gitee.com/youlaiorg/youlai-gin) | Go + Gorm | Go |
+| [youlai-django](https://gitee.com/youlaiorg/youlai-django) | Django + DRF | Python |
+| [youlai-think](https://gitee.com/youlaiorg/youlai-think) | ThinkPHP 8 | PHP |
+| [youlai-aspnet](https://gitee.com/youlaiorg/youlai-aspnet) | ASP.NET Core | C# |
+
+> **youlai-boot** 还提供以下变种和分支版本：[多租户](https://gitee.com/youlaiorg/youlai-boot-tenant)（Spring Boot 4）· [MyBatis-Flex](https://gitee.com/youlaiorg/youlai-boot-flex)（Spring Boot 4）· [Spring Boot 3](https://gitee.com/youlaiorg/youlai-boot/tree/spring-boot-3) · [PostgreSQL](https://gitee.com/youlaiorg/youlai-boot/tree/db-pg) · [多模块](https://gitee.com/youlaiorg/youlai-boot/tree/multi-module)
+>
+> 六种后端共享同一套 **RESTful API 规范** 和 **数据库结构**，前端可无缝切换。
 
 ## 开发指南
 
@@ -195,15 +218,25 @@ Thanks to all the contributors!
 
 [![contributors](https://contrib.rocks/image?repo=youlaitech/vue3-element-admin)](https://github.com/youlaitech/vue3-element-admin/graphs/contributors)
 
-## 特别感谢
+---
 
-- 感谢 [GitCode](https://gitcode.com/) 官方的 [G-Star](https://gitcode.com/g-star) 认证
-  ![](https://foruda.gitee.com/images/1728577513089814203/95f2a70d_716974.jpeg)
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./src/assets/images/qr/wechat-offical.png" height="180" alt="公众号「有来技术」"><br>
+      <sub>公众号「有来技术」</sub>
+    </td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align="center">
+      <img src="./src/assets/images/qr/wechat-mp.jpg" height="180" alt="小程序「有来技术」"><br>
+      <sub>小程序「有来技术」</sub>
+    </td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align="center">
+      <img src="./src/assets/images/qr/wechat-personal.png" height="180" alt="添加作者微信"><br>
+      <sub>添加作者微信</sub>
+    </td>
+  </tr>
+</table>
 
-## 加群交流
-
-① 关注「有来技术」公众号，点击菜单 **交流群** 获取加群二维码（此举防止广告进群，感谢理解和支持）。
-
-② 直接添加微信 **`haoxianrui`** 备注「前端/后端/全栈」。
-
-![有来技术公众号](https://foruda.gitee.com/images/1737108820762592766/3390ed0d_716974.png)
+<p align="center"><em>技术交流 · 问题反馈 · 商务合作</em></p>

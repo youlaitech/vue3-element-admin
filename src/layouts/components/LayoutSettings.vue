@@ -11,13 +11,17 @@
         <el-divider>{{ t("settings.theme") }}</el-divider>
 
         <div class="flex-center">
-          <el-switch
-            v-model="isDark"
-            active-icon="Moon"
-            inactive-icon="Sunny"
-            class="theme-switch"
-            @change="handleThemeChange"
-          />
+          <el-radio-group v-model="themeMode" class="theme-mode-group">
+            <el-radio-button :value="ThemeMode.LIGHT">
+              {{ t("login.light") }}
+            </el-radio-button>
+            <el-radio-button :value="ThemeMode.DARK">
+              {{ t("login.dark") }}
+            </el-radio-button>
+            <el-radio-button :value="ThemeMode.AUTO">
+              {{ t("login.auto") }}
+            </el-radio-button>
+          </el-radio-group>
         </div>
       </section>
 
@@ -71,7 +75,10 @@
           <el-switch v-model="settingsStore.colorWeak" />
         </div>
 
-        <div v-if="!isDark" class="config-item flex-x-between">
+        <div
+          v-if="settingsStore.resolvedTheme !== ThemeMode.DARK"
+          class="config-item flex-x-between"
+        >
           <span class="text-xs">{{ t("settings.sidebarColorScheme") }}</span>
           <el-radio-group v-model="sidebarColor" @change="changeSidebarColor">
             <el-radio :value="SidebarColor.CLASSIC_BLUE">
@@ -167,7 +174,7 @@ import { DocumentCopy, RefreshLeft, Check } from "@element-plus/icons-vue";
 
 const { t } = useI18n();
 import { LayoutMode, PageSwitchingAnimationOptions, SidebarColor, ThemeMode } from "@/enums";
-import { useSettingsStore } from "@/store";
+import { useSettingsStore } from "@/stores";
 import { themeColorPresets } from "@/settings";
 
 // 页面切换动画选项
@@ -199,8 +206,13 @@ const colorPresets = [...themeColorPresets];
 
 const settingsStore = useSettingsStore();
 
-const isDark = ref<boolean>(settingsStore.theme === ThemeMode.DARK);
 const sidebarColor = ref(settingsStore.sidebarColorScheme);
+const themeMode = computed({
+  get: () => settingsStore.theme,
+  set: (value: ThemeMode) => {
+    settingsStore.theme = value;
+  },
+});
 
 const selectedThemeColor = computed({
   get: () => settingsStore.themeColor,
@@ -213,15 +225,6 @@ const drawerVisible = computed({
   get: () => settingsStore.settingsVisible,
   set: (value) => (settingsStore.settingsVisible = value),
 });
-
-/**
- * 处理主题切换
- *
- * @param isDark 是否启用暗黑模式
- */
-const handleThemeChange = (isDark: string | number | boolean) => {
-  settingsStore.theme = isDark ? ThemeMode.DARK : ThemeMode.LIGHT;
-};
 
 /**
  * 更改侧边栏颜色
@@ -277,8 +280,6 @@ const handleResetSettings = async () => {
   try {
     settingsStore.resetSettings();
 
-    // 同步更新本地状态"
-    isDark.value = settingsStore.theme === ThemeMode.DARK;
     sidebarColor.value = settingsStore.sidebarColorScheme;
 
     ElMessage.success(t("settings.resetSuccess"));

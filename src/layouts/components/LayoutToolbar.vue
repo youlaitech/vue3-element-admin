@@ -71,7 +71,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { defaults } from "@/settings";
 import { DeviceEnum, SidebarColor, ThemeMode, LayoutMode } from "@/enums/settings";
-import { useAppStore, useSettingsStore, useUserStore } from "@/store";
+import { useAppStore, useSettingsStore, useUserStore } from "@/stores";
 
 // 导入子组件
 import CommandPalette from "@/components/CommandPalette/index.vue";
@@ -80,7 +80,7 @@ import SizeSelect from "@/components/SizeSelect/index.vue";
 import LangSelect from "@/components/LangSelect/index.vue";
 import NoticeDropdown from "@/components/NoticeDropdown/index.vue";
 import TenantSwitcher from "@/components/TenantSwitcher/index.vue";
-import { useTenantStoreHook } from "@/store/modules/tenant";
+import { useTenantStoreHook } from "@/stores/tenant";
 
 const { t } = useI18n();
 const appStore = useAppStore();
@@ -125,15 +125,15 @@ function handleProfileClick() {
 
 // 根据主题和侧边栏配色方案选择样式类
 const navbarActionsClass = computed(() => {
-  const { theme, sidebarColorScheme, layout } = settingStore;
+  const { resolvedTheme, sidebarColorScheme, layout } = settingStore;
 
   // 暗黑主题下，所有布局都使用白色文字
-  if (theme === ThemeMode.DARK) {
+  if (resolvedTheme === ThemeMode.DARK) {
     return "navbar-actions--white-text";
   }
 
   // 明亮主题下
-  if (theme === ThemeMode.LIGHT) {
+  if (resolvedTheme === ThemeMode.LIGHT) {
     // 顶部布局和混合布局的顶部区域：
     // - 如果侧边栏是经典蓝色，使用白色文字
     // - 如果侧边栏是极简白色，使用深色文字

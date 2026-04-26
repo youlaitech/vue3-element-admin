@@ -74,10 +74,10 @@
 import type { LocationQueryRaw, RouteRecordRaw } from "vue-router";
 import { useWindowSize } from "@vueuse/core";
 import { useLayout } from "./useLayout";
-import { useAppStore, usePermissionStore, useSettingsStore } from "@/store";
+import { useAppStore, usePermissionStore, useSettingsStore } from "@/stores";
 import { isExternal } from "@/utils/index";
 import { translateRouteTitle } from "@/lang/utils";
-import { SidebarColor } from "@/enums/settings";
+import { SidebarColor, ThemeMode } from "@/enums/settings";
 import { ElIcon } from "element-plus";
 import BaseLayout from "./BaseLayout.vue";
 import LayoutLogo from "./components/LayoutLogo.vue";
@@ -127,7 +127,8 @@ const isLogoCollapsed = computed(() => width.value < 768);
 // 是否使用深色菜单配色（暗色主题或经典蓝侧边栏）
 const useMenuColors = computed(
   () =>
-    settingsStore.theme === "dark" || settingsStore.sidebarColorScheme === SidebarColor.CLASSIC_BLUE
+    settingsStore.resolvedTheme === ThemeMode.DARK ||
+    settingsStore.sidebarColorScheme === SidebarColor.CLASSIC_BLUE
 );
 
 // 顶部菜单项（处理单子菜单显示优化）

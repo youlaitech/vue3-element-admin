@@ -2,7 +2,7 @@ import UserAPI from "@/api/system/user";
 import type { UserForm } from "@/api/system/user";
 import type { IModalConfig } from "@/components/CURD/types";
 import { DeviceEnum } from "@/enums/settings";
-import { useAppStore } from "@/store";
+import { useAppStore } from "@/stores";
 import { deptArr, roleArr } from "./options";
 
 const modalConfig: IModalConfig<UserForm> = {

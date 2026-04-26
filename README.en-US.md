@@ -1,35 +1,27 @@
 <div align="center">
-  <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/images/logo.png">
-  <h1>vue3-element-admin</h1>
 
-  <img src="https://img.shields.io/badge/Vue-3.5.22-brightgreen.svg"/>
-  <img src="https://img.shields.io/badge/Vite-7.3.0-green.svg"/>
-  <img src="https://img.shields.io/badge/Element Plus-2.3.2-blue.svg"/>
-  <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
-  <a href="https://gitee.com/youlaiorg" target="_blank">
-      <img src="https://img.shields.io/badge/Author-%E6%9C%89%E6%9D%A5%E5%BC%80%E6%BA%90%E7%BB%84%E7%BB%87-orange.svg"/>
-  </a>
+<img alt="vue3-element-admin" width="80" src="./src/assets/images/logo.png">
 
-  <a href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
-    <img alt="有来技术" src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
-   </a>
-  <a href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
-    <img alt="有来技术" src="https://img.shields.io/github/stars/youlaitech/vue3-element-admin.svg?style=social&label=Stars"/>
-  </a>
-  <a href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
-    <img alt="有来技术" src="https://gitcode.com/youlai/vue3-element-admin/star/badge.svg"/>
-  </a>
+# vue3-element-admin
 
-  <a href="https://atomgit.com/youlai/vue3-element-admin" target="_blank">
-    <img alt="有来技术" src="https://atomgit.com/youlai/vue3-element-admin/star/2025top.svg"/>
-  </a>
+**Vue3 + Vite + TypeScript Enterprise Admin Frontend**
+
+[![Vue](https://img.shields.io/badge/Vue-3.5.22-brightgreen.svg)](https://vuejs.org/)
+[![Vite](https://img.shields.io/badge/Vite-7.3.0-green.svg)](https://vitejs.dev/)
+[![Element Plus](https://img.shields.io/badge/Element%20Plus-2.3.2-blue.svg)](https://element-plus.org/)
+[![Gitee Star](https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg)](https://gitee.com/youlaiorg/vue3-element-admin/stargazers)
+[![GitHub Star](https://img.shields.io/github/stars/youlaitech/vue3-element-admin?style=social)](https://github.com/youlaitech/vue3-element-admin)
+[![GitCode Star](https://gitcode.com/youlai/vue3-element-admin/star/badge.svg)](https://gitcode.com/youlai/vue3-element-admin/stargazers)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 </div>
 
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
 
 <div align="center">
-  <a target="_blank" href="https://vue.youlai.tech">🖥️ Live Preview</a> | <a target="_blank" href="https://app.youlai.tech">📲 Mobile Preview</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📑 Documentation</a>|  <a target="_blank" href="https://www.youlai.tech//vue3-element-admin">🌐 Official Website</a> | <a href="./README.md">💬 中文</a> | <a href="./README.en-US.md">💬 English</a>
+
+[🖥️ Live Preview](https://vue.youlai.tech) | [� Mobile Preview](https://app.youlai.tech) | [� Documentation](https://www.youlai.tech/vue3-element-admin) | [💬 中文](README.md)
+
 </div>
 
 ## Introduction
@@ -49,31 +41,61 @@
 - **Infrastructure**: Provides internationalization, multiple layouts, dark mode, full screen, watermark, API documentation, and code generator functionality.
 - **Continuous Updates**: Project is continuously updated with real-time updates of tools and dependencies.
 
-## Project Screenshots
+## System Preview
 
-🖥️ **Dashboard**
+**PC**
 
-![](https://www.youlai.tech/storage/blog/2025/04/30/20250430085342.png)
+<table align="center">
+  <tr>
+    <td><img alt="PC Preview 1" width="400" src="./src/assets/images/preview/pc-01.png"></td>
+    <td><img alt="PC Preview 2" width="400" src="./src/assets/images/preview/pc-02.png"></td>
+  </tr>
+  <tr>
+    <td><img alt="PC Preview 3" width="400" src="./src/assets/images/preview/pc-03.png"></td>
+    <td><img alt="PC Preview 4" width="400" src="./src/assets/images/preview/pc-04.png"></td>
+  </tr>
+  <tr>
+    <td><img alt="PC Preview 5" width="400" src="./src/assets/images/preview/pc-05.png"></td>
+    <td><img alt="PC Preview 6" width="400" src="./src/assets/images/preview/pc-06.png"></td>
+  </tr>
+</table>
 
-⚡**API Documentation**
+**Mobile**
 
-![](https://www.youlai.tech/storage/blog/2025/01/18/20250118183539.png)
+<table align="center">
+  <tr>
+    <td><img alt="APP Preview 1" width="200" src="./src/assets/images/preview/app-01.png"></td>
+    <td><img alt="APP Preview 2" width="200" src="./src/assets/images/preview/app-02.png"></td>
+    <td><img alt="APP Preview 3" width="200" src="./src/assets/images/preview/app-03.png"></td>
+    <td><img alt="APP Preview 4" width="200" src="./src/assets/images/preview/app-04.png"></td>
+  </tr>
+</table>
 
-📲 **Mobile Version**
+## Ecosystem
 
-![](https://www.youlai.tech/storage/blog/2025/04/30/app.jpg)
+**Frontend**
 
-## Project Source Code
+| Project | Tech Stack | Description |
+|:-----|:-------|:-----|
+| [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | Vue 3 + Vite + TS + Element Plus | PC Admin (Main) |
+| [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js) | Vue 3 + Vite + JS + Element Plus | JavaScript Version |
+| [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) | Vue 3 + Vite + TS + Element Plus | Lite Template |
+| [youlai-app](https://gitee.com/youlaiorg/youlai-app) | Vue 3 + UniApp | Mobile App |
 
-| Project                         | Gitee                                                                      | Github                                                                       | GitCode                                                                   |
-| ------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| vue3-element-admin ✅           | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin)       | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin)       | [vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin)       |
-| vue3-element-admin JS Version   | [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js) | [vue3-element-admin-js](https://github.com/youlaitech/vue3-element-admin-js) | [vue3-element-admin-js](https://gitcode.com/youlai/vue3-element-admin-js) |
-| vue3-element-admin Lite Version | [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) | [vue3-element-template](https://github.com/youlaitech/vue3-element-template) | [vue3-element-template](https://gitcode.com/youlai/vue3-element-template) |
-| vue-uniapp-admin Mobile Version | [vue-uniapp-admin](https://gitee.com/youlaiorg/vue-uniapp-admin)           | [vue-uniapp-admin](https://github.com/youlaitech/vue-uniapp-admin)           | [vue-uniapp-admin](https://gitcode.com/youlai/vue-uniapp-admin)           |
-| Java Backend                    | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)                     | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git)                 | [youlai-boot](https://gitcode.com/youlai/youlai-boot.git)                 |
-| Java Multi-tenant Backend       | [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant)       | -                                                                            | -                                                                         |
-| Node Backend                    | [youlai-nest](https://gitee.com/youlaiorg/youlai-nest)                     | [youlai-nest](https://github.com/haoxianrui/youlai-nest.git)                 | [youlai-nest](https://gitcode.com/youlai/youlai-nest.git)                 |
+**Backend**
+
+| Project | Tech Stack | Description |
+|:-----|:-------|:-----|
+| [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | Spring Boot + MyBatis-Plus | Java Backend (Main) |
+| [youlai-nest](https://gitee.com/youlaiorg/youlai-nest) | NestJS + TypeORM | Node.js |
+| [youlai-gin](https://gitee.com/youlaiorg/youlai-gin) | Go + Gorm | Go |
+| [youlai-django](https://gitee.com/youlaiorg/youlai-django) | Django + DRF | Python |
+| [youlai-think](https://gitee.com/youlaiorg/youlai-think) | ThinkPHP 8 | PHP |
+| [youlai-aspnet](https://gitee.com/youlaiorg/youlai-aspnet) | ASP.NET Core | C# |
+
+> **youlai-boot** also provides variants: [Multi-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant) · [MyBatis-Flex](https://gitee.com/youlaiorg/youlai-boot-flex) · [Spring Boot 3](https://gitee.com/youlaiorg/youlai-boot/tree/spring-boot-3) · [PostgreSQL](https://gitee.com/youlaiorg/youlai-boot/tree/db-pg) · [Multi-module](https://gitee.com/youlaiorg/youlai-boot/tree/multi-module)
+>
+> All six backends share the same **RESTful API** and **database schema**, frontends can switch seamlessly.
 
 ## Development Guide
 
@@ -199,15 +221,29 @@ Thanks to all the contributors!
 
 [![contributors](https://contrib.rocks/image?repo=youlaitech/vue3-element-admin)](https://github.com/youlaitech/vue3-element-admin/graphs/contributors)
 
-## Special Thanks
+---
 
-- Thanks to the [GitCode](https://gitcode.com/) official [G-Star](https://gitcode.com/g-star) certification
-  ![](https://foruda.gitee.com/images/1728577513089814203/95f2a70d_716974.jpeg)
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./src/assets/images/qr/wechat-offical.png" height="180" alt="WeChat Official Account"><br>
+      <sub>WeChat Official Account</sub>
+    </td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align="center">
+      <img src="./src/assets/images/qr/wechat-mp.jpg" height="180" alt="Mini Program"><br>
+      <sub>Mini Program</sub>
+    </td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align="center">
+      <img src="./src/assets/images/qr/wechat-personal.png" height="180" alt="Add Author WeChat"><br>
+      <sub>Add Author WeChat</sub>
+    </td>
+  </tr>
+</table>
 
-## Community
+<p align="center"><em>Technical Exchange · Issue Feedback · Business Cooperation</em></p>
 
-① Follow the "Youlai Tech" WeChat Official Account, click the **Group Chat** menu to get the QR code (this measure is taken to prevent ads from entering the group, thanks for your understanding and support).
+## License
 
-② Directly add WeChat **`haoxianrui`** with a note indicating "Frontend/Backend/Full Stack".
-
-![Youlai Tech WeChat Official Account](https://foruda.gitee.com/images/1737108820762592766/3390ed0d_716974.png)
+[MIT](LICENSE)

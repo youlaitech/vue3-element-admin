@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDictStore } from "@/store";
+import { useDictStore } from "@/stores";
 
 const props = defineProps({
   code: String, // 字典编码

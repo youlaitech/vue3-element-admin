@@ -1,8 +1,8 @@
 import type { RouteRecordRaw } from "vue-router";
 import NProgress from "@/plugins/nprogress";
 import router from "@/router";
-import { usePermissionStore, useUserStore } from "@/store";
-import { useTenantStoreHook } from "@/store/modules/tenant";
+import { usePermissionStore, useUserStore } from "@/stores";
+import { useTenantStoreHook } from "@/stores/tenant";
 import { isTenantEnabled } from "@/utils/tenant";
 import { addRecentMenu } from "@/composables/useRecentMenus";
 

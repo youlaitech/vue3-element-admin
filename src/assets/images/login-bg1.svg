@@ -6,15 +6,6 @@
       --orange: rgba(230, 162, 60, 0.06);
       --green: rgba(144, 238, 144, 0.06);
     }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --blue: rgba(64, 158, 255, 0.04);
-        --grey: rgba(144, 147, 153, 0.03);
-        --orange: rgba(230, 162, 60, 0.04);
-        --green: rgba(144, 238, 144, 0.04);
-      }
-    }
   </style>
 
   <!-- 左侧波浪 -->
