@@ -71,7 +71,7 @@
 
         <footer class="auth-panel__footer">
           <el-text size="small">
-            Copyright © 2021 - 2025 youlai.tech
+            Copyright © 2021 - 2026 youlai.tech
             <a href="http://beian.miit.gov.cn/" target="_blank">皖ICP备00064962号</a>
           </el-text>
         </footer>
