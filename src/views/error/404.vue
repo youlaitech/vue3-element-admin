@@ -1,6 +1,6 @@
 <template>
   <div class="wh-full mx-auto flex-center flex-col lg:flex-row">
-    <img class="min-w-[23.4375rem] sm:w-150" src="@/assets/images/404.svg" alt="404" />
+    <img class="min-w-[23.4375rem] sm:w-150" src="@/assets/images/error/404.svg" alt="404" />
     <div class="w-75">
       <div class="oops mb-5 text-[2rem] font-bold">OOPS</div>
       <div class="info text-gray mb-7 text-[0.8125rem]">

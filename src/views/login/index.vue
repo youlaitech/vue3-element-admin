@@ -166,7 +166,7 @@ const formComponents = {
     inset: 0;
     z-index: -2;
     content: "";
-    background: url("@/assets/images/login-bg.svg") center/cover no-repeat;
+    background: url("@/assets/images/login/bg.svg") center/cover no-repeat;
   }
 
   &::after {
@@ -230,7 +230,7 @@ const formComponents = {
   --auth-button-warning-shadow: 0 14px 26px rgba(211, 142, 38, 0.24);
 
   &::before {
-    background-image: url("@/assets/images/login-bg-dark.svg");
+    background-image: url("@/assets/images/login/bg-dark.svg");
   }
 }
 

@@ -13,7 +13,7 @@
         </div>
       </el-col>
       <el-col :xs="24" :span="12">
-        <img src="@/assets/images/401.svg" class="w-full" />
+        <img src="@/assets/images/error/401.svg" class="w-full" />
       </el-col>
     </el-row>
   </div>
