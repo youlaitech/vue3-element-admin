@@ -160,7 +160,9 @@ function logout() {
     lockScroll: false,
   }).then(() => {
     userStore.logout().then(() => {
-      router.push(`/login?redirect=${route.fullPath}`);
+      // 若当前已在 404/401 等错误页，退出后不再跳回错误页
+      const redirect = ["/404", "/401"].includes(route.path) ? "/" : route.fullPath;
+      router.push(`/login?redirect=${encodeURIComponent(redirect)}`);
     });
   });
 }
