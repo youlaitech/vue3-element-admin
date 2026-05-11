@@ -201,7 +201,7 @@ onMounted(() => {
 }
 
 .icon-grid-item:hover {
-  border-color: #4080ff;
+  border-color: var(--el-color-primary);
   transform: scale(1.2);
 }
 </style>

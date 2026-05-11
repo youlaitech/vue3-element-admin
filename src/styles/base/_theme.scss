@@ -1,6 +1,5 @@
 /**
  * 主题变量定义
- * 只放 :root、html.dark、html.sidebar-color-blue 等定义真实颜色的 CSS 变量
  */
 
 // ============================================
@@ -15,8 +14,42 @@
   --menu-hover: #e6f4ff;
 
   // 侧边栏 Logo
-  --sidebar-logo-background: #f5f5f5;
-  --sidebar-logo-text-color: #303133;
+  --sidebar-logo-background: #fafafa;
+  --sidebar-logo-text-color: #383853;
+
+  // 页面背景与内容区
+  --page-bg: #fafbfc;
+  --content-bg: #ffffff;
+
+  // 边框
+  --border-color: #e2e8ee;
+  --card-border: rgb(0 0 0 / 8%);
+
+  // 卡片
+  --card-radius: calc(var(--custom-radius) + 4px);
+  --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 6%), 0 1px 2px -1px rgb(0 0 0 / 4%);
+
+  // 全局圆角基准（可被 settings 动态覆盖）
+  --custom-radius: 8px;
+
+  // 页面布局间距
+  --page-padding: 20px;
+  --page-gap: 16px;
+
+  // 灰色阶
+  --gray-100: #f9fafb;
+  --gray-200: #f2f4f5;
+  --gray-300: #e6eaeb;
+  --gray-400: #dbdfe1;
+  --gray-500: #949eb7;
+  --gray-600: #7987a1;
+  --gray-700: #4d5875;
+  --gray-800: #383853;
+  --gray-900: #323251;
+
+  // 悬浮与激活
+  --hover-color: #edeff0;
+  --active-color: #f2f4f5;
 }
 
 // ============================================
@@ -44,7 +77,25 @@ html.dark {
   --sidebar-logo-background: rgb(0 0 0 / 20%);
   --sidebar-logo-text-color: #fff;
 
-  // Element Plus 表格选中行背景色
+  --page-bg: #070707;
+  --content-bg: #161618;
+  --border-color: rgb(255 255 255 / 10%);
+  --card-border: rgb(255 255 255 / 8%);
+  --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 40%), 0 1px 2px -1px rgb(0 0 0 / 30%);
+
+  --gray-100: #110f0f;
+  --gray-200: #17171c;
+  --gray-300: #393946;
+  --gray-400: #505062;
+  --gray-500: #73738c;
+  --gray-600: #8f8fa3;
+  --gray-700: #ababba;
+  --gray-800: #c7c7d1;
+  --gray-900: #e3e3e8;
+
+  --hover-color: #252530;
+  --active-color: #202226;
+
   .el-table {
     --el-table-current-row-bg-color: var(--el-fill-color-light);
   }
@@ -54,7 +105,6 @@ html.dark {
 // 无障碍模式
 // ============================================
 
-// 色弱模式
 html.color-weak {
   filter: invert(80%);
 }

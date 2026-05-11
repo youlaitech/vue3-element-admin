@@ -1,67 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1400 800">
   <defs>
-    <!-- 原背景色保持不变 -->
-    <linearGradient id="bgDark" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0b1324" />
-      <stop offset="58%" stop-color="#162135" />
-      <stop offset="100%" stop-color="#1e2c44" />
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1a" />
+      <stop offset="50%" stop-color="#0d1424" />
+      <stop offset="100%" stop-color="#111a2e" />
     </linearGradient>
-
-    <radialGradient id="glowPrimary" cx="18%" cy="14%" r="62%">
-      <stop offset="0%" stop-color="rgba(98,142,255,0.42)" />
-      <stop offset="46%" stop-color="rgba(98,142,255,0.18)" />
-      <stop offset="100%" stop-color="rgba(98,142,255,0)" />
+    <radialGradient id="glow1" cx="15%" cy="18%" r="55%">
+      <stop offset="0%" stop-color="rgba(22,119,255,0.15)" />
+      <stop offset="45%" stop-color="rgba(22,119,255,0.05)" />
+      <stop offset="100%" stop-color="rgba(22,119,255,0)" />
     </radialGradient>
-
-    <radialGradient id="glowSecondary" cx="82%" cy="70%" r="56%">
-      <stop offset="0%" stop-color="rgba(59,108,224,0.28)" />
-      <stop offset="48%" stop-color="rgba(59,108,224,0.14)" />
-      <stop offset="100%" stop-color="rgba(59,108,224,0)" />
+    <radialGradient id="glow2" cx="85%" cy="72%" r="50%">
+      <stop offset="0%" stop-color="rgba(99,102,241,0.1)" />
+      <stop offset="45%" stop-color="rgba(99,102,241,0.03)" />
+      <stop offset="100%" stop-color="rgba(99,102,241,0)" />
     </radialGradient>
-
-    <linearGradient id="meshDark" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
-      <stop offset="35%" stop-color="rgba(255,255,255,0.04)" />
-      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
-    </linearGradient>
-
   </defs>
-
-  <!-- 基础背景 -->
-  <rect width="100%" height="100%" fill="url(#bgDark)" />
-  <rect width="100%" height="100%" fill="url(#glowPrimary)" />
-  <rect width="100%" height="100%" fill="url(#glowSecondary)" />
-  <rect width="100%" height="100%" fill="url(#meshDark)" />
-
-  <g opacity="0.8">
-    <circle cx="280" cy="190" r="120" fill="rgba(98,142,255,0.03)" />
-    <circle cx="280" cy="190" r="120" fill="none" stroke="rgba(98,142,255,0.11)" stroke-width="1" />
-    <circle cx="280" cy="190" r="170" fill="none" stroke="rgba(98,142,255,0.06)" stroke-width="0.8" />
-
-    <g transform="rotate(-12, 1120, 600)">
-      <path d="M900 620 C 980 520, 1120 520, 1240 580 C 1320 620, 1340 680, 1290 720 C 1200 790, 980 760, 900 690 Z" fill="rgba(98,142,255,0.018)" />
-      <path d="M900 620 C 980 520, 1120 520, 1240 580 C 1320 620, 1340 680, 1290 720 C 1200 790, 980 760, 900 690 Z" fill="none" stroke="rgba(98,142,255,0.08)" stroke-width="1" />
-    </g>
-  </g>
-
-  <!-- 节点圆点 -->
-  <g fill="rgba(98,142,255,0.5)">
-    <circle cx="300" cy="150" r="3" />
-    <circle cx="760" cy="220" r="3" />
-    <circle cx="1180" cy="560" r="3" />
-  </g>
-
-  <!-- 节点光晕 -->
-  <g fill="rgba(98,142,255,0.08)">
-    <circle cx="300" cy="150" r="10" />
-    <circle cx="760" cy="220" r="12" />
-    <circle cx="1180" cy="560" r="10" />
-  </g>
-
-  <!-- 右上角装饰圆弧 -->
-  <g fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5">
-    <circle cx="1400" cy="0" r="400" />
-    <circle cx="1400" cy="0" r="650" />
-  </g>
+  <rect width="100%" height="100%" fill="url(#bg)" />
+  <rect width="100%" height="100%" fill="url(#glow1)" />
+  <rect width="100%" height="100%" fill="url(#glow2)" />
 </svg>

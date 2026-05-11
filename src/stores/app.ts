@@ -15,6 +15,7 @@ export const useAppStore = defineStore("app", () => {
     withoutAnimation: false,
   });
   const activeTopMenuPath = useStorage(STORAGE_KEYS.ACTIVE_TOP_MENU_PATH, "");
+  const contentFullscreen = ref(false);
 
   const locale = computed(() => (language?.value === "en" ? en : zhCn));
 
@@ -49,6 +50,10 @@ export const useAppStore = defineStore("app", () => {
     activeTopMenuPath.value = val;
   }
 
+  function toggleContentFullscreen() {
+    contentFullscreen.value = !contentFullscreen.value;
+  }
+
   return {
     device,
     sidebar,
@@ -56,12 +61,14 @@ export const useAppStore = defineStore("app", () => {
     locale,
     size,
     activeTopMenu,
+    contentFullscreen,
     toggleDevice,
     changeSize,
     changeLanguage,
     toggleSidebar,
     closeSideBar,
     openSideBar,
+    toggleContentFullscreen,
     activeTopMenuPath,
   };
 });

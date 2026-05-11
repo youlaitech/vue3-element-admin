@@ -1,7 +1,7 @@
 <template>
   <BaseLayout>
     <!-- 顶部菜单栏 -->
-    <div class="layout__header">
+    <div v-show="!appStore.contentFullscreen" class="layout__header">
       <div class="layout__header-content">
         <div v-if="showLogo" class="layout__header-logo">
           <LayoutLogo :collapse="isLogoCollapsed" />
@@ -37,7 +37,11 @@
     <!-- 主内容区容器 -->
     <div class="layout__container">
       <!-- 左侧菜单栏 -->
-      <div class="layout__sidebar--left" :class="{ 'layout__sidebar--collapsed': !isSidebarOpen }">
+      <div
+        v-show="!appStore.contentFullscreen"
+        class="layout__sidebar--left"
+        :class="{ 'layout__sidebar--collapsed': !isSidebarOpen }"
+      >
         <el-scrollbar>
           <el-menu
             :default-active="activeSideMenuPath"
@@ -233,7 +237,8 @@ watch(
     width: 100%;
     height: $navbar-height;
     background-color: var(--menu-background);
-    border-bottom: 1px solid var(--el-border-color-lighter);
+    border-bottom: 1px solid var(--card-border);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 6%);
 
     &-content {
       display: flex;
@@ -301,6 +306,7 @@ watch(
       width: $sidebar-width;
       height: 100%;
       background-color: var(--menu-background);
+      border-right: 1px solid var(--card-border);
       transition: width 0.28s;
 
       &.layout__sidebar--collapsed {

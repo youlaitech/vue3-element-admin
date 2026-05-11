@@ -107,6 +107,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "qs",
         "vxe-table",
         "path-browserify",
+        "lodash-es",
         "@element-plus/icons-vue",
         "element-plus/es",
         "element-plus/es/locale/lang/en",

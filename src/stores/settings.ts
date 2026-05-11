@@ -32,6 +32,12 @@ export const useSettingsStore = defineStore("setting", () => {
   // 主题
   const theme = useStorage<ThemeMode>(STORAGE_KEYS.THEME, defaults.theme);
   const themeColor = useStorage(STORAGE_KEYS.THEME_COLOR, defaults.themeColor);
+
+  // 旧默认值 → 新默认值 自动迁移（用户自定义的颜色不会被覆盖）
+  const LEGACY_DEFAULTS = ["#4080FF", "#4080ff", "#2563EB", "#2563eb"];
+  if (LEGACY_DEFAULTS.includes(themeColor.value)) {
+    themeColor.value = defaults.themeColor;
+  }
   const resolvedTheme = ref<ThemeMode>(resolveThemeMode(theme.value));
 
   // 特殊模式

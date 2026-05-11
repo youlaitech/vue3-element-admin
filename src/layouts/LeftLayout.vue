@@ -1,7 +1,11 @@
 <template>
   <BaseLayout>
     <!-- 左侧菜单 -->
-    <div class="layout__sidebar" :class="{ 'layout__sidebar--collapsed': !isSidebarOpen }">
+    <div
+      v-show="!appStore.contentFullscreen"
+      class="layout__sidebar"
+      :class="{ 'layout__sidebar--collapsed': !isSidebarOpen }"
+    >
       <div :class="{ 'has-logo': showLogo }" class="layout-sidebar">
         <LayoutLogo v-if="showLogo" :collapse="!isSidebarOpen" />
         <el-scrollbar>
@@ -16,9 +20,10 @@
       :class="{
         hasTagsView: showTagsView,
         'layout__main--collapsed': !isSidebarOpen,
+        'layout__main--fullscreen': appStore.contentFullscreen,
       }"
     >
-      <LayoutNavbar />
+      <LayoutNavbar v-show="!appStore.contentFullscreen" />
       <LayoutTagsView v-if="showTagsView" />
       <LayoutMain />
     </div>
@@ -27,6 +32,7 @@
 
 <script setup lang="ts">
 import { useLayout } from "./useLayout";
+import { useAppStore } from "@/stores";
 import BaseLayout from "./BaseLayout.vue";
 import LayoutLogo from "./components/LayoutLogo.vue";
 import LayoutNavbar from "./components/LayoutNavbar.vue";
@@ -35,6 +41,7 @@ import LayoutMain from "./components/LayoutMain.vue";
 import LayoutSidebar from "./components/LayoutSidebar.vue";
 
 const { showTagsView, showLogo, isSidebarOpen, routes } = useLayout();
+const appStore = useAppStore();
 </script>
 
 <style lang="scss" scoped>
@@ -57,6 +64,7 @@ const { showTagsView, showLogo, isSidebarOpen, routes } = useLayout();
       position: relative;
       height: 100%;
       background-color: var(--menu-background);
+      border-right: 1px solid var(--card-border);
       transition: width 0.28s;
 
       &.has-logo {
@@ -80,6 +88,10 @@ const { showTagsView, showLogo, isSidebarOpen, routes } = useLayout();
 
     &--collapsed {
       margin-left: $sidebar-width-collapsed;
+    }
+
+    &--fullscreen {
+      margin-left: 0 !important;
     }
 
     .fixed-header {

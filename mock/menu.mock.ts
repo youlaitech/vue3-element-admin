@@ -376,9 +376,9 @@ export default defineMock([
               },
             },
             {
-              path: "icon-selector",
-              component: "demo/icon-selector",
-              name: "IconSelector",
+              path: "icon-select",
+              component: "demo/icon-select",
+              name: "IconSelect",
               meta: {
                 title: "图标选择器",
                 icon: "",
@@ -1473,8 +1473,8 @@ export default defineMock([
               name: "图标选择器",
               type: "M",
               routeName: null,
-              routePath: "icon-selector",
-              component: "demo/icon-selector",
+              routePath: "icon-select",
+              component: "demo/icon-select",
               sort: 4,
               visible: 1,
               icon: "",

@@ -1,6 +1,6 @@
 <template>
-  <div class="auth-view">
-    <div class="auth-view__toolbar">
+  <div class="login-page">
+    <div class="login-page__toolbar">
       <el-tooltip :content="t('login.themeToggle')" placement="bottom">
         <div class="toolbar-item">
           <ThemeSwitch />
@@ -13,18 +13,17 @@
       </el-tooltip>
     </div>
 
-    <div class="auth-view__wrapper">
-      <!-- 可选：左侧产品介绍区域，如不需要可整段删除，右侧登录表单会自动居中展示 -->
-      <section class="auth-feature">
-        <div class="auth-feature__badge">
-          <span class="auth-feature__dot" />
+    <div class="login-page__body">
+      <section class="login-hero">
+        <div class="login-hero__badge">
+          <span class="login-hero__dot" />
           Enterprise Ready
         </div>
-        <h1 class="auth-feature__title">企业级管理系统</h1>
-        <p class="auth-feature__subtitle">
+        <h1 class="login-hero__title">企业级管理系统</h1>
+        <p class="login-hero__subtitle">
           提供安全、高效、可扩展的管理解决方案，助力企业数字化转型与业务增长。
         </p>
-        <ul class="auth-feature__highlights">
+        <ul class="login-hero__features">
           <li>
             <span>✓</span>
             统一身份认证与权限管理
@@ -44,16 +43,16 @@
         </ul>
       </section>
 
-      <section class="auth-panel">
-        <div class="auth-panel__brand">
-          <div class="auth-panel__logo-wrap">
-            <el-image :src="logo" class="auth-panel__logo" />
+      <section class="login-card">
+        <div class="login-card__brand">
+          <div class="login-card__logo-wrap">
+            <el-image :src="logo" class="login-card__logo" />
           </div>
-          <div class="auth-panel__meta">
-            <div class="auth-panel__title-row">
-              <span class="auth-panel__title">{{ appConfig.title }}</span>
+          <div class="login-card__meta">
+            <div class="login-card__title-row">
+              <span class="login-card__title">{{ appConfig.title }}</span>
             </div>
-            <div v-if="appConfig.version || tenantEnabled" class="auth-panel__version-row">
+            <div v-if="appConfig.version || tenantEnabled" class="login-card__version-row">
               <el-text size="small" type="info">VERSION</el-text>
               <el-tag v-if="appConfig.version" size="small" effect="light" round>
                 {{ `v${appConfig.version}` }}
@@ -66,10 +65,126 @@
         </div>
 
         <transition name="fade-slide" mode="out-in">
-          <component :is="formComponents[component]" v-model="component" class="auth-panel__form" />
+          <div v-if="component === 'login'" key="login" class="login-card__form">
+            <h3 class="login-form__title text-center">{{ t("login.login") }}</h3>
+            <el-form
+              ref="loginFormRef"
+              :model="loginFormData"
+              :rules="loginRules"
+              size="large"
+              :validate-on-rule-change="false"
+            >
+              <el-form-item prop="username">
+                <el-input v-model.trim="loginFormData.username" :placeholder="t('login.username')">
+                  <template #prefix>
+                    <el-icon><User /></el-icon>
+                  </template>
+                </el-input>
+              </el-form-item>
+
+              <el-tooltip :visible="isCapsLock" :content="t('login.capsLock')" placement="right">
+                <el-form-item prop="password">
+                  <el-input
+                    v-model.trim="loginFormData.password"
+                    :placeholder="t('login.password')"
+                    type="password"
+                    show-password
+                    @keyup="checkCapsLock"
+                    @keyup.enter="handleLoginSubmit"
+                  >
+                    <template #prefix>
+                      <el-icon><Lock /></el-icon>
+                    </template>
+                  </el-input>
+                </el-form-item>
+              </el-tooltip>
+
+              <el-form-item prop="captchaCode">
+                <div flex items-center gap-10px>
+                  <el-input
+                    v-model.trim="loginFormData.captchaCode"
+                    :placeholder="t('login.captchaCode')"
+                    clearable
+                    class="flex-1"
+                    @keyup.enter="handleLoginSubmit"
+                  >
+                    <template #prefix>
+                      <div class="i-svg:captcha" />
+                    </template>
+                  </el-input>
+                  <div cursor-pointer h-44px w-140px flex-center @click="getCaptcha">
+                    <el-icon v-if="codeLoading" class="is-loading" size="20"><Loading /></el-icon>
+                    <img
+                      v-else-if="captchaBase64"
+                      border-rd-4px
+                      w-full
+                      h-full
+                      block
+                      object-cover
+                      shadow="[0_0_0_1px_var(--el-border-color)_inset]"
+                      :src="captchaBase64"
+                      alt="captchaCode"
+                      title="点击刷新验证码"
+                      @error="getCaptcha"
+                    />
+                    <el-text v-else type="info" size="small">点击获取验证码</el-text>
+                  </div>
+                </div>
+              </el-form-item>
+
+              <div class="flex-x-between w-full">
+                <el-checkbox v-model="loginFormData.rememberMe">
+                  {{ t("login.rememberMe") }}
+                </el-checkbox>
+                <el-link type="primary" underline="never" @click="showForm('resetPwd')">
+                  {{ t("login.forgetPassword") }}
+                </el-link>
+              </div>
+
+              <el-form-item>
+                <el-button
+                  :loading="loading"
+                  type="primary"
+                  class="w-full"
+                  @click="handleLoginSubmit"
+                >
+                  {{ t("login.login") }}
+                </el-button>
+              </el-form-item>
+            </el-form>
+
+            <div flex-center gap-10px>
+              <el-text size="default">{{ t("login.noAccount") }}</el-text>
+              <el-link type="primary" underline="never" @click="showForm('register')">
+                {{ t("login.reg") }}
+              </el-link>
+            </div>
+
+            <div class="login-form__social">
+              <div class="social-divider">
+                <span class="social-divider__line" />
+                <span class="social-divider__text">{{ t("login.otherLoginMethods") }}</span>
+                <span class="social-divider__line" />
+              </div>
+              <div class="social-icons">
+                <span class="social-icons__item"><span class="i-svg:wechat" /></span>
+                <span class="social-icons__item"><span class="i-svg:qq" /></span>
+                <span class="social-icons__item"><span class="i-svg:github" /></span>
+                <span class="social-icons__item"><span class="i-svg:gitee" /></span>
+              </div>
+            </div>
+          </div>
+
+          <component
+            :is="formComponents[component]"
+            v-else
+            :key="component"
+            class="login-card__form"
+            @update:model-value="component = $event"
+          />
         </transition>
 
-        <footer class="auth-panel__footer">
+        <footer class="login-card__footer">
           <el-text size="small">
             Copyright © 2021 - 2025 youlai.tech
             <a href="http://beian.miit.gov.cn/" target="_blank">皖ICP备00064962号</a>
@@ -81,6 +196,13 @@
 </template>
 
 <script setup lang="ts">
+import { User, Lock, Loading } from "@element-plus/icons-vue";
+import type { FormInstance } from "element-plus";
+import AuthAPI from "@/api/auth";
+import type { LoginRequest } from "@/api/auth";
+import router from "@/router";
+import { useUserStore } from "@/stores";
+import { AuthStorage } from "@/utils/auth";
 import logo from "@/assets/images/logo.png";
 import { appConfig } from "@/settings";
 import ThemeSwitch from "@/components/ThemeSwitch/index.vue";
@@ -88,181 +210,150 @@ import ThemeSwitch from "@/components/ThemeSwitch/index.vue";
 type LayoutMap = "login" | "register" | "resetPwd";
 
 const { t } = useI18n();
+const userStore = useUserStore();
+const route = useRoute();
 const component = ref<LayoutMap>("login");
 
 const tenantEnabled = appConfig.tenantEnabled;
 
 const formComponents = {
-  login: defineAsyncComponent(() => import("./components/Login.vue")),
   register: defineAsyncComponent(() => import("./components/Register.vue")),
   resetPwd: defineAsyncComponent(() => import("./components/ResetPwd.vue")),
 };
+
+const loginFormRef = ref<FormInstance>();
+const loading = ref(false);
+const isCapsLock = ref(false);
+const captchaBase64 = ref<string>();
+const codeLoading = ref(false);
+
+const rememberMe = AuthStorage.getRememberMe();
+const loginFormData = ref<LoginRequest>({
+  username: "admin",
+  password: "123456",
+  captchaId: "",
+  captchaCode: "",
+  rememberMe,
+});
+
+const loginRules = computed(() => ({
+  username: [{ required: true, trigger: "blur", message: t("login.message.username.required") }],
+  password: [
+    { required: true, trigger: "blur", message: t("login.message.password.required") },
+    { min: 6, message: t("login.message.password.min"), trigger: "blur" },
+  ],
+  captchaCode: [
+    { required: true, trigger: "blur", message: t("login.message.captchaCode.required") },
+  ],
+}));
+
+function getCaptcha() {
+  codeLoading.value = true;
+  AuthAPI.getCaptcha()
+    .then((data) => {
+      loginFormData.value.captchaId = data.captchaId;
+      captchaBase64.value = data.captchaBase64;
+    })
+    .finally(() => (codeLoading.value = false));
+}
+
+async function handleLoginSubmit() {
+  const valid = await loginFormRef.value?.validate().then(
+    () => true,
+    () => false
+  );
+  if (!valid) return;
+
+  loading.value = true;
+  try {
+    await userStore.login(loginFormData.value).then(
+      async () => {
+        const redirectPath = (route.query.redirect as string) || "/";
+        await router.push(decodeURIComponent(redirectPath));
+      },
+      () => {
+        getCaptcha();
+      }
+    );
+  } finally {
+    loading.value = false;
+  }
+}
+
+function checkCapsLock(event: KeyboardEvent) {
+  if (event instanceof KeyboardEvent) {
+    isCapsLock.value = event.getModifierState("CapsLock");
+  }
+}
+
+function showForm(type: "register" | "resetPwd") {
+  component.value = type;
+}
+
+onMounted(() => getCaptcha());
 </script>
 
 <style lang="scss" scoped>
-.auth-view {
-  --auth-page-bg: #f5f7ff;
-  --auth-overlay: linear-gradient(120deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
-  --auth-toolbar-bg: rgba(255, 255, 255, 0.85);
-  --auth-toolbar-border: rgba(22, 93, 255, 0.15);
-  --auth-toolbar-shadow: 0 10px 30px rgba(22, 93, 255, 0.12);
-  --auth-toolbar-hover-shadow: 0 16px 40px rgba(22, 93, 255, 0.18);
-  --auth-toolbar-inner-hover-bg: var(--el-fill-color);
-  --auth-feature-text: var(--el-text-color-primary);
-  --auth-badge-text: rgba(22, 93, 255, 0.95);
-  --auth-badge-bg: rgba(22, 93, 255, 0.1);
-  --auth-dot-bg: #165dff;
-  --auth-dot-shadow: 0 0 12px rgba(22, 93, 255, 0.7);
-  --auth-subtitle-text: var(--el-text-color-regular);
-  --auth-highlight-text: var(--el-text-color-primary);
-  --auth-highlight-bg: rgba(255, 255, 255, 0.9);
-  --auth-highlight-border: rgba(64, 128, 255, 0.08);
-  --auth-highlight-accent: rgba(22, 93, 255, 0.8);
-  --auth-panel-bg: rgba(255, 255, 255, 0.95);
-  --auth-panel-border: rgba(22, 93, 255, 0.1);
-  --auth-panel-shadow:
-    0 16px 48px rgba(22, 93, 255, 0.12), 0 4px 16px rgba(22, 93, 255, 0.08),
-    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-  --auth-brand-border: rgba(22, 93, 255, 0.06);
-  --auth-panel-title: var(--el-text-color-primary);
-  --auth-version-label: var(--el-text-color-secondary);
-  --auth-version-tag-bg: rgba(22, 93, 255, 0.1);
-  --auth-version-tag-border: rgba(22, 93, 255, 0.12);
-  --auth-version-tag-text: rgba(22, 93, 255, 0.9);
-  --auth-logo-bg: radial-gradient(circle at 30% 20%, #ffffff, #e6efff);
-  --auth-logo-shadow: 0 8px 20px rgba(22, 93, 255, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
-  --auth-footer-border: rgba(22, 93, 255, 0.06);
-  --auth-link: rgba(22, 93, 255, 0.85);
-  --auth-link-hover: rgba(22, 93, 255, 1);
-  --auth-inline-text: var(--el-text-color-regular);
-  --auth-input-bg: rgba(255, 255, 255, 0.92);
-  --auth-input-border: var(--el-border-color);
-  --auth-input-border-hover: var(--el-border-color-hover);
-  --auth-input-border-focus: var(--el-color-primary);
-  --auth-input-text: var(--el-text-color-primary);
-  --auth-input-placeholder: var(--el-text-color-placeholder);
-  --auth-input-icon: var(--el-text-color-secondary);
-  --auth-checkbox-text: var(--el-text-color-regular);
-  --auth-divider: var(--el-border-color-light);
-  --auth-social-text: var(--el-text-color-secondary);
-  --auth-social-hover-bg: var(--el-fill-color);
-  --auth-captcha-shadow: 0 0 0 1px var(--el-border-color) inset;
-  --auth-button-shadow: 0 12px 24px rgba(22, 93, 255, 0.12);
-  --auth-button-success-shadow: 0 12px 24px rgba(35, 166, 111, 0.2);
-  --auth-button-warning-shadow: 0 12px 24px rgba(230, 162, 60, 0.2);
+.login-page {
+  --login-hero-text: #1a1a2e;
+  --login-hero-sub: #6b7280;
+  --login-card-bg: rgb(255 255 255 / 90%);
+  --login-card-border: rgb(0 0 0 / 6%);
+
   position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
-  width: 100%;
   min-height: 100vh;
   padding: clamp(1rem, 3vw, 2rem);
-  overflow-x: hidden;
-  overflow-y: auto;
-  background-color: var(--auth-page-bg);
+  overflow: hidden;
+  background: #f5f8ff;
 
   &::before {
     position: fixed;
     inset: 0;
-    z-index: -2;
+    z-index: 0;
+    pointer-events: none;
     content: "";
     background: url("@/assets/images/login/bg.svg") center/cover no-repeat;
   }
-
-  &::after {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    content: "";
-    background: var(--auth-overlay);
-  }
 }
 
-.dark .auth-view {
-  --auth-page-bg: #08101f;
-  --auth-overlay: linear-gradient(120deg, rgba(7, 12, 24, 0.4), rgba(7, 12, 24, 0));
-  --auth-toolbar-bg: rgba(24, 28, 43, 0.9);
-  --auth-toolbar-border: rgba(64, 128, 255, 0.35);
-  --auth-toolbar-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(90, 140, 255, 0.25) inset;
-  --auth-toolbar-hover-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(96, 148, 255, 0.28) inset;
-  --auth-feature-text: rgba(240, 245, 255, 0.92);
-  --auth-badge-text: rgba(160, 190, 255, 0.95);
-  --auth-badge-bg: rgba(64, 128, 255, 0.12);
-  --auth-dot-bg: #7aa2ff;
-  --auth-subtitle-text: rgba(220, 230, 255, 0.75);
-  --auth-highlight-text: rgba(230, 236, 255, 0.85);
-  --auth-highlight-bg: rgba(18, 22, 36, 0.7);
-  --auth-highlight-border: rgba(98, 149, 255, 0.18);
-  --auth-highlight-accent: rgba(122, 162, 255, 0.9);
-  --auth-panel-bg: rgba(26, 32, 48, 0.9);
-  --auth-panel-border: rgba(86, 140, 255, 0.28);
-  --auth-panel-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.58), 0 4px 16px rgba(0, 0, 0, 0.36),
-    0 0 0 1px rgba(110, 150, 255, 0.16) inset;
-  --auth-brand-border: rgba(64, 128, 255, 0.12);
-  --auth-panel-title: rgba(245, 248, 255, 0.95);
-  --auth-version-label: rgba(186, 202, 236, 0.78);
-  --auth-version-tag-bg: rgba(86, 140, 255, 0.16);
-  --auth-version-tag-border: rgba(104, 156, 255, 0.2);
-  --auth-version-tag-text: rgba(214, 226, 255, 0.96);
-  --auth-logo-bg: radial-gradient(circle at 30% 20%, #1f2438, #141827);
-  --auth-logo-shadow: 0 8px 20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(90, 140, 255, 0.3) inset;
-  --auth-footer-border: rgba(64, 128, 255, 0.12);
-  --auth-link: rgba(140, 170, 255, 0.88);
-  --auth-link-hover: rgba(160, 190, 255, 1);
-  --auth-inline-text: rgba(208, 220, 244, 0.76);
-  --auth-input-bg: rgba(14, 19, 33, 0.92);
-  --auth-input-border: rgba(104, 132, 194, 0.28);
-  --auth-input-border-hover: rgba(122, 154, 224, 0.4);
-  --auth-input-border-focus: rgba(122, 162, 255, 0.92);
-  --auth-input-text: rgba(240, 245, 255, 0.96);
-  --auth-input-placeholder: rgba(168, 185, 221, 0.56);
-  --auth-input-icon: rgba(168, 186, 227, 0.74);
-  --auth-checkbox-text: rgba(208, 220, 244, 0.78);
-  --auth-divider: rgba(98, 128, 191, 0.24);
-  --auth-social-text: rgba(176, 192, 224, 0.72);
-  --auth-social-hover-bg: rgba(36, 49, 79, 0.78);
-  --auth-captcha-shadow: 0 0 0 1px rgba(104, 132, 194, 0.28) inset;
-  --auth-button-shadow: 0 14px 26px rgba(51, 100, 214, 0.22);
-  --auth-button-success-shadow: 0 14px 26px rgba(34, 149, 108, 0.24);
-  --auth-button-warning-shadow: 0 14px 26px rgba(211, 142, 38, 0.24);
+.dark .login-page {
+  --login-hero-text: #e4e8f0;
+  --login-hero-sub: #8893a8;
+  --login-card-bg: rgb(22 26 36 / 90%);
+  --login-card-border: rgb(255 255 255 / 7%);
+
+  background: #0b0f19;
 
   &::before {
     background-image: url("@/assets/images/login/bg-dark.svg");
   }
 }
 
-.auth-view__toolbar {
+.login-page__toolbar {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
-  gap: 0.75rem;
+  gap: 8px;
   align-self: flex-end;
-  padding: 0.5rem 0.75rem;
-  background-color: var(--auth-toolbar-bg);
-  border: 1px solid var(--auth-toolbar-border);
+  padding: 6px 10px;
+  background: var(--login-card-bg);
+  border: 1px solid var(--login-card-border);
   border-radius: 999px;
-  box-shadow: var(--auth-toolbar-shadow);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-
-  &:hover {
-    box-shadow: var(--auth-toolbar-hover-shadow);
-    transform: translateY(-2px);
-  }
+  backdrop-filter: blur(8px);
 
   .toolbar-item {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem;
+    padding: 6px;
     cursor: pointer;
     border-radius: 8px;
-    transition: background-color 0.3s ease;
+    transition: background 0.2s;
 
     &:hover {
-      background-color: var(--auth-toolbar-inner-hover-bg);
+      background: var(--el-fill-color);
     }
   }
 
@@ -271,319 +362,278 @@ const formComponents = {
     top: 12px;
     right: 16px;
     z-index: 20;
-    align-self: flex-end;
-    justify-content: center;
   }
 }
 
-.auth-view__wrapper {
+.login-page__body {
+  position: relative;
+  z-index: 1;
   display: grid;
   flex: 1;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: clamp(1.5rem, 3vw, 3rem);
+  gap: clamp(2rem, 4vw, 4rem);
   align-items: stretch;
   padding: clamp(1.5rem, 2vw, 2.5rem);
 }
 
-.auth-feature {
+.login-hero {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(1.5rem, 3vw, 3rem);
-  color: var(--auth-feature-text);
-  animation: featureFade 0.8s ease-out;
+  padding: clamp(1rem, 2vw, 2rem);
+  color: var(--login-hero-text);
+  animation: heroIn 0.8s ease-out;
 }
 
-@media (max-width: 768px) {
-  .auth-view__wrapper {
-    display: block;
-    padding: 1.25rem 0.75rem 1.75rem;
-  }
-
-  .auth-feature {
-    display: none;
-  }
-
-  .auth-panel {
-    width: 100%;
-    margin-inline: 0;
-    box-shadow:
-      0 12px 32px rgba(22, 93, 255, 0.18),
-      0 2px 8px rgba(22, 93, 255, 0.12);
-  }
-}
-
-.auth-feature__badge {
+.login-hero__badge {
   display: inline-flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
   width: fit-content;
-  padding: 0.3rem 0.9rem;
-  font-size: 0.875rem;
-  color: var(--auth-badge-text);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  background: var(--auth-badge-bg);
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--el-color-primary);
+  letter-spacing: 0.06em;
+  background: var(--el-color-primary-light-9);
   border-radius: 999px;
 }
 
-.auth-feature__dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  background: var(--auth-dot-bg);
+.login-hero__dot {
+  width: 7px;
+  height: 7px;
+  background: var(--el-color-primary);
   border-radius: 50%;
-  box-shadow: var(--auth-dot-shadow);
 }
 
-.auth-feature__title {
-  margin: 1.5rem 0 0.5rem;
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  font-weight: 600;
-  line-height: 1.2;
+.login-hero__title {
+  margin: 1.25rem 0 0.5rem;
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
-.auth-feature__subtitle {
+.login-hero__subtitle {
   margin-bottom: 1.5rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.7;
-  color: var(--auth-subtitle-text);
+  color: var(--login-hero-sub);
 }
 
-.auth-feature__highlights {
+.login-hero__features {
   display: grid;
-  gap: 0.75rem;
+  gap: 8px;
   padding: 0;
   margin: 0;
   list-style: none;
 
   li {
     display: flex;
-    gap: 0.5rem;
-    align-items: flex-start;
-    padding: 0.75rem 1rem;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 14px;
+    font-size: 0.9rem;
     font-weight: 500;
-    color: var(--auth-highlight-text);
-    background: var(--auth-highlight-bg);
-    border: 1px solid var(--auth-highlight-border);
-    border-radius: 12px;
-    backdrop-filter: blur(6px);
+    background: var(--login-card-bg);
+    border: 1px solid var(--login-card-border);
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
 
     span {
-      font-size: 0.75rem;
-      line-height: 1.6;
-      color: var(--auth-highlight-accent);
+      flex-shrink: 0;
+      font-weight: 700;
+      color: var(--el-color-primary);
     }
   }
 }
 
-.auth-panel {
+.login-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 20px;
   align-self: center;
-  justify-content: flex-start;
   justify-self: end;
   width: min(420px, 100%);
-  min-height: 560px;
-  padding: clamp(1.5rem, 3vw, 2rem);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
   margin-inline: auto;
-  background: var(--auth-panel-bg);
-  border: 1px solid var(--auth-panel-border);
-  border-radius: 24px;
-  box-shadow: var(--auth-panel-shadow);
-  backdrop-filter: blur(20px);
-  animation: panelLift 0.7s ease;
+  background: var(--login-card-bg);
+  border: 1px solid var(--login-card-border);
+  border-radius: 20px;
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 2%),
+    0 12px 32px rgb(0 0 0 / 6%);
+  backdrop-filter: blur(16px);
+  animation: cardIn 0.7s ease;
 }
 
-.auth-panel__brand {
+.login-card__brand {
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: center;
-  justify-content: space-between;
-  padding-bottom: 0.875rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--auth-brand-border);
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--login-card-border);
 }
 
-.auth-panel__logo-wrap {
-  display: inline-flex;
+.login-card__logo-wrap {
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
-  background: var(--auth-logo-bg);
-  border-radius: 18px;
-  box-shadow: var(--auth-logo-shadow);
+  width: 46px;
+  height: 46px;
+  background: var(--el-color-primary-light-9);
+  border-radius: 14px;
 }
 
-.auth-panel__logo {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+.login-card__logo {
+  width: 26px;
+  height: 26px;
 }
 
-.auth-panel__meta {
-  display: flex;
+.login-card__meta {
   flex: 1;
-  flex-direction: column;
-  gap: 0.35rem;
   min-width: 0;
 }
 
-.auth-panel__title-row {
-  display: flex;
-  gap: 0.5rem;
-  align-items: baseline;
-}
-
-.auth-panel__title {
+.login-card__title {
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 650;
-  line-height: 1.4;
-  color: var(--auth-panel-title);
   white-space: nowrap;
 }
 
-.auth-panel__version-row {
-  display: inline-flex;
-  gap: 0.5rem;
+.login-card__version-row {
+  display: flex;
+  gap: 8px;
   align-items: center;
-  font-size: 0.78rem;
-
-  :deep(.el-text) {
-    color: var(--auth-version-label);
-  }
-
-  :deep(.el-tag) {
-    color: var(--auth-version-tag-text);
-    background-color: var(--auth-version-tag-bg);
-    border-color: var(--auth-version-tag-border);
-  }
+  margin-top: 2px;
+  font-size: 0.72rem;
 }
 
-.auth-panel__form {
-  width: 100%;
-  max-width: 100%;
-  min-height: 360px;
-  margin-inline: auto;
+.login-form__title {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 600;
+}
 
+.login-card__form {
   :deep(.el-form-item) {
-    margin-bottom: 1rem;
+    margin-bottom: 18px;
   }
 
   :deep(.el-input__wrapper) {
-    background-color: var(--auth-input-bg);
-    box-shadow: 0 0 0 1px var(--auth-input-border) inset;
-    transition: all 0.2s ease;
+    background: rgb(0 0 0 / 2%);
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 6%) inset;
+    transition: all 0.2s;
 
     &:hover {
-      box-shadow: 0 0 0 1px var(--auth-input-border-hover) inset;
+      box-shadow: 0 0 0 1px rgb(0 0 0 / 10%) inset;
     }
 
     &.is-focus {
-      box-shadow: 0 0 0 1px var(--auth-input-border-focus) inset;
+      background: transparent;
+      box-shadow: 0 0 0 1.5px var(--el-color-primary) inset;
     }
-  }
-
-  :deep(.el-input__inner) {
-    color: var(--auth-input-text);
-
-    &::placeholder {
-      color: var(--auth-input-placeholder);
-    }
-  }
-
-  :deep(.el-input__prefix),
-  :deep(.el-input__suffix),
-  :deep(.el-input__prefix-inner),
-  :deep(.el-input__suffix-inner) {
-    color: var(--auth-input-icon);
-  }
-
-  :deep(.el-text) {
-    color: var(--auth-inline-text);
-  }
-
-  :deep(.el-link) {
-    color: var(--auth-link);
-
-    &:hover {
-      color: var(--auth-link-hover);
-    }
-  }
-
-  :deep(.el-checkbox) {
-    color: var(--auth-checkbox-text);
-  }
-
-  :deep(.el-checkbox__label) {
-    color: inherit;
-  }
-
-  :deep(.el-button) {
-    box-shadow: var(--auth-button-shadow);
-  }
-
-  :deep(.el-button--success) {
-    box-shadow: var(--auth-button-success-shadow);
-  }
-
-  :deep(.el-button--warning) {
-    box-shadow: var(--auth-button-warning-shadow);
-  }
-
-  :deep(.el-card) {
-    background: transparent;
-    box-shadow: none;
-  }
-
-  :deep(img[alt="captchaCode"]),
-  :deep(img[alt="code"]) {
-    box-shadow: var(--auth-captcha-shadow);
-  }
-
-  :deep(.third-party-login .divider-line) {
-    background: linear-gradient(to right, transparent, var(--auth-divider), transparent);
-  }
-
-  :deep(.third-party-login .divider-text) {
-    color: var(--auth-inline-text);
-  }
-
-  :deep(.third-party-login .social-login) {
-    color: var(--auth-social-text);
-  }
-
-  :deep(.third-party-login .social-login__item:hover) {
-    background-color: var(--auth-social-hover-bg);
   }
 }
 
-.auth-panel__footer {
-  padding-top: 0.875rem;
-  margin-top: 0.125rem;
-  font-size: 0.875rem;
+.dark .login-card__form {
+  :deep(.el-input__wrapper) {
+    background: rgb(255 255 255 / 3%);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 8%) inset;
+
+    &:hover {
+      box-shadow: 0 0 0 1px rgb(255 255 255 / 14%) inset;
+    }
+
+    &.is-focus {
+      background: rgb(255 255 255 / 5%);
+      box-shadow: 0 0 0 1.5px var(--el-color-primary) inset;
+    }
+  }
+}
+
+.login-form__social {
+  .social-divider {
+    display: flex;
+    align-items: center;
+    margin: 16px 0;
+
+    &__line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--el-border-color-light), transparent);
+    }
+
+    &__text {
+      padding: 0 14px;
+      font-size: 12px;
+      color: var(--el-text-color-placeholder);
+      white-space: nowrap;
+    }
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    justify-content: center;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: all 0.2s;
+
+      &:hover {
+        background: var(--el-fill-color);
+      }
+    }
+  }
+}
+
+.login-card__footer {
+  padding-top: 14px;
+  font-size: 0.78rem;
+  color: var(--el-text-color-placeholder);
   text-align: center;
-  border-top: 1px solid var(--auth-footer-border);
+  border-top: 1px solid var(--login-card-border);
 
   a {
-    margin-left: 0.25rem;
-    color: var(--auth-link);
+    margin-left: 4px;
+    color: var(--el-text-color-secondary);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color 0.2s;
 
     &:hover {
-      color: var(--auth-link-hover);
+      color: var(--el-color-primary);
     }
   }
 }
 
-@keyframes featureFade {
+@media (max-width: 768px) {
+  .login-page__body {
+    display: block;
+    padding: 0.5rem;
+  }
+
+  .login-hero {
+    display: none;
+  }
+}
+
+@keyframes heroIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -591,10 +641,10 @@ const formComponents = {
   }
 }
 
-@keyframes panelLift {
+@keyframes cardIn {
   from {
     opacity: 0;
-    transform: translateY(30px) scale(0.98);
+    transform: translateY(24px) scale(0.98);
   }
   to {
     opacity: 1;
@@ -604,22 +654,22 @@ const formComponents = {
 
 .fade-slide-enter-active,
 .fade-slide-leave-active {
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-slide-enter-from {
   opacity: 0;
-  transform: translateX(-40px) scale(0.95);
+  transform: translateY(12px);
 }
 
 .fade-slide-leave-to {
   opacity: 0;
-  transform: translateX(40px) scale(0.95);
+  transform: translateY(-12px);
 }
 
 .fade-slide-enter-to,
 .fade-slide-leave-from {
   opacity: 1;
-  transform: translateX(0) scale(1);
+  transform: translateY(0);
 }
 </style>

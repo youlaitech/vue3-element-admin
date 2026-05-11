@@ -1,383 +1,297 @@
-﻿<template>
-  <div class="relative p-5">
-    <!-- github 角标 -->
-    <github-corner class="absolute top-0 right-0 z-1 border-0" />
-
-    <el-card shadow="never">
-      <div class="flex flex-wrap">
-        <!-- 左侧问候语区域 -->
-        <div class="flex-1 flex items-start">
-          <div style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%">
-            <img
-              :src="userStore.userInfo.avatar + '?imageView2/1/w/80/h/80'"
-              class="w80px h80px rounded-full"
-              style="width: 100%; height: 100%; object-fit: cover; object-position: center"
-            />
+<template>
+  <div class="dash">
+    <!-- ============================================================
+    Header: greeting + links
+    ============================================================ -->
+    <section class="dash-header">
+      <div class="card dash-header__card">
+        <div class="dash-header__start">
+          <div class="dash-avatar">
+            <img v-if="userStore.userInfo.avatar" :src="userStore.userInfo.avatar" alt="" />
+            <el-icon v-else :size="22"><User /></el-icon>
           </div>
-          <div class="ml-5">
-            <p class="text-base font-semibold text-[--el-text-color-primary] leading-tight">
-              {{ greetings }}
-            </p>
-            <p class="text-sm text-gray">今日天气晴朗，气温在15℃至25℃之间，东南风。</p>
+          <div class="dash-header__text">
+            <h1 class="dash-header__greeting">{{ greetings }}</h1>
+            <p class="dash-header__date">{{ currentDateStr }}</p>
           </div>
         </div>
-
-        <!-- 右侧图标区域 - PC端-->
-        <div class="hidden sm:block">
-          <div class="flex items-end space-x-6">
-            <!-- 仓库 -->
-            <div>
-              <div class="font-bold color-#ff9a2e text-sm flex items-center">
-                <el-icon class="mr-2px"><Folder /></el-icon>
-                仓库
-              </div>
-              <div class="mt-3 whitespace-nowrap">
-                <el-link href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
-                  <div class="i-svg:gitee text-lg color-#F76560" />
-                </el-link>
-                <el-divider direction="vertical" />
-                <el-link href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
-                  <div class="i-svg:github text-lg color-#4080FF" />
-                </el-link>
-                <el-divider direction="vertical" />
-                <el-link href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
-                  <div class="i-svg:gitcode text-lg color-#FF9A2E" />
-                </el-link>
-              </div>
-            </div>
-
-            <!-- 文档 -->
-            <div>
-              <div class="font-bold color-#4080ff text-sm flex items-center">
-                <el-icon class="mr-2px"><Document /></el-icon>
-                文档
-              </div>
-              <div class="mt-3 whitespace-nowrap">
-                <el-link href="https://juejin.cn/post/7228990409909108793" target="_blank">
-                  <div class="i-svg:juejin text-lg" />
-                </el-link>
-                <el-divider direction="vertical" />
-                <el-link
-                  href="https://youlai.blog.csdn.net/article/details/130191394"
-                  target="_blank"
-                >
-                  <div class="i-svg:csdn text-lg" />
-                </el-link>
-                <el-divider direction="vertical" />
-                <el-link href="https://www.cnblogs.com/haoxianrui/p/17331952.html" target="_blank">
-                  <div class="i-svg:cnblogs text-lg" />
-                </el-link>
-              </div>
-            </div>
-
-            <!-- 视频 -->
-            <div>
-              <div class="font-bold color-#f76560 text-sm flex items-center">
-                <el-icon class="mr-2px"><VideoCamera /></el-icon>
-                视频
-              </div>
-              <div class="mt-3 whitespace-nowrap">
-                <el-link href="https://www.bilibili.com/video/BV1eFUuYyEFj" target="_blank">
-                  <div class="i-svg:bilibili text-lg" />
-                </el-link>
-              </div>
-            </div>
+        <div class="dash-header__end">
+          <div class="brand-group">
+            <span class="brand-group__label" style="color: #e67e22">
+              <el-icon :size="13"><Folder /></el-icon>
+              <span>仓库</span>
+            </span>
+            <span class="brand-group__icons">
+              <a
+                href="https://gitee.com/youlaiorg/vue3-element-admin"
+                target="_blank"
+                title="Gitee"
+                class="brand-icon"
+                style="color: #c71d23"
+              >
+                <span class="i-svg:gitee" />
+              </a>
+              <a
+                href="https://github.com/youlaitech/vue3-element-admin"
+                target="_blank"
+                title="GitHub"
+                class="brand-icon"
+                style="color: #0969da"
+              >
+                <span class="i-svg:github" />
+              </a>
+              <a
+                href="https://gitcode.com/youlai/vue3-element-admin"
+                target="_blank"
+                title="GitCode"
+                class="brand-icon"
+                style="color: #f36d26"
+              >
+                <span class="i-svg:gitcode" />
+              </a>
+            </span>
           </div>
-        </div>
-
-        <!-- 移动端图标区域-->
-        <div class="w-full sm:hidden mt-3">
-          <div class="flex justify-end space-x-4 overflow-x-auto">
-            <!-- 仓库图标 -->
-            <el-link href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
-              <div class="i-svg:gitee text-lg color-#F76560" />
-            </el-link>
-            <el-link href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
-              <div class="i-svg:github text-lg color-#4080FF" />
-            </el-link>
-            <el-link href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
-              <div class="i-svg:gitcode text-lg color-#FF9A2E" />
-            </el-link>
-
-            <!-- 文档图标 -->
-            <el-link href="https://juejin.cn/post/7228990409909108793" target="_blank">
-              <div class="i-svg:juejin text-lg" />
-            </el-link>
-            <el-link href="https://youlai.blog.csdn.net/article/details/130191394" target="_blank">
-              <div class="i-svg:csdn text-lg" />
-            </el-link>
-            <el-link href="https://www.cnblogs.com/haoxianrui/p/17331952.html" target="_blank">
-              <div class="i-svg:cnblogs text-lg" />
-            </el-link>
-
-            <!-- 视频图标 -->
-            <el-link href="https://www.bilibili.com/video/BV1eFUuYyEFj" target="_blank">
-              <div class="i-svg:bilibili text-lg" />
-            </el-link>
+          <div class="brand-group">
+            <span class="brand-group__label" style="color: #409eff">
+              <el-icon :size="13"><Document /></el-icon>
+              <span>文档</span>
+            </span>
+            <span class="brand-group__icons">
+              <a
+                href="https://juejin.cn/post/7228990409909108793"
+                target="_blank"
+                title="掘金"
+                class="brand-icon"
+                style="color: #1e80ff"
+              >
+                <span class="i-svg:juejin" />
+              </a>
+              <a
+                href="https://youlai.blog.csdn.net/article/details/130191394"
+                target="_blank"
+                title="CSDN"
+                class="brand-icon"
+                style="color: #fc5531"
+              >
+                <span class="i-svg:csdn" />
+              </a>
+              <a
+                href="https://www.cnblogs.com/haoxianrui/p/17331952.html"
+                target="_blank"
+                title="博客园"
+                class="brand-icon"
+                style="color: #f68a1e"
+              >
+                <span class="i-svg:cnblogs" />
+              </a>
+            </span>
+          </div>
+          <div class="brand-group">
+            <span class="brand-group__label" style="color: #e74c3c">
+              <el-icon :size="13"><VideoCamera /></el-icon>
+              <span>视频</span>
+            </span>
+            <span class="brand-group__icons">
+              <a
+                href="https://www.bilibili.com/video/BV1eFUuYyEFj"
+                target="_blank"
+                title="Bilibili"
+                class="brand-icon"
+                style="color: #fb7299"
+              >
+                <span class="i-svg:bilibili" />
+              </a>
+            </span>
           </div>
         </div>
       </div>
-    </el-card>
+    </section>
 
-    <!-- 数据统计 -->
-    <el-row :gutter="10" class="mt-5">
-      <!-- 在线用户数量 -->
-      <el-col :span="8" :xs="24" class="mb-xs-3">
-        <el-card
-          shadow="never"
-          class="h-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+    <!-- ============================================================
+    Stats: 4 cards, no border, shadow only
+    ============================================================ -->
+    <section class="dash-stats">
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--blue">
+          <el-icon :size="18"><User /></el-icon>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__num">{{ onlineUserCount }}</span>
+          <span class="stat-card__label">在线用户</span>
+        </div>
+        <span
+          :class="[
+            'stat-card__badge',
+            isConnected ? 'stat-card__badge--on' : 'stat-card__badge--off',
+          ]"
         >
-          <template #header>
-            <div class="flex-x-between">
-              <span class="text-xs font-medium text-[--el-text-color-secondary]">在线用户</span>
-              <el-tag
-                size="small"
-                :type="
-                  isConnected ? 'success' : connectionState === 'CONNECTING' ? 'warning' : 'danger'
-                "
-                effect="plain"
-                class="inline-flex"
-              >
-                SSE {{ sseStatusText }}
-              </el-tag>
-            </div>
-          </template>
+          {{ isConnected ? "实时" : "离线" }}
+        </span>
+      </div>
 
-          <div class="mt-2 flex-1 flex items-end">
-            <div class="flex items-baseline gap-1.5">
-              <span class="text-xl font-semibold tracking-wide">{{ onlineUserCount }}</span>
-              <span class="text-xs text-[--el-text-color-secondary]">人</span>
-            </div>
-          </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--green">
+          <el-icon :size="18"><Avatar /></el-icon>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__num">{{ displayTransitionUvCount }}</span>
+          <span class="stat-card__label">今日访客</span>
+        </div>
+        <span v-if="uvGrowthText !== '--'" class="stat-card__trend">
+          <el-icon :size="12">
+            <ArrowUp v-if="uvIsUp" />
+            <ArrowDown v-else />
+          </el-icon>
+          {{ uvGrowthText }}
+        </span>
+      </div>
 
-          <div class="mt-2 flex justify-between items-center">
-            <span class="text-sm text-gray">更新时间</span>
-            <span class="text-sm">{{ formattedTime }}</span>
-          </div>
-        </el-card>
-      </el-col>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--orange">
+          <el-icon :size="18"><Monitor /></el-icon>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__num">{{ displayTransitionPvCount }}</span>
+          <span class="stat-card__label">今日浏览量</span>
+        </div>
+        <span v-if="pvGrowthText !== '--'" class="stat-card__trend">
+          <el-icon :size="12">
+            <ArrowUp v-if="pvIsUp" />
+            <ArrowDown v-else />
+          </el-icon>
+          {{ pvGrowthText }}
+        </span>
+      </div>
 
-      <!-- 访客量UV) -->
-      <el-col :span="8" :xs="24" class="mb-xs-3">
-        <el-skeleton :loading="visitOverviewLoading" :rows="5" animated>
-          <template #template>
-            <el-card>
-              <template #header>
-                <div>
-                  <el-skeleton-item variant="h3" style="width: 40%" />
-                  <el-skeleton-item variant="rect" style="float: right; width: 1em; height: 1em" />
-                </div>
-              </template>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--purple">
+          <el-icon :size="18"><Star /></el-icon>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__num">1,286</span>
+          <span class="stat-card__label">系统用户</span>
+        </div>
+        <span class="stat-card__trend stat-card__trend--up">
+          <el-icon :size="12"><ArrowUp /></el-icon>
+          12.5%
+        </span>
+      </div>
+    </section>
 
-              <div class="flex-x-between">
-                <el-skeleton-item variant="text" style="width: 30%" />
-                <el-skeleton-item variant="circle" style="width: 2em; height: 2em" />
-              </div>
-              <div class="mt-5 flex-x-between">
-                <el-skeleton-item variant="text" style="width: 50%" />
-                <el-skeleton-item variant="text" style="width: 1em" />
-              </div>
-            </el-card>
-          </template>
-          <template v-if="!visitOverviewLoading">
-            <el-card
-              shadow="never"
-              class="h-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-            >
-              <template #header>
-                <div class="flex-x-between">
-                  <span class="text-xs font-medium text-[--el-text-color-secondary]">
-                    访客数 UV
-                  </span>
-                  <el-tag type="success" size="small">日</el-tag>
-                </div>
-              </template>
-
-              <div class="mt-2 flex-1 flex items-end">
-                <div class="flex items-baseline gap-1.5">
-                  <span class="text-xl font-semibold tracking-wide">
-                    {{ displayTransitionUvCount }}
-                  </span>
-                  <span
-                    v-if="uvGrowthText !== null"
-                    :class="['text-xs', computeGrowthRateClass(visitOverviewData.uvGrowthRate)]"
-                  >
-                    <el-icon
-                      v-if="
-                        visitOverviewData.uvGrowthRate !== undefined &&
-                        visitOverviewData.uvGrowthRate !== null
-                      "
-                    >
-                      <Top v-if="visitOverviewData.uvGrowthRate > 0" />
-                      <Bottom v-else-if="visitOverviewData.uvGrowthRate < 0" />
-                    </el-icon>
-                    {{ uvGrowthText }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="mt-2 flex justify-between items-center">
-                <span class="text-sm text-gray">总访客数</span>
-                <span class="text-sm">{{ displayTransitionTotalUvCount }}</span>
-              </div>
-            </el-card>
-          </template>
-        </el-skeleton>
-      </el-col>
-
-      <!-- 浏览量(PV) -->
-      <el-col :span="8" :xs="24">
-        <el-skeleton :loading="visitOverviewLoading" :rows="5" animated>
-          <template #template>
-            <el-card>
-              <template #header>
-                <div>
-                  <el-skeleton-item variant="h3" style="width: 40%" />
-                  <el-skeleton-item variant="rect" style="float: right; width: 1em; height: 1em" />
-                </div>
-              </template>
-
-              <div class="flex-x-between">
-                <el-skeleton-item variant="text" style="width: 30%" />
-                <el-skeleton-item variant="circle" style="width: 2em; height: 2em" />
-              </div>
-              <div class="mt-5 flex-x-between">
-                <el-skeleton-item variant="text" style="width: 50%" />
-                <el-skeleton-item variant="text" style="width: 1em" />
-              </div>
-            </el-card>
-          </template>
-          <template v-if="!visitOverviewLoading">
-            <el-card
-              shadow="never"
-              class="h-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-            >
-              <template #header>
-                <div class="flex-x-between">
-                  <span class="text-xs font-medium text-[--el-text-color-secondary]">
-                    浏览量 PV
-                  </span>
-                  <el-tag type="primary" size="small">日</el-tag>
-                </div>
-              </template>
-
-              <div class="mt-2 flex-1 flex items-end">
-                <div class="flex items-baseline gap-1.5">
-                  <span class="text-xl font-semibold tracking-wide">
-                    {{ displayTransitionPvCount }}
-                  </span>
-                  <span
-                    v-if="pvGrowthText !== null"
-                    :class="['text-xs', computeGrowthRateClass(visitOverviewData.pvGrowthRate)]"
-                  >
-                    <el-icon
-                      v-if="
-                        visitOverviewData.pvGrowthRate !== undefined &&
-                        visitOverviewData.pvGrowthRate !== null
-                      "
-                    >
-                      <Top v-if="visitOverviewData.pvGrowthRate > 0" />
-                      <Bottom v-else-if="visitOverviewData.pvGrowthRate < 0" />
-                    </el-icon>
-                    {{ pvGrowthText }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="mt-2 flex justify-between items-center">
-                <span class="text-sm text-gray">总浏览量</span>
-                <span class="text-sm">{{ displayTransitionTotalPvCount }}</span>
-              </div>
-            </el-card>
-          </template>
-        </el-skeleton>
-      </el-col>
-    </el-row>
-
-    <el-row :gutter="10" class="mt-5">
-      <!-- 访问趋势统计图-->
-      <el-col :xs="24" :span="16">
-        <el-card>
-          <template #header>
-            <div class="flex-x-between">
-              <span>访问趋势</span>
-              <el-radio-group v-model="visitTrendDateRange" size="small">
-                <el-radio-button label="近7天" :value="7" />
-                <el-radio-button label="近30天" :value="30" />
-              </el-radio-group>
-            </div>
-          </template>
-          <ECharts :options="visitTrendChartOptions" height="400px" />
-        </el-card>
-      </el-col>
-      <!-- 最近访问 -->
-      <el-col :xs="24" :span="8">
-        <el-card>
-          <template #header>
-            <div class="flex-x-between">
-              <span class="font-semibold">最近访问</span>
-              <el-button
-                v-if="recentMenus.length > 0"
-                type="primary"
-                link
-                size="small"
-                @click="clearRecentMenus"
-              >
-                清空
-              </el-button>
-            </div>
-          </template>
-
-          <div class="min-h-[400px] flex flex-col">
-            <!-- 宫格显示 -->
-            <div v-if="recentMenus.length > 0" class="grid grid-cols-2 gap-3">
-              <div
-                v-for="item in recentMenus"
-                :key="item.path"
-                class="group flex items-center gap-2 px-3 py-2.5 bg-[--el-fill-color-lighter] rounded-lg cursor-pointer transition-all duration-200 hover:bg-[--el-color-primary-light-8]"
-                @click="router.push(item.path)"
-              >
-                <!-- 图标 -->
-                <div class="shrink-0 w-8 h-8 flex items-center justify-center">
-                  <el-icon
-                    v-if="item.icon?.startsWith('el-icon-')"
-                    class="text-lg text-[--el-color-primary]"
-                  >
-                    <component :is="item.icon.replace('el-icon-', '')" />
-                  </el-icon>
-                  <div
-                    v-else-if="item.icon"
-                    :class="`i-svg:${item.icon} text-lg text-[--el-color-primary]`"
-                  />
-                  <el-icon v-else class="text-lg text-[--el-color-primary]"><Menu /></el-icon>
-                </div>
-                <!-- 标题 -->
-                <span class="text-sm truncate flex-1 leading-tight">
-                  {{ item.title }}
-                </span>
-              </div>
-            </div>
-
-            <!-- 空状态 -->
-            <div v-else class="flex flex-col items-center justify-center flex-1 py-16">
-              <el-icon :size="48" class="text-[--el-text-color-placeholder] mb-4">
-                <Clock />
+    <!-- ============================================================
+    Recent visits: collapsible history (like Alibaba Cloud)
+    ============================================================ -->
+    <section v-if="recentMenus.length" class="dash-recent">
+      <div class="card">
+        <div class="card__head">
+          <h3 class="card__title">最近访问</h3>
+          <div class="card__head-actions">
+            <el-button type="primary" link size="small" @click="clearRecentMenus">清空</el-button>
+            <el-button type="primary" link size="small" @click="recentExpanded = !recentExpanded">
+              {{ recentExpanded ? "收起" : "展开" }}
+              <el-icon :size="12">
+                <ArrowUp v-if="recentExpanded" />
+                <ArrowDown v-else />
               </el-icon>
-              <p class="text-sm text-[--el-text-color-secondary] mb-2">暂无访问记录</p>
-              <p class="text-xs text-[--el-text-color-placeholder]">访问的页面会自动记录在这里</p>
+            </el-button>
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="recent-grid" :class="{ 'recent-grid--fold': !recentExpanded }">
+            <div
+              v-for="item in recentMenus"
+              :key="item.path"
+              class="recent-grid__item"
+              @click="router.push(item.path)"
+            >
+              <div class="recent-grid__icon">
+                <el-icon v-if="item.icon?.startsWith('el-icon-')" :size="15">
+                  <component :is="item.icon.replace('el-icon-', '')" />
+                </el-icon>
+                <span
+                  v-else-if="item.icon"
+                  :class="`i-svg:${item.icon}`"
+                  class="recent-grid__svg"
+                />
+                <el-icon v-else :size="15"><Menu /></el-icon>
+              </div>
+              <span class="recent-grid__name">{{ item.title }}</span>
             </div>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+    Chart
+    ============================================================ -->
+    <section class="dash-chart">
+      <div class="card">
+        <div class="card__head">
+          <h3 class="card__title">访问趋势</h3>
+          <el-radio-group v-model="visitTrendDateRange" size="small">
+            <el-radio-button label="近7天" :value="7" />
+            <el-radio-button label="近30天" :value="30" />
+          </el-radio-group>
+        </div>
+        <div class="card__body">
+          <ECharts :options="visitTrendChartOptions" height="310px" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+    Bottom: todo + timeline
+    ============================================================ -->
+    <section class="dash-bottom">
+      <div class="card">
+        <div class="card__head">
+          <h3 class="card__title">待办事项</h3>
+          <el-tag size="small" round>5 项</el-tag>
+        </div>
+        <div class="card__body">
+          <div
+            v-for="todo in todoItems"
+            :key="todo.id"
+            class="todo-row"
+            :class="{ 'todo-row--done': todo.done }"
+          >
+            <el-icon
+              :size="16"
+              :class="todo.done ? 'todo-row__icon--done' : 'todo-row__icon--pending'"
+            >
+              <CircleCheck v-if="todo.done" />
+              <Clock v-else />
+            </el-icon>
+            <span class="todo-row__title">{{ todo.title }}</span>
+            <el-tag :type="todo.tagType" size="small" effect="plain" class="todo-row__tag">
+              {{ todo.tag }}
+            </el-tag>
+            <span class="todo-row__time">{{ todo.time }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <h3 class="card__title">系统动态</h3>
+        </div>
+        <div class="card__body card__body--scroll">
+          <div class="feed">
+            <div v-for="item in activities" :key="item.id" class="feed__item">
+              <span :class="['feed__dot', `feed__dot--${item.color}`]" />
+              <span class="feed__text">{{ item.content }}</span>
+              <span class="feed__time">{{ item.time }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-defineOptions({
-  name: "Dashboard",
-  inheritAttrs: false,
-});
+defineOptions({ name: "Dashboard", inheritAttrs: false });
 
 import { dayjs } from "element-plus";
 import { ref } from "vue";
@@ -386,56 +300,113 @@ import LogAPI from "@/api/system/log";
 import type { VisitOverviewDetail, VisitTrendDetail } from "@/api/system/log";
 import { useUserStore } from "@/stores/user";
 import { formatGrowthRate } from "@/utils";
-import { useTransition, useDateFormat } from "@vueuse/core";
-import { Clock, Menu } from "@element-plus/icons-vue";
+import { useTransition } from "@vueuse/core";
+import {
+  User,
+  Avatar,
+  Monitor,
+  Star,
+  Folder,
+  Document,
+  VideoCamera,
+  ArrowUp,
+  ArrowDown,
+  Clock,
+  Menu,
+  CircleCheck,
+} from "@element-plus/icons-vue";
 import { useOnlineCount, useRecentMenus } from "@/composables";
 
 const router = useRouter();
-
-// 在线用户数量组件相关
-const { onlineUserCount, lastUpdateTime, isConnected, connectionState } = useOnlineCount();
-
-// 最近访问菜单
-const { recentMenus, clearRecentMenus } = useRecentMenus();
-
-// 格式化时间戳
-const formattedTime = computed(() => {
-  if (!lastUpdateTime.value) return "--";
-  return useDateFormat(lastUpdateTime, "HH:mm:ss").value;
-});
-
-const sseStatusText = computed(() => {
-  if (!isConnected.value) {
-    return connectionState.value === "CONNECTING" ? "连接中" : "未连接";
-  }
-  return "已连接";
-});
-
 const userStore = useUserStore();
+const { onlineUserCount, isConnected } = useOnlineCount();
+const { recentMenus, clearRecentMenus } = useRecentMenus();
+const recentExpanded = ref(false);
 
-// 当前时间（用于计算问候语）
-const currentDate = new Date();
-
-// 问候语：根据当前小时返回不同问候语
+const hours = new Date().getHours();
 const greetings = computed(() => {
-  const hours = currentDate.getHours();
-  const nickname = userStore.userInfo.nickname;
-  if (hours >= 6 && hours < 8) {
-    return "晨起披衣出草堂，轩窗已自喜微凉🌅！";
-  } else if (hours >= 8 && hours < 12) {
-    return `上午好，${nickname}！`;
-  } else if (hours >= 12 && hours < 18) {
-    return `下午好，${nickname}！`;
-  } else if (hours >= 18 && hours < 24) {
-    return `晚上好，${nickname}！`;
-  } else {
-    return "偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！";
-  }
+  const n = userStore.userInfo.nickname;
+  if (hours >= 6 && hours < 8) return `早安，${n}`;
+  if (hours >= 8 && hours < 12) return `上午好，${n}`;
+  if (hours >= 12 && hours < 18) return `下午好，${n}`;
+  if (hours >= 18 && hours < 24) return `晚上好，${n}`;
+  return `夜深了，${n}`;
 });
 
-// 访客统计数据加载状态
-const visitOverviewLoading = ref(true);
-// 访客统计数据
+const currentDateStr = computed(() => {
+  const d = new Date();
+  const w = ["日", "一", "二", "三", "四", "五", "六"];
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 星期${w[d.getDay()]}`;
+});
+
+interface TodoItem {
+  id: number;
+  title: string;
+  tag: string;
+  tagType: "primary" | "success" | "warning" | "danger" | "info";
+  time: string;
+  done: boolean;
+}
+
+const todoItems: TodoItem[] = [
+  {
+    id: 1,
+    title: "审批：张三提交的请假申请",
+    tag: "审批",
+    tagType: "warning",
+    time: "10分钟前",
+    done: false,
+  },
+  {
+    id: 2,
+    title: "审核：新用户注册信息核实",
+    tag: "审核",
+    tagType: "primary",
+    time: "30分钟前",
+    done: false,
+  },
+  {
+    id: 3,
+    title: "发布：系统维护通知公告",
+    tag: "通知",
+    tagType: "info",
+    time: "1小时前",
+    done: false,
+  },
+  {
+    id: 4,
+    title: "处理：工单 #TSK-20240509",
+    tag: "工单",
+    tagType: "danger",
+    time: "2小时前",
+    done: false,
+  },
+  {
+    id: 5,
+    title: "更新：用户角色权限配置",
+    tag: "配置",
+    tagType: "success",
+    time: "昨天 15:30",
+    done: true,
+  },
+];
+
+interface Activity {
+  id: number;
+  content: string;
+  time: string;
+  color: "blue" | "green" | "orange" | "purple" | "grey";
+}
+
+const activities: Activity[] = [
+  { id: 1, content: "管理员 admin 登录系统", time: "3分钟前", color: "blue" },
+  { id: 2, content: "新增用户李四，角色为普通用户", time: "25分钟前", color: "green" },
+  { id: 3, content: "系统配置项「登录策略」已更新", time: "1小时前", color: "orange" },
+  { id: 4, content: "数据库自动备份任务执行完成", time: "3小时前", color: "purple" },
+  { id: 5, content: "角色权限批量修改：运营组新增导出权限", time: "昨天 16:42", color: "orange" },
+  { id: 6, content: "SSL 证书已自动续期", time: "昨天 09:15", color: "green" },
+];
+
 const visitOverviewData = ref<VisitOverviewDetail>({
   todayUvCount: 0,
   uvGrowthRate: 0,
@@ -446,208 +417,632 @@ const visitOverviewData = ref<VisitOverviewDetail>({
 });
 
 const uvGrowthText = computed(() => {
-  if (
-    visitOverviewData.value.uvGrowthRate === undefined ||
-    visitOverviewData.value.uvGrowthRate === null
-  ) {
-    return "--";
-  }
-  return formatGrowthRate(visitOverviewData.value.uvGrowthRate);
+  const r = visitOverviewData.value.uvGrowthRate;
+  return r == null ? "--" : formatGrowthRate(r);
 });
-
 const pvGrowthText = computed(() => {
-  if (
-    visitOverviewData.value.pvGrowthRate === undefined ||
-    visitOverviewData.value.pvGrowthRate === null
-  ) {
-    return "--";
-  }
-  return formatGrowthRate(visitOverviewData.value.pvGrowthRate);
+  const r = visitOverviewData.value.pvGrowthRate;
+  return r == null ? "--" : formatGrowthRate(r);
 });
+const uvIsUp = computed(() => (visitOverviewData.value.uvGrowthRate || 0) > 0);
+const pvIsUp = computed(() => (visitOverviewData.value.pvGrowthRate || 0) > 0);
 
-// 数字过渡动画
-const transitionUvCount = useTransition(
+const tUv = useTransition(
   computed(() => visitOverviewData.value.todayUvCount),
   {
-    duration: 1000,
-    transition: [0.25, 0.1, 0.25, 1.0], // CSS cubic-bezier
-  }
-);
-
-const transitionTotalUvCount = useTransition(
-  computed(() => visitOverviewData.value.totalUvCount),
-  {
-    duration: 1200,
+    duration: 800,
     transition: [0.25, 0.1, 0.25, 1.0],
   }
 );
-
-const transitionPvCount = useTransition(
+const tPv = useTransition(
   computed(() => visitOverviewData.value.todayPvCount),
   {
-    duration: 1000,
+    duration: 800,
     transition: [0.25, 0.1, 0.25, 1.0],
   }
 );
+const displayTransitionUvCount = computed(() => Math.round(Number((tUv as any)?.value ?? tUv)));
+const displayTransitionPvCount = computed(() => Math.round(Number((tPv as any)?.value ?? tPv)));
 
-const transitionTotalPvCount = useTransition(
-  computed(() => visitOverviewData.value.totalPvCount),
-  {
-    duration: 1200,
-    transition: [0.25, 0.1, 0.25, 1.0],
-  }
-);
-
-// 过渡结果可能是 Ref<number>，为模板中使用做类型和格式处理（避免 TS 报错）
-const displayTransitionUvCount = computed(() =>
-  Math.round(Number((transitionUvCount as any)?.value ?? transitionUvCount))
-);
-const displayTransitionTotalUvCount = computed(() =>
-  Math.round(Number((transitionTotalUvCount as any)?.value ?? transitionTotalUvCount))
-);
-const displayTransitionPvCount = computed(() =>
-  Math.round(Number((transitionPvCount as any)?.value ?? transitionPvCount))
-);
-const displayTransitionTotalPvCount = computed(() =>
-  Math.round(Number((transitionTotalPvCount as any)?.value ?? transitionTotalPvCount))
-);
-
-// 访问趋势日期范围（单位：天）
 const visitTrendDateRange = ref(7);
-// 访问趋势图表配置
 const visitTrendChartOptions = ref({});
 
-/**
- * 获取访客统计数据
- */
-const fetchVisitOverviewData = () => {
-  LogAPI.getVisitOverview()
-    .then((data) => {
-      visitOverviewData.value = data;
-    })
-    .finally(() => {
-      visitOverviewLoading.value = false;
-    });
-};
+function fetchVisitOverviewData() {
+  LogAPI.getVisitOverview().then((d) => {
+    visitOverviewData.value = d;
+  });
+}
 
-/**
- * 获取访问趋势数据，并更新图表配置
- */
-const fetchVisitTrendData = () => {
-  const startDate = dayjs()
+function fetchVisitTrendData() {
+  const s = dayjs()
     .subtract(visitTrendDateRange.value - 1, "day")
     .toDate();
-  const endDate = new Date();
-
   LogAPI.getVisitTrend({
-    startDate: dayjs(startDate).format("YYYY-MM-DD"),
-    endDate: dayjs(endDate).format("YYYY-MM-DD"),
-  }).then((data) => {
-    updateVisitTrendChartOptions(data);
+    startDate: dayjs(s).format("YYYY-MM-DD"),
+    endDate: dayjs(new Date()).format("YYYY-MM-DD"),
+  }).then((d) => {
+    updateVisitTrendChartOptions(d);
   });
-};
+}
 
-/**
- * 更新访问趋势图表的配置项
- *
- * @param data - 访问趋势数据
- */
-const updateVisitTrendChartOptions = (data: VisitTrendDetail) => {
+function updateVisitTrendChartOptions(d: VisitTrendDetail) {
   visitTrendChartOptions.value = {
     tooltip: {
       trigger: "axis",
+      borderWidth: 0,
+      padding: [8, 12],
+      extraCssText: "box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-radius: 8px;",
     },
     legend: {
-      data: ["浏览量(PV)", "访客量(UV)"],
+      data: ["浏览量", "访客量"],
       bottom: 0,
+      textStyle: { fontSize: 12 },
+      itemWidth: 10,
+      itemHeight: 8,
+      itemGap: 24,
     },
-    grid: {
-      left: "1%",
-      right: "5%",
-      bottom: "10%",
-      containLabel: true,
-    },
+    grid: { left: "0%", right: "4%", bottom: "14%", top: "4%", containLabel: true },
     xAxis: {
       type: "category",
-      data: data.dates,
+      data: d.dates,
+      axisTick: { show: false },
+      axisLabel: { fontSize: 11 },
     },
     yAxis: {
       type: "value",
-      splitLine: {
-        show: true,
-        lineStyle: {
-          type: "dashed",
-        },
-      },
+      splitLine: { lineStyle: { type: "dashed" } },
+      axisLabel: { fontSize: 11 },
     },
     series: [
       {
-        name: "浏览量(PV)",
+        name: "浏览量",
         type: "line",
-        data: data.pvList,
-        areaStyle: {
-          color: "rgba(64, 158, 255, 0.1)",
-        },
+        data: d.pvList,
         smooth: true,
-        itemStyle: {
-          color: "#4080FF",
-        },
-        lineStyle: {
-          color: "#4080FF",
+        symbol: "circle",
+        symbolSize: 5,
+        showSymbol: false,
+        lineStyle: { color: "#409EFF", width: 2.5 },
+        itemStyle: { color: "#409EFF" },
+        areaStyle: {
+          color: {
+            type: "linear",
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: "rgba(64,158,255,0.12)" },
+              { offset: 1, color: "rgba(64,158,255,0.0)" },
+            ],
+          },
         },
       },
       {
-        name: "访客量(UV)",
+        name: "访客量",
         type: "line",
-        data: data.uvList,
-        areaStyle: {
-          color: "rgba(103, 194, 58, 0.1)",
-        },
+        data: d.uvList,
         smooth: true,
-        itemStyle: {
-          color: "#67C23A",
-        },
-        lineStyle: {
-          color: "#67C23A",
+        symbol: "circle",
+        symbolSize: 5,
+        showSymbol: false,
+        lineStyle: { color: "#67C23A", width: 2.5 },
+        itemStyle: { color: "#67C23A" },
+        areaStyle: {
+          color: {
+            type: "linear",
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: "rgba(103,194,58,0.12)" },
+              { offset: 1, color: "rgba(103,194,58,0.0)" },
+            ],
+          },
         },
       },
     ],
   };
-};
+}
 
-/**
- * 根据增长率计算对应的 CSS 类名
- *
- * @param growthRate - 增长率数值
- */
-const computeGrowthRateClass = (growthRate?: number): string => {
-  if (!growthRate) {
-    return "text-[--el-color-info]";
-  }
-  if (growthRate > 0) {
-    return "text-[--el-color-danger]";
-  } else if (growthRate < 0) {
-    return "text-[--el-color-success]";
-  } else {
-    return "text-[--el-color-info]";
-  }
-};
-
-// 监听访问趋势日期范围的变化，重新获取趋势数据
 watch(
   () => visitTrendDateRange.value,
-  () => {
-    fetchVisitTrendData();
-  },
+  () => fetchVisitTrendData(),
   { immediate: true }
 );
-
-// 组件挂载后加载访客统计数据和通知公告数据
 onMounted(() => {
   fetchVisitOverviewData();
 });
 </script>
 
 <style lang="scss" scoped>
-// 暂无自定义样式
+// ============================================================
+// Tokens
+// ============================================================
+$gap: 16px;
+$pad: 16px;
+$radius: 10px;
+
+// Card: shadow instead of border for premium feel.
+// In dark mode the shadow is hidden — the border-color
+// takes over.
+%card {
+  overflow: hidden;
+  background: var(--content-bg);
+  border: 1px solid var(--border-color);
+  border-radius: $radius;
+}
+
+// ============================================================
+// Page
+// ============================================================
+
+.dash {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+  padding: $pad;
+}
+
+// ============================================================
+// Header
+// ============================================================
+
+.dash-header {
+  &__card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+  }
+
+  &__start {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__greeting {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--el-text-color-primary);
+    letter-spacing: -0.01em;
+  }
+
+  &__date {
+    margin: 0;
+    font-size: 12px;
+    color: var(--el-text-color-placeholder);
+  }
+
+  &__end {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--el-color-primary-light-9);
+    border-radius: 8px;
+  }
+}
+
+.dash-avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  color: var(--el-color-primary);
+  background: var(--el-color-primary-light-9);
+  border-radius: 50%;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// ============================================================
+// Brand link groups
+// ============================================================
+
+.brand-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &__label {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--el-text-color-secondary);
+    letter-spacing: 0.03em;
+  }
+
+  &__icons {
+    display: flex;
+    gap: 1px;
+    align-items: center;
+  }
+}
+
+.brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+
+  &:hover {
+    background: var(--el-color-primary-light-9);
+  }
+}
+
+// ============================================================
+// Stat cards
+// ============================================================
+
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $gap;
+}
+
+.stat-card {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 24px;
+  @extend %card;
+
+  &__icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+
+    &--blue {
+      color: var(--el-color-primary);
+      background: var(--el-color-primary-light-9);
+    }
+    &--green {
+      color: var(--el-color-success);
+      background: var(--el-color-success-light-9);
+    }
+    &--orange {
+      color: var(--el-color-warning);
+      background: var(--el-color-warning-light-9);
+    }
+    &--purple {
+      color: var(--el-color-primary-light-3);
+      background: var(--el-color-primary-light-9);
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__num {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--el-text-color-primary);
+    letter-spacing: -0.02em;
+  }
+
+  &__label {
+    font-size: 12px;
+    color: var(--el-text-color-secondary);
+  }
+
+  &__badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 500;
+
+    &--on {
+      color: var(--el-color-success);
+    }
+    &--off {
+      color: var(--el-color-danger);
+    }
+  }
+
+  &__trend {
+    display: inline-flex;
+    flex-shrink: 0;
+    gap: 2px;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--el-text-color-secondary);
+
+    &--up {
+      color: var(--el-color-danger);
+    }
+  }
+}
+
+// ============================================================
+// Generic card
+// ============================================================
+
+.card {
+  @extend %card;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--el-text-color-primary);
+  }
+
+  &__body {
+    padding: 0 20px 20px;
+
+    &--scroll {
+      flex: 1;
+      padding: 0;
+      overflow-y: auto;
+    }
+  }
+}
+
+// ============================================================
+// Chart & bottom grids
+// ============================================================
+
+.dash-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $gap;
+}
+
+// ============================================================
+// Todo rows
+// ============================================================
+
+.todo-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+
+  & + & {
+    border-top: 1px solid var(--el-border-color-lighter);
+  }
+
+  &--done {
+    .todo-row__title {
+      color: var(--el-text-color-placeholder);
+      text-decoration: line-through;
+    }
+  }
+
+  &__icon--pending {
+    flex-shrink: 0;
+    color: var(--el-color-warning);
+  }
+  &__icon--done {
+    flex-shrink: 0;
+    color: var(--el-color-success);
+  }
+
+  &__title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    color: var(--el-text-color-regular);
+    white-space: nowrap;
+  }
+
+  &__tag {
+    flex-shrink: 0;
+  }
+
+  &__time {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--el-text-color-placeholder);
+  }
+}
+
+// ============================================================
+// Activity feed
+// ============================================================
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 20px 16px;
+
+  &__item {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: baseline;
+    padding: 9px 0 9px 16px;
+
+    &::before {
+      position: absolute;
+      top: 22px;
+      bottom: -4px;
+      left: 3px;
+      width: 1px;
+      content: "";
+      background: var(--el-border-color-lighter);
+    }
+
+    &:last-child::before {
+      display: none;
+    }
+  }
+
+  &__dot {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+
+    &--blue {
+      background: var(--el-color-primary);
+    }
+    &--green {
+      background: var(--el-color-success);
+    }
+    &--orange {
+      background: var(--el-color-warning);
+    }
+    &--purple {
+      background: var(--el-color-primary-light-3);
+    }
+    &--grey {
+      background: var(--el-text-color-placeholder);
+    }
+  }
+
+  &__text {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--el-text-color-regular);
+  }
+
+  &__time {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--el-text-color-placeholder);
+  }
+}
+
+// ============================================================
+// Recent visits grid (collapsible)
+// ============================================================
+
+.card__head-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.recent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 2px;
+
+  &--fold {
+    max-height: 42px;
+    overflow: hidden;
+  }
+
+  &__item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.15s;
+
+    &:hover {
+      background: var(--el-fill-color);
+    }
+  }
+
+  &__icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    color: var(--el-text-color-secondary);
+    background: var(--el-fill-color-lighter);
+    border-radius: 5px;
+  }
+
+  &__svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    color: var(--el-text-color-regular);
+    white-space: nowrap;
+  }
+}
+
+// ============================================================
+// Responsive
+// ============================================================
+
+@media (max-width: 1200px) {
+  .dash-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dash-header__card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 992px) {
+  .dash-bottom {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dash {
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .dash-stats {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

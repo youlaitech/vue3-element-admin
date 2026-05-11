@@ -1,6 +1,6 @@
 <template>
   <el-card shadow="never">
-    <el-input v-model="deptName" placeholder="部门名称" clearable>
+    <el-input v-model="deptName" placeholder="搜索部门" clearable>
       <template #prefix>
         <el-icon><Search /></el-icon>
       </template>
@@ -8,7 +8,7 @@
 
     <el-tree
       ref="deptTreeRef"
-      class="mt-2"
+      class="dept-card__tree"
       :data="deptList"
       :props="{ children: 'children', label: 'label', disabled: '' }"
       :expand-on-click-node="false"

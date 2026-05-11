@@ -210,19 +210,19 @@ function handleSettingsClick() {
 
     :deep(.i-svg\:language) {
       flex-shrink: 0;
-      width: 18px;
-      height: 18px;
-      font-size: 18px;
-      line-height: 18px;
-      background-size: 18px 18px;
+      width: 16px;
+      height: 16px;
+      font-size: 16px;
+      line-height: 16px;
+      background-size: 16px 16px;
     }
 
     // 图标样式
     :deep([class^="i-svg:"]) {
-      font-size: 18px;
+      font-size: 16px;
       line-height: 1;
-      color: var(--el-text-color-regular);
-      transition: color 0.3s;
+      color: var(--el-text-color-secondary);
+      transition: color 0.2s;
     }
 
     &:hover {
@@ -297,7 +297,7 @@ function handleSettingsClick() {
 .navbar-actions--dark-text {
   .navbar-actions__item {
     :deep([class^="i-svg:"]) {
-      color: var(--el-text-color-regular) !important;
+      color: var(--el-text-color-secondary) !important;
     }
 
     &:hover {

@@ -2,14 +2,46 @@
  * Element Plus 组件样式定制
  */
 
-$border: 1px solid var(--el-border-color-light);
+$border: 1px solid var(--border-color);
 
-/* el-dialog */
+/* 全局组件圆角基准 */
+:root {
+  --el-border-radius-base: 6px;
+  --el-border-radius-small: 4px;
+  --el-font-weight-primary: 400;
+}
+
+/* 卡片 — 边框模式 */
+.el-card {
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow:
+      0 4px 12px 0 rgb(0 0 0 / 8%),
+      0 1px 3px 0 rgb(0 0 0 / 4%);
+  }
+
+  .el-card__header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .el-card__body {
+    padding: 20px;
+  }
+}
+
+/* 弹窗 */
 .el-dialog {
+  border-radius: 12px;
+
   .el-dialog__header {
-    padding: 15px 20px;
+    padding: 20px 20px 0;
     margin: 0;
-    border-bottom: $border;
+    border-bottom: none;
   }
 
   .el-dialog__body {
@@ -17,15 +49,15 @@ $border: 1px solid var(--el-border-color-light);
   }
 
   .el-dialog__footer {
-    padding: 15px;
-    border-top: $border;
+    padding: 0 20px 20px;
+    border-top: none;
   }
 }
 
-/* el-drawer */
+/* 抽屉 */
 .el-drawer {
   .el-drawer__header {
-    padding: 15px 20px;
+    padding: 16px 20px;
     margin: 0;
     color: inherit;
     border-bottom: $border;
@@ -36,9 +68,87 @@ $border: 1px solid var(--el-border-color-light);
   }
 
   .el-drawer__footer {
-    padding: 15px;
+    padding: 16px;
     border-top: $border;
   }
+}
+
+/* el-table */
+.el-table {
+  --el-table-border-color: var(--border-color);
+  --el-table-header-bg-color: var(--gray-100);
+  --el-table-row-hover-bg-color: var(--el-fill-color-lighter);
+  --el-table-current-row-bg-color: var(--el-fill-color-light);
+
+  border-radius: var(--custom-radius);
+
+  /* 表头 */
+  .el-table__header th {
+    padding: 12px 0;
+    font-weight: 500;
+    color: var(--el-text-color-regular);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  /* 单元格 */
+  .el-table__body td {
+    padding: 10px 0;
+  }
+
+  /* 无数据时不显示底部边框 */
+  .el-table__empty-block {
+    border-bottom: none;
+  }
+}
+
+/* 斑马纹 — 更柔和 */
+.el-table--striped .el-table__body tr.el-table__row--striped td {
+  background-color: rgb(0 0 0 / 1.5%);
+}
+
+html.dark .el-table--striped .el-table__body tr.el-table__row--striped td {
+  background-color: rgb(255 255 255 / 2%);
+}
+
+/* 下拉菜单项 */
+.el-dropdown-menu__item,
+.el-select-dropdown__item {
+  margin: 2px 6px;
+  border-radius: 6px;
+}
+
+/* 按钮 */
+.el-button {
+  --el-button-border-radius: var(--el-border-radius-base);
+  letter-spacing: 0.01em;
+
+  &:not(.is-link):not(.el-button--large):not(.el-button--small) {
+    padding: 9px 16px;
+  }
+}
+
+.el-button--default {
+  --el-button-border-color: var(--border-color);
+
+  &:hover:not(.is-disabled) {
+    color: var(--el-color-primary);
+    background: var(--el-color-primary-light-9);
+    border-color: var(--el-color-primary-light-5);
+  }
+}
+
+.el-button--primary,
+.el-button--success,
+.el-button--warning,
+.el-button--danger {
+  &:hover:not(.is-disabled) {
+    box-shadow: 0 2px 6px 0 var(--el-button-bg-color);
+  }
+}
+
+/* 标签 */
+.el-tag {
+  border-radius: 4px;
 }
 
 /* 抽屉和对话框底部按钮区域 */
@@ -56,6 +166,7 @@ $border: 1px solid var(--el-border-color-light);
   --el-menu-hover-bg-color: var(--menu-hover);
 
   background-color: var(--menu-background);
+  border-radius: 8px;
 
   .el-menu-item,
   .el-sub-menu__title {

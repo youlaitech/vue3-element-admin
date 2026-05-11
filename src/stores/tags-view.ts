@@ -218,6 +218,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
       title: route.meta.title as string,
       path: route.path,
       fullPath: route.fullPath,
+      icon: route.meta?.icon as string | undefined,
       affix: route.meta?.affix,
       keepAlive: route.meta?.keepAlive,
       query: route.query,

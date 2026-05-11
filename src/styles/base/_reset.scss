@@ -36,9 +36,30 @@ body {
     "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑",
     Arial, sans-serif;
   line-height: inherit;
+  background-color: var(--page-bg);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizelegibility;
+}
+
+/* 全局平滑滚动 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 滚动条现代化 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(0 0 0 / 12%);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
 img,

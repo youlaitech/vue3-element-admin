@@ -1,7 +1,7 @@
 <template>
   <BaseLayout>
     <!-- 顶部菜单-->
-    <div class="layout__header">
+    <div v-show="!appStore.contentFullscreen" class="layout__header">
       <div class="layout__header-left">
         <div v-if="showLogo" class="layout__header-logo">
           <LayoutLogo :collapse="isLogoCollapsed" />
@@ -26,6 +26,7 @@
 <script setup lang="ts">
 import { useWindowSize } from "@vueuse/core";
 import { useLayout } from "./useLayout";
+import { useAppStore } from "@/stores";
 import { usePermissionStore } from "@/stores";
 import BaseLayout from "./BaseLayout.vue";
 import LayoutLogo from "./components/LayoutLogo.vue";
@@ -35,6 +36,7 @@ import LayoutTagsView from "./components/LayoutTagsView.vue";
 import LayoutMain from "./components/LayoutMain.vue";
 
 const { showTagsView, showLogo } = useLayout();
+const appStore = useAppStore();
 const { width } = useWindowSize();
 
 const permissionStore = usePermissionStore();
@@ -58,6 +60,7 @@ const isLogoCollapsed = computed(() => width.value < 768);
     width: 100%;
     height: $navbar-height;
     background-color: $menu-background;
+    border-bottom: 1px solid var(--card-border);
 
     &-left {
       display: flex;
