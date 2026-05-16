@@ -18,7 +18,6 @@ import "animate.css";
 
 // ===== 核心配置 =====
 import { setupDirective } from "@/directives";
-import { setupI18n } from "@/lang";
 import { setupRouter } from "@/router";
 import { setupStore } from "@/stores";
 
@@ -43,7 +42,6 @@ const app = createApp(App);
 setupDirective(app);
 setupRouter(app);
 setupStore(app);
-setupI18n(app);
 
 // 2️⃣ 全局组件（Element Plus 图标）
 Object.entries(ElementPlusIcons).forEach(([name, comp]) => app.component(name, comp));

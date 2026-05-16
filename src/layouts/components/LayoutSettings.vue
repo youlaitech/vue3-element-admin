@@ -178,7 +178,7 @@ import { useSettingsStore } from "@/stores";
 import { themeColorPresets } from "@/settings";
 
 // 页面切换动画选项
-const pageSwitchingAnimationOptions: Record<string, OptionItem> = PageSwitchingAnimationOptions;
+const pageSwitchingAnimationOptions = PageSwitchingAnimationOptions;
 
 // 按钮图标
 const copyIcon = markRaw(DocumentCopy);
