@@ -107,8 +107,8 @@ export default [
     },
     rules: {
       // 基础规则
-      "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-      "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+      "no-console": ["error", { allow: ["warn", "error", "debug"] }],
+      "no-debugger": "error",
 
       // ES6+ 规则
       "prefer-const": "error",
@@ -116,7 +116,7 @@ export default [
       "object-shorthand": "error",
 
       // 最佳实践
-      eqeqeq: "off",
+      eqeqeq: ["error", "always", { null: "ignore" }],
       "no-multi-spaces": "error",
       "no-multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
 
@@ -171,7 +171,7 @@ export default [
         },
       ],
       "vue/component-name-in-template-casing": ["error", "PascalCase"],
-      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
     },
   },
 
@@ -189,7 +189,7 @@ export default [
     },
     rules: {
       // TypeScript 规则
-      "@typescript-eslint/no-explicit-any": "off", // 允许使用any类型，方便开发
+      "@typescript-eslint/no-explicit-any": "warn", // 逐步收敛 any 类型
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/ban-ts-comment": "off",

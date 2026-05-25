@@ -11,8 +11,8 @@
     </el-link>
     <table-select :text="text" :select-config="selectConfig" @confirm-click="handleConfirm">
       <template #status="scope">
-        <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
-          {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
+        <el-tag :type="scope.row[scope.prop] === 1 ? 'success' : 'info'">
+          {{ scope.row[scope.prop] === 1 ? "启用" : "禁用" }}
         </el-tag>
       </template>
       <template #gender="scope">
@@ -46,7 +46,9 @@ function handleConfirm(data: IUser[]) {
 const text = computed(() => {
   // 获取字典数据
   const dictData = dictStore.getDictItems("gender");
-  const genderLabel = dictData.find((item: any) => item.value == selectedUser.value?.gender)?.label;
+  const genderLabel = dictData.find(
+    (item) => String(item.value) === String(selectedUser.value?.gender)
+  )?.label;
   return selectedUser.value
     ? `${selectedUser.value.username} - ${genderLabel} - ${selectedUser.value.deptName}`
     : "";

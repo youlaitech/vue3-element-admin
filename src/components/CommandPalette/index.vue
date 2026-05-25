@@ -106,7 +106,7 @@ const {
 
 const displayList = computed(() => (results.value.length ? results.value : history.value));
 
-const handleInputKeydown: (evt: KeyboardEvent | Event) => any = (evt) => {
+const handleInputKeydown: (evt: KeyboardEvent | Event) => void = (evt) => {
   if (!(evt instanceof KeyboardEvent)) return;
   const e = evt;
   const key = e.key.toLowerCase();

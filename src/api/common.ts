@@ -3,7 +3,7 @@
  */
 
 /** API 响应结构 */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   /** 响应码 */
   code: string;
   /** 响应数据 */

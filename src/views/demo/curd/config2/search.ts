@@ -15,8 +15,7 @@ const searchConfig: ISearchConfig = {
       prop: "testInput",
       attrs: { placeholder: "请输入", clearable: true },
       events: {
-        change: (e) => {
-          console.log("输入框的值: ", e);
+        change: () => {
           // 级联操作示例，需要使用reactive提前定义数组
           // selectOptions.push({ label: e, value: e });
         },
@@ -35,9 +34,7 @@ const searchConfig: ISearchConfig = {
       attrs: { placeholder: "全部", clearable: true },
       options: stateArr as any,
       events: {
-        change(e) {
-          console.log("选中的值: ", e);
-        },
+        change() {},
       },
     },
     {

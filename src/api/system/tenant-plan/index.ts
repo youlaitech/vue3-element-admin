@@ -7,7 +7,7 @@ const TENANT_PLAN_BASE_URL = "/api/v1/tenant-plans";
 const TenantPlanAPI = {
   /** 获取租户套餐分页数据 */
   getPage(queryParams?: TenantPlanQueryParams) {
-    return request<any, PageResult<TenantPlanItem>>({
+    return request<unknown, PageResult<TenantPlanItem>>({
       url: `${TENANT_PLAN_BASE_URL}`,
       method: "get",
       params: queryParams,
@@ -16,7 +16,7 @@ const TenantPlanAPI = {
 
   /** 获取租户套餐表单数据 */
   getFormData(planId: string) {
-    return request<any, TenantPlanForm>({
+    return request<unknown, TenantPlanForm>({
       url: `${TENANT_PLAN_BASE_URL}/${planId}/form`,
       method: "get",
     });
@@ -39,7 +39,7 @@ const TenantPlanAPI = {
 
   /** 获取租户方案下拉选项 */
   getOptions() {
-    return request<any, OptionItem[]>({
+    return request<unknown, OptionItem[]>({
       url: `${TENANT_PLAN_BASE_URL}/options`,
       method: "get",
     });
@@ -47,7 +47,7 @@ const TenantPlanAPI = {
 
   /** 获取方案菜单ID集合 */
   getPlanMenuIds(planId: number) {
-    return request<any, number[]>({
+    return request<unknown, number[]>({
       url: `${TENANT_PLAN_BASE_URL}/${planId}/menuIds`,
       method: "get",
     });

@@ -10,7 +10,13 @@ export interface UseSseOptions {
   maxReconnectAttempts?: number; // 最大重试次数，超过后停止重连
 }
 
-type EventHandler = (data: any) => void;
+type EventHandler = (data: unknown) => void;
+
+type SseParseState = {
+  currentEvent: string;
+  currentData: string;
+  buffer: string;
+};
 
 export enum SseConnectionState {
   DISCONNECTED = "DISCONNECTED", // 未连接
@@ -46,15 +52,88 @@ function createSseConnection(options: UseSseOptions = {}) {
 
   const eventHandlers = new Map<string, Set<EventHandler>>();
 
-  const log = (...args: any[]) => console.log("[SSE]", ...args);
-  const logError = (...args: any[]) => console.error("[SSE]", ...args);
+  const log = (...args: unknown[]) => {
+    if (config.debug) {
+      console.debug("[SSE]", ...args);
+    }
+  };
+  const logError = (...args: unknown[]) => console.error("[SSE]", ...args);
 
+  // 清理定时器并返回空值
   const clearTimer = (timer: typeof connectionTimeoutTimer) => {
     if (timer) {
       clearTimeout(timer);
       return null;
     }
     return timer;
+  };
+
+  // 重置重连计数和间隔
+  const resetReconnectState = () => {
+    reconnectAttempts = 0;
+    currentReconnectInterval = config.reconnectInterval;
+  };
+
+  // 更新下一次重连间隔
+  const advanceReconnectState = () => {
+    currentReconnectInterval = Math.min(currentReconnectInterval * 2, config.maxReconnectInterval);
+  };
+
+  // 分发一条完整的 SSE 事件
+  const flushSseEvent = (eventName: string, data: string) => {
+    if (!data) return;
+    const handlers = eventHandlers.get(eventName);
+    if (handlers) {
+      try {
+        const parsed = JSON.parse(data);
+        handlers.forEach((handler) => handler(parsed));
+      } catch {
+        handlers.forEach((handler) => handler(data));
+      }
+    }
+    log(`收到事件[${eventName}]:`, data);
+  };
+
+  // 解析单行 SSE 文本并更新当前事件状态
+  const handleSseLine = (line: string, state: SseParseState) => {
+    if (line.startsWith(":")) return;
+    if (line.startsWith("event:")) {
+      state.currentEvent = line.slice(6).trim() || "message";
+      return;
+    }
+    if (line.startsWith("data:")) {
+      const dataLine = line.slice(5).trim();
+      state.currentData = state.currentData ? `${state.currentData}\n${dataLine}` : dataLine;
+      return;
+    }
+    if (line === "") {
+      flushSseEvent(state.currentEvent, state.currentData);
+      state.currentEvent = "message";
+      state.currentData = "";
+    }
+  };
+
+  // 持续读取 SSE 流并按行解析
+  const consumeSseStream = async (streamReader: ReadableStreamDefaultReader<Uint8Array>) => {
+    const decoder = new TextDecoder();
+    const state: SseParseState = { currentEvent: "message", currentData: "", buffer: "" };
+
+    while (true) {
+      const { done, value } = await streamReader.read();
+      if (done) {
+        connectionState.value = SseConnectionState.DISCONNECTED;
+        log("SSE 连接已关闭");
+        return;
+      }
+
+      state.buffer += decoder.decode(value, { stream: true });
+      const lines = state.buffer.split("\n");
+      state.buffer = lines.pop() || "";
+
+      for (const line of lines) {
+        handleSseLine(line, state);
+      }
+    }
   };
 
   // 指数退避重连
@@ -70,13 +149,11 @@ function createSseConnection(options: UseSseOptions = {}) {
 
     reconnectTimer = setTimeout(() => {
       connect();
-      currentReconnectInterval = Math.min(
-        currentReconnectInterval * 2,
-        config.maxReconnectInterval
-      );
+      advanceReconnectState();
     }, currentReconnectInterval);
   };
 
+  // 建立 SSE 连接
   const connect = () => {
     isManualDisconnect = false;
 
@@ -122,66 +199,17 @@ function createSseConnection(options: UseSseOptions = {}) {
         }
         connectionTimeoutTimer = clearTimer(connectionTimeoutTimer);
         connectionState.value = SseConnectionState.CONNECTED;
-        reconnectAttempts = 0;
-        currentReconnectInterval = config.reconnectInterval;
+        resetReconnectState();
         log("SSE 连接已建立");
         return response.body?.getReader();
       })
-      .then((r) => {
-        if (!r) return;
-        reader = r;
-        const decoder = new TextDecoder();
-        let buffer = "";
-        let currentEvent = "message";
-        let currentData = "";
-
-        // SSE 文本协议解析：event / data / 空行分隔
-        const processChunk = ({
-          done,
-          value,
-        }: ReadableStreamReadResult<Uint8Array>): Promise<void> | void => {
-          if (done) {
-            connectionState.value = SseConnectionState.DISCONNECTED;
-            log("SSE 连接已关闭");
-            return;
-          }
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() || "";
-
-          for (const line of lines) {
-            if (line.startsWith(":")) continue;
-            if (line.startsWith("event:")) {
-              currentEvent = line.slice(6).trim();
-            } else if (line.startsWith("data:")) {
-              const dataLine = line.slice(5).trim();
-              currentData = currentData ? `${currentData}\n${dataLine}` : dataLine;
-            } else if (line === "") {
-              if (currentData) {
-                const handlers = eventHandlers.get(currentEvent);
-                if (handlers) {
-                  try {
-                    const data = JSON.parse(currentData);
-                    handlers.forEach((h) => h(data));
-                  } catch {
-                    handlers.forEach((h) => h(currentData));
-                  }
-                }
-                log(`收到事件[${currentEvent}]:`, currentData);
-              }
-              currentEvent = "message";
-              currentData = "";
-            }
-          }
-
-          return reader!.read().then(processChunk);
-        };
-
-        return reader.read().then(processChunk);
+      .then((streamReader) => {
+        if (!streamReader) return;
+        reader = streamReader;
+        return consumeSseStream(streamReader);
       })
-      .catch((err) => {
-        if (err.name === "AbortError") {
+      .catch((err: unknown) => {
+        if (err instanceof Error && err.name === "AbortError") {
           log("SSE 连接已主动断开");
         } else {
           logError("SSE 连接错误:", err);
@@ -192,17 +220,18 @@ function createSseConnection(options: UseSseOptions = {}) {
   };
 
   // 订阅事件，返回取消函数
-  const on = (eventName: string, handler: EventHandler): (() => void) => {
+  const on = <T = unknown>(eventName: string, handler: (data: T) => void): (() => void) => {
     if (!eventHandlers.has(eventName)) {
       eventHandlers.set(eventName, new Set());
     }
-    eventHandlers.get(eventName)!.add(handler);
+    const wrappedHandler: EventHandler = (data) => handler(data as T);
+    eventHandlers.get(eventName)!.add(wrappedHandler);
     log(`已订阅事件: ${eventName}`);
 
     return () => {
       const handlers = eventHandlers.get(eventName);
       if (handlers) {
-        handlers.delete(handler);
+        handlers.delete(wrappedHandler);
         if (handlers.size === 0) {
           eventHandlers.delete(eventName);
         }

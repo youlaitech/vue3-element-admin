@@ -109,7 +109,7 @@ export interface Meta {
   /** 【菜单】是否开启页面缓存 */
   keepAlive?: boolean;
   /** 路由参数 */
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
   /** 角色集合 */
   roles?: string[];
   /** 路由title */

@@ -22,7 +22,7 @@ const UserAPI = {
    * @returns 登录用户昵称、头像信息，包括角色和权限
    */
   getInfo() {
-    return request<any, UserInfo>({
+    return request<unknown, UserInfo>({
       url: `${USER_BASE_URL}/me`,
       method: "get",
     });
@@ -34,7 +34,7 @@ const UserAPI = {
    * @param queryParams 查询参数
    */
   getPage(queryParams: UserQueryParams) {
-    return request<any, PageResult<UserItem>>({
+    return request<unknown, PageResult<UserItem>>({
       url: `${USER_BASE_URL}`,
       method: "get",
       params: queryParams,
@@ -48,7 +48,7 @@ const UserAPI = {
    * @returns 用户表单详情
    */
   getFormData(userId: string) {
-    return request<any, UserForm>({
+    return request<unknown, UserForm>({
       url: `${USER_BASE_URL}/${userId}/form`,
       method: "get",
     });
@@ -138,7 +138,7 @@ const UserAPI = {
   import(file: File) {
     const formData = new FormData();
     formData.append("file", file);
-    return request<any, ExcelResult>({
+    return request<unknown, ExcelResult>({
       url: `${USER_BASE_URL}/import`,
       method: "post",
       data: formData,
@@ -150,7 +150,7 @@ const UserAPI = {
 
   /** 获取个人中心用户信息 */
   getProfile() {
-    return request<any, UserProfileDetail>({
+    return request<unknown, UserProfileDetail>({
       url: `${USER_BASE_URL}/profile`,
       method: "get",
     });
@@ -232,7 +232,7 @@ const UserAPI = {
    *  获取用户下拉列表
    */
   getOptions() {
-    return request<any, OptionItem[]>({
+    return request<unknown, OptionItem[]>({
       url: `${USER_BASE_URL}/options`,
       method: "get",
     });

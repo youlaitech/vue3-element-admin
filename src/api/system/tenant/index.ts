@@ -19,7 +19,7 @@ const TenantAPI = {
    * 获取当前用户可访问的租户列表
    */
   getTenantList() {
-    return request<any, TenantInfo[]>({
+    return request<unknown, TenantInfo[]>({
       url: `${TENANT_BASE_URL}/options`,
       method: "get",
     });
@@ -29,7 +29,7 @@ const TenantAPI = {
    * 获取当前租户信息
    */
   getCurrentTenant() {
-    return request<any, TenantInfo>({
+    return request<unknown, TenantInfo>({
       url: `${TENANT_BASE_URL}/current`,
       method: "get",
     });
@@ -41,7 +41,7 @@ const TenantAPI = {
    * @param tenantId 目标租户ID
    */
   switchTenant(tenantId: number) {
-    return request<any, TenantInfo>({
+    return request<unknown, TenantInfo>({
       url: `${TENANT_BASE_URL}/${tenantId}/switch`,
       method: "post",
     });
@@ -49,7 +49,7 @@ const TenantAPI = {
 
   /** 获取租户分页数据（平台租户管理） */
   getPage(queryParams?: TenantQueryParams) {
-    return request<any, PageResult<TenantItem>>({
+    return request<unknown, PageResult<TenantItem>>({
       url: `${TENANT_BASE_URL}`,
       method: "get",
       params: queryParams,
@@ -58,7 +58,7 @@ const TenantAPI = {
 
   /** 获取租户表单数据 */
   getFormData(tenantId: string) {
-    return request<any, TenantForm>({
+    return request<unknown, TenantForm>({
       url: `${TENANT_BASE_URL}/${tenantId}/form`,
       method: "get",
     });
@@ -66,7 +66,7 @@ const TenantAPI = {
 
   /** 新增租户并初始化默认数据 */
   create(data: TenantCreateForm) {
-    return request<any, TenantCreateResult>({
+    return request<unknown, TenantCreateResult>({
       url: `${TENANT_BASE_URL}`,
       method: "post",
       data,
@@ -101,7 +101,7 @@ const TenantAPI = {
 
   /** 获取租户菜单ID集合 */
   getTenantMenuIds(tenantId: number) {
-    return request<any, number[]>({
+    return request<unknown, number[]>({
       url: `${TENANT_BASE_URL}/${tenantId}/menuIds`,
       method: "get",
     });

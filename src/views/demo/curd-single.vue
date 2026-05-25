@@ -30,8 +30,8 @@
       @filter-change="handleFilterChange"
     >
       <template #status="scope">
-        <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
-          {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
+        <el-tag :type="scope.row[scope.prop] === 1 ? 'success' : 'info'">
+          {{ scope.row[scope.prop] === 1 ? "启用" : "禁用" }}
         </el-tag>
       </template>
       <template #gender="scope">
@@ -187,13 +187,11 @@ const contentConfig: IContentConfig<UserQueryParams, UserItem> = reactive({
   },
   exportAction: UserAPI.export,
   importTemplate: UserAPI.downloadTemplate,
-  importsAction(data: any) {
-    console.log("importsAction", data);
+  importsAction() {
     return Promise.resolve();
   },
   async exportsAction(params: any) {
     const data = await UserAPI.getPage(params);
-    console.log("exportsAction", data.list);
     return data.list;
   },
   pk: "id",
@@ -299,9 +297,6 @@ const addModalConfig: IModalConfig<UserForm> = reactive({
     labelWidth: 100,
   },
   formAction: UserAPI.create,
-  beforeSubmit(data: any) {
-    console.log("提交之前处理", data);
-  },
   formItems: [
     {
       label: "用户名",
@@ -415,9 +410,6 @@ const editModalConfig: IModalConfig<UserForm> = reactive({
     size: useAppStore().device === DeviceEnum.MOBILE ? "80%" : 500,
   },
   pk: "id",
-  beforeSubmit(data: any) {
-    console.log("beforeSubmit", data);
-  },
   formAction(data: any) {
     return UserAPI.update(data.id as string, data);
   },
@@ -539,7 +531,6 @@ const {
 
 // 其他工具
 function handleToolbarClick(name: string) {
-  console.log(name);
   if (name === "custom1") {
     ElMessage.success("点击了自定义1按钮");
   }

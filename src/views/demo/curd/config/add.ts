@@ -14,9 +14,6 @@ const modalConfig: IModalConfig<UserForm> = {
     labelWidth: 100,
   },
   formAction: UserAPI.create,
-  beforeSubmit(data) {
-    console.log("提交之前处理", data);
-  },
   formItems: [
     {
       label: "用户名",

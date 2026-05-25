@@ -1,3 +1,5 @@
+import type { LocationQuery } from "vue-router";
+
 /**
  * 标签页相关类型定义
  */
@@ -10,5 +12,5 @@ export interface TagView {
   icon?: string;
   affix?: boolean;
   keepAlive?: boolean;
-  query?: any;
+  query?: LocationQuery;
 }

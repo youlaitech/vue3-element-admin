@@ -13,9 +13,6 @@ const modalConfig: IModalConfig<UserForm> = {
     size: useAppStore().device === DeviceEnum.MOBILE ? "80%" : 500,
   },
   pk: "id",
-  beforeSubmit(data) {
-    console.log("beforeSubmit", data);
-  },
   formAction(data) {
     return UserAPI.update(data.id as string, data);
   },

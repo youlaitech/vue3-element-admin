@@ -16,7 +16,7 @@
           class="single-upload__image"
           :src="modelValue"
           :preview-src-list="[modelValue]"
-          @click.stop="handlePreview"
+          @click.stop
         />
         <el-icon class="single-upload__delete-btn" @click.stop="handleDelete">
           <CircleCloseFilled />
@@ -149,13 +149,6 @@ function handleUpload(options: UploadRequestOptions) {
 }
 
 /**
- * 预览图片
- */
-function handlePreview() {
-  console.log("预览图片,停止冒泡");
-}
-
-/**
  * 删除图片
  */
 function handleDelete() {
@@ -175,9 +168,11 @@ const onSuccess = (fileInfo: FileInfo) => {
 /**
  * 上传失败回调
  */
-const onError = (error: any) => {
-  console.log("onError");
-  ElMessage.error("上传失败: " + error.message);
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : String(error);
+
+const onError = (error: unknown) => {
+  ElMessage.error("上传失败: " + getErrorMessage(error));
 };
 </script>
 

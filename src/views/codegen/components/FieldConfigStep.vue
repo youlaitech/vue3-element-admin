@@ -111,7 +111,7 @@
       <el-table-column label="字段信息" min-width="360">
         <template #default="{ row }">
           <div class="flex items-start gap-3">
-            <div class="field-info" style=" flex-shrink: 0;width: 140px">
+            <div class="field-info" style="flex-shrink: 0; width: 140px">
               <div class="flex items-center gap-2">
                 <span class="font-medium text-sm">{{ row.columnName }}</span>
                 <el-tag v-if="row.isPrimaryKey" size="small" type="warning" effect="dark">

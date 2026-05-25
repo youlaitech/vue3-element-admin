@@ -20,6 +20,7 @@ import "animate.css";
 import { setupDirective } from "@/directives";
 import { setupRouter } from "@/router";
 import { setupStore } from "@/stores";
+import { setupI18n } from "@/lang";
 
 // ===== 全局组件 =====
 import * as ElementPlusIcons from "@element-plus/icons-vue";
@@ -40,6 +41,7 @@ const app = createApp(App);
 
 // 1️⃣ 核心配置
 setupDirective(app);
+setupI18n(app);
 setupRouter(app);
 setupStore(app);
 

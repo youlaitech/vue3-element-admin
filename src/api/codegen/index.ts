@@ -6,7 +6,7 @@ const GENERATOR_BASE_URL = "/api/v1/codegen";
 const GeneratorAPI = {
   /** 获取数据表分页列表 */
   getTablePage(params: TableQueryParams) {
-    return request<any, PageResult<TableItem>>({
+    return request<unknown, PageResult<TableItem>>({
       url: `${GENERATOR_BASE_URL}/table`,
       method: "get",
       params,
@@ -15,7 +15,7 @@ const GeneratorAPI = {
 
   /** 获取代码生成配置 */
   getGenConfig(tableName: string) {
-    return request<any, GenConfigForm>({
+    return request<unknown, GenConfigForm>({
       url: `${GENERATOR_BASE_URL}/${tableName}/config`,
       method: "get",
     });
@@ -39,7 +39,7 @@ const GeneratorAPI = {
     if (type) {
       params.type = type;
     }
-    return request<any, GeneratorPreviewItem[]>({
+    return request<unknown, GeneratorPreviewItem[]>({
       url: `${GENERATOR_BASE_URL}/${tableName}/preview`,
       method: "get",
       params: Object.keys(params).length ? params : undefined,
