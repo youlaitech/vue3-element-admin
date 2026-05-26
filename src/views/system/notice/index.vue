@@ -77,15 +77,15 @@
         </el-table-column>
         <el-table-column align="center" label="通告目标类型" prop="targetType" min-width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.targetType == 1" type="warning">全体</el-tag>
-            <el-tag v-if="scope.row.targetType == 2" type="success">指定</el-tag>
+            <el-tag v-if="scope.row.targetType === 1" type="warning">全体</el-tag>
+            <el-tag v-if="scope.row.targetType === 2" type="success">指定</el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" label="发布状态" min-width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.publishStatus == 0" type="info">未发布</el-tag>
-            <el-tag v-if="scope.row.publishStatus == 1" type="success">已发布</el-tag>
-            <el-tag v-if="scope.row.publishStatus == -1" type="warning">已撤回</el-tag>
+            <el-tag v-if="scope.row.publishStatus === 0" type="info">未发布</el-tag>
+            <el-tag v-if="scope.row.publishStatus === 1" type="success">已发布</el-tag>
+            <el-tag v-if="scope.row.publishStatus === -1" type="warning">已撤回</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作时间" width="250">
@@ -111,7 +111,7 @@
               查看
             </el-button>
             <el-button
-              v-if="scope.row.publishStatus != 1"
+              v-if="scope.row.publishStatus !== 1"
               v-hasPerm="['sys:notice:publish']"
               type="primary"
               size="small"
@@ -121,7 +121,7 @@
               发布
             </el-button>
             <el-button
-              v-if="scope.row.publishStatus == 1"
+              v-if="scope.row.publishStatus === 1"
               v-hasPerm="['sys:notice:revoke']"
               type="primary"
               size="small"
@@ -131,7 +131,7 @@
               撤回
             </el-button>
             <el-button
-              v-if="scope.row.publishStatus != 1"
+              v-if="scope.row.publishStatus !== 1"
               v-hasPerm="['sys:notice:update']"
               type="primary"
               size="small"
@@ -141,7 +141,7 @@
               编辑
             </el-button>
             <el-button
-              v-if="scope.row.publishStatus != 1"
+              v-if="scope.row.publishStatus !== 1"
               v-hasPerm="['sys:notice:delete']"
               type="danger"
               size="small"
@@ -207,7 +207,7 @@
             <el-radio :value="2">指定</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-if="formData.targetType == 2" label="指定用户" prop="targetUsers">
+        <el-form-item v-if="formData.targetType === 2" label="指定用户" prop="targetUsers">
           <el-select v-model="formData.targetUsers" multiple search placeholder="请选择指定用户">
             <el-option
               v-for="item in userOptions"
@@ -252,9 +252,9 @@
           {{ currentNotice.title }}
         </el-descriptions-item>
         <el-descriptions-item label="发布状态：">
-          <el-tag v-if="currentNotice.publishStatus == 0" type="info">未发布</el-tag>
-          <el-tag v-else-if="currentNotice.publishStatus == 1" type="success">已发布</el-tag>
-          <el-tag v-else-if="currentNotice.publishStatus == -1" type="warning">已撤回</el-tag>
+          <el-tag v-if="currentNotice.publishStatus === 0" type="info">未发布</el-tag>
+          <el-tag v-else-if="currentNotice.publishStatus === 1" type="success">已发布</el-tag>
+          <el-tag v-else-if="currentNotice.publishStatus === -1" type="warning">已撤回</el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="发布人：">
           {{ currentNotice.publisherName }}

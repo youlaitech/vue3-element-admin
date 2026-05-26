@@ -6,7 +6,7 @@
     <div class="flex flex-col md:flex-row justify-between gap-y-2.5 mb-2.5">
       <!-- 左侧工具 -->
       <div class="toolbar-left flex gap-y-2.5 gap-x-2 md:gap-x-3 flex-wrap">
-        <template v-for="(btn, index) in toolbarLeftBtn" :key="index">
+        <template v-for="(btn, index) in leftToolbarButtons" :key="index">
           <el-button
             v-hasPerm="btn.perm ?? '*:*:*'"
             v-bind="btn.attrs"
@@ -19,7 +19,7 @@
       </div>
       <!-- 右侧工具 -->
       <div class="toolbar-right flex gap-y-2.5 gap-x-2 md:gap-x-3 flex-wrap">
-        <template v-for="(btn, index) in toolbarRightBtn" :key="index">
+        <template v-for="(btn, index) in rightToolbarButtons" :key="index">
           <el-popover v-if="btn.name === 'filter'" placement="bottom" trigger="click">
             <template #reference>
               <el-button v-bind="btn.attrs"></el-button>
@@ -412,13 +412,13 @@ function createToolbar(toolbar: Array<string | IToolsButton>, attr = {}) {
 }
 
 // 左侧工具栏按钮
-const toolbarLeftBtn = computed(() => {
+const leftToolbarButtons = computed(() => {
   if (!config.value.toolbar || config.value.toolbar.length === 0) return [];
   return createToolbar(config.value.toolbar, {});
 });
 
 // 右侧工具栏按钮
-const toolbarRightBtn = computed(() => {
+const rightToolbarButtons = computed(() => {
   if (!config.value.defaultToolbar || config.value.defaultToolbar.length === 0) return [];
   return createToolbar(config.value.defaultToolbar, { circle: true });
 });
@@ -602,7 +602,7 @@ function handleExports() {
           (buffer) => {
             saveXlsx(buffer, filename as string);
           },
-          (error) => console.log(error)
+          (error) => console.error(error)
         );
       });
     } else {
@@ -616,7 +616,7 @@ function handleExports() {
       (buffer) => {
         saveXlsx(buffer, filename as string);
       },
-      (error) => console.log(error)
+      (error) => console.error(error)
     );
   }
 }
@@ -750,7 +750,7 @@ function handleImports() {
             handleRefresh(true);
           });
         },
-        (error) => console.log(error)
+        (error) => console.error(error)
       );
     } else {
       ElMessage.error("读取文件失败");

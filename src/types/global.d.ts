@@ -4,7 +4,7 @@
  * @deprecated 请使用 @/types 下的具名导出
  */
 declare global {
-  type ApiResponse<T = any> = import("@/types/api").ApiResponse<T>;
+  type ApiResponse<T = unknown> = import("@/types/api").ApiResponse<T>;
   type BaseQueryParams = import("@/types/api").BaseQueryParams;
   type PageResult<T> = import("@/types/api").PageResult<T>;
   type OptionItem = import("@/types/api").OptionItem;

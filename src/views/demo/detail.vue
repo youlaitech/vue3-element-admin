@@ -11,7 +11,6 @@ defineOptions({
 });
 
 const route = useRoute();
-console.log(route);
 
 const value = ref("");
 </script>

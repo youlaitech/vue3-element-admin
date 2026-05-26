@@ -1,6 +1,5 @@
 <template>
   <el-config-provider :locale="locale" :size="size">
-    <!-- 开启水印-->
     <el-watermark
       :font="{ color: fontColor }"
       :content="showWatermark ? watermarkContent : ''"

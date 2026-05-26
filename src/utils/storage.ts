@@ -15,7 +15,7 @@ export class Storage {
   /**
    * 存储数据到 localStorage
    */
-  static set(key: string, value: any): void {
+  static set(key: string, value: unknown): void {
     localStorage.setItem(key, JSON.stringify(value));
   }
 
@@ -46,7 +46,7 @@ export class Storage {
   /**
    * 存储数据到 sessionStorage
    */
-  static sessionSet(key: string, value: any): void {
+  static sessionSet(key: string, value: unknown): void {
     sessionStorage.setItem(key, JSON.stringify(value));
   }
 

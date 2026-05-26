@@ -33,8 +33,8 @@
         @filter-change="handleFilterChange"
       >
         <template #status="scope">
-          <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
-            {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
+          <el-tag :type="scope.row[scope.prop] === 1 ? 'success' : 'info'">
+            {{ scope.row[scope.prop] === 1 ? "启用" : "禁用" }}
           </el-tag>
         </template>
         <template #gender="scope">
@@ -91,8 +91,8 @@
         @operate-click="handleOperateClick2"
       >
         <template #status="scope">
-          <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
-            {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
+          <el-tag :type="scope.row[scope.prop] === 1 ? 'success' : 'info'">
+            {{ scope.row[scope.prop] === 1 ? "启用" : "禁用" }}
           </el-tag>
         </template>
       </page-content>
@@ -145,7 +145,6 @@ const {
 
 // 其他工具
 function handleToolbarClick(name: string) {
-  console.log(name);
   if (name === "custom1") {
     ElMessage.success("点击了自定义1按钮");
   }
@@ -203,8 +202,7 @@ const addModalRef2 = ref();
 const openSecondModal = () => {
   handleAddClick(addModalRef2 as Ref<PageModalInstance>);
 };
-const secondSubmit = (formData: any) => {
-  console.log("secondSubmit", formData);
+const secondSubmit = () => {
   ElMessage.success("二级弹窗提交成功");
 };
 

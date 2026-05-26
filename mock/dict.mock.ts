@@ -145,7 +145,7 @@ export default defineMock([
 
       let list = null;
 
-      if (dictCode == "gender") {
+      if (dictCode === "gender") {
         list = [
           {
             value: "1",
@@ -160,7 +160,7 @@ export default defineMock([
             label: "保密",
           },
         ];
-      } else if (dictCode == "notice_level") {
+      } else if (dictCode === "notice_level") {
         list = [
           {
             value: "L",
@@ -178,7 +178,7 @@ export default defineMock([
             tagType: "D",
           },
         ];
-      } else if (dictCode == "notice_type") {
+      } else if (dictCode === "notice_type") {
         list = [
           {
             value: "1",

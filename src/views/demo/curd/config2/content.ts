@@ -30,7 +30,6 @@ const contentConfig: IContentConfig<DemoQueryParams, DemoItem> = {
   toolbar: [],
   indexAction(params) {
     // 模拟发起网络请求获取列表数据
-    console.log("indexAction:", params);
     const list = [
       {
         id: 1,
@@ -74,7 +73,6 @@ const contentConfig: IContentConfig<DemoQueryParams, DemoItem> = {
   },
   modifyAction(data) {
     // 模拟发起网络请求修改字段
-    // console.log("modifyAction:", data);
     ElMessage.success(JSON.stringify(data));
     return Promise.resolve(null);
   },

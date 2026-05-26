@@ -53,7 +53,7 @@
         <el-table-column align="center" label="发布人" prop="publisherName" width="150" />
         <el-table-column align="center" label="状态" width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.isRead == 1" type="success">已读</el-tag>
+            <el-tag v-if="scope.row.isRead === 1" type="success">已读</el-tag>
             <el-tag v-else type="info">未读</el-tag>
           </template>
         </el-table-column>

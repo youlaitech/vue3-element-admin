@@ -12,9 +12,11 @@ import type { OptionItem } from "@/api/common";
 
 const DICT_BASE_URL = "/api/v1/dicts";
 
+type DictTagType = DictItemForm["tagType"];
 type DictTagTypeCode = "N" | "P" | "S" | "W" | "I" | "D";
 
-const decodeDictTagType = (code?: unknown): DictItemForm["tagType"] => {
+// 将后端标签类型转换为前端标签类型
+const decodeDictTagType = (code?: unknown): DictTagType => {
   const val = String(code ?? "")
     .trim()
     .toUpperCase();
@@ -35,6 +37,7 @@ const decodeDictTagType = (code?: unknown): DictItemForm["tagType"] => {
   }
 };
 
+// 将前端标签类型转换为后端标签类型
 const encodeDictTagType = (tagType?: unknown): DictTagTypeCode => {
   const val = String(tagType ?? "")
     .trim()
@@ -58,10 +61,20 @@ const encodeDictTagType = (tagType?: unknown): DictTagTypeCode => {
   }
 };
 
+// 统一转换字典项标签类型
+const normalizeDictTagType = <T extends { tagType?: unknown }>(
+  item: T
+): Omit<T, "tagType"> & {
+  tagType: DictTagType;
+} => ({
+  ...item,
+  tagType: decodeDictTagType(item.tagType),
+});
+
 const DictAPI = {
   /** 字典分页列表 */
   getPage(queryParams: DictTypeQueryParams) {
-    return request<any, PageResult<DictTypeItem>>({
+    return request<unknown, PageResult<DictTypeItem>>({
       url: `${DICT_BASE_URL}`,
       method: "get",
       params: queryParams,
@@ -69,11 +82,11 @@ const DictAPI = {
   },
   /** 字典列表 */
   getList() {
-    return request<any, OptionItem[]>({ url: `${DICT_BASE_URL}/options`, method: "get" });
+    return request<unknown, OptionItem[]>({ url: `${DICT_BASE_URL}/options`, method: "get" });
   },
   /** 字典表单数据 */
   getFormData(id: string) {
-    return request<any, DictTypeForm>({ url: `${DICT_BASE_URL}/${id}/form`, method: "get" });
+    return request<unknown, DictTypeForm>({ url: `${DICT_BASE_URL}/${id}/form`, method: "get" });
   },
   /** 新增字典 */
   create(data: DictTypeForm) {
@@ -90,29 +103,21 @@ const DictAPI = {
 
   /** 获取字典项分页列表 */
   getDictItemPage(dictCode: string, queryParams: DictItemQueryParams) {
-    return request<any, PageResult<DictItem>>({
+    return request<unknown, PageResult<DictItem>>({
       url: `${DICT_BASE_URL}/${dictCode}/items`,
       method: "get",
       params: queryParams,
     }).then((data) => ({
       ...data,
-      list: (data.list ?? []).map((item: DictItem & { tagType?: string }) => ({
-        ...item,
-        tagType: decodeDictTagType(item.tagType),
-      })),
+      list: (data.list ?? []).map(normalizeDictTagType),
     }));
   },
   /** 获取字典项列表 */
   getDictItems(dictCode: string) {
-    return request<any, DictItemOption[]>({
+    return request<unknown, DictItemOption[]>({
       url: `${DICT_BASE_URL}/${dictCode}/items/options`,
       method: "get",
-    }).then((items) =>
-      (items ?? []).map((item) => ({
-        ...item,
-        tagType: decodeDictTagType((item as any).tagType),
-      }))
-    );
+    }).then((items) => (items ?? []).map(normalizeDictTagType));
   },
   /** 新增字典项 */
   createDictItem(dictCode: string, data: DictItemForm) {
@@ -121,19 +126,16 @@ const DictAPI = {
       method: "post",
       data: {
         ...data,
-        tagType: encodeDictTagType((data as any).tagType),
+        tagType: encodeDictTagType(data.tagType),
       },
     });
   },
   /** 获取字典项表单数据 */
   getDictItemFormData(dictCode: string, id: string) {
-    return request<any, DictItemForm>({
+    return request<unknown, DictItemForm>({
       url: `${DICT_BASE_URL}/${dictCode}/items/${id}/form`,
       method: "get",
-    }).then((form) => ({
-      ...form,
-      tagType: decodeDictTagType((form as any).tagType),
-    }));
+    }).then(normalizeDictTagType);
   },
   /** 修改字典项 */
   updateDictItem(dictCode: string, id: string, data: DictItemForm) {
@@ -142,7 +144,7 @@ const DictAPI = {
       method: "put",
       data: {
         ...data,
-        tagType: encodeDictTagType((data as any).tagType),
+        tagType: encodeDictTagType(data.tagType),
       },
     });
   },

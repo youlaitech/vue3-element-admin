@@ -348,8 +348,7 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
     },
     ajax: {
       // 接收 Promise
-      query: ({ page: { currentPage, pageSize }, form, filters, sort, sorts }) => {
-        console.log({ currentPage, pageSize, form, filters, sort, sorts });
+      query: ({ page: { currentPage, pageSize } }) => {
         return new Promise<{ total: number; result: RowMeta[] }>((resolve) => {
           setTimeout(() => {
             const list = [
@@ -465,9 +464,7 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
 });
 const gridEvents: VxeGridListeners<RowMeta> = {
   // 只对 form-config 配置时有效，表单重置时会触发该事件
-  formReset() {
-    console.log("Form Reset");
-  },
+  formReset() {},
 };
 // #endregion
 
@@ -593,7 +590,10 @@ const curd = {
   },
   /** 确定并保存 */
   onSubmitForm: () => {
-    console.log("提交表单");
+    VXETable.modal.message({
+      content: "提交成功",
+      status: "success",
+    });
   },
   onDelete: (row?: RowMeta) => {
     let ids = [];
@@ -614,7 +614,10 @@ const curd = {
     VXETable.modal.confirm("确定要删除吗？").then((type) => {
       if (type === "confirm") {
         // 执行删除操作
-        console.log("删除的ID", ids);
+        VXETable.modal.message({
+          content: `已删除 ${ids.length} 条数据`,
+          status: "success",
+        });
       }
     });
   },

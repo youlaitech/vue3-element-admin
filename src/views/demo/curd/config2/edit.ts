@@ -12,9 +12,6 @@ const modalConfig: IModalConfig = {
     size: useAppStore().device === DeviceEnum.MOBILE ? "80%" : 500,
   },
   form: { labelPosition: "right", labelWidth: "auto" },
-  beforeSubmit(data) {
-    console.log("beforeSubmit", data);
-  },
   formAction(data) {
     // return UserAPI.update(data.id as string, data);
     // 模拟发起网络请求修改字段

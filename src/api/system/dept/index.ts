@@ -7,7 +7,7 @@ const DEPT_BASE_URL = "/api/v1/depts";
 const DeptAPI = {
   /** 获取部门树形列表 */
   getList(queryParams?: DeptQueryParams) {
-    return request<any, DeptItem[]>({
+    return request<unknown, DeptItem[]>({
       url: `${DEPT_BASE_URL}`,
       method: "get",
       params: queryParams,
@@ -15,11 +15,11 @@ const DeptAPI = {
   },
   /** 获取部门下拉数据源 */
   getOptions() {
-    return request<any, OptionItem[]>({ url: `${DEPT_BASE_URL}/options`, method: "get" });
+    return request<unknown, OptionItem[]>({ url: `${DEPT_BASE_URL}/options`, method: "get" });
   },
   /** 获取部门表单数据 */
   getFormData(id: string) {
-    return request<any, DeptForm>({ url: `${DEPT_BASE_URL}/${id}/form`, method: "get" });
+    return request<unknown, DeptForm>({ url: `${DEPT_BASE_URL}/${id}/form`, method: "get" });
   },
   /** 新增部门 */
   create(data: DeptForm) {

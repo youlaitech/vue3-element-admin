@@ -17,7 +17,4 @@ import MultiLevel2 from "../level2.vue";
 defineOptions({ name: "MultiLevel31" });
 
 const value = ref("");
-onMounted(() => {
-  console.log("Multilevel31 onMounted");
-});
 </script>

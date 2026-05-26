@@ -89,7 +89,7 @@
         <el-table-column fixed="right" align="center" label="操作" width="220">
           <template #default="scope">
             <el-button
-              v-if="scope.row.type == MenuTypeEnum.CATALOG || scope.row.type == MenuTypeEnum.MENU"
+              v-if="scope.row.type === MenuTypeEnum.CATALOG || scope.row.type === MenuTypeEnum.MENU"
               v-hasPerm="['sys:menu:create']"
               type="primary"
               link
@@ -155,7 +155,10 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="formData.type == MenuTypeEnum.MENU && !isExternalLink" prop="routeName">
+        <el-form-item
+          v-if="formData.type === MenuTypeEnum.MENU && !isExternalLink"
+          prop="routeName"
+        >
           <template #label>
             <div class="flex-y-center">
               路由名称
@@ -173,7 +176,7 @@
         </el-form-item>
 
         <el-form-item
-          v-if="formData.type == MenuTypeEnum.CATALOG || formData.type == MenuTypeEnum.MENU"
+          v-if="formData.type === MenuTypeEnum.CATALOG || formData.type === MenuTypeEnum.MENU"
           prop="routePath"
         >
           <template #label>
@@ -191,14 +194,17 @@
             </div>
           </template>
           <el-input
-            v-if="formData.type == MenuTypeEnum.CATALOG"
+            v-if="formData.type === MenuTypeEnum.CATALOG"
             v-model="formData.routePath"
             placeholder="system"
           />
           <el-input v-else v-model="formData.routePath" placeholder="user 或 https://example.com" />
         </el-form-item>
 
-        <el-form-item v-if="formData.type == MenuTypeEnum.MENU && !isExternalLink" prop="component">
+        <el-form-item
+          v-if="formData.type === MenuTypeEnum.MENU && !isExternalLink"
+          prop="component"
+        >
           <template #label>
             <div class="flex-y-center">
               组件路径
@@ -214,12 +220,12 @@
           </template>
 
           <el-input v-model="formData.component" placeholder="system/user/index" style="width: 95%">
-            <template v-if="formData.type == MenuTypeEnum.MENU" #prepend>src/views/</template>
-            <template v-if="formData.type == MenuTypeEnum.MENU" #append>.vue</template>
+            <template v-if="formData.type === MenuTypeEnum.MENU" #prepend>src/views/</template>
+            <template v-if="formData.type === MenuTypeEnum.MENU" #append>.vue</template>
           </el-input>
         </el-form-item>
 
-        <el-form-item v-if="formData.type == MenuTypeEnum.MENU && !isExternalLink">
+        <el-form-item v-if="formData.type === MenuTypeEnum.MENU && !isExternalLink">
           <template #label>
             <div class="flex-y-center">
               路由参数
@@ -332,7 +338,7 @@
         </el-form-item>
 
         <!-- 权限标识 -->
-        <el-form-item v-if="formData.type == MenuTypeEnum.BUTTON" label="权限标识" prop="perm">
+        <el-form-item v-if="formData.type === MenuTypeEnum.BUTTON" label="权限标识" prop="perm">
           <el-input v-model="formData.perm" placeholder="sys:user:create" />
         </el-form-item>
 
@@ -341,7 +347,7 @@
           <icon-select v-model="formData.icon" />
         </el-form-item>
 
-        <el-form-item v-if="formData.type == MenuTypeEnum.CATALOG" label="跳转路由">
+        <el-form-item v-if="formData.type === MenuTypeEnum.CATALOG" label="跳转路由">
           <el-input v-model="formData.redirect" placeholder="跳转路由" />
         </el-form-item>
       </el-form>
@@ -529,7 +535,7 @@ function handleSubmit(): void {
     if (isValid) {
       const menuId = formData.value.id;
       if (menuId) {
-        if (formData.value.parentId == menuId) {
+        if (formData.value.parentId === menuId) {
           ElMessage.error("父级菜单不能为当前菜单");
           return;
         }

@@ -7,7 +7,7 @@ const ROLE_BASE_URL = "/api/v1/roles";
 const RoleAPI = {
   /** 获取角色分页数据 */
   getPage(queryParams?: RoleQueryParams) {
-    return request<any, PageResult<RoleItem>>({
+    return request<unknown, PageResult<RoleItem>>({
       url: `${ROLE_BASE_URL}`,
       method: "get",
       params: queryParams,
@@ -15,11 +15,14 @@ const RoleAPI = {
   },
   /** 获取角色下拉数据源 */
   getOptions() {
-    return request<any, OptionItem[]>({ url: `${ROLE_BASE_URL}/options`, method: "get" });
+    return request<unknown, OptionItem[]>({ url: `${ROLE_BASE_URL}/options`, method: "get" });
   },
   /** 获取角色的菜单ID集合 */
   getRoleMenuIds(roleId: string) {
-    return request<any, string[]>({ url: `${ROLE_BASE_URL}/${roleId}/menu-ids`, method: "get" });
+    return request<unknown, string[]>({
+      url: `${ROLE_BASE_URL}/${roleId}/menu-ids`,
+      method: "get",
+    });
   },
   /** 分配菜单权限 */
   updateRoleMenus(roleId: string, data: number[]) {
@@ -27,11 +30,14 @@ const RoleAPI = {
   },
   /** 获取角色表单数据 */
   getFormData(id: string) {
-    return request<any, RoleForm>({ url: `${ROLE_BASE_URL}/${id}/form`, method: "get" });
+    return request<unknown, RoleForm>({ url: `${ROLE_BASE_URL}/${id}/form`, method: "get" });
   },
   /** 获取角色的部门ID集合(自定义数据权限) */
   getRoleDeptIds(roleId: string) {
-    return request<any, string[]>({ url: `${ROLE_BASE_URL}/${roleId}/dept-ids`, method: "get" });
+    return request<unknown, string[]>({
+      url: `${ROLE_BASE_URL}/${roleId}/dept-ids`,
+      method: "get",
+    });
   },
   /** 新增角色 */
   create(data: RoleForm) {

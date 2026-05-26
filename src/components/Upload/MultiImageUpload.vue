@@ -190,9 +190,11 @@ const handleSuccess = (fileInfo: FileInfo, uploadFile: UploadUserFile) => {
 /**
  * 上传失败回调
  */
-const handleError = (error: any) => {
-  console.log("handleError");
-  ElMessage.error("上传失败: " + error.message);
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : String(error);
+
+const handleError = (error: unknown) => {
+  ElMessage.error("上传失败: " + getErrorMessage(error));
 };
 
 /**

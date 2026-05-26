@@ -6,7 +6,10 @@ const AUTH_BASE_URL = "/api/v1/auth";
 const AuthAPI = {
   /** 登录接口*/
   login(data: LoginRequest) {
-    const payload: Record<string, any> = {
+    const payload: Pick<
+      LoginRequest,
+      "username" | "password" | "captchaId" | "captchaCode" | "tenantId"
+    > = {
       username: data.username,
       password: data.password,
       captchaId: data.captchaId,
@@ -18,7 +21,7 @@ const AuthAPI = {
       payload.tenantId = data.tenantId;
     }
 
-    return request<any, LoginResponse>({
+    return request<unknown, LoginResponse>({
       url: `${AUTH_BASE_URL}/login`,
       method: "post",
       data: payload,
@@ -27,7 +30,7 @@ const AuthAPI = {
 
   /** 切换租户(平台用户) - 返回新的 token */
   switchTenant(tenantId: number) {
-    return request<any, LoginResponse>({
+    return request<unknown, LoginResponse>({
       url: `${AUTH_BASE_URL}/switch-tenant`,
       method: "post",
       params: { tenantId },
@@ -36,7 +39,7 @@ const AuthAPI = {
 
   /** 刷新 token 接口*/
   refreshToken(refreshToken: string) {
-    return request<any, LoginResponse>({
+    return request<unknown, LoginResponse>({
       url: `${AUTH_BASE_URL}/refresh-token`,
       method: "post",
       params: { refreshToken },
@@ -56,7 +59,7 @@ const AuthAPI = {
 
   /** 获取验证码接口*/
   getCaptcha() {
-    return request<any, CaptchaInfo>({
+    return request<unknown, CaptchaInfo>({
       url: `${AUTH_BASE_URL}/captcha`,
       method: "get",
     });

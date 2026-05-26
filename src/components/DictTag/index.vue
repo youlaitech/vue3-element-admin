@@ -31,13 +31,13 @@ const dictStore = useDictStore();
  * @param value 字典项的值
  * @returns 包含 label 和 tagType 的对象
  */
-const getLabelAndTagByValue = async (dictCode: string, value: any) => {
+const getLabelAndTagByValue = async (dictCode: string, value: string | number) => {
   // 按需加载字典数据
   await dictStore.loadDictItems(dictCode);
   // 从缓存中获取字典数据
   const dictItems = dictStore.getDictItems(dictCode);
   // 查找对应的字典项
-  const dictItem = dictItems.find((item) => item.value == value);
+  const dictItem = dictItems.find((item) => String(item.value) === String(value));
   return {
     label: dictItem?.label || "",
     tagType: dictItem?.tagType,
