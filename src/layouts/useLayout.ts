@@ -31,9 +31,9 @@ export function useLayout() {
     appStore.toggleDevice(device);
 
     if (isDesktop.value) {
-      appStore.openSideBar();
+      appStore.openSidebar();
     } else {
-      appStore.closeSideBar();
+      appStore.closeSidebar();
     }
   });
 
@@ -82,7 +82,7 @@ export function useLayout() {
   }
 
   function closeSidebar() {
-    appStore.closeSideBar();
+    appStore.closeSidebar();
   }
 
   return {

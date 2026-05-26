@@ -184,7 +184,7 @@ function extractTopMenuPath(path: string): string {
 function handleTopMenuSelect(menuPath: string) {
   if (menuPath === activeTopMenuPath.value) return;
 
-  appStore.activeTopMenu(menuPath);
+  appStore.setActiveTopMenuPath(menuPath);
   permissionStore.setMixLayoutSideMenus(menuPath);
   navigateToFirstMenu(permissionStore.mixLayoutSideMenus);
 }
@@ -215,7 +215,7 @@ watch(
     const isTopMenuChanged = topMenuPath !== activeTopMenuPath.value;
 
     if (isTopMenuChanged) {
-      appStore.activeTopMenu(topMenuPath);
+      appStore.setActiveTopMenuPath(topMenuPath);
     }
 
     // 切换布局（如左侧 -> 混合）时，activeTopMenuPath 可能已是正确值，

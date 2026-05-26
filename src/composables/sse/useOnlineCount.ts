@@ -11,11 +11,11 @@ function createOnlineCountComposable() {
 
   let unsubscribe: (() => void) | null = null;
 
+  // 处理在线人数变更消息
   const handleOnlineCountMessage = (count: number) => {
-    if (count !== undefined && !isNaN(count)) {
-      onlineUserCount.value = count;
-      lastUpdateTime.value = Date.now();
-    }
+    if (!Number.isFinite(count) || count < 0) return;
+    onlineUserCount.value = count;
+    lastUpdateTime.value = Date.now();
   };
 
   const initialize = () => {

@@ -3,6 +3,18 @@ import type { GeneratorPreviewItem, TableQueryParams, TableItem, GenConfigForm }
 
 const GENERATOR_BASE_URL = "/api/v1/codegen";
 
+// 构建预览和下载接口的查询参数
+const buildCodegenParams = (pageType?: "classic" | "curd", type?: "ts" | "js") => {
+  const params: Record<string, string> = {};
+  if (pageType) {
+    params.pageType = pageType;
+  }
+  if (type) {
+    params.type = type;
+  }
+  return Object.keys(params).length ? params : undefined;
+};
+
 const GeneratorAPI = {
   /** 获取数据表分页列表 */
   getTablePage(params: TableQueryParams) {
@@ -21,7 +33,7 @@ const GeneratorAPI = {
     });
   },
 
-  /** 获取代码生成配置 */
+  /** 保存代码生成配置 */
   saveGenConfig(tableName: string, data: GenConfigForm) {
     return request({
       url: `${GENERATOR_BASE_URL}/${tableName}/config`,
@@ -32,17 +44,10 @@ const GeneratorAPI = {
 
   /** 获取代码生成预览数据 */
   getPreviewData(tableName: string, pageType?: "classic" | "curd", type?: "ts" | "js") {
-    const params: Record<string, string> = {};
-    if (pageType) {
-      params.pageType = pageType;
-    }
-    if (type) {
-      params.type = type;
-    }
     return request<unknown, GeneratorPreviewItem[]>({
       url: `${GENERATOR_BASE_URL}/${tableName}/preview`,
       method: "get",
-      params: Object.keys(params).length ? params : undefined,
+      params: buildCodegenParams(pageType, type),
     });
   },
 
@@ -54,23 +59,12 @@ const GeneratorAPI = {
     });
   },
 
-  /**
-   * 下载 ZIP 文件
-   * @param url
-   * @param fileName
-   */
+  /** 下载代码生成 ZIP 文件 */
   download(tableName: string, pageType?: "classic" | "curd", type?: "ts" | "js") {
-    const params: Record<string, string> = {};
-    if (pageType) {
-      params.pageType = pageType;
-    }
-    if (type) {
-      params.type = type;
-    }
     return request({
       url: `${GENERATOR_BASE_URL}/${tableName}/download`,
       method: "get",
-      params: Object.keys(params).length ? params : undefined,
+      params: buildCodegenParams(pageType, type),
       responseType: "blob",
     }).then((response) => {
       const contentDisposition = response?.headers?.["content-disposition"] as string | undefined;
@@ -89,12 +83,12 @@ const GeneratorAPI = {
 
       const blob = new Blob([response.data], { type: "application/zip" });
       const a = document.createElement("a");
-      const url = window.URL.createObjectURL(blob);
-      a.href = url;
+      const downloadUrl = window.URL.createObjectURL(blob);
+      a.href = downloadUrl;
       a.download = fileName;
 
       a.click();
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(downloadUrl);
     });
   },
 };

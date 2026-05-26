@@ -623,5 +623,3 @@ const curd = {
   },
 };
 </script>
-
-<style scoped></style>

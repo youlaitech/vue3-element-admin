@@ -495,5 +495,3 @@ onMounted(() => {
   fetchData();
 });
 </script>
-
-<style scoped lang="scss"></style>
