@@ -581,6 +581,7 @@ onMounted(() => getCaptcha());
     gap: 14px;
     align-items: center;
     justify-content: center;
+    color: var(--el-text-color-secondary);
 
     &__item {
       display: flex;
