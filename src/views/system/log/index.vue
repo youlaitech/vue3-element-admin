@@ -3,12 +3,25 @@
     <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="tableData.params" :inline="true" label-width="auto">
         <el-form-item prop="keywords" label="关键字">
-          <el-input v-model="tableData.params.keywords" placeholder="IP/操作人" clearable @keyup.enter="handleQuery" />
+          <el-input
+            v-model="tableData.params.keywords"
+            placeholder="IP/操作人"
+            clearable
+            @keyup.enter="handleQuery"
+          />
         </el-form-item>
 
         <el-form-item prop="createTime" label="操作时间">
-          <el-date-picker v-model="tableData.params.createTime" :editable="false" type="daterange" range-separator="~" start-placeholder="开始时间"
-            end-placeholder="截止时间" value-format="YYYY-MM-DD" style="width: 260px" />
+          <el-date-picker
+            v-model="tableData.params.createTime"
+            :editable="false"
+            type="daterange"
+            range-separator="~"
+            start-placeholder="开始时间"
+            end-placeholder="截止时间"
+            value-format="YYYY-MM-DD"
+            style="width: 260px"
+          />
         </el-form-item>
 
         <el-form-item>
@@ -47,8 +60,13 @@
         </el-table-column>
       </el-table>
 
-      <pagination v-if="tableData.total > 0" v-model:total="tableData.total" v-model:page="tableData.params.pageNum"
-        v-model:limit="tableData.params.pageSize" @pagination="fetchData" />
+      <pagination
+        v-if="tableData.total > 0"
+        v-model:total="tableData.total"
+        v-model:page="tableData.params.pageNum"
+        v-model:limit="tableData.params.pageSize"
+        @pagination="fetchData"
+      />
     </el-card>
 
     <!-- 详情弹窗 -->
@@ -87,75 +105,76 @@
 </template>
 
 <script setup lang="ts">
-  defineOptions({
-    name: "Log",
-    inheritAttrs: false,
-  });
+defineOptions({
+  name: "Log",
+  inheritAttrs: false,
+});
 
-  import LogAPI from "@/api/system/log";
-  import type { LogItem } from "@/api/system/log";
-  import type { FormInstance, TagProps } from "element-plus";
+import LogAPI from "@/api/system/log";
+import type { LogItem } from "@/api/system/log";
+import type { FormInstance, TagProps } from "element-plus";
 
-  function getMethodTagType(method: string): TagProps["type"] {
-    const map: Record<string, TagProps["type"]> = {
-      GET: undefined,
-      POST: "success",
-      PUT: "warning",
-      DELETE: "danger",
-      PATCH: "info",
-    };
-    return map[method?.toUpperCase()] ?? "info";
-  }
+function getMethodTagType(method: string): TagProps["type"] {
+  const map: Record<string, TagProps["type"]> = {
+    GET: undefined,
+    POST: "success",
+    PUT: "warning",
+    DELETE: "danger",
+    PATCH: "info",
+  };
+  return map[method?.toUpperCase()] ?? "info";
+}
 
-  // 表单引用
-  const queryFormRef = ref<FormInstance>();
+// 表单引用
+const queryFormRef = ref<FormInstance>();
 
-  const loading = ref(false);
+const loading = ref(false);
 
-  const tableData = reactive<PageResult<LogItem>>({
-    list: [],
-    total: 0,
-    params: { //查询参数
-      pageNum: 1,
-      pageSize: 10,
-      keywords: "",
-      createTime: undefined as [string, string] | undefined,
-    },
-  });
-  // 详情弹窗
-  const detailVisible = ref(false);
-  const detailData = ref<Partial<LogItem>>({});
+const tableData = reactive<PageResult<LogItem>>({
+  list: [],
+  total: 0,
+  params: {
+    //查询参数
+    pageNum: 1,
+    pageSize: 10,
+    keywords: "",
+    createTime: undefined as [string, string] | undefined,
+  },
+});
+// 详情弹窗
+const detailVisible = ref(false);
+const detailData = ref<Partial<LogItem>>({});
 
-  function fetchData(): void {
-    loading.value = true;
-    LogAPI.getPage(tableData.params)
-      .then((data) => {
-        tableData.list = data.list ?? [];
-        tableData.total = data.total ?? 0;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  }
+function fetchData(): void {
+  loading.value = true;
+  LogAPI.getPage(tableData.params)
+    .then((data) => {
+      tableData.list = data.list ?? [];
+      tableData.total = data.total ?? 0;
+    })
+    .finally(() => {
+      loading.value = false;
+    });
+}
 
-  function handleQuery(): void {
-    tableData.params.pageNum = 1;
-    fetchData();
-  }
+function handleQuery(): void {
+  tableData.params.pageNum = 1;
+  fetchData();
+}
 
-  function handleResetQuery(): void {
-    queryFormRef.value?.resetFields();
-    tableData.params.pageNum = 1;
-    tableData.params.createTime = undefined;
-    fetchData();
-  }
+function handleResetQuery(): void {
+  queryFormRef.value?.resetFields();
+  tableData.params.pageNum = 1;
+  tableData.params.createTime = undefined;
+  fetchData();
+}
 
-  function handleDetail(row: LogItem): void {
-    detailData.value = row;
-    detailVisible.value = true;
-  }
+function handleDetail(row: LogItem): void {
+  detailData.value = row;
+  detailVisible.value = true;
+}
 
-  onMounted(() => {
-    handleQuery();
-  });
+onMounted(() => {
+  handleQuery();
+});
 </script>

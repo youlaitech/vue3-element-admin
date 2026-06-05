@@ -1,11 +1,8 @@
-
-
 export interface PageQueryParams {
   pageNum: number;
   pageSize: number;
   [key: string]: any;
 }
-
 
 export interface OptionItem {
   label: string;
@@ -42,4 +39,3 @@ export interface BaseEntity {
   createTime: string;
   updateTime: string;
 }
-
