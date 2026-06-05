@@ -1,27 +1,14 @@
 <template>
   <div class="page-container">
     <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
+      <el-form ref="queryFormRef" :model="tableData.params" :inline="true" label-width="auto">
         <el-form-item prop="keywords" label="关键字">
-          <el-input
-            v-model="queryParams.keywords"
-            placeholder="IP/操作人"
-            clearable
-            @keyup.enter="handleQuery"
-          />
+          <el-input v-model="tableData.params.keywords" placeholder="IP/操作人" clearable @keyup.enter="handleQuery" />
         </el-form-item>
 
         <el-form-item prop="createTime" label="操作时间">
-          <el-date-picker
-            v-model="queryParams.createTime"
-            :editable="false"
-            type="daterange"
-            range-separator="~"
-            start-placeholder="开始时间"
-            end-placeholder="截止时间"
-            value-format="YYYY-MM-DD"
-            style="width: 260px"
-          />
+          <el-date-picker v-model="tableData.params.createTime" :editable="false" type="daterange" range-separator="~" start-placeholder="开始时间"
+            end-placeholder="截止时间" value-format="YYYY-MM-DD" style="width: 260px" />
         </el-form-item>
 
         <el-form-item>
@@ -32,7 +19,7 @@
     </el-card>
 
     <el-card class="page-content" shadow="never">
-      <el-table v-loading="loading" :data="pageData" highlight-current-row border>
+      <el-table v-loading="loading" :data="tableData.list" highlight-current-row border>
         <el-table-column label="操作标题" prop="title" min-width="180" show-overflow-tooltip />
         <el-table-column label="状态" prop="status" width="80" align="center">
           <template #default="{ row }">
@@ -60,13 +47,8 @@
         </el-table-column>
       </el-table>
 
-      <pagination
-        v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
-        @pagination="fetchData"
-      />
+      <pagination v-if="tableData.total > 0" v-model:total="tableData.total" v-model:page="tableData.params.pageNum"
+        v-model:limit="tableData.params.pageSize" @pagination="fetchData" />
     </el-card>
 
     <!-- 详情弹窗 -->
@@ -105,76 +87,75 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({
-  name: "Log",
-  inheritAttrs: false,
-});
+  defineOptions({
+    name: "Log",
+    inheritAttrs: false,
+  });
 
-import LogAPI from "@/api/system/log";
-import type { LogItem, LogQueryParams } from "@/api/system/log";
-import type { FormInstance, TagProps } from "element-plus";
+  import LogAPI from "@/api/system/log";
+  import type { LogItem } from "@/api/system/log";
+  import type { FormInstance, TagProps } from "element-plus";
 
-function getMethodTagType(method: string): TagProps["type"] {
-  const map: Record<string, TagProps["type"]> = {
-    GET: undefined,
-    POST: "success",
-    PUT: "warning",
-    DELETE: "danger",
-    PATCH: "info",
-  };
-  return map[method?.toUpperCase()] ?? "info";
-}
+  function getMethodTagType(method: string): TagProps["type"] {
+    const map: Record<string, TagProps["type"]> = {
+      GET: undefined,
+      POST: "success",
+      PUT: "warning",
+      DELETE: "danger",
+      PATCH: "info",
+    };
+    return map[method?.toUpperCase()] ?? "info";
+  }
 
-// 表单引用
-const queryFormRef = ref<FormInstance>();
+  // 表单引用
+  const queryFormRef = ref<FormInstance>();
 
-// 查询参数
-const queryParams = reactive<LogQueryParams>({
-  pageNum: 1,
-  pageSize: 10,
-  keywords: "",
-  createTime: undefined as [string, string] | undefined,
-});
+  const loading = ref(false);
 
-// 列表数据
-const pageData = ref<LogItem[]>();
-const total = ref(0);
-const loading = ref(false);
+  const tableData = reactive<PageResult<LogItem>>({
+    list: [],
+    total: 0,
+    params: { //查询参数
+      pageNum: 1,
+      pageSize: 10,
+      keywords: "",
+      createTime: undefined as [string, string] | undefined,
+    },
+  });
+  // 详情弹窗
+  const detailVisible = ref(false);
+  const detailData = ref<Partial<LogItem>>({});
 
-// 详情弹窗
-const detailVisible = ref(false);
-const detailData = ref<Partial<LogItem>>({});
+  function fetchData(): void {
+    loading.value = true;
+    LogAPI.getPage(tableData.params)
+      .then((data) => {
+        tableData.list = data.list ?? [];
+        tableData.total = data.total ?? 0;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  }
 
-function fetchData(): void {
-  loading.value = true;
-  LogAPI.getPage(queryParams)
-    .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total ?? 0;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-}
+  function handleQuery(): void {
+    tableData.params.pageNum = 1;
+    fetchData();
+  }
 
-function handleQuery(): void {
-  queryParams.pageNum = 1;
-  fetchData();
-}
+  function handleResetQuery(): void {
+    queryFormRef.value?.resetFields();
+    tableData.params.pageNum = 1;
+    tableData.params.createTime = undefined;
+    fetchData();
+  }
 
-function handleResetQuery(): void {
-  queryFormRef.value?.resetFields();
-  queryParams.pageNum = 1;
-  queryParams.createTime = undefined;
-  fetchData();
-}
+  function handleDetail(row: LogItem): void {
+    detailData.value = row;
+    detailVisible.value = true;
+  }
 
-function handleDetail(row: LogItem): void {
-  detailData.value = row;
-  detailVisible.value = true;
-}
-
-onMounted(() => {
-  handleQuery();
-});
+  onMounted(() => {
+    handleQuery();
+  });
 </script>

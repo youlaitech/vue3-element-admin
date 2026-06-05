@@ -8,7 +8,7 @@ import type {
   DictItemForm,
   DictItemOption,
 } from "./types";
-import type { OptionItem } from "@/api/common";
+
 
 const DICT_BASE_URL = "/api/v1/dicts";
 

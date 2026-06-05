@@ -1,14 +1,9 @@
 <template>
   <div class="page-container">
     <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+      <el-form ref="queryFormRef" :model="tableData.params" :inline="true">
         <el-form-item label="关键字" prop="keywords">
-          <el-input
-            v-model="queryParams.keywords"
-            placeholder="字典标签/字典值"
-            clearable
-            @keyup.enter="handleQuery"
-          />
+          <el-input v-model="tableData.params.keywords" placeholder="字典标签/字典值" clearable @keyup.enter="handleQuery" />
         </el-form-item>
 
         <el-form-item>
@@ -22,24 +17,13 @@
       <div class="page-toolbar">
         <div class="page-toolbar__left">
           <el-button type="success" icon="plus" @click="openDialog()">新增</el-button>
-          <el-button
-            type="danger"
-            :disabled="ids.length === 0"
-            icon="delete"
-            @click="handleDelete()"
-          >
+          <el-button type="danger" :disabled="ids.length === 0" icon="delete" @click="handleDelete()">
             删除
           </el-button>
         </div>
       </div>
 
-      <el-table
-        v-loading="loading"
-        highlight-current-row
-        :data="tableData"
-        border
-        @selection-change="handleSelectionChange"
-      >
+      <el-table v-loading="loading" highlight-current-row :data="tableData.list" border @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="字典项标签" prop="label" />
         <el-table-column label="字典项值" prop="value" />
@@ -54,43 +38,21 @@
 
         <el-table-column fixed="right" label="操作" align="center" width="220">
           <template #default="scope">
-            <el-button
-              type="primary"
-              link
-              size="small"
-              icon="edit"
-              @click.stop="openDialog(scope.row)"
-            >
+            <el-button type="primary" link size="small" icon="edit" @click.stop="openDialog(scope.row)">
               编辑
             </el-button>
-            <el-button
-              type="danger"
-              link
-              size="small"
-              icon="delete"
-              @click.stop="handleDelete(scope.row.id)"
-            >
+            <el-button type="danger" link size="small" icon="delete" @click.stop="handleDelete(scope.row.id)">
               删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <pagination
-        v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
-        @pagination="fetchData"
-      />
+      <pagination v-if="tableData.total > 0" v-model:total="tableData.total" v-model:page="tableData.params.pageNum"
+        v-model:limit="tableData.params.pageSize" @pagination="fetchData" />
     </el-card>
 
-    <el-dialog
-      v-model="dialogState.visible"
-      :title="dialogState.title"
-      width="600px"
-      @close="closeDialog"
-    >
+    <el-dialog v-model="dialogState.visible" :title="dialogState.title" width="600px" @close="closeDialog">
       <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="字典项标签" prop="label">
           <el-input v-model="formData.label" placeholder="请输入字典标签" />
@@ -119,12 +81,7 @@
               </el-tooltip>
             </div>
           </template>
-          <el-select
-            v-model="formData.tagType"
-            placeholder="请选择标签类型"
-            clearable
-            @clear="formData.tagType = ''"
-          >
+          <el-select v-model="formData.tagType" placeholder="请选择标签类型" clearable @clear="formData.tagType = ''">
             <template #label="{ value }">
               <el-tag v-if="value" :type="value">
                 {{ formData.label ? formData.label : "字典标签" }}
@@ -152,188 +109,191 @@
 </template>
 
 <script setup lang="ts">
-import DictAPI from "@/api/system/dict";
-import type { DictItemQueryParams, DictItem, DictItemForm } from "@/api/system/dict";
-import type { FormInstance, FormRules } from "element-plus";
+  import DictAPI from "@/api/system/dict";
+  import type { DictItem, DictItemForm } from "@/api/system/dict";
+  import type { FormInstance, FormRules } from "element-plus";
 
-const route = useRoute();
+  const route = useRoute();
 
-// 字典编码
-const dictCode = ref(route.query.dictCode as string);
+  // 字典编码
+  const dictCode = ref(route.query.dictCode as string);
 
-// 表单引用
-const queryFormRef = ref<FormInstance>();
-const dataFormRef = ref<FormInstance>();
+  // 表单引用
+  const queryFormRef = ref<FormInstance>();
+  const dataFormRef = ref<FormInstance>();
 
-// 查询参数
-const queryParams = reactive<DictItemQueryParams>({
-  pageNum: 1,
-  pageSize: 10,
-});
+  // 列表数据
+  const loading = ref(false);
+  const ids = ref<string[]>([]);
 
-// 列表数据
-const tableData = ref<DictItem[]>();
-const total = ref(0);
-const loading = ref(false);
-const ids = ref<string[]>([]);
-
-// 弹窗状态
-const dialogState = reactive({
-  title: "",
-  visible: false,
-});
-
-// 表单数据
-const formData = reactive<DictItemForm>({
-  sort: 1,
-  status: 1,
-  tagType: "",
-});
-
-// 标签类型选项
-const tagType = ["primary", "success", "info", "warning", "danger"] as const;
-
-// 验证规则
-const rules: FormRules = {
-  value: [{ required: true, message: "请输入字典值", trigger: "blur" }],
-  label: [{ required: true, message: "请输入字典标签", trigger: "blur" }],
-};
-
-/**
- * 加载字典项列表数据
- */
-function fetchData(): void {
-  loading.value = true;
-  DictAPI.getDictItemPage(dictCode.value, queryParams)
-    .then((data) => {
-      tableData.value = data.list;
-      total.value = data.total ?? 0;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-}
-
-/**
- * 查询按钮点击事件
- */
-function handleQuery(): void {
-  queryParams.pageNum = 1;
-  fetchData();
-}
-
-/**
- * 重置查询
- */
-function handleResetQuery(): void {
-  queryFormRef.value?.resetFields();
-  queryParams.pageNum = 1;
-  fetchData();
-}
-
-/**
- * 表格选择变化事件
- */
-function handleSelectionChange(selection: DictItem[]): void {
-  ids.value = selection.map((item) => item.id);
-}
-
-/**
- * 打开弹窗
- * @param row 字典项数据（编辑时传入）
- */
-function openDialog(row?: DictItem): void {
-  resetForm();
-  dialogState.visible = true;
-  dialogState.title = row ? "编辑字典值" : "新增字典项";
-
-  if (row?.id) {
-    DictAPI.getDictItemFormData(dictCode.value, row.id).then((data) => {
-      Object.assign(formData, data);
-    });
-  }
-}
-
-function resetForm(): void {
-  dataFormRef.value?.clearValidate();
-  formData.id = undefined;
-  formData.dictCode = dictCode.value;
-  formData.label = undefined;
-  formData.value = undefined;
-  formData.sort = 1;
-  formData.status = 1;
-  formData.tagType = "";
-}
-
-/**
- * 提交表单
- */
-function handleSubmit(): void {
-  dataFormRef.value?.validate((isValid) => {
-    if (isValid) {
-      loading.value = true;
-      const id = formData.id;
-
-      formData.dictCode = dictCode.value;
-      if (id) {
-        DictAPI.updateDictItem(dictCode.value, id, formData)
-          .then(() => {
-            ElMessage.success("修改成功");
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => (loading.value = false));
-      } else {
-        DictAPI.createDictItem(dictCode.value, formData)
-          .then(() => {
-            ElMessage.success("新增成功");
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => (loading.value = false));
-      }
-    }
-  });
-}
-
-/**
- * 关闭弹窗
- */
-function closeDialog(): void {
-  dialogState.visible = false;
-  dataFormRef.value?.resetFields();
-  resetForm();
-}
-
-/**
- * 删除字典项
- * @param id 字典项ID
- */
-function handleDelete(id?: number): void {
-  const itemIds = [id || ids.value].join(",");
-
-  if (!itemIds) {
-    ElMessage.warning("请勾选删除项");
-    return;
-  }
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  }).then(
-    () => {
-      DictAPI.deleteDictItems(dictCode.value, itemIds).then(() => {
-        ElMessage.success("删除成功");
-        handleResetQuery();
-      });
+  const tableData = reactive<PageResult<DictItem>>({
+    list: [],
+    total: 0,
+    params: { //查询参数
+      pageNum: 1,
+      pageSize: 10,
+      dictCode: undefined,
+      keywords: undefined,
     },
-    () => {
-      ElMessage.info("已取消删除");
-    }
-  );
-}
+  });
 
-onMounted(() => {
-  handleQuery();
-});
+  // 弹窗状态
+  const dialogState = reactive({
+    title: "",
+    visible: false,
+  });
+
+  // 表单数据
+  const formData = reactive<DictItemForm>({
+    sort: 1,
+    status: 1,
+    tagType: "",
+  });
+
+  // 标签类型选项
+  const tagType = ["primary", "success", "info", "warning", "danger"] as const;
+
+  // 验证规则
+  const rules: FormRules = {
+    value: [{ required: true, message: "请输入字典值", trigger: "blur" }],
+    label: [{ required: true, message: "请输入字典标签", trigger: "blur" }],
+  };
+
+  /**
+   * 加载字典项列表数据
+   */
+  function fetchData(): void {
+    loading.value = true;
+    DictAPI.getDictItemPage(dictCode.value, tableData.params)
+      .then((data: any) => {
+        tableData.list = data.list;
+        tableData.total = data.total ?? 0;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  }
+
+  /**
+   * 查询按钮点击事件
+   */
+  function handleQuery(): void {
+    tableData.params.pageNum = 1;
+    fetchData();
+  }
+
+  /**
+   * 重置查询
+   */
+  function handleResetQuery(): void {
+    queryFormRef.value?.resetFields();
+    tableData.params.pageNum = 1;
+    fetchData();
+  }
+
+  /**
+   * 表格选择变化事件
+   */
+  function handleSelectionChange(selection: DictItem[]): void {
+    ids.value = selection.map((item) => item.id);
+  }
+
+  /**
+   * 打开弹窗
+   * @param row 字典项数据（编辑时传入）
+   */
+  function openDialog(row?: DictItem): void {
+    resetForm();
+    dialogState.visible = true;
+    dialogState.title = row ? "编辑字典值" : "新增字典项";
+
+    if (row?.id) {
+      DictAPI.getDictItemFormData(dictCode.value, row.id).then((data) => {
+        Object.assign(formData, data);
+      });
+    }
+  }
+
+  function resetForm(): void {
+    dataFormRef.value?.clearValidate();
+    formData.id = undefined;
+    formData.dictCode = dictCode.value;
+    formData.label = undefined;
+    formData.value = undefined;
+    formData.sort = 1;
+    formData.status = 1;
+    formData.tagType = "";
+  }
+
+  /**
+   * 提交表单
+   */
+  function handleSubmit(): void {
+    dataFormRef.value?.validate((isValid) => {
+      if (isValid) {
+        loading.value = true;
+        const id = formData.id;
+
+        formData.dictCode = dictCode.value;
+        if (id) {
+          DictAPI.updateDictItem(dictCode.value, id, formData)
+            .then(() => {
+              ElMessage.success("修改成功");
+              closeDialog();
+              handleQuery();
+            })
+            .finally(() => (loading.value = false));
+        } else {
+          DictAPI.createDictItem(dictCode.value, formData)
+            .then(() => {
+              ElMessage.success("新增成功");
+              closeDialog();
+              handleQuery();
+            })
+            .finally(() => (loading.value = false));
+        }
+      }
+    });
+  }
+
+  /**
+   * 关闭弹窗
+   */
+  function closeDialog(): void {
+    dialogState.visible = false;
+    dataFormRef.value?.resetFields();
+    resetForm();
+  }
+
+  /**
+   * 删除字典项
+   * @param id 字典项ID
+   */
+  function handleDelete(id?: number): void {
+    const itemIds = [id || ids.value].join(",");
+
+    if (!itemIds) {
+      ElMessage.warning("请勾选删除项");
+      return;
+    }
+    ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    }).then(
+      () => {
+        DictAPI.deleteDictItems(dictCode.value, itemIds).then(() => {
+          ElMessage.success("删除成功");
+          handleResetQuery();
+        });
+      },
+      () => {
+        ElMessage.info("已取消删除");
+      }
+    );
+  }
+
+  onMounted(() => {
+    handleQuery();
+  });
 </script>

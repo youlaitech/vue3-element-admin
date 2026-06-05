@@ -28,10 +28,11 @@ export interface ExcelResult {
 export interface PageResult<T> {
   total: number;
   list: T[];
+  params: PageQueryParams;
 }
 
 export interface ApiResponse<T = any> {
-  code: number;
+  code: number | string;
   msg: string;
   data: T;
 }
