@@ -4,17 +4,17 @@
     <el-row :gutter="20">
       <!-- 部门树 -->
       <el-col :lg="4" :xs="24" class="page-aside">
-        <UserDeptTree v-model="queryParams.deptId" @node-click="handleQuery" />
+        <UserDeptTree v-model="tableData.params.deptId" @node-click="handleQuery" />
       </el-col>
 
       <!-- 用户列表 -->
       <el-col :lg="20" :xs="24" class="page-main">
         <!-- 搜索区域 -->
         <el-card shadow="never" class="page-search">
-          <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-width="auto">
+          <el-form ref="queryFormRef" :model="tableData.params" :inline="true" label-width="auto">
             <el-form-item label="关键字" prop="keywords">
               <el-input
-                v-model="queryParams.keywords"
+                v-model="tableData.params.keywords"
                 placeholder="用户名/昵称/手机号"
                 clearable
                 @keyup.enter="handleQuery"
@@ -23,7 +23,7 @@
 
             <el-form-item label="状态" prop="status">
               <el-select
-                v-model="queryParams.status"
+                v-model="tableData.params.status"
                 placeholder="全部"
                 clearable
                 style="width: 100px"
@@ -35,7 +35,7 @@
 
             <el-form-item label="创建时间">
               <el-date-picker
-                v-model="queryParams.createTime"
+                v-model="tableData.params.createTime"
                 :editable="false"
                 type="daterange"
                 range-separator="~"
@@ -86,7 +86,7 @@
 
           <el-table
             v-loading="loading"
-            :data="userList"
+            :data="tableData.list"
             border
             stripe
             highlight-current-row
@@ -150,10 +150,10 @@
           </el-table>
 
           <pagination
-            v-if="total > 0"
-            v-model:total="total"
-            v-model:page="queryParams.pageNum"
-            v-model:limit="queryParams.pageSize"
+            v-if="tableData.total > 0"
+            v-model:total="tableData.total"
+            v-model:page="tableData.params.pageNum"
+            v-model:limit="tableData.params.pageSize"
             @pagination="fetchList"
           />
         </el-card>
@@ -244,7 +244,7 @@
 import { computed, onMounted, reactive, ref } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "element-plus";
-import type { UserForm, UserQueryParams, UserItem } from "@/api/system/user";
+import type { UserForm, UserItem } from "@/api/system/user";
 import { downloadFile } from "@/utils";
 import UserAPI from "@/api/system/user";
 import DeptAPI from "@/api/system/dept";
@@ -267,16 +267,17 @@ const userStore = useUserStore();
 const queryFormRef = ref<FormInstance>();
 const userFormRef = ref<FormInstance>();
 
-// 查询参数
-const queryParams = reactive<UserQueryParams>({
-  pageNum: 1,
-  pageSize: 10,
-});
-
-// 列表数据
-const userList = ref<UserItem[]>([]);
-const total = ref(0);
 const loading = ref(false);
+
+const tableData = reactive<PageResult<UserItem>>({
+  list: [],
+  total: 0,
+  params: {
+    //查询参数
+    pageNum: 1,
+    pageSize: 10,
+  },
+});
 
 // 弹窗状态
 const dialogState = reactive({
@@ -317,9 +318,9 @@ const rules: FormRules = {
 async function fetchList(): Promise<void> {
   loading.value = true;
   try {
-    const data = await UserAPI.getPage(queryParams);
-    userList.value = data.list;
-    total.value = data.total ?? 0;
+    const data = await UserAPI.getPage(tableData.params);
+    tableData.list = data.list ?? [];
+    tableData.total = data.total ?? 0;
   } finally {
     loading.value = false;
   }
@@ -341,7 +342,7 @@ const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<U
  * 执行查询（重置页码）
  */
 function handleQuery(): void {
-  queryParams.pageNum = 1;
+  tableData.params.pageNum = 1;
   fetchList();
 }
 
@@ -350,8 +351,8 @@ function handleQuery(): void {
  */
 function resetQuery(): void {
   queryFormRef.value?.resetFields();
-  queryParams.deptId = undefined;
-  queryParams.createTime = undefined;
+  tableData.params.deptId = undefined;
+  tableData.params.createTime = undefined;
 }
 
 /**
@@ -512,7 +513,7 @@ function handleDelete(id?: string): void {
  * 导出用户列表
  */
 async function exportUsers(): Promise<void> {
-  const response = await UserAPI.export(queryParams);
+  const response = await UserAPI.export(tableData.params);
   downloadFile(response);
   ElMessage.success("导出成功");
 }

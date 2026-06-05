@@ -2,10 +2,10 @@
   <div class="page-container">
     <!-- 搜索区域 -->
     <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+      <el-form ref="queryFormRef" :model="tableData.params" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
-            v-model="queryParams.keywords"
+            v-model="tableData.params.keywords"
             placeholder="角色名称"
             clearable
             @keyup.enter="handleQuery"
@@ -37,7 +37,7 @@
       <el-table
         ref="dataTableRef"
         v-loading="loading"
-        :data="roleList"
+        :data="tableData.list"
         highlight-current-row
         border
         @selection-change="handleSelectionChange"
@@ -92,10 +92,10 @@
       </el-table>
 
       <pagination
-        v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
+        v-if="tableData.total > 0"
+        v-model:total="tableData.total"
+        v-model:page="tableData.params.pageNum"
+        v-model:limit="tableData.params.pageSize"
         @pagination="fetchList"
       />
     </el-card>
@@ -233,7 +233,7 @@ import { useAppStore } from "@/stores/app";
 import { DeviceEnum } from "@/enums/settings";
 
 import RoleAPI from "@/api/system/role";
-import type { RoleItem, RoleForm, RoleQueryParams } from "@/api/system/role";
+import type { RoleItem, RoleForm } from "@/api/system/role";
 import MenuAPI from "@/api/system/menu";
 import DeptAPI from "@/api/system/dept";
 
@@ -250,15 +250,17 @@ const permTreeRef = ref();
 
 const loading = ref(false);
 const ids = ref<number[]>([]);
-const total = ref(0);
 
-const queryParams = reactive<RoleQueryParams>({
-  pageNum: 1,
-  pageSize: 10,
+const tableData = reactive<PageResult<RoleItem>>({
+  list: [],
+  total: 0,
+  params: {
+    pageNum: 1,
+    pageSize: 10,
+    keywords: "",
+  },
 });
 
-// 角色表格数据
-const roleList = ref<RoleItem[]>();
 // 菜单权限下拉
 const menuPermOptions = ref<OptionItem[]>([]);
 // 部门下拉选项
@@ -305,9 +307,9 @@ const parentChildLinked = ref(true);
 async function fetchList(): Promise<void> {
   loading.value = true;
   try {
-    const data = await RoleAPI.getPage(queryParams);
-    roleList.value = data.list;
-    total.value = data.total ?? 0;
+    const data = await RoleAPI.getPage(tableData.params);
+    tableData.list = data.list ?? [];
+    tableData.total = data.total ?? 0;
   } finally {
     loading.value = false;
   }
@@ -315,7 +317,7 @@ async function fetchList(): Promise<void> {
 
 // 查询（重置页码后获取数据）
 function handleQuery(): void {
-  queryParams.pageNum = 1;
+  tableData.params.pageNum = 1;
   fetchList();
 }
 

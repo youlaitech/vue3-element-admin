@@ -1,10 +1,10 @@
 <template>
   <div class="page-container">
     <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+      <el-form ref="queryFormRef" :model="tableData.params" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
-            v-model="queryParams.keywords"
+            v-model="tableData.params.keywords"
             placeholder="租户名称/租户编码/域名"
             clearable
             @keyup.enter="handleQuery"
@@ -12,7 +12,12 @@
         </el-form-item>
 
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryParams.status" placeholder="全部" clearable style="width: 120px">
+          <el-select
+            v-model="tableData.params.status"
+            placeholder="全部"
+            clearable
+            style="width: 120px"
+          >
             <el-option label="正常" :value="1" />
             <el-option label="禁用" :value="0" />
           </el-select>
@@ -50,7 +55,7 @@
 
       <el-table
         v-loading="loading"
-        :data="pageData"
+        :data="tableData.list"
         highlight-current-row
         border
         @selection-change="handleSelectionChange"
@@ -143,10 +148,10 @@
       </el-table>
 
       <pagination
-        v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
+        v-if="tableData.total > 0"
+        v-model:total="tableData.total"
+        v-model:page="tableData.params.pageNum"
+        v-model:limit="tableData.params.pageSize"
         @pagination="fetchData"
       />
     </el-card>
@@ -360,12 +365,7 @@ import { hasPerm } from "@/utils/auth";
 import TenantAPI from "@/api/system/tenant";
 import TenantPlanAPI from "@/api/system/tenant-plan";
 import MenuAPI from "@/api/system/menu";
-import type {
-  TenantCreateForm,
-  TenantForm,
-  TenantQueryParams,
-  TenantItem,
-} from "@/api/system/tenant";
+import type { TenantCreateForm, TenantForm, TenantItem } from "@/api/system/tenant";
 import type { OptionItem } from "@/api/common";
 import { MenuScopeEnum } from "@/enums/business";
 import { isPlatformTenantId } from "@/utils/tenant";
@@ -376,20 +376,22 @@ const dataFormRef = ref<FormInstance>();
 const menuTreeRef = ref();
 const planPreviewTreeRef = ref();
 
-// 查询参数
-const queryParams = reactive<TenantQueryParams>({
-  pageNum: 1,
-  pageSize: 10,
-  keywords: "",
-});
-
 // 列表数据
-const pageData = ref<TenantItem[]>([]);
 const menuPermOptions = ref<OptionItem[]>([]);
 const planOptions = ref<OptionItem[]>([]);
-const total = ref(0);
 const loading = ref(false);
 const ids = ref<number[]>([]);
+
+const tableData = reactive<PageResult<TenantItem>>({
+  list: [],
+  total: 0,
+  params: {
+    //查询参数
+    pageNum: 1,
+    pageSize: 10,
+    keywords: "",
+  },
+});
 
 // 弹窗状态
 const dialogState = reactive({
@@ -484,13 +486,13 @@ function resolvePlanLabel(planId?: number): string {
  */
 function fetchData(): void {
   loading.value = true;
-  TenantAPI.getPage(queryParams)
+  TenantAPI.getPage(tableData.params)
     .then((data) => {
-      pageData.value = data.list.map((item: TenantItem) => ({
+      tableData.list = data.list.map((item: TenantItem) => ({
         ...item,
         planId: item.planId != null ? Number(item.planId) : undefined,
       }));
-      total.value = data.total ?? 0;
+      tableData.total = data.total ?? 0;
     })
     .finally(() => {
       loading.value = false;
@@ -822,7 +824,7 @@ function applyMenuOptionsDisabled(options: OptionItem[], disabled: boolean): Opt
  * 查询按钮点击事件
  */
 function handleQuery(): void {
-  queryParams.pageNum = 1;
+  tableData.params.pageNum = 1;
   fetchData();
 }
 
@@ -831,7 +833,7 @@ function handleQuery(): void {
  */
 function handleResetQuery(): void {
   queryFormRef.value?.resetFields();
-  queryParams.pageNum = 1;
+  tableData.params.pageNum = 1;
   fetchData();
 }
 

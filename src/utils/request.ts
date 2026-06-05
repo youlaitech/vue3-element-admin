@@ -34,7 +34,7 @@ http.interceptors.request.use(
 
 // 响应拦截器
 http.interceptors.response.use(
-  (response: AxiosResponse<ApiResponse>) => {
+  (response: AxiosResponse<ApiResponse>): any => {
     const { responseType } = response.config;
 
     // 二进制数据直接返回
@@ -64,8 +64,8 @@ http.interceptors.response.use(
 
     // Token 过期：尝试刷新 token 后自动重试一次
     if (code === ApiCodeEnum.ACCESS_TOKEN_INVALID) {
-      // 已重试过，直接跳登录
-      if (retriedConfigs.has(config)) {
+      // config 不存在时无法重试，直接跳登录
+      if (!config || retriedConfigs.has(config)) {
         await redirectToLogin("登录已过期，请重新登录");
         return Promise.reject(new Error("Token Invalid"));
       }

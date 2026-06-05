@@ -1,10 +1,10 @@
 ﻿<template>
   <div class="page-container">
     <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-suffix=":">
+      <el-form ref="queryFormRef" :model="tableData.params" :inline="true" label-suffix=":">
         <el-form-item label="标题" prop="title">
           <el-input
-            v-model="queryParams.title"
+            v-model="tableData.params.title"
             placeholder="标题"
             clearable
             @keyup.enter="handleQuery()"
@@ -13,7 +13,7 @@
 
         <el-form-item label="发布状态" prop="publishStatus">
           <el-select
-            v-model="queryParams.publishStatus"
+            v-model="tableData.params.publishStatus"
             clearable
             placeholder="全部"
             style="width: 100px"
@@ -57,7 +57,7 @@
       <el-table
         ref="dataTableRef"
         v-loading="loading"
-        :data="pageData"
+        :data="tableData.list"
         highlight-current-row
         @selection-change="handleSelectionChange"
       >
@@ -155,10 +155,10 @@
       </el-table>
 
       <pagination
-        v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
+        v-if="tableData.total > 0"
+        v-model:total="tableData.total"
+        v-model:page="tableData.params.pageNum"
+        v-model:limit="tableData.params.pageSize"
         @pagination="fetchData()"
       />
     </el-card>
@@ -277,7 +277,7 @@ defineOptions({
 });
 
 import NoticeAPI from "@/api/system/notice";
-import type { NoticeItem, NoticeForm, NoticeQueryParams, NoticeDetail } from "@/api/system/notice";
+import type { NoticeItem, NoticeForm, NoticeDetail } from "@/api/system/notice";
 import UserAPI from "@/api/system/user";
 import type { FormInstance, FormRules } from "element-plus";
 
@@ -285,18 +285,22 @@ import type { FormInstance, FormRules } from "element-plus";
 const queryFormRef = ref<FormInstance>();
 const dataFormRef = ref<FormInstance>();
 
-// 查询参数
-const queryParams = reactive<NoticeQueryParams>({
-  pageNum: 1,
-  pageSize: 10,
-});
-
 // 列表数据
-const pageData = ref<NoticeItem[]>([]);
 const userOptions = ref<OptionItem[]>([]);
-const total = ref(0);
 const loading = ref(false);
 const selectIds = ref<number[]>([]);
+
+const tableData = reactive<PageResult<NoticeItem>>({
+  list: [],
+  total: 0,
+  params: {
+    //查询参数
+    pageNum: 1,
+    pageSize: 10,
+    title: "",
+    publishStatus: undefined,
+  },
+});
 
 // 弹窗状态
 const dialogState = reactive({
@@ -341,7 +345,7 @@ const currentNotice = ref<NoticeDetail>({});
  * 查询按钮点击事件
  */
 function handleQuery(): void {
-  queryParams.pageNum = 1;
+  tableData.params.pageNum = 1;
   fetchData();
 }
 
@@ -350,10 +354,10 @@ function handleQuery(): void {
  */
 function fetchData(): void {
   loading.value = true;
-  NoticeAPI.getPage(queryParams)
+  NoticeAPI.getPage(tableData.params)
     .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total ?? 0;
+      tableData.list = data.list ?? [];
+      tableData.total = data.total ?? 0;
     })
     .finally(() => {
       loading.value = false;
@@ -365,7 +369,7 @@ function fetchData(): void {
  */
 function handleResetQuery(): void {
   queryFormRef.value?.resetFields();
-  queryParams.pageNum = 1;
+  tableData.params.pageNum = 1;
   fetchData();
 }
 

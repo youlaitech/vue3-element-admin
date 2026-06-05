@@ -61,6 +61,8 @@ export interface DictItem {
   status: number;
   /** 排序 */
   sort?: number;
+  /** 标签类型（后端返回的原始码） */
+  tagType?: unknown;
 }
 
 /** 字典项表单对象 */

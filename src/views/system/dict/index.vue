@@ -1,10 +1,10 @@
 <template>
   <div class="page-container">
     <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+      <el-form ref="queryFormRef" :model="tableData.params" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
-            v-model="queryParams.keywords"
+            v-model="tableData.params.keywords"
             placeholder="字典名称/编码"
             clearable
             @keyup.enter="handleQuery"
@@ -36,7 +36,7 @@
       <el-table
         v-loading="loading"
         highlight-current-row
-        :data="tableData"
+        :data="tableData.list"
         border
         @selection-change="handleSelectionChange"
       >
@@ -82,10 +82,10 @@
       </el-table>
 
       <pagination
-        v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
+        v-if="tableData.total > 0"
+        v-model:total="tableData.total"
+        v-model:page="tableData.params.pageNum"
+        v-model:limit="tableData.params.pageSize"
         @pagination="fetchData"
       />
     </el-card>
@@ -134,7 +134,7 @@ defineOptions({
 });
 
 import DictAPI from "@/api/system/dict";
-import type { DictTypeQueryParams, DictTypeItem, DictTypeForm } from "@/api/system/dict";
+import type { DictTypeItem, DictTypeForm } from "@/api/system/dict";
 import type { FormInstance, FormRules } from "element-plus";
 import router from "@/router";
 
@@ -142,17 +142,18 @@ import router from "@/router";
 const queryFormRef = ref<FormInstance>();
 const dataFormRef = ref<FormInstance>();
 
-// 查询参数
-const queryParams = reactive<DictTypeQueryParams>({
-  pageNum: 1,
-  pageSize: 10,
-});
-
 // 列表数据
-const tableData = ref<DictTypeItem[]>();
-const total = ref(0);
 const loading = ref(false);
 const ids = ref<string[]>([]);
+const tableData = reactive<PageResult<DictTypeItem>>({
+  list: [],
+  total: 0,
+  params: {
+    //查询参数
+    pageNum: 1,
+    pageSize: 10,
+  },
+});
 
 // 弹窗状态
 const dialogState = reactive({
@@ -176,10 +177,10 @@ const rules: FormRules = {
  */
 function fetchData(): void {
   loading.value = true;
-  DictAPI.getPage(queryParams)
+  DictAPI.getPage(tableData.params)
     .then((data) => {
-      tableData.value = data.list;
-      total.value = data.total ?? 0;
+      tableData.list = data.list ?? [];
+      tableData.total = data.total ?? 0;
     })
     .finally(() => {
       loading.value = false;
@@ -190,7 +191,7 @@ function fetchData(): void {
  * 查询按钮点击事件
  */
 function handleQuery(): void {
-  queryParams.pageNum = 1;
+  tableData.params.pageNum = 1;
   fetchData();
 }
 
@@ -199,7 +200,7 @@ function handleQuery(): void {
  */
 function handleResetQuery(): void {
   queryFormRef.value?.resetFields();
-  queryParams.pageNum = 1;
+  tableData.params.pageNum = 1;
   fetchData();
 }
 
