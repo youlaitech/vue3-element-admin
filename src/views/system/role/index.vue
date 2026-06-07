@@ -231,6 +231,7 @@
 <script setup lang="ts">
 import { useAppStore } from "@/stores/app";
 import { DeviceEnum } from "@/enums/settings";
+import type { TreeNodeData } from "element-plus/es/components/tree";
 
 import RoleAPI from "@/api/system/role";
 import type { RoleItem, RoleForm } from "@/api/system/role";
@@ -249,7 +250,7 @@ const roleFormRef = ref();
 const permTreeRef = ref();
 
 const loading = ref(false);
-const ids = ref<number[]>([]);
+const ids = ref<string[]>([]);
 
 const tableData = reactive<PageResult<RoleItem>>({
   list: [],
@@ -301,6 +302,11 @@ const isExpanded = ref(true);
 
 const parentChildLinked = ref(true);
 
+interface ToggleableTreeNode {
+  expand: () => void;
+  collapse: () => void;
+}
+
 /**
  * 加载角色列表数据
  */
@@ -337,8 +343,8 @@ function handleResetQuery(): void {
 }
 
 // 行复选框选中
-function handleSelectionChange(selection: any): void {
-  ids.value = selection.map((item: any) => item.id);
+function handleSelectionChange(selection: RoleItem[]): void {
+  ids.value = selection.flatMap((item) => (item.id ? [item.id] : []));
 }
 
 /**
@@ -489,9 +495,10 @@ async function handleAssignPermClick(row: RoleItem): Promise<void> {
 function handleAssignPermSubmit() {
   const roleId = checkedRole.value.id;
   if (roleId) {
-    const checkedMenuIds: number[] = permTreeRef
+    const checkedMenuIds = permTreeRef
       .value!.getCheckedNodes(false, true)
-      .map((node: any) => node.value);
+      .map((node: TreeNodeData) => Number(node.value))
+      .filter((value: number) => !Number.isNaN(value));
 
     loading.value = true;
     RoleAPI.updateRoleMenus(roleId, checkedMenuIds)
@@ -510,11 +517,12 @@ function handleAssignPermSubmit() {
 function togglePermTree(): void {
   isExpanded.value = !isExpanded.value;
   if (permTreeRef.value) {
-    Object.values(permTreeRef.value.store.nodesMap).forEach((node: any) => {
+    Object.values(permTreeRef.value.store.nodesMap).forEach((node) => {
+      const treeNode = node as ToggleableTreeNode;
       if (isExpanded.value) {
-        node.expand();
+        treeNode.expand();
       } else {
-        node.collapse();
+        treeNode.collapse();
       }
     });
   }
@@ -525,19 +533,14 @@ watch(permKeywords, (val) => {
   permTreeRef.value!.filter(val);
 });
 
-function handlePermFilter(
-  value: string,
-  data: {
-    [key: string]: any;
-  }
-) {
+function handlePermFilter(value: string, data: TreeNodeData) {
   if (!value) return true;
-  return data.label.includes(value);
+  return String(data.label ?? "").includes(value);
 }
 
 // 父子菜单节点是否联动
-function handleParentChildLinkedChange(val: any): void {
-  parentChildLinked.value = val;
+function handleParentChildLinkedChange(val: string | number | boolean): void {
+  parentChildLinked.value = Boolean(val);
 }
 
 onMounted(() => {

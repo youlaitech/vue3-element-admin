@@ -21,6 +21,7 @@
 
 <script setup lang="ts">
 import DeptAPI from "@/api/system/dept";
+import type { TreeNodeData } from "element-plus/es/components/tree";
 
 const props = defineProps({
   modelValue: {
@@ -32,7 +33,7 @@ const props = defineProps({
 // 部门树数据
 const deptList = ref<OptionItem[]>();
 const deptTreeRef = ref();
-const deptName = ref();
+const deptName = ref("");
 
 const emits = defineEmits(["node-click"]);
 
@@ -50,17 +51,17 @@ watchEffect(
 /**
  * 部门筛选
  */
-function handleFilter(value: string, data: any): boolean {
+function handleFilter(value: string, data: TreeNodeData): boolean {
   if (!value) {
     return true;
   }
-  return data.label.indexOf(value) !== -1;
+  return String(data.label ?? "").includes(value);
 }
 
 /**
  * 部门树节点点击事件
  */
-function handleNodeClick(data: { [key: string]: any }): void {
+function handleNodeClick(data: OptionItem): void {
   deptId.value = data.value;
   emits("node-click");
 }
