@@ -179,50 +179,6 @@
     </section>
 
     <!-- ============================================================
-    Recent visits: collapsible history (like Alibaba Cloud)
-    ============================================================ -->
-    <section v-if="recentMenus.length" class="dash-recent">
-      <div class="card">
-        <div class="card__head">
-          <h3 class="card__title">最近访问</h3>
-          <div class="card__head-actions">
-            <el-button type="primary" link size="small" @click="clearRecentMenus">清空</el-button>
-            <el-button type="primary" link size="small" @click="recentExpanded = !recentExpanded">
-              {{ recentExpanded ? "收起" : "展开" }}
-              <el-icon :size="12">
-                <ArrowUp v-if="recentExpanded" />
-                <ArrowDown v-else />
-              </el-icon>
-            </el-button>
-          </div>
-        </div>
-        <div class="card__body">
-          <div class="recent-grid" :class="{ 'recent-grid--fold': !recentExpanded }">
-            <div
-              v-for="item in recentMenus"
-              :key="item.path"
-              class="recent-grid__item"
-              @click="router.push(item.path)"
-            >
-              <div class="recent-grid__icon">
-                <el-icon v-if="item.icon?.startsWith('el-icon-')" :size="15">
-                  <component :is="item.icon.replace('el-icon-', '')" />
-                </el-icon>
-                <span
-                  v-else-if="item.icon"
-                  :class="`i-svg:${item.icon}`"
-                  class="recent-grid__svg"
-                />
-                <el-icon v-else :size="15"><Menu /></el-icon>
-              </div>
-              <span class="recent-grid__name">{{ item.title }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
     Chart
     ============================================================ -->
     <section class="dash-chart">
@@ -947,66 +903,6 @@ $radius: 10px;
     flex-shrink: 0;
     font-size: 12px;
     color: var(--el-text-color-placeholder);
-  }
-}
-
-// ============================================================
-// Recent visits grid (collapsible)
-// ============================================================
-
-.card__head-actions {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-.recent-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 2px;
-
-  &--fold {
-    max-height: 42px;
-    overflow: hidden;
-  }
-
-  &__item {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    padding: 8px 10px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.15s;
-
-    &:hover {
-      background: var(--el-fill-color);
-    }
-  }
-
-  &__icon {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    color: var(--el-text-color-secondary);
-    background: var(--el-fill-color-lighter);
-    border-radius: 5px;
-  }
-
-  &__svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  &__name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 12px;
-    color: var(--el-text-color-regular);
-    white-space: nowrap;
   }
 }
 

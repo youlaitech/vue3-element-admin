@@ -379,7 +379,35 @@ const closeSelectedTag = (tag: TagView | null) => {
   });
 };
 
-// 关闭当前激活标签以外的其他标签
+/* ------------------------------------------------------------------ */
+/*  批量关闭标签（左/右/其它方向）                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * 按方向批量关闭标签的通用执行器。
+ *
+ * closeLeftTagsForActive / closeRightTagsForActive / closeLeftTags /
+ * closeRightTags 四个公开函数均委托此函数，仅 source（标签来源 ref）
+ * 和 batchFn（调用的 store 方法）不同。
+ *
+ * 关闭后若当前路由对应的标签已被移除，自动跳转到最后一个剩余标签。
+ */
+function closeDirectional(
+  source: Ref<TagView | null>,
+  batchFn: (tag: TagView) => Promise<{ visitedViews: TagView[] }>
+) {
+  const tag = source.value;
+  if (!tag) return;
+
+  batchFn(tag).then(({ visitedViews }) => {
+    const stillVisible = visitedViews.some((v) => v.path === route.path);
+    if (!stillVisible) {
+      tagsViewStore.toLastView(visitedViews);
+    }
+  });
+}
+
+/** 关闭当前激活标签之外的其它标签 */
 const closeOtherTagsForActive = () => {
   if (!currentTag.value) return;
   tagsViewStore.delOtherViews(currentTag.value).then(() => {
@@ -387,49 +415,14 @@ const closeOtherTagsForActive = () => {
   });
 };
 
-// 关闭当前激活标签左侧的所有标签
-const closeLeftTagsForActive = () => {
-  if (!currentTag.value) return;
-  tagsViewStore.delLeftViews(currentTag.value).then((result: any) => {
-    const hasCurrentRoute = result.visitedViews.some((item: TagView) => item.path === route.path);
-    if (!hasCurrentRoute) {
-      tagsViewStore.toLastView(result.visitedViews);
-    }
-  });
-};
-
-// 关闭当前激活标签右侧的所有标签
-const closeRightTagsForActive = () => {
-  if (!currentTag.value) return;
-  tagsViewStore.delRightViews(currentTag.value).then((result: any) => {
-    const hasCurrentRoute = result.visitedViews.some((item: TagView) => item.path === route.path);
-    if (!hasCurrentRoute) {
-      tagsViewStore.toLastView(result.visitedViews);
-    }
-  });
-};
-
-// 关闭右键选中标签左侧的所有标签
-const closeLeftTags = () => {
-  if (!selectedTag.value) return;
-  tagsViewStore.delLeftViews(selectedTag.value).then((result: any) => {
-    const hasCurrentRoute = result.visitedViews.some((item: TagView) => item.path === route.path);
-    if (!hasCurrentRoute) {
-      tagsViewStore.toLastView(result.visitedViews);
-    }
-  });
-};
-
-// 关闭右键选中标签右侧的所有标签
-const closeRightTags = () => {
-  if (!selectedTag.value) return;
-  tagsViewStore.delRightViews(selectedTag.value).then((result: any) => {
-    const hasCurrentRoute = result.visitedViews.some((item: TagView) => item.path === route.path);
-    if (!hasCurrentRoute) {
-      tagsViewStore.toLastView(result.visitedViews);
-    }
-  });
-};
+// 关闭左侧（当前激活标签）
+const closeLeftTagsForActive = () => closeDirectional(currentTag, tagsViewStore.delLeftViews);
+// 关闭右侧（当前激活标签）
+const closeRightTagsForActive = () => closeDirectional(currentTag, tagsViewStore.delRightViews);
+// 关闭左侧（右键选中标签）
+const closeLeftTags = () => closeDirectional(selectedTag, tagsViewStore.delLeftViews);
+// 关闭右侧（右键选中标签）
+const closeRightTags = () => closeDirectional(selectedTag, tagsViewStore.delRightViews);
 
 // 关闭右键选中标签以外的其他标签
 const closeOtherTags = () => {
