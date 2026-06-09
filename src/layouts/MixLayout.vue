@@ -229,6 +229,8 @@ watch(
 </script>
 
 <style lang="scss" scoped>
+@use "@/styles/base/mixins" as *;
+
 .layout {
   &__header {
     position: sticky;
@@ -297,8 +299,8 @@ watch(
   }
 
   &__container {
+    @include app-main-height;
     display: flex;
-    height: calc(100vh - $navbar-height);
     padding-top: 0;
 
     .layout__sidebar--left {
@@ -314,7 +316,7 @@ watch(
       }
 
       :deep(.el-scrollbar) {
-        height: calc(100vh - $navbar-height - 50px);
+        @include sidebar-scroll-height-with-toggle;
       }
 
       :deep(.el-menu) {
@@ -329,8 +331,8 @@ watch(
         align-items: center;
         justify-content: center;
         width: 100%;
-        height: 50px;
-        line-height: 50px;
+        height: $sidebar-toggle-height;
+        line-height: $sidebar-toggle-height;
         background-color: var(--menu-background);
         box-shadow: 0 0 6px -2px var(--el-color-primary);
       }
@@ -368,7 +370,7 @@ watch(
 
 :deep(.hasTagsView) {
   .app-main {
-    height: calc(100vh - $navbar-height - $tags-view-height) !important;
+    @include app-main-height-with-tags;
   }
 }
 </style>

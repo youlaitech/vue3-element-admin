@@ -1,0 +1,68 @@
+/**
+ * 布局 Mixins
+ *
+ * 所有布局组件共享的样式抽象，确保单一来源。
+ *
+ * ═══════════════════════════════════════════════════════════
+ *  主题变量契约（添加新主题时必须定义以下 CSS 变量）
+ * ═══════════════════════════════════════════════════════════
+ *
+ *  --menu-background       菜单背景色
+ *  --menu-text             菜单文字色
+ *  --menu-active-text      菜单激活文字色（通常复用 --el-menu-active-color）
+ *  --menu-hover            菜单悬浮背景色【自动派生——见 _theme.scss 颜色令牌】
+ *  --sidebar-logo-background  Logo 区域背景色
+ *  --sidebar-logo-text-color  Logo 区域文字色
+ *
+ *  自动派生规则：--menu-hover 通过 color-mix() 从 --menu-background 派生，
+ *  因此新主题只需定义 --menu-background，hover 颜色自动生成。
+ *  如需覆盖自动派生值，显式设置 --menu-hover 即可。
+ */
+
+@use "variables" as *;
+
+// ============================================
+// 布局计算 Mixins
+// ============================================
+
+/**
+ * 计算主内容区高度（考虑 TagsView 是否存在）
+ *
+ * 使用场景：各布局文件中的 .hasTagsView 样式块
+ *
+ * @example
+ *   .hasTagsView {
+ *     :deep(.app-main) {
+ *       @include app-main-height-with-tags;
+ *     }
+ *   }
+ */
+@mixin app-main-height-with-tags {
+  height: calc(100vh - $navbar-height - $tags-view-height) !important;
+}
+
+/**
+ * 主内容区基础高度（无 TagsView）
+ *
+ * @example
+ *   .layout__main {
+ *     @include app-main-height;
+ *   }
+ */
+@mixin app-main-height {
+  height: calc(100vh - $navbar-height);
+}
+
+/**
+ * 侧边栏滚动区高度（带 Logo 时）
+ */
+@mixin sidebar-scroll-height-with-logo {
+  height: calc(100vh - $navbar-height);
+}
+
+/**
+ * 侧边栏滚动区高度（带底部折叠按钮时，如 MixLayout 左侧）
+ */
+@mixin sidebar-scroll-height-with-toggle {
+  height: calc(100vh - $navbar-height - $sidebar-toggle-height);
+}

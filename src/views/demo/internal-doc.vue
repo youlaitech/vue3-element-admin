@@ -4,17 +4,15 @@
   </div>
 </template>
 <style lang="scss" scoped>
-/** 关闭tag标签  */
+@use "@/styles/base/variables" as *;
+
 .page-container {
-  /* 50px = navbar = 50px */
-  height: calc(100vh - 50px);
+  height: calc(100vh - $navbar-height);
 }
 
-/** 开启tag标签  */
 .hasTagsView {
   .page-container {
-    /* 84px = navbar + tags-view = 50px + 34px */
-    height: calc(100vh - 84px);
+    height: calc(100vh - $navbar-height - $tags-view-height);
   }
 }
 

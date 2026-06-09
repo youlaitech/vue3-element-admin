@@ -49,6 +49,8 @@ const isLogoCollapsed = computed(() => width.value < 768);
 </script>
 
 <style lang="scss" scoped>
+@use "@/styles/base/mixins" as *;
+
 .layout {
   &__header {
     position: sticky;
@@ -143,14 +145,14 @@ const isLogoCollapsed = computed(() => width.value < 768);
   }
 
   &__main {
-    height: calc(100vh - $navbar-height);
+    @include app-main-height;
     overflow-y: auto;
   }
 }
 
 .hasTagsView {
   :deep(.app-main) {
-    height: calc(100vh - $navbar-height - $tags-view-height) !important;
+    @include app-main-height-with-tags;
   }
 }
 </style>

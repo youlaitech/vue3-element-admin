@@ -45,6 +45,8 @@ const appStore = useAppStore();
 </script>
 
 <style lang="scss" scoped>
+@use "@/styles/base/mixins" as *;
+
 .layout {
   &__sidebar {
     position: fixed;
@@ -69,7 +71,7 @@ const appStore = useAppStore();
 
       &.has-logo {
         .el-scrollbar {
-          height: calc(100vh - $navbar-height);
+          @include sidebar-scroll-height-with-logo;
         }
       }
 
@@ -131,7 +133,7 @@ const appStore = useAppStore();
 
 .hasTagsView {
   :deep(.app-main) {
-    height: calc(100vh - $navbar-height - $tags-view-height) !important;
+    @include app-main-height-with-tags;
   }
 }
 </style>
