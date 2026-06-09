@@ -295,7 +295,6 @@ defineOptions({ name: "Dashboard", inheritAttrs: false });
 
 import { dayjs } from "element-plus";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import LogAPI from "@/api/system/log";
 import type { VisitOverviewDetail, VisitTrendDetail } from "@/api/system/log";
 import { useUserStore } from "@/stores/user";
@@ -312,16 +311,12 @@ import {
   ArrowUp,
   ArrowDown,
   Clock,
-  Menu,
   CircleCheck,
 } from "@element-plus/icons-vue";
-import { useOnlineCount, useRecentMenus } from "@/composables";
+import { useOnlineCount } from "@/composables";
 
-const router = useRouter();
 const userStore = useUserStore();
 const { onlineUserCount, isConnected } = useOnlineCount();
-const { recentMenus, clearRecentMenus } = useRecentMenus();
-const recentExpanded = ref(false);
 
 const hours = new Date().getHours();
 const greetings = computed(() => {
