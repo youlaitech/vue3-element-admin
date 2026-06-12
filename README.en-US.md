@@ -226,17 +226,17 @@ Thanks to all the contributors!
 <table align="center">
   <tr>
     <td align="center">
-      <img src="./src/assets/images/qr/wechat-offical.png" height="180" alt="WeChat Official Account"><br>
+      <img src="./public/images/qr/wechat-official.png" height="180" alt="WeChat Official Account"><br>
       <sub>WeChat Official Account</sub>
     </td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td align="center">
-      <img src="./src/assets/images/qr/wechat-mp.jpg" height="180" alt="Mini Program"><br>
+      <img src="./public/images/qr/wechat-mp.jpg" height="180" alt="Mini Program"><br>
       <sub>Mini Program</sub>
     </td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td align="center">
-      <img src="./src/assets/images/qr/wechat-personal.png" height="180" alt="Add Author WeChat"><br>
+      <img src="./public/images/qr/wechat-personal.png" height="180" alt="Add Author WeChat"><br>
       <sub>Add Author WeChat</sub>
     </td>
   </tr>

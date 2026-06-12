@@ -328,17 +328,10 @@ function handleQuery(): void {
 }
 
 /**
- * 重置查询条件
- */
-function resetQuery(): void {
-  queryFormRef.value?.resetFields();
-}
-
-/**
- * 重置查询条件并重新查询
+ * 重置搜索条件并重新查询。
  */
 function handleResetQuery(): void {
-  resetQuery();
+  queryFormRef.value?.resetFields();
   handleQuery();
 }
 

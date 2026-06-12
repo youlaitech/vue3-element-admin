@@ -17,7 +17,8 @@
     "lint": "npm run lint:eslint && npm run lint:prettier && npm run lint:stylelint",
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "deploy": "node deploy.mjs"
   },
   "config": {
     "commitizen": {

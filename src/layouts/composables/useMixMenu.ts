@@ -1,23 +1,11 @@
 /**
  * 混合布局菜单逻辑
- *
- * 从 MixLayout.vue 提取，负责：
- *   - 顶部菜单项扁平化（单子菜单向上合并 title/icon）
- *   - 侧边菜单路径解析与激活判定
- *   - 菜单切换导航（自动跳转到第一个可访问子菜单）
- *   - 路由变化时同步顶部菜单激活态与侧边菜单数据
- *
- * 模板只绑定返回值，无需关心内部实现。
  */
 import type { LocationQueryRaw, RouteRecordRaw } from "vue-router";
 import { useLayout } from "../useLayout";
 import { useAppStore, usePermissionStore, useSettingsStore } from "@/stores";
 import { isExternal } from "@/utils/index";
 import { ElIcon } from "element-plus";
-
-/* ------------------------------------------------------------------ */
-/*  MenuIcon — 菜单图标渲染组件（Element Plus / SVG 双模式）           */
-/* ------------------------------------------------------------------ */
 
 const MenuIcon = defineComponent({
   props: { icon: String },
@@ -39,9 +27,6 @@ const MenuIcon = defineComponent({
   },
 });
 
-/* ------------------------------------------------------------------ */
-/*  useMixMenu                                                         */
-/* ------------------------------------------------------------------ */
 
 export function useMixMenu() {
   const route = useRoute();
@@ -53,7 +38,6 @@ export function useMixMenu() {
 
   const { activeTopMenuPath, sideMenuRoutes } = useLayout();
 
-  /* ------ 顶部菜单 ------------------------------------------------- */
 
   /**
    * 顶部菜单项。
@@ -84,9 +68,12 @@ export function useMixMenu() {
     });
   });
 
-  /* ------ 侧边菜单 ------------------------------------------------- */
 
-  /** 当前路由对应的侧边菜单激活路径（优先取 meta.activeMenu） */
+  /**
+   * 当前路由对应的侧边菜单激活路径。
+   *
+   * 优先取 meta.activeMenu，否则使用当前路由路径。
+   */
   const activeSideMenuPath = computed(() => {
     const { meta, path } = route;
     return typeof meta?.activeMenu === "string" ? meta.activeMenu : path;
@@ -105,8 +92,6 @@ export function useMixMenu() {
     return `${activeTopMenuPath.value}/${routePath}`;
   }
 
-  /* ------ 路径工具 ------------------------------------------------- */
-
   /**
    * 从完整路径中提取第一段作为顶级菜单路径。
    *
@@ -114,14 +99,15 @@ export function useMixMenu() {
    *   "/dashboard"   → "/"
    */
   function extractTopMenuPath(path: string): string {
-    return path.split("/").filter(Boolean).length > 1
-      ? path.match(/^\/[^/]+/)?.[0] || "/"
-      : "/";
+    return path.split("/").filter(Boolean).length > 1 ? path.match(/^\/[^/]+/)?.[0] || "/" : "/";
   }
 
-  /* ------ 菜单切换 ------------------------------------------------- */
 
-  /** 顶部菜单点击：切换侧边菜单数据，并导航到第一个可访问叶子菜单 */
+  /**
+   * 顶部菜单点击。
+   *
+   * 切换侧边菜单数据，并导航到第一个可访问叶子菜单。
+   */
   function handleTopMenuSelect(menuPath: string) {
     if (menuPath === activeTopMenuPath.value) return;
 
@@ -153,7 +139,7 @@ export function useMixMenu() {
     }
   }
 
-  /* ------ 路由同步 ------------------------------------------------- */
+  // 路由同步
 
   /**
    * 监听路由变化，保持顶部菜单激活态和侧边菜单数据同步。

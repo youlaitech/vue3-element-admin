@@ -58,16 +58,30 @@ export function useLayout() {
   // 菜单数据
   // ============================================
 
-  /** 路由列表（左侧/顶部菜单） */
+  /**
+   * 路由列表。
+   *
+   * 左侧/顶部菜单共用，由权限 store 生成。
+   */
   const routes = computed(() => permissionStore.routes);
 
-  /** 混合布局侧边菜单 */
+  /**
+   * 混合布局侧边菜单。
+   *
+   * 根据当前激活的顶部菜单路径动态计算。
+   */
   const sideMenuRoutes = computed(() => permissionStore.mixLayoutSideMenus);
 
-  /** 顶部菜单激活路径 */
+  /**
+   * 顶部菜单激活路径。
+   */
   const activeTopMenuPath = computed(() => appStore.activeTopMenuPath);
 
-  /** 当前激活菜单 */
+  /**
+   * 当前激活菜单。
+   *
+   * 优先取路由 meta.activeMenu，否则取当前路径。
+   */
   const activeMenu = computed(() => {
     const { meta, path } = route;
     return meta?.activeMenu || path;

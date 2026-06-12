@@ -78,7 +78,7 @@
                 导入
               </el-button>
 
-              <el-button v-hasPerm="'sys:user:export'" icon="download" @click="exportUsers">
+              <el-button v-hasPerm="'sys:user:export'" icon="download" @click="handleExport">
                 导出
               </el-button>
             </div>
@@ -347,19 +347,12 @@ function handleQuery(): void {
 }
 
 /**
- * 重置查询条件
+ * 重置搜索条件并重新查询。
  */
-function resetQuery(): void {
+function handleResetQuery(): void {
   queryFormRef.value?.resetFields();
   tableData.params.deptId = undefined;
   tableData.params.createTime = undefined;
-}
-
-/**
- * 重置查询条件并重新查询
- */
-function handleResetQuery(): void {
-  resetQuery();
   handleQuery();
 }
 
@@ -509,10 +502,7 @@ function handleDelete(id?: string): void {
   );
 }
 
-/**
- * 导出用户列表
- */
-async function exportUsers(): Promise<void> {
+async function handleExport(): Promise<void> {
   const response = await UserAPI.export(tableData.params);
   downloadFile(response);
   ElMessage.success("导出成功");

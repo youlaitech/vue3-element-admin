@@ -44,7 +44,7 @@ function extractFileName(contentDisposition: string): string {
  * downloadFile(response, "用户列表.xlsx");
  * ```
  */
-export function downloadFile(response: any, customFileName?: string): void {
+export function downloadFile(response: { data: any; headers: Record<string, string> }, customFileName?: string): void {
   try {
     const fileData = response.data;
     const contentDisposition = response.headers["content-disposition"];

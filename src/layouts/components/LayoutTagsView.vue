@@ -49,10 +49,8 @@
       </span>
       <!-- 内容全屏 -->
       <span class="tags-actions__btn" @click="appStore.toggleContentFullscreen()">
-        <el-icon :size="16">
-          <FullScreen v-if="!appStore.contentFullscreen" />
-          <Close v-else />
-        </el-icon>
+        <div v-if="!appStore.contentFullscreen" class="i-svg:fullscreen icon-16" />
+        <div v-else class="i-svg:fullscreen-exit icon-16" />
       </span>
       <!-- 下拉菜单 -->
       <el-dropdown trigger="click" @command="handleActionCommand">
@@ -62,39 +60,27 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item command="refresh">
-              <el-icon :size="14" class="tags-actions__dropdown-icon">
-                <Refresh />
-              </el-icon>
+              <el-icon :size="14" class="icon-14"><Refresh /></el-icon>
               <span>刷新当前</span>
             </el-dropdown-item>
             <el-dropdown-item v-if="currentTag && !currentTag.affix" command="closeCurrent">
-              <el-icon :size="14" class="tags-actions__dropdown-icon">
-                <Close />
-              </el-icon>
+              <div class="i-svg:close icon-14" />
               <span>关闭当前</span>
             </el-dropdown-item>
-            <el-dropdown-item divided command="closeOthers">
-              <el-icon :size="14" class="tags-actions__dropdown-icon">
-                <Remove />
-              </el-icon>
+            <el-dropdown-item divided command="closeOtherTags">
+              <div class="i-svg:close_other icon-14" />
               <span>关闭其它</span>
             </el-dropdown-item>
-            <el-dropdown-item command="closeLeft">
-              <el-icon :size="14" class="tags-actions__dropdown-icon">
-                <DArrowLeft />
-              </el-icon>
+            <el-dropdown-item command="closeLeftTags">
+              <div class="i-svg:close_left icon-14" />
               <span>关闭左侧</span>
             </el-dropdown-item>
-            <el-dropdown-item command="closeRight">
-              <el-icon :size="14" class="tags-actions__dropdown-icon">
-                <DArrowRight />
-              </el-icon>
+            <el-dropdown-item command="closeRightTags">
+              <div class="i-svg:close_right icon-14" />
               <span>关闭右侧</span>
             </el-dropdown-item>
-            <el-dropdown-item divided command="closeAll">
-              <el-icon :size="14" class="tags-actions__dropdown-icon">
-                <CircleClose />
-              </el-icon>
+            <el-dropdown-item divided command="closeAllTags">
+              <div class="i-svg:close_all icon-14" />
               <span>关闭所有</span>
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -114,25 +100,25 @@
           class="contextmenu__danger"
           @click="closeSelectedTag(selectedTag)"
         >
-          <el-icon :size="16" class="contextmenu__icon"><Close /></el-icon>
+          <div class="i-svg:close contextmenu__icon" />
           <span>关闭</span>
         </li>
         <li class="contextmenu__divider" />
         <li @click="closeOtherTags">
-          <el-icon :size="16" class="contextmenu__icon"><Remove /></el-icon>
+          <div class="i-svg:close_other contextmenu__icon" />
           <span>关闭其它</span>
         </li>
         <li v-if="!isFirstView" @click="closeLeftTags">
-          <el-icon :size="16" class="contextmenu__icon"><DArrowLeft /></el-icon>
+          <div class="i-svg:close_left contextmenu__icon" />
           <span>关闭左侧</span>
         </li>
         <li v-if="!isLastView" @click="closeRightTags">
-          <el-icon :size="16" class="contextmenu__icon"><DArrowRight /></el-icon>
+          <div class="i-svg:close_right contextmenu__icon" />
           <span>关闭右侧</span>
         </li>
         <li class="contextmenu__divider" />
         <li @click="closeAllTags(selectedTag)">
-          <el-icon :size="16" class="contextmenu__icon"><CircleClose /></el-icon>
+          <div class="i-svg:close_all contextmenu__icon" />
           <span>关闭所有</span>
         </li>
       </ul>
@@ -212,16 +198,16 @@ const handleActionCommand = (command: string) => {
     case "closeCurrent":
       closeSelectedTag(currentTag.value);
       break;
-    case "closeOthers":
+    case "closeOtherTags":
       closeOtherTagsForActive();
       break;
-    case "closeLeft":
+    case "closeLeftTags":
       closeLeftTagsForActive();
       break;
-    case "closeRight":
+    case "closeRightTags":
       closeRightTagsForActive();
       break;
-    case "closeAll":
+    case "closeAllTags":
       closeAllTags(currentTag.value);
       break;
   }
@@ -379,9 +365,7 @@ const closeSelectedTag = (tag: TagView | null) => {
   });
 };
 
-/* ------------------------------------------------------------------ */
-/*  批量关闭标签（左/右/其它方向）                                     */
-/* ------------------------------------------------------------------ */
+// 批量关闭标签（左/右/其它方向）
 
 /**
  * 按方向批量关闭标签的通用执行器。
@@ -407,7 +391,9 @@ function closeDirectional(
   });
 }
 
-/** 关闭当前激活标签之外的其它标签 */
+/**
+ * 关闭当前激活标签之外的其它标签。
+ */
 const closeOtherTagsForActive = () => {
   if (!currentTag.value) return;
   tagsViewStore.delOtherViews(currentTag.value).then(() => {
@@ -646,19 +632,33 @@ useContextMenuManager();
       background-color: var(--el-fill-color-light);
     }
 
-    :deep(.el-icon) {
+    :deep(.el-icon),
+    :deep(div) {
       opacity: 0.45;
     }
 
-    &:hover :deep(.el-icon) {
+    &:hover :deep(.el-icon),
+    &:hover :deep(div) {
       opacity: 0.7;
     }
   }
+}
 
-  &__dropdown-icon {
-    flex-shrink: 0;
-    margin-right: 6px;
-    opacity: 0.55;
+.icon-16 {
+  width: 16px;
+  height: 16px;
+}
+
+.icon-14 {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  opacity: 0.55;
+
+  &.el-icon {
+    width: 14px;
+    height: 14px;
   }
 }
 
@@ -697,6 +697,8 @@ useContextMenuManager();
 
   &__icon {
     flex-shrink: 0;
+    width: 16px;
+    height: 16px;
     opacity: 0.55;
   }
 

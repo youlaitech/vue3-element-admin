@@ -579,11 +579,8 @@ $radius: 10px;
 
   &__end {
     display: flex;
-    gap: 16px;
+    gap: 20px;
     align-items: center;
-    padding: 10px 14px;
-    background: var(--el-color-primary-light-9);
-    border-radius: 8px;
   }
 }
 

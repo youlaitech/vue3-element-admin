@@ -31,7 +31,7 @@
           </el-button>
           <el-button
             v-hasPerm="['sys:config:refresh']"
-            color="#626aef"
+            type="primary"
             icon="RefreshLeft"
             @click="refreshCache"
           >
