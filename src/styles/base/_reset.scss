@@ -33,18 +33,10 @@ body {
   height: 100%;
   margin: 0;
   font-family:
-    "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑",
-    Arial, sans-serif;
-  line-height: inherit;
-  background-color: var(--page-bg);
-  -moz-osx-font-smoothing: grayscale;
+    Inter, system-ui, Avenir, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizelegibility;
-}
-
-/* 全局平滑滚动 */
-html {
-  scroll-behavior: smooth;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 滚动条现代化 */

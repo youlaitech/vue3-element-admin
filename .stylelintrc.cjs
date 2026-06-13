@@ -31,6 +31,13 @@ module.exports = {
         ignorePseudoClasses: ["global", "export", "deep"],
       },
     ],
+    // 允许 Vue 的深度选择器伪元素 ::deep ::slotted ::global
+    "selector-pseudo-element-no-unknown": [
+      true,
+      {
+        ignorePseudoElements: ["deep", "slotted", "global", "v-deep", "v-slotted", "v-global"],
+      },
+    ],
     // 允许使用未知伪元素
     "no-invalid-position-declaration": null, // Vue 模板内联 style 误报
     "at-rule-no-unknown": null, // 禁用默认的未知 at-rule 检查

@@ -12,22 +12,19 @@
  */
 import { execSync } from "node:child_process";
 
-
-
-// ==================== 改为你的服务器信息 ====================
-const HOST   = "127.0.0.1";                        // 服务器 IP，改为你的
-const USER   = "root";                              // SSH 用户名，改为你的
-const PORT   = 22;                                  // SSH 端口，改为你的
-const TARGET = "/data/www/vue3-element-admin";      // 部署目录，改为你的
+const HOST = "127.0.0.1"; // 服务器 IP，改为你的
+const USER = "root"; // SSH 用户名，改为你的
+const PORT = 22; // SSH 端口，改为你的
+const TARGET = "/data/www/vue3-element-admin"; // 部署目录，改为你的
 // =========================================================
 
 console.log("构建中...");
 execSync("pnpm build-only", { stdio: "inherit" });
 
 console.log(`部署 → ${USER}@${HOST}:${TARGET}`);
-execSync(
-  `scp -o StrictHostKeyChecking=no -P ${PORT} -r "dist/." "${USER}@${HOST}:${TARGET}/"`,
-  { stdio: "inherit", shell: true }
-);
+execSync(`scp -o StrictHostKeyChecking=no -P ${PORT} -r "dist/." "${USER}@${HOST}:${TARGET}/"`, {
+  stdio: "inherit",
+  shell: true,
+});
 
 console.log("部署完成");
