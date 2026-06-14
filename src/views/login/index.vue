@@ -6,25 +6,55 @@
     </div>
 
     <div class="login-layout">
-      <div class="login-brand animate__animated animate__fadeInLeft">
+      <div class="login-brand">
         <div class="login-brand__header">
           <el-image :src="logo" class="login-brand__logo" />
-          <span class="login-brand__name">{{ appConfig.title }}</span>
+          <div class="login-brand__identity">
+            <span class="login-brand__name">{{ appConfig.title }}</span>
+            <span class="login-brand__version">v{{ appConfig.version }}</span>
+          </div>
         </div>
 
         <div class="login-brand__hero">
-          <p class="login-brand__label">DESIGNED BY YOU LAI TEAM</p>
-          <h1 class="login-brand__title">欢迎使用 vue3-element-admin</h1>
-          <p class="login-brand__desc">面向企业级后台管理系统，让开发更高效，让业务更卓越</p>
+          <div class="login-brand__main">
+            <el-tag class="login-brand__tag" type="primary" effect="plain" round>
+              <span class="login-brand__tag-dot" />
+              Enterprise Ready
+            </el-tag>
+            <h1 class="login-brand__title">企业级管理系统</h1>
+            <p class="login-brand__desc">
+              提供安全、高效、可扩展的管理解决方案，助力企业数字化转型与业务增长。
+            </p>
+          </div>
+          <div class="login-brand__features">
+            <div class="login-brand__feature">
+              <span class="login-brand__feature-mark">
+                <span class="login-brand__feature-icon i-svg:security" />
+              </span>
+              <span class="login-brand__feature-text">安全可靠</span>
+            </div>
+            <div class="login-brand__feature">
+              <span class="login-brand__feature-mark">
+                <el-icon class="login-brand__feature-icon"><Clock /></el-icon>
+              </span>
+              <span class="login-brand__feature-text">高效稳定</span>
+            </div>
+            <div class="login-brand__feature">
+              <span class="login-brand__feature-mark">
+                <span class="login-brand__feature-icon i-svg:flexible" />
+              </span>
+              <span class="login-brand__feature-text">灵活扩展</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="login-card animate__animated animate__fadeInRight">
+      <div class="login-card">
         <div class="login-card__inner">
           <transition name="fade-slide" mode="out-in">
             <div v-if="component === 'login'" key="login" class="login-card__form">
               <h2 class="login-card__title">欢迎回来</h2>
-              <p class="login-card__desc">请输入账号和密码登录系统</p>
+              <p class="login-card__desc">请完成身份验证后进入系统</p>
 
               <el-form
                 ref="loginFormRef"
@@ -64,7 +94,7 @@
                       @keyup.enter="handleLoginSubmit"
                     >
                       <template #prefix>
-                        <span class="input-prefix-icon" v-html="ShieldIcon" />
+                        <span class="input-prefix-icon i-svg:security" />
                       </template>
                     </el-input>
                     <div class="captcha-img" @click="getCaptcha">
@@ -97,11 +127,11 @@
                 <div class="login-alt__divider">其他登录方式</div>
                 <div class="login-alt__buttons">
                   <button class="login-alt__btn">
-                    <span class="i-svg:qr-code" />
+                    <span class="login-alt__icon i-svg:qr-code" />
                     扫码登录
                   </button>
                   <button class="login-alt__btn">
-                    <span class="i-svg:sso" />
+                    <span class="login-alt__icon i-svg:security" />
                     统一认证
                   </button>
                 </div>
@@ -126,7 +156,7 @@
 <script setup lang="ts">
 defineOptions({ name: "LoginPage", inheritAttrs: false });
 
-import { User, Lock, Loading, Refresh } from "@element-plus/icons-vue";
+import { Clock, Lock, Loading, Refresh, User } from "@element-plus/icons-vue";
 import type { FormInstance } from "element-plus";
 import AuthAPI from "@/api/auth";
 import type { LoginRequest } from "@/api/auth";
@@ -136,7 +166,6 @@ import { AuthStorage } from "@/utils/auth";
 import { appConfig } from "@/settings";
 import ThemeSwitch from "@/components/ThemeSwitch/index.vue";
 import ResetPwd from "./components/ResetPwd.vue";
-import ShieldIcon from "@/assets/icons/shield.svg?raw";
 import logo from "@/assets/images/logo.png";
 
 const userStore = useUserStore();
@@ -217,8 +246,8 @@ onMounted(() => getCaptcha());
 $primary: #5d87ff;
 $bg: #f8fafc;
 $text-primary: #273248;
-$text-secondary: #6b7280;
-$text-muted: #9ca3af;
+$text-secondary: #667085;
+$text-muted: #98a2b3;
 $input-h: 44px;
 
 .login-page {
@@ -228,8 +257,6 @@ $input-h: 44px;
   overflow: auto;
   background: $bg;
 }
-
-/* ---- 工具栏 ---- */
 
 .login-toolbar {
   position: fixed;
@@ -245,98 +272,186 @@ $input-h: 44px;
   }
 }
 
-/* ---- 布局 ---- */
-
 .login-layout {
   display: flex;
   flex: 1;
   min-height: 100%;
 }
 
-/* ---- 左侧品牌区 65% ---- */
-
 .login-brand {
   position: relative;
   display: flex;
   flex: 0 0 65%;
   flex-direction: column;
-  padding: 20px 0 0 32px;
+  min-height: 100vh;
+  padding: 28px 64px 48px;
   overflow: hidden;
-  background: $bg;
+  background: url("@/assets/images/login/bg.svg") center / cover no-repeat;
+  animation: login-pane-in 0.36s ease-out both;
 
-  &::before {
-    position: absolute;
-    inset: 0;
-    content: "";
-    background:
-      linear-gradient(rgb(0 0 0 / 1.5%) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(0 0 0 / 1.5%) 1px, transparent 1px);
-    background-size: 48px 48px;
-  }
-
-  &::after {
-    position: absolute;
-    bottom: -200px;
-    left: -100px;
-    width: 500px;
-    height: 500px;
-    content: "";
-    background: radial-gradient(rgba(96, 192, 252, 0.12), transparent 70%);
-    filter: blur(50px);
+  &__header,
+  &__hero {
+    position: relative;
+    z-index: 1;
   }
 
   &__header {
-    position: relative;
-    z-index: 1;
     display: flex;
-    gap: 10px;
+    gap: 14px;
     align-items: center;
   }
 
   &__logo {
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
+  }
+
+  &__identity {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    min-width: 0;
   }
 
   &__name {
-    font-size: 22px;
-    font-weight: 500;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1;
+    color: $text-primary;
+  }
+
+  &__version {
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    color: rgba($primary, 0.88);
+    background: rgba($primary, 0.07);
+    border: 1px solid rgba($primary, 0.13);
+    border-radius: 999px;
   }
 
   &__hero {
-    position: relative;
-    z-index: 1;
-    margin-top: auto;
-    margin-bottom: auto;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    width: min(720px, 100%);
+    padding: 20px 0 88px;
   }
 
-  &__label {
-    margin: 0;
-    font-size: 14px;
+  &__main {
+    width: 100%;
+  }
+
+  &__tag {
+    gap: 8px;
+    height: 28px;
+    padding: 0 13px 0 11px;
+    margin-bottom: 18px;
     font-weight: 700;
     color: $primary;
-    letter-spacing: 3px;
+    background: rgba($primary, 0.035);
+    border-color: rgba($primary, 0.14);
+
+    :deep(.el-tag__content) {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+  }
+
+  &__tag-dot {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    background: $primary;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba($primary, 0.12);
   }
 
   &__title {
-    margin: 16px 0 0;
-    font-size: 60px;
-    font-weight: 750;
-    line-height: 1.2;
-    color: $text-primary;
-    letter-spacing: -0.04em;
+    margin: 0 0 18px;
+    font-size: 46px;
+    font-weight: 800;
+    line-height: 1.18;
+    color: #222b3a;
+    letter-spacing: 0;
   }
 
   &__desc {
-    max-width: 600px;
-    margin: 24px 0 0;
-    font-size: 20px;
-    line-height: 1.9;
+    max-width: 560px;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.75;
     color: $text-secondary;
   }
-}
 
-/* ---- 右侧登录区 35% ---- */
+  &__features {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 28px;
+  }
+
+  &__feature {
+    position: relative;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    height: 28px;
+    padding: 0 13px;
+    font-size: 13px;
+    font-weight: 600;
+    color: $text-primary;
+    background: transparent;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:not(:last-child)::after {
+      position: absolute;
+      top: 7px;
+      right: 0;
+      width: 1px;
+      height: 14px;
+      content: "";
+      background: rgba(39 50 72 / 12%);
+    }
+  }
+
+  &__feature-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: $primary;
+    background: rgba($primary, 0.08);
+    border: 1px solid rgba($primary, 0.1);
+    border-radius: 6px;
+  }
+
+  &__feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 13px;
+    height: 13px;
+    color: $primary;
+  }
+
+  &__feature-text {
+    line-height: 1;
+    white-space: nowrap;
+  }
+}
 
 .login-card {
   position: relative;
@@ -347,6 +462,7 @@ $input-h: 44px;
   align-items: center;
   padding: 0 0 32px;
   background: #fff;
+  animation: login-pane-in 0.36s ease-out 0.04s both;
 
   &__inner {
     box-sizing: border-box;
@@ -369,7 +485,7 @@ $input-h: 44px;
     font-weight: 750;
     line-height: 1.1;
     color: $text-primary;
-    letter-spacing: -0.03em;
+    letter-spacing: 0;
   }
 
   &__desc {
@@ -378,8 +494,6 @@ $input-h: 44px;
     color: $text-muted;
   }
 }
-
-/* ---- 输入框 ---- */
 
 ::deep(.el-form-item) {
   margin-bottom: 14px;
@@ -394,15 +508,7 @@ $input-h: 44px;
   width: 14px;
   height: 14px;
   color: var(--el-text-color-placeholder);
-
-  :deep(svg) {
-    width: 14px;
-    height: 14px;
-    fill: currentColor;
-  }
 }
-
-/* ---- 验证码行 ---- */
 
 .captcha-row {
   display: flex;
@@ -417,9 +523,12 @@ $input-h: 44px;
 
 .captcha-img {
   box-sizing: border-box;
+  display: flex;
   flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
   width: 108px;
-  height: 40px;
+  height: $input-h;
   overflow: hidden;
   cursor: pointer;
   background: var(--el-fill-color-blank);
@@ -438,8 +547,6 @@ $input-h: 44px;
     object-fit: contain;
   }
 }
-
-/* ---- 选项行 ---- */
 
 .login-options {
   display: flex;
@@ -461,32 +568,23 @@ $input-h: 44px;
   }
 }
 
-/* ---- 主按钮 ---- */
-
 .login-btn {
   width: 100%;
   height: 44px;
   font-size: 15px;
   font-weight: 600;
   border-radius: 8px;
-  box-shadow: none;
+  box-shadow: 0 12px 24px rgba($primary, 0.18);
 
   &:hover {
-    box-shadow: none;
+    box-shadow: 0 14px 28px rgba($primary, 0.22);
   }
 
   &:focus,
   &:focus-visible {
     outline: none;
-    box-shadow: none;
-  }
-
-  &:active {
-    box-shadow: none;
   }
 }
-
-/* ---- 其他登录 ---- */
 
 .login-alt {
   margin-top: 28px;
@@ -528,21 +626,22 @@ $input-h: 44px;
     border: 1px solid var(--el-border-color-lighter);
     border-radius: 8px;
     transition:
+      color 0.2s,
       background 0.2s,
       border-color 0.2s;
 
     &:hover {
-      background: var(--el-fill-color-light);
-      border-color: var(--el-border-color);
-    }
-
-    span {
-      font-size: 16px;
+      color: $primary;
+      background: rgba($primary, 0.04);
+      border-color: rgba($primary, 0.28);
     }
   }
-}
 
-/* ---- 版权 ---- */
+  &__icon {
+    width: 16px;
+    height: 16px;
+  }
+}
 
 .login-footer {
   flex-shrink: 0;
@@ -550,37 +649,53 @@ $input-h: 44px;
   color: $text-muted;
 }
 
-/* ---- 暗黑模式 ---- */
-
 .dark .login-page {
-  background: #0a0a0b;
+  background: #0b1020;
 }
 
 .dark .login-brand {
-  background: #0a0a0b;
-
-  &::before {
-    background:
-      linear-gradient(rgb(255 255 255 / 1%) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 1%) 1px, transparent 1px);
-    background-size: 48px 48px;
-  }
+  background-image: url("@/assets/images/login/bg-dark.svg");
 
   &__name {
-    color: rgb(255 255 255 / 80%);
+    color: rgb(255 255 255 / 86%);
+  }
+
+  &__version {
+    color: rgb(167 190 255 / 92%);
+    background: rgba($primary, 0.12);
+    border-color: rgba($primary, 0.2);
+  }
+
+  &__tag {
+    color: rgba($primary, 0.95);
+    background: rgba($primary, 0.08);
+    border-color: rgba($primary, 0.18);
   }
 
   &__title {
-    color: rgb(255 255 255 / 85%);
+    color: rgb(255 255 255 / 90%);
   }
 
   &__desc {
-    color: rgb(255 255 255 / 40%);
+    color: rgb(226 232 240 / 62%);
+  }
+
+  &__feature {
+    color: rgb(255 255 255 / 76%);
+
+    &:not(:last-child)::after {
+      background: rgba(255 255 255 / 12%);
+    }
+  }
+
+  &__feature-mark {
+    background: rgba($primary, 0.15);
+    border-color: rgba($primary, 0.18);
   }
 }
 
 .dark .login-card {
-  background: #0a0a0b;
+  background: #0b1020;
 
   &__title {
     color: rgb(255 255 255 / 85%);
@@ -599,8 +714,6 @@ $input-h: 44px;
   color: rgb(255 255 255 / 20%);
 }
 
-/* ---- 动画 ---- */
-
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.2s ease;
@@ -612,7 +725,17 @@ $input-h: 44px;
   transform: translateY(6px);
 }
 
-/* ---- 响应式 ---- */
+@keyframes login-pane-in {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
 
 @media (max-width: 1024px) {
   .login-layout {
@@ -627,30 +750,23 @@ $input-h: 44px;
   .login-brand {
     flex: none;
     height: auto;
-    padding: 28px 0 0 40px;
+    min-height: auto;
+    padding: 28px 40px 0;
     background: #fff;
-
-    &::before {
-      display: none;
-    }
-
-    &::after {
-      display: none;
-    }
 
     &__hero {
       display: none;
     }
   }
 
+  .dark .login-brand {
+    background: #0b1020;
+  }
+
   .login-card {
     flex: 1;
     justify-content: flex-start;
     padding: 96px 48px 0;
-  }
-
-  .login-footer {
-    flex-shrink: 0;
   }
 }
 
