@@ -4,9 +4,7 @@
  */
 
 // 1. 基础层
-@use "./base/variables" as *;
-@use "./base/theme";
-@use "./base/reset";
+@use "./base" as *;
 
 // 2. 第三方适配层
 @use "./vendors/element-plus";

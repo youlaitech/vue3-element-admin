@@ -1,6 +1,6 @@
 <template>
-  <el-card shadow="never">
-    <el-input v-model="deptName" placeholder="搜索部门" clearable>
+  <el-card shadow="never" class="dept-card">
+    <el-input v-model="deptName" class="dept-card__search" placeholder="搜索部门" clearable>
       <template #prefix>
         <el-icon><Search /></el-icon>
       </template>
@@ -30,7 +30,6 @@ const props = defineProps({
   },
 });
 
-// 部门树数据
 const deptList = ref<OptionItem[]>();
 const deptTreeRef = ref();
 const deptName = ref("");
@@ -41,16 +40,13 @@ const deptId = useVModel(props, "modelValue", emits);
 
 watchEffect(
   () => {
-    deptTreeRef.value.filter(deptName.value);
+    deptTreeRef.value?.filter(deptName.value);
   },
   {
     flush: "post",
   }
 );
 
-/**
- * 部门筛选
- */
 function handleFilter(value: string, data: TreeNodeData): boolean {
   if (!value) {
     return true;
@@ -58,9 +54,6 @@ function handleFilter(value: string, data: TreeNodeData): boolean {
   return String(data.label ?? "").includes(value);
 }
 
-/**
- * 部门树节点点击事件
- */
 function handleNodeClick(data: OptionItem): void {
   deptId.value = data.value;
   emits("node-click");
@@ -72,3 +65,22 @@ onBeforeMount(() => {
   });
 });
 </script>
+
+<style lang="scss" scoped>
+.dept-card {
+  :deep(.el-card__body) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.dept-card__search {
+  margin-bottom: 12px;
+}
+
+.dept-card__tree {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+</style>

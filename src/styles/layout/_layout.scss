@@ -3,6 +3,7 @@
  */
 
 .page-container {
+  min-height: 100%;
   padding: var(--page-padding);
 }
 
@@ -18,17 +19,18 @@
   display: flex;
   flex-direction: column;
   gap: var(--page-gap);
+  min-width: 0;
 }
 
 .page-search {
   margin-bottom: var(--page-gap);
 
   .el-card__body {
-    padding: 14px 16px 4px;
+    padding: 14px 16px;
   }
 
   .el-form-item {
-    margin-bottom: 10px;
+    margin-bottom: 0;
   }
 }
 
@@ -36,6 +38,10 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+
+  .el-card__body {
+    padding: 14px 16px;
+  }
 }
 
 .page-toolbar {
@@ -47,7 +53,12 @@
   &__left,
   &__right {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
+
+    .el-button {
+      margin: 0;
+    }
   }
 }
 

@@ -1,39 +1,48 @@
 <!-- 用户管理 -->
 <template>
-  <div class="page-container">
-    <el-row :gutter="20">
-      <!-- 部门树 -->
-      <el-col :lg="4" :xs="24" class="page-aside">
+  <div class="page-container user-page">
+    <div class="user-page__shell">
+      <aside class="user-page__aside">
         <UserDeptTree v-model="tableData.params.deptId" @node-click="handleQuery" />
-      </el-col>
+      </aside>
 
-      <!-- 用户列表 -->
-      <el-col :lg="20" :xs="24" class="page-main">
-        <!-- 搜索区域 -->
-        <el-card shadow="never" class="page-search">
-          <el-form ref="queryFormRef" :model="tableData.params" :inline="true" label-width="auto">
-            <el-form-item label="关键字" prop="keywords">
+      <main class="page-main">
+        <el-card class="page-search" shadow="never">
+          <el-form
+            ref="queryFormRef"
+            class="user-query-form"
+            :model="tableData.params"
+            :inline="true"
+            label-width="auto"
+          >
+            <el-form-item
+              class="user-query-form__item user-query-form__item--keyword"
+              label="关键字"
+              prop="keywords"
+            >
               <el-input
                 v-model="tableData.params.keywords"
-                placeholder="用户名/昵称/手机号"
+                placeholder="用户名 / 昵称 / 手机号"
                 clearable
                 @keyup.enter="handleQuery"
               />
             </el-form-item>
 
-            <el-form-item label="状态" prop="status">
-              <el-select
-                v-model="tableData.params.status"
-                placeholder="全部"
-                clearable
-                style="width: 100px"
-              >
+            <el-form-item
+              class="user-query-form__item user-query-form__item--status"
+              label="状态"
+              prop="status"
+            >
+              <el-select v-model="tableData.params.status" placeholder="全部" clearable>
                 <el-option label="正常" :value="1" />
                 <el-option label="禁用" :value="0" />
               </el-select>
             </el-form-item>
 
-            <el-form-item label="创建时间">
+            <el-form-item
+              class="user-query-form__item user-query-form__item--date"
+              label="创建时间"
+            >
               <el-date-picker
                 v-model="tableData.params.createTime"
                 :editable="false"
@@ -45,19 +54,19 @@
               />
             </el-form-item>
 
-            <el-form-item>
+            <el-form-item class="user-query-form__actions">
               <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
               <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
             </el-form-item>
           </el-form>
         </el-card>
 
-        <el-card shadow="never" class="page-content">
+        <el-card class="page-content" shadow="never">
           <div class="page-toolbar">
             <div class="page-toolbar__left">
               <el-button
                 v-hasPerm="['sys:user:create']"
-                type="success"
+                type="primary"
                 icon="plus"
                 @click="handleCreateClick"
               >
@@ -72,12 +81,9 @@
               >
                 删除
               </el-button>
-            </div>
-            <div class="page-toolbar__right">
               <el-button v-hasPerm="'sys:user:import'" icon="upload" @click="openImportDialog">
                 导入
               </el-button>
-
               <el-button v-hasPerm="'sys:user:export'" icon="download" @click="handleExport">
                 导出
               </el-button>
@@ -86,65 +92,83 @@
 
           <el-table
             v-loading="loading"
+            class="user-table"
             :data="tableData.list"
-            border
-            stripe
             highlight-current-row
             row-key="id"
+            :scrollbar-always-on="true"
             @selection-change="handleSelectionChange"
           >
-            <el-table-column type="selection" width="50" align="center" />
-            <el-table-column label="用户名" prop="username" min-width="120" show-overflow-tooltip />
-            <el-table-column label="昵称" width="200" align="center" prop="nickname" />
+            <el-table-column type="selection" width="48" fixed="left" align="center" />
+            <el-table-column label="用户" width="220" fixed="left">
+              <template #default="scope">
+                <div class="user-profile-cell">
+                  <span class="user-profile-cell__avatar">
+                    {{ getAvatarText(scope.row) }}
+                  </span>
+                  <span class="user-profile-cell__meta">
+                    <strong>{{ scope.row.nickname || "-" }}</strong>
+                    <span>{{ scope.row.username }}</span>
+                  </span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="状态" align="center" prop="status" width="120">
+              <template #default="scope">
+                <span
+                  :class="[
+                    'status-pill',
+                    scope.row.status === CommonStatus.ENABLED ? 'is-enabled' : 'is-disabled',
+                  ]"
+                >
+                  {{ scope.row.status === CommonStatus.ENABLED ? "正常" : "禁用" }}
+                </span>
+              </template>
+            </el-table-column>
             <el-table-column label="性别" width="100" align="center">
               <template #default="scope">
                 <DictTag v-model="scope.row.gender" code="gender" />
               </template>
             </el-table-column>
-            <el-table-column label="部门" width="120" align="center" prop="deptName" />
-            <el-table-column label="角色" align="center" prop="roleNames" min-width="160" />
-            <el-table-column label="手机号码" align="center" prop="mobile" width="120" />
-            <el-table-column label="邮箱" align="center" prop="email" width="160" />
-            <el-table-column label="状态" align="center" prop="status" width="80">
+            <el-table-column label="部门" min-width="180" prop="deptName" show-overflow-tooltip />
+            <el-table-column label="角色" prop="roleNames" min-width="180" show-overflow-tooltip />
+            <el-table-column label="手机号码" prop="mobile" width="150" />
+            <el-table-column label="邮箱" prop="email" min-width="220" show-overflow-tooltip />
+            <el-table-column label="创建时间" prop="createTime" width="180" show-overflow-tooltip />
+            <el-table-column label="操作" fixed="right" align="center" width="150">
               <template #default="scope">
-                <el-tag :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'info'">
-                  {{ scope.row.status === CommonStatus.ENABLED ? "正常" : "禁用" }}
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
-            <el-table-column label="操作" fixed="right" width="220">
-              <template #default="scope">
-                <el-button
-                  v-hasPerm="'sys:user:reset-password'"
-                  type="primary"
-                  icon="RefreshLeft"
-                  size="small"
-                  link
-                  @click="handleResetPassword(scope.row)"
-                >
-                  重置密码
-                </el-button>
-                <el-button
-                  v-hasPerm="'sys:user:update'"
-                  type="primary"
-                  icon="edit"
-                  link
-                  size="small"
-                  @click="handleEditClick(scope.row.id)"
-                >
-                  编辑
-                </el-button>
-                <el-button
-                  v-hasPerm="'sys:user:delete'"
-                  type="danger"
-                  icon="delete"
-                  link
-                  size="small"
-                  @click="handleDelete(scope.row.id)"
-                >
-                  删除
-                </el-button>
+                <div class="table-actions">
+                  <el-button
+                    v-hasPerm="'sys:user:update'"
+                    type="primary"
+                    link
+                    @click="handleEditClick(scope.row.id)"
+                  >
+                    编辑
+                  </el-button>
+                  <el-button
+                    v-hasPerm="'sys:user:delete'"
+                    type="danger"
+                    link
+                    @click="handleDelete(scope.row.id)"
+                  >
+                    删除
+                  </el-button>
+                  <el-dropdown
+                    v-hasPerm="'sys:user:reset-password'"
+                    trigger="click"
+                    @command="(command) => handleTableCommand(command, scope.row)"
+                  >
+                    <el-button class="table-actions__more" type="primary" link>
+                      <el-icon><MoreFilled /></el-icon>
+                    </el-button>
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item command="resetPassword">重置密码</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -157,8 +181,8 @@
             @pagination="fetchList"
           />
         </el-card>
-      </el-col>
-    </el-row>
+      </main>
+    </div>
 
     <!-- 用户表单 -->
     <el-drawer
@@ -244,6 +268,7 @@
 import { computed, onMounted, reactive, ref } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "element-plus";
+import { MoreFilled } from "@element-plus/icons-vue";
 import type { UserForm, UserItem } from "@/api/system/user";
 import { downloadFile } from "@/utils";
 import UserAPI from "@/api/system/user";
@@ -263,7 +288,6 @@ defineOptions({
 const appStore = useAppStore();
 const userStore = useUserStore();
 
-// 表单引用
 const queryFormRef = ref<FormInstance>();
 const userFormRef = ref<FormInstance>();
 
@@ -273,35 +297,34 @@ const tableData = reactive<PageResult<UserItem>>({
   list: [],
   total: 0,
   params: {
-    //查询参数
     pageNum: 1,
     pageSize: 10,
   },
 });
 
-// 弹窗状态
 const dialogState = reactive({
   visible: false,
   title: "新增用户",
   mode: DialogMode.CREATE,
 });
 
-// 导入弹窗状态
 const importDialogVisible = ref(false);
 
-// 表单初始数据
 const initialFormData: UserForm = {
   status: CommonStatus.ENABLED,
 };
 
-// 表单数据
 const formData = reactive<UserForm>({ ...initialFormData });
 
-// 下拉选项
 const deptOptions = ref<OptionItem[]>();
 const roleOptions = ref<OptionItem[]>();
 
 const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
+
+function getAvatarText(row: UserItem): string {
+  const text = row.nickname || row.username || "?";
+  return text.slice(0, 1).toUpperCase();
+}
 
 const rules: FormRules = {
   username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
@@ -312,9 +335,6 @@ const rules: FormRules = {
   mobile: [{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" }],
 };
 
-/**
- * 加载用户列表数据
- */
 async function fetchList(): Promise<void> {
   loading.value = true;
   try {
@@ -326,9 +346,6 @@ async function fetchList(): Promise<void> {
   }
 }
 
-/**
- * 加载表单下拉选项数据
- */
 async function loadFormOptions(): Promise<void> {
   [roleOptions.value, deptOptions.value] = await Promise.all([
     RoleAPI.getOptions(),
@@ -338,17 +355,11 @@ async function loadFormOptions(): Promise<void> {
 
 const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<UserItem>();
 
-/**
- * 执行查询（重置页码）
- */
 function handleQuery(): void {
   tableData.params.pageNum = 1;
   fetchList();
 }
 
-/**
- * 重置搜索条件并重新查询。
- */
 function handleResetQuery(): void {
   queryFormRef.value?.resetFields();
   tableData.params.deptId = undefined;
@@ -356,54 +367,32 @@ function handleResetQuery(): void {
   handleQuery();
 }
 
-/**
- * 重置用户密码
- * @param userId 用户ID
- * @param password 新密码
- */
 async function resetPassword(userId: string, password: string): Promise<void> {
   await UserAPI.resetPassword(userId, password);
   ElMessage.success("密码重置成功");
 }
 
-/**
- * 删除用户
- * @param userIds 用户ID列表，多个ID用逗号分隔
- */
 async function deleteUsers(userIds: string): Promise<void> {
   await UserAPI.deleteByIds(userIds);
   ElMessage.success("删除成功");
   handleQuery();
 }
 
-/**
- * 打开表单弹窗
- */
 function openDialog(): void {
   dialogState.visible = true;
 }
 
-/**
- * 关闭表单弹窗
- */
 function closeDialog(): void {
   dialogState.visible = false;
   resetForm();
 }
 
-/**
- * 重置表单数据和验证状态
- */
 function resetForm(): void {
   userFormRef.value?.resetFields();
   userFormRef.value?.clearValidate();
   Object.assign(formData, initialFormData);
 }
 
-/**
- * 重置密码按钮点击事件
- * @param row 用户数据
- */
 function handleResetPassword(row: UserItem): void {
   ElMessageBox.prompt(`请输入用户【${row.username}】的新密码`, "重置密码", {
     confirmButtonText: "确定",
@@ -418,9 +407,12 @@ function handleResetPassword(row: UserItem): void {
   );
 }
 
-/**
- * 新增按钮点击事件
- */
+function handleTableCommand(command: unknown, row: UserItem): void {
+  if (command === "resetPassword") {
+    handleResetPassword(row);
+  }
+}
+
 async function handleCreateClick(): Promise<void> {
   dialogState.title = "新增用户";
   dialogState.mode = DialogMode.CREATE;
@@ -428,10 +420,6 @@ async function handleCreateClick(): Promise<void> {
   openDialog();
 }
 
-/**
- * 编辑按钮点击事件
- * @param id 用户ID
- */
 async function handleEditClick(id: string): Promise<void> {
   dialogState.title = "修改用户";
   dialogState.mode = DialogMode.EDIT;
@@ -441,9 +429,6 @@ async function handleEditClick(id: string): Promise<void> {
   openDialog();
 }
 
-/**
- * 提交表单（防抖处理）
- */
 const handleSubmit = useDebounceFn(async () => {
   const valid = await userFormRef.value?.validate().then(
     () => true,
@@ -467,10 +452,6 @@ const handleSubmit = useDebounceFn(async () => {
   }
 }, 300);
 
-/**
- * 删除按钮点击事件
- * @param id 用户ID，不传则删除选中的用户
- */
 function handleDelete(id?: string): void {
   const userIds = id ?? selectedIds.value.join(",");
   if (!userIds) {
@@ -508,9 +489,6 @@ async function handleExport(): Promise<void> {
   ElMessage.success("导出成功");
 }
 
-/**
- * 打开导入弹窗
- */
 function openImportDialog(): void {
   importDialogVisible.value = true;
 }
@@ -519,3 +497,218 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+
+<style lang="scss" scoped>
+.user-page {
+  min-width: 0;
+  height: 100%;
+}
+
+.user-page__shell {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.user-page__aside {
+  min-width: 0;
+
+  :deep(.el-card) {
+    min-height: calc(100vh - 154px);
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  :deep(.el-card__body) {
+    height: 100%;
+    padding: 14px;
+  }
+}
+
+.user-query-form {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.user-query-form__item {
+  flex: 0 0 auto;
+}
+
+.user-query-form__item--keyword {
+  width: 220px;
+}
+
+.user-query-form__item--status {
+  width: 132px;
+}
+
+.user-query-form__item--date {
+  width: 304px;
+}
+
+.user-query-form__actions {
+  margin-left: 0;
+
+  :deep(.el-form-item__content) {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  :deep(.el-button) {
+    margin-left: 0 !important;
+    white-space: nowrap;
+  }
+}
+
+.user-table {
+  width: 100%;
+
+  :deep(.el-table__body tr:hover .user-profile-cell__avatar) {
+    transform: scale(1.04);
+  }
+}
+
+.user-profile-cell {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+
+.user-profile-cell__avatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--el-color-primary);
+  background: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-bg-color) 92%);
+  border: 1px solid color-mix(in srgb, var(--el-color-primary) 20%, var(--el-bg-color) 80%);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgb(22 93 255 / 16%);
+  transition: transform 0.16s;
+}
+
+.user-profile-cell__meta {
+  display: grid;
+  min-width: 0;
+
+  strong,
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  strong {
+    font-weight: 500;
+    color: var(--el-text-color-primary);
+  }
+
+  span {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--el-text-color-secondary);
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 999px;
+
+  &::before {
+    width: 6px;
+    height: 6px;
+    content: "";
+    border-radius: 50%;
+  }
+
+  &.is-enabled {
+    color: var(--el-color-success);
+    background: var(--el-color-success-light-9);
+
+    &::before {
+      background: var(--el-color-success);
+    }
+  }
+
+  &.is-disabled {
+    color: var(--el-color-warning);
+    background: var(--el-color-warning-light-9);
+
+    &::before {
+      background: var(--el-color-warning);
+    }
+  }
+}
+
+.table-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-actions__more {
+  font-size: 16px;
+}
+
+@media (max-width: 1280px) {
+  .user-page__shell {
+    grid-template-columns: 1fr;
+  }
+
+  .user-page__aside {
+    :deep(.el-card) {
+      min-height: auto;
+    }
+  }
+
+  .user-query-form__actions {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 960px) {
+  .user-query-form {
+    flex-wrap: wrap;
+  }
+
+  .user-query-form__item--keyword,
+  .user-query-form__item--status,
+  .user-query-form__item--date {
+    width: calc(50% - 6px);
+  }
+}
+
+@media (max-width: 768px) {
+  .user-query-form {
+    align-items: stretch;
+  }
+
+  .user-query-form :deep(.el-form-item) {
+    width: 100%;
+  }
+
+  .user-query-form__item--keyword,
+  .user-query-form__item--status,
+  .user-query-form__item--date {
+    width: 100%;
+  }
+}
+</style>

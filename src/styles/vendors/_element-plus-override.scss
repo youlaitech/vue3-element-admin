@@ -1,136 +1,108 @@
 /**
- * Element Plus 组件样式定制
+ * Element Plus 现代化覆盖层
+ * 目标是把默认组件调成更轻、更清晰的中后台观感
  */
 
-$border: 1px solid var(--border-color);
-
-/* 全局组件圆角基准 */
 :root {
   --el-border-radius-base: 6px;
   --el-border-radius-small: 4px;
   --el-font-weight-primary: 400;
+  --el-component-size: 34px;
+  --el-component-size-small: 28px;
+  --el-component-size-large: 38px;
+  --el-transition-duration: 0.16s;
+  --el-transition-duration-fast: 0.12s;
 }
 
-/* 卡片 — 边框模式 */
 .el-card {
+  color: var(--el-text-color-primary);
+  background: var(--el-bg-color);
   border: 1px solid var(--card-border);
   border-radius: var(--card-radius);
   box-shadow: var(--card-shadow);
-  transition: box-shadow 0.2s ease;
-
-  &:hover {
-    box-shadow:
-      0 4px 12px 0 rgb(0 0 0 / 8%),
-      0 1px 3px 0 rgb(0 0 0 / 4%);
-  }
 
   .el-card__header {
-    padding: 16px 20px;
+    padding: 14px 16px;
     border-bottom: 1px solid var(--card-border);
   }
 
   .el-card__body {
-    padding: 20px;
-  }
-}
-
-/* 弹窗 */
-.el-dialog {
-  border-radius: 12px;
-
-  .el-dialog__header {
-    padding: 20px 20px 0;
-    margin: 0;
-    border-bottom: none;
-  }
-
-  .el-dialog__body {
-    padding: 20px;
-  }
-
-  .el-dialog__footer {
-    padding: 0 20px 20px;
-    border-top: none;
-  }
-}
-
-/* 抽屉 */
-.el-drawer {
-  .el-drawer__header {
-    padding: 16px 20px;
-    margin: 0;
-    color: inherit;
-    border-bottom: $border;
-  }
-
-  .el-drawer__body {
-    padding: 20px;
-  }
-
-  .el-drawer__footer {
     padding: 16px;
-    border-top: $border;
   }
 }
 
-/* el-table */
-.el-table {
-  --el-table-border-color: var(--border-color);
-  --el-table-header-bg-color: var(--gray-100);
-  --el-table-row-hover-bg-color: var(--el-fill-color-lighter);
-  --el-table-current-row-bg-color: var(--el-fill-color-light);
-
-  border-radius: var(--custom-radius);
-
-  /* 表头 */
-  .el-table__header th {
-    padding: 12px 0;
-    font-weight: 500;
-    color: var(--el-text-color-regular);
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  /* 单元格 */
-  .el-table__body td {
-    padding: 10px 0;
-  }
-
-  /* 无数据时不显示底部边框 */
-  .el-table__empty-block {
-    border-bottom: none;
-  }
+.el-input,
+.el-select,
+.el-date-editor {
+  --el-input-height: var(--el-component-size);
 }
 
-/* 斑马纹 — 更柔和 */
-.el-table--striped .el-table__body tr.el-table__row--striped td {
-  background-color: rgb(0 0 0 / 1.5%);
-}
-
-html.dark .el-table--striped .el-table__body tr.el-table__row--striped td {
-  background-color: rgb(255 255 255 / 2%);
-}
-
-/* 下拉菜单项 */
-.el-dropdown-menu__item,
-.el-select-dropdown__item {
-  margin: 2px 6px;
+.el-input__wrapper,
+.el-select__wrapper,
+.el-textarea__inner {
+  background-color: var(--el-bg-color);
   border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--border-color) inset;
+  transition:
+    background-color 0.16s,
+    box-shadow 0.16s;
+
+  &:hover {
+    box-shadow: 0 0 0 1px var(--el-color-primary-light-5) inset;
+  }
+
+  &.is-focus,
+  &:focus,
+  &:focus-within {
+    box-shadow:
+      0 0 0 1px var(--el-color-primary) inset,
+      0 0 0 3px var(--el-color-primary-light-9);
+  }
 }
 
-/* 按钮 */
-.el-button {
-  --el-button-border-radius: var(--el-border-radius-base);
-  letter-spacing: 0.01em;
+.el-form--inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  align-items: center;
 
-  &:not(.is-link):not(.el-button--large):not(.el-button--small) {
-    padding: 9px 16px;
+  .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+}
+
+.el-form-item__label {
+  color: var(--el-text-color-regular);
+}
+
+.el-button {
+  --el-button-border-radius: 6px;
+
+  min-width: 34px;
+  font-weight: 400;
+  letter-spacing: 0;
+  box-shadow: none;
+
+  &:not(.is-link):not(.is-text) {
+    border-color: var(--border-color);
+  }
+
+  &:not(.is-link):not(.is-text):not(.el-button--large):not(.el-button--small) {
+    padding: 8px 14px;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--el-color-primary-light-9);
   }
 }
 
 .el-button--default {
-  --el-button-border-color: var(--border-color);
+  background: var(--el-bg-color);
 
-  &:hover:not(.is-disabled) {
+  &:hover:not(.is-disabled),
+  &:focus:not(.is-disabled) {
     color: var(--el-color-primary);
     background: var(--el-color-primary-light-9);
     border-color: var(--el-color-primary-light-5);
@@ -141,24 +113,166 @@ html.dark .el-table--striped .el-table__body tr.el-table__row--striped td {
 .el-button--success,
 .el-button--warning,
 .el-button--danger {
+  border-color: transparent;
+
   &:hover:not(.is-disabled) {
-    box-shadow: 0 2px 6px 0 var(--el-button-bg-color);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--el-button-bg-color) 28%, transparent);
+    filter: brightness(1.04);
   }
 }
 
-/* 标签 */
+.el-button.is-link {
+  min-width: auto;
+  padding: 0;
+  font-weight: 500;
+}
+
+.el-table {
+  --el-table-border-color: var(--border-color);
+  --el-table-header-bg-color: #f7f9fc;
+  --el-table-row-hover-bg-color: #f7fbff;
+  --el-table-current-row-bg-color: #eef5ff;
+  --el-table-tr-bg-color: var(--el-bg-color);
+
+  overflow: hidden;
+  color: var(--el-text-color-primary);
+  border-radius: 6px;
+
+  &::before,
+  &::after {
+    display: none;
+  }
+
+  .el-table__inner-wrapper::before {
+    height: 0;
+  }
+
+  .el-table__header th {
+    height: 44px;
+    padding: 0;
+    font-weight: 500;
+    color: var(--el-text-color-regular);
+    background: var(--el-table-header-bg-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .el-table__body td {
+    height: 48px;
+    padding: 0;
+    border-bottom: 1px solid #eef1f6;
+  }
+
+  .cell {
+    line-height: 1.4;
+  }
+
+  .el-table__fixed-right {
+    box-shadow: -8px 0 16px rgb(15 23 42 / 6%);
+  }
+}
+
+.el-table--striped .el-table__body tr.el-table__row--striped td {
+  background-color: #fbfcff;
+}
+
+.el-pagination {
+  --el-pagination-button-height: 32px;
+  --el-pagination-button-width: 32px;
+  gap: 6px;
+  font-weight: 400;
+
+  .btn-prev,
+  .btn-next,
+  .el-pager li {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+  }
+
+  .el-pager li.is-active {
+    border-color: var(--el-color-primary);
+    box-shadow: 0 6px 14px rgb(22 93 255 / 18%);
+  }
+}
+
 .el-tag {
+  height: 24px;
+  padding: 0 8px;
+  font-weight: 400;
+  border: none;
   border-radius: 4px;
 }
 
-/* 抽屉和对话框底部按钮区域 */
+.el-tree {
+  --el-tree-node-hover-bg-color: var(--el-color-primary-light-9);
+  color: var(--el-text-color-regular);
+
+  .el-tree-node__content {
+    height: 34px;
+    padding-right: 8px;
+    border-radius: 6px;
+    transition:
+      color 0.16s,
+      background-color 0.16s;
+  }
+
+  .el-tree-node:focus > .el-tree-node__content,
+  .el-tree-node.is-current > .el-tree-node__content {
+    color: var(--el-color-primary);
+    background-color: var(--el-color-primary-light-9);
+  }
+}
+
+.el-dialog {
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 18px 48px rgb(15 23 42 / 18%);
+
+  .el-dialog__header {
+    padding: 18px 20px 12px;
+    margin: 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .el-dialog__body {
+    padding: 20px;
+  }
+
+  .el-dialog__footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border-color);
+  }
+}
+
+.el-drawer {
+  .el-drawer__header {
+    padding: 16px 20px;
+    margin: 0;
+    color: var(--el-text-color-primary);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .el-drawer__body {
+    padding: 20px;
+  }
+
+  .el-drawer__footer {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border-color);
+  }
+}
+
 .dialog-footer {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
 }
 
-/* 弹出菜单统一使用主题变量 */
+.el-dropdown-menu__item,
+.el-select-dropdown__item {
+  margin: 2px 6px;
+  border-radius: 6px;
+}
+
 .el-menu--popup {
   --el-menu-bg-color: var(--menu-background);
   --el-menu-text-color: var(--menu-text);
@@ -182,5 +296,21 @@ html.dark .el-table--striped .el-table__body tr.el-table__row--striped td {
   .el-menu-item.is-active {
     color: var(--menu-active-text) !important;
     background-color: var(--menu-hover) !important;
+  }
+}
+
+html.dark {
+  .el-table {
+    --el-table-header-bg-color: #171b22;
+    --el-table-row-hover-bg-color: rgb(22 93 255 / 10%);
+    --el-table-current-row-bg-color: rgb(22 93 255 / 14%);
+
+    .el-table__body td {
+      border-bottom-color: rgb(255 255 255 / 8%);
+    }
+  }
+
+  .el-table--striped .el-table__body tr.el-table__row--striped td {
+    background-color: rgb(255 255 255 / 2%);
   }
 }

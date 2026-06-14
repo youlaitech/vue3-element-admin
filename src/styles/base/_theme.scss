@@ -46,23 +46,23 @@ $menu-bg-classic-blue: #304156;
   --sidebar-logo-text-color: #383853;
 
   // 页面背景与内容区
-  --page-bg: #fafbfc;
+  --page-bg: #f5f7fb;
   --content-bg: #ffffff;
 
   // 边框
-  --border-color: #e2e8ee;
-  --card-border: rgb(0 0 0 / 8%);
+  --border-color: #e5e8ef;
+  --card-border: #edf0f5;
 
   // 卡片
-  --card-radius: calc(var(--custom-radius) + 4px);
-  --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 6%), 0 1px 2px -1px rgb(0 0 0 / 4%);
+  --card-radius: 6px;
+  --card-shadow: 0 1px 2px rgb(17 24 39 / 3%), 0 8px 24px rgb(17 24 39 / 3%);
 
   // 全局圆角基准（可被 settings 动态覆盖）
   --custom-radius: 8px;
 
   // 页面布局间距
-  --page-padding: 20px;
-  --page-gap: 16px;
+  --page-padding: 16px;
+  --page-gap: 12px;
 
   // 灰色阶
   --gray-100: #f9fafb;
@@ -76,8 +76,8 @@ $menu-bg-classic-blue: #304156;
   --gray-900: #323251;
 
   // 悬浮与激活
-  --hover-color: #edeff0;
-  --active-color: #f2f4f5;
+  --hover-color: #f2f6ff;
+  --active-color: #edf3ff;
 }
 
 // ============================================
@@ -107,7 +107,7 @@ html.dark {
   --sidebar-logo-background: rgb(0 0 0 / 20%);
   --sidebar-logo-text-color: #fff;
 
-  --page-bg: #070707;
+  --page-bg: #0d1117;
   --content-bg: #161618;
   --border-color: rgb(255 255 255 / 10%);
   --card-border: rgb(255 255 255 / 8%);
