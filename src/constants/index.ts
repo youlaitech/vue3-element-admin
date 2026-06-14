@@ -54,7 +54,8 @@ export const STORAGE_KEYS = {
   LAYOUT: `${APP_PREFIX}:ui:layout`,
   SIDEBAR_COLOR_SCHEME: `${APP_PREFIX}:ui:sidebar_color_scheme`,
   THEME: `${APP_PREFIX}:ui:theme`,
-  THEME_COLOR: `${APP_PREFIX}:ui:theme_color`,
+  THEME_PALETTE: `${APP_PREFIX}:ui:theme_palette`,
+  THEME_COLORS: `${APP_PREFIX}:ui:theme_colors`,
   GRAY_MODE: `${APP_PREFIX}:ui:gray_mode`,
   COLOR_WEAK: `${APP_PREFIX}:ui:color_weak`,
 

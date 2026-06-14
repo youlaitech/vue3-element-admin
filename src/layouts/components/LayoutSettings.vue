@@ -23,20 +23,113 @@
             </el-radio-button>
           </el-radio-group>
         </div>
+
+        <div class="config-block config-block--tight">
+          <div class="config-item__header">
+            <span class="text-xs">{{ t("settings.themePalette") }}</span>
+            <button
+              type="button"
+              :class="['custom-color-trigger', { 'is-open': isCustomColorsOpen }]"
+              @click="toggleCustomColors"
+            >
+              <span>{{ t("settings.customColors") }}</span>
+              <el-icon><ArrowRight /></el-icon>
+            </button>
+          </div>
+
+          <div class="palette-strip">
+            <el-tooltip
+              v-for="item in themePalettePresets"
+              :key="item.id"
+              :content="getPaletteDescription(item)"
+              placement="bottom"
+            >
+              <button
+                type="button"
+                :aria-label="getPaletteName(item)"
+                :class="['palette-option', { 'is-active': settingsStore.themePalette === item.id }]"
+                @click="settingsStore.applyThemePalette(item.id)"
+              >
+                <span class="palette-option__name">{{ getPaletteName(item) }}</span>
+                <span class="palette-option__colors">
+                  <span
+                    v-for="color in getPaletteColors(item.colors)"
+                    :key="color"
+                    class="palette-option__dot"
+                    :style="{ backgroundColor: color }"
+                  />
+                </span>
+              </button>
+            </el-tooltip>
+          </div>
+        </div>
+
+        <el-collapse-transition>
+          <div v-show="isCustomColorsOpen" class="custom-colors-panel">
+            <div class="custom-colors-panel__header">
+              <span>{{ t("settings.customColors") }}</span>
+              <span>{{ activePaletteName }}</span>
+            </div>
+
+            <div class="custom-color-list">
+              <div v-for="item in colorOptions" :key="item.name" class="custom-color-row">
+                <span class="custom-color-row__label">{{ getColorLabel(item.name) }}</span>
+                <span class="custom-color-row__value">
+                  {{ settingsStore.themeColors[item.name] }}
+                </span>
+                <el-color-picker
+                  :model-value="settingsStore.themeColors[item.name]"
+                  :predefine="colorPresets[item.name]"
+                  popper-class="theme-picker-dropdown"
+                  @update:model-value="(color) => handleThemeColorChange(item.name, color)"
+                />
+              </div>
+            </div>
+          </div>
+        </el-collapse-transition>
       </section>
 
-      <!-- 界面设置 -->
+      <section class="config-section">
+        <el-divider>{{ t("settings.navigation") }}</el-divider>
+
+        <div class="layout-select">
+          <div class="layout-grid">
+            <el-tooltip
+              v-for="item in layoutOptions"
+              :key="item.value"
+              :content="item.label"
+              placement="bottom"
+            >
+              <div
+                role="button"
+                tabindex="0"
+                :class="[
+                  'layout-item',
+                  item.className,
+                  {
+                    'is-active': settingsStore.layout === item.value,
+                  },
+                ]"
+                @click="handleLayoutChange(item.value)"
+                @keydown.enter.space="handleLayoutChange(item.value)"
+              >
+                <div class="layout-preview">
+                  <div v-if="item.value !== LayoutMode.LEFT" class="layout-header"></div>
+                  <div v-if="item.value !== LayoutMode.TOP" class="layout-sidebar"></div>
+                  <div class="layout-main"></div>
+                </div>
+                <div class="layout-name">{{ item.label }}</div>
+                <div v-if="settingsStore.layout === item.value" class="layout-check">
+                  <el-icon><Check /></el-icon>
+                </div>
+              </div>
+            </el-tooltip>
+          </div>
+        </div>
+      </section>
+
       <section class="config-section">
         <el-divider>{{ t("settings.interface") }}</el-divider>
-
-        <div class="config-item flex-x-between">
-          <span class="text-xs">{{ t("settings.themeColor") }}</span>
-          <el-color-picker
-            v-model="selectedThemeColor"
-            :predefine="colorPresets"
-            popper-class="theme-picker-dropdown"
-          />
-        </div>
 
         <div class="config-item flex-x-between">
           <span class="text-xs">{{ t("settings.showTagsView") }}</span>
@@ -90,59 +183,11 @@
           </el-radio-group>
         </div>
       </section>
-
-      <!-- 布局设置 -->
-      <section class="config-section">
-        <el-divider>{{ t("settings.navigation") }}</el-divider>
-
-        <!-- 整合的布局选择 -->
-        <div class="layout-select">
-          <div class="layout-grid">
-            <el-tooltip
-              v-for="item in layoutOptions"
-              :key="item.value"
-              :content="item.label"
-              placement="bottom"
-            >
-              <div
-                role="button"
-                tabindex="0"
-                :class="[
-                  'layout-item',
-                  item.className,
-                  {
-                    'is-active': settingsStore.layout === item.value,
-                  },
-                ]"
-                @click="handleLayoutChange(item.value)"
-                @keydown.enter.space="handleLayoutChange(item.value)"
-              >
-                <!-- 布局预览图标 -->
-                <div class="layout-preview">
-                  <div v-if="item.value !== LayoutMode.LEFT" class="layout-header"></div>
-                  <div v-if="item.value !== LayoutMode.TOP" class="layout-sidebar"></div>
-                  <div class="layout-main"></div>
-                </div>
-                <!-- 布局名称 -->
-                <div class="layout-name">{{ item.label }}</div>
-                <!-- 选中状态指示器 -->
-                <div v-if="settingsStore.layout === item.value" class="layout-check">
-                  <el-icon><Check /></el-icon>
-                </div>
-              </div>
-            </el-tooltip>
-          </div>
-        </div>
-      </section>
     </div>
 
-    <!-- 操作按钮区域 - 固定到底部 -->
     <template #footer>
       <div class="action-buttons">
-        <el-tooltip
-          content="复制配置将生成当前设置的代码，覆盖到 `src/settings.ts` 下的 `defaultSettings` 变量"
-          placement="top"
-        >
+        <el-tooltip content="复制当前 defaults 片段，方便覆盖到 src/settings.ts" placement="top">
           <el-button
             type="primary"
             size="default"
@@ -170,29 +215,30 @@
 </template>
 
 <script setup lang="ts">
-import { DocumentCopy, RefreshLeft, Check } from "@element-plus/icons-vue";
-
-const { t } = useI18n();
+import { ArrowRight, Check, DocumentCopy, RefreshLeft } from "@element-plus/icons-vue";
 import { LayoutMode, PageSwitchingAnimationOptions, SidebarColor, ThemeMode } from "@/enums";
 import { useSettingsStore } from "@/stores";
-import { themeColorPresets } from "@/settings";
+import { themeColorNames, themePalettePresets } from "@/settings";
+import type { ThemeColorMap, ThemeColorName, ThemePalettePreset } from "@/settings";
 
-// 页面切换动画选项
+const { t } = useI18n();
+
 const pageSwitchingAnimationOptions = PageSwitchingAnimationOptions;
 
-// 按钮图标
 const copyIcon = markRaw(DocumentCopy);
 const resetIcon = markRaw(RefreshLeft);
 
-// 加载状态
 const copyLoading = ref(false);
 const resetLoading = ref(false);
 
-// 布局选项配置
 interface LayoutOption {
   value: LayoutMode;
   label: string;
   className: string;
+}
+
+interface ColorOption {
+  name: ThemeColorName;
 }
 
 const layoutOptions: LayoutOption[] = [
@@ -201,11 +247,25 @@ const layoutOptions: LayoutOption[] = [
   { value: LayoutMode.MIX, label: t("settings.mixLayout"), className: "mix" },
 ];
 
-// 使用统一的颜色预设配置（复制为可变数组以兼容组件 prop）
-const colorPresets = [...themeColorPresets];
+const colorOptions: ColorOption[] = themeColorNames.map((name) => ({ name }));
+
+const colorPresets: Record<ThemeColorName, string[]> = {
+  primary: ["#165DFF", "#1677FF", "#409EFF", "#FF7D00", "#14C9C9", "#EB2F96", "#722ED1"],
+  success: ["#00B42A", "#23C343", "#67C23A", "#22C55E"],
+  warning: ["#FF7D00", "#FF9A2E", "#E6A23C", "#FAAD14"],
+  danger: ["#F53F3F", "#F76560", "#F56C6C", "#FF4D4F"],
+  info: ["#86909C", "#909399", "#788896", "#6B7785"],
+};
+
+const paletteI18nKeys: Record<string, string> = {
+  arco: "arco",
+  "ant-design": "antDesign",
+  "element-plus": "elementPlus",
+};
 
 const settingsStore = useSettingsStore();
 
+const isCustomColorsOpen = ref(false);
 const sidebarColor = ref(settingsStore.sidebarColorScheme);
 const themeMode = computed({
   get: () => settingsStore.theme,
@@ -214,52 +274,58 @@ const themeMode = computed({
   },
 });
 
-const selectedThemeColor = computed({
-  get: () => settingsStore.themeColor,
-  set: (value) => {
-    settingsStore.themeColor = value;
-  },
-});
-
 const drawerVisible = computed({
   get: () => settingsStore.settingsVisible,
   set: (value) => (settingsStore.settingsVisible = value),
 });
 
-/**
- * 更改侧边栏颜色
- *
- * @param val 颜色方案名称
- */
-const changeSidebarColor = (val: any) => {
+const getPaletteColors = (colors: ThemeColorMap) => colorOptions.map((item) => colors[item.name]);
+
+const getPaletteName = (palette: ThemePalettePreset) => {
+  const key = paletteI18nKeys[palette.id];
+  return key ? t(`settings.themePalettes.${key}.name`) : palette.name;
+};
+
+const getPaletteDescription = (palette: ThemePalettePreset) => {
+  const key = paletteI18nKeys[palette.id];
+  return key ? t(`settings.themePalettes.${key}.description`) : palette.description;
+};
+
+const getColorLabel = (name: ThemeColorName) => t(`settings.themeColorNames.${name}`);
+
+const activePaletteName = computed(() =>
+  settingsStore.activeThemePalette
+    ? getPaletteName(settingsStore.activeThemePalette)
+    : t("settings.customPalette")
+);
+
+const toggleCustomColors = () => {
+  isCustomColorsOpen.value = !isCustomColorsOpen.value;
+};
+
+const handleThemeColorChange = (name: ThemeColorName, color: string | null) => {
+  if (!color) return;
+  settingsStore.updateThemeColor(name, color);
+};
+
+const changeSidebarColor = (val: SidebarColor) => {
   settingsStore.sidebarColorScheme = val;
 };
 
-/**
- * 切换布局
- *
- * @param layout - 布局模式
- */
 const handleLayoutChange = (layout: LayoutMode) => {
   if (settingsStore.layout === layout) return;
 
   settingsStore.layout = layout;
 };
 
-/**
- * 复制当前配置
- */
 const handleCopySettings = async () => {
   try {
     copyLoading.value = true;
 
-    // 生成配置代码
     const configCode = generateSettingsCode();
 
-    // 复制到剪贴板
     await navigator.clipboard.writeText(configCode);
 
-    // 显示成功消息
     ElMessage.success({
       message: t("settings.copySuccess"),
       duration: 3000,
@@ -271,9 +337,6 @@ const handleCopySettings = async () => {
   }
 };
 
-/**
- * 重置为默认配置
- */
 const handleResetSettings = async () => {
   resetLoading.value = true;
 
@@ -290,53 +353,50 @@ const handleResetSettings = async () => {
   }
 };
 
-/**
- * 生成配置代码字符串
- */
+// 这里只生成 defaults，避免复制出来的代码和 src/settings.ts 的真实结构对不上。
 const generateSettingsCode = (): string => {
+  const themeColorsCode = JSON.stringify(settingsStore.themeColors, null, 4)
+    .replace(/"([^"]+)":/g, "$1:")
+    .replace(/^/gm, "  ");
   const settings = {
-    title: "pkg.name",
-    version: "pkg.version",
-    showSettings: true,
-    showTagsView: settingsStore.showTagsView,
-    showAppLogo: settingsStore.showAppLogo,
-    layout: `LayoutMode.${settingsStore.layout.toUpperCase()}`,
     theme: `ThemeMode.${settingsStore.theme.toUpperCase()}`,
+    themePalette: `"${settingsStore.themePalette}"`,
+    themeColors: themeColorsCode.trimStart(),
+    sidebarColorScheme: `SidebarColor.${settingsStore.sidebarColorScheme.toUpperCase().replace("-", "_")}`,
+    layout: `LayoutMode.${settingsStore.layout.toUpperCase()}`,
     size: "ComponentSize.DEFAULT",
     language: "LanguageEnum.ZH_CN",
-    themeColor: `"${settingsStore.themeColor}"`,
+    showTagsView: settingsStore.showTagsView,
+    showAppLogo: settingsStore.showAppLogo,
     showWatermark: settingsStore.showWatermark,
+    pageSwitchingAnimation: `"${settingsStore.pageSwitchingAnimation}"`,
+    showSettings: true,
     watermarkContent: "pkg.name",
-    sidebarColorScheme: `SidebarColor.${settingsStore.sidebarColorScheme.toUpperCase().replace("-", "_")}`,
   };
 
-  return `const defaultSettings: AppSettings = {
-  title: ${settings.title},
-  version: ${settings.version},
-  showSettings: ${settings.showSettings},
-  showTagsView: ${settings.showTagsView},
-  showAppLogo: ${settings.showAppLogo},
-  layout: ${settings.layout},
+  return `export const defaults = {
   theme: ${settings.theme},
+  themePalette: ${settings.themePalette},
+  themeColors: ${settings.themeColors},
+  sidebarColorScheme: ${settings.sidebarColorScheme},
+  layout: ${settings.layout},
   size: ${settings.size},
   language: ${settings.language},
-  themeColor: ${settings.themeColor},
+  showTagsView: ${settings.showTagsView},
+  showAppLogo: ${settings.showAppLogo},
   showWatermark: ${settings.showWatermark},
+  pageSwitchingAnimation: ${settings.pageSwitchingAnimation},
+  showSettings: ${settings.showSettings},
   watermarkContent: ${settings.watermarkContent},
-  sidebarColorScheme: ${settings.sidebarColorScheme},
-};`;
+} as const;`;
 };
 
-/**
- * 关闭抽屉前的回调
- */
 const handleCloseDrawer = () => {
   settingsStore.settingsVisible = false;
 };
 </script>
 
 <style lang="scss" scoped>
-/* 设置抽屉样式 */
 .settings-drawer {
   :deep(.el-drawer__body) {
     position: relative;
@@ -348,15 +408,12 @@ const handleCloseDrawer = () => {
   }
 }
 
-/* 设置内容区域 */
 .settings-content {
-  /* let drawer body control height with flex and make this area scrollable */
   flex: 1 1 auto;
-  padding: 20px;
+  padding: 16px 18px;
   overflow-y: auto;
 }
 
-/* 底部操作区域样式 */
 .action-buttons {
   display: flex;
 
@@ -372,21 +429,12 @@ const handleCloseDrawer = () => {
     }
   }
 }
-/* 主题切换器优化 */
-.theme-switch {
-  transform: scale(1.2);
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: scale(1.25);
-  }
-}
 
 .config-section {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 
   .config-item {
-    padding: 12px 0;
+    padding: 10px 0;
     border-bottom: 1px solid var(--el-border-color-light);
     transition: all 0.3s ease;
 
@@ -402,29 +450,228 @@ const handleCloseDrawer = () => {
       border-radius: 6px;
     }
   }
+
+  .config-item--block {
+    display: block;
+
+    &:hover {
+      padding-right: 0;
+      padding-left: 0;
+      margin: 0;
+      background-color: transparent;
+    }
+  }
 }
 
-/* 布局选择器样式优化 */
+.config-block {
+  margin-top: 12px;
+}
+
+.config-block--tight {
+  margin-top: 10px;
+}
+
+.config-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.palette-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.palette-option {
+  display: grid;
+  gap: 5px;
+  align-content: center;
+  justify-items: start;
+  width: 100%;
+  height: 44px;
+  padding: 6px 8px;
+  font: inherit;
+  color: var(--el-text-color-regular);
+  text-align: left;
+  appearance: none;
+  cursor: pointer;
+  background: var(--el-bg-color);
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 8px;
+  transition:
+    background-color 0.18s,
+    border-color 0.18s,
+    box-shadow 0.18s,
+    transform 0.18s;
+
+  &:hover {
+    background: var(--el-fill-color-lighter);
+    border-color: var(--el-color-primary-light-5);
+  }
+
+  &.is-active {
+    background: var(--el-color-primary-light-9);
+    border-color: var(--el-color-primary-light-5);
+    box-shadow: inset 0 0 0 1px var(--el-color-primary-light-5);
+  }
+}
+
+.palette-option__name {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--el-text-color-primary);
+  white-space: nowrap;
+}
+
+.palette-option__colors {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.palette-option__dot {
+  width: 10px;
+  height: 10px;
+  margin-left: -2px;
+  border: 1px solid var(--el-bg-color);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 4%);
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.custom-color-trigger {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+  height: 24px;
+  padding: 0 6px 0 8px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  appearance: none;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  transition:
+    color 0.18s,
+    background-color 0.18s;
+
+  .el-icon {
+    font-size: 12px;
+    transition: transform 0.18s;
+  }
+
+  &:hover,
+  &.is-open {
+    color: var(--el-color-primary);
+    background: var(--el-color-primary-light-9);
+  }
+
+  &.is-open .el-icon {
+    transform: rotate(90deg);
+  }
+}
+
+.custom-colors-panel {
+  padding: 10px;
+  margin-top: 8px;
+  background:
+    linear-gradient(180deg, var(--el-fill-color-blank), var(--el-fill-color-lighter)),
+    var(--el-bg-color);
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 8px;
+}
+
+.custom-colors-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--el-text-color-placeholder);
+
+  span:first-child {
+    font-weight: 700;
+    color: var(--el-text-color-regular);
+  }
+}
+
+.custom-color-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.custom-color-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px;
+  gap: 6px;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 8px;
+  background: var(--el-bg-color);
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 8px;
+}
+
+.custom-color-row__label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--el-text-color-regular);
+}
+
+.custom-color-row__value {
+  display: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  white-space: nowrap;
+}
+
+.custom-color-row :deep(.el-color-picker) {
+  width: 28px;
+  height: 28px;
+}
+
+.custom-color-row :deep(.el-color-picker__trigger) {
+  width: 28px;
+  height: 28px;
+  padding: 2px;
+  border-color: var(--el-border-color);
+}
+
 .layout-select {
-  padding: 16px 8px;
+  padding: 10px 4px 4px;
 
   .layout-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 10px;
     justify-items: center;
   }
 }
 
 .layout-item {
   position: relative;
-  width: 70px;
-  height: 80px;
+  width: 64px;
+  height: 72px;
   overflow: hidden;
   cursor: pointer;
   background: linear-gradient(145deg, var(--el-bg-color) 0%, var(--el-bg-color-page) 100%);
-  border: 2px solid var(--el-border-color);
-  border-radius: 12px;
+  border: 1px solid var(--el-border-color);
+  border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -435,18 +682,18 @@ const handleCloseDrawer = () => {
       var(--el-color-primary-light-9) 100%
     );
     border-color: var(--el-color-primary-light-3);
-    transform: translateY(-4px) scale(1.05);
+    transform: translateY(-2px);
   }
 
   &:active {
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-1px);
   }
 
   .layout-preview {
     position: relative;
     width: 100%;
-    height: 50px;
-    margin: 8px 0 4px 0;
+    height: 42px;
+    margin: 7px 0 3px;
   }
 
   .layout-header {
@@ -485,7 +732,7 @@ const handleCloseDrawer = () => {
   .layout-name {
     position: absolute;
     right: 0;
-    bottom: 6px;
+    bottom: 5px;
     left: 0;
     font-size: 10px;
     font-weight: 500;
@@ -509,7 +756,6 @@ const handleCloseDrawer = () => {
     border-radius: 50%;
   }
 
-  // 左侧布局
   &.left {
     .layout-sidebar {
       top: 4px;
@@ -523,7 +769,6 @@ const handleCloseDrawer = () => {
     }
   }
 
-  // 顶部布局
   &.top {
     .layout-header {
       height: 12px;
@@ -536,7 +781,6 @@ const handleCloseDrawer = () => {
     }
   }
 
-  // 混合布局
   &.mix {
     .layout-header {
       height: 10px;
@@ -560,7 +804,8 @@ const handleCloseDrawer = () => {
       var(--el-color-primary-light-8) 100%
     );
     border-color: var(--el-color-primary);
-    transform: translateY(-2px) scale(1.08);
+    box-shadow: inset 0 0 0 1px var(--el-color-primary);
+    transform: translateY(-1px);
 
     .layout-name {
       font-weight: 600;

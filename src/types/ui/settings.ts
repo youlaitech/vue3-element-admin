@@ -3,6 +3,7 @@
  */
 
 import type { ThemeMode } from "@/enums";
+import type { ThemeColorMap } from "@/settings";
 
 export interface AppSettings {
   title: string;
@@ -11,7 +12,8 @@ export interface AppSettings {
   showTagsView: boolean;
   showAppLogo: boolean;
   layout: "left" | "top" | "mix";
-  themeColor: string;
+  themePalette: string;
+  themeColors: ThemeColorMap;
   theme: ThemeMode;
   size: string;
   language: string;

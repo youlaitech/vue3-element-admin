@@ -67,7 +67,31 @@
     "theme": "Theme",
     "interface": "Interface",
     "navigation": "Navigation",
-    "themeColor": "Theme Color",
+    "themePalette": "Color System",
+    "customColors": "Custom Colors",
+    "customPalette": "Custom",
+    "customPaletteTip": "Custom colors applied",
+    "themeColorNames": {
+      "primary": "Primary",
+      "success": "Success",
+      "warning": "Warning",
+      "danger": "Danger",
+      "info": "Info"
+    },
+    "themePalettes": {
+      "arco": {
+        "name": "Arco",
+        "description": "Clear blue-orange balance"
+      },
+      "antDesign": {
+        "name": "Ant Design",
+        "description": "Stable and structured"
+      },
+      "elementPlus": {
+        "name": "Element Plus",
+        "description": "Close to component defaults"
+      }
+    },
     "showTagsView": "Show Tags View",
     "showAppLogo": "Show App Logo",
     "sidebarColorScheme": "Sidebar Color Scheme",
@@ -83,7 +107,7 @@
     "resetConfig": "Reset Default",
     "copySuccess": "Configuration copied to clipboard",
     "resetSuccess": "Reset to default configuration",
-    "copyDescription": "Copy config will generate current settings code, reset will restore all settings to default",
+    "copyDescription": "Copy config generates the current defaults fragment; reset restores defaults",
     "confirmReset": "Are you sure to reset all settings to default? This operation cannot be undone.",
     "applyToFile": "Apply to File",
     "onlyCopy": "Only Copy",
@@ -91,7 +115,7 @@
     "topLayout": "Top Mode",
     "mixLayout": "Mix Mode",
     "configManagement": "Config Management",
-    "copyConfigDescription": "Generate current settings code and copy to clipboard, then overwrite src/settings.ts file",
+    "copyConfigDescription": "Generate the current defaults fragment and copy it to clipboard",
     "resetConfigDescription": "Restore all settings to system default values"
   }
 }

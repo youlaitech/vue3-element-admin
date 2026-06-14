@@ -9,7 +9,11 @@ import {
   watchSystemTheme,
 } from "@/utils/theme";
 import { STORAGE_KEYS } from "@/constants";
-import { defaults } from "@/settings";
+import { defaults, themePalettePresets } from "@/settings";
+import type { ThemeColorMap, ThemeColorName } from "@/settings";
+
+const CUSTOM_THEME_PALETTE = "custom";
+const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
 
 export const useSettingsStore = defineStore("setting", () => {
   // 界面显示
@@ -31,13 +35,15 @@ export const useSettingsStore = defineStore("setting", () => {
 
   // 主题
   const theme = useStorage<ThemeMode>(STORAGE_KEYS.THEME, defaults.theme);
-  const themeColor = useStorage(STORAGE_KEYS.THEME_COLOR, defaults.themeColor);
+  const themePalette = useStorage<string>(STORAGE_KEYS.THEME_PALETTE, defaults.themePalette);
+  const themeColors = useStorage<ThemeColorMap>(STORAGE_KEYS.THEME_COLORS, {
+    ...defaults.themeColors,
+  });
 
-  // 旧默认值 → 新默认值 自动迁移（用户自定义的颜色不会被覆盖）
-  const LEGACY_DEFAULTS = ["#4080FF", "#4080ff", "#2563EB", "#2563eb"];
-  if (LEGACY_DEFAULTS.includes(themeColor.value)) {
-    themeColor.value = defaults.themeColor;
-  }
+  const activeThemePalette = computed(
+    () => themePalettePresets.find((item) => item.id === themePalette.value) || null
+  );
+
   const resolvedTheme = ref<ThemeMode>(resolveThemeMode(theme.value));
 
   // 特殊模式
@@ -65,12 +71,12 @@ export const useSettingsStore = defineStore("setting", () => {
   );
 
   watch(
-    [resolvedTheme, themeColor],
-    ([t, c]: [ThemeMode, string]) => {
+    [resolvedTheme, themeColors],
+    ([t, colors]) => {
       toggleDarkMode(t === ThemeMode.DARK);
-      applyTheme(generateThemeColors(c, t));
+      applyTheme(generateThemeColors(colors, t));
     },
-    { immediate: true }
+    { immediate: true, deep: true }
   );
 
   watch(sidebarColorScheme, (v) => toggleSidebarColor(v === SidebarColor.CLASSIC_BLUE), {
@@ -95,6 +101,24 @@ export const useSettingsStore = defineStore("setting", () => {
     { immediate: true }
   );
 
+  function applyThemePalette(id: string) {
+    const preset = themePalettePresets.find((item) => item.id === id);
+    if (!preset) return;
+
+    themePalette.value = preset.id;
+    themeColors.value = { ...preset.colors };
+  }
+
+  function updateThemeColor(name: ThemeColorName, color: string) {
+    if (!HEX_COLOR_RE.test(color)) return;
+
+    themePalette.value = CUSTOM_THEME_PALETTE;
+    themeColors.value = {
+      ...themeColors.value,
+      [name]: color,
+    };
+  }
+
   function resetSettings() {
     showTagsView.value = defaults.showTagsView;
     showAppLogo.value = defaults.showAppLogo;
@@ -104,7 +128,8 @@ export const useSettingsStore = defineStore("setting", () => {
     colorWeak.value = false;
     sidebarColorScheme.value = defaults.sidebarColorScheme;
     layout.value = defaults.layout as LayoutMode;
-    themeColor.value = defaults.themeColor;
+    themePalette.value = defaults.themePalette;
+    themeColors.value = { ...defaults.themeColors };
     theme.value = defaults.theme;
   }
 
@@ -118,9 +143,13 @@ export const useSettingsStore = defineStore("setting", () => {
     colorWeak,
     sidebarColorScheme,
     layout,
-    themeColor,
+    themePalette,
+    themeColors,
     theme,
     resolvedTheme,
+    activeThemePalette,
+    applyThemePalette,
+    updateThemeColor,
     resetSettings,
   };
 });

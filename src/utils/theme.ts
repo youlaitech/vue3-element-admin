@@ -1,28 +1,17 @@
 import { ThemeMode } from "@/enums";
+import { themeColorNames } from "@/settings";
+import type { ThemeColorMap, ThemeColorName } from "@/settings";
 
 const SYSTEM_DARK_MEDIA = "(prefers-color-scheme: dark)";
 
-// 辅助函数：将十六进制颜色转换为 RGB
 function hexToRgb(hex: string): [number, number, number] {
   const bigint = parseInt(hex.slice(1), 16);
   return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
 }
 
-// 辅助函数：将 RGB 转换为十六进制颜色
 function rgbToHex(r: number, g: number, b: number): string {
   return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
 }
-
-// 辅助函数：调整颜色亮度
-/** function adjustBrightness(hex: string, factor: number, theme: string): string {
-  const rgb = hexToRgb(hex);
-  // 是否是暗黑模式
-  const isDarkMode = theme === "dark" ? 0 : 255;
-  const newRgb = rgb.map((val) =>
-    Math.max(0, Math.min(255, Math.round(val + (isDarkMode - val) * factor)))
-  ) as [number, number, number];
-  return rgbToHex(...newRgb);
-} */
 
 /**
  * 加深颜色值
@@ -39,7 +28,7 @@ export function getDarkColor(color: string, level: number): string {
 /**
  * 变浅颜色值
  * @param {String} color 颜色值字符串
- * @param {Number} level 加深的程度，限0-1之间
+ * @param {Number} level 变浅的程度，限0-1之间
  * @returns {String} 返回处理后的颜色值
  */
 export const getLightColor = (color: string, level: number): string => {
@@ -49,39 +38,17 @@ export const getLightColor = (color: string, level: number): string => {
 };
 
 /**
- * 生成主题色
- * @param primary 主题色
- * @param theme 主题类型
+ * Element Plus 运行时需要 base、light-1..9 和 dark-2。
+ * 这里从完整颜色方案一次性生成，避免主色和功能色来自不同体系。
  */
-export function generateThemeColors(primary: string, theme: ThemeMode) {
+export function generateThemeColors(palette: ThemeColorMap, theme: ThemeMode) {
   const resolvedTheme = resolveThemeMode(theme);
-  const colors: Record<string, string> = {
-    primary,
-  };
+  const colors: Record<string, string> = {};
 
-  // 生成 primary 浅色/深色变体
-  for (let i = 1; i <= 9; i++) {
-    colors[`primary-light-${i}`] =
-      resolvedTheme === ThemeMode.LIGHT
-        ? `${getLightColor(primary, i / 10)}`
-        : `${getDarkColor(primary, i / 10)}`;
-  }
-
-  colors["primary-dark-2"] =
-    resolvedTheme === ThemeMode.LIGHT
-      ? `${getLightColor(primary, 0.2)}`
-      : `${getDarkColor(primary, 0.3)}`;
-
-  // 语义色（success / warning / danger / info）
-  const semanticColors: Record<string, string> = {
-    success: "#22c55e",
-    warning: "#faad14",
-    danger: "#ff4d4f",
-    info: "#788896",
-  };
-
-  Object.entries(semanticColors).forEach(([name, base]) => {
+  themeColorNames.forEach((name: ThemeColorName) => {
+    const base = palette[name];
     colors[name] = base;
+
     for (let i = 1; i <= 9; i++) {
       colors[`${name}-light-${i}`] =
         resolvedTheme === ThemeMode.LIGHT
@@ -123,9 +90,8 @@ export function applyTheme(colors: Record<string, string>) {
     el.style.setProperty(`--el-color-${key}`, value);
   });
 
-  // 确保主题色立即生效，强制重新渲染
   requestAnimationFrame(() => {
-    // 触发样式重新计算
+    // 给依赖 CSS 变量的组件一次明确的样式刷新信号。
     el.style.setProperty("--theme-update-trigger", Date.now().toString());
   });
 }
@@ -148,8 +114,8 @@ export function toggleDarkMode(isDark: boolean) {
  *
  * @param isBlue 布尔值，表示是否开启深蓝色侧边栏颜色方案
  */
-export function toggleSidebarColor(isBuleSidebar: boolean) {
-  if (isBuleSidebar) {
+export function toggleSidebarColor(isBlueSidebar: boolean) {
+  if (isBlueSidebar) {
     document.documentElement.classList.add("sidebar-color-blue");
   } else {
     document.documentElement.classList.remove("sidebar-color-blue");
