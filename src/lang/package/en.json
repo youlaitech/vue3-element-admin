@@ -80,7 +80,7 @@
     },
     "themePalettes": {
       "arco": {
-        "name": "Arco",
+        "name": "Arco Design",
         "description": "Clear blue-orange balance"
       },
       "antDesign": {
@@ -114,6 +114,7 @@
     "leftLayout": "Left Mode",
     "topLayout": "Top Mode",
     "mixLayout": "Mix Mode",
+    "doubleLayout": "Double Mode",
     "configManagement": "Config Management",
     "copyConfigDescription": "Generate the current defaults fragment and copy it to clipboard",
     "resetConfigDescription": "Restore all settings to system default values"

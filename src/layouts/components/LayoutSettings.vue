@@ -111,11 +111,16 @@
                   },
                 ]"
                 @click="handleLayoutChange(item.value)"
-                @keydown.enter.space="handleLayoutChange(item.value)"
+                @keydown.enter="handleLayoutChange(item.value)"
+                @keydown.space.prevent="handleLayoutChange(item.value)"
               >
                 <div class="layout-preview">
-                  <div v-if="item.value !== LayoutMode.LEFT" class="layout-header"></div>
+                  <div
+                    v-if="item.value === LayoutMode.TOP || item.value === LayoutMode.MIX"
+                    class="layout-header"
+                  ></div>
                   <div v-if="item.value !== LayoutMode.TOP" class="layout-sidebar"></div>
+                  <div v-if="item.value === LayoutMode.DOUBLE" class="layout-sub-sidebar"></div>
                   <div class="layout-main"></div>
                 </div>
                 <div class="layout-name">{{ item.label }}</div>
@@ -245,6 +250,7 @@ const layoutOptions: LayoutOption[] = [
   { value: LayoutMode.LEFT, label: t("settings.leftLayout"), className: "left" },
   { value: LayoutMode.TOP, label: t("settings.topLayout"), className: "top" },
   { value: LayoutMode.MIX, label: t("settings.mixLayout"), className: "mix" },
+  { value: LayoutMode.DOUBLE, label: t("settings.doubleLayout"), className: "double" },
 ];
 
 const colorOptions: ColorOption[] = themeColorNames.map((name) => ({ name }));
@@ -653,79 +659,81 @@ const handleCloseDrawer = () => {
 }
 
 .layout-select {
-  padding: 10px 4px 4px;
+  padding-top: 10px;
 
   .layout-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    justify-items: center;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
   }
 }
 
 .layout-item {
   position: relative;
-  width: 64px;
   height: 72px;
   overflow: hidden;
   cursor: pointer;
-  background: linear-gradient(145deg, var(--el-bg-color) 0%, var(--el-bg-color-page) 100%);
-  border: 1px solid var(--el-border-color);
+  background: var(--el-bg-color);
+  border: 1px solid var(--el-border-color-lighter);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    background-color 0.18s,
+    border-color 0.18s,
+    box-shadow 0.18s,
+    transform 0.18s;
 
   &:hover {
-    background: linear-gradient(
-      145deg,
-      var(--el-bg-color) 0%,
-      var(--el-color-primary-light-9) 100%
-    );
-    border-color: var(--el-color-primary-light-3);
-    transform: translateY(-2px);
+    background: var(--el-fill-color-lighter);
+    border-color: var(--el-color-primary-light-5);
   }
 
   &:active {
-    transform: translateY(-1px);
+    transform: scale(0.98);
   }
 
   .layout-preview {
     position: relative;
-    width: 100%;
-    height: 42px;
-    margin: 7px 0 3px;
+    width: 54px;
+    height: 34px;
+    margin: 8px auto 4px;
   }
 
   .layout-header {
     position: absolute;
     top: 0;
-    right: 4px;
-    left: 4px;
+    right: 0;
+    left: 0;
     height: 8px;
-    background: linear-gradient(
-      90deg,
-      var(--el-color-primary) 0%,
-      var(--el-color-primary-light-3) 100%
-    );
+    background: var(--el-color-primary);
     border-radius: 2px;
   }
 
   .layout-sidebar {
     position: absolute;
-    left: 4px;
+    left: 0;
     width: 12px;
-    background: linear-gradient(
-      180deg,
-      var(--el-color-primary-dark-2) 0%,
-      var(--el-color-primary) 100%
-    );
+    background: var(--el-color-primary);
+    border-radius: 2px;
+  }
+
+  .layout-sub-sidebar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 15px;
+    width: 14px;
+    background: var(--el-color-primary-light-9);
+    border: 1px solid var(--el-color-primary-light-6);
     border-radius: 2px;
   }
 
   .layout-main {
     position: absolute;
-    background: linear-gradient(135deg, var(--el-fill-color-light) 0%, var(--el-fill-color) 100%);
-    border: 1px solid var(--el-border-color-lighter);
+    background:
+      linear-gradient(var(--el-fill-color-light) 0 0) 7px 7px / 18px 3px no-repeat,
+      linear-gradient(var(--el-fill-color-light) 0 0) 7px 14px / 24px 3px no-repeat,
+      var(--el-fill-color-lighter);
+    border: 1px solid var(--el-border-color-extra-light);
     border-radius: 2px;
   }
 
@@ -748,11 +756,12 @@ const handleCloseDrawer = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
     font-size: 10px;
-    color: white;
-    background: var(--el-color-success);
+    color: var(--el-color-primary);
+    background: var(--el-color-primary-light-9);
+    border: 1px solid var(--el-color-primary-light-5);
     border-radius: 50%;
   }
 
@@ -763,9 +772,9 @@ const handleCloseDrawer = () => {
     }
     .layout-main {
       top: 4px;
-      right: 4px;
+      right: 0;
       bottom: 4px;
-      left: 20px;
+      left: 16px;
     }
   }
 
@@ -775,9 +784,9 @@ const handleCloseDrawer = () => {
     }
     .layout-main {
       top: 16px;
-      right: 4px;
-      bottom: 4px;
-      left: 4px;
+      right: 0;
+      bottom: 0;
+      left: 0;
     }
   }
 
@@ -787,25 +796,34 @@ const handleCloseDrawer = () => {
     }
     .layout-sidebar {
       top: 14px;
-      bottom: 4px;
+      bottom: 0;
     }
     .layout-main {
       top: 14px;
-      right: 4px;
-      bottom: 4px;
-      left: 20px;
+      right: 0;
+      bottom: 0;
+      left: 16px;
+    }
+  }
+
+  &.double {
+    .layout-sidebar {
+      top: 0;
+      bottom: 0;
+      width: 10px;
+    }
+    .layout-main {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 33px;
     }
   }
 
   &.is-active {
-    background: linear-gradient(
-      145deg,
-      var(--el-color-primary-light-9) 0%,
-      var(--el-color-primary-light-8) 100%
-    );
-    border-color: var(--el-color-primary);
-    box-shadow: inset 0 0 0 1px var(--el-color-primary);
-    transform: translateY(-1px);
+    background: var(--el-color-primary-light-9);
+    border-color: var(--el-color-primary-light-5);
+    box-shadow: inset 0 0 0 1px var(--el-color-primary-light-6);
 
     .layout-name {
       font-weight: 600;

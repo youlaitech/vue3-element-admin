@@ -55,6 +55,11 @@ export const enum LayoutMode {
    * 混合菜单布局
    */
   MIX = "mix",
+
+  /**
+   * 双列菜单布局
+   */
+  DOUBLE = "double",
 }
 
 /**

@@ -80,7 +80,7 @@
     },
     "themePalettes": {
       "arco": {
-        "name": "Arco",
+        "name": "Arco Design",
         "description": "蓝橙清晰，默认推荐"
       },
       "antDesign": {
@@ -116,6 +116,7 @@
     "leftLayout": "左侧模式",
     "topLayout": "顶部模式",
     "mixLayout": "混合模式",
+    "doubleLayout": "双列模式",
     "configManagement": "配置管理",
     "copyConfigDescription": "生成当前 defaults 片段并复制到剪贴板",
     "resetConfigDescription": "恢复所有设置为系统默认值"

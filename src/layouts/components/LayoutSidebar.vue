@@ -3,7 +3,7 @@
   <el-menu
     ref="menuRef"
     :default-active="activeMenuPath"
-    :collapse="!appStore.sidebar.opened"
+    :collapse="props.alwaysExpand ? false : !appStore.sidebar.opened"
     :background-color="menuThemeProps.backgroundColor"
     :text-color="menuThemeProps.textColor"
     :active-text-color="menuThemeProps.activeTextColor"
@@ -49,6 +49,11 @@ const props = defineProps({
     type: String as PropType<"vertical" | "horizontal">,
     default: "vertical",
     validator: (value: string) => ["vertical", "horizontal"].includes(value),
+  },
+  /** 强制展开，忽略全局 sidebar.opened 状态（DoubleLayout 第二列需要始终展开） */
+  alwaysExpand: {
+    type: Boolean,
+    default: false,
   },
 });
 
