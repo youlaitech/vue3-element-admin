@@ -29,21 +29,7 @@
           type="button"
           @click="toggleSidebar"
         >
-          <svg
-            class="layout__primary-toggle-icon"
-            :class="{ 'is-collapsed': !isSidebarOpen }"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              d="M12 5l-5 5 5 5"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <div class="i-svg:arrow-left-right layout__primary-toggle-icon" />
         </button>
       </div>
 
@@ -132,10 +118,6 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
         span {
           display: none;
         }
-      }
-
-      .layout__primary-toggle-icon {
-        transform: rotate(180deg);
       }
 
       .layout__double-secondary {
@@ -255,13 +237,10 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
   }
 
   &__primary-toggle-icon {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
     transition: transform 0.28s;
-
-    &.is-collapsed {
-      transform: rotate(180deg);
-    }
   }
 
   &__double-secondary {
