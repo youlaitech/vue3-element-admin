@@ -60,8 +60,8 @@
             />
           </el-menu>
         </el-scrollbar>
-        <div class="layout__sidebar-toggle">
-          <Hamburger :is-active="isSidebarOpen" @toggle-click="toggleSidebar" />
+        <div class="layout__sidebar-toggle" @click="toggleSidebar">
+          <div class="i-svg:arrow-left-right layout__sidebar-toggle-icon" />
         </div>
       </div>
 
@@ -87,7 +87,6 @@ import LayoutToolbar from "./components/LayoutToolbar.vue";
 import LayoutTagsView from "./components/LayoutTagsView.vue";
 import LayoutMain from "./components/LayoutMain.vue";
 import LayoutSidebarItem from "./components/LayoutSidebarItem.vue";
-import Hamburger from "@/components/Hamburger/index.vue";
 import variables from "@/styles/variables.module.scss";
 const { width } = useWindowSize();
 
@@ -242,8 +241,21 @@ const useMenuColors = computed(
         width: 100%;
         height: $sidebar-toggle-height;
         line-height: $sidebar-toggle-height;
+        cursor: pointer;
         background-color: var(--menu-background);
         border-top: 1px solid var(--menu-border);
+
+        &-icon {
+          width: 18px;
+          height: 18px;
+          font-size: 18px;
+          color: var(--el-text-color-secondary);
+          transition: color 0.16s;
+        }
+
+        &:hover &-icon {
+          color: var(--el-color-primary);
+        }
       }
     }
 
