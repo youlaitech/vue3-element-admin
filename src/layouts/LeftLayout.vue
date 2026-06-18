@@ -18,7 +18,6 @@
     <div
       class="layout__main"
       :class="{
-        hasTagsView: showTagsView,
         'layout__main--collapsed': !isSidebarOpen,
         'layout__main--fullscreen': appStore.contentFullscreen,
       }"
@@ -128,12 +127,6 @@ const appStore = useAppStore();
 
   .layout__main {
     margin-left: 0 !important;
-  }
-}
-
-.hasTagsView {
-  :deep(.app-main) {
-    @include app-main-height-with-tags;
   }
 }
 </style>

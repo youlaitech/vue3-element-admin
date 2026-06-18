@@ -8,10 +8,10 @@
   >
     <div class="settings-content">
       <section class="config-section">
-        <el-divider>{{ t("settings.theme") }}</el-divider>
+        <div class="section-title">{{ t("settings.theme") }}</div>
 
-        <div class="flex-center">
-          <el-radio-group v-model="themeMode" class="theme-mode-group">
+        <div class="theme-mode">
+          <el-radio-group v-model="themeMode">
             <el-radio-button :value="ThemeMode.LIGHT">
               {{ t("login.light") }}
             </el-radio-button>
@@ -24,9 +24,9 @@
           </el-radio-group>
         </div>
 
-        <div class="config-block config-block--tight">
-          <div class="config-item__header">
-            <span class="text-xs">{{ t("settings.themePalette") }}</span>
+        <div class="config-card">
+          <div class="config-card__header">
+            <span>{{ t("settings.themePalette") }}</span>
             <button
               type="button"
               :class="['custom-color-trigger', { 'is-open': isCustomColorsOpen }]"
@@ -90,7 +90,7 @@
       </section>
 
       <section class="config-section">
-        <el-divider>{{ t("settings.navigation") }}</el-divider>
+        <div class="section-title">{{ t("settings.navigation") }}</div>
 
         <div class="layout-select">
           <div class="layout-grid">
@@ -140,7 +140,7 @@
           <el-radio-group
             v-model="sidebarColor"
             class="config-item__control"
-            @change="changeSidebarColor"
+            @change="setSidebarColor"
           >
             <el-radio :value="SidebarColor.MINIMAL_WHITE">
               {{ t("settings.minimalWhite") }}
@@ -153,7 +153,7 @@
       </section>
 
       <section class="config-section">
-        <el-divider>{{ t("settings.interface") }}</el-divider>
+        <div class="section-title">{{ t("settings.interface") }}</div>
 
         <div class="config-item flex-x-between">
           <span class="text-xs">{{ t("settings.showTagsView") }}</span>
@@ -161,7 +161,7 @@
         </div>
 
         <div v-if="settingsStore.showTagsView" class="config-item config-item--block">
-          <div class="config-item__header">
+          <div class="config-card__header">
             <span class="text-xs">{{ t("settings.tagsViewStyle") }}</span>
           </div>
           <div class="tags-style-grid">
@@ -192,11 +192,6 @@
         </div>
 
         <div class="config-item flex-x-between">
-          <span class="text-xs">{{ t("settings.showWatermark") }}</span>
-          <el-switch v-model="settingsStore.showWatermark" />
-        </div>
-
-        <div class="config-item flex-x-between">
           <span class="text-xs">{{ t("settings.pageSwitchingAnimation") }}</span>
           <el-select v-model="settingsStore.pageSwitchingAnimation" style="width: 150px">
             <el-option
@@ -207,43 +202,46 @@
             />
           </el-select>
         </div>
+      </section>
+
+      <section class="config-section">
+        <div class="section-title">{{ t("settings.assist") }}</div>
 
         <div class="config-item flex-x-between">
-          <span class="text-xs">灰色模式</span>
+          <span class="text-xs">{{ t("settings.showWatermark") }}</span>
+          <el-switch v-model="settingsStore.showWatermark" />
+        </div>
+
+        <div class="config-item flex-x-between">
+          <span class="text-xs">{{ t("settings.grayMode") }}</span>
           <el-switch v-model="settingsStore.grayMode" />
         </div>
 
         <div class="config-item flex-x-between">
-          <span class="text-xs">色弱模式</span>
+          <span class="text-xs">{{ t("settings.colorWeak") }}</span>
           <el-switch v-model="settingsStore.colorWeak" />
         </div>
       </section>
     </div>
 
     <template #footer>
-      <div class="action-buttons">
-        <el-tooltip content="复制当前 defaults 片段，方便覆盖到 src/settings.ts" placement="top">
-          <el-button
-            type="primary"
-            size="default"
-            :icon="copyIcon"
-            :loading="copyLoading"
-            @click="handleCopySettings"
-          >
-            {{ copyLoading ? "复制中..." : t("settings.copyConfig") }}
-          </el-button>
-        </el-tooltip>
-        <el-tooltip content="重置将恢复所有设置为默认值" placement="top">
-          <el-button
-            type="warning"
-            size="default"
-            :icon="resetIcon"
-            :loading="resetLoading"
-            @click="handleResetSettings"
-          >
-            {{ resetLoading ? "重置中..." : t("settings.resetConfig") }}
-          </el-button>
-        </el-tooltip>
+      <div class="settings-footer">
+        <el-button
+          type="primary"
+          :icon="copyIcon"
+          :loading="copyLoading"
+          @click="copyCurrentSettings"
+        >
+          {{ copyLoading ? "复制中..." : t("settings.copyConfig") }}
+        </el-button>
+        <el-button
+          type="default"
+          :icon="resetIcon"
+          :loading="resetLoading"
+          @click="resetSettingsToDefault"
+        >
+          {{ resetLoading ? "重置中..." : t("settings.resetConfig") }}
+        </el-button>
       </div>
     </template>
   </el-drawer>
@@ -331,19 +329,23 @@ const drawerVisible = computed({
   set: (value) => (settingsStore.settingsVisible = value),
 });
 
-const getPaletteColors = (colors: ThemeColorMap) => colorOptions.map((item) => colors[item.name]);
+function getPaletteColors(colors: ThemeColorMap) {
+  return colorOptions.map((item) => colors[item.name]);
+}
 
-const getPaletteName = (palette: ThemePalettePreset) => {
+function getPaletteName(palette: ThemePalettePreset) {
   const key = paletteI18nKeys[palette.id];
   return key ? t(`settings.themePalettes.${key}.name`) : palette.name;
-};
+}
 
-const getPaletteDescription = (palette: ThemePalettePreset) => {
+function getPaletteDescription(palette: ThemePalettePreset) {
   const key = paletteI18nKeys[palette.id];
   return key ? t(`settings.themePalettes.${key}.description`) : palette.description;
-};
+}
 
-const getColorLabel = (name: ThemeColorName) => t(`settings.themeColorNames.${name}`);
+function getColorLabel(name: ThemeColorName) {
+  return t(`settings.themeColorNames.${name}`);
+}
 
 const activePaletteName = computed(() =>
   settingsStore.activeThemePalette
@@ -351,32 +353,47 @@ const activePaletteName = computed(() =>
     : t("settings.customPalette")
 );
 
-const toggleCustomColors = () => {
+/**
+ * 展开或收起自定义颜色
+ */
+function toggleCustomColors(): void {
   isCustomColorsOpen.value = !isCustomColorsOpen.value;
-};
+}
 
-const handleThemeColorChange = (name: ThemeColorName, color: string | null) => {
+/**
+ * 更新单个主题色
+ */
+function handleThemeColorChange(name: ThemeColorName, color: string | null): void {
   if (!color) return;
   settingsStore.updateThemeColor(name, color);
-};
+}
 
-const changeSidebarColor = (val: string | number | boolean | undefined) => {
-  if (val !== SidebarColor.CLASSIC_BLUE && val !== SidebarColor.MINIMAL_WHITE) return;
+/**
+ * 切换侧边栏配色
+ */
+function setSidebarColor(value: string | number | boolean | undefined): void {
+  if (value !== SidebarColor.CLASSIC_BLUE && value !== SidebarColor.MINIMAL_WHITE) return;
 
-  settingsStore.sidebarColorScheme = val;
-};
+  settingsStore.sidebarColorScheme = value;
+}
 
-const handleLayoutChange = (layout: LayoutMode) => {
+/**
+ * 切换导航布局
+ */
+function handleLayoutChange(layout: LayoutMode): void {
   if (settingsStore.layout === layout) return;
 
   settingsStore.layout = layout;
-};
+}
 
-const handleCopySettings = async () => {
+/**
+ * 复制当前 settings 默认配置片段
+ */
+async function copyCurrentSettings(): Promise<void> {
   try {
     copyLoading.value = true;
 
-    const configCode = generateSettingsCode();
+    const configCode = buildDefaultsCode();
 
     await navigator.clipboard.writeText(configCode);
 
@@ -389,26 +406,36 @@ const handleCopySettings = async () => {
   } finally {
     copyLoading.value = false;
   }
-};
+}
 
-const handleResetSettings = async () => {
-  resetLoading.value = true;
-
+/**
+ * 恢复所有设置为默认值
+ */
+async function resetSettingsToDefault(): Promise<void> {
   try {
+    await ElMessageBox.confirm(t("settings.confirmReset"), t("settings.resetConfig"), {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+
+    resetLoading.value = true;
     settingsStore.resetSettings();
 
     sidebarColor.value = settingsStore.sidebarColorScheme;
 
     ElMessage.success(t("settings.resetSuccess"));
   } catch {
-    ElMessage.error("重置配置失败");
+    // 用户取消时不提示
   } finally {
     resetLoading.value = false;
   }
-};
+}
 
-// 这里只生成 defaults，避免复制出来的代码和 src/settings.ts 的真实结构对不上。
-const generateSettingsCode = (): string => {
+/**
+ * 生成 src/settings.ts 中 defaults 的配置片段
+ */
+function buildDefaultsCode(): string {
   const themeColorsCode = JSON.stringify(settingsStore.themeColors, null, 4)
     .replace(/"([^"]+)":/g, "$1:")
     .replace(/^/gm, "  ");
@@ -445,11 +472,11 @@ const generateSettingsCode = (): string => {
   showSettings: ${settings.showSettings},
   watermarkContent: ${settings.watermarkContent},
 } as const;`;
-};
+}
 
-const handleCloseDrawer = () => {
+function handleCloseDrawer(): void {
   settingsStore.settingsVisible = false;
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -463,49 +490,36 @@ const handleCloseDrawer = () => {
     overflow: hidden;
     color: var(--el-text-color-regular);
   }
+
+  :deep(.el-drawer__footer) {
+    padding: 12px 18px 16px;
+    border-top: 1px solid var(--el-border-color-lighter);
+  }
 }
 
 .settings-content {
   flex: 1 1 auto;
-  padding: 16px 18px;
+  padding: 16px 18px 20px;
   overflow-y: auto;
   color: var(--el-text-color-regular);
 }
 
-.action-buttons {
-  display: flex;
-
-  & > .el-button {
-    flex: 1;
-    font-size: 14px;
-    border-radius: 8px;
-    transition: box-shadow 0.16s ease;
-
-    &:hover {
-      box-shadow: none;
-    }
-  }
-}
-
 .config-section {
-  margin-bottom: 16px;
+  & + & {
+    margin-top: 20px;
+  }
 
   .config-item {
     display: flex;
     gap: 12px;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--el-border-color-light);
-    transition: background-color 0.16s ease;
+    min-height: 42px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--el-border-color-lighter);
 
     &:last-child {
       border-bottom: none;
-    }
-
-    &:hover {
-      background-color: var(--el-fill-color-light);
-      border-radius: 6px;
     }
 
     > .text-xs {
@@ -519,9 +533,9 @@ const handleCloseDrawer = () => {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     column-gap: 14px;
-    padding: 14px 12px;
-    margin-top: 4px;
-    background: var(--el-fill-color-lighter);
+    padding: 12px;
+    margin-top: 12px;
+    background: var(--el-fill-color-extra-light);
     border: 1px solid var(--el-border-color-lighter);
     border-radius: 8px;
 
@@ -555,32 +569,62 @@ const handleCloseDrawer = () => {
 
   .config-item--block {
     display: block;
+    min-height: 0;
+    padding-top: 10px;
+    padding-bottom: 12px;
 
-    &:hover {
-      padding-right: 0;
-      padding-left: 0;
-      margin: 0;
-      background-color: transparent;
-    }
+    border-bottom: 1px solid var(--el-border-color-lighter);
   }
 }
 
-.config-block {
-  margin-top: 12px;
+.section-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--el-text-color-primary);
+
+  &::before,
+  &::after {
+    flex: 1;
+    height: 1px;
+    content: "";
+    background: var(--el-border-color-lighter);
+  }
 }
 
-.config-block--tight {
-  margin-top: 10px;
+.theme-mode {
+  display: flex;
+  justify-content: center;
 }
 
-.config-item__header {
+.config-card {
+  margin-top: 14px;
+}
+
+.config-card__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--el-text-color-regular);
 
-  > .text-xs {
-    color: var(--el-text-color-regular);
+  > span {
+    font-weight: 500;
+  }
+}
+
+.settings-footer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+
+  .el-button {
+    margin: 0;
   }
 }
 

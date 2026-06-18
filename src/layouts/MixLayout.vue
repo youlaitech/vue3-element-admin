@@ -66,7 +66,7 @@
       </div>
 
       <!-- 主内容区 -->
-      <div :class="{ hasTagsView: showTagsView }" class="layout__main">
+      <div class="layout__main">
         <LayoutTagsView v-if="showTagsView" />
         <LayoutMain />
       </div>
@@ -171,27 +171,43 @@ const useMenuColors = computed(
         .el-menu-item {
           position: relative;
           height: 100%;
-          padding: 0 12px;
+          padding: 0 14px;
           line-height: $navbar-height;
-          border-bottom: none;
+          border-bottom: none !important;
           border-radius: 0;
           transition:
             color 0.16s ease,
-            background-color 0.16s ease,
-            border-color 0.16s ease;
+            opacity 0.16s ease;
+
+          &::after {
+            position: absolute;
+            right: 12px;
+            bottom: 0;
+            left: 12px;
+            height: 2px;
+            content: "";
+            background: var(--el-color-primary);
+            border-radius: 999px 999px 0 0;
+            opacity: 0;
+            transform: scaleX(0.4);
+            transition:
+              opacity 0.16s ease,
+              transform 0.16s ease;
+          }
 
           &:hover {
-            background-color: var(--menu-hover) !important;
+            color: var(--el-color-primary) !important;
+            background-color: transparent !important;
           }
 
           &.is-active {
             color: var(--el-color-primary) !important;
-            background-color: color-mix(
-              in srgb,
-              var(--el-color-primary) 10%,
-              var(--el-bg-color-overlay)
-            ) !important;
-            border-bottom: 2px solid var(--el-color-primary);
+            background-color: transparent !important;
+          }
+
+          &.is-active::after {
+            opacity: 1;
+            transform: scaleX(1);
           }
         }
       }
@@ -289,23 +305,20 @@ const useMenuColors = computed(
   }
 }
 
-:deep(.hasTagsView) {
-  .app-main {
-    @include app-main-height-with-tags;
-  }
-}
-
 :global(html.dark),
 :global(html.sidebar-color-blue) {
   .layout__header-menu {
     :deep(.el-menu--horizontal) {
-      .el-menu-item.is-active {
-        color: var(--menu-active-text) !important;
-        background-color: color-mix(
-          in srgb,
-          var(--el-color-primary) 18%,
-          var(--menu-background)
-        ) !important;
+      .el-menu-item {
+        &:hover {
+          color: color-mix(in srgb, var(--el-color-primary) 24%, var(--el-color-white)) !important;
+          background-color: transparent !important;
+        }
+
+        &.is-active {
+          color: color-mix(in srgb, var(--el-color-primary) 38%, var(--el-color-white)) !important;
+          background-color: transparent !important;
+        }
       }
     }
   }

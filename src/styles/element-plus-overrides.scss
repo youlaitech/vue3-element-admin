@@ -149,7 +149,7 @@
 }
 
 .el-table {
-  --el-table-border-color: var(--border-color);
+  --el-table-border-color: var(--el-border-color-extra-light);
   --el-table-header-bg-color: #f8fafc;
   --el-table-row-hover-bg-color: #f8fbff;
   --el-table-current-row-bg-color: #eef5ff;
@@ -164,12 +164,16 @@
   }
 
   &.el-table--border::after {
-    display: block;
-    background-color: var(--border-color);
+    width: 1px;
+    background-color: var(--el-table-border-color);
   }
 
   .el-table__inner-wrapper::before {
     height: 0;
+  }
+
+  .el-table__inner-wrapper::after {
+    background-color: var(--el-table-border-color);
   }
 
   .el-table__header th {
@@ -178,13 +182,13 @@
     font-weight: 500;
     color: var(--el-text-color-regular);
     background: var(--el-table-header-bg-color);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--el-table-border-color);
   }
 
   .el-table__body td {
     height: 46px;
     padding: 0;
-    border-bottom: 1px solid #eef1f6;
+    border-bottom: 1px solid var(--el-table-border-color);
   }
 
   .cell {
@@ -192,7 +196,12 @@
   }
 
   .el-table__fixed-right {
-    box-shadow: -1px 0 0 var(--border-color);
+    box-shadow: -1px 0 0 var(--el-table-border-color);
+  }
+
+  .el-table-fixed-column--left.is-last-column::before,
+  .el-table-fixed-column--right.is-first-column::before {
+    box-shadow: none;
   }
 
   &.is-empty {

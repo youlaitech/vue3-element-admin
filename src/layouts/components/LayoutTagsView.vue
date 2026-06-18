@@ -41,22 +41,30 @@
       </div>
     </el-scrollbar>
 
-    <!-- 右侧操作 -->
     <div class="tags-actions">
-      <!-- 刷新当前 -->
-      <span class="tags-actions__btn" @click="refreshSelectedTag(currentTag)">
+      <button
+        type="button"
+        class="tags-actions__btn"
+        aria-label="刷新当前"
+        title="刷新当前"
+        @click="refreshSelectedTag(currentTag)"
+      >
         <el-icon :size="16"><Refresh /></el-icon>
-      </span>
-      <!-- 内容全屏 -->
-      <span class="tags-actions__btn" @click="appStore.toggleContentFullscreen()">
+      </button>
+      <button
+        type="button"
+        class="tags-actions__btn"
+        aria-label="内容全屏"
+        title="内容全屏"
+        @click="appStore.toggleContentFullscreen()"
+      >
         <div v-if="!appStore.contentFullscreen" class="i-svg:fullscreen icon-16" />
         <div v-else class="i-svg:fullscreen-exit icon-16" />
-      </span>
-      <!-- 下拉菜单 -->
+      </button>
       <el-dropdown trigger="click" @command="handleActionCommand">
-        <span class="tags-actions__btn">
+        <button type="button" class="tags-actions__btn" aria-label="页签操作" title="页签操作">
           <el-icon :size="16"><ArrowDown /></el-icon>
-        </span>
+        </button>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item command="refresh">
@@ -174,10 +182,8 @@ const tagsStyleClass = computed(() => {
   }
 });
 
-// 图标兼容：判断是否为 Element Plus 图标 (el-icon-xxx)
 const isEpIcon = (icon: string) => icon.startsWith("el-icon");
 
-// 图标兼容：el-icon-xxx → PascalCase 组件名
 const toEpIconName = (icon: string) =>
   icon.replace("el-icon-", "").replace(/(^|-)\w/g, (s) => s.slice(-1).toUpperCase());
 
@@ -202,7 +208,6 @@ const contextMenuStyle = computed(() => {
   };
 });
 
-// 标签栏右侧操作按钮分发
 const handleActionCommand = (command: string) => {
   switch (command) {
     case "refresh":
@@ -226,7 +231,6 @@ const handleActionCommand = (command: string) => {
   }
 };
 
-// path → TagView 映射，用于快速查找标签
 const routePathMap = computed(() => {
   const map = new Map<string, TagView>();
   visitedViews.value.forEach((tag) => {
@@ -235,7 +239,6 @@ const routePathMap = computed(() => {
   return map;
 });
 
-// 判断右键选中标签是否为最左侧（不可关闭左侧）
 const isFirstView = computed(() => {
   if (!selectedTag.value) return false;
   return (
@@ -244,13 +247,11 @@ const isFirstView = computed(() => {
   );
 });
 
-// 判断右键选中标签是否为最右侧（不可关闭右侧）
 const isLastView = computed(() => {
   if (!selectedTag.value) return false;
   return selectedTag.value.fullPath === visitedViews.value[visitedViews.value.length - 1]?.fullPath;
 });
 
-// 从路由表中提取所有 affix 固定标签
 const extractAffixTags = (routes: RouteRecordRaw[], basePath = "/"): TagView[] => {
   const affixTags: TagView[] = [];
 
@@ -341,7 +342,6 @@ const closeContextMenu = () => {
   contextMenu.visible = false;
 };
 
-// 鼠标滚轮横向滚动（标签栏超出可视区时生效）
 const handleScroll = (event: WheelEvent) => {
   closeContextMenu();
 
@@ -358,7 +358,6 @@ const handleScroll = (event: WheelEvent) => {
   scrollbarRef.value.setScrollLeft(newScrollLeft);
 };
 
-// 刷新指定标签页：移除缓存后跳转 redirect 中转页重新加载
 const refreshSelectedTag = (tag: TagView | null) => {
   if (!tag) return;
 
@@ -368,7 +367,6 @@ const refreshSelectedTag = (tag: TagView | null) => {
   });
 };
 
-// 关闭指定标签页，若关闭的是当前激活标签则跳转到最后一个
 const closeSelectedTag = (tag: TagView | null) => {
   if (!tag) return;
 
@@ -379,18 +377,10 @@ const closeSelectedTag = (tag: TagView | null) => {
   });
 };
 
-// 批量关闭标签（左/右/其它方向）
-
 /**
- * 按方向批量关闭标签的通用执行器。
- *
- * closeLeftTagsForActive / closeRightTagsForActive / closeLeftTags /
- * closeRightTags 四个公开函数均委托此函数，仅 source（标签来源 ref）
- * 和 batchFn（调用的 store 方法）不同。
- *
- * 关闭后若当前路由对应的标签已被移除，自动跳转到最后一个剩余标签。
+ * 关闭指定方向的标签
  */
-function closeDirectional(
+function closeDirectionalTags(
   source: Ref<TagView | null>,
   batchFn: (tag: TagView) => Promise<{ visitedViews: TagView[] }>
 ) {
@@ -406,7 +396,7 @@ function closeDirectional(
 }
 
 /**
- * 关闭当前激活标签之外的其它标签。
+ * 关闭当前激活标签之外的其它标签
  */
 const closeOtherTagsForActive = () => {
   if (!currentTag.value) return;
@@ -415,16 +405,11 @@ const closeOtherTagsForActive = () => {
   });
 };
 
-// 关闭左侧（当前激活标签）
-const closeLeftTagsForActive = () => closeDirectional(currentTag, tagsViewStore.delLeftViews);
-// 关闭右侧（当前激活标签）
-const closeRightTagsForActive = () => closeDirectional(currentTag, tagsViewStore.delRightViews);
-// 关闭左侧（右键选中标签）
-const closeLeftTags = () => closeDirectional(selectedTag, tagsViewStore.delLeftViews);
-// 关闭右侧（右键选中标签）
-const closeRightTags = () => closeDirectional(selectedTag, tagsViewStore.delRightViews);
+const closeLeftTagsForActive = () => closeDirectionalTags(currentTag, tagsViewStore.delLeftViews);
+const closeRightTagsForActive = () => closeDirectionalTags(currentTag, tagsViewStore.delRightViews);
+const closeLeftTags = () => closeDirectionalTags(selectedTag, tagsViewStore.delLeftViews);
+const closeRightTags = () => closeDirectionalTags(selectedTag, tagsViewStore.delRightViews);
 
-// 关闭右键选中标签以外的其他标签
 const closeOtherTags = () => {
   if (!selectedTag.value) return;
   router.push(selectedTag.value);
@@ -433,14 +418,12 @@ const closeOtherTags = () => {
   });
 };
 
-// 关闭所有标签页
 const closeAllTags = (tag: TagView | null) => {
   tagsViewStore.delAllViews().then((result) => {
     tagsViewStore.toLastView(result.visitedViews, tag || undefined);
   });
 };
 
-// 右键菜单生命周期：显示时监听外部点击关闭，卸载时移除监听
 const useContextMenuManager = () => {
   const handleOutsideClick = () => {
     closeContextMenu();
@@ -459,7 +442,6 @@ const useContextMenuManager = () => {
   });
 };
 
-// 路由变化时同步添加标签并更新激活状态
 watch(
   route,
   () => {
@@ -469,7 +451,6 @@ watch(
   { immediate: true }
 );
 
-// 初始化固定标签（affix）
 onMounted(() => {
   initAffixTags();
 });
@@ -708,22 +689,36 @@ useContextMenuManager();
     justify-content: center;
     width: 30px;
     height: 30px;
+    padding: 0;
+    font: inherit;
+    color: var(--el-text-color-regular);
+    appearance: none;
     cursor: pointer;
+    background: transparent;
+    border: 0;
     border-radius: 6px;
-    transition: background-color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
 
     &:hover {
-      background-color: var(--el-fill-color);
+      color: var(--el-color-primary);
+      background-color: color-mix(in srgb, var(--el-color-primary) 10%, transparent);
     }
 
-    :deep(.el-icon),
-    :deep(div) {
-      opacity: 0.45;
+    &:focus-visible {
+      outline: 2px solid var(--el-color-primary-light-5);
+      outline-offset: 1px;
     }
 
-    &:hover :deep(.el-icon),
-    &:hover :deep(div) {
-      opacity: 0.7;
+    :deep(.el-icon) {
+      color: currentcolor;
+      --color: currentcolor;
+    }
+
+    .icon-16 {
+      color: currentcolor;
+      background-color: currentcolor;
     }
   }
 }

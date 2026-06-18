@@ -51,7 +51,6 @@
     <main
       class="layout__main"
       :class="{
-        hasTagsView: showTagsView,
         'layout__main--collapsed': !isSidebarOpen,
         'layout__main--fullscreen': appStore.contentFullscreen,
       }"
@@ -84,8 +83,6 @@ const { MenuIcon, topMenuItems, activeTopMenuPath, sideMenuRoutes, handleTopMenu
 </script>
 
 <style lang="scss" scoped>
-@use "@/styles/mixins" as *;
-
 $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
 
 .layout {
@@ -302,12 +299,6 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
     &--fullscreen {
       margin-left: 0 !important;
     }
-  }
-}
-
-.hasTagsView {
-  :deep(.app-main) {
-    @include app-main-height-with-tags;
   }
 }
 

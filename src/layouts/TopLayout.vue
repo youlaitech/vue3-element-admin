@@ -16,7 +16,7 @@
     </div>
 
     <!-- 主内容区 -->
-    <div :class="{ hasTagsView: showTagsView }" class="layout__main">
+    <div class="layout__main">
       <LayoutTagsView v-if="showTagsView" />
       <LayoutMain />
     </div>
@@ -147,12 +147,6 @@ const isLogoCollapsed = computed(() => width.value < 768);
   &__main {
     @include app-main-height;
     overflow-y: auto;
-  }
-}
-
-.hasTagsView {
-  :deep(.app-main) {
-    @include app-main-height-with-tags;
   }
 }
 </style>

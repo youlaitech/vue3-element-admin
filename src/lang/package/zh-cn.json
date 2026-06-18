@@ -104,6 +104,8 @@
     "showAppLogo": "显示Logo",
     "showWatermark": "显示水印",
     "pageSwitchingAnimation": "页面切换动画",
+    "grayMode": "灰色模式",
+    "colorWeak": "色弱模式",
     "none": "无动画",
     "fade": "淡入淡出",
     "fade-slide": "平滑切换",

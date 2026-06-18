@@ -594,8 +594,7 @@ $pad: 10px;
   flex-direction: column;
   gap: $gap;
   padding: $pad;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 62%), rgb(255 255 255 / 0%) 240px), var(--page-bg);
+  background: var(--page-bg);
 }
 
 // Header

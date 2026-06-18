@@ -3,7 +3,7 @@
     <!-- 桌面端工具项 -->
     <template v-if="isDesktop">
       <!-- 搜索 -->
-      <div class="navbar-actions__item">
+      <div class="navbar-actions__item navbar-actions__item--search">
         <CommandPalette />
       </div>
 
@@ -34,7 +34,7 @@
     </template>
 
     <!-- 用户菜单 -->
-    <div class="navbar-actions__item">
+    <div class="navbar-actions__item navbar-actions__item--profile">
       <el-dropdown trigger="click">
         <div class="user-profile">
           <div style="width: 28px; height: 28px; overflow: hidden; border-radius: 50%">
@@ -110,8 +110,9 @@ function handleTenantChange(tenantId: number) {
       ElMessage.success("切换租户成功");
       window.location.href = "/";
     },
-    (error: any) => {
-      ElMessage.error(error.message || "切换租户失败");
+    (error: unknown) => {
+      const message = error instanceof Error ? error.message : "切换租户失败";
+      ElMessage.error(message);
     }
   );
 }
@@ -177,6 +178,10 @@ function handleSettingsClick() {
 
 <style lang="scss" scoped>
 .navbar-actions {
+  --navbar-action-color: var(--el-text-color-secondary);
+  --navbar-action-hover-color: var(--el-color-primary);
+  --navbar-action-hover-bg: var(--el-fill-color-light);
+
   display: flex;
   gap: 4px;
   align-items: center;
@@ -190,9 +195,10 @@ function handleSettingsClick() {
     min-width: 32px;
     height: 32px;
     padding: 0 6px;
+    color: var(--navbar-action-color);
     text-align: center;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 6px;
     transition:
       background-color 0.16s,
       color 0.16s;
@@ -212,6 +218,14 @@ function handleSettingsClick() {
       justify-content: center;
       width: 100%;
       height: 32px;
+      color: inherit !important;
+    }
+
+    :deep(.el-tooltip__trigger),
+    :deep(.fullscreen-trigger),
+    :deep(.size-trigger),
+    :deep(.notice__trigger) {
+      color: inherit;
     }
 
     :deep(.i-svg\:language) {
@@ -223,20 +237,40 @@ function handleSettingsClick() {
       background-size: 16px 16px;
     }
 
-    // 图标样式
-    :deep([class*="i-svg:"]) {
+    :deep([class*="i-svg:"]),
+    :deep(.el-icon) {
+      --color: currentColor;
+
       font-size: 16px;
       line-height: 1;
-      color: var(--el-text-color-secondary);
-      transition: color 0.2s;
+      color: currentColor !important;
+      transition: color 0.16s;
+    }
+
+    :deep([class*="i-svg:"]) {
+      background-color: currentColor !important;
     }
 
     &:hover {
-      background: var(--el-fill-color);
+      color: var(--navbar-action-hover-color);
+      background: var(--navbar-action-hover-bg);
+    }
+  }
 
-      :deep([class*="i-svg:"]) {
-        color: var(--el-color-primary);
-      }
+  &__item--search {
+    color: var(--el-text-color-secondary);
+
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  &__item--profile {
+    padding-right: 4px;
+    padding-left: 4px;
+
+    &:hover {
+      background: transparent;
     }
   }
 
@@ -257,7 +291,7 @@ function handleSettingsClick() {
     &__name {
       margin-left: 8px;
       font-size: 13px;
-      color: var(--el-text-color-regular);
+      color: currentColor;
       white-space: nowrap;
       transition: color 0.3s;
     }
@@ -266,73 +300,55 @@ function handleSettingsClick() {
 
 // 白色文字样式（用于深色背景：暗黑主题、顶部布局、混合布局等）
 .navbar-actions--white-text {
-  .navbar-actions__item {
-    :deep([class*="i-svg:"]) {
-      color: color-mix(in srgb, var(--el-color-white) 85%, transparent);
-    }
-
-    &:hover {
-      background: color-mix(in srgb, var(--el-color-white) 10%, transparent);
-
-      :deep([class*="i-svg:"]) {
-        color: var(--el-color-white);
-      }
-    }
-  }
+  --navbar-action-color: var(--menu-text);
+  --navbar-action-hover-color: var(--menu-active-text);
+  --navbar-action-hover-bg: var(--menu-hover);
 
   .user-profile__name {
-    color: color-mix(in srgb, var(--el-color-white) 85%, transparent);
+    color: currentColor;
   }
 
   // 租户选择器在白色文字模式下的样式
   ::v-deep(.tenant-switcher__trigger) {
-    color: color-mix(in srgb, var(--el-color-white) 85%, transparent);
+    color: currentColor;
+    background: transparent;
   }
   ::v-deep(.tenant-switcher__trigger .tenant-switcher__icon) {
-    color: color-mix(in srgb, var(--el-color-white) 85%, transparent);
+    color: currentColor;
   }
   ::v-deep(.tenant-switcher__trigger:hover) {
-    color: var(--el-color-white);
-    background: color-mix(in srgb, var(--el-color-white) 10%, transparent);
+    color: var(--navbar-action-hover-color);
+    background: var(--navbar-action-hover-bg);
   }
   ::v-deep(.tenant-switcher__trigger:hover .tenant-switcher__icon) {
-    color: var(--el-color-white);
+    color: currentColor;
   }
 }
 
 // 深色文字样式（用于浅色背景：明亮主题下的左侧布局等）
 .navbar-actions--dark-text {
-  .navbar-actions__item {
-    :deep([class*="i-svg:"]) {
-      color: var(--el-text-color-secondary) !important;
-    }
-
-    &:hover {
-      background: rgba(0, 0, 0, 0.04);
-
-      :deep([class*="i-svg:"]) {
-        color: var(--el-color-primary) !important;
-      }
-    }
-  }
+  --navbar-action-color: var(--el-text-color-secondary);
+  --navbar-action-hover-color: var(--el-color-primary);
+  --navbar-action-hover-bg: var(--el-fill-color-light);
 
   .user-profile__name {
-    color: var(--el-text-color-regular) !important;
+    color: var(--el-text-color-regular);
   }
 
   // 租户选择器在深色文字模式下的样式
   ::v-deep(.tenant-switcher__trigger) {
-    color: var(--el-text-color-regular) !important;
+    color: var(--el-text-color-regular);
+    background: transparent;
   }
   ::v-deep(.tenant-switcher__trigger .tenant-switcher__icon) {
-    color: var(--el-text-color-regular) !important;
+    color: currentColor;
   }
   ::v-deep(.tenant-switcher__trigger:hover) {
-    color: var(--el-color-primary) !important;
-    background: var(--el-fill-color-light);
+    color: var(--navbar-action-hover-color);
+    background: var(--navbar-action-hover-bg);
   }
   ::v-deep(.tenant-switcher__trigger:hover .tenant-switcher__icon) {
-    color: var(--el-color-primary) !important;
+    color: currentColor;
   }
 }
 

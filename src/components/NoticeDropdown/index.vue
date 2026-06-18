@@ -122,6 +122,7 @@ function handleVisibleChange(visible: boolean) {
     justify-content: center;
     width: 100%;
     height: 100%;
+    color: inherit;
   }
 
   &__trigger {
@@ -130,6 +131,7 @@ function handleVisibleChange(visible: boolean) {
     justify-content: center;
     width: 100%;
     height: 100%;
+    color: inherit;
   }
 
   &__icon {
@@ -139,17 +141,20 @@ function handleVisibleChange(visible: boolean) {
     justify-content: center;
     width: 28px;
     height: 28px;
+    color: currentColor;
     border-radius: 6px;
   }
 
   &__bell {
-    color: var(--el-text-color-regular);
+    --color: currentColor;
+
+    color: currentColor;
   }
 
   &__pulse {
     position: absolute;
-    top: 4px;
-    right: 5px;
+    top: 3px;
+    right: 4px;
     width: 6px;
     height: 6px;
     background: var(--el-color-danger);
