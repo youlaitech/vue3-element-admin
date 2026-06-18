@@ -67,12 +67,40 @@
     "theme": "主题设置",
     "interface": "界面设置",
     "navigation": "导航设置",
-    "themeColor": "主题颜色",
-    "themeColorTip": "主题颜色",
+    "themePalette": "配色体系",
+    "customColors": "自定义颜色",
+    "customPalette": "自定义",
+    "customPaletteTip": "已自定义颜色",
+    "themeColorNames": {
+      "primary": "主色",
+      "success": "成功",
+      "warning": "警告",
+      "danger": "危险",
+      "info": "信息"
+    },
+    "themePalettes": {
+      "arco": {
+        "name": "ArcoD",
+        "description": "蓝橙清晰，默认推荐"
+      },
+      "antDesign": {
+        "name": "AntD",
+        "description": "规范稳重，后台友好"
+      },
+      "elementPlus": {
+        "name": "ElementD",
+        "description": "贴近组件默认识别"
+      }
+    },
     "darkMode": "暗黑模式",
     "layoutSetting": "布局设置",
     "sidebarColorScheme": "侧边栏配色",
     "showTagsView": "显示页签",
+    "tagsViewStyle": "页签风格",
+    "tagsViewStyles": {
+      "line": "线性",
+      "card": "卡片"
+    },
     "showAppLogo": "显示Logo",
     "showWatermark": "显示水印",
     "pageSwitchingAnimation": "页面切换动画",
@@ -86,15 +114,16 @@
     "resetConfig": "重置默认",
     "copySuccess": "配置已复制到剪贴板",
     "resetSuccess": "已重置为默认配置",
-    "copyDescription": "复制配置将生成当前设置的代码，重置将恢复所有设置为默认值",
+    "copyDescription": "复制配置会生成当前 defaults 片段，重置会恢复默认设置",
     "confirmReset": "确定要重置所有设置为默认值吗？此操作不可恢复。",
     "applyToFile": "应用到文件",
     "onlyCopy": "仅复制",
     "leftLayout": "左侧模式",
     "topLayout": "顶部模式",
     "mixLayout": "混合模式",
+    "doubleLayout": "双列模式",
     "configManagement": "配置管理",
-    "copyConfigDescription": "生成当前设置的代码并复制到剪贴板，然后覆盖 src/settings.ts 文件",
+    "copyConfigDescription": "生成当前 defaults 片段并复制到剪贴板",
     "resetConfigDescription": "恢复所有设置为系统默认值"
   }
 }

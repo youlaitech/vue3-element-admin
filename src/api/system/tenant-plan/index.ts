@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 import type { TenantPlanForm, TenantPlanItem, TenantPlanQueryParams } from "./types";
-import type { OptionItem } from "@/api/common";
+import type { OptionItem, PageResult } from "@/api/common";
 
 const TENANT_PLAN_BASE_URL = "/api/v1/tenant-plans";
 

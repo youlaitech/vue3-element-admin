@@ -1,9 +1,9 @@
-/**
- * Vue Router 类型扩展
- */
 import "vue-router";
 
 declare module "vue-router" {
+  /**
+   * 项目路由元信息扩展
+   */
   interface RouteMeta {
     title?: string;
     icon?: string;
@@ -13,5 +13,7 @@ declare module "vue-router" {
     keepAlive?: boolean;
     breadcrumb?: boolean;
     activeMenu?: string;
+    params?: Record<string, unknown>;
+    roles?: string[];
   }
 }

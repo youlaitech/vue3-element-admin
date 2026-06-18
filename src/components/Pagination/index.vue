@@ -1,6 +1,6 @@
 <template>
   <el-scrollbar>
-    <div :class="{ hidden: hidden }" class="p-3 flex justify-end">
+    <div :class="{ 'is-hidden': hidden }" class="pagination-container">
       <el-pagination
         v-model:current-page="currentPage"
         v-model:page-size="pageSize"
@@ -79,3 +79,16 @@ function handleCurrentChange(val: number) {
   emit("pagination", { page: val, limit: pageSize.value });
 }
 </script>
+
+<style lang="scss" scoped>
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 14px;
+  overflow: visible;
+}
+
+.pagination-container.is-hidden {
+  display: none;
+}
+</style>

@@ -1,0 +1,111 @@
+/**
+ * 页面公共样式
+ */
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-gap);
+  height: 100%;
+  min-height: 0;
+  padding: var(--page-padding);
+  background: var(--page-bg);
+}
+
+.page-search {
+  flex-shrink: 0;
+
+  .el-card__body {
+    padding: 12px 16px;
+  }
+
+  .el-form-item {
+    margin-bottom: 0;
+  }
+}
+
+.page-content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+
+  .el-card__body {
+    display: grid;
+    flex: 1 1 auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    min-height: 0;
+    padding: 12px 16px;
+    overflow: hidden;
+  }
+}
+
+.page-toolbar {
+  display: flex;
+  flex-shrink: 0;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--page-gap);
+
+  &__left,
+  &__right {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+
+    .el-button {
+      margin: 0;
+    }
+  }
+
+  &__right {
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+}
+
+.page-table-wrapper {
+  min-height: 0;
+  overflow: hidden;
+  background: var(--content-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+}
+
+.page-table {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: 0;
+
+  &.el-table--border {
+    border: 0;
+  }
+
+  .el-table__inner-wrapper {
+    height: 100%;
+  }
+}
+
+.page-pagination {
+  flex-shrink: 0;
+}
+
+.page-icon-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
+  &.el-button + .el-button {
+    margin-left: 0;
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

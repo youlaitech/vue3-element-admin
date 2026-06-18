@@ -1,11 +1,10 @@
-<template>
+﻿<template>
   <div class="page-container">
-    <!-- 搜索区域 -->
     <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="tableData.params" :inline="true">
+      <el-form ref="queryFormRef" :model="params" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
-            v-model="tableData.params.keywords"
+            v-model="params.keywords"
             placeholder="角色名称"
             clearable
             @keyup.enter="handleQuery"
@@ -13,94 +12,94 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
-          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
+          <el-button type="primary" @click="handleQuery">搜索</el-button>
+          <el-button @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
-    <el-card class="page-content" shadow="never">
+    <el-card ref="tableWrapperRef" class="page-content" shadow="never">
       <div class="page-toolbar">
         <div class="page-toolbar__left">
-          <el-button type="success" icon="plus" @click="handleCreateClick()">新增</el-button>
-          <el-button
-            type="danger"
-            :disabled="ids.length === 0"
-            icon="delete"
-            @click="handleBatchDelete()"
-          >
+          <el-button type="primary" @click="handleCreateClick()">新增</el-button>
+          <el-button type="danger" :disabled="!hasSelection" @click="handleBatchDelete()">
             删除
           </el-button>
         </div>
+        <div class="page-toolbar__right">
+          <el-tooltip content="刷新" placement="top">
+            <el-button class="page-icon-btn" @click="fetchData">
+              <el-icon><Refresh /></el-icon>
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="全屏" placement="top">
+            <el-button class="page-icon-btn" @click="toggleFullscreen">
+              <el-icon><FullScreen /></el-icon>
+            </el-button>
+          </el-tooltip>
+        </div>
       </div>
 
-      <el-table
-        ref="dataTableRef"
-        v-loading="loading"
-        :data="tableData.list"
-        highlight-current-row
-        border
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="角色名称" prop="name" min-width="100" />
-        <el-table-column label="角色编码" prop="code" width="150" />
+      <div class="page-table-wrapper">
+        <el-table
+          ref="dataTableRef"
+          v-loading="loading"
+          class="page-table"
+          :data="list"
+          height="100%"
+          highlight-current-row
+          border
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column label="角色名称" prop="name" min-width="100" />
+          <el-table-column label="角色编码" prop="code" width="150" />
 
-        <el-table-column label="数据权限" align="center" width="140" prop="dataScopeLabel" />
+          <el-table-column label="数据权限" align="center" width="140" prop="dataScopeLabel" />
 
-        <el-table-column label="状态" align="center" width="100">
-          <template #default="scope">
-            <el-tag v-if="scope.row.status === 1" type="success">正常</el-tag>
-            <el-tag v-else type="info">禁用</el-tag>
-          </template>
-        </el-table-column>
+          <el-table-column label="状态" align="center" width="100">
+            <template #default="scope">
+              <el-tag v-if="scope.row.status === CommonStatus.ENABLED" type="success">正常</el-tag>
+              <el-tag v-else type="info">禁用</el-tag>
+            </template>
+          </el-table-column>
 
-        <el-table-column label="排序" align="center" width="80" prop="sort" />
+          <el-table-column label="排序" align="center" width="80" prop="sort" />
 
-        <el-table-column fixed="right" label="操作" width="220">
-          <template #default="scope">
-            <el-button
-              v-hasPerm="'sys:role:assign'"
-              type="primary"
-              size="small"
-              link
-              icon="position"
-              @click="handleAssignPermClick(scope.row)"
-            >
-              分配权限
-            </el-button>
-            <el-button
-              type="primary"
-              size="small"
-              link
-              icon="edit"
-              @click="handleEditClick(scope.row.id)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              type="danger"
-              size="small"
-              link
-              icon="delete"
-              @click="handleDelete(scope.row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column fixed="right" label="操作" width="180" align="center">
+            <template #default="scope">
+              <div>
+                <el-button
+                  v-hasPerm="'sys:role:assign'"
+                  type="primary"
+                  size="small"
+                  link
+                  @click="handleAssignPermClick(scope.row)"
+                >
+                  分配权限
+                </el-button>
+                <el-button type="primary" size="small" link @click="handleEditClick(scope.row.id)">
+                  编辑
+                </el-button>
+                <el-button type="danger" size="small" link @click="handleDelete(scope.row.id)">
+                  删除
+                </el-button>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
       <pagination
-        v-if="tableData.total > 0"
-        v-model:total="tableData.total"
-        v-model:page="tableData.params.pageNum"
-        v-model:limit="tableData.params.pageSize"
-        @pagination="fetchList"
+        v-if="total > 0"
+        v-model:total="total"
+        v-model:page="params.pageNum"
+        v-model:limit="params.pageSize"
+        class="page-pagination"
+        @pagination="fetchData"
       />
     </el-card>
 
-    <!-- 角色表单弹窗 -->
     <el-dialog
       v-model="dialogState.visible"
       :title="dialogState.title"
@@ -118,16 +117,20 @@
 
         <el-form-item label="数据权限" prop="dataScope">
           <el-select v-model="formData.dataScope" placeholder="请选择数据权限" style="width: 100%">
-            <el-option :key="1" label="全部数据" :value="1" />
-            <el-option :key="2" label="部门及子部门数据" :value="2" />
-            <el-option :key="3" label="本部门数据" :value="3" />
-            <el-option :key="4" label="本人数据" :value="4" />
-            <el-option :key="5" label="自定义部门数据" :value="5" />
+            <el-option
+              v-for="item in dataScopeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
 
-        <!-- 自定义部门选择 -->
-        <el-form-item v-if="formData.dataScope === 5" label="选择部门" prop="deptIds">
+        <el-form-item
+          v-if="formData.dataScope === DATA_SCOPE_CUSTOM"
+          label="选择部门"
+          prop="deptIds"
+        >
           <el-tree-select
             v-model="formData.deptIds"
             :data="deptOptions"
@@ -141,8 +144,8 @@
 
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="formData.status">
-            <el-radio :value="1">正常</el-radio>
-            <el-radio :value="0">停用</el-radio>
+            <el-radio :value="CommonStatus.ENABLED">正常</el-radio>
+            <el-radio :value="CommonStatus.DISABLED">停用</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -163,7 +166,6 @@
       </template>
     </el-dialog>
 
-    <!-- 分配权限弹窗 -->
     <el-drawer
       v-model="assignPermDialogVisible"
       :title="'【' + checkedRole.name + '】权限分配'"
@@ -229,14 +231,25 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/stores/app";
-import { DeviceEnum } from "@/enums/settings";
-import type { TreeNodeData } from "element-plus/es/components/tree";
+import { useFullscreen } from "@vueuse/core";
+import {
+  ElMessage,
+  ElMessageBox,
+  type FormInstance,
+  type FormRules,
+  type TreeInstance,
+  type TreeNodeData,
+} from "element-plus";
+import { FullScreen, Refresh, Search, Switch, QuestionFilled } from "@element-plus/icons-vue";
 
 import RoleAPI from "@/api/system/role";
-import type { RoleItem, RoleForm } from "@/api/system/role";
+import type { RoleForm, RoleItem, RoleQueryParams } from "@/api/system/role";
 import MenuAPI from "@/api/system/menu";
 import DeptAPI from "@/api/system/dept";
+import type { OptionItem } from "@/api/common";
+import { useAppStore } from "@/stores";
+import { usePageTable, useTableSelection } from "@/composables";
+import { CommonStatus, DeviceEnum } from "@/enums";
 
 defineOptions({
   name: "Role",
@@ -245,62 +258,75 @@ defineOptions({
 
 const appStore = useAppStore();
 
-const queryFormRef = ref();
-const roleFormRef = ref();
-const permTreeRef = ref();
+const tableWrapperRef = ref<HTMLElement | null>(null);
+const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 
-const loading = ref(false);
-const ids = ref<string[]>([]);
+const queryFormRef = ref<FormInstance>();
+const roleFormRef = ref<FormInstance>();
+const permTreeRef = ref<TreeInstance>();
 
-const tableData = reactive<PageResult<RoleItem>>({
-  list: [],
-  total: 0,
-  params: {
+// 自定义数据权限取值
+const DATA_SCOPE_CUSTOM = 5;
+
+const dataScopeOptions = [
+  { label: "全部数据", value: 1 },
+  { label: "部门及子部门数据", value: 2 },
+  { label: "本部门数据", value: 3 },
+  { label: "本人数据", value: 4 },
+  { label: "自定义部门数据", value: DATA_SCOPE_CUSTOM },
+];
+
+/** 分页表格数据管理 */
+const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
+  RoleItem,
+  RoleQueryParams
+>({
+  initialParams: {
     pageNum: 1,
     pageSize: 10,
     keywords: "",
   },
+  request: RoleAPI.getPage,
+  onBeforeReset: () => queryFormRef.value?.resetFields(),
 });
 
-// 菜单权限下拉
-const menuPermOptions = ref<OptionItem[]>([]);
-// 部门下拉选项
-const deptOptions = ref<OptionItem[]>([]);
+const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<RoleItem>();
 
-// 弹窗
 const dialogState = reactive({
   title: "",
   visible: false,
 });
 
-const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
-
-// 角色表单
-const formData = reactive<RoleForm>({
+const initialFormData: RoleForm = {
   sort: 1,
-  status: 1,
-});
+  status: CommonStatus.ENABLED,
+};
 
-const rules = reactive({
+const formData = reactive<RoleForm>({ ...initialFormData });
+
+const rules: FormRules<RoleForm> = {
   name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
   code: [{ required: true, message: "请输入角色编码", trigger: "blur" }],
   dataScope: [{ required: true, message: "请选择数据权限", trigger: "blur" }],
   deptIds: [{ required: true, message: "请选择部门", trigger: "blur" }],
   status: [{ required: true, message: "请选择状态", trigger: "blur" }],
-});
+};
 
-// 选中的角色
+// 部门下拉选项（懒加载，新增/编辑时才请求）
+const deptOptions = ref<OptionItem[]>([]);
+
 interface CheckedRole {
   id?: string;
   name?: string;
 }
 const checkedRole = ref<CheckedRole>({});
 const assignPermDialogVisible = ref(false);
-
+const menuPermOptions = ref<OptionItem[]>([]);
 const permKeywords = ref("");
 const isExpanded = ref(true);
-
 const parentChildLinked = ref(true);
+
+const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
 
 interface ToggleableTreeNode {
   expand: () => void;
@@ -308,47 +334,16 @@ interface ToggleableTreeNode {
 }
 
 /**
- * 加载角色列表数据
- */
-async function fetchList(): Promise<void> {
-  loading.value = true;
-  try {
-    const data = await RoleAPI.getPage(tableData.params);
-    tableData.list = data.list ?? [];
-    tableData.total = data.total ?? 0;
-  } finally {
-    loading.value = false;
-  }
-}
-
-// 查询（重置页码后获取数据）
-function handleQuery(): void {
-  tableData.params.pageNum = 1;
-  fetchList();
-}
-
-/**
- * 重置搜索条件并重新查询。
- */
-function handleResetQuery(): void {
-  queryFormRef.value?.resetFields();
-  handleQuery();
-}
-
-// 行复选框选中
-function handleSelectionChange(selection: RoleItem[]): void {
-  ids.value = selection.flatMap((item) => (item.id ? [item.id] : []));
-}
-
-/**
- * 打开表单弹窗
+ * 打开角色表单弹窗
  */
 function openDialog(): void {
   dialogState.visible = true;
 }
 
 /**
- * 关闭表单弹窗
+ * 关闭角色表单弹窗
+ *
+ * 同步清理表单数据和校验状态
  */
 function closeDialog(): void {
   dialogState.visible = false;
@@ -356,21 +351,21 @@ function closeDialog(): void {
 }
 
 /**
- * 重置表单数据和验证状态
+ * 重置角色表单
  */
 function resetForm(): void {
   roleFormRef.value?.resetFields();
   roleFormRef.value?.clearValidate();
-
-  formData.id = undefined;
-  formData.sort = 1;
-  formData.status = 1;
-  formData.dataScope = undefined;
-  formData.deptIds = undefined;
+  Object.keys(formData).forEach((key) => {
+    delete (formData as Record<string, unknown>)[key];
+  });
+  Object.assign(formData, initialFormData);
 }
 
 /**
- * 新增按钮点击事件
+ * 打开新增角色弹窗
+ *
+ * 部门下拉首次打开时请求，之后复用缓存
  */
 async function handleCreateClick(): Promise<void> {
   dialogState.title = "新增角色";
@@ -381,8 +376,9 @@ async function handleCreateClick(): Promise<void> {
 }
 
 /**
- * 编辑按钮点击事件
- * @param roleId 角色ID
+ * 打开编辑角色弹窗
+ *
+ * @param roleId 角色 ID
  */
 async function handleEditClick(roleId: string): Promise<void> {
   dialogState.title = "修改角色";
@@ -394,7 +390,11 @@ async function handleEditClick(roleId: string): Promise<void> {
   openDialog();
 }
 
-// 提交角色表单
+/**
+ * 校验并提交角色表单
+ *
+ * 非自定义数据权限时丢弃部门 ID
+ */
 async function handleSubmit(): Promise<void> {
   const valid = await roleFormRef.value?.validate().then(
     () => true,
@@ -402,8 +402,8 @@ async function handleSubmit(): Promise<void> {
   );
   if (!valid) return;
 
-  const submitData = { ...formData };
-  if (submitData.dataScope !== 5) {
+  const submitData: RoleForm = { ...formData };
+  if (submitData.dataScope !== DATA_SCOPE_CUSTOM) {
     submitData.deptIds = undefined;
   }
 
@@ -424,117 +424,139 @@ async function handleSubmit(): Promise<void> {
   }
 }
 
-// 删除角色
-function handleDelete(roleId?: number): void {
-  const roleIds = roleId ? String(roleId) : ids.value.join(",");
+/**
+ * 删除单个或批量角色
+ *
+ * @param roleId 指定时删除单个角色；不指定时删除表格勾选项
+ */
+async function handleDelete(roleId?: string): Promise<void> {
+  const roleIds = roleId ?? selectedIds.value.join(",");
   if (!roleIds) {
     ElMessage.warning("请勾选删除项");
     return;
   }
 
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  }).then(
-    () => {
-      loading.value = true;
-      RoleAPI.deleteByIds(roleIds)
-        .then(() => {
-          ElMessage.success("删除成功");
-          handleResetQuery();
-        })
-        .finally(() => (loading.value = false));
-    },
-    () => {
-      ElMessage.info("已取消删除");
-    }
-  );
+  try {
+    await ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+  } catch {
+    ElMessage.info("已取消删除");
+    return;
+  }
+
+  loading.value = true;
+  try {
+    await RoleAPI.deleteByIds(roleIds);
+    ElMessage.success("删除成功");
+    handleResetQuery();
+  } finally {
+    loading.value = false;
+  }
 }
 
 /**
- * 批量删除按钮点击事件
+ * 批量删除当前勾选角色
  */
 function handleBatchDelete(): void {
   handleDelete();
 }
 
-// 打开分配菜单权限弹窗
+/**
+ * 打开权限分配抽屉并回显已分配菜单
+ *
+ * @param row 当前角色行
+ */
 async function handleAssignPermClick(row: RoleItem): Promise<void> {
   const roleId = row.id;
-  if (roleId) {
-    assignPermDialogVisible.value = true;
-    loading.value = true;
+  if (!roleId) return;
 
-    checkedRole.value.id = roleId;
-    checkedRole.value.name = row.name;
+  assignPermDialogVisible.value = true;
+  checkedRole.value = {
+    id: roleId,
+    name: row.name,
+  };
 
-    // 获取所有的菜单
-    menuPermOptions.value = await MenuAPI.getOptions();
+  loading.value = true;
+  try {
+    const [menuOptions, checkedMenuIds] = await Promise.all([
+      MenuAPI.getOptions(),
+      RoleAPI.getRoleMenuIds(roleId),
+    ]);
 
-    // 回显角色已拥有的菜单
-    RoleAPI.getRoleMenuIds(roleId)
-      .then((data) => {
-        const checkedMenuIds = data;
-        checkedMenuIds.forEach((menuId) => permTreeRef.value!.setChecked(menuId, true, false));
-      })
-      .finally(() => {
-        loading.value = false;
-      });
+    menuPermOptions.value = menuOptions;
+    await nextTick();
+
+    checkedMenuIds.forEach((menuId) => {
+      permTreeRef.value?.setChecked(menuId, true, false);
+    });
+  } finally {
+    loading.value = false;
   }
 }
 
-// 分配菜单权限提交
-function handleAssignPermSubmit() {
+/**
+ * 提交当前角色的菜单权限配置
+ */
+async function handleAssignPermSubmit(): Promise<void> {
   const roleId = checkedRole.value.id;
-  if (roleId) {
-    const checkedMenuIds = permTreeRef
-      .value!.getCheckedNodes(false, true)
-      .map((node: TreeNodeData) => Number(node.value))
-      .filter((value: number) => !Number.isNaN(value));
+  if (!roleId) return;
 
-    loading.value = true;
-    RoleAPI.updateRoleMenus(roleId, checkedMenuIds)
-      .then(() => {
-        ElMessage.success("分配权限成功");
-        assignPermDialogVisible.value = false;
-        handleResetQuery();
-      })
-      .finally(() => {
-        loading.value = false;
-      });
+  const checkedMenuIds = (permTreeRef.value?.getCheckedNodes(false, true) ?? [])
+    .map((node: TreeNodeData) => Number(node.value))
+    .filter((value: number) => !Number.isNaN(value));
+
+  loading.value = true;
+  try {
+    await RoleAPI.updateRoleMenus(roleId, checkedMenuIds);
+    ElMessage.success("分配权限成功");
+    assignPermDialogVisible.value = false;
+    handleResetQuery();
+  } finally {
+    loading.value = false;
   }
 }
 
-// 展开/收缩 菜单权限树
+/**
+ * 展开或收起权限树全部节点
+ */
 function togglePermTree(): void {
   isExpanded.value = !isExpanded.value;
-  if (permTreeRef.value) {
-    Object.values(permTreeRef.value.store.nodesMap).forEach((node) => {
-      const treeNode = node as ToggleableTreeNode;
-      if (isExpanded.value) {
-        treeNode.expand();
-      } else {
-        treeNode.collapse();
-      }
-    });
-  }
+  if (!permTreeRef.value) return;
+
+  Object.values(permTreeRef.value.store.nodesMap).forEach((node) => {
+    const treeNode = node as ToggleableTreeNode;
+    if (isExpanded.value) {
+      treeNode.expand();
+    } else {
+      treeNode.collapse();
+    }
+  });
 }
 
-// 权限筛选
-watch(permKeywords, (val) => {
-  permTreeRef.value!.filter(val);
-});
-
-function handlePermFilter(value: string, data: TreeNodeData) {
+/**
+ * 过滤权限树节点
+ *
+ * @param value 输入的关键字
+ * @param data 当前节点数据
+ */
+function handlePermFilter(value: string, data: TreeNodeData): boolean {
   if (!value) return true;
   return String(data.label ?? "").includes(value);
 }
 
-// 父子菜单节点是否联动
-function handleParentChildLinkedChange(val: string | number | boolean): void {
-  parentChildLinked.value = Boolean(val);
+/**
+ * 同步父子联动开关值
+ */
+function handleParentChildLinkedChange(value: string | number | boolean): void {
+  parentChildLinked.value = Boolean(value);
 }
+
+watch(permKeywords, (value) => {
+  permTreeRef.value?.filter(value);
+});
 
 onMounted(() => {
   handleQuery();

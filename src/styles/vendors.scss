@@ -1,12 +1,14 @@
 /**
- * Vxe Table 主题统一：
- * 1) 用 Element Plus 的 CSS 变量覆写 Vxe Table 的 CSS 变量
- * 2) 自定义局部样式
+ * 第三方组件样式适配
  */
 
-/* 变量覆写 */
+// NProgress 进度条样式
+#nprogress .bar {
+  background-color: var(--el-color-primary);
+}
+
+// VxeTable 变量覆写
 :root {
-  /* color */
   --vxe-font-color: var(--el-text-color-regular);
   --vxe-primary-color: var(--el-color-primary);
   --vxe-success-color: var(--el-color-success);
@@ -31,17 +33,11 @@
   --vxe-info-disabled-color: var(--el-color-info-light-5);
   --vxe-warning-disabled-color: var(--el-color-warning-light-5);
   --vxe-danger-disabled-color: var(--el-color-danger-light-5);
-
-  /* input/radio/checkbox */
   --vxe-input-border-color: var(--el-border-color);
   --vxe-input-disabled-color: var(--el-text-color-disabled);
   --vxe-input-disabled-background-color: var(--el-fill-color-light);
   --vxe-input-placeholder-color: var(--el-text-color-placeholder);
-
-  /* popup */
   --vxe-table-popup-border-color: var(--el-border-color);
-
-  /* table */
   --vxe-table-header-font-color: var(--el-text-color-regular);
   --vxe-table-footer-font-color: var(--el-text-color-regular);
   --vxe-table-border-color: var(--el-border-color-lighter);
@@ -52,81 +48,71 @@
   --vxe-table-row-current-background-color: var(--el-fill-color-light);
   --vxe-table-row-hover-current-background-color: var(--el-fill-color-light);
   --vxe-table-checkbox-range-background-color: var(--el-fill-color-light);
-
-  /* menu */
   --vxe-table-menu-background-color: var(--el-bg-color-overlay);
-
-  /* loading */
   --vxe-loading-color: var(--el-color-primary);
   --vxe-loading-background-color: var(--el-mask-color);
-
-  /* validate */
   --vxe-table-validate-error-color: var(--el-color-danger);
-
-  /* toolbar */
   --vxe-toolbar-background-color: var(--el-bg-color);
   --vxe-toolbar-custom-active-background-color: var(--el-bg-color-overlay);
   --vxe-toolbar-panel-background-color: var(--el-bg-color-overlay);
-
-  /* pager */
   --vxe-pager-background-color: var(--el-bg-color);
-
-  /* modal */
   --vxe-modal-header-background-color: var(--el-bg-color);
   --vxe-modal-body-background-color: var(--el-bg-color);
   --vxe-modal-border-color: var(--el-border-color);
-
-  /* button */
   --vxe-button-default-background-color: var(--el-bg-color-overlay);
-
-  /* input */
   --vxe-input-background-color: var(--el-fill-color-blank);
   --vxe-input-panel-background-color: var(--el-fill-color-blank);
-
-  /* form */
   --vxe-form-background-color: var(--el-bg-color);
   --vxe-form-validate-error-color: var(--el-color-danger);
-
-  /* select */
   --vxe-select-option-hover-background-color: var(--el-bg-color-overlay);
   --vxe-select-panel-background-color: var(--el-bg-color);
 }
 
-/* 自定义组件样式 */
+// VxeTable 自定义样式
 .vxe-grid {
-  /* 表单 */
-  &--form-wrapper {
-    .vxe-form {
-      padding: 10px 20px;
-      margin-bottom: 20px;
-    }
+  &--form-wrapper .vxe-form {
+    padding: 10px 20px;
+    margin-bottom: 20px;
   }
 
-  /* 工具栏 */
-  &--toolbar-wrapper {
-    .vxe-toolbar {
-      padding: 20px;
-    }
+  &--toolbar-wrapper .vxe-toolbar {
+    padding: 20px;
   }
 
-  /* 分页 */
-  &--pager-wrapper {
-    .vxe-pager {
-      height: 70px;
-      padding: 0 20px;
+  &--pager-wrapper .vxe-pager {
+    height: 70px;
+    padding: 0 20px;
 
-      &--wrapper {
-        /* 参考 Bootstrap 的响应式设计 WIDTH = 768 */
-        @media screen and (width <= 768px) {
-          .vxe-pager--total,
-          .vxe-pager--sizes,
-          .vxe-pager--jump,
-          .vxe-pager--jump-prev,
-          .vxe-pager--jump-next {
-            display: none;
-          }
+    &--wrapper {
+      @media screen and (width <= 768px) {
+        .vxe-pager--total,
+        .vxe-pager--sizes,
+        .vxe-pager--jump,
+        .vxe-pager--jump-prev,
+        .vxe-pager--jump-next {
+          display: none;
         }
       }
     }
   }
+}
+
+// WangEditor 暗黑模式
+html.dark {
+  --w-e-textarea-bg-color: var(--el-bg-color);
+  --w-e-textarea-color: var(--el-text-color-primary);
+  --w-e-textarea-border-color: var(--el-border-color);
+  --w-e-textarea-slight-border-color: var(--el-border-color-lighter);
+  --w-e-textarea-slight-color: var(--el-text-color-secondary);
+  --w-e-textarea-slight-bg-color: var(--el-bg-color-overlay);
+  --w-e-textarea-selected-border-color: var(--el-color-info-light-5);
+  --w-e-textarea-handler-bg-color: var(--el-color-primary);
+  --w-e-toolbar-color: var(--el-text-color-regular);
+  --w-e-toolbar-bg-color: var(--el-bg-color);
+  --w-e-toolbar-active-color: var(--el-text-color-primary);
+  --w-e-toolbar-active-bg-color: var(--el-fill-color-light);
+  --w-e-toolbar-disabled-color: var(--el-text-color-secondary);
+  --w-e-toolbar-border-color: var(--el-border-color);
+  --w-e-modal-button-bg-color: var(--el-bg-color-overlay);
+  --w-e-modal-button-border-color: var(--el-border-color-light);
 }

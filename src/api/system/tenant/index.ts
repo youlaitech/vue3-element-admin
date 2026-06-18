@@ -7,6 +7,7 @@ import type {
   TenantQueryParams,
   TenantItem,
 } from "./types";
+import type { PageResult } from "@/api/common";
 
 const TENANT_BASE_URL = "/api/v1/tenants";
 

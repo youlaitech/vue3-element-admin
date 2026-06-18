@@ -1,5 +1,6 @@
 import request from "@/utils/request";
 import type { GeneratorPreviewItem, TableQueryParams, TableItem, GenConfigForm } from "./types";
+import type { PageResult } from "@/api/common";
 
 const GENERATOR_BASE_URL = "/api/v1/codegen";
 

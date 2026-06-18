@@ -11,7 +11,7 @@ import type {
   MobileUpdateForm,
   EmailUpdateForm,
 } from "./types";
-import type { OptionItem, ExcelResult } from "@/api/common";
+import type { ExcelResult, OptionItem, PageResult } from "@/api/common";
 
 const USER_BASE_URL = "/api/v1/users";
 

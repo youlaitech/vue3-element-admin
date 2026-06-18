@@ -4,6 +4,7 @@
  * @description
  * 包含主题、布局、语言、设备等应用设置的枚举定义
  */
+import type { OptionItem } from "@/api/common";
 
 /**
  * 主题模式枚举
@@ -39,6 +40,21 @@ export const enum SidebarColor {
 }
 
 /**
+ * 页签栏风格枚举
+ */
+export const enum TagsViewStyle {
+  /**
+   * 线性页签，默认现代后台风格
+   */
+  LINE = "line",
+
+  /**
+   * 卡片页签，保留图标和浅色激活块
+   */
+  CARD = "card",
+}
+
+/**
  * 菜单布局枚举
  */
 export const enum LayoutMode {
@@ -55,6 +71,11 @@ export const enum LayoutMode {
    * 混合菜单布局
    */
   MIX = "mix",
+
+  /**
+   * 双列菜单布局
+   */
+  DOUBLE = "double",
 }
 
 /**

@@ -11,7 +11,7 @@
 </template>
 
 <style lang="scss" scoped>
-@use "@/styles/base/variables" as *;
+@use "@/styles/variables" as *;
 
 .page-container {
   height: calc(100vh - $navbar-height);

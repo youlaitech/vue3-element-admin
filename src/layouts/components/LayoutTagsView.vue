@@ -1,5 +1,5 @@
 <template>
-  <div class="tags-container">
+  <div :class="['tags-container', tagsStyleClass]">
     <!-- 页签滚动区 -->
     <el-scrollbar
       ref="scrollbarRef"
@@ -129,8 +129,10 @@
 <script setup lang="ts">
 import { useRoute, useRouter, type RouteRecordRaw } from "vue-router";
 import { resolve } from "path-browserify";
+import { TagsViewStyle } from "@/enums";
 import { translateRouteTitle } from "@/lang/utils";
-import { useAppStore, usePermissionStore, useTagsViewStore } from "@/stores";
+import { useAppStore, usePermissionStore, useSettingsStore, useTagsViewStore } from "@/stores";
+import type { TagView } from "@/stores/tags-view";
 
 interface ContextMenu {
   visible: boolean;
@@ -143,6 +145,7 @@ const route = useRoute();
 
 const appStore = useAppStore();
 const permissionStore = usePermissionStore();
+const settingsStore = useSettingsStore();
 const tagsViewStore = useTagsViewStore();
 
 const { visitedViews } = storeToRefs(tagsViewStore);
@@ -159,6 +162,16 @@ const scrollbarRef = ref();
 
 const currentTag = computed(() => {
   return visitedViews.value.find((tag) => tagsViewStore.isActive(tag)) || null;
+});
+
+const tagsStyleClass = computed(() => {
+  switch (settingsStore.tagsViewStyle) {
+    case TagsViewStyle.CARD:
+      return "tags-container--card";
+    case TagsViewStyle.LINE:
+    default:
+      return "tags-container--line";
+  }
 });
 
 // 图标兼容：判断是否为 Element Plus 图标 (el-icon-xxx)
@@ -338,7 +351,8 @@ const handleScroll = (event: WheelEvent) => {
   const hasHorizontalScroll = scrollWrapper.scrollWidth > scrollWrapper.clientWidth;
   if (!hasHorizontalScroll) return;
 
-  const deltaY = event.deltaY || -(event as any).wheelDelta || 0;
+  const legacyEvent = event as WheelEvent & { wheelDelta?: number };
+  const deltaY = event.deltaY || -(legacyEvent.wheelDelta ?? 0);
   const newScrollLeft = scrollWrapper.scrollLeft + deltaY;
 
   scrollbarRef.value.setScrollLeft(newScrollLeft);
@@ -358,7 +372,7 @@ const refreshSelectedTag = (tag: TagView | null) => {
 const closeSelectedTag = (tag: TagView | null) => {
   if (!tag) return;
 
-  tagsViewStore.delView(tag).then((result: any) => {
+  tagsViewStore.delView(tag).then((result) => {
     if (tagsViewStore.isActive(tag)) {
       tagsViewStore.toLastView(result.visitedViews, tag);
     }
@@ -421,7 +435,7 @@ const closeOtherTags = () => {
 
 // 关闭所有标签页
 const closeAllTags = (tag: TagView | null) => {
-  tagsViewStore.delAllViews().then((result: any) => {
+  tagsViewStore.delAllViews().then((result) => {
     tagsViewStore.toLastView(result.visitedViews, tag || undefined);
   });
 };
@@ -475,9 +489,9 @@ useContextMenuManager();
   align-items: center;
   width: 100%;
   height: $tags-view-height;
-  padding: 0 4px 0 8px;
+  padding: 0 12px;
   background-color: var(--content-bg);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--card-border);
 }
 
 .scroll-container {
@@ -496,31 +510,30 @@ useContextMenuManager();
 
 .tags-wrapper {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
   height: 100%;
 }
 
 // ============================================
 // 标签项
-// 未激活: 透明底，融入白色容器背景
-// 激活:   浅主色底 + 边框，从背景中"跳"出来
 // ============================================
 
 .tags-item {
+  position: relative;
   display: inline-flex;
   flex-shrink: 0;
   gap: 6px;
   align-items: center;
-  height: 30px;
-  padding: 0 14px;
+  height: 26px;
+  padding: 0 12px;
   font-size: 13px;
   color: var(--el-text-color-regular);
   cursor: pointer;
   user-select: none;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid var(--card-border);
+  border-radius: 2px;
   transition:
     color 0.15s ease,
     background-color 0.15s ease,
@@ -562,10 +575,10 @@ useContextMenuManager();
     }
   }
 
-  // 悬浮态 — 浅灰底浮现
   &:hover {
     color: var(--el-text-color-primary);
-    background-color: var(--el-fill-color-light);
+    background-color: var(--content-bg);
+    border-color: var(--el-border-color);
 
     .tags-item__close {
       opacity: 1;
@@ -576,12 +589,11 @@ useContextMenuManager();
     }
   }
 
-  // 激活态 — 浅主色块突出显示
   &.is-active {
     font-weight: 500;
     color: var(--el-color-primary);
-    background-color: var(--el-color-primary-light-9);
-    border-color: var(--el-color-primary-light-7);
+    background-color: var(--content-bg);
+    border-color: var(--el-color-primary-light-5);
 
     .tags-item__icon {
       color: var(--el-color-primary);
@@ -606,6 +618,78 @@ useContextMenuManager();
   }
 }
 
+.tags-container--line {
+  .tags-wrapper {
+    gap: 8px;
+  }
+
+  .tags-item {
+    height: 100%;
+    padding: 0 8px;
+    color: var(--el-text-color-secondary);
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+
+    &::after {
+      position: absolute;
+      right: 6px;
+      bottom: 0;
+      left: 6px;
+      height: 2px;
+      content: "";
+      background: var(--el-color-primary);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.16s ease;
+    }
+
+    &:hover {
+      color: var(--el-text-color-primary);
+      background: var(--el-fill-color-lighter);
+      border-color: transparent;
+      border-radius: 4px 4px 0 0;
+    }
+
+    &.is-active {
+      color: var(--el-color-primary);
+      background: transparent;
+      border-color: transparent;
+
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
+.tags-container--card {
+  .tags-wrapper {
+    gap: 8px;
+  }
+
+  .tags-item {
+    height: 28px;
+    padding: 0 10px;
+    color: var(--el-text-color-secondary);
+    background: transparent;
+    border-color: transparent;
+    border-radius: 4px;
+
+    &:hover {
+      color: var(--el-text-color-primary);
+      background: var(--el-fill-color-lighter);
+      border-color: transparent;
+    }
+
+    &.is-active {
+      color: var(--el-color-primary);
+      background: var(--el-color-primary-light-9);
+      border-color: var(--el-color-primary-light-6);
+    }
+  }
+}
+
 // ============================================
 // 右侧操作按钮
 // ============================================
@@ -613,23 +697,23 @@ useContextMenuManager();
 .tags-actions {
   display: flex;
   flex-shrink: 0;
-  gap: 2px;
+  gap: 4px;
   align-items: center;
   height: 100%;
-  padding-left: 4px;
+  padding-left: 8px;
 
   &__btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
     border-radius: 6px;
     transition: background-color 0.15s ease;
 
     &:hover {
-      background-color: var(--el-fill-color-light);
+      background-color: var(--el-fill-color);
     }
 
     :deep(.el-icon),

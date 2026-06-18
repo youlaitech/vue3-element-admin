@@ -178,23 +178,27 @@ function handleSettingsClick() {
 <style lang="scss" scoped>
 .navbar-actions {
   display: flex;
+  gap: 4px;
   align-items: center;
-  min-height: 44px;
+  min-height: 32px;
 
   &__item {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 44px; /* 增加最小点击区域到44px，符合人机交互标准 */
-    height: 44px;
-    padding: 0 8px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s;
+    border-radius: 8px;
+    transition:
+      background-color 0.16s,
+      color 0.16s;
 
     // 只对需要居中的子元素生效，不使用通配符避免影响选择器组件
-    > [class^="i-svg:"] {
+    > [class*="i-svg:"] {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -207,7 +211,7 @@ function handleSettingsClick() {
       align-items: center;
       justify-content: center;
       width: 100%;
-      height: 44px;
+      height: 32px;
     }
 
     :deep(.i-svg\:language) {
@@ -220,7 +224,7 @@ function handleSettingsClick() {
     }
 
     // 图标样式
-    :deep([class^="i-svg:"]) {
+    :deep([class*="i-svg:"]) {
       font-size: 16px;
       line-height: 1;
       color: var(--el-text-color-secondary);
@@ -228,9 +232,9 @@ function handleSettingsClick() {
     }
 
     &:hover {
-      background: var(--el-fill-color-light);
+      background: var(--el-fill-color);
 
-      :deep([class^="i-svg:"]) {
+      :deep([class*="i-svg:"]) {
         color: var(--el-color-primary);
       }
     }
@@ -240,8 +244,8 @@ function handleSettingsClick() {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 44px;
-    padding: 0 8px;
+    height: 32px;
+    padding: 0 6px 0 2px;
 
     &__avatar {
       flex-shrink: 0;
@@ -252,6 +256,7 @@ function handleSettingsClick() {
 
     &__name {
       margin-left: 8px;
+      font-size: 13px;
       color: var(--el-text-color-regular);
       white-space: nowrap;
       transition: color 0.3s;
@@ -262,14 +267,14 @@ function handleSettingsClick() {
 // 白色文字样式（用于深色背景：暗黑主题、顶部布局、混合布局等）
 .navbar-actions--white-text {
   .navbar-actions__item {
-    :deep([class^="i-svg:"]) {
+    :deep([class*="i-svg:"]) {
       color: color-mix(in srgb, var(--el-color-white) 85%, transparent);
     }
 
     &:hover {
       background: color-mix(in srgb, var(--el-color-white) 10%, transparent);
 
-      :deep([class^="i-svg:"]) {
+      :deep([class*="i-svg:"]) {
         color: var(--el-color-white);
       }
     }
@@ -298,14 +303,14 @@ function handleSettingsClick() {
 // 深色文字样式（用于浅色背景：明亮主题下的左侧布局等）
 .navbar-actions--dark-text {
   .navbar-actions__item {
-    :deep([class^="i-svg:"]) {
+    :deep([class*="i-svg:"]) {
       color: var(--el-text-color-secondary) !important;
     }
 
     &:hover {
       background: rgba(0, 0, 0, 0.04);
 
-      :deep([class^="i-svg:"]) {
+      :deep([class*="i-svg:"]) {
         color: var(--el-color-primary) !important;
       }
     }
@@ -333,7 +338,7 @@ function handleSettingsClick() {
 
 // 确保下拉菜单中的图标不受影响
 ::v-deep(.el-dropdown-menu) {
-  [class^="i-svg:"] {
+  [class*="i-svg:"] {
     color: var(--el-text-color-regular) !important;
 
     &:hover {

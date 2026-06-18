@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1400 800">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1400 900" preserveAspectRatio="none">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f0f4ff" />
-      <stop offset="50%" stop-color="#f5f8ff" />
-      <stop offset="100%" stop-color="#edf2fe" />
+    <linearGradient id="surface" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbfdff"/>
+      <stop offset="58%" stop-color="#f6fbff"/>
+      <stop offset="100%" stop-color="#eef3ff"/>
     </linearGradient>
-    <radialGradient id="glow1" cx="15%" cy="20%" r="55%">
-      <stop offset="0%" stop-color="rgba(22,119,255,0.12)" />
-      <stop offset="50%" stop-color="rgba(22,119,255,0.04)" />
-      <stop offset="100%" stop-color="rgba(22,119,255,0)" />
-    </radialGradient>
-    <radialGradient id="glow2" cx="85%" cy="75%" r="50%">
-      <stop offset="0%" stop-color="rgba(99,102,241,0.08)" />
-      <stop offset="50%" stop-color="rgba(99,102,241,0.02)" />
-      <stop offset="100%" stop-color="rgba(99,102,241,0)" />
-    </radialGradient>
+    <linearGradient id="rightWash" x1="72%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#8b7cff" stop-opacity=".13"/>
+    </linearGradient>
+    <linearGradient id="bottomWash" x1="0%" y1="100%" x2="58%" y2="46%">
+      <stop offset="0%" stop-color="#56c8ff" stop-opacity=".18"/>
+      <stop offset="52%" stop-color="#56c8ff" stop-opacity=".06"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="88" height="88" patternUnits="userSpaceOnUse">
+      <path d="M88 0H0v88" fill="none" stroke="#5d87ff" stroke-opacity=".06" stroke-width="1"/>
+      <path d="M44 0v88M0 44h88" fill="none" stroke="#5d87ff" stroke-opacity=".032" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="gridFade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".72"/>
+      <stop offset="74%" stop-color="#ffffff" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
   </defs>
-  <rect width="100%" height="100%" fill="url(#bg)" />
-  <rect width="100%" height="100%" fill="url(#glow1)" />
-  <rect width="100%" height="100%" fill="url(#glow2)" />
+  <rect width="1400" height="900" fill="url(#surface)"/>
+  <rect width="1400" height="900" fill="url(#rightWash)"/>
+  <rect width="1400" height="900" fill="url(#bottomWash)"/>
+  <mask id="gridMask">
+    <rect width="1400" height="900" fill="url(#gridFade)"/>
+  </mask>
+  <rect width="1400" height="900" fill="url(#grid)" mask="url(#gridMask)"/>
 </svg>

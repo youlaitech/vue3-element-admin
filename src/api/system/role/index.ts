@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 import type { RoleQueryParams, RoleItem, RoleForm } from "./types";
-import type { OptionItem } from "@/api/common";
+import type { OptionItem, PageResult } from "@/api/common";
 
 const ROLE_BASE_URL = "/api/v1/roles";
 

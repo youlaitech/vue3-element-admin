@@ -45,7 +45,7 @@ const appStore = useAppStore();
 </script>
 
 <style lang="scss" scoped>
-@use "@/styles/base/mixins" as *;
+@use "@/styles/mixins" as *;
 
 .layout {
   &__sidebar {

@@ -4,6 +4,7 @@ import { ApiCodeEnum } from "@/enums/api";
 import { useUserStoreHook } from "@/stores/user";
 import { usePermissionStoreHook } from "@/stores/permission";
 import { AuthStorage, redirectToLogin } from "@/utils/auth";
+import type { ApiResult } from "@/api/common";
 
 // 记录已重试的请求，防止无限循环
 const retriedConfigs = new WeakSet<InternalAxiosRequestConfig>();
@@ -34,7 +35,7 @@ http.interceptors.request.use(
 
 // 响应拦截器
 http.interceptors.response.use(
-  (response: AxiosResponse<ApiResponse>): any => {
+  (response: AxiosResponse<ApiResult>): any => {
     const { responseType } = response.config;
 
     // 二进制数据直接返回
@@ -60,7 +61,7 @@ http.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const { code, msg } = response.data as ApiResponse;
+    const { code, msg } = response.data as ApiResult;
 
     // Token 过期：尝试刷新 token 后自动重试一次
     if (code === ApiCodeEnum.ACCESS_TOKEN_INVALID) {

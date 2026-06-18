@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page-container">
     <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
@@ -12,31 +12,39 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
-          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
+          <el-button type="primary" @click="handleQuery">搜索</el-button>
+          <el-button @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
-    <el-card class="page-content" shadow="never">
+    <el-card ref="tableWrapperRef" class="page-content" shadow="never">
       <div class="page-toolbar">
         <div class="page-toolbar__left">
-          <el-button
-            v-hasPerm="['sys:menu:create']"
-            type="success"
-            icon="plus"
-            @click="openDialog('0')"
-          >
+          <el-button v-hasPerm="['sys:menu:create']" type="primary" @click="openDialog('0')">
             新增
           </el-button>
+        </div>
+        <div class="page-toolbar__right">
+          <el-tooltip content="刷新" placement="top">
+            <el-button class="page-icon-btn" @click="handleQuery">
+              <el-icon><Refresh /></el-icon>
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="全屏" placement="top">
+            <el-button class="page-icon-btn" @click="toggleFullscreen">
+              <el-icon><FullScreen /></el-icon>
+            </el-button>
+          </el-tooltip>
         </div>
       </div>
 
       <el-table
         ref="dataTableRef"
         v-loading="loading"
+        border
         row-key="id"
-        :data="menuTableData"
+        :data="list"
         :tree-props="{
           children: 'children',
           hasChildren: 'hasChildren',
@@ -81,7 +89,7 @@
 
         <el-table-column label="状态" align="center" width="80">
           <template #default="scope">
-            <el-tag v-if="scope.row.visible === 1" type="success">显示</el-tag>
+            <el-tag v-if="scope.row.visible === CommonStatus.ENABLED" type="success">显示</el-tag>
             <el-tag v-else type="info">隐藏</el-tag>
           </template>
         </el-table-column>
@@ -94,7 +102,6 @@
               type="primary"
               link
               size="small"
-              icon="plus"
               @click.stop="openDialog(scope.row.id)"
             >
               新增
@@ -105,7 +112,6 @@
               type="primary"
               link
               size="small"
-              icon="edit"
               @click.stop="openDialog(undefined, scope.row.id)"
             >
               编辑
@@ -115,7 +121,6 @@
               type="danger"
               link
               size="small"
-              icon="delete"
               @click.stop="handleDelete(scope.row.id)"
             >
               删除
@@ -286,8 +291,8 @@
 
         <el-form-item v-if="formData.type !== MenuTypeEnum.BUTTON" prop="visible" label="显示状态">
           <el-radio-group v-model="formData.visible">
-            <el-radio :value="1">显示</el-radio>
-            <el-radio :value="0">隐藏</el-radio>
+            <el-radio :value="CommonStatus.ENABLED">显示</el-radio>
+            <el-radio :value="CommonStatus.DISABLED">隐藏</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -363,12 +368,22 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/stores/app";
-import { DeviceEnum } from "@/enums/settings";
+import { useFullscreen } from "@vueuse/core";
+import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "element-plus";
+import {
+  CirclePlusFilled,
+  DeleteFilled,
+  FullScreen,
+  QuestionFilled,
+  Refresh,
+} from "@element-plus/icons-vue";
+
 import MenuAPI from "@/api/system/menu";
-import type { MenuQueryParams, MenuForm, MenuItem } from "@/api/system/menu";
-import type { FormInstance, FormRules } from "element-plus";
-import { MenuScopeEnum, MenuTypeEnum } from "@/enums/business";
+import type { MenuForm, MenuItem, MenuQueryParams } from "@/api/system/menu";
+import type { OptionItem } from "@/api/common";
+import { useAppStore } from "@/stores/app";
+import { CommonStatus, MenuScopeEnum, MenuTypeEnum } from "@/enums";
+import { DeviceEnum } from "@/enums/settings";
 import { isTenantEnabled } from "@/utils/tenant";
 
 defineOptions({
@@ -378,69 +393,68 @@ defineOptions({
 
 const appStore = useAppStore();
 
-// 表单引用
+const tableWrapperRef = ref<HTMLElement | null>(null);
+const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
+
 const queryFormRef = ref<FormInstance>();
 const menuFormRef = ref<FormInstance>();
 
-// 查询参数
-const queryParams = reactive<MenuQueryParams>({});
-
-// 列表数据
-const menuTableData = ref<MenuItem[]>([]);
-const menuOptions = ref<OptionItem[]>([]);
 const loading = ref(false);
+const list = ref<MenuItem[]>([]);
+const queryParams = reactive<MenuQueryParams>({ keywords: "" });
 
-// 弹窗状态
 const dialogState = reactive({
   title: "新增菜单",
   visible: false,
 });
 
-// 表单数据
-const initialMenuFormData = ref<MenuForm>({
+const menuOptions = ref<OptionItem[]>([]);
+
+const initialFormData: MenuForm = {
   id: undefined,
   parentId: "0",
-  visible: 1,
+  visible: CommonStatus.ENABLED,
   scope: MenuScopeEnum.TENANT,
   sort: 1,
   type: MenuTypeEnum.MENU,
   alwaysShow: 0,
   keepAlive: 1,
   params: [],
-});
-const formData = ref({ ...initialMenuFormData.value });
-const selectedMenuId = ref<string | undefined>();
+};
 
-// 多租户关闭时，隐藏菜单范围
+const formData = reactive<MenuForm>({ ...initialFormData });
+
+// 多租户关闭时隐藏菜单范围字段。
 const showMenuScope = computed(() => isTenantEnabled());
 
-// 抽屉宽度
+// 抽屉宽度（响应式）。
 const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
 
-// 是否外链
+// 是否外链：菜单类型 + 以 http(s) 开头的路由路径。
 const isExternalLink = computed(
   () =>
-    formData.value.type === MenuTypeEnum.MENU &&
-    !!formData.value.routePath &&
-    /^https?:\/\//.test(formData.value.routePath)
+    formData.type === MenuTypeEnum.MENU &&
+    !!formData.routePath &&
+    /^https?:\/\//.test(formData.routePath)
 );
 
-// 验证规则
 const validateRouteName = (_: unknown, value: string, callback: (error?: Error) => void) => {
-  if (formData.value.type === MenuTypeEnum.MENU && !isExternalLink.value && !value) {
+  if (formData.type === MenuTypeEnum.MENU && !isExternalLink.value && !value) {
     callback(new Error("请输入路由名称"));
     return;
   }
   callback();
 };
+
 const validateComponent = (_: unknown, value: string, callback: (error?: Error) => void) => {
-  if (formData.value.type === MenuTypeEnum.MENU && !isExternalLink.value && !value) {
+  if (formData.type === MenuTypeEnum.MENU && !isExternalLink.value && !value) {
     callback(new Error("请输入组件路径"));
     return;
   }
   callback();
 };
-const rules: FormRules = {
+
+const rules: FormRules<MenuForm> = {
   parentId: [{ required: true, message: "请选择父级菜单", trigger: "blur" }],
   name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
   type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
@@ -451,28 +465,26 @@ const rules: FormRules = {
 };
 
 /**
- * 加载菜单列表数据
+ * 拉取菜单列表数据（一次性返回全量树）。
  */
-function fetchData(): void {
+async function fetchData(): Promise<void> {
   loading.value = true;
-  MenuAPI.getList(queryParams)
-    .then((data) => {
-      menuTableData.value = data;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+  try {
+    list.value = await MenuAPI.getList(queryParams);
+  } finally {
+    loading.value = false;
+  }
 }
 
 /**
- * 查询按钮点击事件
+ * 按当前筛选条件重新查询。
  */
 function handleQuery(): void {
   fetchData();
 }
 
 /**
- * 重置查询
+ * 重置搜索表单后重新查询。
  */
 function handleResetQuery(): void {
   queryFormRef.value?.resetFields();
@@ -480,131 +492,129 @@ function handleResetQuery(): void {
 }
 
 /**
- * 行点击事件
+ * 表格行点击事件
+ *
+ * @param row 当前菜单行
  */
 function handleRowClick(row: MenuItem): void {
-  selectedMenuId.value = row.id;
+  void row;
 }
 
 /**
- * 打开弹窗
- * @param parentId 父菜单ID
- * @param menuId 菜单ID（编辑时传入）
+ * 重置表单数据和验证状态
  */
-function openDialog(parentId?: string, menuId?: string): void {
-  MenuAPI.getOptions(true)
-    .then((data) => {
-      menuOptions.value = [{ value: "0", label: "顶级菜单", children: data }];
-    })
-    .then(() => {
-      dialogState.visible = true;
-      if (menuId) {
-        dialogState.title = "编辑菜单";
-        MenuAPI.getFormData(menuId).then((data) => {
-          initialMenuFormData.value = { ...data };
-          formData.value = data;
-        });
-      } else {
-        dialogState.title = "新增菜单";
-        formData.value.parentId = parentId?.toString();
-      }
-    });
+function resetForm(): void {
+  menuFormRef.value?.resetFields();
+  menuFormRef.value?.clearValidate();
+  Object.keys(formData).forEach((key) => {
+    delete (formData as Record<string, unknown>)[key];
+  });
+  Object.assign(formData, initialFormData);
 }
 
 /**
- * 菜单类型切换事件
+ * 打开新增/编辑菜单弹窗。
+ *
+ * @param parentId 父菜单 ID（新增子菜单时传入）
+ * @param menuId 菜单 ID（编辑时传入）
  */
+async function openDialog(parentId?: string, menuId?: string): Promise<void> {
+  const data = await MenuAPI.getOptions(true);
+  menuOptions.value = [{ value: "0", label: "顶级菜单", children: data }];
+
+  dialogState.visible = true;
+  if (menuId) {
+    dialogState.title = "编辑菜单";
+    const form = await MenuAPI.getFormData(menuId);
+    Object.assign(formData, form);
+  } else {
+    dialogState.title = "新增菜单";
+    formData.parentId = parentId?.toString();
+  }
+}
+
+/** 菜单类型切换事件 */
 function handleMenuTypeChange(): void {
-  if (formData.value.type !== initialMenuFormData.value.type) {
-    if (formData.value.type === MenuTypeEnum.MENU) {
-      if (initialMenuFormData.value.type === MenuTypeEnum.CATALOG) {
-        formData.value.component = "";
-      } else {
-        formData.value.routePath = initialMenuFormData.value.routePath;
-        formData.value.component = initialMenuFormData.value.component;
-      }
+  if (formData.type === MenuTypeEnum.MENU) {
+    if (formData.routePath === undefined) {
+      formData.routePath = initialFormData.routePath;
+    }
+    if (formData.component === undefined) {
+      formData.component = initialFormData.component;
     }
   }
 }
 
 /**
- * 提交表单
+ * 校验并提交菜单表单。
  */
-function handleSubmit(): void {
-  menuFormRef.value?.validate((isValid) => {
-    if (isValid) {
-      const menuId = formData.value.id;
-      if (menuId) {
-        if (formData.value.parentId === menuId) {
-          ElMessage.error("父级菜单不能为当前菜单");
-          return;
-        }
-        MenuAPI.update(menuId, formData.value).then(() => {
-          ElMessage.success("修改成功");
-          closeDialog();
-          fetchData();
-        });
-      } else {
-        MenuAPI.create(formData.value).then(() => {
-          ElMessage.success("新增成功");
-          closeDialog();
-          fetchData();
-        });
-      }
+async function handleSubmit(): Promise<void> {
+  const valid = await menuFormRef.value?.validate().then(
+    () => true,
+    () => false
+  );
+  if (!valid) return;
+
+  const menuId = formData.id;
+  if (menuId && formData.parentId === menuId) {
+    ElMessage.error("父级菜单不能为当前菜单");
+    return;
+  }
+
+  loading.value = true;
+  try {
+    if (menuId) {
+      await MenuAPI.update(menuId, formData);
+      ElMessage.success("修改成功");
+    } else {
+      await MenuAPI.create(formData);
+      ElMessage.success("新增成功");
     }
-  });
+    closeDialog();
+    fetchData();
+  } finally {
+    loading.value = false;
+  }
 }
 
 /**
  * 删除菜单
- * @param menuId 菜单ID
+ *
+ * @param menuId 菜单 ID
  */
-function handleDelete(menuId: string): void {
+async function handleDelete(menuId: string): Promise<void> {
   if (!menuId) {
     ElMessage.warning("请勾选删除项");
     return;
   }
 
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  }).then(
-    () => {
-      loading.value = true;
-      MenuAPI.deleteById(menuId)
-        .then(() => {
-          ElMessage.success("删除成功");
-          fetchData();
-        })
-        .finally(() => {
-          loading.value = false;
-        });
-    },
-    () => {
-      ElMessage.info("已取消删除");
-    }
-  );
+  try {
+    await ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+  } catch {
+    ElMessage.info("已取消删除");
+    return;
+  }
+
+  loading.value = true;
+  try {
+    await MenuAPI.deleteById(menuId);
+    ElMessage.success("删除成功");
+    fetchData();
+  } finally {
+    loading.value = false;
+  }
 }
 
 /**
- * 关闭弹窗
+ * 关闭弹窗并重置表单。
  */
 function closeDialog(): void {
   dialogState.visible = false;
-  menuFormRef.value?.resetFields();
-  menuFormRef.value?.clearValidate();
-  formData.value = {
-    id: undefined,
-    parentId: "0",
-    visible: 1,
-    scope: MenuScopeEnum.TENANT,
-    sort: 1,
-    type: MenuTypeEnum.MENU,
-    alwaysShow: 0,
-    keepAlive: 1,
-    params: [],
-  };
+  resetForm();
 }
 
 onMounted(() => {

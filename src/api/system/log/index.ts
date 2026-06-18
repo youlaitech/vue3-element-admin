@@ -6,6 +6,7 @@ import type {
   VisitTrendDetail,
   VisitOverviewDetail,
 } from "./types";
+import type { PageResult } from "@/api/common";
 
 const LOG_BASE_URL = "/api/v1/logs";
 

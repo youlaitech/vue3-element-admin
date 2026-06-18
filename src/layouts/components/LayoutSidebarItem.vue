@@ -284,11 +284,11 @@ html.sidebar-color-blue {
   // 深色主题下的父菜单激活状态"
   html.dark & {
     &.has-active-child > .el-sub-menu__title {
-      color: var(--el-color-primary-light-3) !important;
-      background-color: rgba(64, 128, 255, 0.15) !important;
+      color: var(--menu-active-text) !important;
+      background-color: var(--menu-active-bg) !important;
 
       .menu-icon {
-        color: var(--el-color-primary-light-3) !important;
+        color: var(--menu-active-text) !important;
       }
     }
   }
@@ -296,11 +296,11 @@ html.sidebar-color-blue {
   // 深蓝色侧边栏配色下的父菜单激活状态"
   html.sidebar-color-blue & {
     &.has-active-child > .el-sub-menu__title {
-      color: var(--el-color-primary-light-3) !important;
-      background-color: rgba(64, 128, 255, 0.2) !important;
+      color: var(--menu-active-text) !important;
+      background-color: var(--menu-active-bg) !important;
 
       .menu-icon {
-        color: var(--el-color-primary-light-3) !important;
+        color: var(--menu-active-text) !important;
       }
     }
   }

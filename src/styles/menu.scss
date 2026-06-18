@@ -1,57 +1,8 @@
 /**
- * 全局标准布局样式
+ * 菜单交互样式
  */
 
-.page-container {
-  padding: var(--page-padding);
-}
-
-.page-aside {
-  margin-bottom: var(--page-gap);
-
-  @media (min-width: 992px) {
-    margin-bottom: 0;
-  }
-}
-
-.page-main {
-  display: flex;
-  flex-direction: column;
-  gap: var(--page-gap);
-}
-
-.page-search {
-  margin-bottom: var(--page-gap);
-
-  .el-card__body {
-    padding: 14px 16px 4px;
-  }
-
-  .el-form-item {
-    margin-bottom: 10px;
-  }
-}
-
-.page-content {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-}
-
-.page-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--page-gap);
-
-  &__left,
-  &__right {
-    display: flex;
-    gap: 8px;
-  }
-}
-
-/* 混合布局左侧菜单 hover 样式 */
+// 混合布局左侧菜单 hover
 .layout-mix .layout__sidebar--left .el-menu {
   .el-menu-item:hover,
   .el-sub-menu__title:hover {
@@ -59,16 +10,23 @@
   }
 }
 
-/* 深色或深蓝侧边栏的 hover 样式 */
+// 深色或深蓝侧边栏的 hover
 html.dark .layout-mix .layout__sidebar--left .el-menu,
 html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
   .el-menu-item:hover,
   .el-sub-menu__title:hover {
     background-color: var(--menu-hover) !important;
   }
+
+  .el-menu-item.is-active,
+  .el-sub-menu.is-active > .el-sub-menu__title,
+  .el-sub-menu.has-active-child > .el-sub-menu__title {
+    color: var(--menu-active-text) !important;
+    background-color: var(--menu-active-bg) !important;
+  }
 }
 
-/* 顶部布局菜单填充空间 */
+// 顶部布局菜单填充空间
 .layout-top .layout__header-left .el-menu--horizontal,
 .layout-mix .layout__header-menu .el-menu--horizontal {
   display: flex;
@@ -79,7 +37,7 @@ html.sidebar-color-blue .layout-mix .layout__sidebar--left .el-menu {
   overflow: hidden;
 }
 
-/* 窄屏隐藏菜单文字，仅保留图标 */
+// 窄屏隐藏菜单文字，仅保留图标
 .hideSidebar {
   &.layout-top .layout__header .el-menu--horizontal,
   &.layout-mix .layout__header .el-menu--horizontal {

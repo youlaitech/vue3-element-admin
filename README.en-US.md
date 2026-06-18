@@ -47,16 +47,16 @@
 
 <table align="center">
   <tr>
-    <td><img alt="PC Preview 1" width="400" src="./src/assets/images/preview/pc-01.png"></td>
-    <td><img alt="PC Preview 2" width="400" src="./src/assets/images/preview/pc-02.png"></td>
+    <td><img alt="PC Preview 1" width="400" src="./public/images/preview/pc-01.png"></td>
+    <td><img alt="PC Preview 2" width="400" src="./public/images/preview/pc-02.png"></td>
   </tr>
   <tr>
-    <td><img alt="PC Preview 3" width="400" src="./src/assets/images/preview/pc-03.png"></td>
-    <td><img alt="PC Preview 4" width="400" src="./src/assets/images/preview/pc-04.png"></td>
+    <td><img alt="PC Preview 3" width="400" src="./public/images/preview/pc-03.png"></td>
+    <td><img alt="PC Preview 4" width="400" src="./public/images/preview/pc-04.png"></td>
   </tr>
   <tr>
-    <td><img alt="PC Preview 5" width="400" src="./src/assets/images/preview/pc-05.png"></td>
-    <td><img alt="PC Preview 6" width="400" src="./src/assets/images/preview/pc-06.png"></td>
+    <td><img alt="PC Preview 5" width="400" src="./public/images/preview/pc-05.png"></td>
+    <td><img alt="PC Preview 6" width="400" src="./public/images/preview/pc-06.png"></td>
   </tr>
 </table>
 
@@ -64,10 +64,10 @@
 
 <table align="center">
   <tr>
-    <td><img alt="APP Preview 1" width="200" src="./src/assets/images/preview/app-01.png"></td>
-    <td><img alt="APP Preview 2" width="200" src="./src/assets/images/preview/app-02.png"></td>
-    <td><img alt="APP Preview 3" width="200" src="./src/assets/images/preview/app-03.png"></td>
-    <td><img alt="APP Preview 4" width="200" src="./src/assets/images/preview/app-04.png"></td>
+    <td><img alt="APP Preview 1" width="200" src="./public/images/preview/app-01.png"></td>
+    <td><img alt="APP Preview 2" width="200" src="./public/images/preview/app-02.png"></td>
+    <td><img alt="APP Preview 3" width="200" src="./public/images/preview/app-03.png"></td>
+    <td><img alt="APP Preview 4" width="200" src="./public/images/preview/app-04.png"></td>
   </tr>
 </table>
 
@@ -226,17 +226,17 @@ Thanks to all the contributors!
 <table align="center">
   <tr>
     <td align="center">
-      <img src="./public/images/qr/wechat-official.png" height="180" alt="WeChat Official Account"><br>
+      <img src="./public/images/qrcode/wechat-official.png" height="180" alt="WeChat Official Account"><br>
       <sub>WeChat Official Account</sub>
     </td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td align="center">
-      <img src="./public/images/qr/wechat-mp.jpg" height="180" alt="Mini Program"><br>
+      <img src="./public/images/qrcode/wechat-mp.jpg" height="180" alt="Mini Program"><br>
       <sub>Mini Program</sub>
     </td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td align="center">
-      <img src="./public/images/qr/wechat-personal.png" height="180" alt="Add Author WeChat"><br>
+      <img src="./public/images/qrcode/wechat-personal.png" height="180" alt="Add Author WeChat"><br>
       <sub>Add Author WeChat</sub>
     </td>
   </tr>

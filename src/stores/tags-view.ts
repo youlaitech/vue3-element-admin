@@ -1,3 +1,25 @@
+import type { LocationQuery } from "vue-router";
+
+export interface TagView {
+  name: string;
+  title: string;
+  path: string;
+  fullPath: string;
+  icon?: string;
+  affix?: boolean;
+  keepAlive?: boolean;
+  query?: LocationQuery;
+}
+
+export interface TagsViewResult {
+  visitedViews: TagView[];
+  cachedViews: string[];
+}
+
+export interface DirectionalTagsViewResult {
+  visitedViews: TagView[];
+}
+
 export const useTagsViewStore = defineStore("tagsView", () => {
   const visitedViews = ref<TagView[]>([]);
   const cachedViews = ref<string[]>([]);
@@ -115,7 +137,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     addCachedView(view);
   }
 
-  function delView(view: TagView) {
+  function delView(view: TagView): Promise<TagsViewResult> {
     return new Promise((resolve) => {
       delVisitedView(view);
       delCachedView(view);
@@ -126,7 +148,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
-  function delOtherViews(view: TagView) {
+  function delOtherViews(view: TagView): Promise<TagsViewResult> {
     return new Promise((resolve) => {
       delOtherVisitedViews(view);
       delOtherCachedViews(view);
@@ -137,10 +159,13 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
-  function delLeftViews(view: TagView) {
+  function delLeftViews(view: TagView): Promise<DirectionalTagsViewResult> {
     return new Promise((resolve) => {
       const currIndex = visitedViews.value.findIndex((v) => v.path === view.path);
       if (currIndex === -1) {
+        resolve({
+          visitedViews: [...visitedViews.value],
+        });
         return;
       }
       visitedViews.value = visitedViews.value.filter((item, index) => {
@@ -160,10 +185,13 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
-  function delRightViews(view: TagView) {
+  function delRightViews(view: TagView): Promise<DirectionalTagsViewResult> {
     return new Promise((resolve) => {
       const currIndex = visitedViews.value.findIndex((v) => v.path === view.path);
       if (currIndex === -1) {
+        resolve({
+          visitedViews: [...visitedViews.value],
+        });
         return;
       }
       visitedViews.value = visitedViews.value.filter((item, index) => {
@@ -182,7 +210,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
-  function delAllViews() {
+  function delAllViews(): Promise<TagsViewResult> {
     return new Promise((resolve) => {
       const affixTags = visitedViews.value.filter((tag) => tag?.affix);
       visitedViews.value = affixTags;
@@ -223,7 +251,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
       keepAlive: route.meta?.keepAlive,
       query: route.query,
     };
-    delView(tags).then((res: any) => {
+    delView(tags).then((res) => {
       if (isActive(tags)) {
         toLastView(res.visitedViews, tags);
       }

@@ -1,10 +1,10 @@
-<template>
+﻿<template>
   <div class="page-container">
     <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="tableData.params" :inline="true" label-width="auto">
+      <el-form ref="queryFormRef" :model="params" :inline="true" label-width="auto">
         <el-form-item prop="keywords" label="关键字">
           <el-input
-            v-model="tableData.params.keywords"
+            v-model="params.keywords"
             placeholder="IP/操作人"
             clearable
             @keyup.enter="handleQuery"
@@ -13,7 +13,7 @@
 
         <el-form-item prop="createTime" label="操作时间">
           <el-date-picker
-            v-model="tableData.params.createTime"
+            v-model="params.createTime"
             :editable="false"
             type="daterange"
             range-separator="~"
@@ -25,19 +25,33 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
-          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
+          <el-button type="primary" @click="handleQuery">搜索</el-button>
+          <el-button @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
-    <el-card class="page-content" shadow="never">
-      <el-table v-loading="loading" :data="tableData.list" highlight-current-row border>
+    <el-card ref="tableWrapperRef" class="page-content" shadow="never">
+      <div class="page-toolbar">
+        <div class="page-toolbar__right" style="margin-left: auto">
+          <el-tooltip content="刷新" placement="top">
+            <el-button class="page-icon-btn" @click="fetchData">
+              <el-icon><Refresh /></el-icon>
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="全屏" placement="top">
+            <el-button class="page-icon-btn" @click="toggleFullscreen">
+              <el-icon><FullScreen /></el-icon>
+            </el-button>
+          </el-tooltip>
+        </div>
+      </div>
+      <el-table v-loading="loading" :data="list" highlight-current-row border>
         <el-table-column label="操作标题" prop="title" min-width="180" show-overflow-tooltip />
         <el-table-column label="状态" prop="status" width="80" align="center">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
-              {{ row.status === 1 ? "成功" : "失败" }}
+            <el-tag :type="row.status === LOG_STATUS_SUCCESS ? 'success' : 'danger'" size="small">
+              {{ row.status === LOG_STATUS_SUCCESS ? "成功" : "失败" }}
             </el-tag>
           </template>
         </el-table-column>
@@ -55,16 +69,18 @@
         <el-table-column label="操作时间" prop="createTime" width="180" />
         <el-table-column label="操作" width="80" align="center" fixed="right">
           <template #default="{ row }">
-            <el-button type="primary" link size="small" @click="handleDetail(row)">详情</el-button>
+            <el-button type="primary" link size="small" @click="handleDetail(row as LogItem)">
+              详情
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <pagination
-        v-if="tableData.total > 0"
-        v-model:total="tableData.total"
-        v-model:page="tableData.params.pageNum"
-        v-model:limit="tableData.params.pageSize"
+        v-if="total > 0"
+        v-model:total="total"
+        v-model:page="params.pageNum"
+        v-model:limit="params.pageSize"
         @pagination="fetchData"
       />
     </el-card>
@@ -76,8 +92,11 @@
           {{ detailData.title }}
         </el-descriptions-item>
         <el-descriptions-item label="状态">
-          <el-tag :type="detailData.status === 1 ? 'success' : 'danger'" size="small">
-            {{ detailData.status === 1 ? "成功" : "失败" }}
+          <el-tag
+            :type="detailData.status === LOG_STATUS_SUCCESS ? 'success' : 'danger'"
+            size="small"
+          >
+            {{ detailData.status === LOG_STATUS_SUCCESS ? "成功" : "失败" }}
           </el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="执行时间">
@@ -105,15 +124,50 @@
 </template>
 
 <script setup lang="ts">
+import { useFullscreen } from "@vueuse/core";
+import { type FormInstance, type TagProps } from "element-plus";
+import { FullScreen, Refresh } from "@element-plus/icons-vue";
+
+import LogAPI from "@/api/system/log";
+import type { LogItem, LogQueryParams } from "@/api/system/log";
+import { usePageTable } from "@/composables";
+
 defineOptions({
   name: "Log",
   inheritAttrs: false,
 });
 
-import LogAPI from "@/api/system/log";
-import type { LogItem } from "@/api/system/log";
-import type { FormInstance, TagProps } from "element-plus";
+const tableWrapperRef = ref<HTMLElement | null>(null);
+const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 
+const queryFormRef = ref<FormInstance>();
+
+// 日志状态：1=成功，0=失败。
+const LOG_STATUS_SUCCESS = 1;
+
+/** 分页表格数据管理 */
+const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
+  LogItem,
+  LogQueryParams
+>({
+  initialParams: {
+    pageNum: 1,
+    pageSize: 10,
+    keywords: "",
+    createTime: undefined,
+  },
+  request: LogAPI.getPage,
+  onBeforeReset: () => queryFormRef.value?.resetFields(),
+});
+
+const detailVisible = ref(false);
+const detailData = ref<Partial<LogItem>>({});
+
+/**
+ * 请求方法 → el-tag 类型映射。
+ *
+ * @param method HTTP 方法（GET/POST/PUT/DELETE/PATCH 等）
+ */
 function getMethodTagType(method: string): TagProps["type"] {
   const map: Record<string, TagProps["type"]> = {
     GET: undefined,
@@ -125,50 +179,11 @@ function getMethodTagType(method: string): TagProps["type"] {
   return map[method?.toUpperCase()] ?? "info";
 }
 
-// 表单引用
-const queryFormRef = ref<FormInstance>();
-
-const loading = ref(false);
-
-const tableData = reactive<PageResult<LogItem>>({
-  list: [],
-  total: 0,
-  params: {
-    //查询参数
-    pageNum: 1,
-    pageSize: 10,
-    keywords: "",
-    createTime: undefined as [string, string] | undefined,
-  },
-});
-// 详情弹窗
-const detailVisible = ref(false);
-const detailData = ref<Partial<LogItem>>({});
-
-function fetchData(): void {
-  loading.value = true;
-  LogAPI.getPage(tableData.params)
-    .then((data) => {
-      tableData.list = data.list ?? [];
-      tableData.total = data.total ?? 0;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-}
-
-function handleQuery(): void {
-  tableData.params.pageNum = 1;
-  fetchData();
-}
-
-function handleResetQuery(): void {
-  queryFormRef.value?.resetFields();
-  tableData.params.pageNum = 1;
-  tableData.params.createTime = undefined;
-  fetchData();
-}
-
+/**
+ * 打开日志详情弹窗。
+ *
+ * @param row 当前日志行
+ */
 function handleDetail(row: LogItem): void {
   detailData.value = row;
   detailVisible.value = true;

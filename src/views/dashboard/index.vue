@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="dash">
     <!-- ============================================================
     Header: greeting + links
@@ -16,108 +16,66 @@
           </div>
         </div>
         <div class="dash-header__end">
-          <div class="brand-group">
-            <span class="brand-group__label" style="color: #e67e22">
-              <el-icon :size="13"><Folder /></el-icon>
-              <span>仓库</span>
-            </span>
-            <span class="brand-group__icons">
-              <a
-                href="https://gitee.com/youlaiorg/vue3-element-admin"
-                target="_blank"
-                title="Gitee"
-                class="brand-icon"
-                style="color: #c71d23"
-              >
-                <span class="i-svg:gitee" />
-              </a>
-              <a
-                href="https://github.com/youlaitech/vue3-element-admin"
-                target="_blank"
-                title="GitHub"
-                class="brand-icon"
-                style="color: #0969da"
-              >
-                <span class="i-svg:github" />
-              </a>
-              <a
-                href="https://gitcode.com/youlai/vue3-element-admin"
-                target="_blank"
-                title="GitCode"
-                class="brand-icon"
-                style="color: #f36d26"
-              >
-                <span class="i-svg:gitcode" />
-              </a>
-            </span>
-          </div>
-          <div class="brand-group">
-            <span class="brand-group__label" style="color: #409eff">
-              <el-icon :size="13"><Document /></el-icon>
-              <span>文档</span>
-            </span>
-            <span class="brand-group__icons">
-              <a
-                href="https://juejin.cn/post/7228990409909108793"
-                target="_blank"
-                title="掘金"
-                class="brand-icon"
-                style="color: #1e80ff"
-              >
-                <span class="i-svg:juejin" />
-              </a>
-              <a
-                href="https://youlai.blog.csdn.net/article/details/130191394"
-                target="_blank"
-                title="CSDN"
-                class="brand-icon"
-                style="color: #fc5531"
-              >
-                <span class="i-svg:csdn" />
-              </a>
-              <a
-                href="https://www.cnblogs.com/haoxianrui/p/17331952.html"
-                target="_blank"
-                title="博客园"
-                class="brand-icon"
-                style="color: #f68a1e"
-              >
-                <span class="i-svg:cnblogs" />
-              </a>
-            </span>
-          </div>
-          <div class="brand-group">
-            <span class="brand-group__label" style="color: #e74c3c">
-              <el-icon :size="13"><VideoCamera /></el-icon>
-              <span>视频</span>
-            </span>
-            <span class="brand-group__icons">
-              <a
-                href="https://www.bilibili.com/video/BV1eFUuYyEFj"
-                target="_blank"
-                title="Bilibili"
-                class="brand-icon"
-                style="color: #fb7299"
-              >
-                <span class="i-svg:bilibili" />
-              </a>
-            </span>
-          </div>
+          <a
+            href="https://github.com/youlaitech/vue3-element-admin"
+            target="_blank"
+            title="GitHub"
+            class="quick-link"
+          >
+            <span class="i-svg:github" />
+            <span>GitHub</span>
+          </a>
+          <a
+            href="https://gitee.com/youlaiorg/vue3-element-admin"
+            target="_blank"
+            title="Gitee"
+            class="quick-link"
+          >
+            <span class="i-svg:gitee" />
+            <span>Gitee</span>
+          </a>
+          <a
+            href="https://gitcode.com/youlai/vue3-element-admin"
+            target="_blank"
+            title="GitCode"
+            class="quick-link"
+          >
+            <span class="i-svg:gitcode" />
+            <span>GitCode</span>
+          </a>
+          <a
+            href="https://juejin.cn/post/7228990409909108793"
+            target="_blank"
+            title="文档"
+            class="quick-link"
+          >
+            <el-icon><Document /></el-icon>
+            <span>文档</span>
+          </a>
+          <a
+            href="https://www.bilibili.com/video/BV1eFUuYyEFj"
+            target="_blank"
+            title="视频"
+            class="quick-link"
+          >
+            <el-icon><VideoPlay /></el-icon>
+            <span>视频</span>
+          </a>
         </div>
       </div>
     </section>
 
     <!-- ============================================================
-    Stats: 4 cards, no border, shadow only
+    Stats
     ============================================================ -->
     <section class="dash-stats">
       <div class="stat-card">
-        <div class="stat-card__icon stat-card__icon--blue">
-          <el-icon :size="18"><User /></el-icon>
+        <div class="stat-card__icon stat-card__icon--online">
+          <el-icon :size="18"><Connection /></el-icon>
         </div>
         <div class="stat-card__body">
-          <span class="stat-card__num">{{ onlineUserCount }}</span>
           <span class="stat-card__label">在线用户</span>
+          <span class="stat-card__num">{{ onlineUserCount }}</span>
         </div>
         <span
           :class="[
@@ -130,14 +88,17 @@
       </div>
 
       <div class="stat-card">
-        <div class="stat-card__icon stat-card__icon--green">
-          <el-icon :size="18"><Avatar /></el-icon>
+        <div class="stat-card__icon stat-card__icon--visitor">
+          <el-icon :size="18"><User /></el-icon>
         </div>
         <div class="stat-card__body">
-          <span class="stat-card__num">{{ displayTransitionUvCount }}</span>
           <span class="stat-card__label">今日访客</span>
+          <span class="stat-card__num">{{ displayTransitionUvCount }}</span>
         </div>
-        <span v-if="uvGrowthText !== '--'" class="stat-card__trend">
+        <span
+          v-if="uvGrowthText !== '--'"
+          :class="['stat-card__trend', `stat-card__trend--${uvTrendTone}`]"
+        >
           <el-icon :size="12">
             <ArrowUp v-if="uvIsUp" />
             <ArrowDown v-else />
@@ -147,14 +108,17 @@
       </div>
 
       <div class="stat-card">
-        <div class="stat-card__icon stat-card__icon--orange">
-          <el-icon :size="18"><Monitor /></el-icon>
+        <div class="stat-card__icon stat-card__icon--view">
+          <el-icon :size="18"><View /></el-icon>
         </div>
         <div class="stat-card__body">
-          <span class="stat-card__num">{{ displayTransitionPvCount }}</span>
           <span class="stat-card__label">今日浏览量</span>
+          <span class="stat-card__num">{{ displayTransitionPvCount }}</span>
         </div>
-        <span v-if="pvGrowthText !== '--'" class="stat-card__trend">
+        <span
+          v-if="pvGrowthText !== '--'"
+          :class="['stat-card__trend', `stat-card__trend--${pvTrendTone}`]"
+        >
           <el-icon :size="12">
             <ArrowUp v-if="pvIsUp" />
             <ArrowDown v-else />
@@ -164,14 +128,14 @@
       </div>
 
       <div class="stat-card">
-        <div class="stat-card__icon stat-card__icon--purple">
-          <el-icon :size="18"><Star /></el-icon>
+        <div class="stat-card__icon stat-card__icon--account">
+          <span class="stat-card__svg i-svg:group" />
         </div>
         <div class="stat-card__body">
-          <span class="stat-card__num">1,286</span>
           <span class="stat-card__label">系统用户</span>
+          <span class="stat-card__num">6</span>
         </div>
-        <span class="stat-card__trend stat-card__trend--up">
+        <span :class="['stat-card__trend', `stat-card__trend--${systemTrendTone}`]">
           <el-icon :size="12"><ArrowUp /></el-icon>
           12.5%
         </span>
@@ -182,7 +146,7 @@
     Chart
     ============================================================ -->
     <section class="dash-chart">
-      <div class="card">
+      <div class="card dash-chart__trend">
         <div class="card__head">
           <h3 class="card__title">访问趋势</h3>
           <el-radio-group v-model="visitTrendDateRange" size="small">
@@ -190,8 +154,44 @@
             <el-radio-button label="近30天" :value="30" />
           </el-radio-group>
         </div>
-        <div class="card__body">
-          <ECharts :options="visitTrendChartOptions" height="310px" />
+        <div class="card__body card__body--chart">
+          <ECharts :options="visitTrendChartOptions" height="260px" />
+        </div>
+      </div>
+
+      <div class="card dash-chart__overview">
+        <div class="card__head">
+          <h3 class="card__title">待办概览</h3>
+          <el-tag type="primary" size="small" effect="plain">5 项待处理</el-tag>
+        </div>
+        <div class="card__body overview-card">
+          <div class="overview-summary">
+            <div v-for="item in todoSummaryItems" :key="item.label" class="overview-summary__item">
+              <span class="overview-summary__label">{{ item.label }}</span>
+              <strong class="overview-summary__value">{{ item.value }}</strong>
+            </div>
+          </div>
+          <div class="overview-bars">
+            <div
+              v-for="item in todoOverviewItems"
+              :key="item.label"
+              class="overview-bars__item"
+              :style="{
+                '--overview-percent': `${item.percent}%`,
+              }"
+            >
+              <div class="overview-bars__meta">
+                <span class="overview-bars__label">
+                  <span class="overview-bars__dot" />
+                  {{ item.label }}
+                </span>
+                <span class="overview-bars__value">{{ item.value }} 项</span>
+              </div>
+              <span class="overview-bars__track">
+                <span class="overview-bars__bar" />
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -220,7 +220,12 @@
               <Clock v-else />
             </el-icon>
             <span class="todo-row__title">{{ todo.title }}</span>
-            <el-tag :type="todo.tagType" size="small" effect="plain" class="todo-row__tag">
+            <el-tag
+              :type="todo.done ? 'success' : todo.tag === '工单' ? 'warning' : 'info'"
+              size="small"
+              effect="plain"
+              class="todo-row__tag"
+            >
               {{ todo.tag }}
             </el-tag>
             <span class="todo-row__time">{{ todo.time }}</span>
@@ -235,7 +240,7 @@
         <div class="card__body card__body--scroll">
           <div class="feed">
             <div v-for="item in activities" :key="item.id" class="feed__item">
-              <span :class="['feed__dot', `feed__dot--${item.color}`]" />
+              <span class="feed__dot" />
               <span class="feed__text">{{ item.content }}</span>
               <span class="feed__time">{{ item.time }}</span>
             </div>
@@ -254,24 +259,24 @@ import { ref } from "vue";
 import LogAPI from "@/api/system/log";
 import type { VisitOverviewDetail, VisitTrendDetail } from "@/api/system/log";
 import { useUserStore } from "@/stores/user";
+import { useSettingsStore } from "@/stores/settings";
 import { formatGrowthRate } from "@/utils";
 import { useTransition } from "@vueuse/core";
 import {
   User,
-  Avatar,
-  Monitor,
-  Star,
-  Folder,
-  Document,
-  VideoCamera,
+  Connection,
+  View,
   ArrowUp,
   ArrowDown,
   Clock,
   CircleCheck,
+  Document,
+  VideoPlay,
 } from "@element-plus/icons-vue";
 import { useOnlineCount } from "@/composables";
 
 const userStore = useUserStore();
+const settingsStore = useSettingsStore();
 const { onlineUserCount, isConnected } = useOnlineCount();
 
 const hours = new Date().getHours();
@@ -294,7 +299,6 @@ interface TodoItem {
   id: number;
   title: string;
   tag: string;
-  tagType: "primary" | "success" | "warning" | "danger" | "info";
   time: string;
   done: boolean;
 }
@@ -304,7 +308,6 @@ const todoItems: TodoItem[] = [
     id: 1,
     title: "审批：张三提交的请假申请",
     tag: "审批",
-    tagType: "warning",
     time: "10分钟前",
     done: false,
   },
@@ -312,7 +315,6 @@ const todoItems: TodoItem[] = [
     id: 2,
     title: "审核：新用户注册信息核实",
     tag: "审核",
-    tagType: "primary",
     time: "30分钟前",
     done: false,
   },
@@ -320,7 +322,6 @@ const todoItems: TodoItem[] = [
     id: 3,
     title: "发布：系统维护通知公告",
     tag: "通知",
-    tagType: "info",
     time: "1小时前",
     done: false,
   },
@@ -328,7 +329,6 @@ const todoItems: TodoItem[] = [
     id: 4,
     title: "处理：工单 #TSK-20240509",
     tag: "工单",
-    tagType: "danger",
     time: "2小时前",
     done: false,
   },
@@ -336,7 +336,6 @@ const todoItems: TodoItem[] = [
     id: 5,
     title: "更新：用户角色权限配置",
     tag: "配置",
-    tagType: "success",
     time: "昨天 15:30",
     done: true,
   },
@@ -346,16 +345,28 @@ interface Activity {
   id: number;
   content: string;
   time: string;
-  color: "blue" | "green" | "orange" | "purple" | "grey";
 }
 
 const activities: Activity[] = [
-  { id: 1, content: "管理员 admin 登录系统", time: "3分钟前", color: "blue" },
-  { id: 2, content: "新增用户李四，角色为普通用户", time: "25分钟前", color: "green" },
-  { id: 3, content: "系统配置项「登录策略」已更新", time: "1小时前", color: "orange" },
-  { id: 4, content: "数据库自动备份任务执行完成", time: "3小时前", color: "purple" },
-  { id: 5, content: "角色权限批量修改：运营组新增导出权限", time: "昨天 16:42", color: "orange" },
-  { id: 6, content: "SSL 证书已自动续期", time: "昨天 09:15", color: "green" },
+  { id: 1, content: "管理员 admin 登录系统", time: "3分钟前" },
+  { id: 2, content: "新增用户李四，角色为普通用户", time: "25分钟前" },
+  { id: 3, content: "系统配置项「登录策略」已更新", time: "1小时前" },
+  { id: 4, content: "数据库自动备份任务执行完成", time: "3小时前" },
+  { id: 5, content: "角色权限批量修改：运营组新增导出权限", time: "昨天 16:42" },
+  { id: 6, content: "SSL 证书已自动续期", time: "昨天 09:15" },
+];
+
+const todoOverviewItems = [
+  { label: "审批", value: "2", percent: 40, tone: "primary" },
+  { label: "审核", value: "1", percent: 20, tone: "primary" },
+  { label: "通知", value: "1", percent: 20, tone: "primary" },
+  { label: "工单", value: "1", percent: 20, tone: "primary" },
+];
+
+const todoSummaryItems = [
+  { label: "今日新增", value: "3", tone: "primary" },
+  { label: "即将超时", value: "1", tone: "primary" },
+  { label: "今日完成", value: "1", tone: "success" },
 ];
 
 const visitOverviewData = ref<VisitOverviewDetail>({
@@ -377,6 +388,9 @@ const pvGrowthText = computed(() => {
 });
 const uvIsUp = computed(() => (visitOverviewData.value.uvGrowthRate || 0) > 0);
 const pvIsUp = computed(() => (visitOverviewData.value.pvGrowthRate || 0) > 0);
+const uvTrendTone = computed(() => (uvIsUp.value ? "success" : "danger"));
+const pvTrendTone = computed(() => (pvIsUp.value ? "success" : "danger"));
+const systemTrendTone = "success";
 
 const tUv = useTransition(
   computed(() => visitOverviewData.value.todayUvCount),
@@ -392,11 +406,42 @@ const tPv = useTransition(
     transition: [0.25, 0.1, 0.25, 1.0],
   }
 );
-const displayTransitionUvCount = computed(() => Math.round(Number((tUv as any)?.value ?? tUv)));
-const displayTransitionPvCount = computed(() => Math.round(Number((tPv as any)?.value ?? tPv)));
+const displayTransitionUvCount = computed(() => Math.round(Number(tUv.value)));
+const displayTransitionPvCount = computed(() => Math.round(Number(tPv.value)));
 
 const visitTrendDateRange = ref(7);
+const visitTrendData = ref<VisitTrendDetail>();
 const visitTrendChartOptions = ref({});
+
+function getCssVar(name: string, fallback: string) {
+  if (typeof window === "undefined") return fallback;
+
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
+
+function colorWithAlpha(color: string, alpha: number) {
+  const value = color.trim();
+
+  if (value.startsWith("#")) {
+    const hex =
+      value.length === 4
+        ? `#${value[1]}${value[1]}${value[2]}${value[2]}${value[3]}${value[3]}`
+        : value;
+    const rgb = Number.parseInt(hex.slice(1), 16);
+    const r = (rgb >> 16) & 255;
+    const g = (rgb >> 8) & 255;
+    const b = rgb & 255;
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  const parts = value.match(/\d+(\.\d+)?/g);
+  if (parts && parts.length >= 3) {
+    return `rgba(${parts[0]}, ${parts[1]}, ${parts[2]}, ${alpha})`;
+  }
+
+  return value;
+}
 
 function fetchVisitOverviewData() {
   LogAPI.getVisitOverview().then((d) => {
@@ -412,37 +457,48 @@ function fetchVisitTrendData() {
     startDate: dayjs(s).format("YYYY-MM-DD"),
     endDate: dayjs(new Date()).format("YYYY-MM-DD"),
   }).then((d) => {
+    visitTrendData.value = d;
     updateVisitTrendChartOptions(d);
   });
 }
 
 function updateVisitTrendChartOptions(d: VisitTrendDetail) {
+  const primary = getCssVar("--el-color-primary", "#409eff");
+  const success = getCssVar("--el-color-success", "#67c23a");
+  const textSecondary = getCssVar("--el-text-color-secondary", "#909399");
+  const borderLighter = getCssVar("--el-border-color-lighter", "#ebeef5");
+  const gridLine = colorWithAlpha(borderLighter, 0.72);
+
   visitTrendChartOptions.value = {
     tooltip: {
       trigger: "axis",
       borderWidth: 0,
       padding: [8, 12],
-      extraCssText: "box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-radius: 8px;",
+      extraCssText: "box-shadow: var(--el-box-shadow-light); border-radius: 6px;",
     },
     legend: {
       data: ["浏览量", "访客量"],
       bottom: 0,
-      textStyle: { fontSize: 12 },
+      textStyle: { fontSize: 12, color: textSecondary },
       itemWidth: 10,
       itemHeight: 8,
       itemGap: 24,
     },
-    grid: { left: "0%", right: "4%", bottom: "14%", top: "4%", containLabel: true },
+    grid: { left: "0%", right: "3%", bottom: "14%", top: "5%", containLabel: true },
     xAxis: {
       type: "category",
       data: d.dates,
       axisTick: { show: false },
-      axisLabel: { fontSize: 11 },
+      axisLine: { lineStyle: { color: colorWithAlpha(borderLighter, 0.82) } },
+      axisLabel: { fontSize: 11, color: textSecondary },
+      splitLine: { show: false },
     },
     yAxis: {
       type: "value",
-      splitLine: { lineStyle: { type: "dashed" } },
-      axisLabel: { fontSize: 11 },
+      axisLine: { show: false },
+      axisTick: { show: false },
+      splitLine: { lineStyle: { type: "dashed", color: gridLine, width: 1 } },
+      axisLabel: { fontSize: 11, color: textSecondary },
     },
     series: [
       {
@@ -453,9 +509,10 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
         symbol: "circle",
         symbolSize: 5,
         showSymbol: false,
-        lineStyle: { color: "#409EFF", width: 2.5 },
-        itemStyle: { color: "#409EFF" },
+        lineStyle: { color: primary, width: 2.2 },
+        itemStyle: { color: primary },
         areaStyle: {
+          opacity: 1,
           color: {
             type: "linear",
             x: 0,
@@ -463,8 +520,9 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
             x2: 0,
             y2: 1,
             colorStops: [
-              { offset: 0, color: "rgba(64,158,255,0.12)" },
-              { offset: 1, color: "rgba(64,158,255,0.0)" },
+              { offset: 0, color: colorWithAlpha(primary, 0.18) },
+              { offset: 0.52, color: colorWithAlpha(primary, 0.08) },
+              { offset: 1, color: colorWithAlpha(primary, 0.01) },
             ],
           },
         },
@@ -477,8 +535,8 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
         symbol: "circle",
         symbolSize: 5,
         showSymbol: false,
-        lineStyle: { color: "#67C23A", width: 2.5 },
-        itemStyle: { color: "#67C23A" },
+        lineStyle: { color: colorWithAlpha(success, 0.9), width: 1.8, opacity: 0.86 },
+        itemStyle: { color: success },
         areaStyle: {
           color: {
             type: "linear",
@@ -487,8 +545,8 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
             x2: 0,
             y2: 1,
             colorStops: [
-              { offset: 0, color: "rgba(103,194,58,0.12)" },
-              { offset: 1, color: "rgba(103,194,58,0.0)" },
+              { offset: 0, color: colorWithAlpha(success, 0.08) },
+              { offset: 1, color: colorWithAlpha(success, 0) },
             ],
           },
         },
@@ -502,85 +560,90 @@ watch(
   () => fetchVisitTrendData(),
   { immediate: true }
 );
+watch(
+  () => [settingsStore.resolvedTheme, settingsStore.themeColors],
+  () => {
+    if (!visitTrendData.value) return;
+
+    requestAnimationFrame(() => {
+      if (visitTrendData.value) updateVisitTrendChartOptions(visitTrendData.value);
+    });
+  },
+  { deep: true }
+);
 onMounted(() => {
   fetchVisitOverviewData();
 });
 </script>
 
 <style lang="scss" scoped>
-// ============================================================
 // Tokens
-// ============================================================
-$gap: 16px;
-$pad: 16px;
-$radius: 10px;
-
-// Card: shadow instead of border for premium feel.
-// In dark mode the shadow is hidden — the border-color
-// takes over.
+$gap: 12px;
+$pad: 10px;
 %card {
   overflow: hidden;
-  background: var(--content-bg);
-  border: 1px solid var(--border-color);
-  border-radius: $radius;
+  background: var(--el-bg-color-overlay);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
 }
 
-// ============================================================
 // Page
-// ============================================================
-
 .dash {
   display: flex;
   flex-direction: column;
   gap: $gap;
   padding: $pad;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 62%), rgb(255 255 255 / 0%) 240px), var(--page-bg);
 }
 
-// ============================================================
 // Header
-// ============================================================
-
 .dash-header {
   &__card {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 18px;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    min-height: 78px;
+    padding: 16px 18px;
   }
 
   &__start {
     display: flex;
-    gap: 14px;
+    flex: 1;
+    gap: 12px;
     align-items: center;
+    min-width: 260px;
   }
 
   &__text {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
   }
 
   &__greeting {
     margin: 0;
-    font-size: 20px;
-    font-weight: 400;
+    font-size: 18px;
+    font-weight: 500;
     line-height: 1.3;
     color: var(--el-text-color-primary);
-    letter-spacing: -0.01em;
   }
 
   &__date {
     margin: 0;
     font-size: 12px;
-    color: var(--el-text-color-placeholder);
+    color: var(--el-text-color-secondary);
   }
 
   &__end {
     display: flex;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 8px;
     align-items: center;
+    justify-content: flex-end;
   }
 }
 
@@ -589,11 +652,12 @@ $radius: 10px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   overflow: hidden;
   color: var(--el-color-primary);
-  background: var(--el-color-primary-light-9);
+  background: color-mix(in srgb, var(--el-color-primary) 14%, var(--el-bg-color-overlay));
+  border: 1px solid color-mix(in srgb, var(--el-color-primary) 18%, transparent);
   border-radius: 50%;
 
   img {
@@ -603,53 +667,41 @@ $radius: 10px;
   }
 }
 
-// ============================================================
-// Brand link groups
-// ============================================================
-
-.brand-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-
-  &__label {
-    display: inline-flex;
-    gap: 4px;
-    align-items: center;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--el-text-color-secondary);
-    letter-spacing: 0.03em;
-  }
-
-  &__icons {
-    display: flex;
-    gap: 1px;
-    align-items: center;
-  }
-}
-
-.brand-icon {
+// Quick links
+.quick-link {
   display: inline-flex;
+  gap: 6px;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  font-size: 18px;
+  height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  text-decoration: none;
+  background: var(--el-fill-color-extra-light);
+  border: 1px solid var(--el-border-color-lighter);
   border-radius: 6px;
   transition:
     color 0.15s,
-    background-color 0.15s;
+    background-color 0.15s,
+    border-color 0.15s;
+
+  .el-icon,
+  [class^="i-svg:"] {
+    width: 15px;
+    height: 15px;
+    font-size: 15px;
+    color: currentcolor;
+  }
 
   &:hover {
-    background: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
+    background: color-mix(in srgb, var(--el-color-primary) 7%, var(--el-bg-color-overlay));
+    border-color: color-mix(in srgb, var(--el-color-primary) 20%, var(--el-border-color-lighter));
   }
 }
 
-// ============================================================
 // Stat cards
-// ============================================================
-
 .dash-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -658,9 +710,10 @@ $radius: 10px;
 
 .stat-card {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   align-items: center;
-  padding: 24px;
+  min-height: 84px;
+  padding: 18px;
   @extend %card;
 
   &__icon {
@@ -668,26 +721,33 @@ $radius: 10px;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
 
-    &--blue {
+    &--online {
       color: var(--el-color-primary);
-      background: var(--el-color-primary-light-9);
+      background: color-mix(in srgb, var(--el-color-primary) 10%, var(--el-bg-color-overlay));
     }
-    &--green {
-      color: var(--el-color-success);
-      background: var(--el-color-success-light-9);
+    &--visitor {
+      color: var(--el-color-primary);
+      background: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-bg-color-overlay));
     }
-    &--orange {
-      color: var(--el-color-warning);
-      background: var(--el-color-warning-light-9);
+    &--view {
+      color: var(--el-color-primary);
+      background: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-bg-color-overlay));
     }
-    &--purple {
-      color: var(--el-color-primary-light-3);
-      background: var(--el-color-primary-light-9);
+    &--account {
+      color: var(--el-color-primary);
+      background: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-bg-color-overlay));
     }
+  }
+
+  &__svg {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    color: currentcolor;
   }
 
   &__body {
@@ -698,15 +758,15 @@ $radius: 10px;
   }
 
   &__num {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.15;
     color: var(--el-text-color-primary);
-    letter-spacing: -0.02em;
   }
 
   &__label {
-    font-size: 12px;
+    margin-bottom: 3px;
+    font-size: 13px;
     color: var(--el-text-color-secondary);
   }
 
@@ -719,48 +779,57 @@ $radius: 10px;
       color: var(--el-color-success);
     }
     &--off {
-      color: var(--el-color-danger);
+      color: var(--el-text-color-secondary);
     }
   }
 
   &__trend {
     display: inline-flex;
     flex-shrink: 0;
-    gap: 2px;
+    gap: 3px;
     align-items: center;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 700;
     color: var(--el-text-color-secondary);
 
-    &--up {
+    &--success {
+      color: var(--el-color-success);
+    }
+
+    &--danger {
       color: var(--el-color-danger);
     }
   }
 }
 
-// ============================================================
 // Generic card
-// ============================================================
-
 .card {
+  display: flex;
+  flex-direction: column;
   @extend %card;
 
   &__head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 20px;
+    min-height: 48px;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--card-border);
   }
 
   &__title {
     margin: 0;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--el-text-color-primary);
   }
 
   &__body {
-    padding: 0 20px 20px;
+    padding: 16px 18px 18px;
+
+    &--chart {
+      padding: 14px 18px 16px;
+    }
 
     &--scroll {
       flex: 1;
@@ -770,9 +839,166 @@ $radius: 10px;
   }
 }
 
-// ============================================================
+.dash-header__card {
+  flex-direction: row;
+}
+
 // Chart & bottom grids
-// ============================================================
+.dash-chart {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(280px, 1fr);
+  gap: $gap;
+}
+
+.dash-chart__trend,
+.dash-chart__overview {
+  min-width: 0;
+}
+
+.overview-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 0;
+}
+
+.overview-bars {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 142px;
+  padding: 0;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  &__meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+  }
+
+  &__label,
+  &__value {
+    font-size: 12px;
+    color: var(--el-text-color-secondary);
+  }
+
+  &__value {
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  &__label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    min-width: 0;
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    background: var(--el-color-primary);
+    border-radius: 50%;
+  }
+
+  &__track {
+    height: 5px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--el-color-primary) 10%, var(--el-fill-color-light));
+    border-radius: 999px;
+  }
+
+  &__bar {
+    display: block;
+    width: var(--overview-percent);
+    height: 100%;
+    background: linear-gradient(90deg, var(--el-color-primary), var(--el-color-primary-light-3));
+    border-radius: inherit;
+  }
+}
+
+.overview-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+
+  &__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    min-height: 64px;
+    padding: 12px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--el-color-primary) 4%, var(--el-bg-color-overlay));
+    border: 1px solid
+      color-mix(in srgb, var(--el-color-primary) 10%, var(--el-border-color-lighter));
+    border-radius: 6px;
+
+    &:nth-child(2) {
+      background: color-mix(in srgb, var(--el-color-primary) 6%, var(--el-bg-color-overlay));
+      border-color: color-mix(in srgb, var(--el-color-primary) 14%, var(--el-border-color-lighter));
+
+      &::before {
+        background: color-mix(in srgb, var(--el-color-primary) 48%, transparent);
+      }
+
+      .overview-summary__value {
+        color: var(--el-color-warning);
+      }
+    }
+
+    &:nth-child(3) {
+      background: color-mix(in srgb, var(--el-color-primary) 3%, var(--el-bg-color-overlay));
+      border-color: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-border-color-lighter));
+
+      &::before {
+        background: color-mix(in srgb, var(--el-color-primary) 36%, transparent);
+      }
+
+      .overview-summary__value {
+        color: var(--el-color-success);
+      }
+    }
+
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      content: "";
+      background: color-mix(in srgb, var(--el-color-primary) 62%, transparent);
+    }
+  }
+
+  &__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    color: var(--el-text-color-secondary);
+    white-space: nowrap;
+  }
+
+  &__value {
+    flex-shrink: 0;
+    margin-top: 5px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--el-color-primary);
+  }
+}
 
 .dash-bottom {
   display: grid;
@@ -780,15 +1006,12 @@ $radius: 10px;
   gap: $gap;
 }
 
-// ============================================================
 // Todo rows
-// ============================================================
-
 .todo-row {
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 10px 0;
+  padding: 11px 0;
 
   & + & {
     border-top: 1px solid var(--el-border-color-lighter);
@@ -803,7 +1026,7 @@ $radius: 10px;
 
   &__icon--pending {
     flex-shrink: 0;
-    color: var(--el-color-warning);
+    color: var(--el-color-primary);
   }
   &__icon--done {
     flex-shrink: 0;
@@ -822,23 +1045,32 @@ $radius: 10px;
 
   &__tag {
     flex-shrink: 0;
+    color: var(--el-text-color-secondary);
+    background: var(--el-fill-color-light);
+
+    &.el-tag--warning {
+      color: color-mix(in srgb, var(--el-color-warning) 78%, var(--el-text-color-primary));
+      background: color-mix(in srgb, var(--el-color-warning) 9%, var(--el-bg-color-overlay));
+    }
+
+    &.el-tag--success {
+      color: var(--el-color-success);
+      background: color-mix(in srgb, var(--el-color-success) 8%, var(--el-bg-color-overlay));
+    }
   }
 
   &__time {
     flex-shrink: 0;
     font-size: 12px;
-    color: var(--el-text-color-placeholder);
+    color: var(--el-text-color-secondary);
   }
 }
 
-// ============================================================
 // Activity feed
-// ============================================================
-
 .feed {
   display: flex;
   flex-direction: column;
-  padding: 8px 20px 16px;
+  padding: 10px 20px 16px;
 
   &__item {
     position: relative;
@@ -846,7 +1078,7 @@ $radius: 10px;
     flex-wrap: wrap;
     gap: 8px;
     align-items: baseline;
-    padding: 9px 0 9px 16px;
+    padding: 10px 0 10px 16px;
 
     &::before {
       position: absolute;
@@ -869,23 +1101,9 @@ $radius: 10px;
     left: 0;
     width: 7px;
     height: 7px;
+    background: var(--el-color-primary);
+    border: 2px solid var(--el-color-primary-light-8);
     border-radius: 50%;
-
-    &--blue {
-      background: var(--el-color-primary);
-    }
-    &--green {
-      background: var(--el-color-success);
-    }
-    &--orange {
-      background: var(--el-color-warning);
-    }
-    &--purple {
-      background: var(--el-color-primary-light-3);
-    }
-    &--grey {
-      background: var(--el-text-color-placeholder);
-    }
   }
 
   &__text {
@@ -899,14 +1117,11 @@ $radius: 10px;
   &__time {
     flex-shrink: 0;
     font-size: 12px;
-    color: var(--el-text-color-placeholder);
+    color: var(--el-text-color-secondary);
   }
 }
 
-// ============================================================
 // Responsive
-// ============================================================
-
 @media (max-width: 1200px) {
   .dash-stats {
     grid-template-columns: repeat(2, 1fr);
@@ -915,9 +1130,17 @@ $radius: 10px;
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .dash-header__end {
+    justify-content: flex-start;
+  }
 }
 
 @media (max-width: 992px) {
+  .dash-chart {
+    grid-template-columns: 1fr;
+  }
+
   .dash-bottom {
     grid-template-columns: 1fr;
   }
@@ -925,8 +1148,8 @@ $radius: 10px;
 
 @media (max-width: 768px) {
   .dash {
-    gap: 14px;
-    padding: 14px;
+    gap: 10px;
+    padding: 10px;
   }
 
   .dash-stats {

@@ -1,19 +1,15 @@
 /**
  * 样式总入口
- * 严格按照 ITCSS 架构顺序导入
  */
 
-// 1. 基础层
-@use "./base/variables" as *;
-@use "./base/theme";
-@use "./base/reset";
+// 1. 基础与主题层
+@use "./theme";
+@use "./reset";
 
 // 2. 第三方适配层
-@use "./vendors/element-plus";
-@use "./vendors/element-plus-override";
-@use "./vendors/vxe-table";
-@use "./vendors/wangeditor";
-@use "./vendors/nprogress";
+@use "./element-plus-overrides";
+@use "./vendors";
 
-// 3. 布局层
-@use "./layout/layout";
+// 3. 布局与页面层
+@use "./menu";
+@use "./page";

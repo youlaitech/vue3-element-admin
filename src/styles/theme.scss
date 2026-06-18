@@ -1,0 +1,62 @@
+/**
+ * 主题变量定义
+ */
+
+// 浅色主题
+:root {
+  --menu-background: #fff;
+  --menu-text: #606266;
+  --menu-active-text: var(--el-menu-active-color);
+  --menu-active-bg: #e8f3ff;
+  --menu-hover: #e6f4ff;
+  --menu-border: var(--card-border);
+  --sidebar-logo-background: #fafafa;
+  --sidebar-logo-text-color: #383853;
+  --page-bg: #f6f8fc;
+  --content-bg: #ffffff;
+  --border-color: #e3eaf3;
+  --card-border: #dfe7f1;
+  --card-border-hover: #d5dfec;
+  --card-radius: 8px;
+  --card-shadow: 0 1px 2px rgb(15 23 42 / 3%);
+  --card-shadow-hover: 0 10px 24px rgb(15 23 42 / 6%), 0 2px 6px rgb(15 23 42 / 4%);
+  --custom-radius: 8px;
+  --page-padding: 10px;
+  --page-gap: 10px;
+}
+
+// 深蓝色侧边栏
+html.sidebar-color-blue {
+  --menu-background: #304156;
+  --menu-text: #bfcbd9;
+  --menu-active-text: #ffffff;
+  --menu-active-bg: rgb(22 93 255 / 18%);
+  --menu-hover: rgb(255 255 255 / 7%);
+  --menu-border: rgb(15 23 42 / 22%);
+  --sidebar-logo-background: #2d3748;
+  --sidebar-logo-text-color: #fff;
+}
+
+// 暗黑主题
+html.dark {
+  --menu-background: var(--el-bg-color-overlay);
+  --menu-text: #fff;
+  --menu-active-text: #ffffff;
+  --menu-active-bg: rgb(22 93 255 / 16%);
+  --menu-hover: rgb(0 0 0 / 20%);
+  --menu-border: rgb(255 255 255 / 8%);
+  --sidebar-logo-background: rgb(0 0 0 / 20%);
+  --sidebar-logo-text-color: #fff;
+  --page-bg: #0d1117;
+  --content-bg: #161618;
+  --border-color: rgb(255 255 255 / 10%);
+  --card-border: rgb(255 255 255 / 10%);
+  --card-border-hover: rgb(255 255 255 / 14%);
+  --card-shadow: none;
+  --card-shadow-hover: none;
+}
+
+// 无障碍模式
+html.color-weak {
+  filter: invert(80%);
+}

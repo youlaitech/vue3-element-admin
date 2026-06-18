@@ -89,7 +89,6 @@ import LayoutMain from "./components/LayoutMain.vue";
 import LayoutSidebarItem from "./components/LayoutSidebarItem.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
 import variables from "@/styles/variables.module.scss";
-
 const { width } = useWindowSize();
 
 const appStore = useAppStore();
@@ -123,7 +122,7 @@ const useMenuColors = computed(
 </script>
 
 <style lang="scss" scoped>
-@use "@/styles/base/mixins" as *;
+@use "@/styles/mixins" as *;
 
 .layout {
   &__header {
@@ -133,8 +132,7 @@ const useMenuColors = computed(
     width: 100%;
     height: $navbar-height;
     background-color: var(--menu-background);
-    border-bottom: 1px solid var(--card-border);
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 6%);
+    border-bottom: 1px solid var(--menu-border);
 
     &-content {
       display: flex;
@@ -167,16 +165,33 @@ const useMenuColors = computed(
 
       :deep(.el-menu--horizontal) {
         display: flex;
+        gap: 4px;
         align-items: center;
         height: 100%;
 
         .el-menu-item {
+          position: relative;
           height: 100%;
+          padding: 0 12px;
           line-height: $navbar-height;
           border-bottom: none;
+          border-radius: 0;
+          transition:
+            color 0.16s ease,
+            background-color 0.16s ease,
+            border-color 0.16s ease;
+
+          &:hover {
+            background-color: var(--menu-hover) !important;
+          }
 
           &.is-active {
-            background-color: rgba(255, 255, 255, 0.12);
+            color: var(--el-color-primary) !important;
+            background-color: color-mix(
+              in srgb,
+              var(--el-color-primary) 10%,
+              var(--el-bg-color-overlay)
+            ) !important;
             border-bottom: 2px solid var(--el-color-primary);
           }
         }
@@ -202,7 +217,7 @@ const useMenuColors = computed(
       width: $sidebar-width;
       height: 100%;
       background-color: var(--menu-background);
-      border-right: 1px solid var(--card-border);
+      border-right: 1px solid var(--menu-border);
       transition: width 0.28s;
 
       &.layout__sidebar--collapsed {
@@ -228,7 +243,7 @@ const useMenuColors = computed(
         height: $sidebar-toggle-height;
         line-height: $sidebar-toggle-height;
         background-color: var(--menu-background);
-        box-shadow: 0 0 6px -2px var(--el-color-primary);
+        border-top: 1px solid var(--menu-border);
       }
     }
 
@@ -265,6 +280,22 @@ const useMenuColors = computed(
 :deep(.hasTagsView) {
   .app-main {
     @include app-main-height-with-tags;
+  }
+}
+
+:global(html.dark),
+:global(html.sidebar-color-blue) {
+  .layout__header-menu {
+    :deep(.el-menu--horizontal) {
+      .el-menu-item.is-active {
+        color: var(--menu-active-text) !important;
+        background-color: color-mix(
+          in srgb,
+          var(--el-color-primary) 18%,
+          var(--menu-background)
+        ) !important;
+      }
+    }
   }
 }
 </style>

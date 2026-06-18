@@ -1,0 +1,30 @@
+/**
+ * Element Plus Sass 主题变量配置
+ *
+ * 通过 vite.config.ts 的 additionalData 注入，必须在 Element Plus 组件 Sass
+ * 样式加载前生效。
+ */
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+  $colors: (
+    "primary": (
+      // 与 src/settings.ts 的默认色板保持一致，避免首屏出现两套颜色。
+      "base": #165dff,
+    ),
+    "success": (
+      "base": #00b42a,
+    ),
+    "warning": (
+      "base": #ff7d00,
+    ),
+    "danger": (
+      "base": #f53f3f,
+    ),
+    "info": (
+      "base": #86909c,
+    ),
+  ),
+
+  $bg-color: (
+    "page": #f5f7fb,
+  )
+);

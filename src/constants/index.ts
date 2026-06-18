@@ -48,13 +48,15 @@ export const STORAGE_KEYS = {
 
   // ===== UI 设置 =====
   SHOW_TAGS_VIEW: `${APP_PREFIX}:ui:show_tags_view`,
+  TAGS_VIEW_STYLE: `${APP_PREFIX}:ui:tags_view_style`,
   SHOW_APP_LOGO: `${APP_PREFIX}:ui:show_app_logo`,
   SHOW_WATERMARK: `${APP_PREFIX}:ui:show_watermark`,
   PAGE_SWITCHING_ANIMATION: `${APP_PREFIX}:ui:page_switching_animation`,
   LAYOUT: `${APP_PREFIX}:ui:layout`,
   SIDEBAR_COLOR_SCHEME: `${APP_PREFIX}:ui:sidebar_color_scheme`,
   THEME: `${APP_PREFIX}:ui:theme`,
-  THEME_COLOR: `${APP_PREFIX}:ui:theme_color`,
+  THEME_PALETTE: `${APP_PREFIX}:ui:theme_palette`,
+  THEME_COLORS: `${APP_PREFIX}:ui:theme_colors`,
   GRAY_MODE: `${APP_PREFIX}:ui:gray_mode`,
   COLOR_WEAK: `${APP_PREFIX}:ui:color_weak`,
 

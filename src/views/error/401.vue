@@ -1,6 +1,6 @@
 <template>
   <div class="p-5 pb-0 sm:p-10 lg:p-20 w-full">
-    <el-button icon="arrow-left" @click="router.back()">返回</el-button>
+    <el-button @click="router.back()">返回</el-button>
     <el-row>
       <el-col :xs="24" :span="12">
         <h1 class="text-6xl font-bold text-[#484848]">Oops!</h1>

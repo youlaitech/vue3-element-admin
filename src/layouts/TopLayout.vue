@@ -49,7 +49,7 @@ const isLogoCollapsed = computed(() => width.value < 768);
 </script>
 
 <style lang="scss" scoped>
-@use "@/styles/base/mixins" as *;
+@use "@/styles/mixins" as *;
 
 .layout {
   &__header {

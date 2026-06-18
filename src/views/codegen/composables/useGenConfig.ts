@@ -3,6 +3,7 @@ import type { GenConfigForm } from "@/api/codegen";
 import DictAPI from "@/api/system/dict";
 import MenuAPI from "@/api/system/menu";
 import { QueryTypeEnum } from "@/enums/codegen";
+import type { OptionItem } from "@/api/common";
 
 export function useGenConfig() {
   const genConfigFormData = ref<GenConfigForm>({

@@ -33,18 +33,18 @@
         @filter-change="handleFilterChange"
       >
         <template #status="scope">
-          <el-tag :type="scope.row[scope.prop] === 1 ? 'success' : 'info'">
-            {{ scope.row[scope.prop] === 1 ? "启用" : "禁用" }}
+          <el-tag :type="scope.row[scope.prop as string] === 1 ? 'success' : 'info'">
+            {{ scope.row[scope.prop as string] === 1 ? "启用" : "禁用" }}
           </el-tag>
         </template>
         <template #gender="scope">
-          <DictTag v-model="scope.row[scope.prop]" code="gender" />
+          <DictTag v-model="scope.row[scope.prop as string]" code="gender" />
         </template>
         <template #mobile="scope">
-          <el-text>{{ scope.row[scope.prop] }}</el-text>
+          <el-text>{{ scope.row[scope.prop as string] }}</el-text>
           <copy-button
-            v-if="scope.row[scope.prop]"
-            :text="scope.row[scope.prop]"
+            v-if="scope.row[scope.prop as string]"
+            :text="scope.row[scope.prop as string]"
             :style="{ marginLeft: '2px' }"
           />
         </template>
@@ -91,8 +91,8 @@
         @operate-click="handleOperateClick2"
       >
         <template #status="scope">
-          <el-tag :type="scope.row[scope.prop] === 1 ? 'success' : 'info'">
-            {{ scope.row[scope.prop] === 1 ? "启用" : "禁用" }}
+          <el-tag :type="scope.row[scope.prop as string] === 1 ? 'success' : 'info'">
+            {{ scope.row[scope.prop as string] === 1 ? "启用" : "禁用" }}
           </el-tag>
         </template>
       </page-content>

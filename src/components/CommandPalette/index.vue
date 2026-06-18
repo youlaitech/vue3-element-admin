@@ -141,28 +141,38 @@ const handleInputKeydown: (evt: KeyboardEvent | Event) => void = (evt) => {
 <style scoped>
 .command-palette-trigger {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
-  height: 32px;
-  padding: 0 12px;
+  width: 150px;
+  height: 28px;
+  padding: 0 8px 0 10px;
   user-select: none;
-  background: var(--el-fill-color-light);
-  border: 1px solid var(--el-border-color-lighter);
-  border-radius: 999px;
+  background: var(--el-fill-color-extra-light);
+  border: 1px solid var(--el-border-color-light);
+  border-radius: 6px;
+  transition:
+    background-color 0.16s,
+    border-color 0.16s;
 }
 
 .command-palette-trigger__left {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
+  min-width: 0;
 }
 
 .command-palette-trigger__left :deep([class^="i-svg:"]) {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
   color: var(--el-text-color-secondary) !important;
 }
 
 .command-palette-trigger__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 12px;
   color: var(--el-text-color-secondary);
   white-space: nowrap;
@@ -172,14 +182,15 @@ const handleInputKeydown: (evt: KeyboardEvent | Event) => void = (evt) => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2px 8px;
-  font-size: 12px;
+  height: 18px;
+  padding: 0 6px;
+  font-size: 11px;
   line-height: 1;
-  color: var(--el-text-color-secondary);
+  color: var(--el-text-color-placeholder);
   white-space: nowrap;
   background: var(--el-bg-color-overlay);
-  border: 1px solid var(--el-border-color-lighter);
-  border-radius: 8px;
+  border: 1px solid var(--el-border-color);
+  border-radius: 4px;
 }
 
 .command-palette-trigger:focus-visible {
@@ -188,6 +199,7 @@ const handleInputKeydown: (evt: KeyboardEvent | Event) => void = (evt) => {
 }
 
 .command-palette-trigger:hover {
+  background: var(--el-fill-color-light);
   border-color: var(--el-border-color);
 }
 

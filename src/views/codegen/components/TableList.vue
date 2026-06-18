@@ -1,9 +1,9 @@
 <template>
   <el-card class="page-search" shadow="never">
-    <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+    <el-form ref="queryFormRef" :model="params" :inline="true">
       <el-form-item prop="keywords" label="关键字">
         <el-input
-          v-model="queryParams.keywords"
+          v-model="params.keywords"
           placeholder="表名"
           clearable
           @keyup.enter="handleQuery"
@@ -23,7 +23,7 @@
   </el-card>
 
   <el-card class="page-content" shadow="never">
-    <el-table v-loading="loading" :data="pageData" highlight-current-row border>
+    <el-table v-loading="loading" :data="list" highlight-current-row border>
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="表名" prop="tableName" min-width="100" />
       <el-table-column label="描述" prop="tableComment" width="150" />
@@ -42,7 +42,7 @@
             生成代码
           </el-button>
           <el-button
-            v-if="scope.row.isConfigured === 1"
+            v-if="scope.row.isConfigured === TABLE_CONFIGURED"
             type="danger"
             size="small"
             link
@@ -57,58 +57,62 @@
 
     <pagination
       v-if="total > 0"
-      v-model:page="queryParams.pageNum"
-      v-model:limit="queryParams.pageSize"
-      :total="total"
-      @pagination="handleQuery"
+      v-model:total="total"
+      v-model:page="params.pageNum"
+      v-model:limit="params.pageSize"
+      @pagination="fetchData"
     />
   </el-card>
 </template>
 
 <script setup lang="ts">
+import { onMounted } from "vue";
+import { MagicStick, Refresh, RefreshLeft, Search } from "@element-plus/icons-vue";
+import { ElMessage, ElMessageBox, type FormInstance } from "element-plus";
+
 import GeneratorAPI from "@/api/codegen";
-import type { TableQueryParams, TableItem } from "@/api/codegen";
+import type { TableItem, TableQueryParams } from "@/api/codegen";
+import { usePageTable } from "@/composables";
+
+/** 表已配置代码生成（1:是;0:否）。 */
+const TABLE_CONFIGURED = 1;
 
 const emit = defineEmits<{
   generate: [tableName: string];
   "reset-config": [tableName: string];
 }>();
 
-const queryFormRef = ref();
-const queryParams = reactive<TableQueryParams>({
-  pageNum: 1,
-  pageSize: 10,
+const queryFormRef = ref<FormInstance>();
+
+// ── 分页表格状态 ────────────────────────────────────────────
+/** 分页表格数据管理 */
+const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
+  TableItem,
+  TableQueryParams
+>({
+  initialParams: {
+    pageNum: 1,
+    pageSize: 10,
+  },
+  request: GeneratorAPI.getTablePage,
+  onBeforeReset: () => queryFormRef.value?.resetFields(),
 });
 
-const loading = ref(false);
-const pageData = ref<TableItem[]>([]);
-const total = ref(0);
+/**
+ * 重置指定表的代码生成配置。
+ *
+ * @param tableName 表名
+ */
+async function handleResetConfig(tableName: string): Promise<void> {
+  try {
+    await ElMessageBox.confirm("确定要重置配置吗？", "提示", { type: "warning" });
+  } catch {
+    return;
+  }
 
-function handleQuery() {
-  loading.value = true;
-  GeneratorAPI.getTablePage(queryParams)
-    .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total ?? 0;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-}
-
-function handleResetQuery() {
-  queryFormRef.value?.resetFields();
-  queryParams.pageNum = 1;
+  await GeneratorAPI.resetGenConfig(tableName);
+  ElMessage.success("重置成功");
   handleQuery();
-}
-
-function handleResetConfig(tableName: string) {
-  ElMessageBox.confirm("确定要重置配置吗？", "提示", { type: "warning" }).then(() => {
-    GeneratorAPI.resetGenConfig(tableName).then(() => {
-      ElMessage.success("重置成功");
-      handleQuery();
-    });
-  });
 }
 
 onMounted(() => {

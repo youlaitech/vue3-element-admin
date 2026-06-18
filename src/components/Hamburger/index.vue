@@ -1,6 +1,12 @@
 <template>
   <div class="hamburger-wrapper" @click="toggleClick">
-    <div :class="['i-svg:collapse', { hamburger: true, 'is-active': isActive }, hamburgerClass]" />
+    <div
+      :class="[
+        'i-svg:arrow-left-right',
+        { hamburger: true, 'is-active': isActive },
+        hamburgerClass,
+      ]"
+    />
   </div>
 </template>
 

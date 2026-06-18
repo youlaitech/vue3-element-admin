@@ -1,5 +1,6 @@
 import vue from "@vitejs/plugin-vue";
-import { type ConfigEnv, type UserConfig, loadEnv, defineConfig, PluginOption } from "vite";
+import type { PluginOption } from "vite";
+import { type ConfigEnv, type UserConfig, loadEnv, defineConfig } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
@@ -32,9 +33,12 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     css: {
       preprocessorOptions: {
-        // 定义全局 SCSS 变量
+        // 注入 Element Plus Sass 变量配置和项目布局变量。
         scss: {
-          additionalData: `@use "@/styles/base/variables.scss" as *;`,
+          additionalData: `
+            @use "@/styles/element-plus-vars.scss" as *;
+            @use "@/styles/variables.scss" as *;
+          `,
         },
       },
     },
@@ -70,7 +74,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         vueTemplate: true,
         // 导入函数类型声明文件路径 (false:关闭自动生成)
         dts: false,
-        // dts: "src/types/auto-imports.d.ts",
+        // dts: "types/auto-imports.d.ts",
       }),
       // 组件自动导入
       Components({
@@ -82,7 +86,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         dirs: ["src/components", "src/**/components"],
         // 导入组件类型声明文件路径 (false:关闭自动生成)
         dts: false,
-        //dts: "src/types/components.d.ts",
+        //dts: "types/components.d.ts",
       }),
     ] as PluginOption[],
     // 预加载项目必需的依赖
@@ -130,6 +134,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           "col",
           "color-picker",
           "config-provider",
+          "collapse-transition",
           "date-picker",
           "descriptions",
           "descriptions-item",

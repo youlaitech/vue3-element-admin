@@ -1,22 +1,17 @@
 /**
  * SCSS 变量定义
- * 只放数学变量和 CSS 变量映射
  */
 
-// ============================================
-// 布局尺寸变量
-// ============================================
-
+// 布局尺寸
 $sidebar-width: 210px;
 $sidebar-width-collapsed: 54px;
-$navbar-height: 50px;
-$tags-view-height: 40px;
+$sidebar-primary-width: 76px;
+$sidebar-secondary-width: 210px;
+$navbar-height: 48px;
+$tags-view-height: 38px;
 $sidebar-toggle-height: 50px;
 
-// ============================================
-// CSS 变量映射（供组件和 SCSS 使用）
-// ============================================
-
+// 菜单配色（映射 theme.scss 的 CSS 变量）
 $menu-background: var(--menu-background);
 $menu-text: var(--menu-text);
 $menu-active-text: var(--menu-active-text);

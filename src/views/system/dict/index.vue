@@ -1,10 +1,10 @@
-<template>
+﻿<template>
   <div class="page-container">
     <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="tableData.params" :inline="true">
+      <el-form ref="queryFormRef" :model="params" :inline="true">
         <el-form-item label="关键字" prop="keywords">
           <el-input
-            v-model="tableData.params.keywords"
+            v-model="params.keywords"
             placeholder="字典名称/编码"
             clearable
             @keyup.enter="handleQuery"
@@ -12,31 +12,38 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" icon="search" @click="handleQuery">搜索</el-button>
-          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
+          <el-button type="primary" @click="handleQuery">搜索</el-button>
+          <el-button @click="handleResetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
-    <el-card class="page-content" shadow="never">
+    <el-card ref="tableWrapperRef" class="page-content" shadow="never">
       <div class="page-toolbar">
         <div class="page-toolbar__left">
-          <el-button type="success" icon="plus" @click="handleCreateClick()">新增</el-button>
-          <el-button
-            type="danger"
-            :disabled="ids.length === 0"
-            icon="delete"
-            @click="handleDelete()"
-          >
+          <el-button type="primary" @click="handleCreateClick()">新增</el-button>
+          <el-button type="danger" :disabled="!hasSelection" @click="handleDelete()">
             删除
           </el-button>
+        </div>
+        <div class="page-toolbar__right">
+          <el-tooltip content="刷新" placement="top">
+            <el-button class="page-icon-btn" @click="fetchData">
+              <el-icon><Refresh /></el-icon>
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="全屏" placement="top">
+            <el-button class="page-icon-btn" @click="toggleFullscreen">
+              <el-icon><FullScreen /></el-icon>
+            </el-button>
+          </el-tooltip>
         </div>
       </div>
 
       <el-table
         v-loading="loading"
         highlight-current-row
-        :data="tableData.list"
+        :data="list"
         border
         @selection-change="handleSelectionChange"
       >
@@ -45,36 +52,26 @@
         <el-table-column label="字典编码" prop="dictCode" />
         <el-table-column label="状态" prop="status">
           <template #default="scope">
-            <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">
-              {{ scope.row.status === 1 ? "启用" : "禁用" }}
+            <el-tag :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'info'">
+              {{ scope.row.status === CommonStatus.ENABLED ? "启用" : "禁用" }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="220">
           <template #default="scope">
-            <el-button type="primary" link size="small" @click.stop="openDictData(scope.row)">
-              <template #icon>
-                <Collection />
-              </template>
-              字典数据
-            </el-button>
-
             <el-button
               type="primary"
               link
               size="small"
-              icon="edit"
-              @click.stop="handleEditClick(scope.row.id)"
+              @click.stop="openDictData(scope.row as any)"
             >
+              字典数据
+            </el-button>
+
+            <el-button type="primary" link size="small" @click.stop="handleEditClick(scope.row.id)">
               编辑
             </el-button>
-            <el-button
-              type="danger"
-              link
-              size="small"
-              icon="delete"
-              @click.stop="handleDelete(scope.row.id)"
-            >
+            <el-button type="danger" link size="small" @click.stop="handleDelete(scope.row.id)">
               删除
             </el-button>
           </template>
@@ -82,10 +79,10 @@
       </el-table>
 
       <pagination
-        v-if="tableData.total > 0"
-        v-model:total="tableData.total"
-        v-model:page="tableData.params.pageNum"
-        v-model:limit="tableData.params.pageSize"
+        v-if="total > 0"
+        v-model:total="total"
+        v-model:page="params.pageNum"
+        v-model:limit="params.pageSize"
         @pagination="fetchData"
       />
     </el-card>
@@ -96,7 +93,7 @@
       width="500px"
       @close="closeDialog"
     >
-      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="80px">
+      <el-form ref="dictFormRef" :model="formData" :rules="rules" label-width="80px">
         <el-form-item label="字典名称" prop="name">
           <el-input v-model="formData.name" placeholder="请输入字典名称" />
         </el-form-item>
@@ -107,8 +104,8 @@
 
         <el-form-item label="状态">
           <el-radio-group v-model="formData.status">
-            <el-radio :value="1">启用</el-radio>
-            <el-radio :value="0">禁用</el-radio>
+            <el-radio :value="CommonStatus.ENABLED">启用</el-radio>
+            <el-radio :value="CommonStatus.DISABLED">禁用</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -128,188 +125,171 @@
 </template>
 
 <script setup lang="ts">
+import { useFullscreen } from "@vueuse/core";
+import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "element-plus";
+import { Refresh } from "@element-plus/icons-vue";
+
+import DictAPI from "@/api/system/dict";
+import type { DictTypeForm, DictTypeItem, DictTypeQueryParams } from "@/api/system/dict";
+import router from "@/router";
+import { usePageTable, useTableSelection } from "@/composables";
+import { CommonStatus } from "@/enums";
+
 defineOptions({
   name: "Dict",
   inheritAttrs: false,
 });
 
-import DictAPI from "@/api/system/dict";
-import type { DictTypeItem, DictTypeForm } from "@/api/system/dict";
-import type { FormInstance, FormRules } from "element-plus";
-import router from "@/router";
+const tableWrapperRef = ref<HTMLElement | null>(null);
+const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 
-// 表单引用
 const queryFormRef = ref<FormInstance>();
-const dataFormRef = ref<FormInstance>();
+const dictFormRef = ref<FormInstance>();
 
-// 列表数据
-const loading = ref(false);
-const ids = ref<string[]>([]);
-const tableData = reactive<PageResult<DictTypeItem>>({
-  list: [],
-  total: 0,
-  params: {
-    //查询参数
+/** 分页表格数据管理 */
+const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
+  DictTypeItem,
+  DictTypeQueryParams
+>({
+  initialParams: {
     pageNum: 1,
     pageSize: 10,
+    keywords: "",
   },
+  request: DictAPI.getPage,
+  onBeforeReset: () => queryFormRef.value?.resetFields(),
 });
 
-// 弹窗状态
+const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<DictTypeItem>();
+
 const dialogState = reactive({
   title: "",
   visible: false,
 });
 
-// 表单数据
-const formData = reactive<DictTypeForm>({
-  status: 1,
-});
+const initialFormData: DictTypeForm = {
+  status: CommonStatus.ENABLED,
+};
 
-// 验证规则
-const rules: FormRules = {
+const formData = reactive<DictTypeForm>({ ...initialFormData });
+
+const rules: FormRules<DictTypeForm> = {
   name: [{ required: true, message: "请输入字典名称", trigger: "blur" }],
   dictCode: [{ required: true, message: "请输入字典编码", trigger: "blur" }],
 };
 
 /**
- * 加载字典列表数据
+ * 重置表单数据和验证状态
  */
-function fetchData(): void {
-  loading.value = true;
-  DictAPI.getPage(tableData.params)
-    .then((data) => {
-      tableData.list = data.list ?? [];
-      tableData.total = data.total ?? 0;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-}
-
-/**
- * 查询按钮点击事件
- */
-function handleQuery(): void {
-  tableData.params.pageNum = 1;
-  fetchData();
-}
-
-/**
- * 重置查询
- */
-function handleResetQuery(): void {
-  queryFormRef.value?.resetFields();
-  tableData.params.pageNum = 1;
-  fetchData();
-}
-
-/**
- * 表格选择变化事件
- */
-function handleSelectionChange(selection: DictTypeItem[]): void {
-  ids.value = selection.map((item) => item.id);
-}
-
-/**
- * 新增按钮点击事件
- */
-function handleCreateClick(): void {
-  resetForm();
-  dialogState.visible = true;
-  dialogState.title = "新增字典";
-}
-
-/**
- * 编辑按钮点击事件
- * @param id 字典ID
- */
-function handleEditClick(id: string): void {
-  resetForm();
-  dialogState.visible = true;
-  dialogState.title = "修改字典";
-  DictAPI.getFormData(id).then((data) => {
-    Object.assign(formData, data);
-  });
-}
-
 function resetForm(): void {
-  dataFormRef.value?.clearValidate();
-  formData.id = undefined;
-  formData.name = undefined;
-  formData.dictCode = undefined;
-  formData.status = 1;
-  formData.remark = undefined;
-}
-
-/**
- * 提交表单
- */
-function handleSubmit(): void {
-  dataFormRef.value?.validate((isValid) => {
-    if (isValid) {
-      loading.value = true;
-      const id = formData.id;
-      if (id) {
-        DictAPI.update(id, formData)
-          .then(() => {
-            ElMessage.success("修改成功");
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => (loading.value = false));
-      } else {
-        DictAPI.create(formData)
-          .then(() => {
-            ElMessage.success("新增成功");
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => (loading.value = false));
-      }
-    }
+  dictFormRef.value?.resetFields();
+  dictFormRef.value?.clearValidate();
+  Object.keys(formData).forEach((key) => {
+    delete (formData as Record<string, unknown>)[key];
   });
+  Object.assign(formData, initialFormData);
+}
+
+function openDialog(): void {
+  dialogState.visible = true;
 }
 
 /**
- * 关闭弹窗
+ * 关闭字典表单弹窗并清理临时状态
  */
 function closeDialog(): void {
   dialogState.visible = false;
-  dataFormRef.value?.resetFields();
   resetForm();
 }
 
 /**
- * 删除字典
- * @param id 字典ID
+ * 打开新增字典弹窗
  */
-function handleDelete(id?: number): void {
-  const attrGroupIds = [id || ids.value].join(",");
-  if (!attrGroupIds) {
-    ElMessage.warning("请勾选删除项");
-    return;
-  }
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  }).then(
-    () => {
-      DictAPI.deleteByIds(attrGroupIds).then(() => {
-        ElMessage.success("删除成功");
-        handleResetQuery();
-      });
-    },
-    () => {
-      ElMessage.info("已取消删除");
-    }
-  );
+function handleCreateClick(): void {
+  resetForm();
+  dialogState.title = "新增字典";
+  openDialog();
 }
 
 /**
- * 打开字典数据页面
- * @param row 字典数据
+ * 打开编辑字典弹窗并回填数据
+ *
+ * @param id 字典 ID
+ */
+async function handleEditClick(id: string): Promise<void> {
+  resetForm();
+  dialogState.title = "修改字典";
+  const data = await DictAPI.getFormData(id);
+  Object.assign(formData, data);
+  openDialog();
+}
+
+/**
+ * 校验并提交字典表单
+ */
+async function handleSubmit(): Promise<void> {
+  const valid = await dictFormRef.value?.validate().then(
+    () => true,
+    () => false
+  );
+  if (!valid) return;
+
+  loading.value = true;
+  try {
+    const id = formData.id;
+    if (id) {
+      await DictAPI.update(id, formData);
+      ElMessage.success("修改成功");
+    } else {
+      await DictAPI.create(formData);
+      ElMessage.success("新增成功");
+    }
+    closeDialog();
+    handleQuery();
+  } finally {
+    loading.value = false;
+  }
+}
+
+/**
+ * 删除单个或批量字典
+ *
+ * @param id 指定时删除单个字典；不指定时删除表格勾选项
+ */
+async function handleDelete(id?: string): Promise<void> {
+  const dictIds = id ?? selectedIds.value.join(",");
+  if (!dictIds) {
+    ElMessage.warning("请勾选删除项");
+    return;
+  }
+
+  try {
+    await ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+  } catch {
+    ElMessage.info("已取消删除");
+    return;
+  }
+
+  loading.value = true;
+  try {
+    await DictAPI.deleteByIds(dictIds);
+    ElMessage.success("删除成功");
+    handleResetQuery();
+  } finally {
+    loading.value = false;
+  }
+}
+
+/**
+ * 跳转到字典项管理页面
+ *
+ * 检查路由是否已注册后再跳转
+ *
+ * @param row 当前字典行
  */
 function openDictData(row: DictTypeItem): void {
   try {

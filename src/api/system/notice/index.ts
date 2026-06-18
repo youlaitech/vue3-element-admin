@@ -1,5 +1,6 @@
 import request from "@/utils/request";
 import type { NoticeQueryParams, NoticeForm, NoticeItem, NoticeDetail } from "./types";
+import type { PageResult } from "@/api/common";
 
 const NOTICE_BASE_URL = "/api/v1/notices";
 

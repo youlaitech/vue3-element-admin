@@ -166,6 +166,7 @@
 
 <script setup lang="ts">
 import type { GenConfigForm } from "@/api/codegen";
+import type { OptionItem } from "@/api/common";
 
 const formData = defineModel<GenConfigForm>({ required: true });
 

@@ -12,6 +12,7 @@ import { LayoutMode } from "@/enums/settings";
 import LeftLayout from "./LeftLayout.vue";
 import TopLayout from "./TopLayout.vue";
 import MixLayout from "./MixLayout.vue";
+import DoubleLayout from "./DoubleLayout.vue";
 import Settings from "./components/LayoutSettings.vue";
 
 const route = useRoute();
@@ -26,6 +27,8 @@ const currentLayoutComponent = computed(() => {
       return TopLayout;
     case LayoutMode.MIX:
       return MixLayout;
+    case LayoutMode.DOUBLE:
+      return DoubleLayout;
     default:
       return LeftLayout;
   }
