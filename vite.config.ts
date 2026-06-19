@@ -1,6 +1,12 @@
 import vue from "@vitejs/plugin-vue";
 import type { PluginOption } from "vite";
-import { type ConfigEnv, type UserConfig, loadEnv, defineConfig } from "vite";
+import {
+  type ConfigEnv,
+  type PreRenderedAsset,
+  type UserConfig,
+  loadEnv,
+  defineConfig,
+} from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
@@ -202,13 +208,17 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       cssMinify: "lightningcss", // Vite 8 默认使用 Lightning CSS 压缩
       // minify 默认使用 'oxc'，压缩速度比 terser 快 30-90 倍
       rolldownOptions: {
+        checks: {
+          invalidAnnotation: false,
+          pluginTimings: false,
+        },
         output: {
           // 用于从入口点创建的块的打包输出格式
           entryFileNames: "js/[name].[hash].js",
           // 用于命名代码拆分时创建的共享块的输出命名
           chunkFileNames: "js/[name].[hash].js",
           // 用于输出静态资源的命名
-          assetFileNames: (assetInfo: any) => {
+          assetFileNames: (assetInfo: PreRenderedAsset) => {
             if (!assetInfo.name) {
               return "assets/[name].[hash][extname]";
             }

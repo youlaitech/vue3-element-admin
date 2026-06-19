@@ -333,8 +333,8 @@ import {
   type UploadUserFile,
   type TableInstance,
 } from "element-plus";
-import ExcelJS from "exceljs";
 import { reactive, ref, computed } from "vue";
+import type { Column, Workbook } from "exceljs";
 import type { IContentConfig, IObject, IOperateData } from "./types";
 import type { IToolsButton } from "./types";
 
@@ -579,15 +579,20 @@ function handleCloseExportsModal() {
     exportsFormRef.value?.clearValidate();
   });
 }
+async function createWorkbook(): Promise<Workbook> {
+  const ExcelJS = await import("exceljs");
+  return new ExcelJS.Workbook();
+}
+
 // 导出
-function handleExports() {
+async function handleExports() {
   const filename = exportsFormData.filename
     ? exportsFormData.filename
     : props.contentConfig.permPrefix || "export";
   const sheetname = exportsFormData.sheetname ? exportsFormData.sheetname : "sheet";
-  const workbook = new ExcelJS.Workbook();
+  const workbook = await createWorkbook();
   const worksheet = workbook.addWorksheet(sheetname);
-  const columns: Partial<ExcelJS.Column>[] = [];
+  const columns: Partial<Column>[] = [];
   cols.value.forEach((col) => {
     if (col.label && col.prop && exportsFormData.fields.includes(col.prop)) {
       columns.push({ header: col.label, key: col.prop });
@@ -697,7 +702,7 @@ function handleImport() {
   });
 }
 // 导入
-function handleImports() {
+async function handleImports() {
   const importsAction = props.contentConfig.importsAction;
   if (importsAction === undefined) {
     ElMessage.error("未配置importsAction");
@@ -706,7 +711,7 @@ function handleImports() {
   // 获取选择的文件
   const file = importFormData.files[0].raw as File;
   // 创建Workbook实例
-  const workbook = new ExcelJS.Workbook();
+  const workbook = await createWorkbook();
   // 使用FileReader对象来读取文件内容
   const fileReader = new FileReader();
   // 二进制字符串的形式加载文件

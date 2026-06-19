@@ -3,9 +3,7 @@ import {
   defineConfig,
   presetAttributify,
   presetIcons,
-  presetTypography,
   presetUno,
-  presetWebFonts,
   transformerDirectives,
   transformerVariantGroup,
 } from "unocss";
@@ -69,12 +67,6 @@ export default defineConfig({
           // 如果 `fill` 没有定义，则添加 `fill="currentColor"`
           return svg.includes('fill="') ? svg : svg.replace(/^<svg /, '<svg fill="currentColor" ');
         }),
-      },
-    }),
-    presetTypography(),
-    presetWebFonts({
-      fonts: {
-        // ...
       },
     }),
   ],

@@ -1,7 +1,7 @@
 ﻿<template>
   <div class="page-container">
     <!-- 表格 -->
-    <vxe-grid ref="xGrid" v-bind="gridOptions" v-on="gridEvents">
+    <VxeGrid ref="xGrid" v-bind="gridOptions" v-on="gridEvents">
       <!-- 搜索 -->
       <!-- <template #form-roles="{ data }">
         <el-select
@@ -23,12 +23,12 @@
       </template> -->
       <!-- 左侧按钮列表 -->
       <template #toolbar-btns>
-        <vxe-button status="primary" icon="vxe-icon-add" @click="curd.onShowModal()">
+        <VxeButton status="primary" icon="vxe-icon-add" @click="curd.onShowModal()">
           新增用户
-        </vxe-button>
-        <vxe-button status="danger" icon="vxe-icon-delete" @click="curd.onDelete()">
+        </VxeButton>
+        <VxeButton status="danger" icon="vxe-icon-delete" @click="curd.onDelete()">
           批量删除
-        </vxe-button>
+        </VxeButton>
       </template>
       <!-- 展开行 -->
       <template #column-expand="{ row }">
@@ -65,19 +65,44 @@
         <el-button link type="primary" @click="curd.onShowModal(row)">修改</el-button>
         <el-button link type="danger" @click="curd.onDelete(row)">删除</el-button>
       </template>
-    </vxe-grid>
+    </VxeGrid>
     <!-- 弹窗 -->
-    <vxe-modal ref="xModal" v-bind="modalOptions">
+    <VxeModal ref="xModal" v-bind="modalOptions">
       <!-- 表单 -->
-      <vxe-form ref="xForm" v-bind="formOptions" />
-    </vxe-modal>
+      <VxeForm ref="xForm" v-bind="formOptions" />
+    </VxeModal>
   </div>
 </template>
 
 <script setup lang="ts">
+import "vxe-table/lib/style.css";
 import { ref, reactive, onMounted } from "vue";
 import type { VxeGridInstance, VxeGridProps, VxeGridListeners } from "vxe-table";
-import { VXETable } from "vxe-table";
+import {
+  VXETable,
+  VxeButton,
+  VxeButtonGroup,
+  VxeForm,
+  VxeGrid,
+  VxeInput,
+  VxeModal,
+  VxeSelect,
+} from "vxe-table";
+import { configureVxeTable } from "@/plugins/vxe-table";
+
+defineOptions({
+  components: {
+    VxeButton,
+    VxeButtonGroup,
+    VxeForm,
+    VxeGrid,
+    VxeInput,
+    VxeModal,
+    VxeSelect,
+  },
+});
+
+configureVxeTable();
 
 const options = [
   { label: "管理", value: "admin" },
