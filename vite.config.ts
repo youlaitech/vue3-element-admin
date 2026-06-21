@@ -33,12 +33,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     css: {
       preprocessorOptions: {
-        // 注入 Element Plus Sass 变量配置和项目布局变量。
+        // 注入项目布局变量。
         scss: {
-          additionalData: `
-            @use "@/styles/element-plus-vars.scss" as *;
-            @use "@/styles/variables.scss" as *;
-          `,
+          additionalData: `@use "@/styles/variables.scss" as *;`,
         },
       },
     },
@@ -64,7 +61,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         imports: ["vue", "@vueuse/core", "pinia", "vue-router", "vue-i18n"],
         resolvers: [
           // 导入 Element Plus函数，如：ElMessage, ElMessageBox 等
-          ElementPlusResolver({ importStyle: "sass" }),
+          ElementPlusResolver({ importStyle: "css" }),
         ],
         eslintrc: {
           enabled: false,
@@ -80,7 +77,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       Components({
         resolvers: [
           // 导入 Element Plus 组件
-          ElementPlusResolver({ importStyle: "sass" }),
+          ElementPlusResolver({ importStyle: "css" }),
         ],
         // 指定自定义组件位置(默认:src/components)
         dirs: ["src/components", "src/**/components"],

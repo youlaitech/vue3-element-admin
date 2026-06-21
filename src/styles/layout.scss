@@ -145,6 +145,11 @@ html.sidebar-color-blue .el-menu--popup {
 
 html.dark .layout-root.layout--mix .layout-sidebar .el-menu,
 html.sidebar-color-blue .layout-root.layout--mix .layout-sidebar .el-menu {
+  .el-menu-item:hover,
+  .el-sub-menu__title:hover {
+    background-color: var(--menu-hover) !important;
+  }
+
   .el-menu-item.is-active,
   .el-sub-menu.is-active > .el-sub-menu__title,
   .el-sub-menu.has-active-child > .el-sub-menu__title {
