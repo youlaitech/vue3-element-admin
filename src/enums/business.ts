@@ -11,7 +11,16 @@
 export enum MenuTypeEnum {
   CATALOG = "C", // 目录
   MENU = "M", // 菜单
+  EXTERNAL = "E", // 外链
   BUTTON = "B", // 按钮
+}
+
+/**
+ * 外链打开方式枚举
+ */
+export enum ExternalOpenModeEnum {
+  NEW_TAB = 1, // 新标签页
+  EMBEDDED = 2, // 系统内嵌
 }
 
 /**

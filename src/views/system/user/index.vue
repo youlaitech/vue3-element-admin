@@ -1,11 +1,11 @@
 ﻿<!-- 用户管理 -->
 <template>
-  <div class="page-container user-page">
-    <aside class="user-aside" :class="{ 'is-collapsed': sidebarCollapsed }">
-      <div class="user-aside__inner">
+  <div class="page-container page-container--split user-page">
+    <aside class="page-aside" :class="{ 'is-collapsed': sidebarCollapsed }">
+      <div class="page-aside__inner">
         <UserDeptTree v-model="params.deptId" @node-click="handleQuery" />
       </div>
-      <button class="user-aside__toggle" @click="sidebarCollapsed = !sidebarCollapsed">
+      <button class="page-aside__toggle" @click="sidebarCollapsed = !sidebarCollapsed">
         <el-icon :size="14">
           <ArrowLeft v-if="!sidebarCollapsed" />
           <ArrowRight v-else />
@@ -13,15 +13,15 @@
       </button>
     </aside>
 
-    <div class="user-main">
+    <div class="page-main">
       <el-card class="page-search" shadow="never">
         <el-form ref="queryFormRef" :model="params" :inline="true" label-width="auto">
           <el-form-item label="关键字" prop="keywords">
             <el-input
               v-model="params.keywords"
-              class="user-search__keyword"
               placeholder="用户名/昵称/手机号"
               clearable
+              style="width: 180px"
               @keyup.enter="handleQuery"
             />
           </el-form-item>
@@ -179,7 +179,7 @@
                     type="primary"
                     size="small"
                     link
-                    @click="handleResetPassword(scope.row as UserItem)"
+                    @click="openResetPasswordDialog(scope.row as UserItem)"
                   >
                     重置密码
                   </el-button>
@@ -275,6 +275,53 @@
       </template>
     </el-drawer>
 
+    <!-- 重置密码 -->
+    <el-dialog
+      v-model="resetPasswordDialog.visible"
+      title="重置密码"
+      :width="resetPasswordDialogWidth"
+      append-to-body
+      @closed="resetResetPasswordForm"
+    >
+      <div class="mb-16px">
+        用户：{{ resetPasswordDialog.nickname || resetPasswordDialog.username || "-" }}
+        <span v-if="resetPasswordDialog.nickname && resetPasswordDialog.username">
+          （{{ resetPasswordDialog.username }}）
+        </span>
+      </div>
+
+      <el-form
+        ref="resetPasswordFormRef"
+        :model="resetPasswordForm"
+        :rules="resetPasswordRules"
+        label-width="84px"
+      >
+        <el-form-item label="新密码" prop="password">
+          <el-input
+            v-model="resetPasswordForm.password"
+            type="password"
+            show-password
+            autocomplete="new-password"
+            placeholder="请输入新密码"
+            @keyup.enter="handleResetPasswordSubmit"
+          />
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button
+            type="primary"
+            :loading="resetPasswordSubmitting"
+            @click="handleResetPasswordSubmit"
+          >
+            确 定
+          </el-button>
+          <el-button @click="closeResetPasswordDialog">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
+
     <!-- 用户导入 -->
     <UserImportDialog v-model="importDialogVisible" @import-success="handleQuery()" />
   </div>
@@ -309,6 +356,7 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 
 const queryFormRef = ref<FormInstance>();
 const userFormRef = ref<FormInstance>();
+const resetPasswordFormRef = ref<FormInstance>();
 const sidebarCollapsed = ref(false);
 
 /** 分页表格数据管理 */
@@ -333,6 +381,7 @@ const dialogState = reactive({
 });
 
 const importDialogVisible = ref(false);
+const resetPasswordSubmitting = ref(false);
 
 const initialFormData: UserForm = {
   status: CommonStatus.ENABLED,
@@ -340,10 +389,29 @@ const initialFormData: UserForm = {
 
 const formData = reactive<UserForm>({ ...initialFormData });
 
+type ResetPasswordForm = {
+  password: string;
+};
+
+const resetPasswordDialog = reactive({
+  visible: false,
+  userId: "",
+  username: "",
+  nickname: "",
+});
+
+const resetPasswordForm = reactive<ResetPasswordForm>({
+  password: "",
+});
+
 const deptOptions = ref<OptionItem[]>([]);
 const roleOptions = ref<OptionItem[]>([]);
 
 const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
+
+const resetPasswordDialogWidth = computed(() =>
+  appStore.device === DeviceEnum.DESKTOP ? "420px" : "90%"
+);
 
 const rules: FormRules<UserForm> = {
   username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
@@ -352,6 +420,13 @@ const rules: FormRules<UserForm> = {
   roleIds: [{ required: true, message: "请选择用户角色", trigger: "change" }],
   email: [{ type: "email", message: "请输入正确的邮箱地址", trigger: "blur" }],
   mobile: [{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" }],
+};
+
+const resetPasswordRules: FormRules<ResetPasswordForm> = {
+  password: [
+    { required: true, message: "请输入新密码", trigger: "blur" },
+    { min: 6, message: "密码至少需要6位字符", trigger: "blur" },
+  ],
 };
 
 /**
@@ -513,28 +588,59 @@ function openImportDialog(): void {
 }
 
 /**
- * 重置用户密码。
+ * 打开重置密码弹窗。
  *
  * @param row 用户行数据
  */
-async function handleResetPassword(row: UserItem): Promise<void> {
-  try {
-    const { value } = await ElMessageBox.prompt(
-      `请输入用户【${row.username}】的新密码`,
-      "重置密码",
-      {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        inputPattern: /.{6,}/,
-        inputErrorMessage: "密码至少需要6位字符",
-      }
-    );
-    await UserAPI.resetPassword(row.id, value);
-    ElMessage.success("密码重置成功");
-  } catch {
-    // 用户取消，无需处理
-  }
+function openResetPasswordDialog(row: UserItem): void {
+  resetPasswordDialog.userId = row.id;
+  resetPasswordDialog.username = row.username ?? "";
+  resetPasswordDialog.nickname = row.nickname ?? "";
+  resetPasswordDialog.visible = true;
+
+  nextTick(() => {
+    resetPasswordFormRef.value?.clearValidate();
+  });
 }
+
+/**
+ * 关闭重置密码弹窗。
+ */
+function closeResetPasswordDialog(): void {
+  resetPasswordDialog.visible = false;
+}
+
+/**
+ * 重置密码表单状态。
+ */
+function resetResetPasswordForm(): void {
+  resetPasswordFormRef.value?.resetFields();
+  resetPasswordFormRef.value?.clearValidate();
+  resetPasswordForm.password = "";
+  resetPasswordDialog.userId = "";
+  resetPasswordDialog.username = "";
+  resetPasswordDialog.nickname = "";
+}
+
+/**
+ * 提交重置密码。
+ */
+const handleResetPasswordSubmit = useDebounceFn(async () => {
+  const valid = await resetPasswordFormRef.value?.validate().then(
+    () => true,
+    () => false
+  );
+  if (!valid || !resetPasswordDialog.userId) return;
+
+  resetPasswordSubmitting.value = true;
+  try {
+    await UserAPI.resetPassword(resetPasswordDialog.userId, resetPasswordForm.password);
+    ElMessage.success("密码重置成功");
+    closeResetPasswordDialog();
+  } finally {
+    resetPasswordSubmitting.value = false;
+  }
+}, 300);
 
 onMounted(() => {
   handleQuery();
@@ -542,141 +648,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.user-page {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  min-height: 0;
-  overflow: hidden;
-  --page-aside-width: 224px;
-}
-
-.user-aside {
-  position: relative;
-  display: flex;
-  flex: 0 0 var(--page-aside-width);
-  flex-direction: column;
-  width: var(--page-aside-width);
-  min-width: 0;
-  min-height: 0;
-  overflow: visible;
-  background: var(--content-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--card-radius);
-  box-shadow: var(--card-shadow);
-  transition:
-    flex-basis 0.2s,
-    width 0.2s,
-    margin-right 0.2s,
-    border-color 0.2s;
-
-  &.is-collapsed {
-    flex-basis: 0;
-    width: 0;
-    margin-right: -10px;
-    border-color: transparent;
-    box-shadow: none;
-
-    .user-aside__inner {
-      pointer-events: none;
-      opacity: 0;
-    }
-
-    .user-aside__toggle {
-      right: -18px;
-      border-left: 0;
-      border-radius: 0 6px 6px 0;
-    }
-  }
-}
-
-.user-aside__toggle {
-  position: absolute;
-  top: 50%;
-  right: -10px;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 48px;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  color: var(--el-text-color-secondary);
-  cursor: pointer;
-  background: var(--content-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgb(15 23 42 / 8%);
-  transform: translateY(-50%);
-  transition:
-    color 0.15s,
-    right 0.2s;
-
-  &:hover {
-    color: var(--el-color-primary);
-  }
-}
-
-.user-aside__inner {
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
-  transition: opacity 0.15s;
-}
-
-.user-aside__inner :deep(.dept-card) {
-  height: 100%;
-  background: transparent;
-  border: 0;
-  border-radius: inherit;
-  box-shadow: none;
-
-  > .el-card__body {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 0;
-    padding: 12px;
-  }
-}
-
-.user-aside__inner :deep(.dept-card__tree) {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
-}
-
-.user-main {
-  display: flex;
-  flex: 1 1 0;
-  flex-direction: column;
-  gap: var(--page-gap);
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.user-main :deep(.page-search) {
-  .el-card__body {
-    padding-top: 12px;
-    padding-bottom: 12px;
-  }
-
-  .user-search__keyword {
-    width: 180px;
-  }
-}
-
-.user-aside__inner :deep(.dept-card__search) {
-  margin-bottom: 10px;
-}
-
-.user-aside__inner :deep(.el-tree-node__content) {
-  height: 32px;
-}
-
 .user-name-cell {
   display: inline-flex;
   gap: 8px;

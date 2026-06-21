@@ -73,12 +73,20 @@
           <template #default="scope">
             <el-tag v-if="scope.row.type === MenuTypeEnum.CATALOG" type="warning">目录</el-tag>
             <el-tag v-if="scope.row.type === MenuTypeEnum.MENU" type="success">菜单</el-tag>
+            <el-tag v-if="scope.row.type === MenuTypeEnum.EXTERNAL" type="primary">外链</el-tag>
             <el-tag v-if="scope.row.type === MenuTypeEnum.BUTTON" type="danger">按钮</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="路由名称" align="left" width="150" prop="routeName" />
-        <el-table-column label="路由路径" align="left" width="150" prop="routePath" />
-        <el-table-column label="组件路径" align="left" width="250" prop="component" />
+        <el-table-column label="访问路径" align="left" min-width="180">
+          <template #default="scope">
+            {{ getMenuAccessPath(scope.row) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="页面组件" align="left" min-width="180">
+          <template #default="scope">
+            {{ getMenuComponentPath(scope.row) }}
+          </template>
+        </el-table-column>
         <el-table-column label="权限标识" align="center" width="200" prop="perm" />
         <el-table-column v-if="showMenuScope" label="范围" align="center" width="100">
           <template #default="scope">
@@ -136,7 +144,13 @@
       :size="drawerSize"
       @close="closeDialog"
     >
-      <el-form ref="menuFormRef" :model="formData" :rules="rules" label-width="100px">
+      <el-form
+        ref="menuFormRef"
+        class="menu-form"
+        :model="formData"
+        :rules="rules"
+        label-width="140px"
+      >
         <el-form-item label="父级菜单" prop="parentId">
           <el-tree-select
             v-model="formData.parentId"
@@ -153,70 +167,147 @@
         </el-form-item>
 
         <el-form-item label="菜单类型" prop="type">
-          <el-radio-group v-model="formData.type" @change="handleMenuTypeChange">
-            <el-radio :value="MenuTypeEnum.CATALOG">目录</el-radio>
-            <el-radio :value="MenuTypeEnum.MENU">菜单</el-radio>
-            <el-radio :value="MenuTypeEnum.BUTTON">按钮</el-radio>
+          <div class="menu-type-field">
+            <el-radio-group
+              v-model="formData.type"
+              class="menu-type-group"
+              @change="handleMenuTypeChange"
+            >
+              <el-radio-button :value="MenuTypeEnum.CATALOG">目录</el-radio-button>
+              <el-radio-button :value="MenuTypeEnum.MENU">菜单</el-radio-button>
+              <el-radio-button :value="MenuTypeEnum.EXTERNAL">外链</el-radio-button>
+              <el-radio-button :value="MenuTypeEnum.BUTTON">按钮</el-radio-button>
+            </el-radio-group>
+            <div class="menu-type-hint">{{ menuTypeHint }}</div>
+          </div>
+        </el-form-item>
+
+        <template v-if="showPageConfig">
+          <el-form-item prop="routePath">
+            <template #label>
+              <div class="flex-y-center">
+                访问路径
+                <el-tooltip
+                  content="填写当前菜单这一段路径，例如 user；完整路径会自动跟随父级菜单"
+                  placement="bottom"
+                >
+                  <el-icon class="ml-1 cursor-pointer">
+                    <QuestionFilled />
+                  </el-icon>
+                </el-tooltip>
+              </div>
+            </template>
+            <el-input v-model="formData.routePath" placeholder="user" />
+          </el-form-item>
+
+          <el-form-item prop="component">
+            <template #label>
+              <div class="flex-y-center">
+                页面组件
+                <el-tooltip
+                  content="填写 src/views 下的页面路径，省略 .vue 后缀"
+                  placement="bottom"
+                >
+                  <el-icon class="ml-1 cursor-pointer">
+                    <QuestionFilled />
+                  </el-icon>
+                </el-tooltip>
+              </div>
+            </template>
+
+            <el-input v-model="formData.component" placeholder="system/user/index">
+              <template #prepend>src/views/</template>
+              <template #append>.vue</template>
+            </el-input>
+          </el-form-item>
+        </template>
+
+        <template v-if="showCatalogConfig">
+          <el-form-item prop="routePath">
+            <template #label>
+              <div class="flex-y-center">
+                访问路径
+                <el-tooltip
+                  content="顶级目录填写完整路径，例如 /system；子级目录只填当前这一段，例如 report"
+                  placement="bottom"
+                >
+                  <el-icon class="ml-1 cursor-pointer">
+                    <QuestionFilled />
+                  </el-icon>
+                </el-tooltip>
+              </div>
+            </template>
+            <el-input v-model="formData.routePath" placeholder="/system" />
+          </el-form-item>
+
+          <el-form-item>
+            <template #label>
+              <div class="flex-y-center">
+                默认跳转
+                <el-tooltip
+                  content="访问当前目录路径时，自动跳转到指定页面。通常填写该目录下的默认菜单完整路径，例如 /system/user。"
+                  placement="bottom"
+                >
+                  <el-icon class="ml-1 cursor-pointer">
+                    <QuestionFilled />
+                  </el-icon>
+                </el-tooltip>
+              </div>
+            </template>
+            <el-input v-model="formData.redirect" placeholder="/system/user" />
+          </el-form-item>
+        </template>
+
+        <template v-if="showExternalConfig">
+          <el-form-item label="外链地址" prop="externalUrl">
+            <el-input v-model="formData.externalUrl" placeholder="https://example.com" clearable />
+          </el-form-item>
+
+          <el-form-item label="打开方式" prop="openMode">
+            <el-radio-group v-model="formData.openMode" @change="handleOpenModeChange">
+              <el-radio :value="ExternalOpenModeEnum.NEW_TAB">新标签页</el-radio>
+              <el-radio :value="ExternalOpenModeEnum.EMBEDDED">系统内嵌</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <template v-if="isEmbeddedExternal">
+            <el-form-item prop="routePath">
+              <template #label>
+                <div class="flex-y-center">
+                  系统路径
+                  <el-tooltip content="内嵌外链在系统中的访问路径，例如 apifox" placement="bottom">
+                    <el-icon class="ml-1 cursor-pointer">
+                      <QuestionFilled />
+                    </el-icon>
+                  </el-tooltip>
+                </div>
+              </template>
+              <el-input v-model="formData.routePath" placeholder="apifox" />
+            </el-form-item>
+          </template>
+        </template>
+
+        <template v-if="showPermissionConfig">
+          <el-form-item label="权限标识" prop="perm">
+            <el-input v-model="formData.perm" placeholder="sys:user:create" />
+          </el-form-item>
+        </template>
+
+        <el-form-item v-if="formData.type !== MenuTypeEnum.BUTTON" prop="visible" label="显示状态">
+          <el-radio-group v-model="formData.visible">
+            <el-radio :value="CommonStatus.ENABLED">显示</el-radio>
+            <el-radio :value="CommonStatus.DISABLED">隐藏</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item
-          v-if="formData.type === MenuTypeEnum.MENU && !isExternalLink"
-          prop="routeName"
-        >
+        <el-form-item v-if="showCatalogDisplay">
           <template #label>
             <div class="flex-y-center">
-              路由名称
-              <el-tooltip placement="bottom" effect="light">
-                <template #content>
-                  如果需要开启缓存，需保证页面 defineOptions 中的 name 与此处一致，建议使用驼峰式
-                </template>
-                <el-icon class="ml-1 cursor-pointer">
-                  <QuestionFilled />
-                </el-icon>
-              </el-tooltip>
-            </div>
-          </template>
-          <el-input v-model="formData.routeName" placeholder="User" />
-        </el-form-item>
-
-        <el-form-item
-          v-if="formData.type === MenuTypeEnum.CATALOG || formData.type === MenuTypeEnum.MENU"
-          prop="routePath"
-        >
-          <template #label>
-            <div class="flex-y-center">
-              路由路径
-              <el-tooltip placement="bottom" effect="light">
-                <template #content>
-                  定义应用中不同页面对应的 URL 路径，目录需以 / 开头，菜单项不用。例如：系统管理目录
-                  /system，系统管理下的用户管理菜单 user。
-                </template>
-                <el-icon class="ml-1 cursor-pointer">
-                  <QuestionFilled />
-                </el-icon>
-              </el-tooltip>
-            </div>
-          </template>
-          <el-input
-            v-if="formData.type === MenuTypeEnum.CATALOG"
-            v-model="formData.routePath"
-            placeholder="system"
-          />
-          <el-input v-else v-model="formData.routePath" placeholder="user 或 https://example.com" />
-        </el-form-item>
-
-        <el-form-item
-          v-if="formData.type === MenuTypeEnum.MENU && !isExternalLink"
-          prop="component"
-        >
-          <template #label>
-            <div class="flex-y-center">
-              组件路径
-              <el-tooltip placement="bottom" effect="light">
-                <template #content>
-                  组件页面完整路径，相对于 src/views/，如 system/user/index，缺省后缀 .vue
-                </template>
+              单子级显示
+              <el-tooltip
+                content="仅在当前项只有 1 个可见子级时生效。选择“始终显示本级”后，会保留当前项再显示子级。"
+                placement="bottom"
+              >
                 <el-icon class="ml-1 cursor-pointer">
                   <QuestionFilled />
                 </el-icon>
@@ -224,20 +315,39 @@
             </div>
           </template>
 
-          <el-input v-model="formData.component" placeholder="system/user/index" style="width: 95%">
-            <template v-if="formData.type === MenuTypeEnum.MENU" #prepend>src/views/</template>
-            <template v-if="formData.type === MenuTypeEnum.MENU" #append>.vue</template>
-          </el-input>
+          <el-radio-group v-model="formData.alwaysShow">
+            <el-radio :value="0">显示子级</el-radio>
+            <el-radio :value="1">始终显示本级</el-radio>
+          </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="formData.type === MenuTypeEnum.MENU && !isExternalLink">
+        <el-form-item v-if="showPageCache" label="页面缓存">
+          <el-radio-group v-model="formData.keepAlive" @change="handleKeepAliveChange">
+            <el-radio :value="1">开启</el-radio>
+            <el-radio :value="0">关闭</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item v-if="showRouteName" prop="routeName">
+          <template #label>
+            <div class="flex-y-center">
+              页面标识
+              <el-tooltip :content="routeNameTooltip" placement="bottom">
+                <el-icon class="ml-1 cursor-pointer">
+                  <QuestionFilled />
+                </el-icon>
+              </el-tooltip>
+            </div>
+          </template>
+          <el-input v-model="formData.routeName" :placeholder="routeNamePlaceholder" />
+        </el-form-item>
+
+        <el-form-item v-if="showRouteParams">
           <template #label>
             <div class="flex-y-center">
               路由参数
               <el-tooltip placement="bottom" effect="light">
-                <template #content>
-                  组件页面使用 `useRoute().query.参数名` 获取路由参数值。
-                </template>
+                <template #content>页面内可通过 useRoute().query 读取</template>
                 <el-icon class="ml-1 cursor-pointer">
                   <QuestionFilled />
                 </el-icon>
@@ -246,30 +356,26 @@
           </template>
 
           <div v-if="!formData.params || formData.params.length === 0">
-            <el-button type="success" plain @click="formData.params = [{ key: '', value: '' }]">
-              添加路由参数
+            <el-button type="primary" plain @click="formData.params = [{ key: '', value: '' }]">
+              添加参数
             </el-button>
           </div>
 
-          <div v-else>
-            <div v-for="(item, index) in formData.params" :key="index">
-              <el-input v-model="item.key" placeholder="参数名" style="width: 100px" />
-
-              <span class="mx-1">=</span>
-
-              <el-input v-model="item.value" placeholder="参数名" style="width: 100px" />
+          <div v-else class="menu-param-list">
+            <div v-for="(item, index) in formData.params" :key="index" class="menu-param-row">
+              <el-input v-model="item.key" placeholder="参数名" />
+              <span class="menu-param-row__equal">=</span>
+              <el-input v-model="item.value" placeholder="参数值" />
 
               <el-icon
                 v-if="formData.params.indexOf(item) === formData.params.length - 1"
-                class="ml-2 cursor-pointer color-[var(--el-color-success)]"
-                style="vertical-align: -0.15em"
+                class="menu-param-row__action is-add"
                 @click="formData.params.push({ key: '', value: '' })"
               >
                 <CirclePlusFilled />
               </el-icon>
               <el-icon
-                class="ml-2 cursor-pointer color-[var(--el-color-danger)]"
-                style="vertical-align: -0.15em"
+                class="menu-param-row__action is-delete"
                 @click="formData.params.splice(formData.params.indexOf(item), 1)"
               >
                 <DeleteFilled />
@@ -289,71 +395,17 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="formData.type !== MenuTypeEnum.BUTTON" prop="visible" label="显示状态">
-          <el-radio-group v-model="formData.visible">
-            <el-radio :value="CommonStatus.ENABLED">显示</el-radio>
-            <el-radio :value="CommonStatus.DISABLED">隐藏</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item
-          v-if="formData.type === MenuTypeEnum.CATALOG || formData.type === MenuTypeEnum.MENU"
-        >
-          <template #label>
-            <div class="flex-y-center">
-              始终显示
-              <el-tooltip placement="bottom" effect="light">
-                <template #content>
-                  选择"是"，即使目录或菜单下只有一个子节点，也会显示父节点。
-                  <br />
-                  选择"否"，如果目录或菜单下只有一个子节点，则只显示该子节点，隐藏父节点。
-                  <br />
-                  如果是叶子节点，请选择"否"。
-                </template>
-                <el-icon class="ml-1 cursor-pointer">
-                  <QuestionFilled />
-                </el-icon>
-              </el-tooltip>
-            </div>
-          </template>
-
-          <el-radio-group v-model="formData.alwaysShow">
-            <el-radio :value="1">是</el-radio>
-            <el-radio :value="0">否</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item
-          v-if="formData.type === MenuTypeEnum.MENU && !isExternalLink"
-          label="缓存页面"
-        >
-          <el-radio-group v-model="formData.keepAlive">
-            <el-radio :value="1">开启</el-radio>
-            <el-radio :value="0">关闭</el-radio>
-          </el-radio-group>
+        <el-form-item v-if="formData.type !== MenuTypeEnum.BUTTON" label="图标" prop="icon">
+          <icon-select v-model="formData.icon" />
         </el-form-item>
 
         <el-form-item label="排序" prop="sort">
           <el-input-number
             v-model="formData.sort"
-            style="width: 100px"
+            style="width: 120px"
             controls-position="right"
             :min="0"
           />
-        </el-form-item>
-
-        <!-- 权限标识 -->
-        <el-form-item v-if="formData.type === MenuTypeEnum.BUTTON" label="权限标识" prop="perm">
-          <el-input v-model="formData.perm" placeholder="sys:user:create" />
-        </el-form-item>
-
-        <el-form-item v-if="formData.type !== MenuTypeEnum.BUTTON" label="图标" prop="icon">
-          <!-- 图标选择器 -->
-          <icon-select v-model="formData.icon" />
-        </el-form-item>
-
-        <el-form-item v-if="formData.type === MenuTypeEnum.CATALOG" label="跳转路由">
-          <el-input v-model="formData.redirect" placeholder="跳转路由" />
         </el-form-item>
       </el-form>
 
@@ -382,9 +434,10 @@ import MenuAPI from "@/api/system/menu";
 import type { MenuForm, MenuItem, MenuQueryParams } from "@/api/system/menu";
 import type { OptionItem } from "@/api/common";
 import { useAppStore } from "@/stores/app";
-import { CommonStatus, MenuScopeEnum, MenuTypeEnum } from "@/enums";
+import { CommonStatus, ExternalOpenModeEnum, MenuScopeEnum, MenuTypeEnum } from "@/enums";
 import { DeviceEnum } from "@/enums/settings";
 import { isTenantEnabled } from "@/utils/tenant";
+import { isValidURL } from "@/utils";
 
 defineOptions({
   name: "SysMenu",
@@ -417,12 +470,22 @@ const initialFormData: MenuForm = {
   scope: MenuScopeEnum.TENANT,
   sort: 1,
   type: MenuTypeEnum.MENU,
+  openMode: ExternalOpenModeEnum.NEW_TAB,
   alwaysShow: 0,
   keepAlive: 1,
   params: [],
 };
 
+const menuTypes = [
+  MenuTypeEnum.CATALOG,
+  MenuTypeEnum.MENU,
+  MenuTypeEnum.EXTERNAL,
+  MenuTypeEnum.BUTTON,
+];
+
 const formData = reactive<MenuForm>({ ...initialFormData });
+const currentMenuType = ref<MenuTypeEnum>(MenuTypeEnum.MENU);
+const menuTypeDrafts = reactive<Record<MenuTypeEnum, Partial<MenuForm>>>(createMenuTypeDrafts());
 
 // 多租户关闭时隐藏菜单范围字段。
 const showMenuScope = computed(() => isTenantEnabled());
@@ -430,25 +493,149 @@ const showMenuScope = computed(() => isTenantEnabled());
 // 抽屉宽度（响应式）。
 const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
 
-// 是否外链：菜单类型 + 以 http(s) 开头的路由路径。
-const isExternalLink = computed(
+// 系统内嵌外链需要一个内部路由承载 iframe 页面。
+const isEmbeddedExternal = computed(
   () =>
-    formData.type === MenuTypeEnum.MENU &&
-    !!formData.routePath &&
-    /^https?:\/\//.test(formData.routePath)
+    formData.type === MenuTypeEnum.EXTERNAL && formData.openMode === ExternalOpenModeEnum.EMBEDDED
 );
 
+const showCatalogConfig = computed(() => formData.type === MenuTypeEnum.CATALOG);
+
+const showPageConfig = computed(() => formData.type === MenuTypeEnum.MENU);
+
+const showExternalConfig = computed(() => formData.type === MenuTypeEnum.EXTERNAL);
+
+const showPermissionConfig = computed(() => formData.type === MenuTypeEnum.BUTTON);
+
+const showRoutePath = computed(
+  () =>
+    formData.type === MenuTypeEnum.CATALOG ||
+    formData.type === MenuTypeEnum.MENU ||
+    isEmbeddedExternal.value
+);
+
+const showCatalogDisplay = computed(() => formData.type === MenuTypeEnum.CATALOG);
+
+const showPageCache = computed(
+  () => formData.type === MenuTypeEnum.MENU || isEmbeddedExternal.value
+);
+
+const showRouteName = computed(() => showPageCache.value && isStatusEnabled(formData.keepAlive));
+
+const showRouteParams = computed(() => formData.type === MenuTypeEnum.MENU);
+
+const routeNameTooltip = computed(() =>
+  isEmbeddedExternal.value
+    ? "开启缓存时填写，需和内嵌页路由名称保持一致，例如 Apifox"
+    : "开启缓存时填写，需和页面组件 name 保持一致，例如 User"
+);
+
+const routeNamePlaceholder = computed(() => (isEmbeddedExternal.value ? "Apifox" : "User"));
+
+const menuTypeHint = computed(() => {
+  if (formData.type === MenuTypeEnum.CATALOG) {
+    return "用于菜单分组，不直接对应页面";
+  }
+
+  if (formData.type === MenuTypeEnum.MENU) {
+    return "最常用，关联系统内部页面";
+  }
+
+  if (formData.type === MenuTypeEnum.EXTERNAL) {
+    return "打开第三方地址，可新开页或系统内嵌";
+  }
+
+  if (formData.type === MenuTypeEnum.BUTTON) {
+    return "用于控制页面按钮或操作权限";
+  }
+
+  return "";
+});
+
 const validateRouteName = (_: unknown, value: string, callback: (error?: Error) => void) => {
-  if (formData.type === MenuTypeEnum.MENU && !isExternalLink.value && !value) {
-    callback(new Error("请输入路由名称"));
+  if (showRouteName.value && !value) {
+    callback(new Error("请输入页面标识"));
+    return;
+  }
+  callback();
+};
+
+function isStatusEnabled(value?: number | boolean): boolean {
+  return value === CommonStatus.ENABLED || value === true;
+}
+
+function createMenuTypeDrafts(): Record<MenuTypeEnum, Partial<MenuForm>> {
+  return {
+    [MenuTypeEnum.CATALOG]: {
+      routePath: "",
+      redirect: "",
+      icon: "",
+      alwaysShow: 0,
+    },
+    [MenuTypeEnum.MENU]: {
+      routeName: "",
+      routePath: "",
+      component: "",
+      icon: "",
+      keepAlive: 1,
+      params: [],
+    },
+    [MenuTypeEnum.EXTERNAL]: {
+      externalUrl: "",
+      icon: "",
+      openMode: ExternalOpenModeEnum.NEW_TAB,
+      routeName: "",
+      routePath: "",
+      keepAlive: 1,
+    },
+    [MenuTypeEnum.BUTTON]: {
+      perm: "",
+    },
+  };
+}
+
+function getMenuType(type?: MenuForm["type"]): MenuTypeEnum {
+  return menuTypes.includes(type as MenuTypeEnum) ? (type as MenuTypeEnum) : MenuTypeEnum.MENU;
+}
+
+const validateRoutePath = (_: unknown, value: string, callback: (error?: Error) => void) => {
+  if (showRoutePath.value && !value) {
+    callback(new Error(isEmbeddedExternal.value ? "请输入系统路径" : "请输入访问路径"));
     return;
   }
   callback();
 };
 
 const validateComponent = (_: unknown, value: string, callback: (error?: Error) => void) => {
-  if (formData.type === MenuTypeEnum.MENU && !isExternalLink.value && !value) {
-    callback(new Error("请输入组件路径"));
+  if (formData.type === MenuTypeEnum.MENU && !value) {
+    callback(new Error("请输入页面组件"));
+    return;
+  }
+  callback();
+};
+
+const validateExternalUrl = (_: unknown, value: string, callback: (error?: Error) => void) => {
+  if (formData.type !== MenuTypeEnum.EXTERNAL) {
+    callback();
+    return;
+  }
+
+  if (!value) {
+    callback(new Error("请输入外链地址"));
+    return;
+  }
+
+  if (!isValidURL(value)) {
+    callback(new Error("请输入正确的外链地址"));
+    return;
+  }
+
+  callback();
+};
+
+const validatePerm = (_: unknown, value: string, callback: (error?: Error) => void) => {
+  if (formData.type === MenuTypeEnum.BUTTON && !value) {
+    callback(new Error("请输入权限标识"));
     return;
   }
   callback();
@@ -458,10 +645,22 @@ const rules: FormRules<MenuForm> = {
   parentId: [{ required: true, message: "请选择父级菜单", trigger: "blur" }],
   name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
   type: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
-  routeName: [{ validator: validateRouteName, trigger: "blur" }],
-  routePath: [{ required: true, message: "请输入路由路径", trigger: "blur" }],
-  component: [{ validator: validateComponent, trigger: "blur" }],
+  routeName: [
+    { required: true, message: "请输入页面标识", validator: validateRouteName, trigger: "blur" },
+  ],
+  routePath: [
+    { required: true, message: "请输入访问路径", validator: validateRoutePath, trigger: "blur" },
+  ],
+  component: [
+    { required: true, message: "请输入页面组件", validator: validateComponent, trigger: "blur" },
+  ],
+  externalUrl: [
+    { required: true, message: "请输入外链地址", validator: validateExternalUrl, trigger: "blur" },
+  ],
+  perm: [{ required: true, message: "请输入权限标识", validator: validatePerm, trigger: "blur" }],
+  openMode: [{ required: true, message: "请选择打开方式", trigger: "change" }],
   visible: [{ required: true, message: "请选择显示状态", trigger: "change" }],
+  scope: [{ required: true, message: "请选择菜单范围", trigger: "change" }],
 };
 
 /**
@@ -501,15 +700,181 @@ function handleRowClick(row: MenuItem): void {
 }
 
 /**
+ * 获取菜单列表中的路径
+ */
+function getMenuAccessPath(row: MenuItem): string {
+  if (row.type === MenuTypeEnum.EXTERNAL) {
+    return row.externalUrl ?? "";
+  }
+  return row.routePath ?? "";
+}
+
+/**
+ * 获取菜单列表中的组件路径
+ */
+function getMenuComponentPath(row: MenuItem): string {
+  if (row.type !== MenuTypeEnum.MENU) return "";
+  return row.component ?? "";
+}
+
+/**
+ * 根据父级菜单推断新增类型
+ */
+function getDefaultMenuType(parentId?: string): MenuForm["type"] {
+  if (!parentId || parentId === "0") return MenuTypeEnum.CATALOG;
+
+  const parent = findMenuById(list.value, parentId);
+  if (parent?.type === MenuTypeEnum.MENU) return MenuTypeEnum.BUTTON;
+
+  return MenuTypeEnum.MENU;
+}
+
+/**
+ * 从菜单树中查找指定菜单
+ */
+function findMenuById(menus: MenuItem[], id: string): MenuItem | undefined {
+  for (const menu of menus) {
+    if (menu.id === id) return menu;
+
+    const child = findMenuById(menu.children ?? [], id);
+    if (child) return child;
+  }
+}
+
+/**
+ * 按菜单类型清理无关字段
+ */
+function normalizeMenuPayload(): MenuForm {
+  const payload: MenuForm = {
+    ...formData,
+    params: formData.params?.filter((item) => item.key && item.value) ?? [],
+  };
+
+  if (payload.type === MenuTypeEnum.CATALOG) {
+    payload.routeName = undefined;
+    payload.component = undefined;
+    payload.externalUrl = undefined;
+    payload.openMode = undefined;
+    payload.perm = undefined;
+    payload.keepAlive = undefined;
+    payload.params = [];
+  }
+
+  if (payload.type === MenuTypeEnum.MENU) {
+    payload.externalUrl = undefined;
+    payload.openMode = undefined;
+    payload.redirect = undefined;
+    payload.perm = undefined;
+    payload.alwaysShow = undefined;
+
+    if (!isStatusEnabled(payload.keepAlive)) {
+      payload.routeName = undefined;
+    }
+  }
+
+  if (payload.type === MenuTypeEnum.EXTERNAL) {
+    payload.component = undefined;
+    payload.perm = undefined;
+    payload.redirect = undefined;
+    payload.alwaysShow = undefined;
+    payload.params = [];
+
+    if (payload.openMode === ExternalOpenModeEnum.NEW_TAB) {
+      payload.routeName = undefined;
+      payload.routePath = undefined;
+      payload.keepAlive = undefined;
+    } else if (!isStatusEnabled(payload.keepAlive)) {
+      payload.routeName = undefined;
+    }
+  }
+
+  if (payload.type === MenuTypeEnum.BUTTON) {
+    payload.routeName = undefined;
+    payload.routePath = undefined;
+    payload.component = undefined;
+    payload.externalUrl = undefined;
+    payload.openMode = undefined;
+    payload.redirect = undefined;
+    payload.icon = undefined;
+    payload.keepAlive = undefined;
+    payload.alwaysShow = undefined;
+    payload.params = [];
+  }
+
+  return payload;
+}
+
+function resetMenuTypeDrafts(): void {
+  Object.assign(menuTypeDrafts, createMenuTypeDrafts());
+}
+
+function saveMenuTypeDraft(type: MenuTypeEnum): void {
+  menuTypeDrafts[type] = {
+    routeName: formData.routeName,
+    routePath: formData.routePath,
+    component: formData.component,
+    externalUrl: formData.externalUrl,
+    icon: formData.icon,
+    openMode: formData.openMode,
+    redirect: formData.redirect,
+    perm: formData.perm,
+    alwaysShow: formData.alwaysShow,
+    keepAlive: formData.keepAlive,
+    params: formData.params?.map((item) => ({ ...item })) ?? [],
+  };
+}
+
+/**
+ * 保留各类型已填写内容，避免切换类型时丢失草稿
+ */
+function syncCurrentMenuTypeDraft(): void {
+  saveMenuTypeDraft(currentMenuType.value);
+  restoreMenuTypeDraft(currentMenuType.value);
+}
+
+function restoreMenuTypeDraft(type: MenuTypeEnum): void {
+  const draft = menuTypeDrafts[type] ?? {};
+  Object.assign(formData, {
+    routeName: undefined,
+    routePath: undefined,
+    component: undefined,
+    externalUrl: undefined,
+    icon: undefined,
+    openMode: undefined,
+    redirect: undefined,
+    perm: undefined,
+    alwaysShow: undefined,
+    keepAlive: undefined,
+    params: [],
+    ...draft,
+    type,
+  });
+
+  applyMenuTypeDefaults();
+}
+
+/**
+ * 替换表单数据，避免上一次编辑残留字段
+ */
+function assignFormData(data: MenuForm): void {
+  Object.keys(formData).forEach((key) => {
+    delete (formData as Record<string, unknown>)[key];
+  });
+  Object.assign(formData, data);
+
+  resetMenuTypeDrafts();
+  currentMenuType.value = getMenuType(data.type);
+  saveMenuTypeDraft(currentMenuType.value);
+  syncCurrentMenuTypeDraft();
+}
+
+/**
  * 重置表单数据和验证状态
  */
 function resetForm(): void {
   menuFormRef.value?.resetFields();
   menuFormRef.value?.clearValidate();
-  Object.keys(formData).forEach((key) => {
-    delete (formData as Record<string, unknown>)[key];
-  });
-  Object.assign(formData, initialFormData);
+  assignFormData({ ...initialFormData });
 }
 
 /**
@@ -526,23 +891,72 @@ async function openDialog(parentId?: string, menuId?: string): Promise<void> {
   if (menuId) {
     dialogState.title = "编辑菜单";
     const form = await MenuAPI.getFormData(menuId);
-    Object.assign(formData, form);
+    assignFormData(form);
   } else {
     dialogState.title = "新增菜单";
-    formData.parentId = parentId?.toString();
+    const nextParentId = parentId?.toString() ?? "0";
+    assignFormData({
+      ...initialFormData,
+      parentId: nextParentId,
+      type: getDefaultMenuType(nextParentId),
+    });
   }
 }
 
-/** 菜单类型切换事件 */
-function handleMenuTypeChange(): void {
-  if (formData.type === MenuTypeEnum.MENU) {
-    if (formData.routePath === undefined) {
-      formData.routePath = initialFormData.routePath;
-    }
-    if (formData.component === undefined) {
-      formData.component = initialFormData.component;
-    }
+/**
+ * 补齐当前菜单类型的默认字段
+ */
+function applyMenuTypeDefaults(): void {
+  if (formData.type === MenuTypeEnum.CATALOG) {
+    formData.alwaysShow ??= 0;
   }
+
+  if (formData.type === MenuTypeEnum.MENU) {
+    formData.keepAlive ??= 1;
+    formData.params ??= [];
+  }
+
+  if (formData.type === MenuTypeEnum.EXTERNAL) {
+    formData.openMode ??= ExternalOpenModeEnum.NEW_TAB;
+    formData.component = undefined;
+    formData.params = [];
+  }
+
+  if (formData.type === MenuTypeEnum.BUTTON) {
+    formData.icon = undefined;
+  }
+}
+
+/**
+ * 菜单类型切换事件
+ */
+function handleMenuTypeChange(): void {
+  const nextType = getMenuType(formData.type);
+  if (currentMenuType.value === nextType) return;
+
+  saveMenuTypeDraft(currentMenuType.value);
+  currentMenuType.value = nextType;
+  restoreMenuTypeDraft(nextType);
+
+  nextTick(() => menuFormRef.value?.clearValidate());
+}
+
+/**
+ * 外链打开方式切换事件
+ */
+function handleOpenModeChange(): void {
+  if (formData.openMode === ExternalOpenModeEnum.EMBEDDED) {
+    formData.keepAlive ??= 1;
+  }
+
+  nextTick(() => menuFormRef.value?.clearValidate(["routeName", "routePath"]));
+}
+
+/**
+ * 切换缓存状态后刷新页面标识校验
+ */
+function handleKeepAliveChange(): void {
+  menuFormRef.value?.clearValidate("routeName");
 }
 
 /**
@@ -561,13 +975,14 @@ async function handleSubmit(): Promise<void> {
     return;
   }
 
+  const payload = normalizeMenuPayload();
   loading.value = true;
   try {
     if (menuId) {
-      await MenuAPI.update(menuId, formData);
+      await MenuAPI.update(menuId, payload);
       ElMessage.success("修改成功");
     } else {
-      await MenuAPI.create(formData);
+      await MenuAPI.create(payload);
       ElMessage.success("新增成功");
     }
     closeDialog();
@@ -623,6 +1038,69 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.menu-form {
+  padding-right: 4px;
+}
+
+.menu-form :deep(.el-form-item__label) {
+  white-space: nowrap;
+}
+
+.menu-type-field {
+  width: 100%;
+}
+
+.menu-type-group {
+  display: flex;
+  width: 100%;
+}
+
+.menu-type-group :deep(.el-radio-button) {
+  flex: 1;
+}
+
+.menu-type-group :deep(.el-radio-button__inner) {
+  width: 100%;
+}
+
+.menu-type-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--el-text-color-secondary);
+}
+
+.menu-param-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.menu-param-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) 18px 18px;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.menu-param-row__equal {
+  color: var(--el-text-color-secondary);
+}
+
+.menu-param-row__action {
+  cursor: pointer;
+}
+
+.menu-param-row__action.is-add {
+  color: var(--el-color-success);
+}
+
+.menu-param-row__action.is-delete {
+  color: var(--el-color-danger);
+}
+
 .menu-name-cell {
   display: inline-flex;
   align-items: center;

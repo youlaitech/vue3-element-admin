@@ -1,4 +1,4 @@
-import { STORAGE_KEYS, APP_PREFIX } from "@/constants";
+import { APP_PREFIX, STORAGE_KEYS } from "@/constants";
 
 /**
  * 存储工具类
@@ -10,18 +10,12 @@ import { STORAGE_KEYS, APP_PREFIX } from "@/constants";
  * @author 有来技术团队
  */
 export class Storage {
-  // ==================== localStorage 操作 ====================
-
-  /**
-   * 存储数据到 localStorage
-   */
+  /** 存储数据到 localStorage */
   static set(key: string, value: unknown): void {
     localStorage.setItem(key, JSON.stringify(value));
   }
 
-  /**
-   * 从 localStorage 获取数据
-   */
+  /** 从 localStorage 获取数据 */
   static get<T>(key: string, defaultValue?: T): T {
     const value = localStorage.getItem(key);
     if (!value) return defaultValue as T;
@@ -34,25 +28,17 @@ export class Storage {
     }
   }
 
-  /**
-   * 从 localStorage 删除数据
-   */
+  /** 从 localStorage 删除数据 */
   static remove(key: string): void {
     localStorage.removeItem(key);
   }
 
-  // ==================== sessionStorage 操作 ====================
-
-  /**
-   * 存储数据到 sessionStorage
-   */
+  /** 存储数据到 sessionStorage */
   static sessionSet(key: string, value: unknown): void {
     sessionStorage.setItem(key, JSON.stringify(value));
   }
 
-  /**
-   * 从 sessionStorage 获取数据
-   */
+  /** 从 sessionStorage 获取数据 */
   static sessionGet<T>(key: string, defaultValue?: T): T {
     const value = sessionStorage.getItem(key);
     if (!value) return defaultValue as T;
@@ -65,26 +51,18 @@ export class Storage {
     }
   }
 
-  /**
-   * 从 sessionStorage 删除数据
-   */
+  /** 从 sessionStorage 删除数据 */
   static sessionRemove(key: string): void {
     sessionStorage.removeItem(key);
   }
 
-  // ==================== 批量清理操作 ====================
-
-  /**
-   * 清理指定键的存储（localStorage + sessionStorage）
-   */
+  /** 清理指定键的存储（localStorage + sessionStorage） */
   static clear(key: string): void {
     localStorage.removeItem(key);
     sessionStorage.removeItem(key);
   }
 
-  /**
-   * 批量清理存储
-   */
+  /** 批量清理存储 */
   static clearMultiple(keys: string[]): void {
     keys.forEach((key) => {
       localStorage.removeItem(key);
@@ -121,9 +99,7 @@ export class Storage {
     this.clearByPrefix(`${APP_PREFIX}:`);
   }
 
-  /**
-   * 获取所有项目相关的存储键
-   */
+  /** 获取所有项目相关的存储键 */
   static getAllProjectKeys(): string[] {
     return Object.values(STORAGE_KEYS);
   }

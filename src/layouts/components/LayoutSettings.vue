@@ -6,9 +6,9 @@
     :before-close="handleCloseDrawer"
     class="settings-drawer"
   >
-    <div class="settings-content">
-      <section class="config-section">
-        <div class="section-title">{{ t("settings.theme") }}</div>
+    <div class="layout-settings__content">
+      <section class="layout-settings__section">
+        <div class="layout-settings__section-title">{{ t("settings.theme") }}</div>
 
         <div class="theme-mode">
           <el-radio-group v-model="themeMode">
@@ -24,8 +24,8 @@
           </el-radio-group>
         </div>
 
-        <div class="config-card">
-          <div class="config-card__header">
+        <div class="layout-settings__card">
+          <div class="layout-settings__card-header">
             <span>{{ t("settings.themePalette") }}</span>
             <button
               type="button"
@@ -89,11 +89,11 @@
         </el-collapse-transition>
       </section>
 
-      <section class="config-section">
-        <div class="section-title">{{ t("settings.navigation") }}</div>
+      <section class="layout-settings__section">
+        <div class="layout-settings__section-title">{{ t("settings.navigation") }}</div>
 
-        <div class="layout-select">
-          <div class="layout-grid">
+        <div class="settings-layout-select">
+          <div class="settings-layout-select__grid">
             <el-tooltip
               v-for="item in layoutOptions"
               :key="item.value"
@@ -104,7 +104,7 @@
                 role="button"
                 tabindex="0"
                 :class="[
-                  'layout-item',
+                  'settings-layout-select__item',
                   item.className,
                   {
                     'is-active': settingsStore.layout === item.value,
@@ -114,17 +114,26 @@
                 @keydown.enter="handleLayoutChange(item.value)"
                 @keydown.space.prevent="handleLayoutChange(item.value)"
               >
-                <div class="layout-preview">
+                <div class="settings-layout-preview">
                   <div
                     v-if="item.value === LayoutMode.TOP || item.value === LayoutMode.MIX"
-                    class="layout-header"
+                    class="settings-layout-preview__header"
                   ></div>
-                  <div v-if="item.value !== LayoutMode.TOP" class="layout-sidebar"></div>
-                  <div v-if="item.value === LayoutMode.DOUBLE" class="layout-sub-sidebar"></div>
-                  <div class="layout-main"></div>
+                  <div
+                    v-if="item.value !== LayoutMode.TOP"
+                    class="settings-layout-preview__sidebar"
+                  ></div>
+                  <div
+                    v-if="item.value === LayoutMode.DOUBLE"
+                    class="settings-layout-preview__sub-sidebar"
+                  ></div>
+                  <div class="settings-layout-preview__main"></div>
                 </div>
-                <div class="layout-name">{{ item.label }}</div>
-                <div v-if="settingsStore.layout === item.value" class="layout-check">
+                <div class="settings-layout-select__name">{{ item.label }}</div>
+                <div
+                  v-if="settingsStore.layout === item.value"
+                  class="settings-layout-select__check"
+                >
                   <el-icon><Check /></el-icon>
                 </div>
               </div>
@@ -134,12 +143,14 @@
 
         <div
           v-if="settingsStore.resolvedTheme !== ThemeMode.DARK"
-          class="config-item config-item--sidebar-color"
+          class="layout-settings__item layout-settings__item--sidebar-color"
         >
-          <span class="config-item__label text-xs">{{ t("settings.sidebarColorScheme") }}</span>
+          <span class="layout-settings__item-label text-xs">
+            {{ t("settings.sidebarColorScheme") }}
+          </span>
           <el-radio-group
             v-model="sidebarColor"
-            class="config-item__control"
+            class="layout-settings__item-control"
             @change="setSidebarColor"
           >
             <el-radio :value="SidebarColor.MINIMAL_WHITE">
@@ -152,46 +163,54 @@
         </div>
       </section>
 
-      <section class="config-section">
-        <div class="section-title">{{ t("settings.interface") }}</div>
+      <section class="layout-settings__section">
+        <div class="layout-settings__section-title">{{ t("settings.interface") }}</div>
 
-        <div class="config-item flex-x-between">
+        <div class="layout-settings__item flex-x-between">
           <span class="text-xs">{{ t("settings.showTagsView") }}</span>
           <el-switch v-model="settingsStore.showTagsView" />
         </div>
 
-        <div v-if="settingsStore.showTagsView" class="config-item config-item--block">
-          <div class="config-card__header">
+        <div
+          v-if="settingsStore.showTagsView"
+          class="layout-settings__item layout-settings__item--block"
+        >
+          <div class="layout-settings__card-header">
             <span class="text-xs">{{ t("settings.tagsViewStyle") }}</span>
           </div>
-          <div class="tags-style-grid">
+          <div class="settings-tabs-style">
             <button
               v-for="item in tagsViewStyleOptions"
               :key="item.value"
               type="button"
               :aria-label="item.label"
               :class="[
-                'tags-style-option',
+                'settings-tabs-style__option',
                 { 'is-active': settingsStore.tagsViewStyle === item.value },
               ]"
               @click="settingsStore.tagsViewStyle = item.value"
             >
-              <span :class="['tags-style-preview', `tags-style-preview--${item.value}`]">
+              <span
+                :class="[
+                  'settings-tabs-style__preview',
+                  `settings-tabs-style__preview--${item.value}`,
+                ]"
+              >
                 <i></i>
                 <i></i>
                 <i></i>
               </span>
-              <span class="tags-style-option__label">{{ item.label }}</span>
+              <span class="settings-tabs-style__label">{{ item.label }}</span>
             </button>
           </div>
         </div>
 
-        <div class="config-item flex-x-between">
+        <div class="layout-settings__item flex-x-between">
           <span class="text-xs">{{ t("settings.showAppLogo") }}</span>
           <el-switch v-model="settingsStore.showAppLogo" />
         </div>
 
-        <div class="config-item flex-x-between">
+        <div class="layout-settings__item flex-x-between">
           <span class="text-xs">{{ t("settings.pageSwitchingAnimation") }}</span>
           <el-select v-model="settingsStore.pageSwitchingAnimation" style="width: 150px">
             <el-option
@@ -204,20 +223,20 @@
         </div>
       </section>
 
-      <section class="config-section">
-        <div class="section-title">{{ t("settings.assist") }}</div>
+      <section class="layout-settings__section">
+        <div class="layout-settings__section-title">{{ t("settings.assist") }}</div>
 
-        <div class="config-item flex-x-between">
+        <div class="layout-settings__item flex-x-between">
           <span class="text-xs">{{ t("settings.showWatermark") }}</span>
           <el-switch v-model="settingsStore.showWatermark" />
         </div>
 
-        <div class="config-item flex-x-between">
+        <div class="layout-settings__item flex-x-between">
           <span class="text-xs">{{ t("settings.grayMode") }}</span>
           <el-switch v-model="settingsStore.grayMode" />
         </div>
 
-        <div class="config-item flex-x-between">
+        <div class="layout-settings__item flex-x-between">
           <span class="text-xs">{{ t("settings.colorWeak") }}</span>
           <el-switch v-model="settingsStore.colorWeak" />
         </div>
@@ -293,8 +312,8 @@ const layoutOptions: LayoutOption[] = [
 ];
 
 const tagsViewStyleOptions: TagsViewStyleOption[] = [
-  { value: TagsViewStyle.LINE, label: t("settings.tagsViewStyles.line") },
   { value: TagsViewStyle.CARD, label: t("settings.tagsViewStyles.card") },
+  { value: TagsViewStyle.LINE, label: t("settings.tagsViewStyles.line") },
 ];
 
 const colorOptions: ColorOption[] = themeColorNames.map((name) => ({ name }));
@@ -497,19 +516,19 @@ function handleCloseDrawer(): void {
   }
 }
 
-.settings-content {
+.layout-settings__content {
   flex: 1 1 auto;
   padding: 16px 18px 20px;
   overflow-y: auto;
   color: var(--el-text-color-regular);
 }
 
-.config-section {
+.layout-settings__section {
   & + & {
     margin-top: 20px;
   }
 
-  .config-item {
+  .layout-settings__item {
     display: flex;
     gap: 12px;
     align-items: center;
@@ -529,7 +548,7 @@ function handleCloseDrawer(): void {
     }
   }
 
-  .config-item--sidebar-color {
+  .layout-settings__item--sidebar-color {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     column-gap: 14px;
@@ -539,13 +558,13 @@ function handleCloseDrawer(): void {
     border: 1px solid var(--el-border-color-lighter);
     border-radius: 8px;
 
-    .config-item__label {
+    .layout-settings__item-label {
       min-width: 64px;
       color: var(--el-text-color-regular);
       white-space: nowrap;
     }
 
-    .config-item__control {
+    .layout-settings__item-control {
       justify-content: flex-end;
       min-width: 0;
     }
@@ -567,7 +586,7 @@ function handleCloseDrawer(): void {
     }
   }
 
-  .config-item--block {
+  .layout-settings__item--block {
     display: block;
     min-height: 0;
     padding-top: 10px;
@@ -577,7 +596,7 @@ function handleCloseDrawer(): void {
   }
 }
 
-.section-title {
+.layout-settings__section-title {
   display: flex;
   gap: 10px;
   align-items: center;
@@ -601,11 +620,11 @@ function handleCloseDrawer(): void {
   justify-content: center;
 }
 
-.config-card {
+.layout-settings__card {
   margin-top: 14px;
 }
 
-.config-card__header {
+.layout-settings__card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -799,17 +818,17 @@ function handleCloseDrawer(): void {
   border-color: var(--el-border-color);
 }
 
-.layout-select {
+.settings-layout-select {
   padding-top: 10px;
 
-  .layout-grid {
+  .settings-layout-select__grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
   }
 }
 
-.layout-item {
+.settings-layout-select__item {
   position: relative;
   height: 72px;
   overflow: hidden;
@@ -827,14 +846,14 @@ function handleCloseDrawer(): void {
     border-color: var(--el-color-primary-light-5);
   }
 
-  .layout-preview {
+  .settings-layout-preview {
     position: relative;
     width: 54px;
     height: 34px;
     margin: 8px auto 4px;
   }
 
-  .layout-header {
+  .settings-layout-preview__header {
     position: absolute;
     top: 0;
     right: 0;
@@ -844,7 +863,7 @@ function handleCloseDrawer(): void {
     border-radius: 2px;
   }
 
-  .layout-sidebar {
+  .settings-layout-preview__sidebar {
     position: absolute;
     left: 0;
     width: 12px;
@@ -852,7 +871,7 @@ function handleCloseDrawer(): void {
     border-radius: 2px;
   }
 
-  .layout-sub-sidebar {
+  .settings-layout-preview__sub-sidebar {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -863,7 +882,7 @@ function handleCloseDrawer(): void {
     border-radius: 2px;
   }
 
-  .layout-main {
+  .settings-layout-preview__main {
     position: absolute;
     background:
       linear-gradient(var(--el-fill-color-light) 0 0) 7px 7px / 18px 3px no-repeat,
@@ -873,7 +892,7 @@ function handleCloseDrawer(): void {
     border-radius: 2px;
   }
 
-  .layout-name {
+  .settings-layout-select__name {
     position: absolute;
     right: 0;
     bottom: 5px;
@@ -885,7 +904,7 @@ function handleCloseDrawer(): void {
     transition: color 0.3s ease;
   }
 
-  .layout-check {
+  .settings-layout-select__check {
     position: absolute;
     top: 4px;
     right: 4px;
@@ -902,11 +921,12 @@ function handleCloseDrawer(): void {
   }
 
   &.left {
-    .layout-sidebar {
+    .settings-layout-preview__sidebar {
       top: 4px;
       bottom: 4px;
     }
-    .layout-main {
+
+    .settings-layout-preview__main {
       top: 4px;
       right: 0;
       bottom: 4px;
@@ -915,10 +935,11 @@ function handleCloseDrawer(): void {
   }
 
   &.top {
-    .layout-header {
+    .settings-layout-preview__header {
       height: 12px;
     }
-    .layout-main {
+
+    .settings-layout-preview__main {
       top: 16px;
       right: 0;
       bottom: 0;
@@ -927,14 +948,16 @@ function handleCloseDrawer(): void {
   }
 
   &.mix {
-    .layout-header {
+    .settings-layout-preview__header {
       height: 10px;
     }
-    .layout-sidebar {
+
+    .settings-layout-preview__sidebar {
       top: 14px;
       bottom: 0;
     }
-    .layout-main {
+
+    .settings-layout-preview__main {
       top: 14px;
       right: 0;
       bottom: 0;
@@ -943,12 +966,13 @@ function handleCloseDrawer(): void {
   }
 
   &.double {
-    .layout-sidebar {
+    .settings-layout-preview__sidebar {
       top: 0;
       bottom: 0;
       width: 10px;
     }
-    .layout-main {
+
+    .settings-layout-preview__main {
       top: 0;
       right: 0;
       bottom: 0;
@@ -961,20 +985,20 @@ function handleCloseDrawer(): void {
     border-color: var(--el-color-primary-light-5);
     box-shadow: inset 0 0 0 1px var(--el-color-primary-light-6);
 
-    .layout-name {
+    .settings-layout-select__name {
       font-weight: 600;
       color: var(--el-color-primary);
     }
   }
 }
 
-.tags-style-grid {
+.settings-tabs-style {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
-.tags-style-option {
+.settings-tabs-style__option {
   display: grid;
   gap: 6px;
   align-content: center;
@@ -1004,7 +1028,7 @@ function handleCloseDrawer(): void {
   }
 }
 
-.tags-style-option__label {
+.settings-tabs-style__label {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1014,7 +1038,7 @@ function handleCloseDrawer(): void {
   white-space: nowrap;
 }
 
-.tags-style-preview {
+.settings-tabs-style__preview {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1030,7 +1054,7 @@ function handleCloseDrawer(): void {
   }
 }
 
-.tags-style-preview--line {
+.settings-tabs-style__preview--line {
   gap: 4px;
   align-items: flex-end;
   border-bottom: 1px solid var(--el-border-color-lighter);
@@ -1048,7 +1072,7 @@ function handleCloseDrawer(): void {
   }
 }
 
-.tags-style-preview--card {
+.settings-tabs-style__preview--card {
   gap: 4px;
 
   i {

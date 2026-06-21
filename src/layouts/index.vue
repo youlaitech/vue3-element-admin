@@ -7,16 +7,19 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { useLayout } from "./useLayout";
+import { useLayout } from "./composables/useLayout";
+import { useLayoutDevice } from "./composables/useLayoutDevice";
 import { LayoutMode } from "@/enums/settings";
-import LeftLayout from "./LeftLayout.vue";
-import TopLayout from "./TopLayout.vue";
-import MixLayout from "./MixLayout.vue";
-import DoubleLayout from "./DoubleLayout.vue";
+import LeftLayout from "./modes/LeftLayout.vue";
+import TopLayout from "./modes/TopLayout.vue";
+import MixLayout from "./modes/MixLayout.vue";
+import DoubleLayout from "./modes/DoubleLayout.vue";
 import Settings from "./components/LayoutSettings.vue";
 
 const route = useRoute();
 const { currentLayout, showSettings } = useLayout();
+
+useLayoutDevice();
 
 const currentLayoutComponent = computed(() => {
   const override = route.meta?.layout as LayoutMode | undefined;

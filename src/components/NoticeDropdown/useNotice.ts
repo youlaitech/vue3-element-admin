@@ -1,21 +1,29 @@
-/**
- * 通知中心逻辑
- */
-import { computed, ref, onMounted, onBeforeUnmount } from "vue";
-import type { NoticeItem, NoticeDetail, NoticeQueryParams } from "@/api/system/notice";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import type { NoticeDetail, NoticeItem, NoticeQueryParams } from "@/api/system/notice";
 import NoticeAPI from "@/api/system/notice";
 import { useSse } from "@/composables";
 import router from "@/router";
 
 const PAGE_SIZE = 5;
-
 const NOTICE_EVENT = "notice";
+const NOTICE_REVOKE_EVENT = "notice-revoke";
+
 type NoticeStatus = 0 | 1;
+
+interface NoticeMessage {
+  id: string;
+  title: string;
+  type: number;
+  publishTime?: Date;
+}
+
+interface NoticeRevokeMessage {
+  id: string;
+}
 
 export function useNotice() {
   const { on } = useSse();
 
-  // 状态
   const list = ref<NoticeItem[]>([]);
   const unreadTotal = ref(0);
   const activeStatus = ref<NoticeStatus>(0);
@@ -23,11 +31,7 @@ export function useNotice() {
   const dialogVisible = ref(false);
   const emptyText = computed(() => (activeStatus.value === 0 ? "暂无未读消息" : "暂无已读消息"));
 
-  let unsubscribe: (() => void) | null = null;
-
-  // ============================================
-  // 数据获取
-  // ============================================
+  let stopSubscriptions: (() => void) | null = null;
 
   async function fetchList(params?: Partial<NoticeQueryParams>) {
     const query: NoticeQueryParams = {
@@ -98,14 +102,10 @@ export function useNotice() {
     router.push({ name: "MyNotice" });
   }
 
-  // ============================================
-  // SSE 订阅
-  // ============================================
-
   function setupSubscription() {
-    if (unsubscribe) return;
+    if (stopSubscriptions) return;
 
-    unsubscribe = on(NOTICE_EVENT, (data: any) => {
+    const stopNotice = on<NoticeMessage>(NOTICE_EVENT, (data) => {
       try {
         if (!data.id) return;
 
@@ -116,10 +116,13 @@ export function useNotice() {
         list.value.unshift({
           id: data.id,
           title: data.title,
+          content: "",
           type: data.type,
+          level: "",
+          publishStatus: 1,
           publishTime: data.publishTime,
           isRead: 0,
-        } as NoticeItem);
+        });
 
         if (list.value.length > PAGE_SIZE) {
           list.value.length = PAGE_SIZE;
@@ -136,25 +139,26 @@ export function useNotice() {
       }
     });
 
-    on("notice-revoke", (data: any) => {
+    const stopRevoke = on<NoticeRevokeMessage>(NOTICE_REVOKE_EVENT, (data) => {
       try {
         if (!data.id) return;
 
-        const idx = list.value.findIndex((item: NoticeItem) => item.id === data.id);
-        if (idx >= 0) {
-          const wasUnread = list.value[idx].isRead !== 1;
-          list.value.splice(idx, 1);
+        const index = list.value.findIndex((item: NoticeItem) => item.id === data.id);
+        if (index >= 0) {
+          const wasUnread = list.value[index].isRead !== 1;
+          list.value.splice(index, 1);
           if (wasUnread && unreadTotal.value > 0) unreadTotal.value -= 1;
         }
       } catch (e) {
         console.error("处理撤回通知失败", e);
       }
     });
-  }
 
-  // ============================================
-  // 生命周期
-  // ============================================
+    stopSubscriptions = () => {
+      stopNotice();
+      stopRevoke();
+    };
+  }
 
   onMounted(() => {
     refresh();
@@ -162,9 +166,9 @@ export function useNotice() {
   });
 
   onBeforeUnmount(() => {
-    if (unsubscribe) {
-      unsubscribe();
-      unsubscribe = null;
+    if (stopSubscriptions) {
+      stopSubscriptions();
+      stopSubscriptions = null;
     }
   });
 

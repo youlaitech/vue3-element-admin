@@ -69,19 +69,32 @@ onBeforeMount(() => {
 
 <style lang="scss" scoped>
 .dept-card {
+  height: 100%;
+  background: transparent;
+  border: 0;
+  border-radius: inherit;
+  box-shadow: none;
+
   :deep(.el-card__body) {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
   }
 }
 
 .dept-card__search {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .dept-card__tree {
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
+
+  :deep(.el-tree-node__content) {
+    height: 32px;
+  }
 }
 </style>

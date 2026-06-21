@@ -18,12 +18,10 @@ const settingsStore = useSettingsStore();
 const layout = computed(() => settingsStore.layout);
 
 const hamburgerClass = computed(() => {
-  // 如果暗黑主题
   if (settingsStore.resolvedTheme === ThemeMode.DARK) {
     return "hamburger--white";
   }
 
-  // 如果是混合布局 && 侧边栏配色方案是经典蓝
   if (
     layout.value === LayoutMode.MIX &&
     settingsStore.sidebarColorScheme === SidebarColor.CLASSIC_BLUE
@@ -31,7 +29,6 @@ const hamburgerClass = computed(() => {
     return "hamburger--white";
   }
 
-  // 默认返回空字符串
   return "";
 });
 
@@ -45,13 +42,23 @@ function toggleClick() {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 15px;
+  width: 48px;
+  height: 100%;
+  padding: 0;
+  color: var(--el-text-color-regular);
   cursor: pointer;
 
   .hamburger {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
     vertical-align: middle;
+    color: currentcolor;
+    background-color: currentcolor;
     transform: scaleX(-1);
-    transition: transform 0.3s ease;
+    transition:
+      color 0.16s,
+      transform 0.3s ease;
 
     &--white {
       color: #fff;
@@ -60,6 +67,10 @@ function toggleClick() {
     &.is-active {
       transform: scaleX(1);
     }
+  }
+
+  &:hover {
+    color: var(--el-color-primary);
   }
 }
 </style>

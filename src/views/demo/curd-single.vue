@@ -73,10 +73,12 @@
 </template>
 
 <script setup lang="ts">
+import type { MessageBoxData } from "element-plus";
 import UserAPI from "@/api/system/user";
 import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
-import type { UserForm, UserQueryParams, UserItem } from "@/api/system/user";
+import type { OptionItem } from "@/api/common";
+import type { UserForm, UserItem, UserQueryParams } from "@/api/system/user";
 import type { IObject, IModalConfig, IContentConfig, ISearchConfig } from "@/components/CURD/types";
 import { DeviceEnum } from "@/enums/settings";
 import { useAppStore } from "@/stores";
@@ -87,14 +89,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-// ========================= 选项数据管理 =========================
-interface OptionItem {
-  label: string;
-  value: any;
-  [key: string]: any;
-}
-
-// 共享选项数据
+// 选项数据
 const deptArr = ref<OptionItem[]>([]);
 const roleArr = ref<OptionItem[]>([]);
 const stateArr = ref<OptionItem[]>([
@@ -102,14 +97,13 @@ const stateArr = ref<OptionItem[]>([
   { label: "禁用", value: 0 },
 ]);
 
-// 初始化选项数据
 const initOptions = async () => {
   const [dept, roles] = await Promise.all([DeptAPI.getOptions(), RoleAPI.getOptions()]);
   deptArr.value = dept;
   roleArr.value = roles;
 };
 
-// ========================= 搜索配置 =========================
+// 搜索配置
 const searchConfig: ISearchConfig = reactive({
   permPrefix: "sys:user",
   formItems: [
@@ -165,7 +159,7 @@ const searchConfig: ISearchConfig = reactive({
   ],
 });
 
-// ========================= 内容配置 =========================
+// 内容配置
 const contentConfig: IContentConfig<UserQueryParams, UserItem> = reactive({
   permPrefix: "sys:user",
   table: {
@@ -178,7 +172,7 @@ const contentConfig: IContentConfig<UserQueryParams, UserItem> = reactive({
     pageSize: 20,
     pageSizes: [10, 20, 30, 50],
   },
-  indexAction(params: any) {
+  indexAction(params: UserQueryParams) {
     return UserAPI.getPage(params);
   },
   deleteAction: UserAPI.deleteByIds,
@@ -190,7 +184,7 @@ const contentConfig: IContentConfig<UserQueryParams, UserItem> = reactive({
   importsAction() {
     return Promise.resolve();
   },
-  async exportsAction(params: any) {
+  async exportsAction(params: UserQueryParams) {
     const data = await UserAPI.getPage(params);
     return data.list;
   },
@@ -232,7 +226,7 @@ const contentConfig: IContentConfig<UserQueryParams, UserItem> = reactive({
       filters: [],
       filterMultiple: true,
       filterJoin: ",",
-      async initFn(colItem: any) {
+      async initFn(colItem: IObject) {
         const roleOptions = await RoleAPI.getOptions();
         colItem.filters = roleOptions.map((item) => {
           return { text: item.label, value: item.value };
@@ -285,7 +279,7 @@ const contentConfig: IContentConfig<UserQueryParams, UserItem> = reactive({
   ],
 });
 
-// ========================= 新增配置 =========================
+// 新增配置
 const addModalConfig: IModalConfig<UserForm> = reactive({
   permPrefix: "sys:user",
   dialog: {
@@ -401,7 +395,7 @@ const addModalConfig: IModalConfig<UserForm> = reactive({
   ],
 });
 
-// ========================= 编辑配置 =========================
+// 编辑配置
 const editModalConfig: IModalConfig<UserForm> = reactive({
   permPrefix: "sys:user",
   component: "drawer",
@@ -410,7 +404,7 @@ const editModalConfig: IModalConfig<UserForm> = reactive({
     size: useAppStore().device === DeviceEnum.MOBILE ? "80%" : 500,
   },
   pk: "id",
-  formAction(data: any) {
+  formAction(data: UserForm) {
     return UserAPI.update(data.id as string, data);
   },
   formItems: [
@@ -512,7 +506,7 @@ const editModalConfig: IModalConfig<UserForm> = reactive({
   ],
 });
 
-// ========================= 页面逻辑 =========================
+// 页面逻辑
 const {
   searchRef,
   contentRef,
@@ -529,14 +523,12 @@ const {
   handleFilterChange,
 } = usePage();
 
-// 其他工具
 function handleToolbarClick(name: string) {
   if (name === "custom1") {
     ElMessage.success("点击了自定义1按钮");
   }
 }
 
-// 表格工具
 const handleOperateClick = (data: IObject) => {
   if (data.name === "detail") {
     editModalConfig.drawer = { ...editModalConfig.drawer, title: "查看" };
@@ -553,7 +545,7 @@ const handleOperateClick = (data: IObject) => {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
     }).then(
-      ({ value }: any) => {
+      ({ value }: MessageBoxData) => {
         if (!value || value.length < 6) {
           ElMessage.warning("密码至少需6位字符，请重新输入");
           return false;

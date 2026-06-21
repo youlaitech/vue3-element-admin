@@ -1,27 +1,21 @@
 <template>
-  <div :class="['tags-container', tagsStyleClass]">
-    <!-- 页签滚动区 -->
+  <div :class="['layout-tabs', tabsStyleClass]">
     <el-scrollbar
       ref="scrollbarRef"
-      class="scroll-container"
+      class="layout-tabs__scroll"
       :view-style="{ height: '100%' }"
       @wheel="handleScroll"
     >
-      <div class="tags-wrapper">
+      <div class="layout-tabs__list">
         <div
           v-for="tag in visitedViews"
           :key="tag.fullPath"
-          class="tags-item"
+          class="layout-tabs__item"
           :class="{
             'is-active': tagsViewStore.isActive(tag),
             'is-affix': tag.affix,
           }"
-          @click="
-            router.push({
-              path: tag.fullPath,
-              query: tag.query,
-            })
-          "
+          @click="openTag(tag)"
           @click.middle="handleMiddleClick(tag)"
           @contextmenu.prevent="openContextMenu(tag, $event)"
         >
@@ -29,22 +23,26 @@
             <el-icon v-if="isEpIcon(tag.icon)" :size="14">
               <component :is="toEpIconName(tag.icon)" />
             </el-icon>
-            <span v-else class="tags-item__icon" :class="`i-svg:${tag.icon}`" />
+            <span v-else class="layout-tabs__item-icon" :class="`i-svg:${tag.icon}`" />
           </template>
-          <span class="tags-item__text">
+          <span class="layout-tabs__item-text">
             {{ translateRouteTitle(tag.title) }}
           </span>
-          <span v-if="!tag.affix" class="tags-item__close" @click.stop="closeSelectedTag(tag)">
+          <span
+            v-if="!tag.affix"
+            class="layout-tabs__item-close"
+            @click.stop="closeSelectedTag(tag)"
+          >
             <div class="i-svg:close" />
           </span>
         </div>
       </div>
     </el-scrollbar>
 
-    <div class="tags-actions">
+    <div class="layout-tabs__actions">
       <button
         type="button"
-        class="tags-actions__btn"
+        class="layout-tabs__action"
         aria-label="刷新当前"
         title="刷新当前"
         @click="refreshSelectedTag(currentTag)"
@@ -53,7 +51,7 @@
       </button>
       <button
         type="button"
-        class="tags-actions__btn"
+        class="layout-tabs__action"
         aria-label="内容全屏"
         title="内容全屏"
         @click="appStore.toggleContentFullscreen()"
@@ -62,7 +60,7 @@
         <div v-else class="i-svg:fullscreen-exit icon-16" />
       </button>
       <el-dropdown trigger="click" @command="handleActionCommand">
-        <button type="button" class="tags-actions__btn" aria-label="页签操作" title="页签操作">
+        <button type="button" class="layout-tabs__action" aria-label="页签操作" title="页签操作">
           <el-icon :size="16"><ArrowDown /></el-icon>
         </button>
         <template #dropdown>
@@ -96,37 +94,36 @@
       </el-dropdown>
     </div>
 
-    <!-- 右键菜单 -->
     <Teleport to="body">
-      <ul v-show="contextMenu.visible" class="contextmenu" :style="contextMenuStyle">
+      <ul v-show="contextMenu.visible" class="layout-tabs-menu" :style="contextMenuStyle">
         <li @click="refreshSelectedTag(selectedTag)">
-          <el-icon :size="16" class="contextmenu__icon"><Refresh /></el-icon>
+          <el-icon :size="16" class="layout-tabs-menu__icon"><Refresh /></el-icon>
           <span>刷新</span>
         </li>
         <li
           v-if="!selectedTag?.affix"
-          class="contextmenu__danger"
+          class="layout-tabs-menu__danger"
           @click="closeSelectedTag(selectedTag)"
         >
-          <div class="i-svg:close contextmenu__icon" />
+          <div class="i-svg:close layout-tabs-menu__icon" />
           <span>关闭</span>
         </li>
-        <li class="contextmenu__divider" />
+        <li class="layout-tabs-menu__divider" />
         <li @click="closeOtherTags">
-          <div class="i-svg:close_other contextmenu__icon" />
+          <div class="i-svg:close_other layout-tabs-menu__icon" />
           <span>关闭其它</span>
         </li>
         <li v-if="!isFirstView" @click="closeLeftTags">
-          <div class="i-svg:close_left contextmenu__icon" />
+          <div class="i-svg:close_left layout-tabs-menu__icon" />
           <span>关闭左侧</span>
         </li>
         <li v-if="!isLastView" @click="closeRightTags">
-          <div class="i-svg:close_right contextmenu__icon" />
+          <div class="i-svg:close_right layout-tabs-menu__icon" />
           <span>关闭右侧</span>
         </li>
-        <li class="contextmenu__divider" />
+        <li class="layout-tabs-menu__divider" />
         <li @click="closeAllTags(selectedTag)">
-          <div class="i-svg:close_all contextmenu__icon" />
+          <div class="i-svg:close_all layout-tabs-menu__icon" />
           <span>关闭所有</span>
         </li>
       </ul>
@@ -140,6 +137,7 @@ import { resolve } from "path-browserify";
 import { TagsViewStyle } from "@/enums";
 import { translateRouteTitle } from "@/lang/utils";
 import { useAppStore, usePermissionStore, useSettingsStore, useTagsViewStore } from "@/stores";
+import { isExternal } from "@/utils";
 import type { TagView } from "@/stores/tags-view";
 
 interface ContextMenu {
@@ -172,13 +170,13 @@ const currentTag = computed(() => {
   return visitedViews.value.find((tag) => tagsViewStore.isActive(tag)) || null;
 });
 
-const tagsStyleClass = computed(() => {
+const tabsStyleClass = computed(() => {
   switch (settingsStore.tagsViewStyle) {
     case TagsViewStyle.CARD:
-      return "tags-container--card";
+      return "layout-tabs--card";
     case TagsViewStyle.LINE:
     default:
-      return "tags-container--line";
+      return "layout-tabs--line";
   }
 });
 
@@ -293,6 +291,7 @@ const initAffixTags = () => {
 
 const addCurrentTag = () => {
   if (!route.meta?.title) return;
+  if (isExternal(route.path) || isExternal(route.fullPath)) return;
 
   tagsViewStore.addView({
     name: route.name as string,
@@ -303,6 +302,18 @@ const addCurrentTag = () => {
     affix: route.meta.affix || false,
     keepAlive: route.meta.keepAlive || false,
     query: route.query,
+  });
+};
+
+const openTag = (tag: TagView) => {
+  if (isExternal(tag.fullPath)) {
+    window.open(tag.fullPath, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  router.push({
+    path: tag.fullPath,
+    query: tag.query,
   });
 };
 
@@ -459,11 +470,7 @@ useContextMenuManager();
 </script>
 
 <style lang="scss" scoped>
-// ============================================
-// 容器
-// ============================================
-
-.tags-container {
+.layout-tabs {
   position: relative;
   z-index: 10;
   display: flex;
@@ -475,7 +482,7 @@ useContextMenuManager();
   border-bottom: 1px solid var(--card-border);
 }
 
-.scroll-container {
+.layout-tabs__scroll {
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -485,22 +492,14 @@ useContextMenuManager();
   }
 }
 
-// ============================================
-// 标签列表
-// ============================================
-
-.tags-wrapper {
+.layout-tabs__list {
   display: flex;
   gap: 4px;
   align-items: center;
   height: 100%;
 }
 
-// ============================================
-// 标签项
-// ============================================
-
-.tags-item {
+.layout-tabs__item {
   position: relative;
   display: inline-flex;
   flex-shrink: 0;
@@ -520,7 +519,7 @@ useContextMenuManager();
     background-color 0.15s ease,
     border-color 0.15s ease;
 
-  &__icon {
+  &-icon {
     flex-shrink: 0;
     width: 14px;
     height: 14px;
@@ -528,11 +527,11 @@ useContextMenuManager();
     transition: opacity 0.15s ease;
   }
 
-  &__text {
+  &-text {
     white-space: nowrap;
   }
 
-  &__close {
+  &-close {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -561,11 +560,11 @@ useContextMenuManager();
     background-color: var(--content-bg);
     border-color: var(--el-border-color);
 
-    .tags-item__close {
+    .layout-tabs__item-close {
       opacity: 1;
     }
 
-    .tags-item__icon {
+    .layout-tabs__item-icon {
       opacity: 0.7;
     }
   }
@@ -576,12 +575,12 @@ useContextMenuManager();
     background-color: var(--content-bg);
     border-color: var(--el-color-primary-light-5);
 
-    .tags-item__icon {
+    .layout-tabs__item-icon {
       color: var(--el-color-primary);
       opacity: 1;
     }
 
-    .tags-item__close {
+    .layout-tabs__item-close {
       opacity: 0.6;
 
       &:hover {
@@ -591,20 +590,19 @@ useContextMenuManager();
     }
   }
 
-  // 固定标签 — 不可关闭，视觉上与未激活一致
   &.is-affix {
-    .tags-item__text {
+    .layout-tabs__item-text {
       font-weight: 500;
     }
   }
 }
 
-.tags-container--line {
-  .tags-wrapper {
+.layout-tabs--line {
+  .layout-tabs__list {
     gap: 8px;
   }
 
-  .tags-item {
+  .layout-tabs__item {
     height: 100%;
     padding: 0 8px;
     color: var(--el-text-color-secondary);
@@ -644,12 +642,12 @@ useContextMenuManager();
   }
 }
 
-.tags-container--card {
-  .tags-wrapper {
+.layout-tabs--card {
+  .layout-tabs__list {
     gap: 8px;
   }
 
-  .tags-item {
+  .layout-tabs__item {
     height: 28px;
     padding: 0 10px;
     color: var(--el-text-color-secondary);
@@ -671,11 +669,7 @@ useContextMenuManager();
   }
 }
 
-// ============================================
-// 右侧操作按钮
-// ============================================
-
-.tags-actions {
+.layout-tabs__actions {
   display: flex;
   flex-shrink: 0;
   gap: 4px;
@@ -683,7 +677,7 @@ useContextMenuManager();
   height: 100%;
   padding-left: 8px;
 
-  &__btn {
+  .layout-tabs__action {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -741,11 +735,7 @@ useContextMenuManager();
   }
 }
 
-// ============================================
-// 右键菜单
-// ============================================
-
-.contextmenu {
+.layout-tabs-menu {
   position: fixed;
   z-index: 3000;
   min-width: 150px;
@@ -786,7 +776,7 @@ useContextMenuManager();
       color: var(--el-color-danger);
       background-color: var(--el-color-danger-light-9);
 
-      .contextmenu__icon {
+      .layout-tabs-menu__icon {
         opacity: 1;
       }
     }

@@ -2,43 +2,43 @@
   <BaseLayout>
     <aside
       v-show="!appStore.contentFullscreen"
-      class="layout__double-sidebar"
-      :class="{ 'layout__double-sidebar--collapsed': !isSidebarOpen }"
+      class="layout-double"
+      :class="{ 'is-collapsed': !isSidebarOpen }"
     >
-      <div class="layout__double-primary">
+      <div class="layout-double__primary">
         <LayoutLogo v-if="showLogo" :collapse="true" />
 
-        <el-scrollbar class="layout__double-primary-scroll">
+        <el-scrollbar class="layout-double__primary-scroll">
           <button
             v-for="item in topMenuItems"
             :key="item.path"
-            class="layout__primary-item"
+            class="layout-double__primary-item"
             :class="{ 'is-active': item.path === activeTopMenuPath }"
             :title="item.meta?.title ? translateRouteTitle(item.meta.title) : undefined"
             type="button"
             @click="handleTopMenuSelect(item.path)"
           >
-            <MenuIcon :icon="item.meta?.icon" />
+            <LayoutMenuIcon :icon="item.meta?.icon" />
             <span v-if="item.meta?.title">{{ translateRouteTitle(item.meta.title) }}</span>
           </button>
         </el-scrollbar>
 
         <button
-          class="layout__primary-toggle"
+          class="layout-double__primary-toggle"
           :title="isSidebarOpen ? '收起菜单' : '展开菜单'"
           type="button"
           @click="toggleSidebar"
         >
-          <div class="i-svg:arrow-left-right layout__primary-toggle-icon" />
+          <div class="i-svg:arrow-left-right layout-double__primary-toggle-icon" />
         </button>
       </div>
 
-      <div class="layout__double-secondary">
-        <div v-if="showLogo" class="layout__double-title">
+      <div class="layout-double__secondary">
+        <div v-if="showLogo" class="layout-double__title">
           {{ appConfig.title }}
         </div>
 
-        <el-scrollbar class="layout__double-secondary-scroll">
+        <el-scrollbar class="layout-double__secondary-scroll">
           <LayoutSidebar
             :data="sideMenuRoutes"
             :base-path="activeTopMenuPath"
@@ -49,10 +49,10 @@
     </aside>
 
     <main
-      class="layout__main"
+      class="layout-main"
       :class="{
-        'layout__main--collapsed': !isSidebarOpen,
-        'layout__main--fullscreen': appStore.contentFullscreen,
+        'is-collapsed': !isSidebarOpen,
+        'is-fullscreen': appStore.contentFullscreen,
       }"
     >
       <LayoutNavbar v-show="!appStore.contentFullscreen" />
@@ -63,70 +63,68 @@
 </template>
 
 <script setup lang="ts">
-import { useLayout } from "./useLayout";
-import { useMixMenu } from "./composables/useMixMenu";
+import { useLayout } from "../composables/useLayout";
+import { useMixMenu } from "../composables/useMixMenu";
 import { useAppStore } from "@/stores";
 import { appConfig } from "@/settings";
 import { translateRouteTitle } from "@/lang/utils";
-import BaseLayout from "./BaseLayout.vue";
-import LayoutLogo from "./components/LayoutLogo.vue";
-import LayoutNavbar from "./components/LayoutNavbar.vue";
-import LayoutTagsView from "./components/LayoutTagsView.vue";
-import LayoutMain from "./components/LayoutMain.vue";
-import LayoutSidebar from "./components/LayoutSidebar.vue";
+import BaseLayout from "../BaseLayout.vue";
+import LayoutLogo from "../components/LayoutLogo.vue";
+import LayoutNavbar from "../components/LayoutNavbar.vue";
+import LayoutTagsView from "../components/LayoutTagsView.vue";
+import LayoutMain from "../components/LayoutMain.vue";
+import LayoutSidebar from "../components/LayoutSidebar.vue";
+import LayoutMenuIcon from "../components/LayoutMenuIcon.vue";
 
 const appStore = useAppStore();
 const { showTagsView, showLogo, isSidebarOpen, toggleSidebar } = useLayout();
 
-const { MenuIcon, topMenuItems, activeTopMenuPath, sideMenuRoutes, handleTopMenuSelect } =
-  useMixMenu();
+const { topMenuItems, activeTopMenuPath, sideMenuRoutes, handleTopMenuSelect } = useMixMenu();
 </script>
 
 <style lang="scss" scoped>
 $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
 
-.layout {
-  &__double-sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 999;
-    display: flex;
-    width: $double-sidebar-width;
-    overflow: hidden;
-    background-color: var(--menu-background);
-    border-right: 1px solid var(--menu-border);
-    transition: width 0.28s;
+.layout-double {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  display: flex;
+  width: $double-sidebar-width;
+  overflow: hidden;
+  background-color: var(--menu-background);
+  border-right: 1px solid var(--menu-border);
+  transition: width 0.28s;
 
-    &--collapsed {
-      width: $sidebar-width-collapsed + $sidebar-secondary-width;
+  &.is-collapsed {
+    width: $sidebar-width-collapsed + $sidebar-secondary-width;
 
-      .layout__double-primary {
-        flex-basis: $sidebar-width-collapsed;
-        width: $sidebar-width-collapsed;
+    .layout-double__primary {
+      flex-basis: $sidebar-width-collapsed;
+      width: $sidebar-width-collapsed;
+    }
+
+    .layout-double__primary-item {
+      gap: 0;
+      min-height: 48px;
+      padding: 8px 4px;
+
+      span {
+        display: none;
       }
+    }
 
-      .layout__primary-item {
-        gap: 0;
-        min-height: 48px;
-        padding: 8px 4px;
-
-        span {
-          display: none;
-        }
-      }
-
-      .layout__double-secondary {
-        flex: 0 0 $sidebar-secondary-width;
-        width: $sidebar-secondary-width;
-        min-width: $sidebar-secondary-width;
-        border-right: 1px solid var(--menu-border);
-      }
+    .layout-double__secondary {
+      flex: 0 0 $sidebar-secondary-width;
+      width: $sidebar-secondary-width;
+      min-width: $sidebar-secondary-width;
+      border-right: 1px solid var(--menu-border);
     }
   }
 
-  &__double-primary {
+  &__primary {
     display: flex;
     flex: 0 0 $sidebar-primary-width;
     flex-direction: column;
@@ -144,13 +142,13 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
       flex-basis 0.28s,
       width 0.28s;
 
-    :deep(.logo) {
+    :deep(.layout-logo) {
       height: $navbar-height;
       background-color: transparent;
     }
   }
 
-  &__double-primary-scroll {
+  &__primary-scroll {
     flex: 1;
     min-height: 0;
   }
@@ -178,11 +176,11 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
       color 0.18s,
       background-color 0.18s;
 
-    :deep(.el-icon),
-    :deep([class^="i-svg:"]) {
-      width: 20px;
-      height: 20px;
-      font-size: 20px;
+    :deep(.layout-menu-icon) {
+      width: 20px !important;
+      min-width: 20px !important;
+      height: 20px !important;
+      font-size: 20px !important;
       color: currentcolor !important;
     }
 
@@ -240,7 +238,7 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
     transition: transform 0.28s;
   }
 
-  &__double-secondary {
+  &__secondary {
     display: flex;
     flex: 0 0 auto;
     flex-direction: column;
@@ -254,7 +252,6 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
       border: none;
     }
 
-    /* 恢复 .hideSidebar 被隐藏的文字（第二列始终展开） */
     :deep(.el-menu-item span),
     :deep(.el-sub-menu__title span) {
       visibility: visible !important;
@@ -268,12 +265,12 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
     }
   }
 
-  &__double-secondary-scroll {
+  &__secondary-scroll {
     flex: 1;
     min-height: 0;
   }
 
-  &__double-title {
+  &__title {
     display: flex;
     flex: 0 0 $navbar-height;
     align-items: center;
@@ -284,45 +281,45 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
     color: var(--sidebar-logo-text-color);
     white-space: nowrap;
   }
+}
 
-  &__main {
-    position: relative;
-    height: 100%;
-    margin-left: $double-sidebar-width;
-    overflow-y: auto;
-    transition: margin-left 0.28s;
+.layout-main {
+  position: relative;
+  height: 100%;
+  margin-left: $double-sidebar-width;
+  overflow-y: auto;
+  transition: margin-left 0.28s;
 
-    &--collapsed {
-      margin-left: $sidebar-width-collapsed + $sidebar-secondary-width;
-    }
+  &.is-collapsed {
+    margin-left: $sidebar-width-collapsed + $sidebar-secondary-width;
+  }
 
-    &--fullscreen {
-      margin-left: 0 !important;
-    }
+  &.is-fullscreen {
+    margin-left: 0 !important;
   }
 }
 
-.mobile {
-  .layout__double-sidebar {
+.is-mobile {
+  .layout-double {
     width: $double-sidebar-width;
     transition:
       transform 0.28s,
       width 0s;
   }
 
-  &.hideSidebar {
-    .layout__double-sidebar {
+  &.is-sidebar-collapsed {
+    .layout-double {
       transform: translateX(-$double-sidebar-width);
     }
   }
 
-  &.openSidebar {
-    .layout__double-sidebar {
+  &.is-sidebar-open {
+    .layout-double {
       transform: translateX(0);
     }
   }
 
-  .layout__main {
+  .layout-main {
     margin-left: 0 !important;
   }
 }

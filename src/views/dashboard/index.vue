@@ -1,8 +1,5 @@
 ﻿<template>
   <div class="dash">
-    <!-- ============================================================
-    Header: greeting + links
-    ============================================================ -->
     <section class="dash-header">
       <div class="card dash-header__card">
         <div class="dash-header__start">
@@ -65,9 +62,6 @@
       </div>
     </section>
 
-    <!-- ============================================================
-    Stats
-    ============================================================ -->
     <section class="dash-stats">
       <div class="stat-card">
         <div class="stat-card__icon stat-card__icon--online">
@@ -142,9 +136,6 @@
       </div>
     </section>
 
-    <!-- ============================================================
-    Chart
-    ============================================================ -->
     <section class="dash-chart">
       <div class="card dash-chart__trend">
         <div class="card__head">
@@ -196,9 +187,6 @@
       </div>
     </section>
 
-    <!-- ============================================================
-    Bottom: todo + timeline
-    ============================================================ -->
     <section class="dash-bottom">
       <div class="card">
         <div class="card__head">

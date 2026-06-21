@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main" :style="{ height: appMainHeight }">
+  <section class="layout-content" :style="{ height: appMainHeight }">
     <router-view>
       <template #default="{ Component, route }">
         <transition :name="transitionName" mode="out-in">
@@ -10,8 +10,7 @@
       </template>
     </router-view>
 
-    <!-- 返回顶部按钮 -->
-    <el-backtop target=".app-main">
+    <el-backtop target=".layout-content">
       <div class="i-svg:backtop w-6 h-6" />
     </el-backtop>
   </section>
@@ -27,12 +26,11 @@ const { cachedViews } = toRefs(useTagsViewStore());
 
 const settingsStore = useSettingsStore();
 
-// 当前组件
 const wrapperMap = new Map<string, Component>();
 const currentComponent = (component: Component, route: RouteLocationNormalized) => {
   if (!component) return;
 
-  const { fullPath: componentName } = route; // 使用路由路径作为组件名称
+  const { fullPath: componentName } = route;
   let wrapper = wrapperMap.get(componentName);
 
   if (!wrapper) {
@@ -50,7 +48,6 @@ const currentComponent = (component: Component, route: RouteLocationNormalized) 
     wrapperMap.set(componentName, wrapper);
   }
 
-  // 添加组件数量限制
   if (wrapperMap.size > 100) {
     const firstKey = wrapperMap.keys().next().value;
     if (firstKey) {
@@ -69,14 +66,13 @@ const appMainHeight = computed(() => {
   }
 });
 
-// 页面切换动画名称
 const transitionName = computed(() => {
   return settingsStore.pageSwitchingAnimation ?? "";
 });
 </script>
 
 <style lang="scss" scoped>
-.app-main {
+.layout-content {
   position: relative;
   overflow-y: auto;
   background-color: var(--page-bg);

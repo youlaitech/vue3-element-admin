@@ -1,222 +1,233 @@
 ﻿<template>
-  <div class="p-4">
-    <el-row :gutter="20">
-      <!-- 左侧个人信息卡片 -->
-      <el-col :xs="24" :sm="24" :md="8" :lg="6">
-        <div class="left-column">
-          <!-- 用户信息卡片 -->
-          <el-card class="user-card">
-            <div class="user-info">
-              <div class="avatar-wrapper">
-                <el-avatar :src="userStore.userInfo.avatar" :size="100" />
-                <el-button
-                  type="info"
-                  class="avatar-edit-btn"
-                  circle
-                  :icon="Camera"
-                  size="small"
-                  @click="triggerFileUpload"
-                />
-                <input
-                  ref="fileInput"
-                  type="file"
-                  style="display: none"
-                  accept="image/*"
-                  @change="handleFileChange"
-                />
-              </div>
-              <div class="user-name">
-                <span class="nickname">{{ userProfile.nickname }}</span>
-                <el-icon class="edit-icon" @click="handleOpenDialog(DialogType.ACCOUNT)">
-                  <Edit />
-                </el-icon>
-              </div>
-              <div class="user-role">{{ userProfile.roleNames }}</div>
-
-              <el-descriptions :column="1" size="small" border class="profile-desc">
-                <el-descriptions-item>
-                  <template #label>
-                    <div class="cell-item">
-                      <el-icon><User /></el-icon>
-                      用户名
-                    </div>
-                  </template>
-                  <span>{{ userProfile.username }}</span>
-                  <el-icon v-if="userProfile.gender === 1" class="gender-icon male">
-                    <Male />
-                  </el-icon>
-                  <el-icon v-else class="gender-icon female"><Female /></el-icon>
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template #label>
-                    <div class="cell-item">
-                      <el-icon><Iphone /></el-icon>
-                      手机号码
-                    </div>
-                  </template>
-                  <span :class="{ 'text-muted': !userProfile.mobile }">
-                    {{ userProfile.mobile || "未绑定" }}
-                  </span>
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template #label>
-                    <div class="cell-item">
-                      <el-icon><Message /></el-icon>
-                      邮箱
-                    </div>
-                  </template>
-                  <span :class="{ 'text-muted': !userProfile.email }">
-                    {{ userProfile.email || "未绑定" }}
-                  </span>
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template #label>
-                    <div class="cell-item">
-                      <el-icon><OfficeBuilding /></el-icon>
-                      部门
-                    </div>
-                  </template>
-                  {{ userProfile.deptName || "-" }}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template #label>
-                    <div class="cell-item">
-                      <el-icon><Timer /></el-icon>
-                      创建时间
-                    </div>
-                  </template>
-                  {{ userProfile.createTime }}
-                </el-descriptions-item>
-              </el-descriptions>
-            </div>
-          </el-card>
+  <div class="profile-page">
+    <section class="profile-hero">
+      <div class="profile-hero__body">
+        <div class="profile-avatar">
+          <el-avatar :src="displayAvatar" :size="72">
+            <el-icon><UserFilled /></el-icon>
+          </el-avatar>
+          <el-button
+            type="info"
+            class="profile-avatar__action"
+            circle
+            :icon="Camera"
+            size="small"
+            title="更换头像"
+            @click="triggerFileUpload"
+          />
+          <input
+            ref="fileInput"
+            class="profile-avatar__input"
+            type="file"
+            accept="image/*"
+            @change="handleFileChange"
+          />
         </div>
-      </el-col>
 
-      <!-- 右侧信息卡片 -->
-      <el-col :xs="24" :sm="24" :md="16" :lg="18">
-        <div class="right-column">
-          <!-- 安全设置卡片 -->
-          <el-card class="security-card">
-            <template #header>
-              <div class="card-header">
-                <span class="card-header-title">
-                  <el-icon><Key /></el-icon>
-                  安全设置
-                </span>
+        <div class="profile-hero__info">
+          <div class="profile-hero__title">
+            <h2 class="profile-hero__name">{{ displayName }}</h2>
+            <el-tag type="primary" effect="light" round>{{ primaryRole }}</el-tag>
+          </div>
+          <p class="profile-hero__desc">
+            {{ userProfile.username || "-" }} / {{ userProfile.deptName || "未分配部门" }}
+          </p>
+          <div class="profile-hero__meta">
+            <span class="profile-hero__meta-item">
+              <el-icon><Calendar /></el-icon>
+              加入 {{ formatValue(userProfile.createTime) }}
+            </span>
+            <span class="profile-hero__meta-item">
+              <el-icon><Location /></el-icon>
+              最近登录 {{ recentLoginRecords[0]?.time }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-hero__actions">
+        <el-button :icon="Edit" @click="handleOpenDialog(DialogType.ACCOUNT)">编辑资料</el-button>
+        <el-button type="primary" :icon="Lock" @click="handleOpenDialog(DialogType.PASSWORD)">
+          修改密码
+        </el-button>
+      </div>
+    </section>
+
+    <div class="profile-page__layout">
+      <aside class="profile-page__side">
+        <section class="profile-card">
+          <header class="profile-card__header">
+            <h3 class="profile-card__title">个人资料</h3>
+            <el-tag size="small" effect="plain">{{ genderText }}</el-tag>
+          </header>
+
+          <dl class="profile-info">
+            <div v-for="item in profileInfoItems" :key="item.label" class="profile-info__item">
+              <dt class="profile-info__label">
+                <el-icon><component :is="item.icon" /></el-icon>
+                {{ item.label }}
+              </dt>
+              <dd class="profile-info__value" :class="{ 'is-muted': item.muted }">
+                {{ item.value }}
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="profile-card">
+          <header class="profile-card__header">
+            <h3 class="profile-card__title">账号概览</h3>
+          </header>
+
+          <div class="profile-stats">
+            <div v-for="item in profileStats" :key="item.label" class="profile-stats__item">
+              <span :class="['profile-icon', 'profile-icon--' + item.tone]">
+                <el-icon><component :is="item.icon" /></el-icon>
+              </span>
+              <div class="profile-stats__body">
+                <span class="profile-stats__label">{{ item.label }}</span>
+                <strong class="profile-stats__value">
+                  {{ item.value }}
+                  <em>{{ item.suffix }}</em>
+                </strong>
               </div>
-            </template>
-            <div class="security-list">
-              <div class="security-item">
-                <div class="security-left">
-                  <div class="security-icon password">
-                    <el-icon><Lock /></el-icon>
-                  </div>
-                  <div class="security-content">
-                    <div class="security-title">账户密码</div>
-                    <div class="security-desc">定期修改密码有助于保护账户安全</div>
-                  </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="profile-card">
+          <header class="profile-card__header">
+            <h3 class="profile-card__title">角色权限</h3>
+            <span class="profile-card__extra">{{ permissionCount }} 个权限</span>
+          </header>
+
+          <div class="profile-tags">
+            <el-tag v-for="role in roleList" :key="role" class="m-0" size="small" effect="light">
+              {{ role }}
+            </el-tag>
+            <span v-if="!roleList.length" class="profile-empty">暂无角色</span>
+          </div>
+        </section>
+      </aside>
+
+      <main class="profile-page__main">
+        <section class="profile-card">
+          <header class="profile-card__header">
+            <div>
+              <h3 class="profile-card__title">安全设置</h3>
+              <p class="profile-card__desc">维护账号登录凭证与身份验证方式</p>
+            </div>
+            <el-tag :type="securityLevel.type" effect="light">
+              安全等级 {{ securityLevel.label }}
+            </el-tag>
+          </header>
+
+          <div class="profile-security">
+            <div v-for="item in securityItems" :key="item.key" class="profile-security__item">
+              <span :class="['profile-icon', 'profile-icon--large', 'profile-icon--' + item.tone]">
+                <el-icon><component :is="item.icon" /></el-icon>
+              </span>
+              <div class="profile-security__body">
+                <div class="profile-security__title">
+                  <span>{{ item.title }}</span>
+                  <el-tag size="small" :type="item.statusType" effect="plain">
+                    {{ item.status }}
+                  </el-tag>
                 </div>
-                <el-button type="primary" link @click="handleOpenDialog(DialogType.PASSWORD)">
-                  修改
+                <p class="profile-security__desc">{{ item.description }}</p>
+              </div>
+              <div class="profile-security__actions">
+                <el-button
+                  v-for="action in item.actions"
+                  :key="action.label"
+                  :type="action.type"
+                  link
+                  @click="action.onClick"
+                >
+                  {{ action.label }}
                 </el-button>
               </div>
+            </div>
+          </div>
+        </section>
 
-              <div class="security-item">
-                <div class="security-left">
-                  <div class="security-icon mobile">
-                    <el-icon><Iphone /></el-icon>
-                  </div>
-                  <div class="security-content">
-                    <div class="security-title">手机号</div>
-                    <div class="security-desc">{{ mobileSecurityDesc }}</div>
-                  </div>
+        <div class="profile-page__grid">
+          <section class="profile-card">
+            <header class="profile-card__header">
+              <h3 class="profile-card__title">近期登录</h3>
+              <span class="profile-card__extra">最近 3 条</span>
+            </header>
+
+            <div class="profile-login">
+              <div
+                v-for="record in recentLoginRecords"
+                :key="record.time"
+                class="profile-login__item"
+              >
+                <span class="profile-icon">
+                  <el-icon><Monitor /></el-icon>
+                </span>
+                <div class="profile-login__body">
+                  <strong class="profile-login__device">{{ record.device }}</strong>
+                  <span class="profile-login__meta">{{ record.location }} / {{ record.ip }}</span>
                 </div>
-                <div class="security-actions">
-                  <el-button
-                    v-if="userProfile.mobile"
-                    type="primary"
-                    link
-                    @click="handleOpenDialog(DialogType.MOBILE)"
-                  >
-                    更换
-                  </el-button>
-                  <el-button
-                    v-if="userProfile.mobile"
-                    type="danger"
-                    link
-                    @click="handleUnbindMobile"
-                  >
-                    解绑
-                  </el-button>
-                  <el-button
-                    v-else
-                    type="primary"
-                    link
-                    @click="handleOpenDialog(DialogType.MOBILE)"
-                  >
-                    绑定
-                  </el-button>
-                </div>
+                <time class="profile-login__time">{{ record.time }}</time>
               </div>
+            </div>
+          </section>
 
-              <div class="security-item">
-                <div class="security-left">
-                  <div class="security-icon email">
-                    <el-icon><Message /></el-icon>
-                  </div>
-                  <div class="security-content">
-                    <div class="security-title">邮箱</div>
-                    <div class="security-desc">{{ emailSecurityDesc }}</div>
-                  </div>
-                </div>
-                <div class="security-actions">
-                  <el-button
-                    v-if="userProfile.email"
-                    type="primary"
-                    link
-                    @click="handleOpenDialog(DialogType.EMAIL)"
-                  >
-                    更换
-                  </el-button>
-                  <el-button v-if="userProfile.email" type="danger" link @click="handleUnbindEmail">
-                    解绑
-                  </el-button>
-                  <el-button v-else type="primary" link @click="handleOpenDialog(DialogType.EMAIL)">
-                    绑定
-                  </el-button>
+          <section class="profile-card">
+            <header class="profile-card__header">
+              <h3 class="profile-card__title">账号状态</h3>
+              <span class="profile-card__extra">完善度 {{ profileCompletion }}%</span>
+            </header>
+
+            <div class="profile-status">
+              <div
+                v-for="item in accountStatusItems"
+                :key="item.label"
+                class="profile-status__item"
+                :class="{ 'is-warning': !item.done }"
+              >
+                <el-icon class="profile-status__icon">
+                  <CircleCheck v-if="item.done" />
+                  <Warning v-else />
+                </el-icon>
+                <div class="profile-status__body">
+                  <strong class="profile-status__title">{{ item.label }}</strong>
+                  <span class="profile-status__desc">{{ item.value }}</span>
                 </div>
               </div>
             </div>
-          </el-card>
+          </section>
         </div>
-      </el-col>
-    </el-row>
+      </main>
+    </div>
 
-    <!-- 弹窗 -->
-    <el-dialog v-model="dialogState.visible" :title="dialogState.title" :width="500">
-      <!-- 账号资料 -->
+    <el-dialog v-model="dialogState.visible" :title="dialogState.title" width="520px">
       <el-form
         v-if="dialogState.type === DialogType.ACCOUNT"
         ref="userProfileFormRef"
         :model="userProfileForm"
-        :label-width="100"
+        :rules="userProfileRules"
+        label-width="88px"
+        class="pr-10px"
       >
-        <el-form-item label="昵称">
-          <el-input v-model="userProfileForm.nickname" />
+        <el-form-item label="昵称" prop="nickname">
+          <el-input v-model="userProfileForm.nickname" placeholder="请输入昵称" />
         </el-form-item>
         <el-form-item label="性别">
           <DictSelect v-model="userProfileForm.gender" code="gender" />
         </el-form-item>
       </el-form>
 
-      <!-- 修改密码 -->
       <el-form
-        v-if="dialogState.type === DialogType.PASSWORD"
+        v-else-if="dialogState.type === DialogType.PASSWORD"
         ref="passwordChangeFormRef"
         :model="passwordChangeForm"
         :rules="passwordChangeRules"
-        :label-width="100"
+        label-width="88px"
+        class="pr-10px"
       >
         <el-form-item label="原密码" prop="oldPassword">
           <el-input v-model="passwordChangeForm.oldPassword" type="password" show-password />
@@ -229,68 +240,58 @@
         </el-form-item>
       </el-form>
 
-      <!-- 绑定手机 -->
       <el-form
         v-else-if="dialogState.type === DialogType.MOBILE"
         ref="mobileBindingFormRef"
         :model="mobileUpdateForm"
         :rules="mobileBindingRules"
-        :label-width="100"
+        label-width="88px"
+        class="pr-10px"
       >
         <el-form-item label="手机号码" prop="mobile">
-          <el-input v-model="mobileUpdateForm.mobile" style="width: 250px" />
+          <el-input v-model="mobileUpdateForm.mobile" />
         </el-form-item>
         <el-form-item label="验证码" prop="code">
-          <el-input v-model="mobileUpdateForm.code" style="width: 250px">
+          <el-input v-model="mobileUpdateForm.code">
             <template #append>
               <el-button :disabled="mobileCountdown > 0" @click="handleSendMobileCode">
-                {{ mobileCountdown > 0 ? `${mobileCountdown}s后重新发送` : "发送验证码" }}
+                {{ mobileCountdown > 0 ? mobileCountdown + "s后重新发送" : "发送验证码" }}
               </el-button>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item label="当前密码" prop="password">
-          <el-input
-            v-model="mobileUpdateForm.password"
-            type="password"
-            show-password
-            style="width: 250px"
-          />
+          <el-input v-model="mobileUpdateForm.password" type="password" show-password />
         </el-form-item>
       </el-form>
 
-      <!-- 绑定邮箱 -->
       <el-form
         v-else-if="dialogState.type === DialogType.EMAIL"
         ref="emailBindingFormRef"
         :model="emailUpdateForm"
         :rules="emailBindingRules"
-        :label-width="100"
+        label-width="88px"
+        class="pr-10px"
       >
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="emailUpdateForm.email" style="width: 250px" />
+          <el-input v-model="emailUpdateForm.email" />
         </el-form-item>
         <el-form-item label="验证码" prop="code">
-          <el-input v-model="emailUpdateForm.code" style="width: 250px">
+          <el-input v-model="emailUpdateForm.code">
             <template #append>
               <el-button :disabled="emailCountdown > 0" @click="handleSendEmailCode">
-                {{ emailCountdown > 0 ? `${emailCountdown}s后重新发送` : "发送验证码" }}
+                {{ emailCountdown > 0 ? emailCountdown + "s后重新发送" : "发送验证码" }}
               </el-button>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item label="当前密码" prop="password">
-          <el-input
-            v-model="emailUpdateForm.password"
-            type="password"
-            show-password
-            style="width: 250px"
-          />
+          <el-input v-model="emailUpdateForm.password" type="password" show-password />
         </el-form-item>
       </el-form>
 
       <template #footer>
-        <span class="dialog-footer">
+        <span class="inline-flex gap-2">
           <el-button @click="handleCancel">取消</el-button>
           <el-button type="primary" @click="handleSubmit">确定</el-button>
         </span>
@@ -309,24 +310,56 @@ import type {
   UserProfileForm,
 } from "@/api/system/user";
 
+import type { Component } from "vue";
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import FileAPI from "@/api/file";
 import { useUserStoreHook } from "@/stores";
 import { redirectToLogin } from "@/utils/auth";
 
 import {
+  Calendar,
   Camera,
+  CircleCheck,
+  DataLine,
   Edit,
-  Lock,
-  Iphone,
-  Message,
-  User,
-  Male,
   Female,
+  Iphone,
+  Key,
+  Location,
+  Lock,
+  Male,
+  Message,
+  Monitor,
   OfficeBuilding,
   Timer,
-  Key,
+  User,
+  UserFilled,
+  Warning,
 } from "@element-plus/icons-vue";
+
+interface ProfileInfoItem {
+  label: string;
+  value: string;
+  icon: Component;
+  muted?: boolean;
+}
+
+interface SecurityAction {
+  label: string;
+  type: "primary" | "danger";
+  onClick: () => void;
+}
+
+interface SecurityItem {
+  key: string;
+  title: string;
+  description: string;
+  status: string;
+  statusType: "success" | "warning" | "info";
+  icon: Component;
+  tone: "primary" | "success" | "warning";
+  actions: SecurityAction[];
+}
 
 const userStore = useUserStoreHook();
 
@@ -361,13 +394,38 @@ const mobileTimer = ref();
 const emailCountdown = ref(0);
 const emailTimer = ref();
 
+const recentLoginRecords = [
+  {
+    device: "Chrome / Windows",
+    location: "上海",
+    ip: "192.168.1.26",
+    time: "2026-06-20 09:32",
+  },
+  {
+    device: "Edge / Windows",
+    location: "杭州",
+    ip: "192.168.1.18",
+    time: "2026-06-19 18:46",
+  },
+  {
+    device: "Safari / iOS",
+    location: "深圳",
+    ip: "192.168.1.12",
+    time: "2026-06-18 14:08",
+  },
+];
+
+const userProfileRules = {
+  nickname: [{ required: true, message: "请输入昵称", trigger: "blur" }],
+};
+
 const passwordChangeRules = {
   oldPassword: [{ required: true, message: "请输入原密码", trigger: "blur" }],
   newPassword: [{ required: true, message: "请输入新密码", trigger: "blur" }],
   confirmPassword: [
     { required: true, message: "请再次输入新密码", trigger: "blur" },
     {
-      validator: (_rule: any, value: string, callback: (error?: Error) => void) => {
+      validator: (_rule: unknown, value: string, callback: (error?: Error) => void) => {
         if (value !== passwordChangeForm.newPassword) {
           callback(new Error("两次输入的密码不一致"));
           return;
@@ -406,6 +464,238 @@ const emailBindingRules = {
   code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
   password: [{ required: true, message: "请输入当前密码", trigger: "blur" }],
 };
+
+const displayAvatar = computed(() => userProfile.value.avatar || userStore.userInfo.avatar || "");
+
+const displayName = computed(() => {
+  return (
+    userProfile.value.nickname ||
+    userStore.userInfo.nickname ||
+    userProfile.value.username ||
+    userStore.userInfo.username ||
+    "未命名用户"
+  );
+});
+
+const roleList = computed(() => {
+  return (userProfile.value.roleNames || "")
+    .split(/[,，]/)
+    .map((role) => role.trim())
+    .filter(Boolean);
+});
+
+const primaryRole = computed(() => roleList.value[0] || "普通用户");
+
+const permissionCount = computed(() => userStore.userInfo.perms?.length || 0);
+
+const genderText = computed(() => {
+  if (userProfile.value.gender === 1) return "男";
+  if (userProfile.value.gender === 2) return "女";
+  return "未设置";
+});
+
+const boundCount = computed(() => {
+  return [userProfile.value.mobile, userProfile.value.email].filter(Boolean).length;
+});
+
+const profileCompletion = computed(() => {
+  const fields = [
+    userProfile.value.username,
+    userProfile.value.nickname,
+    displayAvatar.value,
+    userProfile.value.mobile,
+    userProfile.value.email,
+    userProfile.value.deptName,
+    userProfile.value.roleNames,
+    userProfile.value.createTime,
+  ];
+  return Math.round((fields.filter(Boolean).length / fields.length) * 100);
+});
+
+const securityLevel = computed(() => {
+  const score = 60 + boundCount.value * 20;
+  if (score >= 100) {
+    return { score, label: "高", type: "success" as const };
+  }
+  if (score >= 80) {
+    return { score, label: "中", type: "warning" as const };
+  }
+  return { score, label: "低", type: "info" as const };
+});
+
+const profileInfoItems = computed<ProfileInfoItem[]>(() => [
+  {
+    label: "用户名",
+    value: userProfile.value.username || "-",
+    icon: userProfile.value.gender === 2 ? Female : userProfile.value.gender === 1 ? Male : User,
+  },
+  {
+    label: "手机号码",
+    value: userProfile.value.mobile || "未绑定",
+    icon: Iphone,
+    muted: !userProfile.value.mobile,
+  },
+  {
+    label: "邮箱",
+    value: userProfile.value.email || "未绑定",
+    icon: Message,
+    muted: !userProfile.value.email,
+  },
+  {
+    label: "部门",
+    value: userProfile.value.deptName || "-",
+    icon: OfficeBuilding,
+    muted: !userProfile.value.deptName,
+  },
+  {
+    label: "创建时间",
+    value: formatValue(userProfile.value.createTime),
+    icon: Timer,
+    muted: !userProfile.value.createTime,
+  },
+]);
+
+const profileStats = computed(() => [
+  {
+    label: "安全评分",
+    value: securityLevel.value.score,
+    suffix: "分",
+    icon: Key,
+    tone: "primary",
+  },
+  {
+    label: "绑定项目",
+    value: boundCount.value,
+    suffix: "/2",
+    icon: CircleCheck,
+    tone: "success",
+  },
+  {
+    label: "角色数量",
+    value: roleList.value.length,
+    suffix: "个",
+    icon: UserFilled,
+    tone: "warning",
+  },
+  {
+    label: "权限标识",
+    value: permissionCount.value,
+    suffix: "个",
+    icon: DataLine,
+    tone: "info",
+  },
+]);
+
+const accountStatusItems = computed(() => [
+  {
+    label: "登录账号",
+    value: userProfile.value.username || "未获取",
+    done: !!userProfile.value.username,
+  },
+  {
+    label: "手机号验证",
+    value: userProfile.value.mobile ? "已绑定" : "未绑定",
+    done: !!userProfile.value.mobile,
+  },
+  {
+    label: "邮箱验证",
+    value: userProfile.value.email ? "已绑定" : "未绑定",
+    done: !!userProfile.value.email,
+  },
+  {
+    label: "资料完善",
+    value: `${profileCompletion.value}%`,
+    done: profileCompletion.value >= 80,
+  },
+]);
+
+const securityItems = computed<SecurityItem[]>(() => [
+  {
+    key: "password",
+    title: "账户密码",
+    description: "定期修改密码有助于保护账户安全",
+    status: "已设置",
+    statusType: "success",
+    icon: Lock,
+    tone: "primary",
+    actions: [
+      {
+        label: "修改",
+        type: "primary",
+        onClick: () => handleOpenDialog(DialogType.PASSWORD),
+      },
+    ],
+  },
+  {
+    key: "mobile",
+    title: "手机号",
+    description: mobileSecurityDesc.value,
+    status: userProfile.value.mobile ? "已绑定" : "未绑定",
+    statusType: userProfile.value.mobile ? "success" : "warning",
+    icon: Iphone,
+    tone: "success",
+    actions: userProfile.value.mobile
+      ? [
+          {
+            label: "更换",
+            type: "primary",
+            onClick: () => handleOpenDialog(DialogType.MOBILE),
+          },
+          {
+            label: "解绑",
+            type: "danger",
+            onClick: handleUnbindMobile,
+          },
+        ]
+      : [
+          {
+            label: "绑定",
+            type: "primary",
+            onClick: () => handleOpenDialog(DialogType.MOBILE),
+          },
+        ],
+  },
+  {
+    key: "email",
+    title: "邮箱",
+    description: emailSecurityDesc.value,
+    status: userProfile.value.email ? "已绑定" : "未绑定",
+    statusType: userProfile.value.email ? "success" : "warning",
+    icon: Message,
+    tone: "warning",
+    actions: userProfile.value.email
+      ? [
+          {
+            label: "更换",
+            type: "primary",
+            onClick: () => handleOpenDialog(DialogType.EMAIL),
+          },
+          {
+            label: "解绑",
+            type: "danger",
+            onClick: handleUnbindEmail,
+          },
+        ]
+      : [
+          {
+            label: "绑定",
+            type: "primary",
+            onClick: () => handleOpenDialog(DialogType.EMAIL),
+          },
+        ],
+  },
+]);
+
+function formatValue(value?: Date | string) {
+  return value ? String(value) : "-";
+}
+
+function getPromptValue(result: unknown) {
+  if (result && typeof result === "object" && "value" in result) {
+    return String(result.value || "");
+  }
+  return "";
+}
 
 function maskMobile(mobile?: string) {
   if (!mobile) return "";
@@ -471,7 +761,7 @@ async function handleUnbindMobile() {
       inputPlaceholder: "当前密码",
       inputValidator: (val) => !!val || "请输入当前密码",
     });
-    const value = (result as any).value;
+    const value = getPromptValue(result);
     await UserAPI.unbindMobile({ password: value });
     ElMessage.success("手机号解绑成功");
     await loadUserProfile();
@@ -491,7 +781,7 @@ async function handleUnbindEmail() {
       inputPlaceholder: "当前密码",
       inputValidator: (val) => !!val || "请输入当前密码",
     });
-    const value = (result as any).value;
+    const value = getPromptValue(result);
     await UserAPI.unbindEmail({ password: value });
     ElMessage.success("邮箱解绑成功");
     await loadUserProfile();
@@ -556,6 +846,9 @@ const handleSubmit = async () => {
       await UserAPI.updateProfile(userProfileForm);
       ElMessage.success("账号资料修改成功");
       dialogState.visible = false;
+      if (userProfileForm.nickname) {
+        userStore.userInfo.nickname = userProfileForm.nickname;
+      }
       await loadUserProfile();
     } else if (dialogState.type === DialogType.PASSWORD) {
       const valid = await passwordChangeFormRef.value?.validate();
@@ -613,8 +906,11 @@ const handleFileChange = async (event: Event) => {
     await UserAPI.updateProfile({
       avatar: data.url,
     });
+    userProfile.value.avatar = data.url;
     userStore.userInfo.avatar = data.url;
+    ElMessage.success("头像更新成功");
   }
+  target.value = "";
 };
 
 const loadUserProfile = async () => {
@@ -643,186 +939,436 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-.left-column {
+.profile-page {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-height: 100%;
+  padding: 16px;
 }
 
-.right-column {
+.profile-hero,
+.profile-card {
+  background: var(--content-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+
+.profile-hero {
   display: flex;
-  flex-direction: column;
   gap: 16px;
-}
-
-// 用户信息卡片
-.user-card {
-  .user-info {
-    text-align: center;
-
-    .avatar-wrapper {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 12px;
-
-      .avatar-edit-btn {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        border: none;
-        transition: all 0.3s ease;
-
-        &:hover {
-          background: rgba(0, 0, 0, 0.7);
-        }
-      }
-    }
-
-    .user-name {
-      margin-bottom: 4px;
-
-      .nickname {
-        font-size: 18px;
-        font-weight: 600;
-        color: var(--el-text-color-primary);
-      }
-
-      .edit-icon {
-        margin-left: 6px;
-        color: var(--el-text-color-secondary);
-        cursor: pointer;
-        transition: color 0.2s;
-
-        &:hover {
-          color: var(--el-color-primary);
-        }
-      }
-    }
-
-    .user-role {
-      margin-bottom: 16px;
-      font-size: 13px;
-      color: var(--el-text-color-secondary);
-    }
-
-    .profile-desc {
-      text-align: left;
-
-      .cell-item {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-      }
-
-      .text-muted {
-        color: var(--el-text-color-placeholder);
-      }
-
-      .gender-icon {
-        font-size: 16px;
-
-        &.male {
-          color: var(--el-color-primary);
-        }
-
-        &.female {
-          color: #f56c6c;
-        }
-      }
-    }
-  }
-}
-
-// 右侧卡片通用样式
-.security-card {
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    .card-header-title {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--el-text-color-primary);
-    }
-  }
-}
-
-// 安全设置
-.security-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.security-item {
-  display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
-  border-bottom: 1px solid var(--el-border-color-lighter);
-  transition: background 0.2s ease;
+  padding: 20px 24px;
+}
 
-  &:last-child {
-    border-bottom: none;
+.profile-hero__body,
+.profile-hero__title,
+.profile-hero__meta,
+.profile-hero__actions,
+.profile-hero__meta-item {
+  display: flex;
+  align-items: center;
+}
+
+.profile-hero__body {
+  gap: 16px;
+  min-width: 0;
+}
+
+.profile-hero__info {
+  min-width: 0;
+}
+
+.profile-hero__title {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.profile-hero__name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 30px;
+  color: var(--el-text-color-primary);
+}
+
+.profile-hero__desc {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--el-text-color-secondary);
+}
+
+.profile-hero__meta {
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+
+.profile-hero__meta-item {
+  gap: 4px;
+}
+
+.profile-hero__actions {
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.profile-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-avatar__action {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid var(--content-bg);
+}
+
+.profile-avatar__input {
+  display: none;
+}
+
+.profile-page__layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.profile-page__side,
+.profile-page__main {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.profile-page__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  gap: 16px;
+}
+
+.profile-card {
+  padding: 18px 20px;
+}
+
+.profile-card__header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.profile-card__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 22px;
+  color: var(--el-text-color-primary);
+}
+
+.profile-card__desc {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+
+.profile-card__extra,
+.profile-empty {
+  font-size: 12px;
+  color: var(--el-text-color-placeholder);
+}
+
+.profile-info {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.profile-info__item {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 34px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--el-border-color-extra-light);
+}
+
+.profile-info__item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.profile-info__label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--el-text-color-secondary);
+}
+
+.profile-info__value {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  color: var(--el-text-color-primary);
+  white-space: nowrap;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.profile-stats__item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 12px;
+  background: var(--el-fill-color-lighter);
+  border: 1px solid var(--el-border-color-extra-light);
+  border-radius: 8px;
+}
+
+.profile-stats__body {
+  min-width: 0;
+}
+
+.profile-stats__label,
+.profile-stats__value {
+  display: block;
+}
+
+.profile-stats__label {
+  margin-bottom: 2px;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+
+.profile-stats__value {
+  font-size: 20px;
+  line-height: 24px;
+  color: var(--el-text-color-primary);
+}
+
+.profile-stats__value em {
+  display: inline;
+  margin-left: 2px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--el-text-color-secondary);
+}
+
+.profile-icon {
+  display: flex;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  color: var(--el-color-primary);
+  background: var(--el-color-primary-light-9);
+  border-radius: 8px;
+}
+
+.profile-icon--large {
+  flex-basis: 40px;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+
+.profile-icon--success {
+  color: var(--el-color-success);
+  background: var(--el-color-success-light-9);
+}
+
+.profile-icon--warning {
+  color: var(--el-color-warning);
+  background: var(--el-color-warning-light-9);
+}
+
+.profile-icon--info {
+  color: var(--el-color-info);
+  background: var(--el-fill-color-light);
+}
+
+.profile-security,
+.profile-login,
+.profile-status {
+  display: grid;
+  gap: 12px;
+}
+
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile-security__item {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--el-border-color-extra-light);
+  border-radius: 8px;
+}
+
+.profile-security__body,
+.profile-login__body,
+.profile-status__body {
+  min-width: 0;
+}
+
+.profile-security__title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+}
+
+.profile-security__desc {
+  margin: 4px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  white-space: nowrap;
+}
+
+.profile-security__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.profile-security__actions .el-button + .el-button {
+  margin-left: 0;
+}
+
+.profile-login__item {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 44px;
+}
+
+.profile-login__device,
+.profile-login__meta,
+.profile-login__time,
+.profile-status__title,
+.profile-status__desc {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-login__device,
+.profile-status__title {
+  font-size: 13px;
+  color: var(--el-text-color-primary);
+}
+
+.profile-login__meta,
+.profile-login__time,
+.profile-status__desc {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+
+.profile-status__item {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 38px;
+  color: var(--el-color-success);
+}
+
+.profile-status__item.is-warning {
+  color: var(--el-color-warning);
+}
+
+.profile-status__title {
+  margin-bottom: 2px;
+}
+
+.is-muted {
+  color: var(--el-text-color-placeholder);
+}
+
+@media (width <= 1200px) {
+  .profile-page__layout,
+  .profile-page__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (width <= 768px) {
+  .profile-page {
+    padding: 12px;
   }
 
-  &:hover {
-    background: var(--el-fill-color-light);
-    border-radius: 8px;
+  .profile-hero {
+    align-items: flex-start;
   }
 
-  .security-left {
-    display: flex;
-    gap: 12px;
-    align-items: center;
+  .profile-hero,
+  .profile-hero__body,
+  .profile-hero__actions {
+    flex-direction: column;
   }
 
-  .security-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-    border-radius: 8px;
-
-    &.password {
-      color: var(--el-color-primary);
-      background: var(--el-color-primary-light-9);
-    }
-
-    &.mobile {
-      color: var(--el-color-success);
-      background: var(--el-color-success-light-9);
-    }
-
-    &.email {
-      color: var(--el-color-warning);
-      background: var(--el-color-warning-light-9);
-    }
+  .profile-hero__actions {
+    align-items: stretch;
+    width: 100%;
   }
 
-  .security-content {
-    .security-title {
-      margin-bottom: 4px;
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--el-text-color-primary);
-    }
-
-    .security-desc {
-      font-size: 13px;
-      color: var(--el-text-color-secondary);
-    }
+  .profile-hero__actions .el-button {
+    width: 100%;
+    margin-left: 0;
   }
 
-  .security-actions {
-    display: flex;
-    gap: 8px;
+  .profile-security__item,
+  .profile-login__item {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .profile-security__actions,
+  .profile-login__time {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+@media (width <= 520px) {
+  .profile-stats,
+  .profile-info__item {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-info__item {
+    gap: 4px;
   }
 }
 </style>

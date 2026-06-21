@@ -1,13 +1,10 @@
-/**
- * 菜单搜索逻辑
- */
-import { ref, onMounted, onBeforeUnmount, toRaw } from "vue";
-import { RouteRecordRaw, LocationQueryRaw } from "vue-router";
+import { onBeforeUnmount, onMounted, ref, toRaw } from "vue";
+import type { LocationQueryRaw, RouteRecordRaw } from "vue-router";
 import router from "@/router";
 import { usePermissionStore } from "@/stores";
 import { isExternal } from "@/utils";
 
-/** 搜索项类型 */
+/** 命令面板中的可搜索菜单项。 */
 interface SearchItem {
   title: string;
   path: string;
@@ -19,25 +16,21 @@ interface SearchItem {
 
 const STORAGE_KEY = "menu_search_history";
 const MAX_HISTORY = 5;
+const EXCLUDED_PATHS = ["/redirect", "/login", "/401", "/404"];
 
 export function useCommandPalette() {
   const permissionStore = usePermissionStore();
 
-  // 状态
+  // 面板状态
   const visible = ref(false);
   const keyword = ref("");
   const activeIndex = ref(-1);
   const inputRef = ref<HTMLInputElement>();
+
+  // 菜单数据
   const menuItems = ref<SearchItem[]>([]);
   const results = ref<SearchItem[]>([]);
   const history = ref<SearchItem[]>([]);
-
-  // 排除的路由
-  const excludedPaths = ["/redirect", "/login", "/401", "/404"];
-
-  // ============================================
-  // 弹窗控制
-  // ============================================
 
   function open() {
     keyword.value = "";
@@ -51,24 +44,28 @@ export function useCommandPalette() {
     visible.value = false;
   }
 
-  // ============================================
-  // 搜索逻辑
-  // ============================================
-
+  /**
+   * 搜索仅匹配菜单标题，避免路径命中过多造成结果噪音。
+   */
   function onSearch() {
     activeIndex.value = -1;
     if (!keyword.value.trim()) {
       results.value = [];
       return;
     }
-    const kw = keyword.value.toLowerCase();
-    results.value = menuItems.value.filter((item) => item.title.toLowerCase().includes(kw));
+    const keywordText = keyword.value.toLowerCase();
+    results.value = menuItems.value.filter((item) =>
+      item.title.toLowerCase().includes(keywordText)
+    );
   }
 
-  function getDisplayList() {
+  function getDisplayList(): SearchItem[] {
     return results.value.length ? results.value : history.value;
   }
 
+  /**
+   * 键盘选择当前展示列表，搜索为空时回退历史记录。
+   */
   function onSelect() {
     const list = getDisplayList();
     if (list.length === 0) return;
@@ -100,10 +97,6 @@ export function useCommandPalette() {
     }
   }
 
-  // ============================================
-  // 历史记录
-  // ============================================
-
   function loadHistory() {
     try {
       const data = localStorage.getItem(STORAGE_KEY);
@@ -117,15 +110,15 @@ export function useCommandPalette() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history.value));
   }
 
+  /**
+   * 历史记录按最近使用排序，并限制本地缓存数量。
+   */
   function addHistory(item: SearchItem) {
-    // 去重
-    const idx = history.value.findIndex((i) => i.path === item.path);
-    if (idx !== -1) history.value.splice(idx, 1);
+    const index = history.value.findIndex((historyItem) => historyItem.path === item.path);
+    if (index !== -1) history.value.splice(index, 1);
 
-    // 添加到开头
     history.value.unshift(item);
 
-    // 限制数量
     if (history.value.length > MAX_HISTORY) {
       history.value = history.value.slice(0, MAX_HISTORY);
     }
@@ -143,17 +136,16 @@ export function useCommandPalette() {
     localStorage.removeItem(STORAGE_KEY);
   }
 
-  // ============================================
-  // 路由解析
-  // ============================================
-
+  /**
+   * 将权限路由拍平成命令面板可搜索的菜单项。
+   */
   function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
     routes.forEach((route) => {
       const path = route.path.startsWith("/")
         ? route.path
         : `${parentPath}${parentPath.endsWith("/") ? "" : "/"}${route.path}`;
 
-      if (excludedPaths.includes(route.path) || isExternal(route.path)) return;
+      if (EXCLUDED_PATHS.includes(route.path) || isExternal(route.path)) return;
 
       if (route.children) {
         loadRoutes(route.children, path);
@@ -172,20 +164,15 @@ export function useCommandPalette() {
     });
   }
 
-  // ============================================
-  // 快捷键
-  // ============================================
-
+  /**
+   * Ctrl/Cmd + K 打开命令面板，并阻止浏览器默认搜索。
+   */
   function handleKeydown(e: KeyboardEvent) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
       open();
     }
   }
-
-  // ============================================
-  // 生命周期
-  // ============================================
 
   onMounted(() => {
     loadRoutes(permissionStore.routes);

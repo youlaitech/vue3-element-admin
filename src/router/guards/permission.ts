@@ -75,18 +75,13 @@ export function setupPermissionGuard() {
     }
   });
 
-  router.afterEach((to) => {
+  router.afterEach(() => {
     NProgress.done();
   });
 }
 
-// ============================================
-// 多租户支持（可选）
-// ============================================
-
 /** 初始化多租户上下文，未启用或失败时静默跳过 */
 async function initTenantContext(): Promise<void> {
-  // 多租户关闭时不初始化租户上下文
   if (!isTenantEnabled()) return;
 
   try {

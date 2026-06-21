@@ -3,23 +3,15 @@ import { constantRoutes } from "@/router";
 import { store } from "@/stores";
 import router from "@/router";
 import { useUserStoreHook } from "@/stores/user";
+import { isExternal } from "@/utils";
+import { ExternalOpenModeEnum, MenuTypeEnum } from "@/enums";
 
 import MenuAPI from "@/api/system/menu";
 import type { RouteItem } from "@/api/system/menu";
 const modules = import.meta.glob("../views/**/**.vue");
 const Layout = () => import("../layouts/index.vue");
-
-function resolveViewComponent(componentPath: string) {
-  const normalized = componentPath
-    .trim()
-    .replace(/^\/+/, "")
-    .replace(/\.vue$/i, "");
-  return (
-    modules[`../views/${normalized}.vue`] ||
-    modules[`../views/${normalized}/index.vue`] ||
-    modules[`../views/error/404.vue`]
-  );
-}
+const LAYOUT_COMPONENT = "Layout";
+const IFRAME_COMPONENT = "common/iframe";
 
 export const usePermissionStore = defineStore("permission", () => {
   // 所有路由（静态路由 + 动态路由）
@@ -33,9 +25,10 @@ export const usePermissionStore = defineStore("permission", () => {
   async function generateRoutes(): Promise<RouteRecordRaw[]> {
     try {
       const data = await MenuAPI.getRoutes(); // 获取当前登录人的菜单路由
-      const dynamicRoutes = transformRoutes(data);
+      const menuRoutes = transformRoutes(data);
+      const dynamicRoutes = filterRouterRoutes(menuRoutes);
 
-      routes.value = [...constantRoutes, ...dynamicRoutes];
+      routes.value = [...constantRoutes, ...menuRoutes];
       isRouteGenerated.value = true;
 
       return dynamicRoutes;
@@ -135,15 +128,18 @@ export const usePermissionStore = defineStore("permission", () => {
 });
 
 /**
- * 转换后端路由数据为Vue Router配置
- * 处理组件路径映射和Layout层级嵌套
+ * 转换后端路由数据为 Vue Router 配置。
+ *
+ * 处理组件路径映射和 Layout 层级嵌套。
  */
 const transformRoutes = (routes: RouteItem[], isTopLevel: boolean = true): RouteRecordRaw[] => {
   return routes.map((route) => {
-    const { component, children, ...args } = route;
+    const { children, ...args } = route;
+    const componentPath = getRouteComponentPath(route);
 
     // 处理组件：顶层或非Layout保留组件，中间层Layout设为undefined
-    const processedComponent = isTopLevel || component !== "Layout" ? component : undefined;
+    const processedComponent =
+      isTopLevel || componentPath !== LAYOUT_COMPONENT ? componentPath : undefined;
 
     const normalizedRoute = { ...args } as RouteRecordRaw;
 
@@ -153,7 +149,7 @@ const transformRoutes = (routes: RouteItem[], isTopLevel: boolean = true): Route
     } else {
       // 动态导入组件，Layout特殊处理，找不到组件时返回404
       normalizedRoute.component =
-        processedComponent === "Layout" ? Layout : resolveViewComponent(processedComponent);
+        processedComponent === LAYOUT_COMPONENT ? Layout : resolveViewComponent(processedComponent);
     }
 
     // 递归处理子路由
@@ -164,6 +160,75 @@ const transformRoutes = (routes: RouteItem[], isTopLevel: boolean = true): Route
     return normalizedRoute;
   });
 };
+
+/**
+ * 解析路由组件路径。
+ *
+ * 支持 `xxx.vue` 与 `xxx/index.vue` 两种写法，未命中时回退到 404。
+ */
+function resolveViewComponent(componentPath: string) {
+  const normalized = componentPath
+    .trim()
+    .replace(/^\/+/, "")
+    .replace(/\.vue$/i, "");
+  return (
+    modules[`../views/${normalized}.vue`] ||
+    modules[`../views/${normalized}/index.vue`] ||
+    modules[`../views/error/404.vue`]
+  );
+}
+
+/**
+ * 判断路由是否为系统内嵌外链。
+ */
+function isEmbeddedExternalRoute(route: RouteItem): boolean {
+  return (
+    route.meta?.type === MenuTypeEnum.EXTERNAL &&
+    route.meta?.openMode === ExternalOpenModeEnum.EMBEDDED
+  );
+}
+
+/**
+ * 获取路由最终使用的组件路径。
+ *
+ * 系统内嵌外链统一渲染 iframe 页面。
+ */
+function getRouteComponentPath(route: RouteItem): string | undefined {
+  if (isEmbeddedExternalRoute(route)) {
+    return IFRAME_COMPONENT;
+  }
+  return route.component;
+}
+
+/**
+ * 过滤需要注册到 Vue Router 的路由。
+ *
+ * 新标签页外链只参与菜单渲染，不注册为前端路由。
+ */
+function filterRouterRoutes(routes: RouteRecordRaw[]): RouteRecordRaw[] {
+  return routes.reduce<RouteRecordRaw[]>((result, route) => {
+    if (
+      route.meta?.type === MenuTypeEnum.EXTERNAL &&
+      route.meta?.openMode === ExternalOpenModeEnum.NEW_TAB
+    ) {
+      return result;
+    }
+
+    if (isExternal(route.path)) return result;
+
+    const routerRoute = { ...route };
+    const children = route.children ? filterRouterRoutes(route.children) : [];
+
+    if (children.length > 0) {
+      routerRoute.children = children;
+    } else {
+      delete routerRoute.children;
+    }
+
+    result.push(routerRoute);
+    return result;
+  }, []);
+}
 
 /** 非组件环境使用权限store */
 export function usePermissionStoreHook() {

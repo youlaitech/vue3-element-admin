@@ -1,25 +1,30 @@
 <template>
-  <div class="p-5 pb-0 sm:p-10 lg:p-20 w-full">
-    <el-button @click="router.back()">返回</el-button>
-    <el-row>
-      <el-col :xs="24" :span="12">
-        <h1 class="text-6xl font-bold text-[#484848]">Oops!</h1>
-        <h2>你没有权限访问该页面</h2>
-        <h6>如有疑问请联系管理员</h6>
-        <div class="flex flex-col items-start gap-1.5 text-sm">
-          <span>或者你可以：</span>
-          <el-link type="primary" @click="router.push('/dashboard')">返回首页</el-link>
-          <el-link type="primary" href="https://www.youlai.tech/">随便看看</el-link>
-        </div>
-      </el-col>
-      <el-col :xs="24" :span="12">
-        <img src="@/assets/images/error/401.svg" class="w-full" />
-      </el-col>
-    </el-row>
-  </div>
+  <ErrorPage
+    status-code="401"
+    label="访问受限"
+    title="当前账号暂无访问权限"
+    description="如果你确认需要访问该页面，请联系管理员调整权限后再试"
+    variant="locked"
+  >
+    <template #actions>
+      <el-button type="primary" :icon="House" @click="goHome">返回首页</el-button>
+      <el-button :icon="Back" @click="router.back()">返回上一页</el-button>
+    </template>
+  </ErrorPage>
 </template>
 
 <script setup lang="ts">
+import { Back, House } from "@element-plus/icons-vue";
+import ErrorPage from "./components/ErrorPage.vue";
+
 defineOptions({ name: "Page401" });
+
 const router = useRouter();
+
+/**
+ * 回到首页，避免继续停留在无权限路由
+ */
+function goHome() {
+  router.push("/");
+}
 </script>

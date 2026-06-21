@@ -1,4 +1,5 @@
 import type { LocationQuery } from "vue-router";
+import { isExternal } from "@/utils";
 
 export interface TagView {
   name: string;
@@ -31,7 +32,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
    */
   function addVisitedView(view: TagView) {
     // 如果已经存在于已访问的视图列表中或者是重定向地址，则不再添加
-    if (view.path.startsWith("/redirect")) {
+    if (view.path.startsWith("/redirect") || isExternal(view.path) || isExternal(view.fullPath)) {
       return;
     }
     if (visitedViews.value.some((v) => v.path === view.path)) {

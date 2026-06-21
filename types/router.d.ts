@@ -6,6 +6,7 @@ declare module "vue-router" {
    */
   interface RouteMeta {
     title?: string;
+    type?: string;
     icon?: string;
     hidden?: boolean;
     alwaysShow?: boolean;
@@ -14,6 +15,8 @@ declare module "vue-router" {
     breadcrumb?: boolean;
     activeMenu?: string;
     params?: Record<string, unknown>;
+    externalUrl?: string;
+    openMode?: number;
     roles?: string[];
   }
 }

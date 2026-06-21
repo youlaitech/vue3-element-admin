@@ -1,13 +1,11 @@
 <template>
-  <div class="navbar">
+  <div class="layout-navbar">
     <div class="flex-y-center">
-      <!-- 菜单折叠按钮 -->
       <Hamburger :is-active="isSidebarOpened" @toggle-click="toggleSideBar" />
-      <!-- 面包屑导行栏-->
       <Breadcrumb />
     </div>
-    <!-- 导航栏操作区域-->
-    <div class="navbar__actions">
+
+    <div class="layout-navbar__actions">
       <LayoutToolbar />
     </div>
   </div>
@@ -28,7 +26,7 @@ function toggleSideBar() {
 </script>
 
 <style lang="scss" scoped>
-.navbar {
+.layout-navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;

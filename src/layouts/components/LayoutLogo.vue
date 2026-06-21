@@ -1,9 +1,9 @@
 <template>
-  <div class="logo">
+  <div class="layout-logo">
     <transition enter-active-class="animate__animated animate__fadeInLeft">
       <router-link :key="+collapse" class="wh-full flex-center" to="/">
         <img :src="logo" class="w20px h20px" />
-        <span v-if="!collapse" class="title">
+        <span v-if="!collapse" class="layout-logo__title">
           {{ appConfig.title }}
         </span>
       </router-link>
@@ -24,12 +24,12 @@ defineProps({
 </script>
 
 <style lang="scss" scoped>
-.logo {
+.layout-logo {
   width: 100%;
   height: $navbar-height;
   background-color: $sidebar-logo-background;
 
-  .title {
+  &__title {
     flex-shrink: 0;
     margin-left: 10px;
     font-size: 14px;
@@ -40,35 +40,31 @@ defineProps({
 </style>
 
 <style lang="scss">
-// 顶部布局和混合布局的特殊处理
-.layout-top,
-.layout-mix {
-  .logo {
+.layout-root.layout--top,
+.layout-root.layout--mix {
+  .layout-logo {
     background-color: transparent !important;
 
-    .title {
+    &__title {
       color: var(--menu-text);
     }
   }
 }
 
-// 宽屏时：openSidebar 状态下显示完整Logo+文字
-.openSidebar {
-  &.layout-top .layout__header-left .logo,
-  &.layout-mix .layout__header-logo .logo {
-    width: $sidebar-width; // 210px，显示logo+文字
+.layout-root.is-sidebar-open {
+  &.layout--top .layout-header__left .layout-logo,
+  &.layout--mix .layout-header__logo .layout-logo {
+    width: $sidebar-width;
   }
 }
 
-// 窄屏时：hideSidebar 状态下只显示Logo图标
-.hideSidebar {
-  &.layout-top .layout__header-left .logo,
-  &.layout-mix .layout__header-logo .logo {
-    width: $sidebar-width-collapsed; // 54px，只显示logo
+.layout-root.is-sidebar-collapsed {
+  &.layout--top .layout-header__left .layout-logo,
+  &.layout--mix .layout-header__logo .layout-logo {
+    width: $sidebar-width-collapsed;
   }
 
-  // 隐藏文字，只显示图标
-  .logo .title {
+  .layout-logo__title {
     display: none;
   }
 }
