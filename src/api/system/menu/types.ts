@@ -32,8 +32,6 @@ export interface MenuItem {
   path?: string;
   /** 按钮权限标识 */
   perm?: string;
-  /** 外链打开方式(1-新标签页 2-系统内嵌) */
-  openMode?: number;
   /** 跳转路径 */
   redirect?: string;
   /** 是否始终显示 */
@@ -84,8 +82,6 @@ export interface MenuForm {
   scope?: number;
   /** 按钮权限标识 */
   perm?: string;
-  /** 外链打开方式(1-新标签页 2-系统内嵌) */
-  openMode?: number;
   /** 路由参数（用于表单编辑 params） */
   params?: { key?: string; value?: string }[];
   /** 是否始终显示（仅对目录生效） */
@@ -126,14 +122,10 @@ export interface Meta {
   icon?: string;
   /** 【菜单】是否开启页面缓存 */
   keepAlive?: boolean;
-  /** 菜单类型 */
-  type?: string;
   /** 路由参数 */
   params?: Record<string, unknown>;
   /** 外链地址 */
   externalUrl?: string;
-  /** 外链打开方式(1-新标签页 2-系统内嵌) */
-  openMode?: number;
   /** 角色集合 */
   roles?: string[];
   /** 路由title */

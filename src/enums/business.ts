@@ -16,14 +16,6 @@ export enum MenuTypeEnum {
 }
 
 /**
- * 外链打开方式枚举
- */
-export enum ExternalOpenModeEnum {
-  NEW_TAB = 1, // 新标签页
-  EMBEDDED = 2, // 系统内嵌
-}
-
-/**
  * 菜单范围枚举
  */
 export enum MenuScopeEnum {

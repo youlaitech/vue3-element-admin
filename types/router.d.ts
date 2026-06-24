@@ -16,7 +16,6 @@ declare module "vue-router" {
     activeMenu?: string;
     params?: Record<string, unknown>;
     externalUrl?: string;
-    openMode?: number;
     roles?: string[];
   }
 }

@@ -263,10 +263,10 @@
             <el-input v-model="formData.externalUrl" placeholder="https://example.com" clearable />
           </el-form-item>
 
-          <el-form-item label="打开方式" prop="openMode">
-            <el-radio-group v-model="formData.openMode" @change="handleOpenModeChange">
-              <el-radio :value="ExternalOpenModeEnum.NEW_TAB">新标签页</el-radio>
-              <el-radio :value="ExternalOpenModeEnum.EMBEDDED">系统内嵌</el-radio>
+          <el-form-item label="打开方式" prop="component">
+            <el-radio-group v-model="formData.component" @change="handleComponentChange">
+              <el-radio value="">新标签页</el-radio>
+              <el-radio value="iframe">系统内嵌</el-radio>
             </el-radio-group>
           </el-form-item>
 
@@ -434,7 +434,7 @@ import MenuAPI from "@/api/system/menu";
 import type { MenuForm, MenuItem, MenuQueryParams } from "@/api/system/menu";
 import type { OptionItem } from "@/api/common";
 import { useAppStore } from "@/stores/app";
-import { CommonStatus, ExternalOpenModeEnum, MenuScopeEnum, MenuTypeEnum } from "@/enums";
+import { CommonStatus, MenuScopeEnum, MenuTypeEnum } from "@/enums";
 import { DeviceEnum } from "@/enums/settings";
 import { isTenantEnabled } from "@/utils/tenant";
 import { isValidURL } from "@/utils";
@@ -470,7 +470,6 @@ const initialFormData: MenuForm = {
   scope: MenuScopeEnum.TENANT,
   sort: 1,
   type: MenuTypeEnum.MENU,
-  openMode: ExternalOpenModeEnum.NEW_TAB,
   alwaysShow: 0,
   keepAlive: 1,
   params: [],
@@ -495,8 +494,7 @@ const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600
 
 // 系统内嵌外链需要一个内部路由承载 iframe 页面。
 const isEmbeddedExternal = computed(
-  () =>
-    formData.type === MenuTypeEnum.EXTERNAL && formData.openMode === ExternalOpenModeEnum.EMBEDDED
+  () => formData.type === MenuTypeEnum.EXTERNAL && formData.component === "iframe"
 );
 
 const showCatalogConfig = computed(() => formData.type === MenuTypeEnum.CATALOG);
@@ -583,7 +581,7 @@ function createMenuTypeDrafts(): Record<MenuTypeEnum, Partial<MenuForm>> {
     [MenuTypeEnum.EXTERNAL]: {
       externalUrl: "",
       icon: "",
-      openMode: ExternalOpenModeEnum.NEW_TAB,
+      component: "",
       routeName: "",
       routePath: "",
       keepAlive: 1,
@@ -658,7 +656,7 @@ const rules: FormRules<MenuForm> = {
     { required: true, message: "请输入外链地址", validator: validateExternalUrl, trigger: "blur" },
   ],
   perm: [{ required: true, message: "请输入权限标识", validator: validatePerm, trigger: "blur" }],
-  openMode: [{ required: true, message: "请选择打开方式", trigger: "change" }],
+
   visible: [{ required: true, message: "请选择显示状态", trigger: "change" }],
   scope: [{ required: true, message: "请选择菜单范围", trigger: "change" }],
 };
@@ -754,7 +752,6 @@ function normalizeMenuPayload(): MenuForm {
     payload.routeName = undefined;
     payload.component = undefined;
     payload.externalUrl = undefined;
-    payload.openMode = undefined;
     payload.perm = undefined;
     payload.keepAlive = undefined;
     payload.params = [];
@@ -762,7 +759,6 @@ function normalizeMenuPayload(): MenuForm {
 
   if (payload.type === MenuTypeEnum.MENU) {
     payload.externalUrl = undefined;
-    payload.openMode = undefined;
     payload.redirect = undefined;
     payload.perm = undefined;
     payload.alwaysShow = undefined;
@@ -779,7 +775,7 @@ function normalizeMenuPayload(): MenuForm {
     payload.alwaysShow = undefined;
     payload.params = [];
 
-    if (payload.openMode === ExternalOpenModeEnum.NEW_TAB) {
+    if (!payload.component) {
       payload.routeName = undefined;
       payload.routePath = undefined;
       payload.keepAlive = undefined;
@@ -793,7 +789,6 @@ function normalizeMenuPayload(): MenuForm {
     payload.routePath = undefined;
     payload.component = undefined;
     payload.externalUrl = undefined;
-    payload.openMode = undefined;
     payload.redirect = undefined;
     payload.icon = undefined;
     payload.keepAlive = undefined;
@@ -815,7 +810,6 @@ function saveMenuTypeDraft(type: MenuTypeEnum): void {
     component: formData.component,
     externalUrl: formData.externalUrl,
     icon: formData.icon,
-    openMode: formData.openMode,
     redirect: formData.redirect,
     perm: formData.perm,
     alwaysShow: formData.alwaysShow,
@@ -840,7 +834,6 @@ function restoreMenuTypeDraft(type: MenuTypeEnum): void {
     component: undefined,
     externalUrl: undefined,
     icon: undefined,
-    openMode: undefined,
     redirect: undefined,
     perm: undefined,
     alwaysShow: undefined,
@@ -917,9 +910,11 @@ function applyMenuTypeDefaults(): void {
   }
 
   if (formData.type === MenuTypeEnum.EXTERNAL) {
-    formData.openMode ??= ExternalOpenModeEnum.NEW_TAB;
-    formData.component = undefined;
     formData.params = [];
+  }
+
+  if (formData.type === MenuTypeEnum.EXTERNAL && formData.component === "iframe") {
+    formData.keepAlive ??= 1;
   }
 
   if (formData.type === MenuTypeEnum.BUTTON) {
@@ -942,10 +937,10 @@ function handleMenuTypeChange(): void {
 }
 
 /**
- * 外链打开方式切换事件
+ * 外链组件切换事件（新标签页 → 系统内嵌）
  */
-function handleOpenModeChange(): void {
-  if (formData.openMode === ExternalOpenModeEnum.EMBEDDED) {
+function handleComponentChange(): void {
+  if (formData.component === "iframe") {
     formData.keepAlive ??= 1;
   }
 

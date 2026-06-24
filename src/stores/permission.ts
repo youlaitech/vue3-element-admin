@@ -4,78 +4,71 @@ import { store } from "@/stores";
 import router from "@/router";
 import { useUserStoreHook } from "@/stores/user";
 import { isExternal } from "@/utils";
-import { ExternalOpenModeEnum, MenuTypeEnum } from "@/enums";
 
 import MenuAPI from "@/api/system/menu";
 import type { RouteItem } from "@/api/system/menu";
-const modules = import.meta.glob("../views/**/**.vue");
+const modules = import.meta.glob("../views/**/*.vue");
 const Layout = () => import("../layouts/index.vue");
-const LAYOUT_COMPONENT = "Layout";
-const IFRAME_COMPONENT = "common/iframe";
 
 export const usePermissionStore = defineStore("permission", () => {
-  // 所有路由（静态路由 + 动态路由）
   const routes = ref<RouteRecordRaw[]>([]);
-  // 混合布局的左侧菜单路由
   const mixLayoutSideMenus = ref<RouteRecordRaw[]>([]);
-  // 动态路由是否已生成
   const isRouteGenerated = ref(false);
 
-  /** 生成动态路由 */
+  /**
+   * 生成动态路由
+   */
   async function generateRoutes(): Promise<RouteRecordRaw[]> {
     try {
-      const data = await MenuAPI.getRoutes(); // 获取当前登录人的菜单路由
-      const menuRoutes = transformRoutes(data);
-      const dynamicRoutes = filterRouterRoutes(menuRoutes);
+      const routeData = await MenuAPI.getRoutes();
+      const menuRoutes = transformRoutes(routeData);
+      const registerRoutes = filterRoutes(menuRoutes);
 
       routes.value = [...constantRoutes, ...menuRoutes];
       isRouteGenerated.value = true;
 
-      return dynamicRoutes;
+      return registerRoutes;
     } catch (error) {
-      // 路由生成失败，重置状态
       isRouteGenerated.value = false;
       throw error;
     }
   }
 
-  /** 设置混合布局左侧菜单 */
+  /**
+   * 设置混合布局左侧菜单
+   */
   const setMixLayoutSideMenus = (parentPath: string) => {
     const parentMenu = routes.value.find((item: RouteRecordRaw) => item.path === parentPath);
     mixLayoutSideMenus.value = parentMenu?.children || [];
   };
 
-  /** 重置路由状态 */
+  /**
+   * 重置路由状态
+   */
   const resetRouter = () => {
-    // 移除动态添加的路由
-    const constantRouteNames = new Set(constantRoutes.map((route) => route.name).filter(Boolean));
+    const constantNames = new Set(constantRoutes.map((route) => route.name).filter(Boolean));
     routes.value.forEach((route: RouteRecordRaw) => {
-      if (route.name && !constantRouteNames.has(route.name)) {
+      if (route.name && !constantNames.has(route.name)) {
         router.removeRoute(route.name);
       }
     });
 
-    // 重置所有状态
     routes.value = [...constantRoutes];
     mixLayoutSideMenus.value = [];
     isRouteGenerated.value = false;
   };
 
-  let reloadPromise: Promise<RouteRecordRaw[]> | null = null;
+  let pendingReload: Promise<RouteRecordRaw[]> | null = null;
 
   /**
-   * 重新加载动态路由（单飞）。
+   * 重新加载动态路由
    *
-   * 典型场景：后端权限变更导致接口返回权限不足（A0301），前端需要刷新路由和菜单以同步最新权限。
-   *
-   * - 会先清理已注册的动态路由（resetRouter）
-   * - 重新从后端拉取路由（generateRoutes）
-   * - 将动态路由注册到 vue-router（router.addRoute）
+   * 同一时刻只允许一个请求进行中
    */
-  async function reloadDynamicRoutesOnce(): Promise<RouteRecordRaw[]> {
-    if (reloadPromise) return reloadPromise;
+  async function reloadRoutes(): Promise<RouteRecordRaw[]> {
+    if (pendingReload) return pendingReload;
 
-    reloadPromise = (async () => {
+    pendingReload = (async () => {
       try {
         resetRouter();
         const dynamicRoutes = await generateRoutes();
@@ -84,35 +77,34 @@ export const usePermissionStore = defineStore("permission", () => {
         });
         return dynamicRoutes;
       } finally {
-        reloadPromise = null;
+        pendingReload = null;
       }
     })();
 
-    return reloadPromise;
+    return pendingReload;
   }
 
-  let snapshotPromise: Promise<void> | null = null;
+  let pendingPermissionRefresh: Promise<void> | null = null;
 
   /**
-   * 刷新权限快照（单飞）。
+   * 刷新权限
    *
-   * - 刷新用户信息（包含 perms/roles 等）
-   * - 重新加载动态路由
+   * 重新拉取用户信息后重建动态路由
    */
-  async function reloadPermissionSnapshotOnce(): Promise<void> {
-    if (snapshotPromise) return snapshotPromise;
+  async function refreshPermissions(): Promise<void> {
+    if (pendingPermissionRefresh) return pendingPermissionRefresh;
 
-    snapshotPromise = (async () => {
+    pendingPermissionRefresh = (async () => {
       try {
         const userStore = useUserStoreHook();
         await userStore.getUserInfo();
-        await reloadDynamicRoutesOnce();
+        await reloadRoutes();
       } finally {
-        snapshotPromise = null;
+        pendingPermissionRefresh = null;
       }
     })();
 
-    return snapshotPromise;
+    return pendingPermissionRefresh;
   }
 
   return {
@@ -122,37 +114,31 @@ export const usePermissionStore = defineStore("permission", () => {
     generateRoutes,
     setMixLayoutSideMenus,
     resetRouter,
-    reloadDynamicRoutesOnce,
-    reloadPermissionSnapshotOnce,
+    reloadRoutes,
+    refreshPermissions,
   };
 });
 
 /**
- * 转换后端路由数据为 Vue Router 配置。
- *
- * 处理组件路径映射和 Layout 层级嵌套。
+ * 将后端路由数据转为 Vue Router 配置
  */
 const transformRoutes = (routes: RouteItem[], isTopLevel: boolean = true): RouteRecordRaw[] => {
   return routes.map((route) => {
     const { children, ...args } = route;
-    const componentPath = getRouteComponentPath(route);
+    const componentPath = route.component;
 
-    // 处理组件：顶层或非Layout保留组件，中间层Layout设为undefined
-    const processedComponent =
-      isTopLevel || componentPath !== LAYOUT_COMPONENT ? componentPath : undefined;
+    // 非顶层目录壳去掉 Layout 组件，仅保留路由结构
+    const resolvedComponent = isTopLevel || componentPath !== "Layout" ? componentPath : undefined;
 
     const normalizedRoute = { ...args } as RouteRecordRaw;
 
-    if (!processedComponent) {
-      // 多级菜单的父级菜单，不需要组件
+    if (!resolvedComponent) {
       normalizedRoute.component = undefined;
     } else {
-      // 动态导入组件，Layout特殊处理，找不到组件时返回404
       normalizedRoute.component =
-        processedComponent === LAYOUT_COMPONENT ? Layout : resolveViewComponent(processedComponent);
+        resolvedComponent === "Layout" ? Layout : resolveComponent(resolvedComponent);
     }
 
-    // 递归处理子路由
     if (children && children.length > 0) {
       normalizedRoute.children = transformRoutes(children, false);
     }
@@ -162,11 +148,11 @@ const transformRoutes = (routes: RouteItem[], isTopLevel: boolean = true): Route
 };
 
 /**
- * 解析路由组件路径。
+ * 解析组件
  *
- * 支持 `xxx.vue` 与 `xxx/index.vue` 两种写法，未命中时回退到 404。
+ * 支持 xxx.vue 与 xxx/index.vue 两种写法，未命中时回退到 404
  */
-function resolveViewComponent(componentPath: string) {
+function resolveComponent(componentPath: string) {
   const normalized = componentPath
     .trim()
     .replace(/^\/+/, "")
@@ -179,58 +165,29 @@ function resolveViewComponent(componentPath: string) {
 }
 
 /**
- * 判断路由是否为系统内嵌外链。
+ * 过滤掉不注册为 Vue Router 路由的外链
  */
-function isEmbeddedExternalRoute(route: RouteItem): boolean {
-  return (
-    route.meta?.type === MenuTypeEnum.EXTERNAL &&
-    route.meta?.openMode === ExternalOpenModeEnum.EMBEDDED
-  );
-}
-
-/**
- * 获取路由最终使用的组件路径。
- *
- * 系统内嵌外链统一渲染 iframe 页面。
- */
-function getRouteComponentPath(route: RouteItem): string | undefined {
-  if (isEmbeddedExternalRoute(route)) {
-    return IFRAME_COMPONENT;
-  }
-  return route.component;
-}
-
-/**
- * 过滤需要注册到 Vue Router 的路由。
- *
- * 新标签页外链只参与菜单渲染，不注册为前端路由。
- */
-function filterRouterRoutes(routes: RouteRecordRaw[]): RouteRecordRaw[] {
+function filterRoutes(routes: RouteRecordRaw[]): RouteRecordRaw[] {
   return routes.reduce<RouteRecordRaw[]>((result, route) => {
-    if (
-      route.meta?.type === MenuTypeEnum.EXTERNAL &&
-      route.meta?.openMode === ExternalOpenModeEnum.NEW_TAB
-    ) {
-      return result;
-    }
-
     if (isExternal(route.path)) return result;
 
-    const routerRoute = { ...route };
-    const children = route.children ? filterRouterRoutes(route.children) : [];
+    const filtered = { ...route };
+    const children = route.children ? filterRoutes(route.children) : [];
 
     if (children.length > 0) {
-      routerRoute.children = children;
+      filtered.children = children;
     } else {
-      delete routerRoute.children;
+      delete filtered.children;
     }
 
-    result.push(routerRoute);
+    result.push(filtered);
     return result;
   }, []);
 }
 
-/** 非组件环境使用权限store */
+/**
+ * 非组件环境获取 permission store
+ */
 export function usePermissionStoreHook() {
   return usePermissionStore(store);
 }

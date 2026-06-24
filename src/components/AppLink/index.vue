@@ -5,7 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import { ExternalOpenModeEnum } from "@/enums";
 import { isExternal } from "@/utils/index";
 
 defineOptions({
@@ -17,7 +16,6 @@ interface AppLinkTo {
   path: string;
   meta?: {
     externalUrl?: string;
-    openMode?: number;
     type?: string;
   };
   query?: Record<string, unknown> | null;
@@ -27,19 +25,15 @@ const props = defineProps<{
   to: AppLinkTo;
 }>();
 
+const externalUrl = computed(() => {
+  return isExternal(props.to.path || "") ? props.to.path : "";
+});
+
 const isExternalLink = computed(() => {
   return Boolean(externalUrl.value);
 });
 
 const linkType = computed(() => (isExternalLink.value ? "a" : "router-link"));
-
-const externalUrl = computed(() => {
-  if (props.to.meta?.openMode === ExternalOpenModeEnum.NEW_TAB && props.to.meta.externalUrl) {
-    return props.to.meta.externalUrl;
-  }
-
-  return isExternal(props.to.path || "") ? props.to.path : "";
-});
 
 const linkProps = (to: AppLinkTo) => {
   if (isExternalLink.value) {
