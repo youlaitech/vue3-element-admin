@@ -50,52 +50,61 @@
         </div>
       </div>
 
-      <el-table v-loading="loading" :data="list" highlight-current-row border>
-        <el-table-column type="index" label="序号" width="60" />
-        <el-table-column label="套餐名称" prop="name" min-width="120" />
-        <el-table-column label="套餐编码" prop="code" width="160" />
-        <el-table-column label="状态" width="100" align="center">
-          <template #default="scope">
-            <el-tag v-if="scope.row.status === CommonStatus.ENABLED" type="success">启用</el-tag>
-            <el-tag v-else type="info">停用</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="排序" prop="sort" width="80" align="center" />
-        <el-table-column label="备注" prop="remark" min-width="140" />
-        <el-table-column label="创建时间" prop="createTime" width="180" />
-        <el-table-column fixed="right" label="操作" width="240">
-          <template #default="scope">
-            <el-button
-              v-hasPerm="['sys:tenant-plan:assign']"
-              type="primary"
-              size="small"
-              link
-              icon="menu"
-              @click="handleAssignMenuClick(scope.row)"
-            >
-              菜单配置
-            </el-button>
-            <el-button
-              v-hasPerm="['sys:tenant-plan:update']"
-              type="primary"
-              size="small"
-              link
-              @click="handleEditClick(scope.row.id)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              v-hasPerm="['sys:tenant-plan:delete']"
-              type="danger"
-              size="small"
-              link
-              @click="handleDelete(scope.row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="page-table-wrapper">
+        <el-table
+          v-loading="loading"
+          :data="list"
+          class="page-table"
+          height="100%"
+          highlight-current-row
+          border
+        >
+          <el-table-column type="index" label="序号" width="60" />
+          <el-table-column label="套餐名称" prop="name" min-width="120" />
+          <el-table-column label="套餐编码" prop="code" width="160" />
+          <el-table-column label="状态" width="100" align="center">
+            <template #default="scope">
+              <el-tag v-if="scope.row.status === CommonStatus.ENABLED" type="success">启用</el-tag>
+              <el-tag v-else type="info">停用</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="排序" prop="sort" width="80" align="center" />
+          <el-table-column label="备注" prop="remark" min-width="140" />
+          <el-table-column label="创建时间" prop="createTime" width="180" />
+          <el-table-column fixed="right" label="操作" width="240">
+            <template #default="scope">
+              <el-button
+                v-hasPerm="['sys:tenant-plan:assign']"
+                type="primary"
+                size="small"
+                link
+                icon="menu"
+                @click="handleAssignMenuClick(scope.row)"
+              >
+                菜单配置
+              </el-button>
+              <el-button
+                v-hasPerm="['sys:tenant-plan:update']"
+                type="primary"
+                size="small"
+                link
+                @click="handleEditClick(scope.row.id)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                v-hasPerm="['sys:tenant-plan:delete']"
+                type="danger"
+                size="small"
+                link
+                @click="handleDelete(scope.row.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
       <pagination
         v-if="total > 0"

@@ -40,43 +40,52 @@
         </div>
       </div>
 
-      <el-table
-        v-loading="loading"
-        highlight-current-row
-        :data="list"
-        border
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="字典名称" prop="name" />
-        <el-table-column label="字典编码" prop="dictCode" />
-        <el-table-column label="状态" prop="status">
-          <template #default="scope">
-            <el-tag :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'info'">
-              {{ scope.row.status === CommonStatus.ENABLED ? "启用" : "禁用" }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="220">
-          <template #default="scope">
-            <el-button
-              type="primary"
-              link
-              size="small"
-              @click.stop="openDictData(scope.row as any)"
-            >
-              字典数据
-            </el-button>
+      <div class="page-table-wrapper">
+        <el-table
+          v-loading="loading"
+          highlight-current-row
+          :data="list"
+          class="page-table"
+          border
+          height="100%"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column label="字典名称" prop="name" />
+          <el-table-column label="字典编码" prop="dictCode" />
+          <el-table-column label="状态" prop="status">
+            <template #default="scope">
+              <el-tag :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'info'">
+                {{ scope.row.status === CommonStatus.ENABLED ? "启用" : "禁用" }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" label="操作" align="center" width="220">
+            <template #default="scope">
+              <el-button
+                type="primary"
+                link
+                size="small"
+                @click.stop="openDictData(scope.row as any)"
+              >
+                字典数据
+              </el-button>
 
-            <el-button type="primary" link size="small" @click.stop="handleEditClick(scope.row.id)">
-              编辑
-            </el-button>
-            <el-button type="danger" link size="small" @click.stop="handleDelete(scope.row.id)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+              <el-button
+                type="primary"
+                link
+                size="small"
+                @click.stop="handleEditClick(scope.row.id)"
+              >
+                编辑
+              </el-button>
+              <el-button type="danger" link size="small" @click.stop="handleDelete(scope.row.id)">
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
       <pagination
         v-if="total > 0"

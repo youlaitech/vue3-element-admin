@@ -54,97 +54,101 @@
         </div>
       </div>
 
-      <el-table
-        v-loading="loading"
-        :data="list"
-        highlight-current-row
-        border
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column
-          type="selection"
-          width="55"
-          align="center"
-          :selectable="isTenantSelectable"
-        />
-        <el-table-column label="租户名称" prop="name" min-width="140" />
-        <el-table-column label="租户编码" prop="code" width="120" />
-        <el-table-column label="租户套餐" min-width="120">
-          <template #default="scope">
-            <span>{{ resolvePlanLabel(scope.row.planId) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="域名" prop="domain" min-width="140" />
-        <el-table-column label="联系人" prop="contactName" width="100" />
-        <el-table-column label="电话" prop="contactPhone" width="120" />
-        <el-table-column label="状态" width="90" align="center">
-          <template #default="scope">
-            <el-tag :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'info'">
-              {{ scope.row.status === CommonStatus.ENABLED ? "正常" : "禁用" }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="过期时间" prop="expireTime" width="160" />
-        <el-table-column label="创建时间" prop="createTime" width="160" />
-        <el-table-column fixed="right" label="操作" width="320">
-          <template #default="scope">
-            <el-tooltip
-              v-if="!isPlatformTenantId(scope.row.id)"
-              content="更换租户套餐（将影响可用功能）"
-              placement="top"
-            >
+      <div class="page-table-wrapper">
+        <el-table
+          v-loading="loading"
+          :data="list"
+          highlight-current-row
+          class="page-table"
+          border
+          height="100%"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column
+            type="selection"
+            width="55"
+            align="center"
+            :selectable="isTenantSelectable"
+          />
+          <el-table-column label="租户名称" prop="name" min-width="140" />
+          <el-table-column label="租户编码" prop="code" width="120" />
+          <el-table-column label="租户套餐" min-width="120">
+            <template #default="scope">
+              <span>{{ resolvePlanLabel(scope.row.planId) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="域名" prop="domain" min-width="140" />
+          <el-table-column label="联系人" prop="contactName" width="100" />
+          <el-table-column label="电话" prop="contactPhone" width="120" />
+          <el-table-column label="状态" width="90" align="center">
+            <template #default="scope">
+              <el-tag :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'info'">
+                {{ scope.row.status === CommonStatus.ENABLED ? "正常" : "禁用" }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="过期时间" prop="expireTime" width="160" />
+          <el-table-column label="创建时间" prop="createTime" width="160" />
+          <el-table-column fixed="right" label="操作" width="320">
+            <template #default="scope">
+              <el-tooltip
+                v-if="!isPlatformTenantId(scope.row.id)"
+                content="更换租户套餐（将影响可用功能）"
+                placement="top"
+              >
+                <el-button
+                  v-hasPerm="['sys:tenant:plan-assign']"
+                  type="primary"
+                  size="small"
+                  link
+                  icon="menu"
+                  title="更换租户套餐（将影响可用功能）"
+                  @click="openTenantPlanDialog(scope.row)"
+                >
+                  更换套餐
+                </el-button>
+              </el-tooltip>
+              <el-tooltip
+                v-if="!isPlatformTenantId(scope.row.id)"
+                content="在当前套餐范围内配置租户可用功能"
+                placement="top"
+              >
+                <el-button
+                  v-hasPerm="['sys:tenant:plan-assign']"
+                  type="primary"
+                  size="small"
+                  link
+                  icon="setting"
+                  :disabled="!scope.row.planId"
+                  title="在当前套餐范围内配置租户可用功能"
+                  @click="openTenantCustomizeDialog(scope.row)"
+                >
+                  套餐功能配置
+                </el-button>
+              </el-tooltip>
               <el-button
-                v-hasPerm="['sys:tenant:plan-assign']"
+                v-hasPerm="['sys:tenant:update']"
                 type="primary"
                 size="small"
                 link
-                icon="menu"
-                title="更换租户套餐（将影响可用功能）"
-                @click="openTenantPlanDialog(scope.row)"
+                @click="openDialog(scope.row.id)"
               >
-                更换套餐
+                编辑
               </el-button>
-            </el-tooltip>
-            <el-tooltip
-              v-if="!isPlatformTenantId(scope.row.id)"
-              content="在当前套餐范围内配置租户可用功能"
-              placement="top"
-            >
               <el-button
-                v-hasPerm="['sys:tenant:plan-assign']"
-                type="primary"
+                v-if="!isPlatformTenantId(scope.row.id)"
+                v-hasPerm="['sys:tenant:delete']"
+                type="danger"
                 size="small"
                 link
-                icon="setting"
-                :disabled="!scope.row.planId"
-                title="在当前套餐范围内配置租户可用功能"
-                @click="openTenantCustomizeDialog(scope.row)"
+                @click="handleDelete(scope.row.id)"
               >
-                套餐功能配置
+                删除
               </el-button>
-            </el-tooltip>
-            <el-button
-              v-hasPerm="['sys:tenant:update']"
-              type="primary"
-              size="small"
-              link
-              @click="openDialog(scope.row.id)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              v-if="!isPlatformTenantId(scope.row.id)"
-              v-hasPerm="['sys:tenant:delete']"
-              type="danger"
-              size="small"
-              link
-              @click="handleDelete(scope.row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
       <pagination
         v-if="total > 0"

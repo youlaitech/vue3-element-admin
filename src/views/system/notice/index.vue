@@ -60,114 +60,124 @@
         </div>
       </div>
 
-      <el-table
-        ref="dataTableRef"
-        v-loading="loading"
-        :data="list"
-        border
-        highlight-current-row
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column type="index" label="序号" width="60" />
-        <el-table-column label="通知标题" prop="title" min-width="200" />
-        <el-table-column align="center" label="通知类型" width="150">
-          <template #default="scope">
-            <DictTag v-model="scope.row.type" :code="'notice_type'" />
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="发布人" prop="publisherName" width="150" />
-        <el-table-column align="center" label="通知等级" width="100">
-          <template #default="scope">
-            <DictTag v-model="scope.row.level" code="notice_level" />
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="通告目标类型" prop="targetType" min-width="100">
-          <template #default="scope">
-            <el-tag v-if="scope.row.targetType === NOTICE_TARGET_ALL" type="warning">全体</el-tag>
-            <el-tag v-if="scope.row.targetType === NOTICE_TARGET_SPECIFIED" type="success">
-              指定
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="发布状态" min-width="100">
-          <template #default="scope">
-            <el-tag v-if="scope.row.publishStatus === NOTICE_STATUS_DRAFT" type="info">
-              未发布
-            </el-tag>
-            <el-tag v-else-if="scope.row.publishStatus === NOTICE_STATUS_PUBLISHED" type="success">
-              已发布
-            </el-tag>
-            <el-tag v-else-if="scope.row.publishStatus === NOTICE_STATUS_REVOKED" type="warning">
-              已撤回
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作时间" width="250">
-          <template #default="scope">
-            <div class="flex-x-start">
-              <span>创建时间：</span>
-              <span>{{ scope.row.createTime || "-" }}</span>
-            </div>
+      <div class="page-table-wrapper">
+        <el-table
+          ref="dataTableRef"
+          v-loading="loading"
+          :data="list"
+          class="page-table"
+          border
+          height="100%"
+          highlight-current-row
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column type="index" label="序号" width="60" />
+          <el-table-column label="通知标题" prop="title" min-width="200" />
+          <el-table-column align="center" label="通知类型" width="150">
+            <template #default="scope">
+              <DictTag v-model="scope.row.type" :code="'notice_type'" />
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="发布人" prop="publisherName" width="150" />
+          <el-table-column align="center" label="通知等级" width="100">
+            <template #default="scope">
+              <DictTag v-model="scope.row.level" code="notice_level" />
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="通告目标类型" prop="targetType" min-width="100">
+            <template #default="scope">
+              <el-tag v-if="scope.row.targetType === NOTICE_TARGET_ALL" type="warning">全体</el-tag>
+              <el-tag v-if="scope.row.targetType === NOTICE_TARGET_SPECIFIED" type="success">
+                指定
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="发布状态" min-width="100">
+            <template #default="scope">
+              <el-tag v-if="scope.row.publishStatus === NOTICE_STATUS_DRAFT" type="info">
+                未发布
+              </el-tag>
+              <el-tag
+                v-else-if="scope.row.publishStatus === NOTICE_STATUS_PUBLISHED"
+                type="success"
+              >
+                已发布
+              </el-tag>
+              <el-tag v-else-if="scope.row.publishStatus === NOTICE_STATUS_REVOKED" type="warning">
+                已撤回
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作时间" width="250">
+            <template #default="scope">
+              <div class="flex-x-start">
+                <span>创建时间：</span>
+                <span>{{ scope.row.createTime || "-" }}</span>
+              </div>
 
-            <div v-if="scope.row.publishStatus === NOTICE_STATUS_PUBLISHED" class="flex-x-start">
-              <span>发布时间：</span>
-              <span>{{ scope.row.publishTime || "-" }}</span>
-            </div>
-            <div v-else-if="scope.row.publishStatus === NOTICE_STATUS_REVOKED" class="flex-x-start">
-              <span>撤回时间：</span>
-              <span>{{ scope.row.revokeTime || "-" }}</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" fixed="right" label="操作" width="150">
-          <template #default="scope">
-            <el-button type="primary" size="small" link @click="openDetailDialog(scope.row.id)">
-              查看
-            </el-button>
-            <el-button
-              v-if="scope.row.publishStatus !== NOTICE_STATUS_PUBLISHED"
-              v-hasPerm="['sys:notice:publish']"
-              type="primary"
-              size="small"
-              link
-              @click="handlePublish(scope.row.id)"
-            >
-              发布
-            </el-button>
-            <el-button
-              v-if="scope.row.publishStatus === NOTICE_STATUS_PUBLISHED"
-              v-hasPerm="['sys:notice:revoke']"
-              type="primary"
-              size="small"
-              link
-              @click="handleRevoke(scope.row.id)"
-            >
-              撤回
-            </el-button>
-            <el-button
-              v-if="scope.row.publishStatus !== NOTICE_STATUS_PUBLISHED"
-              v-hasPerm="['sys:notice:update']"
-              type="primary"
-              size="small"
-              link
-              @click="openDialog(scope.row.id)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              v-if="scope.row.publishStatus !== NOTICE_STATUS_PUBLISHED"
-              v-hasPerm="['sys:notice:delete']"
-              type="danger"
-              size="small"
-              link
-              @click="handleDelete(scope.row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+              <div v-if="scope.row.publishStatus === NOTICE_STATUS_PUBLISHED" class="flex-x-start">
+                <span>发布时间：</span>
+                <span>{{ scope.row.publishTime || "-" }}</span>
+              </div>
+              <div
+                v-else-if="scope.row.publishStatus === NOTICE_STATUS_REVOKED"
+                class="flex-x-start"
+              >
+                <span>撤回时间：</span>
+                <span>{{ scope.row.revokeTime || "-" }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" fixed="right" label="操作" width="150">
+            <template #default="scope">
+              <el-button type="primary" size="small" link @click="openDetailDialog(scope.row.id)">
+                查看
+              </el-button>
+              <el-button
+                v-if="scope.row.publishStatus !== NOTICE_STATUS_PUBLISHED"
+                v-hasPerm="['sys:notice:publish']"
+                type="primary"
+                size="small"
+                link
+                @click="handlePublish(scope.row.id)"
+              >
+                发布
+              </el-button>
+              <el-button
+                v-if="scope.row.publishStatus === NOTICE_STATUS_PUBLISHED"
+                v-hasPerm="['sys:notice:revoke']"
+                type="primary"
+                size="small"
+                link
+                @click="handleRevoke(scope.row.id)"
+              >
+                撤回
+              </el-button>
+              <el-button
+                v-if="scope.row.publishStatus !== NOTICE_STATUS_PUBLISHED"
+                v-hasPerm="['sys:notice:update']"
+                type="primary"
+                size="small"
+                link
+                @click="openDialog(scope.row.id)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                v-if="scope.row.publishStatus !== NOTICE_STATUS_PUBLISHED"
+                v-hasPerm="['sys:notice:delete']"
+                type="danger"
+                size="small"
+                link
+                @click="handleDelete(scope.row.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
       <pagination
         v-if="total > 0"

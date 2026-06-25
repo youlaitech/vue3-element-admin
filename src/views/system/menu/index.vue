@@ -39,103 +39,109 @@
         </div>
       </div>
 
-      <el-table
-        ref="dataTableRef"
-        v-loading="loading"
-        border
-        row-key="id"
-        :data="list"
-        :tree-props="{
-          children: 'children',
-          hasChildren: 'hasChildren',
-        }"
-        @row-click="handleRowClick"
-      >
-        <el-table-column label="菜单名称" min-width="200">
-          <template #default="scope">
-            <div class="menu-name-cell">
-              <span class="menu-name-cell__icon">
-                <template v-if="scope.row.icon && scope.row.icon.startsWith('el-icon')">
-                  <el-icon style="vertical-align: -0.15em">
-                    <component :is="scope.row.icon.replace('el-icon-', '')" />
-                  </el-icon>
-                </template>
-                <template v-else-if="scope.row.icon">
-                  <span :class="`i-svg:${scope.row.icon}`" />
-                </template>
-              </span>
-              <span class="menu-name-cell__text">{{ scope.row.name }}</span>
-            </div>
-          </template>
-        </el-table-column>
+      <div class="page-table-wrapper">
+        <el-table
+          ref="dataTableRef"
+          v-loading="loading"
+          class="page-table"
+          border
+          row-key="id"
+          :data="list"
+          height="100%"
+          :tree-props="{
+            children: 'children',
+            hasChildren: 'hasChildren',
+          }"
+          @row-click="handleRowClick"
+        >
+          <el-table-column label="菜单名称" min-width="200">
+            <template #default="scope">
+              <div class="menu-name-cell">
+                <span class="menu-name-cell__icon">
+                  <template v-if="scope.row.icon && scope.row.icon.startsWith('el-icon')">
+                    <el-icon style="vertical-align: -0.15em">
+                      <component :is="scope.row.icon.replace('el-icon-', '')" />
+                    </el-icon>
+                  </template>
+                  <template v-else-if="scope.row.icon">
+                    <span :class="`i-svg:${scope.row.icon}`" />
+                  </template>
+                </span>
+                <span class="menu-name-cell__text">{{ scope.row.name }}</span>
+              </div>
+            </template>
+          </el-table-column>
 
-        <el-table-column label="类型" align="center" width="80">
-          <template #default="scope">
-            <el-tag v-if="scope.row.type === MenuTypeEnum.CATALOG" type="warning">目录</el-tag>
-            <el-tag v-if="scope.row.type === MenuTypeEnum.MENU" type="success">菜单</el-tag>
-            <el-tag v-if="scope.row.type === MenuTypeEnum.EXTERNAL" type="primary">外链</el-tag>
-            <el-tag v-if="scope.row.type === MenuTypeEnum.BUTTON" type="danger">按钮</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="访问路径" align="left" min-width="180">
-          <template #default="scope">
-            {{ getMenuAccessPath(scope.row) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="页面组件" align="left" min-width="180">
-          <template #default="scope">
-            {{ getMenuComponentPath(scope.row) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="权限标识" align="center" width="200" prop="perm" />
-        <el-table-column v-if="showMenuScope" label="范围" align="center" width="100">
-          <template #default="scope">
-            <el-tag v-if="scope.row.scope === MenuScopeEnum.PLATFORM" type="danger">平台</el-tag>
-            <el-tag v-else type="success">业务</el-tag>
-          </template>
-        </el-table-column>
+          <el-table-column label="类型" align="center" width="80">
+            <template #default="scope">
+              <el-tag v-if="scope.row.type === MenuTypeEnum.CATALOG" type="warning">目录</el-tag>
+              <el-tag v-if="scope.row.type === MenuTypeEnum.MENU" type="success">菜单</el-tag>
+              <el-tag v-if="scope.row.type === MenuTypeEnum.EXTERNAL" type="primary">外链</el-tag>
+              <el-tag v-if="scope.row.type === MenuTypeEnum.BUTTON" type="danger">按钮</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="访问路径" align="left" min-width="180">
+            <template #default="scope">
+              {{ getMenuAccessPath(scope.row) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="页面组件" align="left" min-width="180">
+            <template #default="scope">
+              {{ getMenuComponentPath(scope.row) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="权限标识" align="center" width="200" prop="perm" />
+          <el-table-column v-if="showMenuScope" label="范围" align="center" width="100">
+            <template #default="scope">
+              <el-tag v-if="scope.row.scope === MenuScopeEnum.PLATFORM" type="danger">平台</el-tag>
+              <el-tag v-else type="success">业务</el-tag>
+            </template>
+          </el-table-column>
 
-        <el-table-column label="状态" align="center" width="80">
-          <template #default="scope">
-            <el-tag v-if="scope.row.visible === CommonStatus.ENABLED" type="success">显示</el-tag>
-            <el-tag v-else type="info">隐藏</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="排序" align="center" width="80" prop="sort" />
-        <el-table-column fixed="right" align="center" label="操作" width="220">
-          <template #default="scope">
-            <el-button
-              v-if="scope.row.type === MenuTypeEnum.CATALOG || scope.row.type === MenuTypeEnum.MENU"
-              v-hasPerm="['sys:menu:create']"
-              type="primary"
-              link
-              size="small"
-              @click.stop="openDialog(scope.row.id)"
-            >
-              新增
-            </el-button>
+          <el-table-column label="状态" align="center" width="80">
+            <template #default="scope">
+              <el-tag v-if="scope.row.visible === CommonStatus.ENABLED" type="success">显示</el-tag>
+              <el-tag v-else type="info">隐藏</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="排序" align="center" width="80" prop="sort" />
+          <el-table-column fixed="right" align="center" label="操作" width="220">
+            <template #default="scope">
+              <el-button
+                v-if="
+                  scope.row.type === MenuTypeEnum.CATALOG || scope.row.type === MenuTypeEnum.MENU
+                "
+                v-hasPerm="['sys:menu:create']"
+                type="primary"
+                link
+                size="small"
+                @click.stop="openDialog(scope.row.id)"
+              >
+                新增
+              </el-button>
 
-            <el-button
-              v-hasPerm="['sys:menu:update']"
-              type="primary"
-              link
-              size="small"
-              @click.stop="openDialog(undefined, scope.row.id)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              v-hasPerm="['sys:menu:delete']"
-              type="danger"
-              link
-              size="small"
-              @click.stop="handleDelete(scope.row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+              <el-button
+                v-hasPerm="['sys:menu:update']"
+                type="primary"
+                link
+                size="small"
+                @click.stop="openDialog(undefined, scope.row.id)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                v-hasPerm="['sys:menu:delete']"
+                type="danger"
+                link
+                size="small"
+                @click.stop="handleDelete(scope.row.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </el-card>
 
     <el-drawer

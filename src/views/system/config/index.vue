@@ -48,6 +48,7 @@
           v-loading="loading"
           :data="list"
           class="page-table"
+          height="100%"
           highlight-current-row
           border
           @selection-change="handleSelectionChange"

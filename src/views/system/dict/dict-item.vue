@@ -40,41 +40,45 @@
         </div>
       </div>
 
-      <el-table
-        v-loading="loading"
-        highlight-current-row
-        :data="list"
-        border
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="字典项标签" prop="label" />
-        <el-table-column label="字典项值" prop="value" />
-        <el-table-column label="排序" prop="sort" />
-        <el-table-column label="状态">
-          <template #default="scope">
-            <el-tag :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'info'">
-              {{ scope.row.status === CommonStatus.ENABLED ? "启用" : "禁用" }}
-            </el-tag>
-          </template>
-        </el-table-column>
+      <div class="page-table-wrapper">
+        <el-table
+          v-loading="loading"
+          highlight-current-row
+          :data="list"
+          class="page-table"
+          border
+          height="100%"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column label="字典项标签" prop="label" />
+          <el-table-column label="字典项值" prop="value" />
+          <el-table-column label="排序" prop="sort" />
+          <el-table-column label="状态">
+            <template #default="scope">
+              <el-tag :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'info'">
+                {{ scope.row.status === CommonStatus.ENABLED ? "启用" : "禁用" }}
+              </el-tag>
+            </template>
+          </el-table-column>
 
-        <el-table-column fixed="right" label="操作" align="center" width="220">
-          <template #default="scope">
-            <el-button
-              type="primary"
-              link
-              size="small"
-              @click.stop="handleEditClick(scope.row as DictItem)"
-            >
-              编辑
-            </el-button>
-            <el-button type="danger" link size="small" @click.stop="handleDelete(scope.row.id)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column fixed="right" label="操作" align="center" width="220">
+            <template #default="scope">
+              <el-button
+                type="primary"
+                link
+                size="small"
+                @click.stop="handleEditClick(scope.row as DictItem)"
+              >
+                编辑
+              </el-button>
+              <el-button type="danger" link size="small" @click.stop="handleDelete(scope.row.id)">
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
       <pagination
         v-if="total > 0"

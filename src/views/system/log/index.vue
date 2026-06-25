@@ -46,35 +46,49 @@
           </el-tooltip>
         </div>
       </div>
-      <el-table v-loading="loading" :data="list" highlight-current-row border>
-        <el-table-column label="操作标题" prop="title" min-width="180" show-overflow-tooltip />
-        <el-table-column label="状态" prop="status" width="80" align="center">
-          <template #default="{ row }">
-            <el-tag :type="row.status === LOG_STATUS_SUCCESS ? 'success' : 'danger'" size="small">
-              {{ row.status === LOG_STATUS_SUCCESS ? "成功" : "失败" }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="IP地址" prop="ip" width="140" />
-        <el-table-column label="请求路径" prop="requestUri" min-width="180" show-overflow-tooltip />
-        <el-table-column label="请求方法" prop="requestMethod" width="100" align="center">
-          <template #default="{ row }">
-            <el-tag :type="getMethodTagType(row.requestMethod)" size="small" effect="plain">
-              {{ row.requestMethod }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="执行时间(ms)" prop="executionTime" width="120" align="center" />
-        <el-table-column label="操作人" prop="operatorName" width="120" />
-        <el-table-column label="操作时间" prop="createTime" width="180" />
-        <el-table-column label="操作" width="80" align="center" fixed="right">
-          <template #default="{ row }">
-            <el-button type="primary" link size="small" @click="handleDetail(row as LogItem)">
-              详情
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="page-table-wrapper">
+        <el-table
+          v-loading="loading"
+          class="page-table"
+          :data="list"
+          height="100%"
+          highlight-current-row
+          border
+        >
+          <el-table-column label="操作标题" prop="title" min-width="180" show-overflow-tooltip />
+          <el-table-column label="状态" prop="status" width="80" align="center">
+            <template #default="{ row }">
+              <el-tag :type="row.status === LOG_STATUS_SUCCESS ? 'success' : 'danger'" size="small">
+                {{ row.status === LOG_STATUS_SUCCESS ? "成功" : "失败" }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="IP地址" prop="ip" width="140" />
+          <el-table-column
+            label="请求路径"
+            prop="requestUri"
+            min-width="180"
+            show-overflow-tooltip
+          />
+          <el-table-column label="请求方法" prop="requestMethod" width="100" align="center">
+            <template #default="{ row }">
+              <el-tag :type="getMethodTagType(row.requestMethod)" size="small" effect="plain">
+                {{ row.requestMethod }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="执行时间(ms)" prop="executionTime" width="120" align="center" />
+          <el-table-column label="操作人" prop="operatorName" width="120" />
+          <el-table-column label="操作时间" prop="createTime" width="180" />
+          <el-table-column label="操作" width="80" align="center" fixed="right">
+            <template #default="{ row }">
+              <el-button type="primary" link size="small" @click="handleDetail(row as LogItem)">
+                详情
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
       <pagination
         v-if="total > 0"

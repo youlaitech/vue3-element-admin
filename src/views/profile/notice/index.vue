@@ -29,41 +29,49 @@
     </el-card>
 
     <el-card class="page-content" shadow="never">
-      <el-table v-loading="loading" :data="list" highlight-current-row>
-        <el-table-column type="index" label="序号" width="60" />
-        <el-table-column label="通知标题" prop="title" min-width="200" />
-        <el-table-column align="center" label="通知类型" width="150">
-          <template #default="scope">
-            <DictTag v-model="scope.row.type" code="notice_type" />
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="通知等级" width="100">
-          <template #default="scope">
-            <DictTag v-model="scope.row.level" code="notice_level" />
-          </template>
-        </el-table-column>
-        <el-table-column
-          key="releaseTime"
-          align="center"
-          label="发布时间"
-          prop="publishTime"
-          width="150"
-        />
-        <el-table-column align="center" label="发布人" prop="publisherName" width="150" />
-        <el-table-column align="center" label="状态" width="100">
-          <template #default="scope">
-            <el-tag v-if="scope.row.isRead === NOTICE_READ" type="success">已读</el-tag>
-            <el-tag v-else type="info">未读</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" fixed="right" label="操作" width="80">
-          <template #default="scope">
-            <el-button type="primary" size="small" link @click="handleReadNotice(scope.row.id)">
-              查看
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="page-table-wrapper">
+        <el-table
+          v-loading="loading"
+          :data="list"
+          class="page-table"
+          height="100%"
+          highlight-current-row
+        >
+          <el-table-column type="index" label="序号" width="60" />
+          <el-table-column label="通知标题" prop="title" min-width="200" />
+          <el-table-column align="center" label="通知类型" width="150">
+            <template #default="scope">
+              <DictTag v-model="scope.row.type" code="notice_type" />
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="通知等级" width="100">
+            <template #default="scope">
+              <DictTag v-model="scope.row.level" code="notice_level" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            key="releaseTime"
+            align="center"
+            label="发布时间"
+            prop="publishTime"
+            width="150"
+          />
+          <el-table-column align="center" label="发布人" prop="publisherName" width="150" />
+          <el-table-column align="center" label="状态" width="100">
+            <template #default="scope">
+              <el-tag v-if="scope.row.isRead === NOTICE_READ" type="success">已读</el-tag>
+              <el-tag v-else type="info">未读</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" fixed="right" label="操作" width="80">
+            <template #default="scope">
+              <el-button type="primary" size="small" link @click="handleReadNotice(scope.row.id)">
+                查看
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
       <pagination
         v-if="total > 0"

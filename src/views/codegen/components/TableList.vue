@@ -23,37 +23,46 @@
   </el-card>
 
   <el-card class="page-content" shadow="never">
-    <el-table v-loading="loading" :data="list" highlight-current-row border>
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="表名" prop="tableName" min-width="100" />
-      <el-table-column label="描述" prop="tableComment" width="150" />
-      <el-table-column label="存储引擎" align="center" prop="engine" />
-      <el-table-column label="排序规则" align="center" prop="tableCollation" />
-      <el-table-column label="创建时间" align="center" prop="createTime" />
-      <el-table-column fixed="right" label="操作" width="200">
-        <template #default="scope">
-          <el-button
-            type="primary"
-            size="small"
-            link
-            @click="emit('generate', scope.row.tableName)"
-          >
-            <template #icon><MagicStick /></template>
-            生成代码
-          </el-button>
-          <el-button
-            v-if="scope.row.isConfigured === TABLE_CONFIGURED"
-            type="danger"
-            size="small"
-            link
-            @click="emit('reset-config', scope.row.tableName)"
-          >
-            <template #icon><RefreshLeft /></template>
-            重置配置
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="page-table-wrapper">
+      <el-table
+        v-loading="loading"
+        :data="list"
+        class="page-table"
+        height="100%"
+        highlight-current-row
+        border
+      >
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column label="表名" prop="tableName" min-width="100" />
+        <el-table-column label="描述" prop="tableComment" width="150" />
+        <el-table-column label="存储引擎" align="center" prop="engine" />
+        <el-table-column label="排序规则" align="center" prop="tableCollation" />
+        <el-table-column label="创建时间" align="center" prop="createTime" />
+        <el-table-column fixed="right" label="操作" width="200">
+          <template #default="scope">
+            <el-button
+              type="primary"
+              size="small"
+              link
+              @click="emit('generate', scope.row.tableName)"
+            >
+              <template #icon><MagicStick /></template>
+              生成代码
+            </el-button>
+            <el-button
+              v-if="scope.row.isConfigured === TABLE_CONFIGURED"
+              type="danger"
+              size="small"
+              link
+              @click="emit('reset-config', scope.row.tableName)"
+            >
+              <template #icon><RefreshLeft /></template>
+              重置配置
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <pagination
       v-if="total > 0"

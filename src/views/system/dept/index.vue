@@ -54,59 +54,63 @@
         </div>
       </div>
 
-      <el-table
-        v-loading="loading"
-        :data="list"
-        row-key="id"
-        default-expand-all
-        border
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column prop="name" label="部门名称" min-width="200" />
-        <el-table-column prop="code" label="部门编号" width="200" />
-        <el-table-column prop="status" label="状态" width="100">
-          <template #default="scope">
-            <el-tag v-if="scope.row.status === CommonStatus.ENABLED" type="success">正常</el-tag>
-            <el-tag v-else type="info">禁用</el-tag>
-          </template>
-        </el-table-column>
+      <div class="page-table-wrapper">
+        <el-table
+          v-loading="loading"
+          :data="list"
+          class="page-table"
+          row-key="id"
+          default-expand-all
+          border
+          height="100%"
+          :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column prop="name" label="部门名称" min-width="200" />
+          <el-table-column prop="code" label="部门编号" width="200" />
+          <el-table-column prop="status" label="状态" width="100">
+            <template #default="scope">
+              <el-tag v-if="scope.row.status === CommonStatus.ENABLED" type="success">正常</el-tag>
+              <el-tag v-else type="info">禁用</el-tag>
+            </template>
+          </el-table-column>
 
-        <el-table-column prop="sort" label="排序" width="100" />
+          <el-table-column prop="sort" label="排序" width="100" />
 
-        <el-table-column label="操作" fixed="right" align="left" width="200">
-          <template #default="scope">
-            <el-button
-              v-hasPerm="['sys:dept:create']"
-              type="primary"
-              link
-              size="small"
-              @click.stop="openDialog(scope.row.id, undefined)"
-            >
-              新增
-            </el-button>
-            <el-button
-              v-hasPerm="['sys:dept:update']"
-              type="primary"
-              link
-              size="small"
-              @click.stop="openDialog(scope.row.parentId, scope.row.id)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              v-hasPerm="['sys:dept:delete']"
-              type="danger"
-              link
-              size="small"
-              @click.stop="handleDelete(scope.row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column label="操作" fixed="right" align="left" width="200">
+            <template #default="scope">
+              <el-button
+                v-hasPerm="['sys:dept:create']"
+                type="primary"
+                link
+                size="small"
+                @click.stop="openDialog(scope.row.id, undefined)"
+              >
+                新增
+              </el-button>
+              <el-button
+                v-hasPerm="['sys:dept:update']"
+                type="primary"
+                link
+                size="small"
+                @click.stop="openDialog(scope.row.parentId, scope.row.id)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                v-hasPerm="['sys:dept:delete']"
+                type="danger"
+                link
+                size="small"
+                @click.stop="handleDelete(scope.row.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </el-card>
 
     <el-dialog
