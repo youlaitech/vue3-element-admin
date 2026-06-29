@@ -775,17 +775,18 @@ function normalizeMenuPayload(): MenuForm {
   }
 
   if (payload.type === MenuTypeEnum.EXTERNAL) {
-    payload.component = undefined;
     payload.perm = undefined;
     payload.redirect = undefined;
     payload.alwaysShow = undefined;
     payload.params = [];
 
     if (!payload.component) {
+      // 新标签页：不需要路由名称、路径、缓存
       payload.routeName = undefined;
       payload.routePath = undefined;
       payload.keepAlive = undefined;
     } else if (!isStatusEnabled(payload.keepAlive)) {
+      // 内嵌但未开启缓存：不需要路由名称
       payload.routeName = undefined;
     }
   }

@@ -179,7 +179,7 @@ export default defineMock([
           children: [
             {
               path: "apifox",
-              component: null,
+              component: "iframe",
               name: "Apifox",
               meta: {
                 title: "Apifox",
@@ -225,7 +225,6 @@ export default defineMock([
             },
             {
               path: "https://juejin.cn/post/7228990409909108793",
-              name: "ext-30",
               meta: {
                 title: "平台文档(外链)",
                 type: "E",
