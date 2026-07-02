@@ -124,7 +124,11 @@
   }
 }
 
-html.dark .layout-root,
+/* 隐藏侧边栏 el-scrollbar 的水平滚动条（el-scrollbar 的 wrap 宽度因滚动条 gutter 比内容少 1px，导致 .el-menu--collapse 始终溢出） */
+.layout-sidebar .el-scrollbar__bar.is-horizontal {
+  display: none !important;
+}
+
 html.sidebar-color-blue .layout-root,
 html.dark .el-menu--popup,
 html.sidebar-color-blue .el-menu--popup {

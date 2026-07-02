@@ -3,7 +3,10 @@
     <aside
       v-show="!appStore.contentFullscreen"
       class="layout-double"
-      :class="{ 'is-collapsed': !isSidebarOpen }"
+      :class="{
+        'is-collapsed': !isSidebarOpen,
+        'is-secondary-collapsed': !secondaryExpanded,
+      }"
     >
       <div class="layout-double__primary">
         <LayoutLogo v-if="showLogo" :collapse="true" />
@@ -33,7 +36,7 @@
         </button>
       </div>
 
-      <div class="layout-double__secondary">
+      <div class="layout-double__secondary" :class="{ 'is-collapsed': !secondaryExpanded }">
         <div v-if="showLogo" class="layout-double__title">
           {{ appConfig.title }}
         </div>
@@ -42,7 +45,7 @@
           <LayoutSidebar
             :data="sideMenuRoutes"
             :base-path="activeTopMenuPath"
-            :always-expand="true"
+            :collapse-override="!secondaryExpanded"
           />
         </el-scrollbar>
       </div>
@@ -52,10 +55,11 @@
       class="layout-main"
       :class="{
         'is-collapsed': !isSidebarOpen,
+        'is-secondary-collapsed': !secondaryExpanded,
         'is-fullscreen': appStore.contentFullscreen,
       }"
     >
-      <LayoutNavbar v-show="!appStore.contentFullscreen" />
+      <LayoutNavbar v-show="!appStore.contentFullscreen" toggle-target="secondary" />
       <LayoutTagsView v-if="showTagsView" />
       <LayoutMain />
     </main>
@@ -78,6 +82,8 @@ import LayoutMenuIcon from "../components/LayoutMenuIcon.vue";
 
 const appStore = useAppStore();
 const { showTagsView, showLogo, isSidebarOpen, toggleSidebar } = useLayout();
+
+const secondaryExpanded = computed(() => appStore.secondarySidebar?.opened ?? true);
 
 const { topMenuItems, activeTopMenuPath, sideMenuRoutes, handleTopMenuSelect } = useMixMenu();
 </script>
@@ -115,13 +121,24 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
         display: none;
       }
     }
+  }
+
+  &.is-secondary-collapsed {
+    width: $sidebar-primary-width + $sidebar-width-collapsed;
 
     .layout-double__secondary {
-      flex: 0 0 $sidebar-secondary-width;
-      width: $sidebar-secondary-width;
-      min-width: $sidebar-secondary-width;
-      border-right: 1px solid var(--menu-border);
+      flex: 0 0 $sidebar-width-collapsed;
+      width: $sidebar-width-collapsed;
+      min-width: $sidebar-width-collapsed;
     }
+
+    .layout-double__title {
+      display: none;
+    }
+  }
+
+  &.is-collapsed.is-secondary-collapsed {
+    width: $sidebar-width-collapsed * 2;
   }
 
   &__primary {
@@ -263,6 +280,21 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
     :deep(.el-sub-menu__icon-arrow) {
       display: inline-flex !important;
     }
+
+    &.is-collapsed {
+      width: $sidebar-width-collapsed;
+
+      :deep(.el-menu--collapse) {
+        .el-menu-item span,
+        .el-sub-menu__title span {
+          display: none !important;
+        }
+
+        .el-sub-menu__icon-arrow {
+          display: none !important;
+        }
+      }
+    }
   }
 
   &__secondary-scroll {
@@ -292,6 +324,14 @@ $double-sidebar-width: $sidebar-primary-width + $sidebar-secondary-width;
 
   &.is-collapsed {
     margin-left: $sidebar-width-collapsed + $sidebar-secondary-width;
+  }
+
+  &.is-secondary-collapsed {
+    margin-left: $sidebar-primary-width + $sidebar-width-collapsed;
+
+    &.is-collapsed {
+      margin-left: $sidebar-width-collapsed + $sidebar-width-collapsed;
+    }
   }
 
   &.is-fullscreen {

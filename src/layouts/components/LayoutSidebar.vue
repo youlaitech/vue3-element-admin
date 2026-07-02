@@ -2,7 +2,7 @@
   <el-menu
     ref="menuRef"
     :default-active="activeMenuPath"
-    :collapse="props.alwaysExpand ? false : !appStore.sidebar.opened"
+    :collapse="props.collapseOverride ?? (props.alwaysExpand ? false : !appStore.sidebar.opened)"
     :background-color="menuThemeProps.backgroundColor"
     :text-color="menuThemeProps.textColor"
     :active-text-color="menuThemeProps.activeTextColor"
@@ -51,6 +51,11 @@ const props = defineProps({
   alwaysExpand: {
     type: Boolean,
     default: false,
+  },
+  /** 显式覆盖 collapse 状态，优先级高于 alwaysExpand 和全局 sidebar.opened */
+  collapseOverride: {
+    type: Boolean,
+    default: null,
   },
 });
 

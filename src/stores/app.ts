@@ -35,6 +35,13 @@ export const useAppStore = defineStore("app", () => {
   });
 
   /**
+   * 双列布局第二列（次级菜单）展开状态
+   */
+  const secondarySidebar = reactive({
+    opened: true,
+  });
+
+  /**
    * 当前激活的顶部菜单路径
    */
   const activeTopMenuPath = useStorage(STORAGE_KEYS.ACTIVE_TOP_MENU_PATH, "");
@@ -71,6 +78,13 @@ export const useAppStore = defineStore("app", () => {
   function openSidebar() {
     sidebar.opened = true;
     sidebarStatus.value = SidebarStatus.OPENED;
+  }
+
+  /**
+   * 切换第二列（次级菜单）展开状态
+   */
+  function toggleSecondarySidebar() {
+    secondarySidebar.opened = !secondarySidebar.opened;
   }
 
   /**
@@ -111,6 +125,7 @@ export const useAppStore = defineStore("app", () => {
   return {
     device,
     sidebar,
+    secondarySidebar,
     language,
     locale,
     size,
@@ -121,6 +136,7 @@ export const useAppStore = defineStore("app", () => {
     toggleSidebar,
     closeSidebar,
     openSidebar,
+    toggleSecondarySidebar,
     setActiveTopMenuPath,
     toggleContentFullscreen,
     activeTopMenuPath,

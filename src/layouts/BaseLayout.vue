@@ -1,6 +1,10 @@
 <template>
   <div class="layout-root" :class="layoutClass">
-    <div v-if="isMobile && isSidebarOpen" class="layout-root__overlay" @click="closeSidebar" />
+    <div
+      v-if="showOverlay && isMobile && isSidebarOpen"
+      class="layout-root__overlay"
+      @click="closeSidebar"
+    />
 
     <slot />
   </div>
@@ -8,6 +12,16 @@
 
 <script setup lang="ts">
 import { useLayout } from "./composables/useLayout";
+
+withDefaults(
+  defineProps<{
+    /** 移动端展开侧边栏时是否显示遮罩层（LeftLayout 需要，MixLayout 不需要） */
+    showOverlay?: boolean;
+  }>(),
+  {
+    showOverlay: true,
+  }
+);
 
 const { layoutClass, isSidebarOpen, isMobile, closeSidebar } = useLayout();
 </script>

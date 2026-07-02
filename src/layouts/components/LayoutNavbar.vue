@@ -1,7 +1,7 @@
 <template>
   <div class="layout-navbar">
     <div class="flex-y-center">
-      <Hamburger :is-active="isSidebarOpened" @toggle-click="toggleSideBar" />
+      <Hamburger :is-active="sidebarState.opened" @toggle-click="sidebarState.toggle" />
       <Breadcrumb />
     </div>
 
@@ -16,13 +16,25 @@ import { useAppStore } from "@/stores";
 import Hamburger from "@/components/Hamburger/index.vue";
 import Breadcrumb from "@/components/Breadcrumb/index.vue";
 
+const props = withDefaults(
+  defineProps<{
+    toggleTarget?: "primary" | "secondary";
+  }>(),
+  {
+    toggleTarget: "primary",
+  }
+);
+
 const appStore = useAppStore();
 
-const isSidebarOpened = computed(() => appStore.sidebar.opened);
-
-function toggleSideBar() {
-  appStore.toggleSidebar();
-}
+const sidebarState = computed(() =>
+  props.toggleTarget === "secondary"
+    ? {
+        opened: appStore.secondarySidebar?.opened ?? true,
+        toggle: () => appStore.toggleSecondarySidebar(),
+      }
+    : { opened: appStore.sidebar.opened, toggle: () => appStore.toggleSidebar() }
+);
 </script>
 
 <style lang="scss" scoped>
