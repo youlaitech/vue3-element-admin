@@ -200,7 +200,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       // minify 默认使用 'oxc'，压缩速度比 terser 快 30-90 倍
       rolldownOptions: {
         checks: {
-          invalidAnnotation: false,
           pluginTimings: false,
         },
         output: {
