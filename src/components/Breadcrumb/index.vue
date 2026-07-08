@@ -1,6 +1,7 @@
 <template>
   <el-breadcrumb class="flex-y-center">
     <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.path">
+      <!-- 末级或不可跳转的节点显示为纯文本，其余可点击 -->
       <span
         v-if="item.redirect === 'noredirect' || index === breadcrumbs.length - 1"
         class="color-gray-400"
@@ -28,11 +29,10 @@ type BreadcrumbRoute = {
 };
 
 const currentRoute = useRoute();
-// 默认补一个首页面包屑
-const dashboardRoute: BreadcrumbRoute = { path: "/dashboard", meta: { title: "dashboard" } };
 
-// 根据当前路由参数生成跳转路径
+// 面包屑取 matched 链，不拼首页（首页与一级菜单平级，非父级）
 const pathCompile = (path: string) => {
+  // 补全动态路由参数，如 /user/:id
   const { params } = currentRoute;
   const toPath = compile(path);
   return toPath(params);
@@ -40,9 +40,10 @@ const pathCompile = (path: string) => {
 
 const breadcrumbs = ref<BreadcrumbRoute[]>([]);
 
-// 生成面包屑列表
+// 生成面包屑：取路由 matched 中有标题的层级，
+// 用 meta.breadcrumb = false 可以隐藏某一级
 function getBreadcrumb() {
-  let matched: BreadcrumbRoute[] = currentRoute.matched
+  const matched: BreadcrumbRoute[] = currentRoute.matched
     .filter((item) => item.meta && item.meta.title)
     .map(({ path, name, redirect, meta }) => ({
       path,
@@ -51,25 +52,12 @@ function getBreadcrumb() {
       meta,
     }));
 
-  const first = matched[0];
-  if (!isDashboard(first)) {
-    matched = [dashboardRoute].concat(matched);
-  }
   breadcrumbs.value = matched.filter((item) => {
     return item.meta && item.meta.title && item.meta.breadcrumb !== false;
   });
 }
 
-// 判断是否为首页路由
-function isDashboard(route?: BreadcrumbRoute) {
-  const name = route?.name;
-  if (!name) {
-    return false;
-  }
-  return name.toString().trim().toLocaleLowerCase() === "Dashboard".toLocaleLowerCase();
-}
-
-// 处理面包屑跳转
+// 跳转：有 redirect 走 redirect，否则按路径（含动态参数先 compile）
 function handleLink(item: BreadcrumbRoute) {
   const { redirect, path } = item;
   if (redirect) {
@@ -83,6 +71,7 @@ function handleLink(item: BreadcrumbRoute) {
   });
 }
 
+// 路由变化就重算面包屑，但 /redirect/ 这类中转路由跳过
 watch(
   () => currentRoute.path,
   (path) => {
