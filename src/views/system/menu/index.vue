@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="page-container">
     <el-card class="page-search" shadow="never">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
@@ -80,7 +80,7 @@
               <el-tag v-if="scope.row.type === MenuTypeEnum.BUTTON" type="danger">按钮</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="访问路径" align="left" min-width="180">
+          <el-table-column label="路由路径" align="left" min-width="180">
             <template #default="scope">
               {{ getMenuAccessPath(scope.row) }}
             </template>
@@ -192,7 +192,7 @@
           <el-form-item prop="routePath">
             <template #label>
               <div class="flex-y-center">
-                访问路径
+                路由路径
                 <el-tooltip
                   content="填写当前菜单这一段路径，例如 user；完整路径会自动跟随父级菜单"
                   placement="bottom"
@@ -232,7 +232,7 @@
           <el-form-item prop="routePath">
             <template #label>
               <div class="flex-y-center">
-                访问路径
+                路由路径
                 <el-tooltip
                   content="顶级目录填写完整路径，例如 /system；子级目录只填当前这一段，例如 report"
                   placement="bottom"
@@ -280,8 +280,11 @@
             <el-form-item prop="routePath">
               <template #label>
                 <div class="flex-y-center">
-                  系统路径
-                  <el-tooltip content="内嵌外链在系统中的访问路径，例如 apifox" placement="bottom">
+                  路由路径
+                  <el-tooltip
+                    content="内嵌外链在地址栏显示的路由路径，例如 apifox"
+                    placement="bottom"
+                  >
                     <el-icon class="ml-1 cursor-pointer">
                       <QuestionFilled />
                     </el-icon>
@@ -604,7 +607,7 @@ function getMenuType(type?: MenuForm["type"]): MenuTypeEnum {
 
 const validateRoutePath = (_: unknown, value: string, callback: (error?: Error) => void) => {
   if (showRoutePath.value && !value) {
-    callback(new Error(isEmbeddedExternal.value ? "请输入系统路径" : "请输入访问路径"));
+    callback(new Error("请输入路由路径"));
     return;
   }
   callback();
@@ -653,7 +656,7 @@ const rules: FormRules<MenuForm> = {
     { required: true, message: "请输入页面标识", validator: validateRouteName, trigger: "blur" },
   ],
   routePath: [
-    { required: true, message: "请输入访问路径", validator: validateRoutePath, trigger: "blur" },
+    { required: true, message: "请输入路由路径", validator: validateRoutePath, trigger: "blur" },
   ],
   component: [
     { required: true, message: "请输入页面组件", validator: validateComponent, trigger: "blur" },
