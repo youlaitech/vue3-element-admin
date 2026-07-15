@@ -1,10 +1,8 @@
 <div align="center">
 
-<img alt="vue3-element-admin" width="80" src="./src/assets/images/logo.png">
+# <img alt="vue3-element-admin" width="28" src="./src/assets/images/logo.png" align="center"> vue3-element-admin
 
-# vue3-element-admin
-
-**Vue3 + Vite + TypeScript 企业级后台管理前端**
+**Vue3 + Vite + TypeScript 企业级中后台前端**
 
 [![Vue](https://img.shields.io/badge/Vue-3.5.30-brightgreen.svg)](https://vuejs.org/)
 [![Element Plus](https://img.shields.io/badge/Element%20Plus-2.13.6-blue.svg)](https://element-plus.org/)
@@ -136,6 +134,17 @@ pnpm install
 # 启动运行
 pnpm run dev
 ```
+
+## AI 编程
+
+本项目配套 [Agent Skill](https://skills.sh/youlaitech/youlai-skills)，安装后 AI 编程助手会自动遵循本项目的 Vue3 开发规范（命名、目录结构、BEM + UnoCSS、组件与 API 约定）。支持 CodeBuddy、Claude Code、Cursor、Codex、GitHub Copilot 等 70+ Agent。
+
+```bash
+npx skills add https://github.com/youlaitech/youlai-skills --skill vue
+```
+
+- **安装位置**：项目级默认写入各 Agent 的 skills 目录，如 CodeBuddy → `.codebuddy/skills/vue/SKILL.md`、Claude Code → `.claude/skills/vue/SKILL.md`、Cursor → `.cursor/skills/vue/SKILL.md`；加 `-g` 改为全局 `~/.codebuddy/skills/` 等，跨项目复用。
+- **生成文件**：`vue/` 目录，内含 `SKILL.md`（frontmatter `name`/`description` + Vue3 开发规范正文）。
 
 ## 项目部署
 
