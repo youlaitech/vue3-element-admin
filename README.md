@@ -1,6 +1,6 @@
 <div align="center">
 
-# <img alt="vue3-element-admin" width="28" src="./src/assets/images/logo.png" align="center"> vue3-element-admin
+# <img alt="logo" width="40" valign="middle" src="./src/assets/images/logo.png"> vue3-element-admin
 
 **Vue3 + Vite + TypeScript 企业级中后台前端**
 
@@ -16,7 +16,13 @@
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
 
 <div align="center">
-  <a target="_blank" href="https://vue.youlai.tech">🖥️ 在线预览</a> | <a target="_blank" href="https://app.youlai.tech">📲 移动端预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">📑 阅读文档</a>|  <a target="_blank" href="https://www.youlai.tech/docs/web/">🌐 官网</a> | <a href="./README.en-US.md">💬 English
+
+[![在线预览](https://img.shields.io/badge/在线预览-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://vue.youlai.tech)
+[![移动端预览](https://img.shields.io/badge/移动端预览-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://app.youlai.tech)
+[![阅读文档](https://img.shields.io/badge/阅读文档-FF6B6B?style=for-the-badge&logo=gitbook&logoColor=white)](https://juejin.cn/post/7228990409909108793)
+[![官网](https://img.shields.io/badge/官网-FF7043?style=for-the-badge&logo=safari&logoColor=white)](https://www.youlai.tech/docs/web/)
+[![English](https://img.shields.io/badge/English-0F9D58?style=for-the-badge&logo=google-translate&logoColor=white)](./README.en-US.md)
+
 </div>
 
 ## 项目简介
