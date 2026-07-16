@@ -17,11 +17,11 @@
 
 <div align="center">
 
-[![在线预览](https://img.shields.io/badge/在线预览-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://vue.youlai.tech)
-[![移动端预览](https://img.shields.io/badge/移动端预览-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://app.youlai.tech)
-[![阅读文档](https://img.shields.io/badge/阅读文档-FF6B6B?style=for-the-badge&logo=gitbook&logoColor=white)](https://juejin.cn/post/7228990409909108793)
-[![官网](https://img.shields.io/badge/官网-FF7043?style=for-the-badge&logo=safari&logoColor=white)](https://www.youlai.tech/docs/web/)
-[![English](https://img.shields.io/badge/English-0F9D58?style=for-the-badge&logo=google-translate&logoColor=white)](./README.en-US.md)
+[![在线预览](https://img.shields.io/badge/在线预览-2D8CF0?style=for-the-badge&logo=google-chrome&logoColor=white)](https://vue.youlai.tech)
+[![移动端预览](https://img.shields.io/badge/移动端预览-19BE6B?style=for-the-badge&logo=android&logoColor=white)](https://app.youlai.tech)
+[![阅读文档](https://img.shields.io/badge/阅读文档-8B5CF6?style=for-the-badge&logo=gitbook&logoColor=white)](https://juejin.cn/post/7228990409909108793)
+[![官网](https://img.shields.io/badge/官网-FF9F1C?style=for-the-badge&logo=safari&logoColor=white)](https://www.youlai.tech/docs/web/)
+[![English](https://img.shields.io/badge/English-00B4D8?style=for-the-badge&logo=google-translate&logoColor=white)](./README.en-US.md)
 
 </div>
 
