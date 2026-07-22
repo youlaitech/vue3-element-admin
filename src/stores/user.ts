@@ -26,6 +26,14 @@ export const useUserStore = defineStore("user", () => {
     AuthStorage.setTokens(accessToken, refreshToken, rememberMe.value);
   }
 
+  /**
+   * 扫码登录：用票据换取会话令牌
+   */
+  async function loginByQrCode(ticket: string): Promise<void> {
+    const { accessToken, refreshToken } = await AuthAPI.qrLogin(ticket);
+    AuthStorage.setTokens(accessToken, refreshToken, false);
+  }
+
   let refreshPromise: Promise<void> | null = null;
 
   /**
@@ -111,6 +119,7 @@ export const useUserStore = defineStore("user", () => {
     rememberMe,
     isLoggedIn: () => !!AuthStorage.getAccessToken(),
     login,
+    loginByQrCode,
     logout,
     getUserInfo,
     resetAllState,

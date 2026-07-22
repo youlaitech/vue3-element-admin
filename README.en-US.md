@@ -1,14 +1,11 @@
 <div align="center">
 
-<img alt="vue3-element-admin" width="80" src="./src/assets/images/logo.png">
-
-# vue3-element-admin
+<img alt="logo" width="40" valign="middle" src="./src/assets/images/logo.png"> vue3-element-admin
 
 **Vue3 + Vite + TypeScript Enterprise Admin Frontend**
 
-[![Vue](https://img.shields.io/badge/Vue-3.5.22-brightgreen.svg)](https://vuejs.org/)
-[![Vite](https://img.shields.io/badge/Vite-7.3.0-green.svg)](https://vitejs.dev/)
-[![Element Plus](https://img.shields.io/badge/Element%20Plus-2.3.2-blue.svg)](https://element-plus.org/)
+[![Vue](https://img.shields.io/badge/Vue-3.5.30-brightgreen.svg)](https://vuejs.org/)
+[![Element Plus](https://img.shields.io/badge/Element%20Plus-2.13.6-blue.svg)](https://element-plus.org/)
 [![Gitee Star](https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg)](https://gitee.com/youlaiorg/vue3-element-admin/stargazers)
 [![GitHub Star](https://img.shields.io/github/stars/youlaitech/vue3-element-admin?style=social)](https://github.com/youlaitech/vue3-element-admin)
 [![GitCode Star](https://gitcode.com/youlai/vue3-element-admin/star/badge.svg)](https://gitcode.com/youlai/vue3-element-admin/stargazers)
@@ -20,26 +17,26 @@
 
 <div align="center">
 
-[🖥️ Live Preview](https://vue.youlai.tech) | [� Mobile Preview](https://app.youlai.tech) | [� Documentation](https://www.youlai.tech/vue3-element-admin) | [💬 中文](README.md)
+[![Online Preview](https://img.shields.io/badge/Online%20Preview-2D8CF0?style=for-the-badge&logo=google-chrome&logoColor=white)](https://vue.youlai.tech)
+[![Mobile Preview](https://img.shields.io/badge/Mobile%20Preview-19BE6B?style=for-the-badge&logo=android&logoColor=white)](https://app.youlai.tech)
+[![Documentation](https://img.shields.io/badge/Documentation-8B5CF6?style=for-the-badge&logo=gitbook&logoColor=white)](https://www.youlai.tech/docs/web/)
+[![Official Site](https://img.shields.io/badge/Official%20Site-FF9F1C?style=for-the-badge&logo=safari&logoColor=white)](https://www.youlai.tech/docs/web/)
+[![中文](https://img.shields.io/badge/中文-00B4D8?style=for-the-badge&logo=google-translate&logoColor=white)](./README.md)
 
 </div>
 
 ## Introduction
 
-[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) is a minimalist enterprise-level admin frontend template built with Vue3, Vite7, TypeScript, and Element-Plus. It comes with a Java backend [youlai-boot](https://gitee.com/youlaiorg/youlai-boot), a multi-tenant Java backend [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant), and a Node backend [youlai-nest](https://gitee.com/youlaiorg/youlai-nest). A simplified version [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) and a JavaScript version [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin) are also available.
+[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) is an enterprise-level admin frontend template built with Vue3, Vite, TypeScript, and Element-Plus. It ships with a Java backend [youlai-boot](https://gitee.com/youlaiorg/youlai-boot), a multi-tenant backend [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant), and a Node backend [youlai-nest](https://gitee.com/youlaiorg/youlai-nest). A streamlined version [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template), a JavaScript version [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js), and a Naive UI version [vue3-naiveui-admin](https://gitee.com/youlaiorg/vue3-naiveui-admin) are also available for different scenarios.
 
 ## Project Features
 
-- **Simple and Easy-to-use**: Upgraded version of [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) for Vue3, with minimal encapsulation and easy to get started.
-- **Data Interaction**: Support for `Mock` data and [online API documentation](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5), with accompanying [Java](https://gitee.com/youlaiorg/youlai-boot) and [Node](https://gitee.com/youlaiorg/youlai-nest) backend source code.
-
-- **System Functions**: Provides user management, role management, menu management, department management, dictionary management, and other functional modules.
-- **Permission Management**: Supports dynamic routing, button permissions, role permissions, and data permissions.
-
-- **Multi-tenant**: Supports multi-tenant mode and tenant isolation.
-
-- **Infrastructure**: Provides internationalization, multiple layouts, dark mode, full screen, watermark, API documentation, and code generator functionality.
-- **Continuous Updates**: Project is continuously updated with real-time updates of tools and dependencies.
+- **Simple and Easy-to-use** — A Vue3 upgrade of [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) with no over-encapsulation, easy to get started.
+- **Permission System** — Dynamic routing, button permissions, role permissions, and data permissions.
+- **Multi-tenant** — Supports multi-tenant mode and tenant isolation.
+- **Infrastructure** — Internationalization, multiple layouts, dark mode, full screen, watermark, API documentation, and code generator.
+- **Data Interaction** — Supports Mock data and online API documentation, with accompanying Java / Node backend source code.
+- **Continuous Updates** — The project is continuously open-sourced and updated, keeping pace with the mainstream tech stack.
 
 ## System Preview
 
@@ -71,64 +68,22 @@
   </tr>
 </table>
 
-## Ecosystem
+## Quick Start
 
-**Frontend**
+**Environment Requirements**: Node.js `^20.19.0` or `>=22.12.0` · pnpm `>=8.0.0`
 
-| Project | Tech Stack | Description |
-|:-----|:-------|:-----|
-| [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | Vue 3 + Vite + TS + Element Plus | PC Admin (Main) |
-| [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js) | Vue 3 + Vite + JS + Element Plus | JavaScript Version |
-| [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) | Vue 3 + Vite + TS + Element Plus | Lite Template |
-| [youlai-app](https://gitee.com/youlaiorg/youlai-app) | Vue 3 + UniApp | Mobile App |
-
-**Backend**
-
-| Project | Tech Stack | Description |
-|:-----|:-------|:-----|
-| [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | Spring Boot + MyBatis-Plus | Java (recommended) |
-| [youlai-nest](https://gitee.com/youlaiorg/youlai-nest) | NestJS + TypeORM | Node.js |
-| [youlai-gin](https://gitee.com/youlaiorg/youlai-gin) | Go + Gorm | Go |
-| [youlai-django](https://gitee.com/youlaiorg/youlai-django) | Django + DRF | Python |
-| [youlai-fastapi](https://gitee.com/youlaiorg/youlai-fastapi) | FastAPI + SQLAlchemy | Python |
-| [youlai-think](https://gitee.com/youlaiorg/youlai-think) | ThinkPHP + ThinkORM | PHP |
-| [youlai-aspnet](https://gitee.com/youlaiorg/youlai-aspnet) | ASP.NET Core + EF Core | C# |
-| [youlai-axum](https://gitee.com/youlaiorg/youlai-axum) | Axum + SeaORM | Rust |
-> **youlai-boot** also provides variants: [Multi-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant) · [MyBatis-Flex](https://gitee.com/youlaiorg/youlai-boot-flex) · [Spring Boot 3](https://gitee.com/youlaiorg/youlai-boot/tree/spring-boot-3) · [PostgreSQL](https://gitee.com/youlaiorg/youlai-boot/tree/db-pg) · [Multi-module](https://gitee.com/youlaiorg/youlai-boot/tree/multi-module)
->
-> All eight backends share the same **RESTful API** and **database schema**, frontends can switch seamlessly.
-
-## Development Guide
-
-| Name                   | Link                                                                                                                                                          |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Video Tutorial         | [https://www.bilibili.com/video/BV1eFUuYyEFj](https://www.bilibili.com/video/BV1eFUuYyEFj)                                                                    |
-| Project Setup          | [Building a Backend Management System from Scratch with Vue3, Vite, TypeScript, and Element-Plus](https://blog.csdn.net/u013737132/article/details/130191394) |
-| Official Documentation | [https://www.youlai.tech/vue3-element-admin/](https://www.youlai.tech/vue3-element-admin/)                                                                    |
-| Code Standards         | [ESLint V9 + Prettier + Stylelint + EditorConfig for Standardized and Unified Frontend Code Style](https://youlai.blog.csdn.net/article/details/145608723)    |
-| Commit Standards       | [Husky + Lint-staged + Commitlint + Commitizen + cz-git for Git Commit Standards](https://youlai.blog.csdn.net/article/details/145615236)                     |
-| API Documentation      | [https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)          |
-
-## Project Setup
-
-- **Environment Preparation**
-
-| Type                | Requirement                                                  | Notes                                    |
-| ------------------- | ------------------------------------------------------------ | ---------------------------------------- |
-| **Node.js**         | `^20.19.0` or `>=22.12.0`                                    | LTS is recommended (even major versions) |
-| **Package Manager** | `pnpm >= 8.0.0`                                              | This project uses pnpm                   |
-| **IDE**             | [Visual Studio Code](https://code.visualstudio.com/Download) | Recommended Vue/TypeScript extensions    |
-
-- **Quick Start**
+| Environment Type | Version Requirement | Notes |
+| -------- | -------- | ---- |
+| **Node.js** | `^20.19.0` or `>=22.12.0` | LTS is recommended (even major versions) |
+| **Package Manager** | `pnpm >= 8.0.0` | This project uses pnpm as the package manager |
+| **IDE** | [Visual Studio Code](https://code.visualstudio.com/Download) | Vue and TypeScript extensions recommended |
 
 ```bash
 # Clone repository
 git clone https://gitee.com/youlaiorg/vue3-element-admin.git
-
-# Change directory
 cd vue3-element-admin
 
-# Install pnpm
+# Install pnpm (skip if already installed)
 npm install pnpm -g
 
 # Set mirror source (optional)
@@ -141,93 +96,102 @@ pnpm install
 pnpm run dev
 ```
 
+After starting, visit http://localhost:3000 and log in with `admin` / `123456`.
+
+> For more, see the official docs: [Quick Start](https://www.youlai.tech/docs/web/) · [Deployment Guide](https://www.youlai.tech/docs/web/deployment/deploy.html)
+
+## AI Programming
+
+This project ships with an [Agent Skill](https://skills.sh/youlaitech/youlai-skills). Once installed, the AI coding assistant automatically follows this project's Vue3 development conventions (naming, directory structure, BEM + UnoCSS, component and API conventions). It supports 70+ agents including CodeBuddy, Claude Code, Cursor, Codex, and GitHub Copilot.
+
+```bash
+npx skills add https://github.com/youlaitech/youlai-skills --skill vue
+```
+
+## Ecosystem Matrix
+
+**Frontend**
+
+| Project | Tech Stack | Description | Status |
+|:-----|:-------|:-----|:---------|
+| [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | Vue 3 + Vite + TS + Element Plus | PC Admin (Main) | ✅️ |
+| [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js) | Vue 3 + Vite + JS + Element Plus | JavaScript Version | ✅️ |
+| [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) | Vue 3 + Vite + TS + Element Plus | Lite Template | ✅️ |
+| [vue3-naiveui-admin](https://gitee.com/youlaiorg/vue3-naiveui-admin) | Vue 3 + Vite + TS + Naive UI | Naive UI Version | ✅️ |
+| [youlai-app](https://gitee.com/youlaiorg/youlai-app) | Vue 3 + UniApp | Mobile App | ✅️ |
+
+**Backend**
+
+| Project | Tech Stack | Description | Status |
+|:-----|:-------|:-----|:---------|
+| [youlai-boot](https://gitee.com/youlaiorg/youlai-boot) | Spring Boot + MyBatis-Plus | Java (Main) | ✅️ |
+| [youlai-nest](https://gitee.com/youlaiorg/youlai-nest) | NestJS + TypeORM | Node.js | ✅️ |
+| [youlai-gin](https://gitee.com/youlaiorg/youlai-gin) | Go + Gorm | Go | ✅️ |
+| [youlai-django](https://gitee.com/youlaiorg/youlai-django) | Django + DRF | Python | ✅️ |
+| [youlai-fastapi](https://gitee.com/youlaiorg/youlai-fastapi) | FastAPI + SQLAlchemy | Python | ✅️ |
+| [youlai-laravel](https://gitee.com/youlaiorg/youlai-laravel) | Laravel + Eloquent | PHP | ✅️ |
+| [youlai-think](https://gitee.com/youlaiorg/youlai-think) | ThinkPHP + ThinkORM | PHP | ✅️ |
+| [youlai-aspnet](https://gitee.com/youlaiorg/youlai-aspnet) | ASP.NET Core + EF Core | C# | ✅️ |
+| [youlai-axum](https://gitee.com/youlaiorg/youlai-axum) | Axum + SeaORM | Rust | ✅️ |
+
+> All nine backends share the same **RESTful API** and **database schema**, frontends can switch seamlessly.
+
+**Variants and Derivatives**
+
+| Project | Base | Description | Status |
+|:-----|:-----|:-----|:---------|
+| [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant) | youlai-boot | Multi-tenant SaaS, tenant isolation and tenant config | ✅️ |
+| [youlai-boot-flex](https://gitee.com/youlaiorg/youlai-boot-flex) | youlai-boot | Switched to MyBatis-Flex | ✅️ |
+| [youlai-boot (db-pg)](https://gitee.com/youlaiorg/youlai-boot/tree/db-pg) | youlai-boot | PostgreSQL database branch | ✅️ |
+| [youlai-boot (multi-module)](https://gitee.com/youlaiorg/youlai-boot/tree/multi-module) | youlai-boot | Multi-module project split | ✅️ |
+| [youlai-boot (spring-boot-3)](https://gitee.com/youlaiorg/youlai-boot/tree/spring-boot-3) | youlai-boot | Spring Boot 3 compatible branch | ✅️ |
+| [youlai-nest (multi-tenant)](https://gitee.com/youlaiorg/youlai-nest/tree/multi-tenant) | youlai-nest | Multi-tenant SaaS, tenant isolation and tenant config | ✅️ |
+
+## Development Guide
+
+| Name | Link |
+| -------- | -------- |
+| Video Tutorial | [https://www.bilibili.com/video/BV1eFUuYyEFj](https://www.bilibili.com/video/BV1eFUuYyEFj) |
+| Project Setup | [Building a Backend Management System from Scratch with Vue3, Vite, TypeScript, and Element-Plus](https://blog.csdn.net/u013737132/article/details/130191394) |
+| Official Documentation | [https://www.youlai.tech/docs/web/](https://www.youlai.tech/docs/web/) |
+| Deployment Guide | [https://www.youlai.tech/docs/web/deployment/deploy.html](https://www.youlai.tech/docs/web/deployment/deploy.html) |
+| FAQ | [https://www.youlai.tech/docs/faq/](https://www.youlai.tech/docs/faq/) |
+| Code Standards | [ESLint V9 + Prettier + Stylelint + EditorConfig for Standardized and Unified Frontend Code Style](https://youlai.blog.csdn.net/article/details/145608723) |
+| Commit Standards | [Husky + Lint-staged + Commitlint + Commitizen + cz-git for Git Commit Standards](https://youlai.blog.csdn.net/article/details/145615236) |
+| API Documentation | [https://www.apifox.cn](https://www.apifox.cn/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5) |
+
 ## Project Deployment
 
-After executing the `pnpm run build` command, the project will be bundled and a `dist` directory will be generated. Next, upload the files from the `dist` directory to the `/usr/share/nginx/html` directory on your server and configure Nginx for reverse proxy.
+Run `pnpm run build` to bundle and generate the `dist` directory, upload it to the server and configure Nginx reverse proxy.
 
 ```bash
 pnpm run build
 ```
 
-Here is an example Nginx configuration:
+For the detailed deployment flow (Nginx config, reverse proxy, HTTPS, etc.), see the [Deployment Guide](https://www.youlai.tech/docs/web/deployment/deploy.html).
 
-```nginx
-server {
-    listen      80;
-    server_name localhost;
+## Data Interface
 
-    location / {
-        root   /usr/share/nginx/html;
-        index  index.html index.htm;
-    }
+The frontend uses the online API by default, and can also switch to local Mock or connect to a local backend.
 
-    # Reverse proxy configuration
-    location /prod-api/ {
-        # Please replace api.youlai.tech with your backend API address, and keep the trailing slash /
-        proxy_pass http://api.youlai.tech/;
-    }
-}
-```
+**Local Mock**: Set `VITE_MOCK_DEV_SERVER` in `.env.development` to `true` to enable local Mock interfaces, allowing standalone development without a backend.
 
-For more detailed information, please refer to this article: [Nginx Installation and Configuration](https://blog.csdn.net/u013737132/article/details/145667694).
-
-## Local Mock
-
-The project supports both online and local Mock interfaces. By default, it uses online interfaces. To switch to Mock interfaces, modify the `VITE_MOCK_DEV_SERVER` value in the `.env.development` file to `true`.
-
-## Backend API
-
-> If you have a basic understanding of Java development, follow these steps to convert online API to local backend API and create an enterprise-level full-stack development environment to help you on your full-stack journey.
-
-1. Get the backend source code based on `Java` and `SpringBoot` from [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git).
-2. Follow the instructions in the backend project's README.md to [set up and run locally](https://gitee.com/youlaiorg/youlai-boot#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C).
-3. Modify the value of `VITE_APP_API_URL` in the `.env.development` file, changing it from https://api.youlai.tech to http://localhost:8989.
-
-## Notes
-
-- **Auto import plugin is disabled by default**
-
-  Component type declarations have been automatically generated for the template project. If you add and use new components, follow the instructions in the screenshot to enable automatic generation. After automatic generation is complete, remember to set it back to `false` to avoid conflicts.
-
-  ![](https://foruda.gitee.com/images/1687755823137387608/412ea803_716974.png)
-
-- **Blank page when accessing the project**
-
-  Try upgrading your browser, as older browser engines may not support certain new JavaScript syntax, such as optional chaining operator `?.`.
-
-- **Project synchronization with repository updates**
-
-  After synchronizing the project with repository updates, it is recommended to run `pnpm install` to update dependencies before starting.
-
-- **Red highlight on project components, functions, and imports**
-
-  Restart VSCode to try again.
-
-- **Other issues**
-
-  If you have any other issues or suggestions, please open an [ISSUE](https://gitee.com/youlaiorg/vue3-element-admin/issues/new).
+**Connect to Backend**: All nine backends use the default port `8000`. Change `VITE_APP_API_URL` in `.env.development` to `http://localhost:8000` and start the corresponding backend (the recommended Java backend is [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git); see each repo's README for the rest).
 
 ## Commit Conventions
 
-Execute `pnpm run commit` to invoke interactive git commit and complete the information input and selection according to the prompts.
+Run `pnpm run commit` to invoke the interactive git commit and complete the information input and selection according to the prompts.
 
 ![](https://foruda.gitee.com/images/1687755823165218215/c1705416_716974.png)
 
-## Project Statistics
+## Technical Cooperation
 
-![](https://repobeats.axiom.co/api/embed/aa7cca3d6fa9c308fc659fa6e09af9a1910506c3.svg "Repobeats analytics image")
-
-Thanks to all the contributors!
-感谢所有的贡献者！
-
-[![contributors](https://contrib.rocks/image?repo=youlaitech/vue3-element-admin)](https://github.com/youlaitech/vue3-element-admin/graphs/contributors)
-
----
+This project is open-sourced under the [MIT](LICENSE) license and free for commercial use. Feel free to submit issues or feedback in [Issue](https://gitee.com/youlaiorg/vue3-element-admin/issues), and pull requests in [Pull Request](https://gitee.com/youlaiorg/vue3-element-admin/pulls) are also welcome. For technical support, business cooperation, secondary development, or project customization, contact the author via WeChat (see QR code below).
 
 <table align="center">
   <tr>
     <td align="center">
-      <img src="./public/images/qrcode/wechat-official.png" height="180" alt="WeChat Official Account"><br>
+      <img src="./public/images/qrcode/wechat-official.jpg" height="180" alt="WeChat Official Account"><br>
       <sub>WeChat Official Account</sub>
     </td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -244,7 +208,3 @@ Thanks to all the contributors!
 </table>
 
 <p align="center"><em>Technical Exchange · Issue Feedback · Business Cooperation</em></p>
-
-## License
-
-[MIT](LICENSE)
