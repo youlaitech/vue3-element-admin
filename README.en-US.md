@@ -27,7 +27,7 @@
 
 ## Introduction
 
-[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) is an enterprise-level admin frontend template built with Vue3, Vite, TypeScript, and Element-Plus. It ships with a Java backend [youlai-boot](https://gitee.com/youlaiorg/youlai-boot), a multi-tenant backend [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant), and a Node backend [youlai-nest](https://gitee.com/youlaiorg/youlai-nest). A streamlined version [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template), a JavaScript version [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js), and a Naive UI version [vue3-naiveui-admin](https://gitee.com/youlaiorg/vue3-naiveui-admin) are also available for different scenarios.
+[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) is an enterprise-level admin frontend built with Vue 3, Vite, TypeScript, and Element Plus, paired with [9 mainstream backends + derivatives](#ecosystem) (covering Java / Node.js / Go / Python / PHP / C# / Rust 7 languages) and the mobile app [youlai-app](https://gitee.com/youlaiorg/youlai-app). Other frontend versions: [JavaScript](https://gitee.com/youlaiorg/vue3-element-admin-js) · [Lite](https://gitee.com/youlaiorg/vue3-element-template) · [NaiveUI](https://gitee.com/youlaiorg/vue3-naiveui-admin).
 
 ## Project Features
 
@@ -136,16 +136,16 @@ npx skills add https://github.com/youlaitech/youlai-skills --skill vue
 
 > All nine backends share the same **RESTful API** and **database schema**, frontends can switch seamlessly.
 
-**Variants and Derivatives**
+**Derivatives**
 
-| Project | Base | Description | Status |
-|:-----|:-----|:-----|:---------|
-| [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant) | youlai-boot | Multi-tenant SaaS, tenant isolation and tenant config | ✅️ |
-| [youlai-boot-flex](https://gitee.com/youlaiorg/youlai-boot-flex) | youlai-boot | Switched to MyBatis-Flex | ✅️ |
-| [youlai-boot (db-pg)](https://gitee.com/youlaiorg/youlai-boot/tree/db-pg) | youlai-boot | PostgreSQL database branch | ✅️ |
-| [youlai-boot (multi-module)](https://gitee.com/youlaiorg/youlai-boot/tree/multi-module) | youlai-boot | Multi-module project split | ✅️ |
-| [youlai-boot (spring-boot-3)](https://gitee.com/youlaiorg/youlai-boot/tree/spring-boot-3) | youlai-boot | Spring Boot 3 compatible branch | ✅️ |
-| [youlai-nest (multi-tenant)](https://gitee.com/youlaiorg/youlai-nest/tree/multi-tenant) | youlai-nest | Multi-tenant SaaS, tenant isolation and tenant config | ✅️ |
+| Project | Based On | Type | Description | Status |
+|:-----|:-----|:-----|:-----|:---------|
+| [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant) | youlai-boot | Repo | Multi-tenant SaaS, tenant isolation and tenant config | ✅️ |
+| [youlai-nest (multi-tenant)](https://gitee.com/youlaiorg/youlai-nest/tree/multi-tenant) | youlai-nest | Branch | Multi-tenant SaaS, tenant isolation and tenant config | ✅️ |
+| [youlai-boot-flex](https://gitee.com/youlaiorg/youlai-boot-flex) | youlai-boot | Repo | Switched to MyBatis-Flex | ✅️ |
+| [youlai-boot (db-pg)](https://gitee.com/youlaiorg/youlai-boot/tree/db-pg) | youlai-boot | Branch | PostgreSQL database branch | ✅️ |
+| [youlai-boot (multi-module)](https://gitee.com/youlaiorg/youlai-boot/tree/multi-module) | youlai-boot | Branch | Multi-module project split | ✅️ |
+| [youlai-boot (spring-boot-3)](https://gitee.com/youlaiorg/youlai-boot/tree/spring-boot-3) | youlai-boot | Branch | Spring Boot 3 compatible branch | ✅️ |
 
 ## Development Guide
 
