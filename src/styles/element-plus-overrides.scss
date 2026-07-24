@@ -105,10 +105,6 @@
   letter-spacing: 0;
   box-shadow: none;
 
-  &:not(.is-link):not(.is-text) {
-    border-color: var(--border-color);
-  }
-
   &:not(.is-link):not(.is-text):not(.el-button--large):not(.el-button--small) {
     padding: 8px 14px;
   }
@@ -120,26 +116,7 @@
 }
 
 .el-button--default {
-  background: var(--el-bg-color);
-
-  &:hover:not(.is-disabled),
-  &:focus:not(.is-disabled) {
-    color: var(--el-color-primary);
-    background: var(--el-color-primary-light-9);
-    border-color: var(--el-color-primary-light-5);
-  }
-}
-
-.el-button--primary,
-.el-button--success,
-.el-button--warning,
-.el-button--danger {
-  border-color: transparent;
-
-  &:hover:not(.is-disabled) {
-    box-shadow: 0 6px 14px color-mix(in srgb, var(--el-button-bg-color) 28%, transparent);
-    filter: brightness(1.04);
-  }
+  border-color: var(--border-color);
 }
 
 .el-button.is-link {
