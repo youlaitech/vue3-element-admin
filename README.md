@@ -28,7 +28,7 @@
 
 ## 项目简介
 
-[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) 基于 Vue3、Vite、TypeScript 和 Element-Plus 搭建的企业级中后台前端模板，配套 Java 后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)、多租户后端 [youlai-boot-tenant](https://gitee.com/youlaiorg/youlai-boot-tenant) 和 Node 后端 [youlai-nest](https://gitee.com/youlaiorg/youlai-nest)。另提供精简版 [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template)、JS 版 [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js) 和 Naive UI 版 [vue3-naiveui-admin](https://gitee.com/youlaiorg/vue3-naiveui-admin) 供不同场景选用。
+[vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) 基于 Vue 3、Vite、TypeScript、Element Plus 构建的企业级中后台前端，配套 [9 种后端实现](#生态矩阵)（覆盖 Java / Node.js / Go / Python / PHP / C# / Rust 7 种语言）及移动端 [youlai-app](https://gitee.com/youlaiorg/youlai-app)。其他前端版本：[JS 版](https://gitee.com/youlaiorg/vue3-element-admin-js) · [精简版](https://gitee.com/youlaiorg/vue3-element-template) · [NaiveUI 版](https://gitee.com/youlaiorg/vue3-naiveui-admin)。
 
 ## 项目特色
 
