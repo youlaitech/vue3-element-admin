@@ -6,11 +6,11 @@
 
 [![Vue](https://img.shields.io/badge/Vue-3.5.30-brightgreen.svg)](https://vuejs.org/)
 [![Element Plus](https://img.shields.io/badge/Element%20Plus-2.13.6-blue.svg)](https://element-plus.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Gitee Star](https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg)](https://gitee.com/youlaiorg/vue3-element-admin)
 [![GitHub Star](https://img.shields.io/github/stars/youlaitech/vue3-element-admin?style=social)](https://github.com/youlaitech/vue3-element-admin)
 [![GitCode Star](https://atomgit.com/youlai/vue3-element-admin/star/badge.svg)](https://gitcode.com/youlai/vue3-element-admin)
 [![GitCode Star 2025](https://atomgit.com/youlai/vue3-element-admin/star/2025top.svg?style=flat-square&logoSize=14)](https://gitcode.com/youlai/vue3-element-admin)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 </div>
 
