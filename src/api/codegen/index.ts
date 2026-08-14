@@ -60,6 +60,15 @@ const GeneratorAPI = {
     });
   },
 
+  /** 发布代码到服务器 */
+  publishToServer(tableName: string, pageType?: "classic" | "curd", type?: "ts" | "js") {
+    return request({
+      url: `${GENERATOR_BASE_URL}/${tableName}/publish`,
+      method: "post",
+      params: buildCodegenParams(pageType, type),
+    });
+  },
+
   /** 下载代码生成 ZIP 文件 */
   download(tableName: string, pageType?: "classic" | "curd", type?: "ts" | "js") {
     return request({

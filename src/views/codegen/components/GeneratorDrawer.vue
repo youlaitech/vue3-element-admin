@@ -73,6 +73,15 @@
             <template #icon><FolderOpened /></template>
             写入本地
           </el-button>
+          <el-button
+            v-if="currentStep === STEP.PREVIEW"
+            type="success"
+            :loading="publishLoading"
+            @click="handlePublishToServer"
+          >
+            <template #icon><Upload /></template>
+            写入服务器
+          </el-button>
         </div>
       </div>
     </template>
@@ -140,6 +149,7 @@ const currentStep = ref<number>(STEP.BASIC_CONFIG);
 const currentTableName = ref("");
 const loading = ref(false);
 const loadingText = ref("loading...");
+const publishLoading = ref(false);
 
 const basicConfigRef = ref();
 const fieldConfigRef = ref();
@@ -255,6 +265,24 @@ async function handleNext() {
   if (currentStep.value === STEP.PREVIEW) {
     const pageType = genConfigFormData.value.pageType || "classic";
     GeneratorAPI.download(currentTableName.value, pageType as "classic" | "curd", "ts");
+  }
+}
+
+/** 发布代码到服务器（与下载使用相同的参数） */
+async function handlePublishToServer() {
+  const pageType = genConfigFormData.value.pageType || "classic";
+  publishLoading.value = true;
+  try {
+    await GeneratorAPI.publishToServer(
+      currentTableName.value,
+      pageType as "classic" | "curd",
+      "ts"
+    );
+    ElMessage.success("已发布到服务器");
+  } catch {
+    ElMessage.error("发布到服务器失败");
+  } finally {
+    publishLoading.value = false;
   }
 }
 
