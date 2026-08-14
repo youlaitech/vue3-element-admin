@@ -80,6 +80,11 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+            <el-form-item label="启用跟踪">
+              <el-switch v-model="formData.enableTracking" />
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
     </div>

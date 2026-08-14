@@ -74,6 +74,8 @@ export interface GenConfigForm {
   defaultSortOrder?: "asc" | "desc";
   /** 默认名称字段（表字段名，如 name） */
   defaultNameColumn?: string;
+  /** 是否启用跟踪(true:开启;false:关闭) */
+  enableTracking?: boolean;
 }
 
 /** 字段配置 */
