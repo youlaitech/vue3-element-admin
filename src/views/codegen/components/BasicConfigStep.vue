@@ -168,6 +168,74 @@
       </el-form>
     </div>
 
+    <!-- 关系配置卡片 -->
+    <div class="config-card">
+      <div class="card-header">
+        <div class="header-icon icon-relation">
+          <el-icon><Connection /></el-icon>
+        </div>
+        <div class="header-title">
+          <div class="title">关系配置</div>
+          <div class="subtitle">表关系与字段关联配置</div>
+        </div>
+      </div>
+      <el-form :model="formData" :rules="rules" :label-width="80" class="card-form">
+        <el-row :gutter="16">
+          <el-col :span="6">
+            <el-form-item label="字段">
+              <el-select
+                v-model="selectedRelationField"
+                clearable
+                filterable
+                placeholder="请选择字段"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in fieldOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button
+                type="primary"
+                :disabled="!selectedRelationField"
+                @click="handleAddRelation"
+              >
+                <el-icon><Plus /></el-icon>
+                添加
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <!-- 确认添加多对多关系对话框 -->
+      <el-dialog v-model="confirmVisible" title="添加多对多关系" width="420px" align-center>
+        <div>
+          是否添加字段
+          <strong>{{ selectedRelationField }}</strong>
+          建立多对多关系？
+        </div>
+        <template #footer>
+          <el-button @click="confirmVisible = false">否</el-button>
+          <el-button type="primary" @click="handleConfirmRelation">是</el-button>
+        </template>
+      </el-dialog>
+
+      <!-- 多对多关系配置对话框（待完善） -->
+      <el-dialog v-model="relationConfigVisible" title="多对多关系配置" width="600px" align-center>
+        <div class="text-sm text-gray-500">多对多关系配置功能待完善。</div>
+        <template #footer>
+          <el-button @click="relationConfigVisible = false">关闭</el-button>
+        </template>
+      </el-dialog>
+    </div>
+
     <!-- 包信息卡片 -->
     <div class="config-card">
       <div class="card-header">
@@ -242,6 +310,25 @@ defineProps<{
 }>();
 
 const formRef = ref();
+
+/** 关系配置：选中的字段 */
+const selectedRelationField = ref("");
+/** 确认添加多对多关系对话框可见性 */
+const confirmVisible = ref(false);
+/** 多对多关系配置对话框可见性 */
+const relationConfigVisible = ref(false);
+
+/** 点击"添加"：弹出确认对话框 */
+function handleAddRelation() {
+  if (!selectedRelationField.value) return;
+  confirmVisible.value = true;
+}
+
+/** 确认框点"是"：关闭确认框，弹出关系配置对话框（待完善） */
+function handleConfirmRelation() {
+  confirmVisible.value = false;
+  relationConfigVisible.value = true;
+}
 
 const rules = {
   tableName: [{ required: true, message: "请输入表名", trigger: "blur" }],
@@ -320,6 +407,14 @@ defineExpose({ validate });
             135deg,
             var(--el-color-warning-light-8),
             var(--el-color-warning-light-9)
+          );
+        }
+        &.icon-relation {
+          color: var(--el-color-danger);
+          background: linear-gradient(
+            135deg,
+            var(--el-color-danger-light-8),
+            var(--el-color-danger-light-9)
           );
         }
       }
