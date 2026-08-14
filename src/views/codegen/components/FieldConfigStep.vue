@@ -86,8 +86,18 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
+
+        <el-button size="small" type="info" plain @click="guideVisible = true">
+          <el-icon><QuestionFilled /></el-icon>
+          生成器说明
+        </el-button>
       </div>
     </div>
+
+    <!-- 生成器说明对话框 -->
+    <el-dialog v-model="guideVisible" title="生成器说明" width="800px" top="6vh">
+      <div class="generator-guide" v-html="renderMarkdown(guideContent)"></div>
+    </el-dialog>
 
     <!-- 字段表格 -->
     <div class="field-table-scroll">
@@ -353,6 +363,86 @@ import { FormTypeEnum, QueryTypeEnum } from "@/enums/codegen";
 import GeneratorAPI from "@/api/codegen";
 import type { GenConfigForm, FieldConfig, TableItem } from "@/api/codegen";
 import type { OptionItem } from "@/api/common";
+import guideContent from "./docs/generator-guide.md?raw";
+
+/** 生成器说明对话框可见性 */
+const guideVisible = ref(false);
+
+/**
+ * 轻量 markdown 渲染（支持标题/列表/表格/引用/分隔线/加粗/行内代码）。
+ *
+ * @description 项目未引入 markdown 渲染库，教程为固定格式，这里做最小化渲染。
+ */
+function renderMarkdown(md: string): string {
+  const escapeHtml = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const inline = (s: string) =>
+    escapeHtml(s)
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/`([^`]+)`/g, "<code>$1</code>");
+
+  const lines = md.split("\n");
+  const html: string[] = [];
+  let inTable = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // 表格
+    if (trimmed.startsWith("|")) {
+      if (!inTable) {
+        html.push("<table>");
+        inTable = true;
+      }
+      const cells = trimmed
+        .split("|")
+        .slice(1, -1)
+        .map((c) => inline(c.trim()));
+      const isHeader = /^[-:]+$/.test(cells.join("").replace(/<[^>]+>/g, ""));
+      if (!isHeader) {
+        html.push(`<tr>${cells.map((c) => `<td>${c}</td>`).join("")}</tr>`);
+      }
+      continue;
+    }
+    if (inTable) {
+      html.push("</table>");
+      inTable = false;
+    }
+
+    // 标题
+    const heading = /^(#{1,4})\s+(.*)$/.exec(trimmed);
+    if (heading) {
+      const level = heading[1].length;
+      html.push(`<h${level}>${inline(heading[2])}</h${level}>`);
+      continue;
+    }
+    // 分隔线
+    if (/^(-{3,}|\*{3,})$/.test(trimmed)) {
+      html.push("<hr />");
+      continue;
+    }
+    // 引用
+    if (trimmed.startsWith(">")) {
+      html.push(`<blockquote>${inline(trimmed.replace(/^>\s?/, ""))}</blockquote>`);
+      continue;
+    }
+    // 无序列表
+    if (/^[-*]\s+/.test(trimmed)) {
+      html.push(`<li>${inline(trimmed.replace(/^[-*]\s+/, ""))}</li>`);
+      continue;
+    }
+    // 空行
+    if (!trimmed) {
+      html.push("");
+      continue;
+    }
+    // 普通段落
+    html.push(`<p>${inline(trimmed)}</p>`);
+  }
+  if (inTable) html.push("</table>");
+  return html.join("\n");
+}
 
 const formData = defineModel<GenConfigForm>({ required: true });
 
@@ -640,5 +730,92 @@ onBeforeUnmount(() => {
   background: var(--el-color-primary-light-9) !important;
   border: 1px dashed var(--el-color-primary);
   opacity: 0.5;
+}
+
+/* 生成器说明教程排版 */
+.generator-guide {
+  max-height: 70vh;
+  padding: 4px 8px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--el-text-color-primary);
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 16px 0 8px;
+    font-weight: 600;
+    color: var(--el-text-color-primary);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h1 {
+    padding-bottom: 8px;
+    font-size: 20px;
+    border-bottom: 1px solid var(--el-border-color-lighter);
+  }
+
+  h2 {
+    font-size: 17px;
+  }
+
+  h3 {
+    font-size: 15px;
+  }
+
+  p {
+    margin: 6px 0;
+  }
+
+  ul {
+    padding-left: 20px;
+    margin: 6px 0;
+    list-style: disc;
+
+    li {
+      margin: 3px 0;
+    }
+  }
+
+  blockquote {
+    padding: 8px 12px;
+    margin: 10px 0;
+    color: var(--el-text-color-secondary);
+    background: var(--el-fill-color-light);
+    border-left: 4px solid var(--el-color-primary);
+    border-radius: 4px;
+  }
+
+  code {
+    padding: 2px 6px;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 13px;
+    color: var(--el-color-primary);
+    background: var(--el-fill-color-light);
+    border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    margin: 10px 0;
+    font-size: 13px;
+    border-collapse: collapse;
+
+    td {
+      padding: 8px 10px;
+      border: 1px solid var(--el-border-color-lighter);
+    }
+  }
+
+  hr {
+    margin: 16px 0;
+    border: none;
+    border-top: 1px solid var(--el-border-color-lighter);
+  }
 }
 </style>
