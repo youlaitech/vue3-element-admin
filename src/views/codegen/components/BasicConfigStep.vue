@@ -270,6 +270,138 @@
       </el-form>
     </div>
 
+    <!-- 前台触发器卡片 -->
+    <div class="config-card">
+      <div class="card-header">
+        <div class="header-icon icon-trigger-front">
+          <el-icon><Cpu /></el-icon>
+        </div>
+        <div class="header-title">
+          <div class="title">前台触发器</div>
+          <div class="subtitle">前端 JS 触发动作配置</div>
+        </div>
+      </div>
+      <el-form :model="formData" :rules="rules" :label-width="80" class="card-form">
+        <el-row :gutter="16">
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="openTriggerEditor('frontend', '新建前触发')">
+                <el-icon><Plus /></el-icon>
+                新建前触发
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="openTriggerEditor('frontend', '新建后触发')">
+                <el-icon><CircleCheck /></el-icon>
+                新建后触发
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="danger" plain @click="openTriggerEditor('frontend', '删除前触发')">
+                <el-icon><Delete /></el-icon>
+                删除前触发
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="danger" plain @click="openTriggerEditor('frontend', '删除后触发')">
+                <el-icon><CircleClose /></el-icon>
+                删除后触发
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- 前台触发动作列表 -->
+        <el-table :data="frontendTriggers" border stripe max-height="240">
+          <el-table-column type="index" label="#" width="55" align="center" />
+          <el-table-column label="触发动作" prop="name" min-width="140" />
+          <el-table-column label="语言" prop="language" width="100" align="center">
+            <template #default="{ row }">
+              <el-tag size="small" type="warning">{{ row.language }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="100" align="center">
+            <template #default="{ row }">
+              <el-button type="danger" size="small" link @click="deleteTrigger('frontend', row)">
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form>
+    </div>
+
+    <!-- 后台触发器卡片 -->
+    <div class="config-card">
+      <div class="card-header">
+        <div class="header-icon icon-trigger-back">
+          <el-icon><DataBoard /></el-icon>
+        </div>
+        <div class="header-title">
+          <div class="title">后台触发器</div>
+          <div class="subtitle">后端 Python 触发动作配置</div>
+        </div>
+      </div>
+      <el-form :model="formData" :rules="rules" :label-width="80" class="card-form">
+        <el-row :gutter="16">
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="openTriggerEditor('backend', '新建前触发')">
+                <el-icon><Plus /></el-icon>
+                新建前触发
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="openTriggerEditor('backend', '新建后触发')">
+                <el-icon><CircleCheck /></el-icon>
+                新建后触发
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="danger" plain @click="openTriggerEditor('backend', '删除前触发')">
+                <el-icon><Delete /></el-icon>
+                删除前触发
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="danger" plain @click="openTriggerEditor('backend', '删除后触发')">
+                <el-icon><CircleClose /></el-icon>
+                删除后触发
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- 后台触发动作列表 -->
+        <el-table :data="backendTriggers" border stripe max-height="240">
+          <el-table-column type="index" label="#" width="55" align="center" />
+          <el-table-column label="触发动作" prop="name" min-width="140" />
+          <el-table-column label="语言" prop="language" width="100" align="center">
+            <template #default="{ row }">
+              <el-tag size="small" type="success">{{ row.language }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="100" align="center">
+            <template #default="{ row }">
+              <el-button type="danger" size="small" link @click="deleteTrigger('backend', row)">
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form>
+    </div>
+
     <!-- 关系配置卡片 -->
     <div class="config-card">
       <div class="card-header">
@@ -337,6 +469,37 @@
         </template>
       </el-dialog>
     </div>
+
+    <!-- 触发器代码编辑对话框 -->
+    <el-dialog
+      v-model="triggerEditorVisible"
+      :title="`${triggerEditor.scope === 'frontend' ? '前台' : '后台'}触发器 - ${triggerEditor.name}`"
+      width="820px"
+      align-center
+    >
+      <div class="trigger-editor">
+        <div class="trigger-editor__meta">
+          <el-tag size="small" :type="triggerEditor.scope === 'frontend' ? 'warning' : 'success'">
+            {{ triggerEditor.scope === "frontend" ? "JavaScript" : "Python" }}
+          </el-tag>
+        </div>
+        <el-input
+          v-model="triggerEditor.code"
+          type="textarea"
+          :rows="16"
+          :placeholder="
+            triggerEditor.scope === 'frontend'
+              ? '// 请输入 JavaScript 代码'
+              : '# 请输入 Python 代码'
+          "
+          class="trigger-editor__code"
+        />
+      </div>
+      <template #footer>
+        <el-button @click="triggerEditorVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleSaveTrigger">保存</el-button>
+      </template>
+    </el-dialog>
 
     <!-- 包信息卡片 -->
     <div class="config-card">
@@ -470,6 +633,52 @@ const viewTypeOptions = [
 /** 当前选中的视图类型（默认列表视图） */
 const viewType = ref("列表视图");
 
+// ── 触发器配置 ──────────────────────────────────────────
+/** 前台触发动作列表（JS） */
+const frontendTriggers = ref<{ name: string; language: string }[]>([]);
+/** 后台触发动作列表（Python） */
+const backendTriggers = ref<{ name: string; language: string }[]>([]);
+
+/** 触发器代码编辑对话框可见性 */
+const triggerEditorVisible = ref(false);
+/** 当前编辑的触发器 */
+const triggerEditor = ref({
+  scope: "frontend" as "frontend" | "backend",
+  name: "",
+  code: "",
+});
+
+/** 打开触发器代码编辑对话框 */
+function openTriggerEditor(scope: "frontend" | "backend", name: string) {
+  triggerEditor.value = {
+    scope,
+    name,
+    code: "",
+  };
+  triggerEditorVisible.value = true;
+}
+
+/** 保存触发器代码 */
+function handleSaveTrigger() {
+  const target = triggerEditor.value.scope === "frontend" ? frontendTriggers : backendTriggers;
+  const exists = target.value.some((item) => item.name === triggerEditor.value.name);
+  if (!exists) {
+    target.value.push({
+      name: triggerEditor.value.name,
+      language: triggerEditor.value.scope === "frontend" ? "JavaScript" : "Python",
+    });
+  }
+  triggerEditorVisible.value = false;
+  ElMessage.success("触发动作已保存");
+}
+
+/** 删除触发动作 */
+function deleteTrigger(scope: "frontend" | "backend", row: { name: string }) {
+  const target = scope === "frontend" ? frontendTriggers : backendTriggers;
+  target.value = target.value.filter((item) => item.name !== row.name);
+  ElMessage.success("触发动作已删除");
+}
+
 const rules = {
   tableName: [{ required: true, message: "请输入表名", trigger: "blur" }],
   businessName: [{ required: true, message: "请输入业务名", trigger: "blur" }],
@@ -563,6 +772,22 @@ defineExpose({ validate });
             135deg,
             var(--el-color-info-light-8),
             var(--el-color-info-light-9)
+          );
+        }
+        &.icon-trigger-front {
+          color: var(--el-color-warning);
+          background: linear-gradient(
+            135deg,
+            var(--el-color-warning-light-8),
+            var(--el-color-warning-light-9)
+          );
+        }
+        &.icon-trigger-back {
+          color: var(--el-color-success);
+          background: linear-gradient(
+            135deg,
+            var(--el-color-success-light-8),
+            var(--el-color-success-light-9)
           );
         }
       }
