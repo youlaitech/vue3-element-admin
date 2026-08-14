@@ -29,6 +29,7 @@ export const FormTypeEnum: Record<string, OptionItem> = {
   IMAGE_UPLOAD: { value: 17, label: "单图片上传" },
   IMAGE_UPLOAD_MULTI: { value: 18, label: "多图片上传" },
   BINARY: { value: 19, label: "二进制" },
+  EMAIL: { value: 20, label: "电子邮件" },
 };
 
 /**
