@@ -11,10 +11,11 @@ import type { OptionItem } from "@/api/common";
  */
 export const FormTypeEnum: Record<string, OptionItem> = {
   INPUT: { value: 1, label: "输入框" },
+  INPUT_NUMBER: { value: 5, label: "数字输入框" },
+  DECIMAL: { value: 13, label: "小数" },
   SELECT: { value: 2, label: "下拉框" },
   RADIO: { value: 3, label: "单选框" },
   CHECK_BOX: { value: 4, label: "复选框" },
-  INPUT_NUMBER: { value: 5, label: "数字输入框" },
   SWITCH: { value: 6, label: "开关" },
   TEXT_AREA: { value: 7, label: "文本域" },
   DATE: { value: 8, label: "日期框" },
@@ -22,7 +23,6 @@ export const FormTypeEnum: Record<string, OptionItem> = {
   HIDDEN: { value: 10, label: "隐藏域" },
   MANY_TO_ONE: { value: 11, label: "多对一" },
   USER_SELECT: { value: 12, label: "用户选一" },
-  DECIMAL: { value: 13, label: "小数" },
   JSON: { value: 14, label: "JSON" },
   FILE_UPLOAD: { value: 15, label: "单文件上传" },
   FILE_UPLOAD_MULTI: { value: 16, label: "多文件上传" },

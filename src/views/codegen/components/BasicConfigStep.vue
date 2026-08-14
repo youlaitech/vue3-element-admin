@@ -168,6 +168,89 @@
       </el-form>
     </div>
 
+    <!-- 视图配置卡片 -->
+    <div class="config-card">
+      <div class="card-header">
+        <div class="header-icon icon-view">
+          <el-icon><Monitor /></el-icon>
+        </div>
+        <div class="header-title">
+          <div class="title">视图配置</div>
+          <div class="subtitle">页面视图添加与配置</div>
+        </div>
+      </div>
+      <el-form :model="formData" :rules="rules" :label-width="80" class="card-form">
+        <el-row :gutter="16">
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="handleAddView('列表视图')">
+                <el-icon><List /></el-icon>
+                添加列表视图
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="handleAddView('表单视图')">
+                <el-icon><EditPen /></el-icon>
+                添加表单视图
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="handleAddView('搜索视图')">
+                <el-icon><Search /></el-icon>
+                添加搜索视图
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="handleAddView('导出视图')">
+                <el-icon><Download /></el-icon>
+                添加导出视图
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="16">
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="handleAddView('打印视图')">
+                <el-icon><Printer /></el-icon>
+                添加打印视图
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="handleAddView('报表视图')">
+                <el-icon><DataAnalysis /></el-icon>
+                添加报表视图
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="handleAddView('图表视图')">
+                <el-icon><PieChart /></el-icon>
+                添加图表视图
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-button type="primary" plain @click="handleAddView('看板视图')">
+                <el-icon><Odometer /></el-icon>
+                添加看板视图
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+
     <!-- 关系配置卡片 -->
     <div class="config-card">
       <div class="card-header">
@@ -349,6 +432,11 @@ function handleConfirmRelation() {
   relationConfigVisible.value = true;
 }
 
+/** 添加视图（暂无接口，仅提示） */
+function handleAddView(viewName: string) {
+  ElMessage.info(`添加${viewName}功能正在完成中`);
+}
+
 const rules = {
   tableName: [{ required: true, message: "请输入表名", trigger: "blur" }],
   businessName: [{ required: true, message: "请输入业务名", trigger: "blur" }],
@@ -434,6 +522,14 @@ defineExpose({ validate });
             135deg,
             var(--el-color-danger-light-8),
             var(--el-color-danger-light-9)
+          );
+        }
+        &.icon-view {
+          color: var(--el-color-info);
+          background: linear-gradient(
+            135deg,
+            var(--el-color-info-light-8),
+            var(--el-color-info-light-9)
           );
         }
       }
