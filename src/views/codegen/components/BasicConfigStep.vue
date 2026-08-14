@@ -248,6 +248,20 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row :gutter="16">
+          <el-col :span="6">
+            <el-form-item label="视图">
+              <el-select v-model="viewType" style="width: 100%">
+                <el-option
+                  v-for="item in viewTypeOptions"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
     </div>
 
@@ -436,6 +450,20 @@ function handleConfirmRelation() {
 function handleAddView(viewName: string) {
   ElMessage.info(`添加${viewName}功能正在完成中`);
 }
+
+/** 视图类型选项 */
+const viewTypeOptions = [
+  "列表视图",
+  "表单视图",
+  "搜索视图",
+  "导出视图",
+  "打印视图",
+  "报表视图",
+  "图表视图",
+  "看板视图",
+];
+/** 当前选中的视图类型（默认列表视图） */
+const viewType = ref("列表视图");
 
 const rules = {
   tableName: [{ required: true, message: "请输入表名", trigger: "blur" }],
