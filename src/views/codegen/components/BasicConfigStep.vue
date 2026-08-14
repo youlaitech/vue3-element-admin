@@ -182,6 +182,20 @@
       <el-form :model="formData" :rules="rules" :label-width="80" class="card-form">
         <el-row :gutter="16">
           <el-col :span="6">
+            <el-form-item label="默认视图">
+              <el-select v-model="viewType" style="width: 100%">
+                <el-option
+                  v-for="item in viewTypeOptions"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="16">
+          <el-col :span="6">
             <el-form-item>
               <el-button type="primary" plain @click="handleAddView('列表视图')">
                 <el-icon><List /></el-icon>
@@ -245,20 +259,6 @@
                 <el-icon><Odometer /></el-icon>
                 添加看板视图
               </el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="16">
-          <el-col :span="6">
-            <el-form-item label="视图">
-              <el-select v-model="viewType" style="width: 100%">
-                <el-option
-                  v-for="item in viewTypeOptions"
-                  :key="item"
-                  :label="item"
-                  :value="item"
-                />
-              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
