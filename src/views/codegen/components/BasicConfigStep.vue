@@ -673,7 +673,7 @@ function handleSaveTrigger() {
 }
 
 /** 删除触发动作 */
-function deleteTrigger(scope: "frontend" | "backend", row: { name: string }) {
+function deleteTrigger(scope: "frontend" | "backend", row: { name?: string }) {
   const target = scope === "frontend" ? frontendTriggers : backendTriggers;
   target.value = target.value.filter((item) => item.name !== row.name);
   ElMessage.success("触发动作已删除");
