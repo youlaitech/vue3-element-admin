@@ -37,6 +37,7 @@ export const FormTypeEnum: Record<string, OptionItem> = {
   AMOUNT: { value: 22, label: "金额" },
   COLOR: { value: 26, label: "颜色" },
   RICH_TEXT: { value: 27, label: "富文本" },
+  MD_DOC: { value: 28, label: "MD文档" },
 };
 
 /**
