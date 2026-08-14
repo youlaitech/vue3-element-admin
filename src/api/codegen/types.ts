@@ -68,6 +68,10 @@ export interface GenConfigForm {
   pageType?: "classic" | "curd";
   /** 要移除的表前缀，如 sys_ */
   removeTablePrefix?: string;
+  /** 默认排序字段（表字段名） */
+  defaultSortColumn?: string;
+  /** 默认排序方式(asc:正排;desc:倒排) */
+  defaultSortOrder?: "asc" | "desc";
 }
 
 /** 字段配置 */

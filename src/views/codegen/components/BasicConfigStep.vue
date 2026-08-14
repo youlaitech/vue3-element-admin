@@ -11,9 +11,9 @@
           <div class="subtitle">数据库表名与业务映射</div>
         </div>
       </div>
-      <el-form :model="formData" :rules="rules" :label-width="100" class="card-form">
-        <el-row :gutter="24">
-          <el-col :span="12">
+      <el-form :model="formData" :rules="rules" :label-width="80" class="card-form">
+        <el-row :gutter="16">
+          <el-col :span="6">
             <el-form-item label="表名" prop="tableName">
               <el-input v-model="formData.tableName" readonly>
                 <template #prefix>
@@ -22,13 +22,43 @@
               </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="6">
             <el-form-item label="业务名" prop="businessName">
               <el-input v-model="formData.businessName" placeholder="如：用户管理">
                 <template #prefix>
                   <el-icon><OfficeBuilding /></el-icon>
                 </template>
               </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="默认排序">
+              <el-select
+                v-model="formData.defaultSortColumn"
+                clearable
+                placeholder="请选择排序字段"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in fieldOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="方式">
+              <el-select
+                v-model="formData.defaultSortOrder"
+                clearable
+                placeholder="请选择排序方式"
+                style="width: 100%"
+              >
+                <el-option label="正排" value="asc" />
+                <el-option label="倒排" value="desc" />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -46,8 +76,8 @@
           <div class="subtitle">Java 包结构与模块划分</div>
         </div>
       </div>
-      <el-form :model="formData" :rules="rules" :label-width="100" class="card-form">
-        <el-row :gutter="24">
+      <el-form :model="formData" :rules="rules" :label-width="80" class="card-form">
+        <el-row :gutter="16">
           <el-col :span="12">
             <el-form-item label="主包名" prop="packageName">
               <el-input v-model="formData.packageName" placeholder="com.youlai.vadmin">
@@ -81,8 +111,8 @@
           <div class="subtitle">代码生成规则与输出选项</div>
         </div>
       </div>
-      <el-form ref="formRef" :model="formData" :rules="rules" :label-width="100" class="card-form">
-        <el-row :gutter="24">
+      <el-form ref="formRef" :model="formData" :rules="rules" :label-width="80" class="card-form">
+        <el-row :gutter="16">
           <el-col :span="12">
             <el-form-item label="实体名" prop="entityName">
               <el-input v-model="formData.entityName" placeholder="User">
@@ -102,7 +132,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row :gutter="24">
+        <el-row :gutter="16">
           <el-col :span="12">
             <el-form-item label="移除表前缀">
               <el-input v-model="formData.removeTablePrefix" placeholder="如: sys_">
@@ -127,7 +157,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row :gutter="24">
+        <el-row :gutter="16">
           <el-col :span="12">
             <el-form-item>
               <template #label>
@@ -170,6 +200,14 @@ import type { OptionItem } from "@/api/common";
 
 const formData = defineModel<GenConfigForm>({ required: true });
 
+/** 表中所有字段选项（用于默认排序下拉） */
+const fieldOptions = computed<OptionItem[]>(() =>
+  (formData.value?.fieldConfigs || []).map((field) => ({
+    value: field.columnName || "",
+    label: field.columnName || "",
+  }))
+);
+
 defineProps<{
   menuOptions: OptionItem[];
 }>();
@@ -198,14 +236,14 @@ defineExpose({ validate });
 
 <style scoped lang="scss">
 .basic-config-step {
-  padding: 8px;
+  padding: 4px;
 
   .config-card {
-    padding: 24px;
-    margin-bottom: 20px;
+    padding: 16px;
+    margin-bottom: 12px;
     background: var(--el-bg-color);
     border: 1px solid var(--el-border-color-lighter);
-    border-radius: 12px;
+    border-radius: 10px;
     transition: all 0.3s ease;
 
     &:hover {
@@ -215,20 +253,20 @@ defineExpose({ validate });
 
     .card-header {
       display: flex;
-      gap: 14px;
+      gap: 10px;
       align-items: center;
-      padding-bottom: 16px;
-      margin-bottom: 20px;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
       border-bottom: 1px solid var(--el-border-color-lighter);
 
       .header-icon {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 44px;
-        height: 44px;
-        font-size: 20px;
-        border-radius: 10px;
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+        border-radius: 8px;
         transition: transform 0.3s ease;
 
         &.icon-table {
@@ -262,20 +300,27 @@ defineExpose({ validate });
       }
 
       .header-title {
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+
         .title {
-          margin-bottom: 4px;
-          font-size: 16px;
+          font-size: 15px;
           font-weight: 600;
           color: var(--el-text-color-primary);
         }
         .subtitle {
-          font-size: 13px;
+          font-size: 12px;
           color: var(--el-text-color-secondary);
         }
       }
     }
 
     .card-form {
+      :deep(.el-form-item) {
+        margin-bottom: 14px;
+      }
+
       :deep(.el-input__prefix-inner) {
         color: var(--el-text-color-secondary);
       }
@@ -284,7 +329,7 @@ defineExpose({ validate });
         display: inline-flex;
         gap: 4px;
         align-items: center;
-        padding: 10px 20px;
+        padding: 7px 14px;
       }
     }
   }
