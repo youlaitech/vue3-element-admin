@@ -189,6 +189,7 @@
                 :key="key"
                 :label="item.label"
                 :value="item.value"
+                :disabled="isFormTypeOptionDisabled(row, item.value)"
               />
             </el-select>
           </template>
@@ -280,6 +281,30 @@
                 :value="item.value"
               />
             </el-select>
+            <!-- 多对一：选择关联表 -->
+            <el-select
+              v-else-if="row.formType === FormTypeEnum.MANY_TO_ONE.value"
+              v-model="row.relationTable"
+              clearable
+              filterable
+              size="small"
+              placeholder="选择关联表"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in tableOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <!-- 用户选一：固定关联用户表 -->
+            <span
+              v-else-if="row.formType === FormTypeEnum.USER_SELECT.value"
+              class="text-xs text-gray-500"
+            >
+              关联用户表
+            </span>
             <span v-else class="text-gray-300 text-xs">-</span>
           </template>
         </el-table-column>
@@ -325,7 +350,8 @@
 <script setup lang="ts">
 import Sortable from "sortablejs";
 import { FormTypeEnum, QueryTypeEnum } from "@/enums/codegen";
-import type { GenConfigForm } from "@/api/codegen";
+import GeneratorAPI from "@/api/codegen";
+import type { GenConfigForm, FieldConfig, TableItem } from "@/api/codegen";
 import type { OptionItem } from "@/api/common";
 
 const formData = defineModel<GenConfigForm>({ required: true });
@@ -339,6 +365,62 @@ defineProps<{
 const formTypeOptions: Record<string, OptionItem> = FormTypeEnum;
 const queryTypeOptions: Record<string, OptionItem> = QueryTypeEnum;
 
+/**
+ * 是否为外键字段（数据库列名以 _id 结尾）。
+ *
+ * @description
+ * 外键字段可配置为"多对一"，且不可设置为日期/日期时间类型。
+ */
+function isForeignKeyField(columnName?: string): boolean {
+  return !!columnName && columnName.endsWith("_id");
+}
+
+/**
+ * 是否为用户字段（user_id / create_by / update_by）。
+ *
+ * @description
+ * 用户字段强制表单类型为"用户选一"。
+ */
+function isUserSelectField(columnName?: string): boolean {
+  return columnName === "user_id" || columnName === "create_by" || columnName === "update_by";
+}
+
+/**
+ * 根据字段名后缀推断默认表单类型。
+ *
+ * @description
+ * - `_time` 结尾：默认"日期时间框"
+ * - `_date` 结尾：默认"日期框"
+ * - 其他：无默认（返回 undefined）
+ */
+function getDefaultFormTypeByColumnName(columnName?: string): number | undefined {
+  if (!columnName) return undefined;
+  if (columnName.endsWith("_time")) return FormTypeEnum.DATE_TIME.value as number;
+  if (columnName.endsWith("_date")) return FormTypeEnum.DATE.value as number;
+  return undefined;
+}
+
+/**
+ * 判断表单类型选项是否禁用。
+ *
+ * @description
+ * - 用户字段（user_id / update_by）：强制必选"用户选一"，禁用其他所有类型
+ * - 其他外键字段（_id 结尾）：禁用"日期框""日期时间框"，允许"多对一"
+ * - 非外键字段：禁用"多对一"
+ */
+function isFormTypeOptionDisabled(row: FieldConfig, value: string | number): boolean {
+  const columnName = row.columnName;
+  // 用户字段必选"用户选一"
+  if (isUserSelectField(columnName)) {
+    return value !== FormTypeEnum.USER_SELECT.value;
+  }
+  const isForeignKey = isForeignKeyField(columnName);
+  if (isForeignKey) {
+    return value === FormTypeEnum.DATE.value || value === FormTypeEnum.DATE_TIME.value;
+  }
+  return value === FormTypeEnum.MANY_TO_ONE.value;
+}
+
 /** 输入框校验类型选项 */
 const validateTypeOptions: OptionItem[] = [
   { value: "mobile", label: "手机号" },
@@ -349,10 +431,48 @@ const validateTypeOptions: OptionItem[] = [
   { value: "chinese", label: "汉字" },
 ];
 
+/** 多对一关联表选项（当前表列表，值=表名，标签=描述(表名)） */
+const tableOptions = ref<OptionItem[]>([]);
+
+/** 加载表列表，供多对一关联表选择 */
+async function loadTableOptions() {
+  try {
+    const { list } = await GeneratorAPI.getTablePage({ pageNum: 1, pageSize: 1000 });
+    tableOptions.value = list.map((item: TableItem) => ({
+      value: item.tableName,
+      label: item.tableComment ? `${item.tableComment}(${item.tableName})` : item.tableName,
+    }));
+  } catch {
+    tableOptions.value = [];
+  }
+}
+
+onMounted(loadTableOptions);
+
 const tableRef = ref();
 const sortFlag = ref<Sortable | null>(null);
 
 const fieldConfigs = computed(() => formData.value?.fieldConfigs || []);
+
+// 用户字段强制修正表单类型为"用户选一"；_time/_date 结尾字段默认日期时间/日期类型
+watch(
+  fieldConfigs,
+  (list) => {
+    list.forEach((row) => {
+      if (isUserSelectField(row.columnName) && row.formType !== FormTypeEnum.USER_SELECT.value) {
+        row.formType = FormTypeEnum.USER_SELECT.value as number;
+      }
+      // 未设置表单类型时，按字段名后缀应用默认类型
+      if (row.formType == null) {
+        const defaultType = getDefaultFormTypeByColumnName(row.columnName);
+        if (defaultType != null) {
+          row.formType = defaultType;
+        }
+      }
+    });
+  },
+  { deep: true, immediate: true }
+);
 
 // 统计数量
 const queryCount = computed(() => fieldConfigs.value.filter((f) => f.isShowInQuery === 1).length);
