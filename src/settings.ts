@@ -76,6 +76,11 @@ export const appConfig = {
 
   // 功能开关
   tenantEnabled: env.VITE_APP_TENANT_ENABLED === "true",
+
+  // 数据库类型（MYSQL / POSTGRES）
+  apiType: env.VITE_API_TYPE,
+  // 是否为 POSTGRES 数据库（POSTGRES 无存储引擎概念）
+  isPostgres: env.VITE_API_TYPE === "POSTGRES",
 } as const;
 
 export const defaults = {

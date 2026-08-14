@@ -10,6 +10,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_TITLE?: string;
   readonly VITE_APP_TENANT_ENABLED?: string;
   readonly VITE_MOCK_DEV_SERVER: string;
+  readonly VITE_API_TYPE?: string;
 }
 
 interface ImportMeta {
