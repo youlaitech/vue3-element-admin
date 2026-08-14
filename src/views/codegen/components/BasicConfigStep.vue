@@ -182,16 +182,16 @@
       <el-form :model="formData" :rules="rules" :label-width="80" class="card-form">
         <el-row :gutter="16">
           <el-col :span="6">
-            <el-form-item label="字段">
+            <el-form-item label="关联表">
               <el-select
-                v-model="selectedRelationField"
+                v-model="selectedRelationTable"
                 clearable
                 filterable
-                placeholder="请选择字段"
+                placeholder="请选择关联表"
                 style="width: 100%"
               >
                 <el-option
-                  v-for="item in fieldOptions"
+                  v-for="item in tableOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -203,7 +203,7 @@
             <el-form-item>
               <el-button
                 type="primary"
-                :disabled="!selectedRelationField"
+                :disabled="!selectedRelationTable"
                 @click="handleAddRelation"
               >
                 <el-icon><Plus /></el-icon>
@@ -217,8 +217,8 @@
       <!-- 确认添加多对多关系对话框 -->
       <el-dialog v-model="confirmVisible" title="添加多对多关系" width="420px" align-center>
         <div>
-          是否添加字段
-          <strong>{{ selectedRelationField }}</strong>
+          是否添加表
+          <strong>{{ selectedRelationTable }}</strong>
           建立多对多关系？
         </div>
         <template #footer>
@@ -274,6 +274,7 @@
 </template>
 
 <script setup lang="ts">
+import GeneratorAPI from "@/api/codegen";
 import type { GenConfigForm } from "@/api/codegen";
 import type { OptionItem } from "@/api/common";
 
@@ -311,16 +312,34 @@ defineProps<{
 
 const formRef = ref();
 
-/** 关系配置：选中的字段 */
-const selectedRelationField = ref("");
+/** 关系配置：选中的关联表 */
+const selectedRelationTable = ref("");
 /** 确认添加多对多关系对话框可见性 */
 const confirmVisible = ref(false);
 /** 多对多关系配置对话框可见性 */
 const relationConfigVisible = ref(false);
 
+/** 关联表选项（值=表名，标签=描述(表名)） */
+const tableOptions = ref<OptionItem[]>([]);
+
+/** 加载表列表，供关系配置选择关联表 */
+async function loadTableOptions() {
+  try {
+    const { list } = await GeneratorAPI.getTablePage({ pageNum: 1, pageSize: 1000 });
+    tableOptions.value = list.map((item) => ({
+      value: item.tableName,
+      label: item.tableComment ? `${item.tableComment}(${item.tableName})` : item.tableName,
+    }));
+  } catch {
+    tableOptions.value = [];
+  }
+}
+
+onMounted(loadTableOptions);
+
 /** 点击"添加"：弹出确认对话框 */
 function handleAddRelation() {
-  if (!selectedRelationField.value) return;
+  if (!selectedRelationTable.value) return;
   confirmVisible.value = true;
 }
 

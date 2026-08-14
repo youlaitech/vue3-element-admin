@@ -87,12 +87,112 @@
           </template>
         </el-dropdown>
 
+        <el-button size="small" type="primary" @click="addFieldVisible = true">
+          <el-icon><Plus /></el-icon>
+          添加字段
+        </el-button>
+
+        <el-button size="small" @click="viewTableVisible = true">
+          <el-icon><View /></el-icon>
+          查看数据表
+        </el-button>
+
+        <el-button size="small" @click="viewDataVisible = true">
+          <el-icon><Grid /></el-icon>
+          查看数据
+        </el-button>
+
+        <el-button size="small" @click="designHistoryVisible = true">
+          <el-icon><Clock /></el-icon>
+          设计历史
+        </el-button>
+
         <el-button size="small" type="info" plain @click="guideVisible = true">
           <el-icon><QuestionFilled /></el-icon>
           生成器说明
         </el-button>
       </div>
     </div>
+
+    <!-- 添加字段对话框 -->
+    <el-dialog v-model="addFieldVisible" title="添加字段" width="480px" align-center>
+      <el-form :model="addFieldForm" :label-width="80">
+        <el-form-item label="字段名称">
+          <el-input v-model="addFieldForm.fieldName" placeholder="请输入字段名称" />
+        </el-form-item>
+        <el-form-item label="字段标签">
+          <el-input v-model="addFieldForm.fieldLabel" placeholder="请输入字段标签" />
+        </el-form-item>
+        <el-form-item label="字段类型">
+          <el-select
+            v-model="addFieldForm.formType"
+            placeholder="请选择字段类型"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="(item, key) in formTypeOptions"
+              :key="key"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="addFieldVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleConfirmAddField">确认</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 查看数据表对话框 -->
+    <el-dialog v-model="viewTableVisible" title="查看数据表" width="640px" align-center>
+      <pre class="table-sql-view">{{ tableSql }}</pre>
+      <template #footer>
+        <el-button @click="viewTableVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 查看数据对话框 -->
+    <el-dialog v-model="viewDataVisible" title="查看数据" width="900px" align-center>
+      <el-table :data="mockTableData" border stripe max-height="60vh">
+        <el-table-column type="index" label="#" width="55" align="center" />
+        <el-table-column label="ID" prop="id" width="80" />
+        <el-table-column label="用户名" prop="username" min-width="120" />
+        <el-table-column label="昵称" prop="nickname" min-width="120" />
+        <el-table-column label="邮箱" prop="email" min-width="180" />
+        <el-table-column label="手机号" prop="phone" min-width="140" />
+        <el-table-column label="状态" prop="status" width="100" align="center">
+          <template #default="{ row }">
+            <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
+              {{ row.status === 1 ? "正常" : "禁用" }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" prop="createTime" width="170" />
+      </el-table>
+      <template #footer>
+        <el-button @click="viewDataVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 设计历史对话框 -->
+    <el-dialog v-model="designHistoryVisible" title="设计历史" width="900px" align-center>
+      <el-table :data="designHistoryList" border stripe max-height="60vh">
+        <el-table-column type="index" label="#" width="55" align="center" />
+        <el-table-column label="操作时间" prop="time" width="170" />
+        <el-table-column label="操作人" prop="operator" width="120" />
+        <el-table-column label="操作类型" prop="action" width="120" align="center">
+          <template #default="{ row }">
+            <el-tag :type="actionTagType(row.action)" size="small">{{ row.action }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作对象" prop="target" width="150" />
+        <el-table-column label="操作内容" prop="detail" min-width="240" />
+      </el-table>
+      <template #footer>
+        <el-button @click="designHistoryVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
 
     <!-- 生成器说明对话框 -->
     <GuideDialog v-model="guideVisible" title="生成器说明" :content="guideContent" />
@@ -366,6 +466,148 @@ import guideContent from "../docs/generator-guide.md?raw";
 
 /** 生成器说明对话框可见性 */
 const guideVisible = ref(false);
+
+/** 查看数据表对话框可见性 */
+const viewTableVisible = ref(false);
+
+/** 查看数据对话框可见性 */
+const viewDataVisible = ref(false);
+
+/** 设计历史对话框可见性 */
+const designHistoryVisible = ref(false);
+/** 操作历史（暂无接口，先用占位示例） */
+const designHistoryList = [
+  {
+    time: "2024-05-12 10:00:00",
+    operator: "admin",
+    action: "新增",
+    target: "sys_user 表",
+    detail: "创建数据表 sys_user",
+  },
+  {
+    time: "2024-05-12 10:05:00",
+    operator: "admin",
+    action: "新增",
+    target: "username 字段",
+    detail: "添加字段 username，类型 varchar(64)",
+  },
+  {
+    time: "2024-05-12 10:06:00",
+    operator: "admin",
+    action: "修改",
+    target: "nickname 字段",
+    detail: "修改字段注释为'昵称'",
+  },
+  {
+    time: "2024-05-12 10:10:00",
+    operator: "youlai",
+    action: "修改",
+    target: "sys_user 表",
+    detail: "配置默认排序字段为 id",
+  },
+  {
+    time: "2024-05-12 10:15:00",
+    operator: "youlai",
+    action: "删除",
+    target: "temp 字段",
+    detail: "删除冗余字段 temp",
+  },
+  {
+    time: "2024-05-12 10:20:00",
+    operator: "admin",
+    action: "新增",
+    target: "email 字段",
+    detail: "添加字段 email，类型 varchar(128)",
+  },
+];
+
+/** 操作类型对应的标签颜色 */
+function actionTagType(action: string): "primary" | "success" | "warning" | "info" | "danger" {
+  switch (action) {
+    case "新增":
+      return "success";
+    case "删除":
+      return "danger";
+    case "修改":
+      return "warning";
+    default:
+      return "info";
+  }
+}
+/** 表数据（暂无接口，先用占位示例） */
+const mockTableData = [
+  {
+    id: 1,
+    username: "admin",
+    nickname: "管理员",
+    email: "admin@youlai.tech",
+    phone: "13800000001",
+    status: 1,
+    createTime: "2024-01-01 10:00:00",
+  },
+  {
+    id: 2,
+    username: "youlai",
+    nickname: "有来",
+    email: "youlai@youlai.tech",
+    phone: "13800000002",
+    status: 1,
+    createTime: "2024-02-01 11:30:00",
+  },
+  {
+    id: 3,
+    username: "test",
+    nickname: "测试用户",
+    email: "test@youlai.tech",
+    phone: "13800000003",
+    status: 0,
+    createTime: "2024-03-01 09:15:00",
+  },
+  {
+    id: 4,
+    username: "dev",
+    nickname: "开发",
+    email: "dev@youlai.tech",
+    phone: "13800000004",
+    status: 1,
+    createTime: "2024-04-01 14:20:00",
+  },
+  {
+    id: 5,
+    username: "ops",
+    nickname: "运维",
+    email: "ops@youlai.tech",
+    phone: "13800000005",
+    status: 1,
+    createTime: "2024-05-01 16:45:00",
+  },
+];
+/** 表构造 SQL（暂无接口，先用占位示例） */
+const tableSql = `CREATE TABLE \`sys_user\` (
+  \`id\` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  \`username\` varchar(64) NOT NULL COMMENT '用户名',
+  \`nickname\` varchar(64) DEFAULT NULL COMMENT '昵称',
+  \`email\` varchar(128) DEFAULT NULL COMMENT '邮箱',
+  \`phone\` varchar(20) DEFAULT NULL COMMENT '手机号',
+  \`status\` tinyint DEFAULT '1' COMMENT '状态(1:正常;0:禁用)',
+  \`create_time\` datetime DEFAULT NULL COMMENT '创建时间',
+  \`update_time\` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (\`id\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';`;
+
+/** 添加字段对话框可见性 */
+const addFieldVisible = ref(false);
+/** 添加字段表单 */
+const addFieldForm = ref({
+  fieldName: "",
+  fieldLabel: "",
+  formType: undefined as number | undefined,
+});
+
+/** 确认添加字段：功能正在完成中 */
+function handleConfirmAddField() {
+  ElMessage.info("添加字段功能正在完成中");
+}
 
 const formData = defineModel<GenConfigForm>({ required: true });
 
@@ -653,5 +895,22 @@ onBeforeUnmount(() => {
   background: var(--el-color-primary-light-9) !important;
   border: 1px dashed var(--el-color-primary);
   opacity: 0.5;
+}
+
+/* 查看数据表：SQL 展示 */
+.table-sql-view {
+  max-height: 50vh;
+  padding: 12px 14px;
+  margin: 0;
+  overflow: auto;
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--el-text-color-primary);
+  word-break: break-all;
+  white-space: pre-wrap;
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
 }
 </style>

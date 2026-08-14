@@ -22,6 +22,13 @@ export const FormTypeEnum: Record<string, OptionItem> = {
   HIDDEN: { value: 10, label: "隐藏域" },
   MANY_TO_ONE: { value: 11, label: "多对一" },
   USER_SELECT: { value: 12, label: "用户选一" },
+  DECIMAL: { value: 13, label: "小数" },
+  JSON: { value: 14, label: "JSON" },
+  FILE_UPLOAD: { value: 15, label: "单文件上传" },
+  FILE_UPLOAD_MULTI: { value: 16, label: "多文件上传" },
+  IMAGE_UPLOAD: { value: 17, label: "单图片上传" },
+  IMAGE_UPLOAD_MULTI: { value: 18, label: "多图片上传" },
+  BINARY: { value: 19, label: "二进制" },
 };
 
 /**
