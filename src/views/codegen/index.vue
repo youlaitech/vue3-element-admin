@@ -12,6 +12,8 @@ defineOptions({ name: "Codegen" });
 import TableList from "./components/TableList.vue";
 import GeneratorDrawer from "./components/GeneratorDrawer.vue";
 
+// 输出 VITE_API_TYPE 环境变量
+
 const drawerVisible = ref(false);
 const drawerTitle = ref("");
 const drawerRef = ref();

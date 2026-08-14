@@ -5,10 +5,19 @@ import MenuAPI from "@/api/system/menu";
 import { QueryTypeEnum } from "@/enums/codegen";
 import type { OptionItem } from "@/api/common";
 
+/** 主包名默认值 */
+const DEFAULT_PACKAGE_NAME = "com.youlai.vadmin";
+
+/** 包名为空时补充默认值，避免表单留空 */
+export function withDefaultPackageName(config: GenConfigForm): GenConfigForm {
+  return { ...config, packageName: config.packageName || DEFAULT_PACKAGE_NAME };
+}
+
 export function useGenConfig() {
   const genConfigFormData = ref<GenConfigForm>({
     fieldConfigs: [],
     pageType: "classic",
+    packageName: DEFAULT_PACKAGE_NAME,
   });
 
   const genConfigFormRules = {
@@ -66,7 +75,7 @@ export function useGenConfig() {
     ]);
     menuOptions.value = menuList;
     dictOptions.value = dictList;
-    genConfigFormData.value = config;
+    genConfigFormData.value = withDefaultPackageName(config);
     return config;
   }
 

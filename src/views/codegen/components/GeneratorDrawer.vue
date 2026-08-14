@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
 import GeneratorAPI from "@/api/codegen";
-import { useGenConfig } from "../composables/useGenConfig";
+import { useGenConfig, withDefaultPackageName } from "../composables/useGenConfig";
 import { useCodePreview } from "../composables/useCodePreview";
 import { useLocalWrite } from "../composables/useLocalWrite";
 
@@ -217,7 +217,9 @@ async function handlePrev() {
     genConfigFormData.value = { fieldConfigs: [] };
     loading.value = true;
     try {
-      genConfigFormData.value = await GeneratorAPI.getGenConfig(currentTableName.value);
+      genConfigFormData.value = withDefaultPackageName(
+        await GeneratorAPI.getGenConfig(currentTableName.value)
+      );
     } finally {
       loading.value = false;
     }
