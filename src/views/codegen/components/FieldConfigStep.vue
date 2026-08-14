@@ -90,146 +90,235 @@
     </div>
 
     <!-- 字段表格 -->
-    <el-table
-      ref="tableRef"
-      v-loading="loading"
-      :data="fieldConfigs"
-      :element-loading-text="loadingText"
-      highlight-current-row
-      class="field-table"
-    >
-      <!-- 拖拽手柄 -->
-      <el-table-column width="48" align="center">
-        <template #default>
-          <el-icon class="cursor-move sortable-handle text-gray-400 hover:text-primary">
-            <Rank />
-          </el-icon>
-        </template>
-      </el-table-column>
+    <div class="field-table-scroll">
+      <el-table
+        ref="tableRef"
+        v-loading="loading"
+        :data="fieldConfigs"
+        :element-loading-text="loadingText"
+        highlight-current-row
+        class="field-table"
+      >
+        <!-- 拖拽手柄 -->
+        <el-table-column width="48" align="center">
+          <template #default>
+            <el-icon class="cursor-move sortable-handle text-gray-400 hover:text-primary">
+              <Rank />
+            </el-icon>
+          </template>
+        </el-table-column>
 
-      <!-- 字段信息 -->
-      <el-table-column label="字段信息" min-width="360">
-        <template #default="{ row }">
-          <div class="flex items-start gap-3">
-            <div class="field-info" style="flex-shrink: 0; width: 140px">
-              <div class="flex items-center gap-2">
-                <span class="font-medium text-sm">{{ row.columnName }}</span>
-                <el-tag v-if="row.isPrimaryKey" size="small" type="warning" effect="dark">
-                  主键
-                </el-tag>
+        <!-- 字段信息 -->
+        <el-table-column label="字段信息" min-width="320">
+          <template #default="{ row }">
+            <div class="flex items-start gap-3">
+              <div class="field-info" style="flex-shrink: 0; width: 140px">
+                <div class="flex items-center gap-2">
+                  <span class="font-medium text-sm">{{ row.columnName }}</span>
+                  <el-tag v-if="row.isPrimaryKey" size="small" type="warning" effect="dark">
+                    主键
+                  </el-tag>
+                </div>
+                <div class="text-xs text-gray-400 font-mono mt-1">
+                  {{ row.columnType }} → {{ row.fieldType }}
+                  <span v-if="row.maxLength">({{ row.maxLength }})</span>
+                </div>
               </div>
-              <div class="text-xs text-gray-400 font-mono mt-1">
-                {{ row.columnType }} → {{ row.fieldType }}
-                <span v-if="row.maxLength">({{ row.maxLength }})</span>
+              <div class="flex-1 flex flex-col gap-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-gray-500 w-10 text-right">字段名</span>
+                  <el-input v-model="row.fieldName" size="small" style="width: 100px" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-gray-500 w-10 text-right">注释</span>
+                  <el-input v-model="row.fieldComment" size="small" style="width: 100px" />
+                </div>
               </div>
             </div>
-            <div class="flex-1 flex flex-col gap-1.5">
-              <div class="flex items-center gap-2">
-                <span class="text-xs text-gray-500 w-10 text-right">字段名</span>
-                <el-input v-model="row.fieldName" size="small" style="width: 130px" />
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs text-gray-500 w-10 text-right">注释</span>
-                <el-input v-model="row.fieldComment" size="small" style="width: 130px" />
-              </div>
+          </template>
+        </el-table-column>
+
+        <!-- 查询 -->
+        <el-table-column label="查询" width="95">
+          <template #default="{ row }">
+            <div class="flex flex-col items-center gap-1">
+              <el-checkbox v-model="row.isShowInQuery" :true-value="1" :false-value="0" />
+              <el-select
+                v-model="row.queryType"
+                :disabled="row.isShowInQuery !== 1"
+                size="small"
+                placeholder=""
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="(item, key) in queryTypeOptions"
+                  :key="key"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
             </div>
-          </div>
-        </template>
-      </el-table-column>
+          </template>
+        </el-table-column>
 
-      <!-- 查询 -->
-      <el-table-column label="查询" width="60" align="center">
-        <template #default="{ row }">
-          <el-checkbox v-model="row.isShowInQuery" :true-value="1" :false-value="0" />
-        </template>
-      </el-table-column>
+        <!-- 列表 -->
+        <el-table-column label="列表" width="40" align="center">
+          <template #default="{ row }">
+            <el-checkbox v-model="row.isShowInList" :true-value="1" :false-value="0" />
+          </template>
+        </el-table-column>
 
-      <!-- 查询方式 -->
-      <el-table-column label="查询方式" width="120">
-        <template #default="{ row }">
-          <el-select
-            v-model="row.queryType"
-            :disabled="row.isShowInQuery !== 1"
-            size="small"
-            placeholder=""
-          >
-            <el-option
-              v-for="(item, key) in queryTypeOptions"
-              :key="key"
-              :label="item.label"
-              :value="item.value"
+        <!-- 表单 -->
+        <el-table-column label="表单" width="40" align="center">
+          <template #default="{ row }">
+            <el-checkbox v-model="row.isShowInForm" :true-value="1" :false-value="0" />
+          </template>
+        </el-table-column>
+
+        <!-- 表单类型 -->
+        <el-table-column label="表单类型" width="108">
+          <template #default="{ row }">
+            <el-select
+              v-model="row.formType"
+              :disabled="row.isShowInForm !== 1 && row.isShowInQuery !== 1"
+              size="small"
+              placeholder=""
+            >
+              <el-option
+                v-for="(item, key) in formTypeOptions"
+                :key="key"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
+
+        <!-- 验证 -->
+        <el-table-column label="验证" width="180">
+          <template #default="{ row }">
+            <!-- 数字输入框：最大/最小值范围 -->
+            <div
+              v-if="row.formType === FormTypeEnum.INPUT_NUMBER.value"
+              class="flex items-center gap-1"
+            >
+              <el-input-number
+                v-model="row.minValue"
+                size="small"
+                :controls="false"
+                placeholder="最小值"
+                style="width: 72px"
+              />
+              <span class="text-gray-400 text-xs">~</span>
+              <el-input-number
+                v-model="row.maxValue"
+                size="small"
+                :controls="false"
+                placeholder="最大值"
+                style="width: 72px"
+              />
+            </div>
+            <!-- 日期框：开始/结束 -->
+            <div
+              v-else-if="row.formType === FormTypeEnum.DATE.value"
+              class="flex items-center gap-1"
+            >
+              <el-date-picker
+                v-model="row.startValue"
+                type="date"
+                size="small"
+                value-format="YYYY-MM-DD"
+                placeholder="开始日期"
+                style="width: 72px"
+              />
+              <span class="text-gray-400 text-xs">~</span>
+              <el-date-picker
+                v-model="row.endValue"
+                type="date"
+                size="small"
+                value-format="YYYY-MM-DD"
+                placeholder="结束日期"
+                style="width: 72px"
+              />
+            </div>
+            <!-- 日期时间框：开始/结束 -->
+            <div
+              v-else-if="row.formType === FormTypeEnum.DATE_TIME.value"
+              class="flex items-center gap-1"
+            >
+              <el-date-picker
+                v-model="row.startValue"
+                type="datetime"
+                size="small"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                placeholder="开始时间"
+                style="width: 72px"
+              />
+              <span class="text-gray-400 text-xs">~</span>
+              <el-date-picker
+                v-model="row.endValue"
+                type="datetime"
+                size="small"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                placeholder="结束时间"
+                style="width: 72px"
+              />
+            </div>
+            <!-- 输入框：校验类型 -->
+            <el-select
+              v-else-if="row.formType === FormTypeEnum.INPUT.value"
+              v-model="row.validateType"
+              clearable
+              size="small"
+              placeholder="请选择"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in validateTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <span v-else class="text-gray-300 text-xs">-</span>
+          </template>
+        </el-table-column>
+
+        <!-- 字典类型 -->
+        <el-table-column label="字典类型" width="105">
+          <template #default="{ row }">
+            <el-select
+              v-if="row.formType === FormTypeEnum.SELECT.value"
+              v-model="row.dictType"
+              clearable
+              size="small"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in dictOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <span v-else class="text-gray-300 text-xs">-</span>
+          </template>
+        </el-table-column>
+
+        <!-- 必填 -->
+        <el-table-column label="必填" width="60" align="center">
+          <template #default="{ row }">
+            <el-switch
+              v-model="row.isRequired"
+              :active-value="1"
+              :inactive-value="0"
+              :disabled="row.isShowInForm !== 1"
+              size="small"
             />
-          </el-select>
-        </template>
-      </el-table-column>
-
-      <!-- 列表 -->
-      <el-table-column label="列表" width="60" align="center">
-        <template #default="{ row }">
-          <el-checkbox v-model="row.isShowInList" :true-value="1" :false-value="0" />
-        </template>
-      </el-table-column>
-
-      <!-- 表单 -->
-      <el-table-column label="表单" width="60" align="center">
-        <template #default="{ row }">
-          <el-checkbox v-model="row.isShowInForm" :true-value="1" :false-value="0" />
-        </template>
-      </el-table-column>
-
-      <!-- 表单类型 -->
-      <el-table-column label="表单类型" width="120">
-        <template #default="{ row }">
-          <el-select
-            v-model="row.formType"
-            :disabled="row.isShowInForm !== 1 && row.isShowInQuery !== 1"
-            size="small"
-            placeholder=""
-          >
-            <el-option
-              v-for="(item, key) in formTypeOptions"
-              :key="key"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </template>
-      </el-table-column>
-
-      <!-- 字典类型 -->
-      <el-table-column label="字典类型" width="120">
-        <template #default="{ row }">
-          <el-select
-            v-if="row.formType === FormTypeEnum.SELECT.value"
-            v-model="row.dictType"
-            clearable
-            size="small"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-          <span v-else class="text-gray-300 text-xs">-</span>
-        </template>
-      </el-table-column>
-
-      <!-- 必填 -->
-      <el-table-column label="必填" width="60" align="center">
-        <template #default="{ row }">
-          <el-switch
-            v-model="row.isRequired"
-            :active-value="1"
-            :inactive-value="0"
-            :disabled="row.isShowInForm !== 1"
-            size="small"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
@@ -249,6 +338,16 @@ defineProps<{
 
 const formTypeOptions: Record<string, OptionItem> = FormTypeEnum;
 const queryTypeOptions: Record<string, OptionItem> = QueryTypeEnum;
+
+/** 输入框校验类型选项 */
+const validateTypeOptions: OptionItem[] = [
+  { value: "mobile", label: "手机号" },
+  { value: "email", label: "邮箱" },
+  { value: "url", label: "网址" },
+  { value: "digits", label: "全数字" },
+  { value: "english", label: "全英文" },
+  { value: "chinese", label: "汉字" },
+];
 
 const tableRef = ref();
 const sortFlag = ref<Sortable | null>(null);
@@ -388,10 +487,15 @@ onBeforeUnmount(() => {
     }
   }
 
-  .field-table {
-    overflow: hidden;
+  .field-table-scroll {
+    overflow-x: auto;
     border: 1px solid var(--el-border-color-lighter);
     border-radius: 12px;
+  }
+
+  .field-table {
+    width: max-content;
+    min-width: 100%;
 
     :deep(.el-table__header) {
       th {
