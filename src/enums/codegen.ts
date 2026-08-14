@@ -35,6 +35,8 @@ export const FormTypeEnum: Record<string, OptionItem> = {
   EMAIL: { value: 20, label: "电子邮件" },
   MULTI_SELECT: { value: 21, label: "多选" },
   AMOUNT: { value: 22, label: "金额" },
+  COLOR: { value: 26, label: "颜色" },
+  RICH_TEXT: { value: 27, label: "富文本" },
 };
 
 /**
