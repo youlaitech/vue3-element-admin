@@ -20,6 +20,8 @@ export const FormTypeEnum: Record<string, OptionItem> = {
   DATE: { value: 8, label: "日期框" },
   DATE_TIME: { value: 9, label: "日期时间框" },
   HIDDEN: { value: 10, label: "隐藏域" },
+  MANY_TO_ONE: { value: 11, label: "多对一" },
+  USER_SELECT: { value: 12, label: "用户选一" },
 };
 
 /**
