@@ -363,7 +363,7 @@ import { FormTypeEnum, QueryTypeEnum } from "@/enums/codegen";
 import GeneratorAPI from "@/api/codegen";
 import type { GenConfigForm, FieldConfig, TableItem } from "@/api/codegen";
 import type { OptionItem } from "@/api/common";
-import guideContent from "./docs/generator-guide.md?raw";
+import guideContent from "../docs/generator-guide.md?raw";
 
 /** 生成器说明对话框可见性 */
 const guideVisible = ref(false);
