@@ -107,6 +107,11 @@
           设计历史
         </el-button>
 
+        <el-button size="small" @click="indexManageVisible = true">
+          <el-icon><Operation /></el-icon>
+          索引管理
+        </el-button>
+
         <el-button size="small" type="info" plain @click="guideVisible = true">
           <el-icon><QuestionFilled /></el-icon>
           生成器说明
@@ -191,6 +196,54 @@
       </el-table>
       <template #footer>
         <el-button @click="designHistoryVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 索引管理对话框 -->
+    <el-dialog v-model="indexManageVisible" title="索引管理" width="900px" align-center>
+      <el-form :model="indexForm" inline class="index-form">
+        <el-form-item label="字段">
+          <el-select v-model="indexForm.field" placeholder="请选择字段" style="width: 180px">
+            <el-option
+              v-for="item in fieldOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="索引类型">
+          <el-select v-model="indexForm.type" placeholder="请选择索引类型" style="width: 160px">
+            <el-option label="普通索引" value="普通索引" />
+            <el-option label="唯一索引" value="唯一索引" />
+            <el-option label="全文索引" value="全文索引" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleAddIndex">确定</el-button>
+        </el-form-item>
+      </el-form>
+      <el-table :data="indexList" border stripe max-height="45vh">
+        <el-table-column type="index" label="#" width="55" align="center" />
+        <el-table-column label="索引名" prop="indexName" min-width="160" />
+        <el-table-column label="字段" prop="field" min-width="140" />
+        <el-table-column label="索引类型" prop="type" width="140" align="center">
+          <template #default="{ row }">
+            <el-tag :type="row.type === '唯一索引' ? 'warning' : 'info'" size="small">
+              {{ row.type }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="100" align="center">
+          <template #default="{ row }">
+            <el-button type="danger" size="small" link @click="handleDeleteIndex(row)">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <template #footer>
+        <el-button @click="indexManageVisible = false">关闭</el-button>
       </template>
     </el-dialog>
 
@@ -534,7 +587,44 @@ function actionTagType(action: string): "primary" | "success" | "warning" | "inf
       return "info";
   }
 }
-/** 表数据（暂无接口，先用占位示例） */
+
+// ── 索引管理 ────────────────────────────────────────────
+/** 索引管理对话框可见性 */
+const indexManageVisible = ref(false);
+/** 添加索引表单 */
+const indexForm = ref({
+  field: "",
+  type: "普通索引",
+});
+/** 当前表的索引列表 */
+const indexList = ref([
+  { indexName: "idx_id", field: "id", type: "普通索引" },
+  { indexName: "uk_username", field: "username", type: "唯一索引" },
+]);
+
+/** 确定：为所选字段建立索引 */
+function handleAddIndex() {
+  if (!indexForm.value.field) {
+    ElMessage.warning("请选择字段");
+    return;
+  }
+  const field = indexForm.value.field;
+  const type = indexForm.value.type;
+  const prefix = type === "唯一索引" ? "uk" : "idx";
+  indexList.value.push({
+    indexName: `${prefix}_${field}`,
+    field,
+    type,
+  });
+  indexForm.value.field = "";
+  ElMessage.success("索引添加成功");
+}
+
+/** 删除索引 */
+function handleDeleteIndex(row: { indexName?: string }) {
+  indexList.value = indexList.value.filter((item) => item.indexName !== row.indexName);
+  ElMessage.success("索引已删除");
+} /** 表数据（暂无接口，先用占位示例） */
 const mockTableData = [
   {
     id: 1,
@@ -708,6 +798,14 @@ const tableRef = ref();
 const sortFlag = ref<Sortable | null>(null);
 
 const fieldConfigs = computed(() => formData.value?.fieldConfigs || []);
+
+/** 表中所有字段选项（用于索引管理等字段下拉） */
+const fieldOptions = computed<OptionItem[]>(() =>
+  fieldConfigs.value.map((field) => ({
+    value: field.columnName || "",
+    label: field.columnName || "",
+  }))
+);
 
 // 用户字段强制修正表单类型为"用户选一"；_time/_date 结尾字段默认日期时间/日期类型
 watch(
