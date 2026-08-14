@@ -127,14 +127,8 @@
           <el-col :span="6">
             <el-form-item label="页面类型">
               <el-radio-group v-model="formData.pageType" size="large">
-                <el-radio-button value="classic">
-                  <el-icon><DocumentChecked /></el-icon>
-                  普通
-                </el-radio-button>
-                <el-radio-button value="curd">
-                  <el-icon><SetUp /></el-icon>
-                  封装(CURD)
-                </el-radio-button>
+                <el-radio-button value="classic">普通</el-radio-button>
+                <el-radio-button value="curd">封装(CURD)</el-radio-button>
               </el-radio-group>
             </el-form-item>
           </el-col>
