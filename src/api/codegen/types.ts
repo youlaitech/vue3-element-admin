@@ -72,6 +72,8 @@ export interface GenConfigForm {
   defaultSortColumn?: string;
   /** 默认排序方式(asc:正排;desc:倒排) */
   defaultSortOrder?: "asc" | "desc";
+  /** 默认名称字段（表字段名，如 name） */
+  defaultNameColumn?: string;
 }
 
 /** 字段配置 */

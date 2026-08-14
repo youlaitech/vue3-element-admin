@@ -32,6 +32,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
+            <el-form-item label="默认名称">
+              <el-select
+                v-model="formData.defaultNameColumn"
+                clearable
+                placeholder="请选择名称字段"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in fieldOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
             <el-form-item label="默认排序">
               <el-select
                 v-model="formData.defaultSortColumn"
@@ -48,6 +65,8 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="16">
           <el-col :span="6">
             <el-form-item label="方式">
               <el-select
@@ -59,6 +78,96 @@
                 <el-option label="正排" value="asc" />
                 <el-option label="倒排" value="desc" />
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+
+    <!-- 生成配置卡片 -->
+    <div class="config-card">
+      <div class="card-header">
+        <div class="header-icon icon-gen">
+          <el-icon><MagicStick /></el-icon>
+        </div>
+        <div class="header-title">
+          <div class="title">生成配置</div>
+          <div class="subtitle">代码生成规则与输出选项</div>
+        </div>
+      </div>
+      <el-form ref="formRef" :model="formData" :rules="rules" :label-width="80" class="card-form">
+        <el-row :gutter="16">
+          <el-col :span="6">
+            <el-form-item label="实体名" prop="entityName">
+              <el-input v-model="formData.entityName" placeholder="User">
+                <template #prefix>
+                  <el-icon><Coin /></el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="作者">
+              <el-input v-model="formData.author" placeholder="youlai">
+                <template #prefix>
+                  <el-icon><User /></el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="移除表前缀">
+              <el-input v-model="formData.removeTablePrefix" placeholder="如: sys_">
+                <template #prefix>
+                  <el-icon><Delete /></el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="页面类型">
+              <el-radio-group v-model="formData.pageType" size="large">
+                <el-radio-button value="classic">
+                  <el-icon><DocumentChecked /></el-icon>
+                  普通
+                </el-radio-button>
+                <el-radio-button value="curd">
+                  <el-icon><SetUp /></el-icon>
+                  封装(CURD)
+                </el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="16">
+          <el-col :span="6">
+            <el-form-item>
+              <template #label>
+                <div class="flex items-center gap-2">
+                  <span>上级菜单</span>
+                  <el-tooltip effect="dark" placement="top">
+                    <template #content>
+                      <div style="max-width: 280px; line-height: 1.8">
+                        选择上级菜单，生成代码后会自动创建对应菜单。
+                        <br />
+                        注意：生成菜单后需分配权限给角色，否则菜单将无法显示。
+                      </div>
+                    </template>
+                    <el-icon class="cursor-pointer text-gray-400 hover:text-primary">
+                      <QuestionFilled />
+                    </el-icon>
+                  </el-tooltip>
+                </div>
+              </template>
+              <el-tree-select
+                v-model="formData.parentMenuId"
+                placeholder="选择上级菜单"
+                :data="menuOptions"
+                check-strictly
+                :render-after-expand="false"
+                filterable
+                clearable
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -99,98 +208,6 @@
         </el-row>
       </el-form>
     </div>
-
-    <!-- 生成配置卡片 -->
-    <div class="config-card">
-      <div class="card-header">
-        <div class="header-icon icon-gen">
-          <el-icon><MagicStick /></el-icon>
-        </div>
-        <div class="header-title">
-          <div class="title">生成配置</div>
-          <div class="subtitle">代码生成规则与输出选项</div>
-        </div>
-      </div>
-      <el-form ref="formRef" :model="formData" :rules="rules" :label-width="80" class="card-form">
-        <el-row :gutter="16">
-          <el-col :span="12">
-            <el-form-item label="实体名" prop="entityName">
-              <el-input v-model="formData.entityName" placeholder="User">
-                <template #prefix>
-                  <el-icon><Coin /></el-icon>
-                </template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="作者">
-              <el-input v-model="formData.author" placeholder="youlai">
-                <template #prefix>
-                  <el-icon><User /></el-icon>
-                </template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="16">
-          <el-col :span="12">
-            <el-form-item label="移除表前缀">
-              <el-input v-model="formData.removeTablePrefix" placeholder="如: sys_">
-                <template #prefix>
-                  <el-icon><Delete /></el-icon>
-                </template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="页面类型">
-              <el-radio-group v-model="formData.pageType" size="large">
-                <el-radio-button value="classic">
-                  <el-icon><DocumentChecked /></el-icon>
-                  普通
-                </el-radio-button>
-                <el-radio-button value="curd">
-                  <el-icon><SetUp /></el-icon>
-                  封装(CURD)
-                </el-radio-button>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="16">
-          <el-col :span="12">
-            <el-form-item>
-              <template #label>
-                <div class="flex items-center gap-2">
-                  <span>上级菜单</span>
-                  <el-tooltip effect="dark" placement="top">
-                    <template #content>
-                      <div style="max-width: 280px; line-height: 1.8">
-                        选择上级菜单，生成代码后会自动创建对应菜单。
-                        <br />
-                        注意：生成菜单后需分配权限给角色，否则菜单将无法显示。
-                      </div>
-                    </template>
-                    <el-icon class="cursor-pointer text-gray-400 hover:text-primary">
-                      <QuestionFilled />
-                    </el-icon>
-                  </el-tooltip>
-                </div>
-              </template>
-              <el-tree-select
-                v-model="formData.parentMenuId"
-                placeholder="选择上级菜单"
-                :data="menuOptions"
-                check-strictly
-                :render-after-expand="false"
-                filterable
-                clearable
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-    </div>
   </div>
 </template>
 
@@ -206,6 +223,24 @@ const fieldOptions = computed<OptionItem[]>(() =>
     value: field.columnName || "",
     label: field.columnName || "",
   }))
+);
+
+// 默认值逻辑：默认名称字段默认选中 name、默认排序字段默认选中 id（仅未配置时生效）
+watch(
+  () => formData.value?.fieldConfigs,
+  (list) => {
+    if (!list || !list.length) return;
+    const columns = list.map((field) => field.columnName);
+    const form = formData.value;
+    if (!form) return;
+    if (!form.defaultNameColumn && columns.includes("name")) {
+      form.defaultNameColumn = "name";
+    }
+    if (!form.defaultSortColumn && columns.includes("id")) {
+      form.defaultSortColumn = "id";
+    }
+  },
+  { deep: true, immediate: true }
 );
 
 defineProps<{
