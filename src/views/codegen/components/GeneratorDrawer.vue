@@ -1,10 +1,10 @@
 <template>
   <el-drawer v-model="visible" :title="title" size="90%" destroy-on-close @close="handleClose">
     <!-- 步骤导航 -->
-    <el-steps :active="currentStep" align-center finish-status="success">
+    <el-steps :active="currentStep" align-center finish-status="success" class="gen-steps">
       <el-step v-for="step in STEPS" :key="step.step">
         <template #icon>
-          <el-icon :size="20"><component :is="step.icon" /></el-icon>
+          <el-icon :size="16"><component :is="step.icon" /></el-icon>
         </template>
         <template #title>{{ step.title }}</template>
         <template #description>{{ step.description }}</template>
@@ -280,5 +280,37 @@ defineExpose({ open });
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* 步骤导航紧凑化：缩小尺寸但保留 Element Plus 状态颜色 */
+.gen-steps {
+  margin-bottom: 8px;
+
+  :deep(.el-step__head) {
+    font-size: 12px;
+  }
+
+  :deep(.el-step__icon) {
+    width: 22px;
+    height: 22px;
+    border-width: 2px;
+  }
+
+  :deep(.el-step__line) {
+    top: 10px;
+  }
+
+  :deep(.el-step__title) {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  :deep(.el-step__description) {
+    margin-top: 2px;
+    font-size: 11px;
+    line-height: 1.3;
+  }
 }
 </style>
