@@ -102,4 +102,14 @@ export interface FieldConfig {
   fieldSort?: number;
   /** 字典类型 */
   dictType?: string;
+  /** 最小值（数字输入框范围限制） */
+  minValue?: number;
+  /** 最大值（数字输入框范围限制） */
+  maxValue?: number;
+  /** 开始值（日期/日期时间框范围限制） */
+  startValue?: string;
+  /** 结束值（日期/日期时间框范围限制） */
+  endValue?: string;
+  /** 输入框校验类型(mobile/email/url/digits/english/chinese) */
+  validateType?: string;
 }
