@@ -112,4 +112,6 @@ export interface FieldConfig {
   endValue?: string;
   /** 输入框校验类型(mobile/email/url/digits/english/chinese) */
   validateType?: string;
+  /** 多对一关联的目标表名 */
+  relationTable?: string;
 }
