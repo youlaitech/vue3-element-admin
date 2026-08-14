@@ -610,7 +610,12 @@ function handleAddIndex() {
   }
   const field = indexForm.value.field;
   const type = indexForm.value.type;
-  const prefix = type === "唯一索引" ? "uk" : "idx";
+  const prefixMap: Record<string, string> = {
+    唯一索引: "uk",
+    全文索引: "ft",
+    普通索引: "idx",
+  };
+  const prefix = prefixMap[type] ?? "idx";
   indexList.value.push({
     indexName: `${prefix}_${field}`,
     field,
