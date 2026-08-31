@@ -11,7 +11,8 @@ import { isTenantEnabled } from "@/utils/tenant";
  * 处理登录验证、动态路由生成、404检测等
  */
 export function setupPermissionGuard() {
-  const whiteList = ["/login"];
+  // 白名单支持前缀匹配：/f 命中所有公开表单分享页 /f/:formKey
+  const whiteList = ["/login", "/f"];
 
   router.beforeEach(async (to, _from) => {
     NProgress.start();
@@ -21,7 +22,10 @@ export function setupPermissionGuard() {
 
       // 未登录处理
       if (!isLoggedIn) {
-        if (whiteList.includes(to.path)) {
+        const isWhiteListed = whiteList.some(
+          (path) => to.path === path || to.path.startsWith(`${path}/`)
+        );
+        if (isWhiteListed) {
           return;
         }
         NProgress.done();

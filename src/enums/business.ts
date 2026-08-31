@@ -34,3 +34,15 @@ export enum UserGender {
   /** 女 */
   FEMALE = 2,
 }
+
+/**
+ * 表单状态枚举（正数为有效生命周期，-1 为退役态）
+ */
+export enum FormStatus {
+  /** 草稿 */
+  DRAFT = 0,
+  /** 已发布 */
+  PUBLISHED = 1,
+  /** 已停用 */
+  DISABLED = -1,
+}

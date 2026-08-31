@@ -1,7 +1,7 @@
 {
   "name": "vue3-element-admin",
   "description": "Vue3 + Vite + TypeScript + Element-Plus 的后台管理模板，vue-element-admin 的 Vue3 版本",
-  "version": "4.8.4",
+  "version": "5.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -48,6 +48,8 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
+    "@form-create/designer": "3.5.0",
+    "@form-create/element-ui": "3.3.3",
     "@vueuse/core": "^14.4.0",
     "@wangeditor-next/editor": "^5.7.16",
     "@wangeditor-next/editor-for-vue": "^5.1.14",
