@@ -1,12 +1,12 @@
 <template>
-  <el-dropdown trigger="click" @command="handleDarkChange">
+  <el-dropdown trigger="click" @command="handleThemeChange">
     <el-icon :size="20">
       <component :is="currentThemeIcon" />
     </el-icon>
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item
-          v-for="item in theneList"
+          v-for="item in themeList"
           :key="item.value"
           :command="item.value"
           :disabled="settingsStore.theme === item.value"
@@ -28,7 +28,7 @@ import { Moon, Sunny, Monitor } from "@element-plus/icons-vue";
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
 
-const theneList = [
+const themeList = [
   { label: t("login.light"), value: ThemeMode.LIGHT, component: Sunny },
   { label: t("login.dark"), value: ThemeMode.DARK, component: Moon },
   { label: t("login.auto"), value: ThemeMode.AUTO, component: Monitor },
@@ -42,7 +42,7 @@ const currentThemeIcon = computed(() => {
   return settingsStore.resolvedTheme === ThemeMode.DARK ? Moon : Sunny;
 });
 
-const handleDarkChange = (theme: ThemeMode) => {
+const handleThemeChange = (theme: ThemeMode) => {
   settingsStore.theme = theme;
 };
 </script>

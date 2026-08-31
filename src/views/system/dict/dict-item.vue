@@ -136,7 +136,7 @@
             </template>
             <el-option v-for="type in tagTypeOptions" :key="type" :label="type" :value="type">
               <div flex-y-center gap-10px>
-                <el-tag :type="type as any">{{ formData.label ?? "字典标签" }}</el-tag>
+                <el-tag :type="type">{{ formData.label ?? "字典标签" }}</el-tag>
                 <span>{{ type }}</span>
               </div>
             </el-option>
@@ -180,7 +180,7 @@ const queryFormRef = ref<FormInstance>();
 const dictItemFormRef = ref<FormInstance>();
 
 // 标签类型可选项。
-const tagTypeOptions: NonNullable<DictItemForm["tagType"]>[] = [
+const tagTypeOptions: Exclude<NonNullable<DictItemForm["tagType"]>, "">[] = [
   "primary",
   "success",
   "info",

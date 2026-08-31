@@ -18,7 +18,7 @@
       </div>
 
       <div class="layout-toolbar__item">
-        <NoticeDropdown />
+        <NoticeCenter />
       </div>
 
       <div v-if="showTenantSwitcher" class="layout-toolbar__item">
@@ -60,12 +60,6 @@ import { defaults } from "@/settings";
 import { DeviceEnum, SidebarColor, ThemeMode, LayoutMode } from "@/enums/settings";
 import { useAppStore, useSettingsStore, useUserStore } from "@/stores";
 
-import CommandPalette from "@/components/CommandPalette/index.vue";
-import Fullscreen from "@/components/Fullscreen/index.vue";
-import SizeSelect from "@/components/SizeSelect/index.vue";
-import LangSelect from "@/components/LangSelect/index.vue";
-import NoticeDropdown from "@/components/NoticeDropdown/index.vue";
-import TenantSwitcher from "@/components/TenantSwitcher/index.vue";
 import { useTenantStoreHook } from "@/stores/tenant";
 
 const { t } = useI18n();

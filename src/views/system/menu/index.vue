@@ -533,8 +533,8 @@ const showRouteParams = computed(() => formData.type === MenuTypeEnum.MENU);
 
 const routeNameTooltip = computed(() =>
   isEmbeddedExternal.value
-    ? "开启缓存时填写，需和内嵌页路由名称保持一致，例如 Apifox"
-    : "开启缓存时填写，需和页面组件 name 保持一致，例如 User"
+    ? "路由唯一标识，需全局唯一，确保多个内嵌页面互不冲突，例如 Apifox"
+    : "路由唯一标识，需全局唯一，用于动态路由注册与命令面板检索，例如 User"
 );
 
 const routeNamePlaceholder = computed(() => (isEmbeddedExternal.value ? "Apifox" : "User"));

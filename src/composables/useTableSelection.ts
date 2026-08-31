@@ -34,7 +34,9 @@ export function useTableSelection<T extends { id?: string | number }>() {
    * @param selection 选中的行数据列表
    */
   function handleSelectionChange(selection: T[]): void {
-    selectedIds.value = selection.flatMap((item) => (item.id ? [item.id] : []));
+    selectedIds.value = selection.flatMap((item) =>
+      item.id === undefined || item.id === null ? [] : [item.id]
+    );
   }
 
   /**

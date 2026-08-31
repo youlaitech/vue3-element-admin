@@ -109,7 +109,7 @@ const UserAPI = {
 
   /** 下载用户导入模板 */
   downloadTemplate() {
-    return request({
+    return request<Blob>({
       url: `${USER_BASE_URL}/template`,
       method: "get",
       responseType: "blob",
@@ -122,7 +122,7 @@ const UserAPI = {
    * @param queryParams 查询参数
    */
   export(queryParams: UserQueryParams) {
-    return request({
+    return request<Blob>({
       url: `${USER_BASE_URL}/export`,
       method: "get",
       params: queryParams,

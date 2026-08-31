@@ -1,7 +1,7 @@
 <template>
   <div class="login-page">
     <div class="login-toolbar">
-      <ThemeSwitch />
+      <ThemeSwitcher />
       <LangSelect size="text-18px" />
     </div>
 
@@ -21,10 +21,7 @@
               <span class="login-brand__tag-dot" />
               Enterprise Ready
             </el-tag>
-            <h1 class="login-brand__title">企业级管理系统</h1>
-            <p class="login-brand__desc">
-              提供安全、高效、可扩展的管理解决方案，助力企业数字化转型与业务增长。
-            </p>
+            <h1 class="login-brand__title">开箱即用的企业级中后台解决方案</h1>
           </div>
           <div class="login-brand__features">
             <div class="login-brand__feature">
@@ -171,7 +168,6 @@ import router from "@/router";
 import { useUserStore } from "@/stores";
 import { AuthStorage } from "@/utils/auth";
 import { appConfig } from "@/settings";
-import ThemeSwitch from "@/components/ThemeSwitch/index.vue";
 import ResetPwd from "./components/ResetPwd.vue";
 import QrCodeLogin from "./components/QrCodeLogin.vue";
 import logo from "@/assets/images/logo.png";
@@ -251,7 +247,7 @@ onMounted(() => getCaptcha());
 </script>
 
 <style lang="scss" scoped>
-$primary: #5d87ff;
+$primary: #165dff;
 $bg: #f8fafc;
 $text-primary: #273248;
 $text-secondary: #667085;
@@ -310,8 +306,13 @@ $input-h: 44px;
   }
 
   &__logo {
+    box-sizing: border-box;
     width: 42px;
     height: 42px;
+    padding: 5px;
+    background: rgb(37 99 235 / 8%);
+    border: 1px solid rgb(37 99 235 / 18%);
+    border-radius: 12px;
   }
 
   &__identity {
@@ -325,7 +326,7 @@ $input-h: 44px;
     font-size: 24px;
     font-weight: 600;
     line-height: 1;
-    color: $text-primary;
+    color: #1e3a8a;
   }
 
   &__version {
@@ -336,9 +337,9 @@ $input-h: 44px;
     font-size: 12px;
     font-weight: 600;
     line-height: 1;
-    color: rgba($primary, 0.88);
-    background: rgba($primary, 0.07);
-    border: 1px solid rgba($primary, 0.13);
+    color: rgb(30 58 138 / 80%);
+    background: rgb(37 99 235 / 8%);
+    border: 1px solid rgb(37 99 235 / 16%);
     border-radius: 999px;
   }
 
@@ -347,8 +348,8 @@ $input-h: 44px;
     flex: 1;
     flex-direction: column;
     justify-content: center;
-    width: min(720px, 100%);
-    padding: 20px 0 88px;
+    width: min(760px, 100%);
+    padding: 40px 0 60px;
   }
 
   &__main {
@@ -357,13 +358,14 @@ $input-h: 44px;
 
   &__tag {
     gap: 8px;
-    height: 28px;
-    padding: 0 13px 0 11px;
-    margin-bottom: 18px;
+    height: 32px;
+    padding: 0 15px 0 13px;
+    margin-bottom: 20px;
+    font-size: 12px;
     font-weight: 700;
-    color: $primary;
-    background: rgba($primary, 0.035);
-    border-color: rgba($primary, 0.14);
+    color: #1d4ed8;
+    background: rgb(37 99 235 / 8%);
+    border-color: rgb(37 99 235 / 16%);
 
     :deep(.el-tag__content) {
       display: inline-flex;
@@ -377,26 +379,26 @@ $input-h: 44px;
     flex-shrink: 0;
     width: 7px;
     height: 7px;
-    background: $primary;
+    background: #2563eb;
     border-radius: 50%;
-    box-shadow: 0 0 0 3px rgba($primary, 0.12);
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 16%);
   }
 
   &__title {
-    margin: 0 0 18px;
-    font-size: 46px;
+    margin: 0;
+    font-size: 36px;
     font-weight: 800;
-    line-height: 1.18;
-    color: #222b3a;
+    line-height: 1.15;
+    color: #1e3a8a;
     letter-spacing: 0;
   }
 
   &__desc {
     max-width: 560px;
     margin: 0;
-    font-size: 16px;
-    line-height: 1.75;
-    color: $text-secondary;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #475569;
   }
 
   &__features {
@@ -404,19 +406,19 @@ $input-h: 44px;
     align-items: center;
     width: fit-content;
     max-width: 100%;
-    margin-top: 28px;
+    margin-top: 32px;
   }
 
   &__feature {
     position: relative;
     display: inline-flex;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
-    height: 28px;
-    padding: 0 13px;
-    font-size: 13px;
+    height: 32px;
+    padding: 0 15px;
+    font-size: 14px;
     font-weight: 600;
-    color: $text-primary;
+    color: rgb(30 58 138 / 85%);
     background: transparent;
 
     &:first-child {
@@ -430,7 +432,7 @@ $input-h: 44px;
       width: 1px;
       height: 14px;
       content: "";
-      background: rgba(39 50 72 / 12%);
+      background: rgb(37 99 235 / 18%);
     }
   }
 
@@ -438,11 +440,11 @@ $input-h: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
-    color: $primary;
-    background: rgba($primary, 0.08);
-    border: 1px solid rgba($primary, 0.1);
+    width: 22px;
+    height: 22px;
+    color: #1d4ed8;
+    background: rgb(37 99 235 / 8%);
+    border: 1px solid rgb(37 99 235 / 16%);
     border-radius: 6px;
   }
 
@@ -450,9 +452,9 @@ $input-h: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 13px;
-    height: 13px;
-    color: $primary;
+    width: 14px;
+    height: 14px;
+    color: #1d4ed8;
   }
 
   &__feature-text {
@@ -488,8 +490,8 @@ $input-h: 44px;
   }
 
   &__title {
-    margin: 0 0 4px;
-    font-size: 34px;
+    margin: 0 0 10px;
+    font-size: 28px;
     font-weight: 750;
     line-height: 1.1;
     color: $text-primary;
@@ -497,8 +499,8 @@ $input-h: 44px;
   }
 
   &__desc {
-    margin: 8px 0 24px;
-    font-size: 14px;
+    margin: 10px 0 28px;
+    font-size: 15px;
     color: $text-muted;
   }
 }
@@ -579,7 +581,7 @@ $input-h: 44px;
 .login-btn {
   width: 100%;
   height: 44px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   border-radius: 8px;
   box-shadow: 0 12px 24px rgba($primary, 0.18);
@@ -627,7 +629,7 @@ $input-h: 44px;
     justify-content: center;
     height: 44px;
     padding: 0;
-    font-size: 13px;
+    font-size: 14px;
     color: $text-secondary;
     cursor: pointer;
     background: transparent;
@@ -664,41 +666,56 @@ $input-h: 44px;
 .dark .login-brand {
   background-image: url("@/assets/images/login/bg-dark.svg");
 
+  &__logo {
+    background: rgb(255 255 255 / 10%);
+    border-color: rgb(255 255 255 / 20%);
+  }
+
   &__name {
-    color: rgb(255 255 255 / 86%);
+    color: rgb(255 255 255 / 92%);
   }
 
   &__version {
-    color: rgb(167 190 255 / 92%);
-    background: rgba($primary, 0.12);
-    border-color: rgba($primary, 0.2);
+    color: rgb(255 255 255 / 85%);
+    background: rgb(255 255 255 / 10%);
+    border-color: rgb(255 255 255 / 16%);
   }
 
   &__tag {
-    color: rgba($primary, 0.95);
-    background: rgba($primary, 0.08);
-    border-color: rgba($primary, 0.18);
+    color: #fff;
+    background: rgb(255 255 255 / 8%);
+    border-color: rgb(255 255 255 / 16%);
+  }
+
+  &__tag-dot {
+    background: #fff;
+    box-shadow: 0 0 0 3px rgb(255 255 255 / 18%);
   }
 
   &__title {
-    color: rgb(255 255 255 / 90%);
+    color: #fff;
   }
 
   &__desc {
-    color: rgb(226 232 240 / 62%);
+    color: rgb(255 255 255 / 65%);
   }
 
   &__feature {
-    color: rgb(255 255 255 / 76%);
+    color: rgb(255 255 255 / 85%);
 
     &:not(:last-child)::after {
-      background: rgba(255 255 255 / 12%);
+      background: rgb(255 255 255 / 18%);
     }
   }
 
   &__feature-mark {
-    background: rgba($primary, 0.15);
-    border-color: rgba($primary, 0.18);
+    color: #fff;
+    background: rgb(255 255 255 / 10%);
+    border-color: rgb(255 255 255 / 16%);
+  }
+
+  &__feature-icon {
+    color: #fff;
   }
 }
 
@@ -760,7 +777,7 @@ $input-h: 44px;
     height: auto;
     min-height: auto;
     padding: 28px 40px 0;
-    background: #fff;
+    background: linear-gradient(180deg, #ffffff 0%, #dbeafe 100%);
 
     &__hero {
       display: none;

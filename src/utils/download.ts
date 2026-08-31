@@ -30,8 +30,18 @@ function extractFileName(contentDisposition: string): string {
 }
 
 /**
+ * 下载响应：axios 二进制响应（blob 透传整个 response）或自组装的二进制数据
+ */
+interface DownloadResponse {
+  /** 二进制内容 */
+  data: BlobPart;
+  /** 响应头（用于解析文件名，自组装数据可省略） */
+  headers?: Record<string, unknown>;
+}
+
+/**
  * 下载文件
- * @param response Axios 响应对象
+ * @param response 二进制接口响应或 { data } 形式的二进制内容
  * @param customFileName 自定义文件名（可选）
  *
  * @example
@@ -44,10 +54,10 @@ function extractFileName(contentDisposition: string): string {
  * downloadFile(response, "用户列表.xlsx");
  * ```
  */
-export function downloadFile(response: { data: any; headers: any }, customFileName?: string): void {
+export function downloadFile(response: DownloadResponse, customFileName?: string): void {
   try {
     const fileData = response.data;
-    const contentDisposition = response.headers["content-disposition"];
+    const contentDisposition = String(response.headers?.["content-disposition"] ?? "");
     const fileName = customFileName || extractFileName(contentDisposition);
 
     // 创建 Blob 对象
