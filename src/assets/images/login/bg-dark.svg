@@ -1,35 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1400 900" preserveAspectRatio="none">
   <defs>
-    <linearGradient id="surface" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#101728"/>
-      <stop offset="58%" stop-color="#0d1424"/>
-      <stop offset="100%" stop-color="#0b1020"/>
+    <linearGradient id="darkBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f1a33"/>
+      <stop offset="55%" stop-color="#0c1428"/>
+      <stop offset="100%" stop-color="#0a1020"/>
     </linearGradient>
-    <linearGradient id="rightWash" x1="72%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#0b1020" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#7c6dff" stop-opacity=".18"/>
-    </linearGradient>
-    <linearGradient id="bottomWash" x1="0%" y1="100%" x2="58%" y2="46%">
-      <stop offset="0%" stop-color="#2563eb" stop-opacity=".16"/>
-      <stop offset="52%" stop-color="#2563eb" stop-opacity=".05"/>
-      <stop offset="100%" stop-color="#0b1020" stop-opacity="0"/>
-    </linearGradient>
-    <pattern id="grid" width="88" height="88" patternUnits="userSpaceOnUse">
-      <path d="M88 0H0v88" fill="none" stroke="#94a3b8" stroke-opacity=".1" stroke-width="1"/>
-      <path d="M44 0v88M0 44h88" fill="none" stroke="#94a3b8" stroke-opacity=".05" stroke-width="1"/>
+
+    <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse">
+      <path d="M72 0H0v72" fill="none" stroke="#ffffff" stroke-opacity=".05" stroke-width="1"/>
     </pattern>
+
     <linearGradient id="gridFade" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity=".76"/>
-      <stop offset="74%" stop-color="#ffffff" stop-opacity=".24"/>
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".9"/>
+      <stop offset="70%" stop-color="#ffffff" stop-opacity=".3"/>
       <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
     </linearGradient>
+
+    <mask id="gridMask">
+      <rect width="1400" height="900" fill="url(#gridFade)"/>
+    </mask>
   </defs>
-  <rect width="1400" height="900" fill="url(#surface)"/>
-  <rect width="1400" height="900" fill="url(#rightWash)"/>
-  <rect width="1400" height="900" fill="url(#bottomWash)"/>
-  <mask id="gridMask">
-    <rect width="1400" height="900" fill="url(#gridFade)"/>
-  </mask>
+
+  <rect width="1400" height="900" fill="url(#darkBlue)"/>
   <rect width="1400" height="900" fill="url(#grid)" mask="url(#gridMask)"/>
 </svg>
