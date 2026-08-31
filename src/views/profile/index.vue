@@ -314,7 +314,6 @@ import type { Component } from "vue";
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import FileAPI from "@/api/file";
 import { useUserStoreHook } from "@/stores";
-import { redirectToLogin } from "@/utils/auth";
 
 import {
   Calendar,
@@ -856,7 +855,7 @@ const handleSubmit = async () => {
 
       await UserAPI.changePassword(passwordChangeForm);
       dialogState.visible = false;
-      await redirectToLogin("密码已修改，请重新登录");
+      await userStore.redirectToLogin("密码已修改，请重新登录");
     } else if (dialogState.type === DialogType.MOBILE) {
       const valid = await mobileBindingFormRef.value?.validate();
       if (!valid) return;

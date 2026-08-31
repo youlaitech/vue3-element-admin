@@ -4,7 +4,7 @@ import qs from "qs";
 import { ApiCodeEnum } from "@/enums/api";
 import { useUserStoreHook } from "@/stores/user";
 import { usePermissionStoreHook } from "@/stores/permission";
-import { AuthStorage, redirectToLogin } from "@/utils/auth";
+import { AuthStorage } from "@/utils/auth";
 import type { ApiResult } from "@/api/common";
 
 // 防止同一请求在 token 刷新后重复进入重试，导致死循环
@@ -65,15 +65,15 @@ http.interceptors.response.use(
 
     // Token 过期
     if (code === ApiCodeEnum.ACCESS_TOKEN_INVALID) {
+      const userStore = useUserStoreHook();
       if (!config || retriedRequests.has(config)) {
-        await redirectToLogin("登录已过期，请重新登录");
+        await userStore.redirectToLogin("登录已过期，请重新登录");
         return Promise.reject(new Error("Token Invalid"));
       }
 
       retriedRequests.add(config);
 
       try {
-        const userStore = useUserStoreHook();
         await userStore.refreshTokenOnce();
 
         const token = AuthStorage.getAccessToken();
@@ -83,14 +83,14 @@ http.interceptors.response.use(
 
         return http(config);
       } catch {
-        await redirectToLogin("登录已过期，请重新登录");
+        await userStore.redirectToLogin("登录已过期，请重新登录");
         return Promise.reject(new Error("Token refresh failed"));
       }
     }
 
     // Refresh token 失效
     if (code === ApiCodeEnum.REFRESH_TOKEN_INVALID) {
-      await redirectToLogin("登录已过期，请重新登录", false);
+      await useUserStoreHook().redirectToLogin("登录已过期，请重新登录", false);
       return Promise.reject(new Error("Token Invalid"));
     }
 
