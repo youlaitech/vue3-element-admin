@@ -261,7 +261,7 @@ import {
   Document,
   VideoPlay,
 } from "@element-plus/icons-vue";
-import { useOnlineUsers } from "@/composables";
+import { useOnlineUsers } from "./composables/useOnlineUsers";
 
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();

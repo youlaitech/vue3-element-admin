@@ -2,7 +2,7 @@
   <div class="page-container h-full flex flex-1 flex-col">
     <div class="flex-x-between mb-10">
       <el-link
-        href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/curd/index.vue"
+        href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/table/curd/index.vue"
         type="primary"
         target="_blank"
       >

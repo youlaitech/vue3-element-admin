@@ -18,6 +18,8 @@
 </template>
 
 <script setup lang="ts">
+// 必须显式导入：页面文件名 text-scroll.vue 与标签 <TextScroll> 同名，会触发 Vue 隐式自引用
+// （自动导入对同名组件不生效，运行时解析到页面自身 → 递归栈溢出白屏）
 import TextScroll from "@/components/TextScroll/index.vue";
 </script>
 

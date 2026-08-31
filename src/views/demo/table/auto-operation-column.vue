@@ -2,7 +2,7 @@
 <template>
   <div class="page-container">
     <el-link
-      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/auto-opreation-column.vue"
+      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/table/auto-operation-column.vue"
       type="primary"
       target="_blank"
       class="mb-10"
@@ -48,8 +48,6 @@
 </template>
 
 <script lang="ts" setup>
-import OperationColumn from "@/components/OperationColumn/index.vue";
-
 const checked1 = ref(true);
 const checked2 = ref(false);
 const checked3 = ref(false);

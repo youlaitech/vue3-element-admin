@@ -1,7 +1,8 @@
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import type { NoticeDetail, NoticeItem, NoticeQueryParams } from "@/api/system/notice";
 import NoticeAPI from "@/api/system/notice";
-import { useSse, SseTopics } from "@/composables";
+import { useSse } from "@/utils/sse";
+import { SseTopics } from "@/enums/sse";
 import router from "@/router";
 
 /** 下拉面板每页展示条数 */

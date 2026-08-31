@@ -13,7 +13,7 @@
       <el-button
         class="page-header__link"
         tag="a"
-        href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/upload.vue"
+        href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/component/upload.vue"
         target="_blank"
         type="primary"
         plain

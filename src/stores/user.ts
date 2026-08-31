@@ -9,7 +9,11 @@ import { AuthStorage } from "@/utils/auth";
 import { usePermissionStoreHook } from "@/stores/permission";
 import { useDictStoreHook } from "@/stores/dict";
 import { useTagsViewStore } from "@/stores";
-import { cleanupSseServices } from "@/composables";
+import { cleanupSse } from "@/utils/sse";
+import router from "@/router";
+
+// 防止并发会话失效触发重复跳转登录页
+let redirectingToLogin = false;
 
 export const useUserStore = defineStore("user", () => {
   // 用户信息
@@ -83,10 +87,11 @@ export const useUserStore = defineStore("user", () => {
     // 2. 重置其他模块状态
     usePermissionStoreHook().resetRouter();
     useDictStoreHook().clearDictCache();
+    useDictStoreHook().teardownDictSync();
     useTagsViewStore().delAllViews();
 
     // 3. 清理 SSE 连接
-    cleanupSseServices();
+    cleanupSse();
   }
 
   /**
@@ -97,6 +102,43 @@ export const useUserStore = defineStore("user", () => {
   function resetUserState(): void {
     AuthStorage.clearAuth();
     userInfo.value = {} as UserInfo;
+  }
+
+  /**
+   * 会话失效的统一出口：通知用户、清理全局状态、携带当前路由跳转登录页
+   *
+   * @param message 通知文案
+   * @param notify 是否弹出通知
+   */
+  async function redirectToLogin(
+    message: string = "请重新登录",
+    notify: boolean = true
+  ): Promise<void> {
+    if (redirectingToLogin) return;
+    redirectingToLogin = true;
+
+    try {
+      if (notify) {
+        ElNotification({
+          title: "提示",
+          message,
+          type: "warning",
+          duration: 3000,
+        });
+      }
+
+      await resetAllState();
+
+      // 跳转到登录页，保留当前路由用于登录后跳转
+      const currentPath = router.currentRoute.value.fullPath;
+      await router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+    } catch (error) {
+      console.error("Redirect to login error:", error);
+      // 强制跳转，即使路由重定向失败
+      window.location.href = "/login";
+    } finally {
+      redirectingToLogin = false;
+    }
   }
 
   /**
@@ -124,6 +166,7 @@ export const useUserStore = defineStore("user", () => {
     getUserInfo,
     resetAllState,
     resetUserState,
+    redirectToLogin,
     refreshToken: doRefreshToken,
     refreshTokenOnce,
   };

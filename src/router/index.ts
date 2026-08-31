@@ -75,7 +75,7 @@ export const constantRoutes: RouteRecordRaw[] = [
       {
         path: "/detail/:id(\\d+)",
         name: "DemoDetail",
-        component: () => import("@/views/demo/detail.vue"),
+        component: () => import("@/views/demo/route/detail.vue"),
         meta: { title: "详情页缓存", icon: "user", hidden: true, keepAlive: true },
       },
     ],

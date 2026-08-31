@@ -2,7 +2,7 @@
 <template>
   <div class="page-container">
     <el-link
-      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/table-select/index.vue"
+      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/component/table-select/index.vue"
       type="primary"
       target="_blank"
       class="mb-10"

@@ -2,7 +2,7 @@
 <template>
   <div class="page-container">
     <el-link
-      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/dictionary.vue"
+      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/component/dictionary.vue"
       type="primary"
       target="_blank"
       class="mb-[20px]"

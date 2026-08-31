@@ -141,11 +141,11 @@
 
 <script setup lang="ts">
 import { useDictStoreHook } from "@/stores/dict";
+import type { DictChangeMessage } from "@/stores/dict";
 import { useDateFormat } from "@vueuse/core";
 import DictAPI from "@/api/system/dict";
 import type { DictItemForm } from "@/api/system/dict";
-import { useDictSync } from "@/composables";
-import type { DictChangeMessage } from "@/composables";
+import { useSse } from "@/utils/sse";
 
 // 性别字典编码
 const DICT_CODE = "gender";
@@ -163,11 +163,11 @@ const dictForm = ref<DictItemForm | null>(null);
 // 选中的性别
 const selectedGender = ref("");
 
-// 初始化 SSE
-const dictSse = useDictSync();
+// SSE 连接（用于展示连接状态）
+const sse = useSse();
 
 // 获取连接状态
-const sseConnected = computed(() => dictSse.isConnected.value);
+const sseConnected = computed(() => sse.isConnected.value);
 
 // SSE 连接状态显示文本
 const sseStatusText = computed(() => (sseConnected.value ? "已连接" : "未连接"));
@@ -183,11 +183,11 @@ const dictCacheStatus = computed(() => {
 
 // 设置 SSE
 const setupSse = () => {
-  // 初始化 SSE 连接
-  dictSse.initialize();
+  // 初始化字典同步订阅（幂等，全局已在应用启动时开启）
+  dictStore.setupDictSync();
 
   // 注册字典消息回调
-  unregisterCallback = dictSse.onDictChange((message: DictChangeMessage) => {
+  unregisterCallback = dictStore.onDictChange((message: DictChangeMessage) => {
     // 只有当消息是关于性别字典的更新时才处理
     if (message.dictCode === DICT_CODE) {
       // 更新最后更新时间
