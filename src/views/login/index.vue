@@ -248,7 +248,6 @@ onMounted(() => getCaptcha());
 
 <style lang="scss" scoped>
 $primary: #165dff;
-$bg: #f8fafc;
 $text-primary: #273248;
 $text-secondary: #667085;
 $text-muted: #98a2b3;
@@ -259,7 +258,8 @@ $input-h: 44px;
   display: flex;
   min-height: 100vh;
   overflow: auto;
-  background: $bg;
+  /* 浅色渐变底色；桌面端被品牌区背景图与白色卡片完全覆盖，窄屏两区透明后透出 */
+  background: linear-gradient(180deg, #ffffff 0%, #dbeafe 100%);
 }
 
 .login-toolbar {
@@ -612,7 +612,7 @@ $input-h: 44px;
       flex: 1;
       height: 1px;
       content: "";
-      background: var(--el-border-color-lighter);
+      background: rgb(30 58 138 / 12%);
     }
   }
 
@@ -621,6 +621,7 @@ $input-h: 44px;
     gap: 12px;
   }
 
+  /* 半透明白底按钮，在渐变背景上保持可见；hover 时提实并加深投影 */
   &__btn {
     display: flex;
     flex: 1;
@@ -632,18 +633,22 @@ $input-h: 44px;
     font-size: 14px;
     color: $text-secondary;
     cursor: pointer;
-    background: transparent;
-    border: 1px solid var(--el-border-color-lighter);
+    background: rgb(255 255 255 / 80%);
+    border: 1px solid rgb(30 58 138 / 10%);
     border-radius: 8px;
+    box-shadow: 0 1px 2px rgb(30 58 138 / 6%);
+    backdrop-filter: blur(4px);
     transition:
       color 0.2s,
       background 0.2s,
-      border-color 0.2s;
+      border-color 0.2s,
+      box-shadow 0.2s;
 
     &:hover {
       color: $primary;
-      background: rgba($primary, 0.04);
-      border-color: rgba($primary, 0.28);
+      background: #fff;
+      border-color: rgba($primary, 0.35);
+      box-shadow: 0 4px 12px rgba($primary, 0.14);
     }
   }
 
@@ -737,6 +742,25 @@ $input-h: 44px;
 
 .dark .login-alt__divider {
   color: rgb(255 255 255 / 20%);
+
+  &::before,
+  &::after {
+    background: rgb(255 255 255 / 12%);
+  }
+}
+
+/* 深色下按钮用半透明白叠加，hover 提亮 */
+.dark .login-alt__btn {
+  color: rgb(255 255 255 / 65%);
+  background: rgb(255 255 255 / 6%);
+  border-color: rgb(255 255 255 / 12%);
+  box-shadow: none;
+
+  &:hover {
+    color: #fff;
+    background: rgb(255 255 255 / 12%);
+    border-color: rgb(255 255 255 / 24%);
+  }
 }
 
 .fade-slide-enter-active,
@@ -776,22 +800,28 @@ $input-h: 44px;
     flex: none;
     height: auto;
     min-height: auto;
-    padding: 28px 40px 0;
-    background: linear-gradient(180deg, #ffffff 0%, #dbeafe 100%);
+    padding: 28px 40px 32px;
+    background: transparent;
 
     &__hero {
       display: none;
     }
   }
 
+  /* 深色品牌区的背景图不适合窄屏，透出页面底色 */
   .dark .login-brand {
-    background: #0b1020;
+    background: none;
   }
 
+  /* 卡片占满剩余高度并透出页面渐变，inner 沿用全局的垂直居中，页脚沉底 */
   .login-card {
     flex: 1;
-    justify-content: flex-start;
-    padding: 96px 48px 0;
+    padding: 40px 48px 32px;
+    background: transparent;
+  }
+
+  .dark .login-card {
+    background: transparent;
   }
 }
 
@@ -802,11 +832,11 @@ $input-h: 44px;
   }
 
   .login-brand {
-    padding: 24px 0 0 24px;
+    padding: 24px 24px 28px;
   }
 
   .login-card {
-    padding: 72px 24px 0;
+    padding: 32px 24px 24px;
 
     &__inner {
       width: 100%;
