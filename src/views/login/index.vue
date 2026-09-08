@@ -146,7 +146,7 @@
                 <div class="login-alt__divider">其他登录方式</div>
                 <div class="login-alt__buttons">
                   <button class="login-alt__btn" @click="component = 'qrcode'">
-                    <span class="login-alt__icon i-svg:qr-code" />
+                    <span class="login-alt__icon i-svg:scan" />
                     扫码登录
                   </button>
                   <button class="login-alt__btn">
