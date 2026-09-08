@@ -44,7 +44,7 @@ export const useAppStore = defineStore("app", () => {
   /**
    * 当前激活的顶部菜单路径
    */
-  const activeTopMenuPath = useStorage(STORAGE_KEYS.ACTIVE_TOP_MENU_PATH, "");
+  const activeTopMenuPath = useStorage(STORAGE_KEYS.ACTIVE_TOP_MENU_PATH, "", sessionStorage);
 
   /**
    * 内容区是否全屏
