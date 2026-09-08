@@ -6,7 +6,7 @@
         ref="menuFormRef"
         :model="menuForm"
         :rules="rules"
-        label-width="80px"
+        label-width="92px"
         class="entry-section__form"
       >
         <el-form-item label="菜单名称" prop="menuName">
@@ -22,10 +22,7 @@
           <template #label>
             <div class="flex-y-center">
               上级菜单
-              <el-tooltip placement="bottom">
-                <template #content>
-                  留空时后端自动创建"表单中心"目录（挂在"动态表单"下）；仅目录类型可选
-                </template>
+              <el-tooltip content="表单入口挂载的目录位置，仅目录类型可选" placement="bottom">
                 <el-icon class="ml-1 cursor-pointer">
                   <QuestionFilled />
                 </el-icon>
@@ -34,10 +31,9 @@
           </template>
           <el-tree-select
             v-model="menuForm.parentId"
-            placeholder="留空默认：表单中心"
+            placeholder="请选择上级菜单"
             :data="catalogTree"
             filterable
-            clearable
             check-strictly
             :render-after-expand="false"
             class="!w-full"
@@ -86,7 +82,7 @@
 
     <!-- 对外分享分区 -->
     <EntrySection v-if="showShare" kind="share" title="对外分享" sub="匿名链接/二维码进入">
-      <el-form label-width="80px" class="entry-section__form">
+      <el-form label-width="92px" class="entry-section__form">
         <el-form-item>
           <template #label>
             <div class="flex-y-center">
@@ -142,12 +138,7 @@ defineOptions({
   name: "FormPublishEntryConfigStep",
 });
 
-/**
- * 入口配置（向导第②步）
- *
- * @description 菜单入口（名称/目录/角色）与公开分享开关的表单分区；
- * 表单数据与开关由容器持有（defineModel 双向绑定），校验能力通过 expose 提供给容器保存前调用
- */
+/** 入口配置（向导第②步；数据由容器持有，校验经 expose 供容器保存前调用） */
 const props = defineProps<{
   /** 是否展示菜单入口配置块 */
   showMenu: boolean;
@@ -171,11 +162,12 @@ const shareEnabled = defineModel<boolean>("shareEnabled", { required: true });
 
 const menuFormRef = ref<FormInstance>();
 
-/** 菜单表单校验规则：菜单名称必填；上级菜单留空 = 默认目录"表单中心"（后端自动创建） */
+/** 菜单表单校验规则：菜单名称与上级菜单必填 */
 const rules = computed<FormRules<FormMenuFormData>>(() =>
   props.showMenu
     ? {
         menuName: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
+        parentId: [{ required: true, message: "请选择上级菜单", trigger: "change" }],
       }
     : {}
 );
@@ -187,8 +179,7 @@ function handleSelectAllRoles(): void {
 
 /**
  * 校验菜单表单（容器保存前调用）
- *
- * @return 校验是否通过；未配置菜单入口时恒通过
+ * @return 未配置菜单入口时恒通过
  */
 function validate(): Promise<boolean> {
   if (!props.showMenu || !menuFormRef.value) {
@@ -213,6 +204,11 @@ defineExpose({ validate });
 
 .entry-section__form {
   padding: 16px 14px 0;
+
+  // label 带提示图标，禁止折行
+  :deep(.el-form-item__label) {
+    white-space: nowrap;
+  }
 }
 
 /* 角色多选下拉 header：全选 + 计数 */

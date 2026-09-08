@@ -1,13 +1,17 @@
 <template>
   <div class="page-container h-full flex flex-1 flex-col">
     <div class="flex-x-between mb-10">
-      <el-link
+      <el-button
+        tag="a"
         href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/table/curd/index.vue"
-        type="primary"
         target="_blank"
+        link
+        type="info"
+        size="small"
       >
-        示例源码 请点击>>>
-      </el-link>
+        <el-icon class="mr-1"><Link /></el-icon>
+        示例源码
+      </el-button>
       <el-button type="primary" plain round size="small" @click="isA = !isA">切换示例</el-button>
     </div>
 

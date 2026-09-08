@@ -1,14 +1,18 @@
 <!-- 列表选择器示例 -->
 <template>
   <div class="page-container">
-    <el-link
-      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/component/table-select/index.vue"
-      type="primary"
-      target="_blank"
+    <el-button
       class="mb-10"
+      tag="a"
+      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/component/table-select/index.vue"
+      target="_blank"
+      link
+      type="info"
+      size="small"
     >
-      示例源码 请点击>>>
-    </el-link>
+      <el-icon class="mr-1"><Link /></el-icon>
+      示例源码
+    </el-button>
     <table-select :text="text" :select-config="selectConfig" @confirm-click="handleConfirm">
       <template #status="scope">
         <el-tag :type="scope.row[scope.prop as string] === 1 ? 'success' : 'info'">

@@ -35,38 +35,45 @@ defineOptions({
 
 const route = useRoute();
 
-/** 表单 ID（设计器始终由列表页"设计"按钮带参进入） */
+/** 表单 ID（列表页"设计"按钮携带） */
 const formId = computed(() => String(route.query.id ?? ""));
 
-/** 页面标题（列表页携带，如【入职信息采集】表单设计） */
+/** 页面标题（列表页携带） */
 const title = computed(() => String(route.query.title ?? "表单设计"));
 
 const designerRef = ref();
 
-/** 设计器配置：隐藏自带保存按钮，保存统一走工具栏 */
+/** 隐藏设计器自带保存按钮，统一走工具栏 */
 const designerConfig = { showSaveBtn: false };
 
 /** 保存中状态 */
 const saving = ref(false);
 
-/** 回显已有规则（空规则为空白画布） */
+/** 表单定义元数据（保存时回传以满足后端非空校验） */
+const formMeta = ref<{ formKey?: string; formName?: string }>({});
+
+// 回显已有规则（空规则为空白画布）
 onMounted(async () => {
   if (!formId.value) {
     ElMessage.error("缺少表单ID参数");
     return;
   }
   const data = await FormAPI.getFormData(formId.value);
+  formMeta.value = { formKey: data.formKey, formName: data.formName };
   if (data.formJson) {
     designerRef.value?.setRule(JSON.parse(data.formJson));
   }
-  if (data.optionsJson) {
-    designerRef.value?.setOption(JSON.parse(data.optionsJson));
+  if (data.optionsJson || data.formName) {
+    const option = data.optionsJson ? JSON.parse(data.optionsJson) : {};
+    // 画布「表单名称」面板回显读 option.formName，而 getOption 保存产出的是面板字段原名
+    // formCreateFormName，键名不对称需转换；画布未填时用表单定义名称预填
+    option.formName = option.formName || option.formCreateFormName || data.formName || "";
+    delete option.formCreateFormName;
+    designerRef.value?.setOption(option);
   }
 });
 
-/**
- * 保存设计器产出的规则与全局配置
- */
+// 保存设计器产出的规则与全局配置
 async function handleSave(): Promise<void> {
   if (!formId.value) {
     ElMessage.error("缺少表单ID参数");
@@ -76,25 +83,19 @@ async function handleSave(): Promise<void> {
   const optionsJson = JSON.stringify(designerRef.value?.getOption() ?? {});
   saving.value = true;
   try {
-    await FormAPI.update(formId.value, { formJson, optionsJson });
+    await FormAPI.update(formId.value, { ...formMeta.value, formJson, optionsJson });
     ElMessage.success("保存成功");
   } finally {
     saving.value = false;
   }
 }
 
-/**
- * 返回表单管理列表
- */
+// 返回表单列表
 function handleBack(): void {
   router.back();
 }
 
-/**
- * 运行态真预览：跳预览页用与填写承载页相同的渲染管线查看效果
- *
- * 预览读取的是已保存规则，未保存的改动不会体现，需先保存再预览
- */
+// 预览读取已保存规则，未保存改动不体现
 function handlePreview(): void {
   if (!formId.value) {
     ElMessage.error("缺少表单ID参数");

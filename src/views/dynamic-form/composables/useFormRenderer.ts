@@ -1,9 +1,7 @@
 /**
  * 表单规则加载与渲染状态
  *
- * @description
- * 填写页（render.vue）、公开填写页（share.vue）、设计器预览页（preview.vue）共用，
- * 保证三处走同一条渲染管线：相同的规则解析、提交按钮策略与成功态切换
+ * 填写页（render）、公开页（share）、预览页（preview）共用同一渲染管线
  */
 
 import { ref, shallowRef } from "vue";
@@ -25,17 +23,15 @@ export interface FormRuleSource {
 export function useFormRenderer<T extends FormRuleSource = FormRuleSource>(
   loader: () => Promise<T | null | undefined>
 ) {
-  // shallowRef：规则与配置整体加载整体替换，无需深层响应式；
-  // 深响应式代理会破坏 form-create Rule 内部 Creator 结构（模板 UnwrapRef 深映射导致类型失配）
+  // shallowRef：深响应式代理会破坏 form-create Rule 内部 Creator 结构
   const rule = shallowRef<Rule[]>([]);
   const option = shallowRef<Options>({ submitBtn: true });
   const loading = ref(false);
   const submitted = ref(false);
 
   /**
-   * 加载并解析规则，返回接口原始数据
-   *
-   * 强制开启提交按钮：填写页必须有提交入口，设计器保存时可能关掉了它
+   * 加载并解析规则
+   * @returns 接口原始数据
    */
   async function load(): Promise<T | undefined> {
     loading.value = true;
@@ -43,6 +39,7 @@ export function useFormRenderer<T extends FormRuleSource = FormRuleSource>(
       const data = await loader();
       rule.value = data?.formJson ? JSON.parse(data.formJson) : [];
       const parsedOption: Options = data?.optionsJson ? JSON.parse(data.optionsJson) : {};
+      // 强制开启提交按钮：填写页必须有提交入口，设计器保存时可能关掉了它
       option.value = { ...parsedOption, submitBtn: true };
       return data ?? undefined;
     } finally {
@@ -50,7 +47,7 @@ export function useFormRenderer<T extends FormRuleSource = FormRuleSource>(
     }
   }
 
-  /** 回到填写态（已填数据清空由 FormRenderer 处理） */
+  // 回到填写态（已填数据清空由 FormRenderer 处理）
   function refill(): void {
     submitted.value = false;
   }

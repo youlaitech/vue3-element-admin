@@ -55,11 +55,7 @@ defineOptions({
   name: "FormPublishResultStep",
 });
 
-/**
- * 发布完成汇总（向导第③步）
- *
- * @description 展示保存后的最终入口配置：菜单位置面包屑、可见角色、分享二维码与链接
- */
+/** 发布完成汇总（向导第③步：菜单位置、可见角色、分享二维码与链接） */
 const props = defineProps<{
   /** 是否展示菜单入口汇总 */
   showMenu: boolean;
@@ -85,7 +81,7 @@ const emit = defineEmits<{
 /** 分享二维码画布 */
 const qrCanvasRef = ref<HTMLCanvasElement>();
 
-// 本组件仅在向导第③步渲染（v-else-if 挂载），此时配置已定，挂载后绘制一次即可
+// 仅在第③步渲染（v-else-if 挂载），配置已定，挂载后绘制一次即可
 onMounted(async () => {
   if (!props.shareVisible) return;
   await nextTick();

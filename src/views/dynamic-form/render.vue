@@ -36,12 +36,7 @@ defineOptions({
 const route = useRoute();
 const router = useRouter();
 
-/**
- * 表单唯一标识
- *
- * 优先取菜单路由参数（meta.params 由后端菜单 params 转换而来，刷新不丢失）；
- * query 兜底：侧边栏点击跳转时 LayoutSidebarItem 会将 meta.params 透传为 query
- */
+/** 表单唯一标识（优先菜单路由 meta.params，query 兜底） */
 const formKey = computed(() => {
   const metaParams = route.meta.params as Record<string, unknown> | undefined;
   return String(metaParams?.formKey ?? route.query.formKey ?? "");
@@ -63,8 +58,7 @@ onMounted(async () => {
 });
 
 /**
- * 提交表单数据（FormRenderer 校验通过后触发）
- *
+ * 提交表单数据（校验通过后触发）
  * @param data 表单数据（field -> value 映射）
  */
 async function handleSubmit(data: Record<string, unknown>): Promise<void> {
@@ -79,14 +73,10 @@ async function handleSubmit(data: Record<string, unknown>): Promise<void> {
   }
 }
 
-/**
- * 是否有权查看收集数据（复用 form:data:list 数据查询权限）
- *
- * 无权限（匿名分享等）不显示"查看已提交数据"按钮，避免点击后无路由可跳
- */
+/** 是否有权查看收集数据（无权限时不显示"查看已提交数据"按钮） */
 const canViewData = computed(() => hasPerm(["form:data:list"]));
 
-/** 跳转数据列表（带 formKey 定位表单，列表按提交时间倒序，本次提交在首位） */
+// 跳转数据列表（按提交时间倒序，本次提交在首位）
 function handleViewData(): void {
   router.push({
     name: "FormData",

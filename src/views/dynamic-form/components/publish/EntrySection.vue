@@ -19,12 +19,7 @@ defineOptions({
   name: "FormPublishEntrySection",
 });
 
-/**
- * 入口分区卡片
- *
- * @description 发布向导第②步（入口配置）与第③步（发布完成）共用的分区容器，
- * 左侧 3px 色条区分两种形态（蓝=系统内嵌 绿=对外分享）
- */
+/** 入口分区卡片（发布向导②③步共用，左侧色条区分内嵌/分享形态） */
 defineProps<{
   /** 分区形态：menu 系统内嵌 / share 对外分享 */
   kind: "menu" | "share";

@@ -1,14 +1,18 @@
 <!-- wangEditor富文本编辑器示例 -->
 <template>
   <div class="page-container">
-    <el-link
-      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/component/wang-editor.vue"
-      type="primary"
-      target="_blank"
+    <el-button
       class="mb-[20px]"
+      tag="a"
+      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/component/wang-editor.vue"
+      target="_blank"
+      link
+      type="info"
+      size="small"
     >
-      示例源码 请点击>>>
-    </el-link>
+      <el-icon class="mr-1"><Link /></el-icon>
+      示例源码
+    </el-button>
     <WangEditor v-model="value" height="400px" />
 
     <div style="margin-top: 10px">

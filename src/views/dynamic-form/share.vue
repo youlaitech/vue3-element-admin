@@ -50,7 +50,7 @@ const formKey = computed(() => String(route.params.formKey ?? ""));
 const renderData = ref<FormRenderData>();
 const submitting = ref(false);
 
-/** 加载失败提示（接口异常时 request 拦截器已弹错误消息，此处只负责兜底文案） */
+/** 加载失败兜底文案（错误消息由拦截器统一弹出） */
 const loadError = ref("");
 
 const { rule, option, loading, submitted, load, refill } = useFormRenderer(() =>
@@ -70,8 +70,7 @@ onMounted(async () => {
 });
 
 /**
- * 匿名提交表单数据（FormRenderer 校验通过后触发）
- *
+ * 匿名提交表单数据（校验通过后触发）
  * @param data 表单数据（field -> value 映射）
  */
 async function handleSubmit(data: Record<string, unknown>): Promise<void> {
@@ -81,7 +80,7 @@ async function handleSubmit(data: Record<string, unknown>): Promise<void> {
     await FormAPI.submitPublicFormData(formKey.value, data);
     submitted.value = true;
   } catch {
-    // 提交失败（限流/校验不通过）消息由 request 拦截器统一弹出，无需重复提示；停留填写态可重试
+    // 失败不重复提示（拦截器已弹），停留填写态可重试
   } finally {
     submitting.value = false;
   }

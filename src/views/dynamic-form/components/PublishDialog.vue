@@ -91,13 +91,7 @@ defineOptions({
   name: "FormPublishDialog",
 });
 
-/**
- * 表单发布/入口管理向导容器
- *
- * @description 三步向导（方式选择 → 入口配置 → 发布完成）的状态与编排容器：
- * 数据加载、保存编排（发布 → 生成菜单 → 保存公开开关）在容器完成，
- * 各步骤展示细节由 publish/ 目录下的步骤组件承担
- */
+/** 发布/入口管理三步向导容器 */
 const props = defineProps<{
   /** 表单ID */
   formId: string;
@@ -119,7 +113,7 @@ const visible = defineModel("modelValue", {
   default: false,
 });
 
-/** 表单是否已发布（决定向导模式：发布流程 / 入口管理直达第②步） */
+/** 表单是否已发布（已发布直达入口配置步骤） */
 const isPublished = computed(() => props.status === FormStatus.PUBLISHED);
 
 /** 当前向导步骤 */
@@ -149,13 +143,10 @@ const entryConfigRef = ref<InstanceType<typeof EntryConfigStep>>();
 /** 目录类型标识（sys_menu.type：C 目录） */
 const MENU_TYPE_CATALOG = "C";
 
-/** 默认挂载目录名称：挂在"动态表单"目录下，管理菜单不授权给填写角色即不渲染 */
+/** 默认挂载目录名称 */
 const DEFAULT_CATALOG_NAME = "表单中心";
 
-/**
- * 是否展示菜单入口配置块：
- * 已发布（入口管理）统一管理两种入口；未发布按第①步所选方式渲染
- */
+/** 是否展示菜单入口配置块（已发布恒显示，未发布按第①步所选） */
 const showMenuConfig = computed(() =>
   isPublished.value ? true : selectedMethods.value.includes("menu")
 );
@@ -176,7 +167,7 @@ const shareUrl = computed(
   () => `${window.location.origin}${window.location.pathname}#/f/${props.formKey}`
 );
 
-/** 第③步分享汇总可见：本次配置了分享且公开开关开启 */
+/** 第③步分享汇总可见（配置了分享且开关开启） */
 const shareResultVisible = computed(() => showShareConfig.value && shareEnabled.value);
 
 /** 第③步副标题 */
@@ -194,9 +185,7 @@ watch(visible, async (newVisible) => {
   await loadWizardData();
 });
 
-/**
- * 加载向导数据：目录树、角色选项、已生成菜单配置回显
- */
+// 加载目录树、角色选项与已生成菜单配置
 async function loadWizardData(): Promise<void> {
   const [menuTree, roles, menu] = await Promise.all([
     MenuAPI.getList({}),
@@ -206,20 +195,19 @@ async function loadWizardData(): Promise<void> {
   catalogTree.value = buildCatalogTree(menuTree);
   roleOptions.value = roles;
 
-  // 回显已生成的菜单配置；未生成过时菜单名默认表单名、父级默认"表单中心"
+  // 未生成过菜单时：名称默认表单名、父级默认"表单中心"
   menuConfig.value = menu;
   Object.assign(menuForm, {
     menuName: menu?.menuName ?? props.formName,
     parentId: menu?.parentId ?? findDefaultCatalogId(),
     roleIds: menu?.roleIds ? [...menu.roleIds] : [],
   });
-  // 回显公开开关（列表行传入，未开启过为 0）
+  // 回显公开开关
   shareEnabled.value = props.isPublic === 1;
 }
 
 /**
- * 切换发布方式选中态（可单选可全选）
- *
+ * 切换发布方式选中态
  * @param method 发布方式
  */
 function toggleMethod(method: PublishMethod): void {
@@ -233,7 +221,6 @@ function toggleMethod(method: PublishMethod): void {
 
 /**
  * 构建目录树（仅目录类型可挂载表单菜单）
- *
  * @param menus 菜单树
  */
 function buildCatalogTree(menus: MenuItem[]): CatalogNode[] {
@@ -247,9 +234,7 @@ function buildCatalogTree(menus: MenuItem[]): CatalogNode[] {
     }));
 }
 
-/**
- * 查找默认挂载目录ID：递归查找"表单中心"（已生成过则预选）；不存在返回空串（留空=后端自动创建）
- */
+// 递归查找"表单中心"目录ID；不存在返回空串（留空由后端自动创建）
 function findDefaultCatalogId(): string {
   const find = (nodes: CatalogNode[]): string => {
     for (const node of nodes) {
@@ -266,14 +251,8 @@ function findDefaultCatalogId(): string {
   return find(catalogTree.value);
 }
 
-/**
- * 菜单路径面包屑：选中目录的名称链 + 菜单名称
- * 留空（默认目录）时展示后端实际挂载位置：动态表单 / 表单中心
- */
+/** 菜单位置面包屑（目录名称链 + 菜单名） */
 const menuBreadcrumb = computed(() => {
-  if (!menuForm.parentId) {
-    return ["动态表单", DEFAULT_CATALOG_NAME, menuForm.menuName];
-  }
   const names: string[] = [];
   const find = (nodes: CatalogNode[], chain: string[]): boolean => {
     for (const node of nodes) {
@@ -297,14 +276,8 @@ const grantedRoleNames = computed(() =>
     .map((role) => role.label)
 );
 
-/**
- * 生成菜单的完整路由路径：目录路径链 + 表单标识
- * 留空（默认目录）时为后端标准挂载位置：/form/center/{formKey}
- */
+/** 菜单完整路由路径（目录路径链 + 表单标识） */
 const menuRoutePath = computed(() => {
-  if (!menuForm.parentId) {
-    return `/form/center/${props.formKey}`;
-  }
   let routePath = "";
   const find = (nodes: CatalogNode[], basePath: string): boolean => {
     for (const node of nodes) {
@@ -324,9 +297,7 @@ const menuRoutePath = computed(() => {
   return routePath;
 });
 
-/**
- * 保存入口配置：未发布表单先发布（版本+1），再按所选方式生成菜单/保存公开开关
- */
+// 保存入口配置：未发布先发布，再生成菜单/保存公开开关
 async function handleSaveEntry(): Promise<void> {
   if (showMenuConfig.value) {
     const valid = (await entryConfigRef.value?.validate()) ?? true;
@@ -341,14 +312,18 @@ async function handleSaveEntry(): Promise<void> {
     if (showMenuConfig.value) {
       await FormAPI.saveFormMenu(props.formId, {
         menuName: menuForm.menuName,
-        // 留空不传：后端自动使用/创建默认目录"表单中心"
-        parentId: menuForm.parentId || undefined,
+        parentId: menuForm.parentId,
         roleIds: menuForm.roleIds,
       });
     }
     if (showShareConfig.value) {
-      // isPublic 独立提交：仅配置分享入口时才写开关，避免菜单-only 保存意外重置公开状态
-      await FormAPI.update(props.formId, { isPublic: shareEnabled.value ? 1 : 0 });
+      // isPublic 独立提交，避免菜单-only 保存意外重置公开状态
+      // formKey/formName 原样回传满足后端非空校验（已发布态后端不更新元数据）
+      await FormAPI.update(props.formId, {
+        formKey: props.formKey,
+        formName: props.formName,
+        isPublic: shareEnabled.value ? 1 : 0,
+      });
     }
     step.value = 2;
     emit("success");
@@ -357,9 +332,7 @@ async function handleSaveEntry(): Promise<void> {
   }
 }
 
-/**
- * 复制分享链接
- */
+// 复制分享链接
 function handleCopyLink(): void {
   navigator.clipboard
     ?.writeText(shareUrl.value)
@@ -367,9 +340,7 @@ function handleCopyLink(): void {
     .catch(() => ElMessage.warning("复制失败，请手动复制"));
 }
 
-/**
- * 前往查看：重载动态路由（菜单为新建，当前路由表未包含）后跳转
- */
+// 重载动态路由（新建菜单需重新拉取路由表）后跳转
 async function handleGoView(): Promise<void> {
   if (!menuRoutePath.value) {
     ElMessage.warning("未能解析菜单路径，请刷新页面后从侧边栏进入");
@@ -381,9 +352,7 @@ async function handleGoView(): Promise<void> {
   router.push(menuRoutePath.value);
 }
 
-/**
- * 关闭向导并重置步骤
- */
+// 关闭向导并重置步骤
 function handleClose(): void {
   step.value = 0;
 }

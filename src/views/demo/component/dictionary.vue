@@ -1,14 +1,18 @@
 <!-- 字典组件示例 -->
 <template>
   <div class="page-container">
-    <el-link
-      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/component/dictionary.vue"
-      type="primary"
-      target="_blank"
+    <el-button
       class="mb-[20px]"
+      tag="a"
+      href="https://gitee.com/youlaiorg/vue3-element-admin/blob/master/src/views/demo/component/dictionary.vue"
+      target="_blank"
+      link
+      type="info"
+      size="small"
     >
-      示例源码 请点击>>>
-    </el-link>
+      <el-icon class="mr-1"><Link /></el-icon>
+      示例源码
+    </el-button>
     <el-form>
       <el-form-item label="性别">
         <DictSelect v-model="stringValue" code="gender" />

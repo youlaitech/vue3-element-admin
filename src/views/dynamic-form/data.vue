@@ -55,7 +55,8 @@
               {{ formatCellValue(getFieldValue(scope.row as FormDataItem, field.field), field) }}
             </template>
           </el-table-column>
-          <el-table-column label="提交人" width="120" align="center" show-overflow-tooltip>
+          <!-- 弹性列：吸收剩余宽度，避免表格右侧留白 -->
+          <el-table-column label="提交人" min-width="120" align="center" show-overflow-tooltip>
             <template #default="scope">
               {{ (scope.row as FormDataItem).createByName || "匿名" }}
             </template>
@@ -140,10 +141,10 @@ defineOptions({
 
 const route = useRoute();
 
-/** 表单唯一标识（列表"数据"按钮 query 携带，复刻 dict-item 模式） */
+/** 表单唯一标识（列表"数据"按钮携带） */
 const formKey = computed(() => String(route.query.formKey ?? ""));
 
-/** 页面标题（列表页携带，如【入职信息采集】数据） */
+/** 页面标题（列表页携带） */
 const title = computed(() => String(route.query.title ?? "表单数据"));
 
 const tableWrapperRef = ref<HTMLElement | null>(null);
@@ -152,10 +153,10 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 /** 表单名称（导出文件名用） */
 const formName = ref("");
 
-/** 导出中状态（防止重复触发全量拉取） */
+/** 导出中状态（防重复触发） */
 const exporting = ref(false);
 
-/** 表单规则（详情抽屉只读回显复用；shallowRef 避免深代理破坏 Rule 内部的 Creator 结构） */
+/** 表单规则（shallowRef 避免深代理破坏 Rule 内部 Creator 结构） */
 const rule = shallowRef<Rule[]>([]);
 
 /** 从表单规则提取的字段元数据（field + title + 选项映射） */
@@ -202,11 +203,7 @@ onMounted(async () => {
   fetchData();
 });
 
-/**
- * 行数据解析缓存（行ID -> field/value 映射）
- *
- * 避免模板渲染时每行每列各解析一次同一行 dataJson
- */
+/** 行数据解析缓存（行ID -> 字段值映射，避免模板重复解析 dataJson） */
 const rowDataMap = computed(() => {
   const map = new Map<string, Record<string, unknown>>();
   list.value.forEach((row) => map.set(row.id, parseDataJson(row.dataJson)));
@@ -215,7 +212,6 @@ const rowDataMap = computed(() => {
 
 /**
  * 取行数据的指定字段值
- *
  * @param row 数据行
  * @param field 字段名
  */
@@ -223,33 +219,27 @@ function getFieldValue(row: FormDataItem, field: string): unknown {
   return rowDataMap.value.get(row.id)?.[field];
 }
 
-/**
- * 打开详情抽屉并只读回显
- *
- * 规则优先加载后端返回的提交时版本快照，防止表单改版（字段删除/改名）导致历史数据回显漂移；
- * 无快照（快照表启用前提交的历史数据）回退当前定义
- */
+// 打开详情抽屉只读回显（优先提交时版本快照，防止表单改版后历史数据漂移）
 async function handleDetailClick(row: FormDataItem): Promise<void> {
   const detail = await FormAPI.getFormDataDetail(formKey.value, row.id);
   detailRow.value = detail;
   detailData.value = detail.dataJson ? JSON.parse(detail.dataJson) : {};
-  // JSON.parse 产出的规则与页面级渲染规则隔离，可安全写入 disabled 只读态
+  // 独立 JSON.parse，与页面渲染规则隔离，可安全置为只读
   detailRule.value = detail.formJson
     ? JSON.parse(detail.formJson)
     : JSON.parse(JSON.stringify(rule.value));
-  // 全局配置随快照回显；强制隐藏提交/重置按钮（快照配置可能开启了它们）
+  // 强制隐藏提交/重置按钮（快照配置可能开启）
   const parsedOption: Options = detail.optionsJson ? JSON.parse(detail.optionsJson) : {};
   detailOption.value = { ...parsedOption, submitBtn: false, resetBtn: false };
   detailState.visible = true;
-  // 抽屉内 form-create 挂载完成后再禁用（api 就绪时机在 nextTick 之后）
+  // form-create 挂载完成后再禁用
   await nextTick();
   detailApi.value?.disabled(true);
 }
 
 /**
  * 删除单个或批量表单数据
- *
- * @param id 指定时删除单条数据；不指定时删除表格勾选项
+ * @param id 指定时删除单条，否则删除勾选项
  */
 async function handleDelete(id?: string): Promise<void> {
   const dataIds = id ?? selectedIds.value.join(",");
@@ -279,18 +269,13 @@ async function handleDelete(id?: string): Promise<void> {
   }
 }
 
-/** 导出分页大小（单页拉取行数，与导出上限配合控制内存占用） */
+/** 导出分页大小 */
 const EXPORT_PAGE_SIZE = 500;
 
-/** 导出页数上限（超出截断并提示，防止超大表单拖垮浏览器） */
+/** 导出页数上限（超出截断提示） */
 const EXPORT_MAX_PAGES = 100;
 
-/**
- * 导出全量表单数据为 Excel
- *
- * 动态列 = 表单全部字段（不受列表展示列数上限约束）+ 提交人/版本/提交时间；
- * 数据按分页循环拉取全量，exceljs 动态导入按需加载
- */
+// 导出全量数据为 Excel（全部字段 + 提交人/版本/时间；分页拉取，exceljs 按需加载）
 async function handleExport(): Promise<void> {
   if (exporting.value) return;
   exporting.value = true;
@@ -333,7 +318,6 @@ async function handleExport(): Promise<void> {
         const data = parseDataJson(row.dataJson);
         const record: Record<string, unknown> = {};
         fields.value.forEach((field) => {
-          // 与列表展示同规则：选项 value 翻译为 label，时间格式化
           record[field.field] = formatCellValue(data[field.field], field);
         });
         record.createByName = row.createByName || "匿名";

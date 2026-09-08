@@ -32,7 +32,7 @@
     <el-card ref="tableWrapperRef" class="page-content" shadow="never">
       <div class="page-toolbar">
         <div class="page-toolbar__left">
-          <!-- 类型过滤视图：空串=全部；切换即查询，替代原"类型列+搜索区类型下拉"双冗余 -->
+          <!-- 类型过滤：空串=全部，切换即查询 -->
           <el-radio-group v-model="params.category" @change="handleQuery">
             <el-radio-button value="">全部</el-radio-button>
             <el-radio-button v-for="(label, value) in categoryOptions" :key="value" :value="value">
@@ -110,6 +110,7 @@
                 设计
               </el-button>
               <el-button
+                v-if="scope.row.status === FormStatus.PUBLISHED"
                 type="primary"
                 link
                 size="small"
@@ -329,7 +330,7 @@ const dialogState = reactive({
   visible: false,
 });
 
-/** 新增表单默认值：类型缺省普通表单（工作流表单需明确选择） */
+/** 新增表单默认值：类型缺省普通表单 */
 const initialFormData: FormDefinitionData = {
   category: "normal",
 };
@@ -348,9 +349,7 @@ const rules: FormRules<FormDefinitionData> = {
   ],
 };
 
-/**
- * 重置表单数据和验证状态
- */
+// 重置表单数据和校验状态
 function resetForm(): void {
   formDefinitionFormRef.value?.resetFields();
   formDefinitionFormRef.value?.clearValidate();
@@ -364,17 +363,13 @@ function openDialog(): void {
   dialogState.visible = true;
 }
 
-/**
- * 关闭表单定义弹窗并清理临时状态
- */
+// 关闭弹窗并重置
 function closeDialog(): void {
   dialogState.visible = false;
   resetForm();
 }
 
-/**
- * 打开新增表单定义弹窗：类型按当前过滤视图预选（仍可修改）
- */
+// 打开新增弹窗（类型按当前过滤视图预选）
 function handleCreateClick(): void {
   resetForm();
   editingStatus.value = null;
@@ -384,9 +379,8 @@ function handleCreateClick(): void {
 }
 
 /**
- * 打开编辑表单定义弹窗并回填数据
- *
- * @param row 当前表单行（携带状态，用于判断类型可否修改）
+ * 打开编辑弹窗并回填数据
+ * @param row 当前表单行（携带状态，判断类型可否修改）
  */
 async function handleEditClick(row: FormDefinitionItem): Promise<void> {
   resetForm();
@@ -397,9 +391,7 @@ async function handleEditClick(row: FormDefinitionItem): Promise<void> {
   openDialog();
 }
 
-/**
- * 校验并提交表单定义
- */
+// 校验并提交
 async function handleSubmit(): Promise<void> {
   const valid = await formDefinitionFormRef.value?.validate().then(
     () => true,
@@ -411,7 +403,10 @@ async function handleSubmit(): Promise<void> {
   try {
     const id = formData.id;
     if (id) {
-      await FormAPI.update(id, formData);
+      // 仅提交元数据：formData 由回显数据整体赋值，含 formJson/optionsJson，
+      // 整体回写会用打开弹窗时的旧规则覆盖期间设计器保存的新规则
+      const { formKey, formName, category, description } = formData;
+      await FormAPI.update(id, { formKey, formName, category, description });
       ElMessage.success("修改成功");
     } else {
       await FormAPI.create(formData);
@@ -424,9 +419,7 @@ async function handleSubmit(): Promise<void> {
   }
 }
 
-/**
- * 发布向导状态（"发布"与已发布表单的"入口管理"共用）
- */
+/** 发布向导状态（发布/入口管理共用） */
 const publishState = reactive({
   visible: false,
   formId: "",
@@ -438,8 +431,7 @@ const publishState = reactive({
 });
 
 /**
- * 打开发布向导（未发布走发布流程，已发布直达入口配置）
- *
+ * 打开发布向导（已发布表单直达入口配置）
  * @param row 当前表单行
  */
 function openPublishDialog(row: FormDefinitionItem): void {
@@ -453,16 +445,13 @@ function openPublishDialog(row: FormDefinitionItem): void {
   });
 }
 
-/**
- * 发布向导保存成功后刷新列表（表单状态与版本可能已变更）
- */
+// 发布后刷新列表（状态与版本可能已变更）
 function handlePublishSuccess(): void {
   fetchData();
 }
 
 /**
  * 跳转到指定表单页面并检查路由是否已注册
- *
  * @param name 路由名称（FormDesigner/FormData）
  * @param query 路由参数
  */
@@ -482,7 +471,6 @@ function openFormPage(name: string, query: Record<string, string>): void {
 
 /**
  * 跳转到表单数据页
- *
  * @param row 当前表单行
  */
 function openDataPage(row: FormDefinitionItem): void {
@@ -491,7 +479,6 @@ function openDataPage(row: FormDefinitionItem): void {
 
 /**
  * 停用表单（已发出去的访问入口立即失效）
- *
  * @param id 表单 ID
  */
 async function handleDisable(id: string): Promise<void> {
@@ -512,8 +499,7 @@ async function handleDisable(id: string): Promise<void> {
 
 /**
  * 删除单个或批量表单定义
- *
- * @param id 指定时删除单个表单；不指定时删除表格勾选项
+ * @param id 指定时删除单个表单，否则删除勾选项
  */
 async function handleDelete(id?: string): Promise<void> {
   const formIds = id ?? selectedIds.value.join(",");
@@ -545,7 +531,6 @@ async function handleDelete(id?: string): Promise<void> {
 
 /**
  * 跳转到表单设计器页面
- *
  * @param row 当前表单行
  */
 function openDesigner(row: FormDefinitionItem): void {

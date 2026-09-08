@@ -37,10 +37,10 @@ defineOptions({
 
 const route = useRoute();
 
-/** 表单 ID（设计器"预览"按钮携参进入） */
+/** 表单 ID（设计器"预览"按钮携带） */
 const formId = computed(() => String(route.query.id ?? ""));
 
-/** 页面标题（设计器携带，如【入职信息采集】表单预览） */
+/** 页面标题（设计器携带） */
 const title = computed(() => String(route.query.title ?? "表单预览"));
 
 // 走表单定义接口拉草稿规则：render 接口仅返回已发布表单，预览恰恰要覆盖未发布态
@@ -56,12 +56,12 @@ onMounted(async () => {
   await load();
 });
 
-/** 预览提交：校验通过即进入成功态，不落库 */
+// 预览不落库，校验通过即进入成功态
 function handlePreviewSubmit(): void {
   submitted.value = true;
 }
 
-/** 返回设计器继续编辑 */
+// 返回设计器
 function handleBack(): void {
   router.back();
 }

@@ -1,7 +1,5 @@
 /**
- * 表单字段解析
- *
- * @description 从 form-create 规则提取字段元数据、解析提交数据并格式化展示值
+ * 表单字段解析（规则字段提取、提交数据解析与展示格式化）
  */
 
 /** 表单字段元数据 */
@@ -15,12 +13,8 @@ export interface FormFieldMeta {
 }
 
 /**
- * 递归提取表单字段元数据
- *
- * 布局容器（row/col）自身无 field，其子节点递归收集；
- * 参数为 JSON 解析产物，结构未经校验，按 unknown 逐层探测
- *
- * @param rules form-create 规则（JSON 解析值）
+ * 递归提取表单字段元数据（布局容器的子节点递归收集）
+ * @param rules form-create 规则（JSON 解析产物，结构未校验）
  */
 export function extractFields(rules: unknown): FormFieldMeta[] {
   const result: FormFieldMeta[] = [];
@@ -45,11 +39,8 @@ export function extractFields(rules: unknown): FormFieldMeta[] {
 }
 
 /**
- * 提取字段选项映射（value -> label）
- *
- * 非对象或缺失 value/label 的脏项跳过
- *
- * @param options 规则里的 options 数组（JSON 解析值）
+ * 提取字段选项映射（value -> label，脏项跳过）
+ * @param options 规则 options 数组
  */
 export function extractOptionMap(options: unknown): Map<string, string> {
   const optionMap = new Map<string, string>();
@@ -66,7 +57,6 @@ export function extractOptionMap(options: unknown): Map<string, string> {
 
 /**
  * 解析提交数据（field -> value 映射，解析失败按空数据兜底）
- *
  * @param dataJson 数据 JSON 字符串
  */
 export function parseDataJson(dataJson?: string): Record<string, unknown> {
@@ -79,9 +69,8 @@ export function parseDataJson(dataJson?: string): Record<string, unknown> {
 
 /**
  * 格式化单元格展示值（选项翻译、数组拼接、对象序列化、空值占位）
- *
  * @param value 字段值
- * @param field 字段元数据（选项类字段 value 翻译为 label，未命中映射时原样展示）
+ * @param field 字段元数据（选项类字段翻译 label，未命中原样展示）
  */
 export function formatCellValue(value: unknown, field?: FormFieldMeta): string {
   if (value === null || value === undefined || value === "") return "-";

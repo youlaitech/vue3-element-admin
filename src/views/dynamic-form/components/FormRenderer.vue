@@ -34,12 +34,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-/**
- * 表单渲染组件
- *
- * @description 填写页、公开填写页、设计器预览页共用，保证三处渲染效果一致；
- * 规则加载与提交落库由各承载页实现，本组件只负责渲染、校验与数据抛出
- */
+/** 表单渲染组件（填写/公开/预览三页共用；规则加载与提交由承载页实现） */
 const props = defineProps<{
   /** 表单标题（卡片头展示） */
   title: string;
@@ -63,10 +58,7 @@ const emit = defineEmits<{
 const formApi = ref();
 const formData = ref<Record<string, unknown>>({});
 
-/**
- * 从成功态返回填写态时清空已提交数据：
- * form-create 随 v-if 重新挂载会重新应用规则默认值，此处仅需清掉残留提交值
- */
+// 返回填写态时清掉残留提交值（重新挂载会重新应用规则默认值）
 watch(
   () => props.submitted,
   (submitted) => {
@@ -76,9 +68,7 @@ watch(
   }
 );
 
-/**
- * 校验通过后抛出表单数据（浅拷贝，避免承载页异步提交期间数据被继续编辑污染）
- */
+// 抛出表单数据（浅拷贝，防异步提交期间被继续编辑污染）
 function handleSubmit(): void {
   emit("submit", { ...formData.value });
 }
