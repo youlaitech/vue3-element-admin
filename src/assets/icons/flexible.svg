@@ -1,6 +1,1 @@
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M5 12h4.2c2 0 3.6-1.6 3.6-3.6V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M9.2 12h3.6c2 0 3.6 1.6 3.6 3.6V18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M16.4 6H19v2.6M16.4 18H19v-2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="5" cy="12" r="1.5" fill="currentColor"/>
-</svg>
+<svg t="1788842305175" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="23579" width="200" height="200"><path d="M417.322667 629.333333l85.333333 85.333334H672v213.333333h-213.333333v-166.826667l-67.861334-67.861333L128 693.333333v-64h289.322667z m190.677333 149.333334h-85.333333v85.333333h85.333333v-85.333333z m341.333333-362.666667v213.333333h-213.333333V554.666667H128v-64h608v-74.666667h213.333333z m-64 64h-85.333333v85.333333h85.333333v-85.333333z m-213.333333-362.666667v213.333334h-172.8l-81.877333 81.92H128v-64l262.805333-0.021334 67.861334-67.861333V117.333333h213.333333z m-64 64h-85.333333v85.333334h85.333333v-85.333334z" p-id="23580"></path></svg>
