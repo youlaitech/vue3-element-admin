@@ -10,6 +10,8 @@ export interface FormDefinitionQueryParams extends BaseQueryParams {
   keywords?: string;
   /** 状态(0草稿 1已发布 -1已停用) */
   status?: number;
+  /** 表单类型(normal普通表单 workflow工作流表单，空串=全部) */
+  category?: string;
 }
 
 /** 表单定义分页对象 */
@@ -28,6 +30,8 @@ export interface FormDefinitionItem {
   version: number;
   /** 是否允许匿名公开访问(0否 1是) */
   isPublic?: number;
+  /** 表单类型(normal普通表单 workflow工作流表单，空串=全部) */
+  category?: string;
   /** 创建时间 */
   createTime?: string;
 }
@@ -48,6 +52,8 @@ export interface FormDefinitionData {
   optionsJson?: string;
   /** 是否允许匿名公开访问(0否 1是)，公开访问总开关 */
   isPublic?: number;
+  /** 表单类型(normal通用表单 workflow工作流表单，缺省normal) */
+  category?: string;
 }
 
 /** 表单渲染对象（渲染端按 formKey 加载） */

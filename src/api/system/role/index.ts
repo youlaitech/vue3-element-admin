@@ -17,6 +17,10 @@ const RoleAPI = {
   getOptions() {
     return request<unknown, OptionItem[]>({ url: `${ROLE_BASE_URL}/options`, method: "get" });
   },
+  /** 获取角色编码下拉数据源（value 为角色编码，供流程候选组等场景） */
+  getCodeOptions() {
+    return request<unknown, OptionItem[]>({ url: `${ROLE_BASE_URL}/code-options`, method: "get" });
+  },
   /** 获取角色的菜单ID集合 */
   getRoleMenuIds(roleId: string) {
     return request<unknown, string[]>({

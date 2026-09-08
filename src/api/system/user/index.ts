@@ -91,7 +91,7 @@ const UserAPI = {
     return request({
       url: `${USER_BASE_URL}/${id}/password/reset`,
       method: "put",
-      params: { password },
+      data: { password },
     });
   },
 

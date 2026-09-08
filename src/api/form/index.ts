@@ -9,11 +9,18 @@ import type {
   FormMenuFormData,
   FormRenderData,
 } from "./types";
-import type { PageResult } from "@/api/common";
+import type { OptionItem, PageResult } from "@/api/common";
 
 const FORM_BASE_URL = "/api/v1/forms";
 
 const FormAPI = {
+  /** 审批表单下拉选项（工作流设计器绑定表单用，仅已发布 workflow 类型） */
+  getWorkflowOptions() {
+    return request<unknown, OptionItem[]>({
+      url: `${FORM_BASE_URL}/options`,
+      method: "get",
+    });
+  },
   /** 表单定义分页列表 */
   getPage(queryParams: FormDefinitionQueryParams) {
     return request<unknown, PageResult<FormDefinitionItem>>({

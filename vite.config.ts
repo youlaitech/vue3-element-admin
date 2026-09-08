@@ -165,6 +165,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           "radio",
           "radio-button",
           "radio-group",
+          "result",
           "row",
           "scrollbar",
           "select",
@@ -191,6 +192,10 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           "upload",
           "watermark",
         ].map((c) => `element-plus/es/components/${c}/style/index`),
+        // 流程设计器与预览器为路由懒加载，bpmn-js 体积大，首启预构建避免进入页面时重优化刷新
+        "bpmn-js/lib/Modeler",
+        "bpmn-js/lib/NavigatedViewer",
+        "bpmn-js/lib/util/ModelUtil",
       ],
     },
     // 构建配置（Vite 8 使用 Rolldown + Oxc）

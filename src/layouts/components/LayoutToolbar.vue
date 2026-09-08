@@ -32,7 +32,7 @@
           <div class="layout-user__avatar">
             <img :src="userStore.userInfo.avatar" class="layout-user__avatar-img" />
           </div>
-          <span class="layout-user__name">{{ userStore.userInfo.username }}</span>
+          <span class="layout-user__name">{{ userStore.userInfo.nickname }}</span>
         </div>
         <template #dropdown>
           <el-dropdown-menu>

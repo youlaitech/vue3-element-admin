@@ -127,6 +127,21 @@
                 </el-button>
               </el-form>
 
+              <div class="login-demo">
+                <div class="login-demo__title">工作流演示账号 · 密码统一 123456，点击直接填入</div>
+                <div class="login-demo__accounts">
+                  <button
+                    v-for="account in demoAccounts"
+                    :key="account.username"
+                    type="button"
+                    class="login-demo__chip"
+                    @click="fillDemoAccount(account)"
+                  >
+                    {{ account.label }}
+                  </button>
+                </div>
+              </div>
+
               <div class="login-alt">
                 <div class="login-alt__divider">其他登录方式</div>
                 <div class="login-alt__buttons">
@@ -186,7 +201,7 @@ const UserIcon = markRaw(User);
 const LockIcon = markRaw(Lock);
 
 const loginFormData = ref<LoginRequest>({
-  username: "admin",
+  username: "youlai",
   password: "123456",
   captchaId: "",
   captchaCode: "",
@@ -201,6 +216,23 @@ const loginRules = computed(() => ({
   ],
   captchaCode: [{ required: true, trigger: "blur", message: "请输入验证码" }],
 }));
+
+/** 工作流演示账号（与 workflow.sql 预置数据一致，点击填入登录表单） */
+const demoAccounts = [
+  { username: "employee", label: "员工·发起" },
+  { username: "dept_manager", label: "部门主管·审批" },
+  { username: "manager", label: "总经理" },
+  { username: "finance", label: "财务" },
+  { username: "clerk", label: "行政" },
+];
+
+/**
+ * 点击演示账号填入账号密码（验证码仍需手动输入）
+ */
+function fillDemoAccount(account: { username: string }): void {
+  loginFormData.value.username = account.username;
+  loginFormData.value.password = "123456";
+}
 
 function getCaptcha() {
   codeLoading.value = true;
@@ -596,6 +628,43 @@ $input-h: 44px;
   }
 }
 
+.login-demo {
+  margin-top: 20px;
+
+  &__title {
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: $text-muted;
+  }
+
+  &__accounts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__chip {
+    height: 28px;
+    padding: 0 12px;
+    font-size: 12px;
+    color: $text-secondary;
+    cursor: pointer;
+    background: rgb(37 99 235 / 5%);
+    border: 1px solid rgb(37 99 235 / 16%);
+    border-radius: 999px;
+    transition:
+      color 0.2s,
+      background 0.2s,
+      border-color 0.2s;
+
+    &:hover {
+      color: $primary;
+      background: rgb(37 99 235 / 10%);
+      border-color: rgba($primary, 0.4);
+    }
+  }
+}
+
 .login-alt {
   margin-top: 28px;
 
@@ -746,6 +815,25 @@ $input-h: 44px;
   &::before,
   &::after {
     background: rgb(255 255 255 / 12%);
+  }
+}
+
+/* 深色下演示账号用半透明白底 */
+.dark .login-demo {
+  &__title {
+    color: rgb(255 255 255 / 35%);
+  }
+
+  &__chip {
+    color: rgb(255 255 255 / 70%);
+    background: rgb(255 255 255 / 6%);
+    border-color: rgb(255 255 255 / 14%);
+
+    &:hover {
+      color: #fff;
+      background: rgb(255 255 255 / 12%);
+      border-color: rgb(255 255 255 / 28%);
+    }
   }
 }
 

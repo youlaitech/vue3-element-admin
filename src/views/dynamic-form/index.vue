@@ -32,6 +32,13 @@
     <el-card ref="tableWrapperRef" class="page-content" shadow="never">
       <div class="page-toolbar">
         <div class="page-toolbar__left">
+          <!-- 类型过滤视图：空串=全部；切换即查询，替代原"类型列+搜索区类型下拉"双冗余 -->
+          <el-radio-group v-model="params.category" @change="handleQuery">
+            <el-radio-button value="">全部</el-radio-button>
+            <el-radio-button v-for="(label, value) in categoryOptions" :key="value" :value="value">
+              {{ label }}
+            </el-radio-button>
+          </el-radio-group>
           <el-button type="primary" @click="handleCreateClick()">新增</el-button>
           <el-button type="danger" :disabled="!hasSelection" @click="handleDelete()">
             删除
@@ -62,12 +69,23 @@
           @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="表单名称" prop="formName" min-width="140" show-overflow-tooltip>
+          <el-table-column label="表单名称" prop="formName" min-width="180" show-overflow-tooltip>
             <template #default="scope">
-              <span>{{ scope.row.formName }}</span>
-              <el-tag v-if="scope.row.isPublic === 1" size="small" type="warning" effect="plain">
-                公开
-              </el-tag>
+              <span class="form-name">
+                <span class="form-name__text">{{ scope.row.formName }}</span>
+                <!-- 类型标签仅"全部"视图标注例外（工作流），避免与分段过滤重复 -->
+                <el-tag
+                  v-if="!params.category && scope.row.category === 'workflow'"
+                  size="small"
+                  type="success"
+                  effect="plain"
+                >
+                  工作流
+                </el-tag>
+                <el-tag v-if="scope.row.isPublic === 1" size="small" type="warning" effect="plain">
+                  公开
+                </el-tag>
+              </span>
             </template>
           </el-table-column>
           <el-table-column label="表单标识" prop="formKey" min-width="160" show-overflow-tooltip />
@@ -120,7 +138,7 @@
                 type="primary"
                 link
                 size="small"
-                @click.stop="handleEditClick(scope.row.id)"
+                @click.stop="handleEditClick(scope.row as FormDefinitionItem)"
               >
                 编辑
               </el-button>
@@ -147,7 +165,7 @@
       width="560px"
       @close="closeDialog"
     >
-      <el-form ref="formDefinitionFormRef" :model="formData" :rules="rules" label-width="90px">
+      <el-form ref="formDefinitionFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="表单名称" prop="formName">
           <el-input v-model="formData.formName" placeholder="请输入表单名称" />
         </el-form-item>
@@ -168,6 +186,34 @@
             :disabled="!!formData.id"
             placeholder="如 employee_onboarding"
           />
+        </el-form-item>
+
+        <el-form-item prop="category">
+          <template #label>
+            <div class="flex-y-center">
+              表单类型
+              <el-tooltip
+                content="普通表单用于公开收集/菜单挂载；工作流表单可被流程绑定为发起或办理表单"
+                placement="bottom"
+              >
+                <el-icon class="ml-1 cursor-pointer">
+                  <QuestionFilled />
+                </el-icon>
+              </el-tooltip>
+            </div>
+          </template>
+          <el-select
+            v-model="formData.category"
+            :disabled="!!formData.id && categoryDisabled"
+            placeholder="请选择表单类型"
+          >
+            <el-option
+              v-for="(label, value) in categoryOptions"
+              :key="value"
+              :label="label"
+              :value="value"
+            />
+          </el-select>
         </el-form-item>
 
         <el-form-item label="表单描述" prop="description">
@@ -231,6 +277,18 @@ const statusOptions: Record<number, string> = {
   [FormStatus.DISABLED]: "已停用",
 };
 
+/** 类型下拉/标签展示映射 */
+const categoryOptions: Record<string, string> = {
+  normal: "普通表单",
+  workflow: "工作流表单",
+};
+
+/** 当前编辑表单状态：非草稿（已发布/已停用）时类型作为业务标识不可修改 */
+const editingStatus = ref<FormStatus | null>(null);
+const categoryDisabled = computed(
+  () => editingStatus.value !== null && editingStatus.value !== FormStatus.DRAFT
+);
+
 /**
  * 状态标签样式
  *
@@ -256,6 +314,8 @@ const { loading, list, total, params, fetchData, handleQuery, handleResetQuery }
     pageNum: 1,
     pageSize: 10,
     keywords: "",
+    // 类型过滤（空串=全部），与工具栏分段按钮绑定
+    category: "",
   },
   request: FormAPI.getPage,
   onBeforeReset: () => queryFormRef.value?.resetFields(),
@@ -269,7 +329,10 @@ const dialogState = reactive({
   visible: false,
 });
 
-const initialFormData: FormDefinitionData = {};
+/** 新增表单默认值：类型缺省普通表单（工作流表单需明确选择） */
+const initialFormData: FormDefinitionData = {
+  category: "normal",
+};
 
 const formData = reactive<FormDefinitionData>({ ...initialFormData });
 
@@ -310,23 +373,26 @@ function closeDialog(): void {
 }
 
 /**
- * 打开新增表单定义弹窗
+ * 打开新增表单定义弹窗：类型按当前过滤视图预选（仍可修改）
  */
 function handleCreateClick(): void {
   resetForm();
+  editingStatus.value = null;
   dialogState.title = "新增表单";
+  formData.category = params.category === "workflow" ? "workflow" : "normal";
   openDialog();
 }
 
 /**
  * 打开编辑表单定义弹窗并回填数据
  *
- * @param id 表单 ID
+ * @param row 当前表单行（携带状态，用于判断类型可否修改）
  */
-async function handleEditClick(id: string): Promise<void> {
+async function handleEditClick(row: FormDefinitionItem): Promise<void> {
   resetForm();
+  editingStatus.value = row.status;
   dialogState.title = "修改表单";
-  const data = await FormAPI.getFormData(id);
+  const data = await FormAPI.getFormData(row.id);
   Object.assign(formData, data);
   openDialog();
 }
@@ -490,3 +556,20 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+
+<style scoped>
+/* 表单名称 + 公开标签同行展示，避免长名称触发折行 */
+.form-name {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  max-width: 100%;
+
+  &__text {
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+</style>

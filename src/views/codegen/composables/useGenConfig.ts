@@ -2,7 +2,7 @@ import GeneratorAPI from "@/api/codegen";
 import type { GenConfigForm } from "@/api/codegen";
 import DictAPI from "@/api/system/dict";
 import MenuAPI from "@/api/system/menu";
-import { QueryTypeEnum } from "@/enums/codegen";
+import { FormTypeEnum, QueryTypeEnum } from "@/enums/codegen";
 import type { OptionItem } from "@/api/common";
 
 export function useGenConfig() {
@@ -39,14 +39,16 @@ export function useGenConfig() {
     }
   );
 
-  // Date 类型字段默认用范围查询，比较符合直觉
+  // 日期类型字段默认用范围查询，比较符合直觉
   watch(
     () => genConfigFormData.value.fieldConfigs,
     (newVal) => {
       if (!newVal) return;
       newVal.forEach((fieldConfig) => {
         if (
-          fieldConfig.fieldType?.includes("Date") &&
+          (fieldConfig.fieldType?.includes("Date") ||
+            fieldConfig.formType === FormTypeEnum.DATE.value ||
+            fieldConfig.formType === FormTypeEnum.DATE_TIME.value) &&
           fieldConfig.isShowInQuery === 1 &&
           fieldConfig.queryType == null
         ) {
