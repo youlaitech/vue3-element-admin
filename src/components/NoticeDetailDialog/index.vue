@@ -17,7 +17,7 @@
       </div>
     </template>
 
-    <div v-if="detail?.content" class="notice-dialog__content rich-text" v-html="detail.content" />
+    <div v-if="detail?.content" class="notice-dialog__content" v-html="detail.content" />
     <el-empty v-else :image-size="60" description="暂无内容" />
   </el-dialog>
 </template>
