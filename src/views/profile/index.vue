@@ -855,7 +855,7 @@ const handleSubmit = async () => {
 
       await UserAPI.changePassword(passwordChangeForm);
       dialogState.visible = false;
-      await userStore.redirectToLogin("密码已修改，请重新登录");
+      await userStore.redirectToLogin("password-changed");
     } else if (dialogState.type === DialogType.MOBILE) {
       const valid = await mobileBindingFormRef.value?.validate();
       if (!valid) return;

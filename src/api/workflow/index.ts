@@ -173,6 +173,13 @@ const TaskAPI = {
       method: "get",
     });
   },
+  /** AI 生成任务审批摘要（未开启 AI 时接口不存在） */
+  aiSummary(taskId: string) {
+    return request<unknown, string>({
+      url: `${WORKFLOW_BASE_URL}/tasks/${taskId}/ai-summary`,
+      method: "post",
+    });
+  },
   /** 获取驳回目标节点列表 */
   listRejectTargets(taskId: string) {
     return request<unknown, RejectTargetItem[]>({

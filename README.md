@@ -176,9 +176,9 @@ pnpm run build
 
 前端默认使用线上接口，也可切换为本地 Mock 或对接本地后端。
 
-**本地 Mock**：将 `.env.development` 的 `VITE_MOCK_DEV_SERVER` 设为 `true` 即启用本地 Mock 接口，无需后端即可独立开发。
+**本地 Mock**：将 `.env.development` 的 `VITE_MOCK_ENABLED` 设为 `true` 即启用本地 Mock 接口，无需后端即可独立开发。
 
-**对接后端**：九种后端默认端口均为 `8000`，将 `.env.development` 的 `VITE_APP_API_URL` 改为 `http://localhost:8000` 并启动对应后端即可（主推 Java 后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git)，其余见各自仓库 README）。
+**对接后端**：九种后端默认端口均为 `8000`，将 `.env.development` 的 `VITE_PROXY_TARGET` 改为 `http://localhost:8000` 并启动对应后端即可（主推 Java 后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git)，其余见各自仓库 README）。
 
 ## 提交规范
 

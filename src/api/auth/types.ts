@@ -39,3 +39,26 @@ export interface CaptchaInfo {
   /** 验证码图片 Base64 */
   captchaBase64: string;
 }
+
+/**
+ * 申请扫码票据的响应
+ */
+export interface QrCodeGenerateResult {
+  ticket: string;
+  /** 票据有效期（秒） */
+  expireSeconds: number;
+}
+
+/**
+ * 轮询扫码状态的响应
+ */
+export interface QrCodeStatusResult {
+  ticket: string;
+  /** 状态：WAITING/SCANNED/CONFIRMED/LOGGED_IN/CANCELED/EXPIRED */
+  status: "WAITING" | "SCANNED" | "CONFIRMED" | "LOGGED_IN" | "CANCELED" | "EXPIRED";
+  /** 脱敏昵称，SCANNED 后才有值 */
+  nickname?: string;
+  avatar?: string;
+  /** 票据剩余有效期（秒） */
+  expireSeconds: number;
+}

@@ -1,54 +1,61 @@
 import request from "@/utils/request";
-import type { CaptchaInfo, LoginRequest, LoginResult } from "./types";
-
-/** 申请扫码票据的响应：票据字符串与有效期（秒） */
-export interface QrCodeGenerateResult {
-  /** 一次扫码登录会话的唯一票据，由 PC 端编码进二维码 */
-  ticket: string;
-  /** 票据有效期（秒），默认 300，过期后 Redis 自动清理 */
-  expireSeconds: number;
-}
-
-/** 轮询扫码状态的响应 */
-export interface QrCodeStatusResult {
-  /** 当前票据 */
-  ticket: string;
-  /** 状态：WAITING/SCANNED/CONFIRMED/LOGGED_IN/CANCELED/EXPIRED */
-  status: "WAITING" | "SCANNED" | "CONFIRMED" | "LOGGED_IN" | "CANCELED" | "EXPIRED";
-  /** 脱敏昵称，仅 SCANNED 之后返回，WAITING 为 undefined */
-  nickname?: string;
-  /** 头像 URL，仅 SCANNED 之后返回 */
-  avatar?: string;
-  /** 票据剩余有效期（秒） */
-  expireSeconds: number;
-}
+import type {
+  CaptchaInfo,
+  LoginRequest,
+  LoginResult,
+  QrCodeGenerateResult,
+  QrCodeStatusResult,
+} from "./types";
 
 const AUTH_BASE_URL = "/api/v1/auth";
 
 const AuthAPI = {
+  /**
+   * 登录
+   */
   login(data: LoginRequest) {
-    const payload: Pick<
-      LoginRequest,
-      "username" | "password" | "captchaId" | "captchaCode" | "tenantId"
-    > = {
+    const payload = {
       username: data.username,
       password: data.password,
       captchaId: data.captchaId,
       captchaCode: data.captchaCode,
+      ...(typeof data.tenantId !== "undefined" && { tenantId: data.tenantId }),
     };
-
-    // 仅多租户场景传入 tenantId
-    if (typeof data.tenantId !== "undefined") {
-      payload.tenantId = data.tenantId;
-    }
 
     return request<unknown, LoginResult>({
       url: `${AUTH_BASE_URL}/login`,
       method: "post",
       data: payload,
+      // 白名单接口携带过期令牌仍会被 Spring Security 判 401
+      anonymous: true,
     });
   },
 
+  /**
+   * 获取验证码图片
+   */
+  getCaptcha() {
+    return request<unknown, CaptchaInfo>({
+      url: `${AUTH_BASE_URL}/captcha`,
+      method: "get",
+      // 残留过期令牌会让白名单接口 401，登录页取不到验证码
+      anonymous: true,
+    });
+  },
+
+  /**
+   * 退出登录
+   */
+  logout() {
+    return request({
+      url: `${AUTH_BASE_URL}/logout`,
+      method: "delete",
+    });
+  },
+
+  /**
+   * 切换租户并重新签发令牌
+   */
   switchTenant(tenantId: number) {
     return request<unknown, LoginResult>({
       url: `${AUTH_BASE_URL}/switch-tenant`,
@@ -57,58 +64,54 @@ const AuthAPI = {
     });
   },
 
+  /**
+   * 用刷新令牌换取新的访问令牌
+   */
   refreshToken(refreshToken: string) {
     return request<unknown, LoginResult>({
       url: `${AUTH_BASE_URL}/refresh-token`,
       method: "post",
       params: { refreshToken },
-      headers: {
-        Authorization: "no-auth",
-      },
+      anonymous: true,
     });
   },
 
-  logout() {
-    return request({
-      url: `${AUTH_BASE_URL}/logout`,
-      method: "delete",
-    });
-  },
-
-  getCaptcha() {
-    return request<unknown, CaptchaInfo>({
-      url: `${AUTH_BASE_URL}/captcha`,
-      method: "get",
-    });
-  },
-
-  // ============ 扫码登录 ============
-
+  /**
+   * 生成扫码登录票据
+   */
   qrGenerate(): Promise<QrCodeGenerateResult> {
     return request<unknown, QrCodeGenerateResult>({
       url: `${AUTH_BASE_URL}/qr-code/generate`,
       method: "post",
+      anonymous: true,
     });
   },
 
+  /**
+   * 轮询扫码登录状态
+   */
   qrStatus(ticket: string): Promise<QrCodeStatusResult> {
     return request<unknown, QrCodeStatusResult>({
       url: `${AUTH_BASE_URL}/qr-code/status`,
       method: "get",
       params: { ticket },
+      anonymous: true,
     });
   },
 
+  /**
+   * 用票据换取登录令牌
+   */
   qrLogin(ticket: string): Promise<LoginResult> {
     return request<unknown, LoginResult>({
       url: `${AUTH_BASE_URL}/qr-code/login`,
       method: "post",
       data: { ticket },
+      anonymous: true,
     });
   },
 };
 
 export default AuthAPI;
 
-// 重导出类型
 export * from "./types";

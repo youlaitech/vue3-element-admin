@@ -301,7 +301,7 @@
           {{ currentNotice.publishTime }}
         </el-descriptions-item>
         <el-descriptions-item label="公告内容：">
-          <div class="notice-content" v-html="currentNotice.content" />
+          <div class="notice-content rich-text" v-html="currentNotice.content" />
         </el-descriptions-item>
       </el-descriptions>
     </el-dialog>

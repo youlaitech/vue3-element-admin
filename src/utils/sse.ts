@@ -3,7 +3,7 @@ import { useUserStoreHook } from "@/stores/user";
 
 /** SSE 连接配置选项 */
 export interface UseSseOptions {
-  /** SSE 连接地址，默认走 VITE_APP_BASE_API 代理 */
+  /** SSE 连接地址，默认走 VITE_API_BASE 代理 */
   url?: string;
   /** 是否在控制台打印调试日志 */
   debug?: boolean;
@@ -37,7 +37,7 @@ export enum SseConnectionState {
 let globalInstance: ReturnType<typeof createSseConnection> | null = null;
 
 function createSseConnection(options: UseSseOptions = {}) {
-  const baseUrl = import.meta.env.VITE_APP_BASE_API;
+  const baseUrl = import.meta.env.VITE_API_BASE;
   const defaultUrl = `${baseUrl}/api/v1/sse/connect`;
 
   const config = {

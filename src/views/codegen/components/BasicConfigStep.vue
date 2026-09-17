@@ -1,17 +1,13 @@
 <template>
   <div class="basic-config-step">
-    <!-- 表信息卡片 -->
-    <div class="config-card">
-      <div class="card-header">
-        <div class="header-icon icon-table">
-          <el-icon><Grid /></el-icon>
-        </div>
-        <div class="header-title">
-          <div class="title">表信息</div>
-          <div class="subtitle">数据库表名与业务映射</div>
-        </div>
+    <!-- 表信息 -->
+    <section class="config-section">
+      <div class="section-header">
+        <el-icon class="section-icon icon-table"><Document /></el-icon>
+        <span class="section-title">表信息</span>
+        <span class="section-subtitle">数据库表名与业务映射</span>
       </div>
-      <el-form :model="formData" :rules="rules" :label-width="100" class="card-form">
+      <el-form :model="formData" :rules="rules" :label-width="100" class="config-form">
         <el-row :gutter="24">
           <el-col :span="12">
             <el-form-item label="表名" prop="tableName">
@@ -33,20 +29,16 @@
           </el-col>
         </el-row>
       </el-form>
-    </div>
+    </section>
 
-    <!-- 包信息卡片 -->
-    <div class="config-card">
-      <div class="card-header">
-        <div class="header-icon icon-package">
-          <el-icon><Box /></el-icon>
-        </div>
-        <div class="header-title">
-          <div class="title">包信息</div>
-          <div class="subtitle">Java 包结构与模块划分</div>
-        </div>
+    <!-- 包信息 -->
+    <section class="config-section">
+      <div class="section-header">
+        <el-icon class="section-icon icon-package"><Box /></el-icon>
+        <span class="section-title">包信息</span>
+        <span class="section-subtitle">Java 包结构与模块划分</span>
       </div>
-      <el-form :model="formData" :rules="rules" :label-width="100" class="card-form">
+      <el-form :model="formData" :rules="rules" :label-width="100" class="config-form">
         <el-row :gutter="24">
           <el-col :span="12">
             <el-form-item label="主包名" prop="packageName">
@@ -68,20 +60,22 @@
           </el-col>
         </el-row>
       </el-form>
-    </div>
+    </section>
 
-    <!-- 生成配置卡片 -->
-    <div class="config-card">
-      <div class="card-header">
-        <div class="header-icon icon-gen">
-          <el-icon><MagicStick /></el-icon>
-        </div>
-        <div class="header-title">
-          <div class="title">生成配置</div>
-          <div class="subtitle">代码生成规则与输出选项</div>
-        </div>
+    <!-- 生成配置 -->
+    <section class="config-section">
+      <div class="section-header">
+        <el-icon class="section-icon icon-gen"><MagicStick /></el-icon>
+        <span class="section-title">生成配置</span>
+        <span class="section-subtitle">代码生成规则与输出选项</span>
       </div>
-      <el-form ref="formRef" :model="formData" :rules="rules" :label-width="100" class="card-form">
+      <el-form
+        ref="formRef"
+        :model="formData"
+        :rules="rules"
+        :label-width="100"
+        class="config-form"
+      >
         <el-row :gutter="24">
           <el-col :span="12">
             <el-form-item label="实体名" prop="entityName">
@@ -114,14 +108,14 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="页面类型">
-              <el-radio-group v-model="formData.pageType" size="large">
+              <el-radio-group v-model="formData.pageType">
                 <el-radio-button value="classic">
                   <el-icon><DocumentChecked /></el-icon>
                   普通
                 </el-radio-button>
                 <el-radio-button value="curd">
                   <el-icon><SetUp /></el-icon>
-                  封装(CURD)
+                  封装(CRUD)
                 </el-radio-button>
               </el-radio-group>
             </el-form-item>
@@ -160,7 +154,7 @@
           </el-col>
         </el-row>
       </el-form>
-    </div>
+    </section>
   </div>
 </template>
 
@@ -200,92 +194,55 @@ defineExpose({ validate });
 .basic-config-step {
   padding: 8px;
 
-  .config-card {
-    padding: 24px;
-    margin-bottom: 20px;
-    background: var(--el-bg-color);
-    border: 1px solid var(--el-border-color-lighter);
-    border-radius: 12px;
-    transition: all 0.3s ease;
+  .config-section + .config-section {
+    padding-top: 24px;
+    margin-top: 24px;
+    border-top: 1px solid var(--el-border-color-lighter);
+  }
 
-    &:hover {
-      border-color: var(--el-border-color);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  .section-header {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .section-icon {
+    font-size: 16px;
+
+    &.icon-table {
+      color: var(--el-color-primary);
+    }
+    &.icon-package {
+      color: var(--el-color-success);
+    }
+    &.icon-gen {
+      color: var(--el-color-warning);
+    }
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--el-text-color-primary);
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--el-text-color-secondary);
+  }
+
+  .config-form {
+    :deep(.el-input__prefix-inner) {
+      color: var(--el-text-color-secondary);
     }
 
-    .card-header {
-      display: flex;
-      gap: 14px;
+    // 与默认输入框高度对齐，之前 10px 内边距把按钮撑得比输入框高
+    :deep(.el-radio-button__inner) {
+      display: inline-flex;
+      gap: 4px;
       align-items: center;
-      padding-bottom: 16px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid var(--el-border-color-lighter);
-
-      .header-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-        font-size: 20px;
-        border-radius: 10px;
-        transition: transform 0.3s ease;
-
-        &.icon-table {
-          color: var(--el-color-primary);
-          background: linear-gradient(
-            135deg,
-            var(--el-color-primary-light-8),
-            var(--el-color-primary-light-9)
-          );
-        }
-        &.icon-package {
-          color: var(--el-color-success);
-          background: linear-gradient(
-            135deg,
-            var(--el-color-success-light-8),
-            var(--el-color-success-light-9)
-          );
-        }
-        &.icon-gen {
-          color: var(--el-color-warning);
-          background: linear-gradient(
-            135deg,
-            var(--el-color-warning-light-8),
-            var(--el-color-warning-light-9)
-          );
-        }
-      }
-
-      &:hover .header-icon {
-        transform: scale(1.08) rotate(-3deg);
-      }
-
-      .header-title {
-        .title {
-          margin-bottom: 4px;
-          font-size: 16px;
-          font-weight: 600;
-          color: var(--el-text-color-primary);
-        }
-        .subtitle {
-          font-size: 13px;
-          color: var(--el-text-color-secondary);
-        }
-      }
-    }
-
-    .card-form {
-      :deep(.el-input__prefix-inner) {
-        color: var(--el-text-color-secondary);
-      }
-
-      :deep(.el-radio-button__inner) {
-        display: inline-flex;
-        gap: 4px;
-        align-items: center;
-        padding: 10px 20px;
-      }
+      padding: 6px 14px;
     }
   }
 }

@@ -12,8 +12,16 @@ import { useTagsViewStore } from "@/stores";
 import { cleanupSse } from "@/utils/sse";
 import router from "@/router";
 
-// 防止并发会话失效触发重复跳转登录页
-let redirectingToLogin = false;
+// 会话失效已处理，登录成功后复位
+let sessionExpired = false;
+
+// 连续续期失败上限
+const MAX_REFRESH_FAILURES = 3;
+// 连续续期失败次数
+let refreshFailures = 0;
+
+// 跳转登录页的原因（URL reason 参数的取值）
+type RedirectReason = "expired" | "password-changed";
 
 export const useUserStore = defineStore("user", () => {
   // 用户信息
@@ -21,29 +29,27 @@ export const useUserStore = defineStore("user", () => {
   // 记住我状态
   const rememberMe = ref(AuthStorage.getRememberMe());
 
-  /**
-   * 登录
-   */
+  // 登录
   async function login(loginRequest: LoginRequest): Promise<void> {
     const { accessToken, refreshToken } = await AuthAPI.login(loginRequest);
     rememberMe.value = loginRequest.rememberMe ?? false;
     AuthStorage.setTokens(accessToken, refreshToken, rememberMe.value);
+    refreshFailures = 0;
+    sessionExpired = false;
   }
 
-  /**
-   * 扫码登录：用票据换取会话令牌
-   */
+  // 扫码登录：用票据换取会话令牌
   async function loginByQrCode(ticket: string): Promise<void> {
     const { accessToken, refreshToken } = await AuthAPI.qrLogin(ticket);
     AuthStorage.setTokens(accessToken, refreshToken, false);
+    refreshFailures = 0;
+    sessionExpired = false;
   }
 
   let refreshPromise: Promise<void> | null = null;
 
   /**
-   * 刷新 token（单飞模式）
-   *
-   * 多个并发请求遇到 token 过期时，共享同一次 refresh 请求。
+   * 刷新 token（单飞）：并发请求共享同一次 refresh
    */
   function refreshTokenOnce(): Promise<void> {
     if (refreshPromise) return refreshPromise;
@@ -55,9 +61,12 @@ export const useUserStore = defineStore("user", () => {
     return refreshPromise;
   }
 
-  /**
-   * 获取用户信息
-   */
+  // 等待进行中的续期；无续期时立即返回
+  function waitRefresh(): Promise<void> {
+    return refreshPromise ?? Promise.resolve();
+  }
+
+  // 获取用户信息
   async function getUserInfo(): Promise<UserInfo> {
     const data = await UserAPI.getInfo();
     if (!data) {
@@ -67,19 +76,13 @@ export const useUserStore = defineStore("user", () => {
     return data;
   }
 
-  /**
-   * 登出
-   */
+  // 登出
   async function logout(): Promise<void> {
     await AuthAPI.logout();
     resetAllState();
   }
 
-  /**
-   * 重置所有系统状态
-   *
-   * 统一处理所有清理工作，包括用户凭证、路由、缓存等
-   */
+  // 重置所有系统状态（凭证、路由、缓存、SSE）
   function resetAllState(): void {
     // 1. 重置用户状态
     resetUserState();
@@ -94,66 +97,52 @@ export const useUserStore = defineStore("user", () => {
     cleanupSse();
   }
 
-  /**
-   * 重置用户状态
-   *
-   * 仅处理用户模块内的状态
-   */
+  // 重置用户状态（仅用户模块内的，全局清理走 resetAllState）
   function resetUserState(): void {
     AuthStorage.clearAuth();
     userInfo.value = {} as UserInfo;
   }
 
   /**
-   * 会话失效的统一出口：通知用户、清理全局状态、携带当前路由跳转登录页
+   * 会话失效的统一出口：清状态、整页跳登录页
    *
-   * @param message 通知文案
-   * @param notify 是否弹出通知
+   * @param reason 跳转原因，写入 URL 的 reason 参数，登录页据此展示提示；不传则无提示
    */
-  async function redirectToLogin(
-    message: string = "请重新登录",
-    notify: boolean = true
-  ): Promise<void> {
-    if (redirectingToLogin) return;
-    redirectingToLogin = true;
+  function redirectToLogin(reason?: RedirectReason): void {
+    if (sessionExpired) return;
+    sessionExpired = true;
 
-    try {
-      if (notify) {
-        ElNotification({
-          title: "提示",
-          message,
-          type: "warning",
-          duration: 3000,
-        });
-      }
+    // 携带当前路由，登录成功后跳回
+    const currentPath = router.currentRoute.value.fullPath;
+    resetAllState();
 
-      await resetAllState();
-
-      // 跳转到登录页，保留当前路由用于登录后跳转
-      const currentPath = router.currentRoute.value.fullPath;
-      await router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
-    } catch (error) {
-      console.error("Redirect to login error:", error);
-      // 强制跳转，即使路由重定向失败
-      window.location.href = "/login";
-    } finally {
-      redirectingToLogin = false;
-    }
+    // 整页跳转：SPA 内 push 的导航被并发请求或守卫取消时不报错，页面会留在原地
+    const reasonQuery = reason ? `&reason=${reason}` : "";
+    window.location.href = `${window.location.pathname}#/login?redirect=${encodeURIComponent(currentPath)}${reasonQuery}`;
+    window.location.reload();
   }
 
-  /**
-   * 刷新 token
-   */
+  // 刷新 token
   async function doRefreshToken(): Promise<void> {
+    if (refreshFailures >= MAX_REFRESH_FAILURES) {
+      throw new Error("令牌续期连续失败，请重新登录");
+    }
+
     const currentRefreshToken = AuthStorage.getRefreshToken();
 
     if (!currentRefreshToken) {
       throw new Error("没有有效的刷新令牌");
     }
 
-    const { accessToken, refreshToken: newRefreshToken } =
-      await AuthAPI.refreshToken(currentRefreshToken);
-    AuthStorage.setTokens(accessToken, newRefreshToken, AuthStorage.getRememberMe());
+    try {
+      const { accessToken, refreshToken: newRefreshToken } =
+        await AuthAPI.refreshToken(currentRefreshToken);
+      AuthStorage.setTokens(accessToken, newRefreshToken, AuthStorage.getRememberMe());
+      refreshFailures = 0;
+    } catch (error) {
+      refreshFailures += 1;
+      throw error;
+    }
   }
 
   return {
@@ -167,8 +156,8 @@ export const useUserStore = defineStore("user", () => {
     resetAllState,
     resetUserState,
     redirectToLogin,
-    refreshToken: doRefreshToken,
     refreshTokenOnce,
+    waitRefresh,
   };
 });
 

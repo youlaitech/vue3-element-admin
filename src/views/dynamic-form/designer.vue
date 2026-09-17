@@ -8,6 +8,10 @@
         <span class="designer-toolbar__title">{{ title }}</span>
       </div>
       <div class="designer-toolbar__right">
+        <el-button @click="aiDialogVisible = true">
+          <template #icon><MagicStick /></template>
+          AI 生成
+        </el-button>
         <el-button @click="handlePreview">预 览</el-button>
         <el-button type="primary" :loading="saving" @click="handleSave">保 存</el-button>
       </div>
@@ -16,12 +20,29 @@
     <div class="designer-wrapper">
       <FcDesigner ref="designerRef" :config="designerConfig" height="100%" />
     </div>
+
+    <el-dialog v-model="aiDialogVisible" title="AI 生成表单" width="560px" append-to-body>
+      <el-input
+        v-model="aiDescription"
+        type="textarea"
+        :rows="5"
+        maxlength="1000"
+        show-word-limit
+        placeholder="描述需要的表单，例如：请假申请，包含姓名、请假类型、起止日期、请假事由（必填）、附件"
+      />
+      <template #footer>
+        <el-button @click="aiDialogVisible = false">取 消</el-button>
+        <el-button type="primary" :loading="aiGenerating" @click="handleAiGenerate">
+          生 成
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
-import { ArrowLeft } from "@element-plus/icons-vue";
+import { ArrowLeft, MagicStick } from "@element-plus/icons-vue";
 
 import FcDesigner from "@form-create/designer";
 
@@ -48,6 +69,11 @@ const designerConfig = { showSaveBtn: false };
 
 /** 保存中状态 */
 const saving = ref(false);
+
+/** AI 生成弹窗与需求描述 */
+const aiDialogVisible = ref(false);
+const aiDescription = ref("");
+const aiGenerating = ref(false);
 
 /** 表单定义元数据（保存时回传以满足后端非空校验） */
 const formMeta = ref<{ formKey?: string; formName?: string }>({});
@@ -87,6 +113,26 @@ async function handleSave(): Promise<void> {
     ElMessage.success("保存成功");
   } finally {
     saving.value = false;
+  }
+}
+
+// AI 生成的规则直接覆盖画布，用户确认后再点保存
+async function handleAiGenerate(): Promise<void> {
+  const description = aiDescription.value.trim();
+  if (!description) {
+    ElMessage.warning("请输入需求描述");
+    return;
+  }
+  aiGenerating.value = true;
+  try {
+    const formJson = await FormAPI.aiGenerate(description);
+    designerRef.value?.setRule(JSON.parse(formJson));
+    aiDialogVisible.value = false;
+    ElMessage.success("生成完成，请核对后保存");
+  } catch {
+    ElMessage.error("AI 生成失败，请确认已开启 AI 配置或调整描述");
+  } finally {
+    aiGenerating.value = false;
   }
 }
 

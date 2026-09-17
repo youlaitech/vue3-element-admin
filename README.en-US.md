@@ -174,9 +174,9 @@ For the detailed deployment flow (Nginx config, reverse proxy, HTTPS, etc.), see
 
 The frontend uses the online API by default, and can also switch to local Mock or connect to a local backend.
 
-**Local Mock**: Set `VITE_MOCK_DEV_SERVER` in `.env.development` to `true` to enable local Mock interfaces, allowing standalone development without a backend.
+**Local Mock**: Set `VITE_MOCK_ENABLED` in `.env.development` to `true` to enable local Mock interfaces, allowing standalone development without a backend.
 
-**Connect to Backend**: All nine backends use the default port `8000`. Change `VITE_APP_API_URL` in `.env.development` to `http://localhost:8000` and start the corresponding backend (the recommended Java backend is [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git); see each repo's README for the rest).
+**Connect to Backend**: All nine backends use the default port `8000`. Change `VITE_PROXY_TARGET` in `.env.development` to `http://localhost:8000` and start the corresponding backend (the recommended Java backend is [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git); see each repo's README for the rest).
 
 ## Commit Conventions
 

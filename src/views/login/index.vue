@@ -16,13 +16,11 @@
         </div>
 
         <div class="login-brand__hero">
-          <div class="login-brand__main">
-            <el-tag class="login-brand__tag" type="primary" effect="plain" round>
-              <span class="login-brand__tag-dot" />
-              Enterprise Ready
-            </el-tag>
-            <h1 class="login-brand__title">开箱即用的企业级中后台解决方案</h1>
-          </div>
+          <el-tag class="login-brand__tag" type="primary" effect="plain" round>
+            <span class="login-brand__tag-dot" />
+            Enterprise Ready
+          </el-tag>
+          <h1 class="login-brand__title">开箱即用的企业级中后台解决方案</h1>
           <div class="login-brand__features">
             <div class="login-brand__feature">
               <span class="login-brand__feature-mark">
@@ -48,6 +46,15 @@
 
       <div class="login-card">
         <div class="login-card__inner">
+          <el-alert
+            v-if="loginTip"
+            class="login-card__alert"
+            type="warning"
+            :closable="false"
+            show-icon
+            :title="loginTip"
+          />
+
           <transition name="fade-slide" mode="out-in">
             <QrCodeLogin
               v-if="component === 'qrcode'"
@@ -90,18 +97,18 @@
                 </el-tooltip>
 
                 <el-form-item prop="captchaCode">
-                  <div class="captcha-row">
+                  <div class="flex w-full gap-12px">
                     <el-input
                       v-model.trim="loginFormData.captchaCode"
                       placeholder="验证码"
-                      class="captcha-row__input"
+                      class="min-w-0 flex-1"
                       @keyup.enter="handleLoginSubmit"
                     >
                       <template #prefix>
-                        <span class="input-prefix-icon i-svg:security" />
+                        <span class="i-svg:security login-card__prefix-icon" />
                       </template>
                     </el-input>
-                    <div class="captcha-img" @click="getCaptcha">
+                    <div class="login-card__captcha" @click="getCaptcha">
                       <el-icon v-if="codeLoading" class="is-loading" :size="16">
                         <Loading />
                       </el-icon>
@@ -111,30 +118,32 @@
                   </div>
                 </el-form-item>
 
-                <div class="login-options">
+                <div class="login-card__options">
                   <el-checkbox v-model="loginFormData.rememberMe">记住我</el-checkbox>
-                  <a class="login-options__link" @click="showForm('resetPwd')">忘记密码？</a>
+                  <a @click="showForm('resetPwd')">忘记密码？</a>
                 </div>
 
                 <el-button
                   :loading="loading"
                   type="primary"
                   size="large"
-                  class="login-btn"
+                  class="login-card__submit"
                   @click="handleLoginSubmit"
                 >
                   登录
                 </el-button>
               </el-form>
 
-              <div class="login-demo">
-                <div class="login-demo__title">工作流演示账号 · 密码统一 123456，点击直接填入</div>
-                <div class="login-demo__accounts">
+              <div class="login-card__demo">
+                <div class="login-card__demo-title">
+                  工作流演示账号 · 密码统一 123456，点击直接填入
+                </div>
+                <div class="flex flex-wrap gap-8px">
                   <button
                     v-for="account in demoAccounts"
                     :key="account.username"
                     type="button"
-                    class="login-demo__chip"
+                    class="login-card__demo-chip"
                     @click="fillDemoAccount(account)"
                   >
                     {{ account.label }}
@@ -142,15 +151,15 @@
                 </div>
               </div>
 
-              <div class="login-alt">
-                <div class="login-alt__divider">其他登录方式</div>
-                <div class="login-alt__buttons">
-                  <button class="login-alt__btn" @click="component = 'qrcode'">
-                    <span class="login-alt__icon i-svg:scan" />
+              <div class="login-card__alt">
+                <div class="login-card__alt-divider">其他登录方式</div>
+                <div class="flex gap-12px">
+                  <button class="login-card__alt-btn" @click="component = 'qrcode'">
+                    <span class="i-svg:scan login-card__alt-icon" />
                     扫码登录
                   </button>
-                  <button class="login-alt__btn">
-                    <span class="login-alt__icon i-svg:security" />
+                  <button class="login-card__alt-btn">
+                    <span class="i-svg:security login-card__alt-icon" />
                     统一认证
                   </button>
                 </div>
@@ -217,7 +226,18 @@ const loginRules = computed(() => ({
   captchaCode: [{ required: true, trigger: "blur", message: "请输入验证码" }],
 }));
 
-/** 工作流演示账号（与 workflow.sql 预置数据一致，点击填入登录表单） */
+// 会话失效跳转而来时，按 reason 参数展示对应提示
+const loginTip = computed(() => {
+  const reasonMap: Record<string, string> = {
+    expired: "登录已过期，请重新登录",
+    "password-changed": "密码已修改，请重新登录",
+  };
+  const tip = reasonMap[route.query.reason as string];
+  if (!tip) return "";
+  return route.query.redirect ? `${tip}，登录后将返回原页面` : tip;
+});
+
+// 工作流演示账号，与 workflow.sql 预置数据一致
 const demoAccounts = [
   { username: "employee", label: "员工·发起" },
   { username: "dept_manager", label: "部门主管·审批" },
@@ -226,9 +246,6 @@ const demoAccounts = [
   { username: "clerk", label: "行政" },
 ];
 
-/**
- * 点击演示账号填入账号密码（验证码仍需手动输入）
- */
 function fillDemoAccount(account: { username: string }): void {
   loginFormData.value.username = account.username;
   loginFormData.value.password = "123456";
@@ -279,18 +296,21 @@ onMounted(() => getCaptcha());
 </script>
 
 <style lang="scss" scoped>
-$primary: #165dff;
 $text-primary: #273248;
 $text-secondary: #667085;
 $text-muted: #98a2b3;
 $input-h: 44px;
 
 .login-page {
+  // 品牌色阶：从运行时主题色派生，切换主题色板（ArcoD/AntD/ElementD）时整页跟随
+  --brand-strong: color-mix(in srgb, var(--el-color-primary), #000 15%);
+  --brand-deep: color-mix(in srgb, var(--el-color-primary), #000 45%);
+
   position: relative;
   display: flex;
   min-height: 100vh;
   overflow: auto;
-  /* 浅色渐变底色；桌面端被品牌区背景图与白色卡片完全覆盖，窄屏两区透明后透出 */
+  /* 浅色渐变底色；桌面端被品牌区背景与白色卡片完全覆盖，窄屏两区透明后透出 */
   background: linear-gradient(180deg, #ffffff 0%, #dbeafe 100%);
 }
 
@@ -322,7 +342,18 @@ $input-h: 44px;
   min-height: 100vh;
   padding: 28px 64px 48px;
   overflow: hidden;
-  background: url("@/assets/images/login/bg.svg") center / cover no-repeat;
+  // 白云蓝海渐变（原 bg.svg）：白 → 主题色浅蓝，各 stop 按主题色混合比例派生
+  background: linear-gradient(
+    180deg,
+    #fff 0%,
+    color-mix(in srgb, var(--el-color-primary) 3%, #fff) 16%,
+    color-mix(in srgb, var(--el-color-primary) 5%, #fff) 32%,
+    color-mix(in srgb, var(--el-color-primary) 6%, #fff) 48%,
+    color-mix(in srgb, var(--el-color-primary) 8%, #fff) 62%,
+    color-mix(in srgb, var(--el-color-primary) 15%, #fff) 76%,
+    color-mix(in srgb, var(--el-color-primary) 25%, #fff) 88%,
+    color-mix(in srgb, var(--el-color-primary) 42%, #fff) 100%
+  );
   animation: login-pane-in 0.36s ease-out both;
 
   &__header,
@@ -342,8 +373,8 @@ $input-h: 44px;
     width: 42px;
     height: 42px;
     padding: 5px;
-    background: rgb(37 99 235 / 8%);
-    border: 1px solid rgb(37 99 235 / 18%);
+    background: color-mix(in srgb, var(--el-color-primary) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--el-color-primary) 18%, transparent);
     border-radius: 12px;
   }
 
@@ -358,7 +389,7 @@ $input-h: 44px;
     font-size: 24px;
     font-weight: 600;
     line-height: 1;
-    color: #1e3a8a;
+    color: var(--brand-deep);
   }
 
   &__version {
@@ -369,9 +400,9 @@ $input-h: 44px;
     font-size: 12px;
     font-weight: 600;
     line-height: 1;
-    color: rgb(30 58 138 / 80%);
-    background: rgb(37 99 235 / 8%);
-    border: 1px solid rgb(37 99 235 / 16%);
+    color: color-mix(in srgb, var(--brand-deep) 80%, transparent);
+    background: color-mix(in srgb, var(--el-color-primary) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--el-color-primary) 16%, transparent);
     border-radius: 999px;
   }
 
@@ -384,20 +415,18 @@ $input-h: 44px;
     padding: 40px 0 60px;
   }
 
-  &__main {
-    width: 100%;
-  }
-
   &__tag {
     gap: 8px;
+    // 去掉 main 包装层后 tag 成为 hero 的 flex 子项，防止被 stretch 拉满宽度
+    align-self: flex-start;
     height: 32px;
     padding: 0 15px 0 13px;
     margin-bottom: 20px;
     font-size: 12px;
     font-weight: 700;
-    color: #1d4ed8;
-    background: rgb(37 99 235 / 8%);
-    border-color: rgb(37 99 235 / 16%);
+    color: var(--brand-strong);
+    background: color-mix(in srgb, var(--el-color-primary) 8%, transparent);
+    border-color: color-mix(in srgb, var(--el-color-primary) 16%, transparent);
 
     :deep(.el-tag__content) {
       display: inline-flex;
@@ -411,9 +440,9 @@ $input-h: 44px;
     flex-shrink: 0;
     width: 7px;
     height: 7px;
-    background: #2563eb;
+    background: var(--el-color-primary);
     border-radius: 50%;
-    box-shadow: 0 0 0 3px rgb(37 99 235 / 16%);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--el-color-primary) 16%, transparent);
   }
 
   &__title {
@@ -421,7 +450,7 @@ $input-h: 44px;
     font-size: 36px;
     font-weight: 800;
     line-height: 1.15;
-    color: #1e3a8a;
+    color: var(--brand-deep);
     letter-spacing: 0;
   }
 
@@ -450,7 +479,7 @@ $input-h: 44px;
     padding: 0 15px;
     font-size: 14px;
     font-weight: 600;
-    color: rgb(30 58 138 / 85%);
+    color: color-mix(in srgb, var(--brand-deep) 85%, transparent);
     background: transparent;
 
     &:first-child {
@@ -464,7 +493,7 @@ $input-h: 44px;
       width: 1px;
       height: 14px;
       content: "";
-      background: rgb(37 99 235 / 18%);
+      background: color-mix(in srgb, var(--el-color-primary) 18%, transparent);
     }
   }
 
@@ -474,9 +503,9 @@ $input-h: 44px;
     justify-content: center;
     width: 22px;
     height: 22px;
-    color: #1d4ed8;
-    background: rgb(37 99 235 / 8%);
-    border: 1px solid rgb(37 99 235 / 16%);
+    color: var(--brand-strong);
+    background: color-mix(in srgb, var(--el-color-primary) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--el-color-primary) 16%, transparent);
     border-radius: 6px;
   }
 
@@ -486,7 +515,7 @@ $input-h: 44px;
     justify-content: center;
     width: 14px;
     height: 14px;
-    color: #1d4ed8;
+    color: var(--brand-strong);
   }
 
   &__feature-text {
@@ -521,6 +550,11 @@ $input-h: 44px;
     width: 100%;
   }
 
+  &__alert {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
   &__title {
     margin: 0 0 10px;
     font-size: 28px;
@@ -535,6 +569,166 @@ $input-h: 44px;
     font-size: 15px;
     color: $text-muted;
   }
+
+  &__prefix-icon {
+    display: inline-flex;
+    width: 14px;
+    height: 14px;
+    color: var(--el-text-color-placeholder);
+  }
+
+  &__captcha {
+    box-sizing: border-box;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 108px;
+    height: $input-h;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--el-fill-color-blank);
+    border: 1px solid var(--el-border-color);
+    border-radius: var(--el-border-radius-base);
+    transition: border-color 0.2s;
+
+    &:hover {
+      border-color: var(--el-color-primary);
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    font-size: 14px;
+    color: $text-secondary;
+
+    a {
+      font-weight: 500;
+      color: var(--el-color-primary);
+      cursor: pointer;
+      transition: opacity 0.15s;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  &__submit {
+    width: 100%;
+    height: 44px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 12px 24px color-mix(in srgb, var(--el-color-primary) 18%, transparent);
+
+    &:hover {
+      box-shadow: 0 14px 28px color-mix(in srgb, var(--el-color-primary) 22%, transparent);
+    }
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  &__demo {
+    margin-top: 20px;
+
+    &-title {
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: $text-muted;
+    }
+
+    &-chip {
+      height: 28px;
+      padding: 0 12px;
+      font-size: 12px;
+      color: $text-secondary;
+      cursor: pointer;
+      background: color-mix(in srgb, var(--el-color-primary) 5%, transparent);
+      border: 1px solid color-mix(in srgb, var(--el-color-primary) 16%, transparent);
+      border-radius: 999px;
+      transition:
+        color 0.2s,
+        background 0.2s,
+        border-color 0.2s;
+
+      &:hover {
+        color: var(--el-color-primary);
+        background: color-mix(in srgb, var(--el-color-primary) 10%, transparent);
+        border-color: color-mix(in srgb, var(--el-color-primary) 40%, transparent);
+      }
+    }
+  }
+
+  /* 半透明白底按钮，在渐变背景上保持可见；hover 时提实并加深投影 */
+  &__alt {
+    margin-top: 28px;
+
+    &-divider {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: $text-muted;
+
+      &::before,
+      &::after {
+        flex: 1;
+        height: 1px;
+        content: "";
+        background: color-mix(in srgb, var(--brand-deep) 12%, transparent);
+      }
+    }
+
+    &-btn {
+      display: flex;
+      flex: 1;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0;
+      font-size: 14px;
+      color: $text-secondary;
+      cursor: pointer;
+      background: rgb(255 255 255 / 80%);
+      border: 1px solid color-mix(in srgb, var(--brand-deep) 10%, transparent);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px color-mix(in srgb, var(--brand-deep) 6%, transparent);
+      backdrop-filter: blur(4px);
+      transition:
+        color 0.2s,
+        background 0.2s,
+        border-color 0.2s,
+        box-shadow 0.2s;
+
+      &:hover {
+        color: var(--el-color-primary);
+        background: #fff;
+        border-color: color-mix(in srgb, var(--el-color-primary) 35%, transparent);
+        box-shadow: 0 4px 12px color-mix(in srgb, var(--el-color-primary) 14%, transparent);
+      }
+    }
+
+    &-icon {
+      width: 16px;
+      height: 16px;
+    }
+  }
 }
 
 :deep(.el-form-item) {
@@ -543,188 +737,6 @@ $input-h: 44px;
 
 :deep(.el-input__wrapper) {
   height: $input-h;
-}
-
-.input-prefix-icon {
-  display: inline-flex;
-  width: 14px;
-  height: 14px;
-  color: var(--el-text-color-placeholder);
-}
-
-.captcha-row {
-  display: flex;
-  gap: 12px;
-  width: 100%;
-}
-
-.captcha-row__input {
-  flex: 1;
-  min-width: 0;
-}
-
-.captcha-img {
-  box-sizing: border-box;
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 108px;
-  height: $input-h;
-  overflow: hidden;
-  cursor: pointer;
-  background: var(--el-fill-color-blank);
-  border: 1px solid var(--el-border-color);
-  border-radius: var(--el-border-radius-base);
-  transition: border-color 0.2s;
-
-  &:hover {
-    border-color: var(--el-color-primary);
-  }
-
-  img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-}
-
-.login-options {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 22px;
-  font-size: 14px;
-  color: $text-secondary;
-
-  &__link {
-    font-weight: 500;
-    color: $primary;
-    cursor: pointer;
-    transition: opacity 0.15s;
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-}
-
-.login-btn {
-  width: 100%;
-  height: 44px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 8px;
-  box-shadow: 0 12px 24px rgba($primary, 0.18);
-
-  &:hover {
-    box-shadow: 0 14px 28px rgba($primary, 0.22);
-  }
-
-  &:focus,
-  &:focus-visible {
-    outline: none;
-  }
-}
-
-.login-demo {
-  margin-top: 20px;
-
-  &__title {
-    margin-bottom: 10px;
-    font-size: 12px;
-    color: $text-muted;
-  }
-
-  &__accounts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  &__chip {
-    height: 28px;
-    padding: 0 12px;
-    font-size: 12px;
-    color: $text-secondary;
-    cursor: pointer;
-    background: rgb(37 99 235 / 5%);
-    border: 1px solid rgb(37 99 235 / 16%);
-    border-radius: 999px;
-    transition:
-      color 0.2s,
-      background 0.2s,
-      border-color 0.2s;
-
-    &:hover {
-      color: $primary;
-      background: rgb(37 99 235 / 10%);
-      border-color: rgba($primary, 0.4);
-    }
-  }
-}
-
-.login-alt {
-  margin-top: 28px;
-
-  &__divider {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 14px;
-    font-size: 13px;
-    color: $text-muted;
-
-    &::before,
-    &::after {
-      flex: 1;
-      height: 1px;
-      content: "";
-      background: rgb(30 58 138 / 12%);
-    }
-  }
-
-  &__buttons {
-    display: flex;
-    gap: 12px;
-  }
-
-  /* 半透明白底按钮，在渐变背景上保持可见；hover 时提实并加深投影 */
-  &__btn {
-    display: flex;
-    flex: 1;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
-    height: 44px;
-    padding: 0;
-    font-size: 14px;
-    color: $text-secondary;
-    cursor: pointer;
-    background: rgb(255 255 255 / 80%);
-    border: 1px solid rgb(30 58 138 / 10%);
-    border-radius: 8px;
-    box-shadow: 0 1px 2px rgb(30 58 138 / 6%);
-    backdrop-filter: blur(4px);
-    transition:
-      color 0.2s,
-      background 0.2s,
-      border-color 0.2s,
-      box-shadow 0.2s;
-
-    &:hover {
-      color: $primary;
-      background: #fff;
-      border-color: rgba($primary, 0.35);
-      box-shadow: 0 4px 12px rgba($primary, 0.14);
-    }
-  }
-
-  &__icon {
-    width: 16px;
-    height: 16px;
-  }
 }
 
 .login-footer {
@@ -738,7 +750,25 @@ $input-h: 44px;
 }
 
 .dark .login-brand {
-  background-image: url("@/assets/images/login/bg-dark.svg");
+  // 深蓝渐变底（原 bg-dark.svg），暗色下不随主题色变化
+  background: linear-gradient(135deg, #0f1a33 0%, #0c1428 55%, #0a1020 100%);
+
+  // 网格纹理（原 bg-dark.svg pattern）：白色细线 + 上浓下淡遮罩
+  &::before {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background-image:
+      linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(
+      to bottom,
+      rgb(0 0 0 / 90%) 0%,
+      rgb(0 0 0 / 30%) 70%,
+      transparent 100%
+    );
+  }
 
   &__logo {
     background: rgb(255 255 255 / 10%);
@@ -803,28 +833,12 @@ $input-h: 44px;
   &__desc {
     color: rgb(255 255 255 / 30%);
   }
-}
 
-.dark .login-footer {
-  color: rgb(255 255 255 / 15%);
-}
-
-.dark .login-alt__divider {
-  color: rgb(255 255 255 / 20%);
-
-  &::before,
-  &::after {
-    background: rgb(255 255 255 / 12%);
-  }
-}
-
-/* 深色下演示账号用半透明白底 */
-.dark .login-demo {
-  &__title {
+  &__demo-title {
     color: rgb(255 255 255 / 35%);
   }
 
-  &__chip {
+  &__demo-chip {
     color: rgb(255 255 255 / 70%);
     background: rgb(255 255 255 / 6%);
     border-color: rgb(255 255 255 / 14%);
@@ -835,20 +849,32 @@ $input-h: 44px;
       border-color: rgb(255 255 255 / 28%);
     }
   }
+
+  &__alt-divider {
+    color: rgb(255 255 255 / 20%);
+
+    &::before,
+    &::after {
+      background: rgb(255 255 255 / 12%);
+    }
+  }
+
+  &__alt-btn {
+    color: rgb(255 255 255 / 65%);
+    background: rgb(255 255 255 / 6%);
+    border-color: rgb(255 255 255 / 12%);
+    box-shadow: none;
+
+    &:hover {
+      color: #fff;
+      background: rgb(255 255 255 / 12%);
+      border-color: rgb(255 255 255 / 24%);
+    }
+  }
 }
 
-/* 深色下按钮用半透明白叠加，hover 提亮 */
-.dark .login-alt__btn {
-  color: rgb(255 255 255 / 65%);
-  background: rgb(255 255 255 / 6%);
-  border-color: rgb(255 255 255 / 12%);
-  box-shadow: none;
-
-  &:hover {
-    color: #fff;
-    background: rgb(255 255 255 / 12%);
-    border-color: rgb(255 255 255 / 24%);
-  }
+.dark .login-footer {
+  color: rgb(255 255 255 / 15%);
 }
 
 .fade-slide-enter-active,
@@ -896,9 +922,13 @@ $input-h: 44px;
     }
   }
 
-  /* 深色品牌区的背景图不适合窄屏，透出页面底色 */
+  /* 深色品牌区的渐变与网格纹理不适合窄屏，透出页面底色 */
   .dark .login-brand {
     background: none;
+
+    &::before {
+      display: none;
+    }
   }
 
   /* 卡片占满剩余高度并透出页面渐变，inner 沿用全局的垂直居中，页脚沉底 */

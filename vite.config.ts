@@ -18,10 +18,8 @@ const __APP_INFO__ = {
   buildTimestamp: Date.now(),
 };
 
-// ESM 模式下使用 import.meta.dirname（Node 20.11+）
 const pathSrc = resolve(import.meta.dirname, "src");
 
-// Vite配置  https://cn.vitejs.dev/config
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
 
@@ -44,16 +42,16 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       port: +env.VITE_APP_PORT,
       open: true,
       proxy: {
-        [env.VITE_APP_BASE_API]: {
+        [env.VITE_API_BASE]: {
           changeOrigin: true,
-          target: env.VITE_APP_API_URL,
-          rewrite: (path: string) => path.replace(new RegExp(`^${env.VITE_APP_BASE_API}`), ""),
+          target: env.VITE_PROXY_TARGET,
+          rewrite: (path: string) => path.replace(new RegExp(`^${env.VITE_API_BASE}`), ""),
         },
       },
     },
     plugins: [
       vue(),
-      ...(env.VITE_MOCK_DEV_SERVER === "true" ? [mockDevServerPlugin()] : []),
+      ...(env.VITE_MOCK_ENABLED === "true" ? [mockDevServerPlugin()] : []),
       UnoCSS(),
       // API 自动导入
       AutoImport({

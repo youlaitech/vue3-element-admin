@@ -5,11 +5,12 @@
  */
 interface ImportMetaEnv {
   readonly VITE_APP_PORT: string;
-  readonly VITE_APP_BASE_API: string;
-  readonly VITE_APP_API_URL: string;
+  readonly VITE_API_BASE: string;
+  readonly VITE_PROXY_TARGET: string;
   readonly VITE_APP_TITLE?: string;
-  readonly VITE_APP_TENANT_ENABLED?: string;
-  readonly VITE_MOCK_DEV_SERVER: string;
+  readonly VITE_TENANT_ENABLED?: string;
+  readonly VITE_AI_ENABLED?: string;
+  readonly VITE_MOCK_ENABLED?: string;
 }
 
 interface ImportMeta {

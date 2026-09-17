@@ -21,6 +21,14 @@ const FormAPI = {
       method: "get",
     });
   },
+  /** AI 生成表单规则（未开启 AI 时接口不存在） */
+  aiGenerate(description: string) {
+    return request<unknown, string>({
+      url: `${FORM_BASE_URL}/ai-generate`,
+      method: "post",
+      data: { description },
+    });
+  },
   /** 表单定义分页列表 */
   getPage(queryParams: FormDefinitionQueryParams) {
     return request<unknown, PageResult<FormDefinitionItem>>({
@@ -68,8 +76,8 @@ const FormAPI = {
     return request<unknown, FormRenderData>({
       url: `${FORM_BASE_URL}/public/${formKey}/render`,
       method: "get",
-      // 匿名页显式跳过 token 注入，避免已登录管理员预览分享链接时携带身份
-      headers: { Authorization: "no-auth" },
+      // 已登录管理员打开分享链接时不能混入自身令牌
+      anonymous: true,
     });
   },
   /** 匿名提交公开表单数据（后端按 formKey + IP 限流防刷） */
@@ -78,7 +86,7 @@ const FormAPI = {
       url: `${FORM_BASE_URL}/public/${formKey}/data`,
       method: "post",
       data,
-      headers: { Authorization: "no-auth" },
+      anonymous: true,
     });
   },
   /** 表单数据分页列表 */

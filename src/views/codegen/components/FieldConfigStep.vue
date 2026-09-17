@@ -1,46 +1,31 @@
 <template>
   <div class="field-config-step">
-    <!-- 顶部统计栏 -->
+    <!-- 统计与批量操作 -->
     <div class="stats-bar">
-      <div class="stat-item">
-        <div class="stat-icon bg-primary">
-          <el-icon><Tickets /></el-icon>
-        </div>
-        <div class="stat-info">
-          <div class="stat-value">{{ fieldConfigs.length }}</div>
-          <div class="stat-label">字段总数</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon bg-success">
-          <el-icon><Search /></el-icon>
-        </div>
-        <div class="stat-info">
-          <div class="stat-value">{{ queryCount }}</div>
-          <div class="stat-label">查询字段</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon bg-warning">
-          <el-icon><List /></el-icon>
-        </div>
-        <div class="stat-info">
-          <div class="stat-value">{{ listCount }}</div>
-          <div class="stat-label">列表字段</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon bg-info">
-          <el-icon><EditPen /></el-icon>
-        </div>
-        <div class="stat-info">
-          <div class="stat-value">{{ formCount }}</div>
-          <div class="stat-label">表单字段</div>
-        </div>
-      </div>
+      <span>
+        共
+        <b>{{ fieldConfigs.length }}</b>
+        个字段
+      </span>
+      <span>
+        查询
+        <b>{{ queryCount }}</b>
+      </span>
+      <span>
+        列表
+        <b>{{ listCount }}</b>
+      </span>
+      <span>
+        表单
+        <b>{{ formCount }}</b>
+      </span>
 
       <!-- 批量操作 -->
       <div class="bulk-actions">
+        <el-checkbox v-if="aiChangedCount" v-model="onlyAiChanged">
+          只看 AI 改动（{{ aiChangedCount }}）
+        </el-checkbox>
+        <el-divider v-if="aiChangedCount" direction="vertical" />
         <span class="text-sm text-gray-500">批量:</span>
         <el-dropdown @command="(cmd: any) => bulkSet(cmd.key, cmd.value)">
           <el-button size="small" type="primary" plain>
@@ -89,147 +74,121 @@
       </div>
     </div>
 
-    <!-- 字段表格 -->
-    <el-table
-      ref="tableRef"
-      v-loading="loading"
-      :data="fieldConfigs"
-      :element-loading-text="loadingText"
-      highlight-current-row
-      class="field-table"
-    >
-      <!-- 拖拽手柄 -->
-      <el-table-column width="48" align="center">
-        <template #default>
-          <el-icon class="cursor-move sortable-handle text-gray-400 hover:text-primary">
+    <!-- 字段卡片：取代原来的宽表，设置项在卡片内分行排布 -->
+    <div v-loading="loading" :element-loading-text="loadingText" class="field-cards-wrap">
+      <div ref="listRef" class="field-cards">
+        <div
+          v-for="row in visibleFields"
+          :key="row.columnName"
+          class="field-card"
+          :class="{
+            'is-ai': isAiChanged(row.columnName),
+            'is-located': locatedColumn === row.columnName,
+          }"
+        >
+          <el-icon class="sortable-handle cursor-move text-gray-400 hover:text-primary">
             <Rank />
           </el-icon>
-        </template>
-      </el-table-column>
+          <span class="field-column" :title="row.columnName">{{ row.columnName }}</span>
+          <el-tooltip v-if="aiChangesOf(row.columnName)?.length" placement="top" effect="light">
+            <template #content>
+              <div
+                v-for="item in aiChangesOf(row.columnName)"
+                :key="item.label"
+                class="ai-change-line"
+              >
+                {{ item.label }}：{{ item.from }} → {{ item.to }}
+              </div>
+            </template>
+            <el-tag size="small" type="primary" effect="plain">AI</el-tag>
+          </el-tooltip>
+          <span class="field-meta" :title="`${row.columnType} → ${row.fieldType}`">
+            {{ row.columnType }} → {{ row.fieldType }}
+            <span v-if="row.maxLength">({{ row.maxLength }})</span>
+          </span>
 
-      <!-- 字段信息 -->
-      <el-table-column label="字段信息" min-width="360">
-        <template #default="{ row }">
-          <div class="flex items-start gap-3">
-            <div class="field-info" style="flex-shrink: 0; width: 140px">
-              <div class="flex items-center gap-2">
-                <span class="font-medium text-sm">{{ row.columnName }}</span>
-                <el-tag v-if="row.isPrimaryKey" size="small" type="warning" effect="dark">
-                  主键
-                </el-tag>
-              </div>
-              <div class="text-xs text-gray-400 font-mono mt-1">
-                {{ row.columnType }} → {{ row.fieldType }}
-                <span v-if="row.maxLength">({{ row.maxLength }})</span>
-              </div>
+          <div class="field-naming">
+            <span class="field-label">字段名</span>
+            <el-input v-model="row.fieldName" size="small" class="field-input" />
+            <span class="field-label">注释</span>
+            <el-input v-model="row.fieldComment" size="small" class="field-input" />
+          </div>
+
+          <div class="field-settings">
+            <div class="setting-group">
+              <el-checkbox v-model="row.isShowInQuery" :true-value="1" :false-value="0">
+                查询
+              </el-checkbox>
+              <el-select
+                v-model="row.queryType"
+                :disabled="row.isShowInQuery !== 1"
+                size="small"
+                placeholder="未启用"
+                class="field-select"
+              >
+                <el-option
+                  v-for="(item, key) in queryTypeOptions"
+                  :key="key"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
             </div>
-            <div class="flex-1 flex flex-col gap-1.5">
-              <div class="flex items-center gap-2">
-                <span class="text-xs text-gray-500 w-10 text-right">字段名</span>
-                <el-input v-model="row.fieldName" size="small" style="width: 130px" />
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs text-gray-500 w-10 text-right">注释</span>
-                <el-input v-model="row.fieldComment" size="small" style="width: 130px" />
+            <div class="setting-group">
+              <el-checkbox v-model="row.isShowInList" :true-value="1" :false-value="0">
+                列表
+              </el-checkbox>
+            </div>
+            <div class="setting-group">
+              <el-checkbox v-model="row.isShowInForm" :true-value="1" :false-value="0">
+                表单
+              </el-checkbox>
+              <el-select
+                v-model="row.formType"
+                :disabled="row.isShowInForm !== 1 && row.isShowInQuery !== 1"
+                size="small"
+                placeholder="未启用"
+                class="field-select"
+              >
+                <el-option
+                  v-for="(item, key) in formTypeOptions"
+                  :key="key"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+              <el-select
+                v-if="row.formType === FormTypeEnum.SELECT.value"
+                v-model="row.dictType"
+                clearable
+                size="small"
+                placeholder="字典"
+                class="field-select"
+              >
+                <el-option
+                  v-for="item in dictOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+              <div class="field-required">
+                <span class="field-label">必填</span>
+                <el-switch
+                  v-model="row.isRequired"
+                  :active-value="1"
+                  :inactive-value="0"
+                  :disabled="row.isShowInForm !== 1"
+                  size="small"
+                />
               </div>
             </div>
           </div>
-        </template>
-      </el-table-column>
+        </div>
+      </div>
 
-      <!-- 查询 -->
-      <el-table-column label="查询" width="60" align="center">
-        <template #default="{ row }">
-          <el-checkbox v-model="row.isShowInQuery" :true-value="1" :false-value="0" />
-        </template>
-      </el-table-column>
-
-      <!-- 查询方式 -->
-      <el-table-column label="查询方式" width="120">
-        <template #default="{ row }">
-          <el-select
-            v-model="row.queryType"
-            :disabled="row.isShowInQuery !== 1"
-            size="small"
-            placeholder=""
-          >
-            <el-option
-              v-for="(item, key) in queryTypeOptions"
-              :key="key"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </template>
-      </el-table-column>
-
-      <!-- 列表 -->
-      <el-table-column label="列表" width="60" align="center">
-        <template #default="{ row }">
-          <el-checkbox v-model="row.isShowInList" :true-value="1" :false-value="0" />
-        </template>
-      </el-table-column>
-
-      <!-- 表单 -->
-      <el-table-column label="表单" width="60" align="center">
-        <template #default="{ row }">
-          <el-checkbox v-model="row.isShowInForm" :true-value="1" :false-value="0" />
-        </template>
-      </el-table-column>
-
-      <!-- 表单类型 -->
-      <el-table-column label="表单类型" width="120">
-        <template #default="{ row }">
-          <el-select
-            v-model="row.formType"
-            :disabled="row.isShowInForm !== 1 && row.isShowInQuery !== 1"
-            size="small"
-            placeholder=""
-          >
-            <el-option
-              v-for="(item, key) in formTypeOptions"
-              :key="key"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </template>
-      </el-table-column>
-
-      <!-- 字典类型 -->
-      <el-table-column label="字典类型" width="120">
-        <template #default="{ row }">
-          <el-select
-            v-if="row.formType === FormTypeEnum.SELECT.value"
-            v-model="row.dictType"
-            clearable
-            size="small"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-          <span v-else class="text-gray-300 text-xs">-</span>
-        </template>
-      </el-table-column>
-
-      <!-- 必填 -->
-      <el-table-column label="必填" width="60" align="center">
-        <template #default="{ row }">
-          <el-switch
-            v-model="row.isRequired"
-            :active-value="1"
-            :inactive-value="0"
-            :disabled="row.isShowInForm !== 1"
-            size="small"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
+      <el-empty v-if="!visibleFields.length" description="没有字段" :image-size="80" />
+    </div>
   </div>
 </template>
 
@@ -238,22 +197,85 @@ import Sortable from "sortablejs";
 import { FormTypeEnum, QueryTypeEnum } from "@/enums/codegen";
 import type { GenConfigForm } from "@/api/codegen";
 import type { OptionItem } from "@/api/common";
+import type { AiChangeItem } from "../composables/useAiFillDiff";
 
 const formData = defineModel<GenConfigForm>({ required: true });
 
-defineProps<{
+const props = defineProps<{
   loading: boolean;
   loadingText: string;
   dictOptions?: OptionItem[];
+  /** AI 改动明细：列名 → 各改动项 */
+  aiChanges?: Record<string, AiChangeItem[]>;
 }>();
 
 const formTypeOptions: Record<string, OptionItem> = FormTypeEnum;
 const queryTypeOptions: Record<string, OptionItem> = QueryTypeEnum;
 
-const tableRef = ref();
+const listRef = ref<HTMLElement>();
 const sortFlag = ref<Sortable | null>(null);
 
 const fieldConfigs = computed(() => formData.value?.fieldConfigs || []);
+
+// 只看 AI 改动过的字段
+const onlyAiChanged = ref(false);
+
+/** AI 改动过的字段数 */
+const aiChangedCount = computed(() => Object.keys(props.aiChanges ?? {}).length);
+
+/** 展示的字段，开启筛选时只保留 AI 改动过的字段 */
+const visibleFields = computed(() => {
+  if (!onlyAiChanged.value) return fieldConfigs.value;
+  return fieldConfigs.value.filter(
+    (row) => row.columnName && props.aiChanges?.[row.columnName]?.length
+  );
+});
+
+/** 取某列的 AI 改动明细 */
+function aiChangesOf(columnName?: string) {
+  return columnName ? props.aiChanges?.[columnName] : undefined;
+}
+
+/** 是否给卡片加改动底色；全部字段都被改过时不再整片高亮，那已经没有对比意义 */
+function isAiChanged(columnName?: string) {
+  const changed = aiChangesOf(columnName)?.length;
+  return !!changed && aiChangedCount.value < fieldConfigs.value.length;
+}
+
+/** 只看 AI 改动过的字段，AI 填充完成后由父级调用 */
+function showOnlyAiChanged() {
+  if (!aiChangedCount.value) return;
+  onlyAiChanged.value = true;
+}
+
+// 定位目标字段，短暂高亮用
+const locatedColumn = ref("");
+let locateTimer: ReturnType<typeof setTimeout> | undefined;
+
+/** 滚动到指定字段卡片并短暂高亮，供父级从 AI 改动明细定位时调用 */
+async function locateField(columnName: string) {
+  if (!columnName) return;
+  // 等字段列表按当前筛选渲染完，再取节点，否则可能定位到上一帧已不存在的卡片
+  await nextTick();
+  const cards = listRef.value?.querySelectorAll<HTMLElement>(".field-card");
+  const target = Array.from(cards ?? []).find(
+    (card) => card.querySelector(".field-column")?.textContent?.trim() === columnName
+  );
+  if (!target) return;
+  target.scrollIntoView({ behavior: "smooth", block: "center" });
+  locatedColumn.value = columnName;
+  clearTimeout(locateTimer);
+  locateTimer = setTimeout(() => (locatedColumn.value = ""), 2000);
+}
+
+// 筛选时关掉拖拽，避免显示的序号和真实数据错位
+watch(onlyAiChanged, (only) => {
+  if (only) {
+    destroySort();
+  } else {
+    nextTick(() => initSort());
+  }
+});
 
 // 统计数量
 const queryCount = computed(() => fieldConfigs.value.filter((f) => f.isShowInQuery === 1).length);
@@ -267,12 +289,11 @@ function bulkSet(key: "isShowInQuery" | "isShowInList" | "isShowInForm", value: 
   });
 }
 
-// 用 Sortable.js 实现行拖拽排序，需要在字段配置步骤显示后调用
+// 用 Sortable.js 实现卡片拖拽排序，需要在字段配置步骤显示后调用
 function initSort() {
-  if (sortFlag.value) return;
-  const tbody = tableRef.value?.$el?.querySelector(".el-table__body-wrapper tbody");
-  if (!tbody) return;
-  sortFlag.value = Sortable.create(tbody, {
+  if (sortFlag.value || onlyAiChanged.value) return;
+  if (!listRef.value) return;
+  sortFlag.value = Sortable.create(listRef.value, {
     animation: 150,
     ghostClass: "sortable-ghost",
     handle: ".sortable-handle",
@@ -293,10 +314,11 @@ function destroySort() {
 }
 
 // 暴露给父组件
-defineExpose({ initSort, destroySort });
+defineExpose({ initSort, destroySort, showOnlyAiChanged, locateField });
 
 onBeforeUnmount(() => {
   destroySort();
+  clearTimeout(locateTimer);
 });
 </script>
 
@@ -306,72 +328,17 @@ onBeforeUnmount(() => {
     display: flex;
     gap: 16px;
     align-items: center;
-    padding: 16px 20px;
+    padding: 12px 16px;
     margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--el-text-color-secondary);
     background: var(--el-bg-color);
     border: 1px solid var(--el-border-color-lighter);
-    border-radius: 12px;
+    border-radius: 10px;
 
-    .stat-item {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      padding: 0 16px;
-      border-right: 1px solid var(--el-border-color-lighter);
-
-      &:last-of-type {
-        border-right: none;
-      }
-
-      .stat-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 38px;
-        height: 38px;
-        font-size: 18px;
-        color: #fff;
-        border-radius: 10px;
-
-        &.bg-primary {
-          background: linear-gradient(
-            135deg,
-            var(--el-color-primary),
-            var(--el-color-primary-light-3)
-          );
-        }
-        &.bg-success {
-          background: linear-gradient(
-            135deg,
-            var(--el-color-success),
-            var(--el-color-success-light-3)
-          );
-        }
-        &.bg-warning {
-          background: linear-gradient(
-            135deg,
-            var(--el-color-warning),
-            var(--el-color-warning-light-3)
-          );
-        }
-        &.bg-info {
-          background: linear-gradient(135deg, var(--el-color-info), var(--el-color-info-light-3));
-        }
-      }
-
-      .stat-info {
-        .stat-value {
-          font-size: 20px;
-          font-weight: 700;
-          line-height: 1.2;
-          color: var(--el-text-color-primary);
-        }
-        .stat-label {
-          margin-top: 2px;
-          font-size: 12px;
-          color: var(--el-text-color-secondary);
-        }
-      }
+    b {
+      font-weight: 600;
+      color: var(--el-text-color-primary);
     }
 
     .bulk-actions {
@@ -388,28 +355,117 @@ onBeforeUnmount(() => {
     }
   }
 
-  .field-table {
-    overflow: hidden;
-    border: 1px solid var(--el-border-color-lighter);
-    border-radius: 12px;
+  .field-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-    :deep(.el-table__header) {
-      th {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--el-text-color-primary);
-        background: var(--el-fill-color-light);
+  .field-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 16px;
+    background: var(--el-bg-color);
+    border: 1px solid var(--el-border-color-lighter);
+    border-radius: 10px;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: var(--el-border-color);
+    }
+
+    // AI 改动过的字段：左侧标记 + 淡色底
+    &.is-ai {
+      background: var(--el-color-primary-light-9);
+      border-color: var(--el-color-primary-light-7);
+      box-shadow: inset 3px 0 0 0 var(--el-color-primary);
+    }
+
+    // 从 AI 改动明细定位过来：用 outline 描边，不和 is-ai 的 box-shadow 打架
+    &.is-located {
+      outline: 2px solid var(--el-color-primary-light-5);
+      outline-offset: 1px;
+      border-color: var(--el-color-primary);
+    }
+
+    // 列名与类型固定宽度，保证各字段纵向对齐好扫读
+    .field-column {
+      flex: none;
+      width: 108px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--el-text-color-primary);
+      white-space: nowrap;
+    }
+
+    .field-meta {
+      flex: none;
+      width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: var(--el-font-family-mono, monospace);
+      font-size: 12px;
+      color: var(--el-text-color-secondary);
+      white-space: nowrap;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: var(--el-text-color-secondary);
+      white-space: nowrap;
+    }
+
+    .field-naming {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding-left: 12px;
+      border-left: 1px dashed var(--el-border-color-lighter);
+
+      .field-input {
+        width: 120px;
       }
     }
 
-    :deep(.el-table__row) {
-      transition: background 0.2s ease;
+    .field-settings {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      padding-left: 12px;
+      border-left: 1px dashed var(--el-border-color-lighter);
 
-      &:hover {
-        background: var(--el-fill-color-lighter) !important;
+      .setting-group {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+
+        // 查询、列表、表单三组之间用虚线分隔
+        & + .setting-group {
+          padding-left: 16px;
+          border-left: 1px dashed var(--el-border-color-lighter);
+        }
+
+        .field-required {
+          display: flex;
+          gap: 6px;
+          align-items: center;
+        }
+      }
+
+      .field-select {
+        width: 118px;
       }
     }
   }
+}
+
+.ai-change-line {
+  line-height: 1.7;
 }
 
 .sortable-ghost {

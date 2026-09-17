@@ -67,29 +67,7 @@
     </template>
   </el-dropdown>
 
-  <el-dialog
-    v-model="dialogVisible"
-    :title="detail?.title ?? '通知详情'"
-    width="800px"
-    custom-class="notification-detail"
-  >
-    <div v-if="detail" class="p-x-20px">
-      <div class="flex-y-center mb-16px text-13px text-color-secondary">
-        <span class="flex-y-center">
-          <el-icon><User /></el-icon>
-          {{ detail.publisherName }}
-        </span>
-        <span class="ml-2 flex-y-center">
-          <el-icon><Timer /></el-icon>
-          {{ detail.publishTime }}
-        </span>
-      </div>
-
-      <div class="max-h-60vh pt-16px mb-24px overflow-y-auto border-t border-solid border-color">
-        <div v-html="detail.content"></div>
-      </div>
-    </div>
-  </el-dialog>
+  <NoticeDetailDialog v-model="dialogVisible" :detail="detail" />
 </template>
 
 <script setup lang="ts">

@@ -59,6 +59,14 @@ export function useGenConfig() {
     { deep: true, immediate: true }
   );
 
+  /** 未保存过的表页面类型为空，统一补成普通表单 */
+  function applyDefaults(config: GenConfigForm): GenConfigForm {
+    if (!config.pageType) {
+      config.pageType = "classic";
+    }
+    return config;
+  }
+
   /** 加载配置：并行获取菜单、字典、生成配置 */
   async function loadConfig(tableName: string) {
     const [menuList, dictList, config] = await Promise.all([
@@ -68,7 +76,7 @@ export function useGenConfig() {
     ]);
     menuOptions.value = menuList;
     dictOptions.value = dictList;
-    genConfigFormData.value = config;
+    genConfigFormData.value = applyDefaults(config);
     return config;
   }
 
@@ -105,5 +113,6 @@ export function useGenConfig() {
     saveConfig,
     validateBasic,
     bulkSet,
+    applyDefaults,
   };
 }

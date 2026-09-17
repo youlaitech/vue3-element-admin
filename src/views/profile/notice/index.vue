@@ -82,35 +82,13 @@
       />
     </el-card>
 
-    <el-dialog
-      v-model="noticeDialogVisible"
-      :title="noticeDetail?.title ?? '通知详情'"
-      width="800px"
-      custom-class="notice-detail"
-    >
-      <div v-if="noticeDetail" class="notice-detail__wrapper">
-        <div class="notice-detail__meta">
-          <span>
-            <el-icon><User /></el-icon>
-            {{ noticeDetail.publisherName }}
-          </span>
-          <span class="ml-2">
-            <el-icon><Timer /></el-icon>
-            {{ noticeDetail.publishTime }}
-          </span>
-        </div>
-
-        <div class="notice-detail__content">
-          <div v-html="noticeDetail.content"></div>
-        </div>
-      </div>
-    </el-dialog>
+    <NoticeDetailDialog v-model="noticeDialogVisible" :detail="noticeDetail" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { Refresh, Search, Timer, User } from "@element-plus/icons-vue";
+import { Refresh, Search } from "@element-plus/icons-vue";
 
 import NoticeAPI from "@/api/system/notice";
 import type { NoticeDetail, NoticeItem, NoticeQueryParams } from "@/api/system/notice";
@@ -157,43 +135,3 @@ onMounted(() => {
   handleQuery();
 });
 </script>
-
-<style lang="scss" scoped>
-:deep(.el-dialog__header) {
-  text-align: center;
-}
-
-.notice-detail {
-  &__wrapper {
-    padding: 0 20px;
-  }
-
-  &__meta {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-    font-size: 13px;
-    color: var(--el-text-color-secondary);
-  }
-
-  &__publisher {
-    margin-right: 24px;
-
-    i {
-      margin-right: 4px;
-    }
-  }
-
-  &__content {
-    max-height: 60vh;
-    padding-top: 16px;
-    margin-bottom: 24px;
-    overflow-y: auto;
-    border-top: 1px solid var(--el-border-color);
-
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-  }
-}
-</style>
