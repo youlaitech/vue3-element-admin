@@ -11,5 +11,8 @@ export { formatGrowthRate, formatFileSize, formatNumber, formatCurrency } from "
 // 文件下载
 export { downloadFile } from "./download";
 
+// 路由路径
+export { joinRoutePath } from "./route";
+
 // 本地存储
 export { Storage } from "./storage";

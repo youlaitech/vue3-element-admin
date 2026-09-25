@@ -549,12 +549,12 @@ onMounted(() => {
   gap: 6px;
   align-items: center;
   max-width: 100%;
+}
 
-  &__text {
-    flex-shrink: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.form-name__text {
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

@@ -6,9 +6,9 @@ import { useTenantStoreHook } from "@/stores/tenant";
 import { isTenantEnabled } from "@/utils/tenant";
 
 /**
- * 路由权限守卫
+ * 路由守卫
  *
- * 处理登录验证、动态路由生成、404检测等
+ * 处理登录验证、动态路由生成、404 检测、页面标题与进度条
  */
 export function setupPermissionGuard() {
   // 白名单支持前缀匹配：/f 命中所有公开表单分享页 /f/:formKey
@@ -84,7 +84,9 @@ export function setupPermissionGuard() {
   });
 }
 
-/** 初始化多租户上下文，未启用或失败时静默跳过 */
+/**
+ * 初始化多租户上下文，未启用或失败时静默跳过
+ */
 async function initTenantContext(): Promise<void> {
   if (!isTenantEnabled()) return;
 

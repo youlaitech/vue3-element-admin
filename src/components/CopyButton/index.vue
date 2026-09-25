@@ -29,10 +29,10 @@ function handleClipboard() {
     // 使用 Clipboard API
     navigator.clipboard.writeText(props.text).then(
       () => {
-        ElMessage.success("Copy successfully");
+        ElMessage.success("复制成功");
       },
       () => {
-        ElMessage.warning("Copy failed");
+        ElMessage.warning("复制失败");
       }
     );
   } else {
@@ -47,9 +47,9 @@ function handleClipboard() {
       const successful = document.execCommand("copy");
 
       if (successful) {
-        ElMessage.success("Copy successfully!");
+        ElMessage.success("复制成功");
       } else {
-        ElMessage.warning("Copy failed!");
+        ElMessage.warning("复制失败");
       }
     } finally {
       document.body.removeChild(input);

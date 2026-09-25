@@ -12,7 +12,7 @@ import { setupStore } from "@/stores";
 import { setupI18n } from "@/lang";
 import { setupFormCreate } from "@/plugins/form-create";
 import * as ElementPlusIcons from "@element-plus/icons-vue";
-import { setupPermissionGuard } from "@/router/guards/permission";
+import { setupPermissionGuard } from "@/router/guards";
 import { useSse } from "@/utils/sse";
 import { useDictStoreHook } from "@/stores/dict";
 
