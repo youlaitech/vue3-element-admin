@@ -35,6 +35,9 @@ const isExternalLink = computed(() => {
 
 const linkType = computed(() => (isExternalLink.value ? "a" : "router-link"));
 
+/**
+ * 拼接链接属性：外链给 a 标签，内链交给 router-link
+ */
 const linkProps = (to: AppLinkTo) => {
   if (isExternalLink.value) {
     return {
@@ -49,6 +52,9 @@ const linkProps = (to: AppLinkTo) => {
   return { to: routeTo };
 };
 
+/**
+ * 外链点击自行处理跳转，不走 router-link 的默认行为
+ */
 function handleClick(event: MouseEvent) {
   if (!isExternalLink.value) return;
 

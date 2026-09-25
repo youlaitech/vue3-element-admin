@@ -146,38 +146,43 @@ import { ref, reactive, computed } from "vue";
 import { useResizeObserver } from "@vueuse/core";
 import type { FormInstance, PopoverProps, TableInstance } from "element-plus";
 
-// 对象类型
+/**
+ * 对象类型
+ */
 export type IObject = Record<string, any>;
-// 定义接收的属性
+
+/**
+ * 定义接收的属性
+ */
 export interface ISelectConfig<T = any> {
-  // 宽度
+  /** 宽度 */
   width?: string;
-  // 占位符
+  /** 占位符 */
   placeholder?: string;
-  // popover组件属性
+  /** popover 组件属性 */
   popover?: Partial<Omit<PopoverProps, "visible" | "v-model:visible">>;
-  // 列表的网络请求函数 (需返回 Promise)
+  /** 列表的网络请求函数（需返回 Promise） */
   indexAction: (_queryParams: T) => Promise<any>;
-  // 主键 (跨页选择必填, 默认为 id)
+  /** 主键（跨页选择必填，默认为 id） */
   pk?: string;
-  // 是否多选
+  /** 是否多选 */
   multiple?: boolean;
-  // 表单项
+  /** 表单项 */
   formItems: Array<{
-    // 组件类型(如 input, select 等)
+    /** 组件类型（如 input、select 等） */
     type?: "input" | "select" | "tree-select" | "date-picker";
-    // 标签文本
+    /** 标签文本 */
     label: string;
-    // 键名
+    /** 键名 */
     prop: string;
-    // 组件属性
+    /** 组件属性 */
     attrs?: IObject;
-    // 初始值
+    /** 初始值 */
     initialValue?: any;
-    // 可选项(适用于select组件)
+    /** 可选项（适用于 select 组件） */
     options?: { label: string; value: any }[];
   }>;
-  // 列选项
+  /** 列选项 */
   tableColumns: Array<{
     type?: "default" | "selection" | "index" | "expand";
     label?: string;
@@ -196,7 +201,9 @@ const props = withDefaults(
   }
 );
 
-// 自定义事件
+/**
+ * 自定义事件
+ */
 const emit = defineEmits<{
   confirmClick: [selection: any[]];
 }>();
@@ -229,7 +236,7 @@ const queryParams = reactive<{
   pageSize,
 });
 
-// 计算popover的宽度
+// 计算 popover 的宽度
 const tableSelectRef = ref();
 const popoverWidth = ref(width);
 useResizeObserver(tableSelectRef, (entries) => {
@@ -242,17 +249,23 @@ const formRef = ref<FormInstance>();
 for (const item of props.selectConfig.formItems) {
   queryParams[item.prop] = item.initialValue ?? "";
 }
-// 重置操作
+/**
+ * 重置操作
+ */
 function handleReset() {
   formRef.value?.resetFields();
   fetchPageData(true);
 }
-// 查询操作
+/**
+ * 查询操作
+ */
 function handleQuery() {
   fetchPageData(true);
 }
 
-// 获取分页数据
+/**
+ * 获取分页数据
+ */
 function fetchPageData(isRestart = false) {
   loading.value = true;
   if (isRestart) {
@@ -284,6 +297,9 @@ const selectedItems = ref<IObject[]>([]);
 const confirmText = computed(() => {
   return selectedItems.value.length > 0 ? `已选${selectedItems.value.length}条` : "请选择";
 });
+/**
+ * 处理表格单选与多选
+ */
 function handleSelect(selection: any[]) {
   if (isMultiple || selection.length === 0) {
     // 多选
@@ -296,26 +312,35 @@ function handleSelect(selection: any[]) {
     tableRef.value?.setCurrentRow(selectedItems.value[0]);
   }
 }
+/**
+ * 处理表格全选
+ */
 function handleSelectAll(selection: any[]) {
   if (isMultiple) {
     selectedItems.value = selection;
   }
 }
-// 分页
+/**
+ * 分页
+ */
 function handlePagination() {
   fetchPageData();
 }
 
 // 弹出框
 const isInit = ref(false);
-// 显示
+/**
+ * 显示
+ */
 function handleShow() {
   if (isInit.value === false) {
     isInit.value = true;
     fetchPageData();
   }
 }
-// 确定
+/**
+ * 确定
+ */
 function handleConfirm() {
   if (selectedItems.value.length === 0) {
     ElMessage.error("请选择数据");
@@ -324,12 +349,16 @@ function handleConfirm() {
   popoverVisible.value = false;
   emit("confirmClick", selectedItems.value);
 }
-// 清空
+/**
+ * 清空
+ */
 function handleClear() {
   tableRef.value?.clearSelection();
   selectedItems.value = [];
 }
-// 关闭
+/**
+ * 关闭
+ */
 function handleClose() {
   popoverVisible.value = false;
 }

@@ -359,7 +359,7 @@ const userFormRef = ref<FormInstance>();
 const resetPasswordFormRef = ref<FormInstance>();
 const sidebarCollapsed = ref(false);
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   UserItem,
   UserQueryParams
@@ -430,7 +430,7 @@ const resetPasswordRules: FormRules<ResetPasswordForm> = {
 };
 
 /**
- * 取昵称/用户名首字母作为头像占位文本。
+ * 取昵称/用户名首字母作为头像占位文本
  *
  * @param row 用户行数据
  */
@@ -440,7 +440,7 @@ function getAvatarText(row: UserItem): string {
 }
 
 /**
- * 加载表单所需的下拉选项（角色 + 部门），并行请求。
+ * 加载表单所需的下拉选项（角色 + 部门），并行请求
  */
 async function loadFormOptions(): Promise<void> {
   [roleOptions.value, deptOptions.value] = await Promise.all([
@@ -450,14 +450,14 @@ async function loadFormOptions(): Promise<void> {
 }
 
 /**
- * 打开用户表单弹窗。
+ * 打开用户表单弹窗
  */
 function openDialog(): void {
   dialogState.visible = true;
 }
 
 /**
- * 关闭用户表单弹窗并清理临时状态。
+ * 关闭用户表单弹窗并清理临时状态
  */
 function closeDialog(): void {
   dialogState.visible = false;
@@ -465,7 +465,7 @@ function closeDialog(): void {
 }
 
 /**
- * 重置表单数据和验证状态。
+ * 重置表单数据和验证状态
  */
 function resetForm(): void {
   userFormRef.value?.resetFields();
@@ -477,7 +477,7 @@ function resetForm(): void {
 }
 
 /**
- * 打开新增弹窗。
+ * 打开新增弹窗
  */
 async function handleCreateClick(): Promise<void> {
   dialogState.title = "新增用户";
@@ -487,7 +487,7 @@ async function handleCreateClick(): Promise<void> {
 }
 
 /**
- * 打开编辑弹窗并回填数据。
+ * 打开编辑弹窗并回填数据
  */
 async function handleEditClick(id: string): Promise<void> {
   dialogState.title = "修改用户";
@@ -498,9 +498,7 @@ async function handleEditClick(id: string): Promise<void> {
   openDialog();
 }
 
-/**
- * 校验并提交用户表单。
- */
+// 校验并提交用户表单
 const handleSubmit = useDebounceFn(async () => {
   const valid = await userFormRef.value?.validate().then(
     () => true,
@@ -525,11 +523,9 @@ const handleSubmit = useDebounceFn(async () => {
 }, 300);
 
 /**
- * 删除单个或批量用户。
+ * 删除单个或批量用户，删除前拦住"把自己删掉"这条路径
  *
- * 安全检查：禁止删除当前登录用户。
- *
- * @param id 指定时删除单个用户；不指定时删除表格勾选项
+ * @param id 指定时按单个用户删除，不指定时删除表格勾选项
  */
 async function handleDelete(id?: string): Promise<void> {
   const userIds = id ?? selectedIds.value.join(",");
@@ -572,7 +568,7 @@ async function handleDelete(id?: string): Promise<void> {
 }
 
 /**
- * 导出当前查询条件下的用户列表。
+ * 导出当前查询条件下的用户列表
  */
 async function handleExport(): Promise<void> {
   const response = await UserAPI.export(params);
@@ -581,14 +577,14 @@ async function handleExport(): Promise<void> {
 }
 
 /**
- * 打开用户导入弹窗。
+ * 打开用户导入弹窗
  */
 function openImportDialog(): void {
   importDialogVisible.value = true;
 }
 
 /**
- * 打开重置密码弹窗。
+ * 打开重置密码弹窗
  *
  * @param row 用户行数据
  */
@@ -604,14 +600,14 @@ function openResetPasswordDialog(row: UserItem): void {
 }
 
 /**
- * 关闭重置密码弹窗。
+ * 关闭重置密码弹窗
  */
 function closeResetPasswordDialog(): void {
   resetPasswordDialog.visible = false;
 }
 
 /**
- * 重置密码表单状态。
+ * 重置密码表单状态
  */
 function resetResetPasswordForm(): void {
   resetPasswordFormRef.value?.resetFields();
@@ -622,9 +618,7 @@ function resetResetPasswordForm(): void {
   resetPasswordDialog.nickname = "";
 }
 
-/**
- * 提交重置密码。
- */
+// 提交重置密码
 const handleResetPasswordSubmit = useDebounceFn(async () => {
   const valid = await resetPasswordFormRef.value?.validate().then(
     () => true,

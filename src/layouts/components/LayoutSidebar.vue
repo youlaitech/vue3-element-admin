@@ -124,9 +124,7 @@ const onMenuClose = (index: string) => {
   expandedMenuIndexes.value = expandedMenuIndexes.value.filter((item) => item !== index);
 };
 
-/**
- * 展开状态变化后同步父级菜单激活态
- */
+// 展开状态变化后同步父级菜单激活态
 watch(
   () => expandedMenuIndexes.value,
   () => {
@@ -134,9 +132,7 @@ watch(
   }
 );
 
-/**
- * 水平菜单切换时收起弹出的垂直菜单
- */
+// 水平菜单切换时收起弹出的垂直菜单
 watch(
   () => props.menuMode,
   (newMode) => {
@@ -146,9 +142,7 @@ watch(
   }
 );
 
-/**
- * 路由激活项变化后同步父级菜单激活态
- */
+// 路由激活项变化后同步父级菜单激活态
 watch(
   () => activeMenuPath.value,
   () => {
@@ -159,9 +153,7 @@ watch(
   { immediate: true }
 );
 
-/**
- * TagsView 切换时重新计算父级菜单激活态
- */
+// TagsView 切换时重新计算父级菜单激活态
 watch(
   () => currentRoute.path,
   () => {
@@ -219,9 +211,7 @@ function syncActiveParentMenus() {
   });
 }
 
-/**
- * 首次挂载后同步父级菜单激活态
- */
+// 首次挂载后同步父级菜单激活态
 onMounted(() => {
   syncActiveParentMenus();
 });

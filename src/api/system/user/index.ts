@@ -44,7 +44,7 @@ const UserAPI = {
   /**
    * 获取用户表单详情
    *
-   * @param userId 用户ID
+   * @param userId 用户 ID
    * @returns 用户表单详情
    */
   getFormData(userId: string) {
@@ -70,7 +70,7 @@ const UserAPI = {
   /**
    * 修改用户
    *
-   * @param id 用户ID
+   * @param id 用户 ID
    * @param data 用户表单数据
    */
   update(id: string, data: UserForm) {
@@ -84,7 +84,7 @@ const UserAPI = {
   /**
    * 修改用户密码
    *
-   * @param id 用户ID
+   * @param id 用户 ID
    * @param password 新密码
    */
   resetPassword(id: string, password: string) {
@@ -98,7 +98,7 @@ const UserAPI = {
   /**
    * 批量删除用户，多个以英文逗号(,)分割
    *
-   * @param ids 用户ID字符串，多个以英文逗号(,)分割
+   * @param ids 用户 ID 字符串，多个以英文逗号(,)分割
    */
   deleteByIds(ids: string) {
     return request({
@@ -107,7 +107,9 @@ const UserAPI = {
     });
   },
 
-  /** 下载用户导入模板 */
+  /**
+   * 下载用户导入模板
+   */
   downloadTemplate() {
     return request<Blob>({
       url: `${USER_BASE_URL}/template`,
@@ -148,7 +150,9 @@ const UserAPI = {
     });
   },
 
-  /** 获取个人中心用户信息 */
+  /**
+   * 获取个人中心用户信息
+   */
   getProfile() {
     return request<unknown, UserProfileDetail>({
       url: `${USER_BASE_URL}/profile`,
@@ -156,7 +160,9 @@ const UserAPI = {
     });
   },
 
-  /** 修改个人中心用户信息 */
+  /**
+   * 修改个人中心用户信息
+   */
   updateProfile(data: UserProfileForm) {
     return request({
       url: `${USER_BASE_URL}/profile`,
@@ -165,7 +171,9 @@ const UserAPI = {
     });
   },
 
-  /** 修改个人中心用户密码 */
+  /**
+   * 修改个人中心用户密码
+   */
   changePassword(data: PasswordChangeForm) {
     return request({
       url: `${USER_BASE_URL}/password`,
@@ -174,7 +182,9 @@ const UserAPI = {
     });
   },
 
-  /** 发送短信验证码（绑定或更换手机号）*/
+  /**
+   * 发送短信验证码（绑定或更换手机号）
+   */
   sendMobileCode(mobile: string) {
     return request({
       url: `${USER_BASE_URL}/mobile/code`,
@@ -183,7 +193,9 @@ const UserAPI = {
     });
   },
 
-  /** 绑定或更换手机号 */
+  /**
+   * 绑定或更换手机号
+   */
   bindOrChangeMobile(data: MobileUpdateForm) {
     return request({
       url: `${USER_BASE_URL}/mobile`,
@@ -192,7 +204,9 @@ const UserAPI = {
     });
   },
 
-  /** 解绑手机号 */
+  /**
+   * 解绑手机号
+   */
   unbindMobile(data: PasswordVerifyForm) {
     return request({
       url: `${USER_BASE_URL}/mobile`,
@@ -201,7 +215,9 @@ const UserAPI = {
     });
   },
 
-  /** 发送邮箱验证码（绑定或更换邮箱）*/
+  /**
+   * 发送邮箱验证码（绑定或更换邮箱）
+   */
   sendEmailCode(email: string) {
     return request({
       url: `${USER_BASE_URL}/email/code`,
@@ -210,7 +226,9 @@ const UserAPI = {
     });
   },
 
-  /** 绑定或更换邮箱 */
+  /**
+   * 绑定或更换邮箱
+   */
   bindOrChangeEmail(data: EmailUpdateForm) {
     return request({
       url: `${USER_BASE_URL}/email`,
@@ -219,7 +237,9 @@ const UserAPI = {
     });
   },
 
-  /** 解绑邮箱 */
+  /**
+   * 解绑邮箱
+   */
   unbindEmail(data: PasswordVerifyForm) {
     return request({
       url: `${USER_BASE_URL}/email`,

@@ -82,13 +82,10 @@ const modelValue = defineModel<string | number | Array<string | number>>();
 
 const dictStore = useDictStore();
 
-/** 字典选项 */
+// 字典选项
 const options = ref<Array<{ label: string; value: string | number }>>([]);
 
-/**
- * 单选值（select/radio）：选项加载后把外部值翻译为选项的原始值（消除 "1" 与 1 的
- * 字符串/数字差异），未命中时原样保留不清空；用户选择直接写回 modelValue
- */
+// 单选值（select/radio）：选项加载后把外部值翻译为选项的原始值（消除 "1" 与 1 的字符串/数字差异），未命中时原样保留不清空；用户选择直接写回 modelValue
 const selectedSingle = computed<string | number | undefined>({
   get() {
     const value = modelValue.value;
@@ -101,7 +98,7 @@ const selectedSingle = computed<string | number | undefined>({
   },
 });
 
-/** 多选值（checkbox）：非数组入参按空选处理 */
+// 多选值（checkbox）：非数组入参按空选处理
 const selectedMulti = computed<Array<string | number>>({
   get() {
     return Array.isArray(modelValue.value) ? modelValue.value : [];

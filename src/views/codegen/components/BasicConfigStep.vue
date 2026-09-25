@@ -113,7 +113,7 @@
                   <el-icon><DocumentChecked /></el-icon>
                   普通
                 </el-radio-button>
-                <el-radio-button value="curd">
+                <el-radio-button value="crud">
                   <el-icon><SetUp /></el-icon>
                   封装(CRUD)
                 </el-radio-button>
@@ -178,6 +178,9 @@ const rules = {
   entityName: [{ required: true, message: "请输入实体名", trigger: "blur" }],
 };
 
+/**
+ * 校验基础配置表单
+ */
 async function validate(): Promise<boolean> {
   try {
     await formRef.value?.validate();

@@ -5,13 +5,17 @@ import { STORAGE_KEYS } from "@/constants";
 import { useSse } from "@/utils/sse";
 import { SseTopics } from "@/enums/sse";
 
-/** 字典变更消息体 */
+/**
+ * 字典变更消息体
+ */
 export interface DictChangeMessage {
   /** 字典编码 */
   dictCode: string;
 }
 
-/** 字典变更回调函数类型 */
+/**
+ * 字典变更回调函数类型
+ */
 export type DictChangeCallback = (message: DictChangeMessage) => void;
 
 export const useDictStore = defineStore("dict", () => {
@@ -23,18 +27,18 @@ export const useDictStore = defineStore("dict", () => {
 
   /**
    * 缓存字典数据
+   *
    * @param dictCode 字典编码
    * @param data 字典项列表
-   */
-  const cacheDictItems = (dictCode: string, data: DictItemOption[]) => {
+   */ const cacheDictItems = (dictCode: string, data: DictItemOption[]) => {
     dictCache.value[dictCode] = data;
   };
 
   /**
    * 加载字典数据（如果缓存中没有则请求）
+   *
    * @param dictCode 字典编码
-   */
-  const loadDictItems = async (dictCode: string) => {
+   */ const loadDictItems = async (dictCode: string) => {
     if (dictCache.value[dictCode]) return;
     // 防止重复请求
     if (!requestQueue[dictCode]) {
@@ -54,18 +58,18 @@ export const useDictStore = defineStore("dict", () => {
 
   /**
    * 获取字典项列表
+   *
    * @param dictCode 字典编码
    * @returns 字典项列表
-   */
-  const getDictItems = (dictCode: string): DictItemOption[] => {
+   */ const getDictItems = (dictCode: string): DictItemOption[] => {
     return dictCache.value[dictCode] || [];
   };
 
   /**
    * 移除指定字典项
+   *
    * @param dictCode 字典编码
-   */
-  const removeDictItem = (dictCode: string) => {
+   */ const removeDictItem = (dictCode: string) => {
     if (dictCache.value[dictCode]) {
       Reflect.deleteProperty(dictCache.value, dictCode);
     }
@@ -86,9 +90,9 @@ export const useDictStore = defineStore("dict", () => {
 
   /**
    * 处理字典变更消息：清除指定字典缓存，并通知所有已注册回调
+   *
    * @param message SSE 推送的字典变更消息
-   */
-  const handleDictChange = (message: DictChangeMessage) => {
+   */ const handleDictChange = (message: DictChangeMessage) => {
     const { dictCode } = message;
     if (!dictCode) {
       console.warn("[DictStore] 收到无效的字典变更消息：缺少 dictCode");
@@ -124,9 +128,9 @@ export const useDictStore = defineStore("dict", () => {
 
   /**
    * 注册字典变更回调，返回取消注册函数
+   *
    * @param cb 字典变更回调
-   */
-  const onDictChange = (cb: DictChangeCallback) => {
+   */ const onDictChange = (cb: DictChangeCallback) => {
     dictChangeCallbacks.push(cb);
     return () => {
       const idx = dictChangeCallbacks.indexOf(cb);
@@ -145,6 +149,9 @@ export const useDictStore = defineStore("dict", () => {
   };
 });
 
+/**
+ * 在组件外拿 dict store 实例
+ */
 export function useDictStoreHook() {
   return useDictStore(store);
 }

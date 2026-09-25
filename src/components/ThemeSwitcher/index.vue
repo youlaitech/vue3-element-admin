@@ -34,6 +34,7 @@ const themeList = [
   { label: t("login.auto"), value: ThemeMode.AUTO, component: Monitor },
 ];
 
+// 自动模式跟随系统，故显示显示器图标；否则按实际生效主题显示太阳/月亮
 const currentThemeIcon = computed(() => {
   if (settingsStore.theme === ThemeMode.AUTO) {
     return Monitor;
@@ -42,6 +43,9 @@ const currentThemeIcon = computed(() => {
   return settingsStore.resolvedTheme === ThemeMode.DARK ? Moon : Sunny;
 });
 
+/**
+ * 切换主题模式
+ */
 const handleThemeChange = (theme: ThemeMode) => {
   settingsStore.theme = theme;
 };

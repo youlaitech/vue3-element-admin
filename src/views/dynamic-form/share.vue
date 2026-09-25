@@ -44,13 +44,13 @@ defineOptions({
 
 const route = useRoute();
 
-/** 表单唯一标识（路由路径段 /f/:formKey） */
+// 表单唯一标识（路由路径段 /f/:formKey）
 const formKey = computed(() => String(route.params.formKey ?? ""));
 
 const renderData = ref<FormRenderData>();
 const submitting = ref(false);
 
-/** 加载失败兜底文案（错误消息由拦截器统一弹出） */
+// 加载失败兜底文案（错误消息由拦截器统一弹出）
 const loadError = ref("");
 
 const { rule, option, loading, submitted, load, refill } = useFormRenderer(() =>
@@ -71,6 +71,7 @@ onMounted(async () => {
 
 /**
  * 匿名提交表单数据（校验通过后触发）
+ *
  * @param data 表单数据（field -> value 映射）
  */
 async function handleSubmit(data: Record<string, unknown>): Promise<void> {

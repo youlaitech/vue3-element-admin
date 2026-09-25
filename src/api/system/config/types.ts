@@ -1,18 +1,20 @@
-/**
- * Config 配置类型定义
- */
+// Config 配置类型定义
 
 import type { BaseQueryParams } from "@/api/common";
 
-/** 配置分页查询参数 */
+/**
+ * 配置分页查询参数
+ */
 export interface ConfigQueryParams extends BaseQueryParams {
   /** 搜索关键字 */
   keywords?: string;
 }
 
-/** 配置表单对象 */
+/**
+ * 配置表单对象
+ */
 export interface ConfigForm {
-  /** 配置ID */
+  /** 配置 ID */
   id?: string;
   /** 配置名称 */
   configName?: string;
@@ -24,9 +26,11 @@ export interface ConfigForm {
   remark?: string;
 }
 
-/** 配置分页对象 */
+/**
+ * 配置分页对象
+ */
 export interface ConfigItem {
-  /** 配置ID */
+  /** 配置 ID */
   id?: string;
   /** 配置名称 */
   configName?: string;

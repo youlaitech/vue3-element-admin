@@ -99,12 +99,12 @@ defineOptions({
   inheritAttrs: false,
 });
 
-/** 通知已读标记（1:已读;0:未读）。 */
+// 通知已读标记（1:已读;0:未读）
 const NOTICE_READ = 1;
 
 const queryFormRef = ref();
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   NoticeItem,
   NoticeQueryParams
@@ -121,7 +121,7 @@ const noticeDialogVisible = ref(false);
 const noticeDetail = ref<NoticeDetail | null>(null);
 
 /**
- * 查看通知详情。
+ * 查看通知详情
  *
  * @param id 通知 ID
  */

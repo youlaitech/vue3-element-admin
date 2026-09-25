@@ -1,8 +1,8 @@
-/**
- * 表单字段解析（规则字段提取、提交数据解析与展示格式化）
- */
+// 表单字段解析（规则字段提取、提交数据解析与展示格式化）
 
-/** 表单字段元数据 */
+/**
+ * 表单字段元数据
+ */
 export interface FormFieldMeta {
   /** 字段名 */
   field: string;
@@ -68,7 +68,8 @@ export function parseDataJson(dataJson?: string): Record<string, unknown> {
 }
 
 /**
- * 格式化单元格展示值（选项翻译、数组拼接、对象序列化、空值占位）
+ * 格式化单元格展示值
+ *
  * @param value 字段值
  * @param field 字段元数据（选项类字段翻译 label，未命中原样展示）
  */

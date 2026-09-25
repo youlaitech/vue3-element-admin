@@ -1,0 +1,196 @@
+/*
+ * 数据大屏公共样式
+ *
+ * 供 views/demo/screen 下的多个大屏示例复用：暗色背景、面板、面板标题、指标卡与主标题。
+ * 页面在自身 scoped 样式里覆盖 --screen-accent / --screen-accent-rgb 即可换主题色。
+ */
+
+.screen {
+  --screen-text-1: #e6f2ff;
+  --screen-text-2: #7fa8d0;
+  /* 主题色及其 RGB 分量，后者供 rgb(var(...) / 透明度) 写法使用 */
+  --screen-accent: #3ba9ff;
+  --screen-accent-rgb: 59 169 255;
+  --screen-success: #34d399;
+  --screen-danger: #f87171;
+  --screen-panel-bg: linear-gradient(180deg, rgb(20 52 82 / 85%) 0%, rgb(9 28 48 / 85%) 100%);
+  --screen-panel-border: rgb(43 106 160 / 55%);
+
+  /* 高度取 .page-container 的剩余空间，min-height 只作可读性下限 */
+  min-height: 600px;
+  background-color: #06111f;
+  background-image:
+    radial-gradient(ellipse at 50% 0, rgb(var(--screen-accent-rgb) / 20%) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgb(var(--screen-accent-rgb) / 10%) 0%, transparent 55%),
+    linear-gradient(rgb(var(--screen-accent-rgb) / 4%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--screen-accent-rgb) / 4%) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    40px 40px,
+    40px 40px;
+  border-radius: 8px;
+
+  &:fullscreen {
+    min-height: 100vh;
+    border-radius: 0;
+  }
+}
+
+/* 标题使用渐变文字，发光只能走 drop-shadow（text-shadow 对透明文字无效） */
+.screen__title {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  background: linear-gradient(180deg, #ffffff 18%, var(--screen-accent) 100%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 26px rgb(var(--screen-accent-rgb) / 65%));
+}
+
+.screen__subtitle {
+  margin-top: 5px;
+  font-size: 11px;
+  color: rgb(127 168 208 / 65%);
+  letter-spacing: 6px;
+}
+
+/* 时钟：不加外框，靠字号与明暗拉开层级；数字等宽避免逐秒抖动 */
+.screen__clock {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.screen__clock-time {
+  font-size: 23px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--screen-text-1);
+  letter-spacing: 1px;
+}
+
+/* 时间与日期之间的竖分隔线 */
+.screen__clock-divider {
+  width: 1px;
+  height: 22px;
+  background: rgb(var(--screen-accent-rgb) / 30%);
+}
+
+.screen__clock-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  line-height: 1;
+}
+
+.screen__clock-date {
+  font-size: 11px;
+  color: var(--screen-text-2);
+  letter-spacing: 1px;
+}
+
+.screen__clock-week {
+  font-size: 11px;
+  color: var(--screen-accent);
+  letter-spacing: 2px;
+}
+
+/* 全屏按钮：透明底融入暗色大屏；用 .el-button 双类提升优先级，避免被按需注入的按钮样式覆盖 */
+.screen__action.el-button {
+  color: var(--screen-text-1);
+  background-color: transparent;
+  border-color: rgb(var(--screen-accent-rgb) / 40%);
+  --el-button-bg-color: transparent;
+  --el-button-border-color: rgb(var(--screen-accent-rgb) / 40%);
+  --el-button-hover-bg-color: rgb(var(--screen-accent-rgb) / 16%);
+  --el-button-hover-border-color: var(--screen-accent);
+  --el-button-hover-text-color: var(--screen-accent);
+}
+
+/* 指标卡顶部渐变色条，颜色由各指标通过行内 --metric-color 提供 */
+.screen__metric {
+  position: relative;
+  overflow: hidden;
+  background: var(--screen-panel-bg);
+  border: 1px solid var(--screen-panel-border);
+  border-radius: 4px;
+  box-shadow: inset 0 1px 0 rgb(var(--screen-accent-rgb) / 22%);
+
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    content: "";
+    background: linear-gradient(90deg, transparent, var(--metric-color), transparent);
+  }
+}
+
+.screen__metric-value {
+  color: #ffffff;
+  text-shadow: 0 0 14px var(--metric-color);
+}
+
+.screen__panel {
+  position: relative;
+  padding: 12px;
+  overflow: hidden;
+  background: var(--screen-panel-bg);
+  border: 1px solid var(--screen-panel-border);
+  border-radius: 4px;
+  box-shadow:
+    inset 0 1px 0 rgb(var(--screen-accent-rgb) / 22%),
+    0 0 20px rgb(4 18 32 / 70%);
+
+  /* 左上与右下角标，大屏面板的常见装饰 */
+  &::before,
+  &::after {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    content: "";
+    border-color: var(--screen-accent);
+    border-style: solid;
+  }
+
+  &::before {
+    top: 0;
+    left: 0;
+    border-width: 2px 0 0 2px;
+  }
+
+  &::after {
+    right: 0;
+    bottom: 0;
+    border-width: 0 2px 2px 0;
+  }
+}
+
+/* 地图是整屏的视觉锚点，边框与发光都强于普通面板 */
+.screen__panel--map {
+  border-color: rgb(var(--screen-accent-rgb) / 70%);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--screen-accent-rgb) / 30%),
+    0 0 30px rgb(20 90 150 / 45%);
+}
+
+/* 标题栏通栏铺满面板顶部，用负 margin 抵消面板内边距 */
+.screen__panel-title {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 10px;
+  margin: -12px -12px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--screen-text-1);
+  background: linear-gradient(90deg, rgb(var(--screen-accent-rgb) / 16%) 0%, transparent 70%);
+  border-bottom: 1px solid rgb(43 106 160 / 40%);
+
+  .el-icon {
+    color: var(--screen-accent);
+  }
+}

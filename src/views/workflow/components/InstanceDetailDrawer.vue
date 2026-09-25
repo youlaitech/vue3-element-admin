@@ -69,7 +69,7 @@ defineOptions({
   name: "InstanceDetailDrawer",
 });
 
-/** 实例状态展示映射（标签文案 + 标签色） */
+// 实例状态展示映射（标签文案 + 标签色）
 const statusOptions: Record<
   InstanceStatus,
   { label: string; tag: "primary" | "success" | "danger" }
@@ -84,7 +84,7 @@ const loading = ref(false);
 
 const detail = ref<InstanceDetailData>();
 
-/** 流程图数据（详情抽屉"流程图"页签） */
+// 流程图数据（详情抽屉"流程图"页签）
 const diagram = ref<ProcessDiagramData>({
   bpmnXml: "",
   executedActivityIds: [],

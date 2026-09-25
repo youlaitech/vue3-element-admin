@@ -1,104 +1,209 @@
+<!-- 角色管理 -->
 <template>
-  <div class="page-container">
-    <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="params" :inline="true">
-        <el-form-item prop="keywords" label="关键字">
-          <el-input
-            v-model="params.keywords"
-            placeholder="角色名称"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
+  <div class="page-container page-container--split role-page">
+    <aside class="page-aside" :class="{ 'is-collapsed': sidebarCollapsed }">
+      <div class="page-aside__inner">
+        <div class="role-list">
+          <div class="mb-2 flex items-center gap-2">
+            <el-input
+              v-model="params.keywords"
+              class="flex-1"
+              placeholder="角色名称"
+              clearable
+              @keyup.enter="handleSearch"
+              @clear="handleSearch"
+            />
+            <el-button
+              v-hasPerm="'sys:role:create'"
+              type="primary"
+              :icon="Plus"
+              @click="handleCreateClick()"
+            />
+          </div>
 
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">搜索</el-button>
-          <el-button @click="handleResetQuery">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
-    <el-card ref="tableWrapperRef" class="page-content" shadow="never">
-      <div class="page-toolbar">
-        <div class="page-toolbar__left">
-          <el-button type="primary" @click="handleCreateClick()">新增</el-button>
-          <el-button type="danger" :disabled="!hasSelection" @click="handleBatchDelete()">
-            删除
-          </el-button>
-        </div>
-        <div class="page-toolbar__right">
-          <el-tooltip content="刷新" placement="top">
-            <el-button class="page-icon-btn" @click="fetchData">
-              <el-icon><Refresh /></el-icon>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="全屏" placement="top">
-            <el-button class="page-icon-btn" @click="toggleFullscreen">
-              <el-icon><FullScreen /></el-icon>
-            </el-button>
-          </el-tooltip>
-        </div>
-      </div>
-
-      <div class="page-table-wrapper">
-        <el-table
-          ref="dataTableRef"
-          v-loading="loading"
-          class="page-table"
-          :data="list"
-          height="100%"
-          highlight-current-row
-          border
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="角色名称" prop="name" min-width="100" />
-          <el-table-column label="角色编码" prop="code" width="150" />
-
-          <el-table-column label="数据权限" align="center" width="140" prop="dataScopeLabel" />
-
-          <el-table-column label="状态" align="center" width="100">
-            <template #default="scope">
-              <el-tag v-if="scope.row.status === CommonStatus.ENABLED" type="success">正常</el-tag>
-              <el-tag v-else type="info">禁用</el-tag>
-            </template>
-          </el-table-column>
-
-          <el-table-column label="排序" align="center" width="80" prop="sort" />
-
-          <el-table-column fixed="right" label="操作" width="180" align="center">
-            <template #default="scope">
-              <div>
+          <el-scrollbar v-loading="loading" class="role-list__scroll">
+            <div
+              v-for="row in list"
+              :key="row.id"
+              class="role-list__item"
+              :class="{ 'is-active': row.id === currentRole?.id }"
+              @click="handleRoleClick(row)"
+            >
+              <div class="role-list__info">
+                <span class="role-list__name" :title="row.name">{{ row.name }}</span>
+                <span class="role-list__code" :title="row.code">{{ row.code }}</span>
+              </div>
+              <div v-if="row.code !== ROLE_ROOT" class="role-list__actions">
                 <el-button
-                  v-hasPerm="'sys:role:assign'"
-                  type="primary"
-                  size="small"
+                  v-hasPerm="'sys:role:update'"
                   link
-                  @click="handleAssignPermClick(scope.row)"
+                  type="primary"
+                  @click.stop="handleEditClick(row.id)"
                 >
-                  分配权限
+                  <el-icon><Edit /></el-icon>
                 </el-button>
-                <el-button type="primary" size="small" link @click="handleEditClick(scope.row.id)">
-                  编辑
-                </el-button>
-                <el-button type="danger" size="small" link @click="handleDelete(scope.row.id)">
-                  删除
+                <el-button
+                  v-hasPerm="'sys:role:delete'"
+                  link
+                  type="danger"
+                  @click.stop="handleDelete(row.id)"
+                >
+                  <el-icon><Delete /></el-icon>
                 </el-button>
               </div>
-            </template>
-          </el-table-column>
-        </el-table>
+            </div>
+
+            <el-empty
+              v-if="!loading && list.length === 0"
+              :image-size="60"
+              description="暂无角色"
+            />
+          </el-scrollbar>
+
+          <div class="flex items-center justify-between gap-2 pt-2">
+            <span class="text-12px text-[var(--el-text-color-secondary)]">共 {{ total }} 个</span>
+            <el-pagination
+              v-model:current-page="params.pageNum"
+              :page-size="params.pageSize"
+              :total="total"
+              layout="prev, pager, next"
+              size="small"
+              background
+              @current-change="handlePageChange"
+            />
+          </div>
+        </div>
       </div>
 
-      <pagination
-        v-if="total > 0"
-        v-model:total="total"
-        v-model:page="params.pageNum"
-        v-model:limit="params.pageSize"
-        class="page-pagination"
-        @pagination="fetchData"
-      />
-    </el-card>
+      <button
+        class="page-aside__toggle"
+        :title="sidebarCollapsed ? '展开角色列表' : '收起角色列表'"
+        type="button"
+        @click="sidebarCollapsed = !sidebarCollapsed"
+      >
+        <el-icon :size="14">
+          <ArrowLeft v-if="!sidebarCollapsed" />
+          <ArrowRight v-else />
+        </el-icon>
+      </button>
+    </aside>
+
+    <div class="page-main">
+      <el-card v-if="currentRole" ref="permWrapperRef" class="page-content" shadow="never">
+        <div class="role-perm__header">
+          <div class="role-perm__row">
+            <span class="role-perm__title">功能权限</span>
+            <el-tag type="primary" effect="plain">{{ currentRole.name }}</el-tag>
+            <el-tag v-if="isRootRole" type="warning" effect="plain">
+              超级管理员拥有全部权限，无需分配
+            </el-tag>
+
+            <el-button
+              v-hasPerm="'sys:role:assign'"
+              class="ml-auto"
+              type="primary"
+              :loading="saving"
+              :disabled="isRootRole"
+              @click="handleSavePerm"
+            >
+              保存
+            </el-button>
+          </div>
+
+          <div class="role-perm__row">
+            <el-input
+              v-model="permKeywords"
+              class="role-perm__search"
+              placeholder="权限名称"
+              clearable
+            >
+              <template #prefix>
+                <el-icon><Search /></el-icon>
+              </template>
+            </el-input>
+
+            <div class="ml-auto flex items-center gap-3">
+              <el-segmented v-model="checkMode" :options="CHECK_MODE_OPTIONS" />
+
+              <el-tooltip :content="isAllCollapsed ? '展开' : '收缩'" placement="top">
+                <el-button class="page-icon-btn" @click="toggleAllGroups">
+                  <span v-if="isAllCollapsed" class="i-svg:add-box" />
+                  <span v-else class="i-svg:checkbox-indeterminate" />
+                </el-button>
+              </el-tooltip>
+
+              <el-tooltip content="刷新" placement="top">
+                <el-button class="page-icon-btn" @click="handleRefreshPerm">
+                  <el-icon><Refresh /></el-icon>
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="全屏" placement="top">
+                <el-button class="page-icon-btn" @click="toggleFullscreen">
+                  <el-icon><FullScreen /></el-icon>
+                </el-button>
+              </el-tooltip>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-table-wrapper">
+          <el-table
+            v-loading="permLoading"
+            class="page-table"
+            :data="displayRows"
+            row-key="id"
+            height="100%"
+            border
+            :row-class-name="resolveRowClass"
+          >
+            <el-table-column label="权限名称" min-width="240">
+              <template #default="{ row }">
+                <div
+                  class="role-perm__cell"
+                  :class="{ 'is-group': row.group }"
+                  :style="{ paddingLeft: `${row.depth * 18}px` }"
+                >
+                  <el-icon
+                    v-if="row.group"
+                    class="role-perm__caret"
+                    :size="14"
+                    @click.stop="toggleGroup(row.id)"
+                  >
+                    <CaretBottom v-if="!collapsedIds.has(row.id)" />
+                    <CaretRight v-else />
+                  </el-icon>
+                  <span v-else class="role-perm__caret-space" />
+                  <el-checkbox
+                    :model-value="checkedIds.has(row.id)"
+                    @change="(checked) => handleNodeCheck(row.id, checked)"
+                  />
+                  <span class="role-perm__name" :title="row.name">{{ row.name }}</span>
+                </div>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="权限项" min-width="360">
+              <template #default="{ row }">
+                <div class="flex flex-wrap gap-x-4 gap-y-1">
+                  <el-checkbox
+                    v-for="btn in row.buttons"
+                    :key="btn.id"
+                    :model-value="checkedIds.has(btn.id)"
+                    @change="(checked) => handleNodeCheck(btn.id, checked)"
+                  >
+                    {{ btn.name }}
+                  </el-checkbox>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-card>
+
+      <el-card v-else class="page-content role-page__empty" shadow="never">
+        <el-empty description="请先在左侧选择角色" />
+      </el-card>
+    </div>
 
     <el-dialog
       v-model="dialogState.visible"
@@ -165,105 +270,60 @@
         </div>
       </template>
     </el-dialog>
-
-    <el-drawer
-      v-model="assignPermDialogVisible"
-      :title="'【' + checkedRole.name + '】权限分配'"
-      :size="drawerSize"
-    >
-      <div class="flex-x-between">
-        <el-input v-model="permKeywords" clearable class="w-[150px]" placeholder="菜单权限名称">
-          <template #prefix>
-            <Search />
-          </template>
-        </el-input>
-
-        <div class="flex-center ml-5">
-          <el-button type="primary" size="small" plain @click="togglePermTree">
-            <template #icon>
-              <Switch />
-            </template>
-            {{ isExpanded ? "收缩" : "展开" }}
-          </el-button>
-          <el-checkbox
-            v-model="parentChildLinked"
-            class="ml-5"
-            @change="handleParentChildLinkedChange"
-          >
-            父子联动
-          </el-checkbox>
-
-          <el-tooltip placement="bottom">
-            <template #content>
-              如果只需勾选菜单权限，不需要勾选子菜单或者按钮权限，请关闭父子联动
-            </template>
-            <el-icon class="ml-1 color-[--el-color-primary] inline-block cursor-pointer">
-              <QuestionFilled />
-            </el-icon>
-          </el-tooltip>
-        </div>
-      </div>
-
-      <el-tree
-        ref="permTreeRef"
-        node-key="value"
-        show-checkbox
-        :data="menuPermOptions"
-        :filter-node-method="handlePermFilter"
-        :default-expand-all="true"
-        :check-strictly="!parentChildLinked"
-        class="mt-5"
-      >
-        <template #default="{ data }">
-          {{ data.label }}
-        </template>
-      </el-tree>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button v-hasPerm="'sys:role:assign'" type="primary" @click="handleAssignPermSubmit">
-            确定
-          </el-button>
-          <el-button @click="assignPermDialogVisible = false">取消</el-button>
-        </div>
-      </template>
-    </el-drawer>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useFullscreen } from "@vueuse/core";
+import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "element-plus";
 import {
-  ElMessage,
-  ElMessageBox,
-  type FormInstance,
-  type FormRules,
-  type TreeInstance,
-  type TreeNodeData,
-} from "element-plus";
-import { FullScreen, Refresh, Search, Switch, QuestionFilled } from "@element-plus/icons-vue";
+  ArrowLeft,
+  ArrowRight,
+  CaretBottom,
+  CaretRight,
+  Delete,
+  Edit,
+  FullScreen,
+  Plus,
+  Refresh,
+  Search,
+} from "@element-plus/icons-vue";
 
 import RoleAPI from "@/api/system/role";
 import type { RoleForm, RoleItem, RoleQueryParams } from "@/api/system/role";
 import MenuAPI from "@/api/system/menu";
+import type { MenuItem } from "@/api/system/menu";
 import DeptAPI from "@/api/system/dept";
 import type { OptionItem } from "@/api/common";
-import { useAppStore } from "@/stores";
-import { usePageTable, useTableSelection } from "@/composables";
-import { CommonStatus, DeviceEnum } from "@/enums";
+import { usePageTable } from "@/composables";
+import { CommonStatus } from "@/enums";
+import { ROLE_ROOT } from "@/constants";
 
 defineOptions({
   name: "Role",
   inheritAttrs: false,
 });
 
-const appStore = useAppStore();
+/** 权限表格行，按钮权限挂在所属菜单行的 buttons 上而不单独成行 */
+interface PermRow {
+  /** 节点 ID */
+  id: string;
+  /** 节点名称 */
+  name: string;
+  /** 是否为目录分组行 */
+  group: boolean;
+  /** 层级，仅用于缩进 */
+  depth: number;
+  /** 行内展示的按钮权限 */
+  buttons: PermRow[];
+}
 
-const tableWrapperRef = ref<HTMLElement | null>(null);
-const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
+// 左侧角色列表折叠状态
+const sidebarCollapsed = ref(false);
 
-const queryFormRef = ref<FormInstance>();
 const roleFormRef = ref<FormInstance>();
-const permTreeRef = ref<TreeInstance>();
+const permWrapperRef = ref<HTMLElement | null>(null);
+const { toggle: toggleFullscreen } = useFullscreen(permWrapperRef);
 
 // 自定义数据权限取值
 const DATA_SCOPE_CUSTOM = 5;
@@ -276,21 +336,378 @@ const dataScopeOptions = [
   { label: "自定义部门数据", value: DATA_SCOPE_CUSTOM },
 ];
 
-/** 分页表格数据管理 */
-const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
-  RoleItem,
-  RoleQueryParams
->({
+// 左侧角色列表分页数据管理
+const { loading, list, total, params, fetchData } = usePageTable<RoleItem, RoleQueryParams>({
   initialParams: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 20,
     keywords: "",
   },
   request: RoleAPI.getPage,
-  onBeforeReset: () => queryFormRef.value?.resetFields(),
 });
 
-const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<RoleItem>();
+// 当前选中角色，右侧权限表格据此联动
+const currentRole = ref<RoleItem>();
+// 当前选中角色是否为超级管理员：权限固定为全部，不允许编辑与分配
+const isRootRole = computed(() => currentRole.value?.code === ROLE_ROOT);
+
+// 权限表格数据与勾选状态
+const permRows = ref<PermRow[]>([]);
+const checkedIds = ref(new Set<string>());
+const permLoading = ref(false);
+const saving = ref(false);
+const permKeywords = ref("");
+
+/** 勾选模式：父子联动 / 节点独立 */
+type CheckMode = "linked" | "independent";
+
+const CHECK_MODE_OPTIONS: { value: CheckMode; label: string }[] = [
+  { value: "linked", label: "父子联动" },
+  { value: "independent", label: "节点独立" },
+];
+
+const checkMode = ref<CheckMode>("linked");
+
+// 折叠的目录 ID，折叠后其下菜单行不展示
+const collapsedIds = ref(new Set<string>());
+
+// 节点祖先链，勾选子级时用于回填父级
+const nodeParents = new Map<string, string[]>();
+// 节点及其全部后代的 ID
+const nodeFamilies = new Map<string, string[]>();
+
+// 菜单树只请求一次，切换角色时复用
+let menuTreeLoaded = false;
+
+/**
+ * 整理菜单层级
+ * 后端返回的可能是树，也可能是扁平列表，扁平数据按 parentId 就地组装成树
+ *
+ * @param list 菜单列表
+ * @returns 顶层菜单列表
+ */
+function normalizeMenuTree(list: MenuItem[]): MenuItem[] {
+  const hasNested = list.some((menu) => (menu.children?.length ?? 0) > 0);
+  if (hasNested) return list;
+
+  const nodeMap = new Map<string, MenuItem>();
+  list.forEach((menu) => nodeMap.set(String(menu.id), { ...menu }));
+
+  const roots: MenuItem[] = [];
+  nodeMap.forEach((menu) => {
+    const parent = nodeMap.get(String(menu.parentId ?? "0"));
+    if (parent) {
+      parent.children = [...(parent.children ?? []), menu];
+    } else {
+      roots.push(menu);
+    }
+  });
+  return roots;
+}
+
+/**
+ * 菜单树转权限表格行
+ * 目录节点占一行做分组标题，菜单节点占一行并把它下面的按钮权限摊到行内
+ *
+ * @param nodes 菜单节点列表
+ * @param depth 当前层级
+ * @param ancestors 祖先 ID 链
+ * @returns 权限表格行列表
+ */
+function buildPermRows(nodes: MenuItem[], depth = 0, ancestors: string[] = []): PermRow[] {
+  const rows: PermRow[] = [];
+
+  nodes.forEach((node) => {
+    const id = String(node.id);
+    const children = node.children ?? [];
+    const subMenus = children.filter((child) => child.type !== "B");
+    const buttons: PermRow[] = children
+      .filter((child) => child.type === "B")
+      .map((child) => ({
+        id: String(child.id),
+        name: child.name ?? "",
+        group: false,
+        depth: depth + 1,
+        buttons: [],
+      }));
+
+    rows.push({
+      id,
+      name: node.name ?? "",
+      group: subMenus.length > 0,
+      depth,
+      buttons,
+    });
+    buttons.forEach((btn) => {
+      nodeParents.set(btn.id, [...ancestors, id]);
+      nodeFamilies.set(btn.id, [btn.id]);
+    });
+
+    const childRows = buildPermRows(subMenus, depth + 1, [...ancestors, id]);
+    rows.push(...childRows);
+
+    nodeParents.set(id, ancestors);
+    nodeFamilies.set(id, [
+      id,
+      ...buttons.map((btn) => btn.id),
+      ...childRows.flatMap((row) => nodeFamilies.get(row.id) ?? []),
+    ]);
+  });
+
+  return rows;
+}
+
+/**
+ * 按关键字过滤权限行
+ * 分组内任一行命中即整组保留，避免只剩零散菜单丢失所属目录
+ *
+ * @param rows 权限表格行列表
+ * @param keyword 权限名称关键字
+ * @returns 过滤后的权限表格行列表
+ */
+function filterPermRows(rows: PermRow[], keyword: string): PermRow[] {
+  if (!keyword) return rows;
+
+  const result: PermRow[] = [];
+  let groupRow: PermRow | null = null;
+  let groupRows: PermRow[] = [];
+  let groupHit = false;
+
+  /**
+   * 判断权限行是否命中搜索关键字
+   */
+  const hitRow = (row: PermRow) =>
+    row.name.includes(keyword) || row.buttons.some((btn) => btn.name.includes(keyword));
+
+  /**
+   * 把命中的权限分组写入结果
+   */
+  const flushGroup = () => {
+    if (groupRow && groupHit) {
+      result.push(groupRow, ...groupRows);
+    }
+    groupRow = null;
+    groupRows = [];
+    groupHit = false;
+  };
+
+  rows.forEach((row) => {
+    if (row.group) {
+      flushGroup();
+      groupRow = row;
+      groupHit = hitRow(row);
+      return;
+    }
+
+    if (!groupRow) {
+      if (hitRow(row)) result.push(row);
+      return;
+    }
+
+    if (hitRow(row)) groupHit = true;
+    groupRows.push(row);
+  });
+
+  flushGroup();
+  return result;
+}
+
+// 权限表格渲染数据
+const displayRows = computed(() => {
+  const rows = filterPermRows(permRows.value, permKeywords.value);
+  // 搜索时全部展开，避免命中的菜单被折叠藏起来
+  if (permKeywords.value || collapsedIds.value.size === 0) return rows;
+
+  const visible: PermRow[] = [];
+  let collapsedDepth: number | null = null;
+
+  rows.forEach((row) => {
+    if (collapsedDepth !== null && row.depth > collapsedDepth) return;
+
+    collapsedDepth = null;
+    visible.push(row);
+    if (row.group && collapsedIds.value.has(row.id)) {
+      collapsedDepth = row.depth;
+    }
+  });
+
+  return visible;
+});
+
+// 带下级菜单行的节点
+const collapsibleIds = computed(() =>
+  permRows.value.filter((row) => row.group).map((row) => row.id)
+);
+
+// 带下级菜单行的节点是否都已折叠
+const isAllCollapsed = computed(
+  () =>
+    collapsibleIds.value.length > 0 &&
+    collapsibleIds.value.every((id) => collapsedIds.value.has(id))
+);
+
+/**
+ * 拉取菜单树并生成权限表格行
+ */
+async function loadMenuTree(): Promise<void> {
+  if (menuTreeLoaded) return;
+
+  const menuList = await MenuAPI.getList({});
+  permRows.value = buildPermRows(normalizeMenuTree(menuList));
+  menuTreeLoaded = true;
+}
+
+/**
+ * 分组行加浅底色，和菜单行区分开
+ *
+ * @param param0 表格行数据
+ * @returns 行样式类名
+ */
+function resolveRowClass({ row }: { row: PermRow }): string {
+  return row.group ? "role-perm__row--group" : "";
+}
+
+/**
+ * 拉取指定角色已分配的菜单权限并回显
+ *
+ * @param roleId 角色 ID
+ */
+async function loadRolePerm(roleId?: string): Promise<void> {
+  if (!roleId) return;
+
+  permLoading.value = true;
+  try {
+    await loadMenuTree();
+    // 超级管理员拥有全部权限，不回显勾选
+    if (currentRole.value?.code === ROLE_ROOT) {
+      checkedIds.value = new Set();
+      return;
+    }
+    const menuIds = await RoleAPI.getRoleMenuIds(roleId);
+    checkedIds.value = new Set(menuIds.map((menuId) => String(menuId)));
+  } finally {
+    permLoading.value = false;
+  }
+}
+
+/**
+ * 拉取角色列表并保持右侧选中项有效
+ *
+ * @param preferRoleId 优先选中的角色 ID，缺省沿用当前选中项
+ */
+async function fetchRoles(preferRoleId?: string): Promise<void> {
+  await fetchData();
+
+  const targetId = preferRoleId ?? currentRole.value?.id;
+  currentRole.value = list.value.find((row) => row.id === targetId) ?? list.value[0];
+  await loadRolePerm(currentRole.value?.id);
+}
+
+/**
+ * 按关键字查询角色
+ */
+function handleSearch(): void {
+  params.pageNum = 1;
+  fetchRoles();
+}
+
+/**
+ * 角色列表翻页
+ */
+function handlePageChange(): void {
+  fetchRoles();
+}
+
+/**
+ * 选中角色，右侧权限表格随之切换
+ *
+ * @param row 角色行
+ */
+async function handleRoleClick(row: RoleItem): Promise<void> {
+  if (row.id === currentRole.value?.id) return;
+  currentRole.value = row;
+  await loadRolePerm(row.id);
+}
+
+/**
+ * 勾选或取消权限节点
+ * 父子联动时向下级联并回填父级，节点独立时只作用于当前节点
+ *
+ * @param nodeId 权限节点 ID
+ * @param checked 是否勾选
+ */
+function handleNodeCheck(nodeId: string, checked: boolean | string | number): void {
+  const isChecked = Boolean(checked);
+
+  if (checkMode.value === "independent") {
+    if (isChecked) {
+      checkedIds.value.add(nodeId);
+    } else {
+      checkedIds.value.delete(nodeId);
+    }
+    return;
+  }
+
+  const family = nodeFamilies.get(nodeId) ?? [nodeId];
+  if (isChecked) {
+    [...family, ...(nodeParents.get(nodeId) ?? [])].forEach((id) => checkedIds.value.add(id));
+  } else {
+    family.forEach((id) => checkedIds.value.delete(id));
+  }
+}
+
+/**
+ * 折叠或展开指定目录
+ *
+ * @param groupId 目录 ID
+ */
+function toggleGroup(groupId: string): void {
+  if (collapsedIds.value.has(groupId)) {
+    collapsedIds.value.delete(groupId);
+  } else {
+    collapsedIds.value.add(groupId);
+  }
+}
+
+/**
+ * 一键折叠或展开全部目录
+ */
+function toggleAllGroups(): void {
+  collapsedIds.value = isAllCollapsed.value ? new Set() : new Set(collapsibleIds.value);
+}
+
+/**
+ * 重新拉取当前角色的菜单权限
+ */
+async function handleRefreshPerm(): Promise<void> {
+  await loadRolePerm(currentRole.value?.id);
+}
+
+/**
+ * 提交当前角色的菜单权限配置
+ */
+async function handleSavePerm(): Promise<void> {
+  const roleId = currentRole.value?.id;
+  if (!roleId) return;
+
+  // 超级管理员权限固定为全部，不支持修改
+  if (currentRole.value?.code === ROLE_ROOT) {
+    ElMessage.warning("超级管理员拥有全部权限，无需分配");
+    return;
+  }
+
+  const menuIds = Array.from(checkedIds.value)
+    .map((menuId) => Number(menuId))
+    .filter((menuId) => !Number.isNaN(menuId));
+
+  saving.value = true;
+  try {
+    await RoleAPI.updateRoleMenus(roleId, menuIds);
+    ElMessage.success("分配权限成功");
+  } finally {
+    saving.value = false;
+  }
+}
 
 const dialogState = reactive({
   title: "",
@@ -315,24 +732,6 @@ const rules: FormRules<RoleForm> = {
 // 部门下拉选项（懒加载，新增/编辑时才请求）
 const deptOptions = ref<OptionItem[]>([]);
 
-interface CheckedRole {
-  id?: string;
-  name?: string;
-}
-const checkedRole = ref<CheckedRole>({});
-const assignPermDialogVisible = ref(false);
-const menuPermOptions = ref<OptionItem[]>([]);
-const permKeywords = ref("");
-const isExpanded = ref(true);
-const parentChildLinked = ref(true);
-
-const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
-
-interface ToggleableTreeNode {
-  expand: () => void;
-  collapse: () => void;
-}
-
 /**
  * 打开角色表单弹窗
  */
@@ -342,7 +741,6 @@ function openDialog(): void {
 
 /**
  * 关闭角色表单弹窗
- *
  * 同步清理表单数据和校验状态
  */
 function closeDialog(): void {
@@ -364,7 +762,6 @@ function resetForm(): void {
 
 /**
  * 打开新增角色弹窗
- *
  * 部门下拉首次打开时请求，之后复用缓存
  */
 async function handleCreateClick(): Promise<void> {
@@ -380,7 +777,8 @@ async function handleCreateClick(): Promise<void> {
  *
  * @param roleId 角色 ID
  */
-async function handleEditClick(roleId: string): Promise<void> {
+async function handleEditClick(roleId?: string): Promise<void> {
+  if (!roleId) return;
   dialogState.title = "修改角色";
   if (deptOptions.value.length === 0) {
     deptOptions.value = await DeptAPI.getOptions();
@@ -418,26 +816,22 @@ async function handleSubmit(): Promise<void> {
       ElMessage.success("新增成功");
     }
     closeDialog();
-    handleResetQuery();
+    fetchRoles(roleId);
   } finally {
     loading.value = false;
   }
 }
 
 /**
- * 删除单个或批量角色
+ * 删除角色，删除后右侧联动到剩余角色
  *
- * @param roleId 指定时删除单个角色；不指定时删除表格勾选项
+ * @param roleId 角色 ID
  */
 async function handleDelete(roleId?: string): Promise<void> {
-  const roleIds = roleId ?? selectedIds.value.join(",");
-  if (!roleIds) {
-    ElMessage.warning("请勾选删除项");
-    return;
-  }
+  if (!roleId) return;
 
   try {
-    await ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
+    await ElMessageBox.confirm("确认删除该角色?", "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning",
@@ -449,116 +843,178 @@ async function handleDelete(roleId?: string): Promise<void> {
 
   loading.value = true;
   try {
-    await RoleAPI.deleteByIds(roleIds);
+    await RoleAPI.deleteByIds(roleId);
     ElMessage.success("删除成功");
-    handleResetQuery();
+    fetchRoles();
   } finally {
     loading.value = false;
   }
 }
-
-/**
- * 批量删除当前勾选角色
- */
-function handleBatchDelete(): void {
-  handleDelete();
-}
-
-/**
- * 打开权限分配抽屉并回显已分配菜单
- *
- * @param row 当前角色行
- */
-async function handleAssignPermClick(row: RoleItem): Promise<void> {
-  const roleId = row.id;
-  if (!roleId) return;
-
-  assignPermDialogVisible.value = true;
-  checkedRole.value = {
-    id: roleId,
-    name: row.name,
-  };
-
-  loading.value = true;
-  try {
-    const [menuOptions, checkedMenuIds] = await Promise.all([
-      MenuAPI.getOptions(),
-      RoleAPI.getRoleMenuIds(roleId),
-    ]);
-
-    menuPermOptions.value = menuOptions;
-    await nextTick();
-
-    checkedMenuIds.forEach((menuId) => {
-      permTreeRef.value?.setChecked(menuId, true, false);
-    });
-  } finally {
-    loading.value = false;
-  }
-}
-
-/**
- * 提交当前角色的菜单权限配置
- */
-async function handleAssignPermSubmit(): Promise<void> {
-  const roleId = checkedRole.value.id;
-  if (!roleId) return;
-
-  const checkedMenuIds = (permTreeRef.value?.getCheckedNodes(false, true) ?? [])
-    .map((node: TreeNodeData) => Number(node.value))
-    .filter((value: number) => !Number.isNaN(value));
-
-  loading.value = true;
-  try {
-    await RoleAPI.updateRoleMenus(roleId, checkedMenuIds);
-    ElMessage.success("分配权限成功");
-    assignPermDialogVisible.value = false;
-    handleResetQuery();
-  } finally {
-    loading.value = false;
-  }
-}
-
-/**
- * 展开或收起权限树全部节点
- */
-function togglePermTree(): void {
-  isExpanded.value = !isExpanded.value;
-  if (!permTreeRef.value) return;
-
-  Object.values(permTreeRef.value.store.nodesMap).forEach((node) => {
-    const treeNode = node as ToggleableTreeNode;
-    if (isExpanded.value) {
-      treeNode.expand();
-    } else {
-      treeNode.collapse();
-    }
-  });
-}
-
-/**
- * 过滤权限树节点
- *
- * @param value 输入的关键字
- * @param data 当前节点数据
- */
-function handlePermFilter(value: string, data: TreeNodeData): boolean {
-  if (!value) return true;
-  return String(data.label ?? "").includes(value);
-}
-
-/**
- * 同步父子联动开关值
- */
-function handleParentChildLinkedChange(value: string | number | boolean): void {
-  parentChildLinked.value = Boolean(value);
-}
-
-watch(permKeywords, (value) => {
-  permTreeRef.value?.filter(value);
-});
 
 onMounted(() => {
-  handleQuery();
+  fetchRoles();
 });
 </script>
+
+<style lang="scss" scoped>
+.role-page {
+  --page-aside-width: 280px;
+}
+
+.role-page__empty {
+  align-items: center;
+  justify-content: center;
+}
+
+.role-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: 12px;
+
+  &__scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 8px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.15s;
+
+    &:hover {
+      background-color: var(--el-fill-color-light);
+    }
+
+    &.is-active {
+      background-color: var(--el-color-primary-light-9);
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.35;
+  }
+
+  &__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--el-text-color-primary);
+    white-space: nowrap;
+  }
+
+  &__code {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    color: var(--el-text-color-secondary);
+    white-space: nowrap;
+  }
+
+  &__item.is-active &__name {
+    color: var(--el-color-primary);
+  }
+
+  &__actions {
+    flex-shrink: 0;
+    margin-left: 4px;
+
+    .el-button + .el-button {
+      margin-left: 4px;
+    }
+
+    .el-button {
+      padding: 0;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+  }
+
+  &__item:hover &__actions .el-button,
+  &__item.is-active &__actions .el-button {
+    opacity: 1;
+  }
+}
+
+.role-perm {
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: var(--page-gap);
+  }
+
+  &__row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  // 类名控制宽度，UnoCSS 原子类会被按需注入的 .el-input 宽度覆盖
+  &__search {
+    width: 220px;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--el-text-color-primary);
+  }
+
+  &__cell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    &.is-group {
+      font-weight: 600;
+    }
+
+    .el-checkbox {
+      margin-right: 0;
+    }
+  }
+
+  &__caret {
+    flex-shrink: 0;
+    color: var(--el-text-color-secondary);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--el-color-primary);
+    }
+  }
+
+  &__caret-space {
+    flex-shrink: 0;
+    width: 14px;
+  }
+
+  &__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    color: var(--el-text-color-primary);
+    white-space: nowrap;
+  }
+
+  // 目录行做分组标题，浅底色把它和下面的菜单行区分开
+  :deep(.role-perm__row--group) {
+    background-color: var(--el-fill-color-light);
+
+    td.el-table__cell {
+      background-color: var(--el-fill-color-light);
+    }
+  }
+}
+</style>

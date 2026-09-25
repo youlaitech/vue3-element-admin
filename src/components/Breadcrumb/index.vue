@@ -30,7 +30,9 @@ type BreadcrumbRoute = {
 
 const currentRoute = useRoute();
 
-// 面包屑取 matched 链，不拼首页（首页与一级菜单平级，非父级）
+/**
+ * 面包屑取 matched 链，不拼首页（首页与一级菜单平级，非父级）
+ */
 const pathCompile = (path: string) => {
   // 补全动态路由参数，如 /user/:id
   const { params } = currentRoute;
@@ -40,8 +42,10 @@ const pathCompile = (path: string) => {
 
 const breadcrumbs = ref<BreadcrumbRoute[]>([]);
 
-// 生成面包屑：取路由 matched 中有标题的层级，
-// 用 meta.breadcrumb = false 可以隐藏某一级
+/**
+ * 生成面包屑：取路由 matched 中有标题的层级，
+ * 用 meta.breadcrumb = false 可以隐藏某一级
+ */
 function getBreadcrumb() {
   const matched: BreadcrumbRoute[] = currentRoute.matched
     .filter((item) => item.meta && item.meta.title)
@@ -57,7 +61,9 @@ function getBreadcrumb() {
   });
 }
 
-// 跳转：有 redirect 走 redirect，否则按路径（含动态参数先 compile）
+/**
+ * 跳转：有 redirect 走 redirect，否则按路径（含动态参数先 compile）
+ */
 function handleLink(item: BreadcrumbRoute) {
   const { redirect, path } = item;
   if (redirect) {

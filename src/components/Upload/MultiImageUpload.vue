@@ -44,39 +44,29 @@ import FileAPI from "@/api/file";
 import type { FileInfo } from "@/api/file";
 
 const props = defineProps({
-  /**
-   * 请求携带的额外参数
-   */
+  /** 请求携带的额外参数 */
   data: {
     type: Object,
     default: () => {
       return {};
     },
   },
-  /**
-   * 上传文件的参数名
-   */
+  /** 上传文件的参数名 */
   name: {
     type: String,
     default: "file",
   },
-  /**
-   * 文件上传数量限制
-   */
+  /** 文件上传数量限制 */
   limit: {
     type: Number,
     default: 10,
   },
-  /**
-   * 单个文件的最大允许大小
-   */
+  /** 单个文件的最大允许大小 */
   maxFileSize: {
     type: Number,
     default: 10,
   },
-  /**
-   * 上传文件类型
-   */
+  /** 上传文件类型 */
   accept: {
     type: String,
     default: "image/*", // 默认支持所有图片格式，如果需要指定格式，格式如下：.png,.jpg,.jpeg,.gif,.bmp
@@ -108,19 +98,17 @@ function handleRemove(imageUrl: string) {
  * 上传前校验
  */
 function handleBeforeUpload(file: UploadRawFile) {
-  // 校验文件类型：虽然 accept 属性限制了用户在文件选择器中可选的文件类型，但仍需在上传时再次校验文件实际类型，确保符合 accept 的规则
+  /**
+   * accept 支持 image/*、.png、image/png 三种写法，浏览器只按它过滤，还需按同样规则复核实际文件
+   */
   const acceptTypes = props.accept.split(",").map((type) => type.trim());
 
-  // 检查文件格式是否符合 accept
   const isValidType = acceptTypes.some((type) => {
     if (type === "image/*") {
-      // 如果是 image/*，检查 MIME 类型是否以 "image/" 开头
       return file.type.startsWith("image/");
     } else if (type.startsWith(".")) {
-      // 如果是扩展名 (.png, .jpg)，检查文件名是否以指定扩展名结尾
       return file.name.toLowerCase().endsWith(type);
     } else {
-      // 如果是具体的 MIME 类型 (image/png, image/jpeg)，检查是否完全匹配
       return file.type === type;
     }
   });
@@ -190,6 +178,9 @@ const handleSuccess = (fileInfo: FileInfo, uploadFile: UploadUserFile) => {
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
 
+/**
+ * 上传失败时提示错误
+ */
 const handleError = (error: unknown) => {
   ElMessage.error("上传失败: " + getErrorMessage(error));
 };

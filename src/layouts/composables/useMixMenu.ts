@@ -3,6 +3,9 @@ import { useLayout } from "./useLayout";
 import { useAppStore, usePermissionStore } from "@/stores";
 import { isExternal } from "@/utils/index";
 
+/**
+ * 混合布局的顶部菜单与激活路径
+ */
 export function useMixMenu() {
   const route = useRoute();
   const router = useRouter();
@@ -12,35 +15,10 @@ export function useMixMenu() {
 
   const { activeTopMenuPath, sideMenuRoutes } = useLayout();
 
-  /**
-   * 生成顶部菜单，单子菜单路由提升为顶级入口
-   */
-  const topMenuItems = computed(() => {
-    const routes = permissionStore.routes.filter((item) => !item.meta?.hidden);
+  // 顶部菜单
+  const topMenuItems = computed(() => permissionStore.routes.filter((item) => !item.meta?.hidden));
 
-    return routes.map((route) => {
-      if (route.meta?.alwaysShow || !route.children?.length) return route;
-
-      const visibleChildren = route.children.filter((child) => !child.meta?.hidden);
-
-      if (visibleChildren.length === 1) {
-        const child = visibleChildren[0];
-        return {
-          ...route,
-          meta: {
-            ...route.meta,
-            title: child.meta?.title || route.meta?.title,
-            icon: child.meta?.icon || route.meta?.icon,
-          },
-        };
-      }
-      return route;
-    });
-  });
-
-  /**
-   * 解析当前侧边菜单激活路径
-   */
+  // 解析当前侧边菜单激活路径
   const activeSideMenuPath = computed(() => {
     const { meta, path } = route;
     return typeof meta?.activeMenu === "string" ? meta.activeMenu : path;
@@ -93,9 +71,7 @@ export function useMixMenu() {
     }
   }
 
-  /**
-   * 路由变化时保持顶部菜单和侧边菜单同步
-   */
+  // 路由变化时保持顶部菜单和侧边菜单同步
   watch(
     () => route.path,
     (newPath) => {

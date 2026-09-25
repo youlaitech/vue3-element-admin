@@ -1,4 +1,4 @@
-<!-- wangEditor富文本编辑器示例 -->
+<!-- wangEditor 富文本编辑器示例 -->
 <template>
   <div class="page-container">
     <el-button

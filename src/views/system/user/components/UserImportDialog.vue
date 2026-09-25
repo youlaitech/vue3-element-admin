@@ -95,7 +95,9 @@ import { downloadFile } from "@/utils/download";
 
 const emit = defineEmits(["import-success"]);
 
-// 弹窗可见状态
+/**
+ * 弹窗可见状态
+ */
 const visible = defineModel("modelValue", {
   type: Boolean,
   required: true,

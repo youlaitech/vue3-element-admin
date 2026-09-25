@@ -238,7 +238,7 @@ const dataFormRef = ref<FormInstance>();
 const tableWrapperRef = ref<HTMLElement | null>(null);
 const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 
-/** 三方平台下拉选项 */
+// 三方平台下拉选项
 const platformOptions: Array<{ value: AppPlatform; label: string }> = [
   { value: "WECHAT_MP", label: "微信公众号" },
   { value: "WECHAT_MINI", label: "微信小程序" },
@@ -247,7 +247,9 @@ const platformOptions: Array<{ value: AppPlatform; label: string }> = [
   { value: "QQ", label: "QQ" },
 ];
 
-/** 根据平台值解析中文名称。 */
+/**
+ * 根据平台值解析中文名称
+ */
 function resolvePlatformLabel(platform?: string): string {
   return platformOptions.find((item) => item.value === platform)?.label || "-";
 }
@@ -264,7 +266,7 @@ const initialFormData: AppForm = {
   remark: "",
 };
 
-/** 应用表格数据 */
+// 应用表格数据
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   AppItem,
   AppQueryParams
@@ -296,13 +298,17 @@ const rules: FormRules<AppForm> = {
   appId: [{ required: true, message: "请输入 AppId", trigger: "blur" }],
 };
 
-/** 关闭弹窗并重置表单 */
+/**
+ * 关闭弹窗并重置表单
+ */
 function closeDialog(): void {
   dialog.visible = false;
   resetForm();
 }
 
-/** 重置表单数据为初始值并清理校验 */
+/**
+ * 重置表单数据为初始值并清理校验
+ */
 function resetForm(): void {
   dataFormRef.value?.resetFields();
   dataFormRef.value?.clearValidate();
@@ -312,13 +318,17 @@ function resetForm(): void {
   Object.assign(formData, initialFormData);
 }
 
-/** 打开新增弹窗 */
+/**
+ * 打开新增弹窗
+ */
 function handleCreateClick(): void {
   dialog.title = "新增应用";
   dialog.visible = true;
 }
 
-/** 打开编辑弹窗并回填数据 */
+/**
+ * 打开编辑弹窗并回填数据
+ */
 async function handleEditClick(id: string): Promise<void> {
   dialog.title = "修改应用";
   const data = await AppAPI.getFormData(id);
@@ -326,7 +336,9 @@ async function handleEditClick(id: string): Promise<void> {
   dialog.visible = true;
 }
 
-/** 切换应用状态 */
+/**
+ * 切换应用状态
+ */
 async function handleStatusChange(row: AppItem): Promise<void> {
   const id = String(row.id);
   const status = row.status as number;
@@ -338,7 +350,9 @@ async function handleStatusChange(row: AppItem): Promise<void> {
   }
 }
 
-/** 提交应用表单 */
+/**
+ * 提交应用表单
+ */
 async function handleSubmit(): Promise<void> {
   const valid = await dataFormRef.value?.validate().then(
     () => true,
@@ -363,12 +377,16 @@ async function handleSubmit(): Promise<void> {
   }
 }
 
-/** 批量删除应用 */
+/**
+ * 批量删除应用
+ */
 function handleBatchDelete(): void {
   handleDelete();
 }
 
-/** 删除应用（单个或批量） */
+/**
+ * 删除应用（单个或批量）
+ */
 async function handleDelete(id?: string): Promise<void> {
   const ids = id || selectedIds.value.join(",");
   if (!ids) {

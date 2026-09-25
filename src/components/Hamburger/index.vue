@@ -32,6 +32,9 @@ const hamburgerClass = computed(() => {
   return "";
 });
 
+/**
+ * 触发侧边栏折叠切换
+ */
 function toggleClick() {
   emit("toggleClick");
 }

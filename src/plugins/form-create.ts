@@ -1,15 +1,10 @@
-/**
- * FormCreate 动态表单全局注册
- *
- * @description 注册 form-create 渲染器（@form-create/element-ui 3.x）、可视化设计器
- * （@form-create/designer 3.x）与业务组件拖拽规则
- *
- * <p>ElementPlus 只能全量注册：两个包的产物在运行时用 resolveComponent 解析 el-xxx
- * 标签，unplugin-vue-components 只转换项目源码、不处理 node_modules 里的预编译产物，
- * 按需导入会让设计器内部组件解析失败并抛出 vnode 为 null 的报错</p>
- *
- * @see https://www.form-create.com/v3/guide/
- */
+// FormCreate 动态表单全局注册
+// 注册 form-create 渲染器（@form-create/element-ui 3.x）、可视化设计器
+// （@form-create/designer 3.x）与业务组件拖拽规则
+// ElementPlus 只能全量注册：两个包的产物在运行时用 resolveComponent 解析 el-xxx
+// 标签，unplugin-vue-components 只转换项目源码、不处理 node_modules 里的预编译产物，
+// 按需导入会让设计器内部组件解析失败并抛出 vnode 为 null 的报错
+// 参考：https://www.form-create.com/v3/guide/
 
 import type { App } from "vue";
 
@@ -36,11 +31,9 @@ export function setupFormCreate(app: App): void {
   setupFormCreateComponents();
 }
 
-// ---------------------------------------------------------------------------
 // 业务组件拖拽规则
-// ---------------------------------------------------------------------------
 
-/** 字段名自增序号（拖入画布时生成唯一 field，语义前缀便于数据侧识别） */
+// 字段名自增序号（拖入画布时生成唯一 field，语义前缀便于数据侧识别）
 let fieldSeed = 0;
 
 /**
@@ -52,7 +45,7 @@ function uniqueField(prefix: string): string {
   return `${prefix}_${++fieldSeed}`;
 }
 
-/** 字典选择：选项由字典编码在运行时从字典中心加载，设计时无需配置选项 */
+// 字典选择：选项由字典编码在运行时从字典中心加载，设计时无需配置选项
 const dictSelectRule: DragRule = {
   name: "DictSelect",
   label: "字典选择",
@@ -91,7 +84,7 @@ const dictSelectRule: DragRule = {
   ],
 };
 
-/** 文件上传：直连项目对象存储，值存文件信息数组 [{name, url}] */
+// 文件上传：直连项目对象存储，值存文件信息数组 [{name, url}]
 const fileUploadRule: DragRule = {
   name: "FileUpload",
   label: "文件上传",
@@ -127,20 +120,16 @@ const fileUploadRule: DragRule = {
   ],
 };
 
-/**
- * 注册业务组件到设计器与运行态渲染器
- *
- * <p>拖入画布的组件在运行态渲染（render/preview/share/data 页）同样可解析：
- * FcDesigner.component() 会同时挂载到设计态渲染器（designerForm）与
- * 运行态渲染器（@form-create/element-ui 默认实例，即全局 &lt;form-create&gt;）</p>
- *
- * <p>注意：业务组件选项数据来自需登录的管理端接口，仅适用于系统内嵌表单；
- * 公开表单（匿名访问）请使用设计器自带基础组件，否则选项接口会 401</p>
- *
- * 幂等保护：HMR 或多次调用时跳过重复注册
- */
+// 注册业务组件到设计器与运行态渲染器
+// 拖入画布的组件在运行态渲染（render/preview/share/data 页）同样可解析：FcDesigner.component() 会同时挂载到
+// 设计态渲染器（designerForm）与运行态渲染器（@form-create/element-ui 默认实例，即全局 <form-create>）
+// 注意：业务组件选项数据来自需登录的管理端接口，仅适用于系统内嵌表单；公开表单（匿名访问）请使用设计器自带基础组件，否则选项接口会 401
+// 幂等保护：HMR 或多次调用时跳过重复注册
 let registered = false;
 
+/**
+ * 注册表单设计器用到的业务组件
+ */
 function setupFormCreateComponents(): void {
   if (registered) return;
   registered = true;

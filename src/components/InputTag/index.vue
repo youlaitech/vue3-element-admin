@@ -32,7 +32,9 @@ const inputValue = ref("");
 const inputVisible = ref(false);
 const inputRef = ref<InputInstance>();
 
-// 定义 model，用于与父组件的 v-model绑定
+/**
+ * 定义 model，用于与父组件的 v-model 绑定
+ */
 const tags = defineModel<string[]>();
 
 defineProps({
@@ -50,6 +52,9 @@ defineProps({
   },
 });
 
+/**
+ * 删除一个标签
+ */
 const handleClose = (tag: string) => {
   if (tags.value) {
     const newTags = tags.value.filter((t) => t !== tag);
@@ -57,11 +62,17 @@ const handleClose = (tag: string) => {
   }
 };
 
+/**
+ * 显示标签输入框并聚焦
+ */
 const showInput = () => {
   inputVisible.value = true;
   nextTick(() => inputRef.value?.focus());
 };
 
+/**
+ * 确认输入的标签并追加到列表
+ */
 const handleInputConfirm = () => {
   if (inputValue.value) {
     const newTags = [...(tags.value || []), inputValue.value];

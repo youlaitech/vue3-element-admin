@@ -257,10 +257,12 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 const queryFormRef = ref<FormInstance>();
 const modelFormRef = ref<FormInstance>();
 
-/** 启用开关权限（el-switch 不支持 v-hasPerm 指令移除，改 v-if 控制） */
+/**
+ * 启用开关权限（el-switch 不支持 v-hasPerm 指令移除，改 v-if 控制）
+ */
 const hasStatePerm = hasPerm("workflow:definition:update");
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   WorkflowModelItem,
   WorkflowModelQueryParams
@@ -297,7 +299,7 @@ const rules: FormRules<WorkflowModelFormData> = {
   ],
 };
 
-/** 流程图弹窗状态 */
+// 流程图弹窗状态
 const diagramState = reactive({
   title: "",
   visible: false,
@@ -305,7 +307,7 @@ const diagramState = reactive({
   xml: "",
 });
 
-/** 正在切换启用状态的流程 ID（该行开关转圈，其余行禁用防并发） */
+// 正在切换启用状态的流程 ID（该行开关转圈，其余行禁用防并发）
 const switchingId = ref<string | null>(null);
 
 /**
@@ -465,7 +467,7 @@ async function handleResetDemo(): Promise<void> {
   }
 }
 
-/** 是否正在重置演示流程（重置请求期间按钮转圈并防重复点击） */
+// 是否正在重置演示流程（重置请求期间按钮转圈并防重复点击）
 const resetting = ref(false);
 
 /**

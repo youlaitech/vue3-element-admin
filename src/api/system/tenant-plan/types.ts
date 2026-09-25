@@ -1,10 +1,10 @@
-/**
- * Tenant Plan 租户套餐类型定义
- */
+// Tenant Plan 租户套餐类型定义
 
 import type { BaseQueryParams } from "@/api/common";
 
-/** 租户套餐分页查询参数 */
+/**
+ * 租户套餐分页查询参数
+ */
 export interface TenantPlanQueryParams extends BaseQueryParams {
   /** 关键字(套餐名称/套餐编码) */
   keywords?: string;
@@ -12,7 +12,9 @@ export interface TenantPlanQueryParams extends BaseQueryParams {
   status?: number;
 }
 
-/** 租户套餐分页对象 */
+/**
+ * 租户套餐分页对象
+ */
 export interface TenantPlanItem {
   id?: number;
   name?: string;
@@ -24,7 +26,9 @@ export interface TenantPlanItem {
   updateTime?: string;
 }
 
-/** 租户套餐表单对象 */
+/**
+ * 租户套餐表单对象
+ */
 export interface TenantPlanForm {
   id?: number;
   name?: string;

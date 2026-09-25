@@ -4,11 +4,16 @@ import { useTagsViewStore } from "@/stores";
 
 export default defineComponent({
   name: "ToDetail",
+  /**
+   * 组件初始化：渲染两个跳转详情的按钮
+   */
   setup() {
     const route = useRoute();
     const tagsViewStore = useTagsViewStore();
 
-    // 跳转详情
+    /**
+     * 跳转详情
+     */
     const navigateToDetail = async (id: number) => {
       await router.push({
         path: "/detail/" + id,

@@ -19,7 +19,9 @@ const i18n = createI18n({
   globalInjection: true,
 });
 
-// 全局注册 i18n
+/**
+ * 全局注册 i18n
+ */
 export function setupI18n(app: App<Element>) {
   app.use(i18n);
 }

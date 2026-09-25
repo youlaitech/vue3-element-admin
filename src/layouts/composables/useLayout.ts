@@ -26,33 +26,31 @@ export function useLayout() {
     [`layout--${settingsStore.layout}`]: true,
   }));
 
-  /**
-   * 左侧和顶部菜单共用的路由列表
-   */
+  // 左侧和顶部菜单共用的路由列表
   const routes = computed(() => permissionStore.routes);
 
-  /**
-   * 混合布局中随顶部菜单切换的侧边菜单
-   */
+  // 混合布局中随顶部菜单切换的侧边菜单
   const sideMenuRoutes = computed(() => permissionStore.mixLayoutSideMenus);
 
-  /**
-   * 混合布局当前激活的顶部菜单路径
-   */
+  // 混合布局当前激活的顶部菜单路径
   const activeTopMenuPath = computed(() => appStore.activeTopMenuPath);
 
-  /**
-   * 当前侧边菜单激活路径
-   */
+  // 当前侧边菜单激活路径
   const activeMenu = computed(() => {
     const { meta, path } = route;
     return meta?.activeMenu || path;
   });
 
+  /**
+   * 切换侧边栏展开状态
+   */
   function toggleSidebar() {
     appStore.toggleSidebar();
   }
 
+  /**
+   * 收起侧边栏
+   */
   function closeSidebar() {
     appStore.closeSidebar();
   }

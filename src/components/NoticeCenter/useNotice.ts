@@ -5,7 +5,7 @@ import { useSse } from "@/utils/sse";
 import { SseTopics } from "@/enums/sse";
 import router from "@/router";
 
-/** 下拉面板每页展示条数 */
+// 下拉面板每页展示条数
 const PAGE_SIZE = 5;
 
 /** 通知读取状态：0=未读，1=已读 */
@@ -26,30 +26,28 @@ interface NoticeRevokeMessage {
 
 /**
  * 通知下拉面板的响应式数据与业务逻辑
- * 在组件挂载时拉取列表、建立 SSE 订阅，卸载时自动清理
  */
 export function useNotice() {
   const { on } = useSse();
 
-  /** 当前 Tab 下的通知列表（最多 PAGE_SIZE 条） */
+  // 当前 Tab 下的通知列表（最多 PAGE_SIZE 条）
   const list = ref<NoticeItem[]>([]);
-  /** 未读通知总数（红点/角标数字） */
+  // 未读通知总数（红点/角标数字）
   const unreadTotal = ref(0);
-  /** 当前激活的 Tab：0=未读，1=已读 */
+  // 当前激活的 Tab：0=未读，1=已读
   const activeStatus = ref<NoticeStatus>(0);
-  /** 查看详情时加载的完整通知数据 */
+  // 查看详情时加载的完整通知数据
   const detail = ref<NoticeDetail | null>(null);
-  /** 详情弹窗可见性 */
+  // 详情弹窗可见性
   const dialogVisible = ref(false);
-  /** 列表为空时的占位文案，根据当前 Tab 切换 */
+  // 列表为空时的占位文案，根据当前 Tab 切换
   const emptyText = computed(() => (activeStatus.value === 0 ? "暂无未读消息" : "暂无已读消息"));
 
-  /** SSE 订阅的取消函数集合，用于组件卸载时解绑 */
+  // SSE 订阅的取消函数集合，用于组件卸载时解绑
   let stopSubscriptions: (() => void) | null = null;
 
   /**
-   * 拉取通知分页列表
-   * 查询未读 Tab 时同步更新 unreadTotal
+   * 拉取通知分页列表；未读 Tab 顺带更新未读总数
    */
   async function fetchList(params?: Partial<NoticeQueryParams>) {
     const query: NoticeQueryParams = {
@@ -66,7 +64,9 @@ export function useNotice() {
     }
   }
 
-  /** 仅查询未读通知总数（不更新列表），用于切换到已读 Tab 后刷新角标 */
+  /**
+   * 仅查询未读通知总数（不更新列表），用于切换到已读 Tab 后刷新角标
+   */
   async function fetchUnreadTotal() {
     const page = await NoticeAPI.getMyNoticePage({
       pageNum: 1,
@@ -77,8 +77,7 @@ export function useNotice() {
   }
 
   /**
-   * 切换未读/已读 Tab
-   * 同一 Tab 重复点击不重复请求
+   * 切换未读/已读 Tab，同 Tab 重复点击不请求
    */
   async function switchStatus(status: NoticeStatus) {
     if (activeStatus.value === status) return;
@@ -88,8 +87,7 @@ export function useNotice() {
   }
 
   /**
-   * 刷新数据
-   * 未读 Tab：刷新列表即可；已读 Tab：额外刷新未读总数以更新角标
+   * 刷新数据：已读 Tab 额外刷新未读总数以更新角标
    */
   async function refresh() {
     await Promise.all([
@@ -99,12 +97,7 @@ export function useNotice() {
   }
 
   /**
-   * 点击单条通知查看详情
-   * 1. 标记原列表项是否为未读
-   * 2. 拉取详情并打开弹窗
-   * 3. 从当前列表中移除该项（下拉面板内不再显示）
-   * 4. 若为未读，本地角标 -1
-   * 5. 刷新数据与角标
+   * 查看通知详情：从下拉列表移除该条，未读则角标减一
    */
   async function read(id: string) {
     const item = list.value.find((notice: NoticeItem) => notice.id === id);
@@ -120,7 +113,9 @@ export function useNotice() {
     await refresh();
   }
 
-  /** 全部标为已读：调用接口 + 清空本地未读数 + 刷新列表 */
+  /**
+   * 全部标为已读
+   */
   async function readAll() {
     if (unreadTotal.value <= 0) return;
 
@@ -134,16 +129,15 @@ export function useNotice() {
     ElMessage.success("已全部标记为已读");
   }
 
-  /** 跳转到通知列表页 */
+  /**
+   * 跳转到通知列表页
+   */
   function goMore() {
     router.push({ name: "MyNotice" });
   }
 
   /**
-   * 建立 SSE 实时推送订阅
-   * - NOTICE 事件：新通知到达时插入列表头部、更新角标、弹出浏览器通知
-   * - NOTICE_REVOKE 事件：通知被撤回时从列表中移除并更新角标
-   * 重复调用会跳过，避免多次挂载时重复订阅
+   * 订阅通知推送：NOTICE 插入列表头部并弹浏览器通知，NOTICE_REVOKE 移除该条；已订阅则跳过，避免重复挂载重复订阅
    */
   function setupSubscription() {
     if (stopSubscriptions) return;

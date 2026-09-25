@@ -46,15 +46,6 @@
 
       <div class="login-card">
         <div class="login-card__inner">
-          <el-alert
-            v-if="loginTip"
-            class="login-card__alert"
-            type="warning"
-            :closable="false"
-            show-icon
-            :title="loginTip"
-          />
-
           <transition name="fade-slide" mode="out-in">
             <QrCodeLogin
               v-if="component === 'qrcode'"
@@ -226,17 +217,6 @@ const loginRules = computed(() => ({
   captchaCode: [{ required: true, trigger: "blur", message: "请输入验证码" }],
 }));
 
-// 会话失效跳转而来时，按 reason 参数展示对应提示
-const loginTip = computed(() => {
-  const reasonMap: Record<string, string> = {
-    expired: "登录已过期，请重新登录",
-    "password-changed": "密码已修改，请重新登录",
-  };
-  const tip = reasonMap[route.query.reason as string];
-  if (!tip) return "";
-  return route.query.redirect ? `${tip}，登录后将返回原页面` : tip;
-});
-
 // 工作流演示账号，与 workflow.sql 预置数据一致
 const demoAccounts = [
   { username: "employee", label: "员工·发起" },
@@ -246,11 +226,17 @@ const demoAccounts = [
   { username: "clerk", label: "行政" },
 ];
 
+/**
+ * 填充演示账号
+ */
 function fillDemoAccount(account: { username: string }): void {
   loginFormData.value.username = account.username;
   loginFormData.value.password = "123456";
 }
 
+/**
+ * 刷新验证码
+ */
 function getCaptcha() {
   codeLoading.value = true;
   AuthAPI.getCaptcha()
@@ -261,6 +247,9 @@ function getCaptcha() {
     .finally(() => (codeLoading.value = false));
 }
 
+/**
+ * 提交登录表单
+ */
 async function handleLoginSubmit() {
   const valid = await loginFormRef.value?.validate().then(
     () => true,
@@ -282,12 +271,18 @@ async function handleLoginSubmit() {
   }
 }
 
+/**
+ * 检测大写锁定是否打开
+ */
 function checkCapsLock(event: KeyboardEvent) {
   if (event instanceof KeyboardEvent) {
     isCapsLock.value = event.getModifierState("CapsLock");
   }
 }
 
+/**
+ * 切换登录区展示的表单
+ */
 function showForm(type: "resetPwd") {
   component.value = type;
 }
@@ -548,11 +543,6 @@ $input-h: 44px;
 
   &__form {
     width: 100%;
-  }
-
-  &__alert {
-    width: 100%;
-    margin-bottom: 16px;
   }
 
   &__title {

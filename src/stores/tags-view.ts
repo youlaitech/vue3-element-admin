@@ -78,6 +78,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
+  /**
+   * 删除单个缓存视图
+   */
   function delCachedView(view: TagView) {
     const { fullPath } = view;
     return new Promise((resolve) => {
@@ -88,6 +91,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
       resolve([...cachedViews.value]);
     });
   }
+  /**
+   * 删除其他访问视图
+   */
   function delOtherVisitedViews(view: TagView) {
     return new Promise((resolve) => {
       visitedViews.value = visitedViews.value.filter((v) => {
@@ -97,6 +103,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
+  /**
+   * 删除其他缓存视图
+   */
   function delOtherCachedViews(view: TagView) {
     const { fullPath } = view;
     return new Promise((resolve) => {
@@ -111,6 +120,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
+  /**
+   * 更新访问视图的标题与图标
+   */
   function updateVisitedView(view: TagView) {
     for (const v of visitedViews.value) {
       if (v.path === view.path) {
@@ -122,10 +134,10 @@ export const useTagsViewStore = defineStore("tagsView", () => {
 
   /**
    * 根据路径更新标签名称
+   *
    * @param fullPath 路径
    * @param title 标签名称
-   */
-  function updateTagName(fullPath: string, title: string) {
+   */ function updateTagName(fullPath: string, title: string) {
     const tag = visitedViews.value.find((tag: TagView) => tag.fullPath === fullPath);
 
     if (tag) {
@@ -133,11 +145,17 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     }
   }
 
+  /**
+   * 新增页签：同时写入访问与缓存
+   */
   function addView(view: TagView) {
     addVisitedView(view);
     addCachedView(view);
   }
 
+  /**
+   * 删除页签：同时移除访问与缓存
+   */
   function delView(view: TagView): Promise<TagsViewResult> {
     return new Promise((resolve) => {
       delVisitedView(view);
@@ -149,6 +167,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
+  /**
+   * 删除其他页签
+   */
   function delOtherViews(view: TagView): Promise<TagsViewResult> {
     return new Promise((resolve) => {
       delOtherVisitedViews(view);
@@ -160,6 +181,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
+  /**
+   * 删除左侧页签
+   */
   function delLeftViews(view: TagView): Promise<DirectionalTagsViewResult> {
     return new Promise((resolve) => {
       const currIndex = visitedViews.value.findIndex((v) => v.path === view.path);
@@ -186,6 +210,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
+  /**
+   * 删除右侧页签
+   */
   function delRightViews(view: TagView): Promise<DirectionalTagsViewResult> {
     return new Promise((resolve) => {
       const currIndex = visitedViews.value.findIndex((v) => v.path === view.path);
@@ -211,6 +238,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
+  /**
+   * 删除全部页签
+   */
   function delAllViews(): Promise<TagsViewResult> {
     return new Promise((resolve) => {
       const affixTags = visitedViews.value.filter((tag) => tag?.affix);
@@ -223,6 +253,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
+  /**
+   * 删除全部访问视图
+   */
   function delAllVisitedViews() {
     return new Promise((resolve) => {
       const affixTags = visitedViews.value.filter((tag) => tag?.affix);
@@ -231,6 +264,9 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
+  /**
+   * 删除全部缓存视图
+   */
   function delAllCachedViews() {
     return new Promise((resolve) => {
       cachedViews.value = [];
@@ -239,7 +275,7 @@ export const useTagsViewStore = defineStore("tagsView", () => {
   }
 
   /**
-   * 关闭当前tagView
+   * 关闭当前 tagView
    */
   function closeCurrentView() {
     const tags: TagView = {
@@ -259,10 +295,16 @@ export const useTagsViewStore = defineStore("tagsView", () => {
     });
   }
 
+  /**
+   * 判断页签是否对应当前路由
+   */
   function isActive(tag: TagView) {
     return tag.path === route.path;
   }
 
+  /**
+   * 关闭后跳转到剩余页签的最后一个
+   */
   function toLastView(visitedViews: TagView[], view?: TagView) {
     const latestView = visitedViews.slice(-1)[0];
     if (latestView && latestView.fullPath) {

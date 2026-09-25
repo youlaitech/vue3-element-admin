@@ -23,8 +23,8 @@
 // ✅ 显式导入公共组件，优先级高于隐式自引用，杜绝递归
 import IconSelect from "@/components/IconSelect/index.vue";
 
-// element-plus 图标格式以el-icon-开头
+// element-plus 图标格式以 el-icon-开头
 const iconName = ref("el-icon-edit");
-// 本地SVG图标格式为src/assets/icons 下的文件名，不需要svg后缀
+// 本地 SVG 图标格式为 src/assets/icons 下的文件名，不需要 svg 后缀
 // const iconName = ref("api");
 </script>

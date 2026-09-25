@@ -51,6 +51,9 @@ const currentTenantName = computed(() => {
   return fromList || tenantStore.currentTenant?.name || "切换租户";
 });
 
+/**
+ * 选择租户并抛出切换事件
+ */
 function onCommand(tenantId: number) {
   if (tenantId === currentTenantId.value) {
     return;

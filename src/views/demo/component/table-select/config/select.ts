@@ -81,6 +81,9 @@ const selectConfig: ISelectConfig = {
       },
     },
   ],
+  /**
+   * 列表数据查询（时间区间字段拆分为起止时间）
+   */
   indexAction(params) {
     if ("createAt" in params) {
       const createAt = params.createAt as string[];

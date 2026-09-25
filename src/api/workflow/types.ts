@@ -1,22 +1,22 @@
-/**
- * Workflow 工作流类型定义
- */
+// Workflow 工作流类型定义
 
 import type { BaseQueryParams } from "@/api/common";
 
-// ---------------------------------------------------------------
 // 流程模型
-// ---------------------------------------------------------------
 
-/** 流程模型分页查询参数 */
+/**
+ * 流程模型分页查询参数
+ */
 export interface WorkflowModelQueryParams extends BaseQueryParams {
   /** 搜索关键字（模型名称） */
   keywords?: string;
 }
 
-/** 流程模型分页对象 */
+/**
+ * 流程模型分页对象
+ */
 export interface WorkflowModelItem {
-  /** 模型ID */
+  /** 模型 ID */
   id: string;
   /** 模型名称 */
   name: string;
@@ -26,7 +26,7 @@ export interface WorkflowModelItem {
   description?: string;
   /** 版本号 */
   version: number;
-  /** 最新发布定义ID（未发布为空） */
+  /** 最新发布定义 ID（未发布为空） */
   definitionId?: string;
   /** 最新发布版本号（未发布为空） */
   publishedVersion?: number;
@@ -40,7 +40,9 @@ export interface WorkflowModelItem {
   updateTime?: string;
 }
 
-/** 流程模型表单对象 */
+/**
+ * 流程模型表单对象
+ */
 export interface WorkflowModelFormData {
   /** 模型名称 */
   name: string;
@@ -50,13 +52,13 @@ export interface WorkflowModelFormData {
   description?: string;
 }
 
-// ---------------------------------------------------------------
 // 流程定义
-// ---------------------------------------------------------------
 
-/** 可发起流程对象（发起页流程选择列表） */
+/**
+ * 可发起流程对象（发起页流程选择列表）
+ */
 export interface StartableProcessItem {
-  /** 流程定义ID */
+  /** 流程定义 ID */
   id: string;
   /** 流程定义标识 */
   key: string;
@@ -68,9 +70,11 @@ export interface StartableProcessItem {
   formKey?: string;
 }
 
-/** 流程审批阶段对象（发起页/审批弹窗展示流程走向与各环节办理人） */
+/**
+ * 流程审批阶段对象（发起页/审批弹窗展示流程走向与各环节办理人）
+ */
 export interface ProcessStageItem {
-  /** 节点ID */
+  /** 节点 ID */
   nodeId: string;
   /** 节点名称（审批环节） */
   nodeName: string;
@@ -82,13 +86,13 @@ export interface ProcessStageItem {
   initiator: boolean;
 }
 
-// ---------------------------------------------------------------
 // 流程实例
-// ---------------------------------------------------------------
 
-/** 发起流程表单对象 */
+/**
+ * 发起流程表单对象
+ */
 export interface StartProcessFormData {
-  /** 流程定义ID */
+  /** 流程定义 ID */
   processDefinitionId: string;
   /** 流程实例名称（默认可自动拼接流程-姓名-时间，可修改；不传时取流程定义名称） */
   name?: string;
@@ -98,24 +102,30 @@ export interface StartProcessFormData {
   variables?: Record<string, unknown>;
 }
 
-/** 流程实例分页查询参数 */
+/**
+ * 流程实例分页查询参数
+ */
 export interface WorkflowInstanceQueryParams extends BaseQueryParams {
   /** 搜索关键字（流程定义名称） */
   keywords?: string;
 }
 
-/** 实例状态 */
+/**
+ * 实例状态
+ */
 export type InstanceStatus = "running" | "finished" | "terminated";
 
-/** 流程实例分页对象 */
+/**
+ * 流程实例分页对象
+ */
 export interface WorkflowInstanceItem {
-  /** 流程实例ID */
+  /** 流程实例 ID */
   id: string;
   /** 流程定义标识 */
   processDefinitionKey: string;
   /** 流程定义名称 */
   processName: string;
-  /** 业务主键（绑定的表单数据ID，未绑定表单为空） */
+  /** 业务主键（绑定的表单数据 ID，未绑定表单为空） */
   businessKey?: string;
   /** 绑定表单标识（未绑定为空） */
   formKey?: string;
@@ -129,19 +139,23 @@ export interface WorkflowInstanceItem {
   endTime?: string;
 }
 
-/** 流程图数据对象（bpmn-js 渲染 + 节点高亮） */
+/**
+ * 流程图数据对象（bpmn-js 渲染 + 节点高亮）
+ */
 export interface ProcessDiagramData {
   /** BPMN 2.0 XML */
   bpmnXml: string;
-  /** 已办节点ID列表（高亮为走过路径） */
+  /** 已办节点 ID 列表（高亮为走过路径） */
   executedActivityIds: string[];
-  /** 进行中节点ID列表（高亮为当前待办） */
+  /** 进行中节点 ID 列表（高亮为当前待办） */
   activeActivityIds: string[];
 }
 
-/** 审批记录对象 */
+/**
+ * 审批记录对象
+ */
 export interface ApprovalHistoryItem {
-  /** 节点ID（与流程走向环节 nodeId 对应） */
+  /** 节点 ID（与流程走向环节 nodeId 对应） */
   activityId?: string;
   /** 节点名称 */
   activityName: string;
@@ -155,9 +169,11 @@ export interface ApprovalHistoryItem {
   endTime?: string;
 }
 
-/** 流程实例详情对象 */
+/**
+ * 流程实例详情对象
+ */
 export interface InstanceDetailData {
-  /** 流程实例ID */
+  /** 流程实例 ID */
   id: string;
   /** 流程定义名称 */
   processName: string;
@@ -187,27 +203,29 @@ export interface InstanceDetailData {
   activeStageIndex?: number;
 }
 
-// ---------------------------------------------------------------
 // 流程任务
-// ---------------------------------------------------------------
 
-/** 任务分页查询参数（待办/已办共用） */
+/**
+ * 任务分页查询参数（待办/已办共用）
+ */
 export interface WorkflowTaskQueryParams extends BaseQueryParams {
   /** 搜索关键字（任务名称） */
   keywords?: string;
 }
 
-/** 待办任务分页对象 */
+/**
+ * 待办任务分页对象
+ */
 export interface TodoTaskItem {
-  /** 任务ID */
+  /** 任务 ID */
   id: string;
   /** 任务名称 */
   name: string;
-  /** 流程实例ID */
+  /** 流程实例 ID */
   processInstanceId: string;
   /** 流程定义名称 */
   processName: string;
-  /** 业务主键（绑定的表单数据ID，未绑定表单为空） */
+  /** 业务主键（绑定的表单数据 ID，未绑定表单为空） */
   businessKey?: string;
   /** 绑定表单标识（未绑定为空） */
   formKey?: string;
@@ -215,13 +233,15 @@ export interface TodoTaskItem {
   createTime?: string;
 }
 
-/** 已办任务分页对象 */
+/**
+ * 已办任务分页对象
+ */
 export interface DoneTaskItem {
-  /** 任务ID */
+  /** 任务 ID */
   id: string;
   /** 任务名称 */
   name: string;
-  /** 流程实例ID */
+  /** 流程实例 ID */
   processInstanceId: string;
   /** 流程定义名称 */
   processName: string;
@@ -231,15 +251,17 @@ export interface DoneTaskItem {
   comment?: string;
 }
 
-/** 待办任务详情对象（审批页渲染：发起表单只读回显 + 审批记录） */
+/**
+ * 待办任务详情对象（审批页渲染：发起表单只读回显 + 审批记录）
+ */
 export interface TaskDetailData {
-  /** 任务ID */
+  /** 任务 ID */
   taskId: string;
   /** 任务名称 */
   taskName: string;
-  /** 当前任务节点ID（BPMN 节点，用于流程走向高亮定位） */
+  /** 当前任务节点 ID（BPMN 节点，用于流程走向高亮定位） */
   taskDefinitionKey?: string;
-  /** 流程实例ID */
+  /** 流程实例 ID */
   processInstanceId: string;
   /** 流程定义名称 */
   processName: string;
@@ -259,7 +281,9 @@ export interface TaskDetailData {
   stages: ProcessStageItem[];
 }
 
-/** 审批任务表单对象（通过） */
+/**
+ * 审批任务表单对象（通过）
+ */
 export interface CompleteTaskFormData {
   /** 审批意见 */
   comment?: string;
@@ -267,17 +291,21 @@ export interface CompleteTaskFormData {
   variables?: Record<string, unknown>;
 }
 
-/** 驳回任务表单对象 */
+/**
+ * 驳回任务表单对象
+ */
 export interface RejectTaskFormData {
-  /** 目标节点ID（驳回到的历史节点） */
+  /** 目标节点 ID（驳回到的历史节点） */
   targetActivityId: string;
   /** 驳回意见 */
   comment?: string;
 }
 
-/** 驳回目标节点对象 */
+/**
+ * 驳回目标节点对象
+ */
 export interface RejectTargetItem {
-  /** 节点ID */
+  /** 节点 ID */
   activityId: string;
   /** 节点名称 */
   activityName: string;

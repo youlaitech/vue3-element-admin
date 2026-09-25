@@ -180,8 +180,14 @@ const tabsStyleClass = computed(() => {
   }
 });
 
+/**
+ * 判断是否是 Element Plus 图标
+ */
 const isEpIcon = (icon: string) => icon.startsWith("el-icon");
 
+/**
+ * 把 el-icon-xxx 转成图标组件名
+ */
 const toEpIconName = (icon: string) =>
   icon.replace("el-icon-", "").replace(/(^|-)\w/g, (s) => s.slice(-1).toUpperCase());
 
@@ -206,6 +212,9 @@ const contextMenuStyle = computed(() => {
   };
 });
 
+/**
+ * 处理页签操作命令：刷新、关闭等
+ */
 const handleActionCommand = (command: string) => {
   switch (command) {
     case "refresh":
@@ -250,9 +259,15 @@ const isLastView = computed(() => {
   return selectedTag.value.fullPath === visitedViews.value[visitedViews.value.length - 1]?.fullPath;
 });
 
+/**
+ * 从路由表里提取固定页签
+ */
 const extractAffixTags = (routes: RouteRecordRaw[], basePath = "/"): TagView[] => {
   const affixTags: TagView[] = [];
 
+  /**
+   * 递归遍历路由表
+   */
   const traverse = (routeList: RouteRecordRaw[], currentBasePath: string) => {
     routeList.forEach((route) => {
       const fullPath = resolve(currentBasePath, route.path);
@@ -279,6 +294,9 @@ const extractAffixTags = (routes: RouteRecordRaw[], basePath = "/"): TagView[] =
   return affixTags;
 };
 
+/**
+ * 初始化固定页签
+ */
 const initAffixTags = () => {
   const affixTags = extractAffixTags(permissionStore.routes);
 
@@ -289,6 +307,9 @@ const initAffixTags = () => {
   });
 };
 
+/**
+ * 把当前路由加入页签列表
+ */
 const addCurrentTag = () => {
   if (!route.meta?.title) return;
   if (isExternal(route.path) || isExternal(route.fullPath)) return;
@@ -305,6 +326,9 @@ const addCurrentTag = () => {
   });
 };
 
+/**
+ * 打开页签，外链走新窗口
+ */
 const openTag = (tag: TagView) => {
   if (isExternal(tag.fullPath)) {
     window.open(tag.fullPath, "_blank", "noopener,noreferrer");
@@ -317,6 +341,9 @@ const openTag = (tag: TagView) => {
   });
 };
 
+/**
+ * 同步当前页签的标题与图标
+ */
 const updateCurrentTag = () => {
   nextTick(() => {
     const currentTag = routePathMap.value.get(route.path);
@@ -336,12 +363,18 @@ const updateCurrentTag = () => {
   });
 };
 
+/**
+ * 中键关闭页签
+ */
 const handleMiddleClick = (tag: TagView) => {
   if (!tag.affix) {
     closeSelectedTag(tag);
   }
 };
 
+/**
+ * 打开页签右键菜单
+ */
 const openContextMenu = (tag: TagView, event: MouseEvent) => {
   contextMenu.x = event.clientX;
   contextMenu.y = event.clientY;
@@ -349,10 +382,16 @@ const openContextMenu = (tag: TagView, event: MouseEvent) => {
   selectedTag.value = tag;
 };
 
+/**
+ * 关闭页签右键菜单
+ */
 const closeContextMenu = () => {
   contextMenu.visible = false;
 };
 
+/**
+ * 滚动页签条时顺带关掉右键菜单
+ */
 const handleScroll = (event: WheelEvent) => {
   closeContextMenu();
 
@@ -369,6 +408,9 @@ const handleScroll = (event: WheelEvent) => {
   scrollbarRef.value.setScrollLeft(newScrollLeft);
 };
 
+/**
+ * 刷新选中页签：清掉缓存让页面重建
+ */
 const refreshSelectedTag = (tag: TagView | null) => {
   if (!tag) return;
 
@@ -378,6 +420,9 @@ const refreshSelectedTag = (tag: TagView | null) => {
   });
 };
 
+/**
+ * 关闭选中页签
+ */
 const closeSelectedTag = (tag: TagView | null) => {
   if (!tag) return;
 
@@ -416,11 +461,26 @@ const closeOtherTagsForActive = () => {
   });
 };
 
+/**
+ * 关闭当前页签左侧的页签
+ */
 const closeLeftTagsForActive = () => closeDirectionalTags(currentTag, tagsViewStore.delLeftViews);
+/**
+ * 关闭当前页签右侧的页签
+ */
 const closeRightTagsForActive = () => closeDirectionalTags(currentTag, tagsViewStore.delRightViews);
+/**
+ * 关闭右键选中页签左侧的页签
+ */
 const closeLeftTags = () => closeDirectionalTags(selectedTag, tagsViewStore.delLeftViews);
+/**
+ * 关闭右键选中页签右侧的页签
+ */
 const closeRightTags = () => closeDirectionalTags(selectedTag, tagsViewStore.delRightViews);
 
+/**
+ * 关闭除选中外的其他页签
+ */
 const closeOtherTags = () => {
   if (!selectedTag.value) return;
   router.push(selectedTag.value);
@@ -429,13 +489,22 @@ const closeOtherTags = () => {
   });
 };
 
+/**
+ * 关闭全部页签
+ */
 const closeAllTags = (tag: TagView | null) => {
   tagsViewStore.delAllViews().then((result) => {
     tagsViewStore.toLastView(result.visitedViews, tag || undefined);
   });
 };
 
+/**
+ * 右键菜单的显示与点击外部自动关闭
+ */
 const useContextMenuManager = () => {
+  /**
+   * 点击空白处关闭右键菜单
+   */
   const handleOutsideClick = () => {
     closeContextMenu();
   };

@@ -18,16 +18,15 @@ defineOptions({
 
 /**
  * BPMN 流程图查看器
- *
- * @description 渲染 BPMN XML 并按节点状态高亮：已办节点标记走过路径、
+ * 渲染 BPMN XML 并按节点状态高亮：已办节点标记走过路径、
  * 进行中节点标记当前待办；缩放平移由 NavigatedViewer 自带滚轮/空格拖拽支持
  */
 const props = defineProps<{
   /** BPMN 2.0 XML */
   xml: string;
-  /** 已办节点ID列表（走过路径高亮） */
+  /** 已办节点 ID 列表（走过路径高亮） */
   executedActivityIds?: string[];
-  /** 进行中节点ID列表（当前待办高亮） */
+  /** 进行中节点 ID 列表（当前待办高亮） */
   activeActivityIds?: string[];
 }>();
 
@@ -38,8 +37,8 @@ const viewer = shallowRef<Viewer>();
  * 导入 XML 并叠加高亮标记
  *
  * @param xml BPMN XML
- * @param executedIds 已办节点ID列表
- * @param activeIds 进行中节点ID列表
+ * @param executedIds 已办节点 ID 列表
+ * @param activeIds 进行中节点 ID 列表
  */
 async function renderDiagram(
   xml: string,

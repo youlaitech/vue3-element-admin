@@ -57,54 +57,40 @@ import FileAPI from "@/api/file";
 import type { FileInfo } from "@/api/file";
 
 const props = defineProps({
-  /**
-   * 请求携带的额外参数
-   */
+  /** 请求携带的额外参数 */
   data: {
     type: Object,
     default: () => {
       return {};
     },
   },
-  /**
-   * 上传文件的参数名
-   */
+  /** 上传文件的参数名 */
   name: {
     type: String,
     default: "file",
   },
-  /**
-   * 文件上传数量限制
-   */
+  /** 文件上传数量限制 */
   limit: {
     type: Number,
     default: 10,
   },
-  /**
-   * 单个文件上传大小限制(单位MB)
-   */
+  /** 单个文件上传大小限制(单位 MB) */
   maxFileSize: {
     type: Number,
     default: 10,
   },
-  /**
-   * 上传文件类型
-   */
+  /** 上传文件类型 */
   accept: {
     type: String,
     default: "*",
   },
-  /**
-   * 上传按钮文本
-   */
+  /** 上传按钮文本 */
   uploadBtnText: {
     type: String,
     default: "上传文件",
   },
 
-  /**
-   * 样式
-   */
+  /** 样式 */
   style: {
     type: Object,
     default: () => {
@@ -206,7 +192,7 @@ const handleSuccess = (response: any, uploadFile: UploadFile, files: UploadFiles
           fileInfos.push({ name: res.name, url: res.url } as FileInfo);
         }
       } else {
-        //失败上传 从fileList删掉，不展示
+        // 失败上传 从 fileList 删掉，不展示
         fileList.value.splice(
           fileList.value.findIndex((e) => e.uid === file.uid),
           1
@@ -246,7 +232,9 @@ function handleDownload(file: UploadUserFile) {
   }
 }
 
-/** 获取一个不重复的id */
+/**
+ * 获取一个不重复的 id
+ */
 function getUid(): number {
   // 时间戳左移 13 位（相当于乘以 8192）+ 13 位随机数
   return (Date.now() << 13) | Math.floor(Math.random() * 8192);

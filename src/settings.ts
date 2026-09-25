@@ -1,6 +1,4 @@
-/**
- * 应用配置
- */
+// 应用配置
 
 import {
   LayoutMode,
@@ -72,7 +70,7 @@ export const defaultThemePalette = themePalettePresets[0];
 /**
  * 解析布尔环境变量，仅 "true" 视为开启，未设置或为空时取默认值
  *
- * @param value        环境变量原始值
+ * @param value 环境变量原始值
  * @param defaultValue 未设置时的取值
  */
 function envBool(value: string | undefined, defaultValue: boolean): boolean {

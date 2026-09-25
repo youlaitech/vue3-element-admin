@@ -55,7 +55,9 @@ defineOptions({
   name: "FormPublishResultStep",
 });
 
-/** 发布完成汇总（向导第③步：菜单位置、可见角色、分享二维码与链接） */
+/**
+ * 发布完成汇总（向导第③步：菜单位置、可见角色、分享二维码与链接）
+ */
 const props = defineProps<{
   /** 是否展示菜单入口汇总 */
   showMenu: boolean;
@@ -78,7 +80,7 @@ const emit = defineEmits<{
   copy: [];
 }>();
 
-/** 分享二维码画布 */
+// 分享二维码画布
 const qrCanvasRef = ref<HTMLCanvasElement>();
 
 // 仅在第③步渲染（v-else-if 挂载），配置已定，挂载后绘制一次即可

@@ -3,7 +3,9 @@ import type { FieldConfig, GenConfigForm } from "@/api/codegen";
 import type { OptionItem } from "@/api/common";
 import { FormTypeEnum, QueryTypeEnum } from "@/enums/codegen";
 
-/** 单处改动 */
+/**
+ * 单处改动
+ */
 export interface AiChangeItem {
   /** 改动项名称 */
   label: string;
@@ -13,7 +15,9 @@ export interface AiChangeItem {
   to: string;
 }
 
-/** 单个字段的改动 */
+/**
+ * 单个字段的改动
+ */
 export interface AiFieldChange {
   /** 列名 */
   columnName: string;
@@ -21,7 +25,9 @@ export interface AiFieldChange {
   changes: AiChangeItem[];
 }
 
-/** 改动明细行，供差异表格逐行展示 */
+/**
+ * 改动明细行，供差异表格逐行展示
+ */
 export interface AiChangeRow extends AiChangeItem {
   /** 列名 */
   columnName: string;
@@ -31,7 +37,9 @@ export interface AiChangeRow extends AiChangeItem {
   first: boolean;
 }
 
-/** AI 填充前后差异 */
+/**
+ * AI 填充前后差异
+ */
 export interface AiFillDiff {
   /** 业务名改动 */
   businessName?: AiChangeItem;
@@ -43,7 +51,7 @@ export interface AiFillDiff {
   changeCount: number;
 }
 
-/** 参与比对的字段属性，顺序与字段配置表格一致 */
+// 参与比对的字段属性，顺序与字段配置表格一致
 const FIELD_ITEMS: { key: keyof FieldConfig; label: string; format: (value: unknown) => string }[] =
   [
     { key: "fieldComment", label: "字段描述", format: text },
@@ -56,24 +64,32 @@ const FIELD_ITEMS: { key: keyof FieldConfig; label: string; format: (value: unkn
     { key: "isRequired", label: "必填", format: switchText },
   ];
 
-/** 空值显示为「空」，避免差异明细里出现空白 */
+/**
+ * 空值显示为「空」，避免差异明细里出现空白
+ */
 function text(value: unknown): string {
   return value == null || value === "" ? "空" : String(value);
 }
 
-/** 0/1 开关值转文本 */
+/**
+ * 0/1 开关值转文本
+ */
 function switchText(value: unknown): string {
   return value === 1 ? "是" : "否";
 }
 
-/** 枚举值转中文名，匹配不到时保留原值 */
+/**
+ * 枚举值转中文名，匹配不到时保留原值
+ */
 function enumLabel(options: Record<string, OptionItem>, value: unknown): string {
   if (value == null) return "-";
   const hit = Object.values(options).find((item) => item.value === value);
   return hit?.label ?? String(value);
 }
 
-/** 对比两份配置，只保留发生变化的部分 */
+/**
+ * 对比两份配置，只保留发生变化的部分
+ */
 export function diffGenConfig(before: GenConfigForm, after: GenConfigForm): AiFillDiff {
   const diff: AiFillDiff = { fields: [], fieldCount: 0, changeCount: 0 };
 
@@ -108,12 +124,14 @@ export function diffGenConfig(before: GenConfigForm, after: GenConfigForm): AiFi
   return diff;
 }
 
-/** AI 填充差异：填充前留快照，填充后算差异，支持撤销 */
+/**
+ * AI 填充差异：填充前留快照，填充后算差异，支持撤销
+ */
 export function useAiFillDiff() {
   const aiDiff = ref<AiFillDiff | null>(null);
   let snapshot: GenConfigForm | null = null;
 
-  /** 字段改动映射，供字段表格按列名标记 */
+  // 字段改动映射，供字段表格按列名标记
   const fieldChanges = computed<Record<string, AiChangeItem[]>>(() => {
     const map: Record<string, AiChangeItem[]> = {};
     (aiDiff.value?.fields ?? []).forEach((field) => {
@@ -122,7 +140,7 @@ export function useAiFillDiff() {
     return map;
   });
 
-  /** 改动明细拍平成表格行，同一字段的多条改动带上合并标记 */
+  // 改动明细拍平成表格行，同一字段的多条改动带上合并标记
   const changeRows = computed<AiChangeRow[]>(() =>
     (aiDiff.value?.fields ?? []).flatMap((field) =>
       field.changes.map((item, index) => ({
@@ -134,19 +152,25 @@ export function useAiFillDiff() {
     )
   );
 
-  /** 丢弃差异与快照 */
+  /**
+   * 丢弃差异与快照
+   */
   function clear() {
     snapshot = null;
     aiDiff.value = null;
   }
 
-  /** 记录填充前的配置 */
+  /**
+   * 记录填充前的配置
+   */
   function snapshotConfig(config: GenConfigForm) {
     snapshot = cloneDeep(config);
     aiDiff.value = null;
   }
 
-  /** 计算与填充前的差异 */
+  /**
+   * 计算与填充前的差异
+   */
   function resolveDiff(filled: GenConfigForm): AiFillDiff {
     const diff = snapshot
       ? diffGenConfig(snapshot, filled)
@@ -155,7 +179,9 @@ export function useAiFillDiff() {
     return diff;
   }
 
-  /** 恢复填充前的配置并清空差异 */
+  /**
+   * 恢复填充前的配置并清空差异
+   */
   function undo(): GenConfigForm | null {
     if (!snapshot) return null;
     const config = cloneDeep(snapshot);

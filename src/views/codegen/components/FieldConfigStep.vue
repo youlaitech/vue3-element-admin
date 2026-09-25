@@ -220,10 +220,10 @@ const fieldConfigs = computed(() => formData.value?.fieldConfigs || []);
 // 只看 AI 改动过的字段
 const onlyAiChanged = ref(false);
 
-/** AI 改动过的字段数 */
+// AI 改动过的字段数
 const aiChangedCount = computed(() => Object.keys(props.aiChanges ?? {}).length);
 
-/** 展示的字段，开启筛选时只保留 AI 改动过的字段 */
+// 展示的字段，开启筛选时只保留 AI 改动过的字段
 const visibleFields = computed(() => {
   if (!onlyAiChanged.value) return fieldConfigs.value;
   return fieldConfigs.value.filter(
@@ -231,18 +231,24 @@ const visibleFields = computed(() => {
   );
 });
 
-/** 取某列的 AI 改动明细 */
+/**
+ * 取某列的 AI 改动明细
+ */
 function aiChangesOf(columnName?: string) {
   return columnName ? props.aiChanges?.[columnName] : undefined;
 }
 
-/** 是否给卡片加改动底色；全部字段都被改过时不再整片高亮，那已经没有对比意义 */
+/**
+ * 是否给卡片加改动底色；全部字段都被改过时不再整片高亮，那已经没有对比意义
+ */
 function isAiChanged(columnName?: string) {
   const changed = aiChangesOf(columnName)?.length;
   return !!changed && aiChangedCount.value < fieldConfigs.value.length;
 }
 
-/** 只看 AI 改动过的字段，AI 填充完成后由父级调用 */
+/**
+ * 只看 AI 改动过的字段，AI 填充完成后由父级调用
+ */
 function showOnlyAiChanged() {
   if (!aiChangedCount.value) return;
   onlyAiChanged.value = true;
@@ -252,7 +258,9 @@ function showOnlyAiChanged() {
 const locatedColumn = ref("");
 let locateTimer: ReturnType<typeof setTimeout> | undefined;
 
-/** 滚动到指定字段卡片并短暂高亮，供父级从 AI 改动明细定位时调用 */
+/**
+ * 滚动到指定字段卡片并短暂高亮，供父级从 AI 改动明细定位时调用
+ */
 async function locateField(columnName: string) {
   if (!columnName) return;
   // 等字段列表按当前筛选渲染完，再取节点，否则可能定位到上一帧已不存在的卡片
@@ -282,14 +290,18 @@ const queryCount = computed(() => fieldConfigs.value.filter((f) => f.isShowInQue
 const listCount = computed(() => fieldConfigs.value.filter((f) => f.isShowInList === 1).length);
 const formCount = computed(() => fieldConfigs.value.filter((f) => f.isShowInForm === 1).length);
 
-// 批量设置
+/**
+ * 批量设置
+ */
 function bulkSet(key: "isShowInQuery" | "isShowInList" | "isShowInForm", value: 0 | 1) {
   fieldConfigs.value.forEach((row) => {
     row[key] = value;
   });
 }
 
-// 用 Sortable.js 实现卡片拖拽排序，需要在字段配置步骤显示后调用
+/**
+ * 用 Sortable.js 实现卡片拖拽排序，需要在字段配置步骤显示后调用
+ */
 function initSort() {
   if (sortFlag.value || onlyAiChanged.value) return;
   if (!listRef.value) return;
@@ -308,12 +320,17 @@ function initSort() {
   });
 }
 
+/**
+ * 销毁拖拽排序实例
+ */
 function destroySort() {
   sortFlag.value?.destroy();
   sortFlag.value = null;
 }
 
-// 暴露给父组件
+/**
+ * 暴露给父组件
+ */
 defineExpose({ initSort, destroySort, showOnlyAiChanged, locateField });
 
 onBeforeUnmount(() => {

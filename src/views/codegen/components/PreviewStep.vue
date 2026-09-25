@@ -180,10 +180,16 @@ const currentFilePath = computed(() => {
   return idx > -1 ? key.slice(idx + 1) : key;
 });
 
+/**
+ * 切换预览范围
+ */
 function onScopeChange(val: any) {
   emit("update:previewScope", val as "all" | "frontend" | "backend");
 }
 
+/**
+ * 切换预览文件类型
+ */
 function onTypesChange(val: any) {
   emit("update:previewTypes", val as string[]);
 }
@@ -196,6 +202,9 @@ const currentLanguage = computed(() => {
 
 const fileCount = computed(() => {
   let count = 0;
+  /**
+   * 递归统计文件数量
+   */
   function walk(nodes: any[]) {
     nodes.forEach((n) => {
       if (!n.children || !n.children.length) count++;
@@ -206,11 +215,17 @@ const fileCount = computed(() => {
   return count;
 });
 
+/**
+ * 下载生成的代码
+ */
 function handleDownload() {
   const pageType = props.genConfigFormData.pageType || "classic";
-  GeneratorAPI.download(props.tableName, pageType as "classic" | "curd", "ts");
+  GeneratorAPI.download(props.tableName, pageType as "classic" | "crud", "ts");
 }
 
+/**
+ * 刷新代码编辑器布局
+ */
 function refreshEditor() {
   const inst = cmRef.value as any;
   inst?.cminstance?.refresh?.();
@@ -218,12 +233,21 @@ function refreshEditor() {
   inst?.editor?.refresh?.();
 }
 
+/**
+ * 开始拖动文件树宽度
+ */
 function startResize(e: MouseEvent) {
   const startX = e.clientX;
   const startWidth = fileTreeWidth.value;
+  /**
+   * 拖动中更新文件树宽度
+   */
   const onMove = (ev: MouseEvent) => {
     fileTreeWidth.value = Math.max(200, Math.min(500, startWidth + ev.clientX - startX));
   };
+  /**
+   * 结束拖动并解绑监听
+   */
   const onUp = () => {
     document.removeEventListener("mousemove", onMove);
     document.removeEventListener("mouseup", onUp);

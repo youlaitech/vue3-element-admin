@@ -105,6 +105,9 @@ export const useSettingsStore = defineStore("setting", () => {
     { immediate: true }
   );
 
+  /**
+   * 应用一套主题调色板
+   */
   function applyThemePalette(id: string) {
     const preset = themePalettePresets.find((item) => item.id === id);
     if (!preset) return;
@@ -113,6 +116,9 @@ export const useSettingsStore = defineStore("setting", () => {
     themeColors.value = { ...preset.colors };
   }
 
+  /**
+   * 更新单个主题色
+   */
   function updateThemeColor(name: ThemeColorName, color: string) {
     if (!HEX_COLOR_RE.test(color)) return;
 
@@ -123,6 +129,9 @@ export const useSettingsStore = defineStore("setting", () => {
     };
   }
 
+  /**
+   * 恢复默认设置
+   */
   function resetSettings() {
     showTagsView.value = defaults.showTagsView;
     tagsViewStyle.value = defaults.tagsViewStyle;

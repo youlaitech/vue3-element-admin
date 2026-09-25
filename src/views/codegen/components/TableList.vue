@@ -83,7 +83,7 @@ import GeneratorAPI from "@/api/codegen";
 import type { TableItem, TableQueryParams } from "@/api/codegen";
 import { usePageTable } from "@/composables";
 
-/** 表已配置代码生成（1:是;0:否）。 */
+// 表已配置代码生成（1:是;0:否）
 const TABLE_CONFIGURED = 1;
 
 const emit = defineEmits<{
@@ -94,7 +94,7 @@ const emit = defineEmits<{
 const queryFormRef = ref<FormInstance>();
 
 // ── 分页表格状态 ────────────────────────────────────────────
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   TableItem,
   TableQueryParams
@@ -108,7 +108,7 @@ const { loading, list, total, params, fetchData, handleQuery, handleResetQuery }
 });
 
 /**
- * 重置指定表的代码生成配置。
+ * 重置指定表的代码生成配置
  *
  * @param tableName 表名
  */

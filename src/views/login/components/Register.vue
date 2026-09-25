@@ -108,6 +108,9 @@ import type { LoginRequest } from "@/api/auth";
 const { t } = useI18n();
 
 const emit = defineEmits(["update:modelValue"]);
+/**
+ * 切回登录表单
+ */
 const toLogin = () => emit("update:modelValue", "login");
 
 onMounted(() => getCaptcha());
@@ -115,7 +118,7 @@ onMounted(() => getCaptcha());
 const formRef = ref<FormInstance>();
 const loading = ref(false); // 按钮 loading 状态
 const isCapsLock = ref(false); // 是否大写锁定
-const captchaBase64 = ref(); // 验证码图片Base64字符串
+const captchaBase64 = ref(); // 验证码图片 Base64 字符串
 const isRead = ref(false);
 
 interface Model extends LoginRequest {
@@ -183,6 +186,9 @@ const rules = computed(() => {
 
 // 获取验证码
 const codeLoading = ref(false);
+/**
+ * 刷新验证码
+ */
 function getCaptcha() {
   codeLoading.value = true;
   AuthAPI.getCaptcha()
@@ -193,7 +199,9 @@ function getCaptcha() {
     .finally(() => (codeLoading.value = false));
 }
 
-// 检查输入大小写
+/**
+ * 检查输入大小写
+ */
 function checkCapsLock(event: KeyboardEvent) {
   // 防止浏览器密码自动填充时报错
   if (event instanceof KeyboardEvent) {
@@ -201,6 +209,9 @@ function checkCapsLock(event: KeyboardEvent) {
   }
 }
 
+/**
+ * 提交注册表单
+ */
 const submit = async () => {
   await formRef.value?.validate();
   ElMessage.warning("开发中 ...");

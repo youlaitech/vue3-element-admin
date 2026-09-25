@@ -24,6 +24,9 @@ const props = defineProps({
   },
 });
 
+/**
+ * 把文本复制到剪贴板
+ */
 function handleClipboard() {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     // 使用 Clipboard API

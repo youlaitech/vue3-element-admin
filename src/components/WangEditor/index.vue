@@ -49,7 +49,9 @@ defineProps({
     default: "500px",
   },
 });
-// 双向绑定 - 直接使用 v-model，无需手动 setHtml
+/**
+ * 双向绑定 - 直接使用 v-model，无需手动 setHtml
+ */
 const modelValue = defineModel<string>({
   type: String,
   required: false,
@@ -78,11 +80,16 @@ const editorConfig: Partial<IEditorConfig> = {
   },
 };
 
-// 记录 editor 实例
+/**
+ * 记录 editor 实例
+ */
 const handleCreated = (editor: any) => {
   editorRef.value = editor;
 };
 
+/**
+ * 编辑器内容变化后同步回 v-model
+ */
 const handleChange = () => {
   innerUpdating.value = true;
   Promise.resolve().then(() => {

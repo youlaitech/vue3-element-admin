@@ -82,6 +82,9 @@ const showTenantSwitcher = computed(() => {
   return tenantStore.tenantList.length > 1;
 });
 
+/**
+ * 切换租户，成功后刷新页面
+ */
 function handleTenantChange(tenantId: number) {
   tenantStore.switchTenant(tenantId).then(
     () => {

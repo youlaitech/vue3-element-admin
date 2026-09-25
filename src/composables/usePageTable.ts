@@ -19,10 +19,8 @@ export function usePageTable<T, Q extends BaseQueryParams = BaseQueryParams>(
 
   /**
    * 拉取当前查询参数对应的分页数据
-   *
    * 只负责请求和回填，不处理弹窗、路由或消息提示
-   */
-  async function fetchData(): Promise<void> {
+   */ async function fetchData(): Promise<void> {
     loading.value = true;
     try {
       const data = await request(params);
@@ -43,17 +41,14 @@ export function usePageTable<T, Q extends BaseQueryParams = BaseQueryParams>(
 
   /**
    * 恢复初始查询参数
-   *
    * 保持响应式引用不变，不触发查询
-   */
-  function resetParams(): void {
+   */ function resetParams(): void {
     Object.assign(params, initialParams);
   }
 
   /**
    * 恢复初始查询参数并重新查询
-   */
-  function handleResetQuery(): void {
+   */ function handleResetQuery(): void {
     onBeforeReset?.();
     resetParams();
     fetchData();
@@ -74,9 +69,7 @@ export function usePageTable<T, Q extends BaseQueryParams = BaseQueryParams>(
 export interface UsePageTableOptions<T, Q extends BaseQueryParams> {
   /** 初始查询参数，同时作为重置基准 */
   initialParams: Q;
-  /**
-   * 分页请求函数
-   */
+  /** 分页请求函数 */
   request: (params: Q) => Promise<PageResult<T>>;
   /**
    * 重置查询前的回调
@@ -95,20 +88,12 @@ export interface UsePageTableReturn<T, Q extends BaseQueryParams> {
   total: Ref<number>;
   /** 当前查询参数 */
   params: Q;
-  /**
-   * 拉取分页数据
-   */
+  /** 拉取分页数据 */
   fetchData: () => Promise<void>;
-  /**
-   * 回到第一页并查询
-   */
+  /** 回到第一页并查询 */
   handleQuery: () => void;
-  /**
-   * 恢复初始参数并重新查询
-   */
+  /** 恢复初始参数并重新查询 */
   handleResetQuery: () => void;
-  /**
-   * 恢复初始参数但不触发查询
-   */
+  /** 恢复初始参数但不触发查询 */
   resetParams: () => void;
 }

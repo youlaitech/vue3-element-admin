@@ -34,7 +34,9 @@ defineProps<{
   detail?: NoticeDetail | null;
 }>();
 
-/** 弹窗显示状态 */
+/**
+ * 弹窗显示状态
+ */
 const visible = defineModel<boolean>({ default: false });
 </script>
 

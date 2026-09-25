@@ -41,6 +41,13 @@
           </el-button>
         </div>
         <div class="page-toolbar__right">
+          <el-tooltip :content="expandAll ? '折叠全部' : '展开全部'" placement="top">
+            <el-button class="page-icon-btn" @click="toggleExpandAll">
+              <span v-if="expandAll" class="i-svg:checkbox-indeterminate" />
+              <span v-else class="i-svg:add-box" />
+            </el-button>
+          </el-tooltip>
+          <el-divider class="page-toolbar__divider" direction="vertical" />
           <el-tooltip content="刷新" placement="top">
             <el-button class="page-icon-btn" @click="handleQuery">
               <el-icon><Refresh /></el-icon>
@@ -56,11 +63,12 @@
 
       <div class="page-table-wrapper">
         <el-table
+          ref="tableRef"
           v-loading="loading"
           :data="list"
           class="page-table"
           row-key="id"
-          default-expand-all
+          :default-expand-all="expandAll"
           border
           height="100%"
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
@@ -163,7 +171,13 @@
 </template>
 
 <script setup lang="ts">
-import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "element-plus";
+import {
+  ElMessage,
+  ElMessageBox,
+  type FormInstance,
+  type FormRules,
+  type TableInstance,
+} from "element-plus";
 import { Refresh, FullScreen } from "@element-plus/icons-vue";
 
 import DeptAPI from "@/api/system/dept";
@@ -182,6 +196,9 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 
 const queryFormRef = ref<FormInstance>();
 const deptFormRef = ref<FormInstance>();
+const tableRef = ref<TableInstance>();
+// 是否展开全部部门层级，默认展开
+const expandAll = ref(true);
 
 const loading = ref(false);
 const list = ref<DeptItem[]>([]);
@@ -227,7 +244,34 @@ async function fetchData(): Promise<void> {
 }
 
 /**
- * 按当前筛选条件重新查询。
+ * 展开/折叠全部部门层级
+ */
+function toggleExpandAll(): void {
+  expandAll.value = !expandAll.value;
+  applyExpansion();
+}
+
+/**
+ * 按当前开关应用展开状态，逐级下发到所有部门节点
+ */
+function applyExpansion(): void {
+  /**
+   * 递归展开树节点
+   */
+  const walk = (rows: DeptItem[]): void => {
+    rows.forEach((row) => {
+      if (!row.children?.length) return;
+
+      tableRef.value?.toggleRowExpansion(row, expandAll.value);
+      walk(row.children);
+    });
+  };
+
+  walk(list.value);
+}
+
+/**
+ * 按当前筛选条件重新查询
  */
 function handleQuery(): void {
   fetchData();
@@ -254,7 +298,7 @@ function resetForm(): void {
 }
 
 /**
- * 打开新增/编辑部门弹窗。
+ * 打开新增/编辑部门弹窗
  *
  * @param parentId 父部门 ID（新增子部门时传入）
  * @param deptId 部门 ID（编辑时传入）
@@ -281,7 +325,7 @@ async function openDialog(parentId?: string, deptId?: string): Promise<void> {
 }
 
 /**
- * 校验并提交部门表单。
+ * 校验并提交部门表单
  */
 async function handleSubmit(): Promise<void> {
   const valid = await deptFormRef.value?.validate().then(
@@ -308,7 +352,7 @@ async function handleSubmit(): Promise<void> {
 }
 
 /**
- * 删除单个或批量部门。
+ * 删除单个或批量部门
  *
  * @param deptId 指定时删除单个部门；不指定时删除表格勾选项
  */

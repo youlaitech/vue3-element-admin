@@ -154,7 +154,7 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 const queryFormRef = ref<FormInstance>();
 const dataFormRef = ref<FormInstance>();
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   ConfigItem,
   ConfigQueryParams
@@ -180,6 +180,9 @@ const rules: FormRules = {
   configValue: [{ required: true, message: "请输入系统配置值", trigger: "blur" }],
 };
 
+/**
+ * 记录表格勾选项
+ */
 function handleSelectionChange(selection: ConfigItem[]): void {
   void selection;
 }
@@ -199,7 +202,7 @@ async function openDialog(id?: string): Promise<void> {
   }
 }
 
-// 刷新缓存。
+// 刷新缓存
 const refreshCache = useDebounceFn(async () => {
   await ConfigAPI.refreshCache();
   ElMessage.success("刷新成功");

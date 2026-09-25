@@ -6,54 +6,36 @@ import { STORAGE_KEYS } from "@/constants";
 import { defaults } from "@/settings";
 
 export const useAppStore = defineStore("app", () => {
-  /**
-   * 当前设备类型
-   */
+  // 当前设备类型
   const device = useStorage(STORAGE_KEYS.DEVICE, DeviceEnum.DESKTOP);
 
-  /**
-   * 组件默认尺寸
-   */
+  // 组件默认尺寸
   const size = useStorage(STORAGE_KEYS.SIZE, defaults.size);
 
-  /**
-   * 当前语言
-   */
+  // 当前语言
   const language = useStorage(STORAGE_KEYS.LANGUAGE, defaults.language);
 
-  /**
-   * 侧边栏持久化状态
-   */
+  // 侧边栏持久化状态
   const sidebarStatus = useStorage(STORAGE_KEYS.SIDEBAR_STATUS, SidebarStatus.CLOSED);
 
-  /**
-   * 侧边栏显示状态
-   */
+  // 侧边栏显示状态
   const sidebar = reactive({
     opened: sidebarStatus.value === SidebarStatus.OPENED,
     withoutAnimation: false,
   });
 
-  /**
-   * 双列布局第二列（次级菜单）展开状态
-   */
+  // 双列布局第二列（次级菜单）展开状态
   const secondarySidebar = reactive({
     opened: true,
   });
 
-  /**
-   * 当前激活的顶部菜单路径
-   */
+  // 当前激活的顶部菜单路径
   const activeTopMenuPath = useStorage(STORAGE_KEYS.ACTIVE_TOP_MENU_PATH, "", sessionStorage);
 
-  /**
-   * 内容区是否全屏
-   */
+  // 内容区是否全屏
   const contentFullscreen = ref(false);
 
-  /**
-   * Element Plus 当前语言包
-   */
+  // Element Plus 当前语言包
   const locale = computed(() => (language?.value === "en" ? en : zhCn));
 
   /**
@@ -143,6 +125,9 @@ export const useAppStore = defineStore("app", () => {
   };
 });
 
+/**
+ * 在组件外拿 app store 实例
+ */
 export function useAppStoreHook() {
   return useAppStore(store);
 }

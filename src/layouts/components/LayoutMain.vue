@@ -27,6 +27,9 @@ const { cachedViews } = toRefs(useTagsViewStore());
 const settingsStore = useSettingsStore();
 
 const wrapperMap = new Map<string, Component>();
+/**
+ * 解析当前路由要渲染的组件
+ */
 const currentComponent = (component: Component, route: RouteLocationNormalized) => {
   if (!component) return;
 

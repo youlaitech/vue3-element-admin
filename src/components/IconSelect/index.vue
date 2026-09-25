@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import { elementIconNames, svgIconNames } from "@/utils/icon";
 
 const props = defineProps({
   modelValue: {
@@ -101,8 +101,8 @@ const popoverContentRef = ref();
 const popoverVisible = ref(false);
 const activeTab = ref("svg");
 
-const svgIcons = ref<string[]>([]);
-const elementIcons = ref<string[]>(Object.keys(ElementPlusIconsVue));
+const svgIcons = ref<string[]>(svgIconNames);
+const elementIcons = ref<string[]>(elementIconNames);
 const selectedIcon = defineModel("modelValue", {
   type: String,
   required: true,
@@ -110,26 +110,23 @@ const selectedIcon = defineModel("modelValue", {
 });
 
 const filterText = ref("");
-const filteredSvgIcons = ref<string[]>([]);
+const filteredSvgIcons = ref<string[]>(svgIcons.value);
 const filteredElementIcons = ref<string[]>(elementIcons.value);
 const isElementIcon = computed(() => {
   return selectedIcon.value && selectedIcon.value.startsWith("el-icon");
 });
 
-function loadIcons() {
-  const icons = import.meta.glob("../../assets/icons/*.svg");
-  for (const path in icons) {
-    const iconName = path.replace(/.*\/(.*)\.svg$/, "$1");
-    svgIcons.value.push(iconName);
-  }
-  filteredSvgIcons.value = svgIcons.value;
-}
-
+/**
+ * 切换图标分类页签
+ */
 function handleTabClick(tabPane: any) {
   activeTab.value = tabPane.props.name;
   filterIcons();
 }
 
+/**
+ * 按关键字过滤当前分类下的图标
+ */
 function filterIcons() {
   if (activeTab.value === "svg") {
     filteredSvgIcons.value = filterText.value
@@ -144,12 +141,18 @@ function filterIcons() {
   }
 }
 
+/**
+ * 选中图标并回传给 v-model
+ */
 function selectIcon(icon: string) {
   const iconName = activeTab.value === "element" ? "el-icon-" + icon : icon;
   emit("update:modelValue", iconName);
   popoverVisible.value = false;
 }
 
+/**
+ * 展开或收起图标选择弹层
+ */
 function togglePopover() {
   popoverVisible.value = !popoverVisible.value;
 }
@@ -166,7 +169,6 @@ function clearSelectedIcon() {
 }
 
 onMounted(() => {
-  loadIcons();
   if (selectedIcon.value) {
     if (elementIcons.value.includes(selectedIcon.value.replace("el-icon-", ""))) {
       activeTab.value = "element";

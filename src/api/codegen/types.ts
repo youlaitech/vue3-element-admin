@@ -1,10 +1,10 @@
-/**
- * CodeGen 代码生成类型定义
- */
+// CodeGen 代码生成类型定义
 
 import type { BaseQueryParams } from "@/api/common";
 
-/** 代码生成预览对象 */
+/**
+ * 代码生成预览对象
+ */
 export interface GeneratorPreviewItem {
   /** 文件生成路径 */
   path: string;
@@ -18,13 +18,17 @@ export interface GeneratorPreviewItem {
   language: string;
 }
 
-/** 数据表分页查询参数 */
+/**
+ * 数据表分页查询参数
+ */
 export interface TableQueryParams extends BaseQueryParams {
   /** 搜索关键字(表名) */
   keywords?: string;
 }
 
-/** 数据表分页对象 */
+/**
+ * 数据表分页对象
+ */
 export interface TableItem {
   /** 表名称 */
   tableName: string;
@@ -40,7 +44,9 @@ export interface TableItem {
   createTime: string;
 }
 
-/** 代码生成配置表单 */
+/**
+ * 代码生成配置表单
+ */
 export interface GenConfigForm {
   /** 主键 */
   id?: string;
@@ -64,13 +70,15 @@ export interface GenConfigForm {
   frontendAppName?: string;
   /** 字段配置列表 */
   fieldConfigs?: FieldConfig[];
-  /** 页面类型 classic|curd */
-  pageType?: "classic" | "curd";
+  /** 页面类型 classic|crud */
+  pageType?: "classic" | "crud";
   /** 要移除的表前缀，如 sys_ */
   removeTablePrefix?: string;
 }
 
-/** 字段配置 */
+/**
+ * 字段配置
+ */
 export interface FieldConfig {
   /** 主键 */
   id?: string;

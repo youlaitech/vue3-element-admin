@@ -85,10 +85,16 @@ const svg_icons: string[] = [
 ];
 const icons = ref(ElementPlusIconsVue);
 
+/**
+ * 生成 svg 图标的使用代码
+ */
 function generateIconCode(symbol: any) {
   return `<div class="i-svg:${symbol}" />`;
 }
 
+/**
+ * 生成 Element Plus 图标的使用代码
+ */
 function generateElementIconCode(symbol: any) {
   return `<el-icon><${symbol} /></el-icon>`;
 }

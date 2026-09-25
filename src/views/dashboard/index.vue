@@ -401,12 +401,18 @@ const visitTrendDateRange = ref(7);
 const visitTrendData = ref<VisitTrendDetail>();
 const visitTrendChartOptions = ref({});
 
+/**
+ * 读取 CSS 变量，取不到时用兜底值
+ */
 function getCssVar(name: string, fallback: string) {
   if (typeof window === "undefined") return fallback;
 
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 }
 
+/**
+ * 给颜色加上透明度
+ */
 function colorWithAlpha(color: string, alpha: number) {
   const value = color.trim();
 
@@ -431,12 +437,18 @@ function colorWithAlpha(color: string, alpha: number) {
   return value;
 }
 
+/**
+ * 拉取访问概览数据
+ */
 function fetchVisitOverviewData() {
   LogAPI.getVisitOverview().then((d) => {
     visitOverviewData.value = d;
   });
 }
 
+/**
+ * 拉取访问趋势数据
+ */
 function fetchVisitTrendData() {
   const s = dayjs()
     .subtract(visitTrendDateRange.value - 1, "day")
@@ -450,6 +462,9 @@ function fetchVisitTrendData() {
   });
 }
 
+/**
+ * 更新访问趋势图表配置
+ */
 function updateVisitTrendChartOptions(d: VisitTrendDetail) {
   const primary = getCssVar("--el-color-primary", "#409eff");
   const success = getCssVar("--el-color-success", "#67c23a");

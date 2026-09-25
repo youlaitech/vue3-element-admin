@@ -1,36 +1,29 @@
 <template>
   <div v-if="!item.meta || !item.meta.hidden">
-    <template
-      v-if="
-        (hasOneShowingChild(item.children, item) &&
-          !item.meta?.alwaysShow &&
-          (!onlyOneChild.children || onlyOneChild.noShowingChildren)) ||
-        (item.meta?.alwaysShow && !item.children)
-      "
-    >
+    <template v-if="leafMenu">
       <AppLink
-        v-if="onlyOneChild.meta"
+        v-if="leafMenu.meta"
         :to="{
-          path: resolvePath(onlyOneChild.path),
-          meta: onlyOneChild.meta,
-          query: onlyOneChild.meta.params,
+          path: resolvePath(leafMenu.path),
+          meta: leafMenu.meta,
+          query: leafMenu.meta.params,
         }"
       >
         <el-menu-item
-          :index="resolvePath(onlyOneChild.path)"
+          :index="resolvePath(leafMenu.path)"
           :class="{ 'submenu-title-noDropdown': !isNest }"
         >
-          <template v-if="onlyOneChild.meta">
-            <LayoutMenuIcon :icon="onlyOneChild.meta.icon || item.meta?.icon" />
+          <template v-if="leafMenu.meta">
+            <LayoutMenuIcon :icon="leafMenu.meta.icon || item.meta?.icon" />
             <span
-              v-if="onlyOneChild.meta.title"
+              v-if="leafMenu.meta.title"
               class="ml-1"
-              :title="translateRouteTitle(onlyOneChild.meta.title)"
+              :title="translateRouteTitle(leafMenu.meta.title)"
             >
-              {{ translateRouteTitle(onlyOneChild.meta.title) }}
+              {{ translateRouteTitle(leafMenu.meta.title) }}
             </span>
-            <span v-if="getBadge(onlyOneChild.meta)" class="menu-badge">
-              {{ getBadge(onlyOneChild.meta) }}
+            <span v-if="getBadge(leafMenu.meta)" class="menu-badge">
+              {{ getBadge(leafMenu.meta) }}
             </span>
           </template>
         </el-menu-item>
@@ -68,10 +61,6 @@ import { isExternal } from "@/utils";
 import { translateRouteTitle } from "@/lang/utils";
 import LayoutMenuIcon from "./LayoutMenuIcon.vue";
 
-type SidebarRoute = RouteRecordRaw & {
-  noShowingChildren?: boolean;
-};
-
 defineOptions({
   name: "LayoutSidebarItem",
   inheritAttrs: false,
@@ -97,30 +86,22 @@ const props = defineProps({
   },
 });
 
-const onlyOneChild = ref<SidebarRoute>({} as SidebarRoute);
+// 可见子路由
+const showingChildren = computed(() =>
+  (props.item.children ?? []).filter((route) => !route.meta?.hidden)
+);
 
-/**
- * 判断当前路由是否应按叶子菜单渲染
- */
-function hasOneShowingChild(children: RouteRecordRaw[] = [], parent: RouteRecordRaw) {
-  const showingChildren = children.filter((route: RouteRecordRaw) => {
-    if (!route.meta?.hidden) {
-      onlyOneChild.value = route as SidebarRoute;
-      return true;
-    }
-    return false;
-  });
-
-  if (showingChildren.length === 1) {
-    return true;
+// 叶子菜单渲染目标
+// 无可见子路由时用自身占位（path 置空，点击落在父级路径）；壳层路由（自身无标题）只有唯一子路由时下沉到该子路由，避免多出一层无标题分组
+const leafMenu = computed<RouteRecordRaw | undefined>(() => {
+  if (showingChildren.value.length === 0) {
+    return { ...props.item, path: "" };
   }
 
-  if (showingChildren.length === 0) {
-    onlyOneChild.value = { ...parent, path: "", noShowingChildren: true } as SidebarRoute;
-    return true;
-  }
-  return false;
-}
+  return !props.item.meta?.title && showingChildren.value.length === 1
+    ? showingChildren.value[0]
+    : undefined;
+});
 
 /**
  * 解析菜单跳转路径
@@ -133,8 +114,7 @@ function resolvePath(routePath: string) {
 }
 
 /**
- * 读取菜单角标（如 NEW/HOT）：来自 sys_menu.params 的 {"badge":"NEW"}，
- * 经 meta.params 透传至此；不配置则不渲染，纯数据驱动，无需菜单管理表单支持
+ * 读取菜单角标（如 NEW/HOT）：来自 sys_menu.params 的 {"badge":"NEW"}， 经 meta.params 透传至此；不配置则不渲染，纯数据驱动，无需菜单管理表单支持
  */
 function getBadge(meta: RouteMeta | undefined): string {
   const params = meta?.params as Record<string, unknown> | undefined;

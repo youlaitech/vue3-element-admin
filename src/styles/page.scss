@@ -1,4 +1,4 @@
-/**
+/*
  * 页面公共样式
  */
 
@@ -155,6 +155,12 @@
   &__right {
     justify-content: flex-end;
     margin-left: auto;
+  }
+
+  // 图标按钮之间的分组竖线，去掉 Element Plus 默认的外边距，间距交由 flex gap 控制
+  &__divider.el-divider--vertical {
+    height: 20px;
+    margin: 0;
   }
 }
 

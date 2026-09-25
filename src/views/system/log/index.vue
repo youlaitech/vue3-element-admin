@@ -156,10 +156,10 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 
 const queryFormRef = ref<FormInstance>();
 
-// 日志状态：1=成功，0=失败。
+// 日志状态：1=成功，0=失败
 const LOG_STATUS_SUCCESS = 1;
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   LogItem,
   LogQueryParams
@@ -178,7 +178,7 @@ const detailVisible = ref(false);
 const detailData = ref<Partial<LogItem>>({});
 
 /**
- * 请求方法 → el-tag 类型映射。
+ * 请求方法 → el-tag 类型映射
  *
  * @param method HTTP 方法（GET/POST/PUT/DELETE/PATCH 等）
  */
@@ -194,7 +194,7 @@ function getMethodTagType(method: string): TagProps["type"] {
 }
 
 /**
- * 打开日志详情弹窗。
+ * 打开日志详情弹窗
  *
  * @param row 当前日志行
  */

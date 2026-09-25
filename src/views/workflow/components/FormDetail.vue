@@ -12,8 +12,7 @@ defineOptions({
 
 /**
  * 表单只读回显
- *
- * @description 按提交时快照规则渲染表单并禁用全部控件，
+ * 按提交时快照规则渲染表单并禁用全部控件，
  * 供审批办理、实例详情等场景回看发起数据
  */
 const props = defineProps<{
@@ -45,7 +44,6 @@ watch(
 
 /**
  * 递归禁用规则中的全部控件
- *
  * 同时移除校验规则，只读态不展示必填星号
  *
  * @param rules form-create 规则（JSON 解析值）

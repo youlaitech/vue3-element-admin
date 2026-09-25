@@ -4,7 +4,7 @@ import router from "@/router";
 import { usePermissionStore } from "@/stores";
 import { isExternal } from "@/utils";
 
-/** 命令面板中的可搜索菜单项。 */
+/** 命令面板中的可搜索菜单项 */
 interface SearchItem {
   title: string;
   path: string;
@@ -18,6 +18,9 @@ const STORAGE_KEY = "menu_search_history";
 const MAX_HISTORY = 5;
 const EXCLUDED_PATHS = ["/redirect", "/login", "/401", "/404"];
 
+/**
+ * 命令面板：菜单搜索、历史记录与键盘导航
+ */
 export function useCommandPalette() {
   const permissionStore = usePermissionStore();
 
@@ -32,6 +35,9 @@ export function useCommandPalette() {
   const results = ref<SearchItem[]>([]);
   const history = ref<SearchItem[]>([]);
 
+  /**
+   * 打开面板并清空上一次的搜索状态
+   */
   function open() {
     keyword.value = "";
     results.value = [];
@@ -40,12 +46,15 @@ export function useCommandPalette() {
     setTimeout(() => inputRef.value?.focus(), 100);
   }
 
+  /**
+   * 关闭面板
+   */
   function close() {
     visible.value = false;
   }
 
   /**
-   * 搜索仅匹配菜单标题，避免路径命中过多造成结果噪音。
+   * 搜索仅匹配菜单标题，避免路径命中过多造成结果噪音
    */
   function onSearch() {
     activeIndex.value = -1;
@@ -59,12 +68,15 @@ export function useCommandPalette() {
     );
   }
 
+  /**
+   * 有搜索结果时展示结果，否则展示历史记录
+   */
   function getDisplayList(): SearchItem[] {
     return results.value.length ? results.value : history.value;
   }
 
   /**
-   * 键盘选择当前展示列表，搜索为空时回退历史记录。
+   * 键盘选择当前展示列表，搜索为空时回退历史记录
    */
   function onSelect() {
     const list = getDisplayList();
@@ -75,6 +87,9 @@ export function useCommandPalette() {
     onGo(item);
   }
 
+  /**
+   * 上下键移动高亮项，到头后循环
+   */
   function onNavigate(direction: "up" | "down") {
     const list = getDisplayList();
     if (list.length === 0) return;
@@ -86,6 +101,9 @@ export function useCommandPalette() {
     }
   }
 
+  /**
+   * 跳转到选中项并写入历史
+   */
   function onGo(item: SearchItem) {
     close();
     addHistory(item);
@@ -97,6 +115,9 @@ export function useCommandPalette() {
     }
   }
 
+  /**
+   * 从本地存储读取搜索历史
+   */
   function loadHistory() {
     try {
       const data = localStorage.getItem(STORAGE_KEY);
@@ -106,12 +127,15 @@ export function useCommandPalette() {
     }
   }
 
+  /**
+   * 把搜索历史写入本地存储
+   */
   function saveHistory() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history.value));
   }
 
   /**
-   * 历史记录按最近使用排序，并限制本地缓存数量。
+   * 历史记录按最近使用排序，并限制本地缓存数量
    */
   function addHistory(item: SearchItem) {
     const index = history.value.findIndex((historyItem) => historyItem.path === item.path);
@@ -126,18 +150,24 @@ export function useCommandPalette() {
     saveHistory();
   }
 
+  /**
+   * 删除单条搜索历史
+   */
   function removeHistory(index: number) {
     history.value.splice(index, 1);
     saveHistory();
   }
 
+  /**
+   * 清空搜索历史
+   */
   function clearHistory() {
     history.value = [];
     localStorage.removeItem(STORAGE_KEY);
   }
 
   /**
-   * 将权限路由拍平成命令面板可搜索的菜单项。
+   * 将权限路由拍平成命令面板可搜索的菜单项
    */
   function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
     routes.forEach((route) => {
@@ -165,7 +195,7 @@ export function useCommandPalette() {
   }
 
   /**
-   * Ctrl/Cmd + K 打开命令面板，并阻止浏览器默认搜索。
+   * Ctrl/Cmd + K 打开命令面板，并阻止浏览器默认搜索
    */
   function handleKeydown(e: KeyboardEvent) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {

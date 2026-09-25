@@ -44,6 +44,9 @@ interface IUser {
   createTime: string;
 }
 const selectedUser = ref<IUser>();
+/**
+ * 确认选择并回填
+ */
 function handleConfirm(data: IUser[]) {
   selectedUser.value = data[0];
 }

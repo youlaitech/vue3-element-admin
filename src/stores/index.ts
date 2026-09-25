@@ -3,6 +3,9 @@ import { createPinia } from "pinia";
 
 const store = createPinia();
 
+/**
+ * 注册 pinia 实例
+ */
 export function setupStore(app: App<Element>) {
   app.use(store);
 }

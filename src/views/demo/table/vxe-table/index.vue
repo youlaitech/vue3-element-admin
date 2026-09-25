@@ -23,10 +23,10 @@
       </template> -->
       <!-- 左侧按钮列表 -->
       <template #toolbar-btns>
-        <VxeButton status="primary" icon="vxe-icon-add" @click="curd.onShowModal()">
+        <VxeButton status="primary" icon="vxe-icon-add" @click="crud.onShowModal()">
           新增用户
         </VxeButton>
-        <VxeButton status="danger" icon="vxe-icon-delete" @click="curd.onDelete()">
+        <VxeButton status="danger" icon="vxe-icon-delete" @click="crud.onDelete()">
           批量删除
         </VxeButton>
       </template>
@@ -62,8 +62,8 @@
       </template>
       <!-- 操作列 -->
       <template #column-operate="{ row }">
-        <el-button link type="primary" @click="curd.onShowModal(row)">修改</el-button>
-        <el-button link type="danger" @click="curd.onDelete(row)">删除</el-button>
+        <el-button link type="primary" @click="crud.onShowModal(row)">修改</el-button>
+        <el-button link type="danger" @click="crud.onDelete(row)">删除</el-button>
       </template>
     </VxeGrid>
     <!-- 弹窗 -->
@@ -135,19 +135,20 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
   autoResize: true,
   // 是否显示表尾
   showFooter: true,
-  // 表尾数据（优先级比 footerMethod 高）
-  // footerData: [
-  //   {
-  //     username: "-",
-  //     roles: "-",
-  //     phone: "-",
-  //     email: "-",
-  //     status: "启用/禁用",
-  //     createTime: "-",
-  //   },
-  // ],
-  // 表尾的数据获取方法，返回一个二维数组
-  footerMethod({ columns, data }) {
+  /**
+   * 表尾数据（优先级比 footerMethod 高）
+   * footerData: [
+   *   {
+   *     username: "-",
+   *     roles: "-",
+   *     phone: "-",
+   *     email: "-",
+   *     status: "启用/禁用",
+   *     createTime: "-",
+   *   },
+   * ],
+   * 表尾的数据获取方法，返回一个二维数组
+   */ footerMethod({ columns, data }) {
     return [
       columns.map((column, columnIndex) => {
         if (columnIndex === 0 || column.field === undefined) {
@@ -186,6 +187,9 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
       ],
       // 数据筛选，只对 filters 有效，筛选是否允许多选
       filterMultiple: false,
+      /**
+       * 单元格格式化：布尔值转启用/禁用
+       */
       formatter({ cellValue }) {
         return cellValue === true ? "启用" : "禁用";
       },
@@ -318,7 +322,7 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
     zoom: true,
     // 自定义列配置
     custom: true,
-    //插槽
+    // 插槽
     slots: {
       // 按钮列表
       buttons: "toolbar-btns",
@@ -488,7 +492,9 @@ const gridOptions = reactive<VxeGridProps<RowMeta>>({
   },
 });
 const gridEvents: VxeGridListeners<RowMeta> = {
-  // 只对 form-config 配置时有效，表单重置时会触发该事件
+  /**
+   * 只对 form-config 配置时有效，表单重置时会触发该事件
+   */
   formReset() {},
 };
 // #endregion
@@ -564,7 +570,7 @@ const formOptions = reactive({
               status: "primary",
             },
             events: {
-              click: () => curd.onSubmitForm(),
+              click: () => crud.onSubmitForm(),
             },
           },
         ],
@@ -603,7 +609,7 @@ const formOptions = reactive({
 });
 // #endregion
 
-const curd = {
+const crud = {
   commitQuery: () => xGrid.value?.commitProxy("query"),
   onShowModal: (row?: RowMeta) => {
     if (row) {

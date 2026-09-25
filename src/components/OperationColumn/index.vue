@@ -10,31 +10,31 @@
 
 <script lang="ts" setup>
 interface Props {
-  /**
-   * 表格数据长度
-   * 用于性能优化，避免多次计算宽度
-   */
-  listDataLength: number;
+  /** 表格数据长度（用于性能优化，避免多次计算宽度） */
+  listDataLength?: number;
   prop?: string;
   label?: string;
   fixed?: string;
   align?: string;
   showOverflowTooltip?: boolean;
-  /**
-   * 最小宽度，优先级高于自动计算宽度，默认80px
-   * @default 80px
-   */
+  /** 最小宽度，优先级高于自动计算宽度，默认 80px */
   minWidth?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  listDataLength: 0,
   label: "操作",
   fixed: "right",
   align: "center",
+  showOverflowTooltip: false,
+  minWidth: 80,
 });
 
 const count = ref(0);
 const maxWidth = ref(80);
+/**
+ * 按列数计算操作列宽度
+ */
 const calculateWidth = () => {
   count.value++;
   if (count.value !== props.listDataLength) return;
@@ -46,7 +46,7 @@ const calculateWidth = () => {
     const buttons = el.querySelectorAll(".el-button");
     totalWidth = Array.from(buttons).reduce((prev, button) => {
       // 14 是按钮之间的距离
-      // 组成：按钮的左边距(Element Plus默认为12px)+按钮的padding(Element Plus默认为2px)
+      // 组成：按钮的左边距(Element Plus 默认为 12px)+按钮的 padding(Element Plus 默认为 2px)
       return prev + button.scrollWidth + 14;
     }, 24); // 24 是左右内边距
 

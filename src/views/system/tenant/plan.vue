@@ -255,7 +255,7 @@ const queryFormRef = ref<FormInstance>();
 const planFormRef = ref<FormInstance>();
 const menuTreeRef = ref<TreeInstance>();
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   TenantPlanItem,
   TenantPlanQueryParams
@@ -320,14 +320,14 @@ function resetForm(): void {
 }
 
 /**
- * 打开表单弹窗。
+ * 打开表单弹窗
  */
 function openDialog(): void {
   dialogState.visible = true;
 }
 
 /**
- * 关闭表单弹窗并清理临时状态。
+ * 关闭表单弹窗并清理临时状态
  */
 function closeDialog(): void {
   dialogState.visible = false;
@@ -361,7 +361,7 @@ async function handleEditClick(planId?: number): Promise<void> {
   openDialog();
 }
 
-/** 校验并提交套餐表单 */
+// 校验并提交套餐表单
 const handleSubmit = useDebounceFn(async (): Promise<void> => {
   const valid = await planFormRef.value?.validate().then(
     () => true,
@@ -386,7 +386,7 @@ const handleSubmit = useDebounceFn(async (): Promise<void> => {
 }, 300);
 
 /**
- * 删除套餐。
+ * 删除套餐
  *
  * @param planId 套餐 ID
  */
@@ -414,7 +414,7 @@ async function handleDelete(planId?: number): Promise<void> {
 }
 
 /**
- * 打开菜单配置抽屉并回显已分配菜单。
+ * 打开菜单配置抽屉并回显已分配菜单
  *
  * @param row 当前套餐行
  */
@@ -427,7 +427,7 @@ async function handleAssignMenuClick(row: TenantPlanItem): Promise<void> {
   loading.value = true;
   try {
     const [menuOptions, menuIds] = await Promise.all([
-      MenuAPI.getOptions(false, MenuScopeEnum.TENANT),
+      MenuAPI.getOptions({ scope: MenuScopeEnum.TENANT }),
       TenantPlanAPI.getPlanMenuIds(row.id),
     ]);
 
@@ -453,7 +453,7 @@ function closePlanMenuDialog(): void {
 }
 
 /**
- * 展开或收起菜单树全部节点。
+ * 展开或收起菜单树全部节点
  */
 function toggleMenuTree(): void {
   menuExpanded.value = !menuExpanded.value;
@@ -470,7 +470,7 @@ function toggleMenuTree(): void {
 }
 
 /**
- * 父子联动开关变化处理。
+ * 父子联动开关变化处理
  *
  * @param val 开关当前值
  */
@@ -479,7 +479,7 @@ function handleMenuLinkChange(val: string | number | boolean): void {
 }
 
 /**
- * 菜单树过滤函数。
+ * 菜单树过滤函数
  *
  * @param value 输入的关键字
  * @param data 当前节点数据
@@ -490,7 +490,7 @@ function handleMenuFilter(value: string, data: TreeNodeData): boolean {
 }
 
 /**
- * 提交当前套餐的菜单权限配置。
+ * 提交当前套餐的菜单权限配置
  */
 async function handlePlanMenuSubmit(): Promise<void> {
   const planId = checkedPlan.value.id;

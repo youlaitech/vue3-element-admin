@@ -348,20 +348,32 @@ const drawerVisible = computed({
   set: (value) => (settingsStore.settingsVisible = value),
 });
 
+/**
+ * 取调色板的颜色列表
+ */
 function getPaletteColors(colors: ThemeColorMap) {
   return colorOptions.map((item) => colors[item.name]);
 }
 
+/**
+ * 取调色板名称
+ */
 function getPaletteName(palette: ThemePalettePreset) {
   const key = paletteI18nKeys[palette.id];
   return key ? t(`settings.themePalettes.${key}.name`) : palette.name;
 }
 
+/**
+ * 取调色板描述
+ */
 function getPaletteDescription(palette: ThemePalettePreset) {
   const key = paletteI18nKeys[palette.id];
   return key ? t(`settings.themePalettes.${key}.description`) : palette.description;
 }
 
+/**
+ * 取颜色项的名称
+ */
 function getColorLabel(name: ThemeColorName) {
   return t(`settings.themeColorNames.${name}`);
 }
@@ -493,6 +505,9 @@ function buildDefaultsCode(): string {
 } as const;`;
 }
 
+/**
+ * 关闭设置抽屉
+ */
 function handleCloseDrawer(): void {
   settingsStore.settingsVisible = false;
 }

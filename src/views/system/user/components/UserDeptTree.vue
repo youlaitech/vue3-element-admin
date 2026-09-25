@@ -48,6 +48,9 @@ watchEffect(
   }
 );
 
+/**
+ * 部门树的节点过滤
+ */
 function handleFilter(value: string, data: TreeNodeData): boolean {
   if (!value) {
     return true;
@@ -55,6 +58,9 @@ function handleFilter(value: string, data: TreeNodeData): boolean {
   return String(data.label ?? "").includes(value);
 }
 
+/**
+ * 点击部门树节点
+ */
 function handleNodeClick(data: OptionItem): void {
   deptId.value = data.value;
   emits("node-click");

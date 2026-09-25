@@ -146,7 +146,7 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 
 const queryFormRef = ref<FormInstance>();
 
-/** 实例状态展示映射（标签文案 + 标签色） */
+// 实例状态展示映射（标签文案 + 标签色）
 const statusOptions: Record<
   InstanceStatus,
   { label: string; tag: "primary" | "success" | "danger" }
@@ -156,7 +156,7 @@ const statusOptions: Record<
   terminated: { label: "已终止", tag: "danger" },
 };
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   WorkflowInstanceItem,
   WorkflowInstanceQueryParams
@@ -170,10 +170,12 @@ const { loading, list, total, params, fetchData, handleQuery, handleResetQuery }
   onBeforeReset: () => queryFormRef.value?.resetFields(),
 });
 
-/** 暴露刷新能力：审批中心页签切换时父组件调用 */
+/**
+ * 暴露刷新能力：审批中心页签切换时父组件调用
+ */
 defineExpose({ fetchData });
 
-/** 实例详情抽屉 */
+// 实例详情抽屉
 const detailDrawerRef = ref<InstanceType<typeof InstanceDetailDrawer>>();
 
 /**

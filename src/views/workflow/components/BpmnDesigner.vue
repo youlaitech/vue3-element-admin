@@ -186,8 +186,7 @@ defineOptions({
 
 /**
  * BPMN 流程设计器
- *
- * @description bpmn-js 建模器 + 轻量属性面板（名称/表单标识/办理人/候选组/条件表达式），
+ * bpmn-js 建模器 + 轻量属性面板（名称/表单标识/办理人/候选组/条件表达式），
  * 扩展 flowable 命名空间属性，保存时产出引擎可直接部署的 BPMN 2.0 XML
  */
 const props = defineProps<{
@@ -205,10 +204,10 @@ const emit = defineEmits<{
 const canvasRef = ref<HTMLElement | null>(null);
 const modeler = shallowRef<Modeler>();
 
-/** 脏标记：画布有未保存的修改（承载页据此拦截离开） */
+// 脏标记：画布有未保存的修改（承载页据此拦截离开）
 const dirty = ref(false);
 
-/** 当前选中元素（Shape/Connection 统称） */
+// 当前选中元素（Shape/Connection 统称）
 const selectedElement = shallowRef<Shape | null>(null);
 
 const isUserTask = computed(
@@ -217,7 +216,7 @@ const isUserTask = computed(
 const isSequenceFlow = computed(
   () => !!selectedElement.value && is(selectedElement.value, "bpmn:SequenceFlow")
 );
-/** 仅开始节点可绑定表单（后端只读开始节点 formKey 渲染发起表单，审批展示复用同一份数据） */
+// 仅开始节点可绑定表单（后端只读开始节点 formKey 渲染发起表单，审批展示复用同一份数据）
 const isFormBindable = computed(
   () => !!selectedElement.value && is(selectedElement.value, "bpmn:StartEvent")
 );
@@ -227,20 +226,20 @@ const selectedFormKey = computed(() => selectedElement.value?.businessObject?.ge
 const selectedAssignee = computed(
   () => selectedElement.value?.businessObject?.get("assignee") ?? ""
 );
-/** 候选组（角色编码，逗号分隔）与办理人二选一配置，均空发布时会被后端拦截 */
+// 候选组（角色编码，逗号分隔）与办理人二选一配置，均空发布时会被后端拦截
 const selectedCandidateGroups = computed(
   () => selectedElement.value?.businessObject?.get("candidateGroups") ?? ""
 );
-/** 候选组多选值：XML 逗号串 ↔ 选项数组互转，数据结构保持引擎兼容 */
+// 候选组多选值：XML 逗号串 ↔ 选项数组互转，数据结构保持引擎兼容
 const candidateGroupCodes = computed(() =>
   String(selectedCandidateGroups.value)
     .split(",")
     .map((code) => code.trim())
     .filter(Boolean)
 );
-/** 角色编码选项（label 角色名 / value 角色编码） */
+// 角色编码选项（label 角色名 / value 角色编码）
 const roleCodeOptions = ref<OptionItem[]>([]);
-/** 发起表单选项（label 表单名 / value formKey，仅已发布 workflow 类型） */
+// 发起表单选项（label 表单名 / value formKey，仅已发布 workflow 类型）
 const workflowFormOptions = ref<OptionItem[]>([]);
 const selectedCondition = computed(
   () => selectedElement.value?.businessObject?.conditionExpression?.body ?? ""
@@ -250,7 +249,7 @@ const selectedCondition = computed(
  * 更新元素普通属性（名称/formKey/assignee/candidateGroups）
  *
  * @param property 属性名
- * @param value    属性值（空值传 undefined 移除属性，避免序列化出空串属性干扰引擎解析）
+ * @param value 属性值（空值传 undefined 移除属性，避免序列化出空串属性干扰引擎解析）
  */
 function updateProperty(property: string, value: string): void {
   const element = selectedElement.value;
@@ -273,12 +272,16 @@ function updateCandidateGroups(codes: string[]): void {
   updateProperty("candidateGroups", codes.join(","));
 }
 
-/** 加载角色编码选项（候选组下拉数据源） */
+/**
+ * 加载角色编码选项（候选组下拉数据源）
+ */
 async function loadRoleCodeOptions(): Promise<void> {
   roleCodeOptions.value = await RoleAPI.getCodeOptions();
 }
 
-/** 加载发起表单选项（formKey 下拉数据源） */
+/**
+ * 加载发起表单选项（formKey 下拉数据源）
+ */
 async function loadWorkflowFormOptions(): Promise<void> {
   workflowFormOptions.value = await FormAPI.getWorkflowOptions();
 }
@@ -319,12 +322,16 @@ function handleZoom(delta: number): void {
   canvas.zoom(canvas.zoom() + delta);
 }
 
-/** 适应画布（完整展示流程图） */
+/**
+ * 适应画布（完整展示流程图）
+ */
 function handleFitViewport(): void {
   (modeler.value!.get("canvas") as CanvasLike).zoom("fit-viewport");
 }
 
-/** 导入 XML 并选中态复位 */
+/**
+ * 导入 XML 并选中态复位
+ */
 async function importXml(xml: string): Promise<void> {
   if (!xml || !modeler.value) return;
   try {

@@ -102,12 +102,8 @@ const {
 
 const isLogoCollapsed = computed(() => width.value < 768);
 
-/**
- * 深色菜单配色。
- *
- * 暗色主题或经典蓝侧边栏时菜单区域使用深色背景与浅色文字，
- * 其他情况使用 Element Plus 默认配色。
- */
+// 深色菜单配色
+// 暗色主题或经典蓝侧边栏时菜单区域使用深色背景与浅色文字，其他情况使用 Element Plus 默认配色
 const useMenuColors = computed(
   () =>
     settingsStore.resolvedTheme === ThemeMode.DARK ||

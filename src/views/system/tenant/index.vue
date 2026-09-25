@@ -394,7 +394,7 @@ const queryFormRef = ref<FormInstance>();
 const tenantFormRef = ref<FormInstance>();
 const menuTreeRef = ref<InstanceType<typeof ElTree>>();
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   TenantItem,
   TenantQueryParams
@@ -442,11 +442,11 @@ const initialFormData: TenantForm & TenantCreateForm = {
 
 const formData = reactive<TenantForm & TenantCreateForm>({ ...initialFormData });
 
-// 当前表单是否为平台租户。
+// 当前表单是否为平台租户
 const isPlatformTenant = computed(() => isPlatformTenantId(formData.id));
 
 /**
- * 表格行是否可勾选（平台租户不可勾选）。
+ * 表格行是否可勾选（平台租户不可勾选）
  *
  * @param row 当前租户行
  */
@@ -471,7 +471,7 @@ const rules: FormRules<TenantForm & TenantCreateForm> = {
 const planOptions = ref<OptionItem[]>([]);
 
 /**
- * 根据套餐 ID 解析显示名称。
+ * 根据套餐 ID 解析显示名称
  *
  * @param planId 套餐 ID
  */
@@ -495,26 +495,26 @@ const menuCheckedCount = ref(0);
 const menuParentChildLinked = ref(true);
 const originalEnabledMenuIds = ref<number[]>([]);
 
-/** 当前可见菜单的默认展开节点（顶级节点全部展开）。 */
+// 当前可见菜单的默认展开节点（顶级节点全部展开）
 const menuExpandedKeys = computed(() => menuPermOptions.value.map((item) => item.value));
 
-/**
- * el-tree 节点属性映射。
- */
+// el-tree 节点属性映射
 const menuTreeProps = {
   children: "children",
   label: "label",
   disabled: "disabled",
 };
 
-// 目标套餐未配置菜单时禁止提交。
+// 目标套餐未配置菜单时禁止提交
 const isPlanMenuEmpty = computed(
   () => tenantPlanId.value != null && planMenuIds.value.length === 0
 );
 
 const hasPermTenantMenu = computed(() => hasPerm("sys:tenant:plan-assign"));
 
-/** 重置表单数据和验证状态 */
+/**
+ * 重置表单数据和验证状态
+ */
 function resetForm(): void {
   tenantFormRef.value?.resetFields();
   tenantFormRef.value?.clearValidate();
@@ -525,7 +525,7 @@ function resetForm(): void {
 }
 
 /**
- * 统一菜单 ID 为 number 并过滤无效值。
+ * 统一菜单 ID 为 number 并过滤无效值
  *
  * @param menuIds 原始菜单 ID 列表（可能混有字符串）
  */
@@ -534,9 +534,8 @@ function normalizeMenuIds(menuIds: Array<number | string>): number[] {
 }
 
 /**
- * 递归设置菜单节点禁用状态。
- *
- * 用于在套餐功能配置抽屉里"锁定"套餐范围外的菜单。
+ * 递归设置菜单节点禁用状态
+ * 用于在套餐功能配置抽屉里"锁定"套餐范围外的菜单
  *
  * @param options 菜单选项树
  * @param disabled 是否禁用
@@ -550,7 +549,7 @@ function applyMenuOptionsDisabled(options: OptionItem[], disabled: boolean): Opt
 }
 
 /**
- * 过滤菜单树，仅保留套餐允许的节点。
+ * 过滤菜单树，仅保留套餐允许的节点
  *
  * @param options 原始菜单选项树
  * @param allowedMenuIdSet 套餐允许的菜单 ID 集合
@@ -575,9 +574,8 @@ function filterMenuOptionsByIds(
 }
 
 /**
- * 根据套餐范围同步勾选菜单。
- *
- * 优先保留租户原有勾选（仅在套餐允许范围内），否则回退到套餐默认全选。
+ * 根据套餐范围同步勾选菜单
+ * 优先保留租户原有勾选（仅在套餐允许范围内），否则回退到套餐默认全选
  */
 function updateCheckedMenus(): void {
   const allowedMenuIdSet = new Set(planMenuIds.value);
@@ -591,7 +589,7 @@ function updateCheckedMenus(): void {
 }
 
 /**
- * 切换目标套餐时更新可用菜单。
+ * 切换目标套餐时更新可用菜单
  *
  * @param planId 目标套餐 ID
  */
@@ -623,7 +621,7 @@ async function handlePlanChange(planId?: number): Promise<void> {
 }
 
 /**
- * 树节点勾选变化时更新勾选计数。
+ * 树节点勾选变化时更新勾选计数
  */
 function handleMenuCheckedChange(): void {
   const checkedKeys = menuTreeRef.value?.getCheckedKeys(false) || [];
@@ -631,7 +629,7 @@ function handleMenuCheckedChange(): void {
 }
 
 /**
- * 重置套餐相关的所有临时状态。
+ * 重置套餐相关的所有临时状态
  */
 function resetTenantPlanState(): void {
   tenantPlanDialogVisible.value = false;
@@ -651,21 +649,21 @@ function resetTenantPlanState(): void {
 }
 
 /**
- * 关闭套餐选择弹窗。
+ * 关闭套餐选择弹窗
  */
 function closeTenantPlanSelectDialog(): void {
   resetTenantPlanState();
 }
 
 /**
- * 关闭套餐功能配置抽屉。
+ * 关闭套餐功能配置抽屉
  */
 function closeTenantPlanDialog(): void {
   resetTenantPlanState();
 }
 
 /**
- * 打开更换套餐弹窗。
+ * 打开更换套餐弹窗
  *
  * @param row 当前租户行
  */
@@ -687,7 +685,7 @@ async function openTenantPlanDialog(row: TenantItem): Promise<void> {
   try {
     const [tenantForm, menuOptions, menuIds] = await Promise.all([
       TenantAPI.getFormData(String(tenantId)),
-      MenuAPI.getOptions(false, MenuScopeEnum.TENANT),
+      MenuAPI.getOptions({ scope: MenuScopeEnum.TENANT }),
       hasPermTenantMenu.value ? TenantAPI.getTenantMenuIds(Number(tenantId)) : Promise.resolve([]),
     ]);
     checkedTenantForm.value = tenantForm;
@@ -704,7 +702,7 @@ async function openTenantPlanDialog(row: TenantItem): Promise<void> {
 }
 
 /**
- * 打开套餐功能配置抽屉（不经过"更换套餐"流程）。
+ * 打开套餐功能配置抽屉（不经过"更换套餐"流程）
  *
  * @param row 当前租户行（可选，复用弹窗上下文时不传）
  */
@@ -725,7 +723,7 @@ async function openTenantCustomizeDialog(row?: TenantItem): Promise<void> {
   try {
     const [tenantForm, menuOptions, menuIds] = await Promise.all([
       TenantAPI.getFormData(String(tenantId)),
-      MenuAPI.getOptions(false, MenuScopeEnum.TENANT),
+      MenuAPI.getOptions({ scope: MenuScopeEnum.TENANT }),
       hasPermTenantMenu.value ? TenantAPI.getTenantMenuIds(Number(tenantId)) : Promise.resolve([]),
     ]);
     checkedTenantForm.value = tenantForm;
@@ -748,9 +746,8 @@ async function openTenantCustomizeDialog(row?: TenantItem): Promise<void> {
 }
 
 /**
- * 提交更换套餐操作。
- *
- * 包含二次确认，并同步更新租户的菜单权限（保留套餐范围内原勾选）。
+ * 提交更换套餐操作
+ * 包含二次确认，并同步更新租户的菜单权限（保留套餐范围内原勾选）
  */
 async function handleTenantPlanSelectSubmit(): Promise<void> {
   const tenantId = checkedTenant.value.id;
@@ -811,7 +808,7 @@ async function handleTenantPlanSelectSubmit(): Promise<void> {
 }
 
 /**
- * 提交套餐功能配置更新。
+ * 提交套餐功能配置更新
  */
 async function handleTenantPlanSubmit(): Promise<void> {
   const tenantId = checkedTenant.value.id;
@@ -857,7 +854,7 @@ async function handleTenantPlanSubmit(): Promise<void> {
 }
 
 /**
- * 打开新增/编辑租户弹窗。
+ * 打开新增/编辑租户弹窗
  *
  * @param tenantId 租户 ID（编辑时传入）
  */
@@ -879,14 +876,14 @@ async function openDialog(tenantId?: string): Promise<void> {
 }
 
 /**
- * 关闭租户表单弹窗并重置表单。
+ * 关闭租户表单弹窗并重置表单
  */
 function closeDialog(): void {
   dialogState.visible = false;
   resetForm();
 }
 
-/** 提交租户表单。 */
+// 提交租户表单
 const handleSubmit = useDebounceFn(async (): Promise<void> => {
   const valid = await tenantFormRef.value?.validate().then(
     () => true,
@@ -938,7 +935,7 @@ const handleSubmit = useDebounceFn(async (): Promise<void> => {
 }, 300);
 
 /**
- * 删除单个或批量租户。
+ * 删除单个或批量租户
  *
  * @param tenantId 指定时删除单个租户；不指定时删除表格勾选项
  */
@@ -970,7 +967,7 @@ async function handleDelete(tenantId?: string): Promise<void> {
 }
 
 /**
- * 加载租户套餐选项。
+ * 加载租户套餐选项
  */
 async function fetchPlanOptions(): Promise<void> {
   const options = await TenantPlanAPI.getOptions();

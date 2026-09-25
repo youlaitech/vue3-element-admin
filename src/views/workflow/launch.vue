@@ -104,10 +104,10 @@ defineOptions({
   inheritAttrs: false,
 });
 
-/** 演示引导提示条可见状态（关闭后本次会话不再显示） */
+// 演示引导提示条可见状态（关闭后本次会话不再显示）
 const demoTipVisible = ref(true);
 
-/** 可发起流程列表 */
+// 可发起流程列表
 const processList = ref<StartableProcessItem[]>([]);
 
 const selectedId = ref("");
@@ -116,28 +116,25 @@ const selectedProcess = computed(() =>
   processList.value.find((process) => process.id === selectedId.value)
 );
 
-/** 审批流程走向预览 */
+// 审批流程走向预览
 const stages = ref<ProcessStageItem[]>([]);
 
 const userStore = useUserStore();
 
-/**
- * 流程实例名称：默认按"流程-姓名-时间"自动拼接，切换流程或手动修改后重置，
- * 用户可编辑以获得可读标题（同一流程多次发起也能从列表一眼区分）
- */
+// 流程实例名称：默认按"流程-姓名-时间"自动拼接，切换流程或手动修改后重置， 用户可编辑以获得可读标题（同一流程多次发起也能从列表一眼区分）
 const processName = ref("");
 const autoNameValue = ref("");
-/** 名称被手动修改过：区别于自动值，展示"恢复自动命名"入口 */
+// 名称被手动修改过：区别于自动值，展示"恢复自动命名"入口
 const autoNameDirty = ref(false);
 
 /**
- * 生成默认流程名称：流程名-昵称-MM月DD日
- *
- * <p>精确到日即可：同日多次发起由列表的"发起时间"列区分，名称保持简洁；特殊情况可手动编辑</p>
+ * 生成默认流程名称：流程名-昵称-MM 月 DD 日
+ * 精确到日即可：同日多次发起由列表的"发起时间"列区分，名称保持简洁；特殊情况可手动编辑
  */
 function buildAutoName(): string {
   const nickname = userStore.userInfo?.nickname || userStore.userInfo?.username || "";
   const now = new Date();
+  // 数值补零为两位
   const pad = (num: number) => String(num).padStart(2, "0");
   return selectedProcess.value
     ? `${selectedProcess.value.name}-${nickname}-${pad(now.getMonth() + 1)}月${pad(now.getDate())}日`
@@ -168,7 +165,9 @@ function resetAutoName(): void {
   autoNameDirty.value = false;
 }
 
-/** 发起表单渲染状态（复用动态表单渲染管线，保证与填写页一致） */
+/**
+ * 发起表单渲染状态（复用动态表单渲染管线，保证与填写页一致）
+ */
 const { rule, option, loading, submitted, load, refill } = useFormRenderer(() =>
   FormAPI.getRender(selectedProcess.value?.formKey ?? "")
 );
@@ -181,7 +180,6 @@ onMounted(async () => {
 
 /**
  * 切换流程时按 formKey 加载发起表单规则与审批走向
- *
  * 未绑定表单的流程走确认直发，不加载规则
  */
 async function handleProcessChange(): Promise<void> {

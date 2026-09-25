@@ -141,33 +141,33 @@ defineOptions({
 
 const route = useRoute();
 
-/** 表单唯一标识（列表"数据"按钮携带） */
+// 表单唯一标识（列表"数据"按钮携带）
 const formKey = computed(() => String(route.query.formKey ?? ""));
 
-/** 页面标题（列表页携带） */
+// 页面标题（列表页携带）
 const title = computed(() => String(route.query.title ?? "表单数据"));
 
 const tableWrapperRef = ref<HTMLElement | null>(null);
 const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 
-/** 表单名称（导出文件名用） */
+// 表单名称（导出文件名用）
 const formName = ref("");
 
-/** 导出中状态（防重复触发） */
+// 导出中状态（防重复触发）
 const exporting = ref(false);
 
-/** 表单规则（shallowRef 避免深代理破坏 Rule 内部 Creator 结构） */
+// 表单规则（shallowRef 避免深代理破坏 Rule 内部 Creator 结构）
 const rule = shallowRef<Rule[]>([]);
 
-/** 从表单规则提取的字段元数据（field + title + 选项映射） */
+// 从表单规则提取的字段元数据（field + title + 选项映射）
 const fields = ref<FormFieldMeta[]>([]);
 
-/** 动态列上限：超出部分在详情抽屉查看，避免表格横向溢出 */
+// 动态列上限：超出部分在详情抽屉查看，避免表格横向溢出
 const MAX_FIELD_COLUMNS = 6;
 
 const displayFields = computed(() => fields.value.slice(0, MAX_FIELD_COLUMNS));
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData } = usePageTable<FormDataItem, FormDataQueryParams>(
   {
     initialParams: { pageNum: 1, pageSize: 10 },
@@ -177,12 +177,12 @@ const { loading, list, total, params, fetchData } = usePageTable<FormDataItem, F
 
 const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<FormDataItem>();
 
-/** 详情抽屉状态 */
+// 详情抽屉状态
 const detailState = reactive({
   visible: false,
 });
 
-/** 详情行（descriptions 展示提交人/时间） */
+// 详情行（descriptions 展示提交人/时间）
 const detailRow = ref<FormDataItem>();
 
 const detailApi = ref();
@@ -203,7 +203,7 @@ onMounted(async () => {
   fetchData();
 });
 
-/** 行数据解析缓存（行ID -> 字段值映射，避免模板重复解析 dataJson） */
+// 行数据解析缓存（行 ID -> 字段值映射，避免模板重复解析 dataJson）
 const rowDataMap = computed(() => {
   const map = new Map<string, Record<string, unknown>>();
   list.value.forEach((row) => map.set(row.id, parseDataJson(row.dataJson)));
@@ -212,6 +212,7 @@ const rowDataMap = computed(() => {
 
 /**
  * 取行数据的指定字段值
+ *
  * @param row 数据行
  * @param field 字段名
  */
@@ -219,7 +220,9 @@ function getFieldValue(row: FormDataItem, field: string): unknown {
   return rowDataMap.value.get(row.id)?.[field];
 }
 
-// 打开详情抽屉只读回显（优先提交时版本快照，防止表单改版后历史数据漂移）
+/**
+ * 打开详情抽屉只读回显（优先提交时版本快照，防止表单改版后历史数据漂移）
+ */
 async function handleDetailClick(row: FormDataItem): Promise<void> {
   const detail = await FormAPI.getFormDataDetail(formKey.value, row.id);
   detailRow.value = detail;
@@ -239,6 +242,7 @@ async function handleDetailClick(row: FormDataItem): Promise<void> {
 
 /**
  * 删除单个或批量表单数据
+ *
  * @param id 指定时删除单条，否则删除勾选项
  */
 async function handleDelete(id?: string): Promise<void> {
@@ -269,13 +273,15 @@ async function handleDelete(id?: string): Promise<void> {
   }
 }
 
-/** 导出分页大小 */
+// 导出分页大小
 const EXPORT_PAGE_SIZE = 500;
 
-/** 导出页数上限（超出截断提示） */
+// 导出页数上限（超出截断提示）
 const EXPORT_MAX_PAGES = 100;
 
-// 导出全量数据为 Excel（全部字段 + 提交人/版本/时间；分页拉取，exceljs 按需加载）
+/**
+ * 导出全量数据为 Excel（全部字段 + 提交人/版本/时间；分页拉取，exceljs 按需加载）
+ */
 async function handleExport(): Promise<void> {
   if (exporting.value) return;
   exporting.value = true;

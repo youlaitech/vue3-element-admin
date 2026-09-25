@@ -272,6 +272,9 @@ watch(aiDiffVisible, (visible) => {
   if (visible) diffTargetColumn.value = "";
 });
 
+/**
+ * 点击改动明细定位到对应字段
+ */
 function handleDiffRowClick(row: AiChangeRow) {
   diffTargetColumn.value = row.columnName;
 }
@@ -321,6 +324,9 @@ watch(currentStep, (val) => {
   }
 });
 
+/**
+ * 打开生成向导并加载表配置
+ */
 async function open(tableName: string) {
   currentTableName.value = tableName;
   currentStep.value = STEP.BASIC_CONFIG;
@@ -341,6 +347,9 @@ async function open(tableName: string) {
   }
 }
 
+/**
+ * 回到上一步
+ */
 async function handlePrev() {
   if (currentStep.value === STEP.PREVIEW) {
     // 从预览回退要重新加载，不然下次进来数据会有问题
@@ -359,7 +368,9 @@ async function handlePrev() {
   }
 }
 
-// AI 推断字段描述、表单/查询类型并回填，回填后跳到字段配置核对差异
+/**
+ * AI 推断字段描述、表单/查询类型并回填，回填后跳到字段配置核对差异
+ */
 async function handleAiFill() {
   aiLoading.value = true;
   loadingText.value = "AI 推断中，请稍候...";
@@ -383,13 +394,17 @@ async function handleAiFill() {
   }
 }
 
-// 跳到字段配置，并只显示 AI 改动过的字段
+/**
+ * 跳到字段配置，并只显示 AI 改动过的字段
+ */
 function gotoFieldChanges() {
   currentStep.value = STEP.FIELD_CONFIG;
   nextTick(() => fieldConfigRef.value?.showOnlyAiChanged());
 }
 
-// 同一字段的多条改动合并字段列，避免字段名反复出现
+/**
+ * 同一字段的多条改动合并字段列，避免字段名反复出现
+ */
 function diffSpanMethod({ rowIndex, columnIndex }: { rowIndex: number; columnIndex: number }) {
   if (columnIndex !== 0) return;
   const rows = changeRows.value;
@@ -404,7 +419,9 @@ function diffSpanMethod({ rowIndex, columnIndex }: { rowIndex: number; columnInd
   return { rowspan, colspan: 1 };
 }
 
-// 从明细弹窗定位到选中字段：切到字段配置并滚动高亮该字段
+/**
+ * 从明细弹窗定位到选中字段：切到字段配置并滚动高亮该字段
+ */
 function locateFromDiff() {
   const columnName = diffTargetColumn.value;
   if (!columnName) return;
@@ -413,7 +430,9 @@ function locateFromDiff() {
   nextTick(() => fieldConfigRef.value?.locateField(columnName));
 }
 
-// 恢复到 AI 填充前的配置
+/**
+ * 恢复到 AI 填充前的配置
+ */
 function undoAiFill() {
   const config = undo();
   if (!config) return;
@@ -421,12 +440,17 @@ function undoAiFill() {
   ElMessage.info("已撤销 AI 填充");
 }
 
-// 从明细弹窗撤销
+/**
+ * 从明细弹窗撤销
+ */
 function undoFromDiff() {
   aiDiffVisible.value = false;
   undoAiFill();
 }
 
+/**
+ * 进入下一步
+ */
 async function handleNext() {
   if (currentStep.value === STEP.BASIC_CONFIG) {
     if (!validateBasic()) return;
@@ -452,16 +476,22 @@ async function handleNext() {
 
   if (currentStep.value === STEP.PREVIEW) {
     const pageType = genConfigFormData.value.pageType || "classic";
-    GeneratorAPI.download(currentTableName.value, pageType as "classic" | "curd", "ts");
+    GeneratorAPI.download(currentTableName.value, pageType as "classic" | "crud", "ts");
   }
 }
 
+/**
+ * 生成预览文件
+ */
 async function doPreview(tableName: string) {
   const files = await handlePreview(tableName);
   // 把文件列表传给写入本地模块，这样点写入时能拿到数据
   setPreviewFiles(files);
 }
 
+/**
+ * 关闭生成向导
+ */
 function handleClose() {
   visible.value = false;
   fieldConfigRef.value?.destroySort();

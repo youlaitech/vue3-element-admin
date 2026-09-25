@@ -87,6 +87,9 @@ const {
   goMore,
 } = useNotice();
 
+/**
+ * 下拉展开时刷新通知列表
+ */
 function handleVisibleChange(visible: boolean) {
   if (visible) refresh();
 }

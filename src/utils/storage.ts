@@ -6,8 +6,6 @@ import { APP_PREFIX, STORAGE_KEYS } from "@/constants";
  * @description
  * 提供 localStorage 和 sessionStorage 的统一操作接口
  * 支持自动 JSON 序列化/反序列化
- *
- * @author 有来技术团队
  */
 export class Storage {
   /** 存储数据到 localStorage */
@@ -80,11 +78,15 @@ export class Storage {
    * ```
    */
   static clearByPrefix(prefix: string): void {
-    // localStorage 清理
+    /**
+     * localStorage 清理
+     */
     const localKeys = Object.keys(localStorage).filter((key) => key.startsWith(prefix));
     localKeys.forEach((key) => localStorage.removeItem(key));
 
-    // sessionStorage 清理
+    /**
+     * sessionStorage 清理
+     */
     const sessionKeys = Object.keys(sessionStorage).filter((key) => key.startsWith(prefix));
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
   }

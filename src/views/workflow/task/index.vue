@@ -37,21 +37,20 @@ defineOptions({
 
 const route = useRoute();
 
-/** 当前页签；发起成功跳转携带 ?tab=mine 直达「我发起的」查看进度 */
+// 当前页签；发起成功跳转携带 ?tab=mine 直达「我发起的」查看进度
 const activeTab = ref((route.query.tab as string) || "todo");
 
-/** 待办数量（TodoTab 查询后回传，驱动页签角标） */
+// 待办数量（TodoTab 查询后回传，驱动页签角标）
 const todoTotal = ref(0);
 
-/** 各页签组件引用（调用其暴露的刷新能力） */
+// 各页签组件引用（调用其暴露的刷新能力）
 const todoTabRef = ref<InstanceType<typeof TodoTab>>();
 const doneTabRef = ref<InstanceType<typeof DoneTab>>();
 const mineTabRef = ref<InstanceType<typeof MineTab>>();
 
 /**
  * 页签切换刷新对应列表
- *
- * @description lazy 页签首次激活时 ref 尚未就绪，由子组件 onMounted 自行首查，此处跳过不重复请求；
+ * lazy 页签首次激活时 ref 尚未就绪，由子组件 onMounted 自行首查，此处跳过不重复请求；
  * 再次切换时调用子组件刷新，保证办理/发起后切回页签即见最新数据
  */
 function handleTabChange(name: string | number): void {

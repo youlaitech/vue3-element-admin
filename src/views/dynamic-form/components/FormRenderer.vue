@@ -34,7 +34,9 @@ defineOptions({
   inheritAttrs: false,
 });
 
-/** 表单渲染组件（填写/公开/预览三页共用；规则加载与提交由承载页实现） */
+/**
+ * 表单渲染组件（填写/公开/预览三页共用；规则加载与提交由承载页实现）
+ */
 const props = defineProps<{
   /** 表单标题（卡片头展示） */
   title: string;
@@ -68,7 +70,9 @@ watch(
   }
 );
 
-// 抛出表单数据（浅拷贝，防异步提交期间被继续编辑污染）
+/**
+ * 抛出表单数据（浅拷贝，防异步提交期间被继续编辑污染）
+ */
 function handleSubmit(): void {
   emit("submit", { ...formData.value });
 }

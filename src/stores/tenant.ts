@@ -5,11 +5,9 @@ import { STORAGE_KEYS } from "@/constants";
 import AuthAPI from "@/api/auth";
 import { AuthStorage } from "@/utils/auth";
 
-/**
- * 租户 Store
- */
+// 租户 Store
 export const useTenantStore = defineStore("tenant", () => {
-  // 当前租户ID
+  // 当前租户 ID
   const currentTenantId = ref<number | null>(null);
   // 当前租户信息
   const currentTenant = ref<TenantInfo | null>(null);
@@ -17,8 +15,7 @@ export const useTenantStore = defineStore("tenant", () => {
   const tenantList = ref<TenantInfo[]>([]);
 
   /**
-   * 恢复租户信息
-   * 从 localStorage 恢复上次使用的租户
+   * 恢复租户信息 从 localStorage 恢复上次使用的租户
    */
   function restoreTenant() {
     const savedTenantId = localStorage.getItem(STORAGE_KEYS.TENANT_ID);
@@ -48,17 +45,9 @@ export const useTenantStore = defineStore("tenant", () => {
 
   /**
    * 加载租户
-   *
-   * 执行流程：
-   * 1. 获取用户可访问的租户列表
-   * 2. 尝试获取后端当前租户
-   * 3. 如果只有一个租户，自动选中
-   * 4. 否则等待用户手动选择
-   *
-   * @remarks
+   * 执行流程：1. 获取用户可访问的租户列表 2. 尝试获取后端当前租户 3. 如果只有一个租户，自动选中 4. 否则等待用户手动选择
    * 此方法由路由守卫调用，仅在启用多租户时执行
-   */
-  async function loadTenant() {
+   */ async function loadTenant() {
     restoreTenant();
 
     // 1. 获取租户列表
@@ -106,8 +95,7 @@ export const useTenantStore = defineStore("tenant", () => {
    * 设置当前租户
    *
    * @param tenant 租户信息
-   */
-  function setCurrentTenant(tenant: TenantInfo) {
+   */ function setCurrentTenant(tenant: TenantInfo) {
     currentTenantId.value = tenant.id;
     currentTenant.value = tenant;
 
@@ -119,9 +107,8 @@ export const useTenantStore = defineStore("tenant", () => {
   /**
    * 切换租户
    *
-   * @param tenantId 目标租户ID
-   */
-  async function switchTenant(tenantId: number): Promise<void> {
+   * @param tenantId 目标租户 ID
+   */ async function switchTenant(tenantId: number): Promise<void> {
     await refreshTokenIfSupported(tenantId);
 
     const tenantInfo = await TenantAPI.switchTenant(tenantId);
@@ -155,11 +142,17 @@ export const useTenantStore = defineStore("tenant", () => {
     clearLocalTenant();
   }
 
+  /**
+   * 清除本地保存的租户信息
+   */
   function clearLocalTenant() {
     localStorage.removeItem(STORAGE_KEYS.TENANT_ID);
     localStorage.removeItem(STORAGE_KEYS.TENANT_INFO);
   }
 
+  /**
+   * 获取当前租户，失败返回 null
+   */
   async function safeGetCurrentTenant(): Promise<TenantInfo | null> {
     try {
       return await TenantAPI.getCurrentTenant();
@@ -169,6 +162,9 @@ export const useTenantStore = defineStore("tenant", () => {
     }
   }
 
+  /**
+   * 切换租户后重新签发令牌
+   */
   async function refreshTokenIfSupported(tenantId: number): Promise<void> {
     try {
       const token = await AuthAPI.switchTenant(tenantId);

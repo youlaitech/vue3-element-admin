@@ -161,7 +161,7 @@ export default [
   },
 
   {
-    files: ["**/components/CURD/**/*.{ts,vue}"],
+    files: ["**/components/Crud/**/*.{ts,vue}"],
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "off",

@@ -58,10 +58,8 @@ defineOptions({
 
 /**
  * 审批流程时间线（流程走向 + 审批记录融合）
- *
- * @description 以设计环节为骨架按编排顺序展示，实际办理记录按 activityId 归位到环节：
- * 已办（办理人/意见/时间）、进行中（待认领或等待办理）、未到（运行中位于当前环节之后）、
- * 未经过（网关分支跳过或流程结束仍未到达），驳回重办的多轮记录全部保留
+ * 以设计环节为骨架按编排顺序展示，实际办理记录按 activityId 归位到环节：
+ * 已办（办理人/意见/时间）、进行中（待认领或等待办理）、未到（运行中位于当前环节之后）、 未经过（网关分支跳过或流程结束仍未到达），驳回重办的多轮记录全部保留
  */
 const props = defineProps<{
   /** 审批环节（按 BPMN 编排顺序，含分支未走节点） */
@@ -74,7 +72,7 @@ const props = defineProps<{
   status: InstanceStatus;
 }>();
 
-/** 节点ID -> 办理记录（驳回重办为多条） */
+// 节点 ID -> 办理记录（驳回重办为多条）
 const recordMap = computed(() => {
   const map = new Map<string, ApprovalHistoryItem[]>();
   props.history.forEach((item) => {
@@ -86,25 +84,37 @@ const recordMap = computed(() => {
   return map;
 });
 
+/**
+ * 取节点对应的审批记录
+ */
 function recordsOf(nodeId: string): ApprovalHistoryItem[] {
   return recordMap.value.get(nodeId) ?? [];
 }
 
+/**
+ * 判断节点是否已有审批记录
+ */
 function hasRecord(nodeId: string): boolean {
   return recordsOf(nodeId).length > 0;
 }
 
-/** 是否"未到"：流程运行中且位于当前环节之后 */
+/**
+ * 是否"未到"：流程运行中且位于当前环节之后
+ */
 function isUpcoming(index: number): boolean {
   return props.status === "running" && index >= props.active;
 }
 
-/** 无记录环节状态标签：未到（后续环节）/ 未经过（分支跳过或已结束） */
+/**
+ * 无记录环节状态标签：未到（后续环节）/ 未经过（分支跳过或已结束）
+ */
 function pendingLabel(index: number): string {
   return isUpcoming(index) ? "未到" : "未经过";
 }
 
-/** 环节办理人描述：角色（成员账号）；发起人办理环节标注"发起人" */
+/**
+ * 环节办理人描述：角色（成员账号）；发起人办理环节标注"发起人"
+ */
 function describe(stage: ProcessStageItem): string {
   if (stage.initiator) {
     return "发起人";

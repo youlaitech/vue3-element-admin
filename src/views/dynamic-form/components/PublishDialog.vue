@@ -91,17 +91,19 @@ defineOptions({
   name: "FormPublishDialog",
 });
 
-/** 发布/入口管理三步向导容器 */
+/**
+ * 发布/入口管理三步向导容器
+ */
 const props = defineProps<{
-  /** 表单ID */
+  /** 表单 ID */
   formId: string;
   /** 表单唯一标识 */
   formKey: string;
   /** 表单名称（菜单名称默认值） */
   formName: string;
-  /** 表单状态(0草稿 1已发布 -1已停用)：已发布走"入口管理"语义，跳过方式选择 */
+  /** 表单状态(0 草稿 1 已发布 -1 已停用)：已发布走"入口管理"语义，跳过方式选择 */
   status: number;
-  /** 是否允许匿名公开访问(0否 1是)：分享配置回显 */
+  /** 是否允许匿名公开访问(0 否 1 是)：分享配置回显 */
   isPublic?: number;
 }>();
 
@@ -113,64 +115,64 @@ const visible = defineModel("modelValue", {
   default: false,
 });
 
-/** 表单是否已发布（已发布直达入口配置步骤） */
+// 表单是否已发布（已发布直达入口配置步骤）
 const isPublished = computed(() => props.status === FormStatus.PUBLISHED);
 
-/** 当前向导步骤 */
+// 当前向导步骤
 const step = ref(0);
 
-/** 保存中状态 */
+// 保存中状态
 const saving = ref(false);
 
-/** 选中的发布方式（可单选可全选） */
+// 选中的发布方式（可单选可全选）
 const selectedMethods = ref<PublishMethod[]>(["menu"]);
 
-/** 已生成的菜单配置（回显，未生成过为 null） */
+// 已生成的菜单配置（回显，未生成过为 null）
 const menuConfig = ref<FormMenuConfig | null>(null);
 
-/** 公开访问开关（分享配置） */
+// 公开访问开关（分享配置）
 const shareEnabled = ref(false);
 
 const catalogTree = ref<CatalogNode[]>([]);
 const roleOptions = ref<OptionItem[]>([]);
 
-/** 菜单入口配置表单数据（第②步编辑，保存时读取） */
+// 菜单入口配置表单数据（第②步编辑，保存时读取）
 const menuForm = reactive<FormMenuFormData>({ menuName: "", parentId: "", roleIds: [] });
 
-/** 第②步组件实例（校验入口） */
+// 第②步组件实例（校验入口）
 const entryConfigRef = ref<InstanceType<typeof EntryConfigStep>>();
 
-/** 目录类型标识（sys_menu.type：C 目录） */
+// 目录类型标识（sys_menu.type：C 目录）
 const MENU_TYPE_CATALOG = "C";
 
-/** 默认挂载目录名称 */
+// 默认挂载目录名称
 const DEFAULT_CATALOG_NAME = "表单中心";
 
-/** 是否展示菜单入口配置块（已发布恒显示，未发布按第①步所选） */
+// 是否展示菜单入口配置块（已发布恒显示，未发布按第①步所选）
 const showMenuConfig = computed(() =>
   isPublished.value ? true : selectedMethods.value.includes("menu")
 );
 
-/** 是否展示分享入口配置块 */
+// 是否展示分享入口配置块
 const showShareConfig = computed(() =>
   isPublished.value ? true : selectedMethods.value.includes("share")
 );
 
-/** 保存按钮文案（按配置的入口组合动态变化） */
+// 保存按钮文案（按配置的入口组合动态变化）
 const saveButtonLabel = computed(() => {
   if (isPublished.value) return "保存配置";
   return showMenuConfig.value ? "发布并生成入口" : "发布并开启分享";
 });
 
-/** 分享链接（hash 路由：origin + pathname + #/f/formKey） */
+// 分享链接（hash 路由：origin + pathname + #/f/formKey）
 const shareUrl = computed(
   () => `${window.location.origin}${window.location.pathname}#/f/${props.formKey}`
 );
 
-/** 第③步分享汇总可见（配置了分享且开关开启） */
+// 第③步分享汇总可见（配置了分享且开关开启）
 const shareResultVisible = computed(() => showShareConfig.value && shareEnabled.value);
 
-/** 第③步副标题 */
+// 第③步副标题
 const resultSubtitle = computed(() => {
   if (showMenuConfig.value && shareResultVisible.value)
     return "员工可从侧边栏进入，也可通过分享链接填写";
@@ -185,7 +187,9 @@ watch(visible, async (newVisible) => {
   await loadWizardData();
 });
 
-// 加载目录树、角色选项与已生成菜单配置
+/**
+ * 加载目录树、角色选项与已生成菜单配置
+ */
 async function loadWizardData(): Promise<void> {
   const [menuTree, roles, menu] = await Promise.all([
     MenuAPI.getList({}),
@@ -208,6 +212,7 @@ async function loadWizardData(): Promise<void> {
 
 /**
  * 切换发布方式选中态
+ *
  * @param method 发布方式
  */
 function toggleMethod(method: PublishMethod): void {
@@ -221,6 +226,7 @@ function toggleMethod(method: PublishMethod): void {
 
 /**
  * 构建目录树（仅目录类型可挂载表单菜单）
+ *
  * @param menus 菜单树
  */
 function buildCatalogTree(menus: MenuItem[]): CatalogNode[] {
@@ -234,7 +240,9 @@ function buildCatalogTree(menus: MenuItem[]): CatalogNode[] {
     }));
 }
 
-// 递归查找"表单中心"目录ID；不存在返回空串（留空由后端自动创建）
+/**
+ * 递归查找"表单中心"目录 ID；不存在返回空串（留空由后端自动创建）
+ */
 function findDefaultCatalogId(): string {
   const find = (nodes: CatalogNode[]): string => {
     for (const node of nodes) {
@@ -251,7 +259,7 @@ function findDefaultCatalogId(): string {
   return find(catalogTree.value);
 }
 
-/** 菜单位置面包屑（目录名称链 + 菜单名） */
+// 菜单位置面包屑（目录名称链 + 菜单名）
 const menuBreadcrumb = computed(() => {
   const names: string[] = [];
   const find = (nodes: CatalogNode[], chain: string[]): boolean => {
@@ -269,14 +277,14 @@ const menuBreadcrumb = computed(() => {
   return [...names, menuForm.menuName];
 });
 
-/** 已授权角色名称列表 */
+// 已授权角色名称列表
 const grantedRoleNames = computed(() =>
   roleOptions.value
     .filter((role) => menuForm.roleIds?.includes(String(role.value)))
     .map((role) => role.label)
 );
 
-/** 菜单完整路由路径（目录路径链 + 表单标识） */
+// 菜单完整路由路径（目录路径链 + 表单标识）
 const menuRoutePath = computed(() => {
   let routePath = "";
   const find = (nodes: CatalogNode[], basePath: string): boolean => {
@@ -297,7 +305,9 @@ const menuRoutePath = computed(() => {
   return routePath;
 });
 
-// 保存入口配置：未发布先发布，再生成菜单/保存公开开关
+/**
+ * 保存入口配置：未发布先发布，再生成菜单/保存公开开关
+ */
 async function handleSaveEntry(): Promise<void> {
   if (showMenuConfig.value) {
     const valid = (await entryConfigRef.value?.validate()) ?? true;
@@ -332,7 +342,9 @@ async function handleSaveEntry(): Promise<void> {
   }
 }
 
-// 复制分享链接
+/**
+ * 复制分享链接
+ */
 function handleCopyLink(): void {
   navigator.clipboard
     ?.writeText(shareUrl.value)
@@ -340,7 +352,9 @@ function handleCopyLink(): void {
     .catch(() => ElMessage.warning("复制失败，请手动复制"));
 }
 
-// 重载动态路由（新建菜单需重新拉取路由表）后跳转
+/**
+ * 重载动态路由（新建菜单需重新拉取路由表）后跳转
+ */
 async function handleGoView(): Promise<void> {
   if (!menuRoutePath.value) {
     ElMessage.warning("未能解析菜单路径，请刷新页面后从侧边栏进入");
@@ -352,7 +366,9 @@ async function handleGoView(): Promise<void> {
   router.push(menuRoutePath.value);
 }
 
-// 关闭向导并重置步骤
+/**
+ * 关闭向导并重置步骤
+ */
 function handleClose(): void {
   step.value = 0;
 }

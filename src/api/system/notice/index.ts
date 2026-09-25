@@ -5,7 +5,9 @@ import type { PageResult } from "@/api/common";
 const NOTICE_BASE_URL = "/api/v1/notices";
 
 const NoticeAPI = {
-  /** 获取通知公告分页数据 */
+  /**
+   * 获取通知公告分页数据
+   */
   getPage(queryParams?: NoticeQueryParams) {
     return request<unknown, PageResult<NoticeItem>>({
       url: `${NOTICE_BASE_URL}`,
@@ -13,42 +15,60 @@ const NoticeAPI = {
       params: queryParams,
     });
   },
-  /** 获取通知公告表单数据 */
+  /**
+   * 获取通知公告表单数据
+   */
   getFormData(id: string) {
     return request<unknown, NoticeForm>({ url: `${NOTICE_BASE_URL}/${id}/form`, method: "get" });
   },
-  /** 添加通知公告 */
+  /**
+   * 添加通知公告
+   */
   create(data: NoticeForm) {
     return request({ url: `${NOTICE_BASE_URL}`, method: "post", data });
   },
-  /** 更新通知公告 */
+  /**
+   * 更新通知公告
+   */
   update(id: string, data: NoticeForm) {
     return request({ url: `${NOTICE_BASE_URL}/${id}`, method: "put", data });
   },
-  /** 批量删除通知公告，多个以英文逗号(,)分割 */
+  /**
+   * 批量删除通知公告，多个以英文逗号(,)分割
+   */
   deleteByIds(ids: string) {
     return request({ url: `${NOTICE_BASE_URL}/${ids}`, method: "delete" });
   },
-  /** 发布通知 */
+  /**
+   * 发布通知
+   */
   publish(id: string) {
     return request({ url: `${NOTICE_BASE_URL}/${id}/publish`, method: "put" });
   },
-  /** 撤回通知 */
+  /**
+   * 撤回通知
+   */
   revoke(id: string) {
     return request({ url: `${NOTICE_BASE_URL}/${id}/revoke`, method: "put" });
   },
-  /** 查看通知 */
+  /**
+   * 查看通知
+   */
   getDetail(id: string) {
     return request<unknown, NoticeDetail>({
       url: `${NOTICE_BASE_URL}/${id}/detail`,
       method: "get",
     });
   },
-  /** 全部已读 */
+  /**
+   * 全部已读
+   */
   readAll() {
     return request({ url: `${NOTICE_BASE_URL}/read-all`, method: "put" });
   },
-  /** 获取我的通知分页列表 */
+  /**
+   * 获取我的通知分页列表
+   */
   getMyNoticePage(queryParams?: NoticeQueryParams) {
     return request<unknown, PageResult<NoticeItem>>({
       url: `${NOTICE_BASE_URL}/my`,

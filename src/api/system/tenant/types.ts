@@ -1,12 +1,12 @@
-/**
- * Tenant 租户类型定义
- */
+// Tenant 租户类型定义
 
 import type { BaseQueryParams } from "@/api/common";
 
-/** 租户信息 */
+/**
+ * 租户信息
+ */
 export interface TenantInfo {
-  /** 租户ID */
+  /** 租户 ID */
   id: number;
   /** 租户名称 */
   name: string;
@@ -14,7 +14,9 @@ export interface TenantInfo {
   domain?: string;
 }
 
-/** 租户分页查询参数 */
+/**
+ * 租户分页查询参数
+ */
 export interface TenantQueryParams extends BaseQueryParams {
   /** 关键字(租户名称/租户编码/域名) */
   keywords?: string;
@@ -22,7 +24,9 @@ export interface TenantQueryParams extends BaseQueryParams {
   status?: number;
 }
 
-/** 租户分页对象 */
+/**
+ * 租户分页对象
+ */
 export interface TenantItem {
   id?: string;
   name?: string;
@@ -40,7 +44,9 @@ export interface TenantItem {
   updateTime?: string;
 }
 
-/** 租户表单对象（编辑） */
+/**
+ * 租户表单对象（编辑）
+ */
 export interface TenantForm {
   id?: string;
   name?: string;
@@ -56,7 +62,9 @@ export interface TenantForm {
   expireTime?: string;
 }
 
-/** 新增租户表单对象 */
+/**
+ * 新增租户表单对象
+ */
 export interface TenantCreateForm {
   name?: string;
   code?: string;
@@ -71,7 +79,9 @@ export interface TenantCreateForm {
   adminUsername?: string;
 }
 
-/** 新增租户结果 */
+/**
+ * 新增租户结果
+ */
 export interface TenantCreateResult {
   tenantId?: string;
   tenantCode?: string;

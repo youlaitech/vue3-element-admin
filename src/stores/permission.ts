@@ -9,6 +9,7 @@ import { isExternal, joinRoutePath } from "@/utils";
 import MenuAPI from "@/api/system/menu";
 import type { RouteItem } from "@/api/system/menu";
 
+// 布局组件（懒加载）
 const Layout = () => import("../layouts/index.vue");
 
 export const usePermissionStore = defineStore("permission", () => {
@@ -47,8 +48,7 @@ export const usePermissionStore = defineStore("permission", () => {
    * 移除已注册的动态路由（静态路由保留）
    *
    * @param routeList 待移除的路由清单
-   */
-  const removeDynamicRoutes = (routeList: RouteRecordRaw[]) => {
+   */ const removeDynamicRoutes = (routeList: RouteRecordRaw[]) => {
     const constantNames = new Set(constantRoutes.map((route) => route.name).filter(Boolean));
     routeList.forEach((route) => {
       if (route.name && !constantNames.has(route.name)) {
@@ -72,11 +72,8 @@ export const usePermissionStore = defineStore("permission", () => {
 
   /**
    * 重新加载动态路由
-   *
-   * 同一时刻只允许一个请求进行中；拉取期间旧路由保持在线，
-   * 摘旧与注册新之间无 await，导航无法插入，避免路由空窗触发 404 告警
-   */
-  async function reloadRoutes(): Promise<RouteRecordRaw[]> {
+   * 同一时刻只允许一个请求进行中；拉取期间旧路由保持在线， 摘旧与注册新之间无 await，导航无法插入，避免路由空窗触发 404 告警
+   */ async function reloadRoutes(): Promise<RouteRecordRaw[]> {
     if (pendingReload) return pendingReload;
 
     pendingReload = (async () => {
@@ -102,10 +99,8 @@ export const usePermissionStore = defineStore("permission", () => {
 
   /**
    * 刷新权限
-   *
    * 重新拉取用户信息后重建动态路由
-   */
-  async function refreshPermissions(): Promise<void> {
+   */ async function refreshPermissions(): Promise<void> {
     if (pendingPermissionRefresh) return pendingPermissionRefresh;
 
     pendingPermissionRefresh = (async () => {
@@ -138,9 +133,7 @@ const LAYOUT_COMPONENT = "Layout";
 
 /**
  * 后端菜单树还原为 Vue Router 路由树
- *
- * 顶层菜单统一由 Layout 承载：目录本身是容器，页面下沉为 path 为空的子路由；
- * 路径前缀与默认跳转在此推导，菜单数据只描述业务信息。
+ * 顶层菜单统一由 Layout 承载：目录本身是容器，页面下沉为 path 为空的子路由； 路径前缀与默认跳转在此推导，菜单数据只描述业务信息
  */
 const buildRoutes = (menus: RouteItem[]): RouteRecordRaw[] => menus.map(buildTopLevelRoute);
 

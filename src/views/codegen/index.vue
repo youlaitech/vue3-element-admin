@@ -17,6 +17,9 @@ const drawerTitle = ref("");
 const drawerRef = ref();
 const tableListRef = ref();
 
+/**
+ * 打开代码生成抽屉
+ */
 function handleOpenDrawer(tableName: string) {
   drawerTitle.value = `${tableName} 代码生成`;
   drawerVisible.value = true;
@@ -25,6 +28,9 @@ function handleOpenDrawer(tableName: string) {
   });
 }
 
+/**
+ * 重置指定表的生成配置
+ */
 function handleResetConfig(tableName: string) {
   tableListRef.value?.handleResetConfig(tableName);
 }

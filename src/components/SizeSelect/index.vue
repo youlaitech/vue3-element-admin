@@ -35,6 +35,9 @@ const sizeOptions = computed(() => {
 });
 
 const appStore = useAppStore();
+/**
+ * 切换组件尺寸
+ */
 function handleSizeChange(size: string) {
   appStore.changeSize(size);
   ElMessage.success(t("sizeSelect.message.success"));

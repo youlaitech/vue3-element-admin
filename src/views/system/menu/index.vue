@@ -24,11 +24,15 @@
           <el-button v-hasPerm="['sys:menu:create']" type="primary" @click="openDialog()">
             新增菜单
           </el-button>
-          <el-button link type="primary" @click="toggleButtons">
-            {{ expandButtons ? "收起按钮" : "展开按钮" }}
-          </el-button>
         </div>
         <div class="page-toolbar__right">
+          <el-tooltip :content="expandAll ? '折叠全部' : '展开全部'" placement="top">
+            <el-button class="page-icon-btn" @click="toggleExpandAll">
+              <span v-if="expandAll" class="i-svg:checkbox-indeterminate" />
+              <span v-else class="i-svg:add-box" />
+            </el-button>
+          </el-tooltip>
+          <el-divider class="page-toolbar__divider" direction="vertical" />
           <el-tooltip content="刷新" placement="top">
             <el-button class="page-icon-btn" @click="handleQuery">
               <el-icon><Refresh /></el-icon>
@@ -218,7 +222,35 @@
         <SectionTitle title="基础信息" />
 
         <el-form-item label="菜单名称" prop="name">
-          <el-input v-model="formData.name" placeholder="侧边栏上显示的名字，如 用户管理" />
+          <div class="menu-form__field">
+            <div class="menu-form__row">
+              <el-input v-model="formData.name" placeholder="侧边栏上显示的名字，如 用户管理" />
+              <el-tooltip
+                v-if="appConfig.aiEnabled && !isExternal"
+                :content="aiTip"
+                placement="top"
+              >
+                <span class="menu-form__tip-trigger">
+                  <el-button
+                    link
+                    type="primary"
+                    :loading="aiLoading"
+                    :disabled="!formData.name?.trim()"
+                    @click="handleAiFill"
+                  >
+                    <template #icon><span class="i-svg:ai" /></template>
+                    {{ aiLoading ? "推断中" : "推断" }}
+                  </el-button>
+                </span>
+              </el-tooltip>
+            </div>
+            <div v-if="aiFilledTip" class="menu-form__tip">
+              {{ aiFilledTip }}
+              <el-button class="menu-form__undo" link type="primary" @click="handleAiUndo">
+                撤销
+              </el-button>
+            </div>
+          </div>
         </el-form-item>
 
         <el-form-item label="上级菜单" prop="parentId">
@@ -339,10 +371,7 @@
         <SectionTitle v-if="!isButton" title="展示设置" />
 
         <el-form-item v-if="!isButton" label="在侧边栏显示">
-          <div class="menu-form__field">
-            <el-switch v-model="visibleSwitch" />
-            <div class="menu-form__tip">关闭后不出现在侧边栏，但地址仍然可以直接访问</div>
-          </div>
+          <el-switch v-model="visibleSwitch" />
         </el-form-item>
 
         <el-form-item v-if="!isButton" label="菜单图标" prop="icon">
@@ -399,13 +428,10 @@
                   </el-tooltip>
                 </span>
               </template>
-              <div class="menu-form__field">
-                <el-input
-                  v-model="formData.routeName"
-                  :placeholder="derivedRouteName || 'SystemUser'"
-                />
-                <div class="menu-form__tip">留空时按访问地址自动生成，无需手动填写</div>
-              </div>
+              <el-input
+                v-model="formData.routeName"
+                :placeholder="derivedRouteName || 'SystemUser'"
+              />
             </el-form-item>
 
             <el-form-item v-if="isPage">
@@ -453,19 +479,17 @@
               <el-input v-model="formData.redirect" placeholder="留空自动跳转第一个可见子页面" />
             </el-form-item>
 
-            <el-form-item v-if="isCatalog">
-              <template #label>
-                <span class="menu-form__label">
-                  单子级时
-                  <el-tooltip content="分组下只有一个子菜单时的侧边栏显示方式" placement="bottom">
-                    <el-icon><QuestionFilled /></el-icon>
-                  </el-tooltip>
-                </span>
-              </template>
-              <el-radio-group v-model="formData.alwaysShow">
-                <el-radio :value="0">直接显示子菜单</el-radio>
-                <el-radio :value="1">保留分组层级</el-radio>
-              </el-radio-group>
+            <el-form-item v-if="isPage && !isEditing" label="按钮权限">
+              <div class="menu-form__field">
+                <el-checkbox v-model="formData.generateCrudButtons">生成增删改查按钮</el-checkbox>
+                <el-input
+                  v-if="formData.generateCrudButtons"
+                  v-model="formData.buttonPermPrefix"
+                  class="menu-form__prefix"
+                  placeholder="权限前缀，如 sys:user"
+                  @input="permPrefixAuto = false"
+                />
+              </div>
             </el-form-item>
           </el-collapse-item>
         </el-collapse>
@@ -513,12 +537,14 @@ import {
   normalizeViewPath,
   pageComponentTree,
 } from "@/router/views";
+import { appConfig } from "@/settings";
 import { useAppStore } from "@/stores/app";
 import { usePermissionStore } from "@/stores/permission";
 import { CommonStatus, MenuScopeEnum, MenuTypeEnum } from "@/enums";
 import { DeviceEnum } from "@/enums/settings";
 import { isTenantEnabled } from "@/utils/tenant";
 import { isValidURL, joinRoutePath } from "@/utils";
+import { matchIcon } from "@/utils/icon";
 
 defineOptions({
   name: "SysMenu",
@@ -553,8 +579,8 @@ const menuFormRef = ref<FormInstance>();
 const loading = ref(false);
 const list = ref<MenuItem[]>([]);
 const tableRef = ref<TableInstance>();
-/** 是否展开页面下的按钮子行，默认收起让列表聚焦菜单结构 */
-const expandButtons = ref(false);
+// 是否展开全部菜单层级，默认折叠只显示顶级菜单
+const expandAll = ref(false);
 const queryParams = reactive<MenuQueryParams>({ keywords: "" });
 
 const dialogState = reactive({
@@ -562,33 +588,54 @@ const dialogState = reactive({
   visible: false,
 });
 
-const menuOptions = ref<OptionItem[]>([]);
+// AI 推断状态与结果提示
+const aiLoading = ref(false);
+const aiFilledTip = ref("");
+// AI 推断前的字段值，供撤销恢复
+let aiSnapshot: { routePath?: string; perm?: string; icon?: string } | null = null;
+
+// 同级页面已有按钮的权限模块名，用于推导按钮权限前缀
+const siblingPermModule = ref("");
+// 按钮权限前缀是否由自动推导填入，用户手改后不再跟随访问路径
+const permPrefixAuto = ref(false);
+
+// 全量菜单树，供上级菜单选项、排序推算与层级校验使用
+const parentMenuTree = ref<MenuItem[]>([]);
 const componentManual = ref(false);
 // 编辑前的组件值，历史数据可能已无对应文件，不做存在性校验
 const originalComponent = ref<string>();
 const externalMode = ref<ExternalMode>("blank");
-/** 高级设置折叠面板名称 */
+// 高级设置折叠面板名称
 const ADVANCED_PANEL = "advanced";
-/** 已展开的高级设置面板，默认展开 */
+// 已展开的高级设置面板，默认展开
 const advancedPanels = ref<string[]>([ADVANCED_PANEL]);
 
 const initialFormData: MenuForm = {
   parentId: "0",
   visible: CommonStatus.ENABLED,
   scope: MenuScopeEnum.TENANT,
-  sort: 1,
   type: MenuTypeEnum.MENU,
-  alwaysShow: 0,
   keepAlive: 1,
   params: [],
+  generateCrudButtons: false,
 };
 
 const formData = reactive<MenuForm>({ ...initialFormData });
 
-// 多租户关闭时隐藏菜单范围字段。
+// AI 推断按钮的提示文案，未填名称时说明置灰原因
+const aiTip = computed(() =>
+  formData.name?.trim() ? "根据菜单名称推断访问路径、权限标识" : "先填写菜单名称"
+);
+
+// 上级菜单选项，顶级节点下挂完整菜单树
+const menuOptions = computed<OptionItem[]>(() => [
+  { value: "0", label: "顶级菜单", children: toMenuOptions(parentMenuTree.value) },
+]);
+
+// 多租户关闭时隐藏菜单范围字段
 const showMenuScope = computed(() => isTenantEnabled());
 
-// 抽屉宽度（响应式）。
+// 抽屉宽度（响应式）
 const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
 
 const isEditing = computed(() => Boolean(formData.id));
@@ -603,7 +650,7 @@ const isExternal = computed(() => formData.type === MenuTypeEnum.EXTERNAL);
 
 const isButton = computed(() => formData.type === MenuTypeEnum.BUTTON);
 
-// 系统内嵌外链需要一个内部路由承载 iframe 页面。
+// 系统内嵌外链需要一个内部路由承载 iframe 页面
 const isEmbeddedExternal = computed(() => isExternal.value && externalMode.value === "iframe");
 
 const showRoutePath = computed(() => isCatalog.value || isPage.value || isEmbeddedExternal.value);
@@ -624,7 +671,7 @@ const typeOptions = computed(() => {
 
 const typeLocked = computed(() => isEditing.value || typeOptions.value.length === 1);
 
-/** 类型被锁定的原因：编辑时不可改类型；页面下新增只能挂按钮 */
+// 类型被锁定的原因：编辑时不可改类型；页面下新增只能挂按钮
 const typeLockedTip = computed(() =>
   isEditing.value ? "类型创建后不可修改" : "页面下只能挂按钮权限"
 );
@@ -636,14 +683,24 @@ const visibleSwitch = computed({
   },
 });
 
-const parentMenu = computed(() => findMenuById(list.value, formData.parentId));
+const parentMenu = computed(() => findMenuById(parentMenuTree.value, formData.parentId));
 
-/** 上级菜单选项：编辑时禁用自身及其下级，避免选到自己 */
+// 上级菜单选项：编辑时禁用自身及其下级，与当前类型不兼容的节点也禁用
 const parentOptionProps = computed(() => ({
   label: "label",
   children: "children",
-  disabled: (data: { value?: string }) =>
-    isMenuInSubtree(findMenuById(list.value, formData.id), data.value),
+  disabled: (data: { value?: string }) => {
+    if (isMenuInSubtree(findMenuById(parentMenuTree.value, formData.id), data.value)) {
+      return true;
+    }
+    /**
+     * 按钮挂页面下，其余类型挂目录或顶级；顶级不在菜单树里，取不到节点
+     */
+    const target = findMenuById(parentMenuTree.value, data.value);
+    return formData.type === MenuTypeEnum.BUTTON
+      ? target?.type !== MenuTypeEnum.MENU
+      : target?.type === MenuTypeEnum.MENU;
+  },
 }));
 
 // 新建时上级菜单可切换，可选类型随之变化：当前类型不再被允许时自动收敛
@@ -658,9 +715,29 @@ watch(
   }
 );
 
+// 勾选生成按钮时按同级已有按钮推导权限前缀，用户已填则不覆盖
+watch(
+  () => formData.generateCrudButtons,
+  (checked) => {
+    if (!checked || formData.buttonPermPrefix?.trim()) return;
+    formData.buttonPermPrefix = deriveButtonPermPrefix();
+    permPrefixAuto.value = true;
+  }
+);
+
+// 前缀是推导来的就跟随访问路径刷新，用户手改过则不再变动
+watch(
+  () => formData.routePath,
+  () => {
+    if (permPrefixAuto.value) {
+      formData.buttonPermPrefix = deriveButtonPermPrefix();
+    }
+  }
+);
+
 // 上级路径逐级拼接，得到当前菜单的完整访问地址
 const parentPath = computed(() =>
-  findMenuTrail(list.value, formData.parentId).reduce(
+  findMenuTrail(parentMenuTree.value, formData.parentId).reduce(
     (path, menu) => joinRoutePath(path, menu.routePath),
     ""
   )
@@ -674,7 +751,7 @@ const derivedRouteName = computed(() =>
   fullRoutePath.value ? deriveRouteName(fullRoutePath.value) : ""
 );
 
-/** 页面路径对应的文件位置，输入带 .vue 后缀也能正确展示 */
+// 页面路径对应的文件位置，输入带 .vue 后缀也能正确展示
 const componentFilePath = computed(() =>
   formData.component ? `src/views/${normalizeViewPath(formData.component)}.vue` : ""
 );
@@ -703,6 +780,9 @@ const previewText = computed(() => {
   return `侧边栏${position}新增一项「${name}」${address}`;
 });
 
+/**
+ * 校验路由路径
+ */
 const validateRoutePath = (_: unknown, value: string, callback: (error?: Error) => void) => {
   if (showRoutePath.value && !value) {
     callback(new Error("请输入访问路径"));
@@ -711,6 +791,9 @@ const validateRoutePath = (_: unknown, value: string, callback: (error?: Error) 
   callback();
 };
 
+/**
+ * 校验组件路径
+ */
 const validateComponent = (_: unknown, value: string, callback: (error?: Error) => void) => {
   if (!isPage.value) {
     callback();
@@ -734,6 +817,9 @@ const validateComponent = (_: unknown, value: string, callback: (error?: Error) 
   callback();
 };
 
+/**
+ * 校验外链地址
+ */
 const validateExternalUrl = (_: unknown, value: string, callback: (error?: Error) => void) => {
   if (!isExternal.value) {
     callback();
@@ -753,6 +839,9 @@ const validateExternalUrl = (_: unknown, value: string, callback: (error?: Error
   callback();
 };
 
+/**
+ * 校验权限标识
+ */
 const validatePerm = (_: unknown, value: string, callback: (error?: Error) => void) => {
   if (isButton.value && !value) {
     callback(new Error("请输入权限标识"));
@@ -773,7 +862,7 @@ const rules: FormRules<MenuForm> = {
 };
 
 /**
- * 拉取菜单列表数据（一次性返回全量树）。
+ * 拉取菜单列表数据（一次性返回全量树）
  */
 async function fetchData(): Promise<void> {
   loading.value = true;
@@ -788,14 +877,14 @@ async function fetchData(): Promise<void> {
 }
 
 /**
- * 按当前筛选条件重新查询。
+ * 按当前筛选条件重新查询
  */
 function handleQuery(): void {
   fetchData();
 }
 
 /**
- * 重置搜索表单后重新查询。
+ * 重置搜索表单后重新查询
  */
 function handleResetQuery(): void {
   queryFormRef.value?.resetFields();
@@ -803,23 +892,25 @@ function handleResetQuery(): void {
 }
 
 /**
- * 展开/收起页面下的按钮子行
+ * 展开/折叠全部菜单层级
  */
-function toggleButtons(): void {
-  expandButtons.value = !expandButtons.value;
+function toggleExpandAll(): void {
+  expandAll.value = !expandAll.value;
   applyExpansion();
 }
 
 /**
- * 按当前开关应用展开状态：目录层级始终展开，页面下的按钮子行由开关决定
+ * 按当前开关应用展开状态，逐级下发到所有菜单节点
  */
 function applyExpansion(): void {
+  /**
+   * 递归展开树节点
+   */
   const walk = (rows: MenuItem[]): void => {
     rows.forEach((row) => {
       if (!row.children?.length) return;
 
-      const expand = row.type !== MenuTypeEnum.MENU || expandButtons.value;
-      tableRef.value?.toggleRowExpansion(row, expand);
+      tableRef.value?.toggleRowExpansion(row, expandAll.value);
       walk(row.children);
     });
   };
@@ -829,8 +920,7 @@ function applyExpansion(): void {
 
 /**
  * 菜单行的图标类名
- *
- * 未配图标时与侧边栏保持一致，兜底为默认菜单图标；按钮不进侧边栏，不兜底
+ * 未配图标时兜底为默认菜单图标（侧边栏同样兜底）；按钮不进侧边栏，不兜底
  *
  * @param row 当前菜单行
  */
@@ -867,7 +957,7 @@ function getMenuComponentPath(row: MenuItem): string {
  * 从菜单树中查找菜单及其祖先链
  *
  * @param menus 菜单树
- * @param id    目标菜单 ID
+ * @param id 目标菜单 ID
  * @param trail 已遍历的祖先
  */
 function findMenuTrail(menus: MenuItem[], id?: string, trail: MenuItem[] = []): MenuItem[] {
@@ -888,16 +978,86 @@ function findMenuTrail(menus: MenuItem[], id?: string, trail: MenuItem[] = []): 
  * 从菜单树中查找菜单
  *
  * @param menus 菜单树
- * @param id    目标菜单 ID
+ * @param id 目标菜单 ID
  */
 function findMenuById(menus: MenuItem[], id?: string): MenuItem | undefined {
   return findMenuTrail(menus, id).pop();
 }
 
 /**
+ * 菜单树转为下拉选项树
+ *
+ * @param menus 菜单树
+ */
+function toMenuOptions(menus: MenuItem[]): OptionItem[] {
+  return menus.map((menu) => ({
+    value: menu.id ?? "",
+    label: menu.name ?? "",
+    children: toMenuOptions(menu.children ?? []),
+  }));
+}
+
+/**
+ * 同级菜单的下一个排序值，让新增的菜单排在末尾
+ *
+ * @param menus 菜单树
+ * @param parentId 上级菜单 ID
+ */
+function resolveNextSort(menus: MenuItem[], parentId: string): number {
+  const siblings = parentId === "0" ? menus : (findMenuById(menus, parentId)?.children ?? []);
+  return siblings.reduce((max, item) => Math.max(max, item.sort ?? 0), 0) + 1;
+}
+
+/**
+ * 同级页面已有按钮的权限模块名，取出现次数最多的那一段
+ *
+ * @param menus 菜单树
+ * @param parentId 上级菜单 ID
+ */
+function resolveSiblingPermModule(menus: MenuItem[], parentId: string): string {
+  const siblings = parentId === "0" ? menus : (findMenuById(menus, parentId)?.children ?? []);
+  const counter = new Map<string, number>();
+
+  siblings.forEach((sibling) =>
+    (sibling.children ?? []).forEach((child) => {
+      if (child.type !== MenuTypeEnum.BUTTON) return;
+      const module = child.perm?.split(":")[0];
+      if (module) counter.set(module, (counter.get(module) ?? 0) + 1);
+    })
+  );
+
+  let module = "";
+  let max = 0;
+  counter.forEach((count, name) => {
+    if (count > max) {
+      max = count;
+      module = name;
+    }
+  });
+  return module;
+}
+
+/**
+ * 按钮权限前缀，由同级模块名与当前访问路径拼成
+ */
+function deriveButtonPermPrefix(): string {
+  return [siblingPermModule.value, formData.routePath?.trim()].filter(Boolean).join(":");
+}
+
+/**
+ * 访问路径只保留最后一段
+ * 该字段只存当前这一级的路径片段，上级路径由系统拼接；AI 偶尔会返回带上级的完整地址
+ *
+ * @param routePath AI 返回的访问路径
+ */
+function resolveAiRoutePath(routePath: string): string {
+  return routePath.trim().split("/").filter(Boolean).pop() ?? "";
+}
+
+/**
  * 判断菜单是否位于指定子树内（含自身）
  *
- * @param root     子树根节点
+ * @param root 子树根节点
  * @param targetId 目标菜单 ID
  */
 function isMenuInSubtree(root: MenuItem | undefined, targetId?: string): boolean {
@@ -919,6 +1079,9 @@ function deriveRouteName(path: string): string {
     .join("");
 }
 
+/**
+ * 判断状态是否为启用
+ */
 function isStatusEnabled(value?: number | boolean): boolean {
   return value === CommonStatus.ENABLED || value === true;
 }
@@ -941,6 +1104,8 @@ function assignFormData(data: MenuForm): void {
   externalMode.value = formData.component === "iframe" ? "iframe" : "blank";
   originalComponent.value = formData.component;
   advancedPanels.value = [ADVANCED_PANEL];
+  clearAiFill();
+  permPrefixAuto.value = false;
 }
 
 /**
@@ -953,31 +1118,37 @@ function resetForm(): void {
 }
 
 /**
- * 打开新增/编辑抽屉。
+ * 打开新增/编辑抽屉
  *
  * @param parentId 新增子菜单时的父菜单 ID
  * @param menuId 编辑时的菜单 ID
  */
 async function openDialog(parentId?: string, menuId?: string): Promise<void> {
-  const data = await MenuAPI.getOptions(true);
-  menuOptions.value = [{ value: "0", label: "顶级菜单", children: data }];
+  // 拉全量菜单：上级选项与排序推算都要用完整数据，避免被搜索条件过滤
+  const [allMenus, menuForm] = await Promise.all([
+    MenuAPI.getList({}),
+    menuId ? MenuAPI.getFormData(menuId) : Promise.resolve(null),
+  ]);
+  parentMenuTree.value = allMenus;
 
   dialogState.visible = true;
-  if (menuId) {
+  if (menuForm) {
     dialogState.title = "编辑菜单";
-    assignFormData(await MenuAPI.getFormData(menuId));
+    assignFormData(menuForm);
     return;
   }
 
   dialogState.title = "新增菜单";
   const nextParentId = parentId?.toString() ?? "0";
-  const parent = findMenuById(list.value, nextParentId);
+  const parent = findMenuById(allMenus, nextParentId);
   assignFormData({
     ...initialFormData,
     parentId: nextParentId,
+    sort: resolveNextSort(allMenus, nextParentId),
     // 页面下只能新增按钮权限
     type: parent?.type === MenuTypeEnum.MENU ? MenuTypeEnum.BUTTON : MenuTypeEnum.MENU,
   });
+  siblingPermModule.value = resolveSiblingPermModule(allMenus, nextParentId);
 }
 
 /**
@@ -994,8 +1165,9 @@ function handleTypeChange(): void {
     redirect: undefined,
     perm: undefined,
     params: [],
-    alwaysShow: 0,
     keepAlive: type === MenuTypeEnum.MENU ? 1 : undefined,
+    generateCrudButtons: false,
+    buttonPermPrefix: undefined,
   });
 
   if (type === MenuTypeEnum.EXTERNAL) {
@@ -1003,7 +1175,91 @@ function handleTypeChange(): void {
     formData.component = "";
   }
 
+  // 类型切换会清空权限标识等字段，AI 推断结果一并失效
+  clearAiFill();
+  permPrefixAuto.value = false;
+
   nextTick(() => menuFormRef.value?.clearValidate());
+}
+
+/**
+ * AI 推断访问路径与权限标识
+ */
+async function handleAiFill(): Promise<void> {
+  const name = formData.name?.trim();
+  if (!name) return;
+
+  aiLoading.value = true;
+  // 记录推断前的值，供撤销恢复
+  aiSnapshot = { routePath: formData.routePath, perm: formData.perm, icon: formData.icon };
+  try {
+    const result = await MenuAPI.aiFill({
+      name,
+      type: formData.type,
+      parentId: formData.parentId,
+    });
+
+    // 只回填当前类型实际使用的字段：按钮只认权限标识，目录与页面补访问路径与图标
+    const filled: string[] = [];
+    const aiRoutePath = result.routePath ? resolveAiRoutePath(result.routePath) : "";
+    if (aiRoutePath && !isButton.value) {
+      formData.routePath = aiRoutePath;
+      filled.push(`访问路径 ${aiRoutePath}`);
+
+      // 路由名称按访问地址派生，与访问路径保持同源；用户已手填时不覆盖
+      if (isPage.value && !formData.routeName?.trim() && derivedRouteName.value) {
+        formData.routeName = derivedRouteName.value;
+        filled.push(`路由名称 ${derivedRouteName.value}`);
+      }
+    }
+    if (result.perm && isButton.value) {
+      formData.perm = result.perm;
+      filled.push(`权限标识 ${result.perm}`);
+    }
+    // 图标由关键词匹配前端图标库，匹配不到就不填
+    if (!isButton.value) {
+      const icon = matchIcon(result.iconKeywords ?? []);
+      if (icon) {
+        formData.icon = icon;
+        filled.push(`图标 ${icon}`);
+      }
+    }
+    if (filled.length === 0) {
+      clearAiFill();
+      ElMessage.warning("AI 未推断出可用结果");
+      return;
+    }
+
+    aiFilledTip.value = `已推断 ${filled.join("、")}`;
+    nextTick(() => menuFormRef.value?.clearValidate(["routePath", "perm"]));
+  } catch {
+    // 业务异常已由请求拦截器统一提示后端 message（含 AI 未开启的具体原因）
+    clearAiFill();
+  } finally {
+    aiLoading.value = false;
+  }
+}
+
+/**
+ * 恢复到 AI 推断前的值
+ */
+function handleAiUndo(): void {
+  if (!aiSnapshot) return;
+
+  formData.routePath = aiSnapshot.routePath;
+  formData.perm = aiSnapshot.perm;
+  formData.icon = aiSnapshot.icon;
+  clearAiFill();
+  nextTick(() => menuFormRef.value?.clearValidate(["routePath", "perm"]));
+  ElMessage.info("已撤销 AI 推断");
+}
+
+/**
+ * 清空 AI 推断结果与快照
+ */
+function clearAiFill(): void {
+  aiSnapshot = null;
+  aiFilledTip.value = "";
 }
 
 /**
@@ -1054,6 +1310,8 @@ function normalizeMenuPayload(): MenuForm {
     externalUrl: formData.externalUrl?.trim() || undefined,
     redirect: formData.redirect?.trim() || undefined,
     params: formData.params?.filter((item) => item.key && item.value) ?? [],
+    // 后端按 前缀:动作 拼接，去掉末尾冒号避免出现 sys:user::list
+    buttonPermPrefix: formData.buttonPermPrefix?.trim().replace(/:+$/, "") || undefined,
   };
 
   if (isCatalog.value) {
@@ -1069,13 +1327,11 @@ function normalizeMenuPayload(): MenuForm {
     payload.externalUrl = undefined;
     payload.redirect = undefined;
     payload.perm = undefined;
-    payload.alwaysShow = undefined;
   }
 
   if (isExternal.value) {
     payload.perm = undefined;
     payload.redirect = undefined;
-    payload.alwaysShow = undefined;
     payload.params = [];
 
     if (!isEmbeddedExternal.value) {
@@ -1095,8 +1351,13 @@ function normalizeMenuPayload(): MenuForm {
     payload.redirect = undefined;
     payload.icon = undefined;
     payload.keepAlive = undefined;
-    payload.alwaysShow = undefined;
     payload.params = [];
+  }
+
+  // 按钮权限仅页面类型可选，其他类型不带
+  if (!isPage.value) {
+    payload.generateCrudButtons = undefined;
+    payload.buttonPermPrefix = undefined;
   }
 
   // 路由名称用于程序内部定位页面，留空时按访问地址生成；关闭缓存时不下发
@@ -1110,7 +1371,7 @@ function normalizeMenuPayload(): MenuForm {
 }
 
 /**
- * 校验并提交菜单表单。
+ * 校验并提交菜单表单
  */
 async function handleSubmit(): Promise<void> {
   const valid = await menuFormRef.value?.validate().then(
@@ -1120,7 +1381,7 @@ async function handleSubmit(): Promise<void> {
   if (!valid) return;
 
   const menuId = formData.id;
-  const selfMenu = findMenuById(list.value, menuId);
+  const selfMenu = findMenuById(parentMenuTree.value, menuId);
   if (isMenuInSubtree(selfMenu, formData.parentId)) {
     ElMessage.error("上级菜单不能是自身或其下级");
     return;
@@ -1198,7 +1459,7 @@ async function refreshUserRoutes(): Promise<void> {
 }
 
 /**
- * 关闭弹窗并重置表单。
+ * 关闭弹窗并重置表单
  */
 function closeDialog(): void {
   dialogState.visible = false;
@@ -1324,11 +1585,30 @@ onMounted(() => {
   flex: none;
 }
 
+/* 按钮权限前缀输入框：与上方勾选框留出间距 */
+.menu-form__prefix {
+  margin-top: 8px;
+}
+
+/* AI 推断按钮的包裹层：按钮置灰时不触发 hover，提示挂在外层才能显示 */
+.menu-form__tip-trigger {
+  display: inline-flex;
+  flex: none;
+}
+
 .menu-form__tip {
   margin-top: 4px;
   font-size: 12px;
   line-height: 1.4;
   color: var(--el-text-color-secondary);
+}
+
+/* AI 结果行里的撤销按钮：贴着小字提示，去掉默认内边距 */
+.menu-form__undo {
+  padding: 0;
+  margin-left: 4px;
+  font-size: 12px;
+  vertical-align: baseline;
 }
 
 .menu-form__path {

@@ -106,6 +106,9 @@ const {
 
 const displayList = computed(() => (results.value.length ? results.value : history.value));
 
+/**
+ * 处理输入框键盘操作：上下选择、回车跳转
+ */
 const handleInputKeydown: (evt: KeyboardEvent | Event) => void = (evt) => {
   if (!(evt instanceof KeyboardEvent)) return;
   const e = evt;

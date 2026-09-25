@@ -1,14 +1,16 @@
-/**
- * Menu 菜单类型定义
- */
+// Menu 菜单类型定义
 
-/** 菜单查询参数 */
+/**
+ * 菜单查询参数
+ */
 export interface MenuQueryParams {
   /** 搜索关键字 */
   keywords?: string;
 }
 
-/** 菜单视图对象 */
+/**
+ * 菜单视图对象
+ */
 export interface MenuItem {
   /** 子菜单 */
   children?: MenuItem[];
@@ -18,11 +20,11 @@ export interface MenuItem {
   externalUrl?: string;
   /** ICON */
   icon?: string;
-  /** 菜单ID */
+  /** 菜单 ID */
   id?: string;
   /** 菜单名称 */
   name?: string;
-  /** 父菜单ID */
+  /** 父菜单 ID */
   parentId?: string;
   /** 路由名称 */
   routeName?: string;
@@ -34,8 +36,6 @@ export interface MenuItem {
   perm?: string;
   /** 跳转路径 */
   redirect?: string;
-  /** 是否始终显示 */
-  alwaysShow?: number | boolean;
   /** 是否缓存 */
   keepAlive?: number | boolean;
   /** 路由参数 */
@@ -50,11 +50,13 @@ export interface MenuItem {
   scope?: number;
 }
 
-/** 菜单表单对象 */
+/**
+ * 菜单表单对象
+ */
 export interface MenuForm {
-  /** 菜单ID */
+  /** 菜单 ID */
   id?: string;
-  /** 父菜单ID */
+  /** 父菜单 ID */
   parentId?: string;
   /** 菜单名称 */
   name?: string;
@@ -84,19 +86,37 @@ export interface MenuForm {
   perm?: string;
   /** 路由参数（用于表单编辑 params） */
   params?: { key?: string; value?: string }[];
-  /** 是否始终显示（仅对目录生效） */
-  alwaysShow?: number | boolean;
   /** 是否缓存（用于 keepAlive） */
   keepAlive?: number | boolean;
+  /** 新增页面菜单时是否生成增删改查按钮 */
+  generateCrudButtons?: boolean;
+  /** 按钮权限标识前缀，如 sys:user */
+  buttonPermPrefix?: string;
 }
 
-/** 菜单选项 */
+/**
+ * AI 推断的菜单配置
+ */
+export interface MenuAiResult {
+  /** 访问路径 */
+  routePath?: string;
+  /** 权限标识 */
+  perm?: string;
+  /** 建议的图标关键词，按贴切程度排列 */
+  iconKeywords?: string[];
+}
+
+/**
+ * 菜单选项
+ */
 export interface MenuOption {
   key: string;
   value: string;
 }
 
-/** 路由对象 */
+/**
+ * 路由对象
+ */
 export interface RouteItem {
   /** 子路由列表 */
   children: RouteItem[];
@@ -112,10 +132,10 @@ export interface RouteItem {
   redirect?: string;
 }
 
-/** 路由属性 */
+/**
+ * 路由属性
+ */
 export interface Meta {
-  /** 【目录】只有一个子路由是否始终显示 */
-  alwaysShow?: boolean;
   /** 是否隐藏(true-是 false-否) */
   hidden?: boolean;
   /** ICON */
@@ -128,6 +148,6 @@ export interface Meta {
   externalUrl?: string;
   /** 角色集合 */
   roles?: string[];
-  /** 路由title */
+  /** 路由 title */
   title?: string;
 }

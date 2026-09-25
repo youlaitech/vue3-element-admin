@@ -1,9 +1,5 @@
-/**
- * SSE 相关枚举
- *
- * @description
- * SSE 事件名枚举，与后端 SseTopics.java 一一对应
- */
+// SSE 相关枚举
+// SSE 事件名枚举，与后端 SseTopics.java 一一对应
 
 /**
  * SSE 事件名枚举

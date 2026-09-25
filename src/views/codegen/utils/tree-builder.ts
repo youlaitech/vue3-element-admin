@@ -1,6 +1,8 @@
 import type { GeneratorPreviewItem } from "@/api/codegen";
 
-/** 文件树节点 */
+/**
+ * 文件树节点
+ */
 export interface TreeNode {
   label: string;
   key?: string;
@@ -48,7 +50,9 @@ export function buildFileTree(data: GeneratorPreviewItem[]): TreeNode {
   return root;
 }
 
-/** 递归查找第一个叶子节点 */
+/**
+ * 递归查找第一个叶子节点
+ */
 export function findFirstLeaf(node: TreeNode): TreeNode | null {
   if (!node.children || node.children.length === 0) {
     return node;
@@ -60,7 +64,9 @@ export function findFirstLeaf(node: TreeNode): TreeNode | null {
   return null;
 }
 
-/** 根据 key 查找叶子节点 */
+/**
+ * 根据 key 查找叶子节点
+ */
 export function findLeafByKey(nodes: TreeNode[], key: string): TreeNode | null {
   for (const node of nodes) {
     if (!node.children || node.children.length === 0) {
@@ -73,7 +79,9 @@ export function findLeafByKey(nodes: TreeNode[], key: string): TreeNode | null {
   return null;
 }
 
-/** 根据文件扩展名获取图标名 */
+/**
+ * 根据文件扩展名获取图标名
+ */
 export function getFileIcon(node: TreeNode): string {
   const ext = (node.language || node.label.split(".").pop() || "").toLowerCase();
   const iconMap: Record<string, string> = {
@@ -97,6 +105,9 @@ export function filterTree(
   scope: "all" | "frontend" | "backend",
   types: string[]
 ): TreeNode[] {
+  /**
+   * 判断节点是否命中当前筛选
+   */
   const match = (node: TreeNode): boolean => {
     if (scope !== "all" && node.scope !== scope) return false;
     if (!types.length) return true;
@@ -104,6 +115,9 @@ export function filterTree(
     return types.includes(language);
   };
 
+  /**
+   * 按筛选条件克隆树节点
+   */
   const cloneFilter = (node: TreeNode): TreeNode | null => {
     if (!node.children || node.children.length === 0) {
       return match(node) ? { ...node } : null;

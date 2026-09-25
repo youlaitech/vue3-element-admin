@@ -70,7 +70,7 @@
           </el-card>
         </el-col>
 
-        <!-- 卡2: 字典组件展示 -->
+        <!-- 卡 2: 字典组件展示 -->
         <el-col :span="8">
           <el-card shadow="hover" class="dict-card">
             <template #header>
@@ -113,7 +113,7 @@
           </el-card>
         </el-col>
 
-        <!-- 卡3: 字典缓存数据 -->
+        <!-- 卡 3: 字典缓存数据 -->
         <el-col :span="8">
           <el-card shadow="hover" class="dict-card">
             <template #header>
@@ -149,10 +149,10 @@ import { useSse } from "@/utils/sse";
 
 // 性别字典编码
 const DICT_CODE = "gender";
-// 男性字典项ID
+// 男性字典项 ID
 const MALE_ITEM_ID = "1";
 
-// 字典store
+// 字典 store
 const dictStore = useDictStoreHook();
 // 保存状态
 const saving = ref(false);
@@ -181,7 +181,9 @@ const dictCacheStatus = computed(() => {
   return dictStore.getDictItems(DICT_CODE).length > 0;
 });
 
-// 设置 SSE
+/**
+ * 设置 SSE
+ */
 const setupSse = () => {
   // 初始化字典同步订阅（幂等，全局已在应用启动时开启）
   dictStore.setupDictSync();
@@ -201,26 +203,32 @@ const setupSse = () => {
   });
 };
 
-// 刷新字典组件，强制重新加载字典数据
+/**
+ * 刷新字典组件，强制重新加载字典数据
+ */
 const refreshDictComponent = async () => {
   // 这里重新获取字典数据以触发按需加载
   await dictStore.loadDictItems(DICT_CODE);
   ElMessage.success("字典组件已刷新");
 };
 
-// 加载男性字典表单数据
+/**
+ * 加载男性字典表单数据
+ */
 const loadMaleDict = async () => {
   // 获取男性字典项表单数据 - 使用接口 /dicts/gender/items/1/form
   const data = await DictAPI.getDictItemFormData(DICT_CODE, MALE_ITEM_ID);
   dictForm.value = data;
 };
 
-// 保存字典值
+/**
+ * 保存字典值
+ */
 const saveDict = async () => {
   if (!dictForm.value) return;
 
   saving.value = true;
-  // dictForm的类型已经是DictItemForm，直接传递
+  // dictForm 的类型已经是 DictItemForm，直接传递
   await DictAPI.updateDictItem(DICT_CODE, MALE_ITEM_ID, dictForm.value);
 
   // 更新时间

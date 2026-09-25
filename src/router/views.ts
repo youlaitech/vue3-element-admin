@@ -1,16 +1,17 @@
-/**
- * 视图组件注册表
- *
- * 维护「菜单 component 字符串 → src/views 视图文件」的映射，路由注册与菜单表单共用。
- * 表单的「页面路径」选项树也由此派生：跳过错误页与页面内部组件，index.vue 归并到目录。
- */
+// 视图组件注册表
+// 维护「菜单 component 字符串 → src/views 视图文件」的映射，路由注册与菜单表单共用
+// 表单的「页面路径」选项树也由此派生：跳过错误页与页面内部组件，index.vue 归并到目录
 
-/** 全部视图模块，键形如 /src/views/system/user/index.vue */
+/**
+ * 全部视图模块，键形如 /src/views/system/user/index.vue
+ */
 export const viewModules = import.meta.glob("/src/views/**/*.vue");
 
 const VIEW_PREFIX = "/src/views/";
 
-/** 视图文件路径集合，元素形如 system/user/index */
+/**
+ * 视图文件路径集合，元素形如 system/user/index
+ */
 export const viewPaths = new Set(
   Object.keys(viewModules).map((key) => key.slice(VIEW_PREFIX.length).replace(/\.vue$/, ""))
 );
@@ -46,7 +47,9 @@ export function isViewComponent(componentPath?: string): boolean {
   return viewPaths.has(path) || viewPaths.has(`${path}/index`);
 }
 
-/** 选项树节点 */
+/**
+ * 选项树节点
+ */
 export interface PageComponentNode {
   /** 表单取值：真实文件路径，目录无 index.vue 时不可选 */
   value?: string;
@@ -55,12 +58,18 @@ export interface PageComponentNode {
   disabled?: boolean;
 }
 
+/**
+ * 判断路径是否可以作为页面组件选择项
+ */
 function isSelectable(path: string): boolean {
   const segments = path.split("/");
   if (segments.includes("components")) return false;
   return segments[0] !== "error" && path !== "redirect";
 }
 
+/**
+ * 把页面路径列表构造成组件树
+ */
 function buildTree(): PageComponentNode[] {
   const tree: PageComponentNode[] = [];
 
@@ -109,12 +118,17 @@ function markDisabled(nodes: PageComponentNode[]): void {
   });
 }
 
+/**
+ * 按名称排序树节点
+ */
 function sortTree(nodes: PageComponentNode[]): void {
   nodes.sort((a, b) => a.label.localeCompare(b.label));
   nodes.forEach((node) => node.children && sortTree(node.children));
 }
 
-/** 页面组件选项树 */
+/**
+ * 页面组件选项树
+ */
 export const pageComponentTree = buildTree();
 
 /**

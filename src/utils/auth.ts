@@ -2,8 +2,13 @@ import { Storage } from "./storage";
 import { STORAGE_KEYS, ROLE_ROOT } from "@/constants";
 import { useUserStoreHook } from "@/stores/user";
 
-// 负责本地凭证与偏好的读写
+/**
+ * 本地凭证与偏好读写
+ */
 export const AuthStorage = {
+  /**
+   * 读取访问令牌
+   */
   getAccessToken(): string {
     const isRememberMe = Storage.get<boolean>(STORAGE_KEYS.REMEMBER_ME, false);
     return isRememberMe
@@ -11,6 +16,9 @@ export const AuthStorage = {
       : Storage.sessionGet(STORAGE_KEYS.ACCESS_TOKEN, "");
   },
 
+  /**
+   * 读取刷新令牌
+   */
   getRefreshToken(): string {
     const isRememberMe = Storage.get<boolean>(STORAGE_KEYS.REMEMBER_ME, false);
     return isRememberMe
@@ -18,6 +26,9 @@ export const AuthStorage = {
       : Storage.sessionGet(STORAGE_KEYS.REFRESH_TOKEN, "");
   },
 
+  /**
+   * 写入令牌，按"记住我"决定存本地还是会话
+   */
   setTokens(accessToken: string, refreshToken: string, rememberMe: boolean): void {
     Storage.set(STORAGE_KEYS.REMEMBER_ME, rememberMe);
     if (rememberMe) {
@@ -31,6 +42,9 @@ export const AuthStorage = {
     }
   },
 
+  /**
+   * 清空令牌
+   */
   clearAuth(): void {
     Storage.remove(STORAGE_KEYS.ACCESS_TOKEN);
     Storage.remove(STORAGE_KEYS.REFRESH_TOKEN);
@@ -38,6 +52,9 @@ export const AuthStorage = {
     Storage.sessionRemove(STORAGE_KEYS.REFRESH_TOKEN);
   },
 
+  /**
+   * 读取"记住我"偏好
+   */
   getRememberMe(): boolean {
     return Storage.get<boolean>(STORAGE_KEYS.REMEMBER_ME, false);
   },

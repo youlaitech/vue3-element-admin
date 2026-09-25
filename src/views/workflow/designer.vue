@@ -33,15 +33,15 @@ defineOptions({
 
 const route = useRoute();
 
-/** 模型 ID（设计器始终由列表页"设计"按钮带参进入） */
+// 模型 ID（设计器始终由列表页"设计"按钮带参进入）
 const modelId = computed(() => String(route.query.modelId ?? ""));
 
-/** 页面标题（列表页携带，如【请假审批】流程设计） */
+// 页面标题（列表页携带，如【请假审批】流程设计）
 const title = computed(() => String(route.query.title ?? "流程设计"));
 
 const designerRef = ref<InstanceType<typeof BpmnDesigner>>();
 
-/** 回显的 BPMN XML（新模型为空串，画布空白可自由拖拽） */
+// 回显的 BPMN XML（新模型为空串，画布空白可自由拖拽）
 const xml = ref("");
 
 const loading = ref(false);
@@ -58,7 +58,7 @@ onMounted(() => {
 });
 
 // 菜单 keep_alive=1 缓存页面，换模型再次进入需按 modelId 重载画布；
-// 离开页面时 query 置空，跳过重载避免缓存页误报"缺少模型ID参数"
+// 离开页面时 query 置空，跳过重载避免缓存页误报"缺少模型 ID 参数"
 watch(modelId, (val) => {
   if (val) loadXml();
 });
@@ -101,7 +101,7 @@ async function handleSave(xml: string): Promise<void> {
 }
 
 /**
- * 返回流程设计列表（有未保存修改时二次确认）
+ * @returns 流程设计列表（有未保存修改时二次确认）
  */
 async function handleBack(): Promise<void> {
   if (designerRef.value?.isDirty()) {

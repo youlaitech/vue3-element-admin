@@ -5,7 +5,9 @@ import type { OptionItem, PageResult } from "@/api/common";
 const TENANT_PLAN_BASE_URL = "/api/v1/tenant-plans";
 
 const TenantPlanAPI = {
-  /** 获取租户套餐分页数据 */
+  /**
+   * 获取租户套餐分页数据
+   */
   getPage(queryParams?: TenantPlanQueryParams) {
     return request<unknown, PageResult<TenantPlanItem>>({
       url: `${TENANT_PLAN_BASE_URL}`,
@@ -14,7 +16,9 @@ const TenantPlanAPI = {
     });
   },
 
-  /** 获取租户套餐表单数据 */
+  /**
+   * 获取租户套餐表单数据
+   */
   getFormData(planId: string) {
     return request<unknown, TenantPlanForm>({
       url: `${TENANT_PLAN_BASE_URL}/${planId}/form`,
@@ -22,22 +26,30 @@ const TenantPlanAPI = {
     });
   },
 
-  /** 新增租户套餐 */
+  /**
+   * 新增租户套餐
+   */
   create(data: TenantPlanForm) {
     return request({ url: `${TENANT_PLAN_BASE_URL}`, method: "post", data });
   },
 
-  /** 修改租户套餐 */
+  /**
+   * 修改租户套餐
+   */
   update(planId: string, data: TenantPlanForm) {
     return request({ url: `${TENANT_PLAN_BASE_URL}/${planId}`, method: "put", data });
   },
 
-  /** 删除租户套餐 */
+  /**
+   * 删除租户套餐
+   */
   deleteByIds(ids: string) {
     return request({ url: `${TENANT_PLAN_BASE_URL}/${ids}`, method: "delete" });
   },
 
-  /** 获取租户方案下拉选项 */
+  /**
+   * 获取租户方案下拉选项
+   */
   getOptions() {
     return request<unknown, OptionItem[]>({
       url: `${TENANT_PLAN_BASE_URL}/options`,
@@ -45,7 +57,9 @@ const TenantPlanAPI = {
     });
   },
 
-  /** 获取方案菜单ID集合 */
+  /**
+   * 获取方案菜单 ID 集合
+   */
   getPlanMenuIds(planId: number) {
     return request<unknown, number[]>({
       url: `${TENANT_PLAN_BASE_URL}/${planId}/menuIds`,
@@ -53,7 +67,9 @@ const TenantPlanAPI = {
     });
   },
 
-  /** 更新方案菜单 */
+  /**
+   * 更新方案菜单
+   */
   updatePlanMenus(planId: number, menuIds: number[]) {
     return request({
       url: `${TENANT_PLAN_BASE_URL}/${planId}/menus`,

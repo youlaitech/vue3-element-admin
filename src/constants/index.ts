@@ -1,4 +1,6 @@
-/** 应用存储前缀 */
+/**
+ * 应用存储前缀
+ */
 export const APP_PREFIX = "vea";
 
 /**
@@ -10,7 +12,7 @@ export const APP_PREFIX = "vea";
 export const ROLE_ROOT = "ROOT";
 
 /**
- * 平台租户ID
+ * 平台租户 ID
  *
  * @description
  * 用于前端识别平台租户（不参与套餐/菜单配置）
@@ -59,5 +61,7 @@ export const STORAGE_KEYS = {
   ACTIVE_TOP_MENU_PATH: `${APP_PREFIX}:app:active_top_menu_path`,
 } as const;
 
-/** 存储键名类型 */
+/**
+ * 存储键名类型
+ */
 export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];

@@ -75,7 +75,9 @@ let pollTimer: ReturnType<typeof setTimeout> | null = null;
 // 轮询间隔（毫秒）
 const QR_POLL_INTERVAL = 2000;
 
-// 申请票据并渲染二维码，开始轮询
+/**
+ * 申请票据并渲染二维码，开始轮询
+ */
 async function start() {
   stopPolling();
   state.value = "loading";
@@ -92,16 +94,25 @@ async function start() {
   }
 }
 
+/**
+ * 把票据渲染成二维码
+ */
 async function renderQrCode(payload: string) {
   if (!canvasRef.value) return;
   await QRCode.toCanvas(canvasRef.value, payload, { width: 220, margin: 1 });
 }
 
+/**
+ * 开始轮询扫码状态
+ */
 function startPolling() {
   stopPolling();
   pollTimer = setTimeout(pollOnce, QR_POLL_INTERVAL);
 }
 
+/**
+ * 停止轮询扫码状态
+ */
 function stopPolling() {
   if (pollTimer) {
     clearTimeout(pollTimer);
@@ -109,6 +120,9 @@ function stopPolling() {
   }
 }
 
+/**
+ * 查询一次扫码结果
+ */
 async function pollOnce() {
   if (!ticket) return;
   try {
@@ -119,7 +133,9 @@ async function pollOnce() {
   }
 }
 
-// 根据后端返回状态推进界面与下一步动作
+/**
+ * 根据后端返回状态推进界面与下一步动作
+ */
 function handleStatus(res: QrCodeStatusResult) {
   switch (res.status) {
     case "WAITING":
@@ -146,6 +162,9 @@ function handleStatus(res: QrCodeStatusResult) {
   }
 }
 
+/**
+ * 扫码成功后完成登录
+ */
 async function doLogin() {
   state.value = "done";
   stopPolling();

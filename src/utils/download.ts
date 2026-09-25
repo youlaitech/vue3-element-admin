@@ -1,9 +1,8 @@
-/**
- * 文件下载工具函数
- */
+// 文件下载工具函数
 
 /**
  * 从响应头中提取文件名
+ *
  * @param contentDisposition Content-Disposition 响应头
  * @returns 解码后的文件名
  */

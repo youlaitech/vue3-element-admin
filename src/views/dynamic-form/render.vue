@@ -36,7 +36,7 @@ defineOptions({
 const route = useRoute();
 const router = useRouter();
 
-/** 表单唯一标识（优先菜单路由 meta.params，query 兜底） */
+// 表单唯一标识（优先菜单路由 meta.params，query 兜底）
 const formKey = computed(() => {
   const metaParams = route.meta.params as Record<string, unknown> | undefined;
   return String(metaParams?.formKey ?? route.query.formKey ?? "");
@@ -59,6 +59,7 @@ onMounted(async () => {
 
 /**
  * 提交表单数据（校验通过后触发）
+ *
  * @param data 表单数据（field -> value 映射）
  */
 async function handleSubmit(data: Record<string, unknown>): Promise<void> {
@@ -73,10 +74,12 @@ async function handleSubmit(data: Record<string, unknown>): Promise<void> {
   }
 }
 
-/** 是否有权查看收集数据（无权限时不显示"查看已提交数据"按钮） */
+// 是否有权查看收集数据（无权限时不显示"查看已提交数据"按钮）
 const canViewData = computed(() => hasPerm(["form:data:list"]));
 
-// 跳转数据列表（按提交时间倒序，本次提交在首位）
+/**
+ * 跳转数据列表（按提交时间倒序，本次提交在首位）
+ */
 function handleViewData(): void {
   router.push({
     name: "FormData",

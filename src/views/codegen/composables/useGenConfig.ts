@@ -5,6 +5,9 @@ import MenuAPI from "@/api/system/menu";
 import { FormTypeEnum, QueryTypeEnum } from "@/enums/codegen";
 import type { OptionItem } from "@/api/common";
 
+/**
+ * 代码生成配置表单
+ */
 export function useGenConfig() {
   const genConfigFormData = ref<GenConfigForm>({
     fieldConfigs: [],
@@ -22,7 +25,7 @@ export function useGenConfig() {
   const menuOptions = ref<OptionItem[]>([]);
   const dictOptions = ref<OptionItem[]>([]);
 
-  /** 自动根据表前缀推导实体名 */
+  // 自动根据表前缀推导实体名
   watch(
     () => genConfigFormData.value.removeTablePrefix,
     (prefix) => {
@@ -59,7 +62,9 @@ export function useGenConfig() {
     { deep: true, immediate: true }
   );
 
-  /** 未保存过的表页面类型为空，统一补成普通表单 */
+  /**
+   * 未保存过的表页面类型为空，统一补成普通表单
+   */
   function applyDefaults(config: GenConfigForm): GenConfigForm {
     if (!config.pageType) {
       config.pageType = "classic";
@@ -67,10 +72,12 @@ export function useGenConfig() {
     return config;
   }
 
-  /** 加载配置：并行获取菜单、字典、生成配置 */
+  /**
+   * 加载配置：并行获取菜单、字典、生成配置
+   */
   async function loadConfig(tableName: string) {
     const [menuList, dictList, config] = await Promise.all([
-      MenuAPI.getOptions(true),
+      MenuAPI.getParentOptions(),
       DictAPI.getList(),
       GeneratorAPI.getGenConfig(tableName),
     ]);
@@ -80,12 +87,16 @@ export function useGenConfig() {
     return config;
   }
 
-  /** 保存配置 */
+  /**
+   * 保存配置
+   */
   async function saveConfig(tableName: string) {
     await GeneratorAPI.saveGenConfig(tableName, genConfigFormData.value);
   }
 
-  /** 校验基础配置必填项 */
+  /**
+   * 校验基础配置必填项
+   */
   function validateBasic(): boolean {
     const { tableName, packageName, businessName, moduleName, entityName } =
       genConfigFormData.value;
@@ -96,7 +107,9 @@ export function useGenConfig() {
     return true;
   }
 
-  /** 批量设置字段属性 */
+  /**
+   * 批量设置字段属性
+   */
   function bulkSet(key: "isShowInQuery" | "isShowInList" | "isShowInForm", value: 0 | 1) {
     const list = genConfigFormData.value?.fieldConfigs || [];
     list.forEach((row) => {

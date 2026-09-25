@@ -1,6 +1,9 @@
 import type { GeneratorPreviewItem, GenConfigForm } from "@/api/codegen";
 import { ElLoading } from "element-plus";
 
+/**
+ * 把生成的代码写入本地目录
+ */
 export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
   const supportsFSAccess = typeof (window as any).showDirectoryPicker === "function";
 
@@ -24,14 +27,23 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
   // 只要有预览文件就可以点写入按钮，目录在弹窗里选
   const canWriteToLocal = computed(() => lastPreviewFiles.value.length > 0);
 
+  /**
+   * 打开写入本地弹窗
+   */
   function openWriteDialog() {
     writeDialog.visible = true;
   }
 
+  /**
+   * 暂存预览文件列表
+   */
   function setPreviewFiles(files: GeneratorPreviewItem[]) {
     lastPreviewFiles.value = files;
   }
 
+  /**
+   * 选择前端项目目录
+   */
   async function pickFrontendDir() {
     try {
       frontendDirHandle.value = await (window as any).showDirectoryPicker();
@@ -42,6 +54,9 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     }
   }
 
+  /**
+   * 选择后端项目目录
+   */
   async function pickBackendDir() {
     try {
       backendDirHandle.value = await (window as any).showDirectoryPicker();
@@ -52,6 +67,9 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     }
   }
 
+  /**
+   * 确认写入本地
+   */
   async function confirmWrite() {
     await writeGeneratedCode();
     writeDialog.visible = false;
@@ -59,10 +77,16 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
 
   // ---- 内部工具函数 ----
 
+  /**
+   * 判断生成项写入前端还是后端根目录
+   */
   function resolveRootForItem(item: GeneratorPreviewItem): "frontend" | "backend" {
     return item.scope === "backend" ? "backend" : "frontend";
   }
 
+  /**
+   * 去掉路径里的项目根目录前缀
+   */
   function stripProjectRoot(p: string): string {
     const normalized = p.replace(/\\/g, "/");
     const frontApp = genConfigFormData.value.frontendAppName;
@@ -77,7 +101,9 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     return normalized;
   }
 
-  // 逐级创建/获取目录句柄
+  /**
+   * 逐级创建/获取目录句柄
+   */
   async function ensureDir(root: FileSystemDirectoryHandle, path: string[], create = true) {
     let current = root;
     for (const segment of path) {
@@ -86,6 +112,9 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     return current;
   }
 
+  /**
+   * 把单个文件写入目录
+   */
   async function writeFileToDir(
     dirHandle: FileSystemDirectoryHandle,
     filePath: string,
@@ -102,6 +131,9 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     await writable.close();
   }
 
+  /**
+   * 判断目录下的文件是否存在
+   */
   async function pathExists(
     dirHandle: FileSystemDirectoryHandle,
     filePath: string
@@ -119,6 +151,9 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     }
   }
 
+  /**
+   * 判断文件内容是否与本地一致
+   */
   async function isSameFile(
     dirHandle: FileSystemDirectoryHandle,
     filePath: string,
@@ -139,6 +174,9 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     }
   }
 
+  /**
+   * 按选择的目录写入全部生成文件
+   */
   async function writeGeneratedCode() {
     if (!supportsFSAccess) {
       ElMessage.warning("当前浏览器不支持本地写入，请选择下载ZIP");
@@ -173,6 +211,9 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     const concurrency = 4;
     const queue = files.slice();
 
+    /**
+     * 并发写入队列的工作函数
+     */
     async function worker() {
       while (queue.length) {
         const item = queue.shift();

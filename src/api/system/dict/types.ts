@@ -1,11 +1,10 @@
-/**
- * Dict 字典类型定义
- */
+// Dict 字典类型定义
 
 import type { BaseQueryParams } from "@/api/common";
 
-/** 字典分页查询参数 */
-
+/**
+ * 字典分页查询参数
+ */
 export interface DictTypeQueryParams extends BaseQueryParams {
   /** 搜索关键字 */
   keywords?: string;
@@ -13,9 +12,11 @@ export interface DictTypeQueryParams extends BaseQueryParams {
   status?: number;
 }
 
-/** 字典分页对象 */
+/**
+ * 字典分页对象
+ */
 export interface DictTypeItem {
-  /** 字典ID */
+  /** 字典 ID */
   id: string;
   /** 字典名称 */
   name: string;
@@ -25,9 +26,11 @@ export interface DictTypeItem {
   status: number;
 }
 
-/** 字典表单对象 */
+/**
+ * 字典表单对象
+ */
 export interface DictTypeForm {
-  /** 字典ID */
+  /** 字典 ID */
   id?: string;
   /** 字典名称 */
   name?: string;
@@ -39,7 +42,9 @@ export interface DictTypeForm {
   remark?: string;
 }
 
-/** 字典项分页查询参数 */
+/**
+ * 字典项分页查询参数
+ */
 export interface DictItemQueryParams extends BaseQueryParams {
   /** 搜索关键字 */
   keywords?: string;
@@ -47,9 +52,11 @@ export interface DictItemQueryParams extends BaseQueryParams {
   dictCode?: string;
 }
 
-/** 字典项分页对象 */
+/**
+ * 字典项分页对象
+ */
 export interface DictItem {
-  /** 字典项ID */
+  /** 字典项 ID */
   id: string;
   /** 字典编码 */
   dictCode: string;
@@ -65,9 +72,11 @@ export interface DictItem {
   tagType?: unknown;
 }
 
-/** 字典项表单对象 */
+/**
+ * 字典项表单对象
+ */
 export interface DictItemForm {
-  /** 字典项ID */
+  /** 字典项 ID */
   id?: string;
   /** 字典编码 */
   dictCode?: string;
@@ -83,7 +92,9 @@ export interface DictItemForm {
   tagType?: "success" | "warning" | "info" | "primary" | "danger" | "";
 }
 
-/** 字典项选项 */
+/**
+ * 字典项选项
+ */
 export interface DictItemOption {
   /** 字典项值 */
   value: number | string;

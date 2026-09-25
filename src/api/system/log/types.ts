@@ -1,10 +1,10 @@
-/**
- * Log 日志类型定义
- */
+// Log 日志类型定义
 
 import type { BaseQueryParams } from "@/api/common";
 
-/** 日志分页查询参数 */
+/**
+ * 日志分页查询参数
+ */
 export interface LogQueryParams extends BaseQueryParams {
   /** 搜索关键字(IP/操作人) */
   keywords?: string;
@@ -12,9 +12,11 @@ export interface LogQueryParams extends BaseQueryParams {
   createTime?: [string, string];
 }
 
-/** 日志分页对象 */
+/**
+ * 日志分页对象
+ */
 export interface LogItem {
-  /** 日志ID */
+  /** 日志 ID */
   id: number;
   /** 模块 */
   module?: string;
@@ -24,7 +26,7 @@ export interface LogItem {
   title?: string;
   /** 自定义日志内容 */
   content?: string;
-  /** 操作人ID */
+  /** 操作人 ID */
   operatorId?: number;
   /** 操作人名称 */
   operatorName?: string;
@@ -32,7 +34,7 @@ export interface LogItem {
   requestUri?: string;
   /** 请求方法 */
   requestMethod?: string;
-  /** IP地址 */
+  /** IP 地址 */
   ip?: string;
   /** 地区 */
   region?: string;
@@ -42,7 +44,7 @@ export interface LogItem {
   browser?: string;
   /** 操作系统 */
   os?: string;
-  /** 状态：0失败 1成功 */
+  /** 状态：0 失败 1 成功 */
   status?: number;
   /** 执行时间(毫秒) */
   executionTime?: number;
@@ -52,7 +54,9 @@ export interface LogItem {
   createTime?: string;
 }
 
-/** 访问趋势查询参数 */
+/**
+ * 访问趋势查询参数
+ */
 export interface VisitTrendQueryParams {
   /** 开始日期 */
   startDate: string;
@@ -60,7 +64,9 @@ export interface VisitTrendQueryParams {
   endDate: string;
 }
 
-/** 访问趋势视图对象 */
+/**
+ * 访问趋势视图对象
+ */
 export interface VisitTrendDetail {
   /** 日期列表 */
   dates: string[];
@@ -70,7 +76,9 @@ export interface VisitTrendDetail {
   uvList: number[];
 }
 
-/** 访问概览视图对象 */
+/**
+ * 访问概览视图对象
+ */
 export interface VisitOverviewDetail {
   /** 今日独立访客数(UV) */
   todayUvCount: number;

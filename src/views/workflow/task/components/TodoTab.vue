@@ -92,8 +92,8 @@
           <el-descriptions-item label="当前任务">{{ detail.taskName }}</el-descriptions-item>
         </el-descriptions>
 
-        <!-- AI 摘要：按需生成，未开启 AI 时接口不存在，失败不影响审批 -->
-        <div class="todo-approve__ai">
+        <!-- AI 摘要：按需生成，未开启 AI 时入口不显示；生成失败不影响审批 -->
+        <div v-if="appConfig.aiEnabled" class="todo-approve__ai">
           <div class="todo-approve__ai-header">
             <span>AI 摘要</span>
             <el-button link type="primary" :loading="aiLoading" @click="handleAiSummary">
@@ -187,6 +187,7 @@ import type {
   WorkflowTaskQueryParams,
 } from "@/api/workflow";
 import { usePageTable } from "@/composables";
+import { appConfig } from "@/settings";
 import ApprovalTimeline from "../../components/ApprovalTimeline.vue";
 import FormDetail from "../../components/FormDetail.vue";
 import ProcessStages from "../../components/ProcessStages.vue";
@@ -195,7 +196,9 @@ defineOptions({
   name: "WorkflowTodoTab",
 });
 
-/** 待办数量回传（驱动审批中心页签角标） */
+/**
+ * 待办数量回传（驱动审批中心页签角标）
+ */
 const emit = defineEmits<{
   totalChange: [total: number];
 }>();
@@ -205,7 +208,7 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 
 const queryFormRef = ref<FormInstance>();
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   TodoTaskItem,
   WorkflowTaskQueryParams
@@ -221,27 +224,29 @@ const { loading, list, total, params, fetchData, handleQuery, handleResetQuery }
 
 watch(total, (value) => emit("totalChange", value), { immediate: true });
 
-/** 暴露刷新能力：审批中心页签切换时父组件调用 */
+/**
+ * 暴露刷新能力：审批中心页签切换时父组件调用
+ */
 defineExpose({ fetchData });
 
-/** 办理弹窗状态 */
+// 办理弹窗状态
 const approveState = reactive({
   visible: false,
   loading: false,
   title: "审批办理",
 });
 
-/** 当前任务详情 */
+// 当前任务详情
 const detail = ref<TaskDetailData>();
 
-/** 审批意见（通过/驳回共用） */
+// 审批意见（通过/驳回共用）
 const comment = ref("");
 
-/** AI 摘要与生成状态 */
+// AI 摘要与生成状态
 const aiSummary = ref("");
 const aiLoading = ref(false);
 
-/** 当前任务在流程走向中的位置（节点ID精确匹配，当前环节高亮进行中，之前为已完成；未匹配时不高亮） */
+// 当前任务在流程走向中的位置（节点 ID 精确匹配，当前环节高亮进行中，之前为已完成；未匹配时不高亮）
 const currentStageIndex = computed(() => {
   const stages = detail.value?.stages;
   if (!stages?.length || !detail.value?.taskDefinitionKey) {
@@ -250,7 +255,7 @@ const currentStageIndex = computed(() => {
   return stages.findIndex((stage) => stage.nodeId === detail.value?.taskDefinitionKey);
 });
 
-/** 驳回模式状态 */
+// 驳回模式状态
 const rejectMode = ref(false);
 const rejectTargets = ref<RejectTargetItem[]>([]);
 const rejectTargetId = ref("");

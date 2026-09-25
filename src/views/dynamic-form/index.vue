@@ -271,20 +271,20 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 const queryFormRef = ref<FormInstance>();
 const formDefinitionFormRef = ref<FormInstance>();
 
-/** 状态下拉/标签展示映射 */
+// 状态下拉/标签展示映射
 const statusOptions: Record<number, string> = {
   [FormStatus.DRAFT]: "草稿",
   [FormStatus.PUBLISHED]: "已发布",
   [FormStatus.DISABLED]: "已停用",
 };
 
-/** 类型下拉/标签展示映射 */
+// 类型下拉/标签展示映射
 const categoryOptions: Record<string, string> = {
   normal: "普通表单",
   workflow: "工作流表单",
 };
 
-/** 当前编辑表单状态：非草稿（已发布/已停用）时类型作为业务标识不可修改 */
+// 当前编辑表单状态：非草稿（已发布/已停用）时类型作为业务标识不可修改
 const editingStatus = ref<FormStatus | null>(null);
 const categoryDisabled = computed(
   () => editingStatus.value !== null && editingStatus.value !== FormStatus.DRAFT
@@ -306,7 +306,7 @@ function statusTagType(status: number): "info" | "success" | "danger" {
   }
 }
 
-/** 分页表格数据管理 */
+// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   FormDefinitionItem,
   FormDefinitionQueryParams
@@ -330,7 +330,7 @@ const dialogState = reactive({
   visible: false,
 });
 
-/** 新增表单默认值：类型缺省普通表单 */
+// 新增表单默认值：类型缺省普通表单
 const initialFormData: FormDefinitionData = {
   category: "normal",
 };
@@ -349,7 +349,9 @@ const rules: FormRules<FormDefinitionData> = {
   ],
 };
 
-// 重置表单数据和校验状态
+/**
+ * 重置表单数据和校验状态
+ */
 function resetForm(): void {
   formDefinitionFormRef.value?.resetFields();
   formDefinitionFormRef.value?.clearValidate();
@@ -359,17 +361,24 @@ function resetForm(): void {
   Object.assign(formData, initialFormData);
 }
 
+/**
+ * 打开表单弹窗
+ */
 function openDialog(): void {
   dialogState.visible = true;
 }
 
-// 关闭弹窗并重置
+/**
+ * 关闭弹窗并重置
+ */
 function closeDialog(): void {
   dialogState.visible = false;
   resetForm();
 }
 
-// 打开新增弹窗（类型按当前过滤视图预选）
+/**
+ * 打开新增弹窗（类型按当前过滤视图预选）
+ */
 function handleCreateClick(): void {
   resetForm();
   editingStatus.value = null;
@@ -380,6 +389,7 @@ function handleCreateClick(): void {
 
 /**
  * 打开编辑弹窗并回填数据
+ *
  * @param row 当前表单行（携带状态，判断类型可否修改）
  */
 async function handleEditClick(row: FormDefinitionItem): Promise<void> {
@@ -391,7 +401,9 @@ async function handleEditClick(row: FormDefinitionItem): Promise<void> {
   openDialog();
 }
 
-// 校验并提交
+/**
+ * 校验并提交
+ */
 async function handleSubmit(): Promise<void> {
   const valid = await formDefinitionFormRef.value?.validate().then(
     () => true,
@@ -419,7 +431,7 @@ async function handleSubmit(): Promise<void> {
   }
 }
 
-/** 发布向导状态（发布/入口管理共用） */
+// 发布向导状态（发布/入口管理共用）
 const publishState = reactive({
   visible: false,
   formId: "",
@@ -432,6 +444,7 @@ const publishState = reactive({
 
 /**
  * 打开发布向导（已发布表单直达入口配置）
+ *
  * @param row 当前表单行
  */
 function openPublishDialog(row: FormDefinitionItem): void {
@@ -445,13 +458,16 @@ function openPublishDialog(row: FormDefinitionItem): void {
   });
 }
 
-// 发布后刷新列表（状态与版本可能已变更）
+/**
+ * 发布后刷新列表（状态与版本可能已变更）
+ */
 function handlePublishSuccess(): void {
   fetchData();
 }
 
 /**
  * 跳转到指定表单页面并检查路由是否已注册
+ *
  * @param name 路由名称（FormDesigner/FormData）
  * @param query 路由参数
  */
@@ -471,6 +487,7 @@ function openFormPage(name: string, query: Record<string, string>): void {
 
 /**
  * 跳转到表单数据页
+ *
  * @param row 当前表单行
  */
 function openDataPage(row: FormDefinitionItem): void {
@@ -479,6 +496,7 @@ function openDataPage(row: FormDefinitionItem): void {
 
 /**
  * 停用表单（已发出去的访问入口立即失效）
+ *
  * @param id 表单 ID
  */
 async function handleDisable(id: string): Promise<void> {
@@ -499,6 +517,7 @@ async function handleDisable(id: string): Promise<void> {
 
 /**
  * 删除单个或批量表单定义
+ *
  * @param id 指定时删除单个表单，否则删除勾选项
  */
 async function handleDelete(id?: string): Promise<void> {
@@ -531,6 +550,7 @@ async function handleDelete(id?: string): Promise<void> {
 
 /**
  * 跳转到表单设计器页面
+ *
  * @param row 当前表单行
  */
 function openDesigner(row: FormDefinitionItem): void {

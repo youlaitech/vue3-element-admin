@@ -9,6 +9,9 @@ import {
 } from "../utils/tree-builder";
 import type { TreeNode } from "../utils/tree-builder";
 
+/**
+ * 代码预览：拉取生成结果并构造文件树
+ */
 export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
   const treeData = ref<TreeNode[]>([]);
   const previewScope = ref<"all" | "frontend" | "backend">("all");
@@ -30,11 +33,13 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
     if (copied.value) ElMessage.success("复制成功");
   });
 
-  /** 获取预览数据并构建文件树 */
+  /**
+   * 获取预览数据并构建文件树
+   */
   async function handlePreview(tableName: string) {
     treeData.value = [];
     const pageType = genConfigFormData.value.pageType || "classic";
-    const data = await GeneratorAPI.getPreviewData(tableName, pageType as "classic" | "curd", "ts");
+    const data = await GeneratorAPI.getPreviewData(tableName, pageType as "classic" | "crud", "ts");
     const previewList = data || [];
 
     // 提取语言类型选项
@@ -48,11 +53,15 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
     previewTypeOptions.value = typeOptions;
     previewTypes.value = [...typeOptions];
 
-    // 构建树
+    /**
+     * 构建树
+     */
     const tree = buildFileTree(previewList);
     treeData.value = tree?.children ? [...tree.children] : [];
 
-    // 选中第一个叶子节点
+    /**
+     * 选中第一个叶子节点
+     */
     const firstLeaf = findFirstLeaf(tree);
     if (firstLeaf) {
       code.value = firstLeaf.content || "";
@@ -64,7 +73,9 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
     return previewList;
   }
 
-  /** 点击文件树节点 */
+  /**
+   * 点击文件树节点
+   */
   function handleFileTreeNodeClick(data: TreeNode) {
     if (!data.children || data.children.length === 0) {
       code.value = data.content || "";
@@ -72,7 +83,9 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
     }
   }
 
-  /** 复制代码 */
+  /**
+   * 复制代码
+   */
   function handleCopyCode() {
     if (code.value) copy(code.value);
   }
