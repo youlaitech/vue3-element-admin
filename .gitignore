@@ -35,3 +35,7 @@ yarn.lock
 
 # Local history
 .history
+
+# 本地部署脚本（含服务器地址与账号）
+deploy.mjs
+deploy.config.mjs
