@@ -1,9 +1,12 @@
 /* eslint-disable no-console */
 /**
- * 构建并上传到服务器
+ * 部署模板：构建并上传到服务器
  *
- * 服务器信息取自 deploy.config.mjs（已加入忽略，不会入库），缺该文件时回落到
- * 环境变量 DEPLOY_HOST / DEPLOY_USER / DEPLOY_PORT / DEPLOY_TARGET
+ * 用法：复制本文件为 deploy.mjs（已加入忽略，不入库），再创建 deploy.config.mjs
+ *      填写服务器信息，然后执行 pnpm run deploy
+ *
+ * 服务器信息取自 deploy.config.mjs，缺该文件时回落到环境变量
+ * DEPLOY_HOST / DEPLOY_USER / DEPLOY_PORT / DEPLOY_TARGET
  *
  * 前置：SSH 免密登录（只需一次）
  *   1. 没有 %USERPROFILE%\.ssh\id_rsa 就先 ssh-keygen -t rsa 回车到底

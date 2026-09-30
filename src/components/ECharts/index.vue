@@ -51,6 +51,9 @@ echarts.use([
   GeoComponent,
 ]);
 
+/**
+ * ECharts 图表容器：按配置渲染并自适应尺寸
+ */
 const props = defineProps<{
   options: echarts.EChartsCoreOption;
   width?: string;

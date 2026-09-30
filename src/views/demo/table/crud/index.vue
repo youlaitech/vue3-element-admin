@@ -117,6 +117,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: "Crud",
+});
+
 import UserAPI from "@/api/system/user";
 import type { IObject, IOperateData, CrudModalInstance } from "@/components/Crud/types";
 import useCrudPage from "@/components/Crud/useCrudPage";

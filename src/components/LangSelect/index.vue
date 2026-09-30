@@ -20,6 +20,9 @@
 import { useAppStore } from "@/stores/app";
 import { LanguageEnum } from "@/enums/settings";
 
+/**
+ * 语言切换：中英文切换入口
+ */
 defineProps({
   size: {
     type: String,

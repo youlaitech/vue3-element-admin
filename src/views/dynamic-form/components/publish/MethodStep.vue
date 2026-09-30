@@ -59,6 +59,9 @@ defineProps<{
   shareOpened: boolean;
 }>();
 
+/**
+ * 上抛发布方式切换
+ */
 const emit = defineEmits<{
   /** 切换发布方式选中态 */
   toggle: [method: PublishMethod];

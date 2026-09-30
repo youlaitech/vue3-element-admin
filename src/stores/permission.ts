@@ -4,12 +4,11 @@ import { resolveComponent } from "@/router/views";
 import { store } from "@/stores";
 import router from "@/router";
 import { useUserStoreHook } from "@/stores/user";
-import { isExternal, joinRoutePath } from "@/utils";
+import { isExternal, joinRoutePath, resolveExternalUrl } from "@/utils";
 
 import MenuAPI from "@/api/system/menu";
 import type { RouteItem } from "@/api/system/menu";
 
-// 布局组件（懒加载）
 const Layout = () => import("../layouts/index.vue");
 
 export const usePermissionStore = defineStore("permission", () => {
@@ -46,9 +45,8 @@ export const usePermissionStore = defineStore("permission", () => {
 
   /**
    * 移除已注册的动态路由（静态路由保留）
-   *
-   * @param routeList 待移除的路由清单
-   */ const removeDynamicRoutes = (routeList: RouteRecordRaw[]) => {
+   */
+  const removeDynamicRoutes = (routeList: RouteRecordRaw[]) => {
     const constantNames = new Set(constantRoutes.map((route) => route.name).filter(Boolean));
     routeList.forEach((route) => {
       if (route.name && !constantNames.has(route.name)) {
@@ -71,9 +69,9 @@ export const usePermissionStore = defineStore("permission", () => {
   let pendingReload: Promise<RouteRecordRaw[]> | null = null;
 
   /**
-   * 重新加载动态路由
-   * 同一时刻只允许一个请求进行中；拉取期间旧路由保持在线， 摘旧与注册新之间无 await，导航无法插入，避免路由空窗触发 404 告警
-   */ async function reloadRoutes(): Promise<RouteRecordRaw[]> {
+   * 重新加载动态路由：并发复用同一请求，避免路由空窗
+   */
+  async function reloadRoutes(): Promise<RouteRecordRaw[]> {
     if (pendingReload) return pendingReload;
 
     pendingReload = (async () => {
@@ -98,9 +96,9 @@ export const usePermissionStore = defineStore("permission", () => {
   let pendingPermissionRefresh: Promise<void> | null = null;
 
   /**
-   * 刷新权限
-   * 重新拉取用户信息后重建动态路由
-   */ async function refreshPermissions(): Promise<void> {
+   * 刷新权限：重新拉取用户信息并重建动态路由
+   */
+  async function refreshPermissions(): Promise<void> {
     if (pendingPermissionRefresh) return pendingPermissionRefresh;
 
     pendingPermissionRefresh = (async () => {
@@ -128,23 +126,24 @@ export const usePermissionStore = defineStore("permission", () => {
   };
 });
 
-// 目录菜单在 component 上的占位值，表示该级只作路由容器
+// 目录菜单 component 的占位值，标记该级只作路由容器
 const LAYOUT_COMPONENT = "Layout";
 
 /**
- * 后端菜单树还原为 Vue Router 路由树
- * 顶层菜单统一由 Layout 承载：目录本身是容器，页面下沉为 path 为空的子路由； 路径前缀与默认跳转在此推导，菜单数据只描述业务信息
+ * 顶层统一套 Layout：目录即容器，页面下沉为 path 为空的子路由
  */
 const buildRoutes = (menus: RouteItem[]): RouteRecordRaw[] => menus.map(buildTopLevelRoute);
 
 /**
- * 顶层菜单路由：套 Layout 壳，保证页面具备侧边栏与顶栏
+ * 套 Layout 壳承载顶层菜单，使页面具备侧边栏与顶栏
  */
 function buildTopLevelRoute(menu: RouteItem): RouteRecordRaw {
   // 新标签页外链不注册路由，保留原始数据供侧边栏直接跳转
-  if (isExternalLink(menu)) return toExternalRoute(menu, menu.path as string);
+  const externalUrl = resolveMenuExternalUrl(menu);
+  if (externalUrl) return toExternalRoute(menu, externalUrl);
 
   const path = joinRoutePath("", menu.path);
+
   const meta = { ...menu.meta };
 
   // 目录：自身就是侧边栏分组，标题与图标保留在壳层
@@ -159,7 +158,7 @@ function buildTopLevelRoute(menu: RouteItem): RouteRecordRaw {
     };
   }
 
-  // 页面：壳层只承载显示状态，标题与图标下沉到页面子路由，避免面包屑与标签页多出一层
+  // 页面：标题与图标下沉到子路由，避免面包屑与标签页多出一层
   return {
     path,
     name: path,
@@ -184,7 +183,8 @@ function buildChildRoutes(menus: RouteItem[] | undefined, basePath: string): Rou
   return (menus ?? []).map((menu) => {
     const fullPath = joinRoutePath(basePath, menu.path);
 
-    if (isExternalLink(menu)) return toExternalRoute(menu, fullPath);
+    const externalUrl = resolveMenuExternalUrl(menu);
+    if (externalUrl) return toExternalRoute(menu, externalUrl);
 
     if (isContainer(menu)) {
       const children = buildChildRoutes(menu.children, fullPath);
@@ -208,11 +208,24 @@ function buildChildRoutes(menus: RouteItem[] | undefined, basePath: string): Rou
 }
 
 /**
- * 新标签页外链路由：不参与路由注册，仅保留侧边栏跳转所需信息
+ * 新标签页外链：不注册路由，仅保留侧边栏跳转所需信息
  */
 function toExternalRoute(menu: RouteItem, path: string): RouteRecordRaw {
   const { children: _children, ...rest } = menu;
   return { ...rest, path } as RouteRecordRaw;
+}
+
+/**
+ * 外链地址：取 meta.externalUrl；存量数据的外链直接写在 path 上
+ */
+function resolveMenuExternalUrl(menu: RouteItem): string {
+  if (menu.component) return "";
+
+  const externalUrl = menu.meta?.externalUrl;
+  if (externalUrl) return resolveExternalUrl(externalUrl);
+
+  const path = menu.path ?? "";
+  return isExternal(path) ? path : "";
 }
 
 /**
@@ -223,22 +236,15 @@ function isContainer(menu: RouteItem): boolean {
 }
 
 /**
- * 新标签页外链：外链地址直接写在路由路径上且不带组件
- */
-function isExternalLink(menu: RouteItem): boolean {
-  return !menu.component && isExternal(menu.path ?? "");
-}
-
-/**
- * 默认跳转：第一个可见子菜单的完整路径
+ * 默认跳转：第一个非外链的可见子菜单完整路径
  */
 function firstVisiblePath(menus: RouteItem[] | undefined, basePath: string): string | undefined {
-  const first = (menus ?? []).find((menu) => !menu.meta?.hidden && !isExternal(menu.path ?? ""));
+  const first = (menus ?? []).find((menu) => !menu.meta?.hidden && !resolveMenuExternalUrl(menu));
   return first ? joinRoutePath(basePath, first.path) : undefined;
 }
 
 /**
- * 过滤掉不注册为 Vue Router 路由的外链
+ * 过滤掉新标签页外链，仅保留可注册的路由
  */
 function filterRoutes(routes: RouteRecordRaw[]): RouteRecordRaw[] {
   return routes.reduce<RouteRecordRaw[]>((result, route) => {

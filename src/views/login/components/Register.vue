@@ -107,6 +107,9 @@ import type { LoginRequest } from "@/api/auth";
 
 const { t } = useI18n();
 
+/**
+ * 切换登录或注册表单
+ */
 const emit = defineEmits(["update:modelValue"]);
 /**
  * 切回登录表单

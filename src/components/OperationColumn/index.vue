@@ -21,6 +21,9 @@ interface Props {
   minWidth?: number;
 }
 
+/**
+ * 表格操作列：统一渲染编辑、删除等操作按钮
+ */
 const props = withDefaults(defineProps<Props>(), {
   listDataLength: 0,
   label: "操作",

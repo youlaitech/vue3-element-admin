@@ -290,7 +290,7 @@ const dictMap: Record<string, any> = {
   },
 };
 
-// 字典项数据：tagType 用全称，与 sql/youlai-admin.sql 种子数据保持一致
+// 字典项数据：tagType 取全称（primary、success 等），对应 sys_dict_item.tag_type
 const dictItemList: Record<string, any[]> = {
   gender: [
     {

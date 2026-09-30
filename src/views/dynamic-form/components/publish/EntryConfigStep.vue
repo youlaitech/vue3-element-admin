@@ -154,6 +154,9 @@ const props = defineProps<{
   shareUrl: string;
 }>();
 
+/**
+ * 上抛复制分享链接操作
+ */
 const emit = defineEmits<{
   /** 复制分享链接（统一由容器执行剪贴板写入与提示） */
   copy: [];
@@ -196,6 +199,9 @@ function validate(): Promise<boolean> {
   );
 }
 
+/**
+ * 暴露 validate 供容器保存前校验
+ */
 defineExpose({ validate });
 </script>
 

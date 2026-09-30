@@ -29,6 +29,9 @@ import type { FormInstance } from "element-plus";
 
 const { t } = useI18n();
 
+/**
+ * 切换登录或重置密码表单
+ */
 const emit = defineEmits(["update:modelValue"]);
 /**
  * 切回登录表单

@@ -43,6 +43,9 @@ import FileAPI from "@/api/file";
 // 上传图片回调函数类型
 type InsertFnType = (_url: string, _alt: string, _href: string) => void;
 
+/**
+ * wangEditor 富文本编辑器
+ */
 defineProps({
   height: {
     type: String,

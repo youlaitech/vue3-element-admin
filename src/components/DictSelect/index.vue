@@ -45,6 +45,9 @@ defineOptions({
   name: "DictSelect",
 });
 
+/**
+ * 字典下拉选择：按字典类型加载选项
+ */
 const props = defineProps({
   /** 字典编码 */
   code: {

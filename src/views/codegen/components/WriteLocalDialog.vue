@@ -133,6 +133,9 @@
 <script setup lang="ts">
 const modelValue = defineModel<boolean>({ required: true });
 
+/**
+ * 写入本地弹窗：选择目录并落盘
+ */
 const props = defineProps<{
   supportsFSAccess: boolean;
   frontendDirPath: string;
@@ -144,6 +147,9 @@ const props = defineProps<{
   canWriteToLocal: boolean;
 }>();
 
+/**
+ * 上抛写入范围、覆盖模式与目录选择
+ */
 const emit = defineEmits<{
   "update:writeScope": [val: "all" | "frontend" | "backend"];
   "update:overwriteMode": [val: "overwrite" | "skip" | "ifChanged"];

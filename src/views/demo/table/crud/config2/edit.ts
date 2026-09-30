@@ -16,7 +16,6 @@ const modalConfig: IModalConfig = {
    * 表单提交（示例不发请求，直接提示）
    */
   formAction(data) {
-    // return UserAPI.update(data.id as string, data);
     // 模拟发起网络请求修改字段
     ElMessage.success(JSON.stringify(data));
     return Promise.resolve(null);

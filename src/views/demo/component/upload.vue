@@ -118,6 +118,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: "Upload",
+});
+
 // 单图
 const picUrl = ref("https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg");
 const picUrls = ref(["https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg"]);

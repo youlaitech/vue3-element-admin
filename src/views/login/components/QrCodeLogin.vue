@@ -54,6 +54,9 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 // → done(已登录) / expired(过期或已使用) / canceled(APP 取消)
 type State = "loading" | "waiting" | "scanned" | "expired" | "canceled" | "done";
 
+/**
+ * 切换登录方式
+ */
 const emit = defineEmits<{ (e: "switch", mode: "login"): void }>();
 
 const userStore = useUserStore();

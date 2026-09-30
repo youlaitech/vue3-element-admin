@@ -1,0 +1,128 @@
+// 导入字体文件
+@use "../fonts/font";
+
+// 定义公共样式的Mixin
+@mixin head-styles($skew-direction, $margin-side, $after-position) {
+  &::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    margin-top: var(--padding-size);
+    content: "";
+    background-color: var(--bg-fill-color);
+    transform: skewX($skew-direction);
+    #{$margin-side}: var(--padding-size);
+  }
+
+  &::after {
+    position: absolute;
+    z-index: -1;
+    width: 100px;
+    height: 100%;
+    content: "";
+    background-color: var(--bg-fill-color);
+    #{$after-position}: 0;
+  }
+}
+
+.dataScreen-container {
+  --bg-fill-color: rgb(28 58 160 / 100%);
+
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: url("../images/bg.webp") center;
+  background-size: cover;
+}
+
+.dataScreen-header {
+  position: relative;
+  height: 60px;
+  background: url("../images/header-bg.webp") 50%;
+  background-size: cover;
+  // padding: 0 10px;
+  --padding-size: 10px;
+
+  .title {
+    position: relative;
+    top: -8px;
+    // w="[50%]" text-center
+    width: 50%;
+    font-family: YouSheBiaoTiHei, Arial, sans-serif;
+    font-size: 38px;
+    color: #00eaff;
+    text-align: center;
+    letter-spacing: 8px;
+  }
+
+  .leftHead,
+  .rightHead {
+    position: relative;
+    display: flex;
+    flex: 1;
+    height: 100%;
+    padding-top: var(--padding-size);
+  }
+
+  // 应用Mixin
+  .leftHead {
+    @include head-styles(45deg, margin-right, left);
+  }
+
+  .rightHead {
+    @include head-styles(-45deg, margin-left, right);
+
+    .dateTime {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      width: 100%;
+      padding-right: 10px;
+      font-family: YouSheBiaoTiHei, Arial, sans-serif;
+      font-size: 24px;
+    }
+  }
+
+  .lines {
+    position: absolute;
+    top: -3px;
+    width: 140px;
+    height: 6px;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAAAGCAYAAAAR63aAAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTggKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkFDRTEzN0RDOTg3OTExRUM5RTgzQ0U4QUEzRjc2RTRFIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkFDRTEzN0REOTg3OTExRUM5RTgzQ0U4QUEzRjc2RTRFIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QUNFMTM3REE5ODc5MTFFQzlFODNDRThBQTNGNzZFNEUiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QUNFMTM3REI5ODc5MTFFQzlFODNDRThBQTNGNzZFNEUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5uuACcAAAC/0lEQVR42oRXOZIUMRCsnCDwl/exJi4eeHyA/QLe/IiPrInXiY46stRBMMa2Wi3VkZV1LOw3P8LsjbTP4/lpPG0892++cC5gIC1/vgTjzPhufpZyN87M51X7iHMpJ+66nKv07Pus9bqP/ZyfLv9+LSvv8pc/8Z3GC/aYz5RX+uf7XD5YvtxkyVlT/b63ZFwcOrqPW/98Oi4XG45YroVv28+H+0n3IWyJGBX+cV/2Gn6KIxpeSydQsc74q1y8j5PPsfz2Yfz5Ofa/pgL3cRNkB5B2J0sa5Tfoq7A85KQBsp/XhFCxt5xGOUgBtBuBtGtaCUwy2AY8I+W2ucwgpHJ/S0NKg79bavAduE7FyFzwddi3/HDyN6zCjr2ABrARU/CzCjTDWlglVWpmf72wZWATLaKZpMFGV0lX16tQLEIZXxZHaH9mIrxW2F2BsTxD50mcLTj2mSRFQenBk7vLaZgK3bbWnrq/cT1k6Fl3POQEAzcG6Kfp9IMTTOIIr26dQrIGOwdR/kTwxckEXW0GVDqPYJevgSO19Iz9iEtPuIP5UcFTn59nJfXaAUsEisgwu9kVrx7zL4+KJbPs8ciKuwy2PKxqQvW2kYmse7TOaBiVPQpzb39CbNPKJ05XJvNm9yQYgzgs3USB0rIsEoOSIlG2UQRtZScZhRaQXhthGkK1s1Vlb4ElDa1g8agu6Gh6LDxK0IQsX6R7CUnZrN2JsS2ehHlGCYokgzKfdxCzImTbiPJXIKEX1MyUHkFJbFhrY//In2wV6zxkxpAk17ZCSl6CHVRY2q553+uLgIfCht4rwZOwlMQQ29hZc6/YB9/sTgpq69f5CKhUrIxv8s7ZNGmIe3vODPJWL8PQrznDfHdXX8efF57ZjEa/NjnUaMLGVMFJqqf0a5kOijm7ymW4qRlciFLKLCnt8BJCswirFq87TpokmlgK+98v7tcgS5kn2NJNQLwORh+MoZ+J+euch/QfArbKzWyLVRRqTsHZKdiHRY2RVjXF3fW9j9fnWP74K8AA3scr31D4jAoAAAAASUVORK5CYII=");
+  }
+
+  .ray {
+    position: absolute;
+    bottom: -26px;
+    z-index: -1;
+    width: 100%;
+    height: 56px;
+    background-image: url("../images/ray.webp");
+    background-position: 100px;
+  }
+}
+
+.leftChart,
+.rightChart {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+
+.centerChart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-between;
+  width: 50%;
+
+  .map {
+    height: 75%;
+  }
+
+  .vehicleCharging {
+    height: 25%;
+  }
+}

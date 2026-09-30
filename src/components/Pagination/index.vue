@@ -29,6 +29,9 @@ interface Props {
   hidden?: boolean;
 }
 
+/**
+ * 分页组件：数据总条数、每页条数与布局
+ */
 const props = withDefaults(defineProps<Props>(), {
   total: 0,
   pageSizes: () => [10, 20, 50, 100],
@@ -37,6 +40,9 @@ const props = withDefaults(defineProps<Props>(), {
   hidden: false,
 });
 
+/**
+ * 页码或每页条数变化时回传
+ */
 const emit = defineEmits<{
   /** 页码或每页条数变化时触发，回调当前页码与每页条数 */
   pagination: [query: { page: number; limit: number }];

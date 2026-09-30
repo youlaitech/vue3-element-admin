@@ -43,6 +43,9 @@ import { UploadRawFile, UploadRequestOptions, UploadUserFile } from "element-plu
 import FileAPI from "@/api/file";
 import type { FileInfo } from "@/api/file";
 
+/**
+ * 多图上传：图片卡片列表与预览
+ */
 const props = defineProps({
   /** 请求携带的额外参数 */
   data: {
@@ -126,7 +129,7 @@ function handleBeforeUpload(file: UploadRawFile) {
   return true;
 }
 
-/*
+/**
  * 上传文件
  */
 function handleUpload(options: UploadRequestOptions) {

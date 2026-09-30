@@ -70,6 +70,9 @@ interface ErrorPageProps {
   variant: "locked" | "missing";
 }
 
+/**
+ * 错误页：404 / 无权限等场景通用
+ */
 const props = defineProps<ErrorPageProps>();
 
 // 使用系统色生成异常页视觉，避免固定插画破坏主题一致性

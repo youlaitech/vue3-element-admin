@@ -27,6 +27,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: "TableSelect",
+});
+
 import selectConfig from "./config/select";
 import { useDictStore } from "@/stores";
 const dictStore = useDictStore();

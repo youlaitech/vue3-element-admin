@@ -37,6 +37,9 @@ const inputRef = ref<InputInstance>();
  */
 const tags = defineModel<string[]>();
 
+/**
+ * 标签输入框：回车新增标签
+ */
 defineProps({
   config: {
     type: Object as () => {

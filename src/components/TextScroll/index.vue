@@ -30,6 +30,9 @@
 <script setup lang="ts">
 import { useElementHover } from "@vueuse/core";
 
+/**
+ * 关闭公告时触发
+ */
 const emit = defineEmits(["close"]);
 
 interface Props {
@@ -49,6 +52,9 @@ interface Props {
   typewriterSpeed?: number;
 }
 
+/**
+ * 文字横向滚动：速度、方向与打字机效果
+ */
 const props = withDefaults(defineProps<Props>(), {
   speed: 70,
   direction: "left",

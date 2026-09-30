@@ -229,7 +229,13 @@ const STEPS = [
 
 const visible = defineModel<boolean>("visible", { required: true });
 
+/**
+ * 代码生成抽屉：承载三步向导
+ */
 defineProps<{ title: string }>();
+/**
+ * 生成成功或重置配置时上抛
+ */
 defineEmits<{ success: [] }>();
 
 const currentStep = ref<number>(STEP.BASIC_CONFIG);
@@ -497,6 +503,9 @@ function handleClose() {
   fieldConfigRef.value?.destroySort();
 }
 
+/**
+ * 暴露 open 供列表页打开抽屉
+ */
 defineExpose({ open });
 </script>
 

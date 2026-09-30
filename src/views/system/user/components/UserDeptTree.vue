@@ -24,6 +24,9 @@ import DeptAPI from "@/api/system/dept";
 import type { OptionItem } from "@/api/common";
 import type { TreeNodeData } from "element-plus/es/components/tree";
 
+/**
+ * 用户部门树：按部门筛选用户
+ */
 const props = defineProps({
   modelValue: {
     type: [String, Number],
@@ -35,6 +38,9 @@ const deptList = ref<OptionItem[]>();
 const deptTreeRef = ref();
 const deptName = ref("");
 
+/**
+ * 选中部门时上抛部门 ID
+ */
 const emits = defineEmits(["node-click"]);
 
 const deptId = useVModel(props, "modelValue", emits);

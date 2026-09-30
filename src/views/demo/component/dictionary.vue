@@ -46,6 +46,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: "DictDemo",
+});
+
 const stringValue = ref("1"); // 性别(值为 String)
 const numberValue = ref(1); // 性别(值为 Number)
 const arrayValue = ref(["1", "2"]); // 性别(值为 Array)

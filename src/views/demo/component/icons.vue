@@ -39,7 +39,7 @@
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
 defineOptions({
-  name: "Icons",
+  name: "IconDemo",
   inheritAttrs: false,
 });
 const svg_icons: string[] = [

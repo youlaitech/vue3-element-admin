@@ -1,11 +1,5 @@
 <template>
   <div class="page-container">
-    <RouteInfoPanel
-      class="mb-4"
-      title="列表 → 独立编辑页"
-      description="点「编辑」跳到独立页面改数据，改完返回列表。本页开了 keepAlive，筛选条件不会丢，返回时还会重新读取数据源，把修改结果显示出来。"
-    />
-
     <el-card class="page-content" shadow="never">
       <template #header>成员列表</template>
 
@@ -45,7 +39,6 @@
 
 <script setup lang="ts">
 import router from "@/router";
-import RouteInfoPanel from "@/views/demo/route/components/RouteInfoPanel.vue";
 
 import { listMembers } from "./data";
 import type { MemberItem } from "./data";

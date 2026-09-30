@@ -201,6 +201,9 @@ import type { AiChangeItem } from "../composables/useAiFillDiff";
 
 const formData = defineModel<GenConfigForm>({ required: true });
 
+/**
+ * 代码生成字段配置步骤
+ */
 const props = defineProps<{
   loading: boolean;
   loadingText: string;
@@ -329,7 +332,7 @@ function destroySort() {
 }
 
 /**
- * 暴露给父组件
+ * 暴露字段排序、显隐切换与定位能力
  */
 defineExpose({ initSort, destroySort, showOnlyAiChanged, locateField });
 

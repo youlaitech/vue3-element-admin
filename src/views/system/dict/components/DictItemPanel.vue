@@ -180,6 +180,9 @@ defineOptions({
   inheritAttrs: false,
 });
 
+/**
+ * 字典项面板
+ */
 const props = defineProps({
   /** 当前字典编码 */
   dictCode: {

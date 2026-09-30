@@ -32,6 +32,10 @@ import { useSettingsStore, useAppStore } from "@/stores";
 import { isExternal } from "@/utils/index";
 import LayoutSidebarItem from "./LayoutSidebarItem.vue";
 import variables from "@/styles/variables.module.scss";
+
+/**
+ * 侧边栏导航：菜单数据与展示模式（垂直/水平）
+ */
 const props = defineProps({
   data: {
     type: Array as PropType<RouteRecordRaw[]>,

@@ -86,6 +86,9 @@ import { usePageTable } from "@/composables";
 // 表已配置代码生成（1:是;0:否）
 const TABLE_CONFIGURED = 1;
 
+/**
+ * 上抛生成与重置配置操作
+ */
 const emit = defineEmits<{
   generate: [tableName: string];
   "reset-config": [tableName: string];
@@ -128,5 +131,8 @@ onMounted(() => {
   handleQuery();
 });
 
+/**
+ * 暴露查询与重置能力供父组件调用
+ */
 defineExpose({ handleQuery, handleResetConfig });
 </script>

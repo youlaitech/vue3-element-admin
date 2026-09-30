@@ -52,6 +52,9 @@ const props = defineProps<{
   submitted?: boolean;
 }>();
 
+/**
+ * 表单校验通过后上抛提交数据
+ */
 const emit = defineEmits<{
   /** 表单校验通过后的提交（是否落库由承载页决定） */
   submit: [data: Record<string, unknown>];

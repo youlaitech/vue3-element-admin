@@ -52,6 +52,10 @@
 </template>
 
 <script lang="ts" setup>
+defineOptions({
+  name: "AutoOperationColumn",
+});
+
 const checked1 = ref(true);
 const checked2 = ref(false);
 const checked3 = ref(false);

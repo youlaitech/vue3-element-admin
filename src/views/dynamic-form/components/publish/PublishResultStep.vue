@@ -73,6 +73,9 @@ const props = defineProps<{
   subtitle: string;
 }>();
 
+/**
+ * 上抛前往查看与复制链接操作
+ */
 const emit = defineEmits<{
   /** 前往查看（容器负责重载动态路由后跳转） */
   goView: [];

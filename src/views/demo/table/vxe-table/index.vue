@@ -97,6 +97,7 @@ import {
 } from "vxe-pc-ui";
 
 defineOptions({
+  name: "VxeTable",
   components: {
     VxeButton,
     VxeButtonGroup,
@@ -488,13 +489,6 @@ const xGridOpt = reactive<VxeGridProps<RowMeta>>({
         xGridOpt.loading = true;
         return new Promise<{ total: number; result: RowMeta[] }>((resolve) => {
           // 接口需要的参数
-          // const params = {
-          //   page: currentPage,
-          //   limit: pageSize,
-          //   username: form.username,
-          //   roles: form.roles === null ? undefined : form.roles.join(","),
-          //   createTime: form.createTime.length > 0 ? form.createTime.join(",") : undefined,
-          // };
           // 模拟异步加载数据
           setTimeout(() => {
             const list = [

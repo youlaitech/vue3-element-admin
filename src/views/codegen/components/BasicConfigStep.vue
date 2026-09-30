@@ -164,6 +164,9 @@ import type { OptionItem } from "@/api/common";
 
 const formData = defineModel<GenConfigForm>({ required: true });
 
+/**
+ * 代码生成基础配置步骤
+ */
 defineProps<{
   menuOptions: OptionItem[];
 }>();
@@ -190,6 +193,9 @@ async function validate(): Promise<boolean> {
   }
 }
 
+/**
+ * 暴露 validate 供容器保存前校验
+ */
 defineExpose({ validate });
 </script>
 

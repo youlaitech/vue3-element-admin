@@ -1,11 +1,5 @@
 <template>
   <div class="page-container">
-    <RouteInfoPanel
-      class="mb-4"
-      title="独立编辑页"
-      description="本页不在菜单里，由列表页携 ID 跳转打开（路由 /route-example/edit/:id）。保存后返回列表，列表会读到最新数据。"
-    />
-
     <el-card class="page-content" shadow="never">
       <template #header>编辑成员信息</template>
 
@@ -32,7 +26,6 @@
 import { ElMessage } from "element-plus";
 
 import router from "@/router";
-import RouteInfoPanel from "@/views/demo/route/components/RouteInfoPanel.vue";
 
 import { getMember, updateMember } from "./data";
 import type { MemberItem } from "./data";

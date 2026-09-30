@@ -66,6 +66,9 @@ defineOptions({
   inheritAttrs: false,
 });
 
+/**
+ * 侧边栏菜单项
+ */
 const props = defineProps({
   /** 当前路由对象 */
   item: {

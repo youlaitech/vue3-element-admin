@@ -30,6 +30,9 @@ import { computed } from "vue";
 import { ArrowDown } from "@element-plus/icons-vue";
 import { useTenantStoreHook } from "@/stores/tenant";
 
+/**
+ * 切换租户时回传租户 ID
+ */
 const emit = defineEmits<{
   (e: "change", tenantId: number): void;
 }>();

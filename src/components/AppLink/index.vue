@@ -21,6 +21,9 @@ interface AppLinkTo {
   query?: Record<string, unknown> | null;
 }
 
+/**
+ * 应用内链接：按菜单路径跳转
+ */
 const props = defineProps<{
   to: AppLinkTo;
 }>();

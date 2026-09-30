@@ -94,7 +94,7 @@ import { useAppStore } from "@/stores";
 import useCrudPage from "@/components/Crud/useCrudPage";
 
 defineOptions({
-  name: "CrudDemo",
+  name: "CrudSingle",
   inheritAttrs: false,
 });
 

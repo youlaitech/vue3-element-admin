@@ -12,6 +12,9 @@
  */
 defineOptions({ name: "SectionTitle" });
 
+/**
+ * 区块标题
+ */
 defineProps<{
   /** 分区标题 */
   title: string;

@@ -83,6 +83,9 @@
 <script setup lang="ts">
 import { elementIconNames, svgIconNames } from "@/utils/icon";
 
+/**
+ * 图标选择器：内置图标库检索与选择
+ */
 const props = defineProps({
   modelValue: {
     type: String,
@@ -94,6 +97,9 @@ const props = defineProps({
   },
 });
 
+/**
+ * 选中图标时回传图标名
+ */
 const emit = defineEmits(["update:modelValue"]);
 
 const iconSelectRef = ref();

@@ -150,6 +150,9 @@ import GeneratorAPI from "@/api/codegen";
 import type { GenConfigForm } from "@/api/codegen";
 import { getFileIcon } from "../utils/tree-builder";
 
+/**
+ * 代码预览步骤
+ */
 const props = defineProps<{
   genConfigFormData: GenConfigForm;
   previewScope: "all" | "frontend" | "backend";
@@ -161,6 +164,9 @@ const props = defineProps<{
   tableName: string;
 }>();
 
+/**
+ * 上抛预览范围变化与文件点击
+ */
 const emit = defineEmits<{
   (_e: "update:previewScope", _val: "all" | "frontend" | "backend"): void;
   (_e: "update:previewTypes", _val: string[]): void;
@@ -256,6 +262,9 @@ function startResize(e: MouseEvent) {
   document.addEventListener("mouseup", onUp);
 }
 
+/**
+ * 暴露编辑器刷新与文件树引用
+ */
 defineExpose({ refreshEditor, fileTreeRef });
 
 onBeforeUnmount(() => {
