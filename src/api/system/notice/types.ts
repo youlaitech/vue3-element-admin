@@ -8,7 +8,7 @@ import type { BaseQueryParams } from "@/api/common";
 export interface NoticeQueryParams extends BaseQueryParams {
   /** 通知标题 */
   title?: string;
-  /** 发布状态(0:草稿;1:已发布;2:已撤回) */
+  /** 发布状态(0:未发布;1:已发布;-1:已撤回) */
   publishStatus?: number;
   /** 是否已读(1:是;0:否) */
   isRead?: number;
