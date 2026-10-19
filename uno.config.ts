@@ -28,7 +28,7 @@ const generateSafeList = () => {
 };
 
 export default defineConfig({
-  // dev 下预扫源码，避免懒加载页面首屏缺类
+  // 开发环境下预扫源码，避免懒加载页面首屏缺类
   content: {
     filesystem: ["src/**/*.{vue,js,ts,jsx,tsx}"],
   },
