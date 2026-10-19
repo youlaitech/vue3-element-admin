@@ -28,6 +28,10 @@ const generateSafeList = () => {
 };
 
 export default defineConfig({
+  // dev 下预扫源码，避免懒加载页面首屏缺类
+  content: {
+    filesystem: ["src/**/*.{vue,js,ts,jsx,tsx}"],
+  },
   // 自定义快捷类
   shortcuts: {
     "wh-full": "w-full h-full",
