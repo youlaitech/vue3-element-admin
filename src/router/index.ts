@@ -1,5 +1,6 @@
 import type { App } from "vue";
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from "vue-router";
+import { ensureFormCreate } from "@/plugins/form-create";
 
 /**
  * 布局组件，供各路由复用（懒加载）
@@ -13,7 +14,7 @@ export const screenRoutes: RouteRecordRaw[] = [
   {
     path: "/data-screen",
     name: "DataScreen",
-    component: () => import("@/views/data-screen/index.vue"),
+    component: () => import("@/views/demo/data-screen/index.vue"),
     meta: { hidden: true, title: "数据大屏" },
   },
 ];
@@ -27,7 +28,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: "/redirect/:path(.*)",
-        component: () => import("@/views/redirect.vue"),
+        component: () => import("@/views/internal/redirect.vue"),
       },
     ],
   },
@@ -38,11 +39,22 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: { hidden: true },
   },
 
+  // 统一认证回调页（匿名访问，守卫白名单，只用票据换取业务令牌）
+  {
+    path: "/oidc/callback",
+    name: "OidcCallback",
+    component: () => import("@/views/login/oidc-callback.vue"),
+    meta: { hidden: true },
+  },
+
   // 公开表单分享页（匿名访问，守卫白名单，不套管理端 Layout）
   {
     path: "/f/:formKey",
     name: "FormShare",
-    component: () => import("@/views/dynamic-form/share.vue"),
+    component: async () => {
+      await ensureFormCreate();
+      return import("@/views/dynamic-form/share.vue");
+    },
     meta: { hidden: true, title: "表单填写" },
   },
 
@@ -70,24 +82,24 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "401",
-        component: () => import("@/views/error/401.vue"),
+        component: () => import("@/views/internal/error/401.vue"),
         meta: { hidden: true },
       },
       {
         path: "404",
-        component: () => import("@/views/error/404.vue"),
+        component: () => import("@/views/internal/error/404.vue"),
         meta: { hidden: true },
       },
       {
         path: "profile",
         name: "Profile",
-        component: () => import("@/views/profile/index.vue"),
+        component: () => import("@/views/workspace/account/index.vue"),
         meta: { title: "个人中心", icon: "user", hidden: true },
       },
       {
         path: "profile/notice",
         name: "MyNotice",
-        component: () => import("@/views/profile/notice/index.vue"),
+        component: () => import("@/views/workspace/notifications/index.vue"),
         meta: { title: "我的通知", icon: "user", hidden: true },
       },
       {

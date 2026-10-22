@@ -3,21 +3,15 @@ import { useSse } from "@/utils/sse";
 import { SseTopics } from "@/enums/sse";
 
 /**
- * 在线用户数组合式函数（页面级）
- *
- * 订阅 SSE 在线用户数事件，组件挂载时订阅、卸载时自动取消；
- * 进入页面后需等待下一次推送才有数据
+ * 订阅在线用户数推送，首次推送前人数为 null
  */
-export function useOnlineUsers() {
-  const onlineUserCount = ref(0);
+export function useOnlineUserCount() {
+  const onlineUserCount = ref<number | null>(null);
 
   const { isConnected, on } = useSse();
 
   let unsubscribe: (() => void) | null = null;
 
-  /**
-   * 处理 SSE 推来的在线人数消息
-   */
   const handleOnlineUsersMessage = (count: number) => {
     if (!Number.isFinite(count) || count < 0) return;
     onlineUserCount.value = count;
@@ -30,7 +24,7 @@ export function useOnlineUsers() {
   onUnmounted(() => {
     unsubscribe?.();
     unsubscribe = null;
-    onlineUserCount.value = 0;
+    onlineUserCount.value = null;
   });
 
   return {

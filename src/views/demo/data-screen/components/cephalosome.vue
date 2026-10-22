@@ -21,14 +21,25 @@
 </template>
 <script lang="ts" setup>
 import { useKeepTicking } from "../composables/useKeepTicking";
-import { parseTime } from "../utils/time";
 
 defineOptions({ name: "Cephalosome" });
 
+// 看板时间格式：YYYY-MM-DD HH:mm:ss 周X 上午/下午
+function formatClock(date: Date): string {
+  const week = ["日", "一", "二", "三", "四", "五", "六"][date.getDay()];
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const meridiem = date.getHours() < 12 ? "上午" : "下午";
+
+  return (
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+    `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())} ` +
+    `周${week} ${meridiem}`
+  );
+}
+
 // 获取当前时间
 const dateTime = ref("加载中...");
-const getCurrentTime = () =>
-  (dateTime.value = parseTime(new Date(), "YYYY-MM-DD HH:mm:ss 周dd A "));
+const getCurrentTime = () => (dateTime.value = formatClock(new Date()));
 
 // 使用定时器钩子更新时间
 useKeepTicking(getCurrentTime, 1000);

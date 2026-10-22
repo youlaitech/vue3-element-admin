@@ -69,7 +69,7 @@
         </div>
         <div class="stat-card__body">
           <span class="stat-card__label">在线用户</span>
-          <span class="stat-card__num">{{ onlineUserCount }}</span>
+          <span class="stat-card__num">{{ onlineUserCount ?? "--" }}</span>
         </div>
         <span
           :class="[
@@ -261,11 +261,11 @@ import {
   Document,
   VideoPlay,
 } from "@element-plus/icons-vue";
-import { useOnlineUsers } from "./composables/useOnlineUsers";
+import { useOnlineUserCount } from "./composables/useOnlineUserCount";
 
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
-const { onlineUserCount, isConnected } = useOnlineUsers();
+const { onlineUserCount, isConnected } = useOnlineUserCount();
 
 const hours = new Date().getHours();
 const greetings = computed(() => {

@@ -124,16 +124,16 @@ defineOptions({
 import UserAPI from "@/api/system/user";
 import type { IObject, IOperateData, CrudModalInstance } from "@/components/Crud/types";
 import useCrudPage from "@/components/Crud/useCrudPage";
-import addModalConfig from "./config/add";
-import contentConfig from "./config/content";
-import editModalConfig from "./config/edit";
-import searchConfig from "./config/search";
-import { initOptions } from "./config/options";
+import addModalConfig from "./config/user/add";
+import contentConfig from "./config/user/content";
+import editModalConfig from "./config/user/edit";
+import searchConfig from "./config/user/search";
+import { initOptions } from "./config/user/options";
 
-import addModalConfig2 from "./config2/add";
-import contentConfig2 from "./config2/content";
-import editModalConfig2 from "./config2/edit";
-import searchConfig2 from "./config2/search";
+import addModalConfig2 from "./config/mock/add";
+import contentConfig2 from "./config/mock/content";
+import editModalConfig2 from "./config/mock/edit";
+import searchConfig2 from "./config/mock/search";
 
 const {
   searchRef,

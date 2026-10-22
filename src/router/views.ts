@@ -2,6 +2,8 @@
 // 维护「菜单 component 字符串 → src/views 视图文件」的映射，路由注册与菜单表单共用
 // 表单的「页面路径」选项树也由此派生：跳过错误页与页面内部组件，index.vue 归并到目录
 
+import { ensureFormCreate } from "@/plugins/form-create";
+
 /**
  * 全部视图模块，键形如 /src/views/system/user/index.vue
  */
@@ -26,16 +28,36 @@ export function normalizeViewPath(componentPath: string): string {
     .replace(/\.vue$/i, "");
 }
 
+// 内嵌外链菜单的组件标识固定为 iframe，视图文件在 internal 下
+const VIEW_ALIASES: Record<string, string> = { iframe: "internal/iframe" };
+
+/**
+ * 把菜单里保存的组件标识映射到实际视图路径
+ */
+function resolveViewAlias(path: string): string {
+  return VIEW_ALIASES[path] ?? path;
+}
+
+// 用到 form-create 的视图：动态表单模块本身，以及内嵌表单的业务流程页
+const FORM_VIEW_PATTERN = /^(dynamic-form|workflow)(\/|$)/;
+
 /**
  * 解析组件：支持 system/user 与 system/user/index 两种写法，未命中回退 404
  */
 export function resolveComponent(componentPath: string) {
-  const path = normalizeViewPath(componentPath);
-  return (
+  const path = resolveViewAlias(normalizeViewPath(componentPath));
+  const loader =
     viewModules[`${VIEW_PREFIX}${path}.vue`] ||
     viewModules[`${VIEW_PREFIX}${path}/index.vue`] ||
-    viewModules[`${VIEW_PREFIX}error/404.vue`]
-  );
+    viewModules[`${VIEW_PREFIX}internal/error/404.vue`];
+
+  if (!FORM_VIEW_PATTERN.test(path)) return loader;
+
+  // 表单页的 <form-create> 依赖全局注册，组件加载前先完成注册
+  return async () => {
+    await ensureFormCreate();
+    return loader();
+  };
 }
 
 /**
@@ -43,7 +65,7 @@ export function resolveComponent(componentPath: string) {
  */
 export function isViewComponent(componentPath?: string): boolean {
   if (!componentPath) return false;
-  const path = normalizeViewPath(componentPath);
+  const path = resolveViewAlias(normalizeViewPath(componentPath));
   return viewPaths.has(path) || viewPaths.has(`${path}/index`);
 }
 
@@ -64,7 +86,7 @@ export interface PageComponentNode {
 function isSelectable(path: string): boolean {
   const segments = path.split("/");
   if (segments.includes("components")) return false;
-  return segments[0] !== "error" && path !== "redirect";
+  return segments[0] !== "internal";
 }
 
 /**
