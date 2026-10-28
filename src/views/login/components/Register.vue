@@ -187,7 +187,6 @@ const rules = computed(() => {
   };
 });
 
-// 获取验证码
 const codeLoading = ref(false);
 /**
  * 刷新验证码

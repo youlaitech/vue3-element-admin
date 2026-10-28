@@ -22,17 +22,24 @@
       <template #file="{ file }">
         <template v-if="file.status === 'success'">
           <div class="el-upload-list__item-info">
-            <a class="el-upload-list__item-name" @click="handleDownload(file)">
+            <button
+              type="button"
+              class="el-upload-list__item-name file-action"
+              @click="handleDownload(file)"
+            >
               <el-icon>
                 <Document />
               </el-icon>
               <span class="el-upload-list__item-file-name">{{ file.name }}</span>
-              <span class="el-icon--close" @click.stop="handleRemove(file.url!)">
-                <el-icon>
-                  <Close />
-                </el-icon>
-              </span>
-            </a>
+            </button>
+            <button
+              type="button"
+              class="el-icon--close file-action"
+              :aria-label="`删除${file.name}`"
+              @click.stop="handleRemove(file.url!)"
+            >
+              <el-icon aria-hidden="true"><Close /></el-icon>
+            </button>
           </div>
         </template>
         <template v-else>
@@ -45,16 +52,11 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {
-  UploadRawFile,
-  UploadUserFile,
-  UploadFile,
-  UploadFiles,
-  UploadRequestOptions,
-} from "element-plus";
+import type { UploadRawFile, UploadUserFile, UploadRequestOptions } from "element-plus";
 
 import FileAPI from "@/api/file";
 import type { FileInfo } from "@/api/file";
+import { useUploadQueue } from "./useUploadQueue";
 
 const props = defineProps({
   /** 请求携带的额外参数 */
@@ -100,34 +102,17 @@ const props = defineProps({
     },
   },
 });
-const modelValue = defineModel<FileInfo[]>({ required: true, default: () => [] });
-
-const fileList = ref([] as UploadFile[]);
-
-// 监听 modelValue 转换用于显示到 fileList
-watch(
-  modelValue,
-  (value) => {
-    fileList.value = value.map((item) => {
-      const name = item.name ? item.name : item.url?.substring(item.url.lastIndexOf("/") + 1);
-      return {
-        name,
-        url: item.url,
-        status: "success",
-        uid: getUid(),
-      } as UploadFile;
-    });
-  },
-  {
-    immediate: true,
-  }
-);
+const modelValue = defineModel<FileInfo[]>({ default: () => [] });
+const queue = useUploadQueue(modelValue, {
+  toFile: (file) => file,
+  toValue: (file) => file,
+});
+const { fileList } = queue;
 
 /**
- * 上传前校验
+ * 检查单个文件的大小限制。
  */
-function handleBeforeUpload(file: UploadRawFile) {
-  // 限制文件大小
+function handleBeforeUpload(file: UploadRawFile): boolean {
   if (file.size > props.maxFileSize * 1024 * 1024) {
     ElMessage.warning("上传文件不能大于" + props.maxFileSize + "M");
     return false;
@@ -135,112 +120,64 @@ function handleBeforeUpload(file: UploadRawFile) {
   return true;
 }
 
-/*
- * 上传文件
+/**
+ * 通过上传队列提交文件及附加参数。
  */
-function handleUpload(options: UploadRequestOptions) {
-  return new Promise((resolve, reject) => {
-    const file = options.file;
-    const formData = new FormData();
-    formData.append(props.name, file);
-
-    // 处理附加参数
-    Object.keys(props.data).forEach((key) => {
-      formData.append(key, props.data[key]);
-    });
-    FileAPI.upload(formData, (percent) => {
-      const uid = file.uid;
-      const fileItem = fileList.value.find((file) => file.uid === uid);
-      if (fileItem) {
-        fileItem.percentage = percent;
-      }
-    }).then(
-      (data) => {
-        resolve(data);
-      },
-      (err) => {
-        reject(err);
-      }
-    );
-  });
+function handleUpload(options: UploadRequestOptions): Promise<FileInfo> {
+  return queue.upload(options, props);
 }
 
 /**
- * 上传文件超出限制
+ * 提示上传数量已达上限。
  */
-function handleExceed() {
+function handleExceed(): void {
   ElMessage.warning("最多只能上传 " + props.limit + " 个文件");
 }
 
 /**
- * 上传成功
+ * 结算有效上传任务并提示成功。
  */
-const handleSuccess = (response: any, uploadFile: UploadFile, files: UploadFiles) => {
-  ElMessage.success("上传成功");
-  // 只有当状态为 success 或者 fail，代表文件上传全部完成了，失败也算完成
-  if (
-    files.every((file: UploadFile) => {
-      return file.status === "success" || file.status === "fail";
-    })
-  ) {
-    const fileInfos = [] as FileInfo[];
-    files.map((file: UploadFile) => {
-      if (file.status === "success") {
-        // 只取携带 response 的才是刚上传的
-        const res = file.response as FileInfo;
-        if (res) {
-          fileInfos.push({ name: res.name, url: res.url } as FileInfo);
-        }
-      } else {
-        // 失败上传 从 fileList 删掉，不展示
-        fileList.value.splice(
-          fileList.value.findIndex((e) => e.uid === file.uid),
-          1
-        );
-      }
-    });
-    if (fileInfos.length > 0) {
-      modelValue.value = [...modelValue.value, ...fileInfos];
-    }
-  }
-};
-
-/**
- * 上传失败
- */
-const handleError = (_error: any) => {
-  console.error(_error);
-  ElMessage.error("上传失败");
-};
-
-/**
- * 删除文件
- */
-function handleRemove(fileUrl: string) {
-  FileAPI.delete(fileUrl).then(() => {
-    modelValue.value = modelValue.value.filter((file) => file.url !== fileUrl);
-  });
+function handleSuccess(info: FileInfo, file: UploadUserFile): void {
+  if (queue.complete(info, file)) ElMessage.success("上传成功");
 }
 
 /**
- * 下载文件
+ * 清理有效失败任务并提示错误。
+ */
+function handleError(_error: unknown, file: UploadUserFile): void {
+  if (queue.fail(file)) ElMessage.error("上传失败");
+}
+
+/**
+ * 删除远端文件后移除表单中的引用。
+ */
+async function handleRemove(fileUrl: string): Promise<void> {
+  await FileAPI.delete(fileUrl);
+  queue.remove(fileUrl);
+}
+
+/**
+ * 下载已有地址的文件。
  */
 function handleDownload(file: UploadUserFile) {
-  const { url, name } = file;
-  if (url) {
-    FileAPI.download(url, name);
-  }
-}
-
-/**
- * 获取一个不重复的 id
- */
-function getUid(): number {
-  // 时间戳左移 13 位（相当于乘以 8192）+ 13 位随机数
-  return (Date.now() << 13) | Math.floor(Math.random() * 8192);
+  if (file.url) return FileAPI.download(file.url, file.name);
 }
 </script>
 <style lang="scss" scoped>
+.file-action {
+  padding: 0;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+
+  &:focus-visible {
+    outline: 2px solid var(--el-color-primary);
+    outline-offset: 2px;
+  }
+}
+
 .el-upload-list__item .el-icon--close {
   position: absolute;
   top: 50%;

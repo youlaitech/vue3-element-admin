@@ -1,6 +1,4 @@
-// CodeGen 代码生成类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery } from "@/api/common";
 
 /**
  * 代码生成预览对象
@@ -21,7 +19,7 @@ export interface GeneratorPreviewItem {
 /**
  * 数据表分页查询参数
  */
-export interface TableQueryParams extends BaseQueryParams {
+export interface TableQuery extends PageQuery {
   /** 搜索关键字(表名) */
   keywords?: string;
 }

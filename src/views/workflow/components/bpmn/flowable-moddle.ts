@@ -1,8 +1,5 @@
 /**
- * Flowable 命名空间 moddle 描述符
- *
- * 为 bpmn-js 扩展 flowable:formKey / flowable:assignee 等自定义属性，
- * 设计器属性面板可读写、XML 序列化保留 flowable: 前缀，供引擎解析
+ * 声明 Flowable 扩展属性，使 bpmn-js 读写时保留这些属性。
  */
 const flowableModdleDescriptor = {
   name: "Flowable",

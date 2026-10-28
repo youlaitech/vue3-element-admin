@@ -80,7 +80,7 @@ import { MagicStick, Refresh, RefreshLeft, Search } from "@element-plus/icons-vu
 import { ElMessage, ElMessageBox, type FormInstance } from "element-plus";
 
 import GeneratorAPI from "@/api/codegen";
-import type { TableItem, TableQueryParams } from "@/api/codegen";
+import type { TableItem, TableQuery } from "@/api/codegen";
 import { usePageTable } from "@/composables";
 
 // 表已配置代码生成（1:是;0:否）
@@ -100,7 +100,7 @@ const queryFormRef = ref<FormInstance>();
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   TableItem,
-  TableQueryParams
+  TableQuery
 >({
   initialParams: {
     pageNum: 1,

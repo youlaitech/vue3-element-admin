@@ -1,11 +1,9 @@
-// Role 角色类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery } from "@/api/common";
 
 /**
  * 角色分页查询参数
  */
-export interface RoleQueryParams extends BaseQueryParams {
+export interface RoleQuery extends PageQuery {
   /** 搜索关键字 */
   keywords?: string;
 }
@@ -29,7 +27,7 @@ export interface RoleItem {
   /** 数据权限标签 */
   dataScopeLabel?: string;
   /** 修改时间 */
-  updateTime?: Date;
+  updateTime?: string;
 }
 
 /**

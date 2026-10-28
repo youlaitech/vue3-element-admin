@@ -2,60 +2,103 @@
   <div
     class="rounded bg-[var(--el-bg-color)] border border-[var(--el-border-color)] p-5 h-full md:flex flex-1 flex-col md:overflow-auto"
   >
-    <!-- 表格工具 -->
     <div class="flex flex-col md:flex-row justify-between gap-y-2.5 mb-2.5">
-      <!-- 左侧工具 -->
       <div class="toolbar-left flex gap-y-2.5 gap-x-2 md:gap-x-3 flex-wrap">
-        <template v-for="(btn, index) in leftToolbarButtons" :key="index">
-          <el-button
-            v-hasPerm="btn.perm ?? '*:*:*'"
-            v-bind="btn.attrs"
-            :disabled="btn.name === 'delete' && removeIds.length === 0"
-            @click="handleToolbar(btn.name)"
+        <template v-for="btn in leftToolbarButtons" :key="btn.key">
+          <slot
+            v-if="isActionVisible(btn)"
+            :name="'toolbar-action-' + btn.key"
+            :action="getActionState(btn)"
           >
-            {{ btn.text }}
-          </el-button>
+            <el-button
+              v-bind="btn.buttonProps"
+              :disabled="isActionDisabled(btn)"
+              :loading="isActionPending(btn)"
+              @click="runAction(btn)"
+            >
+              {{ btn.label }}
+            </el-button>
+          </slot>
         </template>
       </div>
-      <!-- 右侧工具 -->
       <div class="toolbar-right flex gap-y-2.5 gap-x-2 md:gap-x-3 flex-wrap">
-        <template v-for="(btn, index) in rightToolbarButtons" :key="index">
-          <el-popover v-if="btn.name === 'filter'" placement="bottom" trigger="click">
+        <template v-for="btn in rightToolbarButtons" :key="btn.key">
+          <el-popover
+            v-if="btn.key === 'columns' && isActionVisible(btn)"
+            placement="bottom"
+            trigger="click"
+          >
             <template #reference>
-              <el-button v-bind="btn.attrs"></el-button>
+              <el-button
+                v-bind="btn.buttonProps"
+                :aria-label="btn.label"
+                :title="btn.label"
+                :disabled="isActionDisabled(btn)"
+              />
             </template>
             <el-scrollbar max-height="350px">
-              <template v-for="col in cols" :key="col.prop">
-                <el-checkbox v-if="col.prop" v-model="col.show" :label="col.label" />
+              <template v-for="col in columns" :key="col.columnKey ?? col.prop ?? col.type">
+                <el-checkbox
+                  v-if="col.prop"
+                  v-model="col.show"
+                  :disabled="col.hideable === false"
+                  :label="col.label"
+                />
               </template>
+              <el-button link @click="restoreColumns">恢复默认列</el-button>
             </el-scrollbar>
           </el-popover>
-          <el-button
-            v-else
-            v-hasPerm="btn.perm ?? '*:*:*'"
-            v-bind="btn.attrs"
-            @click="handleToolbar(btn.name)"
-          ></el-button>
+          <slot
+            v-else-if="btn.key !== 'columns' && isActionVisible(btn)"
+            :name="'toolbar-action-' + btn.key"
+            :action="getActionState(btn)"
+          >
+            <el-button
+              v-bind="btn.buttonProps"
+              :aria-label="btn.label"
+              :title="btn.label"
+              :disabled="isActionDisabled(btn)"
+              :loading="isActionPending(btn)"
+              @click="runAction(btn)"
+            />
+          </slot>
         </template>
       </div>
     </div>
 
-    <!-- 列表 -->
+    <el-alert
+      v-if="loadError || actionError"
+      class="mb-4"
+      type="error"
+      :title="loadError || actionError"
+      :closable="false"
+    />
     <el-table
-      ref="tableRef"
+      ref="elementTableRef"
       v-loading="loading"
-      v-bind="contentConfig.table"
+      v-bind="tableConfig.table"
       :data="pageData"
-      :row-key="pk"
+      :row-key="rowKey"
       class="flex-1"
       @selection-change="handleSelectionChange"
       @filter-change="handleFilterChange"
+      @sort-change="handleSortChange"
     >
-      <template v-for="col in cols" :key="col.prop">
-        <el-table-column v-if="col.show" v-bind="col">
-          <template #default="scope">
-            <!-- 显示图片 -->
-            <template v-if="col.templet === 'image'">
+      <template v-for="col in columns" :key="col.columnKey ?? col.prop ?? col.type">
+        <el-table-column v-if="col.show" v-bind="getColumnAttrs(col)">
+          <template v-if="!col.type || col.type === 'default'" #header="scope">
+            <slot :name="'header-' + (col.columnKey ?? col.prop)" v-bind="scope">
+              {{ col.label }}
+            </slot>
+          </template>
+          <template
+            v-if="!col.type || col.type === 'default' || col.type === 'expand'"
+            #default="scope"
+          >
+            <template v-if="$slots['cell-' + col.prop]">
+              <slot :name="'cell-' + col.prop" :prop="col.prop" v-bind="scope" />
+            </template>
+            <template v-else-if="col.cellType === 'image'">
               <template v-if="col.prop">
                 <template v-if="Array.isArray(scope.row[col.prop])">
                   <template v-for="(item, index) in scope.row[col.prop]" :key="item">
@@ -78,24 +121,20 @@
                 </template>
               </template>
             </template>
-            <!-- 根据行的 selectList 属性返回对应列表 -->
-            <template v-else-if="col.templet === 'list'">
+            <template v-else-if="col.cellType === 'list'">
               <template v-if="col.prop">
                 {{ (col.selectList ?? {})[scope.row[col.prop]] }}
               </template>
             </template>
-            <!-- 格式化显示链接 -->
-            <template v-else-if="col.templet === 'url'">
+            <template v-else-if="col.cellType === 'url'">
               <template v-if="col.prop">
                 <el-link type="primary" :href="scope.row[col.prop]" target="_blank">
                   {{ scope.row[col.prop] }}
                 </el-link>
               </template>
             </template>
-            <!-- 生成开关组 -->
-            <template v-else-if="col.templet === 'switch'">
+            <template v-else-if="col.cellType === 'switch'">
               <template v-if="col.prop">
-                <!-- pageData.length>0: 解决 el-switch 组件会在表格初始化的时候触发一次 change 事件 -->
                 <el-switch
                   v-model="scope.row[col.prop]"
                   :active-value="col.activeValue ?? 1"
@@ -104,49 +143,47 @@
                   :active-text="col.activeText ?? ''"
                   :inactive-text="col.inactiveText ?? ''"
                   :validate-event="false"
-                  :disabled="!hasButtonPerm(col.prop)"
-                  @change="
-                    pageData.length > 0 && handleModify(col.prop, scope.row[col.prop], scope.row)
-                  "
+                  :disabled="isCellDisabled(scope.row, col.prop)"
+                  @change="handleModify(col.prop, scope.row[col.prop], scope.row)"
                 />
               </template>
             </template>
-            <!-- 生成输入框组 -->
-            <template v-else-if="col.templet === 'input'">
+            <template v-else-if="col.cellType === 'input'">
               <template v-if="col.prop">
                 <el-input
                   v-model="scope.row[col.prop]"
                   :type="col.inputType ?? 'text'"
-                  :disabled="!hasButtonPerm(col.prop)"
+                  :disabled="isCellDisabled(scope.row, col.prop)"
                   @blur="handleModify(col.prop, scope.row[col.prop], scope.row)"
                 />
               </template>
             </template>
-            <!-- 格式化为价格 -->
-            <template v-else-if="col.templet === 'price'">
+            <template v-else-if="col.cellType === 'price'">
               <template v-if="col.prop">
                 {{ `${col.priceFormat ?? ""}${scope.row[col.prop]}` }}
               </template>
             </template>
-            <!-- 格式化为百分比 -->
-            <template v-else-if="col.templet === 'percent'">
+            <template v-else-if="col.cellType === 'percent'">
               <template v-if="col.prop">{{ scope.row[col.prop] }}%</template>
             </template>
-            <!-- 显示图标 -->
-            <template v-else-if="col.templet === 'icon'">
+            <template v-else-if="col.cellType === 'icon'">
               <template v-if="col.prop">
-                <template v-if="scope.row[col.prop].startsWith('el-icon-')">
+                <template
+                  v-if="
+                    typeof scope.row[col.prop] === 'string' &&
+                    scope.row[col.prop].startsWith('el-icon-')
+                  "
+                >
                   <el-icon>
                     <component :is="scope.row[col.prop].replace('el-icon-', '')" />
                   </el-icon>
                 </template>
                 <template v-else>
-                  <div class="i-svg:{{ scope.row[col.prop] }}" />
+                  <div :class="'i-svg:' + (scope.row[col.prop] ?? '')" />
                 </template>
               </template>
             </template>
-            <!-- 格式化时间 -->
-            <template v-else-if="col.templet === 'date'">
+            <template v-else-if="col.cellType === 'date'">
               <template v-if="col.prop">
                 {{
                   scope.row[col.prop]
@@ -156,28 +193,20 @@
                 }}
               </template>
             </template>
-            <!-- 列操作栏 -->
-            <template v-else-if="col.templet === 'tool'">
-              <template v-for="(btn, index) in tableToolbarBtn" :key="index">
-                <el-button
-                  v-if="btn.render === undefined || btn.render(scope.row)"
-                  v-hasPerm="btn.perm ?? '*:*:*'"
-                  v-bind="btn.attrs"
-                  @click="
-                    handleOperate({
-                      name: btn.name,
-                      row: scope.row,
-                      column: scope.column,
-                      $index: scope.$index,
-                    })
-                  "
+            <template v-else-if="col.cellType === 'actions'">
+              <TableActions
+                :actions="getRowActions(col, scope.row)"
+                :max-visible="col.maxVisibleActions"
+              >
+                <template
+                  v-for="name in getRowActionSlotNames($slots)"
+                  #[name.slice(4)]="slotProps"
                 >
-                  {{ btn.text }}
-                </el-button>
-              </template>
+                  <slot :name="name" :row="scope.row" v-bind="slotProps" />
+                </template>
+              </TableActions>
             </template>
-            <!-- 自定义 -->
-            <template v-else-if="col.templet === 'custom'">
+            <template v-else-if="col.cellType === 'custom'">
               <slot :name="col.slotName ?? col.prop" :prop="col.prop" v-bind="scope" />
             </template>
           </template>
@@ -185,9 +214,8 @@
       </template>
     </el-table>
 
-    <!-- 分页 -->
     <div v-if="showPagination" class="mt-4">
-      <el-scrollbar :class="['h-8!', { 'flex-x-end': contentConfig?.pagePosition === 'right' }]">
+      <el-scrollbar :class="['h-8!', { 'flex-x-end': tableConfig?.pagePosition === 'right' }]">
         <el-pagination
           v-bind="pagination"
           @size-change="handleSizeChange"
@@ -196,74 +224,79 @@
       </el-scrollbar>
     </div>
 
-    <!-- 导出弹窗 -->
     <el-dialog
-      v-model="exportsModalVisible"
+      v-model="exportDialogVisible"
+      :close-on-click-modal="!exporting"
+      :close-on-press-escape="!exporting"
+      :show-close="!exporting"
       :align-center="true"
       title="导出数据"
       width="600px"
       style="padding-right: 0"
-      @close="handleCloseExportsModal"
+      @close="closeExportDialog"
     >
-      <!-- 滚动 -->
+      <el-alert v-if="exportError" :title="exportError" type="error" :closable="false" />
       <el-scrollbar max-height="60vh">
-        <!-- 表单 -->
         <el-form
-          ref="exportsFormRef"
+          ref="exportFormRef"
           style="padding-right: var(--el-dialog-padding-primary)"
-          :model="exportsFormData"
-          :rules="exportsFormRules"
+          :model="exportForm"
+          :rules="exportRules"
         >
-          <el-form-item label="文件名" prop="filename">
-            <el-input v-model="exportsFormData.filename" clearable />
+          <el-form-item label="文件名" prop="fileName">
+            <el-input v-model="exportForm.fileName" clearable />
           </el-form-item>
-          <el-form-item label="工作表名" prop="sheetname">
-            <el-input v-model="exportsFormData.sheetname" clearable />
+          <el-form-item label="工作表名" prop="sheetName">
+            <el-input v-model="exportForm.sheetName" clearable />
           </el-form-item>
-          <el-form-item label="数据来源" prop="origin">
-            <el-select v-model="exportsFormData.origin">
-              <el-option label="当前数据 (当前页的数据)" :value="ExportsOriginEnum.CURRENT" />
+          <el-form-item label="数据来源" prop="scope">
+            <el-select v-model="exportForm.scope">
+              <el-option label="当前数据 (当前页的数据)" :value="ExportScope.CURRENT" />
               <el-option
                 label="选中数据 (所有选中的数据)"
-                :value="ExportsOriginEnum.SELECTED"
-                :disabled="selectionData.length <= 0"
+                :value="ExportScope.SELECTED"
+                :disabled="selectedRows.length <= 0"
               />
               <el-option
                 label="全量数据 (所有分页的数据)"
-                :value="ExportsOriginEnum.REMOTE"
-                :disabled="contentConfig.exportsAction === undefined"
+                :value="ExportScope.ALL"
+                :disabled="tableConfig.fetchExportRows === undefined"
               />
             </el-select>
           </el-form-item>
           <el-form-item label="字段" prop="fields">
-            <el-checkbox-group v-model="exportsFormData.fields">
-              <template v-for="col in cols" :key="col.prop">
-                <el-checkbox v-if="col.prop" :value="col.prop" :label="col.label" />
+            <el-checkbox-group v-model="exportForm.fields">
+              <template v-for="col in columns" :key="col.prop">
+                <el-checkbox
+                  v-if="col.prop && col.cellType !== 'actions'"
+                  :value="col.prop"
+                  :label="col.label"
+                />
               </template>
             </el-checkbox-group>
           </el-form-item>
         </el-form>
       </el-scrollbar>
-      <!-- 弹窗底部操作按钮 -->
       <template #footer>
         <div style="padding-right: var(--el-dialog-padding-primary)">
-          <el-button type="primary" @click="handleExportsSubmit">确定</el-button>
-          <el-button @click="handleCloseExportsModal">取消</el-button>
+          <el-button type="primary" :loading="exporting" @click="handleExport">确定</el-button>
+          <el-button :disabled="exporting" @click="closeExportDialog">取消</el-button>
         </div>
       </template>
     </el-dialog>
-    <!-- 导入弹窗 -->
     <el-dialog
       v-model="importModalVisible"
+      :close-on-click-modal="!importing"
+      :close-on-press-escape="!importing"
+      :show-close="!importing"
       :align-center="true"
       title="导入数据"
       width="600px"
       style="padding-right: 0"
       @close="handleCloseImportModal"
     >
-      <!-- 滚动 -->
+      <el-alert v-if="importError" :title="importError" type="error" :closable="false" />
       <el-scrollbar max-height="60vh">
-        <!-- 表单 -->
         <el-form
           ref="importFormRef"
           style="padding-right: var(--el-dialog-padding-primary)"
@@ -275,7 +308,8 @@
               ref="uploadRef"
               v-model:file-list="importFormData.files"
               class="w-full"
-              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              :accept="isFileImport ? '.xlsx,.xls' : '.xlsx'"
+              :disabled="importing"
               :drag="true"
               :limit="1"
               :auto-upload="false"
@@ -290,7 +324,7 @@
                 <div class="el-upload__tip">
                   *.xlsx / *.xls
                   <el-link
-                    v-if="contentConfig.importTemplate"
+                    v-if="tableConfig.importTemplate"
                     type="primary"
                     icon="download"
                     underline="never"
@@ -304,17 +338,17 @@
           </el-form-item>
         </el-form>
       </el-scrollbar>
-      <!-- 弹窗底部操作按钮 -->
       <template #footer>
         <div style="padding-right: var(--el-dialog-padding-primary)">
           <el-button
             type="primary"
             :disabled="importFormData.files.length === 0"
+            :loading="importing"
             @click="handleImportSubmit"
           >
             确定
           </el-button>
-          <el-button @click="handleCloseImportModal">取消</el-button>
+          <el-button :disabled="importing" @click="handleCloseImportModal">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -322,8 +356,9 @@
 </template>
 
 <script setup lang="ts">
-import { hasPerm } from "@/utils/auth";
-import { useDateFormat, useThrottleFn } from "@vueuse/core";
+import { hasPerm } from "@/utils/permission";
+import TableActions from "@/components/TableActions/index.vue";
+import { useDateFormat } from "@vueuse/core";
 import {
   genFileId,
   type FormInstance,
@@ -333,117 +368,212 @@ import {
   type UploadUserFile,
   type TableInstance,
 } from "element-plus";
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, type Slots } from "vue";
 import type { Column, Workbook } from "exceljs";
-import type { ICrudTableConfig, IObject, IOperateData } from "./types";
-import type { IToolsButton } from "./types";
+import { cloneDeep } from "lodash-es";
+import { downloadFile } from "@/utils/download";
+import { parseWorksheetRows, readImportSummary } from "./utils/workbook";
+import type { CrudTableConfig, CrudRecord, CrudRowActionEvent, CrudActionContext } from "./types";
+import type { CrudAction } from "./types";
+import { buildSort, type TableSort } from "./utils/sort";
+import type { SortExpression } from "@/api/common";
 
-/**
- * 定义接收的属性
- */
-const props = defineProps<{ contentConfig: ICrudTableConfig }>();
-
-/**
- * 定义自定义事件
- */
-const emit = defineEmits<{
-  addClick: [];
-  exportClick: [];
-  searchClick: [];
-  toolbarClick: [name: string];
-  editClick: [row: IObject];
-  filterChange: [data: IObject];
-  operateClick: [data: IOperateData];
+const props = defineProps<{
+  tableConfig: CrudTableConfig;
+  /** 由组合页面统一首次查询时关闭，默认自动加载 */
+  autoLoad?: boolean;
 }>();
 
-// 表格工具栏按钮配置
-const config = computed(() => props.contentConfig);
-const buttonConfig = reactive<Record<string, IObject>>({
-  add: { text: "新增", attrs: { icon: "plus", type: "success" }, perm: "create" },
-  delete: { text: "删除", attrs: { icon: "delete", type: "danger" }, perm: "delete" },
-  import: { text: "导入", attrs: { icon: "upload", type: "" }, perm: "import" },
-  export: { text: "导出", attrs: { icon: "download", type: "" }, perm: "export" },
-  refresh: { text: "刷新", attrs: { icon: "refresh", type: "" }, perm: "*:*:*" },
-  filter: { text: "筛选列", attrs: { icon: "operation", type: "" }, perm: "*:*:*" },
-  search: { text: "搜索", attrs: { icon: "search", type: "" }, perm: "list" },
-  imports: { text: "批量导入", attrs: { icon: "upload", type: "" }, perm: "imports" },
-  exports: { text: "批量导出", attrs: { icon: "download", type: "" }, perm: "exports" },
-  view: { text: "查看", attrs: { icon: "view", type: "primary" }, perm: "view" },
-  edit: { text: "编辑", attrs: { icon: "edit", type: "primary" }, perm: "update" },
-});
+const emit = defineEmits<{
+  create: [];
+  "toggle-search": [];
+  "toolbar-action": [key: string];
+  "filter-change": [data: CrudRecord];
+  "row-action": [data: CrudRowActionEvent];
+}>();
 
-// 主键
-const pk = props.contentConfig.pk ?? "id";
-// 权限名称前缀
-const authPrefix = computed(() => props.contentConfig.permPrefix);
+const config = computed(() => props.tableConfig);
+const builtInActions: Record<string, Omit<CrudAction, "key">> = {
+  create: { label: "新增", buttonProps: { icon: "plus", type: "success" }, permission: "create" },
+  delete: { label: "删除", buttonProps: { icon: "delete", type: "danger" }, permission: "delete" },
+  import: { label: "导入", buttonProps: { icon: "upload", type: "" }, permission: "import" },
+  export: { label: "导出", buttonProps: { icon: "download", type: "" }, permission: "export" },
+  refresh: { label: "刷新", buttonProps: { icon: "refresh", type: "" }, permission: "*:*:*" },
+  columns: { label: "列设置", buttonProps: { icon: "operation", type: "" }, permission: "*:*:*" },
+  search: { label: "搜索", buttonProps: { icon: "search", type: "" }, permission: "list" },
+  view: { label: "查看", buttonProps: { icon: "view", type: "primary" }, permission: "update" },
+  edit: { label: "编辑", buttonProps: { icon: "edit", type: "primary" }, permission: "update" },
+};
+
+const rowKey = props.tableConfig.rowKey ?? "id";
+const permissionPrefix = computed(() => props.tableConfig.permissionPrefix);
 
 /**
- * 获取按钮权限标识
+ * 有前缀时补全相对权限，完整权限原样保留。
  */
-function getButtonPerm(action: string): string | null {
-  // 如果 action 已经包含完整路径(包含冒号)，则直接使用
-  if (action.includes(":")) {
-    return action;
-  }
-  // 否则使用权限前缀组合
-  return authPrefix.value ? `${authPrefix.value}:${action}` : null;
+function resolvePermission(permission: string | string[]): string | string[] {
+  const resolve = (value: string) =>
+    value.includes(":") || !permissionPrefix.value ? value : `${permissionPrefix.value}:${value}`;
+  return Array.isArray(permission) ? permission.map(resolve) : resolve(permission);
 }
 
 /**
- * 检查是否有权限
+ * 未配置前缀时，单元格编辑不附加内置权限。
  */
-function hasButtonPerm(action: string): boolean {
-  const perm = getButtonPerm(action);
-  // 如果没有设置权限标识，则默认具有权限
-  if (!perm) return true;
-  return hasPerm(perm);
+function hasActionPermission(action: string): boolean {
+  return !permissionPrefix.value || hasPerm(resolvePermission(action));
 }
 
 /**
- * 创建工具栏按钮
+ * 将业务配置合并到内置按钮默认值。
  */
-function createToolbar(toolbar: Array<string | IToolsButton>, attr = {}) {
-  return toolbar.map((item) => {
+function resolveActions(
+  actions: Array<string | CrudAction>,
+  buttonProps: CrudAction["buttonProps"] = {}
+) {
+  return actions.map((item) => {
     const isString = typeof item === "string";
+    const key = isString ? item : item.key;
+    const defaults = builtInActions[key];
+    if (isString && !defaults) throw new Error(`未知内置按钮：${key}`);
+    const defaultPermission =
+      permissionPrefix.value || defaults?.permission === "*:*:*" ? defaults?.permission : undefined;
+    const permission = isString ? defaultPermission : (item.permission ?? defaultPermission);
+    if (!permission && permissionPrefix.value) throw new Error(`按钮 ${key} 缺少权限配置`);
     return {
-      name: isString ? item : item?.name || "",
-      text: isString ? buttonConfig[item].text : item?.text,
-      attrs: {
-        ...attr,
-        ...(isString ? buttonConfig[item].attrs : item?.attrs),
+      key,
+      label: isString ? defaults.label : (item.label ?? defaults?.label),
+      buttonProps: {
+        ...buttonProps,
+        ...defaults?.buttonProps,
+        ...(!isString ? item.buttonProps : {}),
       },
-      render: isString ? undefined : (item?.render ?? undefined),
-      perm: isString
-        ? getButtonPerm(buttonConfig[item].perm)
-        : item?.perm
-          ? getButtonPerm(item.perm as string)
-          : "*:*:*",
+      visible: isString ? true : (item.visible ?? true),
+      disabled: isString ? false : (item.disabled ?? false),
+      onClick: isString ? undefined : item.onClick,
+      permission: permission ? resolvePermission(permission) : null,
     };
   });
 }
 
-// 左侧工具栏按钮
+/**
+ * 已合并默认值的按钮配置。
+ */
+type ResolvedAction = ReturnType<typeof resolveActions>[number];
+
+/**
+ * 取得当前行和勾选记录，供按钮条件及回调使用。
+ */
+function getActionContext(row?: CrudRecord): CrudActionContext {
+  return { row, selectedRows: selectedRows.value, selectedKeys: selectedKeys.value };
+}
+
+/**
+ * 同时检查权限和业务显示条件。
+ */
+function isActionVisible(button: ResolvedAction, row?: CrudRecord): boolean {
+  if (button.permission && !hasPerm(button.permission)) return false;
+  return typeof button.visible === "function"
+    ? button.visible(getActionContext(row))
+    : button.visible;
+}
+
+/**
+ * 工具栏和各行分别记录动作执行状态。
+ */
+function getActionKey(button: ResolvedAction, row?: CrudRecord): string {
+  return JSON.stringify([row ? row[rowKey] : null, button.key]);
+}
+
+/**
+ * 判断动作是否正在执行。
+ */
+function isActionPending(button: ResolvedAction, row?: CrudRecord): boolean {
+  return pendingActions.has(getActionKey(button, row));
+}
+
+/**
+ * 业务配置不能启用正在执行或尚不满足条件的按钮。
+ */
+function isActionDisabled(button: ResolvedAction, row?: CrudRecord): boolean {
+  const disabled =
+    typeof button.disabled === "function"
+      ? button.disabled(getActionContext(row))
+      : button.disabled;
+  return (
+    !!button.buttonProps.disabled ||
+    disabled ||
+    isActionPending(button, row) ||
+    (!row && button.key === "delete" && selectedKeys.value.length === 0) ||
+    (button.key === "export" && (!canExport.value || exporting.value))
+  );
+}
+
+/**
+ * 提供按钮插槽的显示状态和执行方法。
+ */
+function getActionState(button: ResolvedAction, row?: CrudRecord) {
+  return {
+    key: button.key,
+    label: button.label,
+    buttonProps: button.buttonProps,
+    disabled: isActionDisabled(button, row),
+    loading: isActionPending(button, row),
+    run: () => runAction(button, row),
+  };
+}
+
+/**
+ * 先筛选可见动作，再交给操作栏计算折叠数量。
+ */
+function getRowActions(column: CrudTableConfig["columns"][number], row: CrudRecord) {
+  return resolveActions(column.actions ?? ["edit", "delete"], { link: true, size: "small" })
+    .filter((action) => isActionVisible(action, row))
+    .map((action) => getActionState(action, row));
+}
+
+/**
+ * 转发行操作插槽，保留原有 row-action 命名。
+ */
+function getRowActionSlotNames(slots: Slots): string[] {
+  return Object.keys(slots).filter((name) => name.startsWith("row-action-"));
+}
+
+/**
+ * 执行前检查条件，并等待自定义操作完成。
+ */
+async function runAction(button: ResolvedAction, row?: CrudRecord): Promise<void> {
+  if (!isActionVisible(button, row) || isActionDisabled(button, row)) return;
+  const key = getActionKey(button, row);
+  pendingActions.add(key);
+  actionError.value = "";
+  try {
+    if (button.onClick) await button.onClick(getActionContext(row));
+    else if (button.key === "delete" && config.value.deleteByIds)
+      await handleDelete(row?.[rowKey], button.permission);
+    else if (row) emit("row-action", { key: button.key, row });
+    else await handleToolbar(button.key);
+  } catch (error) {
+    actionError.value = error instanceof Error ? error.message : "操作失败，请重试";
+  } finally {
+    pendingActions.delete(key);
+  }
+}
+
 const leftToolbarButtons = computed(() => {
-  if (!config.value.toolbar || config.value.toolbar.length === 0) return [];
-  return createToolbar(config.value.toolbar, {});
+  if (!config.value.toolbarActions || config.value.toolbarActions.length === 0) return [];
+  return resolveActions(config.value.toolbarActions, {});
 });
 
-// 右侧工具栏按钮
 const rightToolbarButtons = computed(() => {
-  if (!config.value.defaultToolbar || config.value.defaultToolbar.length === 0) return [];
-  return createToolbar(config.value.defaultToolbar, { circle: true });
+  if (!config.value.tableTools || config.value.tableTools.length === 0) return [];
+  return resolveActions(config.value.tableTools, { circle: true });
 });
 
-// 表格操作工具栏
-const tableToolbar = config.value.cols[config.value.cols.length - 1].operat ?? ["edit", "delete"];
-const tableToolbarBtn = createToolbar(tableToolbar, { link: true, size: "small" });
-
-// 表格相关
-const cols = ref(
-  props.contentConfig.cols.map((col) => {
-    if (col.initFn) {
-      col.initFn(col);
-    }
+const columns = ref(
+  props.tableConfig.columns.map((source) => {
+    const col = { ...source };
+    if (col.hideable === false) col.show = true;
     if (col.show === undefined) {
       col.show = true;
     }
@@ -461,13 +591,61 @@ const cols = ref(
     return col;
   })
 );
-// 加载状态
 const loading = ref(false);
-// 列表数据
-const pageData = ref<IObject[]>([]);
-// 显示分页
-const showPagination = props.contentConfig.pagination !== false;
-// 分页配置
+const loadError = ref("");
+const actionError = ref("");
+columns.value.forEach((column) => {
+  if (column.onInit)
+    void Promise.resolve()
+      .then(() => column.onInit?.(column))
+      .catch((error: unknown) => {
+        actionError.value = error instanceof Error ? error.message : "列选项加载失败";
+      });
+});
+const pendingActions = reactive(new Set<string>());
+const sort = ref<SortExpression[]>();
+const initialSort = props.tableConfig.table?.defaultSort;
+if (initialSort?.prop && initialSort.order) {
+  const column = columns.value.find((col) => col.prop === initialSort.prop);
+  if (column?.sortable === "custom")
+    sort.value = buildSort(initialSort, column.sortField ?? column.prop);
+}
+const pageData = ref<CrudRecord[]>([]);
+const confirmedRows = new Map<string | number, CrudRecord>();
+const pendingCells = reactive(new Set<string>());
+const defaultColumnVisibility = columns.value.map((col) => col.show);
+
+/**
+ * 只向 Element Plus 传递列属性，保留自有元数据供渲染和请求使用。
+ */
+function getColumnAttrs(column: CrudTableConfig["columns"][number]): CrudRecord {
+  const attrs = { ...column };
+  for (const key of [
+    "show",
+    "hideable",
+    "sortField",
+    "cellType",
+    "actions",
+    "maxVisibleActions",
+    "slotName",
+    "onInit",
+    "filterJoin",
+    "imageWidth",
+    "imageHeight",
+    "selectList",
+    "activeValue",
+    "inactiveValue",
+    "activeText",
+    "inactiveText",
+    "inputType",
+    "priceFormat",
+    "dateFormat",
+  ]) {
+    Reflect.deleteProperty(attrs, key);
+  }
+  return attrs;
+}
+const showPagination = props.tableConfig.pagination !== false;
 const defaultPagination = {
   background: true,
   layout: "total, sizes, prev, pager, next, jumper",
@@ -477,136 +655,152 @@ const defaultPagination = {
   currentPage: 1,
 };
 const pagination = reactive(
-  typeof props.contentConfig.pagination === "object"
-    ? { ...defaultPagination, ...props.contentConfig.pagination }
+  typeof props.tableConfig.pagination === "object"
+    ? { ...defaultPagination, ...props.tableConfig.pagination }
     : defaultPagination
 );
-// 分页相关的请求参数
-const request = props.contentConfig.request ?? {
-  pageName: "pageNum",
-  limitName: "pageSize",
+const paginationKeys = props.tableConfig.paginationKeys ?? {
+  page: "pageNum",
+  size: "pageSize",
 };
 
-const tableRef = ref<TableInstance>();
+const elementTableRef = ref<TableInstance>();
 
-// 行选中
-const selectionData = ref<IObject[]>([]);
-// 删除 ID 集合 用于批量删除
-const removeIds = ref<(number | string)[]>([]);
+const selectedRows = ref<CrudRecord[]>([]);
+const selectedKeys = ref<(number | string)[]>([]);
 /**
- * 记录表格勾选项与待删除 ID
+ * 更新勾选记录及主键。
  */
-function handleSelectionChange(selection: any[]) {
-  selectionData.value = selection;
-  removeIds.value = selection.map((item) => item[pk]);
+function handleSelectionChange(selection: CrudRecord[]) {
+  selectedRows.value = selection;
+  selectedKeys.value = selection.map(getRowKey);
 }
 
 /**
- * 获取行选中
+ * 列显隐只修改当前实例，恢复时使用声明初值。
  */
-function getSelectionData() {
-  return selectionData.value;
+function restoreColumns(): void {
+  columns.value.forEach((col, index) => {
+    col.show = defaultColumnVisibility[index];
+  });
 }
 
 /**
- * 刷新
+ * 同步清理选中行、主键及界面状态。
  */
-function handleRefresh(isRestart = false) {
-  fetchPageData(lastFormData, isRestart);
+function clearSelection(): void {
+  selectedRows.value = [];
+  selectedKeys.value = [];
+  elementTableRef.value?.clearSelection();
 }
 
 /**
- * 删除
+ * 读取当前勾选的记录。
  */
-function handleDelete(id?: number | string) {
-  const ids = [id || removeIds.value].join(",");
-  if (!ids) {
-    ElMessage.warning("请勾选删除项");
-    return;
-  }
+function getSelection() {
+  return selectedRows.value;
+}
 
-  ElMessageBox.confirm("确认删除?", "警告", {
+/**
+ * 沿用已提交的条件查询，可选择回到第一页。
+ */
+function refresh(resetPage = false): Promise<void> {
+  return loadData(appliedQuery, resetPage);
+}
+
+/**
+ * 删除指定行或勾选记录，成功后刷新列表。
+ */
+async function handleDelete(
+  id?: number | string,
+  permission?: string | string[] | null
+): Promise<void> {
+  const ids = id === undefined ? selectedKeys.value.join(",") : String(id);
+  if (!ids) return;
+  const action = props.tableConfig.deleteByIds;
+  if (!action) throw new Error("未配置删除接口");
+  const confirmed = await ElMessageBox.confirm("确认删除选中记录？", "提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
   }).then(
-    function () {
-      if (props.contentConfig.deleteAction) {
-        props.contentConfig.deleteAction(ids).then(
-          () => {
-            ElMessage.success("删除成功");
-            removeIds.value = [];
-            // 清空选中项
-            tableRef.value?.clearSelection();
-            handleRefresh(true);
-          },
-          () => {
-            // 交由全局错误处理
-          }
-        );
-      } else {
-        ElMessage.error("未配置deleteAction");
-      }
-    },
-    () => {
-      // 用户取消
-    }
+    () => true,
+    () => false
   );
+  if (!confirmed || (permission && !hasPerm(permission))) return;
+  await action(ids);
+  clearSelection();
+  ElMessage.success("删除成功");
+  // 删除已成功，刷新失败可单独重试。
+  await refresh().catch(() => undefined);
 }
 
-// 导出表单
 const fields: string[] = [];
-cols.value.forEach((item) => {
-  if (item.prop !== undefined) {
+columns.value.forEach((item) => {
+  if (item.prop !== undefined && item.cellType !== "actions") {
     fields.push(item.prop);
   }
 });
-const enum ExportsOriginEnum {
+/**
+ * 浏览器导出的数据范围。
+ */
+const enum ExportScope {
   CURRENT = "current",
   SELECTED = "selected",
-  REMOTE = "remote",
+  ALL = "all",
 }
-const exportsModalVisible = ref(false);
-const exportsFormRef = ref<FormInstance>();
-const exportsFormData = reactive({
-  filename: "",
-  sheetname: "",
+const exportDialogVisible = ref(false);
+const exporting = ref(false);
+const exportError = ref("");
+const exportFormRef = ref<FormInstance>();
+const exportForm = reactive({
+  fileName: "",
+  sheetName: "",
   fields,
-  origin: ExportsOriginEnum.CURRENT,
+  scope: ExportScope.CURRENT,
 });
-const exportsFormRules: FormRules = {
+const exportRules: FormRules = {
   fields: [{ required: true, message: "请选择字段" }],
-  origin: [{ required: true, message: "请选择数据来源" }],
+  scope: [{ required: true, message: "请选择数据来源" }],
 };
 
 /**
- * 打开导出弹窗
+ * 打开浏览器导出表单。
  */
-function handleOpenExportsModal() {
-  exportsModalVisible.value = true;
+function openExportDialog() {
+  exportError.value = "";
+  exportDialogVisible.value = true;
 }
-// 导出确认
-const handleExportsSubmit = useThrottleFn(() => {
-  exportsFormRef.value?.validate((valid: boolean) => {
-    if (valid) {
-      handleExports();
-      handleCloseExportsModal();
-    }
-  });
-}, 3000);
+/**
+ * 校验导出配置并生成文件，失败保留弹窗。
+ */
+async function handleExport(): Promise<void> {
+  if (exporting.value) return;
+  exporting.value = true;
+  exportError.value = "";
+  try {
+    if (!(await exportFormRef.value?.validate().catch(() => false))) return;
+    await exportRows();
+    closeExportDialog();
+  } catch (error) {
+    exportError.value = error instanceof Error ? error.message : "导出失败，请重试";
+  } finally {
+    exporting.value = false;
+  }
+}
 
 /**
- * 关闭导出弹窗
+ * 关闭并重置导出表单。
  */
-function handleCloseExportsModal() {
-  exportsModalVisible.value = false;
-  exportsFormRef.value?.resetFields();
+function closeExportDialog() {
+  exportDialogVisible.value = false;
+  exportFormRef.value?.resetFields();
   nextTick(() => {
-    exportsFormRef.value?.clearValidate();
+    exportFormRef.value?.clearValidate();
   });
 }
 /**
- * 创建 Excel 工作簿，exceljs 按需加载
+ * 按需加载 ExcelJS 并创建工作簿。
  */
 async function createWorkbook(): Promise<Workbook> {
   const ExcelJS = await import("exceljs");
@@ -614,53 +808,38 @@ async function createWorkbook(): Promise<Workbook> {
 }
 
 /**
- * 导出
+ * 按所选字段和数据范围生成 Excel 文件。
  */
-async function handleExports() {
-  const filename = exportsFormData.filename
-    ? exportsFormData.filename
-    : props.contentConfig.permPrefix || "export";
-  const sheetname = exportsFormData.sheetname ? exportsFormData.sheetname : "sheet";
-  const workbook = await createWorkbook();
-  const worksheet = workbook.addWorksheet(sheetname);
-  const columns: Partial<Column>[] = [];
-  cols.value.forEach((col) => {
-    if (col.label && col.prop && exportsFormData.fields.includes(col.prop)) {
-      columns.push({ header: col.label, key: col.prop });
-    }
-  });
-  worksheet.columns = columns;
-  if (exportsFormData.origin === ExportsOriginEnum.REMOTE) {
-    if (props.contentConfig.exportsAction) {
-      props.contentConfig.exportsAction(lastFormData).then((data) => {
-        worksheet.addRows(data);
-        workbook.xlsx.writeBuffer().then(
-          (buffer) => {
-            saveXlsx(buffer, filename as string);
-          },
-          (error) => console.error(error)
-        );
-      });
-    } else {
-      ElMessage.error("未配置exportsAction");
-    }
-  } else {
-    worksheet.addRows(
-      exportsFormData.origin === ExportsOriginEnum.SELECTED ? selectionData.value : pageData.value
-    );
-    workbook.xlsx.writeBuffer().then(
-      (buffer) => {
-        saveXlsx(buffer, filename as string);
-      },
-      (error) => console.error(error)
-    );
+async function exportRows(): Promise<void> {
+  const query = getExportQuery();
+  const fileName = exportForm.fileName || "export";
+  const sheetName = exportForm.sheetName || "sheet";
+  const exportColumns: Partial<Column>[] = columns.value
+    .filter(
+      (col) =>
+        col.cellType !== "actions" && col.label && col.prop && exportForm.fields.includes(col.prop)
+    )
+    .map((col) => ({ header: col.label, key: col.prop }));
+  const scope = exportForm.scope;
+  let rows = cloneDeep(scope === ExportScope.SELECTED ? selectedRows.value : pageData.value);
+  if (scope === ExportScope.SELECTED && !rows.length) throw new Error("请先勾选导出记录");
+  if (scope === ExportScope.ALL) {
+    const action = props.tableConfig.fetchExportRows;
+    if (!action) throw new Error("未配置全量导出接口");
+    rows = await action(query);
   }
+  const workbook = await createWorkbook();
+  const worksheet = workbook.addWorksheet(sheetName);
+  worksheet.columns = exportColumns;
+  worksheet.addRows(rows);
+  saveXlsx(await workbook.xlsx.writeBuffer(), fileName);
 }
 
-// 导入表单
-let isFileImport = false;
+const isFileImport = ref(false);
 const uploadRef = ref<UploadInstance>();
 const importModalVisible = ref(false);
+const importing = ref(false);
+const importError = ref("");
 const importFormRef = ref<FormInstance>();
 const importFormData = reactive<{
   files: UploadUserFile[];
@@ -672,14 +851,15 @@ const importFormRules: FormRules = {
 };
 
 /**
- * 打开导入弹窗
+ * 打开导入表单，区分文件上传与浏览器解析。
  */
 function handleOpenImportModal(isFile: boolean = false) {
+  importError.value = "";
   importModalVisible.value = true;
-  isFileImport = isFile;
+  isFileImport.value = isFile;
 }
 /**
- * 覆盖前一个文件
+ * 用新文件替换已选文件。
  */
 function handleFileExceed(files: File[]) {
   uploadRef.value!.clearFiles();
@@ -688,39 +868,50 @@ function handleFileExceed(files: File[]) {
   uploadRef.value!.handleStart(file);
 }
 /**
- * 下载导入模板
+ * 下载导入模板。
  */
-function handleDownloadTemplate() {
-  const importTemplate = props.contentConfig.importTemplate;
-  if (typeof importTemplate === "string") {
-    window.open(importTemplate);
-  } else if (typeof importTemplate === "function") {
-    importTemplate().then((response) => {
-      const fileData = response.data;
-      const fileName = decodeURI(
-        response.headers["content-disposition"].split(";")[1].split("=")[1]
-      );
-      saveXlsx(fileData, fileName);
-    });
-  } else {
-    ElMessage.error("未配置importTemplate");
-  }
+async function handleDownloadTemplate(): Promise<void> {
+  const template = props.tableConfig.importTemplate;
+  if (typeof template === "string") window.open(template);
+  else if (typeof template === "function") downloadFile(await template());
+  else ElMessage.error("未配置导入模板");
 }
-// 导入确认
-const handleImportSubmit = useThrottleFn(() => {
-  importFormRef.value?.validate((valid: boolean) => {
-    if (valid) {
-      if (isFileImport) {
-        handleImport();
-      } else {
-        handleImports();
-      }
-    }
-  });
-}, 3000);
 
 /**
- * 关闭导入弹窗
+ * 校验后导入文件，成功后刷新列表。
+ */
+async function handleImportSubmit(): Promise<void> {
+  if (importing.value) return;
+  importing.value = true;
+  importError.value = "";
+  try {
+    if (!(await importFormRef.value?.validate().catch(() => false))) return;
+    const result = isFileImport.value ? await importFile() : await importRows();
+    const summary = readImportSummary(result);
+    if (summary && summary.invalidCount > 0) {
+      importError.value =
+        "已导入 " +
+        summary.validCount +
+        " 条，无效 " +
+        summary.invalidCount +
+        " 条。请修正后重新选择文件。" +
+        summary.messages.slice(0, 5).join("；");
+      importFormData.files = [];
+      if (summary.validCount > 0) await refresh(true).catch(() => undefined);
+      return;
+    }
+    ElMessage.success("导入成功");
+    handleCloseImportModal();
+    await refresh(true).catch(() => undefined);
+  } catch (error) {
+    importError.value = error instanceof Error ? error.message : "导入失败，请重试";
+  } finally {
+    importing.value = false;
+  }
+}
+
+/**
+ * 关闭并重置导入表单。
  */
 function handleCloseImportModal() {
   importModalVisible.value = false;
@@ -730,277 +921,284 @@ function handleCloseImportModal() {
   });
 }
 /**
- * 文件导入
+ * 将原文件交给导入接口处理。
  */
-function handleImport() {
-  const importAction = props.contentConfig.importAction;
-  if (importAction === undefined) {
-    ElMessage.error("未配置importAction");
-    return;
-  }
-  importAction(importFormData.files[0].raw as File).then(() => {
-    ElMessage.success("导入数据成功");
-    handleCloseImportModal();
-    handleRefresh(true);
-  });
+async function importFile(): Promise<unknown> {
+  const action = props.tableConfig.importFile;
+  if (!action) throw new Error("未配置文件导入接口");
+  const file = importFormData.files[0]?.raw;
+  if (!file) throw new Error("请选择导入文件");
+  return action(file);
 }
 /**
- * 导入
+ * 解析 Excel 首张工作表，将数据行交给导入回调。
  */
-async function handleImports() {
-  const importsAction = props.contentConfig.importsAction;
-  if (importsAction === undefined) {
-    ElMessage.error("未配置importsAction");
-    return;
-  }
-  // 获取选择的文件
-  const file = importFormData.files[0].raw as File;
-  // 创建 Workbook 实例
+async function importRows(): Promise<unknown> {
+  const action = props.tableConfig.importRows;
+  if (!action) throw new Error("未配置数据导入接口");
+  const file = importFormData.files[0]?.raw;
+  if (!file) throw new Error("请选择导入文件");
   const workbook = await createWorkbook();
-  // 使用 FileReader 对象来读取文件内容
-  const fileReader = new FileReader();
-  // 二进制字符串的形式加载文件
-  fileReader.readAsArrayBuffer(file);
-  fileReader.onload = (ev) => {
-    if (ev.target !== null && ev.target.result !== null) {
-      const result = ev.target.result as ArrayBuffer;
-      // 从 buffer 中加载并解析数据
-      workbook.xlsx.load(result).then(
-        (workbook) => {
-          // 解析后的数据
-          const data = [];
-          // 获取第一个 worksheet 内容
-          const worksheet = workbook.getWorksheet(1);
-          if (worksheet) {
-            // 获取第一行的标题
-            const fields: any[] = [];
-            worksheet.getRow(1).eachCell((cell) => {
-              fields.push(cell.value);
-            });
-            // 遍历工作表的每一行（从第二行开始，因为第一行通常是标题行）
-            for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
-              const rowData: IObject = {};
-              const row = worksheet.getRow(rowNumber);
-              // 遍历当前行的每个单元格
-              row.eachCell((cell, colNumber) => {
-                // 获取标题对应的键，并将当前单元格的值存储到相应的属性名中
-                rowData[fields[colNumber - 1]] = cell.value;
-              });
-              // 将当前行的数据对象添加到数组中
-              data.push(rowData);
-            }
-          }
-          if (data.length === 0) {
-            ElMessage.error("未解析到数据");
-            return;
-          }
-          importsAction(data).then(() => {
-            ElMessage.success("导入数据成功");
-            handleCloseImportModal();
-            handleRefresh(true);
-          });
-        },
-        (error) => console.error(error)
-      );
-    } else {
-      ElMessage.error("读取文件失败");
-    }
-  };
+  await workbook.xlsx.load(await file.arrayBuffer());
+  const worksheet = workbook.getWorksheet(1);
+  if (!worksheet) throw new Error("工作簿没有工作表");
+  const rows = parseWorksheetRows(worksheet);
+  if (!rows.length) throw new Error("未解析到数据");
+  return action(rows);
 }
 /**
- * 操作人"
+ * 执行内置工具，或发出自定义工具栏事件。
  */
-function handleToolbar(name: string) {
-  switch (name) {
+async function handleToolbar(key: string): Promise<void> {
+  switch (key) {
     case "refresh":
-      handleRefresh();
-      break;
-    case "exports":
-      handleOpenExportsModal();
-      break;
-    case "imports":
-      handleOpenImportModal();
+      await refresh();
       break;
     case "search":
-      emit("searchClick");
+      emit("toggle-search");
       break;
-    case "add":
-      emit("addClick");
+    case "create":
+      emit("create");
       break;
     case "delete":
-      handleDelete();
+      await handleDelete();
       break;
     case "import":
-      handleOpenImportModal(true);
+      if (config.value.importFile && config.value.importRows && !config.value.importMode)
+        throw new Error("同时配置两种导入回调时，请指定 importMode");
+      handleOpenImportModal(
+        config.value.importMode ? config.value.importMode === "file" : !!config.value.importFile
+      );
       break;
     case "export":
-      emit("exportClick");
+      if (config.value.exportFile && config.value.fetchExportRows && !config.value.exportMode)
+        throw new Error("同时配置两种导出回调时，请指定 exportMode");
+      if (config.value.exportMode ? config.value.exportMode === "file" : !!config.value.exportFile)
+        await exportFile();
+      else openExportDialog();
       break;
     default:
-      emit("toolbarClick", name);
+      emit("toolbar-action", key);
       break;
   }
 }
 
 /**
- * 操作人"
+ * 保存单元格修改，失败时回滚未刷新的记录。
  */
-function handleOperate(data: IOperateData) {
-  switch (data.name) {
-    case "delete":
-      if (props.contentConfig?.deleteAction) {
-        handleDelete(data.row[pk]);
-      } else {
-        emit("operateClick", data);
-      }
-      break;
-    default:
-      emit("operateClick", data);
-      break;
+async function handleModify(
+  field: string,
+  value: boolean | string | number,
+  row: CrudRecord
+): Promise<void> {
+  const id = getRowKey(row);
+  const original = confirmedRows.get(id);
+  if (!original || Object.is(original[field], value) || isCellDisabled(row, field)) return;
+  const action = props.tableConfig.updateField;
+  if (!action) return;
+  const key = JSON.stringify([id, field]);
+  pendingCells.add(key);
+  actionError.value = "";
+  try {
+    await action({ [rowKey]: id, field, value });
+    if (confirmedRows.get(id) === original) {
+      original[field] = cloneDeep(value);
+      row[field] = cloneDeep(value);
+    }
+  } catch (error) {
+    if (confirmedRows.get(id) === original && pageData.value.includes(row))
+      row[field] = cloneDeep(original[field]);
+    actionError.value = error instanceof Error ? error.message : "修改失败，请重试";
+  } finally {
+    pendingCells.delete(key);
   }
 }
 
 /**
- * 属性修改
+ * 读取字符串或数字主键，缺失时抛错。
  */
-function handleModify(field: string, value: boolean | string | number, row: Record<string, any>) {
-  if (props.contentConfig.modifyAction) {
-    props.contentConfig.modifyAction({
-      [pk]: row[pk],
-      field,
-      value,
-    });
-  } else {
-    ElMessage.error("未配置modifyAction");
-  }
+function getRowKey(row: CrudRecord): string | number {
+  const value: unknown = row[rowKey];
+  if (typeof value === "string" || typeof value === "number") return value;
+  throw new Error("列表记录缺少有效主键：" + rowKey);
 }
 
 /**
- * 分页切换
+ * 配置保存接口且有更新权限时允许编辑，保存中禁用。
+ */
+function isCellDisabled(row: CrudRecord, field: string): boolean {
+  return (
+    !props.tableConfig.updateField ||
+    !hasActionPermission("update") ||
+    pendingCells.has(JSON.stringify([getRowKey(row), field]))
+  );
+}
+
+/**
+ * 切换每页条数并回到第一页。
  */
 function handleSizeChange(value: number) {
   pagination.pageSize = value;
-  handleRefresh();
+  void refresh(true).catch(() => undefined);
 }
 /**
- * 切换页码并重新拉取数据
+ * 切换页码并查询列表。
  */
 function handleCurrentChange(value: number) {
   pagination.currentPage = value;
-  handleRefresh();
+  void refresh().catch(() => undefined);
 }
 
-// 远程数据筛选
-let filterParams: IObject = {};
+let filterParams: CrudRecord = {};
 /**
- * 表头筛选变化后重新查询
+ * 转换表头筛选值；清空的列从累计条件中删除，再通知页面应用筛选。
  */
-function handleFilterChange(newFilters: any) {
-  const filters: IObject = {};
+function handleFilterChange(newFilters: Record<string, (string | number | boolean)[]>) {
   for (const key in newFilters) {
-    const col = cols.value.find((col) => {
+    const values = newFilters[key];
+    if (!values || values.length === 0) {
+      Reflect.deleteProperty(filterParams, key);
+      continue;
+    }
+    const col = columns.value.find((col) => {
       return col.columnKey === key || col["column-key"] === key;
     });
-    if (col && col.filterJoin !== undefined) {
-      filters[key] = newFilters[key].join(col.filterJoin);
-    } else {
-      filters[key] = newFilters[key];
-    }
+    filterParams[key] = col && col.filterJoin !== undefined ? values.join(col.filterJoin) : values;
   }
-  filterParams = { ...filterParams, ...filters };
-  emit("filterChange", filterParams);
+  emit("filter-change", { ...filterParams });
 }
 
 /**
- * 获取筛选条件
+ * 读取已转换的表头筛选条件。
  */
-function getFilterParams() {
+function getFilters() {
   return filterParams;
 }
 
-// 获取分页数据
-let lastFormData = {};
+let appliedQuery: CrudRecord = {};
+let lastSuccessfulQuery: CrudRecord | undefined;
+let pageSequence = 0;
+const canExport = computed(
+  () => !loading.value && !loadError.value && lastSuccessfulQuery !== undefined
+);
+onScopeDispose(() => {
+  pageSequence += 1;
+});
+
 /**
- * 拉取分页数据
+ * 仅最新响应回填列表，成功查询同时记录导出所用条件。
  */
-function fetchPageData(formData: IObject = {}, isRestart = false) {
+async function loadData(query: CrudRecord = appliedQuery, resetPage = false): Promise<void> {
+  const sequence = ++pageSequence;
   loading.value = true;
-  // 上一次搜索条件
-  lastFormData = formData;
-  // 重置页码
-  if (isRestart) {
+  loadError.value = "";
+  appliedQuery = cloneDeep(query);
+  if (resetPage) {
     pagination.currentPage = 1;
+    clearSelection();
   }
-  props.contentConfig
-    .indexAction(
-      showPagination
-        ? {
-            [request.pageName]: pagination.currentPage,
-            [request.limitName]: pagination.pageSize,
-            ...getFilterParams(),
-            ...formData,
-          }
-        : {
-            ...getFilterParams(),
-            ...formData,
-          }
-    )
-    .then((data) => {
-      if (showPagination) {
-        pagination.total = (data as any)?.total ?? 0;
-        pageData.value = (data as any)?.list ?? [];
-      } else {
-        pageData.value = Array.isArray(data) ? data : (data?.list ?? (data as any)?.data ?? []);
-      }
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-}
-fetchPageData();
-
-/**
- * 导出 Excel
- */
-function exportPageData(formData: IObject = {}) {
-  if (props.contentConfig.exportAction) {
-    props.contentConfig.exportAction(formData).then((response) => {
-      const fileData = response.data;
-      const fileName = decodeURI(
-        response.headers["content-disposition"].split(";")[1].split("=")[1]
-      );
-      saveXlsx(fileData, fileName);
-    });
-  } else {
-    ElMessage.error("未配置exportAction");
+  const params = {
+    ...cloneDeep(query),
+    ...cloneDeep(getFilters()),
+    ...(showPagination
+      ? {
+          [paginationKeys.page]: pagination.currentPage,
+          [paginationKeys.size]: pagination.pageSize,
+        }
+      : {}),
+  };
+  if (sort.value) params.sort = [...sort.value];
+  else Reflect.deleteProperty(params, "sort");
+  try {
+    const data = await props.tableConfig.fetchData(params);
+    if (sequence !== pageSequence) return;
+    const rows = Array.isArray(data) ? data : data?.list;
+    const total = Array.isArray(data) ? data.length : data?.total;
+    if (!Array.isArray(rows) || !Number.isInteger(total) || total < 0)
+      throw new Error("请在 fetchData 中将接口结果转换为数组或 { list, total }");
+    const maxPage = Math.max(1, Math.ceil(total / pagination.pageSize));
+    if (showPagination && pagination.currentPage > maxPage) {
+      pagination.currentPage = maxPage;
+      await loadData(query);
+      return;
+    }
+    pageData.value = rows;
+    pagination.total = total;
+    confirmedRows.clear();
+    pageData.value.forEach((row) => confirmedRows.set(getRowKey(row), cloneDeep(row)));
+    lastSuccessfulQuery = cloneDeep(params);
+  } catch (error) {
+    if (sequence === pageSequence)
+      loadError.value = error instanceof Error ? error.message : "列表加载失败";
+    throw error;
+  } finally {
+    if (sequence === pageSequence) loading.value = false;
   }
 }
 
 /**
- * 浏览器保存文件
+ * 读取上次成功查询的条件，去除分页参数。
  */
-function saveXlsx(fileData: any, fileName: string) {
-  const fileType =
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
-
-  const blob = new Blob([fileData], { type: fileType });
-  const downloadUrl = window.URL.createObjectURL(blob);
-
-  const downloadLink = document.createElement("a");
-  downloadLink.href = downloadUrl;
-  downloadLink.download = fileName;
-
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-
-  document.body.removeChild(downloadLink);
-  window.URL.revokeObjectURL(downloadUrl);
+function getExportQuery(): CrudRecord {
+  if (!canExport.value || !lastSuccessfulQuery) throw new Error("请先成功加载列表再导出");
+  const params = cloneDeep(lastSuccessfulQuery);
+  Reflect.deleteProperty(params, paginationKeys.page);
+  Reflect.deleteProperty(params, paginationKeys.size);
+  return params;
 }
 
 /**
- * 暴露的属性和方法
+ * 服务端导出期间禁止重复请求。
  */
-defineExpose({ fetchPageData, exportPageData, getFilterParams, getSelectionData, handleRefresh });
+async function exportFile(): Promise<void> {
+  if (exporting.value) return;
+  const action = props.tableConfig.exportFile;
+  if (!action) throw new Error("未配置文件导出接口");
+  const params = getExportQuery();
+  exporting.value = true;
+  try {
+    downloadFile(await action(params));
+  } finally {
+    exporting.value = false;
+  }
+}
+
+/**
+ * 应用远程排序；本地排序保留 Element Plus 原有行为。
+ */
+async function handleSortChange(state: TableSort): Promise<void> {
+  const column = columns.value.find((col) => col.prop === state.prop);
+  if (column?.sortable !== "custom" && !(state.order === null && sort.value)) return;
+  sort.value = buildSort(state, column?.sortField ?? state.prop);
+  await refresh(true).catch(() => undefined);
+}
+
+/**
+ * 清除表头筛选和内部条件，不发起查询。
+ */
+function clearFilters(): void {
+  filterParams = {};
+  elementTableRef.value?.clearFilter();
+}
+
+if (props.autoLoad !== false) void loadData().catch(() => undefined);
+
+/**
+ * 将工作簿保存为 .xlsx 文件。
+ */
+function saveXlsx(fileData: BlobPart, fileName: string): void {
+  downloadFile({ data: fileData }, fileName.endsWith(".xlsx") ? fileName : fileName + ".xlsx");
+}
+
+defineExpose({
+  loadData,
+  exportFile,
+  getFilters,
+  getSelection,
+  getExportQuery,
+  refresh,
+  clearFilters,
+});
 </script>
 
 <style lang="scss" scoped>

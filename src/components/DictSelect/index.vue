@@ -85,8 +85,7 @@ const modelValue = defineModel<string | number | Array<string | number>>();
 
 const dictStore = useDictStore();
 
-// 字典选项
-const options = ref<Array<{ label: string; value: string | number }>>([]);
+const options = computed(() => (props.code ? dictStore.getDictItems(props.code) : []));
 
 // 单选值（select/radio）：选项加载后把外部值翻译为选项的原始值（消除 "1" 与 1 的字符串/数字差异），未命中时原样保留不清空；用户选择直接写回 modelValue
 const selectedSingle = computed<string | number | undefined>({
@@ -111,17 +110,15 @@ const selectedMulti = computed<Array<string | number>>({
   },
 });
 
-// 获取字典数据（空编码跳过：设计器画布上未配置字典编码时不发无效请求；
+// 空编码跳过：设计器画布上未配置字典编码时不发无效请求；
 // watch 而非 onMounted：设计器右侧面板修改编码后画布即时刷新选项）
 watch(
   () => props.code,
   async (code) => {
     if (!code) {
-      options.value = [];
       return;
     }
     await dictStore.loadDictItems(code);
-    options.value = dictStore.getDictItems(code);
   },
   { immediate: true }
 );

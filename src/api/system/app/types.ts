@@ -1,6 +1,4 @@
-// 应用管理类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery } from "@/api/common";
 
 /**
  * 三方平台（微信公众平台 / 微信小程序 / 支付宝 / 苹果 / QQ）
@@ -10,7 +8,7 @@ export type AppPlatform = "WECHAT_MP" | "WECHAT_MINI" | "ALIPAY" | "APPLE" | "QQ
 /**
  * 应用分页查询参数
  */
-export interface AppQueryParams extends BaseQueryParams {
+export interface AppQuery extends PageQuery {
   /** 关键字（应用名称 / 应用编码 / AppId） */
   keywords?: string;
   /** 状态（1-正常 0-禁用） */

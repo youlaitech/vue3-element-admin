@@ -1,6 +1,4 @@
-// User 用户类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery, SortExpression } from "@/api/common";
 
 /**
  * 登录用户信息
@@ -23,9 +21,13 @@ export interface UserInfo {
 }
 
 /**
- * 用户分页查询参数
+ * 用户查询条件。
  */
-export interface UserQueryParams extends BaseQueryParams {
+export interface UserQuery extends PageQuery {
+  /** 用户接口允许的排序属性 */
+  sort?: SortExpression<"id" | "username" | "createTime" | "updateTime">[];
+  /** 角色筛选 */
+  roleIds?: (string | number)[];
   /** 搜索关键字 */
   keywords?: string;
   /** 用户状态 */
@@ -37,7 +39,7 @@ export interface UserQueryParams extends BaseQueryParams {
 }
 
 /**
- * 用户分页对象
+ * 用户列表记录。
  */
 export interface UserItem {
   /** 用户 ID */
@@ -45,7 +47,7 @@ export interface UserItem {
   /** 用户头像地址 */
   avatar?: string;
   /** 创建时间 */
-  createTime?: Date;
+  createTime?: string;
   /** 部门名称 */
   deptName?: string;
   /** 用户邮箱 */
@@ -83,7 +85,7 @@ export interface UserForm {
   /** 用户昵称 */
   nickname?: string;
   /** 角色 ID 集合 */
-  roleIds?: number[];
+  roleIds?: string[];
   /** 用户状态(1:正常;0:禁用) */
   status?: number;
   /** 用户名 */
@@ -113,7 +115,7 @@ export interface UserProfileDetail {
   /** 角色名称 */
   roleNames?: string;
   /** 创建时间 */
-  createTime?: Date;
+  createTime?: string;
 }
 
 /**
@@ -133,11 +135,11 @@ export interface UserProfileForm {
  */
 export interface PasswordChangeForm {
   /** 原密码 */
-  oldPassword?: string;
+  oldPassword: string;
   /** 新密码 */
-  newPassword?: string;
+  newPassword: string;
   /** 确认新密码 */
-  confirmPassword?: string;
+  confirmPassword: string;
 }
 
 /**
@@ -145,7 +147,7 @@ export interface PasswordChangeForm {
  */
 export interface PasswordVerifyForm {
   /** 当前密码 */
-  password?: string;
+  password: string;
 }
 
 /**
@@ -153,11 +155,11 @@ export interface PasswordVerifyForm {
  */
 export interface MobileUpdateForm {
   /** 手机号 */
-  mobile?: string;
+  mobile: string;
   /** 验证码 */
-  code?: string;
+  code: string;
   /** 当前密码 */
-  password?: string;
+  password: string;
 }
 
 /**
@@ -165,9 +167,9 @@ export interface MobileUpdateForm {
  */
 export interface EmailUpdateForm {
   /** 邮箱 */
-  email?: string;
+  email: string;
   /** 验证码 */
-  code?: string;
+  code: string;
   /** 当前密码 */
-  password?: string;
+  password: string;
 }

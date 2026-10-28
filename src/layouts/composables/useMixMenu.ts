@@ -15,7 +15,6 @@ export function useMixMenu() {
 
   const { activeTopMenuPath, sideMenuRoutes } = useLayout();
 
-  // 顶部菜单
   const topMenuItems = computed(() => permissionStore.routes.filter((item) => !item.meta?.hidden));
 
   // 解析当前侧边菜单激活路径

@@ -13,6 +13,9 @@
 <script setup lang="ts">
 import { useLayout } from "./composables/useLayout";
 
+/**
+ * 基础布局骨架
+ */
 withDefaults(
   defineProps<{
     /** 移动端展开侧边栏时是否显示遮罩层（LeftLayout 需要，MixLayout 不需要） */

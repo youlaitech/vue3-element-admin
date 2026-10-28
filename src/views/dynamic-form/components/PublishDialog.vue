@@ -121,10 +121,8 @@ const visible = defineModel("modelValue", {
 // 表单是否已发布（已发布直达入口配置步骤）
 const isPublished = computed(() => props.status === FormStatus.PUBLISHED);
 
-// 当前向导步骤
 const step = ref(0);
 
-// 保存中状态
 const saving = ref(false);
 
 // 选中的发布方式（可单选可全选）
@@ -175,7 +173,6 @@ const shareUrl = computed(
 // 第③步分享汇总可见（配置了分享且开关开启）
 const shareResultVisible = computed(() => showShareConfig.value && shareEnabled.value);
 
-// 第③步副标题
 const resultSubtitle = computed(() => {
   if (showMenuConfig.value && shareResultVisible.value)
     return "员工可从侧边栏进入，也可通过分享链接填写";
@@ -247,6 +244,9 @@ function buildCatalogTree(menus: MenuItem[]): CatalogNode[] {
  * 递归查找"表单中心"目录 ID；不存在返回空串（留空由后端自动创建）
  */
 function findDefaultCatalogId(): string {
+  /**
+   * 递归查找默认目录的 ID。
+   */
   const find = (nodes: CatalogNode[]): string => {
     for (const node of nodes) {
       if (node.label === DEFAULT_CATALOG_NAME) {
@@ -265,6 +265,9 @@ function findDefaultCatalogId(): string {
 // 菜单位置面包屑（目录名称链 + 菜单名）
 const menuBreadcrumb = computed(() => {
   const names: string[] = [];
+  /**
+   * 查找父目录并收集面包屑路径。
+   */
   const find = (nodes: CatalogNode[], chain: string[]): boolean => {
     for (const node of nodes) {
       const nextChain = [...chain, node.label];
@@ -280,7 +283,6 @@ const menuBreadcrumb = computed(() => {
   return [...names, menuForm.menuName];
 });
 
-// 已授权角色名称列表
 const grantedRoleNames = computed(() =>
   roleOptions.value
     .filter((role) => menuForm.roleIds?.includes(String(role.value)))
@@ -290,6 +292,9 @@ const grantedRoleNames = computed(() =>
 // 菜单完整路由路径（目录路径链 + 表单标识）
 const menuRoutePath = computed(() => {
   let routePath = "";
+  /**
+   * 查找父目录并拼接菜单完整路由。
+   */
   const find = (nodes: CatalogNode[], basePath: string): boolean => {
     for (const node of nodes) {
       // 顶级目录 routePath 以 / 开头，子级为相对段
@@ -331,12 +336,8 @@ async function handleSaveEntry(): Promise<void> {
     }
     if (showShareConfig.value) {
       // isPublic 独立提交，避免菜单-only 保存意外重置公开状态
-      // formKey/formName 原样回传满足后端非空校验（已发布态后端不更新元数据）
-      await FormAPI.update(props.formId, {
-        formKey: props.formKey,
-        formName: props.formName,
-        isPublic: shareEnabled.value ? 1 : 0,
-      });
+      // 更新接口按提交字段更新，元数据不必回传
+      await FormAPI.update(props.formId, { isPublic: shareEnabled.value ? 1 : 0 });
     }
     step.value = 2;
     emit("success");

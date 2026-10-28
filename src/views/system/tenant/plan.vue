@@ -233,11 +233,7 @@ import { FullScreen, QuestionFilled, Refresh, Search, Switch } from "@element-pl
 
 import MenuAPI from "@/api/system/menu";
 import TenantPlanAPI from "@/api/system/tenant-plan";
-import type {
-  TenantPlanForm,
-  TenantPlanItem,
-  TenantPlanQueryParams,
-} from "@/api/system/tenant-plan";
+import type { TenantPlanForm, TenantPlanItem, TenantPlanQuery } from "@/api/system/tenant-plan";
 import type { OptionItem } from "@/api/common";
 import { usePageTable } from "@/composables";
 import { CommonStatus } from "@/enums";
@@ -258,7 +254,7 @@ const menuTreeRef = ref<TreeInstance>();
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   TenantPlanItem,
-  TenantPlanQueryParams
+  TenantPlanQuery
 >({
   initialParams: {
     pageNum: 1,
@@ -361,7 +357,6 @@ async function handleEditClick(planId?: number): Promise<void> {
   openDialog();
 }
 
-// 校验并提交套餐表单
 const handleSubmit = useDebounceFn(async (): Promise<void> => {
   const valid = await planFormRef.value?.validate().then(
     () => true,

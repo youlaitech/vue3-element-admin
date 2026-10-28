@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { RoleQueryParams, RoleItem, RoleForm } from "./types";
+import type { RoleQuery, RoleItem, RoleForm } from "./types";
 import type { OptionItem, PageResult } from "@/api/common";
 
 const ROLE_BASE_URL = "/api/v1/roles";
@@ -8,9 +8,9 @@ const RoleAPI = {
   /**
    * 获取角色分页数据
    */
-  getPage(queryParams?: RoleQueryParams) {
+  getPage(queryParams?: RoleQuery) {
     return request<unknown, PageResult<RoleItem>>({
-      url: `${ROLE_BASE_URL}`,
+      url: ROLE_BASE_URL,
       method: "get",
       params: queryParams,
     });
@@ -61,7 +61,7 @@ const RoleAPI = {
    * 新增角色
    */
   create(data: RoleForm) {
-    return request({ url: `${ROLE_BASE_URL}`, method: "post", data });
+    return request({ url: ROLE_BASE_URL, method: "post", data });
   },
   /**
    * 更新角色
@@ -79,5 +79,4 @@ const RoleAPI = {
 
 export default RoleAPI;
 
-// 重导出类型
 export * from "./types";

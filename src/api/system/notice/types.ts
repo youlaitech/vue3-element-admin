@@ -1,11 +1,9 @@
-// Notice 通知类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery } from "@/api/common";
 
 /**
  * 通知分页查询参数
  */
-export interface NoticeQueryParams extends BaseQueryParams {
+export interface NoticeQuery extends PageQuery {
   /** 通知标题 */
   title?: string;
   /** 发布状态(0:未发布;1:已发布;-1:已撤回) */

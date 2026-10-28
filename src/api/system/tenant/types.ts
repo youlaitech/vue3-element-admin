@@ -1,6 +1,4 @@
-// Tenant 租户类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery } from "@/api/common";
 
 /**
  * 租户信息
@@ -17,7 +15,7 @@ export interface TenantInfo {
 /**
  * 租户分页查询参数
  */
-export interface TenantQueryParams extends BaseQueryParams {
+export interface TenantQuery extends PageQuery {
   /** 关键字(租户名称/租户编码/域名) */
   keywords?: string;
   /** 租户状态(1-正常 0-禁用) */

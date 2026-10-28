@@ -59,7 +59,7 @@
     <section class="demo-card">
       <header class="demo-card__header">
         <span class="demo-card__icon demo-card__icon--success">
-          <el-icon :size="18"><Pictures /></el-icon>
+          <el-icon :size="18"><PictureFilled /></el-icon>
         </span>
         <div class="demo-card__meta">
           <h3 class="demo-card__title">多图上传</h3>

@@ -39,6 +39,9 @@
             <el-dropdown-item @click="handleProfileClick">
               {{ t("navbar.profile") }}
             </el-dropdown-item>
+            <el-dropdown-item v-if="appConfig.oidcEnabled" @click="handleIdentityClick">
+              {{ t("navbar.identity") }}
+            </el-dropdown-item>
             <el-dropdown-item divided @click="logout">
               {{ t("navbar.logout") }}
             </el-dropdown-item>
@@ -56,7 +59,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
-import { defaults } from "@/settings";
+import { appConfig, defaults } from "@/settings";
 import { DeviceEnum, SidebarColor, ThemeMode, LayoutMode } from "@/enums/settings";
 import { useAppStore, useSettingsStore, useUserStore } from "@/stores";
 
@@ -105,6 +108,13 @@ function handleProfileClick() {
   router.push({ name: "Profile" });
 }
 
+/**
+ * 打开个人中心的认证身份区块
+ */
+function handleIdentityClick() {
+  router.push({ name: "Profile", query: { tab: "identity" } });
+}
+
 const toolbarToneClass = computed(() => {
   const { resolvedTheme, sidebarColorScheme, layout } = settingStore;
 
@@ -123,18 +133,33 @@ const toolbarToneClass = computed(() => {
 /**
  * 退出登录
  */
-function logout() {
-  ElMessageBox.confirm("确定注销并退出系统吗？", "提示", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-    lockScroll: false,
-  }).then(() => {
-    userStore.logout().then(() => {
-      const redirect = ["/404", "/401"].includes(route.path) ? "/" : route.fullPath;
-      router.push(`/login?redirect=${encodeURIComponent(redirect)}`);
+async function logout() {
+  try {
+    await ElMessageBox.confirm("确定注销并退出系统吗？", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+      lockScroll: false,
     });
-  });
+  } catch {
+    return;
+  }
+
+  let logoutUrl: string | null = null;
+  try {
+    logoutUrl = await userStore.logout();
+  } catch {
+    // 请求拦截器已提示；本地状态已清理，继续回登录页
+  }
+
+  if (logoutUrl) {
+    // 交回认证中心统一登出，由认证中心回跳登录页
+    window.location.href = logoutUrl;
+    return;
+  }
+
+  const redirect = ["/404", "/401"].includes(route.path) ? "/" : route.fullPath;
+  router.push(`/login?redirect=${encodeURIComponent(redirect)}`);
 }
 
 /**

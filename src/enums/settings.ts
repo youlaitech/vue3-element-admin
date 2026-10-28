@@ -1,4 +1,3 @@
-// 设置相关枚举
 import type { OptionItem } from "@/api/common";
 
 /**

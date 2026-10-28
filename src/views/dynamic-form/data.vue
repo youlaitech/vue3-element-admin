@@ -52,13 +52,15 @@
             show-overflow-tooltip
           >
             <template #default="scope">
-              {{ formatCellValue(getFieldValue(scope.row as FormDataItem, field.field), field) }}
+              {{
+                formatCellValue(getFieldValue(scope.row as FormSubmissionItem, field.field), field)
+              }}
             </template>
           </el-table-column>
           <!-- 弹性列：吸收剩余宽度，避免表格右侧留白 -->
           <el-table-column label="提交人" min-width="120" align="center" show-overflow-tooltip>
             <template #default="scope">
-              {{ (scope.row as FormDataItem).createByName || "匿名" }}
+              {{ (scope.row as FormSubmissionItem).createByName || "匿名" }}
             </template>
           </el-table-column>
           <el-table-column label="版本" prop="formVersion" width="70" align="center" />
@@ -69,7 +71,7 @@
                 type="primary"
                 link
                 size="small"
-                @click.stop="handleDetailClick(scope.row as FormDataItem)"
+                @click.stop="handleDetailClick(scope.row as FormSubmissionItem)"
               >
                 详情
               </el-button>
@@ -78,7 +80,7 @@
                 type="danger"
                 link
                 size="small"
-                @click.stop="handleDelete((scope.row as FormDataItem).id)"
+                @click.stop="handleDelete((scope.row as FormSubmissionItem).id)"
               >
                 删除
               </el-button>
@@ -124,7 +126,7 @@ import type { Options, Rule } from "@form-create/element-ui";
 import type { Column } from "exceljs";
 
 import FormAPI from "@/api/form";
-import type { FormDataItem, FormDataQueryParams } from "@/api/form";
+import type { FormSubmissionItem, FormSubmissionQuery } from "@/api/form";
 import { usePageTable, useTableSelection } from "@/composables";
 import { downloadFile } from "@/utils";
 import {
@@ -168,14 +170,16 @@ const MAX_FIELD_COLUMNS = 6;
 const displayFields = computed(() => fields.value.slice(0, MAX_FIELD_COLUMNS));
 
 // 分页表格数据管理
-const { loading, list, total, params, fetchData } = usePageTable<FormDataItem, FormDataQueryParams>(
-  {
-    initialParams: { pageNum: 1, pageSize: 10 },
-    request: (queryParams) => FormAPI.getFormDataPage(formKey.value, queryParams),
-  }
-);
+const { loading, list, total, params, fetchData } = usePageTable<
+  FormSubmissionItem,
+  FormSubmissionQuery
+>({
+  initialParams: { pageNum: 1, pageSize: 10 },
+  request: (queryParams) => FormAPI.getSubmissionPage(formKey.value, queryParams),
+});
 
-const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<FormDataItem>();
+const { selectedIds, hasSelection, handleSelectionChange } =
+  useTableSelection<FormSubmissionItem>();
 
 // 详情抽屉状态
 const detailState = reactive({
@@ -183,7 +187,7 @@ const detailState = reactive({
 });
 
 // 详情行（descriptions 展示提交人/时间）
-const detailRow = ref<FormDataItem>();
+const detailRow = ref<FormSubmissionItem>();
 
 const detailApi = ref();
 const detailData = ref<Record<string, unknown>>({});
@@ -216,15 +220,15 @@ const rowDataMap = computed(() => {
  * @param row 数据行
  * @param field 字段名
  */
-function getFieldValue(row: FormDataItem, field: string): unknown {
+function getFieldValue(row: FormSubmissionItem, field: string): unknown {
   return rowDataMap.value.get(row.id)?.[field];
 }
 
 /**
  * 打开详情抽屉只读回显（优先提交时版本快照，防止表单改版后历史数据漂移）
  */
-async function handleDetailClick(row: FormDataItem): Promise<void> {
-  const detail = await FormAPI.getFormDataDetail(formKey.value, row.id);
+async function handleDetailClick(row: FormSubmissionItem): Promise<void> {
+  const detail = await FormAPI.getSubmissionDetail(formKey.value, row.id);
   detailRow.value = detail;
   detailData.value = detail.dataJson ? JSON.parse(detail.dataJson) : {};
   // 独立 JSON.parse，与页面渲染规则隔离，可安全置为只读
@@ -265,7 +269,7 @@ async function handleDelete(id?: string): Promise<void> {
 
   loading.value = true;
   try {
-    await FormAPI.deleteFormData(formKey.value, dataIds);
+    await FormAPI.deleteSubmissions(formKey.value, dataIds);
     ElMessage.success("删除成功");
     fetchData();
   } finally {
@@ -286,10 +290,10 @@ async function handleExport(): Promise<void> {
   if (exporting.value) return;
   exporting.value = true;
   try {
-    const rows: FormDataItem[] = [];
+    const rows: FormSubmissionItem[] = [];
     let total = 0;
     for (let pageNum = 1; pageNum <= EXPORT_MAX_PAGES; pageNum++) {
-      const page = await FormAPI.getFormDataPage(formKey.value, {
+      const page = await FormAPI.getSubmissionPage(formKey.value, {
         pageNum,
         pageSize: EXPORT_PAGE_SIZE,
       });

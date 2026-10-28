@@ -129,12 +129,6 @@ const options: EChartsOption = {
           shadowColor: "rgba(0, 255, 127, 0.8)",
         },
       },
-      // label: {
-      //   show: true,
-      //   position: "top",
-      //   color: "#00ff7f",
-      //   formatter: "{c}",
-      // },
       z: 2,
     },
     {
@@ -165,12 +159,6 @@ const options: EChartsOption = {
           shadowColor: "rgba(0, 255, 255, 0.8)",
         },
       },
-      // label: {
-      //   show: true,
-      //   position: "top",
-      //   color: "#00ffff",
-      //   formatter: "{c}",
-      // },
       areaStyle: {
         color: {
           type: "linear",

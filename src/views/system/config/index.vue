@@ -21,7 +21,12 @@
     <el-card ref="tableWrapperRef" class="page-content" shadow="never">
       <div class="page-toolbar">
         <div class="page-toolbar__left">
-          <el-button v-hasPerm="['sys:config:create']" type="primary" @click="openDialog()">
+          <el-button
+            v-hasPerm="['sys:config:create']"
+            type="primary"
+            :disabled="isSaving || deletingId !== undefined"
+            @click="openDialog()"
+          >
             新增
           </el-button>
           <el-button v-hasPerm="['sys:config:refresh']" type="warning" @click="refreshCache">
@@ -44,14 +49,12 @@
 
       <div class="page-table-wrapper">
         <el-table
-          ref="dataTableRef"
           v-loading="loading"
           :data="list"
           class="page-table"
           height="100%"
           highlight-current-row
           border
-          @selection-change="handleSelectionChange"
         >
           <el-table-column type="index" label="序号" width="60" />
           <el-table-column key="configName" label="配置名称" prop="configName" min-width="100" />
@@ -65,6 +68,7 @@
                 type="primary"
                 size="small"
                 link
+                :disabled="isSaving || deletingId !== undefined"
                 @click="openDialog(scope.row.id)"
               >
                 编辑
@@ -74,6 +78,8 @@
                 type="danger"
                 size="small"
                 link
+                :loading="deletingId === scope.row.id"
+                :disabled="isSaving || deletingId !== undefined"
                 @click="handleDelete(scope.row.id)"
               >
                 删除
@@ -96,12 +102,23 @@
       v-model="dialogState.visible"
       :title="dialogState.title"
       width="500px"
+      :close-on-click-modal="!isSaving"
+      :close-on-press-escape="!isSaving"
+      :show-close="!isSaving"
       @close="closeDialog"
     >
+      <el-alert
+        v-if="hasFormLoadError"
+        title="配置详情加载失败，请重新打开。"
+        type="error"
+        :closable="false"
+      />
       <el-form
         ref="dataFormRef"
+        v-loading="isLoadingForm"
         :model="formData"
         :rules="rules"
+        :disabled="isLoadingForm || hasFormLoadError || isSaving"
         label-suffix=":"
         label-width="100px"
       >
@@ -127,8 +144,15 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
-          <el-button @click="closeDialog">取消</el-button>
+          <el-button
+            type="primary"
+            :loading="isSaving"
+            :disabled="isLoadingForm || hasFormLoadError"
+            @click="handleSubmit"
+          >
+            确定
+          </el-button>
+          <el-button :disabled="isSaving" @click="closeDialog">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -140,7 +164,7 @@ import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "elem
 import { Refresh, FullScreen } from "@element-plus/icons-vue";
 
 import ConfigAPI from "@/api/system/config";
-import type { ConfigItem, ConfigForm, ConfigQueryParams } from "@/api/system/config";
+import type { ConfigItem, ConfigForm, ConfigQuery } from "@/api/system/config";
 import { usePageTable } from "@/composables";
 
 defineOptions({
@@ -157,7 +181,7 @@ const dataFormRef = ref<FormInstance>();
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   ConfigItem,
-  ConfigQueryParams
+  ConfigQuery
 >({
   initialParams: { pageNum: 1, pageSize: 10, keywords: "" },
   request: ConfigAPI.getPage,
@@ -165,14 +189,20 @@ const { loading, list, total, params, fetchData, handleQuery, handleResetQuery }
 });
 
 const dialogState = reactive({ title: "", visible: false });
+const isLoadingForm = ref(false);
+const hasFormLoadError = ref(false);
+const isSaving = ref(false);
+const deletingId = ref<string>();
+let formRevision = 0;
 
-const formData = reactive<ConfigForm>({
+const initialFormData: ConfigForm = {
   id: undefined,
   configName: "",
   configKey: "",
   configValue: "",
   remark: "",
-});
+};
+const formData = reactive<ConfigForm>({ ...initialFormData });
 
 const rules: FormRules = {
   configName: [{ required: true, message: "请输入系统配置名称", trigger: "blur" }],
@@ -181,24 +211,26 @@ const rules: FormRules = {
 };
 
 /**
- * 记录表格勾选项
- */
-function handleSelectionChange(selection: ConfigItem[]): void {
-  void selection;
-}
-
-/**
- * 打开新增/编辑系统配置弹窗
+ * 打开配置表单，仅回填当前记录的最新详情。
  */
 async function openDialog(id?: string): Promise<void> {
+  if (isSaving.value || deletingId.value !== undefined) return;
+  const revision = ++formRevision;
+  Object.assign(formData, initialFormData);
+  dataFormRef.value?.clearValidate();
+  hasFormLoadError.value = false;
+  isLoadingForm.value = id !== undefined;
+  dialogState.title = id === undefined ? "新增系统配置" : "修改系统配置";
   dialogState.visible = true;
-  if (id) {
-    dialogState.title = "修改系统配置";
+
+  if (id === undefined) return;
+  try {
     const data = await ConfigAPI.getFormData(id);
-    Object.assign(formData, data);
-  } else {
-    dialogState.title = "新增系统配置";
-    formData.id = undefined;
+    if (revision === formRevision) Object.assign(formData, data, { id });
+  } catch {
+    if (revision === formRevision) hasFormLoadError.value = true;
+  } finally {
+    if (revision === formRevision) isLoadingForm.value = false;
   }
 }
 
@@ -212,23 +244,27 @@ const refreshCache = useDebounceFn(async () => {
  * 校验并提交系统配置表单
  */
 async function handleSubmit(): Promise<void> {
-  const valid = await dataFormRef.value?.validate().catch(() => false);
-  if (!valid) return;
-
-  loading.value = true;
+  if (isSaving.value || isLoadingForm.value || hasFormLoadError.value || !dialogState.visible)
+    return;
+  const revision = formRevision;
+  isSaving.value = true;
   try {
-    const id = formData.id;
+    const valid = await dataFormRef.value?.validate().catch(() => false);
+    if (!valid || revision !== formRevision) return;
+
+    const data = { ...formData };
+    const id = data.id;
     if (id) {
-      await ConfigAPI.update(id, formData);
+      await ConfigAPI.update(id, data);
       ElMessage.success("修改成功");
     } else {
-      await ConfigAPI.create(formData);
+      await ConfigAPI.create(data);
       ElMessage.success("新增成功");
     }
     closeDialog();
-    handleResetQuery();
+    await handleResetQuery().catch(() => undefined);
   } finally {
-    loading.value = false;
+    isSaving.value = false;
   }
 }
 
@@ -236,30 +272,42 @@ async function handleSubmit(): Promise<void> {
  * 关闭弹窗并重置表单
  */
 function closeDialog(): void {
+  formRevision += 1;
   dialogState.visible = false;
-  dataFormRef.value?.resetFields();
+  isLoadingForm.value = false;
+  hasFormLoadError.value = false;
+  Object.assign(formData, initialFormData);
   dataFormRef.value?.clearValidate();
-  formData.id = undefined;
 }
 
 /**
  * 删除系统配置
  */
 async function handleDelete(id: string): Promise<void> {
-  await ElMessageBox.confirm("确认删除该项配置?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  });
-  loading.value = true;
+  if (isSaving.value || deletingId.value !== undefined) return;
+  deletingId.value = id;
   try {
+    const confirmed = await ElMessageBox.confirm("确认删除该项配置?", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    }).then(
+      () => true,
+      () => false
+    );
+    if (!confirmed) return;
+
     await ConfigAPI.deleteById(id);
     ElMessage.success("删除成功");
-    handleResetQuery();
+    await handleResetQuery().catch(() => undefined);
   } finally {
-    loading.value = false;
+    deletingId.value = undefined;
   }
 }
+
+onScopeDispose(() => {
+  formRevision += 1;
+});
 
 onMounted(() => {
   handleQuery();

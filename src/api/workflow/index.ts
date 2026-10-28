@@ -13,11 +13,11 @@ import type {
   TaskDetailData,
   TodoTaskItem,
   WorkflowInstanceItem,
-  WorkflowInstanceQueryParams,
+  WorkflowInstanceQuery,
   WorkflowModelFormData,
   WorkflowModelItem,
-  WorkflowModelQueryParams,
-  WorkflowTaskQueryParams,
+  WorkflowModelQuery,
+  WorkflowTaskQuery,
 } from "./types";
 
 const WORKFLOW_BASE_URL = "/api/v1/workflow";
@@ -29,7 +29,7 @@ const ModelAPI = {
   /**
    * 流程模型分页列表
    */
-  getPage(queryParams: WorkflowModelQueryParams) {
+  getPage(queryParams: WorkflowModelQuery) {
     return request<unknown, PageResult<WorkflowModelItem>>({
       url: `${WORKFLOW_BASE_URL}/models`,
       method: "get",
@@ -147,7 +147,7 @@ const InstanceAPI = {
   /**
    * 我的流程分页列表
    */
-  getPage(queryParams: WorkflowInstanceQueryParams) {
+  getPage(queryParams: WorkflowInstanceQuery) {
     return request<unknown, PageResult<WorkflowInstanceItem>>({
       url: `${WORKFLOW_BASE_URL}/instances`,
       method: "get",
@@ -197,7 +197,7 @@ const TaskAPI = {
   /**
    * 待办任务分页列表
    */
-  getTodoPage(queryParams: WorkflowTaskQueryParams) {
+  getTodoPage(queryParams: WorkflowTaskQuery) {
     return request<unknown, PageResult<TodoTaskItem>>({
       url: `${WORKFLOW_BASE_URL}/tasks/todo`,
       method: "get",
@@ -207,7 +207,7 @@ const TaskAPI = {
   /**
    * 已办任务分页列表
    */
-  getDonePage(queryParams: WorkflowTaskQueryParams) {
+  getDonePage(queryParams: WorkflowTaskQuery) {
     return request<unknown, PageResult<DoneTaskItem>>({
       url: `${WORKFLOW_BASE_URL}/tasks/done`,
       method: "get",
@@ -264,5 +264,4 @@ const WorkflowAPI = {
 
 export default WorkflowAPI;
 
-// 重导出类型
 export * from "./types";

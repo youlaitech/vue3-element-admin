@@ -7,7 +7,7 @@
   </BaseChart>
 </template>
 <script lang="ts" setup>
-import { type EChartsOption } from "echarts";
+import type { EChartsOption } from "echarts";
 import { useTemplateRef } from "vue";
 import { useKeepTicking } from "../composables/useKeepTicking";
 
@@ -18,7 +18,9 @@ const chartRef = useTemplateRef("chart");
 onMounted(() => {
   chartRef.value?.initOptions(options);
 });
-// 生成一个500到1000的随机数
+/**
+ * 生成指定范围内的演示数值。
+ */
 const randomNum = () => Math.floor(Math.random() * 500) + 500;
 
 const options: EChartsOption = {

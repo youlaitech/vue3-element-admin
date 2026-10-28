@@ -14,6 +14,9 @@ import { VxeUI } from "vxe-pc-ui";
 import { useAppStore } from "@/stores/app";
 import { DeviceEnum } from "@/enums";
 
+/**
+ * 配置 vxe-table 的默认参数
+ */
 export function configureVxeUI() {
   const appStore = useAppStore();
   const isMobile = appStore.device === DeviceEnum.MOBILE;

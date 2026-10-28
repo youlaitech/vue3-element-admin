@@ -1,6 +1,3 @@
-// API 相关枚举
-// 包含 API 响应码、请求状态等枚举定义
-
 /**
  * API 响应码枚举
  */
@@ -19,4 +16,7 @@ export const enum ApiCodeEnum {
 
   /** 需要选择租户 */
   CHOOSE_TENANT = "A0250",
+
+  /** 实时服务未启用 */
+  REALTIME_DISABLED = "B0102",
 }

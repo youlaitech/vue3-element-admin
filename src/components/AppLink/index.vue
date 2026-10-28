@@ -36,6 +36,11 @@ const isExternalLink = computed(() => {
   return Boolean(externalUrl.value);
 });
 
+// 站内地址（同源）不能带 noopener，新页签要继承当前页签会话存储里的登录态
+const isSameOriginLink = computed(() => {
+  return externalUrl.value.startsWith(`${window.location.origin}/`);
+});
+
 const linkType = computed(() => (isExternalLink.value ? "a" : "router-link"));
 
 /**
@@ -46,7 +51,7 @@ const linkProps = (to: AppLinkTo) => {
     return {
       href: externalUrl.value,
       target: "_blank",
-      rel: "noopener noreferrer",
+      rel: isSameOriginLink.value ? undefined : "noopener noreferrer",
     };
   }
 
@@ -63,6 +68,11 @@ function handleClick(event: MouseEvent) {
 
   event.preventDefault();
   event.stopPropagation();
-  window.open(externalUrl.value, "_blank", "noopener,noreferrer");
+
+  window.open(
+    externalUrl.value,
+    "_blank",
+    isSameOriginLink.value ? undefined : "noopener,noreferrer"
+  );
 }
 </script>

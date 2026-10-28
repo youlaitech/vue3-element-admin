@@ -55,7 +55,6 @@ function handleConfirm(data: IUser[]) {
   selectedUser.value = data[0];
 }
 const text = computed(() => {
-  // 获取字典数据
   const dictData = dictStore.getDictItems("gender");
   const genderLabel = dictData.find(
     (item) => String(item.value) === String(selectedUser.value?.gender)

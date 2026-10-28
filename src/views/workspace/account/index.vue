@@ -151,6 +151,19 @@
           </div>
         </section>
 
+        <section v-if="appConfig.oidcEnabled" ref="identityRef" class="profile-card">
+          <header class="profile-card__header">
+            <div>
+              <h3 class="profile-card__title">认证身份</h3>
+              <p class="profile-card__desc">
+                把本地账号与统一认证的登录身份绑定，绑定后可直接用认证中心登录
+              </p>
+            </div>
+          </header>
+
+          <IdentityBinding />
+        </section>
+
         <div class="profile-page__grid">
           <section class="profile-card">
             <header class="profile-card__header">
@@ -313,6 +326,9 @@ import type {
 import type { Component } from "vue";
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import FileAPI from "@/api/file";
+import { useRoute } from "vue-router";
+import { appConfig } from "@/settings";
+import IdentityBinding from "./components/IdentityBinding.vue";
 import { useUserStoreHook } from "@/stores";
 
 import {
@@ -383,9 +399,13 @@ const mobileBindingFormRef = ref();
 const emailBindingFormRef = ref();
 
 const userProfileForm = reactive<UserProfileForm>({});
-const passwordChangeForm = reactive<PasswordChangeForm>({});
-const mobileUpdateForm = reactive<MobileUpdateForm>({});
-const emailUpdateForm = reactive<EmailUpdateForm>({});
+const passwordChangeForm = reactive<PasswordChangeForm>({
+  oldPassword: "",
+  newPassword: "",
+  confirmPassword: "",
+});
+const mobileUpdateForm = reactive<MobileUpdateForm>({ mobile: "", code: "", password: "" });
+const emailUpdateForm = reactive<EmailUpdateForm>({ email: "", code: "", password: "" });
 
 const mobileCountdown = ref(0);
 const mobileTimer = ref();
@@ -420,7 +440,10 @@ const userProfileRules = {
 
 const passwordChangeRules = {
   oldPassword: [{ required: true, message: "请输入原密码", trigger: "blur" }],
-  newPassword: [{ required: true, message: "请输入新密码", trigger: "blur" }],
+  newPassword: [
+    { required: true, message: "请输入新密码", trigger: "blur" },
+    { min: 6, max: 20, message: "密码长度为 6 至 20 位", trigger: "blur" },
+  ],
   confirmPassword: [
     { required: true, message: "请再次输入新密码", trigger: "blur" },
     {
@@ -885,7 +908,7 @@ const handleSubmit = async () => {
 
       await UserAPI.changePassword(passwordChangeForm);
       dialogState.visible = false;
-      await userStore.redirectToLogin("password-changed");
+      await userStore.redirectToLogin();
     } else if (dialogState.type === DialogType.MOBILE) {
       const valid = await mobileBindingFormRef.value?.validate();
       if (!valid) return;
@@ -959,6 +982,9 @@ const loadUserProfile = async () => {
   userProfile.value = data;
 };
 
+const route = useRoute();
+const identityRef = ref<HTMLElement>();
+
 onMounted(async () => {
   if (mobileTimer.value) {
     clearInterval(mobileTimer.value);
@@ -967,6 +993,10 @@ onMounted(async () => {
     clearInterval(emailTimer.value);
   }
   await loadUserProfile();
+  // 从头像菜单或应用中心进入时定位到认证身份区块
+  if (route.query.tab === "identity") {
+    identityRef.value?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 });
 
 onBeforeUnmount(() => {

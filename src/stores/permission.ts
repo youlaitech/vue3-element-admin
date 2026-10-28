@@ -11,6 +11,9 @@ import type { RouteItem } from "@/api/system/menu";
 
 const Layout = () => import("../layouts/index.vue");
 
+/**
+ * 按用户权限生成并维护动态路由。
+ */
 export const usePermissionStore = defineStore("permission", () => {
   const routes = ref<RouteRecordRaw[]>([]);
   const mixLayoutSideMenus = ref<RouteRecordRaw[]>([]);
@@ -104,7 +107,7 @@ export const usePermissionStore = defineStore("permission", () => {
     pendingPermissionRefresh = (async () => {
       try {
         const userStore = useUserStoreHook();
-        await userStore.getUserInfo();
+        await userStore.fetchUserInfo();
         await reloadRoutes();
       } finally {
         pendingPermissionRefresh = null;

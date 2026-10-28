@@ -184,7 +184,7 @@ import type {
   RejectTargetItem,
   TaskDetailData,
   TodoTaskItem,
-  WorkflowTaskQueryParams,
+  WorkflowTaskQuery,
 } from "@/api/workflow";
 import { usePageTable } from "@/composables";
 import { appConfig } from "@/settings";
@@ -211,7 +211,7 @@ const queryFormRef = ref<FormInstance>();
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   TodoTaskItem,
-  WorkflowTaskQueryParams
+  WorkflowTaskQuery
 >({
   initialParams: {
     pageNum: 1,

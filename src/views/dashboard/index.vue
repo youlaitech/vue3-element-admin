@@ -68,7 +68,15 @@
           <el-icon :size="18"><Connection /></el-icon>
         </div>
         <div class="stat-card__body">
-          <span class="stat-card__label">在线用户</span>
+          <el-tooltip
+            :content="
+              presence
+                ? `节点 ${presence.nodeId} · ${presence.onlineConnections} 个连接`
+                : '当前节点在线用户，需在线人数查看权限'
+            "
+          >
+            <span class="stat-card__label">本节点在线用户</span>
+          </el-tooltip>
           <span class="stat-card__num">{{ onlineUserCount ?? "--" }}</span>
         </div>
         <span
@@ -265,7 +273,7 @@ import { useOnlineUserCount } from "./composables/useOnlineUserCount";
 
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
-const { onlineUserCount, isConnected } = useOnlineUserCount();
+const { onlineUserCount, isConnected, presence } = useOnlineUserCount();
 
 const hours = new Date().getHours();
 const greetings = computed(() => {

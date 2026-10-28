@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { TenantPlanForm, TenantPlanItem, TenantPlanQueryParams } from "./types";
+import type { TenantPlanForm, TenantPlanItem, TenantPlanQuery } from "./types";
 import type { OptionItem, PageResult } from "@/api/common";
 
 const TENANT_PLAN_BASE_URL = "/api/v1/tenant-plans";
@@ -8,9 +8,9 @@ const TenantPlanAPI = {
   /**
    * 获取租户套餐分页数据
    */
-  getPage(queryParams?: TenantPlanQueryParams) {
+  getPage(queryParams?: TenantPlanQuery) {
     return request<unknown, PageResult<TenantPlanItem>>({
-      url: `${TENANT_PLAN_BASE_URL}`,
+      url: TENANT_PLAN_BASE_URL,
       method: "get",
       params: queryParams,
     });
@@ -30,7 +30,7 @@ const TenantPlanAPI = {
    * 新增租户套餐
    */
   create(data: TenantPlanForm) {
-    return request({ url: `${TENANT_PLAN_BASE_URL}`, method: "post", data });
+    return request({ url: TENANT_PLAN_BASE_URL, method: "post", data });
   },
 
   /**
@@ -81,5 +81,4 @@ const TenantPlanAPI = {
 
 export default TenantPlanAPI;
 
-// 重导出类型
 export * from "./types";

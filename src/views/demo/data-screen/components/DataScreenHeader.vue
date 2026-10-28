@@ -22,11 +22,16 @@
 <script lang="ts" setup>
 import { useKeepTicking } from "../composables/useKeepTicking";
 
-defineOptions({ name: "Cephalosome" });
+defineOptions({ name: "DataScreenHeader" });
 
-// 看板时间格式：YYYY-MM-DD HH:mm:ss 周X 上午/下午
+/**
+ * 生成包含日期、时间和星期的大屏时钟文本。
+ */
 function formatClock(date: Date): string {
   const week = ["日", "一", "二", "三", "四", "五", "六"][date.getDay()];
+  /**
+   * 将时间分量补齐为两位数字。
+   */
   const pad = (n: number) => String(n).padStart(2, "0");
   const meridiem = date.getHours() < 12 ? "上午" : "下午";
 
@@ -37,10 +42,12 @@ function formatClock(date: Date): string {
   );
 }
 
-// 获取当前时间
 const dateTime = ref("加载中...");
-const getCurrentTime = () => (dateTime.value = formatClock(new Date()));
+/**
+ * 更新大屏日期和时间。
+ */
+const updateCurrentTime = () => (dateTime.value = formatClock(new Date()));
 
 // 使用定时器钩子更新时间
-useKeepTicking(getCurrentTime, 1000);
+useKeepTicking(updateCurrentTime, 1000);
 </script>

@@ -1,48 +1,28 @@
 import { computed, ref } from "vue";
 
 /**
- * 表格行选择 Composable
- *
- * 提供统一的表格行选择逻辑，包括选中 ID 管理和清空选择
- *
- * 规则：
- *
- * - 不和分页状态合并
- * - 不和弹窗状态合并
- * - 不和 API 请求合并
- *
- * @template T 数据项类型，必须包含可选 `id` 属性
- *
- * @example
- * ```ts
- * const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<RoleItem>();
- * ```
+ * 管理选中 ID；分页、弹窗和表格 UI 勾选由页面持有。
  */
 export function useTableSelection<T extends { id?: string | number }>() {
-  // 选中的数据项 ID 列表
   const selectedIds = ref<(string | number)[]>([]);
 
-  // 选中数量
   const selectedCount = computed(() => selectedIds.value.length);
 
-  // 是否有选中项
   const hasSelection = computed(() => selectedIds.value.length > 0);
 
   /**
-   * 表格选中项变化处理
-   *
-   * @param selection 选中的行数据列表
-   */ function handleSelectionChange(selection: T[]): void {
+   * 保存表格勾选记录。
+   */
+  function handleSelectionChange(selection: T[]): void {
     selectedIds.value = selection.flatMap((item) =>
       item.id === undefined || item.id === null ? [] : [item.id]
     );
   }
 
   /**
-   * 检查指定 ID 是否被选中
-   *
-   * @param id 要检查的 ID
-   */ function isSelected(id: string | number): boolean {
+   * 检查指定记录是否已被勾选。
+   */
+  function isSelected(id: string | number): boolean {
     return selectedIds.value.includes(id);
   }
 

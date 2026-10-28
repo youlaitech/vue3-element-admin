@@ -2,7 +2,7 @@ import request from "@/utils/request";
 import type {
   UserInfo,
   UserForm,
-  UserQueryParams,
+  UserQuery,
   UserItem,
   UserProfileDetail,
   UserProfileForm,
@@ -17,9 +17,7 @@ const USER_BASE_URL = "/api/v1/users";
 
 const UserAPI = {
   /**
-   * 获取当前登录用户信息
-   *
-   * @returns 登录用户昵称、头像信息，包括角色和权限
+   * 获取当前用户资料、角色与权限。
    */
   getInfo() {
     return request<unknown, UserInfo>({
@@ -30,12 +28,10 @@ const UserAPI = {
 
   /**
    * 获取用户分页列表
-   *
-   * @param queryParams 查询参数
    */
-  getPage(queryParams: UserQueryParams) {
+  getPage(queryParams: UserQuery) {
     return request<unknown, PageResult<UserItem>>({
-      url: `${USER_BASE_URL}`,
+      url: USER_BASE_URL,
       method: "get",
       params: queryParams,
     });
@@ -43,9 +39,6 @@ const UserAPI = {
 
   /**
    * 获取用户表单详情
-   *
-   * @param userId 用户 ID
-   * @returns 用户表单详情
    */
   getFormData(userId: string) {
     return request<unknown, UserForm>({
@@ -56,12 +49,10 @@ const UserAPI = {
 
   /**
    * 添加用户
-   *
-   * @param data 用户表单数据
    */
   create(data: UserForm) {
     return request({
-      url: `${USER_BASE_URL}`,
+      url: USER_BASE_URL,
       method: "post",
       data,
     });
@@ -69,9 +60,6 @@ const UserAPI = {
 
   /**
    * 修改用户
-   *
-   * @param id 用户 ID
-   * @param data 用户表单数据
    */
   update(id: string, data: UserForm) {
     return request({
@@ -82,10 +70,18 @@ const UserAPI = {
   },
 
   /**
+   * 修改用户启用状态。
+   */
+  updateStatus(userId: string, status: 0 | 1) {
+    return request({
+      url: `${USER_BASE_URL}/${userId}/status`,
+      method: "patch",
+      params: { status },
+    });
+  },
+
+  /**
    * 修改用户密码
-   *
-   * @param id 用户 ID
-   * @param password 新密码
    */
   resetPassword(id: string, password: string) {
     return request({
@@ -96,9 +92,7 @@ const UserAPI = {
   },
 
   /**
-   * 批量删除用户，多个以英文逗号(,)分割
-   *
-   * @param ids 用户 ID 字符串，多个以英文逗号(,)分割
+   * 批量删除用户，ID 以英文逗号分隔。
    */
   deleteByIds(ids: string) {
     return request({
@@ -120,10 +114,8 @@ const UserAPI = {
 
   /**
    * 导出用户
-   *
-   * @param queryParams 查询参数
    */
-  export(queryParams: UserQueryParams) {
+  export(queryParams: Omit<UserQuery, "pageNum" | "pageSize">) {
     return request<Blob>({
       url: `${USER_BASE_URL}/export`,
       method: "get",
@@ -134,8 +126,6 @@ const UserAPI = {
 
   /**
    * 导入用户
-   *
-   * @param file 导入文件
    */
   import(file: File) {
     const formData = new FormData();
@@ -249,7 +239,7 @@ const UserAPI = {
   },
 
   /**
-   *  获取用户下拉列表
+   * 获取用户下拉列表
    */
   getOptions() {
     return request<unknown, OptionItem[]>({
@@ -261,5 +251,4 @@ const UserAPI = {
 
 export default UserAPI;
 
-// 重导出类型
 export * from "./types";

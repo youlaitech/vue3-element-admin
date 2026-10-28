@@ -85,7 +85,7 @@ onMounted(async () => {
     ElMessage.error("缺少表单ID参数");
     return;
   }
-  const data = await FormAPI.getFormData(formId.value);
+  const data = await FormAPI.getDefinitionForm(formId.value);
   formMeta.value = { formKey: data.formKey, formName: data.formName };
   if (data.formJson) {
     designerRef.value?.setRule(JSON.parse(data.formJson));

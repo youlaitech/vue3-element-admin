@@ -91,7 +91,7 @@ import { onMounted, ref } from "vue";
 import { Refresh, Search } from "@element-plus/icons-vue";
 
 import NoticeAPI from "@/api/system/notice";
-import type { NoticeDetail, NoticeItem, NoticeQueryParams } from "@/api/system/notice";
+import type { NoticeDetail, NoticeItem, NoticeQuery } from "@/api/system/notice";
 import { usePageTable } from "@/composables";
 
 defineOptions({
@@ -107,7 +107,7 @@ const queryFormRef = ref();
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   NoticeItem,
-  NoticeQueryParams
+  NoticeQuery
 >({
   initialParams: {
     pageNum: 1,

@@ -1,6 +1,3 @@
-// 表单规则加载与渲染状态
-// 填写页（render）、公开页（share）、预览页（preview）共用同一渲染管线
-
 import { ref, shallowRef } from "vue";
 import type { Options, Rule } from "@form-create/element-ui";
 
@@ -15,9 +12,7 @@ export interface FormRuleSource {
 }
 
 /**
- * 加载表单规则并管理渲染状态
- *
- * @param loader 规则加载函数（各承载页的规则来源不同：草稿定义 / 已发布规则 / 公开规则）
+ * 加载规则并管理表单填写、公开访问与预览页的渲染状态。
  */
 export function useFormRenderer<T extends FormRuleSource = FormRuleSource>(
   loader: () => Promise<T | null | undefined>
@@ -32,7 +27,8 @@ export function useFormRenderer<T extends FormRuleSource = FormRuleSource>(
    * 加载并解析规则
    *
    * @returns 接口原始数据
-   */ async function load(): Promise<T | undefined> {
+   */
+  async function load(): Promise<T | undefined> {
     loading.value = true;
     try {
       const data = await loader();

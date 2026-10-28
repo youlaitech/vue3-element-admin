@@ -23,8 +23,8 @@
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
 import { useKeepTicking } from "../composables/useKeepTicking";
-import { EChartsOption } from "echarts";
-import { EChartsType } from "echarts/core";
+import type { EChartsOption } from "echarts";
+import type { EChartsType } from "echarts/core";
 
 defineOptions({ name: "RealTimeStatus" });
 
@@ -42,6 +42,9 @@ const data = [
 const currentIndex = ref(0);
 const chartInstance = ref<EChartsType>();
 
+/**
+ * 轮换高亮的设备状态。
+ */
 const highlightItem = (chart: EChartsType) => {
   chartInstance.value = chart;
 };

@@ -146,6 +146,8 @@ import "codemirror/mode/javascript/javascript.js";
 import Codemirror from "codemirror-editor-vue3";
 import type { CmComponentRef } from "codemirror-editor-vue3";
 import type { EditorConfiguration } from "codemirror";
+import type { TreeInstance } from "element-plus";
+import type { TreeNode } from "../utils/tree-builder";
 import GeneratorAPI from "@/api/codegen";
 import type { GenConfigForm } from "@/api/codegen";
 import { getFileIcon } from "../utils/tree-builder";
@@ -158,7 +160,7 @@ const props = defineProps<{
   previewScope: "all" | "frontend" | "backend";
   previewTypes: string[];
   previewTypeOptions: string[];
-  filteredTreeData: any[];
+  filteredTreeData: TreeNode[];
   code: string;
   currentFileKey: string;
   tableName: string;
@@ -170,13 +172,13 @@ const props = defineProps<{
 const emit = defineEmits<{
   (_e: "update:previewScope", _val: "all" | "frontend" | "backend"): void;
   (_e: "update:previewTypes", _val: string[]): void;
-  (_e: "file-click", _data: any): void;
+  (_e: "file-click", _data: TreeNode): void;
   (_e: "copy"): void;
 }>();
 
 const cmRef = ref<CmComponentRef>();
 const cmOptions: EditorConfiguration = { mode: "text/javascript" };
-const fileTreeRef = ref();
+const fileTreeRef = ref<TreeInstance>();
 const fileTreeWidth = ref(280);
 
 const currentFilePath = computed(() => {
@@ -189,15 +191,16 @@ const currentFilePath = computed(() => {
 /**
  * 切换预览范围
  */
-function onScopeChange(val: any) {
-  emit("update:previewScope", val as "all" | "frontend" | "backend");
+function onScopeChange(val: unknown) {
+  if (val === "all" || val === "frontend" || val === "backend") emit("update:previewScope", val);
 }
 
 /**
  * 切换预览文件类型
  */
-function onTypesChange(val: any) {
-  emit("update:previewTypes", val as string[]);
+function onTypesChange(val: unknown) {
+  if (Array.isArray(val) && val.every((item) => typeof item === "string"))
+    emit("update:previewTypes", val);
 }
 
 const currentLanguage = computed(() => {
@@ -211,7 +214,7 @@ const fileCount = computed(() => {
   /**
    * 递归统计文件数量
    */
-  function walk(nodes: any[]) {
+  function walk(nodes: TreeNode[]) {
     nodes.forEach((n) => {
       if (!n.children || !n.children.length) count++;
       else walk(n.children);
@@ -226,48 +229,52 @@ const fileCount = computed(() => {
  */
 function handleDownload() {
   const pageType = props.genConfigFormData.pageType || "classic";
-  GeneratorAPI.download(props.tableName, pageType as "classic" | "crud", "ts");
+  return GeneratorAPI.download(props.tableName, pageType as "classic" | "crud", "ts");
 }
 
 /**
  * 刷新代码编辑器布局
  */
 function refreshEditor() {
-  const inst = cmRef.value as any;
-  inst?.cminstance?.refresh?.();
-  inst?.cm?.refresh?.();
-  inst?.editor?.refresh?.();
+  cmRef.value?.refresh();
 }
+
+// 拖拽结束、再次开始或组件卸载时，共用同一份监听清理函数。
+let stopResize: (() => void) | undefined;
 
 /**
  * 开始拖动文件树宽度
  */
 function startResize(e: MouseEvent) {
+  stopResize?.();
   const startX = e.clientX;
   const startWidth = fileTreeWidth.value;
   /**
-   * 拖动中更新文件树宽度
+   * 按鼠标位移调整预览区域宽度。
    */
   const onMove = (ev: MouseEvent) => {
     fileTreeWidth.value = Math.max(200, Math.min(500, startWidth + ev.clientX - startX));
   };
   /**
-   * 结束拖动并解绑监听
+   * 结束拖动并移除鼠标监听。
    */
   const onUp = () => {
     document.removeEventListener("mousemove", onMove);
     document.removeEventListener("mouseup", onUp);
+    stopResize = undefined;
   };
+  stopResize = onUp;
   document.addEventListener("mousemove", onMove);
   document.addEventListener("mouseup", onUp);
 }
 
 /**
- * 暴露编辑器刷新与文件树引用
+ * 父组件切换到预览步骤后刷新编辑器布局。
  */
-defineExpose({ refreshEditor, fileTreeRef });
+defineExpose({ refreshEditor });
 
 onBeforeUnmount(() => {
+  stopResize?.();
   cmRef.value?.destroy();
 });
 </script>

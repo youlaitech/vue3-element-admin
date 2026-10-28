@@ -1,99 +1,102 @@
-import { reactive, ref, type Ref } from "vue";
-
-import type { BaseQueryParams, PageResult } from "@/api/common";
+import { getCurrentScope, onScopeDispose, reactive, ref, shallowRef } from "vue";
+import type { Ref } from "vue";
+import { cloneDeep } from "lodash-es";
+import type { PageQuery, PageResult } from "@/api/common";
 
 /**
- * 分页列表页通用状态管理
- *
- * 只管理请求、分页数据和查询参数，不处理勾选、弹窗、表单
+ * 分页查询只接收最近一次请求的结果；勾选与弹窗状态由页面持有。
  */
-export function usePageTable<T, Q extends BaseQueryParams = BaseQueryParams>(
+export function usePageTable<T, Q extends PageQuery = PageQuery>(
   options: UsePageTableOptions<T, Q>
 ): UsePageTableReturn<T, Q> {
-  const { initialParams, request, onBeforeReset } = options;
-
+  const { request, onBeforeReset } = options;
+  const initialParams = cloneDeep(options.initialParams);
+  const params = reactive(cloneDeep(initialParams)) as Q;
   const loading = ref(false);
-  const list = ref<T[]>([]) as Ref<T[]>;
+  const list = shallowRef<T[]>([]);
   const total = ref(0);
-  const params = reactive({ ...initialParams }) as Q;
+  let requestSequence = 0;
 
   /**
-   * 拉取当前查询参数对应的分页数据
-   * 只负责请求和回填，不处理弹窗、路由或消息提示
-   */ async function fetchData(): Promise<void> {
+   * 按当前条件查询；结果和 loading 只由最近一次请求更新。
+   */
+  async function fetchData(): Promise<void> {
+    const sequence = ++requestSequence;
+    // 请求使用独立快照，等待期间修改表单不会改变本次参数。
+    const snapshot = cloneDeep(params);
     loading.value = true;
     try {
-      const data = await request(params);
+      const data = await request(snapshot);
+      if (sequence !== requestSequence) return;
       list.value = data.list ?? [];
       total.value = data.total ?? 0;
     } finally {
-      loading.value = false;
+      // 旧请求结束时，不能提前关闭新请求的 loading。
+      if (sequence === requestSequence) loading.value = false;
     }
   }
 
   /**
-   * 回到第一页并查询
+   * 按当前条件查询第一页。
    */
-  function handleQuery(): void {
+  function handleQuery(): Promise<void> {
     params.pageNum = 1;
-    fetchData();
+    return fetchData();
   }
 
   /**
-   * 恢复初始查询参数
-   * 保持响应式引用不变，不触发查询
-   */ function resetParams(): void {
-    Object.assign(params, initialParams);
+   * 保持响应式引用，删除新增条件，并从独立初值恢复。
+   */
+  function resetParams(): void {
+    requestSequence += 1;
+    loading.value = false;
+    Object.keys(params).forEach((key) => Reflect.deleteProperty(params, key));
+    Object.assign(params, cloneDeep(initialParams));
   }
 
   /**
-   * 恢复初始查询参数并重新查询
-   */ function handleResetQuery(): void {
+   * 重置查询条件并加载第一页。
+   */
+  function handleResetQuery(): Promise<void> {
     onBeforeReset?.();
     resetParams();
-    fetchData();
+    return fetchData();
   }
 
-  return {
-    loading,
-    list,
-    total,
-    params,
-    fetchData,
-    handleQuery,
-    handleResetQuery,
-    resetParams,
-  };
+  if (getCurrentScope()) {
+    onScopeDispose(() => {
+      requestSequence += 1;
+    });
+  }
+
+  return { loading, list, total, params, fetchData, handleQuery, handleResetQuery, resetParams };
 }
 
-export interface UsePageTableOptions<T, Q extends BaseQueryParams> {
-  /** 初始查询参数，同时作为重置基准 */
+/**
+ * 分页请求、查询初值与重置回调。
+ */
+export interface UsePageTableOptions<T, Q extends PageQuery> {
+  /** 初值会深复制，请求和编辑不会改变重置基准。 */
   initialParams: Q;
-  /** 分页请求函数 */
+  /** 接收查询快照；请求异常由调用方处理。 */
   request: (params: Q) => Promise<PageResult<T>>;
-  /**
-   * 重置查询前的回调
-   *
-   * 常用于同步重置搜索表单字段
-   */
+  /** 恢复参数前，同步重置页面自有的搜索控件。 */
   onBeforeReset?: () => void;
 }
 
-export interface UsePageTableReturn<T, Q extends BaseQueryParams> {
-  /** 加载状态 */
+/**
+ * 列表查询状态与分页操作。
+ */
+export interface UsePageTableReturn<T, Q extends PageQuery> {
   loading: Ref<boolean>;
-  /** 当前页数据列表 */
   list: Ref<T[]>;
-  /** 数据总条数 */
   total: Ref<number>;
-  /** 当前查询参数 */
   params: Q;
-  /** 拉取分页数据 */
   fetchData: () => Promise<void>;
-  /** 回到第一页并查询 */
-  handleQuery: () => void;
-  /** 恢复初始参数并重新查询 */
-  handleResetQuery: () => void;
-  /** 恢复初始参数但不触发查询 */
+  /** 回到第一页并查询。 */
+  handleQuery: () => Promise<void>;
+  /** 恢复初始条件后重新查询。 */
+  handleResetQuery: () => Promise<void>;
+  /** 仅恢复参数，不发请求。 */
   resetParams: () => void;
 }

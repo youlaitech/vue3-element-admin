@@ -1,5 +1,3 @@
-// 代码生成相关枚举
-// 包含表单类型、查询类型等代码生成功能的枚举定义
 import type { OptionItem } from "@/api/common";
 
 /**

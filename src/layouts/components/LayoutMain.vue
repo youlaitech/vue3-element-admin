@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalized } from "vue-router";
+import type { RouteLocationNormalized } from "vue-router";
 import { useSettingsStore, useTagsViewStore } from "@/stores";
 import variables from "@/styles/variables.module.scss";
 import Error404 from "@/views/internal/error/404.vue";

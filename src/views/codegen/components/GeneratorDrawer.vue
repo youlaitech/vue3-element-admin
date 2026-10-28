@@ -198,6 +198,9 @@ import { useGenConfig } from "../composables/useGenConfig";
 import { useCodePreview } from "../composables/useCodePreview";
 import { useLocalWrite } from "../composables/useLocalWrite";
 import { useAiFillDiff, type AiChangeRow } from "../composables/useAiFillDiff";
+import BasicConfigStep from "./BasicConfigStep.vue";
+import FieldConfigStep from "./FieldConfigStep.vue";
+import PreviewStep from "./PreviewStep.vue";
 
 const STEP = { BASIC_CONFIG: 0, FIELD_CONFIG: 1, PREVIEW: 2 } as const;
 const STEPS = [
@@ -244,9 +247,9 @@ const loading = ref(false);
 const aiLoading = ref(false);
 const loadingText = ref("loading...");
 
-const basicConfigRef = ref();
-const fieldConfigRef = ref();
-const previewRef = ref();
+const basicConfigRef = ref<InstanceType<typeof BasicConfigStep>>();
+const fieldConfigRef = ref<InstanceType<typeof FieldConfigStep>>();
+const previewRef = ref<InstanceType<typeof PreviewStep>>();
 
 const {
   genConfigFormData,
@@ -482,7 +485,7 @@ async function handleNext() {
 
   if (currentStep.value === STEP.PREVIEW) {
     const pageType = genConfigFormData.value.pageType || "classic";
-    GeneratorAPI.download(currentTableName.value, pageType as "classic" | "crud", "ts");
+    await GeneratorAPI.download(currentTableName.value, pageType as "classic" | "crud", "ts");
   }
 }
 

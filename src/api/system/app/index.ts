@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { AppQueryParams, AppForm, AppItem } from "./types";
+import type { AppQuery, AppForm, AppItem } from "./types";
 import type { PageResult } from "@/api/common";
 
 const APP_BASE_URL = "/api/v1/apps";
@@ -8,9 +8,9 @@ const AppAPI = {
   /**
    * 获取应用分页数据
    */
-  getPage(queryParams?: AppQueryParams) {
+  getPage(queryParams?: AppQuery) {
     return request<unknown, PageResult<AppItem>>({
-      url: `${APP_BASE_URL}`,
+      url: APP_BASE_URL,
       method: "get",
       params: queryParams,
     });
@@ -28,7 +28,7 @@ const AppAPI = {
    * 新增应用
    */
   create(data: AppForm) {
-    return request({ url: `${APP_BASE_URL}`, method: "post", data });
+    return request({ url: APP_BASE_URL, method: "post", data });
   },
   /**
    * 修改应用
@@ -52,5 +52,4 @@ const AppAPI = {
 
 export default AppAPI;
 
-// 重导出类型
 export * from "./types";

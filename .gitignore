@@ -11,6 +11,9 @@ stats.html
 .env.local
 .env.*.local
 
+# 线上部署专用变量，不入库
+.env.youlai
+
 # Editor directories and files
 .idea/
 .vscode/*
@@ -35,3 +38,6 @@ yarn.lock
 
 # Local history
 .history
+
+# Local deploy config
+deploy.mjs

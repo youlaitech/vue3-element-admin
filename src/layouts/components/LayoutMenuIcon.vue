@@ -6,6 +6,9 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 菜单图标：按图标名渲染组件
+ */
 const props = withDefaults(
   defineProps<{
     icon?: string;

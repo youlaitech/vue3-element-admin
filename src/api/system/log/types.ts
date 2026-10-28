@@ -1,11 +1,9 @@
-// Log 日志类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery } from "@/api/common";
 
 /**
  * 日志分页查询参数
  */
-export interface LogQueryParams extends BaseQueryParams {
+export interface LogQuery extends PageQuery {
   /** 搜索关键字(IP/操作人) */
   keywords?: string;
   /** 操作时间 */
@@ -57,7 +55,7 @@ export interface LogItem {
 /**
  * 访问趋势查询参数
  */
-export interface VisitTrendQueryParams {
+export interface VisitTrendQuery {
   /** 开始日期 */
   startDate: string;
   /** 结束日期 */

@@ -101,7 +101,9 @@ const emit = defineEmits<{
 const chartRef = useTemplateRef<HTMLDivElement>("chart");
 const chartInstance = ref<EChartsType>();
 
-/** 初始化图表实例 */
+/**
+ * 初始化图表实例
+ */
 const init = async () => {
   await nextTick();
   if (!chartRef.value) return;
@@ -110,25 +112,28 @@ const init = async () => {
   if (!chartInstance.value) {
     chartInstance.value = markRaw(
       echarts.init(chartRef.value, theme, {
-        renderer: "canvas", // 指定渲染模式（canvas性能更好）
+        renderer: "canvas",
       })
     );
   }
 };
 
-/** 初始化配置（清空后设置） */
+/**
+ * 初始化配置（清空后设置）
+ */
 const initOptions = async (options: EChartsOption) => {
   await nextTick();
-  chartInstance.value?.clear(); // 清空旧配置
-  chartInstance.value?.setOption(options); // 应用新配置
+  chartInstance.value?.clear();
+  chartInstance.value?.setOption(options);
   emit("onload", chartInstance.value!);
 };
 
-/** 更新图表配置（增量更新） */
+/**
+ * 更新图表配置（增量更新）
+ */
 const updateCharts = async (options: EChartsOption) => {
   await nextTick();
   chartInstance.value?.setOption(options);
-  // chartInstance.value?.hideLoading();
 };
 
 onMounted(() => init());

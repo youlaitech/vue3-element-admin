@@ -71,12 +71,12 @@
 
 ## 快速开始
 
-**环境要求**：Node.js `^20.19.0` 或 `>=22.12.0` · pnpm `>=8.0.0`
+**环境要求**：Node.js `^24.0.0` · pnpm `10.34.5`
 
 | 环境类型 | 版本要求 | 备注 |
 | -------- | -------- | ---- |
-| **Node.js** | `^20.19.0` 或 `>=22.12.0` | 推荐 LTS 版本（主版本为偶数） |
-| **包管理器** | `pnpm >= 8.0.0` | 项目使用 pnpm 作为包管理器 |
+| **Node.js** | `^24.0.0` | 24 LTS；ESLint、lint-staged 等工具链要求 Node ≥ 22.22，统一到 24 |
+| **包管理器** | `pnpm 10.34.5` | `packageManager` 字段已固定版本，请使用 Corepack 或同版本 pnpm |
 | **开发工具** | [Visual Studio Code](https://code.visualstudio.com/Download) | 推荐安装 Vue、TypeScript 相关插件 |
 
 ```bash
@@ -85,7 +85,7 @@ git clone https://gitee.com/youlaiorg/vue3-element-admin.git
 cd vue3-element-admin
 
 # 安装 pnpm（已安装可跳过）
-npm install pnpm -g
+npm install --global pnpm@10.34.5
 
 # 设置镜像源（可忽略）
 pnpm config set registry https://registry.npmmirror.com
@@ -178,7 +178,7 @@ pnpm run build
 
 **本地 Mock**：将 `.env.development` 的 `VITE_MOCK_ENABLED` 设为 `true` 即启用本地 Mock 接口，无需后端即可独立开发。
 
-**对接后端**：九种后端默认端口均为 `8000`，将 `.env.development` 的 `VITE_PROXY_TARGET` 改为 `http://localhost:8000` 并启动对应后端即可（主推 Java 后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git)，其余见各自仓库 README）。
+**对接后端**：九种后端默认端口均为 `8000`，将 `.env.development` 的 `API_PROXY_TARGET` 改为 `http://localhost:8000` 并启动对应后端即可（主推 Java 后端 [youlai-boot](https://gitee.com/youlaiorg/youlai-boot.git)，其余见各自仓库 README）。
 
 ## 提交规范
 

@@ -1,39 +1,66 @@
-// FormCreate 动态表单全局注册
-// 注册 form-create 渲染器（@form-create/element-ui 3.x）、可视化设计器
-// （@form-create/designer 3.x）与业务组件拖拽规则
-// ElementPlus 只能全量注册：两个包的产物在运行时用 resolveComponent 解析 el-xxx
-// 标签，unplugin-vue-components 只转换项目源码、不处理 node_modules 里的预编译产物，
-// 按需导入会让设计器内部组件解析失败并抛出 vnode 为 null 的报错
-// 参考：https://www.form-create.com/v3/guide/
-
-import type { App } from "vue";
-
-import ElementPlus from "element-plus";
-import formCreate from "@form-create/element-ui";
-import FcDesigner from "@form-create/designer";
+import type { App, Component } from "vue";
+// 设计器默认导出：既是可 app.use 的插件，也提供 addMenu/component/addDragRule 静态方法
+import type DesignerPlugin from "@form-create/designer";
 import type { DragRule } from "@form-create/designer";
 
-import DictSelect from "@/components/DictSelect/index.vue";
-import FileUpload from "@/components/Upload/FileUpload.vue";
+// 启动时登记的应用实例
+let appRef: App | null = null;
 
-import "element-plus/dist/index.css";
+// 注册任务，重复调用复用同一次加载
+let registering: Promise<void> | null = null;
 
 /**
- * 注册 ElementPlus 全量组件、form-create 渲染器、设计器与业务组件
- *
- * @param app Vue 应用实例
+ * 登记应用实例，实际加载和注册延后到首次进入表单页。
  */
 export function setupFormCreate(app: App): void {
-  app.use(ElementPlus);
-  app.use(formCreate);
-  app.use(FcDesigner);
-  // 业务组件（字典/文件上传）注册必须先于设计器实例挂载
-  setupFormCreateComponents();
+  appRef = app;
+}
+
+/**
+ * 首次加载并注册表单依赖，后续调用复用注册任务。
+ * 加载失败会释放任务，允许再次进入页面时重试。
+ */
+export function ensureFormCreate(): Promise<void> {
+  if (!registering) {
+    const pending = register().catch((error) => {
+      // 只释放本次失败任务，不影响后续已启动的注册。
+      if (registering === pending) registering = null;
+      throw error;
+    });
+    registering = pending;
+  }
+  return registering;
+}
+
+/**
+ * 加载依赖并完成注册
+ */
+async function register(): Promise<void> {
+  const app = appRef;
+  if (!app) {
+    throw new Error("未登记应用实例，需先调用 setupFormCreate");
+  }
+
+  const [elementPlus, formCreate, designer, dictSelect, fileUpload] = await Promise.all([
+    import("element-plus"),
+    import("@form-create/element-ui"),
+    import("@form-create/designer"),
+    import("@/components/DictSelect/index.vue"),
+    import("@/components/Upload/FileUpload.vue"),
+    import("element-plus/dist/index.css"),
+  ]);
+
+  // 预编译的 form-create 在运行时解析 Element Plus 组件，需全量注册。
+  app.use(elementPlus.default);
+  app.use(formCreate.default);
+  app.use(designer.default);
+  // 业务组件注册必须先于设计器实例挂载
+  registerComponents(designer.default, dictSelect.default, fileUpload.default);
 }
 
 // 业务组件拖拽规则
 
-// 字段名自增序号（拖入画布时生成唯一 field，语义前缀便于数据侧识别）
+// 时间前缀区分页面重载，序号区分同一毫秒内拖入的字段。
 let fieldSeed = 0;
 
 /**
@@ -42,7 +69,7 @@ let fieldSeed = 0;
  * @param prefix 字段前缀（如 dict/user/dept/file）
  */
 function uniqueField(prefix: string): string {
-  return `${prefix}_${++fieldSeed}`;
+  return `${prefix}_${Date.now().toString(36)}_${++fieldSeed}`;
 }
 
 // 字典选择：选项由字典编码在运行时从字典中心加载，设计时无需配置选项
@@ -120,27 +147,27 @@ const fileUploadRule: DragRule = {
   ],
 };
 
-// 注册业务组件到设计器与运行态渲染器
-// 拖入画布的组件在运行态渲染（render/preview/share/data 页）同样可解析：FcDesigner.component() 会同时挂载到
-// 设计态渲染器（designerForm）与运行态渲染器（@form-create/element-ui 默认实例，即全局 <form-create>）
-// 注意：业务组件选项数据来自需登录的管理端接口，仅适用于系统内嵌表单；公开表单（匿名访问）请使用设计器自带基础组件，否则选项接口会 401
-// 幂等保护：HMR 或多次调用时跳过重复注册
+// 业务组件依赖登录接口；匿名表单应使用设计器基础组件。
 let registered = false;
 
 /**
- * 注册表单设计器用到的业务组件
+ * 同时登记设计态、运行态组件，并补充设计器拖拽规则。
  */
-function setupFormCreateComponents(): void {
+function registerComponents(
+  designer: typeof DesignerPlugin,
+  dictSelect: Component,
+  fileUpload: Component
+): void {
   if (registered) return;
-  registered = true;
 
   // 新增左侧菜单分组，业务组件与设计器基础组件区分开
-  FcDesigner.addMenu({ name: "biz", title: "业务组件", list: [] });
+  designer.addMenu({ name: "biz", title: "业务组件", list: [] });
 
   // 组件本体：同时挂载到设计态渲染器与运行态渲染器
-  FcDesigner.component("DictSelect", DictSelect);
-  FcDesigner.component("FileUpload", FileUpload);
+  designer.component("DictSelect", dictSelect);
+  designer.component("FileUpload", fileUpload);
 
   // 拖拽规则：定义左侧菜单项、拖入画布的默认规则与右侧属性面板
-  FcDesigner.addDragRule([dictSelectRule, fileUploadRule]);
+  designer.addDragRule([dictSelectRule, fileUploadRule]);
+  registered = true;
 }

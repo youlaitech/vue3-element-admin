@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { DeptQueryParams, DeptItem, DeptForm } from "./types";
+import type { DeptQuery, DeptItem, DeptForm } from "./types";
 import type { OptionItem } from "@/api/common";
 
 const DEPT_BASE_URL = "/api/v1/depts";
@@ -8,9 +8,9 @@ const DeptAPI = {
   /**
    * 获取部门树形列表
    */
-  getList(queryParams?: DeptQueryParams) {
+  getList(queryParams?: DeptQuery) {
     return request<unknown, DeptItem[]>({
-      url: `${DEPT_BASE_URL}`,
+      url: DEPT_BASE_URL,
       method: "get",
       params: queryParams,
     });
@@ -31,7 +31,7 @@ const DeptAPI = {
    * 新增部门
    */
   create(data: DeptForm) {
-    return request({ url: `${DEPT_BASE_URL}`, method: "post", data });
+    return request({ url: DEPT_BASE_URL, method: "post", data });
   },
   /**
    * 修改部门
@@ -49,5 +49,4 @@ const DeptAPI = {
 
 export default DeptAPI;
 
-// 重导出类型
 export * from "./types";

@@ -236,13 +236,9 @@ import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "elem
 import { QuestionFilled, Refresh } from "@element-plus/icons-vue";
 
 import WorkflowAPI from "@/api/workflow";
-import type {
-  WorkflowModelFormData,
-  WorkflowModelItem,
-  WorkflowModelQueryParams,
-} from "@/api/workflow";
+import type { WorkflowModelFormData, WorkflowModelItem, WorkflowModelQuery } from "@/api/workflow";
 import router from "@/router";
-import { hasPerm } from "@/utils/auth";
+import { hasPerm } from "@/utils/permission";
 import { usePageTable, useTableSelection } from "@/composables";
 import BpmnViewer from "./components/BpmnViewer.vue";
 
@@ -257,15 +253,13 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 const queryFormRef = ref<FormInstance>();
 const modelFormRef = ref<FormInstance>();
 
-/**
- * 启用开关权限（el-switch 不支持 v-hasPerm 指令移除，改 v-if 控制）
- */
+// 启用开关权限（el-switch 不支持 v-hasPerm 指令移除，改 v-if 控制）
 const hasStatePerm = hasPerm("workflow:definition:update");
 
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   WorkflowModelItem,
-  WorkflowModelQueryParams
+  WorkflowModelQuery
 >({
   initialParams: {
     pageNum: 1,

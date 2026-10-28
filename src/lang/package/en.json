@@ -46,7 +46,8 @@
     "logout": "Logout",
     "document": "Document",
     "gitee": "Gitee",
-    "profile": "User Profile"
+    "profile": "User Profile",
+    "identity": "Identity"
   },
   "sizeSelect": {
     "tooltip": "Layout Size",

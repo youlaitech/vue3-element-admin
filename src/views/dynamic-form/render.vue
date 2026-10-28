@@ -24,7 +24,7 @@ import { ElMessage } from "element-plus";
 
 import FormAPI from "@/api/form";
 import type { FormRenderData } from "@/api/form";
-import { hasPerm } from "@/utils/auth";
+import { hasPerm } from "@/utils/permission";
 import FormRenderer from "./components/FormRenderer.vue";
 import { useFormRenderer } from "./composables/useFormRenderer";
 
@@ -66,7 +66,7 @@ async function handleSubmit(data: Record<string, unknown>): Promise<void> {
   if (submitting.value) return;
   submitting.value = true;
   try {
-    await FormAPI.submitFormData(formKey.value, data);
+    await FormAPI.submitSubmission(formKey.value, data);
     ElMessage.success("提交成功");
     submitted.value = true;
   } finally {

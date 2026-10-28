@@ -8,6 +8,10 @@ module.exports = {
   ],
   overrides: [
     {
+      files: ["**/*.css"],
+      rules: { "declaration-property-value-no-unknown": true },
+    },
+    {
       files: ["**/*.{vue,html}"],
       customSyntax: "postcss-html",
     },

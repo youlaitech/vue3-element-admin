@@ -12,7 +12,8 @@ import { isTenantEnabled } from "@/utils/tenant";
  */
 export function setupPermissionGuard() {
   // 白名单支持前缀匹配：/f 命中所有公开表单分享页 /f/:formKey
-  const whiteList = ["/login", "/f"];
+  // /data-screen 是不调用接口的演示大屏，新页签与直连地址都不依赖登录态
+  const whiteList = ["/login", "/f", "/oidc/callback", "/data-screen"];
 
   router.beforeEach(async (to, _from) => {
     NProgress.start();
@@ -43,7 +44,7 @@ export function setupPermissionGuard() {
       // 动态路由生成
       if (!permissionStore.isRouteGenerated) {
         if (!userStore.userInfo?.roles?.length) {
-          await userStore.getUserInfo();
+          await userStore.fetchUserInfo();
         }
 
         // 加载用户租户列表（VITE_TENANT_ENABLED=true 时生效）
@@ -73,7 +74,15 @@ export function setupPermissionGuard() {
       }
     } catch (error) {
       console.error("Route guard error:", error);
-      await useUserStore().resetAllState();
+
+      const userStore = useUserStore();
+      // 会话失效已由请求拦截器统一清状态并跳登录页，这里不再重复导航
+      if (userStore.isSessionExpired()) {
+        NProgress.done();
+        return false;
+      }
+
+      await userStore.resetAllState();
       NProgress.done();
       return "/login";
     }

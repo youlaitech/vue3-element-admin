@@ -3,16 +3,16 @@
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
-          <span>字典 SSE 实时更新演示</span>
-          <el-tag :type="sseConnected ? 'success' : 'danger'" size="small" class="ml-2">
-            SSE {{ sseStatusText }}
+          <span>字典 WebSocket 实时更新演示</span>
+          <el-tag :type="realtimeConnected ? 'success' : 'danger'" size="small" class="ml-2">
+            WebSocket {{ realtimeStatusText }}
           </el-tag>
         </div>
       </template>
 
       <el-alert type="info" :closable="false" class="mb-4">
-        本示例展示 SSE 实时更新字典缓存的效果。您可以编辑"男"性别字典项，保存后后端将通过 SSE
-        通知所有客户端刷新缓存。
+        本示例展示 WebSocket
+        实时更新字典缓存的效果。编辑“男”字典项后，服务端会通知其他客户端刷新缓存。
       </el-alert>
 
       <el-row :gutter="16">
@@ -145,7 +145,7 @@ import type { DictChangeMessage } from "@/stores/dict";
 import { useDateFormat } from "@vueuse/core";
 import DictAPI from "@/api/system/dict";
 import type { DictItemForm } from "@/api/system/dict";
-import { useSse } from "@/utils/sse";
+import { useRealtime } from "@/composables/useRealtime";
 
 // 性别字典编码
 const DICT_CODE = "gender";
@@ -163,16 +163,9 @@ const dictForm = ref<DictItemForm | null>(null);
 // 选中的性别
 const selectedGender = ref("");
 
-// SSE 连接（用于展示连接状态）
-const sse = useSse();
+const { isConnected: realtimeConnected } = useRealtime();
+const realtimeStatusText = computed(() => (realtimeConnected.value ? "已连接" : "未连接"));
 
-// 获取连接状态
-const sseConnected = computed(() => sse.isConnected.value);
-
-// SSE 连接状态显示文本
-const sseStatusText = computed(() => (sseConnected.value ? "已连接" : "未连接"));
-
-// 保存 SSE 清理函数
 let unregisterCallback: (() => void) | null = null;
 
 // 当前选中字典的缓存状态
@@ -182,13 +175,9 @@ const dictCacheStatus = computed(() => {
 });
 
 /**
- * 设置 SSE
+ * 监听字典缓存失效
  */
-const setupSse = () => {
-  // 初始化字典同步订阅（幂等，全局已在应用启动时开启）
-  dictStore.setupDictSync();
-
-  // 注册字典消息回调
+const watchDictChange = () => {
   unregisterCallback = dictStore.onDictChange((message: DictChangeMessage) => {
     // 只有当消息是关于性别字典的更新时才处理
     if (message.dictCode === DICT_CODE) {
@@ -234,7 +223,7 @@ const saveDict = async () => {
   // 更新时间
   lastUpdateTime.value = useDateFormat(new Date(), "YYYY-MM-DD HH:mm:ss").value;
 
-  ElMessage.success("保存成功，后端将通过 SSE 通知所有客户端");
+  ElMessage.success("保存成功，服务端将通知其他客户端刷新缓存");
   saving.value = false;
 };
 
@@ -245,11 +234,9 @@ onMounted(async () => {
   await dictStore.loadDictItems(DICT_CODE);
   // 初始化选中性别为男
   selectedGender.value = "1";
-  // 设置 SSE
-  setupSse();
+  watchDictChange();
 });
 
-// 组件卸载时清理 SSE
 onUnmounted(() => {
   unregisterCallback?.();
 });

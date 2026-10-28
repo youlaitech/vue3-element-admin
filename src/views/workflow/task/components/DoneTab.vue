@@ -99,7 +99,7 @@ import type { FormInstance } from "element-plus";
 import { Refresh } from "@element-plus/icons-vue";
 
 import WorkflowAPI from "@/api/workflow";
-import type { DoneTaskItem, WorkflowTaskQueryParams } from "@/api/workflow";
+import type { DoneTaskItem, WorkflowTaskQuery } from "@/api/workflow";
 import { usePageTable } from "@/composables";
 import InstanceDetailDrawer from "../../components/InstanceDetailDrawer.vue";
 
@@ -115,7 +115,7 @@ const queryFormRef = ref<FormInstance>();
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   DoneTaskItem,
-  WorkflowTaskQueryParams
+  WorkflowTaskQuery
 >({
   initialParams: {
     pageNum: 1,

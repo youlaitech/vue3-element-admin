@@ -1,9 +1,7 @@
-// Menu 菜单类型定义
-
 /**
  * 菜单查询参数
  */
-export interface MenuQueryParams {
+export interface MenuQuery {
   /** 搜索关键字 */
   keywords?: string;
 }
@@ -104,14 +102,6 @@ export interface MenuAiResult {
   perm?: string;
   /** 建议的图标关键词，按贴切程度排列 */
   iconKeywords?: string[];
-}
-
-/**
- * 菜单选项
- */
-export interface MenuOption {
-  key: string;
-  value: string;
 }
 
 /**

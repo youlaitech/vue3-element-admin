@@ -1,6 +1,4 @@
-// 视图组件注册表
-// 维护「菜单 component 字符串 → src/views 视图文件」的映射，路由注册与菜单表单共用
-// 表单的「页面路径」选项树也由此派生：跳过错误页与页面内部组件，index.vue 归并到目录
+// 视图组件注册表，供动态路由解析和菜单页面选择共用。
 
 import { ensureFormCreate } from "@/plugins/form-create";
 
@@ -81,7 +79,7 @@ export interface PageComponentNode {
 }
 
 /**
- * 判断路径是否可以作为页面组件选择项
+ * 判断页面是否可选；internal 视图与 components 目录不可选。
  */
 function isSelectable(path: string): boolean {
   const segments = path.split("/");

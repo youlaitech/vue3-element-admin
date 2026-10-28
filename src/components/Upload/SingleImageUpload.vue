@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { UploadRawFile, UploadRequestOptions } from "element-plus";
+import type { UploadRawFile, UploadRequestOptions } from "element-plus";
 import FileAPI from "@/api/file";
 import type { FileInfo } from "@/api/file";
 
@@ -82,9 +82,7 @@ const modelValue = defineModel<string>({ default: "" });
  * 限制用户上传文件的格式和大小
  */
 function handleBeforeUpload(file: UploadRawFile) {
-  /**
-   * accept 支持 image/*、.png、image/png 三种写法，浏览器只按它过滤，还需按同样规则复核实际文件
-   */
+  // accept 支持 image/*、.png、image/png 三种写法，浏览器只按它过滤，还需按同样规则复核实际文件
   const acceptTypes = props.accept.split(",").map((type) => type.trim());
 
   const isValidType = acceptTypes.some((type) => {

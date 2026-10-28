@@ -2,7 +2,7 @@
   <div class="designer-container">
     <div class="designer-toolbar">
       <div class="designer-toolbar__left">
-        <el-button circle @click="handleBack">
+        <el-button circle aria-label="返回流程列表" @click="handleBack">
           <el-icon><ArrowLeft /></el-icon>
         </el-button>
         <span class="designer-toolbar__title">{{ title }}</span>

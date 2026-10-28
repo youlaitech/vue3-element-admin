@@ -87,7 +87,7 @@ async function start() {
   nickname.value = "";
   avatar.value = "";
   try {
-    const res = await AuthAPI.qrGenerate();
+    const res = await AuthAPI.generateQrCode();
     ticket = res.ticket;
     await renderQrCode(ticket);
     state.value = "waiting";
@@ -129,7 +129,7 @@ function stopPolling() {
 async function pollOnce() {
   if (!ticket) return;
   try {
-    const res = await AuthAPI.qrStatus(ticket);
+    const res = await AuthAPI.getQrCodeStatus(ticket);
     handleStatus(res);
   } catch {
     startPolling();

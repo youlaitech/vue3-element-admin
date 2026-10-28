@@ -1,11 +1,9 @@
-// Tenant Plan 租户套餐类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery } from "@/api/common";
 
 /**
  * 租户套餐分页查询参数
  */
-export interface TenantPlanQueryParams extends BaseQueryParams {
+export interface TenantPlanQuery extends PageQuery {
   /** 关键字(套餐名称/套餐编码) */
   keywords?: string;
   /** 状态(1-启用 0-停用) */

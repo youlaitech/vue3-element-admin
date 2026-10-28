@@ -94,7 +94,7 @@
         :dict-code="currentType.dictCode"
         :dict-name="currentType.name"
       />
-      <el-card v-else class="page-content dict-page__empty" shadow="never">
+      <el-card v-else class="page-content" shadow="never">
         <el-empty description="请先在左侧选择字典类型" />
       </el-card>
     </div>
@@ -141,7 +141,7 @@ import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "elem
 import { ArrowLeft, ArrowRight, Delete, Edit, Plus } from "@element-plus/icons-vue";
 
 import DictAPI from "@/api/system/dict";
-import type { DictTypeForm, DictTypeItem, DictTypeQueryParams } from "@/api/system/dict";
+import type { DictTypeForm, DictTypeItem, DictTypeQuery } from "@/api/system/dict";
 import { usePageTable } from "@/composables";
 import { CommonStatus } from "@/enums";
 import DictItemPanel from "./components/DictItemPanel.vue";
@@ -160,16 +160,14 @@ const dictFormRef = ref<FormInstance>();
 const currentType = ref<DictTypeItem>();
 
 // 字典类型列表分页数据管理
-const { loading, list, total, params, fetchData } = usePageTable<DictTypeItem, DictTypeQueryParams>(
-  {
-    initialParams: {
-      pageNum: 1,
-      pageSize: 20,
-      keywords: "",
-    },
-    request: DictAPI.getPage,
-  }
-);
+const { loading, list, total, params, fetchData } = usePageTable<DictTypeItem, DictTypeQuery>({
+  initialParams: {
+    pageNum: 1,
+    pageSize: 20,
+    keywords: "",
+  },
+  request: DictAPI.getPage,
+});
 
 /**
  * 拉取字典类型并保持右侧选中项有效
@@ -338,11 +336,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .dict-page {
   --page-aside-width: 320px;
-}
-
-.dict-page__empty {
-  align-items: center;
-  justify-content: center;
 }
 
 .dict-type {

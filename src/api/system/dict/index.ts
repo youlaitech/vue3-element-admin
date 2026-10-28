@@ -1,9 +1,9 @@
 import request from "@/utils/request";
 import type {
-  DictTypeQueryParams,
+  DictTypeQuery,
   DictTypeItem,
   DictTypeForm,
-  DictItemQueryParams,
+  DictItemQuery,
   DictItem,
   DictItemForm,
   DictItemOption,
@@ -62,9 +62,9 @@ const DictAPI = {
   /**
    * 字典分页列表
    */
-  getPage(queryParams: DictTypeQueryParams) {
+  getPage(queryParams: DictTypeQuery) {
     return request<unknown, PageResult<DictTypeItem>>({
-      url: `${DICT_BASE_URL}`,
+      url: DICT_BASE_URL,
       method: "get",
       params: queryParams,
     });
@@ -85,7 +85,7 @@ const DictAPI = {
    * 新增字典
    */
   create(data: DictTypeForm) {
-    return request({ url: `${DICT_BASE_URL}`, method: "post", data });
+    return request({ url: DICT_BASE_URL, method: "post", data });
   },
   /**
    * 修改字典
@@ -104,7 +104,7 @@ const DictAPI = {
   /**
    * 获取字典项分页列表
    */
-  getDictItemPage(dictCode: string, queryParams: DictItemQueryParams) {
+  getDictItemPage(dictCode: string, queryParams: DictItemQuery) {
     return request<unknown, PageResult<DictItem>>({
       url: `${DICT_BASE_URL}/${dictCode}/items`,
       method: "get",
@@ -162,5 +162,4 @@ const DictAPI = {
 
 export default DictAPI;
 
-// 重导出类型
 export * from "./types";

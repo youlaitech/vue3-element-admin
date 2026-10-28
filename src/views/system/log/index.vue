@@ -139,11 +139,11 @@
 
 <script setup lang="ts">
 import { useFullscreen } from "@vueuse/core";
-import { type FormInstance, type TagProps } from "element-plus";
+import type { FormInstance, TagProps } from "element-plus";
 import { FullScreen, Refresh } from "@element-plus/icons-vue";
 
 import LogAPI from "@/api/system/log";
-import type { LogItem, LogQueryParams } from "@/api/system/log";
+import type { LogItem, LogQuery } from "@/api/system/log";
 import { usePageTable } from "@/composables";
 
 defineOptions({
@@ -162,7 +162,7 @@ const LOG_STATUS_SUCCESS = 1;
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   LogItem,
-  LogQueryParams
+  LogQuery
 >({
   initialParams: {
     pageNum: 1,

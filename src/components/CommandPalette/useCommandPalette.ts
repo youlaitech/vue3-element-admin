@@ -4,7 +4,9 @@ import router from "@/router";
 import { usePermissionStore } from "@/stores";
 import { isExternal } from "@/utils";
 
-/** 命令面板中的可搜索菜单项 */
+/**
+ * 命令面板中的可搜索菜单项
+ */
 interface SearchItem {
   title: string;
   path: string;
@@ -24,13 +26,11 @@ const EXCLUDED_PATHS = ["/redirect", "/login", "/401", "/404"];
 export function useCommandPalette() {
   const permissionStore = usePermissionStore();
 
-  // 面板状态
   const visible = ref(false);
   const keyword = ref("");
   const activeIndex = ref(-1);
   const inputRef = ref<HTMLInputElement>();
 
-  // 菜单数据
   const menuItems = ref<SearchItem[]>([]);
   const results = ref<SearchItem[]>([]);
   const history = ref<SearchItem[]>([]);

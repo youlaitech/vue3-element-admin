@@ -4,15 +4,6 @@ import * as typescriptEslint from "typescript-eslint";
 import pluginVue from "eslint-plugin-vue";
 import vueParser from "vue-eslint-parser";
 import configPrettier from "eslint-config-prettier";
-import fs from "node:fs";
-
-let autoImportGlobals: Record<string, "readonly"> = {};
-try {
-  autoImportGlobals =
-    JSON.parse(fs.readFileSync("./.eslintrc-auto-import.json", "utf-8")).globals || {};
-} catch (error) {
-  console.warn("Could not load auto-import globals", error);
-}
 
 export default [
   {
@@ -36,11 +27,7 @@ export default [
       ecmaVersion: "latest",
       sourceType: "module",
       globals: {
-        ...globals.browser,
-        ...globals.node,
         ...globals.es2022,
-        ...autoImportGlobals,
-        __APP_INFO__: "readonly",
       },
     },
     plugins: {
@@ -66,8 +53,21 @@ export default [
       "no-unused-vars": "off",
       "no-undef": "off",
       "no-redeclare": "off",
-      "@typescript-eslint/ban-ts-comment": "off",
     },
+  },
+
+  {
+    files: ["src/**/*.{js,ts,vue}"],
+    languageOptions: { globals: { ...globals.browser, __APP_INFO__: "readonly" } },
+  },
+  {
+    files: ["*.{js,mjs,cjs,ts}", "mock/**/*.ts"],
+    languageOptions: { globals: globals.node },
+    rules: { "no-console": "off" },
+  },
+  {
+    files: ["**/*.{js,mjs,cjs}"],
+    rules: { "no-undef": "error" },
   },
 
   {
@@ -79,7 +79,7 @@ export default [
         sourceType: "module",
         parser: typescriptEslint.parser,
         extraFileExtensions: [".vue"],
-        tsconfigRootDir: __dirname,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     rules: {
@@ -88,10 +88,12 @@ export default [
       "vue/require-default-prop": "off",
       "vue/require-explicit-emits": "error",
       "vue/no-unused-vars": "error",
-      "vue/no-mutating-props": "off",
+      "vue/no-mutating-props": "warn",
       "vue/valid-v-for": "warn",
       "vue/no-template-shadow": "warn",
-      "vue/return-in-computed-property": "warn",
+      // 组件由 unplugin-vue-components 自动注册，ESLint 侧拿不到已注册组件清单
+      "vue/no-undef-components": "off",
+      "vue/return-in-computed-property": "error",
       "vue/block-order": [
         "error",
         {
@@ -111,7 +113,6 @@ export default [
         },
       ],
       "vue/component-name-in-template-casing": ["error", "PascalCase"],
-      "@typescript-eslint/no-explicit-any": "warn",
     },
   },
 
@@ -123,15 +124,30 @@ export default [
         ecmaVersion: "latest",
         sourceType: "module",
         project: "./tsconfig.eslint.json",
-        tsconfigRootDir: __dirname,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     rules: {
-      "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-empty-object-type": "off",
-      "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-unused-expressions": "warn",
+    },
+  },
+
+  {
+    // Vue 与 TS 共用的脚本规则：同一段代码放在 .ts 或 <script setup lang="ts"> 中要求一致
+    files: ["**/*.{ts,tsx,mts,cts,vue}"],
+    rules: {
+      "@typescript-eslint/ban-ts-comment": [
+        "warn",
+        {
+          "ts-ignore": true,
+          "ts-expect-error": "allow-with-description",
+          minimumDescriptionLength: 10,
+        },
+      ],
+      "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": [
         "warn",
         {
@@ -140,7 +156,6 @@ export default [
           caughtErrorsIgnorePattern: "^_",
         },
       ],
-      "@typescript-eslint/no-unused-expressions": "warn",
       "@typescript-eslint/consistent-type-imports": [
         "error",
         {
@@ -161,11 +176,23 @@ export default [
   },
 
   {
-    files: ["**/components/Crud/**/*.{ts,vue}"],
+    // 先在基础异步边界试点，避免全仓同时切换 typed 规则。
+    files: [
+      "src/composables/usePageTable.ts",
+      "src/utils/realtime/client.ts",
+      "src/views/workflow/components/FormDetail.vue",
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: "./tsconfig.eslint.json",
+        tsconfigRootDir: import.meta.dirname,
+        extraFileExtensions: [".vue"],
+      },
+    },
     rules: {
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-floating-promises": ["warn", { ignoreVoid: true }],
+      "@typescript-eslint/no-misused-promises": "warn",
+      "@typescript-eslint/await-thenable": "warn",
     },
   },
 

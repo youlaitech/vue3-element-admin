@@ -1,49 +1,102 @@
 import type { DialogProps, DrawerProps, FormItemRule, PaginationProps } from "element-plus";
 import type { FormProps, TableProps, ColProps, ButtonProps, CardProps } from "element-plus";
 import type CrudTable from "./CrudTable.vue";
-import type CrudModal from "./CrudModal.vue";
+import type CrudForm from "./CrudForm.vue";
 import type CrudSearch from "./CrudSearch.vue";
-import type { CSSProperties } from "vue";
+import type { CSSProperties, Ref } from "vue";
 import type { PageResult } from "@/api/common";
+import type { AxiosResponse } from "axios";
 
+/**
+ * 搜索组件实例。
+ */
 export type CrudSearchInstance = InstanceType<typeof CrudSearch>;
+/**
+ * 表格组件实例。
+ */
 export type CrudTableInstance = InstanceType<typeof CrudTable>;
-export type CrudModalInstance = InstanceType<typeof CrudModal>;
+/**
+ * 共用表单组件实例。
+ */
+export type CrudFormInstance = InstanceType<typeof CrudForm>;
 
-export type IObject = Record<string, any>;
+/**
+ * 动态控件与插槽的模型边界，业务接口仍使用具体类型。
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 动态组件的 v-model 值由对应控件约束。
+export type CrudRecord = Record<string, any>;
 
-type DateComponent = "date-picker" | "time-picker" | "time-select" | "custom-tag" | "input-tag";
-type InputComponent = "input" | "select" | "input-number" | "cascader" | "tree-select";
-type OtherComponent = "text" | "radio" | "checkbox" | "switch" | "icon-select" | "custom";
-export type ISearchComponent = DateComponent | InputComponent | "custom";
-export type IComponentType = DateComponent | InputComponent | OtherComponent;
+/**
+ * 搜索字段支持的控件。
+ */
+export type CrudSearchFieldType =
+  | "input"
+  | "select"
+  | "input-number"
+  | "cascader"
+  | "tree-select"
+  | "date-picker"
+  | "time-picker"
+  | "time-select"
+  | "custom-tag"
+  | "input-tag"
+  | "custom";
+/**
+ * 表单支持搜索控件及只读文本、单选、复选等控件。
+ */
+export type CrudFieldType =
+  CrudSearchFieldType | "text" | "radio" | "checkbox" | "switch" | "icon-select";
 
-type ToolbarLeft = "add" | "delete" | "import" | "export";
-type ToolbarRight = "refresh" | "filter" | "imports" | "exports" | "search";
-type ToolbarTable = "edit" | "view" | "delete";
-export type IToolsButton = {
-  name: string; // 按钮名称
-  text?: string; // 按钮文本
-  perm?: Array<string> | string; // 权限标识(可以是完整权限字符串如'sys:user:create'或操作权限如'create')
-  attrs?: Partial<ButtonProps> & { style?: CSSProperties }; // 按钮属性
-  render?: (row: IObject) => boolean; // 条件渲染
+/**
+ * 业务工具栏的内置动作。
+ */
+type ToolbarActionKey = "create" | "delete" | "import" | "export";
+/**
+ * 表格右侧的内置工具。
+ */
+type TableToolKey = "refresh" | "columns" | "import" | "export" | "search";
+/**
+ * 行操作的内置动作。
+ */
+type RowActionKey = "edit" | "view" | "delete";
+/**
+ * 工具栏和行操作共用的权限、状态与回调。
+ */
+export type CrudAction = {
+  key: string; // 动作标识，也用于按钮插槽
+  label?: string; // 按钮文字
+  permission?: string | string[]; // 完整权限或相对操作后缀
+  buttonProps?: Partial<ButtonProps> & { style?: CSSProperties };
+  visible?: boolean | ((context: CrudActionContext) => boolean); // 业务显示条件
+  disabled?: boolean | ((context: CrudActionContext) => boolean); // 暂不可操作
+  onClick?: (context: CrudActionContext) => void | Promise<unknown>;
 };
-export type IToolsDefault = ToolbarLeft | ToolbarRight | ToolbarTable | IToolsButton;
 
-export interface IOperateData {
-  name: string;
-  row: IObject;
-  column: IObject;
-  $index: number;
+/**
+ * 当前按钮的行及选择上下文。
+ */
+export interface CrudActionContext {
+  row?: CrudRecord;
+  selectedRows: readonly CrudRecord[];
+  selectedKeys: readonly (string | number)[];
 }
 
-export interface ISearchConfig {
-  /** 权限前缀(如 sys:user，用于组成权限标识)，不提供则不进行权限校验 */
-  permPrefix?: string;
+/**
+ * 交给页面处理的行操作。
+ */
+export interface CrudRowActionEvent {
+  key: string;
+  row: CrudRecord;
+}
+
+/**
+ * 搜索字段及布局。
+ */
+export interface CrudSearchConfig {
   /** 标签冒号(默认：false) */
   colon?: boolean;
   /** 表单项(默认：[]) */
-  formItems?: IFormItems<ISearchComponent>;
+  fields?: CrudField<CrudSearchFieldType>[];
   /** 是否开启展开和收缩(默认：true) */
   isExpandable?: boolean;
   /** 默认展示的表单项数量(默认：3) */
@@ -51,16 +104,19 @@ export interface ISearchConfig {
   /** 卡片属性 */
   cardAttrs?: Partial<CardProps> & { style?: CSSProperties };
   /** form 组件属性 */
-  form?: IForm;
+  form?: CrudFormProps;
   /** 自适应网格布局(使用时表单不要添加 style: { width: "200px" }) */
   grid?: boolean | "left" | "right";
 }
 
-export interface ICrudTableConfig<TQuery = any, TItem = any> {
-  /** 权限前缀(如 sys:user，用于组成权限标识)，不提供则不进行权限校验 */
-  permPrefix?: string;
+/**
+ * 列表接口、按钮、列及导入导出。
+ */
+export interface CrudTableConfig<TQuery = CrudRecord, TItem = CrudRecord> {
+  /** 权限前缀，如 sys:user；动作可用完整权限覆盖 */
+  permissionPrefix?: string;
   /** table 组件属性 */
-  table?: Partial<Omit<TableProps<any>, "data">>;
+  table?: Partial<Omit<TableProps<CrudRecord>, "data" | "rowKey">>;
   /** 分页组件位置(默认：left) */
   pagePosition?: "left" | "right";
   /** pagination 组件属性 */
@@ -72,40 +128,43 @@ export interface ICrudTableConfig<TQuery = any, TItem = any> {
           "v-model:page-size" | "v-model:current-page" | "total" | "currentPage"
         >
       >;
-  /** 列表的网络请求函数(需返回 promise) */
-  indexAction: (queryParams: TQuery) => Promise<PageResult<TItem> | TItem[]>;
-  /** 默认的分页相关的请求参数 */
-  request?: {
-    pageName: string;
-    limitName: string;
+  /** 返回分页结果或数组，其他接口结构在此转换 */
+  fetchData(queryParams: TQuery): Promise<PageResult<TItem> | TItem[]>;
+  /** 分页参数名，默认 pageNum、pageSize */
+  paginationKeys?: {
+    page: string;
+    size: string;
   };
-  /** 分页接口统一返回 PageResult { list, total } */
-  /** 修改属性的网络请求函数(需返回 promise) */
-  modifyAction?: (data: {
-    [key: string]: any;
+  /** 保存单个字段，失败时组件回滚 */
+  updateField?: (data: {
+    [key: string]: unknown;
     field: string;
     value: boolean | string | number;
-  }) => Promise<any>;
-  /** 删除的网络请求函数(需返回 promise) */
-  deleteAction?: (ids: string) => Promise<any>;
+  }) => Promise<unknown>;
+  /** 删除记录，主键使用英文逗号拼接 */
+  deleteByIds?: (ids: string) => Promise<unknown>;
   /** 后端导出的网络请求函数(需返回 promise) */
-  exportAction?: (queryParams: TQuery) => Promise<any>;
+  exportFile?: (queryParams: Partial<TQuery>) => Promise<AxiosResponse<Blob>>;
   /** 前端全量导出的网络请求函数(需返回 promise) */
-  exportsAction?: (queryParams: TQuery) => Promise<TItem[]>;
+  fetchExportRows?: (queryParams: Partial<TQuery>) => Promise<TItem[]>;
   /** 导入模板 */
-  importTemplate?: string | (() => Promise<any>);
+  importTemplate?: string | (() => Promise<AxiosResponse<Blob>>);
   /** 后端导入的网络请求函数(需返回 promise) */
-  importAction?: (file: File) => Promise<any>;
+  importFile?: (file: File) => Promise<unknown>;
   /** 前端导入的网络请求函数(需返回 promise) */
-  importsAction?: (data: IObject[]) => Promise<any>;
+  importRows?: (data: CrudRecord[]) => Promise<unknown>;
+  /** 同时提供两种导入回调时必须指定 */
+  importMode?: "file" | "rows";
+  /** 同时提供两种导出回调时必须指定 */
+  exportMode?: "file" | "rows";
   /** 主键名(默认为 id) */
-  pk?: string;
-  /** 表格工具栏(默认:add,delete,export,也可自定义) */
-  toolbar?: Array<ToolbarLeft | IToolsButton>;
-  /** 表格工具栏右侧图标(默认:refresh,filter,imports,exports,search) */
-  defaultToolbar?: Array<ToolbarRight | IToolsButton>;
-  /** table 组件列属性(额外的属性 templet,operat,slotName) */
-  cols: Array<{
+  rowKey?: string;
+  /** 左侧按钮，未配置时不显示 */
+  toolbarActions?: Array<ToolbarActionKey | CrudAction>;
+  /** 右侧按钮，未配置时不显示 */
+  tableTools?: Array<TableToolKey | CrudAction>;
+  /** table 组件列属性(额外的属性 cellType,actions,slotName) */
+  columns: Array<{
     type?: "default" | "selection" | "index" | "expand";
     label?: string;
     prop?: string;
@@ -115,8 +174,12 @@ export interface ICrudTableConfig<TQuery = any, TItem = any> {
     reserveSelection?: boolean;
     /** 列是否显示 */
     show?: boolean;
+    /** 不允许用户在列设置中隐藏 */
+    hideable?: boolean;
+    /** 远程排序对应的 API 属性，不是数据库列名 */
+    sortField?: string;
     /** 模板 */
-    templet?:
+    cellType?:
       | "image"
       | "list"
       | "url"
@@ -126,13 +189,13 @@ export interface ICrudTableConfig<TQuery = any, TItem = any> {
       | "percent"
       | "icon"
       | "date"
-      | "tool"
+      | "actions"
       | "custom";
     /** image 模板相关参数 */
     imageWidth?: number;
     imageHeight?: number;
     /** list 模板相关参数 */
-    selectList?: IObject;
+    selectList?: CrudRecord;
     /** switch 模板相关参数 */
     activeValue?: boolean | string | number;
     inactiveValue?: boolean | string | number;
@@ -144,23 +207,26 @@ export interface ICrudTableConfig<TQuery = any, TItem = any> {
     priceFormat?: string;
     /** date 模板相关参数 */
     dateFormat?: string;
-    /** tool 模板相关参数 */
-    operat?: Array<ToolbarTable | IToolsButton>;
+    /** 行操作按钮 */
+    actions?: Array<RowActionKey | CrudAction>;
+    /** 直接显示的操作上限，默认 3，0 表示全部显示 */
+    maxVisibleActions?: number;
     /** filter 值拼接符 */
     filterJoin?: string;
-    [key: string]: any;
+    [key: string]: unknown;
     /** 初始化数据函数 */
-    initFn?: (item: IObject) => void;
+    onInit?: (item: CrudRecord) => void | Promise<void>;
   }>;
 }
 
-export interface IModalConfig<T = any> {
-  /** 权限前缀(如 sys:user，用于组成权限标识)，不提供则不进行权限校验 */
-  permPrefix?: string;
+/**
+ * 新增、编辑和查看共用的弹窗表单。
+ */
+export interface CrudFormConfig<T = CrudRecord> {
   /** 标签冒号(默认：false) */
   colon?: boolean;
   /** 主键名(主要用于编辑数据,默认为 id) */
-  pk?: string;
+  rowKey?: string;
   /** 组件类型(默认：dialog) */
   component?: "dialog" | "drawer";
   /** dialog 组件属性 */
@@ -168,37 +234,70 @@ export interface IModalConfig<T = any> {
   /** drawer 组件属性 */
   drawer?: Partial<Omit<DrawerProps, "modelValue">>;
   /** form 组件属性 */
-  form?: IForm;
+  form?: CrudFormProps;
   /** 表单项 */
-  formItems: IFormItems<IComponentType>;
+  fields: CrudFormField[];
+  /** 按当前模式显示表单标题 */
+  title?: string | ((context: CrudFormContext) => string);
   /** 提交之前处理 */
-  beforeSubmit?: (data: T) => void;
-  /** 提交的网络请求函数(需返回 promise) */
-  formAction?: (data: T) => Promise<any>;
+  beforeSubmit?(data: T): void | Promise<void>;
+  /** 保存数据，查看模式不调用 */
+  submitForm?(data: T, context: CrudFormContext): Promise<unknown>;
+  /** 保存成功提示，false 不提示(默认：保存成功) */
+  successMessage?: string | false;
 }
 
-export type IForm = Partial<Omit<FormProps, "model" | "rules">>;
+/**
+ * 同一表单支持的操作模式。
+ */
+export type CrudFormMode = "create" | "edit" | "view";
 
 /**
- * 表单项
+ * 表单条件和提交所用的模式、路径主键及当前数据。
  */
-export type IFormItems<T = IComponentType> = Array<{
+export interface CrudFormContext {
+  mode: CrudFormMode;
+  id?: string | number;
+  model: Readonly<CrudRecord>;
+}
+
+/**
+ * 新增、编辑和查看共用的字段配置。
+ */
+export type CrudFormField = Omit<CrudField, "label"> & {
+  label: string | ((context: CrudFormContext) => string);
+  visible?: boolean | ((context: CrudFormContext) => boolean);
+  readonly?: boolean | ((context: CrudFormContext) => boolean);
+  required?: boolean | ((context: CrudFormContext) => boolean);
+};
+
+/**
+ * 原生表单属性，模型与校验规则由组件维护。
+ */
+export type CrudFormProps = Partial<Omit<FormProps, "model" | "rules">>;
+
+/**
+ * 搜索与表单共用的字段配置。
+ */
+export type CrudField<T = CrudFieldType> = {
   /** 组件类型(如 input,select,radio,custom 等) */
   type: T;
   /** 标签提示 */
-  tips?: string | IObject;
+  tips?: string | CrudRecord;
   /** 标签文本 */
   label: string;
   /** 键名 */
   prop: string;
   /** 组件属性 */
-  attrs?: IObject;
+  attrs?: CrudRecord;
   /** 组件可选项(只适用于 select,radio,checkbox 组件) */
-  options?: Array<{ label: string; value: any; [key: string]: any }> | Ref<any[]>;
+  options?:
+    | Array<{ label: string; value: string | number | boolean; [key: string]: unknown }>
+    | Ref<Array<{ label: string; value: string | number | boolean }>>;
   /** 验证规则 */
   rules?: FormItemRule[];
   /** 初始值 */
-  initialValue?: any;
+  initialValue?: unknown;
   /** 插槽名(适用于自定义组件，设置类型为 custom) */
   slotName?: string;
   /** 是否隐藏 */
@@ -206,16 +305,7 @@ export type IFormItems<T = IComponentType> = Array<{
   /** layout 组件 Col 属性 */
   col?: Partial<ColProps>;
   /** 组件事件 */
-  events?: Record<string, (...args: any) => void>;
+  events?: Record<string, (...args: never[]) => void>;
   /** 初始化数据函数扩展 */
-  initFn?: (item: IObject) => void;
-}>;
-
-export interface IPageForm {
-  /** 主键名(主要用于编辑数据,默认为 id) */
-  pk?: string;
-  /** form 组件属性 */
-  form?: IForm;
-  /** 表单项 */
-  formItems: IFormItems<IComponentType>;
-}
+  onInit?: (item: CrudRecord) => void | Promise<void>;
+};

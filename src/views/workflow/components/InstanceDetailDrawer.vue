@@ -1,6 +1,7 @@
 <template>
   <el-drawer v-model="visible" title="流程详情" size="720px">
     <el-skeleton v-if="loading" :rows="6" animated />
+    <el-alert v-else-if="detailError" :title="detailError" type="error" :closable="false" />
     <template v-else-if="detail">
       <el-descriptions :column="2" border>
         <el-descriptions-item label="流程名称">
@@ -45,8 +46,9 @@
         </el-tab-pane>
         <el-tab-pane label="流程图" lazy>
           <div v-loading="diagramLoading" class="instance-detail__diagram">
+            <el-alert v-if="diagramError" :title="diagramError" type="error" :closable="false" />
             <BpmnViewer
-              v-if="diagram.bpmnXml"
+              v-else-if="diagram.bpmnXml"
               :xml="diagram.bpmnXml"
               :executed-activity-ids="diagram.executedActivityIds"
               :active-activity-ids="diagram.activeActivityIds"
@@ -81,6 +83,8 @@ const statusOptions: Record<
 
 const visible = ref(false);
 const loading = ref(false);
+const detailError = ref("");
+const diagramError = ref("");
 
 const detail = ref<InstanceDetailData>();
 
@@ -93,31 +97,65 @@ const diagram = ref<ProcessDiagramData>({
 
 const diagramLoading = ref(false);
 
+// 打开序号：快速连续打开时只让最后一次请求的结果生效
+let openSequence = 0;
+watch(
+  visible,
+  (value) => {
+    if (!value) openSequence += 1;
+  },
+  { flush: "sync" }
+);
+onScopeDispose(() => {
+  openSequence += 1;
+});
+
 /**
- * 打开抽屉并加载实例详情与流程图
- *
- * @param instanceId 流程实例 ID
+ * 清空上一实例，并发加载详情与流程图。
+ * 两路分别记录加载状态和错误，仅当前打开批次可回填。
  */
 async function open(instanceId: string): Promise<void> {
   visible.value = true;
+  const sequence = ++openSequence;
   loading.value = true;
   diagramLoading.value = true;
+  detail.value = undefined;
+  detailError.value = "";
+  diagramError.value = "";
   diagram.value = { bpmnXml: "", executedActivityIds: [], activeActivityIds: [] };
-  try {
-    // 详情与流程图互不依赖，并行加载
-    [detail.value, diagram.value] = await Promise.all([
-      WorkflowAPI.instance.getDetail(instanceId),
-      WorkflowAPI.instance.getDiagram(instanceId),
-    ]);
-  } finally {
-    loading.value = false;
-    diagramLoading.value = false;
-  }
+
+  // 请求层提示失败原因，组件记录错误态，避免显示上一实例。
+  const detailRequest = WorkflowAPI.instance
+    .getDetail(instanceId)
+    .then((data) => {
+      if (sequence === openSequence) {
+        detail.value = data;
+      }
+    })
+    .catch(() => {
+      if (sequence === openSequence) detailError.value = "实例详情加载失败，请重新打开";
+    })
+    .finally(() => {
+      if (sequence === openSequence) {
+        loading.value = false;
+      }
+    });
+
+  // 流程图加载：失败不阻塞详情展示
+  const diagramRequest = WorkflowAPI.instance
+    .getDiagram(instanceId)
+    .then((data) => {
+      if (sequence === openSequence) diagram.value = data;
+    })
+    .catch(() => {
+      if (sequence === openSequence) diagramError.value = "流程图加载失败，请重新打开";
+    })
+    .finally(() => {
+      if (sequence === openSequence) diagramLoading.value = false;
+    });
+  await Promise.all([detailRequest, diagramRequest]);
 }
 
-/**
- * 暴露 open 供父组件打开实例详情
- */
 defineExpose({ open });
 </script>
 

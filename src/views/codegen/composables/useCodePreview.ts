@@ -25,7 +25,6 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
 
   const code = ref("");
   const currentFileKey = ref("");
-  const fileTreeRef = ref();
 
   const { copy, copied } = useClipboard();
 
@@ -53,21 +52,15 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
     previewTypeOptions.value = typeOptions;
     previewTypes.value = [...typeOptions];
 
-    /**
-     * 构建树
-     */
+    // 构建树
     const tree = buildFileTree(previewList);
     treeData.value = tree?.children ? [...tree.children] : [];
 
-    /**
-     * 选中第一个叶子节点
-     */
+    // 选中第一个叶子节点
     const firstLeaf = findFirstLeaf(tree);
     if (firstLeaf) {
       code.value = firstLeaf.content || "";
       currentFileKey.value = firstLeaf.key || "";
-      await nextTick();
-      fileTreeRef.value?.setCurrentKey?.(currentFileKey.value);
     }
 
     return previewList;
@@ -93,7 +86,7 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
   // 过滤条件变了之后，如果当前选中的文件还在就继续高亮，否则选第一个
   watch(
     () => filteredTreeData.value,
-    async (nodes) => {
+    (nodes) => {
       if (!nodes.length) {
         currentFileKey.value = "";
         code.value = "";
@@ -102,8 +95,6 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
       if (currentFileKey.value) {
         const leaf = findLeafByKey(nodes, currentFileKey.value);
         if (leaf) {
-          await nextTick();
-          fileTreeRef.value?.setCurrentKey?.(currentFileKey.value);
           return;
         }
       }
@@ -111,8 +102,6 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
       if (first) {
         code.value = first.content || "";
         currentFileKey.value = first.key || "";
-        await nextTick();
-        fileTreeRef.value?.setCurrentKey?.(currentFileKey.value);
       }
     },
     { immediate: true }
@@ -126,7 +115,6 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
     previewTypeOptions,
     code,
     currentFileKey,
-    fileTreeRef,
     handlePreview,
     handleFileTreeNodeClick,
     handleCopyCode,

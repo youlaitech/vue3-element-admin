@@ -49,7 +49,7 @@
       <div class="page-table-wrapper">
         <el-table
           ref="tableRef"
-          v-loading="loading"
+          v-loading="listLoading"
           class="page-table"
           border
           row-key="id"
@@ -168,6 +168,7 @@
               </el-button>
               <el-button
                 v-hasPerm="['sys:menu:delete']"
+                :loading="deletingId === scope.row.id"
                 type="danger"
                 link
                 size="small"
@@ -501,7 +502,7 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" :loading="loading" @click="handleSubmit">确定</el-button>
+          <el-button type="primary" :loading="saving" @click="handleSubmit">确定</el-button>
           <el-button @click="closeDialog">取消</el-button>
         </div>
       </template>
@@ -533,7 +534,7 @@ import {
 } from "@element-plus/icons-vue";
 
 import MenuAPI from "@/api/system/menu";
-import type { MenuForm, MenuItem, MenuQueryParams } from "@/api/system/menu";
+import type { MenuForm, MenuItem, MenuQuery } from "@/api/system/menu";
 import type { OptionItem } from "@/api/common";
 import {
   filterPageComponent,
@@ -555,10 +556,14 @@ defineOptions({
   inheritAttrs: false,
 });
 
-/** 外链打开方式 */
+/**
+ * 外链打开方式
+ */
 type ExternalMode = "blank" | "iframe";
 
-/** 菜单类型选项 */
+/**
+ * 菜单类型选项
+ */
 interface MenuTypeOption {
   value: MenuTypeEnum;
   label: string;
@@ -580,23 +585,26 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 const queryFormRef = ref<FormInstance>();
 const menuFormRef = ref<FormInstance>();
 
-const loading = ref(false);
+const listLoading = ref(false);
+const saving = ref(false);
+const deletingId = ref<string | null>(null);
+let listSequence = 0;
 const list = ref<MenuItem[]>([]);
 const tableRef = ref<TableInstance>();
 // 是否展开全部菜单层级，默认折叠只显示顶级菜单
 const expandAll = ref(false);
-const queryParams = reactive<MenuQueryParams>({ keywords: "" });
+const queryParams = reactive<MenuQuery>({ keywords: "" });
 
 const dialogState = reactive({
   title: "新增菜单",
   visible: false,
 });
 
-// AI 推断状态与结果提示
 const aiLoading = ref(false);
+let aiSequence = 0;
 const aiFilledTip = ref("");
-// AI 推断前的字段值，供撤销恢复
-let aiSnapshot: { routePath?: string; perm?: string; icon?: string } | null = null;
+// AI 推断前的字段值，供撤销恢复；字段集合与 AI 实际会写入的字段一致
+let aiSnapshot: Pick<MenuForm, "routePath" | "routeName" | "perm" | "icon"> | null = null;
 
 // 同级页面已有按钮的权限模块名，用于推导按钮权限前缀
 const siblingPermModule = ref("");
@@ -697,9 +705,7 @@ const parentOptionProps = computed(() => ({
     if (isMenuInSubtree(findMenuById(parentMenuTree.value, formData.id), data.value)) {
       return true;
     }
-    /**
-     * 按钮挂页面下，其余类型挂目录或顶级；顶级不在菜单树里，取不到节点
-     */
+    // 按钮挂页面下，其余类型挂目录或顶级；顶级不在菜单树里，取不到节点
     const target = findMenuById(parentMenuTree.value, data.value);
     return formData.type === MenuTypeEnum.BUTTON
       ? target?.type !== MenuTypeEnum.MENU
@@ -875,30 +881,33 @@ const rules: FormRules<MenuForm> = {
  * 拉取菜单列表数据（一次性返回全量树）
  */
 async function fetchData(): Promise<void> {
-  loading.value = true;
+  const sequence = ++listSequence;
+  listLoading.value = true;
   try {
-    list.value = await MenuAPI.getList(queryParams);
+    const data = await MenuAPI.getList({ ...queryParams });
+    if (sequence !== listSequence) return;
+    list.value = data;
     // 表格渲染出树节点后再应用展开状态
     await nextTick();
-    applyExpansion();
+    if (sequence === listSequence) applyExpansion();
   } finally {
-    loading.value = false;
+    if (sequence === listSequence) listLoading.value = false;
   }
 }
 
 /**
  * 按当前筛选条件重新查询
  */
-function handleQuery(): void {
-  fetchData();
+function handleQuery(): Promise<void> {
+  return fetchData();
 }
 
 /**
  * 重置搜索表单后重新查询
  */
-function handleResetQuery(): void {
+function handleResetQuery(): Promise<void> {
   queryFormRef.value?.resetFields();
-  fetchData();
+  return fetchData();
 }
 
 /**
@@ -1196,18 +1205,27 @@ function handleTypeChange(): void {
  * AI 推断访问路径与权限标识
  */
 async function handleAiFill(): Promise<void> {
+  if (aiLoading.value) return;
   const name = formData.name?.trim();
   if (!name) return;
 
   aiLoading.value = true;
-  // 记录推断前的值，供撤销恢复
-  aiSnapshot = { routePath: formData.routePath, perm: formData.perm, icon: formData.icon };
+  // 关闭、清空或切换类型会递增序号，使旧推断结果失效。
+  const sequence = ++aiSequence;
+  // 记录推断前的值，供撤销恢复；AI 会写入的全部字段都要进快照
+  aiSnapshot = {
+    routePath: formData.routePath,
+    routeName: formData.routeName,
+    perm: formData.perm,
+    icon: formData.icon,
+  };
   try {
     const result = await MenuAPI.aiFill({
       name,
       type: formData.type,
       parentId: formData.parentId,
     });
+    if (sequence !== aiSequence || !dialogState.visible) return;
 
     // 只回填当前类型实际使用的字段：按钮只认权限标识，目录与页面补访问路径与图标
     const filled: string[] = [];
@@ -1244,9 +1262,9 @@ async function handleAiFill(): Promise<void> {
     nextTick(() => menuFormRef.value?.clearValidate(["routePath", "perm"]));
   } catch {
     // 业务异常已由请求拦截器统一提示后端 message（含 AI 未开启的具体原因）
-    clearAiFill();
+    if (sequence === aiSequence) clearAiFill();
   } finally {
-    aiLoading.value = false;
+    if (sequence === aiSequence) aiLoading.value = false;
   }
 }
 
@@ -1257,6 +1275,7 @@ function handleAiUndo(): void {
   if (!aiSnapshot) return;
 
   formData.routePath = aiSnapshot.routePath;
+  formData.routeName = aiSnapshot.routeName;
   formData.perm = aiSnapshot.perm;
   formData.icon = aiSnapshot.icon;
   clearAiFill();
@@ -1268,6 +1287,8 @@ function handleAiUndo(): void {
  * 清空 AI 推断结果与快照
  */
 function clearAiFill(): void {
+  aiSequence += 1;
+  aiLoading.value = false;
   aiSnapshot = null;
   aiFilledTip.value = "";
 }
@@ -1384,6 +1405,7 @@ function normalizeMenuPayload(): MenuForm {
  * 校验并提交菜单表单
  */
 async function handleSubmit(): Promise<void> {
+  if (saving.value) return;
   const valid = await menuFormRef.value?.validate().then(
     () => true,
     () => false
@@ -1398,7 +1420,7 @@ async function handleSubmit(): Promise<void> {
   }
 
   const payload = normalizeMenuPayload();
-  loading.value = true;
+  saving.value = true;
   try {
     if (menuId) {
       await MenuAPI.update(menuId, payload);
@@ -1408,10 +1430,9 @@ async function handleSubmit(): Promise<void> {
       ElMessage.success("新增成功");
     }
     closeDialog();
-    fetchData();
-    refreshUserRoutes();
+    await Promise.all([fetchData(), refreshUserRoutes()]);
   } finally {
-    loading.value = false;
+    saving.value = false;
   }
 }
 
@@ -1421,6 +1442,7 @@ async function handleSubmit(): Promise<void> {
  * @param menuId 菜单 ID
  */
 async function handleDelete(menuId: string): Promise<void> {
+  if (deletingId.value !== null) return;
   const menu = findMenuById(list.value, menuId);
   if (!menu) return;
 
@@ -1437,14 +1459,13 @@ async function handleDelete(menuId: string): Promise<void> {
     return;
   }
 
-  loading.value = true;
+  deletingId.value = menuId;
   try {
     await MenuAPI.deleteById(menuId);
     ElMessage.success("删除成功");
-    fetchData();
-    refreshUserRoutes();
+    await Promise.all([fetchData(), refreshUserRoutes()]);
   } finally {
-    loading.value = false;
+    deletingId.value = null;
   }
 }
 

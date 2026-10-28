@@ -149,7 +149,11 @@
                     <span class="i-svg:scan login-card__alt-icon" />
                     扫码登录
                   </button>
-                  <button class="login-card__alt-btn">
+                  <button
+                    v-if="appConfig.oidcEnabled"
+                    class="login-card__alt-btn"
+                    @click="startOidcLogin"
+                  >
                     <span class="i-svg:security login-card__alt-icon" />
                     统一认证
                   </button>
@@ -177,7 +181,7 @@ defineOptions({ name: "LoginPage", inheritAttrs: false });
 
 import { Clock, Lock, Loading, Refresh, User } from "@element-plus/icons-vue";
 import type { FormInstance } from "element-plus";
-import AuthAPI from "@/api/auth";
+import AuthAPI, { OIDC_AUTHORIZATION_URL } from "@/api/auth";
 import type { LoginRequest } from "@/api/auth";
 import router from "@/router";
 import { useUserStore } from "@/stores";
@@ -287,7 +291,16 @@ function showForm(type: "resetPwd") {
   component.value = type;
 }
 
-onMounted(() => getCaptcha());
+/**
+ * 跳转认证中心开始 OIDC 登录。
+ */
+function startOidcLogin() {
+  window.location.href = OIDC_AUTHORIZATION_URL;
+}
+
+onMounted(() => {
+  getCaptcha();
+});
 </script>
 
 <style lang="scss" scoped>

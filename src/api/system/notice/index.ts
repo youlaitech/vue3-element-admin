@@ -1,16 +1,25 @@
 import request from "@/utils/request";
-import type { NoticeQueryParams, NoticeForm, NoticeItem, NoticeDetail } from "./types";
+import type { NoticeQuery, NoticeForm, NoticeItem, NoticeDetail } from "./types";
 import type { PageResult } from "@/api/common";
 
 const NOTICE_BASE_URL = "/api/v1/notices";
 
 const NoticeAPI = {
   /**
+   * 管理端预览，不改变阅读状态。
+   */
+  getPreview(id: string) {
+    return request<unknown, NoticeDetail>({
+      url: `${NOTICE_BASE_URL}/${id}/preview`,
+      method: "get",
+    });
+  },
+  /**
    * 获取通知公告分页数据
    */
-  getPage(queryParams?: NoticeQueryParams) {
+  getPage(queryParams?: NoticeQuery) {
     return request<unknown, PageResult<NoticeItem>>({
-      url: `${NOTICE_BASE_URL}`,
+      url: NOTICE_BASE_URL,
       method: "get",
       params: queryParams,
     });
@@ -25,7 +34,7 @@ const NoticeAPI = {
    * 添加通知公告
    */
   create(data: NoticeForm) {
-    return request({ url: `${NOTICE_BASE_URL}`, method: "post", data });
+    return request({ url: NOTICE_BASE_URL, method: "post", data });
   },
   /**
    * 更新通知公告
@@ -69,7 +78,7 @@ const NoticeAPI = {
   /**
    * 获取我的通知分页列表
    */
-  getMyNoticePage(queryParams?: NoticeQueryParams) {
+  getMyNoticePage(queryParams?: NoticeQuery) {
     return request<unknown, PageResult<NoticeItem>>({
       url: `${NOTICE_BASE_URL}/my`,
       method: "get",
@@ -80,5 +89,4 @@ const NoticeAPI = {
 
 export default NoticeAPI;
 
-// 重导出类型
 export * from "./types";

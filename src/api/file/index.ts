@@ -5,11 +5,12 @@ const FileAPI = {
   /**
    * 上传文件 （传入 FormData，上传进度回调）
    */
-  upload(formData: FormData, onProgress?: (percent: number) => void) {
+  upload(formData: FormData, onProgress?: (percent: number) => void, signal?: AbortSignal) {
     return request<unknown, FileInfo>({
       url: "/api/v1/files",
       method: "post",
       data: formData,
+      signal,
       headers: { "Content-Type": "multipart/form-data" },
       onUploadProgress: (progressEvent) => {
         if (progressEvent.total) {

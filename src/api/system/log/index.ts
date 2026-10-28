@@ -1,8 +1,8 @@
 import request from "@/utils/request";
 import type {
-  LogQueryParams,
+  LogQuery,
   LogItem,
-  VisitTrendQueryParams,
+  VisitTrendQuery,
   VisitTrendDetail,
   VisitOverviewDetail,
 } from "./types";
@@ -14,9 +14,9 @@ const LogAPI = {
   /**
    * 获取日志分页列表
    */
-  getPage(queryParams: LogQueryParams) {
+  getPage(queryParams: LogQuery) {
     return request<unknown, PageResult<LogItem>>({
-      url: `${LOG_BASE_URL}`,
+      url: LOG_BASE_URL,
       method: "get",
       params: queryParams,
     });
@@ -25,7 +25,7 @@ const LogAPI = {
   /**
    * 获取访问趋势统计
    */
-  getVisitTrend(queryParams: VisitTrendQueryParams) {
+  getVisitTrend(queryParams: VisitTrendQuery) {
     return request<unknown, VisitTrendDetail>({
       url: `${LOG_BASE_URL}/analytics/trend`,
       method: "get",
@@ -46,5 +46,4 @@ const LogAPI = {
 
 export default LogAPI;
 
-// 重导出类型
 export * from "./types";

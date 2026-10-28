@@ -21,6 +21,9 @@ export interface DirectionalTagsViewResult {
   visitedViews: TagView[];
 }
 
+/**
+ * 维护已访问页签和缓存视图。
+ */
 export const useTagsViewStore = defineStore("tagsView", () => {
   const visitedViews = ref<TagView[]>([]);
   const cachedViews = ref<string[]>([]);
@@ -51,12 +54,11 @@ export const useTagsViewStore = defineStore("tagsView", () => {
    * 添加缓存视图到缓存视图列表中
    */
   function addCachedView({ fullPath, keepAlive }: TagView) {
-    // 如果缓存视图名称已经存在于缓存视图列表中，则不再添加
+    // 以 fullPath 区分同一路径下的不同查询参数。
     if (cachedViews.value.includes(fullPath)) {
       return;
     }
 
-    // 如果视图需要缓存（keepAlive），则将其路由名称添加到缓存视图列表中
     if (keepAlive) {
       cachedViews.value.push(fullPath);
     }
@@ -137,7 +139,8 @@ export const useTagsViewStore = defineStore("tagsView", () => {
    *
    * @param fullPath 路径
    * @param title 标签名称
-   */ function updateTagName(fullPath: string, title: string) {
+   */
+  function updateTagName(fullPath: string, title: string) {
     const tag = visitedViews.value.find((tag: TagView) => tag.fullPath === fullPath);
 
     if (tag) {

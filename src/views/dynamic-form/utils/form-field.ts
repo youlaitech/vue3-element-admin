@@ -18,6 +18,9 @@ export interface FormFieldMeta {
  */
 export function extractFields(rules: unknown): FormFieldMeta[] {
   const result: FormFieldMeta[] = [];
+  /**
+   * 递归收集表单规则中的字段。
+   */
   const walk = (nodes: unknown[]): void => {
     nodes.forEach((node) => {
       if (!node || typeof node !== "object") return;
@@ -61,7 +64,10 @@ export function extractOptionMap(options: unknown): Map<string, string> {
  */
 export function parseDataJson(dataJson?: string): Record<string, unknown> {
   try {
-    return dataJson ? (JSON.parse(dataJson) as Record<string, unknown>) : {};
+    const value: unknown = dataJson ? JSON.parse(dataJson) : undefined;
+    return value !== null && typeof value === "object" && !Array.isArray(value)
+      ? (value as Record<string, unknown>)
+      : {};
   } catch {
     return {};
   }

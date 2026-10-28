@@ -5,7 +5,7 @@
 </template>
 <script setup lang="ts">
 import type { EChartsOption } from "echarts";
-import { EChartsType } from "echarts/core";
+import type { EChartsType } from "echarts/core";
 import { useTemplateRef } from "vue";
 import { useKeepTicking } from "../composables/useKeepTicking";
 

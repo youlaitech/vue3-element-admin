@@ -3,7 +3,7 @@
     <!-- 适配屏幕容器：按 1920×1080 设计稿等比缩放 -->
     <div v-fit-screen pt-10px flex flex-col>
       <!-- 头部区域 -->
-      <Cephalosome />
+      <DataScreenHeader />
 
       <!-- 图表区域 -->
       <div flex-1 p-10px flex gap="10px" relative>
@@ -21,19 +21,20 @@
 </template>
 
 <script lang="ts" setup>
-import { type Directive } from "vue";
+import type { Directive } from "vue";
+import DataScreenHeader from "./components/DataScreenHeader.vue";
 
 import "./assets/styles/index.scss";
 
 defineOptions({ name: "DataScreen" });
 
-/** 设计稿宽度 */
+// 设计稿宽度
 const DESIGN_WIDTH = 1920;
 
-/** 设计稿高度 */
+// 设计稿高度
 const DESIGN_HEIGHT = 1080;
 
-/** 元素与 resize 回调的映射，卸载时按引用移除监听 */
+// 元素与 resize 回调的映射，卸载时按引用移除监听
 const resizeHandlers = new WeakMap<HTMLElement, () => void>();
 
 /**
@@ -44,9 +45,7 @@ function applyScale(el: HTMLElement): void {
   el.style.transform = `scale(${scale}) translate(-50%, -50%)`;
 }
 
-/**
- * 大屏适配指令：元素固定为设计稿尺寸后等比缩放，版式不随窗口比例变形
- */
+// 大屏适配指令：元素固定为设计稿尺寸后等比缩放，版式不随窗口比例变形
 const vFitScreen: Directive<HTMLElement> = {
   mounted(el) {
     Object.assign(el.style, {

@@ -9,6 +9,11 @@ import type {
 
 const AUTH_BASE_URL = "/api/v1/auth";
 
+/**
+ * OIDC 授权入口，末段对应后端 registrationId。
+ */
+export const OIDC_AUTHORIZATION_URL = "/oauth2/authorization/youlai";
+
 const AuthAPI = {
   /**
    * 登录
@@ -45,9 +50,11 @@ const AuthAPI = {
 
   /**
    * 退出登录
+   *
+   * 统一认证登录额外返回认证中心登出地址，普通登录返回 null。
    */
   logout() {
-    return request({
+    return request<unknown, { logoutUrl: string | null }>({
       url: `${AUTH_BASE_URL}/logout`,
       method: "delete",
     });
@@ -60,6 +67,7 @@ const AuthAPI = {
     return request<unknown, LoginResult>({
       url: `${AUTH_BASE_URL}/switch-tenant`,
       method: "post",
+      silentErrorStatuses: [404, 405, 501],
       params: { tenantId },
     });
   },
@@ -71,7 +79,7 @@ const AuthAPI = {
     return request<unknown, LoginResult>({
       url: `${AUTH_BASE_URL}/refresh-token`,
       method: "post",
-      params: { refreshToken },
+      data: { refreshToken },
       anonymous: true,
     });
   },
@@ -79,7 +87,7 @@ const AuthAPI = {
   /**
    * 生成扫码登录票据
    */
-  qrGenerate(): Promise<QrCodeGenerateResult> {
+  generateQrCode(): Promise<QrCodeGenerateResult> {
     return request<unknown, QrCodeGenerateResult>({
       url: `${AUTH_BASE_URL}/qr-code/generate`,
       method: "post",
@@ -90,7 +98,7 @@ const AuthAPI = {
   /**
    * 轮询扫码登录状态
    */
-  qrStatus(ticket: string): Promise<QrCodeStatusResult> {
+  getQrCodeStatus(ticket: string): Promise<QrCodeStatusResult> {
     return request<unknown, QrCodeStatusResult>({
       url: `${AUTH_BASE_URL}/qr-code/status`,
       method: "get",
@@ -105,6 +113,18 @@ const AuthAPI = {
   qrLogin(ticket: string): Promise<LoginResult> {
     return request<unknown, LoginResult>({
       url: `${AUTH_BASE_URL}/qr-code/login`,
+      method: "post",
+      data: { ticket },
+      anonymous: true,
+    });
+  },
+
+  /**
+   * 用 OIDC 登录票据换取本地令牌。
+   */
+  exchangeOidcTicket(ticket: string): Promise<LoginResult> {
+    return request<unknown, LoginResult>({
+      url: `${AUTH_BASE_URL}/oidc/tickets/exchange`,
       method: "post",
       data: { ticket },
       anonymous: true,

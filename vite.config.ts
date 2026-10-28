@@ -1,5 +1,4 @@
 import vue from "@vitejs/plugin-vue";
-import type { PluginOption } from "vite";
 import { type ConfigEnv, type UserConfig, loadEnv, defineConfig } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
@@ -9,22 +8,33 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import { mockDevServerPlugin } from "vite-plugin-mock-dev-server";
 
 import UnoCSS from "unocss/vite";
-import { join, resolve } from "path";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { name, version } from "./package.json" with { type: "json" };
+import { resolve } from "node:path";
+import packageInfo from "./package.json" with { type: "json" };
 
 // 平台名称、版本信息
 const __APP_INFO__ = {
-  pkg: { name, version },
+  pkg: { name: packageInfo.name, version: packageInfo.version },
   buildTimestamp: Date.now(),
 };
 
 const pathSrc = resolve(import.meta.dirname, "src");
 
-export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
-  const env = loadEnv(mode, process.cwd());
+export default defineConfig(({ mode, command, isPreview }: ConfigEnv): UserConfig => {
+  const env = loadEnv(mode, import.meta.dirname, "");
+  const isDevServer = command === "serve" && !isPreview;
+  const port = Number(env.APP_PORT ?? "3000");
+  if (!Number.isInteger(port) || port < 1 || port > 65535)
+    throw new Error("APP_PORT 必须是 1–65535 的整数");
+  const proxyTarget = env.API_PROXY_TARGET;
+  if (isDevServer) {
+    if (!proxyTarget || !/^https?:\/\//.test(proxyTarget))
+      throw new Error("API_PROXY_TARGET 必须是 HTTP(S) 地址");
+    new URL(proxyTarget);
+  }
 
   return {
+    // 部署在子路径时由 .env.youlai 指定 VITE_BASE_URL，缺省用站点根路径
+    base: env.VITE_BASE_URL || "/",
     resolve: {
       alias: {
         "@": pathSrc,
@@ -38,18 +48,35 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         },
       },
     },
-    server: {
-      host: "0.0.0.0",
-      port: +env.VITE_APP_PORT,
-      open: true,
-      proxy: {
-        [env.VITE_API_BASE]: {
-          changeOrigin: true,
-          target: env.VITE_PROXY_TARGET,
-          rewrite: (path: string) => path.replace(new RegExp(`^${env.VITE_API_BASE}`), ""),
-        },
-      },
-    },
+    server: isDevServer
+      ? {
+          host: "0.0.0.0",
+          port,
+          open: true,
+          proxy: {
+            "/api/v1/realtime/ws": {
+              target: proxyTarget,
+              ws: true,
+            },
+            [env.VITE_API_BASE]: {
+              changeOrigin: true,
+              target: proxyTarget,
+              rewrite: (path: string) => path.slice(env.VITE_API_BASE.length),
+            },
+            // 保留浏览器访问地址，OIDC 回调经开发代理返回。
+            "/oauth2": {
+              changeOrigin: true,
+              xfwd: true,
+              target: proxyTarget,
+            },
+            "/login/oauth2": {
+              changeOrigin: true,
+              xfwd: true,
+              target: proxyTarget,
+            },
+          },
+        }
+      : undefined,
     plugins: [
       vue(),
       ...(env.VITE_MOCK_ENABLED === "true" ? [mockDevServerPlugin()] : []),
@@ -62,13 +89,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           // 导入 Element Plus函数，如：ElMessage, ElMessageBox 等
           ElementPlusResolver({ importStyle: "sass" }),
         ],
-        eslintrc: {
-          enabled: false,
-          filepath: "./.eslintrc-auto-import.json",
-          globalsPropValue: true,
-        },
         vueTemplate: true,
-        // 导入函数类型声明文件路径 (false:关闭自动生成)
+        // 类型声明默认不生成，新增自动导入的函数后手动打开并提交一次声明文件
         dts: false,
         // dts: "types/auto-imports.d.ts",
       }),
@@ -80,25 +102,23 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         ],
         // 指定自定义组件位置(默认:src/components)
         dirs: ["src/components", "src/**/components"],
-        // 导入组件类型声明文件路径 (false:关闭自动生成)
+        // 类型声明默认不生成，新增自动导入的组件后手动打开并提交一次声明文件
         dts: false,
-        //dts: "types/components.d.ts",
+        // dts: "types/components.d.ts",
       }),
       // 生成版本号文件
       {
         name: "dist-version",
-        closeBundle() {
-          const distDir = resolve(__dirname, "dist");
-          if (!existsSync(distDir)) {
-            mkdirSync(distDir, { recursive: true });
-          }
-          writeFileSync(
-            join(distDir, "version.json"),
-            JSON.stringify({ version: __APP_INFO__.buildTimestamp })
-          );
+        apply: "build",
+        generateBundle() {
+          this.emitFile({
+            type: "asset",
+            fileName: "version.json",
+            source: JSON.stringify({ version: __APP_INFO__.buildTimestamp }),
+          });
         },
       },
-    ] as PluginOption[],
+    ],
     // 预加载项目必需的依赖
     optimizeDeps: {
       include: [
@@ -213,37 +233,49 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     // 构建配置（Vite 8 使用 Rolldown + Oxc）
     build: {
-      chunkSizeWarningLimit: 1200, // chunk 大小警告阈值
+      // 单个 chunk 告警阈值（kB），取略高于最大 vendor 包的值
+      chunkSizeWarningLimit: 1200,
+      // 跳过 gzip 体积统计，加快构建
       reportCompressedSize: false,
-      cssMinify: "lightningcss", // Vite 8 默认使用 Lightning CSS 压缩
-      // minify 默认使用 'oxc'，压缩速度比 terser 快 30-90 倍
+      // CSS 压缩默认 Lightning CSS、JS 压缩默认 Oxc，无需显式配置
       rolldownOptions: {
-        checks: {
-          pluginTimings: false,
-        },
         output: {
-          // 用于从入口点创建的块的打包输出格式
-          entryFileNames: "js/[name].[hash].js",
-          // 用于命名代码拆分时创建的共享块的输出命名
-          chunkFileNames: "js/[name].[hash].js",
-          // 用于输出静态资源的命名
+          // 产物按 assets/、css/、img/、fonts/、media/ 分类输出；资源目录避开 nginx 已占用的 /js/ 子路径
+          entryFileNames: "assets/[name].[hash].js",
+          chunkFileNames: "assets/[name].[hash].js",
           assetFileNames: (assetInfo) => {
             const assetName = assetInfo.names[0];
+            if (!assetName) return "assets/[name].[hash][extname]";
 
-            if (!assetName) {
-              return "assets/[name].[hash][extname]";
-            }
-
-            const info = assetName.split(".");
-            let extType = info[info.length - 1];
-            if (/\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/i.test(assetName)) {
-              extType = "media";
-            } else if (/\.(png|jpe?g|gif|svg)(\?.*)?$/.test(assetName)) {
-              extType = "img";
-            } else if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(assetName)) {
-              extType = "fonts";
-            }
-            return `${extType}/[name].[hash].[ext]`;
+            const ext = assetName.split(".").pop()?.split("?")[0] ?? "";
+            if (/^(mp4|webm|ogg|mp3|wav|flac|aac)$/i.test(ext)) return `media/[name].[hash].[ext]`;
+            if (/^(png|jpe?g|gif|svg|webp|avif)$/i.test(ext)) return `img/[name].[hash].[ext]`;
+            if (/^(woff2?|eot|ttf|otf)$/i.test(ext)) return `fonts/[name].[hash].[ext]`;
+            return `${ext}/[name].[hash].[ext]`;
+          },
+          codeSplitting: {
+            groups: [
+              // 框架核心，每个页面都依赖
+              {
+                name: "vendor-vue",
+                test: /node_modules[\\/](vue|@vue|vue-router|pinia|vue-i18n|@vueuse)[\\/]/,
+              },
+              // 图表：大屏与报表页共用
+              {
+                name: "vendor-echarts",
+                test: /node_modules[\\/](echarts|zrender)[\\/]/,
+              },
+              // vxe 表格体系
+              {
+                name: "vendor-table",
+                test: /node_modules[\\/](vxe-table|vxe-pc-ui|xe-utils|@vxe-ui)[\\/]/,
+              },
+              // 流程设计器：仅工作流页面加载
+              {
+                name: "vendor-bpmn",
+                test: /node_modules[\\/](bpmn-js|diagram-js|bpmn-moddle|moddle|moddle-xml)[\\/]/,
+              },
+            ],
           },
         },
       },

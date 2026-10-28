@@ -5,7 +5,9 @@
 <script setup lang="ts">
 import Viewer from "bpmn-js/lib/NavigatedViewer";
 
-/** 画布服务调用子集（diagram-js Canvas，pnpm 严格模式下不可直接引用其类型） */
+/**
+ * 缩放与节点高亮所需的画布服务接口。
+ */
 interface CanvasLike {
   zoom(scale: number | "fit-viewport"): number;
   addMarker(id: string, marker: string): void;
@@ -17,9 +19,7 @@ defineOptions({
 });
 
 /**
- * BPMN 流程图查看器
- * 渲染 BPMN XML 并按节点状态高亮：已办节点标记走过路径、
- * 进行中节点标记当前待办；缩放平移由 NavigatedViewer 自带滚轮/空格拖拽支持
+ * BPMN 流程图与节点高亮数据。
  */
 const props = defineProps<{
   /** BPMN 2.0 XML */

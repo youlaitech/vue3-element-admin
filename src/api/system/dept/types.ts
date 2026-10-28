@@ -1,9 +1,7 @@
-// Dept 部门类型定义
-
 /**
  * 部门查询参数
  */
-export interface DeptQueryParams {
+export interface DeptQuery {
   /** 搜索关键字 */
   keywords?: string;
   /** 状态 */

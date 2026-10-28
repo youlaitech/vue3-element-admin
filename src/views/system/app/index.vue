@@ -225,7 +225,7 @@ import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "elem
 import { FullScreen, Refresh } from "@element-plus/icons-vue";
 import { usePageTable, useTableSelection } from "@/composables";
 import AppAPI from "@/api/system/app";
-import type { AppItem, AppForm, AppQueryParams, AppPlatform } from "@/api/system/app";
+import type { AppItem, AppForm, AppQuery, AppPlatform } from "@/api/system/app";
 import { CommonStatus } from "@/enums";
 
 defineOptions({
@@ -269,7 +269,7 @@ const initialFormData: AppForm = {
 // 应用表格数据
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   AppItem,
-  AppQueryParams
+  AppQuery
 >({
   initialParams: {
     pageNum: 1,

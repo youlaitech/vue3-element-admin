@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import "@wangeditor-next/editor/dist/css/style.css";
 import { Toolbar, Editor } from "@wangeditor-next/editor-for-vue";
-import { IToolbarConfig, IEditorConfig } from "@wangeditor-next/editor";
+import type { IToolbarConfig, IEditorConfig } from "@wangeditor-next/editor";
 
 // 文件上传 API
 import FileAPI from "@/api/file";
@@ -52,9 +52,7 @@ defineProps({
     default: "500px",
   },
 });
-/**
- * 双向绑定 - 直接使用 v-model，无需手动 setHtml
- */
+// 双向绑定 - 直接使用 v-model，无需手动 setHtml
 const modelValue = defineModel<string>({
   type: String,
   required: false,
@@ -75,6 +73,9 @@ const editorConfig: Partial<IEditorConfig> = {
   placeholder: "请输入内容..",
   MENU_CONF: {
     uploadImage: {
+      /**
+       * 上传编辑器图片并插入返回的文件地址。
+       */
       async customUpload(file: File, insertFn: InsertFnType) {
         const data = await FileAPI.uploadFile(file);
         insertFn(data.url, data.name, data.url);

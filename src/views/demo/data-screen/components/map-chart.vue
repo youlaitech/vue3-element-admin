@@ -6,8 +6,8 @@
 <script lang="ts" setup>
 import chinaGeoJSON from "../assets/chinaGeoJSON.json";
 
-import getSeriesData from "../utils/seriesData";
-import { EChartsOption } from "echarts";
+import getSeriesData from "../utils/series-data";
+import type { EChartsOption } from "echarts";
 import { useTemplateRef } from "vue";
 import { useKeepTicking } from "../composables/useKeepTicking";
 

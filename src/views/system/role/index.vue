@@ -26,12 +26,26 @@
               v-for="row in list"
               :key="row.id"
               class="role-list__item"
-              :class="{ 'is-active': row.id === currentRole?.id }"
+              :class="{
+                'is-active': row.id === currentRole?.id,
+                'is-disabled': row.status === 0,
+              }"
               @click="handleRoleClick(row)"
             >
               <div class="role-list__info">
-                <span class="role-list__name" :title="row.name">{{ row.name }}</span>
-                <span class="role-list__code" :title="row.code">{{ row.code }}</span>
+                <span class="role-list__title">
+                  <span
+                    class="role-list__dot"
+                    :class="{ 'is-stopped': row.status !== CommonStatus.ENABLED }"
+                  />
+                  <span class="role-list__name" :title="row.name">{{ row.name }}</span>
+                </span>
+                <span class="role-list__meta">
+                  <span class="role-list__code" :title="row.code">{{ row.code }}</span>
+                  <span v-if="row.status !== CommonStatus.ENABLED" class="role-list__stopped">
+                    停用
+                  </span>
+                </span>
               </div>
               <div v-if="row.code !== ROLE_ROOT" class="role-list__actions">
                 <el-button
@@ -200,7 +214,7 @@
         </div>
       </el-card>
 
-      <el-card v-else class="page-content role-page__empty" shadow="never">
+      <el-card v-else class="page-content" shadow="never">
         <el-empty description="请先在左侧选择角色" />
       </el-card>
     </div>
@@ -290,7 +304,7 @@ import {
 } from "@element-plus/icons-vue";
 
 import RoleAPI from "@/api/system/role";
-import type { RoleForm, RoleItem, RoleQueryParams } from "@/api/system/role";
+import type { RoleForm, RoleItem, RoleQuery } from "@/api/system/role";
 import MenuAPI from "@/api/system/menu";
 import type { MenuItem } from "@/api/system/menu";
 import DeptAPI from "@/api/system/dept";
@@ -303,20 +317,6 @@ defineOptions({
   name: "Role",
   inheritAttrs: false,
 });
-
-/** 权限表格行，按钮权限挂在所属菜单行的 buttons 上而不单独成行 */
-interface PermRow {
-  /** 节点 ID */
-  id: string;
-  /** 节点名称 */
-  name: string;
-  /** 是否为目录分组行 */
-  group: boolean;
-  /** 层级，仅用于缩进 */
-  depth: number;
-  /** 行内展示的按钮权限 */
-  buttons: PermRow[];
-}
 
 // 左侧角色列表折叠状态
 const sidebarCollapsed = ref(false);
@@ -337,7 +337,7 @@ const dataScopeOptions = [
 ];
 
 // 左侧角色列表分页数据管理
-const { loading, list, total, params, fetchData } = usePageTable<RoleItem, RoleQueryParams>({
+const { loading, list, total, params, fetchData } = usePageTable<RoleItem, RoleQuery>({
   initialParams: {
     pageNum: 1,
     pageSize: 20,
@@ -351,37 +351,25 @@ const currentRole = ref<RoleItem>();
 // 当前选中角色是否为超级管理员：权限固定为全部，不允许编辑与分配
 const isRootRole = computed(() => currentRole.value?.code === ROLE_ROOT);
 
-// 权限表格数据与勾选状态
-const permRows = ref<PermRow[]>([]);
-const checkedIds = ref(new Set<string>());
-const permLoading = ref(false);
-const saving = ref(false);
-const permKeywords = ref("");
-
-/** 勾选模式：父子联动 / 节点独立 */
-type CheckMode = "linked" | "independent";
-
-const CHECK_MODE_OPTIONS: { value: CheckMode; label: string }[] = [
-  { value: "linked", label: "父子联动" },
-  { value: "independent", label: "节点独立" },
-];
-
-const checkMode = ref<CheckMode>("linked");
-
-// 折叠的目录 ID，折叠后其下菜单行不展示
-const collapsedIds = ref(new Set<string>());
-
-// 节点祖先链，勾选子级时用于回填父级
-const nodeParents = new Map<string, string[]>();
-// 节点及其全部后代的 ID
-const nodeFamilies = new Map<string, string[]>();
-
-// 菜单树只请求一次，切换角色时复用
-let menuTreeLoaded = false;
+/**
+ * 权限表格行，按钮权限挂在所属菜单行的 buttons 上而不单独成行
+ */
+interface PermRow {
+  /** 节点 ID */
+  id: string;
+  /** 节点名称 */
+  name: string;
+  /** 是否为目录分组行 */
+  group: boolean;
+  /** 层级，仅用于缩进 */
+  depth: number;
+  /** 行内展示的按钮权限 */
+  buttons: PermRow[];
+}
 
 /**
  * 整理菜单层级
- * 后端返回的可能是树，也可能是扁平列表，扁平数据按 parentId 就地组装成树
+ * 后端返回的可能是树，也可能是扁平列表，扁平数据按 parentId 复制节点后组装成树
  *
  * @param list 菜单列表
  * @returns 顶层菜单列表
@@ -406,56 +394,93 @@ function normalizeMenuTree(list: MenuItem[]): MenuItem[] {
 }
 
 /**
- * 菜单树转权限表格行
- * 目录节点占一行做分组标题，菜单节点占一行并把它下面的按钮权限摊到行内
- *
- * @param nodes 菜单节点列表
- * @param depth 当前层级
- * @param ancestors 祖先 ID 链
- * @returns 权限表格行列表
+ * 一次返回行与索引；后代集合包含节点自身，重建不会保留旧索引。
  */
-function buildPermRows(nodes: MenuItem[], depth = 0, ancestors: string[] = []): PermRow[] {
-  const rows: PermRow[] = [];
+function buildPermissionModel(nodes: MenuItem[]) {
+  const ancestorsById = new Map<string, string[]>();
+  const descendantIdsById = new Map<string, string[]>();
 
-  nodes.forEach((node) => {
-    const id = String(node.id);
-    const children = node.children ?? [];
-    const subMenus = children.filter((child) => child.type !== "B");
-    const buttons: PermRow[] = children
-      .filter((child) => child.type === "B")
-      .map((child) => ({
-        id: String(child.id),
-        name: child.name ?? "",
-        group: false,
-        depth: depth + 1,
-        buttons: [],
-      }));
+  /**
+   * 按菜单层级构建权限表格行。
+   */
+  function buildRows(nodes: MenuItem[], depth = 0, ancestors: string[] = []): PermRow[] {
+    const rows: PermRow[] = [];
 
-    rows.push({
-      id,
-      name: node.name ?? "",
-      group: subMenus.length > 0,
-      depth,
-      buttons,
+    nodes.forEach((node) => {
+      const id = String(node.id);
+      const children = node.children ?? [];
+      const subMenus = children.filter((child) => child.type !== "B");
+      const buttons: PermRow[] = children
+        .filter((child) => child.type === "B")
+        .map((child) => ({
+          id: String(child.id),
+          name: child.name ?? "",
+          group: false,
+          depth: depth + 1,
+          buttons: [],
+        }));
+
+      rows.push({
+        id,
+        name: node.name ?? "",
+        group: subMenus.length > 0,
+        depth,
+        buttons,
+      });
+      buttons.forEach((btn) => {
+        ancestorsById.set(btn.id, [...ancestors, id]);
+        descendantIdsById.set(btn.id, [btn.id]);
+      });
+
+      const childRows = buildRows(subMenus, depth + 1, [...ancestors, id]);
+      rows.push(...childRows);
+
+      ancestorsById.set(id, ancestors);
+      descendantIdsById.set(id, [
+        ...new Set([
+          id,
+          ...buttons.map((btn) => btn.id),
+          ...childRows.flatMap((row) => descendantIdsById.get(row.id) ?? []),
+        ]),
+      ]);
     });
-    buttons.forEach((btn) => {
-      nodeParents.set(btn.id, [...ancestors, id]);
-      nodeFamilies.set(btn.id, [btn.id]);
-    });
 
-    const childRows = buildPermRows(subMenus, depth + 1, [...ancestors, id]);
-    rows.push(...childRows);
+    return rows;
+  }
 
-    nodeParents.set(id, ancestors);
-    nodeFamilies.set(id, [
-      id,
-      ...buttons.map((btn) => btn.id),
-      ...childRows.flatMap((row) => nodeFamilies.get(row.id) ?? []),
-    ]);
-  });
-
-  return rows;
+  const rows = buildRows(normalizeMenuTree(nodes));
+  return { rows, ancestorsById, descendantIdsById };
 }
+
+// 权限表格数据与勾选状态
+const permRows = ref<PermRow[]>([]);
+const checkedIds = ref(new Set<string>());
+const permLoading = ref(false);
+const saving = ref(false);
+const permKeywords = ref("");
+
+/**
+ * 勾选模式：父子联动 / 节点独立
+ */
+type CheckMode = "linked" | "independent";
+
+const CHECK_MODE_OPTIONS: { value: CheckMode; label: string }[] = [
+  { value: "linked", label: "父子联动" },
+  { value: "independent", label: "节点独立" },
+];
+
+const checkMode = ref<CheckMode>("linked");
+
+// 折叠的目录 ID，折叠后其下菜单行不展示
+const collapsedIds = ref(new Set<string>());
+
+// 节点祖先链，勾选子级时用于回填父级
+let ancestorsById = new Map<string, string[]>();
+// 节点及其全部后代的 ID
+let descendantIdsById = new Map<string, string[]>();
+
+// 菜单树只请求一次，切换角色时复用
+let menuTreeLoaded = false;
 
 /**
  * 按关键字过滤权限行
@@ -553,7 +578,10 @@ async function loadMenuTree(): Promise<void> {
   if (menuTreeLoaded) return;
 
   const menuList = await MenuAPI.getList({});
-  permRows.value = buildPermRows(normalizeMenuTree(menuList));
+  const model = buildPermissionModel(menuList);
+  permRows.value = model.rows;
+  ancestorsById = model.ancestorsById;
+  descendantIdsById = model.descendantIdsById;
   menuTreeLoaded = true;
 }
 
@@ -648,9 +676,9 @@ function handleNodeCheck(nodeId: string, checked: boolean | string | number): vo
     return;
   }
 
-  const family = nodeFamilies.get(nodeId) ?? [nodeId];
+  const family = descendantIdsById.get(nodeId) ?? [nodeId];
   if (isChecked) {
-    [...family, ...(nodeParents.get(nodeId) ?? [])].forEach((id) => checkedIds.value.add(id));
+    [...family, ...(ancestorsById.get(nodeId) ?? [])].forEach((id) => checkedIds.value.add(id));
   } else {
     family.forEach((id) => checkedIds.value.delete(id));
   }
@@ -861,11 +889,6 @@ onMounted(() => {
   --page-aside-width: 280px;
 }
 
-.role-page__empty {
-  align-items: center;
-  justify-content: center;
-}
-
 .role-list {
   display: flex;
   flex-direction: column;
@@ -879,6 +902,7 @@ onMounted(() => {
   }
 
   &__item {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -894,6 +918,17 @@ onMounted(() => {
     &.is-active {
       background-color: var(--el-color-primary-light-9);
     }
+
+    &.is-active::before {
+      position: absolute;
+      top: 6px;
+      bottom: 6px;
+      left: 0;
+      width: 2px;
+      content: "";
+      background-color: var(--el-color-primary);
+      border-radius: 1px;
+    }
   }
 
   &__info {
@@ -904,13 +939,41 @@ onMounted(() => {
     line-height: 1.35;
   }
 
+  &__title {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    min-width: 0;
+  }
+
   &__name {
+    flex: 0 1 auto;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 14px;
     font-weight: 600;
     color: var(--el-text-color-primary);
     white-space: nowrap;
+  }
+
+  &__dot {
+    flex: 0 0 auto;
+    width: 6px;
+    height: 6px;
+    background-color: var(--el-color-success);
+    border-radius: 50%;
+
+    &.is-stopped {
+      background-color: var(--el-text-color-placeholder);
+    }
+  }
+
+  &__meta {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    min-width: 0;
   }
 
   &__code {
@@ -921,8 +984,22 @@ onMounted(() => {
     white-space: nowrap;
   }
 
+  &__stopped {
+    flex-shrink: 0;
+    padding: 0 4px;
+    font-size: 11px;
+    line-height: 16px;
+    color: var(--el-color-warning);
+    background-color: var(--el-color-warning-light-9);
+    border-radius: 3px;
+  }
+
   &__item.is-active &__name {
     color: var(--el-color-primary);
+  }
+
+  &__item.is-disabled:not(.is-active) &__name {
+    color: var(--el-text-color-secondary);
   }
 
   &__actions {

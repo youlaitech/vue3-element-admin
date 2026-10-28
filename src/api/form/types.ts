@@ -1,11 +1,9 @@
-// Form 动态表单类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery } from "@/api/common";
 
 /**
  * 表单定义分页查询参数
  */
-export interface FormDefinitionQueryParams extends BaseQueryParams {
+export interface FormDefinitionQuery extends PageQuery {
   /** 搜索关键字（表单名称/标识） */
   keywords?: string;
   /** 状态(0 草稿 1 已发布 -1 已停用) */
@@ -41,7 +39,7 @@ export interface FormDefinitionItem {
 /**
  * 表单定义表单对象
  */
-export interface FormDefinitionData {
+export interface FormDefinitionForm {
   /** 表单 ID */
   id?: string;
   /** 表单唯一标识（创建后不可修改） */
@@ -79,12 +77,12 @@ export interface FormRenderData {
 /**
  * 表单数据分页查询参数
  */
-export type FormDataQueryParams = BaseQueryParams;
+export type FormSubmissionQuery = PageQuery;
 
 /**
  * 表单数据分页对象
  */
-export interface FormDataItem {
+export interface FormSubmissionItem {
   /** 数据 ID */
   id: string;
   /** 表单版本（提交时快照） */

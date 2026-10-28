@@ -129,11 +129,7 @@ import { ElMessage, ElMessageBox, type FormInstance } from "element-plus";
 import { Refresh } from "@element-plus/icons-vue";
 
 import WorkflowAPI from "@/api/workflow";
-import type {
-  InstanceStatus,
-  WorkflowInstanceItem,
-  WorkflowInstanceQueryParams,
-} from "@/api/workflow";
+import type { InstanceStatus, WorkflowInstanceItem, WorkflowInstanceQuery } from "@/api/workflow";
 import { usePageTable } from "@/composables";
 import InstanceDetailDrawer from "../../components/InstanceDetailDrawer.vue";
 
@@ -159,7 +155,7 @@ const statusOptions: Record<
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   WorkflowInstanceItem,
-  WorkflowInstanceQueryParams
+  WorkflowInstanceQuery
 >({
   initialParams: {
     pageNum: 1,

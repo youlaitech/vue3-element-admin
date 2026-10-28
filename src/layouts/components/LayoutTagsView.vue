@@ -331,7 +331,9 @@ const addCurrentTag = () => {
  */
 const openTag = (tag: TagView) => {
   if (isExternal(tag.fullPath)) {
-    window.open(tag.fullPath, "_blank", "noopener,noreferrer");
+    // 站内地址（同源）不带 noopener，新页签才能继承会话存储里的登录态
+    const sameOrigin = tag.fullPath.startsWith(`${window.location.origin}/`);
+    window.open(tag.fullPath, "_blank", sameOrigin ? undefined : "noopener,noreferrer");
     return;
   }
 

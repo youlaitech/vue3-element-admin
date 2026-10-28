@@ -1,34 +1,15 @@
-import { onMounted, onUnmounted, readonly, ref } from "vue";
-import { useSse } from "@/utils/sse";
-import { SseTopics } from "@/enums/sse";
+import { computed } from "vue";
+import { useRealtime } from "@/composables/useRealtime";
 
 /**
- * 订阅在线用户数推送，首次推送前人数为 null
+ * 读取当前节点的在线用户数和连接状态。
  */
 export function useOnlineUserCount() {
-  const onlineUserCount = ref<number | null>(null);
-
-  const { isConnected, on } = useSse();
-
-  let unsubscribe: (() => void) | null = null;
-
-  const handleOnlineUsersMessage = (count: number) => {
-    if (!Number.isFinite(count) || count < 0) return;
-    onlineUserCount.value = count;
-  };
-
-  onMounted(() => {
-    unsubscribe = on(SseTopics.ONLINE_USERS, handleOnlineUsersMessage);
-  });
-
-  onUnmounted(() => {
-    unsubscribe?.();
-    unsubscribe = null;
-    onlineUserCount.value = null;
-  });
+  const { presence, isConnected } = useRealtime();
 
   return {
-    onlineUserCount: readonly(onlineUserCount),
+    onlineUserCount: computed(() => presence.value?.onlineUsers ?? null),
+    presence,
     isConnected,
   };
 }

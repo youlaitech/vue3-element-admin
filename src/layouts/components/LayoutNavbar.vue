@@ -14,6 +14,9 @@
 <script setup lang="ts">
 import { useAppStore } from "@/stores";
 
+/**
+ * 顶部导航栏
+ */
 const props = withDefaults(
   defineProps<{
     toggleTarget?: "primary" | "secondary";

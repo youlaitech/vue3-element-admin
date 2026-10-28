@@ -4,18 +4,25 @@ import type { TenantInfo } from "@/api/system/tenant";
 import { STORAGE_KEYS } from "@/constants";
 import AuthAPI from "@/api/auth";
 import { AuthStorage } from "@/utils/auth";
+import { isAxiosError } from "axios";
 
-// 租户 Store
+/**
+ * 识别当前部署未提供的租户接口。
+ */
+function isUnsupportedEndpoint(error: unknown): boolean {
+  return isAxiosError(error) && [404, 405, 501].includes(error.response?.status ?? 0);
+}
+
+/**
+ * 管理租户选项与租户功能状态。
+ */
 export const useTenantStore = defineStore("tenant", () => {
-  // 当前租户 ID
   const currentTenantId = ref<number | null>(null);
-  // 当前租户信息
   const currentTenant = ref<TenantInfo | null>(null);
-  // 用户可访问的租户列表
   const tenantList = ref<TenantInfo[]>([]);
 
   /**
-   * 恢复租户信息 从 localStorage 恢复上次使用的租户
+   * 从本地缓存恢复租户 ID 与展示信息。
    */
   function restoreTenant() {
     const savedTenantId = localStorage.getItem(STORAGE_KEYS.TENANT_ID);
@@ -44,16 +51,14 @@ export const useTenantStore = defineStore("tenant", () => {
   }
 
   /**
-   * 加载租户
-   * 执行流程：1. 获取用户可访问的租户列表 2. 尝试获取后端当前租户 3. 如果只有一个租户，自动选中 4. 否则等待用户手动选择
-   * 此方法由路由守卫调用，仅在启用多租户时执行
-   */ async function loadTenant() {
+   * 恢复租户选择，缺失或失效时选择默认租户。
+   */
+  async function loadTenant() {
     restoreTenant();
 
-    // 1. 获取租户列表
     await fetchTenantList();
 
-    // 2. 校验本地恢复的租户是否仍然可用（避免 tenantId 不在列表导致无默认选中）
+    // 缓存中的租户已不可访问时重新选择。
     if (
       currentTenantId.value != null &&
       tenantList.value.length > 0 &&
@@ -63,9 +68,8 @@ export const useTenantStore = defineStore("tenant", () => {
       clearLocalTenant();
     }
 
-    // 3. 如果已有租户列表，则保证一定有一个默认租户被选中
     if (tenantList.value.length > 0) {
-      // 3.1 优先后端当前租户
+      // 没有本地选择时，优先使用后端当前租户。
       if (currentTenantId.value == null) {
         const currentTenantInfo = await safeGetCurrentTenant();
         if (currentTenantInfo) {
@@ -74,7 +78,7 @@ export const useTenantStore = defineStore("tenant", () => {
         }
       }
 
-      // 3.2 本地已有 tenantId，但 currentTenant 为空时，从列表补全 tenantInfo（保持展示名称一致）
+      // 本地仅保存 ID 时，从可访问列表补全展示信息。
       if (currentTenantId.value != null && !currentTenant.value) {
         const matched = tenantList.value.find((t) => t.id === currentTenantId.value);
         if (matched) {
@@ -83,7 +87,7 @@ export const useTenantStore = defineStore("tenant", () => {
         }
       }
 
-      // 3.3 兜底：默认选中第一个（即使有多个租户，也保证 TenantSwitcher 有默认选中）
+      // 本地和后端均未选择时，使用首个可访问租户。
       if (currentTenantId.value == null) {
         setCurrentTenant(tenantList.value[0]);
         console.debug("[Tenant] 默认选中第一个租户:", tenantList.value[0].name);
@@ -92,10 +96,9 @@ export const useTenantStore = defineStore("tenant", () => {
   }
 
   /**
-   * 设置当前租户
-   *
-   * @param tenant 租户信息
-   */ function setCurrentTenant(tenant: TenantInfo) {
+   * 更新当前租户并保存本地选择。
+   */
+  function setCurrentTenant(tenant: TenantInfo) {
     currentTenantId.value = tenant.id;
     currentTenant.value = tenant;
 
@@ -108,7 +111,8 @@ export const useTenantStore = defineStore("tenant", () => {
    * 切换租户
    *
    * @param tenantId 目标租户 ID
-   */ async function switchTenant(tenantId: number): Promise<void> {
+   */
+  async function switchTenant(tenantId: number): Promise<void> {
     await refreshTokenIfSupported(tenantId);
 
     const tenantInfo = await TenantAPI.switchTenant(tenantId);
@@ -151,13 +155,13 @@ export const useTenantStore = defineStore("tenant", () => {
   }
 
   /**
-   * 获取当前租户，失败返回 null
+   * 可选接口未实现时返回空，其他故障继续抛出。
    */
   async function safeGetCurrentTenant(): Promise<TenantInfo | null> {
     try {
       return await TenantAPI.getCurrentTenant();
     } catch (error) {
-      console.debug("[Tenant] 获取当前租户失败，尝试本地/默认选择:", error);
+      if (!isUnsupportedEndpoint(error)) throw error;
       return null;
     }
   }
@@ -171,8 +175,9 @@ export const useTenantStore = defineStore("tenant", () => {
       if (token?.accessToken && token?.refreshToken) {
         AuthStorage.setTokens(token.accessToken, token.refreshToken, AuthStorage.getRememberMe());
       }
-    } catch {
-      // 忽略：非平台用户或后端未启用该接口时，回退到旧接口
+    } catch (error) {
+      // 只有接口明确未实现时回退；权限、网络和服务异常继续交给调用方。
+      if (!isUnsupportedEndpoint(error)) throw error;
     }
   }
 

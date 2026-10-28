@@ -411,17 +411,6 @@ const xGridOpt = reactive<VxeGridProps<RowMeta>>({
   showOverflow: "tooltip",
   // 是否显示表尾
   showFooter: true,
-  // 表尾数据（优先级比 footerMethod 高）
-  // footerData: [
-  //   {
-  //     username: "-",
-  //     roles: "-",
-  //     phone: "-",
-  //     email: "-",
-  //     status: "启用/禁用",
-  //     createTime: "-",
-  //   },
-  // ],
   // 表尾的数据获取方法，返回一个二维数组
   footerMethod({ columns, data }) {
     return [
@@ -684,12 +673,6 @@ const xModalDom = useTemplateRef<VxeModalInstance>("xModalDom");
 const xModalOpt = reactive<VxeModalProps>({
   // 窗口的标题
   title: "",
-  // 窗口的高度
-  // height: 500,
-  // 窗口宽度
-  // width: "60%",
-  // 窗口打开时自动最大化显示
-  // fullscreen: true,
   // 标题是否标显示最大化与还原按钮
   showZoom: true,
   // 是否显示关闭按钮
@@ -698,7 +681,7 @@ const xModalOpt = reactive<VxeModalProps>({
   maskClosable: true,
   // 是否允许按 Esc 键关闭窗口
   escClosable: true,
-  // // 是否显示底部栏
+  // 是否显示底部栏
   showFooter: true,
   // 在窗口关闭时销毁内容
   destroyOnClose: false,

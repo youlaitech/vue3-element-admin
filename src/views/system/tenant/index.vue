@@ -370,15 +370,10 @@ import { FullScreen, Refresh } from "@element-plus/icons-vue";
 import TenantAPI from "@/api/system/tenant";
 import TenantPlanAPI from "@/api/system/tenant-plan";
 import MenuAPI from "@/api/system/menu";
-import type {
-  TenantCreateForm,
-  TenantForm,
-  TenantItem,
-  TenantQueryParams,
-} from "@/api/system/tenant";
+import type { TenantCreateForm, TenantForm, TenantItem, TenantQuery } from "@/api/system/tenant";
 import type { OptionItem } from "@/api/common";
 import { CommonStatus, MenuScopeEnum } from "@/enums";
-import { hasPerm } from "@/utils/auth";
+import { hasPerm } from "@/utils/permission";
 import { isPlatformTenantId } from "@/utils/tenant";
 import { usePageTable, useTableSelection } from "@/composables";
 
@@ -397,7 +392,7 @@ const menuTreeRef = ref<InstanceType<typeof ElTree>>();
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   TenantItem,
-  TenantQueryParams
+  TenantQuery
 >({
   initialParams: {
     pageNum: 1,
@@ -883,7 +878,9 @@ function closeDialog(): void {
   resetForm();
 }
 
-// 提交租户表单
+/**
+ * 校验并提交租户配置。
+ */
 const handleSubmit = useDebounceFn(async (): Promise<void> => {
   const valid = await tenantFormRef.value?.validate().then(
     () => true,

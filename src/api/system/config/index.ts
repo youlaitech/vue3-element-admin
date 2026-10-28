@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { ConfigQueryParams, ConfigForm, ConfigItem } from "./types";
+import type { ConfigQuery, ConfigForm, ConfigItem } from "./types";
 import type { PageResult } from "@/api/common";
 
 const CONFIG_BASE_URL = "/api/v1/configs";
@@ -8,9 +8,9 @@ const ConfigAPI = {
   /**
    * 获取配置分页数据
    */
-  getPage(queryParams?: ConfigQueryParams) {
+  getPage(queryParams?: ConfigQuery) {
     return request<unknown, PageResult<ConfigItem>>({
-      url: `${CONFIG_BASE_URL}`,
+      url: CONFIG_BASE_URL,
       method: "get",
       params: queryParams,
     });
@@ -28,7 +28,7 @@ const ConfigAPI = {
    * 新增配置
    */
   create(data: ConfigForm) {
-    return request({ url: `${CONFIG_BASE_URL}`, method: "post", data });
+    return request({ url: CONFIG_BASE_URL, method: "post", data });
   },
   /**
    * 修改配置
@@ -52,5 +52,4 @@ const ConfigAPI = {
 
 export default ConfigAPI;
 
-// 重导出类型
 export * from "./types";

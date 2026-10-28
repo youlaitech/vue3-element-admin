@@ -10,6 +10,9 @@
 
     // 严格性和类型检查相关配置
     "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
 

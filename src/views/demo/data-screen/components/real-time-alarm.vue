@@ -3,7 +3,7 @@
 </template>
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
-import { type EChartsOption } from "echarts";
+import type { EChartsOption } from "echarts";
 
 defineOptions({ name: "RealTimeAlarm" });
 
@@ -40,9 +40,6 @@ const options: EChartsOption = {
     axisName: {
       color: "#ffffff",
       fontSize: 14,
-      // backgroundColor: "#0175FC",
-      // padding: [5, 5, 3, 5],
-      // borderRadius: 4,
     },
     splitLine: {
       lineStyle: { color: "rgba(0, 255, 255, 0.3)" },

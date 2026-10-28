@@ -18,7 +18,6 @@ export const useAppStore = defineStore("app", () => {
   // 侧边栏持久化状态
   const sidebarStatus = useStorage(STORAGE_KEYS.SIDEBAR_STATUS, SidebarStatus.CLOSED);
 
-  // 侧边栏显示状态
   const sidebar = reactive({
     opened: sidebarStatus.value === SidebarStatus.OPENED,
     withoutAnimation: false,
@@ -35,7 +34,6 @@ export const useAppStore = defineStore("app", () => {
   // 内容区是否全屏
   const contentFullscreen = ref(false);
 
-  // Element Plus 当前语言包
   const locale = computed(() => (language?.value === "en" ? en : zhCn));
 
   /**

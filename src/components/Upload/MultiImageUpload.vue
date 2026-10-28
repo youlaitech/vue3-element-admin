@@ -15,16 +15,31 @@
     <el-icon><Plus /></el-icon>
     <template #file="{ file }">
       <div style="width: 100%">
-        <img class="el-upload-list__item-thumbnail" :src="file.url" />
+        <img
+          class="el-upload-list__item-thumbnail"
+          :src="file.url"
+          :alt="file.name || '上传图片'"
+        />
         <span class="el-upload-list__item-actions">
           <!-- 预览 -->
-          <span @click="handlePreviewImage(file.url!)">
-            <el-icon><zoom-in /></el-icon>
-          </span>
+          <button
+            type="button"
+            class="image-action"
+            aria-label="预览图片"
+            :disabled="file.status !== 'success'"
+            @click="handlePreviewImage(file.url!)"
+          >
+            <el-icon aria-hidden="true"><ZoomIn /></el-icon>
+          </button>
           <!-- 删除 -->
-          <span @click="handleRemove(file.url!)">
-            <el-icon><Delete /></el-icon>
-          </span>
+          <button
+            type="button"
+            class="image-action"
+            aria-label="删除图片"
+            @click="handleRemove(file)"
+          >
+            <el-icon aria-hidden="true"><Delete /></el-icon>
+          </button>
         </span>
       </div>
     </template>
@@ -39,9 +54,10 @@
   />
 </template>
 <script setup lang="ts">
-import { UploadRawFile, UploadRequestOptions, UploadUserFile } from "element-plus";
+import type { UploadRawFile, UploadRequestOptions, UploadUserFile } from "element-plus";
 import FileAPI from "@/api/file";
 import type { FileInfo } from "@/api/file";
+import { useUploadQueue } from "./useUploadQueue";
 
 /**
  * 多图上传：图片卡片列表与预览
@@ -80,30 +96,30 @@ const previewVisible = ref(false); // 是否显示预览
 const previewImageIndex = ref(0); // 预览图片的索引
 
 const modelValue = defineModel<string[]>({ default: () => [] });
-
-const fileList = ref<UploadUserFile[]>([]);
+const queue = useUploadQueue(modelValue, {
+  toFile: (url) => ({ name: url.substring(url.lastIndexOf("/") + 1), url }),
+  toValue: (file) => file.url,
+});
+const { fileList } = queue;
 
 /**
- * 删除图片
+ * 删除图片：模型与展示队列按各自条件删除，两个数组的下标不保证一致
  */
-function handleRemove(imageUrl: string) {
-  FileAPI.delete(imageUrl).then(() => {
-    const index = modelValue.value.indexOf(imageUrl);
-    if (index !== -1) {
-      // 直接修改数组避免触发整体更新
-      modelValue.value.splice(index, 1);
-      fileList.value.splice(index, 1); // 同步更新 fileList
-    }
-  });
+async function handleRemove(file: UploadUserFile): Promise<void> {
+  if (file.status !== "success") {
+    queue.cancel(file);
+    return;
+  }
+  if (!file.url) return;
+  await FileAPI.delete(file.url);
+  queue.remove(file.url);
 }
 
 /**
  * 上传前校验
  */
 function handleBeforeUpload(file: UploadRawFile) {
-  /**
-   * accept 支持 image/*、.png、image/png 三种写法，浏览器只按它过滤，还需按同样规则复核实际文件
-   */
+  // accept 支持 image/*、.png、image/png 三种写法，浏览器只按它过滤，还需按同样规则复核实际文件
   const acceptTypes = props.accept.split(",").map((type) => type.trim());
 
   const isValidType = acceptTypes.some((type) => {
@@ -132,27 +148,8 @@ function handleBeforeUpload(file: UploadRawFile) {
 /**
  * 上传文件
  */
-function handleUpload(options: UploadRequestOptions) {
-  return new Promise((resolve, reject) => {
-    const file = options.file;
-
-    const formData = new FormData();
-    formData.append(props.name, file);
-
-    // 处理附加参数
-    Object.keys(props.data).forEach((key) => {
-      formData.append(key, props.data[key]);
-    });
-
-    FileAPI.upload(formData).then(
-      (data) => {
-        resolve(data);
-      },
-      (error) => {
-        reject(error);
-      }
-    );
-  });
+function handleUpload(options: UploadRequestOptions): Promise<FileInfo> {
+  return queue.upload(options, props);
 }
 
 /**
@@ -163,29 +160,17 @@ function handleExceed() {
 }
 
 /**
- * 上传成功回调
+ * 上传成功回调：按 uid 定位任务更新结果，再显式提交新模型数组
  */
 const handleSuccess = (fileInfo: FileInfo, uploadFile: UploadUserFile) => {
-  ElMessage.success("上传成功");
-  const index = fileList.value.findIndex((file) => file.uid === uploadFile.uid);
-  if (index !== -1) {
-    fileList.value[index].url = fileInfo.url;
-    fileList.value[index].status = "success";
-    modelValue.value[index] = fileInfo.url;
-  }
+  if (queue.complete(fileInfo, uploadFile)) ElMessage.success("上传成功");
 };
 
 /**
  * 上传失败回调
  */
-const getErrorMessage = (error: unknown) =>
-  error instanceof Error ? error.message : String(error);
-
-/**
- * 上传失败时提示错误
- */
-const handleError = (error: unknown) => {
-  ElMessage.error("上传失败: " + getErrorMessage(error));
+const handleError = (_error: unknown, uploadFile: UploadUserFile) => {
+  if (queue.fail(uploadFile)) ElMessage.error("上传失败");
 };
 
 /**
@@ -202,15 +187,21 @@ const handlePreviewImage = (imageUrl: string) => {
 const handlePreviewClose = () => {
   previewVisible.value = false;
 };
-
-onMounted(() => {
-  fileList.value = modelValue.value.map((url) => ({ url }) as UploadUserFile);
-});
-
-watch(
-  () => modelValue.value,
-  (newVal) => {
-    fileList.value = newVal.map((url) => ({ url }) as UploadUserFile);
-  }
-);
 </script>
+
+<style scoped lang="scss">
+.image-action {
+  padding: 0;
+  margin: 0 8px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+
+  &:focus-visible {
+    outline: 2px solid var(--el-color-primary);
+    outline-offset: 3px;
+  }
+}
+</style>

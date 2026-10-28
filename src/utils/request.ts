@@ -1,11 +1,12 @@
-import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from "axios";
+import axios, { type AxiosResponse } from "axios";
+import type { AxiosRequestConfig } from "axios";
 import qs from "qs";
 
 import { ApiCodeEnum } from "@/enums/api";
 import { usePermissionStoreHook } from "@/stores/permission";
-import { AuthStorage } from "@/utils/auth";
 import type { ApiResult } from "@/api/common";
 import { installTokenRefresh } from "@/utils/token-refresh";
+import { readBinaryApiResult } from "@/utils/http-response";
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE,
@@ -15,50 +16,48 @@ const http = axios.create({
   paramsSerializer: (params) => qs.stringify(params, { arrayFormat: "repeat" }),
 });
 
-// 注入访问令牌
-http.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    if (!config.anonymous) {
-      const token = AuthStorage.getAccessToken();
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// 令牌续期拦截器：响应拦截器按注册顺序执行，先于业务拦截器接管 401，业务拦截器只负责业务错误的提示
+// 先注册续期拦截器，使令牌失效在业务错误提示之前处理。
 installTokenRefresh(http);
 
-// 解包业务数据
+// 拦截器保留完整响应，解包仅在下方 request 入口执行一次。
 http.interceptors.response.use(
-  (response: AxiosResponse<ApiResult>): AxiosResponse | any => {
+  async (response: AxiosResponse<ApiResult>): Promise<AxiosResponse<ApiResult>> => {
     const { responseType } = response.config;
 
-    // 二进制数据直接透传
+    // 文件接口的业务失败仍按 JSON 处理，成功时保留完整文件响应。
     if (responseType === "blob" || responseType === "arraybuffer") {
+      try {
+        const result = await readBinaryApiResult(response);
+        if (!result || result.code === ApiCodeEnum.SUCCESS) return response;
+        throw new Error(result.msg || "文件请求失败");
+      } catch (error) {
+        ElMessage.error(error instanceof Error ? error.message : "文件请求失败");
+        throw error;
+      }
+    }
+
+    const { code, msg } = response.data;
+
+    if (code === ApiCodeEnum.SUCCESS) {
       return response;
     }
 
-    const { code, data, msg } = response.data;
-
-    if (code === ApiCodeEnum.SUCCESS) {
-      return data;
-    }
-
     ElMessage.error(msg || "系统出错");
-    return Promise.reject(new Error(msg || "系统出错"));
+    throw new Error(msg || "系统出错");
   },
 
   async (error) => {
+    if (axios.isCancel(error)) return Promise.reject(error);
     // 令牌续期拦截器已终结的错误（Token Invalid 等）不再提示
     if (!axios.isAxiosError(error)) {
       return Promise.reject(error);
     }
 
     const { response } = error;
+
+    if (response && error.config?.silentErrorStatuses?.includes(response.status)) {
+      return Promise.reject(error);
+    }
 
     if (!response) {
       ElMessage.error("网络连接失败");
@@ -67,7 +66,7 @@ http.interceptors.response.use(
 
     const { code, msg } = response.data as ApiResult;
 
-    // 令牌失效：透传原始响应给续期拦截器处理，不在此提示
+    // 令牌失效已交由前面的续期拦截器处理，这里不重复提示。
     if (code === ApiCodeEnum.ACCESS_TOKEN_INVALID || code === ApiCodeEnum.REFRESH_TOKEN_INVALID) {
       return Promise.reject(error);
     }
@@ -75,14 +74,36 @@ http.interceptors.response.use(
     // 权限不足：刷新权限后再提示
     if (code === ApiCodeEnum.PERMISSION_DENIED) {
       const permissionStore = usePermissionStoreHook();
-      await permissionStore.refreshPermissions();
+      try {
+        await permissionStore.refreshPermissions();
+      } catch {
+        // 权限刷新失败不能覆盖原请求的 403。
+        return Promise.reject(error);
+      }
       ElMessage.error(msg || "权限不足");
-      return Promise.reject(new Error(msg || "权限不足"));
+      return Promise.reject(error);
     }
 
     ElMessage.error(msg || "请求失败");
-    return Promise.reject(new Error(msg || "请求失败"));
+    return Promise.reject(error);
   }
 );
 
-export default http;
+/**
+ * 二进制保留响应头，JSON 返回业务 data；Axios 泛型适配集中在此处。
+ */
+function request<T = Blob>(
+  config: AxiosRequestConfig & { responseType: "blob" }
+): Promise<AxiosResponse<T>>;
+function request<T = ArrayBuffer>(
+  config: AxiosRequestConfig & { responseType: "arraybuffer" }
+): Promise<AxiosResponse<T>>;
+function request<T = unknown, R = T>(config: AxiosRequestConfig): Promise<R>;
+async function request(config: AxiosRequestConfig): Promise<unknown> {
+  const response = await http.request<ApiResult>(config);
+  return config.responseType === "blob" || config.responseType === "arraybuffer"
+    ? response
+    : response.data.data;
+}
+
+export default request;

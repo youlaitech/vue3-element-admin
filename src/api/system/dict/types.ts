@@ -1,11 +1,9 @@
-// Dict 字典类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery } from "@/api/common";
 
 /**
  * 字典分页查询参数
  */
-export interface DictTypeQueryParams extends BaseQueryParams {
+export interface DictTypeQuery extends PageQuery {
   /** 搜索关键字 */
   keywords?: string;
   /** 状态(1:启用;0:禁用) */
@@ -45,7 +43,7 @@ export interface DictTypeForm {
 /**
  * 字典项分页查询参数
  */
-export interface DictItemQueryParams extends BaseQueryParams {
+export interface DictItemQuery extends PageQuery {
   /** 搜索关键字 */
   keywords?: string;
   /** 字典编码 */

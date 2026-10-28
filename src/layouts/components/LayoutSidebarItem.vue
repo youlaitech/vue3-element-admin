@@ -89,18 +89,17 @@ const props = defineProps({
   },
 });
 
-// 可见子路由
 const showingChildren = computed(() =>
   (props.item.children ?? []).filter((route) => !route.meta?.hidden)
 );
 
-// 叶子菜单渲染目标
-// 无可见子路由时用自身占位（path 置空，点击落在父级路径）；壳层路由（自身无标题）只有唯一子路由时下沉到该子路由，避免多出一层无标题分组
 const leafMenu = computed<RouteRecordRaw | undefined>(() => {
   if (showingChildren.value.length === 0) {
+    // 子路径留空，使叶子菜单指向当前父路径。
     return { ...props.item, path: "" };
   }
 
+  // 无标题且只有一个可见子项时，省略空分组。
   return !props.item.meta?.title && showingChildren.value.length === 1
     ? showingChildren.value[0]
     : undefined;
@@ -117,7 +116,7 @@ function resolvePath(routePath: string) {
 }
 
 /**
- * 读取菜单角标（如 NEW/HOT）：来自 sys_menu.params 的 {"badge":"NEW"}， 经 meta.params 透传至此；不配置则不渲染，纯数据驱动，无需菜单管理表单支持
+ * 读取路由参数中的 badge 作为菜单角标，缺失时返回空字符串。
  */
 function getBadge(meta: RouteMeta | undefined): string {
   const params = meta?.params as Record<string, unknown> | undefined;
@@ -126,7 +125,6 @@ function getBadge(meta: RouteMeta | undefined): string {
 </script>
 
 <style lang="scss" scoped>
-/* 菜单角标：小巧不抢视觉重心，随侧边栏折叠自动隐藏（折叠态文本 span 均被 el-menu 隐藏） */
 .menu-badge {
   height: 16px;
   padding: 0 5px;

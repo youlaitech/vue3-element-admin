@@ -181,7 +181,7 @@ import {
 import { Refresh, FullScreen } from "@element-plus/icons-vue";
 
 import DeptAPI from "@/api/system/dept";
-import type { DeptForm, DeptItem, DeptQueryParams } from "@/api/system/dept";
+import type { DeptForm, DeptItem, DeptQuery } from "@/api/system/dept";
 import type { OptionItem } from "@/api/common";
 import { useTableSelection } from "@/composables";
 import { CommonStatus } from "@/enums";
@@ -202,7 +202,7 @@ const expandAll = ref(true);
 
 const loading = ref(false);
 const list = ref<DeptItem[]>([]);
-const queryParams = reactive<DeptQueryParams>({
+const queryParams = reactive<DeptQuery>({
   keywords: "",
   status: undefined,
 });

@@ -1,13 +1,11 @@
-// Workflow 工作流类型定义
-
-import type { BaseQueryParams } from "@/api/common";
+import type { PageQuery } from "@/api/common";
 
 // 流程模型
 
 /**
  * 流程模型分页查询参数
  */
-export interface WorkflowModelQueryParams extends BaseQueryParams {
+export interface WorkflowModelQuery extends PageQuery {
   /** 搜索关键字（模型名称） */
   keywords?: string;
 }
@@ -105,7 +103,7 @@ export interface StartProcessFormData {
 /**
  * 流程实例分页查询参数
  */
-export interface WorkflowInstanceQueryParams extends BaseQueryParams {
+export interface WorkflowInstanceQuery extends PageQuery {
   /** 搜索关键字（流程定义名称） */
   keywords?: string;
 }
@@ -208,7 +206,7 @@ export interface InstanceDetailData {
 /**
  * 任务分页查询参数（待办/已办共用）
  */
-export interface WorkflowTaskQueryParams extends BaseQueryParams {
+export interface WorkflowTaskQuery extends PageQuery {
   /** 搜索关键字（任务名称） */
   keywords?: string;
 }

@@ -75,8 +75,6 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     writeDialog.visible = false;
   }
 
-  // ---- 内部工具函数 ----
-
   /**
    * 判断生成项写入前端还是后端根目录
    */

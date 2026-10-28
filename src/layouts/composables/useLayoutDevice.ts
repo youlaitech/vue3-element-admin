@@ -6,12 +6,7 @@ const WIDE_BREAKPOINT = 992;
 const MOBILE_BREAKPOINT = 768;
 
 /**
- * 根据窗口宽度同步设备类型和侧边栏展开状态
- *
- * 三档断点：
- * - ≥992px：桌面宽屏，侧边栏展开（完整菜单）
- * - 768~992px：桌面窄屏，侧边栏收缩（仅图标）
- * - <768px：移动端，侧边栏完全隐藏
+ * 按窗口宽度同步设备类型和侧栏展开状态。
  */
 export function useLayoutDevice() {
   const appStore = useAppStore();

@@ -170,7 +170,7 @@ import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "elem
 import { FullScreen, QuestionFilled, Refresh } from "@element-plus/icons-vue";
 
 import DictAPI from "@/api/system/dict";
-import type { DictItem, DictItemForm, DictItemQueryParams } from "@/api/system/dict";
+import type { DictItem, DictItemForm, DictItemQuery } from "@/api/system/dict";
 import { usePageTable, useTableSelection } from "@/composables";
 import { CommonStatus } from "@/enums";
 import { useDictStoreHook } from "@/stores/dict";
@@ -215,7 +215,7 @@ const tagTypeOptions: Exclude<NonNullable<DictItemForm["tagType"]>, "">[] = [
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   DictItem,
-  DictItemQueryParams
+  DictItemQuery
 >({
   initialParams: {
     pageNum: 1,
@@ -298,10 +298,10 @@ async function handleEditClick(row: DictItem): Promise<void> {
 }
 
 /**
- * 字典项变更后清除本地缓存，避免 DictSelect/DictTag 沿用旧数据直到 SSE 推送到达
+ * 字典项变更后立即清除本地缓存，不等待实时消息返回
  */
 function invalidateDictCache(): void {
-  dictStore.removeDictItem(props.dictCode);
+  dictStore.invalidateDict(props.dictCode);
 }
 
 /**

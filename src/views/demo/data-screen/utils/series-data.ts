@@ -1,3 +1,6 @@
+/**
+ * 地图城市点及连线数据。
+ */
 interface City {
   name: string;
   value: [number, number, number];

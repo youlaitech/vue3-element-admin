@@ -276,7 +276,7 @@ import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "elem
 import { QuestionFilled, Refresh } from "@element-plus/icons-vue";
 
 import FormAPI from "@/api/form";
-import type { FormDefinitionData, FormDefinitionItem, FormDefinitionQueryParams } from "@/api/form";
+import type { FormDefinitionForm, FormDefinitionItem, FormDefinitionQuery } from "@/api/form";
 import router from "@/router";
 import { usePageTable, useTableSelection } from "@/composables";
 import { FormStatus } from "@/enums";
@@ -331,7 +331,7 @@ function statusTagType(status: number): "info" | "success" | "danger" {
 // 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   FormDefinitionItem,
-  FormDefinitionQueryParams
+  FormDefinitionQuery
 >({
   initialParams: {
     pageNum: 1,
@@ -353,13 +353,13 @@ const dialogState = reactive({
 });
 
 // 新增表单默认值：类型缺省普通表单
-const initialFormData: FormDefinitionData = {
+const initialFormData: FormDefinitionForm = {
   category: "normal",
 };
 
-const formData = reactive<FormDefinitionData>({ ...initialFormData });
+const formData = reactive<FormDefinitionForm>({ ...initialFormData });
 
-const rules: FormRules<FormDefinitionData> = {
+const rules: FormRules<FormDefinitionForm> = {
   formName: [{ required: true, message: "请输入表单名称", trigger: "blur" }],
   formKey: [
     { required: true, message: "请输入表单标识", trigger: "blur" },
@@ -418,7 +418,7 @@ async function handleEditClick(row: FormDefinitionItem): Promise<void> {
   resetForm();
   editingStatus.value = row.status;
   dialogState.title = "修改表单";
-  const data = await FormAPI.getFormData(row.id);
+  const data = await FormAPI.getDefinitionForm(row.id);
   Object.assign(formData, data);
   openDialog();
 }

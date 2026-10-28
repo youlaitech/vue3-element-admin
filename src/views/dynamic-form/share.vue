@@ -78,7 +78,7 @@ async function handleSubmit(data: Record<string, unknown>): Promise<void> {
   if (submitting.value) return;
   submitting.value = true;
   try {
-    await FormAPI.submitPublicFormData(formKey.value, data);
+    await FormAPI.submitPublicSubmission(formKey.value, data);
     submitted.value = true;
   } catch {
     // 失败不重复提示（拦截器已弹），停留填写态可重试

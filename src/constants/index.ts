@@ -60,8 +60,3 @@ export const STORAGE_KEYS = {
   SIDEBAR_STATUS: `${APP_PREFIX}:app:sidebar_status`,
   ACTIVE_TOP_MENU_PATH: `${APP_PREFIX}:app:active_top_menu_path`,
 } as const;
-
-/**
- * 存储键名类型
- */
-export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];

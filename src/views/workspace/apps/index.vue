@@ -4,11 +4,9 @@
     <el-card class="page-content" shadow="never">
       <section v-for="group in appGroups" :key="group.category.key" class="app-section">
         <header class="app-section__header">
-          <div class="app-section__title">
-            <span class="app-section__name">{{ group.category.name }}</span>
-            <span class="app-section__count">{{ group.apps.length }}</span>
-          </div>
-          <p class="app-section__desc">{{ group.category.description }}</p>
+          <span class="app-section__name">{{ group.category.name }}</span>
+          <span class="app-section__count">{{ group.apps.length }}</span>
+          <span class="app-section__desc">{{ group.category.description }}</span>
         </header>
 
         <div class="app-grid">
@@ -16,19 +14,21 @@
             v-for="app in group.apps"
             :key="app.name"
             class="app-card"
-            :class="[`app-card--${app.theme}`, { 'is-disabled': !app.ssoReady }]"
+            :class="[`app-card--${app.theme}`, { 'is-disabled': !app.ssoReady && !app.url }]"
             @click="handleAppClick(app)"
           >
-            <div class="app-card__top">
-              <div class="app-card__icon">
-                <el-icon :size="26">
-                  <component :is="app.icon" />
-                </el-icon>
-              </div>
-              <el-tag v-if="!app.ssoReady" type="info" size="small" effect="plain">即将接入</el-tag>
+            <div class="app-card__icon">
+              <el-icon :size="22">
+                <component :is="app.icon" />
+              </el-icon>
             </div>
-            <div class="app-card__name">{{ app.name }}</div>
-            <div class="app-card__desc">{{ app.description }}</div>
+            <div class="app-card__body">
+              <div class="app-card__name">{{ app.name }}</div>
+              <div class="app-card__desc">{{ app.description }}</div>
+            </div>
+            <el-icon v-if="app.ssoReady || app.url" class="app-card__arrow">
+              <ArrowRight />
+            </el-icon>
           </div>
         </div>
       </section>
@@ -37,22 +37,31 @@
 </template>
 
 <script setup lang="ts">
+import { ArrowRight } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
+import { OIDC_AUTHORIZATION_URL } from "@/api/auth";
+import { appConfig } from "@/settings";
 
 defineOptions({ name: "AppCenter" });
 
-/** 应用分类标识 */
-type CategoryKey = "business" | "operation" | "smart";
+/**
+ * 应用分类标识
+ */
+type CategoryKey = "business" | "smart" | "account";
 
-/** 应用分类 */
+/**
+ * 应用分类
+ */
 interface AppCategory {
   key: CategoryKey;
   name: string;
   description: string;
 }
 
-/** 应用卡片 */
+/**
+ * 应用卡片
+ */
 interface AppCard {
   /** 应用名称 */
   name: string;
@@ -64,7 +73,7 @@ interface AppCard {
   icon: string;
   /** 卡片主题色，对应 Element Plus 的状态色 */
   theme: "primary" | "success" | "warning" | "info";
-  /** 是否已接入统一认证：未接入的卡片置灰不可跳转 */
+  /** 是否已接入统一认证；未接入且没有入口的卡片置灰不可跳转 */
   ssoReady: boolean;
   /** 所属分类 */
   category: CategoryKey;
@@ -78,23 +87,23 @@ const categories: AppCategory[] = [
     description: "已上线的系统，账号与权限由认证中心下发",
   },
   {
-    key: "operation",
-    name: "经营管理",
-    description: "设备、资产、进销存等经营场景的系统",
-  },
-  {
     key: "smart",
     name: "智能与多端",
     description: "智能助手与移动端、桌面端客户端",
   },
+  {
+    key: "account",
+    name: "我的账号",
+    description: "账号与统一认证身份的关联",
+  },
 ];
 
-/** 应用清单：接入统一认证后把 ssoReady 改为 true 并补上 url */
+/** 应用清单：接入统一认证的应用补上 url 并置 ssoReady 为 true */
 const apps: AppCard[] = [
   {
     name: "youlai-admin",
     description: "Vue3 + Element Plus + 多语言中后台管理系统",
-    url: "/",
+    url: OIDC_AUTHORIZATION_URL,
     icon: "Monitor",
     theme: "primary",
     ssoReady: true,
@@ -117,60 +126,6 @@ const apps: AppCard[] = [
     theme: "warning",
     ssoReady: false,
     category: "business",
-  },
-  {
-    name: "设备管理",
-    description: "设备台账、点检保养与维修记录，备件出入库联动",
-    url: "",
-    icon: "Setting",
-    theme: "primary",
-    ssoReady: false,
-    category: "operation",
-  },
-  {
-    name: "资产管理",
-    description: "资产入库、领用调拨、折旧计提与定期盘点",
-    url: "",
-    icon: "Box",
-    theme: "success",
-    ssoReady: false,
-    category: "operation",
-  },
-  {
-    name: "进销存",
-    description: "采购、销售与库存管理，支持调拨和库存预警",
-    url: "",
-    icon: "Goods",
-    theme: "warning",
-    ssoReady: false,
-    category: "operation",
-  },
-  {
-    name: "客户关系",
-    description: "客户档案、商机跟进与合同回款",
-    url: "",
-    icon: "User",
-    theme: "info",
-    ssoReady: false,
-    category: "operation",
-  },
-  {
-    name: "工单中心",
-    description: "报修派单、处理时效与满意度回访",
-    url: "",
-    icon: "Tickets",
-    theme: "primary",
-    ssoReady: false,
-    category: "operation",
-  },
-  {
-    name: "项目管理",
-    description: "立项、任务分解、进度跟踪与工时统计",
-    url: "",
-    icon: "Files",
-    theme: "success",
-    ssoReady: false,
-    category: "operation",
   },
   {
     name: "youlai-ai",
@@ -199,22 +154,40 @@ const apps: AppCard[] = [
     ssoReady: false,
     category: "smart",
   },
+  {
+    name: "认证身份",
+    description: "绑定统一认证身份，单点登录自动匹配",
+    url: "/profile?tab=identity",
+    icon: "Link",
+    theme: "primary",
+    ssoReady: false,
+    category: "account",
+  },
 ];
 
 const router = useRouter();
 
 const appGroups = categories
   .map((category) => ({ category, apps: apps.filter((app) => app.category === category.key) }))
-  .filter((group) => group.apps.length > 0);
+  // 未启用统一认证时不展示账号分组
+  .filter(
+    (group) => group.apps.length > 0 && (appConfig.oidcEnabled || group.category.key !== "account")
+  );
 
 // 站内路径走路由跳转，外部地址新标签打开
 function handleAppClick(app: AppCard): void {
-  if (!app.ssoReady) {
+  // 未接入统一认证且没有入口的应用只作展示
+  if (!app.ssoReady && !app.url) {
     ElMessage.info(`${app.name} 尚未接入统一认证`);
     return;
   }
   if (/^https?:\/\//.test(app.url)) {
     window.open(app.url, "_blank", "noopener");
+    return;
+  }
+  // 统一认证授权地址需要整页跳转，由后端重定向到认证中心
+  if (app.url.startsWith("/oauth2/")) {
+    window.location.href = app.url;
     return;
   }
   router.push(app.url);
@@ -223,19 +196,17 @@ function handleAppClick(app: AppCard): void {
 
 <style scoped lang="scss">
 .app-section + .app-section {
-  padding-top: 26px;
-  margin-top: 26px;
-  border-top: 1px dashed var(--el-border-color-lighter);
+  padding-top: 24px;
+  margin-top: 24px;
+  border-top: 1px solid var(--el-border-color-extra-light);
 }
 
 .app-section__header {
-  margin-bottom: 16px;
-}
-
-.app-section__title {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  align-items: center;
+  align-items: baseline;
+  margin-bottom: 16px;
 }
 
 .app-section__name {
@@ -259,61 +230,60 @@ function handleAppClick(app: AppCard): void {
 }
 
 .app-section__count {
-  padding: 0 7px;
+  padding: 0 6px;
   font-size: 12px;
-  line-height: 18px;
+  line-height: 16px;
   color: var(--el-text-color-secondary);
   background: var(--el-fill-color-light);
-  border-radius: 9px;
+  border-radius: 8px;
 }
 
 .app-section__desc {
-  margin: 6px 0 0 10px;
   font-size: 12px;
   color: var(--el-text-color-secondary);
 }
 
 .app-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
 }
 
 .app-card {
-  position: relative;
   display: flex;
-  flex-direction: column;
-  padding: 20px;
-  overflow: hidden;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px;
   cursor: pointer;
-  background: linear-gradient(180deg, var(--app-bg) 0%, var(--el-bg-color) 72%);
+  background: var(--el-bg-color);
   border: 1px solid var(--el-border-color-lighter);
-  border-radius: 12px;
+  border-radius: 10px;
   transition:
     border-color 0.2s,
     box-shadow 0.2s,
     transform 0.2s;
 
-  &::before {
-    position: absolute;
-    inset: 0 0 auto;
-    height: 3px;
-    content: "";
-    background: linear-gradient(90deg, var(--app-color), transparent);
-  }
-
   &:hover {
-    border-color: var(--app-color);
-    box-shadow: 0 10px 24px rgb(0 0 0 / 8%);
-    transform: translateY(-3px);
+    border-color: var(--app-border);
+    box-shadow: 0 6px 16px rgb(0 0 0 / 6%);
+    transform: translateY(-2px);
+
+    .app-card__arrow {
+      color: var(--app-color);
+      transform: translateX(2px);
+    }
   }
 
   &.is-disabled {
     cursor: not-allowed;
 
     .app-card__icon {
-      opacity: 0.85;
-      filter: grayscale(0.35);
+      opacity: 0.75;
+      filter: saturate(0.7);
+    }
+
+    .app-card__name {
+      color: var(--el-text-color-regular);
     }
 
     &:hover {
@@ -323,68 +293,73 @@ function handleAppClick(app: AppCard): void {
     }
   }
 
-  &__top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-
   &__icon {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    color: #fff;
-    background: linear-gradient(135deg, var(--app-color), var(--app-color-light));
-    border-radius: 14px;
-    box-shadow: 0 6px 16px var(--app-shadow);
+    width: 44px;
+    height: 44px;
+    color: var(--app-color);
+    background: var(--app-bg);
+    border-radius: 10px;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
   }
 
   &__name {
-    margin-top: 16px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
+    line-height: 22px;
     color: var(--el-text-color-primary);
   }
 
   &__desc {
     display: -webkit-box;
-    margin-top: 8px;
+    margin-top: 6px;
     overflow: hidden;
     -webkit-line-clamp: 2;
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 12px;
+    line-height: 1.7;
     color: var(--el-text-color-secondary);
     -webkit-box-orient: vertical;
+  }
+
+  &__arrow {
+    flex-shrink: 0;
+    align-self: center;
+    font-size: 14px;
+    color: var(--el-text-color-placeholder);
+    transition:
+      color 0.2s,
+      transform 0.2s;
   }
 }
 
 .app-card--primary {
   --app-color: var(--el-color-primary);
-  --app-color-light: var(--el-color-primary-light-3);
   --app-bg: var(--el-color-primary-light-9);
-  --app-shadow: rgb(64 158 255 / 30%);
+  --app-border: var(--el-color-primary-light-5);
 }
 
 .app-card--success {
   --app-color: var(--el-color-success);
-  --app-color-light: var(--el-color-success-light-3);
   --app-bg: var(--el-color-success-light-9);
-  --app-shadow: rgb(103 194 58 / 30%);
+  --app-border: var(--el-color-success-light-5);
 }
 
 .app-card--warning {
   --app-color: var(--el-color-warning);
-  --app-color-light: var(--el-color-warning-light-3);
   --app-bg: var(--el-color-warning-light-9);
-  --app-shadow: rgb(230 162 60 / 30%);
+  --app-border: var(--el-color-warning-light-5);
 }
 
 .app-card--info {
   --app-color: var(--el-color-info);
-  --app-color-light: var(--el-color-info-light-3);
   --app-bg: var(--el-color-info-light-9);
-  --app-shadow: rgb(144 147 153 / 30%);
+  --app-border: var(--el-color-info-light-5);
 }
 </style>

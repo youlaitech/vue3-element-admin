@@ -220,7 +220,6 @@ const sortFlag = ref<Sortable | null>(null);
 
 const fieldConfigs = computed(() => formData.value?.fieldConfigs || []);
 
-// 只看 AI 改动过的字段
 const onlyAiChanged = ref(false);
 
 // AI 改动过的字段数
@@ -333,6 +332,10 @@ function destroySort() {
 
 /**
  * 暴露字段排序、显隐切换与定位能力
+ */
+
+/**
+ * 暴露给父组件
  */
 defineExpose({ initSort, destroySort, showOnlyAiChanged, locateField });
 
