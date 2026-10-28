@@ -100,7 +100,6 @@
 </template>
 <script setup lang="ts">
 import type { FormInstance } from "element-plus";
-import { Lock } from "@element-plus/icons-vue";
 import { useI18n } from "vue-i18n";
 import AuthAPI from "@/api/auth";
 import type { LoginRequest } from "@/api/auth";
