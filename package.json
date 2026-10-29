@@ -17,7 +17,7 @@
     "lint:lint-staged": "lint-staged",
     "lint": "pnpm run lint:eslint && pnpm run lint:prettier && pnpm run lint:stylelint",
     "lint:check": "eslint src mock vite.config.ts uno.config.ts eslint.config.ts",
-    "format:check": "prettier --check \"src/**/*.{ts,vue,scss,css,json}\" \"mock/**/*.ts\" \"*.{ts,cjs,mjs,json,yaml}\" \".github/workflows/*.{yml,yaml}\"",
+    "format:check": "prettier --check --no-error-on-unmatched-pattern \"src/**/*.{ts,vue,scss,css,json}\" \"mock/**/*.ts\" \"*.{ts,cjs,mjs,json,yaml}\" \".github/workflows/*.{yml,yaml}\"",
     "style:check": "stylelint \"src/**/*.{css,scss,vue}\"",
     "check": "pnpm run type-check && pnpm run lint:check && pnpm run format:check && pnpm run style:check",
     "preinstall": "npx only-allow pnpm",

@@ -195,6 +195,13 @@ function handleAppClick(app: AppCard): void {
 </script>
 
 <style scoped lang="scss">
+/* 分组按内容高度排列，不占用页面剩余高度 */
+.page-content :deep(.el-card__body) {
+  grid-template-rows: none;
+  grid-auto-rows: min-content;
+  align-content: start;
+}
+
 .app-section + .app-section {
   padding-top: 24px;
   margin-top: 24px;

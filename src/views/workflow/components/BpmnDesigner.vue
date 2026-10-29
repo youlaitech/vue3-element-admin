@@ -381,9 +381,13 @@ onBeforeUnmount(() => {
 defineExpose({
   /** 供承载页触发的保存动作（与工具栏保存共用一套导出逻辑） */
   save: handleSave,
-  /** 画布是否有未保存的修改 */
+  /**
+   * 画布是否有未保存的修改
+   */
   isDirty: () => dirty.value,
-  /** 持久化成功后清除脏标记（由承载页调用） */
+  /**
+   * 持久化成功后清除脏标记（由承载页调用）
+   */
   markSaved: () => {
     dirty.value = false;
   },

@@ -78,7 +78,9 @@ export function usePageTable<T, Q extends PageQuery = PageQuery>(
 export interface UsePageTableOptions<T, Q extends PageQuery> {
   /** 初值会深复制，请求和编辑不会改变重置基准。 */
   initialParams: Q;
-  /** 接收查询快照；请求异常由调用方处理。 */
+  /**
+   * 接收查询快照；请求异常由调用方处理。
+   */
   request: (params: Q) => Promise<PageResult<T>>;
   /** 恢复参数前，同步重置页面自有的搜索控件。 */
   onBeforeReset?: () => void;
@@ -93,10 +95,16 @@ export interface UsePageTableReturn<T, Q extends PageQuery> {
   total: Ref<number>;
   params: Q;
   fetchData: () => Promise<void>;
-  /** 回到第一页并查询。 */
+  /**
+   * 回到第一页并查询。
+   */
   handleQuery: () => Promise<void>;
-  /** 恢复初始条件后重新查询。 */
+  /**
+   * 恢复初始条件后重新查询。
+   */
   handleResetQuery: () => Promise<void>;
-  /** 仅恢复参数，不发请求。 */
+  /**
+   * 仅恢复参数，不发请求。
+   */
   resetParams: () => void;
 }

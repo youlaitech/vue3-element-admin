@@ -954,6 +954,18 @@ $input-h: 44px;
 
   .login-brand {
     padding: 24px 24px 28px;
+
+    /* 版本号移到名称下方，避免与右上角工具栏图标重叠 */
+    &__identity {
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    &__name {
+      font-size: 20px;
+      white-space: nowrap;
+    }
   }
 
   .login-card {

@@ -161,7 +161,9 @@ export interface ISelectConfig<T = any> {
   placeholder?: string;
   /** popover 组件属性 */
   popover?: Partial<Omit<PopoverProps, "visible" | "v-model:visible">>;
-  /** 列表的网络请求函数（需返回 Promise） */
+  /**
+   * 列表的网络请求函数（需返回 Promise）
+   */
   indexAction: (_queryParams: T) => Promise<any>;
   /** 主键（跨页选择必填，默认为 id） */
   pk?: string;

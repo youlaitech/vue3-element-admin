@@ -36,7 +36,9 @@ const tableList = [
   },
 ];
 
-/** 下划线命名转驼峰首字母大写，如 sys_user → SysUser */
+/**
+ * 下划线命名转驼峰首字母大写，如 sys_user → SysUser
+ */
 function toPascalCase(name: string): string {
   return name
     .split("_")
@@ -196,7 +198,9 @@ const genConfigMap: Record<string, any> = {
   },
 };
 
-/** 未配置表的默认生成配置（无 id，进入抽屉后从基础配置步骤开始） */
+/**
+ * 未配置表的默认生成配置（无 id，进入抽屉后从基础配置步骤开始）
+ */
 function buildDefaultConfig(tableName: string) {
   return {
     tableName,
@@ -214,7 +218,9 @@ function buildDefaultConfig(tableName: string) {
   };
 }
 
-/** 构造代码生成预览文件列表 */
+/**
+ * 构造代码生成预览文件列表
+ */
 function buildPreviewFiles(tableName: string, tableComment: string) {
   const bizName = tableName.replace(/^sys_/, "");
   const entityName = toPascalCase(bizName);

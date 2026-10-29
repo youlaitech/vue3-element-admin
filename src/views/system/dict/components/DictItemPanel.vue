@@ -61,9 +61,10 @@
         <el-table-column label="排序" prop="sort" align="center" width="80" />
         <el-table-column label="状态" align="center" width="100">
           <template #default="scope">
-            <el-tag :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'info'">
+            <span class="dict-item-panel__status">
+              <StatusDot :active="scope.row.status === CommonStatus.ENABLED" />
               {{ scope.row.status === CommonStatus.ENABLED ? "启用" : "禁用" }}
-            </el-tag>
+            </span>
           </template>
         </el-table-column>
 
@@ -172,6 +173,7 @@ import { FullScreen, QuestionFilled, Refresh } from "@element-plus/icons-vue";
 import DictAPI from "@/api/system/dict";
 import type { DictItem, DictItemForm, DictItemQuery } from "@/api/system/dict";
 import { usePageTable, useTableSelection } from "@/composables";
+import StatusDot from "@/components/StatusDot/index.vue";
 import { CommonStatus } from "@/enums";
 import { useDictStoreHook } from "@/stores/dict";
 
@@ -377,5 +379,11 @@ onMounted(() => {
 .dict-item-panel__plain {
   font-size: 13px;
   color: var(--el-text-color-placeholder);
+}
+
+.dict-item-panel__status {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
 }
 </style>
