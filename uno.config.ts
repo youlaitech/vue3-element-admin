@@ -64,7 +64,7 @@ export default defineConfig({
         width: "1em",
         height: "1em",
       },
-      // 图表集合
+      // 图标集合
       collections: {
         // svg 是图标集合名称，使用 `i-svg:图标名` 调用
         svg: FileSystemIconLoader(iconsDir, (svg) => {

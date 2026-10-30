@@ -115,7 +115,6 @@ export const useTagsViewStore = defineStore("tagsView", () => {
       if (index > -1) {
         cachedViews.value = cachedViews.value.slice(index, index + 1);
       } else {
-        // if index = -1, there is no cached tags
         cachedViews.value = [];
       }
       resolve([...cachedViews.value]);

@@ -1,7 +1,7 @@
 {
   "name": "vue3-element-admin",
   "description": "Vue3 + Vite + TypeScript + Element-Plus 的后台管理模板，vue-element-admin 的 Vue3 版本",
-  "version": "4.11.0",
+  "version": "4.11.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,7 +14,6 @@
     "lint:eslint": "eslint --cache \"src/**/*.{vue,ts,js}\" --fix",
     "lint:prettier": "prettier --write \"**/*.{js,cjs,ts,json,css,scss,vue,html}\"",
     "lint:stylelint": "stylelint --cache \"**/*.{css,scss,vue}\" --fix",
-    "lint:lint-staged": "lint-staged",
     "lint": "pnpm run lint:eslint && pnpm run lint:prettier && pnpm run lint:stylelint",
     "lint:check": "eslint src mock vite.config.ts uno.config.ts eslint.config.ts",
     "format:check": "prettier --check --no-error-on-unmatched-pattern \"src/**/*.{ts,vue,scss,css,json}\" \"mock/**/*.ts\" \"*.{ts,cjs,mjs,json,yaml}\" \".github/workflows/*.{yml,yaml}\"",
