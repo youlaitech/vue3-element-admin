@@ -56,7 +56,7 @@ watch(
     }
     formData.value = parseDataJson(props.dataJson);
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 /**

@@ -1,5 +1,5 @@
 import vue from "@vitejs/plugin-vue";
-import { type ConfigEnv, type UserConfig, loadEnv, defineConfig } from "vite";
+import { type ConfigEnv, type Plugin, type UserConfig, loadEnv, defineConfig } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
@@ -51,7 +51,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           target: proxyTarget,
           rewrite: (path: string) => path.slice(env.VITE_API_BASE.length),
         },
-        // 通知中心 WebSocket，单独代理以完成 ws 升级
+        // 通知中心 WebSocket，单独代理以转发握手请求
         "/api/v1/realtime/ws": {
           changeOrigin: true,
           rewriteWsOrigin: true,
@@ -192,7 +192,7 @@ function getElementPlusStyleDeps(): string[] {
   return readdirSync(componentsDir, { withFileTypes: true })
     .filter(
       (entry) =>
-        entry.isDirectory() && existsSync(resolve(componentsDir, entry.name, "style/index.mjs"))
+        entry.isDirectory() && existsSync(resolve(componentsDir, entry.name, "style/index.mjs")),
     )
     .map((entry) => `element-plus/es/components/${entry.name}/style/index`);
 }

@@ -214,38 +214,38 @@ const dirty = ref(false);
 const selectedElement = shallowRef<Shape | null>(null);
 
 const isUserTask = computed(
-  () => !!selectedElement.value && is(selectedElement.value, "bpmn:UserTask")
+  () => !!selectedElement.value && is(selectedElement.value, "bpmn:UserTask"),
 );
 const isSequenceFlow = computed(
-  () => !!selectedElement.value && is(selectedElement.value, "bpmn:SequenceFlow")
+  () => !!selectedElement.value && is(selectedElement.value, "bpmn:SequenceFlow"),
 );
 // 仅开始节点可绑定表单（后端只读开始节点 formKey 渲染发起表单，审批展示复用同一份数据）
 const isFormBindable = computed(
-  () => !!selectedElement.value && is(selectedElement.value, "bpmn:StartEvent")
+  () => !!selectedElement.value && is(selectedElement.value, "bpmn:StartEvent"),
 );
 
 const selectedName = computed(() => selectedElement.value?.businessObject?.name ?? "");
 const selectedFormKey = computed(() => selectedElement.value?.businessObject?.get("formKey") ?? "");
 const selectedAssignee = computed(
-  () => selectedElement.value?.businessObject?.get("assignee") ?? ""
+  () => selectedElement.value?.businessObject?.get("assignee") ?? "",
 );
 // 候选组（角色编码，逗号分隔）与办理人二选一配置，均空发布时会被后端拦截
 const selectedCandidateGroups = computed(
-  () => selectedElement.value?.businessObject?.get("candidateGroups") ?? ""
+  () => selectedElement.value?.businessObject?.get("candidateGroups") ?? "",
 );
 // 候选组多选值：XML 逗号串 ↔ 选项数组互转，数据结构保持引擎兼容
 const candidateGroupCodes = computed(() =>
   String(selectedCandidateGroups.value)
     .split(",")
     .map((code) => code.trim())
-    .filter(Boolean)
+    .filter(Boolean),
 );
 // 角色编码选项（label 角色名 / value 角色编码）
 const roleCodeOptions = ref<OptionItem[]>([]);
 // 发起表单选项（label 表单名 / value formKey，仅已发布 workflow 类型）
 const workflowFormOptions = ref<OptionItem[]>([]);
 const selectedCondition = computed(
-  () => selectedElement.value?.businessObject?.conditionExpression?.body ?? ""
+  () => selectedElement.value?.businessObject?.conditionExpression?.body ?? "",
 );
 
 /**
@@ -350,7 +350,7 @@ async function importXml(xml: string): Promise<void> {
 
 watch(
   () => props.xml,
-  (xml) => importXml(xml)
+  (xml) => importXml(xml),
 );
 
 onMounted(() => {

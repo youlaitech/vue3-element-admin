@@ -7,7 +7,7 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
  * 取自 src/assets/icons 下的文件名，存入菜单时无前缀
  */
 export const svgIconNames: string[] = Object.keys(import.meta.glob("../assets/icons/*.svg")).map(
-  (path) => path.replace(/.*\/(.*)\.svg$/, "$1")
+  (path) => path.replace(/.*\/(.*)\.svg$/, "$1"),
 );
 
 /**
@@ -53,7 +53,7 @@ export function matchIcon(keywords: string[]): string {
       keyword
         .trim()
         .toLowerCase()
-        .replace(/^el-icon-/, "")
+        .replace(/^el-icon-/, ""),
     )
     .filter(Boolean);
 

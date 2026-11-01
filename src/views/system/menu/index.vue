@@ -636,7 +636,7 @@ const formData = reactive<MenuForm>({ ...initialFormData });
 
 // AI 推断按钮的提示文案，未填名称时说明置灰原因
 const aiTip = computed(() =>
-  formData.name?.trim() ? "根据菜单名称推断访问路径、权限标识" : "先填写菜单名称"
+  formData.name?.trim() ? "根据菜单名称推断访问路径、权限标识" : "先填写菜单名称",
 );
 
 // 上级菜单选项，顶级节点下挂完整菜单树
@@ -685,7 +685,7 @@ const typeLocked = computed(() => isEditing.value || typeOptions.value.length ==
 
 // 类型被锁定的原因：编辑时不可改类型；页面下新增只能挂按钮
 const typeLockedTip = computed(() =>
-  isEditing.value ? "类型创建后不可修改" : "页面下只能挂按钮权限"
+  isEditing.value ? "类型创建后不可修改" : "页面下只能挂按钮权限",
 );
 
 const visibleSwitch = computed({
@@ -722,7 +722,7 @@ watch(
     if (allowed.some((item) => item.value === formData.type)) return;
     formData.type = allowed[0]?.value ?? MenuTypeEnum.MENU;
     handleTypeChange();
-  }
+  },
 );
 
 // 勾选生成按钮时按同级已有按钮推导权限前缀，用户已填则不覆盖
@@ -732,7 +732,7 @@ watch(
     if (!checked || formData.buttonPermPrefix?.trim()) return;
     formData.buttonPermPrefix = deriveButtonPermPrefix();
     permPrefixAuto.value = true;
-  }
+  },
 );
 
 // 前缀是推导来的就跟随访问路径刷新，用户手改过则不再变动
@@ -742,28 +742,28 @@ watch(
     if (permPrefixAuto.value) {
       formData.buttonPermPrefix = deriveButtonPermPrefix();
     }
-  }
+  },
 );
 
 // 上级路径逐级拼接，得到当前菜单的完整访问地址
 const parentPath = computed(() =>
   findMenuTrail(parentMenuTree.value, formData.parentId).reduce(
     (path, menu) => joinRoutePath(path, menu.routePath),
-    ""
-  )
+    "",
+  ),
 );
 
 const fullRoutePath = computed(() =>
-  formData.routePath ? joinRoutePath(parentPath.value, formData.routePath) : ""
+  formData.routePath ? joinRoutePath(parentPath.value, formData.routePath) : "",
 );
 
 const derivedRouteName = computed(() =>
-  fullRoutePath.value ? deriveRouteName(fullRoutePath.value) : ""
+  fullRoutePath.value ? deriveRouteName(fullRoutePath.value) : "",
 );
 
 // 页面路径对应的文件位置，输入带 .vue 后缀也能正确展示
 const componentFilePath = computed(() =>
-  formData.component ? `src/views/${normalizeViewPath(formData.component)}.vue` : ""
+  formData.component ? `src/views/${normalizeViewPath(formData.component)}.vue` : "",
 );
 
 const previewText = computed(() => {
@@ -819,7 +819,7 @@ const validateComponent = (_: unknown, value: string, callback: (error?: Error) 
   // 未改动的历史值跳过存在性校验，避免旧数据无法保存
   if (value !== originalComponent.value && !isViewComponent(value)) {
     callback(
-      new Error(componentManual.value ? "页面不存在，请检查路径" : "页面不存在，请重新选择")
+      new Error(componentManual.value ? "页面不存在，请检查路径" : "页面不存在，请重新选择"),
     );
     return;
   }
@@ -958,7 +958,7 @@ function getMenuAccessPath(row: MenuItem): string {
   if (row.type === MenuTypeEnum.BUTTON) return "";
   return findMenuTrail(list.value, row.id).reduce(
     (path, menu) => joinRoutePath(path, menu.routePath),
-    ""
+    "",
   );
 }
 
@@ -1042,7 +1042,7 @@ function resolveSiblingPermModule(menus: MenuItem[], parentId: string): string {
       if (child.type !== MenuTypeEnum.BUTTON) return;
       const module = child.perm?.split(":")[0];
       if (module) counter.set(module, (counter.get(module) ?? 0) + 1);
-    })
+    }),
   );
 
   let module = "";
@@ -1408,7 +1408,7 @@ async function handleSubmit(): Promise<void> {
   if (saving.value) return;
   const valid = await menuFormRef.value?.validate().then(
     () => true,
-    () => false
+    () => false,
   );
   if (!valid) return;
 

@@ -429,7 +429,7 @@ function hasActionPermission(action: string): boolean {
  */
 function resolveActions(
   actions: Array<string | CrudAction>,
-  buttonProps: CrudAction["buttonProps"] = {}
+  buttonProps: CrudAction["buttonProps"] = {},
 ) {
   return actions.map((item) => {
     const isString = typeof item === "string";
@@ -589,7 +589,7 @@ const columns = ref(
       col.reserveSelection = true;
     }
     return col;
-  })
+  }),
 );
 const loading = ref(false);
 const loadError = ref("");
@@ -657,7 +657,7 @@ const defaultPagination = {
 const pagination = reactive(
   typeof props.tableConfig.pagination === "object"
     ? { ...defaultPagination, ...props.tableConfig.pagination }
-    : defaultPagination
+    : defaultPagination,
 );
 const paginationKeys = props.tableConfig.paginationKeys ?? {
   page: "pageNum",
@@ -713,7 +713,7 @@ function refresh(resetPage = false): Promise<void> {
  */
 async function handleDelete(
   id?: number | string,
-  permission?: string | string[] | null
+  permission?: string | string[] | null,
 ): Promise<void> {
   const ids = id === undefined ? selectedKeys.value.join(",") : String(id);
   if (!ids) return;
@@ -725,7 +725,7 @@ async function handleDelete(
     type: "warning",
   }).then(
     () => true,
-    () => false
+    () => false,
   );
   if (!confirmed || (permission && !hasPerm(permission))) return;
   await action(ids);
@@ -817,7 +817,7 @@ async function exportRows(): Promise<void> {
   const exportColumns: Partial<Column>[] = columns.value
     .filter(
       (col) =>
-        col.cellType !== "actions" && col.label && col.prop && exportForm.fields.includes(col.prop)
+        col.cellType !== "actions" && col.label && col.prop && exportForm.fields.includes(col.prop),
     )
     .map((col) => ({ header: col.label, key: col.prop }));
   const scope = exportForm.scope;
@@ -967,7 +967,7 @@ async function handleToolbar(key: string): Promise<void> {
       if (config.value.importFile && config.value.importRows && !config.value.importMode)
         throw new Error("同时配置两种导入回调时，请指定 importMode");
       handleOpenImportModal(
-        config.value.importMode ? config.value.importMode === "file" : !!config.value.importFile
+        config.value.importMode ? config.value.importMode === "file" : !!config.value.importFile,
       );
       break;
     case "export":
@@ -989,7 +989,7 @@ async function handleToolbar(key: string): Promise<void> {
 async function handleModify(
   field: string,
   value: boolean | string | number,
-  row: CrudRecord
+  row: CrudRecord,
 ): Promise<void> {
   const id = getRowKey(row);
   const original = confirmedRows.get(id);
@@ -1079,7 +1079,7 @@ let appliedQuery: CrudRecord = {};
 let lastSuccessfulQuery: CrudRecord | undefined;
 let pageSequence = 0;
 const canExport = computed(
-  () => !loading.value && !loadError.value && lastSuccessfulQuery !== undefined
+  () => !loading.value && !loadError.value && lastSuccessfulQuery !== undefined,
 );
 onScopeDispose(() => {
   pageSequence += 1;

@@ -356,7 +356,7 @@ function handleEditClick(row: WorkflowModelItem): void {
 async function handleSubmit(): Promise<void> {
   const valid = await modelFormRef.value?.validate().then(
     () => true,
-    () => false
+    () => false,
   );
   if (!valid) return;
 
@@ -445,7 +445,7 @@ async function handleResetDemo(): Promise<void> {
     await ElMessageBox.confirm(
       "将清空所有流程（含用户自建）的模型、发布版本、实例与历史记录，恢复至 4 个初始演示流程。确定重置?",
       "重置工作流数据",
-      { confirmButtonText: "重置", cancelButtonText: "取消", type: "warning" }
+      { confirmButtonText: "重置", cancelButtonText: "取消", type: "warning" },
     );
   } catch {
     ElMessage.info("已取消重置");
@@ -492,7 +492,7 @@ async function handleDelete(id?: string): Promise<void> {
     await ElMessageBox.confirm(
       "将删除该流程的设计、已发布版本及全部流程实例数据，不可恢复。确定删除?",
       "删除流程",
-      { confirmButtonText: "删除", cancelButtonText: "取消", type: "warning" }
+      { confirmButtonText: "删除", cancelButtonText: "取消", type: "warning" },
     );
   } catch {
     ElMessage.info("已取消删除");

@@ -309,7 +309,7 @@ const categoryOptions: Record<string, string> = {
 // 当前编辑表单状态：非草稿（已发布/已停用）时类型作为业务标识不可修改
 const editingStatus = ref<FormStatus | null>(null);
 const categoryDisabled = computed(
-  () => editingStatus.value !== null && editingStatus.value !== FormStatus.DRAFT
+  () => editingStatus.value !== null && editingStatus.value !== FormStatus.DRAFT,
 );
 
 /**
@@ -429,7 +429,7 @@ async function handleEditClick(row: FormDefinitionItem): Promise<void> {
 async function handleSubmit(): Promise<void> {
   const valid = await formDefinitionFormRef.value?.validate().then(
     () => true,
-    () => false
+    () => false,
   );
   if (!valid) return;
 

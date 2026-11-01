@@ -28,12 +28,12 @@ const item = computed(() =>
     ? dictStore
         .getDictItems(props.code)
         .find((entry) => String(entry.value) === String(props.modelValue))
-    : undefined
+    : undefined,
 );
 const label = computed(() => item.value?.label ?? "");
 const tagType = computed(() => item.value?.tagType || undefined);
 const tagSize = computed(() =>
-  props.size === "large" || props.size === "small" ? props.size : "default"
+  props.size === "large" || props.size === "small" ? props.size : "default",
 );
 
 watch(
@@ -41,6 +41,6 @@ watch(
   async (code) => {
     if (code) await dictStore.loadDictItems(code);
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>

@@ -49,7 +49,7 @@ const decodeDictTagType = (code?: unknown): DictTagType => {
  * 统一转换字典项标签类型
  */
 const normalizeDictTagType = <T extends { tagType?: unknown }>(
-  item: T
+  item: T,
 ): Omit<T, "tagType"> & {
   tagType: DictTagType;
 } => ({

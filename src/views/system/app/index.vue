@@ -356,7 +356,7 @@ async function handleStatusChange(row: AppItem): Promise<void> {
 async function handleSubmit(): Promise<void> {
   const valid = await dataFormRef.value?.validate().then(
     () => true,
-    () => false
+    () => false,
   );
   if (!valid) return;
 

@@ -230,7 +230,7 @@ export function provideRealtime(): RealtimeContext {
         [...(user.userInfo.perms ?? [])].sort().join(),
       ].join("|"),
     resetConnection,
-    { flush: "sync" }
+    { flush: "sync" },
   );
 
   const context: RealtimeContext = {

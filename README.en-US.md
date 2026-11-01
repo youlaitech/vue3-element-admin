@@ -19,8 +19,8 @@
 
 [![Online Preview](https://img.shields.io/badge/Online%20Preview-2D8CF0?style=for-the-badge&logo=google-chrome&logoColor=white)](https://vue.youlai.tech)
 [![Mobile Preview](https://img.shields.io/badge/Mobile%20Preview-19BE6B?style=for-the-badge&logo=android&logoColor=white)](https://app.youlai.tech)
-[![Documentation](https://img.shields.io/badge/Documentation-8B5CF6?style=for-the-badge&logo=gitbook&logoColor=white)](https://www.youlai.tech/docs/web/)
-[![Official Site](https://img.shields.io/badge/Official%20Site-FF9F1C?style=for-the-badge&logo=safari&logoColor=white)](https://www.youlai.tech/docs/web/)
+[![Documentation](https://img.shields.io/badge/Documentation-8B5CF6?style=for-the-badge&logo=gitbook&logoColor=white)](https://www.youlai.tech/docs/element/introduction.html)
+[![Official Site](https://img.shields.io/badge/Official%20Site-FF9F1C?style=for-the-badge&logo=safari&logoColor=white)](https://www.youlai.tech)
 [![中文](https://img.shields.io/badge/中文-00B4D8?style=for-the-badge&logo=google-translate&logoColor=white)](./README.md)
 
 </div>
@@ -98,14 +98,14 @@ pnpm run dev
 
 After starting, visit http://localhost:3000 and log in with `admin` / `123456`.
 
-> For more, see the official docs: [Quick Start](https://www.youlai.tech/docs/web/) · [Deployment Guide](https://www.youlai.tech/docs/web/deployment/deploy.html)
+> For more, see the official docs: [Quick Start](https://www.youlai.tech/docs/element/quick-start.html) · [Deployment Guide](https://www.youlai.tech/docs/element/deploy/)
 
 ## AI Programming
 
 This project ships with an [Agent Skill](https://skills.sh/youlaitech/youlai-skills). Once installed, the AI coding assistant automatically follows this project's Vue3 development conventions (naming, directory structure, BEM + UnoCSS, component and API conventions). It supports 70+ agents including CodeBuddy, Claude Code, Cursor, Codex, and GitHub Copilot.
 
 ```bash
-npx skills add https://github.com/youlaitech/youlai-skills --skill vue-admin
+npx skills add https://github.com/youlaitech/youlai-skills --skill vue3-element-admin
 ```
 
 ## Ecosystem Matrix
@@ -153,8 +153,8 @@ npx skills add https://github.com/youlaitech/youlai-skills --skill vue-admin
 | -------- | -------- |
 | Video Tutorial | [https://www.bilibili.com/video/BV1eFUuYyEFj](https://www.bilibili.com/video/BV1eFUuYyEFj) |
 | Project Setup | [Building a Backend Management System from Scratch with Vue3, Vite, TypeScript, and Element-Plus](https://blog.csdn.net/u013737132/article/details/130191394) |
-| Official Documentation | [https://www.youlai.tech/docs/web/](https://www.youlai.tech/docs/web/) |
-| Deployment Guide | [https://www.youlai.tech/docs/web/deployment/deploy.html](https://www.youlai.tech/docs/web/deployment/deploy.html) |
+| Official Documentation | [https://www.youlai.tech/docs/element/introduction.html](https://www.youlai.tech/docs/element/introduction.html) |
+| Deployment Guide | [https://www.youlai.tech/docs/element/deploy/](https://www.youlai.tech/docs/element/deploy/) |
 | FAQ | [https://www.youlai.tech/docs/faq/](https://www.youlai.tech/docs/faq/) |
 | Code Standards | [ESLint V9 + Prettier + Stylelint + EditorConfig for Standardized and Unified Frontend Code Style](https://youlai.blog.csdn.net/article/details/145608723) |
 | Commit Standards | [Husky + Lint-staged + Commitlint + Commitizen + cz-git for Git Commit Standards](https://youlai.blog.csdn.net/article/details/145615236) |
@@ -168,7 +168,7 @@ Run `pnpm run build` to bundle and generate the `dist` directory, upload it to t
 pnpm run build
 ```
 
-For the detailed deployment flow (Nginx config, reverse proxy, HTTPS, etc.), see the [Deployment Guide](https://www.youlai.tech/docs/web/deployment/deploy.html).
+For the detailed deployment flow (Nginx config, reverse proxy, HTTPS, etc.), see the [Deployment Guide](https://www.youlai.tech/docs/element/deploy/).
 
 ## Data Interface
 

@@ -21,20 +21,20 @@ export const useSettingsStore = defineStore("setting", () => {
   const showTagsView = useStorage(STORAGE_KEYS.SHOW_TAGS_VIEW, defaults.showTagsView);
   const tagsViewStyle = useStorage<TagsViewStyle>(
     STORAGE_KEYS.TAGS_VIEW_STYLE,
-    defaults.tagsViewStyle
+    defaults.tagsViewStyle,
   );
   const showAppLogo = useStorage(STORAGE_KEYS.SHOW_APP_LOGO, defaults.showAppLogo);
   const showWatermark = useStorage(STORAGE_KEYS.SHOW_WATERMARK, defaults.showWatermark);
   const pageSwitchingAnimation = useStorage(
     STORAGE_KEYS.PAGE_SWITCHING_ANIMATION,
-    defaults.pageSwitchingAnimation
+    defaults.pageSwitchingAnimation,
   );
 
   // 布局
   const layout = useStorage<LayoutMode>(STORAGE_KEYS.LAYOUT, defaults.layout as LayoutMode);
   const sidebarColorScheme = useStorage(
     STORAGE_KEYS.SIDEBAR_COLOR_SCHEME,
-    defaults.sidebarColorScheme
+    defaults.sidebarColorScheme,
   );
 
   // 主题
@@ -45,7 +45,7 @@ export const useSettingsStore = defineStore("setting", () => {
   });
 
   const activeThemePalette = computed(
-    () => themePalettePresets.find((item) => item.id === themePalette.value) || null
+    () => themePalettePresets.find((item) => item.id === themePalette.value) || null,
   );
 
   const resolvedTheme = ref<ThemeMode>(resolveThemeMode(theme.value));
@@ -71,7 +71,7 @@ export const useSettingsStore = defineStore("setting", () => {
         stopWatchingSystemTheme = undefined;
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   watch(
@@ -80,7 +80,7 @@ export const useSettingsStore = defineStore("setting", () => {
       toggleDarkMode(t === ThemeMode.DARK);
       applyTheme(generateThemeColors(colors, t));
     },
-    { immediate: true, deep: true }
+    { immediate: true, deep: true },
   );
 
   watch(sidebarColorScheme, (v) => toggleSidebarColor(v === SidebarColor.CLASSIC_BLUE), {
@@ -93,7 +93,7 @@ export const useSettingsStore = defineStore("setting", () => {
     (v) => {
       document.documentElement.style.filter = v ? "grayscale(100%)" : "";
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   // 色弱模式监听
@@ -102,7 +102,7 @@ export const useSettingsStore = defineStore("setting", () => {
     (v) => {
       document.documentElement.classList.toggle("color-weak", v);
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   /**

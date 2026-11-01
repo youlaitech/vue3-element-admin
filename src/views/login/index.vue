@@ -257,7 +257,7 @@ function getCaptcha() {
 async function handleLoginSubmit() {
   const valid = await loginFormRef.value?.validate().then(
     () => true,
-    () => false
+    () => false,
   );
   if (!valid) return;
 
@@ -268,7 +268,7 @@ async function handleLoginSubmit() {
         const redirectPath = (route.query.redirect as string) || "/";
         await router.push(decodeURIComponent(redirectPath));
       },
-      () => getCaptcha()
+      () => getCaptcha(),
     );
   } finally {
     loading.value = false;

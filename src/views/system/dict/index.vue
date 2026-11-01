@@ -282,7 +282,7 @@ async function handleEditClick(id?: string): Promise<void> {
 async function handleSubmit(): Promise<void> {
   const valid = await dictFormRef.value?.validate().then(
     () => true,
-    () => false
+    () => false,
   );
   if (!valid) return;
 

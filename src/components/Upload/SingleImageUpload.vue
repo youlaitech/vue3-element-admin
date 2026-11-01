@@ -129,7 +129,7 @@ function handleUpload(options: UploadRequestOptions) {
       },
       (error) => {
         reject(error);
-      }
+      },
     );
   });
 }

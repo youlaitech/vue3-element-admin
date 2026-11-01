@@ -393,14 +393,14 @@ const tUv = useTransition(
   {
     duration: 800,
     transition: [0.25, 0.1, 0.25, 1.0],
-  }
+  },
 );
 const tPv = useTransition(
   computed(() => visitOverviewData.value.todayPvCount),
   {
     duration: 800,
     transition: [0.25, 0.1, 0.25, 1.0],
-  }
+  },
 );
 const displayTransitionUvCount = computed(() => Math.round(Number(tUv.value)));
 const displayTransitionPvCount = computed(() => Math.round(Number(tPv.value)));
@@ -569,7 +569,7 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
 watch(
   () => visitTrendDateRange.value,
   () => fetchVisitTrendData(),
-  { immediate: true }
+  { immediate: true },
 );
 watch(
   () => [settingsStore.resolvedTheme, settingsStore.themeColors],
@@ -580,7 +580,7 @@ watch(
       if (visitTrendData.value) updateVisitTrendChartOptions(visitTrendData.value);
     });
   },
-  { deep: true }
+  { deep: true },
 );
 onMounted(() => {
   fetchVisitOverviewData();

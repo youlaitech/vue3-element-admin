@@ -23,7 +23,7 @@ withDefaults(
   }>(),
   {
     showOverlay: true,
-  }
+  },
 );
 
 const { layoutClass, isSidebarOpen, isMobile, closeSidebar } = useLayout();

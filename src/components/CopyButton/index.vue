@@ -39,7 +39,7 @@ function handleClipboard() {
       },
       () => {
         ElMessage.warning("复制失败");
-      }
+      },
     );
   } else {
     // 兼容性处理（useClipboard 有兼容性问题）

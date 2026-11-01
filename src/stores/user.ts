@@ -52,7 +52,7 @@ export const useUserStore = defineStore("user", () => {
     () => {
       refreshPromise = null;
     },
-    { flush: "sync" }
+    { flush: "sync" },
   );
 
   /**

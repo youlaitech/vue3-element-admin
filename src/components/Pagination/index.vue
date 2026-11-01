@@ -67,7 +67,7 @@ watch(
       currentPage.value = lastPage;
       emit("pagination", { page: currentPage.value, limit: pageSize.value });
     }
-  }
+  },
 );
 
 /**

@@ -113,7 +113,7 @@ const init = async () => {
     chartInstance.value = markRaw(
       echarts.init(chartRef.value, theme, {
         renderer: "canvas",
-      })
+      }),
     );
   }
 };

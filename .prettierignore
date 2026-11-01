@@ -1,12 +1,24 @@
+# 构建与测试产物
 dist
-node_modules
+coverage
+stats.html
+
+# 静态资源
 public
+src/assets
+
+# 依赖与工具目录
+node_modules
 .husky
 .vscode
 .idea
+
+# 锁文件
+pnpm-lock.yaml
+
+# 压缩产物
+*.min.*
+
+# 脚本与文档不参与格式化
 *.sh
 *.md
-
-src/assets
-stats.html
-pnpm-lock.yaml

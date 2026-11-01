@@ -12,3 +12,13 @@ declare module "sockjs-client/dist/sockjs.min.js" {
   import Client from "sockjs-client";
   export default Client;
 }
+
+declare module "vxe-pc-ui/lib/language/en-US" {
+  const language: Record<string, unknown>;
+  export default language;
+}
+
+declare module "vxe-pc-ui/lib/language/zh-CN" {
+  const language: Record<string, unknown>;
+  export default language;
+}

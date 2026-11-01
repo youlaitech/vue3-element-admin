@@ -51,7 +51,7 @@ watchEffect(
   },
   {
     flush: "post",
-  }
+  },
 );
 
 /**

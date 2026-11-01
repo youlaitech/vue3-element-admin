@@ -85,7 +85,7 @@ watch(
       return;
     }
     getBreadcrumb();
-  }
+  },
 );
 
 onBeforeMount(() => {

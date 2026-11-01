@@ -57,7 +57,7 @@ function handleConfirm(data: IUser[]) {
 const text = computed(() => {
   const dictData = dictStore.getDictItems("gender");
   const genderLabel = dictData.find(
-    (item) => String(item.value) === String(selectedUser.value?.gender)
+    (item) => String(item.value) === String(selectedUser.value?.gender),
   )?.label;
   return selectedUser.value
     ? `${selectedUser.value.username} - ${genderLabel} - ${selectedUser.value.deptName}`

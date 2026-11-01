@@ -19,10 +19,10 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
   const lastPreviewFiles = ref<GeneratorPreviewItem[]>([]);
 
   const needFrontend = computed(() =>
-    lastPreviewFiles.value.some((f) => resolveRootForItem(f) === "frontend")
+    lastPreviewFiles.value.some((f) => resolveRootForItem(f) === "frontend"),
   );
   const needBackend = computed(() =>
-    lastPreviewFiles.value.some((f) => resolveRootForItem(f) === "backend")
+    lastPreviewFiles.value.some((f) => resolveRootForItem(f) === "backend"),
   );
   // 只要有预览文件就可以点写入按钮，目录在弹窗里选
   const canWriteToLocal = computed(() => lastPreviewFiles.value.length > 0);
@@ -116,7 +116,7 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
   async function writeFileToDir(
     dirHandle: FileSystemDirectoryHandle,
     filePath: string,
-    content: string
+    content: string,
   ) {
     const normalized = filePath.replace(/\\/g, "/");
     const parts = normalized.split("/").filter(Boolean);
@@ -134,7 +134,7 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
    */
   async function pathExists(
     dirHandle: FileSystemDirectoryHandle,
-    filePath: string
+    filePath: string,
   ): Promise<boolean> {
     try {
       const normalized = filePath.replace(/\\/g, "/");
@@ -155,7 +155,7 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
   async function isSameFile(
     dirHandle: FileSystemDirectoryHandle,
     filePath: string,
-    content: string
+    content: string,
   ): Promise<boolean> {
     try {
       const normalized = filePath.replace(/\\/g, "/");
@@ -199,7 +199,7 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
     const failed: string[] = [];
 
     const files = lastPreviewFiles.value.filter(
-      (f) => writeScope.value === "all" || resolveRootForItem(f) === writeScope.value
+      (f) => writeScope.value === "all" || resolveRootForItem(f) === writeScope.value,
     );
     writeProgress.total = files.length;
     writeProgress.done = 0;
@@ -256,7 +256,7 @@ export function useLocalWrite(genConfigFormData: Ref<GenConfigForm>) {
 
     if (failed.length) {
       ElMessage.warning(
-        `部分文件写入失败 ${failed.length} 个，成功 前端 ${frontCount} 个，后端 ${backCount} 个`
+        `部分文件写入失败 ${failed.length} 个，成功 前端 ${frontCount} 个，后端 ${backCount} 个`,
       );
     } else {
       ElMessage.success(`写入完成：前端 ${frontCount} 个文件，后端 ${backCount} 个文件`);

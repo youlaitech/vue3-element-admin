@@ -63,7 +63,7 @@ export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
             (file) =>
               file.status === "ready" ||
               file.status === "uploading" ||
-              (file.uid !== undefined && activeTasks.has(file.uid))
+              (file.uid !== undefined && activeTasks.has(file.uid)),
           )
         : [];
       fileList.value = [
@@ -75,7 +75,7 @@ export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
       ];
     },
     // 同步消费回写标记，避免延迟侦听与下一次发布混淆。
-    { immediate: true, flush: "sync" }
+    { immediate: true, flush: "sync" },
   );
 
   /**
@@ -83,7 +83,7 @@ export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
    */
   function upload(
     options: UploadRequestOptions,
-    fields: { name: string; data: Record<string, unknown> }
+    fields: { name: string; data: Record<string, unknown> },
   ): Promise<FileInfo> {
     const uid = options.file.uid;
     const controller = new AbortController();
@@ -100,7 +100,7 @@ export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
         const file = fileList.value.find((item) => item.uid === uid);
         if (file) file.percentage = percentage;
       },
-      controller.signal
+      controller.signal,
     ).finally(() => {
       if (requests.get(uid) === controller) requests.delete(uid);
     });

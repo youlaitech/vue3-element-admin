@@ -15,7 +15,7 @@ export interface FormRuleSource {
  * 加载规则并管理表单填写、公开访问与预览页的渲染状态。
  */
 export function useFormRenderer<T extends FormRuleSource = FormRuleSource>(
-  loader: () => Promise<T | null | undefined>
+  loader: () => Promise<T | null | undefined>,
 ) {
   // shallowRef：深响应式代理会破坏 form-create Rule 内部 Creator 结构
   const rule = shallowRef<Rule[]>([]);

@@ -51,7 +51,7 @@ export default defineConfig({
       [640, 768, 1024, 1280, 1536, 1920, 2560].map((size, index) => [
         ["sm", "md", "lg", "xl", "2xl", "3xl", "4xl"][index],
         `${size}px`,
-      ])
+      ]),
     ),
   },
   presets: [

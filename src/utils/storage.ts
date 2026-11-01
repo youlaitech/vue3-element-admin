@@ -52,7 +52,7 @@ export class Storage {
     storage: Pick<globalThis.Storage, "getItem">,
     key: string,
     defaultValue: T | undefined,
-    validate?: ValueGuard<T>
+    validate?: ValueGuard<T>,
   ): T | undefined {
     const raw = storage.getItem(key);
     if (raw === null) return defaultValue;

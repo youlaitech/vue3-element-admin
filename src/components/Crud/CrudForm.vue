@@ -162,7 +162,7 @@ const childrenMap = new Map<CrudFieldType, Component>([
   ["checkbox", ElCheckbox],
 ]);
 const fields = reactive(
-  props.formConfig.fields.map((item) => ({ ...item, attrs: { ...item.attrs } }))
+  props.formConfig.fields.map((item) => ({ ...item, attrs: { ...item.attrs } })),
 );
 const rowKey = props.formConfig.rowKey ?? "id";
 const modalVisible = ref(false);
@@ -171,7 +171,7 @@ const formData = reactive<CrudRecord>({});
 const formMode = ref<CrudFormMode>("create");
 const targetId = ref<string | number>();
 const formDisable = computed(
-  () => formMode.value === "view" || props.formConfig.form?.disabled === true
+  () => formMode.value === "view" || props.formConfig.form?.disabled === true,
 );
 const isLoading = ref(false);
 const isSaving = ref(false);
@@ -202,7 +202,7 @@ const containerAttrs = computed(() => ({
     : {}),
 }));
 const formRules = computed<FormRules>(() =>
-  Object.fromEntries(fields.filter(isFieldVisible).map((item) => [item.prop, getFieldRules(item)]))
+  Object.fromEntries(fields.filter(isFieldVisible).map((item) => [item.prop, getFieldRules(item)])),
 );
 onScopeDispose(() => {
   revision += 1;
@@ -451,7 +451,7 @@ async function initializeFields(): Promise<void> {
   isInitializing.value = true;
   optionError.value = "";
   const results = await Promise.allSettled(
-    initializers.map((field) => Promise.resolve().then(() => field.onInit?.(field)))
+    initializers.map((field) => Promise.resolve().then(() => field.onInit?.(field))),
   );
   const failure = results.find((result) => result.status === "rejected");
   if (failure?.status === "rejected")

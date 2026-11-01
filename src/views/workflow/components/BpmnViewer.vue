@@ -43,7 +43,7 @@ const viewer = shallowRef<Viewer>();
 async function renderDiagram(
   xml: string,
   executedIds?: string[],
-  activeIds?: string[]
+  activeIds?: string[],
 ): Promise<void> {
   if (!xml || !viewer.value) return;
   const canvas = viewer.value.get("canvas") as CanvasLike;
@@ -64,9 +64,9 @@ watch(
     renderDiagram(
       xml as string,
       executedIds as string[] | undefined,
-      activeIds as string[] | undefined
+      activeIds as string[] | undefined,
     ),
-  { flush: "post" }
+  { flush: "post" },
 );
 
 onMounted(() => {

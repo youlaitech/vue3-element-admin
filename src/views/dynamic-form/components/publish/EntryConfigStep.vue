@@ -174,7 +174,7 @@ const rules = computed<FormRules<FormMenuFormData>>(() =>
         menuName: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
         parentId: [{ required: true, message: "请选择上级菜单", trigger: "change" }],
       }
-    : {}
+    : {},
 );
 
 /**
@@ -195,7 +195,7 @@ function validate(): Promise<boolean> {
   }
   return menuFormRef.value.validate().then(
     () => true,
-    () => false
+    () => false,
   );
 }
 

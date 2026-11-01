@@ -381,7 +381,7 @@ function getColorLabel(name: ThemeColorName) {
 const activePaletteName = computed(() =>
   settingsStore.activeThemePalette
     ? getPaletteName(settingsStore.activeThemePalette)
-    : t("settings.customPalette")
+    : t("settings.customPalette"),
 );
 
 /**

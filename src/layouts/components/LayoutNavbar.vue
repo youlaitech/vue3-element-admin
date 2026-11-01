@@ -23,7 +23,7 @@ const props = withDefaults(
   }>(),
   {
     toggleTarget: "primary",
-  }
+  },
 );
 
 const appStore = useAppStore();
@@ -34,7 +34,7 @@ const sidebarState = computed(() =>
         opened: appStore.secondarySidebar?.opened ?? true,
         toggle: () => appStore.toggleSecondarySidebar(),
       }
-    : { opened: appStore.sidebar.opened, toggle: () => appStore.toggleSidebar() }
+    : { opened: appStore.sidebar.opened, toggle: () => appStore.toggleSidebar() },
 );
 </script>
 

@@ -45,7 +45,7 @@ const title = computed(() => String(route.query.title ?? "表单预览"));
 
 // 走表单定义接口拉草稿规则：render 接口仅返回已发布表单，预览恰恰要覆盖未发布态
 const { rule, option, loading, submitted, load, refill } = useFormRenderer(() =>
-  FormAPI.getDefinitionForm(formId.value)
+  FormAPI.getDefinitionForm(formId.value),
 );
 
 onMounted(async () => {

@@ -79,7 +79,7 @@ const props = defineProps<ErrorPageProps>();
 const visualIcon = computed<Component>(() => (props.variant === "locked" ? Lock : Search));
 const visualName = computed(() => (props.variant === "locked" ? "ACCESS CONTROL" : "ROUTE TRACE"));
 const visualMeta = computed(() =>
-  props.variant === "locked" ? "权限校验未通过" : "目标路由未匹配"
+  props.variant === "locked" ? "权限校验未通过" : "目标路由未匹配",
 );
 </script>
 

@@ -200,7 +200,7 @@ const props = withDefaults(
   }>(),
   {
     text: "",
-  }
+  },
 );
 
 /**

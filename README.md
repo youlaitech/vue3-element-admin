@@ -20,8 +20,8 @@
 
 [![在线预览](https://img.shields.io/badge/在线预览-2D8CF0?style=for-the-badge&logo=google-chrome&logoColor=white)](https://vue.youlai.tech)
 [![移动端预览](https://img.shields.io/badge/移动端预览-19BE6B?style=for-the-badge&logo=android&logoColor=white)](https://app.youlai.tech)
-[![阅读文档](https://img.shields.io/badge/阅读文档-8B5CF6?style=for-the-badge&logo=gitbook&logoColor=white)](https://www.youlai.tech/docs/web/)
-[![官网](https://img.shields.io/badge/官网-FF9F1C?style=for-the-badge&logo=safari&logoColor=white)](https://www.youlai.tech/docs/web/)
+[![阅读文档](https://img.shields.io/badge/阅读文档-8B5CF6?style=for-the-badge&logo=gitbook&logoColor=white)](https://www.youlai.tech/docs/element/introduction.html)
+[![官网](https://img.shields.io/badge/官网-FF9F1C?style=for-the-badge&logo=safari&logoColor=white)](https://www.youlai.tech)
 [![English](https://img.shields.io/badge/English-00B4D8?style=for-the-badge&logo=google-translate&logoColor=white)](./README.en-US.md)
 
 </div>
@@ -99,14 +99,14 @@ pnpm run dev
 
 启动后访问 [http://localhost:3000](http://localhost:3000)，使用 `admin` / `123456` 登录。
 
-> 更多内容详见官方文档：[快速开始](https://www.youlai.tech/docs/web/) · [部署指南](https://www.youlai.tech/docs/web/deployment/deploy.html)
+> 更多内容详见官方文档：[快速开始](https://www.youlai.tech/docs/element/quick-start.html) · [部署指南](https://www.youlai.tech/docs/element/deploy/)
 
 ## AI 编程
 
 本项目配套 [Agent Skill](https://skills.sh/youlaitech/youlai-skills)，安装后 AI 编程助手会自动遵循本项目的 Vue3 开发规范（命名、目录结构、BEM + UnoCSS、组件与 API 约定）。支持 CodeBuddy、Claude Code、Cursor、Codex、GitHub Copilot 等 70+ Agent。
 
 ```bash
-npx skills add https://github.com/youlaitech/youlai-skills --skill vue-admin
+npx skills add https://github.com/youlaitech/youlai-skills --skill vue3-element-admin
 ```
 
 ## 生态矩阵
@@ -134,7 +134,7 @@ npx skills add https://github.com/youlaitech/youlai-skills --skill vue-admin
 | [youlai-think](https://gitee.com/youlaiorg/youlai-think) | ThinkPHP + ThinkORM | PHP | ✅️ |
 | [youlai-aspnet](https://gitee.com/youlaiorg/youlai-aspnet) | ASP.NET Core + EF Core | C# | ✅️ |
 | [youlai-axum](https://gitee.com/youlaiorg/youlai-axum) | Axum + SeaORM | Rust | ✅️ |
-| [youlai-laravel](https://gitee.com/youlaiorg/youlai-laravel) | Laravel + Eloquent | PHP | ❌️ |
+| [youlai-laravel](https://gitee.com/youlaiorg/youlai-laravel) | Laravel + Eloquent | PHP | ✅️ |
 
 > 九种后端共享同一套 **RESTful API 规范** 和 **数据库结构**，前端可无缝切换。
 
@@ -147,7 +147,7 @@ npx skills add https://github.com/youlaitech/youlai-skills --skill vue-admin
 | [youlai-boot-flex](https://gitee.com/youlaiorg/youlai-boot-flex) | youlai-boot | 独立仓库 | 改用 MyBatis-Flex | ✅️ |
 | [youlai-boot (db-pg)](https://gitee.com/youlaiorg/youlai-boot/tree/db-pg) | youlai-boot | 分支 | PostgreSQL 数据库分支 | ✅️ |
 | [youlai-boot (multi-module)](https://gitee.com/youlaiorg/youlai-boot/tree/multi-module) | youlai-boot | 分支 | 多模块工程拆分 | ✅️ |
-| [youlai-boot (spring-boot-3)](https://gitee.com/youlaiorg/youlai-boot/tree/spring-boot-3) | youlai-boot | 分支 | Spring Boot 3 兼容分支 | ❌️ |
+| [youlai-boot (spring-boot-3)](https://gitee.com/youlaiorg/youlai-boot/tree/spring-boot-3) | youlai-boot | 分支 | Spring Boot 3 兼容分支 | ✅️ |
 
 ## 开发指南
 
@@ -155,8 +155,8 @@ npx skills add https://github.com/youlaitech/youlai-skills --skill vue-admin
 | -------- | -------- |
 | 视频教程 | [https://www.bilibili.com/video/BV1eFUuYyEFj](https://www.bilibili.com/video/BV1eFUuYyEFj) |
 | 项目搭建 | [基于 Vue3 + Vite + TypeScript + Element-Plus 从0到1搭建后台管理系统](https://blog.csdn.net/u013737132/article/details/130191394) |
-| 官方文档 | [https://www.youlai.tech/docs/web/](https://www.youlai.tech/docs/web/) |
-| 部署指南 | [https://www.youlai.tech/docs/web/deployment/deploy.html](https://www.youlai.tech/docs/web/deployment/deploy.html) |
+| 官方文档 | [https://www.youlai.tech/docs/element/introduction.html](https://www.youlai.tech/docs/element/introduction.html) |
+| 部署指南 | [https://www.youlai.tech/docs/element/deploy/](https://www.youlai.tech/docs/element/deploy/) |
 | 常见问题 | [https://www.youlai.tech/docs/faq/](https://www.youlai.tech/docs/faq/) |
 | 代码规范 | [ESLint V9 + Prettier + Stylelint + EditorConfig 约束和统一前端代码规范](https://youlai.blog.csdn.net/article/details/145608723) |
 | 提交规范 | [Husky + Lint-staged + Commitlint + Commitizen + cz-git 配置 Git 提交规范](https://youlai.blog.csdn.net/article/details/145615236) |
@@ -170,7 +170,7 @@ npx skills add https://github.com/youlaitech/youlai-skills --skill vue-admin
 pnpm run build
 ```
 
-详细部署流程（Nginx 配置、反向代理、HTTPS 等）见 [部署指南](https://www.youlai.tech/docs/web/deployment/deploy.html)。
+详细部署流程（Nginx 配置、反向代理、HTTPS 等）见 [部署指南](https://www.youlai.tech/docs/element/deploy/)。
 
 ## 数据接口
 

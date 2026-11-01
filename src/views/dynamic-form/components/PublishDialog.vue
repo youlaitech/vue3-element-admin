@@ -151,12 +151,12 @@ const DEFAULT_CATALOG_NAME = "表单中心";
 
 // 是否展示菜单入口配置块（已发布恒显示，未发布按第①步所选）
 const showMenuConfig = computed(() =>
-  isPublished.value ? true : selectedMethods.value.includes("menu")
+  isPublished.value ? true : selectedMethods.value.includes("menu"),
 );
 
 // 是否展示分享入口配置块
 const showShareConfig = computed(() =>
-  isPublished.value ? true : selectedMethods.value.includes("share")
+  isPublished.value ? true : selectedMethods.value.includes("share"),
 );
 
 // 保存按钮文案（按配置的入口组合动态变化）
@@ -167,7 +167,7 @@ const saveButtonLabel = computed(() => {
 
 // 分享链接（hash 路由：origin + pathname + #/f/formKey）
 const shareUrl = computed(
-  () => `${window.location.origin}${window.location.pathname}#/f/${props.formKey}`
+  () => `${window.location.origin}${window.location.pathname}#/f/${props.formKey}`,
 );
 
 // 第③步分享汇总可见（配置了分享且开关开启）
@@ -286,7 +286,7 @@ const menuBreadcrumb = computed(() => {
 const grantedRoleNames = computed(() =>
   roleOptions.value
     .filter((role) => menuForm.roleIds?.includes(String(role.value)))
-    .map((role) => role.label)
+    .map((role) => role.label),
 );
 
 // 菜单完整路由路径（目录路径链 + 表单标识）

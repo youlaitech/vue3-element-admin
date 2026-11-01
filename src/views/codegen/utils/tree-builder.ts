@@ -103,7 +103,7 @@ export function getFileIcon(node: TreeNode): string {
 export function filterTree(
   nodes: TreeNode[],
   scope: "all" | "frontend" | "backend",
-  types: string[]
+  types: string[],
 ): TreeNode[] {
   /**
    * 判断节点是否命中当前筛选

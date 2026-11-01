@@ -171,7 +171,7 @@ const appGroups = categories
   .map((category) => ({ category, apps: apps.filter((app) => app.category === category.key) }))
   // 未启用统一认证时不展示账号分组
   .filter(
-    (group) => group.apps.length > 0 && (appConfig.oidcEnabled || group.category.key !== "account")
+    (group) => group.apps.length > 0 && (appConfig.oidcEnabled || group.category.key !== "account"),
   );
 
 // 站内路径走路由跳转，外部地址新标签打开

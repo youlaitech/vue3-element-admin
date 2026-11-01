@@ -440,7 +440,7 @@ const closeSelectedTag = (tag: TagView | null) => {
  */
 function closeDirectionalTags(
   source: Ref<TagView | null>,
-  batchFn: (tag: TagView) => Promise<{ visitedViews: TagView[] }>
+  batchFn: (tag: TagView) => Promise<{ visitedViews: TagView[] }>,
 ) {
   const tag = source.value;
   if (!tag) return;
@@ -530,7 +530,7 @@ watch(
     addCurrentTag();
     updateCurrentTag();
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onMounted(() => {

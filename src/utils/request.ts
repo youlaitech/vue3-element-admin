@@ -86,17 +86,17 @@ http.interceptors.response.use(
 
     ElMessage.error(msg || "请求失败");
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
  * 二进制保留响应头，JSON 返回业务 data；Axios 泛型适配集中在此处。
  */
 function request<T = Blob>(
-  config: AxiosRequestConfig & { responseType: "blob" }
+  config: AxiosRequestConfig & { responseType: "blob" },
 ): Promise<AxiosResponse<T>>;
 function request<T = ArrayBuffer>(
-  config: AxiosRequestConfig & { responseType: "arraybuffer" }
+  config: AxiosRequestConfig & { responseType: "arraybuffer" },
 ): Promise<AxiosResponse<T>>;
 function request<T = unknown, R = T>(config: AxiosRequestConfig): Promise<R>;
 async function request(config: AxiosRequestConfig): Promise<unknown> {

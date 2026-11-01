@@ -39,7 +39,7 @@ export function useGenConfig() {
         .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
         .join("");
       genConfigFormData.value.entityName = camel;
-    }
+    },
   );
 
   // 日期类型字段默认用范围查询，比较符合直觉
@@ -59,7 +59,7 @@ export function useGenConfig() {
         }
       });
     },
-    { deep: true, immediate: true }
+    { deep: true, immediate: true },
   );
 
   /**

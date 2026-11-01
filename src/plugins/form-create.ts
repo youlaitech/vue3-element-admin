@@ -156,7 +156,7 @@ let registered = false;
 function registerComponents(
   designer: typeof DesignerPlugin,
   dictSelect: Component,
-  fileUpload: Component
+  fileUpload: Component,
 ): void {
   if (registered) return;
 

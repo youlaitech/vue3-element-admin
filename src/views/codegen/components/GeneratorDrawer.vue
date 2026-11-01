@@ -366,7 +366,7 @@ async function handlePrev() {
     loading.value = true;
     try {
       genConfigFormData.value = applyDefaults(
-        await GeneratorAPI.getGenConfig(currentTableName.value)
+        await GeneratorAPI.getGenConfig(currentTableName.value),
       );
     } finally {
       loading.value = false;

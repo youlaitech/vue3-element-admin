@@ -40,7 +40,7 @@ const props = defineProps<{
 }>();
 
 const contentHtml = computed(() =>
-  DOMPurify.sanitize(props.detail?.content ?? "", { USE_PROFILES: { html: true } })
+  DOMPurify.sanitize(props.detail?.content ?? "", { USE_PROFILES: { html: true } }),
 );
 
 const visible = defineModel<boolean>({ default: false });

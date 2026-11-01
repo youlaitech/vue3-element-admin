@@ -312,7 +312,7 @@ function invalidateDictCache(): void {
 async function handleSubmit(): Promise<void> {
   const valid = await dictItemFormRef.value?.validate().then(
     () => true,
-    () => false
+    () => false,
   );
   if (!valid) return;
 

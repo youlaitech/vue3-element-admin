@@ -39,7 +39,7 @@ function useCrudPage() {
     mode: "edit" | "view",
     row: CrudRecord,
     loader?: (row: CrudRecord) => CrudRecord | Promise<CrudRecord>,
-    target: Ref<CrudFormInstance | undefined> = formRef
+    target: Ref<CrudFormInstance | undefined> = formRef,
   ): Promise<void> {
     const form = target.value;
     if (!form?.openForm(mode, row)) return;
@@ -52,7 +52,7 @@ function useCrudPage() {
   function openEdit(
     row: CrudRecord,
     loader?: (row: CrudRecord) => CrudRecord | Promise<CrudRecord>,
-    target?: Ref<CrudFormInstance | undefined>
+    target?: Ref<CrudFormInstance | undefined>,
   ): Promise<void> {
     return openRecord("edit", row, loader, target);
   }
@@ -63,7 +63,7 @@ function useCrudPage() {
   function openView(
     row: CrudRecord,
     loader?: (row: CrudRecord) => CrudRecord | Promise<CrudRecord>,
-    target?: Ref<CrudFormInstance | undefined>
+    target?: Ref<CrudFormInstance | undefined>,
   ): Promise<void> {
     return openRecord("view", row, loader, target);
   }

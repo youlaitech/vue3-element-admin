@@ -293,7 +293,7 @@ async function handleDelete(id: string): Promise<void> {
       type: "warning",
     }).then(
       () => true,
-      () => false
+      () => false,
     );
     if (!confirmed) return;
 

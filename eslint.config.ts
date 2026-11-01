@@ -3,7 +3,7 @@ import globals from "globals";
 import * as typescriptEslint from "typescript-eslint";
 import pluginVue from "eslint-plugin-vue";
 import vueParser from "vue-eslint-parser";
-import configPrettier from "eslint-config-prettier";
+import skipFormatting from "@vue/eslint-config-prettier/skip-formatting";
 
 export default [
   {
@@ -123,7 +123,7 @@ export default [
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
-        project: "./tsconfig.eslint.json",
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -184,7 +184,7 @@ export default [
     ],
     languageOptions: {
       parserOptions: {
-        project: "./tsconfig.eslint.json",
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
         extraFileExtensions: [".vue"],
       },
@@ -196,11 +196,5 @@ export default [
     },
   },
 
-  {
-    rules: {
-      ...configPrettier.rules,
-      "arrow-body-style": "off",
-      "prefer-arrow-callback": "off",
-    },
-  },
+  skipFormatting,
 ];

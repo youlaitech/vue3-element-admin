@@ -103,7 +103,7 @@ export function diffGenConfig(before: GenConfigForm, after: GenConfigForm): AiFi
   }
 
   const beforeFields = new Map(
-    (before.fieldConfigs ?? []).map((field) => [field.columnName, field])
+    (before.fieldConfigs ?? []).map((field) => [field.columnName, field]),
   );
   (after.fieldConfigs ?? []).forEach((field) => {
     const origin = beforeFields.get(field.columnName);
@@ -148,8 +148,8 @@ export function useAiFillDiff() {
         fieldChangeCount: field.changes.length,
         first: index === 0,
         ...item,
-      }))
-    )
+      })),
+    ),
   );
 
   /**

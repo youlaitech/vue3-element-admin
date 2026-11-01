@@ -90,7 +90,7 @@ const props = defineProps({
 });
 
 const showingChildren = computed(() =>
-  (props.item.children ?? []).filter((route) => !route.meta?.hidden)
+  (props.item.children ?? []).filter((route) => !route.meta?.hidden),
 );
 
 const leafMenu = computed<RouteRecordRaw | undefined>(() => {

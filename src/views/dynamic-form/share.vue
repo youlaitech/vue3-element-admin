@@ -54,7 +54,7 @@ const submitting = ref(false);
 const loadError = ref("");
 
 const { rule, option, loading, submitted, load, refill } = useFormRenderer(() =>
-  FormAPI.getPublicRender(formKey.value)
+  FormAPI.getPublicRender(formKey.value),
 );
 
 onMounted(async () => {

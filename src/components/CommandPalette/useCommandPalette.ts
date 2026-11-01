@@ -64,7 +64,7 @@ export function useCommandPalette() {
     }
     const keywordText = keyword.value.toLowerCase();
     results.value = menuItems.value.filter((item) =>
-      item.title.toLowerCase().includes(keywordText)
+      item.title.toLowerCase().includes(keywordText),
     );
   }
 

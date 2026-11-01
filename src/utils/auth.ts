@@ -46,7 +46,7 @@ export const AuthStorage = {
     accessToken: string,
     refreshToken: string,
     rememberMe: boolean,
-    renewing = false
+    renewing = false,
   ): void {
     Storage.set(STORAGE_KEYS.REMEMBER_ME, rememberMe);
     if (rememberMe) {

@@ -72,7 +72,7 @@ const slots = useSlots();
 const resolvedFormConfig = computed(() =>
   props.formConfig
     ? { ...props.formConfig, rowKey: props.formConfig.rowKey ?? props.tableConfig.rowKey }
-    : undefined
+    : undefined,
 );
 const page = useCrudPage();
 const {
@@ -113,7 +113,7 @@ function handleCreate(): void {
 function openEdit(
   row: CrudRecord,
   loader = props.loadFormData,
-  target?: Ref<CrudFormInstance | undefined>
+  target?: Ref<CrudFormInstance | undefined>,
 ): Promise<void> {
   return page.openEdit(row, loader, target);
 }
@@ -124,7 +124,7 @@ function openEdit(
 function openView(
   row: CrudRecord,
   loader = props.loadFormData,
-  target?: Ref<CrudFormInstance | undefined>
+  target?: Ref<CrudFormInstance | undefined>,
 ): Promise<void> {
   return page.openView(row, loader, target);
 }

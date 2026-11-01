@@ -7,7 +7,7 @@ import type { PageQuery, PageResult } from "@/api/common";
  * 分页查询只接收最近一次请求的结果；勾选与弹窗状态由页面持有。
  */
 export function usePageTable<T, Q extends PageQuery = PageQuery>(
-  options: UsePageTableOptions<T, Q>
+  options: UsePageTableOptions<T, Q>,
 ): UsePageTableReturn<T, Q> {
   const { request, onBeforeReset } = options;
   const initialParams = cloneDeep(options.initialParams);

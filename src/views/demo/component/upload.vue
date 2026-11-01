@@ -134,10 +134,10 @@ const fileUrls = ref([
 // 绑定值 JSON 预览
 const picUrlJson = computed(() => (picUrl.value ? JSON.stringify(picUrl.value) : "// 暂无数据"));
 const picUrlsJson = computed(() =>
-  picUrls.value.length ? JSON.stringify(picUrls.value, null, 2) : "// 暂无数据"
+  picUrls.value.length ? JSON.stringify(picUrls.value, null, 2) : "// 暂无数据",
 );
 const fileUrlsJson = computed(() =>
-  fileUrls.value.length ? JSON.stringify(fileUrls.value, null, 2) : "// 暂无数据"
+  fileUrls.value.length ? JSON.stringify(fileUrls.value, null, 2) : "// 暂无数据",
 );
 </script>
 

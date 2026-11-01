@@ -21,7 +21,7 @@ export enum RealtimeConnectionStatus {
  */
 interface RealtimeClientOptions {
   readonly requestTicket: (
-    request: CreateRealtimeTicketRequest
+    request: CreateRealtimeTicketRequest,
   ) => Promise<RealtimeTicketResponse | null>;
 }
 
@@ -161,7 +161,7 @@ export function createRealtimeClient(options: RealtimeClientOptions) {
         attempt.timer = null;
         if (checkDeadline(attempt)) armDeadline(attempt);
       },
-      Math.min(Math.max(1, attempt.deadline - Date.now()), 2_147_483_647)
+      Math.min(Math.max(1, attempt.deadline - Date.now()), 2_147_483_647),
     );
   }
 

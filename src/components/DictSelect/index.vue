@@ -120,6 +120,6 @@ watch(
     }
     await dictStore.loadDictItems(code);
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>

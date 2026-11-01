@@ -70,7 +70,7 @@ watch(
     if (!submitted) {
       formData.value = {};
     }
-  }
+  },
 );
 
 /**

@@ -104,7 +104,7 @@ watch(
   (value) => {
     if (!value) openSequence += 1;
   },
-  { flush: "sync" }
+  { flush: "sync" },
 );
 onScopeDispose(() => {
   openSequence += 1;

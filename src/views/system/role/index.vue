@@ -559,14 +559,14 @@ const displayRows = computed(() => {
 
 // 带下级菜单行的节点
 const collapsibleIds = computed(() =>
-  permRows.value.filter((row) => row.group).map((row) => row.id)
+  permRows.value.filter((row) => row.group).map((row) => row.id),
 );
 
 // 带下级菜单行的节点是否都已折叠
 const isAllCollapsed = computed(
   () =>
     collapsibleIds.value.length > 0 &&
-    collapsibleIds.value.every((id) => collapsedIds.value.has(id))
+    collapsibleIds.value.every((id) => collapsedIds.value.has(id)),
 );
 
 /**
@@ -822,7 +822,7 @@ async function handleEditClick(roleId?: string): Promise<void> {
 async function handleSubmit(): Promise<void> {
   const valid = await roleFormRef.value?.validate().then(
     () => true,
-    () => false
+    () => false,
   );
   if (!valid) return;
 

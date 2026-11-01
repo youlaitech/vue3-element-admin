@@ -360,7 +360,7 @@ async function handleEditClick(planId?: number): Promise<void> {
 const handleSubmit = useDebounceFn(async (): Promise<void> => {
   const valid = await planFormRef.value?.validate().then(
     () => true,
-    () => false
+    () => false,
   );
   if (!valid) return;
 

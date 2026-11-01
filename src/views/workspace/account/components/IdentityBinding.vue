@@ -109,7 +109,7 @@ async function saveIdentity(): Promise<void> {
   try {
     const valid = await formRef.value?.validate().then(
       () => true,
-      () => false
+      () => false,
     );
     if (!valid) return;
 
@@ -134,10 +134,10 @@ async function removeIdentity(): Promise<void> {
     const confirmed = await ElMessageBox.confirm(
       "确认解除统一认证身份吗？现有会话也会失效。",
       "解除绑定",
-      { type: "warning" }
+      { type: "warning" },
     ).then(
       () => true,
-      () => false
+      () => false,
     );
     if (!confirmed) return;
 
