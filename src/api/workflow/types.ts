@@ -287,6 +287,8 @@ export interface CompleteTaskFormData {
   comment?: string;
   /** 流程变量（驱动后续网关条件） */
   variables?: Record<string, unknown>;
+  /** 发起表单数据（发起人节点重新提交时填写） */
+  formData?: Record<string, unknown>;
 }
 
 /**

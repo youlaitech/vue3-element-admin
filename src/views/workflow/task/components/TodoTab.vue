@@ -106,8 +106,15 @@
 
         <el-tabs class="todo-approve__tabs">
           <el-tab-pane label="申请信息">
+            <form-create
+              v-if="isInitiatorTask && detail.formJson"
+              v-model="editFormData"
+              v-model:api="editFormApi"
+              :rule="editRule"
+              :option="editOption"
+            />
             <FormDetail
-              v-if="detail.formJson"
+              v-else-if="detail.formJson"
               :form-json="detail.formJson"
               :options-json="detail.optionsJson"
               :data-json="detail.dataJson"
@@ -179,6 +186,8 @@ import { useFullscreen } from "@vueuse/core";
 import { ElMessage, type FormInstance } from "element-plus";
 import { MagicStick, Refresh } from "@element-plus/icons-vue";
 
+import type { Options, Rule } from "@form-create/element-ui";
+
 import WorkflowAPI from "@/api/workflow";
 import type {
   RejectTargetItem,
@@ -238,6 +247,39 @@ const approveState = reactive({
 
 // 当前任务详情
 const detail = ref<TaskDetailData>();
+
+// 发起人节点可编辑表单：只有该节点允许修改申请内容，其余节点保持只读
+const editFormApi = ref();
+const editFormData = ref<Record<string, unknown>>({});
+const editRule = shallowRef<Rule[]>([]);
+const editOption = ref<Options>({ submitBtn: false, resetBtn: false });
+const isInitiatorTask = computed(() => Boolean(detail.value?.taskFormKey));
+
+watch(
+  () => [
+    detail.value?.taskFormKey,
+    detail.value?.formJson,
+    detail.value?.optionsJson,
+    detail.value?.dataJson,
+  ],
+  () => {
+    if (!isInitiatorTask.value) return;
+    try {
+      editRule.value = JSON.parse(detail.value?.formJson || "[]") as Rule[];
+      editOption.value = {
+        ...(JSON.parse(detail.value?.optionsJson || "{}") as Options),
+        submitBtn: false,
+        resetBtn: false,
+      };
+      editFormData.value = JSON.parse(detail.value?.dataJson || "{}") as Record<string, unknown>;
+    } catch {
+      editRule.value = [];
+      editOption.value = { submitBtn: false, resetBtn: false };
+      editFormData.value = {};
+    }
+  },
+  { immediate: true },
+);
 
 // 审批意见（通过/驳回共用）
 const comment = ref("");
@@ -326,7 +368,17 @@ function closeRejectMode(): void {
 async function handleComplete(): Promise<void> {
   submitting.value = true;
   try {
-    await WorkflowAPI.task.complete(detail.value!.taskId, { comment: comment.value });
+    if (isInitiatorTask.value) {
+      const valid = await editFormApi.value
+        ?.validate()
+        .then(() => true)
+        .catch(() => false);
+      if (!valid) return;
+    }
+    await WorkflowAPI.task.complete(detail.value!.taskId, {
+      comment: comment.value,
+      formData: isInitiatorTask.value ? { ...editFormData.value } : undefined,
+    });
     ElMessage.success("审批通过");
     approveState.visible = false;
     fetchData();
