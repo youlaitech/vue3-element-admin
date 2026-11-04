@@ -37,7 +37,7 @@ export function useCodePreview(genConfigFormData: Ref<GenConfigForm>) {
    */
   async function handlePreview(tableName: string) {
     treeData.value = [];
-    const pageType = genConfigFormData.value.pageType || "classic";
+    const pageType = genConfigFormData.value.pageType || "crud";
     const data = await GeneratorAPI.getPreviewData(tableName, pageType as "classic" | "crud", "ts");
     const previewList = data || [];
 

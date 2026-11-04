@@ -387,7 +387,7 @@ async function handleAiFill() {
     snapshotConfig(genConfigFormData.value);
     const filled = await GeneratorAPI.aiFillConfig(currentTableName.value);
     // 接口按表结构重建配置，页面类型等非字段项可能为空，沿用当前选择再补默认
-    filled.pageType = filled.pageType || genConfigFormData.value.pageType || "classic";
+    filled.pageType = filled.pageType || genConfigFormData.value.pageType || "crud";
     const diff = resolveDiff(filled);
     genConfigFormData.value = applyDefaults(filled);
     if (diff.changeCount === 0) {
@@ -484,7 +484,7 @@ async function handleNext() {
   }
 
   if (currentStep.value === STEP.PREVIEW) {
-    const pageType = genConfigFormData.value.pageType || "classic";
+    const pageType = genConfigFormData.value.pageType || "crud";
     await GeneratorAPI.download(currentTableName.value, pageType as "classic" | "crud", "ts");
   }
 }

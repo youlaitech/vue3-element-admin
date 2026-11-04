@@ -11,7 +11,7 @@ import type { OptionItem } from "@/api/common";
 export function useGenConfig() {
   const genConfigFormData = ref<GenConfigForm>({
     fieldConfigs: [],
-    pageType: "classic",
+    pageType: "crud",
   });
 
   const genConfigFormRules = {
@@ -63,11 +63,11 @@ export function useGenConfig() {
   );
 
   /**
-   * 未保存过的表页面类型为空，统一补成普通表单
+   * 未保存过的表页面类型为空，统一补成 CrudPage 页面
    */
   function applyDefaults(config: GenConfigForm): GenConfigForm {
     if (!config.pageType) {
-      config.pageType = "classic";
+      config.pageType = "crud";
     }
     return config;
   }

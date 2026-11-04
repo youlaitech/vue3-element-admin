@@ -131,6 +131,7 @@
                   :key="key"
                   :label="item.label"
                   :value="item.value"
+                  :disabled="isQueryTypeDisabled(row, key)"
                 />
               </el-select>
             </div>
@@ -212,8 +213,19 @@ const props = defineProps<{
   aiChanges?: Record<string, AiChangeItem[]>;
 }>();
 
+type FieldConfig = NonNullable<GenConfigForm["fieldConfigs"]>[number];
+
 const formTypeOptions: Record<string, OptionItem> = FormTypeEnum;
 const queryTypeOptions: Record<string, OptionItem> = QueryTypeEnum;
+
+/**
+ * 判断查询方式是否适用于字段类型
+ */
+function isQueryTypeDisabled(row: FieldConfig, key: string): boolean {
+  if (key === "IN") return row.fieldType === "byte[]";
+  if (key === "BETWEEN") return row.fieldType === "Boolean" || row.fieldType === "byte[]";
+  return false;
+}
 
 const listRef = ref<HTMLElement>();
 const sortFlag = ref<Sortable | null>(null);

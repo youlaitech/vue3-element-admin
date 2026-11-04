@@ -228,7 +228,7 @@ const fileCount = computed(() => {
  * 下载生成的代码
  */
 function handleDownload() {
-  const pageType = props.genConfigFormData.pageType || "classic";
+  const pageType = props.genConfigFormData.pageType || "crud";
   return GeneratorAPI.download(props.tableName, pageType as "classic" | "crud", "ts");
 }
 
