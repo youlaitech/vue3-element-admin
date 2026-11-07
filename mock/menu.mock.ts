@@ -308,7 +308,7 @@ export default defineMock([
               children: [
                 {
                   path: "crud",
-                  component: "demo/table/crud/index",
+                  component: "demo/crud/index",
                   redirect: "",
                   name: "Crud",
                   meta: {
@@ -321,7 +321,7 @@ export default defineMock([
                 },
                 {
                   path: "crud-single",
-                  component: "demo/table/crud-single",
+                  component: "demo/crud/index",
                   redirect: "",
                   name: "CrudSingle",
                   meta: {
@@ -1745,7 +1745,7 @@ export default defineMock([
                   type: "M",
                   routeName: "Crud",
                   routePath: "crud",
-                  component: "demo/table/crud/index",
+                  component: "demo/crud/index",
                   externalUrl: null,
                   sort: 1,
                   visible: 1,
@@ -1762,7 +1762,7 @@ export default defineMock([
                   type: "M",
                   routeName: "CrudSingle",
                   routePath: "crud-single",
-                  component: "demo/table/crud-single",
+                  component: "demo/crud/index",
                   externalUrl: null,
                   sort: 2,
                   visible: 1,
@@ -4112,7 +4112,7 @@ const menuMap: Record<string, any> = {
     type: "M",
     routeName: "Crud",
     routePath: "crud",
-    component: "demo/table/crud/index",
+    component: "demo/crud/index",
     externalUrl: null,
     perm: null,
     visible: 1,
@@ -4128,7 +4128,7 @@ const menuMap: Record<string, any> = {
     type: "M",
     routeName: "CrudSingle",
     routePath: "crud-single",
-    component: "demo/table/crud-single",
+    component: "demo/crud/index",
     externalUrl: null,
     perm: null,
     visible: 1,
