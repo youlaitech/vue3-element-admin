@@ -35,14 +35,14 @@ const TenantAPI = {
   },
 
   /**
-   * 切换租户
+   * 获取租户详情（校验当前用户对该租户的访问权限）
    *
-   * @param tenantId 目标租户 ID
+   * @param tenantId 租户 ID
    */
-  switchTenant(tenantId: number) {
+  getTenant(tenantId: number) {
     return request<unknown, TenantInfo>({
-      url: `${TENANT_BASE_URL}/${tenantId}/switch`,
-      method: "post",
+      url: `${TENANT_BASE_URL}/${tenantId}`,
+      method: "get",
     });
   },
 
