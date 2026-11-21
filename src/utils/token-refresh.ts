@@ -46,7 +46,7 @@ export function installTokenRefresh(http: AxiosInstance) {
       return Promise.reject(error);
     }
 
-    // 旧账号的失败响应不能触发当前账号续期或退出。
+    // 旧账号的失败响应不能触发当前账号续期或退出
     if (
       config?.sessionRevision !== undefined &&
       config.sessionRevision !== authSessionRevision.value
@@ -61,14 +61,14 @@ export function installTokenRefresh(http: AxiosInstance) {
       error.cause ??= new Error("文件接口错误响应解析失败", { cause });
       return Promise.reject(error);
     }
-    // 文件解码期间也可能切换账号，不能将旧请求重试到新会话。
+    // 文件解码期间也可能切换账号，不能将旧请求重试到新会话
     if (
       config?.sessionRevision !== undefined &&
       config.sessionRevision !== authSessionRevision.value
     ) {
       return Promise.reject(new Error("登录会话已切换"));
     }
-    // 匿名登录和续期的失败由调用者处理，不影响当前会话。
+    // 匿名登录和续期的失败由调用者处理，不影响当前会话
     if (config?.anonymous) return Promise.reject(error);
 
     const { code } = response.data ?? {};
@@ -77,7 +77,7 @@ export function installTokenRefresh(http: AxiosInstance) {
       const retryConfig = config as RetryRequestConfig | undefined;
       const userStore = useUserStoreHook();
 
-      // 缺少重试配置或已重试过时终止续期，防止循环请求。
+      // 缺少重试配置或已重试过时终止续期，防止循环请求
       if (!retryConfig || retryConfig.isRetried || retryConfig.anonymous) {
         await userStore.redirectToLogin();
         return Promise.reject(new Error("Token Invalid"));
@@ -86,7 +86,7 @@ export function installTokenRefresh(http: AxiosInstance) {
       retryConfig.isRetried = true;
 
       try {
-        // 晚到的 401 可能使用了续期前的令牌，无须再次轮换。
+        // 晚到的 401 可能使用了续期前的令牌，无须再次轮换
         if (retryConfig.headers.get("Authorization") === `Bearer ${AuthStorage.getAccessToken()}`) {
           await userStore.refreshTokenOnce();
         }
@@ -109,7 +109,7 @@ export function installTokenRefresh(http: AxiosInstance) {
         if (retryConfig.sessionRevision !== authSessionRevision.value) {
           return Promise.reject(new Error("登录会话已切换"));
         }
-        // Redis 不可用或网络中断时保留凭证，交给请求层提示重试。
+        // Redis 不可用或网络中断时保留凭证，交给请求层提示重试
         if (isAxiosError(refreshError) && refreshError.response?.status !== 401) {
           return Promise.reject(refreshError);
         }

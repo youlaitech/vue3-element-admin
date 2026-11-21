@@ -110,7 +110,7 @@ const queue = useUploadQueue(modelValue, {
 const { fileList } = queue;
 
 /**
- * 检查单个文件的大小限制。
+ * 检查单个文件的大小限制
  */
 function handleBeforeUpload(file: UploadRawFile): boolean {
   if (file.size > props.maxFileSize * 1024 * 1024) {
@@ -121,35 +121,35 @@ function handleBeforeUpload(file: UploadRawFile): boolean {
 }
 
 /**
- * 通过上传队列提交文件及附加参数。
+ * 通过上传队列提交文件及附加参数
  */
 function handleUpload(options: UploadRequestOptions): Promise<FileInfo> {
   return queue.upload(options, props);
 }
 
 /**
- * 提示上传数量已达上限。
+ * 提示上传数量已达上限
  */
 function handleExceed(): void {
   ElMessage.warning("最多只能上传 " + props.limit + " 个文件");
 }
 
 /**
- * 结算有效上传任务并提示成功。
+ * 结算有效上传任务并提示成功
  */
 function handleSuccess(info: FileInfo, file: UploadUserFile): void {
   if (queue.complete(info, file)) ElMessage.success("上传成功");
 }
 
 /**
- * 清理有效失败任务并提示错误。
+ * 清理有效失败任务并提示错误
  */
 function handleError(_error: unknown, file: UploadUserFile): void {
   if (queue.fail(file)) ElMessage.error("上传失败");
 }
 
 /**
- * 删除远端文件后移除表单中的引用。
+ * 删除远端文件后移除表单中的引用
  */
 async function handleRemove(fileUrl: string): Promise<void> {
   await FileAPI.delete(fileUrl);
@@ -157,7 +157,7 @@ async function handleRemove(fileUrl: string): Promise<void> {
 }
 
 /**
- * 下载已有地址的文件。
+ * 下载已有地址的文件
  */
 function handleDownload(file: UploadUserFile) {
   if (file.url) return FileAPI.download(file.url, file.name);

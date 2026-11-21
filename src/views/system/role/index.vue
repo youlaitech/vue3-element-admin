@@ -4,21 +4,28 @@
     <aside class="page-aside" :class="{ 'is-collapsed': sidebarCollapsed }">
       <div class="page-aside__inner">
         <div class="role-list">
-          <div class="mb-2 flex items-center gap-2">
+          <div class="role-list__head">
             <el-input
               v-model="params.keywords"
-              class="flex-1"
-              placeholder="角色名称"
+              placeholder="搜索角色"
               clearable
-              @keyup.enter="handleSearch"
+              @input="handleSearchInput"
               @clear="handleSearch"
-            />
+            >
+              <template #prefix>
+                <el-icon><Search /></el-icon>
+              </template>
+            </el-input>
             <el-button
               v-hasPerm="'sys:role:create'"
               type="primary"
-              :icon="Plus"
+              plain
+              class="role-list__create"
               @click="handleCreateClick()"
-            />
+            >
+              <el-icon><Plus /></el-icon>
+              新增
+            </el-button>
           </div>
 
           <el-scrollbar v-loading="loading" class="role-list__scroll">
@@ -28,13 +35,16 @@
               class="role-list__item"
               :class="{
                 'is-active': row.id === currentRole?.id,
-                'is-disabled': row.status === 0,
+                'is-disabled': row.status === CommonStatus.DISABLED,
               }"
               @click="handleRoleClick(row)"
             >
               <div class="role-list__info">
                 <span class="role-list__title">
-                  <StatusDot :active="row.status === CommonStatus.ENABLED" />
+                  <span
+                    class="status-dot"
+                    :class="{ 'is-stopped': row.status !== CommonStatus.ENABLED }"
+                  />
                   <span class="role-list__name" :title="row.name">{{ row.name }}</span>
                 </span>
                 <span class="role-list__meta">
@@ -44,23 +54,27 @@
                   </span>
                 </span>
               </div>
-              <div v-if="row.code !== ROLE_ROOT" class="role-list__actions">
-                <el-button
-                  v-hasPerm="'sys:role:update'"
-                  link
-                  type="primary"
-                  @click.stop="handleEditClick(row.id)"
-                >
-                  <el-icon><Edit /></el-icon>
-                </el-button>
-                <el-button
-                  v-hasPerm="'sys:role:delete'"
-                  link
-                  type="danger"
-                  @click.stop="handleDelete(row.id)"
-                >
-                  <el-icon><Delete /></el-icon>
-                </el-button>
+              <div v-if="row.code !== ROLE_ROOT" class="aside-actions">
+                <el-tooltip content="编辑" placement="top">
+                  <el-button
+                    v-hasPerm="'sys:role:update'"
+                    link
+                    class="is-edit"
+                    @click.stop="handleEditClick(row.id)"
+                  >
+                    <el-icon><Edit /></el-icon>
+                  </el-button>
+                </el-tooltip>
+                <el-tooltip content="删除" placement="top">
+                  <el-button
+                    v-hasPerm="'sys:role:delete'"
+                    link
+                    class="is-delete"
+                    @click.stop="handleDelete(row.id)"
+                  >
+                    <el-icon><Delete /></el-icon>
+                  </el-button>
+                </el-tooltip>
               </div>
             </div>
 
@@ -102,26 +116,13 @@
     <div class="page-main">
       <el-card v-if="currentRole" ref="permWrapperRef" class="page-content" shadow="never">
         <div class="role-perm__header">
-          <div class="role-perm__row">
-            <span class="role-perm__title">功能权限</span>
-            <el-tag type="primary" effect="plain">{{ currentRole.name }}</el-tag>
-            <el-tag v-if="isRootRole" type="warning" effect="plain">
-              超级管理员拥有全部权限，无需分配
-            </el-tag>
+          <span class="role-perm__title">功能权限</span>
+          <el-tag type="primary" effect="plain">{{ currentRole.name }}</el-tag>
+          <el-tag v-if="isRootRole" type="warning" effect="plain">
+            超级管理员拥有全部权限，无需分配
+          </el-tag>
 
-            <el-button
-              v-hasPerm="'sys:role:assign'"
-              class="ml-auto"
-              type="primary"
-              :loading="saving"
-              :disabled="isRootRole"
-              @click="handleSavePerm"
-            >
-              保存
-            </el-button>
-          </div>
-
-          <div class="role-perm__row">
+          <div class="role-perm__actions">
             <el-input
               v-model="permKeywords"
               class="role-perm__search"
@@ -133,27 +134,36 @@
               </template>
             </el-input>
 
-            <div class="ml-auto flex items-center gap-3">
-              <el-segmented v-model="checkMode" :options="CHECK_MODE_OPTIONS" />
+            <el-segmented v-model="checkMode" :options="CHECK_MODE_OPTIONS" />
 
-              <el-tooltip :content="isAllCollapsed ? '展开' : '收缩'" placement="top">
-                <el-button class="page-icon-btn" @click="toggleAllGroups">
-                  <span v-if="isAllCollapsed" class="i-svg:add-box" />
-                  <span v-else class="i-svg:checkbox-indeterminate" />
-                </el-button>
-              </el-tooltip>
+            <el-tooltip :content="isAllCollapsed ? '展开' : '收缩'" placement="top">
+              <el-button class="page-icon-btn" @click="toggleAllGroups">
+                <span v-if="isAllCollapsed" class="i-svg:add-box" />
+                <span v-else class="i-svg:checkbox-indeterminate" />
+              </el-button>
+            </el-tooltip>
 
-              <el-tooltip content="刷新" placement="top">
-                <el-button class="page-icon-btn" @click="handleRefreshPerm">
-                  <el-icon><Refresh /></el-icon>
-                </el-button>
-              </el-tooltip>
-              <el-tooltip content="全屏" placement="top">
-                <el-button class="page-icon-btn" @click="toggleFullscreen">
-                  <el-icon><FullScreen /></el-icon>
-                </el-button>
-              </el-tooltip>
-            </div>
+            <el-tooltip content="刷新" placement="top">
+              <el-button class="page-icon-btn" @click="handleRefreshPerm">
+                <el-icon><Refresh /></el-icon>
+              </el-button>
+            </el-tooltip>
+
+            <el-tooltip content="全屏" placement="top">
+              <el-button class="page-icon-btn" @click="toggleFullscreen">
+                <el-icon><FullScreen /></el-icon>
+              </el-button>
+            </el-tooltip>
+
+            <el-button
+              v-hasPerm="'sys:role:assign'"
+              type="primary"
+              :loading="saving"
+              :disabled="isRootRole"
+              @click="handleSavePerm"
+            >
+              保存
+            </el-button>
           </div>
         </div>
 
@@ -220,6 +230,7 @@
       v-model="dialogState.visible"
       :title="dialogState.title"
       width="600px"
+      append-to-body
       @close="closeDialog"
     >
       <el-form ref="roleFormRef" :model="formData" :rules="rules" label-width="100px">
@@ -307,7 +318,6 @@ import type { MenuItem } from "@/api/system/menu";
 import DeptAPI from "@/api/system/dept";
 import type { OptionItem } from "@/api/common";
 import { usePageTable } from "@/composables";
-import StatusDot from "@/components/StatusDot/index.vue";
 import { CommonStatus } from "@/enums";
 import { ROLE_ROOT } from "@/constants";
 
@@ -392,14 +402,14 @@ function normalizeMenuTree(list: MenuItem[]): MenuItem[] {
 }
 
 /**
- * 一次返回行与索引；后代集合包含节点自身，重建不会保留旧索引。
+ * 一次返回行与索引；后代集合包含节点自身，重建不会保留旧索引
  */
 function buildPermissionModel(nodes: MenuItem[]) {
   const ancestorsById = new Map<string, string[]>();
   const descendantIdsById = new Map<string, string[]>();
 
   /**
-   * 按菜单层级构建权限表格行。
+   * 按菜单层级构建权限表格行
    */
   function buildRows(nodes: MenuItem[], depth = 0, ancestors: string[] = []): PermRow[] {
     const rows: PermRow[] = [];
@@ -481,58 +491,31 @@ let descendantIdsById = new Map<string, string[]>();
 let menuTreeLoaded = false;
 
 /**
- * 按关键字过滤权限行
- * 分组内任一行命中即整组保留，避免只剩零散菜单丢失所属目录
+ * 按关键字过滤权限行：命中行连同祖先链保留，目录名命中时展开整棵子树
  *
  * @param rows 权限表格行列表
  * @param keyword 权限名称关键字
  * @returns 过滤后的权限表格行列表
  */
 function filterPermRows(rows: PermRow[], keyword: string): PermRow[] {
-  if (!keyword) return rows;
+  const keywordText = keyword.trim();
+  if (!keywordText) return rows;
 
-  const result: PermRow[] = [];
-  let groupRow: PermRow | null = null;
-  let groupRows: PermRow[] = [];
-  let groupHit = false;
-
-  /**
-   * 判断权限行是否命中搜索关键字
-   */
-  const hitRow = (row: PermRow) =>
-    row.name.includes(keyword) || row.buttons.some((btn) => btn.name.includes(keyword));
-
-  /**
-   * 把命中的权限分组写入结果
-   */
-  const flushGroup = () => {
-    if (groupRow && groupHit) {
-      result.push(groupRow, ...groupRows);
-    }
-    groupRow = null;
-    groupRows = [];
-    groupHit = false;
-  };
+  const matchedIds = new Set<string>();
 
   rows.forEach((row) => {
-    if (row.group) {
-      flushGroup();
-      groupRow = row;
-      groupHit = hitRow(row);
-      return;
-    }
+    const nameHit = row.name.includes(keywordText);
+    if (!nameHit && !row.buttons.some((btn) => btn.name.includes(keywordText))) return;
 
-    if (!groupRow) {
-      if (hitRow(row)) result.push(row);
-      return;
-    }
+    matchedIds.add(row.id);
+    (ancestorsById.get(row.id) ?? []).forEach((id) => matchedIds.add(id));
 
-    if (hitRow(row)) groupHit = true;
-    groupRows.push(row);
+    if (nameHit) {
+      (descendantIdsById.get(row.id) ?? []).forEach((id) => matchedIds.add(id));
+    }
   });
 
-  flushGroup();
-  return result;
+  return rows.filter((row) => matchedIds.has(row.id));
 }
 
 // 权限表格渲染数据
@@ -636,6 +619,9 @@ function handleSearch(): void {
   params.pageNum = 1;
   fetchRoles();
 }
+
+// 输入即筛，避免用户以为搜索框没生效
+const handleSearchInput = useDebounceFn(handleSearch, 300);
 
 /**
  * 角色列表翻页
@@ -759,6 +745,15 @@ const rules: FormRules<RoleForm> = {
 const deptOptions = ref<OptionItem[]>([]);
 
 /**
+ * 请求部门下拉选项，已加载时复用
+ */
+async function ensureDeptOptions(): Promise<void> {
+  if (deptOptions.value.length === 0) {
+    deptOptions.value = await DeptAPI.getOptions();
+  }
+}
+
+/**
  * 打开角色表单弹窗
  */
 function openDialog(): void {
@@ -792,9 +787,7 @@ function resetForm(): void {
  */
 async function handleCreateClick(): Promise<void> {
   dialogState.title = "新增角色";
-  if (deptOptions.value.length === 0) {
-    deptOptions.value = await DeptAPI.getOptions();
-  }
+  await ensureDeptOptions();
   openDialog();
 }
 
@@ -806,9 +799,7 @@ async function handleCreateClick(): Promise<void> {
 async function handleEditClick(roleId?: string): Promise<void> {
   if (!roleId) return;
   dialogState.title = "修改角色";
-  if (deptOptions.value.length === 0) {
-    deptOptions.value = await DeptAPI.getOptions();
-  }
+  await ensureDeptOptions();
   const data = await RoleAPI.getFormData(roleId);
   Object.assign(formData, data);
   openDialog();
@@ -892,7 +883,23 @@ onMounted(() => {
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  padding: 12px;
+  padding: 16px;
+
+  &__head {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+
+    :deep(.el-input) {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &__create {
+    flex-shrink: 0;
+  }
 
   &__scroll {
     flex: 1 1 auto;
@@ -904,9 +911,9 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 7px 8px;
+    padding: 8px 10px;
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: var(--radius-control);
     transition: background-color 0.15s;
 
     &:hover {
@@ -950,7 +957,7 @@ onMounted(() => {
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--el-text-color-primary);
     white-space: nowrap;
   }
@@ -981,46 +988,32 @@ onMounted(() => {
   }
 
   &__item.is-active &__name {
+    font-weight: 600;
     color: var(--el-color-primary);
   }
 
   &__item.is-disabled:not(.is-active) &__name {
     color: var(--el-text-color-secondary);
   }
-
-  &__actions {
-    flex-shrink: 0;
-    margin-left: 4px;
-
-    .el-button + .el-button {
-      margin-left: 4px;
-    }
-
-    .el-button {
-      padding: 0;
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
-  }
-
-  &__item:hover &__actions .el-button,
-  &__item.is-active &__actions .el-button {
-    opacity: 1;
-  }
 }
 
 .role-perm {
   &__header {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: var(--page-gap);
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: center;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
   }
 
-  &__row {
+  &__actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     align-items: center;
+    margin-left: auto;
   }
 
   // 类名控制宽度，UnoCSS 原子类会被按需注入的 .el-input 宽度覆盖

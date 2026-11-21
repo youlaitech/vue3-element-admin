@@ -10,20 +10,20 @@ let appRef: App | null = null;
 let registering: Promise<void> | null = null;
 
 /**
- * 登记应用实例，实际加载和注册延后到首次进入表单页。
+ * 登记应用实例，实际加载和注册延后到首次进入表单页
  */
 export function setupFormCreate(app: App): void {
   appRef = app;
 }
 
 /**
- * 首次加载并注册表单依赖，后续调用复用注册任务。
- * 加载失败会释放任务，允许再次进入页面时重试。
+ * 首次加载并注册表单依赖，后续调用复用注册任务
+ * 加载失败会释放任务，允许再次进入页面时重试
  */
 export function ensureFormCreate(): Promise<void> {
   if (!registering) {
     const pending = register().catch((error) => {
-      // 只释放本次失败任务，不影响后续已启动的注册。
+      // 只释放本次失败任务，不影响后续已启动的注册
       if (registering === pending) registering = null;
       throw error;
     });
@@ -50,7 +50,7 @@ async function register(): Promise<void> {
     import("element-plus/dist/index.css"),
   ]);
 
-  // 预编译的 form-create 在运行时解析 Element Plus 组件，需全量注册。
+  // 预编译的 form-create 在运行时解析 Element Plus 组件，需全量注册
   app.use(elementPlus.default);
   app.use(formCreate.default);
   app.use(designer.default);
@@ -60,7 +60,7 @@ async function register(): Promise<void> {
 
 // 业务组件拖拽规则
 
-// 时间前缀区分页面重载，序号区分同一毫秒内拖入的字段。
+// 时间前缀区分页面重载，序号区分同一毫秒内拖入的字段
 let fieldSeed = 0;
 
 /**
@@ -147,11 +147,11 @@ const fileUploadRule: DragRule = {
   ],
 };
 
-// 业务组件依赖登录接口；匿名表单应使用设计器基础组件。
+// 业务组件依赖登录接口；匿名表单应使用设计器基础组件
 let registered = false;
 
 /**
- * 同时登记设计态、运行态组件，并补充设计器拖拽规则。
+ * 同时登记设计态、运行态组件，并补充设计器拖拽规则
  */
 function registerComponents(
   designer: typeof DesignerPlugin,

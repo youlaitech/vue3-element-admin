@@ -62,7 +62,10 @@
         <el-table-column label="状态" align="center" width="100">
           <template #default="scope">
             <span class="dict-item-panel__status">
-              <StatusDot :active="scope.row.status === CommonStatus.ENABLED" />
+              <span
+                class="status-dot"
+                :class="{ 'is-stopped': scope.row.status !== CommonStatus.ENABLED }"
+              />
               {{ scope.row.status === CommonStatus.ENABLED ? "启用" : "禁用" }}
             </span>
           </template>
@@ -173,7 +176,6 @@ import { FullScreen, QuestionFilled, Refresh } from "@element-plus/icons-vue";
 import DictAPI from "@/api/system/dict";
 import type { DictItem, DictItemForm, DictItemQuery } from "@/api/system/dict";
 import { usePageTable, useTableSelection } from "@/composables";
-import StatusDot from "@/components/StatusDot/index.vue";
 import { CommonStatus } from "@/enums";
 import { useDictStoreHook } from "@/stores/dict";
 
@@ -190,11 +192,6 @@ const props = defineProps({
   dictCode: {
     type: String,
     required: true,
-  },
-  /** 当前字典名称 */
-  dictName: {
-    type: String,
-    default: "",
   },
 });
 
@@ -214,7 +211,6 @@ const tagTypeOptions: Exclude<NonNullable<DictItemForm["tagType"]>, "">[] = [
   "danger",
 ];
 
-// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   DictItem,
   DictItemQuery

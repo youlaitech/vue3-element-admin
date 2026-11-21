@@ -3,21 +3,28 @@
     <aside class="page-aside" :class="{ 'is-collapsed': sidebarCollapsed }">
       <div class="page-aside__inner">
         <div class="dict-type">
-          <div class="flex items-center gap-2 mb-2">
+          <div class="dict-type__head">
             <el-input
               v-model="params.keywords"
-              class="flex-1"
-              placeholder="字典名称/编码"
+              placeholder="搜索字典"
               clearable
-              @keyup.enter="handleSearch"
+              @input="handleSearchInput"
               @clear="handleSearch"
-            />
+            >
+              <template #prefix>
+                <el-icon><Search /></el-icon>
+              </template>
+            </el-input>
             <el-button
               v-hasPerm="['sys:dict:create']"
               type="primary"
-              :icon="Plus"
+              plain
+              class="dict-type__create"
               @click="handleCreateClick()"
-            />
+            >
+              <el-icon><Plus /></el-icon>
+              新增
+            </el-button>
           </div>
 
           <el-scrollbar v-loading="loading" class="dict-type__list">
@@ -30,16 +37,19 @@
             >
               <div class="dict-type__info">
                 <span class="dict-type__name" :title="row.name">
-                  <StatusDot :active="row.status === CommonStatus.ENABLED" />
+                  <span
+                    class="status-dot"
+                    :class="{ 'is-stopped': row.status !== CommonStatus.ENABLED }"
+                  />
                   {{ row.name }}
                 </span>
                 <span class="dict-type__code" :title="row.dictCode">{{ row.dictCode }}</span>
               </div>
-              <div class="dict-type__actions">
+              <div class="aside-actions">
                 <el-button
                   v-hasPerm="['sys:dict:update']"
                   link
-                  type="primary"
+                  class="is-edit"
                   @click.stop="handleEditClick(row.id)"
                 >
                   <el-icon><Edit /></el-icon>
@@ -47,7 +57,7 @@
                 <el-button
                   v-hasPerm="['sys:dict:delete']"
                   link
-                  type="danger"
+                  class="is-delete"
                   @click.stop="handleDelete(row.id)"
                 >
                   <el-icon><Delete /></el-icon>
@@ -95,7 +105,6 @@
         v-if="currentType"
         :key="currentType.dictCode"
         :dict-code="currentType.dictCode"
-        :dict-name="currentType.name"
       />
       <el-card v-else class="page-content" shadow="never">
         <el-empty description="请先在左侧选择字典类型" />
@@ -108,7 +117,7 @@
       width="500px"
       @close="closeDialog"
     >
-      <el-form ref="dictFormRef" :model="formData" :rules="rules" label-width="80px">
+      <el-form ref="dictFormRef" :model="formData" :rules="rules" label-width="88px">
         <el-form-item label="字典名称" prop="name">
           <el-input v-model="formData.name" placeholder="请输入字典名称" />
         </el-form-item>
@@ -141,12 +150,11 @@
 
 <script setup lang="ts">
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from "element-plus";
-import { ArrowLeft, ArrowRight, Delete, Edit, Plus } from "@element-plus/icons-vue";
+import { ArrowLeft, ArrowRight, Delete, Edit, Plus, Search } from "@element-plus/icons-vue";
 
 import DictAPI from "@/api/system/dict";
 import type { DictTypeForm, DictTypeItem, DictTypeQuery } from "@/api/system/dict";
 import { usePageTable } from "@/composables";
-import StatusDot from "@/components/StatusDot/index.vue";
 import { CommonStatus } from "@/enums";
 import DictItemPanel from "./components/DictItemPanel.vue";
 
@@ -155,15 +163,13 @@ defineOptions({
   inheritAttrs: false,
 });
 
-// 左侧字典类型折叠状态：折叠后右侧顶部仍会显示当前字典，用以免丢失上下文
+// 左侧字典类型折叠状态
 const sidebarCollapsed = ref(false);
 
 const dictFormRef = ref<FormInstance>();
 
 // 当前选中的字典类型，右侧字典项据此联动
 const currentType = ref<DictTypeItem>();
-
-// 字典类型列表分页数据管理
 const { loading, list, total, params, fetchData } = usePageTable<DictTypeItem, DictTypeQuery>({
   initialParams: {
     pageNum: 1,
@@ -192,6 +198,9 @@ function handleSearch(): void {
   params.pageNum = 1;
   fetchTypes();
 }
+
+// 输入即筛
+const handleSearchInput = useDebounceFn(handleSearch, 300);
 
 /**
  * 左侧列表翻页
@@ -347,7 +356,23 @@ onMounted(() => {
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  padding: 12px;
+  padding: 16px;
+
+  &__head {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+
+    :deep(.el-input) {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &__create {
+    flex-shrink: 0;
+  }
 
   &__list {
     flex: 1 1 auto;
@@ -355,12 +380,13 @@ onMounted(() => {
   }
 
   &__item {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 7px 8px;
+    padding: 8px 10px;
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: var(--radius-control);
     transition: background-color 0.15s;
 
     &:hover {
@@ -369,6 +395,17 @@ onMounted(() => {
 
     &.is-active {
       background-color: var(--el-color-primary-light-9);
+    }
+
+    &.is-active::before {
+      position: absolute;
+      top: 6px;
+      bottom: 6px;
+      left: 0;
+      width: 2px;
+      content: "";
+      background-color: var(--el-color-primary);
+      border-radius: 1px;
     }
   }
 
@@ -380,25 +417,11 @@ onMounted(() => {
     line-height: 1.35;
   }
 
-  &__dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    margin-right: 6px;
-    vertical-align: middle;
-    background-color: var(--el-color-success);
-    border-radius: 50%;
-
-    &.is-stopped {
-      background-color: var(--el-text-color-placeholder);
-    }
-  }
-
   &__name {
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--el-text-color-primary);
     white-space: nowrap;
   }
@@ -414,26 +437,6 @@ onMounted(() => {
   &__item.is-active &__name {
     font-weight: 600;
     color: var(--el-color-primary);
-  }
-
-  &__actions {
-    flex-shrink: 0;
-    margin-left: 4px;
-
-    .el-button + .el-button {
-      margin-left: 4px;
-    }
-
-    .el-button {
-      padding: 0;
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
-  }
-
-  &__item:hover &__actions .el-button,
-  &__item.is-active &__actions .el-button {
-    opacity: 1;
   }
 }
 </style>

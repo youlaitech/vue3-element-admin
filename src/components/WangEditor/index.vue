@@ -74,7 +74,7 @@ const editorConfig: Partial<IEditorConfig> = {
   MENU_CONF: {
     uploadImage: {
       /**
-       * 上传编辑器图片并插入返回的文件地址。
+       * 上传编辑器图片并插入返回的文件地址
        */
       async customUpload(file: File, insertFn: InsertFnType) {
         const data = await FileAPI.uploadFile(file);

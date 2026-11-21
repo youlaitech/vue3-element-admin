@@ -65,17 +65,17 @@ export const themePalettePresets = [
   },
 ] as const satisfies readonly ThemePalettePreset[];
 
-export const defaultThemePalette = themePalettePresets[0];
+const defaultThemePalette = themePalettePresets[0];
 
 export const appConfig = {
   name: pkg.name as string,
   version: pkg.version as string,
   title: (env.VITE_APP_TITLE as string) || pkg.name,
 
-  // 环境变量是字符串，只有 "true" 开启功能。
+  // 环境变量是字符串，只有 "true" 开启功能
   tenantEnabled: env.VITE_TENANT_ENABLED === "true",
   aiEnabled: env.VITE_AI_ENABLED === "true",
-  // 显示 OIDC 入口，后端需另行启用 security.oidc.enabled。
+  // 显示 OIDC 入口，后端需另行启用 security.oidc.enabled
   oidcEnabled: env.VITE_OIDC_ENABLED === "true",
 } as const;
 

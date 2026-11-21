@@ -1,31 +1,31 @@
 <template>
   <div class="page-container">
-    <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="params" :inline="true">
-        <el-form-item prop="keywords" label="关键字">
-          <el-input
-            v-model="params.keywords"
-            placeholder="租户名称/租户编码/域名"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-
-        <el-form-item prop="status" label="状态">
-          <el-select v-model="params.status" placeholder="全部" clearable style="width: 120px">
-            <el-option label="正常" :value="CommonStatus.ENABLED" />
-            <el-option label="禁用" :value="CommonStatus.DISABLED" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">搜索</el-button>
-          <el-button @click="handleResetQuery">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
     <el-card ref="tableWrapperRef" class="page-content" shadow="never">
+      <div class="page-filter">
+        <el-form ref="queryFormRef" :model="params" :inline="true">
+          <el-form-item prop="keywords" label="关键字">
+            <el-input
+              v-model="params.keywords"
+              placeholder="租户名称/租户编码/域名"
+              clearable
+              @keyup.enter="handleQuery"
+            />
+          </el-form-item>
+
+          <el-form-item prop="status" label="状态">
+            <el-select v-model="params.status" placeholder="全部" clearable style="width: 120px">
+              <el-option label="正常" :value="CommonStatus.ENABLED" />
+              <el-option label="禁用" :value="CommonStatus.DISABLED" />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="handleQuery">搜索</el-button>
+            <el-button @click="handleResetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+
       <div class="page-toolbar">
         <div class="page-toolbar__left">
           <el-button v-hasPerm="['sys:tenant:create']" type="primary" @click="openDialog()">
@@ -331,7 +331,6 @@
           :default-expanded-keys="menuExpandedKeys"
           :default-expand-all="false"
           class="mt-5"
-          @check="handleMenuCheckedChange"
         >
           <template #default="{ data }">
             {{ data.label }}
@@ -389,7 +388,6 @@ const queryFormRef = ref<FormInstance>();
 const tenantFormRef = ref<FormInstance>();
 const menuTreeRef = ref<InstanceType<typeof ElTree>>();
 
-// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   TenantItem,
   TenantQuery
@@ -484,10 +482,7 @@ const tenantPlanId = ref<number | undefined>();
 const planMenuIds = ref<number[]>([]);
 const tenantMenuIds = ref<number[]>([]);
 const menuSourceOptions = ref<OptionItem[]>([]);
-const planPreviewOptions = ref<OptionItem[]>([]);
 const menuPermOptions = ref<OptionItem[]>([]);
-const menuCheckedCount = ref(0);
-const menuParentChildLinked = ref(true);
 const originalEnabledMenuIds = ref<number[]>([]);
 
 // 当前可见菜单的默认展开节点（顶级节点全部展开）
@@ -580,7 +575,6 @@ function updateCheckedMenus(): void {
       : planMenuIds.value;
   menuTreeRef.value?.setCheckedKeys([], false);
   checkedMenuIds.forEach((menuId) => menuTreeRef.value?.setChecked(menuId, true, false));
-  menuCheckedCount.value = checkedMenuIds.length;
 }
 
 /**
@@ -591,11 +585,9 @@ function updateCheckedMenus(): void {
 async function handlePlanChange(planId?: number): Promise<void> {
   if (!planId) {
     planMenuIds.value = [];
-    planPreviewOptions.value = [];
     menuPermOptions.value = applyMenuOptionsDisabled([], false);
     await nextTick();
     menuTreeRef.value?.setCheckedKeys([], false);
-    menuCheckedCount.value = 0;
     return;
   }
   loading.value = true;
@@ -606,21 +598,12 @@ async function handlePlanChange(planId?: number): Promise<void> {
     const filteredOptions = allowedMenuIdSet.size
       ? filterMenuOptionsByIds(menuSourceOptions.value, allowedMenuIdSet)
       : [];
-    planPreviewOptions.value = filteredOptions;
     menuPermOptions.value = applyMenuOptionsDisabled(filteredOptions, false);
     await nextTick();
     updateCheckedMenus();
   } finally {
     loading.value = false;
   }
-}
-
-/**
- * 树节点勾选变化时更新勾选计数
- */
-function handleMenuCheckedChange(): void {
-  const checkedKeys = menuTreeRef.value?.getCheckedKeys(false) || [];
-  menuCheckedCount.value = checkedKeys.length;
 }
 
 /**
@@ -633,11 +616,8 @@ function resetTenantPlanState(): void {
   tenantPlanId.value = undefined;
   planMenuIds.value = [];
   tenantMenuIds.value = [];
-  planPreviewOptions.value = [];
   menuPermOptions.value = [];
   menuSourceOptions.value = [];
-  menuCheckedCount.value = 0;
-  menuParentChildLinked.value = true;
   checkedTenant.value = {};
   checkedTenantForm.value = null;
   menuTreeRef.value?.setCheckedKeys([], false);
@@ -669,7 +649,6 @@ async function openTenantPlanDialog(row: TenantItem): Promise<void> {
 
   tenantPlanSelectVisible.value = true;
   loading.value = true;
-  menuParentChildLinked.value = true;
 
   checkedTenant.value = {
     id: Number(tenantId),
@@ -707,7 +686,6 @@ async function openTenantCustomizeDialog(row?: TenantItem): Promise<void> {
   if (isPlatformTenantId(tenantId)) return;
 
   loading.value = true;
-  menuParentChildLinked.value = true;
 
   checkedTenant.value = {
     id: Number(tenantId),
@@ -730,7 +708,6 @@ async function openTenantCustomizeDialog(row?: TenantItem): Promise<void> {
     menuSourceOptions.value = menuOptions;
     tenantMenuIds.value = normalizeMenuIds(menuIds);
     await handlePlanChange(tenantPlanId.value);
-    menuPermOptions.value = applyMenuOptionsDisabled(planPreviewOptions.value, false);
     tenantPlanDialogVisible.value = true;
     tenantPlanSelectVisible.value = false;
     await nextTick();
@@ -879,7 +856,7 @@ function closeDialog(): void {
 }
 
 /**
- * 校验并提交租户配置。
+ * 校验并提交租户配置
  */
 const handleSubmit = useDebounceFn(async (): Promise<void> => {
   const valid = await tenantFormRef.value?.validate().then(

@@ -44,10 +44,9 @@ const sidebarState = computed(() =>
   align-items: center;
   justify-content: space-between;
   height: $navbar-height;
-  padding: 0 14px 0 6px;
+  padding: 0 16px 0 8px;
   background-color: var(--content-bg);
-  border-bottom: 1px solid var(--card-border);
-  box-shadow: 0 1px 0 rgb(15 23 42 / 3%);
+  border-bottom: 1px solid var(--border-color);
 
   &__actions {
     display: flex;

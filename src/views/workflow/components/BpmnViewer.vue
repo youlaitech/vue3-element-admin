@@ -6,7 +6,7 @@
 import Viewer from "bpmn-js/lib/NavigatedViewer";
 
 /**
- * 缩放与节点高亮所需的画布服务接口。
+ * 缩放与节点高亮所需的画布服务接口
  */
 interface CanvasLike {
   zoom(scale: number | "fit-viewport"): number;
@@ -19,7 +19,7 @@ defineOptions({
 });
 
 /**
- * BPMN 流程图与节点高亮数据。
+ * BPMN 流程图与节点高亮数据
  */
 const props = defineProps<{
   /** BPMN 2.0 XML */

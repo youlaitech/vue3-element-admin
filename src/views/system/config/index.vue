@@ -1,24 +1,24 @@
 <template>
   <div class="page-container">
-    <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="params" :inline="true">
-        <el-form-item label="关键字" prop="keywords">
-          <el-input
-            v-model="params.keywords"
-            placeholder="请输入配置键\配置名称"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">搜索</el-button>
-          <el-button @click="handleResetQuery">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
     <el-card ref="tableWrapperRef" class="page-content" shadow="never">
+      <div class="page-filter">
+        <el-form ref="queryFormRef" :model="params" :inline="true">
+          <el-form-item label="关键字" prop="keywords">
+            <el-input
+              v-model="params.keywords"
+              placeholder="请输入配置键\配置名称"
+              clearable
+              @keyup.enter="handleQuery"
+            />
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="handleQuery">搜索</el-button>
+            <el-button @click="handleResetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+
       <div class="page-toolbar">
         <div class="page-toolbar__left">
           <el-button
@@ -102,6 +102,7 @@
       v-model="dialogState.visible"
       :title="dialogState.title"
       width="500px"
+      append-to-body
       :close-on-click-modal="!isSaving"
       :close-on-press-escape="!isSaving"
       :show-close="!isSaving"
@@ -115,10 +116,9 @@
       />
       <el-form
         ref="dataFormRef"
-        v-loading="isLoadingForm"
         :model="formData"
         :rules="rules"
-        :disabled="isLoadingForm || hasFormLoadError || isSaving"
+        :disabled="hasFormLoadError || isSaving"
         label-suffix=":"
         label-width="100px"
       >
@@ -147,7 +147,7 @@
           <el-button
             type="primary"
             :loading="isSaving"
-            :disabled="isLoadingForm || hasFormLoadError"
+            :disabled="hasFormLoadError"
             @click="handleSubmit"
           >
             确定
@@ -178,7 +178,6 @@ const { toggle: toggleFullscreen } = useFullscreen(tableWrapperRef);
 const queryFormRef = ref<FormInstance>();
 const dataFormRef = ref<FormInstance>();
 
-// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   ConfigItem,
   ConfigQuery
@@ -189,7 +188,6 @@ const { loading, list, total, params, fetchData, handleQuery, handleResetQuery }
 });
 
 const dialogState = reactive({ title: "", visible: false });
-const isLoadingForm = ref(false);
 const hasFormLoadError = ref(false);
 const isSaving = ref(false);
 const deletingId = ref<string>();
@@ -211,30 +209,32 @@ const rules: FormRules = {
 };
 
 /**
- * 打开配置表单，仅回填当前记录的最新详情。
+ * 加载详情后打开，避免表单二次填充
  */
 async function openDialog(id?: string): Promise<void> {
   if (isSaving.value || deletingId.value !== undefined) return;
   const revision = ++formRevision;
+  const isEdit = id !== undefined;
   Object.assign(formData, initialFormData);
   dataFormRef.value?.clearValidate();
   hasFormLoadError.value = false;
-  isLoadingForm.value = id !== undefined;
-  dialogState.title = id === undefined ? "新增系统配置" : "修改系统配置";
-  dialogState.visible = true;
+  dialogState.title = isEdit ? "修改系统配置" : "新增系统配置";
 
-  if (id === undefined) return;
+  if (!isEdit) {
+    dialogState.visible = true;
+    return;
+  }
+
   try {
     const data = await ConfigAPI.getFormData(id);
     if (revision === formRevision) Object.assign(formData, data, { id });
   } catch {
     if (revision === formRevision) hasFormLoadError.value = true;
   } finally {
-    if (revision === formRevision) isLoadingForm.value = false;
+    if (revision === formRevision) dialogState.visible = true;
   }
 }
 
-// 刷新缓存
 const refreshCache = useDebounceFn(async () => {
   await ConfigAPI.refreshCache();
   ElMessage.success("刷新成功");
@@ -244,8 +244,7 @@ const refreshCache = useDebounceFn(async () => {
  * 校验并提交系统配置表单
  */
 async function handleSubmit(): Promise<void> {
-  if (isSaving.value || isLoadingForm.value || hasFormLoadError.value || !dialogState.visible)
-    return;
+  if (isSaving.value || hasFormLoadError.value || !dialogState.visible) return;
   const revision = formRevision;
   isSaving.value = true;
   try {
@@ -274,7 +273,6 @@ async function handleSubmit(): Promise<void> {
 function closeDialog(): void {
   formRevision += 1;
   dialogState.visible = false;
-  isLoadingForm.value = false;
   hasFormLoadError.value = false;
   Object.assign(formData, initialFormData);
   dataFormRef.value?.clearValidate();

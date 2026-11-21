@@ -12,7 +12,7 @@ import type { RouteItem } from "@/api/system/menu";
 const Layout = () => import("../layouts/index.vue");
 
 /**
- * 按用户权限生成并维护动态路由。
+ * 按用户权限生成并维护动态路由
  */
 export const usePermissionStore = defineStore("permission", () => {
   const routes = ref<RouteRecordRaw[]>([]);

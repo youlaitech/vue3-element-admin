@@ -9,7 +9,7 @@ const PAGE_SIZE = 5;
 type NoticeStatus = 0 | 1;
 
 /**
- * 通知中心的数据与交互。
+ * 通知中心的数据与交互
  */
 export function useNotice() {
   const { onNoticeChange } = useRealtime();
@@ -27,7 +27,7 @@ export function useNotice() {
   let unreadSequence = 0;
 
   /**
-   * 加载当前阅读状态的通知，忽略过期响应。
+   * 加载当前阅读状态的通知，忽略过期响应
    */
   async function fetchList(params?: Partial<NoticeQuery>): Promise<void> {
     const revision = authSessionRevision.value;
@@ -51,7 +51,7 @@ export function useNotice() {
   }
 
   /**
-   * 查询未读总数，忽略旧会话及旧请求结果。
+   * 查询未读总数，忽略旧会话及旧请求结果
    */
   async function fetchUnreadTotal(): Promise<void> {
     const revision = authSessionRevision.value;
@@ -66,7 +66,7 @@ export function useNotice() {
   }
 
   /**
-   * 切换阅读状态并重新加载通知。
+   * 切换阅读状态并重新加载通知
    */
   async function switchStatus(status: NoticeStatus): Promise<void> {
     if (activeStatus.value === status) return;
@@ -75,7 +75,7 @@ export function useNotice() {
   }
 
   /**
-   * 刷新通知列表和未读总数。
+   * 刷新通知列表和未读总数
    */
   async function refresh(): Promise<void> {
     await Promise.all([
@@ -85,7 +85,7 @@ export function useNotice() {
   }
 
   /**
-   * 同时只执行一次刷新；在途收到新提示时，结束后再补拉一次。
+   * 同时只执行一次刷新；在途收到新提示时，结束后再补拉一次
    */
   function scheduleRefresh(): void {
     if (disposed) return;
@@ -106,7 +106,7 @@ export function useNotice() {
   }
 
   /**
-   * 打开通知详情并刷新阅读状态。
+   * 打开通知详情并刷新阅读状态
    */
   async function read(id: string): Promise<void> {
     const revision = authSessionRevision.value;
@@ -118,7 +118,7 @@ export function useNotice() {
   }
 
   /**
-   * 将全部通知标为已读并刷新列表。
+   * 将全部通知标为已读并刷新列表
    */
   async function readAll(): Promise<void> {
     if (unreadTotal.value <= 0) return;
@@ -129,7 +129,7 @@ export function useNotice() {
   }
 
   /**
-   * 进入我的通知页面。
+   * 进入我的通知页面
    */
   function goMore(): void {
     void router.push({ name: "MyNotice" });

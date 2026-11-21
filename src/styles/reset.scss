@@ -19,8 +19,9 @@ html {
 body {
   margin: 0;
   font-family:
-    Inter, system-ui, Avenir, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", Arial, sans-serif;
+    Inter, system-ui, "PingFang SC", "HarmonyOS Sans SC", "Hiragino Sans GB", "Microsoft YaHei",
+    Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -31,12 +32,26 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgb(0 0 0 / 12%);
+  background-color: rgb(15 23 42 / 14%);
   border-radius: 3px;
+
+  &:hover {
+    background-color: rgb(15 23 42 / 26%);
+  }
 }
 
 ::-webkit-scrollbar-track {
   background-color: transparent;
+}
+
+html.dark {
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(255 255 255 / 16%);
+
+    &:hover {
+      background-color: rgb(255 255 255 / 28%);
+    }
+  }
 }
 
 a {

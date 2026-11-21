@@ -10,7 +10,7 @@ export const Layout = () => import("@/layouts/index.vue");
 /**
  * 布局外大屏路由：不套后台 Layout，整页铺满视口，菜单以站内外链形式新标签页打开
  */
-export const screenRoutes: RouteRecordRaw[] = [
+const screenRoutes: RouteRecordRaw[] = [
   {
     path: "/data-screen",
     name: "DataScreen",
@@ -77,7 +77,8 @@ export const constantRoutes: RouteRecordRaw[] = [
           title: "dashboard",
           icon: "homepage",
           affix: true,
-          keepAlive: true,
+          // 开发环境关闭首页缓存：KeepAlive 缓存与 HMR 叠加会导致组件实例失效、页面空白
+          keepAlive: !import.meta.env.DEV,
         },
       },
       {

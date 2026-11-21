@@ -1,5 +1,5 @@
 /**
- * 地图城市点及连线数据。
+ * 地图城市点及连线数据
  */
 interface City {
   name: string;

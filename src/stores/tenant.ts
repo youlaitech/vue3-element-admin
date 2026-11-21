@@ -7,22 +7,22 @@ import { AuthStorage } from "@/utils/auth";
 import { isAxiosError } from "axios";
 
 /**
- * 识别当前部署未提供的租户接口。
+ * 识别当前部署未提供的租户接口
  */
 function isUnsupportedEndpoint(error: unknown): boolean {
   return isAxiosError(error) && [404, 405, 501].includes(error.response?.status ?? 0);
 }
 
 /**
- * 管理租户选项与租户功能状态。
+ * 管理租户选项与租户功能状态
  */
-export const useTenantStore = defineStore("tenant", () => {
+const useTenantStore = defineStore("tenant", () => {
   const currentTenantId = ref<number | null>(null);
   const currentTenant = ref<TenantInfo | null>(null);
   const tenantList = ref<TenantInfo[]>([]);
 
   /**
-   * 从本地缓存恢复租户 ID 与展示信息。
+   * 从本地缓存恢复租户 ID 与展示信息
    */
   function restoreTenant() {
     const savedTenantId = localStorage.getItem(STORAGE_KEYS.TENANT_ID);
@@ -51,14 +51,14 @@ export const useTenantStore = defineStore("tenant", () => {
   }
 
   /**
-   * 恢复租户选择，缺失或失效时选择默认租户。
+   * 恢复租户选择，缺失或失效时选择默认租户
    */
   async function loadTenant() {
     restoreTenant();
 
     await fetchTenantList();
 
-    // 缓存中的租户已不可访问时重新选择。
+    // 缓存中的租户已不可访问时重新选择
     if (
       currentTenantId.value != null &&
       tenantList.value.length > 0 &&
@@ -69,7 +69,7 @@ export const useTenantStore = defineStore("tenant", () => {
     }
 
     if (tenantList.value.length > 0) {
-      // 没有本地选择时，优先使用后端当前租户。
+      // 没有本地选择时，优先使用后端当前租户
       if (currentTenantId.value == null) {
         const currentTenantInfo = await safeGetCurrentTenant();
         if (currentTenantInfo) {
@@ -78,7 +78,7 @@ export const useTenantStore = defineStore("tenant", () => {
         }
       }
 
-      // 本地仅保存 ID 时，从可访问列表补全展示信息。
+      // 本地仅保存 ID 时，从可访问列表补全展示信息
       if (currentTenantId.value != null && !currentTenant.value) {
         const matched = tenantList.value.find((t) => t.id === currentTenantId.value);
         if (matched) {
@@ -87,7 +87,7 @@ export const useTenantStore = defineStore("tenant", () => {
         }
       }
 
-      // 本地和后端均未选择时，使用首个可访问租户。
+      // 本地和后端均未选择时，使用首个可访问租户
       if (currentTenantId.value == null) {
         setCurrentTenant(tenantList.value[0]);
         console.debug("[Tenant] 默认选中第一个租户:", tenantList.value[0].name);
@@ -96,7 +96,7 @@ export const useTenantStore = defineStore("tenant", () => {
   }
 
   /**
-   * 更新当前租户并保存本地选择。
+   * 更新当前租户并保存本地选择
    */
   function setCurrentTenant(tenant: TenantInfo) {
     currentTenantId.value = tenant.id;
@@ -155,7 +155,7 @@ export const useTenantStore = defineStore("tenant", () => {
   }
 
   /**
-   * 可选接口未实现时返回空，其他故障继续抛出。
+   * 可选接口未实现时返回空，其他故障继续抛出
    */
   async function safeGetCurrentTenant(): Promise<TenantInfo | null> {
     try {
@@ -176,7 +176,7 @@ export const useTenantStore = defineStore("tenant", () => {
         AuthStorage.setTokens(token.accessToken, token.refreshToken, AuthStorage.getRememberMe());
       }
     } catch (error) {
-      // 只有接口明确未实现时回退；权限、网络和服务异常继续交给调用方。
+      // 只有接口明确未实现时回退；权限、网络和服务异常继续交给调用方
       if (!isUnsupportedEndpoint(error)) throw error;
     }
   }

@@ -111,8 +111,8 @@ onScopeDispose(() => {
 });
 
 /**
- * 清空上一实例，并发加载详情与流程图。
- * 两路分别记录加载状态和错误，仅当前打开批次可回填。
+ * 清空上一实例，并发加载详情与流程图
+ * 两路分别记录加载状态和错误，仅当前打开批次可回填
  */
 async function open(instanceId: string): Promise<void> {
   visible.value = true;
@@ -124,7 +124,7 @@ async function open(instanceId: string): Promise<void> {
   diagramError.value = "";
   diagram.value = { bpmnXml: "", executedActivityIds: [], activeActivityIds: [] };
 
-  // 请求层提示失败原因，组件记录错误态，避免显示上一实例。
+  // 请求层提示失败原因，组件记录错误态，避免显示上一实例
   const detailRequest = WorkflowAPI.instance
     .getDetail(instanceId)
     .then((data) => {

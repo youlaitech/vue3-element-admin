@@ -32,9 +32,10 @@ defineProps({
   &__title {
     flex-shrink: 0;
     margin-left: 10px;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 15px;
+    font-weight: 600;
     color: $sidebar-logo-text-color;
+    letter-spacing: 0.01em;
   }
 }
 

@@ -17,7 +17,7 @@
             <LayoutMenuIcon :icon="leafMenu.meta.icon || item.meta?.icon" />
             <span
               v-if="leafMenu.meta.title"
-              class="ml-1"
+              class="ml-2"
               :title="translateRouteTitle(leafMenu.meta.title)"
             >
               {{ translateRouteTitle(leafMenu.meta.title) }}
@@ -34,7 +34,7 @@
       <template #title>
         <template v-if="item.meta">
           <LayoutMenuIcon :icon="item.meta.icon" />
-          <span v-if="item.meta.title" class="ml-1" :title="translateRouteTitle(item.meta.title)">
+          <span v-if="item.meta.title" class="ml-2" :title="translateRouteTitle(item.meta.title)">
             {{ translateRouteTitle(item.meta.title) }}
           </span>
           <span v-if="getBadge(item.meta)" class="menu-badge">
@@ -95,11 +95,11 @@ const showingChildren = computed(() =>
 
 const leafMenu = computed<RouteRecordRaw | undefined>(() => {
   if (showingChildren.value.length === 0) {
-    // 子路径留空，使叶子菜单指向当前父路径。
+    // 子路径留空，使叶子菜单指向当前父路径
     return { ...props.item, path: "" };
   }
 
-  // 无标题且只有一个可见子项时，省略空分组。
+  // 无标题且只有一个可见子项时，省略空分组
   return !props.item.meta?.title && showingChildren.value.length === 1
     ? showingChildren.value[0]
     : undefined;
@@ -116,7 +116,7 @@ function resolvePath(routePath: string) {
 }
 
 /**
- * 读取路由参数中的 badge 作为菜单角标，缺失时返回空字符串。
+ * 读取路由参数中的 badge 作为菜单角标，缺失时返回空字符串
  */
 function getBadge(meta: RouteMeta | undefined): string {
   const params = meta?.params as Record<string, unknown> | undefined;
@@ -127,13 +127,13 @@ function getBadge(meta: RouteMeta | undefined): string {
 <style lang="scss" scoped>
 .menu-badge {
   height: 16px;
-  padding: 0 5px;
+  padding: 0 6px;
   margin-left: 6px;
   font-size: 10px;
   font-weight: 600;
   line-height: 16px;
-  color: #fff;
-  background-color: var(--el-color-danger);
-  border-radius: 8px;
+  color: var(--menu-active-text);
+  background-color: color-mix(in srgb, var(--el-color-primary) 16%, transparent);
+  border-radius: var(--radius-pill);
 }
 </style>

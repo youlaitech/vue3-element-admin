@@ -5,24 +5,67 @@
 // 浅色主题
 :root {
   --menu-background: #fff;
-  --menu-text: #606266;
+  --menu-text: #4e5969;
   --menu-active-text: var(--el-menu-active-color);
   --menu-active-bg: #e8f3ff;
-  --menu-hover: #e6f4ff;
+  --menu-hover: #f2f6fc;
+  --menu-icon-color: #86909c;
   --menu-border: var(--card-border);
-  --sidebar-logo-background: #fafafa;
-  --sidebar-logo-text-color: #383853;
-  --page-bg: #f2f4f7;
+  --sidebar-logo-background: #fff;
+  --sidebar-logo-text-color: #1d2129;
+
+  // 中性色阶：画布 / 表面 / 微底 三档
+  --page-bg: #f5f6f8;
   --content-bg: #ffffff;
-  --border-color: #e3eaf3;
-  --card-border: #dfe7f1;
-  --card-border-hover: #d5dfec;
-  --card-radius: 8px;
-  --card-shadow: 0 1px 2px rgb(15 23 42 / 3%);
-  --card-shadow-hover: 0 10px 24px rgb(15 23 42 / 6%), 0 2px 6px rgb(15 23 42 / 4%);
-  --custom-radius: 8px;
-  --page-padding: 10px;
-  --page-gap: 10px;
+  --surface-subtle: #f8f9fb;
+  --border-color: #eef1f5;
+  --card-border: #e9edf2;
+  --card-border-hover: #dce3eb;
+
+  // 圆角阶：卡片 / 控件 / 胶囊
+  --card-radius: 12px;
+  --radius-control: 8px;
+  --radius-pill: 999px;
+  --custom-radius: 12px;
+
+  // 阴影三档：静置 / 抬升 / 浮层
+  --card-shadow: 0 1px 2px rgb(16 24 40 / 4%), 0 2px 8px rgb(16 24 40 / 4%);
+  --card-shadow-hover: 0 12px 28px rgb(16 24 40 / 8%), 0 4px 10px rgb(16 24 40 / 5%);
+  --shadow-overlay: 0 18px 48px rgb(15 23 42 / 18%);
+
+  // 舒展间距：页边距 / 区块间隙
+  --page-padding: 20px;
+  --page-gap: 16px;
+
+  // 字阶：页标题 / 卡标题 / 正文 / 次级 / 辅助
+  --font-size-page-title: 20px;
+  --font-size-card-title: 15px;
+  --font-size-body: 14px;
+  --font-size-secondary: 13px;
+  --font-size-aux: 12px;
+  --font-display: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+
+  // 品牌时刻：主按钮渐变与投影
+  --brand-gradient: linear-gradient(135deg, #165dff 0%, #4080ff 100%);
+  --brand-shadow: 0 4px 10px rgb(22 93 255 / 24%);
+  --brand-shadow-hover: 0 6px 16px rgb(22 93 255 / 32%);
+
+  // 图表色板：色相 + 明度双重可分离
+  --chart-1: #165dff;
+  --chart-2: #14c9c9;
+  --chart-3: #f7ba1e;
+  --chart-4: #722ed1;
+  --chart-5: #f77234;
+  --chart-6: #0fc6c2;
+  --chart-7: #eb0aa4;
+  --chart-8: #86909c;
+}
+
+// 宽屏进一步放开页边距
+@media (min-width: 1600px) {
+  :root {
+    --page-padding: 24px;
+  }
 }
 
 // 深蓝色侧边栏
@@ -32,6 +75,7 @@ html.sidebar-color-blue {
   --menu-active-text: #ffffff;
   --menu-active-bg: rgb(64 158 255 / 22%);
   --menu-hover: rgb(255 255 255 / 7%);
+  --menu-icon-color: #93a3b8;
   --menu-border: rgb(15 23 42 / 22%);
   --sidebar-logo-background: #2d3748;
   --sidebar-logo-text-color: #fff;
@@ -43,17 +87,27 @@ html.dark {
   --menu-text: #fff;
   --menu-active-text: #ffffff;
   --menu-active-bg: rgb(22 93 255 / 16%);
-  --menu-hover: rgb(0 0 0 / 20%);
+  --menu-hover: rgb(255 255 255 / 6%);
+  --menu-icon-color: rgb(255 255 255 / 55%);
   --menu-border: rgb(255 255 255 / 8%);
   --sidebar-logo-background: rgb(0 0 0 / 20%);
   --sidebar-logo-text-color: #fff;
   --page-bg: #0d1117;
   --content-bg: #161618;
-  --border-color: rgb(255 255 255 / 10%);
+  --surface-subtle: #1b1f26;
+  --border-color: rgb(255 255 255 / 8%);
   --card-border: rgb(255 255 255 / 10%);
-  --card-border-hover: rgb(255 255 255 / 14%);
+  --card-border-hover: rgb(255 255 255 / 16%);
   --card-shadow: none;
-  --card-shadow-hover: none;
+  --card-shadow-hover: 0 12px 28px rgb(0 0 0 / 45%);
+  --shadow-overlay: 0 18px 48px rgb(0 0 0 / 55%);
+  --brand-shadow: 0 4px 12px rgb(22 93 255 / 35%);
+  --brand-shadow-hover: 0 6px 18px rgb(22 93 255 / 45%);
+  --chart-2: #37d4cf;
+  --chart-3: #fadc19;
+  --chart-5: #ff8b57;
+  --chart-7: #f568c0;
+  --chart-8: #9aa4b2;
 }
 
 // 无障碍模式

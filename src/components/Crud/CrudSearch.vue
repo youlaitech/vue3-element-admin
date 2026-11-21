@@ -136,7 +136,7 @@ const layoutClass = computed(() =>
     : "flex flex-wrap gap-x-8 gap-y-4",
 );
 /**
- * 加载字段选项；失败可重试，上一批结束前不重复加载。
+ * 加载字段选项；失败可重试，上一批结束前不重复加载
  */
 async function initializeFields(): Promise<void> {
   const initializers = fields.filter((field) => field.onInit);
@@ -155,28 +155,28 @@ async function initializeFields(): Promise<void> {
 void initializeFields();
 
 /**
- * 字符串提示使用组件默认样式。
+ * 字符串提示使用组件默认样式
  */
 function getTooltipProps(tips: string | CrudRecord): CrudRecord {
   return typeof tips === "string" ? { content: tips } : tips;
 }
 
 /**
- * 提交独立快照，继续输入不会改动已应用条件。
+ * 提交独立快照，继续输入不会改动已应用条件
  */
 function handleQuery(): void {
   emit("search", getQueryParams());
 }
 
 /**
- * 重置声明初值，数组不与配置共享引用。
+ * 重置声明初值，数组不与配置共享引用
  */
 function handleReset(): void {
   emit("reset", reset());
 }
 
 /**
- * 恢复初值并返回查询快照，不触发搜索事件。
+ * 恢复初值并返回查询快照，不触发搜索事件
  */
 function reset(): CrudRecord {
   Object.keys(queryParams).forEach((key) => Reflect.deleteProperty(queryParams, key));
@@ -186,14 +186,14 @@ function reset(): CrudRecord {
 }
 
 /**
- * 读取当前搜索草稿的副本。
+ * 读取当前搜索草稿的副本
  */
 function getQueryParams(): CrudRecord {
   return cloneDeep(queryParams);
 }
 
 /**
- * 切换搜索区域。
+ * 切换搜索区域
  */
 function toggleVisible(): void {
   visible.value = !visible.value;

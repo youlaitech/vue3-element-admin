@@ -2,7 +2,7 @@ import type { AxiosResponse } from "axios";
 import type { ApiResult } from "@/api/common";
 
 /**
- * 读取文件接口返回的 JSON 业务结果，保留原始文件和响应头。
+ * 读取文件接口返回的 JSON 业务结果，保留原始文件和响应头
  */
 export async function readBinaryApiResult(
   response: AxiosResponse<unknown>,

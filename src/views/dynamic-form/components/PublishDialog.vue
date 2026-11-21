@@ -245,7 +245,7 @@ function buildCatalogTree(menus: MenuItem[]): CatalogNode[] {
  */
 function findDefaultCatalogId(): string {
   /**
-   * 递归查找默认目录的 ID。
+   * 递归查找默认目录的 ID
    */
   const find = (nodes: CatalogNode[]): string => {
     for (const node of nodes) {
@@ -266,7 +266,7 @@ function findDefaultCatalogId(): string {
 const menuBreadcrumb = computed(() => {
   const names: string[] = [];
   /**
-   * 查找父目录并收集面包屑路径。
+   * 查找父目录并收集面包屑路径
    */
   const find = (nodes: CatalogNode[], chain: string[]): boolean => {
     for (const node of nodes) {
@@ -293,7 +293,7 @@ const grantedRoleNames = computed(() =>
 const menuRoutePath = computed(() => {
   let routePath = "";
   /**
-   * 查找父目录并拼接菜单完整路由。
+   * 查找父目录并拼接菜单完整路由
    */
   const find = (nodes: CatalogNode[], basePath: string): boolean => {
     for (const node of nodes) {

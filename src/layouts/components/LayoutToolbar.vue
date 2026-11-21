@@ -6,7 +6,9 @@
       </div>
 
       <div class="layout-toolbar__item">
-        <Fullscreen />
+        <div class="fullscreen-trigger" @click="toggleFullscreen">
+          <div :class="`i-svg:` + (isFullscreen ? 'fullscreen-exit' : 'fullscreen')" />
+        </div>
       </div>
 
       <div class="layout-toolbar__item">
@@ -70,6 +72,7 @@ const appStore = useAppStore();
 const settingStore = useSettingsStore();
 const userStore = useUserStore();
 const tenantStore = useTenantStoreHook();
+const { isFullscreen, toggle: toggleFullscreen } = useFullscreen();
 
 const route = useRoute();
 const router = useRouter();
@@ -179,20 +182,20 @@ function handleSettingsClick() {
   display: flex;
   gap: 4px;
   align-items: center;
-  min-height: 32px;
+  min-height: 36px;
 
   &__item {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 32px;
-    height: 32px;
+    min-width: 36px;
+    height: 36px;
     padding: 0 6px;
     color: var(--layout-toolbar-color);
     text-align: center;
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: var(--radius-control);
     transition:
       background-color 0.16s,
       color 0.16s;
@@ -203,13 +206,21 @@ function handleSettingsClick() {
       justify-content: center;
     }
 
+    .fullscreen-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
     :deep(.el-dropdown),
     :deep(.el-tooltip) {
       display: flex;
       align-items: center;
       justify-content: center;
       width: 100%;
-      height: 32px;
+      height: 36px;
       color: inherit !important;
     }
 
@@ -222,18 +233,18 @@ function handleSettingsClick() {
 
     :deep(.i-svg\:language) {
       flex-shrink: 0;
-      width: 16px;
-      height: 16px;
-      font-size: 16px;
-      line-height: 16px;
-      background-size: 16px 16px;
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      line-height: 18px;
+      background-size: 18px 18px;
     }
 
     :deep([class*="i-svg:"]),
     :deep(.el-icon) {
       --color: currentColor;
 
-      font-size: 16px;
+      font-size: 18px;
       line-height: 1;
       color: currentColor !important;
       transition: color 0.16s;
@@ -271,13 +282,13 @@ function handleSettingsClick() {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 32px;
+  height: 36px;
   padding: 0 6px 0 2px;
 
   &__avatar {
     flex-shrink: 0;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     overflow: hidden;
     border-radius: 50%;
   }

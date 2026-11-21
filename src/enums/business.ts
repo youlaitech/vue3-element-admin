@@ -29,7 +29,7 @@ export enum UserGender {
 }
 
 /**
- * 表单发布状态。
+ * 表单发布状态
  */
 export enum FormStatus {
   /** 草稿 */

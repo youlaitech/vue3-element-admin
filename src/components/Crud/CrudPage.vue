@@ -87,11 +87,11 @@ const {
   applyFilters,
 } = page;
 
-// 子组件挂载后读取搜索初值，避免首次重复请求。
+// 子组件挂载后读取搜索初值，避免首次重复请求
 onMounted(() => search());
 
 /**
- * 筛选子组件插槽，并去掉转发前缀。
+ * 筛选子组件插槽，并去掉转发前缀
  */
 function getSlotNames(prefix: string): string[] {
   return Object.keys(slots)
@@ -100,7 +100,7 @@ function getSlotNames(prefix: string): string[] {
 }
 
 /**
- * 有表单时直接新增，否则交给页面处理。
+ * 有表单时直接新增，否则交给页面处理
  */
 function handleCreate(): void {
   if (props.formConfig) openCreate();
@@ -108,7 +108,7 @@ function handleCreate(): void {
 }
 
 /**
- * 打开编辑表单，默认使用页面配置的详情加载器。
+ * 打开编辑表单，默认使用页面配置的详情加载器
  */
 function openEdit(
   row: CrudRecord,
@@ -119,7 +119,7 @@ function openEdit(
 }
 
 /**
- * 打开只读表单，默认使用页面配置的详情加载器。
+ * 打开只读表单，默认使用页面配置的详情加载器
  */
 function openView(
   row: CrudRecord,
@@ -130,7 +130,7 @@ function openView(
 }
 
 /**
- * 处理内置编辑、查看，再通知页面行操作。
+ * 处理内置编辑、查看，再通知页面行操作
  */
 async function handleRowAction(action: CrudRowActionEvent): Promise<void> {
   if (props.formConfig) {
@@ -141,7 +141,7 @@ async function handleRowAction(action: CrudRowActionEvent): Promise<void> {
 }
 
 /**
- * 保存成功后通知页面，并沿用已应用的条件刷新列表。
+ * 保存成功后通知页面，并沿用已应用的条件刷新列表
  */
 async function handleSaved(): Promise<void> {
   emit("saved");

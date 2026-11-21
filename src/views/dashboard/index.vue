@@ -63,84 +63,88 @@
     </section>
 
     <section class="dash-stats">
-      <div class="stat-card">
-        <div class="stat-card__icon stat-card__icon--online">
-          <el-icon :size="18"><Connection /></el-icon>
-        </div>
-        <div class="stat-card__body">
-          <el-tooltip
-            :content="
-              presence
-                ? `节点 ${presence.nodeId} · ${presence.onlineConnections} 个连接`
-                : '当前节点在线用户，需在线人数查看权限'
-            "
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-card__icon">
+            <el-icon :size="18"><Monitor /></el-icon>
+          </div>
+          <div class="stat-card__body">
+            <el-tooltip
+              :content="
+                presence
+                  ? `节点 ${presence.nodeId} · ${presence.onlineConnections} 个连接`
+                  : '当前节点在线用户，需在线人数查看权限'
+              "
+            >
+              <span class="stat-card__label">本节点在线用户</span>
+            </el-tooltip>
+            <span class="stat-card__num">{{ onlineUserCount ?? "--" }}</span>
+          </div>
+          <span
+            :class="[
+              'stat-card__badge',
+              isConnected ? 'stat-card__badge--on' : 'stat-card__badge--off',
+            ]"
           >
-            <span class="stat-card__label">本节点在线用户</span>
-          </el-tooltip>
-          <span class="stat-card__num">{{ onlineUserCount ?? "--" }}</span>
+            {{ isConnected ? "实时" : "离线" }}
+          </span>
         </div>
-        <span
-          :class="[
-            'stat-card__badge',
-            isConnected ? 'stat-card__badge--on' : 'stat-card__badge--off',
-          ]"
-        >
-          {{ isConnected ? "实时" : "离线" }}
-        </span>
-      </div>
 
-      <div class="stat-card">
-        <div class="stat-card__icon stat-card__icon--visitor">
-          <el-icon :size="18"><User /></el-icon>
+        <div class="stat-card">
+          <div class="stat-card__icon">
+            <el-icon :size="18"><User /></el-icon>
+          </div>
+          <div class="stat-card__body">
+            <span class="stat-card__label">今日访客</span>
+            <span class="stat-card__num">{{ fmt(displayTransitionUvCount) }}</span>
+          </div>
+          <span
+            v-if="uvGrowthText !== '--'"
+            :class="[
+              'stat-card__trend',
+              uvIsUp ? 'stat-card__trend--success' : 'stat-card__trend--danger',
+            ]"
+          >
+            <el-icon :size="12">
+              <ArrowUpBold v-if="uvIsUp" />
+              <ArrowDownBold v-else />
+            </el-icon>
+            {{ uvGrowthText }}
+          </span>
         </div>
-        <div class="stat-card__body">
-          <span class="stat-card__label">今日访客</span>
-          <span class="stat-card__num">{{ displayTransitionUvCount }}</span>
-        </div>
-        <span
-          v-if="uvGrowthText !== '--'"
-          :class="['stat-card__trend', `stat-card__trend--${uvTrendTone}`]"
-        >
-          <el-icon :size="12">
-            <ArrowUp v-if="uvIsUp" />
-            <ArrowDown v-else />
-          </el-icon>
-          {{ uvGrowthText }}
-        </span>
-      </div>
 
-      <div class="stat-card">
-        <div class="stat-card__icon stat-card__icon--view">
-          <el-icon :size="18"><View /></el-icon>
+        <div class="stat-card">
+          <div class="stat-card__icon">
+            <el-icon :size="18"><Document /></el-icon>
+          </div>
+          <div class="stat-card__body">
+            <span class="stat-card__label">今日浏览量</span>
+            <span class="stat-card__num">{{ fmt(displayTransitionPvCount) }}</span>
+          </div>
+          <span
+            v-if="pvGrowthText !== '--'"
+            :class="[
+              'stat-card__trend',
+              pvIsUp ? 'stat-card__trend--success' : 'stat-card__trend--danger',
+            ]"
+          >
+            <el-icon :size="12">
+              <ArrowUpBold v-if="pvIsUp" />
+              <ArrowDownBold v-else />
+            </el-icon>
+            {{ pvGrowthText }}
+          </span>
         </div>
-        <div class="stat-card__body">
-          <span class="stat-card__label">今日浏览量</span>
-          <span class="stat-card__num">{{ displayTransitionPvCount }}</span>
-        </div>
-        <span
-          v-if="pvGrowthText !== '--'"
-          :class="['stat-card__trend', `stat-card__trend--${pvTrendTone}`]"
-        >
-          <el-icon :size="12">
-            <ArrowUp v-if="pvIsUp" />
-            <ArrowDown v-else />
-          </el-icon>
-          {{ pvGrowthText }}
-        </span>
-      </div>
 
-      <div class="stat-card">
-        <div class="stat-card__icon stat-card__icon--account">
-          <span class="stat-card__svg i-svg:group" />
+        <div class="stat-card">
+          <div class="stat-card__icon">
+            <el-icon :size="18"><Avatar /></el-icon>
+          </div>
+          <div class="stat-card__body">
+            <span class="stat-card__label">系统用户</span>
+            <span class="stat-card__num">{{ userStats ? fmt(userStats.users) : "--" }}</span>
+          </div>
         </div>
-        <div class="stat-card__body">
-          <span class="stat-card__label">系统用户</span>
-          <span class="stat-card__num">6</span>
-        </div>
-        <span :class="['stat-card__trend', `stat-card__trend--${systemTrendTone}`]">
-          <el-icon :size="12"><ArrowUp /></el-icon>
-          12.5%
-        </span>
       </div>
     </section>
 
@@ -148,13 +152,10 @@
       <div class="card dash-chart__trend">
         <div class="card__head">
           <h3 class="card__title">访问趋势</h3>
-          <el-radio-group v-model="visitTrendDateRange" size="small">
-            <el-radio-button label="近7天" :value="7" />
-            <el-radio-button label="近30天" :value="30" />
-          </el-radio-group>
+          <el-segmented v-model="visitTrendDateRange" :options="visitTrendRangeOptions" />
         </div>
         <div class="card__body card__body--chart">
-          <ECharts :options="visitTrendChartOptions" height="260px" />
+          <ECharts :options="visitTrendChartOptions" height="240px" />
         </div>
       </div>
 
@@ -175,15 +176,10 @@
               v-for="item in todoOverviewItems"
               :key="item.label"
               class="overview-bars__item"
-              :style="{
-                '--overview-percent': `${item.percent}%`,
-              }"
+              :style="{ '--overview-percent': `${item.percent}%` }"
             >
               <div class="overview-bars__meta">
-                <span class="overview-bars__label">
-                  <span class="overview-bars__dot" />
-                  {{ item.label }}
-                </span>
+                <span class="overview-bars__label">{{ item.label }}</span>
                 <span class="overview-bars__value">{{ item.value }} 项</span>
               </div>
               <span class="overview-bars__track">
@@ -199,7 +195,7 @@
       <div class="card">
         <div class="card__head">
           <h3 class="card__title">待办事项</h3>
-          <el-tag size="small" round>5 项</el-tag>
+          <span class="card__count">5 项</span>
         </div>
         <div class="card__body">
           <div
@@ -216,14 +212,7 @@
               <Clock v-else />
             </el-icon>
             <span class="todo-row__title">{{ todo.title }}</span>
-            <el-tag
-              :type="todo.done ? 'success' : todo.tag === '工单' ? 'warning' : 'info'"
-              size="small"
-              effect="plain"
-              class="todo-row__tag"
-            >
-              {{ todo.tag }}
-            </el-tag>
+            <span class="todo-row__tag">{{ todo.tag }}</span>
             <span class="todo-row__time">{{ todo.time }}</span>
           </div>
         </div>
@@ -253,6 +242,7 @@ defineOptions({ name: "Dashboard", inheritAttrs: false });
 import { dayjs } from "element-plus";
 import { ref } from "vue";
 import LogAPI from "@/api/system/log";
+import UserAPI from "@/api/system/user";
 import type { VisitOverviewDetail, VisitTrendDetail } from "@/api/system/log";
 import { useUserStore } from "@/stores/user";
 import { useSettingsStore } from "@/stores/settings";
@@ -260,10 +250,10 @@ import { formatGrowthRate } from "@/utils";
 import { useTransition } from "@vueuse/core";
 import {
   User,
-  Connection,
-  View,
-  ArrowUp,
-  ArrowDown,
+  Avatar,
+  Monitor,
+  ArrowUpBold,
+  ArrowDownBold,
   Clock,
   CircleCheck,
   Document,
@@ -353,16 +343,16 @@ const activities: Activity[] = [
 ];
 
 const todoOverviewItems = [
-  { label: "审批", value: "2", percent: 40, tone: "primary" },
-  { label: "审核", value: "1", percent: 20, tone: "primary" },
-  { label: "通知", value: "1", percent: 20, tone: "primary" },
-  { label: "工单", value: "1", percent: 20, tone: "primary" },
+  { label: "审批", value: "2", percent: 40 },
+  { label: "审核", value: "1", percent: 20 },
+  { label: "通知", value: "1", percent: 20 },
+  { label: "工单", value: "1", percent: 20 },
 ];
 
 const todoSummaryItems = [
-  { label: "今日新增", value: "3", tone: "primary" },
-  { label: "即将超时", value: "1", tone: "primary" },
-  { label: "今日完成", value: "1", tone: "success" },
+  { label: "今日新增", value: "3" },
+  { label: "即将超时", value: "1" },
+  { label: "今日完成", value: "1" },
 ];
 
 const visitOverviewData = ref<VisitOverviewDetail>({
@@ -384,9 +374,20 @@ const pvGrowthText = computed(() => {
 });
 const uvIsUp = computed(() => (visitOverviewData.value.uvGrowthRate || 0) > 0);
 const pvIsUp = computed(() => (visitOverviewData.value.pvGrowthRate || 0) > 0);
-const uvTrendTone = computed(() => (uvIsUp.value ? "success" : "danger"));
-const pvTrendTone = computed(() => (pvIsUp.value ? "success" : "danger"));
-const systemTrendTone = "success";
+/** 千分位格式化，空值显示占位符 */
+const fmt = (n?: number | null) => (n == null ? "--" : n.toLocaleString("en-US"));
+
+// 用户统计：总数取接口真实数据，无权限时降级为占位符
+const userStats = ref<{ users: number } | null>(null);
+function fetchUserStats() {
+  UserAPI.getPage({ pageNum: 1, pageSize: 1 })
+    .then((all) => {
+      userStats.value = { users: all.total ?? 0 };
+    })
+    .catch(() => {
+      userStats.value = null;
+    });
+}
 
 const tUv = useTransition(
   computed(() => visitOverviewData.value.todayUvCount),
@@ -406,6 +407,10 @@ const displayTransitionUvCount = computed(() => Math.round(Number(tUv.value)));
 const displayTransitionPvCount = computed(() => Math.round(Number(tPv.value)));
 
 const visitTrendDateRange = ref(7);
+const visitTrendRangeOptions = [
+  { label: "近7天", value: 7 },
+  { label: "近30天", value: 30 },
+];
 const visitTrendData = ref<VisitTrendDetail>();
 const visitTrendChartOptions = ref({});
 
@@ -474,8 +479,8 @@ function fetchVisitTrendData() {
  * 更新访问趋势图表配置
  */
 function updateVisitTrendChartOptions(d: VisitTrendDetail) {
-  const primary = getCssVar("--el-color-primary", "#409eff");
-  const success = getCssVar("--el-color-success", "#67c23a");
+  const primary = getCssVar("--chart-1", "#165dff");
+  const second = getCssVar("--chart-2", "#14c9c9");
   const textSecondary = getCssVar("--el-text-color-secondary", "#909399");
   const borderLighter = getCssVar("--el-border-color-lighter", "#ebeef5");
   const gridLine = colorWithAlpha(borderLighter, 0.72);
@@ -546,8 +551,8 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
         symbol: "circle",
         symbolSize: 5,
         showSymbol: false,
-        lineStyle: { color: colorWithAlpha(success, 0.9), width: 1.8, opacity: 0.86 },
-        itemStyle: { color: success },
+        lineStyle: { color: colorWithAlpha(second, 0.9), width: 1.8, opacity: 0.86 },
+        itemStyle: { color: second },
         areaStyle: {
           color: {
             type: "linear",
@@ -556,8 +561,8 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
             x2: 0,
             y2: 1,
             colorStops: [
-              { offset: 0, color: colorWithAlpha(success, 0.08) },
-              { offset: 1, color: colorWithAlpha(success, 0) },
+              { offset: 0, color: colorWithAlpha(second, 0.08) },
+              { offset: 1, color: colorWithAlpha(second, 0) },
             ],
           },
         },
@@ -571,6 +576,7 @@ watch(
   () => fetchVisitTrendData(),
   { immediate: true },
 );
+
 watch(
   () => [settingsStore.resolvedTheme, settingsStore.themeColors],
   () => {
@@ -584,16 +590,17 @@ watch(
 );
 onMounted(() => {
   fetchVisitOverviewData();
+  fetchUserStats();
 });
 </script>
 
 <style lang="scss" scoped>
 // Tokens
-$gap: 12px;
-$pad: 10px;
+$gap: 16px;
+$pad: var(--page-padding);
 %card {
   overflow: hidden;
-  background: var(--el-bg-color-overlay);
+  background: var(--content-bg);
   border: 1px solid var(--card-border);
   border-radius: var(--card-radius);
   box-shadow: var(--card-shadow);
@@ -606,21 +613,91 @@ $pad: 10px;
   gap: $gap;
   padding: $pad;
   background: var(--page-bg);
+
+  // 入场节奏：区块与统计卡依次浮现
+  > section {
+    animation: dash-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+
+    &:nth-child(2) {
+      animation-delay: 0.06s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.12s;
+    }
+
+    &:nth-child(4) {
+      animation-delay: 0.18s;
+    }
+  }
+}
+
+@keyframes dash-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash > section {
+    animation: none;
+  }
 }
 
 // Header
 .dash-header {
   &__card {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     gap: 18px;
     align-items: center;
     justify-content: space-between;
-    min-height: 78px;
-    padding: 16px 18px;
+    min-height: 96px;
+    padding: 24px 28px;
+    background:
+      radial-gradient(
+        560px 220px at 88% -60%,
+        color-mix(in srgb, var(--el-color-primary) 12%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        420px 180px at 4% 140%,
+        color-mix(in srgb, var(--chart-2) 10%, transparent),
+        transparent 72%
+      ),
+      var(--content-bg);
+
+    // 细网格纹理：向右上晕染处淡出
+    &::before {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+      background-image:
+        linear-gradient(
+          to right,
+          color-mix(in srgb, var(--el-color-primary) 7%, transparent) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          to bottom,
+          color-mix(in srgb, var(--el-color-primary) 7%, transparent) 1px,
+          transparent 1px
+        );
+      background-size: 28px 28px;
+      mask-image: radial-gradient(420px 160px at 85% 0%, #000 0%, transparent 75%);
+    }
   }
 
   &__start {
+    position: relative;
     display: flex;
     flex: 1;
     gap: 12px;
@@ -631,24 +708,26 @@ $pad: 10px;
   &__text {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
   }
 
   &__greeting {
     margin: 0;
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 24px;
+    font-weight: 600;
     line-height: 1.3;
     color: var(--el-text-color-primary);
+    letter-spacing: -0.015em;
   }
 
   &__date {
     margin: 0;
-    font-size: 12px;
+    font-size: var(--font-size-secondary);
     color: var(--el-text-color-secondary);
   }
 
   &__end {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -662,11 +741,11 @@ $pad: 10px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   overflow: hidden;
   color: var(--el-color-primary);
-  background: color-mix(in srgb, var(--el-color-primary) 14%, var(--el-bg-color-overlay));
+  background: color-mix(in srgb, var(--el-color-primary) 14%, var(--content-bg));
   border: 1px solid color-mix(in srgb, var(--el-color-primary) 18%, transparent);
   border-radius: 50%;
 
@@ -683,18 +762,19 @@ $pad: 10px;
   gap: 6px;
   align-items: center;
   justify-content: center;
-  height: 30px;
-  padding: 0 10px;
+  height: 32px;
+  padding: 0 14px;
   font-size: 12px;
   color: var(--el-text-color-secondary);
   text-decoration: none;
-  background: var(--el-fill-color-extra-light);
-  border: 1px solid var(--el-border-color-lighter);
-  border-radius: 6px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
   transition:
     color 0.15s,
     background-color 0.15s,
-    border-color 0.15s;
+    border-color 0.15s,
+    transform 0.15s;
 
   .el-icon,
   [class^="i-svg:"] {
@@ -706,24 +786,25 @@ $pad: 10px;
 
   &:hover {
     color: var(--el-color-primary);
-    background: color-mix(in srgb, var(--el-color-primary) 7%, var(--el-bg-color-overlay));
-    border-color: color-mix(in srgb, var(--el-color-primary) 20%, var(--el-border-color-lighter));
+    background: color-mix(in srgb, var(--el-color-primary) 6%, transparent);
+    border-color: color-mix(in srgb, var(--el-color-primary) 35%, transparent);
+    transform: translateY(-1px);
   }
 }
 
-// Stat cards
-.dash-stats {
+// Stat cards：图标 + 指标 + 状态，单行结构
+.stat-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: $gap;
 }
 
 .stat-card {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: center;
-  min-height: 84px;
-  padding: 18px;
+  min-height: 76px;
+  padding: 16px 18px;
   @extend %card;
 
   &__icon {
@@ -731,33 +812,11 @@ $pad: 10px;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-
-    &--online {
-      color: var(--el-color-primary);
-      background: color-mix(in srgb, var(--el-color-primary) 10%, var(--el-bg-color-overlay));
-    }
-    &--visitor {
-      color: var(--el-color-primary);
-      background: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-bg-color-overlay));
-    }
-    &--view {
-      color: var(--el-color-primary);
-      background: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-bg-color-overlay));
-    }
-    &--account {
-      color: var(--el-color-primary);
-      background: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-bg-color-overlay));
-    }
-  }
-
-  &__svg {
-    width: 20px;
-    height: 20px;
-    font-size: 20px;
-    color: currentcolor;
+    width: 36px;
+    height: 36px;
+    color: var(--el-color-primary);
+    background: color-mix(in srgb, var(--el-color-primary) 9%, var(--content-bg));
+    border-radius: 8px;
   }
 
   &__body {
@@ -767,27 +826,33 @@ $pad: 10px;
     min-width: 0;
   }
 
+  &__label {
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    color: var(--el-text-color-secondary);
+    white-space: nowrap;
+  }
+
   &__num {
     font-size: 24px;
     font-weight: 600;
+    font-variant-numeric: tabular-nums;
     line-height: 1.15;
-    color: var(--el-text-color-primary);
-  }
-
-  &__label {
-    margin-bottom: 3px;
-    font-size: 13px;
-    color: var(--el-text-color-secondary);
+    color: var(--el-text-color-regular);
   }
 
   &__badge {
     flex-shrink: 0;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
+    color: var(--el-text-color-secondary);
 
     &--on {
       color: var(--el-color-success);
     }
+
     &--off {
       color: var(--el-text-color-secondary);
     }
@@ -799,7 +864,7 @@ $pad: 10px;
     gap: 3px;
     align-items: center;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--el-text-color-secondary);
 
     &--success {
@@ -822,23 +887,28 @@ $pad: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 48px;
-    padding: 13px 18px;
+    min-height: 52px;
+    padding: 14px 20px;
     border-bottom: 1px solid var(--card-border);
   }
 
   &__title {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--font-size-card-title);
     font-weight: 600;
     color: var(--el-text-color-primary);
   }
 
+  &__count {
+    font-size: 12px;
+    color: var(--el-text-color-secondary);
+  }
+
   &__body {
-    padding: 16px 18px 18px;
+    padding: 18px 20px 20px;
 
     &--chart {
-      padding: 14px 18px 16px;
+      padding: 14px 20px 16px;
     }
 
     &--scroll {
@@ -913,13 +983,6 @@ $pad: 10px;
     min-width: 0;
   }
 
-  &__dot {
-    width: 6px;
-    height: 6px;
-    background: var(--el-color-primary);
-    border-radius: 50%;
-  }
-
   &__track {
     height: 5px;
     overflow: hidden;
@@ -939,56 +1002,36 @@ $pad: 10px;
 .overview-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 
   &__item {
-    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-width: 0;
-    min-height: 64px;
-    padding: 12px;
-    overflow: hidden;
-    background: color-mix(in srgb, var(--el-color-primary) 4%, var(--el-bg-color-overlay));
-    border: 1px solid
-      color-mix(in srgb, var(--el-color-primary) 10%, var(--el-border-color-lighter));
-    border-radius: 6px;
+    min-height: 56px;
+    padding: 8px 12px;
 
-    &:nth-child(2) {
-      background: color-mix(in srgb, var(--el-color-primary) 6%, var(--el-bg-color-overlay));
-      border-color: color-mix(in srgb, var(--el-color-primary) 14%, var(--el-border-color-lighter));
-
-      &::before {
-        background: color-mix(in srgb, var(--el-color-primary) 48%, transparent);
-      }
-
-      .overview-summary__value {
-        color: var(--el-color-warning);
-      }
+    &:first-child {
+      padding-left: 0;
     }
 
-    &:nth-child(3) {
-      background: color-mix(in srgb, var(--el-color-primary) 3%, var(--el-bg-color-overlay));
-      border-color: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-border-color-lighter));
-
-      &::before {
-        background: color-mix(in srgb, var(--el-color-primary) 36%, transparent);
-      }
-
-      .overview-summary__value {
-        color: var(--el-color-success);
-      }
+    &:last-child {
+      padding-right: 0;
     }
 
-    &::before {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      content: "";
-      background: color-mix(in srgb, var(--el-color-primary) 62%, transparent);
+    & + & {
+      border-left: 1px solid var(--border-color);
+    }
+
+    &:nth-child(2) .overview-summary__value {
+      color: var(--el-color-warning);
+    }
+
+    &:nth-child(3) .overview-summary__value {
+      color: var(--el-color-success);
     }
   }
 
@@ -1002,8 +1045,8 @@ $pad: 10px;
 
   &__value {
     flex-shrink: 0;
-    margin-top: 5px;
-    font-size: 18px;
+    margin-top: 4px;
+    font-size: 20px;
     font-weight: 600;
     line-height: 1.1;
     color: var(--el-color-primary);
@@ -1055,18 +1098,12 @@ $pad: 10px;
 
   &__tag {
     flex-shrink: 0;
+    padding: 1px 8px;
+    font-size: 11px;
+    line-height: 18px;
     color: var(--el-text-color-secondary);
     background: var(--el-fill-color-light);
-
-    &.el-tag--warning {
-      color: color-mix(in srgb, var(--el-color-warning) 78%, var(--el-text-color-primary));
-      background: color-mix(in srgb, var(--el-color-warning) 9%, var(--el-bg-color-overlay));
-    }
-
-    &.el-tag--success {
-      color: var(--el-color-success);
-      background: color-mix(in srgb, var(--el-color-success) 8%, var(--el-bg-color-overlay));
-    }
+    border-radius: var(--radius-pill);
   }
 
   &__time {
@@ -1133,8 +1170,8 @@ $pad: 10px;
 
 // Responsive
 @media (max-width: 1200px) {
-  .dash-stats {
-    grid-template-columns: repeat(2, 1fr);
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .dash-header__card {
     flex-direction: column;
@@ -1158,11 +1195,11 @@ $pad: 10px;
 
 @media (max-width: 768px) {
   .dash {
-    gap: 10px;
-    padding: 10px;
+    gap: 12px;
+    padding: 12px;
   }
 
-  .dash-stats {
+  .stat-grid {
     grid-template-columns: 1fr;
   }
 }

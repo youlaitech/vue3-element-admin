@@ -209,7 +209,7 @@ onScopeDispose(() => {
 });
 
 /**
- * 查看、加载和保存时禁用字段，不能被 attrs 覆盖。
+ * 查看、加载和保存时禁用字段，不能被 attrs 覆盖
  */
 function getFieldAttrs(item: CrudFormField): CrudRecord {
   const readonly =
@@ -229,35 +229,35 @@ function getFieldAttrs(item: CrudFormField): CrudRecord {
 }
 
 /**
- * 提供模式、目标主键及当前表单数据。
+ * 提供模式、目标主键及当前表单数据
  */
 function getFormContext(model = formData): CrudFormContext {
   return { mode: formMode.value, id: targetId.value, model };
 }
 
 /**
- * 按当前模式和数据计算字段条件。
+ * 按当前模式和数据计算字段条件
  */
 function evaluateField(value: boolean | ((context: CrudFormContext) => boolean)): boolean {
   return typeof value === "function" ? value(getFormContext()) : value;
 }
 
 /**
- * 隐藏字段不校验，数据仍保留。
+ * 隐藏字段不校验，数据仍保留
  */
 function isFieldVisible(item: CrudFormField): boolean {
   return !item.hidden && (item.visible === undefined || evaluateField(item.visible));
 }
 
 /**
- * 读取字段标签，支持按模式或数据计算。
+ * 读取字段标签，支持按模式或数据计算
  */
 function getFieldLabel(item: CrudFormField): string {
   return typeof item.label === "function" ? item.label(getFormContext()) : item.label;
 }
 
 /**
- * 动态必填只覆盖必填标志，保留其他校验约束。
+ * 动态必填只覆盖必填标志，保留其他校验约束
  */
 function getFieldRules(item: CrudFormField) {
   const rules = item.rules ?? [];
@@ -269,14 +269,14 @@ function getFieldRules(item: CrudFormField) {
 }
 
 /**
- * 将字符串提示转换为 Tooltip 的 content 属性。
+ * 将字符串提示转换为 Tooltip 的 content 属性
  */
 function getTooltipProps(tips: string | CrudRecord): CrudRecord {
   return typeof tips === "string" ? { content: tips } : tips;
 }
 
 /**
- * 每次打开创建独立默认值，避免复用上次记录。
+ * 每次打开创建独立默认值，避免复用上次记录
  */
 function initializeForm(): void {
   Object.keys(formData).forEach((key) => Reflect.deleteProperty(formData, key));
@@ -294,7 +294,7 @@ function initializeForm(): void {
 }
 
 /**
- * 每次切换使旧详情请求失效；打开时重建初值。
+ * 每次切换使旧详情请求失效；打开时重建初值
  */
 function setModalVisible(visible = true): void {
   if (isSaving.value) return;
@@ -308,7 +308,7 @@ function setModalVisible(visible = true): void {
 }
 
 /**
- * 按模式打开表单，更新目标以传入记录的主键为准。
+ * 按模式打开表单，更新目标以传入记录的主键为准
  */
 function openForm(mode: CrudFormMode = "create", row?: CrudRecord): boolean {
   if (isSaving.value) return false;
@@ -327,7 +327,7 @@ function openForm(mode: CrudFormMode = "create", row?: CrudRecord): boolean {
 }
 
 /**
- * 回填详情，并作为重置时的初值。
+ * 回填详情，并作为重置时的初值
  */
 function setFormData(data: CrudRecord): void {
   initializeForm();
@@ -341,7 +341,7 @@ function setFormData(data: CrudRecord): void {
 }
 
 /**
- * 只处理当前表单的最新详情请求，忽略旧响应。
+ * 只处理当前表单的最新详情请求，忽略旧响应
  */
 async function loadFormData(loader: () => Promise<CrudRecord>): Promise<void> {
   const current = ++revision;
@@ -363,14 +363,14 @@ async function loadFormData(loader: () => Promise<CrudRecord>): Promise<void> {
 }
 
 /**
- * 重试当前记录的详情。
+ * 重试当前记录的详情
  */
 async function retryLoad(): Promise<void> {
   if (lastLoader.value) await loadFormData(lastLoader.value);
 }
 
 /**
- * 恢复本次打开的初值；已加载详情时恢复详情。
+ * 恢复本次打开的初值；已加载详情时恢复详情
  */
 function resetForm(): void {
   Object.keys(formData).forEach((key) => Reflect.deleteProperty(formData, key));
@@ -379,21 +379,21 @@ function resetForm(): void {
 }
 
 /**
- * 关闭表单并使旧详情请求失效，保存中禁止关闭。
+ * 关闭表单并使旧详情请求失效，保存中禁止关闭
  */
 function handleClose(): void {
   if (!isSaving.value) setModalVisible(false);
 }
 
 /**
- * 阻止遮罩和关闭按钮中断保存。
+ * 阻止遮罩和关闭按钮中断保存
  */
 function beforeClose(done: () => void): void {
   if (!isSaving.value) done();
 }
 
 /**
- * 校验并保存表单；保存中防止重复提交，失败保留输入。
+ * 校验并保存表单；保存中防止重复提交，失败保留输入
  */
 async function handleSubmit(): Promise<void> {
   if (
@@ -427,7 +427,7 @@ async function handleSubmit(): Promise<void> {
 }
 
 /**
- * 读取当前模型引用或指定字段。
+ * 读取当前模型引用或指定字段
  */
 function getFormData(): CrudRecord;
 function getFormData(key: string): unknown;
@@ -436,14 +436,14 @@ function getFormData(key?: string): unknown {
 }
 
 /**
- * 更新一个表单字段。
+ * 更新一个表单字段
  */
 function setFieldValue(key: string, value: unknown): void {
   formData[key] = value;
 }
 
 /**
- * 加载字段选项；失败可重试，上一批结束前不重复加载。
+ * 加载字段选项；失败可重试，上一批结束前不重复加载
  */
 async function initializeFields(): Promise<void> {
   const initializers = fields.filter((field) => field.onInit);

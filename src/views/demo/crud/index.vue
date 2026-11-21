@@ -117,7 +117,7 @@ const tableConfig: CrudTableConfig<UserQuery, UserItem> = {
       minWidth: 140,
       filterJoin: ",",
       /**
-       * 加载角色筛选项，提交值为角色 ID。
+       * 加载角色筛选项，提交值为角色 ID
        */
       async onInit(column) {
         column.filters = (await roleRequest).map((role) => ({
@@ -144,7 +144,7 @@ const tableConfig: CrudTableConfig<UserQuery, UserItem> = {
           label: "重置密码",
           permission: "sys:user:reset-password",
           /**
-           * 输入新密码并提交重置请求，取消时不提交。
+           * 输入新密码并提交重置请求，取消时不提交
            */
           async onClick({ row }) {
             if (!row) return;
@@ -168,7 +168,7 @@ const formConfig: CrudFormConfig<UserForm> = {
   title: ({ mode }) => ({ create: "新增用户", edit: "编辑用户", view: "查看用户" })[mode],
   dialog: { width: 560 },
   /**
-   * 保存用户，更新目标使用打开表单时的主键。
+   * 保存用户，更新目标使用打开表单时的主键
    */
   submitForm(data, { mode, id }) {
     if (mode === "create") return UserAPI.create(data);
@@ -184,7 +184,7 @@ const formConfig: CrudFormConfig<UserForm> = {
       readonly: ({ mode }) => mode !== "create",
     },
     { type: "input", prop: "nickname", label: "用户昵称", required: true },
-    // 更新接口会写入头像，表单不展示时也需保留原值。
+    // 更新接口会写入头像，表单不展示时也需保留原值
     { type: "input", prop: "avatar", label: "头像", hidden: true },
     {
       type: "tree-select",
@@ -213,7 +213,7 @@ const formConfig: CrudFormConfig<UserForm> = {
       prop: "mobile",
       label: "手机号码",
       attrs: { maxlength: 11 },
-      // 允许留空，填写时与后端校验规则一致。
+      // 允许留空，填写时与后端校验规则一致
       rules: [
         {
           pattern: /^1(3\d|4[5-9]|5[0-35-9]|6[2567]|7[0-8]|8\d|9[0-35-9])\d{8}$/,
@@ -239,7 +239,7 @@ const formConfig: CrudFormConfig<UserForm> = {
 };
 
 /**
- * 加载编辑和查看所需的用户详情。
+ * 加载编辑和查看所需的用户详情
  */
 function loadUserForm(row: CrudRecord): Promise<UserForm> {
   return UserAPI.getFormData(String(row.id));

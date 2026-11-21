@@ -2,7 +2,7 @@ import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, ref } from "vue";
 
 /**
- * 轮询部署版本，并提示用户刷新页面。
+ * 轮询部署版本，并提示用户刷新页面
  */
 export function useVersionCheck(interval = 60_000) {
   const hasNewVersion = ref(false);
@@ -10,7 +10,7 @@ export function useVersionCheck(interval = 60_000) {
   const safeInterval = Math.max(10_000, interval);
 
   /**
-   * 查询部署版本并更新升级提示。
+   * 查询部署版本并更新升级提示
    */
   const checkVersion = async () => {
     try {
@@ -33,13 +33,13 @@ export function useVersionCheck(interval = 60_000) {
   };
 
   /**
-   * 提示新版本，已有通知时不重复显示。
+   * 提示新版本，已有通知时不重复显示
    */
   const showUpdateNotice = () => {
     if (notified) return;
     notified = true;
 
-    // 使用非阻塞通知，避免中断当前操作。
+    // 使用非阻塞通知，避免中断当前操作
     ElNotification({
       title: "🎉 发现新版本",
       message: "系统已更新，点击刷新以获取最新功能",
@@ -55,7 +55,7 @@ export function useVersionCheck(interval = 60_000) {
 
   let timer: ReturnType<typeof setInterval>;
   /**
-   * 页面恢复可见时立即检查部署版本。
+   * 页面恢复可见时立即检查部署版本
    */
   const handleVisibilityChange = () => {
     if (!document.hidden) checkVersion();

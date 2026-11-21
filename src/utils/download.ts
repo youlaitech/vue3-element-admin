@@ -1,19 +1,19 @@
 /**
- * 提取并解码响应头文件名，缺失时生成默认名称。
+ * 提取并解码响应头文件名，缺失时生成默认名称
  */
 function extractFileName(contentDisposition: string): string {
   if (!contentDisposition) {
     return `download_${Date.now()}`;
   }
 
-  // 优先使用 UTF-8 编码的 filename*。
+  // 优先使用 UTF-8 编码的 filename*
   const filenameRegex = /filename\*=UTF-8''([^;]+)/i;
   const matches = filenameRegex.exec(contentDisposition);
   if (matches && matches[1]) {
     return decodeFileName(matches[1]);
   }
 
-  // 兼容普通 filename 参数。
+  // 兼容普通 filename 参数
   const fallbackRegex = /filename=([^;]+)/;
   const fallbackMatches = fallbackRegex.exec(contentDisposition);
   if (fallbackMatches && fallbackMatches[1]) {
@@ -24,7 +24,7 @@ function extractFileName(contentDisposition: string): string {
 }
 
 /**
- * 解码响应头中的文件名，编码无效时保留原值。
+ * 解码响应头中的文件名，编码无效时保留原值
  */
 function decodeFileName(value: string): string {
   try {
@@ -35,7 +35,7 @@ function decodeFileName(value: string): string {
 }
 
 /**
- * 下载所需的二进制内容与可选响应头。
+ * 下载所需的二进制内容与可选响应头
  */
 interface DownloadResponse {
   /** 二进制内容 */
@@ -45,7 +45,7 @@ interface DownloadResponse {
 }
 
 /**
- * 触发浏览器下载，优先使用指定文件名，其次读取响应头。
+ * 触发浏览器下载，优先使用指定文件名，其次读取响应头
  */
 export function downloadFile(response: DownloadResponse, customFileName?: string): void {
   try {
@@ -63,7 +63,7 @@ export function downloadFile(response: DownloadResponse, customFileName?: string
     document.body.appendChild(link);
     link.click();
 
-    // 下载触发后释放临时 URL，避免累积浏览器资源。
+    // 下载触发后释放临时 URL，避免累积浏览器资源
     document.body.removeChild(link);
     window.URL.revokeObjectURL(downloadUrl);
   } catch (error) {

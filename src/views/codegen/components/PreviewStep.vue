@@ -239,7 +239,7 @@ function refreshEditor() {
   cmRef.value?.refresh();
 }
 
-// 拖拽结束、再次开始或组件卸载时，共用同一份监听清理函数。
+// 拖拽结束、再次开始或组件卸载时，共用同一份监听清理函数
 let stopResize: (() => void) | undefined;
 
 /**
@@ -250,13 +250,13 @@ function startResize(e: MouseEvent) {
   const startX = e.clientX;
   const startWidth = fileTreeWidth.value;
   /**
-   * 按鼠标位移调整预览区域宽度。
+   * 按鼠标位移调整预览区域宽度
    */
   const onMove = (ev: MouseEvent) => {
     fileTreeWidth.value = Math.max(200, Math.min(500, startWidth + ev.clientX - startX));
   };
   /**
-   * 结束拖动并移除鼠标监听。
+   * 结束拖动并移除鼠标监听
    */
   const onUp = () => {
     document.removeEventListener("mousemove", onMove);
@@ -269,7 +269,7 @@ function startResize(e: MouseEvent) {
 }
 
 /**
- * 父组件切换到预览步骤后刷新编辑器布局。
+ * 父组件切换到预览步骤后刷新编辑器布局
  */
 defineExpose({ refreshEditor });
 

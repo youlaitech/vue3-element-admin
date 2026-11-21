@@ -3,14 +3,14 @@ import { STORAGE_KEYS } from "@/constants";
 import { readonly, shallowRef } from "vue";
 
 const sessionRevision = shallowRef(0);
-// 标识登录会话变化，正常续期不递增，供异步回调判断是否仍属当前账号。
+// 标识登录会话变化，正常续期不递增，供异步回调判断是否仍属当前账号
 export const authSessionRevision = readonly(sessionRevision);
 /**
- * 校验持久化值是否为字符串。
+ * 校验持久化值是否为字符串
  */
 const isString = (value: unknown): value is string => typeof value === "string";
 /**
- * 校验持久化值是否为布尔值。
+ * 校验持久化值是否为布尔值
  */
 const isBoolean = (value: unknown): value is boolean => typeof value === "boolean";
 
@@ -39,8 +39,8 @@ export const AuthStorage = {
   },
 
   /**
-   * 按“记住我”选择凭证存储，并清理另一存储中的旧令牌。
-   * renewing 表示当前会话续期，不递增会话版本。
+   * 按“记住我”选择凭证存储，并清理另一存储中的旧令牌
+   * renewing 表示当前会话续期，不递增会话版本
    */
   setTokens(
     accessToken: string,

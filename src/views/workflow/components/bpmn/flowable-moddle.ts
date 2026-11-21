@@ -1,5 +1,5 @@
 /**
- * 声明 Flowable 扩展属性，使 bpmn-js 读写时保留这些属性。
+ * 声明 Flowable 扩展属性，使 bpmn-js 读写时保留这些属性
  */
 const flowableModdleDescriptor = {
   name: "Flowable",

@@ -1,18 +1,18 @@
-// 视图组件注册表，供动态路由解析和菜单页面选择共用。
+// 视图组件注册表，供动态路由解析和菜单页面选择共用
 
 import { ensureFormCreate } from "@/plugins/form-create";
 
 /**
  * 全部视图模块，键形如 /src/views/system/user/index.vue
  */
-export const viewModules = import.meta.glob("/src/views/**/*.vue");
+const viewModules = import.meta.glob("/src/views/**/*.vue");
 
 const VIEW_PREFIX = "/src/views/";
 
 /**
  * 视图文件路径集合，元素形如 system/user/index
  */
-export const viewPaths = new Set(
+const viewPaths = new Set(
   Object.keys(viewModules).map((key) => key.slice(VIEW_PREFIX.length).replace(/\.vue$/, "")),
 );
 
@@ -70,7 +70,7 @@ export function isViewComponent(componentPath?: string): boolean {
 /**
  * 选项树节点
  */
-export interface PageComponentNode {
+interface PageComponentNode {
   /** 表单取值：真实文件路径，目录无 index.vue 时不可选 */
   value?: string;
   label: string;
@@ -79,7 +79,7 @@ export interface PageComponentNode {
 }
 
 /**
- * 判断页面是否可选；internal 视图与 components 目录不可选。
+ * 判断页面是否可选；internal 视图与 components 目录不可选
  */
 function isSelectable(path: string): boolean {
   const segments = path.split("/");

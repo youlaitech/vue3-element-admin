@@ -17,7 +17,7 @@ const USER_BASE_URL = "/api/v1/users";
 
 const UserAPI = {
   /**
-   * 获取当前用户资料、角色与权限。
+   * 获取当前用户资料、角色与权限
    */
   getInfo() {
     return request<unknown, UserInfo>({
@@ -70,7 +70,7 @@ const UserAPI = {
   },
 
   /**
-   * 修改用户启用状态。
+   * 修改用户启用状态
    */
   updateStatus(userId: string, status: 0 | 1) {
     return request({
@@ -92,7 +92,7 @@ const UserAPI = {
   },
 
   /**
-   * 批量删除用户，ID 以英文逗号分隔。
+   * 批量删除用户，ID 以英文逗号分隔
    */
   deleteByIds(ids: string) {
     return request({

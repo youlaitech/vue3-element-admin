@@ -10,12 +10,12 @@
       flex-shrink: 0;
       align-items: center;
       justify-content: center;
-      width: 18px !important;
-      min-width: 18px !important;
-      height: 18px !important;
+      width: 20px !important;
+      min-width: 20px !important;
+      height: 20px !important;
       margin-right: 0 !important;
-      font-size: 18px;
-      line-height: 18px;
+      font-size: 20px;
+      line-height: 20px;
       color: currentcolor !important;
     }
 
@@ -30,12 +30,7 @@
   }
 
   .el-sub-menu.has-active-child > .el-sub-menu__title {
-    color: var(--el-color-primary) !important;
-    background-color: var(--el-color-primary-light-9) !important;
-
-    .menu-icon {
-      color: var(--el-color-primary) !important;
-    }
+    color: var(--menu-active-text) !important;
   }
 }
 
@@ -63,10 +58,10 @@
     .el-menu-item,
     .el-sub-menu > .el-sub-menu__title {
       .layout-menu-icon {
-        width: 18px !important;
-        min-width: 18px !important;
-        height: 18px !important;
-        font-size: 18px !important;
+        width: 20px !important;
+        min-width: 20px !important;
+        height: 20px !important;
+        font-size: 20px !important;
       }
 
       > span:not(.layout-menu-icon):not(.el-icon) {
@@ -81,10 +76,10 @@
 
   &.is-sidebar-collapsed {
     .layout-menu-icon {
-      width: 18px !important;
-      min-width: 18px !important;
-      height: 18px !important;
-      font-size: 18px !important;
+      width: 20px !important;
+      min-width: 20px !important;
+      height: 20px !important;
+      font-size: 20px !important;
     }
 
     .submenu-title-noDropdown {
@@ -139,11 +134,6 @@ html.sidebar-color-blue .el-menu--popup {
 
   .el-sub-menu.has-active-child > .el-sub-menu__title {
     color: var(--menu-active-text) !important;
-    background-color: var(--menu-active-bg) !important;
-
-    .menu-icon {
-      color: var(--menu-active-text) !important;
-    }
   }
 }
 
@@ -159,6 +149,105 @@ html.sidebar-color-blue .layout-root.layout--mix .layout-sidebar .el-menu {
   .el-sub-menu.has-active-child > .el-sub-menu__title {
     color: var(--menu-active-text) !important;
     background-color: var(--menu-active-bg) !important;
+  }
+}
+
+// 垂直菜单：两侧内缩的圆角胶囊，图标比文字浅一档
+.layout-root .el-menu--vertical {
+  --el-menu-item-height: 44px;
+  --el-menu-sub-item-height: 40px;
+
+  padding: 6px 0 12px;
+
+  .el-menu-item,
+  .el-sub-menu__title {
+    height: 44px;
+    margin: 2px 10px;
+    line-height: 44px;
+    border-radius: var(--radius-control);
+    transition:
+      background-color 0.16s,
+      color 0.16s;
+  }
+
+  .el-menu-item:hover,
+  .el-sub-menu__title:hover {
+    background-color: var(--menu-hover);
+  }
+
+  .el-menu-item.is-active {
+    font-weight: 500;
+    color: var(--menu-active-text);
+    background-color: var(--menu-active-bg);
+  }
+
+  .layout-menu-icon {
+    color: var(--menu-icon-color) !important;
+  }
+
+  .el-menu-item:hover .layout-menu-icon,
+  .el-sub-menu__title:hover .layout-menu-icon,
+  .el-menu-item.is-active .layout-menu-icon,
+  .el-sub-menu.has-active-child > .el-sub-menu__title .layout-menu-icon {
+    color: var(--menu-active-text) !important;
+  }
+
+  .el-menu--inline {
+    padding: 2px 0 8px;
+
+    .el-menu-item {
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+
+  .el-sub-menu__icon-arrow {
+    opacity: 0.5;
+    transition:
+      transform 0.2s,
+      opacity 0.16s;
+  }
+
+  .el-sub-menu__title:hover .el-sub-menu__icon-arrow,
+  .el-sub-menu.has-active-child > .el-sub-menu__title .el-sub-menu__icon-arrow {
+    opacity: 0.9;
+  }
+
+  &.el-menu--collapse {
+    --el-menu-base-level-padding: 20px;
+
+    padding: 6px 0;
+
+    .el-menu-item,
+    .el-sub-menu > .el-sub-menu__title {
+      justify-content: center;
+      padding: 0 !important;
+      margin: 2px 8px;
+    }
+  }
+}
+
+// 弹出子菜单同步胶囊语言
+.el-menu--popup {
+  padding: 6px;
+  box-shadow: var(--shadow-overlay);
+
+  .el-menu-item,
+  .el-sub-menu__title {
+    height: 40px;
+    margin: 2px 0;
+    line-height: 40px;
+    border-radius: var(--radius-control);
+  }
+
+  .layout-menu-icon {
+    color: var(--menu-icon-color) !important;
+  }
+
+  .el-menu-item:hover .layout-menu-icon,
+  .el-sub-menu__title:hover .layout-menu-icon,
+  .el-menu-item.is-active .layout-menu-icon {
+    color: var(--menu-active-text) !important;
   }
 }
 /* stylelint-enable no-descending-specificity */

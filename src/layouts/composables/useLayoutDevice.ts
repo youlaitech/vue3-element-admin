@@ -6,7 +6,7 @@ const WIDE_BREAKPOINT = 992;
 const MOBILE_BREAKPOINT = 768;
 
 /**
- * 按窗口宽度同步设备类型和侧栏展开状态。
+ * 按窗口宽度同步设备类型和侧栏展开状态
  */
 export function useLayoutDevice() {
   const appStore = useAppStore();

@@ -1,16 +1,16 @@
 import type { CellValue, Worksheet } from "exceljs";
 
 /**
- * 导入接口返回的有效行、无效行及错误摘要。
+ * 导入接口返回的有效行、无效行及错误摘要
  */
-export interface ImportSummary {
+interface ImportSummary {
   validCount: number;
   invalidCount: number;
   messages: string[];
 }
 
 /**
- * 识别项目的 ExcelResult；无返回值的导入接口不需要适配。
+ * 识别项目的 ExcelResult；无返回值的导入接口不需要适配
  */
 export function readImportSummary(result: unknown): ImportSummary | undefined {
   if (!result || typeof result !== "object") return undefined;
@@ -38,7 +38,7 @@ export function readImportSummary(result: unknown): ImportSummary | undefined {
 }
 
 /**
- * 表头按列号映射，保留中间空列；重复表头和有数据的无标题列明确报错。
+ * 表头按列号映射，保留中间空列；重复表头和有数据的无标题列明确报错
  */
 export function parseWorksheetRows(worksheet: Worksheet): Record<string, CellValue>[] {
   const headers = new Map<number, string>();

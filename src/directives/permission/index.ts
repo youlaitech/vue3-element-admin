@@ -3,7 +3,7 @@ import type { Directive, DirectiveBinding } from "vue";
 import { hasPerm as hasPermFn } from "@/utils/permission";
 
 /**
- * 按钮权限与函数调用共用同一判断。
+ * 按钮权限与函数调用共用同一判断
  */
 export const hasPerm: Directive = {
   /**

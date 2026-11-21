@@ -1,23 +1,23 @@
 /**
- * 实时消息协议版本。
+ * 实时消息协议版本
  */
 export const REALTIME_PROTOCOL_VERSION = 1 as const;
 /**
- * 可订阅的业务主题。
+ * 可订阅的业务主题
  */
 export const REALTIME_TOPICS = ["notice", "dict", "presence"] as const;
 
 /**
- * 客户端可订阅的实时主题。
+ * 客户端可订阅的实时主题
  */
 export type RealtimeTopic = (typeof REALTIME_TOPICS)[number];
 /**
- * 实时连接使用的客户端平台标识。
+ * 实时连接使用的客户端平台标识
  */
 export type RealtimeClientPlatform = "web" | "mp-weixin" | "app";
 
 /**
- * 申请握手票据的客户端信息与订阅主题。
+ * 申请握手票据的客户端信息与订阅主题
  */
 export interface CreateRealtimeTicketRequest {
   readonly clientInstanceId: string;
@@ -26,14 +26,14 @@ export interface CreateRealtimeTicketRequest {
 }
 
 /**
- * 一次性握手票据。
+ * 一次性握手票据
  */
 export interface RealtimeTicketResponse {
   readonly ticket: string;
 }
 
 /**
- * 节点在线统计，用户数按用户 ID 去重。
+ * 节点在线统计，用户数按用户 ID 去重
  */
 export interface PresenceSnapshot {
   readonly onlineUsers: number;
@@ -43,7 +43,7 @@ export interface PresenceSnapshot {
 }
 
 /**
- * 服务端消息及各类业务载荷。
+ * 服务端消息及各类业务载荷
  */
 export type RealtimeServerMessage = {
   readonly version: typeof REALTIME_PROTOCOL_VERSION;
@@ -60,7 +60,7 @@ export type RealtimeServerMessage = {
 );
 
 /**
- * 客户端对指定心跳的应答。
+ * 客户端对指定心跳的应答
  */
 export interface HeartbeatPongMessage {
   readonly version: typeof REALTIME_PROTOCOL_VERSION;
@@ -68,12 +68,12 @@ export interface HeartbeatPongMessage {
   readonly payload: { readonly pingId: string };
 }
 /**
- * 通知发布或撤回的变更消息。
+ * 通知发布或撤回的变更消息
  */
 export type NoticeChangedMessage = Extract<RealtimeServerMessage, { type: "notice.changed" }>;
 
 /**
- * 拒绝服务端消息的校验原因。
+ * 拒绝服务端消息的校验原因
  */
 type RejectionReason =
   | "message-too-large"
@@ -83,7 +83,7 @@ type RejectionReason =
   | "invalid-payload";
 
 /**
- * 区分有效消息、未知类型与协议错误的解析结果。
+ * 区分有效消息、未知类型与协议错误的解析结果
  */
 export type ParseRealtimeMessageResult =
   | { readonly kind: "message"; readonly message: RealtimeServerMessage }
@@ -91,7 +91,7 @@ export type ParseRealtimeMessageResult =
   | { readonly kind: "rejected"; readonly reason: RejectionReason };
 
 /**
- * 握手票据响应的校验结果。
+ * 握手票据响应的校验结果
  */
 export type ParseRealtimeTicketResult =
   | { readonly kind: "success"; readonly value: RealtimeTicketResponse }
@@ -101,14 +101,14 @@ const MAX_MESSAGE_BYTES = 16_384;
 const MAX_TIMER_DELAY_MS = 2_147_483_647;
 
 /**
- * 判断输入是否为非空、非数组对象。
+ * 判断输入是否为非空、非数组对象
  */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /**
- * 校验文本长度及首尾空白。
+ * 校验文本长度及首尾空白
  */
 function isText(value: unknown, maximumLength = 128): value is string {
   return (
@@ -120,21 +120,21 @@ function isText(value: unknown, maximumLength = 128): value is string {
 }
 
 /**
- * 校验非负安全整数。
+ * 校验非负安全整数
  */
 function isNonNegativeInteger(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
 
 /**
- * 校验可用于定时器的正整数毫秒数。
+ * 校验可用于定时器的正整数毫秒数
  */
 function isTimerDelay(value: unknown): value is number {
   return isNonNegativeInteger(value) && value > 0 && value <= MAX_TIMER_DELAY_MS;
 }
 
 /**
- * 校验 UTC 时间及日期有效性。
+ * 校验 UTC 时间及日期有效性
  */
 function isUtcTimestamp(value: unknown): value is string {
   if (typeof value !== "string") return false;
@@ -150,7 +150,7 @@ function isUtcTimestamp(value: unknown): value is string {
 }
 
 /**
- * 计算 UTF-8 字节数，超过消息上限时提前结束。
+ * 计算 UTF-8 字节数，超过消息上限时提前结束
  */
 function utf8ByteLength(value: string): number {
   let bytes = 0;
@@ -163,7 +163,7 @@ function utf8ByteLength(value: string): number {
 }
 
 /**
- * 解析并校验服务端消息，业务层只接收可信结构。
+ * 解析并校验服务端消息，业务层只接收可信结构
  */
 export function parseRealtimeServerMessage(text: string): ParseRealtimeMessageResult {
   if (utf8ByteLength(text) > MAX_MESSAGE_BYTES) {
@@ -258,7 +258,7 @@ export function parseRealtimeServerMessage(text: string): ParseRealtimeMessageRe
 }
 
 /**
- * 校验领票接口，避免无效数据进入连接流程。
+ * 校验领票接口，避免无效数据进入连接流程
  */
 export function parseRealtimeTicket(value: unknown): ParseRealtimeTicketResult {
   const invalid: ParseRealtimeTicketResult = {
@@ -275,7 +275,7 @@ export function parseRealtimeTicket(value: unknown): ParseRealtimeTicketResult {
 }
 
 /**
- * 生成对应服务端心跳的应答消息。
+ * 生成对应服务端心跳的应答消息
  */
 export function createHeartbeatPong(pingId: string): HeartbeatPongMessage {
   return {

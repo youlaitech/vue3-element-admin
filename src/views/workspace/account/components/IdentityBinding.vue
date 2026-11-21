@@ -78,7 +78,7 @@ const rules: FormRules<typeof form> = {
 };
 
 /**
- * 读取当前用户在认证中心的身份。
+ * 读取当前用户在认证中心的身份
  */
 async function loadIdentity(): Promise<void> {
   const userId = userStore.userInfo.userId;
@@ -98,12 +98,12 @@ async function loadIdentity(): Promise<void> {
 }
 
 /**
- * 保存当前用户的身份绑定。
+ * 保存当前用户的身份绑定
  */
 async function saveIdentity(): Promise<void> {
   const userId = userStore.userInfo.userId;
   if (!userId || isSubmitting.value || loadFailed.value || !issuer.value) return;
-  // 身份标识按原值提交，保留大小写与空格，不自动 trim。
+  // 身份标识按原值提交，保留大小写与空格，不自动 trim
   const value = form.subject;
   isSubmitting.value = true;
   try {
@@ -117,14 +117,14 @@ async function saveIdentity(): Promise<void> {
     subject.value = value;
     ElMessage.success("身份绑定已保存，重新登录后生效");
   } catch {
-    // 请求层已提示错误，保留输入供用户修正。
+    // 请求层已提示错误，保留输入供用户修正
   } finally {
     isSubmitting.value = false;
   }
 }
 
 /**
- * 确认后解除当前用户的身份绑定。
+ * 确认后解除当前用户的身份绑定
  */
 async function removeIdentity(): Promise<void> {
   const userId = userStore.userInfo.userId;
@@ -146,7 +146,7 @@ async function removeIdentity(): Promise<void> {
     form.subject = "";
     ElMessage.success("身份绑定已解除，重新登录后生效");
   } catch {
-    // 失败时保留已加载的绑定。
+    // 失败时保留已加载的绑定
   } finally {
     isSubmitting.value = false;
   }

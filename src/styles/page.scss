@@ -10,12 +10,86 @@
   min-height: 0;
   padding: var(--page-padding);
   background: var(--page-bg);
+
+  // 区块入场动画
+  // fill-mode 用 backwards：both 会在终帧保留 transform，形成层叠上下文盖住悬浮把手
+  > * {
+    animation: page-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+
+    &:nth-child(2) {
+      animation-delay: 0.05s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.1s;
+    }
+
+    &:nth-child(4) {
+      animation-delay: 0.15s;
+    }
+
+    // 第 5 个起固定档位，不再与首个区块同时出现
+    &:nth-child(n + 5) {
+      animation-delay: 0.2s;
+    }
+  }
+}
+
+@keyframes page-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-container > * {
+    animation: none;
+  }
+}
+
+// 页头：标题 + 描述 + 右侧主操作
+.page-header {
+  display: flex;
+  flex-shrink: 0;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+
+  &__title {
+    font-size: var(--font-size-page-title);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--el-text-color-primary);
+    letter-spacing: -0.01em;
+  }
+
+  &__desc {
+    margin-top: 4px;
+    font-size: var(--font-size-secondary);
+    color: var(--el-text-color-secondary);
+  }
+
+  &__actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+:root {
+  --page-aside-width: 224px;
 }
 
 .page-container--split {
   flex-direction: row;
   overflow: hidden;
-  --page-aside-width: 224px;
 }
 
 .page-aside {
@@ -51,8 +125,11 @@
 
     .page-aside__toggle {
       right: -18px;
+      color: var(--el-color-primary);
+      border-color: var(--card-border-hover);
       border-left: 0;
       border-radius: 0 6px 6px 0;
+      box-shadow: 0 6px 16px rgb(15 23 42 / 12%);
     }
   }
 }
@@ -106,12 +183,15 @@
 .page-search {
   flex-shrink: 0;
 
-  .el-card__body {
-    padding: 12px 16px;
+  // 无边框 filter 区：直接坐在画布上，全站 CRUD 搜索条统一样式
+  &.el-card {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
   }
 
-  .el-form-item {
-    margin-bottom: 0;
+  .el-card__body {
+    padding: 0;
   }
 }
 
@@ -127,8 +207,45 @@
     flex: 1 1 auto;
     grid-template-rows: auto minmax(0, 1fr) auto;
     min-height: 0;
-    padding: 12px 16px;
+    padding: 16px 20px 20px;
     overflow: hidden;
+  }
+}
+
+// 有筛选和工具栏时四行，其余三行
+.page-content .el-card__body:has(> .page-filter):has(> .page-toolbar) {
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+
+// 卡片内搜索区：坐在表格卡片顶部，细分隔线下方接工具栏
+.page-filter {
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+// 搜索表单横排与次要色 label，page-search / page-filter 共用
+.page-search,
+.page-filter {
+  .el-form--inline {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 12px;
+    align-items: center;
+  }
+
+  .el-form-item {
+    margin-right: 20px;
+    margin-bottom: 0;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .el-form-item__label {
+    font-size: var(--font-size-secondary);
+    color: var(--el-text-color-secondary);
   }
 }
 
@@ -169,9 +286,11 @@
 
   min-height: 0;
   overflow: hidden;
-  background: var(--content-bg);
-  border: 1px solid var(--page-table-border-color);
-  border-radius: var(--card-radius);
+
+  // 表格不套内层边框
+  background: transparent;
+  border: 0;
+  border-radius: 0;
 }
 
 .page-table {
@@ -209,12 +328,135 @@
 }
 
 .page-icon-btn {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   padding: 0;
 
   &.el-button + .el-button {
     margin-left: 0;
+  }
+}
+
+// 表格复合主单元格：头像 + 主标题 + 次级行
+.cell-main {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+
+  &__avatar {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--font-size-body);
+    font-weight: 500;
+    color: var(--el-text-color-primary);
+    white-space: nowrap;
+  }
+
+  &__sub {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--font-size-aux);
+    color: var(--el-text-color-secondary);
+    white-space: nowrap;
+  }
+}
+
+// 次级信息单元格：手机号 / 邮箱 / 时间等
+.cell-sub {
+  font-size: var(--font-size-secondary);
+  color: var(--el-text-color-secondary);
+}
+
+// 行内操作：主色文字，hover 浅背景
+// 限定在 .page-table 内，CrudTable 组件内的同名类由组件 scoped 样式负责
+.page-table .row-actions {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+
+  .el-button + .el-button {
+    margin-left: 0;
+  }
+
+  .el-button.is-link:not(.is-disabled) {
+    padding: 0 4px;
+    color: var(--el-color-primary);
+    border-radius: 4px;
+    transition:
+      color 0.15s,
+      background-color 0.15s;
+
+    &.el-button--danger {
+      color: var(--el-color-danger);
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: var(--el-color-primary);
+      background: var(--el-color-primary-light-9);
+    }
+
+    &.el-button--danger:hover,
+    &.el-button--danger:focus-visible {
+      color: var(--el-color-danger);
+      background: var(--el-color-danger-light-9);
+    }
+  }
+}
+
+// 侧栏列表行内图标按钮：常驻可见但视觉安静，hover / 聚焦时提亮
+.aside-actions {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 4px;
+  align-items: center;
+  margin-left: 4px;
+
+  .el-button {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    margin: 0;
+    color: var(--el-text-color-secondary);
+    transition: color 0.15s;
+  }
+
+  .el-button.is-edit:hover,
+  .el-button.is-edit:focus-visible {
+    color: var(--el-color-primary);
+  }
+
+  .el-button.is-delete:hover,
+  .el-button.is-delete:focus-visible {
+    color: var(--el-color-danger);
+  }
+}
+
+// 状态圆点：启用成功色，停用占位色
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--el-color-success);
+  border-radius: 50%;
+
+  &.is-stopped {
+    background-color: var(--el-text-color-placeholder);
   }
 }
 

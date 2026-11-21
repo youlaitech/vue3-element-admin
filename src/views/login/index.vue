@@ -70,10 +70,11 @@
                     v-model.trim="loginFormData.username"
                     placeholder="用户名"
                     :prefix-icon="UserIcon"
+                    @keyup.enter="handleLoginSubmit"
                   />
                 </el-form-item>
 
-                <el-tooltip :visible="isCapsLock" content="大写锁定已开启" placement="right">
+                <el-tooltip :visible="isCapsLock" content="大写锁定已开启" placement="top">
                   <el-form-item prop="password">
                     <el-input
                       v-model.trim="loginFormData.password"
@@ -90,6 +91,7 @@
                 <el-form-item prop="captchaCode">
                   <div class="flex w-full gap-12px">
                     <el-input
+                      ref="captchaInputRef"
                       v-model.trim="loginFormData.captchaCode"
                       placeholder="验证码"
                       class="min-w-0 flex-1"
@@ -99,13 +101,25 @@
                         <span class="i-svg:security login-card__prefix-icon" />
                       </template>
                     </el-input>
-                    <div class="login-card__captcha" @click="getCaptcha">
+                    <button
+                      type="button"
+                      class="login-card__captcha"
+                      title="点击刷新验证码"
+                      @click="getCaptcha"
+                    >
                       <el-icon v-if="codeLoading" class="is-loading" :size="16">
                         <Loading />
                       </el-icon>
                       <img v-else-if="captchaBase64" :src="captchaBase64" alt="验证码" />
                       <el-icon v-else :size="16"><Refresh /></el-icon>
-                    </div>
+                      <el-icon
+                        v-if="captchaBase64 && !codeLoading"
+                        class="login-card__captcha-refresh"
+                        :size="16"
+                      >
+                        <Refresh />
+                      </el-icon>
+                    </button>
                   </div>
                 </el-form-item>
 
@@ -180,7 +194,7 @@
 defineOptions({ name: "LoginPage", inheritAttrs: false });
 
 import { Clock, Lock, Loading, Refresh, User } from "@element-plus/icons-vue";
-import type { FormInstance } from "element-plus";
+import type { FormInstance, InputInstance } from "element-plus";
 import AuthAPI, { OIDC_AUTHORIZATION_URL } from "@/api/auth";
 import type { LoginRequest } from "@/api/auth";
 import router from "@/router";
@@ -200,6 +214,7 @@ const loading = ref(false);
 const isCapsLock = ref(false);
 const captchaBase64 = ref<string>();
 const codeLoading = ref(false);
+const captchaInputRef = ref<InputInstance>();
 
 const UserIcon = markRaw(User);
 const LockIcon = markRaw(Lock);
@@ -236,6 +251,8 @@ const demoAccounts = [
 function fillDemoAccount(account: { username: string }): void {
   loginFormData.value.username = account.username;
   loginFormData.value.password = "123456";
+  // 账号密码已填好，直接把焦点交给验证码，减少一次手动点击
+  captchaInputRef.value?.focus();
 }
 
 /**
@@ -265,8 +282,9 @@ async function handleLoginSubmit() {
   try {
     await userStore.login(loginFormData.value).then(
       async () => {
-        const redirectPath = (route.query.redirect as string) || "/";
-        await router.push(decodeURIComponent(redirectPath));
+        const redirectPath = decodeURIComponent((route.query.redirect as string) || "/");
+        // redirect 指向登录页自身（历史嵌套链接）时回退首页，避免循环
+        await router.push(redirectPath.startsWith("/login") ? "/" : redirectPath);
       },
       () => getCaptcha(),
     );
@@ -292,7 +310,7 @@ function showForm(type: "resetPwd") {
 }
 
 /**
- * 跳转认证中心开始 OIDC 登录。
+ * 跳转认证中心开始 OIDC 登录
  */
 function startOidcLogin() {
   window.location.href = OIDC_AUTHORIZATION_URL;
@@ -319,7 +337,11 @@ $input-h: 44px;
   min-height: 100vh;
   overflow: auto;
   /* 浅色渐变底色；桌面端被品牌区背景与白色卡片完全覆盖，窄屏两区透明后透出 */
-  background: linear-gradient(180deg, #ffffff 0%, #dbeafe 100%);
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    color-mix(in srgb, var(--el-color-primary) 16%, #fff) 100%
+  );
 }
 
 .login-toolbar {
@@ -363,6 +385,45 @@ $input-h: 44px;
     color-mix(in srgb, var(--el-color-primary) 42%, #fff) 100%
   );
   animation: login-pane-in 0.36s ease-out both;
+
+  // 浅色网格纹理 + 双角晕染：与暗色纹理、首页欢迎卡同一套视觉语言
+  &::before {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--el-color-primary) 6%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--el-color-primary) 6%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 56px 56px;
+    mask-image: radial-gradient(720px 420px at 20% 46%, #000 0%, transparent 75%);
+  }
+
+  &::after {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+    background:
+      radial-gradient(
+        560px 260px at 84% 10%,
+        color-mix(in srgb, var(--el-color-primary) 10%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        480px 240px at 6% 94%,
+        color-mix(in srgb, var(--chart-2) 8%, transparent),
+        transparent 72%
+      );
+  }
 
   &__header,
   &__hero {
@@ -421,6 +482,23 @@ $input-h: 44px;
     justify-content: center;
     width: min(760px, 100%);
     padding: 40px 0 60px;
+
+    // 徽标 / 标题 / 特性依次浮现，backwards 不占用终帧 transform
+    > * {
+      animation: login-hero-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    > :nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    > :nth-child(2) {
+      animation-delay: 0.16s;
+    }
+
+    > :nth-child(3) {
+      animation-delay: 0.22s;
+    }
   }
 
   &__tag {
@@ -496,7 +574,7 @@ $input-h: 44px;
 
     &:not(:last-child)::after {
       position: absolute;
-      top: 7px;
+      top: 9px;
       right: 0;
       width: 1px;
       height: 14px;
@@ -581,6 +659,7 @@ $input-h: 44px;
   }
 
   &__captcha {
+    position: relative;
     box-sizing: border-box;
     display: flex;
     flex-shrink: 0;
@@ -588,7 +667,9 @@ $input-h: 44px;
     justify-content: center;
     width: 108px;
     height: $input-h;
+    padding: 0;
     overflow: hidden;
+    font: inherit;
     cursor: pointer;
     background: var(--el-fill-color-blank);
     border: 1px solid var(--el-border-color);
@@ -597,6 +678,19 @@ $input-h: 44px;
 
     &:hover {
       border-color: var(--el-color-primary);
+
+      img {
+        opacity: 0.35;
+      }
+
+      .login-card__captcha-refresh {
+        opacity: 1;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid color-mix(in srgb, var(--el-color-primary) 55%, transparent);
+      outline-offset: 2px;
     }
 
     img {
@@ -604,7 +698,15 @@ $input-h: 44px;
       width: 100%;
       height: 100%;
       object-fit: contain;
+      transition: opacity 0.15s;
     }
+  }
+
+  &__captcha-refresh {
+    position: absolute;
+    color: var(--el-color-primary);
+    opacity: 0;
+    transition: opacity 0.15s;
   }
 
   &__options {
@@ -633,15 +735,23 @@ $input-h: 44px;
     font-size: 16px;
     font-weight: 600;
     border-radius: 8px;
-    box-shadow: 0 12px 24px color-mix(in srgb, var(--el-color-primary) 18%, transparent);
+    box-shadow: var(--brand-shadow);
+    transition:
+      box-shadow 0.16s,
+      transform 0.16s;
 
     &:hover {
-      box-shadow: 0 14px 28px color-mix(in srgb, var(--el-color-primary) 22%, transparent);
+      box-shadow: var(--brand-shadow-hover);
+      transform: translateY(-1px);
     }
 
-    &:focus,
+    &:active {
+      transform: translateY(0);
+    }
+
     &:focus-visible {
-      outline: none;
+      outline: 2px solid color-mix(in srgb, var(--el-color-primary) 55%, transparent);
+      outline-offset: 2px;
     }
   }
 
@@ -672,6 +782,11 @@ $input-h: 44px;
         color: var(--el-color-primary);
         background: color-mix(in srgb, var(--el-color-primary) 10%, transparent);
         border-color: color-mix(in srgb, var(--el-color-primary) 40%, transparent);
+      }
+
+      &:focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--el-color-primary) 55%, transparent);
+        outline-offset: 2px;
       }
     }
   }
@@ -725,6 +840,11 @@ $input-h: 44px;
         border-color: color-mix(in srgb, var(--el-color-primary) 35%, transparent);
         box-shadow: 0 4px 12px color-mix(in srgb, var(--el-color-primary) 14%, transparent);
       }
+
+      &:focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--el-color-primary) 55%, transparent);
+        outline-offset: 2px;
+      }
     }
 
     &-icon {
@@ -771,6 +891,11 @@ $input-h: 44px;
       rgb(0 0 0 / 30%) 70%,
       transparent 100%
     );
+  }
+
+  // 暗色已有深蓝渐变与网格，不再叠加浅色晕染
+  &::after {
+    display: none;
   }
 
   &__logo {
@@ -903,6 +1028,26 @@ $input-h: 44px;
   }
 }
 
+@keyframes login-hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-brand,
+  .login-card,
+  .login-brand__hero > * {
+    animation: none;
+  }
+}
+
 @media (max-width: 1024px) {
   .login-layout {
     flex-direction: column;
@@ -919,6 +1064,11 @@ $input-h: 44px;
     min-height: auto;
     padding: 28px 40px 32px;
     background: transparent;
+
+    &::before,
+    &::after {
+      display: none;
+    }
 
     &__hero {
       display: none;

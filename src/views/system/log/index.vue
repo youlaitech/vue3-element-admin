@@ -1,39 +1,37 @@
 <template>
   <div class="page-container">
-    <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="params" :inline="true" label-width="auto">
-        <el-form-item prop="keywords" label="关键字">
-          <el-input
-            v-model="params.keywords"
-            placeholder="IP/操作人"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-
-        <el-form-item prop="createTime" label="操作时间">
-          <el-date-picker
-            v-model="params.createTime"
-            :editable="false"
-            type="daterange"
-            range-separator="~"
-            start-placeholder="开始时间"
-            end-placeholder="截止时间"
-            value-format="YYYY-MM-DD"
-            style="width: 260px"
-          />
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">搜索</el-button>
-          <el-button @click="handleResetQuery">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
     <el-card ref="tableWrapperRef" class="page-content" shadow="never">
-      <div class="page-toolbar">
-        <div class="page-toolbar__right" style="margin-left: auto">
+      <div class="page-filter page-filter--actions">
+        <el-form ref="queryFormRef" :model="params" :inline="true" label-width="auto">
+          <el-form-item prop="keywords" label="关键字">
+            <el-input
+              v-model="params.keywords"
+              placeholder="IP/操作人"
+              clearable
+              @keyup.enter="handleQuery"
+            />
+          </el-form-item>
+
+          <el-form-item prop="createTime" label="操作时间">
+            <el-date-picker
+              v-model="params.createTime"
+              :editable="false"
+              type="daterange"
+              range-separator="~"
+              start-placeholder="开始时间"
+              end-placeholder="截止时间"
+              value-format="YYYY-MM-DD"
+              style="width: 260px"
+            />
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="handleQuery">搜索</el-button>
+            <el-button @click="handleResetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+
+        <div class="page-filter__actions">
           <el-tooltip content="刷新" placement="top">
             <el-button class="page-icon-btn" @click="fetchData">
               <el-icon><Refresh /></el-icon>
@@ -46,6 +44,7 @@
           </el-tooltip>
         </div>
       </div>
+
       <div class="page-table-wrapper">
         <el-table
           v-loading="loading"
@@ -159,7 +158,6 @@ const queryFormRef = ref<FormInstance>();
 // 日志状态：1=成功，0=失败
 const LOG_STATUS_SUCCESS = 1;
 
-// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   LogItem,
   LogQuery
@@ -207,3 +205,23 @@ onMounted(() => {
   handleQuery();
 });
 </script>
+
+<style lang="scss" scoped>
+.page-filter--actions {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  .el-form {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.page-filter__actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+  align-items: center;
+}
+</style>

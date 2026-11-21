@@ -4,7 +4,7 @@ import type { Options, Rule } from "@form-create/element-ui";
 /**
  * 规则来源（表单定义接口与渲染接口返回的 JSON 字段）
  */
-export interface FormRuleSource {
+interface FormRuleSource {
   /** 表单规则（form-create rule 数组 JSON 字符串） */
   formJson?: string;
   /** 表单全局配置 JSON 字符串 */
@@ -12,7 +12,7 @@ export interface FormRuleSource {
 }
 
 /**
- * 加载规则并管理表单填写、公开访问与预览页的渲染状态。
+ * 加载规则并管理表单填写、公开访问与预览页的渲染状态
  */
 export function useFormRenderer<T extends FormRuleSource = FormRuleSource>(
   loader: () => Promise<T | null | undefined>,

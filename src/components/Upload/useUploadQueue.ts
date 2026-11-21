@@ -11,36 +11,36 @@ interface UploadValues<T> {
 }
 
 /**
- * 按 uid 同步上传队列与表单模型，外部替换模型时取消旧任务。
- * 自身更新的父级回写需保留数组引用，否则按外部替换处理。
+ * 按 uid 同步上传队列与表单模型，外部替换模型时取消旧任务
+ * 自身更新的父级回写需保留数组引用，否则按外部替换处理
  */
 export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
   const fileList = ref<UploadUserFile[]>([]);
   const requests = new Map<number, AbortController>();
-  // HTTP 结束后仍需等待组件回调，任务标记不能随控制器一起清理。
+  // HTTP 结束后仍需等待组件回调，任务标记不能随控制器一起清理
   const activeTasks = new Set<number>();
-  // 暂存尚未回写的发布值，用于识别自身更新和合并连续成功的结果。
+  // 暂存尚未回写的发布值，用于识别自身更新和合并连续成功的结果
   let publishedValue: T[] | null = null;
 
   /**
-   * 释放文件的本地预览地址。
+   * 释放文件的本地预览地址
    */
   function releasePreview(file: UploadUserFile): void {
     if (file.url?.startsWith("blob:")) URL.revokeObjectURL(file.url);
   }
 
   /**
-   * 使全部任务失效并中断在途请求。
+   * 使全部任务失效并中断在途请求
    */
   function abortAll(): void {
-    // 先使回调失效，再中断请求，防止取消触发的回调回写模型。
+    // 先使回调失效，再中断请求，防止取消触发的回调回写模型
     activeTasks.clear();
     requests.forEach((request) => request.abort());
     requests.clear();
   }
 
   /**
-   * 回写文件值，并标记组件自身的模型更新。
+   * 回写文件值，并标记组件自身的模型更新
    */
   function publish(value: T[]): void {
     publishedValue = toRaw(value);
@@ -50,14 +50,14 @@ export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
   watch(
     model,
     (items) => {
-      // 同一引用是自身回写；内容相同的新数组仍视为外部替换。
+      // 同一引用是自身回写；内容相同的新数组仍视为外部替换
       const ownUpdate = toRaw(items) === publishedValue;
       publishedValue = null;
       if (!ownUpdate) {
         abortAll();
         fileList.value.forEach(releasePreview);
       }
-      // 保留待校验文件和在途 uid，供组件后续回调定位原任务。
+      // 保留待校验文件和在途 uid，供组件后续回调定位原任务
       const pending = ownUpdate
         ? fileList.value.filter(
             (file) =>
@@ -74,12 +74,12 @@ export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
         ...pending,
       ];
     },
-    // 同步消费回写标记，避免延迟侦听与下一次发布混淆。
+    // 同步消费回写标记，避免延迟侦听与下一次发布混淆
     { immediate: true, flush: "sync" },
   );
 
   /**
-   * 提交文件并更新对应任务的上传进度。
+   * 提交文件并更新对应任务的上传进度
    */
   function upload(
     options: UploadRequestOptions,
@@ -107,7 +107,7 @@ export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
   }
 
   /**
-   * 仅结算有效任务；重置、取消或重复回调返回 false。
+   * 仅结算有效任务；重置、取消或重复回调返回 false
    */
   function complete(info: FileInfo, file: UploadUserFile): boolean {
     if (file.uid === undefined || !activeTasks.delete(file.uid)) return false;
@@ -116,13 +116,13 @@ export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
     releasePreview(task);
     task.url = info.url;
     task.status = "success";
-    // 父级回写前可能连续成功，优先合并暂存结果，避免覆盖前一个文件。
+    // 父级回写前可能连续成功，优先合并暂存结果，避免覆盖前一个文件
     publish([...(publishedValue ?? model.value), values.toValue(info)]);
     return true;
   }
 
   /**
-   * 移除有效的失败任务；过期、取消或重复回调返回 false。
+   * 移除有效的失败任务；过期、取消或重复回调返回 false
    */
   function fail(file: UploadUserFile): boolean {
     if (file.uid === undefined || !activeTasks.delete(file.uid)) return false;
@@ -132,11 +132,11 @@ export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
   }
 
   /**
-   * 取消指定任务并释放预览资源。
+   * 取消指定任务并释放预览资源
    */
   function cancel(file: UploadUserFile): void {
     if (file.uid !== undefined) {
-      // 中断可能同步触发回调，先使任务失效。
+      // 中断可能同步触发回调，先使任务失效
       activeTasks.delete(file.uid);
       requests.get(file.uid)?.abort();
       requests.delete(file.uid);
@@ -146,7 +146,7 @@ export function useUploadQueue<T>(model: Ref<T[]>, values: UploadValues<T>) {
   }
 
   /**
-   * 从表单模型中移除指定文件地址。
+   * 从表单模型中移除指定文件地址
    */
   function remove(url: string): void {
     publish((publishedValue ?? model.value).filter((item) => values.toFile(item).url !== url));

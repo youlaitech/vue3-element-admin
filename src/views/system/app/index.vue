@@ -1,42 +1,42 @@
 <template>
   <div class="page-container">
-    <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="params" :inline="true">
-        <el-form-item label="关键字" prop="keywords">
-          <el-input
-            v-model="params.keywords"
-            placeholder="应用名称/编码/AppId"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-
-        <el-form-item label="平台" prop="platform">
-          <el-select v-model="params.platform" placeholder="全部" clearable style="width: 140px">
-            <el-option
-              v-for="item in platformOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="params.status" placeholder="全部" clearable style="width: 120px">
-            <el-option label="正常" :value="CommonStatus.ENABLED" />
-            <el-option label="禁用" :value="CommonStatus.DISABLED" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">搜索</el-button>
-          <el-button @click="handleResetQuery">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
     <el-card ref="tableWrapperRef" class="page-content" shadow="never">
+      <div class="page-filter">
+        <el-form ref="queryFormRef" :model="params" :inline="true">
+          <el-form-item label="关键字" prop="keywords">
+            <el-input
+              v-model="params.keywords"
+              placeholder="应用名称/编码/AppId"
+              clearable
+              @keyup.enter="handleQuery"
+            />
+          </el-form-item>
+
+          <el-form-item label="平台" prop="platform">
+            <el-select v-model="params.platform" placeholder="全部" clearable style="width: 140px">
+              <el-option
+                v-for="item in platformOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="状态" prop="status">
+            <el-select v-model="params.status" placeholder="全部" clearable style="width: 120px">
+              <el-option label="正常" :value="CommonStatus.ENABLED" />
+              <el-option label="禁用" :value="CommonStatus.DISABLED" />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="handleQuery">搜索</el-button>
+            <el-button @click="handleResetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+
       <div class="page-toolbar">
         <div class="page-toolbar__left">
           <el-button v-hasPerm="['sys:app:create']" type="primary" @click="handleCreateClick">
@@ -46,7 +46,7 @@
             v-hasPerm="['sys:app:delete']"
             type="danger"
             :disabled="!hasSelection"
-            @click="handleBatchDelete"
+            @click="handleDelete()"
           >
             删除
           </el-button>
@@ -67,7 +67,6 @@
 
       <div class="page-table-wrapper">
         <el-table
-          ref="dataTableRef"
           v-loading="loading"
           class="page-table"
           :data="list"
@@ -140,7 +139,12 @@
       />
     </el-card>
 
-    <el-dialog v-model="dialog.visible" :title="dialog.title" width="640px" @close="closeDialog">
+    <el-dialog
+      v-model="dialogState.visible"
+      :title="dialogState.title"
+      width="640px"
+      @close="closeDialog"
+    >
       <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="应用名称" prop="appName">
           <el-input v-model="formData.appName" placeholder="请输入应用名称" :maxlength="100" />
@@ -284,7 +288,7 @@ const { loading, list, total, params, fetchData, handleQuery, handleResetQuery }
 
 const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<AppItem>();
 
-const dialog = reactive({
+const dialogState = reactive({
   title: "",
   visible: false,
 });
@@ -302,7 +306,7 @@ const rules: FormRules<AppForm> = {
  * 关闭弹窗并重置表单
  */
 function closeDialog(): void {
-  dialog.visible = false;
+  dialogState.visible = false;
   resetForm();
 }
 
@@ -322,18 +326,18 @@ function resetForm(): void {
  * 打开新增弹窗
  */
 function handleCreateClick(): void {
-  dialog.title = "新增应用";
-  dialog.visible = true;
+  dialogState.title = "新增应用";
+  dialogState.visible = true;
 }
 
 /**
  * 打开编辑弹窗并回填数据
  */
 async function handleEditClick(id: string): Promise<void> {
-  dialog.title = "修改应用";
+  dialogState.title = "修改应用";
   const data = await AppAPI.getFormData(id);
   Object.assign(formData, data);
-  dialog.visible = true;
+  dialogState.visible = true;
 }
 
 /**
@@ -375,13 +379,6 @@ async function handleSubmit(): Promise<void> {
   } finally {
     loading.value = false;
   }
-}
-
-/**
- * 批量删除应用
- */
-function handleBatchDelete(): void {
-  handleDelete();
 }
 
 /**

@@ -149,7 +149,7 @@ import type { FormInstance, PopoverProps, TableInstance } from "element-plus";
 /**
  * 对象类型
  */
-export type IObject = Record<string, any>;
+type IObject = Record<string, any>;
 
 /**
  * 定义接收的属性

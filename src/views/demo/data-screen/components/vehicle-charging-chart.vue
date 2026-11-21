@@ -19,7 +19,7 @@ onMounted(() => {
   chartRef.value?.initOptions(options);
 });
 /**
- * 生成指定范围内的演示数值。
+ * 生成指定范围内的演示数值
  */
 const randomNum = () => Math.floor(Math.random() * 500) + 500;
 

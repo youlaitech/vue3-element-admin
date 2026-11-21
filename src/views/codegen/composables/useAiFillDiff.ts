@@ -18,7 +18,7 @@ export interface AiChangeItem {
 /**
  * 单个字段的改动
  */
-export interface AiFieldChange {
+interface AiFieldChange {
   /** 列名 */
   columnName: string;
   /** 改动明细 */
@@ -40,7 +40,7 @@ export interface AiChangeRow extends AiChangeItem {
 /**
  * AI 填充前后差异
  */
-export interface AiFillDiff {
+interface AiFillDiff {
   /** 业务名改动 */
   businessName?: AiChangeItem;
   /** 字段改动列表 */
@@ -90,7 +90,7 @@ function enumLabel(options: Record<string, OptionItem>, value: unknown): string 
 /**
  * 对比两份配置，只保留发生变化的部分
  */
-export function diffGenConfig(before: GenConfigForm, after: GenConfigForm): AiFillDiff {
+function diffGenConfig(before: GenConfigForm, after: GenConfigForm): AiFillDiff {
   const diff: AiFillDiff = { fields: [], fieldCount: 0, changeCount: 0 };
 
   if ((before.businessName ?? "") !== (after.businessName ?? "")) {

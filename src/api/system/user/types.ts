@@ -21,7 +21,7 @@ export interface UserInfo {
 }
 
 /**
- * 用户查询条件。
+ * 用户查询条件
  */
 export interface UserQuery extends PageQuery {
   /** 用户接口允许的排序属性 */
@@ -39,7 +39,7 @@ export interface UserQuery extends PageQuery {
 }
 
 /**
- * 用户列表记录。
+ * 用户列表记录
  */
 export interface UserItem {
   /** 用户 ID */

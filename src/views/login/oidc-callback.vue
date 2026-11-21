@@ -45,7 +45,7 @@ onBeforeUnmount(() => {
 });
 
 /**
- * 复制认证中心的身份标识。
+ * 复制认证中心的身份标识
  */
 async function copySubject(): Promise<void> {
   try {
@@ -57,14 +57,14 @@ async function copySubject(): Promise<void> {
 }
 
 /**
- * 重新发起 OIDC 登录。
+ * 重新发起 OIDC 登录
  */
 function retryLogin(): void {
   window.location.href = OIDC_AUTHORIZATION_URL;
 }
 
 /**
- * 读取路由参数，兼容普通查询参数。
+ * 读取路由参数，兼容普通查询参数
  */
 function getCallbackParam(name: string): string {
   const value = router.currentRoute.value.query[name];
@@ -74,7 +74,7 @@ function getCallbackParam(name: string): string {
 }
 
 /**
- * 兑换票据并保存本地登录凭证。
+ * 兑换票据并保存本地登录凭证
  */
 async function completeLogin(): Promise<void> {
   const ticket = getCallbackParam("ticket");
@@ -83,7 +83,7 @@ async function completeLogin(): Promise<void> {
   const revision = authSessionRevision.value;
 
   try {
-    // 兑换前清理地址，避免刷新页面重复使用票据。
+    // 兑换前清理地址，避免刷新页面重复使用票据
     const url = new URL(window.location.href);
     ["ticket", "error", "subject"].forEach((name) => url.searchParams.delete(name));
     window.history.replaceState(window.history.state, "", url);
@@ -105,7 +105,7 @@ async function completeLogin(): Promise<void> {
     }
 
     const { accessToken, refreshToken } = await AuthAPI.exchangeOidcTicket(ticket);
-    // 离开页面或切换账号后，不再写入这次登录的凭证。
+    // 离开页面或切换账号后，不再写入这次登录的凭证
     if (!active || revision !== authSessionRevision.value) return;
     AuthStorage.setTokens(accessToken, refreshToken, false);
     await router.replace("/");

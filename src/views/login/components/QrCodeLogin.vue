@@ -173,8 +173,9 @@ async function doLogin() {
   stopPolling();
   try {
     await userStore.loginByQrCode(ticket);
-    const redirectPath = (route.query.redirect as string) || "/";
-    await router.push(decodeURIComponent(redirectPath));
+    const redirectPath = decodeURIComponent((route.query.redirect as string) || "/");
+    // redirect 指向登录页自身（历史嵌套链接）时回退首页，避免循环
+    await router.push(redirectPath.startsWith("/login") ? "/" : redirectPath);
   } catch {
     state.value = "expired";
   }

@@ -1,31 +1,31 @@
 <template>
   <div class="page-container">
-    <el-card ref="tableWrapperRef" class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="params" :inline="true">
-        <el-form-item label="关键字" prop="keywords">
-          <el-input
-            v-model="params.keywords"
-            placeholder="套餐名称/套餐编码"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
+    <el-card ref="tableWrapperRef" class="page-content" shadow="never">
+      <div class="page-filter">
+        <el-form ref="queryFormRef" :model="params" :inline="true">
+          <el-form-item label="关键字" prop="keywords">
+            <el-input
+              v-model="params.keywords"
+              placeholder="套餐名称/套餐编码"
+              clearable
+              @keyup.enter="handleQuery"
+            />
+          </el-form-item>
 
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="params.status" placeholder="全部" clearable style="width: 120px">
-            <el-option label="启用" :value="CommonStatus.ENABLED" />
-            <el-option label="停用" :value="CommonStatus.DISABLED" />
-          </el-select>
-        </el-form-item>
+          <el-form-item label="状态" prop="status">
+            <el-select v-model="params.status" placeholder="全部" clearable style="width: 120px">
+              <el-option label="启用" :value="CommonStatus.ENABLED" />
+              <el-option label="停用" :value="CommonStatus.DISABLED" />
+            </el-select>
+          </el-form-item>
 
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">搜索</el-button>
-          <el-button @click="handleResetQuery">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+          <el-form-item>
+            <el-button type="primary" @click="handleQuery">搜索</el-button>
+            <el-button @click="handleResetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
 
-    <el-card class="page-content" shadow="never">
       <div class="page-toolbar">
         <div class="page-toolbar__left">
           <el-button
@@ -174,9 +174,7 @@
             </template>
             {{ menuExpanded ? "收缩" : "展开" }}
           </el-button>
-          <el-checkbox v-model="menuParentChildLinked" class="ml-5" @change="handleMenuLinkChange">
-            父子联动
-          </el-checkbox>
+          <el-checkbox v-model="menuParentChildLinked" class="ml-5">父子联动</el-checkbox>
 
           <el-tooltip placement="bottom">
             <template #content>
@@ -251,7 +249,6 @@ const queryFormRef = ref<FormInstance>();
 const planFormRef = ref<FormInstance>();
 const menuTreeRef = ref<TreeInstance>();
 
-// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   TenantPlanItem,
   TenantPlanQuery
@@ -462,15 +459,6 @@ function toggleMenuTree(): void {
       treeNode.collapse();
     }
   });
-}
-
-/**
- * 父子联动开关变化处理
- *
- * @param val 开关当前值
- */
-function handleMenuLinkChange(val: string | number | boolean): void {
-  menuParentChildLinked.value = Boolean(val);
 }
 
 /**

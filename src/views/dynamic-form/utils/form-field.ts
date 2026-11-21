@@ -19,7 +19,7 @@ export interface FormFieldMeta {
 export function extractFields(rules: unknown): FormFieldMeta[] {
   const result: FormFieldMeta[] = [];
   /**
-   * 递归收集表单规则中的字段。
+   * 递归收集表单规则中的字段
    */
   const walk = (nodes: unknown[]): void => {
     nodes.forEach((node) => {
@@ -45,7 +45,7 @@ export function extractFields(rules: unknown): FormFieldMeta[] {
  * 提取字段选项映射（value -> label，脏项跳过）
  * @param options 规则 options 数组
  */
-export function extractOptionMap(options: unknown): Map<string, string> {
+function extractOptionMap(options: unknown): Map<string, string> {
   const optionMap = new Map<string, string>();
   if (!Array.isArray(options)) return optionMap;
   options.forEach((option) => {

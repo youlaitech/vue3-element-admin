@@ -1,6 +1,6 @@
 <!-- 用户管理 -->
 <template>
-  <div class="page-container page-container--split user-page">
+  <div class="page-container page-container--split">
     <aside class="page-aside" :class="{ 'is-collapsed': sidebarCollapsed }">
       <div class="page-aside__inner">
         <UserDeptTree v-model="params.deptId" @node-click="handleQuery" />
@@ -14,58 +14,61 @@
     </aside>
 
     <div class="page-main">
-      <el-card class="page-search" shadow="never">
-        <el-form ref="queryFormRef" :model="params" :inline="true" label-width="auto">
-          <el-form-item label="关键字" prop="keywords">
-            <el-input
-              v-model="params.keywords"
-              placeholder="用户名/昵称/手机号"
-              clearable
-              style="width: 180px"
-              @keyup.enter="handleQuery"
-            />
-          </el-form-item>
-
-          <el-form-item label="状态" prop="status">
-            <el-select v-model="params.status" placeholder="全部" clearable style="width: 112px">
-              <el-option label="正常" :value="CommonStatus.ENABLED" />
-              <el-option label="禁用" :value="CommonStatus.DISABLED" />
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="创建时间" prop="createTime">
-            <el-date-picker
-              v-model="params.createTime"
-              :editable="false"
-              type="daterange"
-              range-separator="~"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              value-format="YYYY-MM-DD"
-              style="width: 240px"
-            />
-          </el-form-item>
-
-          <el-form-item>
-            <el-button type="primary" @click="handleQuery">搜索</el-button>
-            <el-button @click="handleResetQuery">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </el-card>
-
       <el-card ref="tableWrapperRef" class="page-content" shadow="never">
+        <div class="page-filter">
+          <el-form ref="queryFormRef" :model="params" :inline="true" label-width="auto">
+            <el-form-item label="关键字" prop="keywords">
+              <el-input
+                v-model="params.keywords"
+                placeholder="用户名/昵称/手机号"
+                clearable
+                style="width: 180px"
+                @keyup.enter="handleQuery"
+              />
+            </el-form-item>
+
+            <el-form-item label="状态" prop="status">
+              <el-select v-model="params.status" placeholder="全部" clearable style="width: 112px">
+                <el-option label="正常" :value="CommonStatus.ENABLED" />
+                <el-option label="禁用" :value="CommonStatus.DISABLED" />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="创建时间" prop="createTime">
+              <el-date-picker
+                v-model="params.createTime"
+                :editable="false"
+                type="daterange"
+                range-separator="~"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                value-format="YYYY-MM-DD"
+                style="width: 240px"
+              />
+            </el-form-item>
+
+            <el-form-item>
+              <el-button type="primary" @click="handleQuery">搜索</el-button>
+              <el-button @click="handleResetQuery">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+
         <div class="page-toolbar">
           <div class="page-toolbar__left">
             <el-button v-hasPerm="['sys:user:create']" type="primary" @click="handleCreateClick">
+              <el-icon><Plus /></el-icon>
               新增
             </el-button>
             <el-button
               v-hasPerm="'sys:user:delete'"
               type="danger"
+              plain
               :disabled="!hasSelection"
               @click="handleDelete()"
             >
-              删除
+              <el-icon><Delete /></el-icon>
+              批量删除
             </el-button>
           </div>
           <div class="page-toolbar__right">
@@ -108,54 +111,92 @@
             @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="42" fixed="left" align="center" />
-            <el-table-column label="昵称" min-width="140" fixed="left">
+            <el-table-column label="昵称" min-width="180" fixed="left">
               <template #default="scope">
-                <div class="user-name-cell">
-                  <el-avatar v-if="scope.row.avatar" :src="scope.row.avatar" :size="24" />
-                  <span v-else class="user-name-cell__text">
+                <div class="cell-main">
+                  <el-avatar
+                    v-if="scope.row.avatar"
+                    class="cell-main__avatar"
+                    :src="scope.row.avatar"
+                    :size="32"
+                  />
+                  <span v-else class="user-avatar-fallback">
                     {{ getAvatarText(scope.row as UserItem) }}
                   </span>
-                  <span>{{ scope.row.nickname || "-" }}</span>
+                  <span class="cell-main__text">
+                    <span class="cell-main__title">{{ scope.row.nickname || "-" }}</span>
+                    <span class="cell-main__sub">{{ scope.row.username }}</span>
+                  </span>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="用户名" min-width="120" prop="username" show-overflow-tooltip />
-            <el-table-column label="状态" align="center" width="80">
+            <el-table-column label="状态" align="center" width="90">
               <template #default="scope">
-                <el-tag
-                  :type="scope.row.status === CommonStatus.ENABLED ? 'success' : 'danger'"
-                  size="small"
+                <span
+                  class="status-cell"
+                  :class="{ 'is-disabled': !isAccountEnabled(scope.row as UserItem) }"
                 >
-                  {{ scope.row.status === CommonStatus.ENABLED ? "正常" : "禁用" }}
-                </el-tag>
+                  <span
+                    class="status-dot"
+                    :class="{ 'is-stopped': !isAccountEnabled(scope.row as UserItem) }"
+                  />
+                  {{ isAccountEnabled(scope.row as UserItem) ? "正常" : "禁用" }}
+                </span>
               </template>
             </el-table-column>
             <el-table-column label="性别" align="center" width="70">
               <template #default="scope">
-                <el-tag
-                  v-if="
-                    scope.row.gender === UserGender.MALE || scope.row.gender === UserGender.FEMALE
-                  "
-                  :type="scope.row.gender === UserGender.MALE ? 'primary' : 'danger'"
-                  size="small"
-                >
-                  <el-icon>
-                    <Male v-if="scope.row.gender === UserGender.MALE" />
-                    <Female v-else />
-                  </el-icon>
-                  <span>{{ scope.row.gender === UserGender.MALE ? "男" : "女" }}</span>
-                </el-tag>
-                <span v-else>-</span>
+                <span class="cell-sub">
+                  {{ getGenderText(scope.row as UserItem) }}
+                </span>
               </template>
             </el-table-column>
             <el-table-column label="部门" min-width="140" prop="deptName" show-overflow-tooltip />
             <el-table-column label="角色" prop="roleNames" min-width="160" show-overflow-tooltip />
-            <el-table-column label="手机号码" prop="mobile" width="130" />
-            <el-table-column label="邮箱" prop="email" min-width="180" show-overflow-tooltip />
-            <el-table-column label="创建时间" prop="createTime" width="160" show-overflow-tooltip />
-            <el-table-column label="操作" fixed="right" width="200">
+            <el-table-column label="手机号码" width="130">
               <template #default="scope">
-                <TableActions :actions="getUserActions(scope.row as UserItem)" />
+                <span class="cell-sub">{{ scope.row.mobile || "-" }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="邮箱" min-width="200" show-overflow-tooltip>
+              <template #default="scope">
+                <span class="cell-sub">{{ scope.row.email || "-" }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="创建时间" width="170" show-overflow-tooltip>
+              <template #default="scope">
+                <span class="cell-sub">{{ scope.row.createTime || "-" }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" fixed="right" width="180" align="center">
+              <template #default="scope">
+                <div class="row-actions">
+                  <el-button
+                    v-if="hasPerm('sys:user:update')"
+                    link
+                    size="small"
+                    @click="handleEditClick(scope.row.id)"
+                  >
+                    编辑
+                  </el-button>
+                  <el-button
+                    v-if="hasPerm('sys:user:reset-password')"
+                    link
+                    size="small"
+                    @click="openResetPasswordDialog(scope.row as UserItem)"
+                  >
+                    重置密码
+                  </el-button>
+                  <el-button
+                    v-if="hasPerm('sys:user:delete')"
+                    link
+                    size="small"
+                    type="danger"
+                    @click="handleDelete(scope.row.id)"
+                  >
+                    删除
+                  </el-button>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -180,7 +221,7 @@
       :size="drawerSize"
       @close="closeDialog"
     >
-      <el-form ref="userFormRef" :model="formData" :rules="rules" label-width="80px">
+      <el-form ref="userFormRef" :model="formData" :rules="rules" label-width="88px">
         <el-form-item label="用户名" prop="username">
           <el-input
             v-model="formData.username"
@@ -253,7 +294,7 @@
       title="重置密码"
       :width="resetPasswordDialogWidth"
       append-to-body
-      @closed="resetResetPasswordForm"
+      @closed="clearResetPasswordState"
     >
       <div class="mb-16px">
         用户：{{ resetPasswordDialog.nickname || resetPasswordDialog.username || "-" }}
@@ -309,12 +350,10 @@ import type { UserForm, UserItem, UserQuery } from "@/api/system/user";
 import type { OptionItem } from "@/api/common";
 import { useAppStore, useUserStore } from "@/stores";
 import { usePageTable, useTableSelection } from "@/composables";
-import { CommonStatus, DeviceEnum, DialogMode, UserGender } from "@/enums";
+import { CommonStatus, DeviceEnum, UserGender } from "@/enums";
 import { downloadFile } from "@/utils";
 import { hasPerm } from "@/utils/permission";
 
-import TableActions from "@/components/TableActions/index.vue";
-import type { TableAction } from "@/components/TableActions/types";
 import UserDeptTree from "./components/UserDeptTree.vue";
 import UserImportDialog from "./components/UserImportDialog.vue";
 
@@ -334,7 +373,6 @@ const userFormRef = ref<FormInstance>();
 const resetPasswordFormRef = ref<FormInstance>();
 const sidebarCollapsed = ref(false);
 
-// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   UserItem,
   UserQuery
@@ -352,7 +390,6 @@ const { selectedIds, hasSelection, handleSelectionChange } = useTableSelection<U
 const dialogState = reactive({
   visible: false,
   title: "",
-  mode: DialogMode.CREATE,
 });
 
 const importDialogVisible = ref(false);
@@ -406,12 +443,25 @@ const resetPasswordRules: FormRules<ResetPasswordForm> = {
 
 /**
  * 取昵称/用户名首字母作为头像占位文本
- *
- * @param row 用户行数据
  */
 function getAvatarText(row: UserItem): string {
   const text = row.nickname || row.username || "?";
   return text.slice(0, 1).toUpperCase();
+}
+
+/**
+ * 账号是否启用
+ */
+function isAccountEnabled(row: UserItem): boolean {
+  return row.status === CommonStatus.ENABLED;
+}
+
+/**
+ * 性别展示文本，未知性别显示占位符
+ */
+function getGenderText(row: UserItem): string {
+  if (row.gender === UserGender.MALE) return "男";
+  return row.gender === UserGender.FEMALE ? "女" : "-";
 }
 
 /**
@@ -456,7 +506,6 @@ function resetForm(): void {
  */
 async function handleCreateClick(): Promise<void> {
   dialogState.title = "新增用户";
-  dialogState.mode = DialogMode.CREATE;
   await loadFormOptions();
   openDialog();
 }
@@ -466,7 +515,6 @@ async function handleCreateClick(): Promise<void> {
  */
 async function handleEditClick(id: string): Promise<void> {
   dialogState.title = "修改用户";
-  dialogState.mode = DialogMode.EDIT;
   await loadFormOptions();
   const data = await UserAPI.getFormData(id);
   Object.assign(formData, data);
@@ -474,33 +522,7 @@ async function handleEditClick(id: string): Promise<void> {
 }
 
 /**
- * 返回当前用户有权使用的行操作。
- */
-function getUserActions(row: UserItem): TableAction[] {
-  const actions: TableAction[] = [];
-  if (hasPerm("sys:user:update")) {
-    actions.push({ key: "edit", label: "编辑", run: () => handleEditClick(row.id) });
-  }
-  if (hasPerm("sys:user:delete")) {
-    actions.push({
-      key: "delete",
-      label: "删除",
-      buttonProps: { type: "danger" },
-      run: () => handleDelete(row.id),
-    });
-  }
-  if (hasPerm("sys:user:reset-password")) {
-    actions.push({
-      key: "reset-password",
-      label: "重置密码",
-      run: () => openResetPasswordDialog(row),
-    });
-  }
-  return actions;
-}
-
-/**
- * 校验并提交用户资料。
+ * 校验并提交用户资料
  */
 const handleSubmit = useDebounceFn(async () => {
   const valid = await userFormRef.value?.validate().then(
@@ -537,7 +559,7 @@ async function handleDelete(id?: string): Promise<void> {
     return;
   }
 
-  // 安全检查：防止删除当前登录用户
+  // 防止删除当前登录用户
   const currentUserId = userStore.userInfo?.userId;
   if (currentUserId) {
     const isCurrentUserInList = id
@@ -610,9 +632,9 @@ function closeResetPasswordDialog(): void {
 }
 
 /**
- * 重置密码表单状态
+ * 清理重置密码表单和弹窗状态
  */
-function resetResetPasswordForm(): void {
+function clearResetPasswordState(): void {
   resetPasswordFormRef.value?.resetFields();
   resetPasswordFormRef.value?.clearValidate();
   resetPasswordForm.password = "";
@@ -622,7 +644,7 @@ function resetResetPasswordForm(): void {
 }
 
 /**
- * 校验并提交密码重置。
+ * 校验并提交密码重置
  */
 const handleResetPasswordSubmit = useDebounceFn(async () => {
   const valid = await resetPasswordFormRef.value?.validate().then(
@@ -647,23 +669,29 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.user-name-cell {
+.user-avatar-fallback {
   display: inline-flex;
-  gap: 8px;
+  flex-shrink: 0;
   align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--el-color-primary);
+  background: var(--el-color-primary-light-9);
+  border-radius: 50%;
+}
 
-  &__text {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--el-color-primary);
-    background: var(--el-color-primary-light-9);
-    border-radius: 50%;
+.status-cell {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: var(--font-size-secondary);
+  color: var(--el-text-color-regular);
+
+  &.is-disabled {
+    color: var(--el-text-color-secondary);
   }
 }
 </style>

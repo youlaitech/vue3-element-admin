@@ -43,7 +43,7 @@ const currentIndex = ref(0);
 const chartInstance = ref<EChartsType>();
 
 /**
- * 轮换高亮的设备状态。
+ * 轮换高亮的设备状态
  */
 const highlightItem = (chart: EChartsType) => {
   chartInstance.value = chart;

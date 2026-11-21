@@ -1,7 +1,7 @@
 import type { SortExpression } from "@/api/common";
 
 /**
- * Element Plus 表格的排序状态。
+ * Element Plus 表格的排序状态
  */
 export interface TableSort {
   prop?: string | null;
@@ -9,7 +9,7 @@ export interface TableSort {
 }
 
 /**
- * 将表头排序转为接口参数；清除时不发送空规则。
+ * 将表头排序转为接口参数；清除时不发送空规则
  */
 export function buildSort(sort: TableSort, field = sort.prop): SortExpression[] | undefined {
   if (sort.order === null) return undefined;

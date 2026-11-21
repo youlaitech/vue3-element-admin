@@ -15,12 +15,12 @@ import router from "@/router";
 let sessionExpired = false;
 
 /**
- * 创建未登录时的用户信息。
+ * 创建未登录时的用户信息
  */
 const createEmptyUserInfo = (): UserInfo => ({ roles: [], perms: [] });
 
 /**
- * 管理用户资料、登录会话和令牌续期。
+ * 管理用户资料、登录会话和令牌续期
  */
 export const useUserStore = defineStore("user", () => {
   const userInfo = ref<UserInfo>(createEmptyUserInfo());
@@ -46,7 +46,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   let refreshPromise: Promise<void> | null = null;
-  // 新会话独立续期，不能等待上一账号尚未结束的任务。
+  // 新会话独立续期，不能等待上一账号尚未结束的任务
   watch(
     authSessionRevision,
     () => {
@@ -56,7 +56,7 @@ export const useUserStore = defineStore("user", () => {
   );
 
   /**
-   * 并发续期共享同一任务，完成后允许下一次续期。
+   * 并发续期共享同一任务，完成后允许下一次续期
    */
   function refreshTokenOnce(): Promise<void> {
     if (refreshPromise) return refreshPromise;
@@ -64,7 +64,7 @@ export const useUserStore = defineStore("user", () => {
     const revision = authSessionRevision.value;
     const token = AuthStorage.getRefreshToken();
     /**
-     * 合并续期并丢弃旧会话结果，支持 Web Locks 时跨标签页串行。
+     * 合并续期并丢弃旧会话结果，支持 Web Locks 时跨标签页串行
      */
     const refresh = async () => {
       if (revision !== authSessionRevision.value) throw new Error("登录会话已切换");
@@ -79,7 +79,7 @@ export const useUserStore = defineStore("user", () => {
       ? navigator.locks.request("youlai-auth-refresh", refresh)
       : refresh();
     const pending = task.finally(() => {
-      // 旧会话的 finally 不能清除新会话已建立的续期任务。
+      // 旧会话的 finally 不能清除新会话已建立的续期任务
       if (refreshPromise === pending) refreshPromise = null;
     });
     refreshPromise = pending;
@@ -94,7 +94,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   /**
-   * 读取并替换当前会话的用户快照。
+   * 读取并替换当前会话的用户快照
    */
   async function fetchUserInfo(): Promise<UserInfo> {
     const revision = authSessionRevision.value;
@@ -124,7 +124,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   /**
-   * 重置凭证、路由和本地缓存。
+   * 重置凭证、路由和本地缓存
    */
   function resetAllState(): void {
     // 1. 重置用户状态
@@ -147,17 +147,19 @@ export const useUserStore = defineStore("user", () => {
   /**
    * 会话失效的统一出口：清空状态并静默跳转登录页
    *
-   * 整页 replace 避免回退到失效页面，redirect 用于登录后返回。
+   * 整页 replace 避免回退到失效页面，redirect 用于登录后返回
    */
   async function redirectToLogin(): Promise<void> {
     if (sessionExpired) return;
     sessionExpired = true;
 
-    // 携带当前路由，登录成功后跳回
-    const currentPath = router.currentRoute.value.fullPath;
+    // 携带当前路由，登录成功后跳回；已在登录页时复用其 redirect，避免嵌套包裹
+    const current = router.currentRoute.value;
+    const redirect =
+      current.path === "/login" ? (current.query.redirect as string | undefined) : current.fullPath;
     const loginHref = router.resolve({
       path: "/login",
-      query: { redirect: currentPath },
+      query: redirect && !redirect.startsWith("/login") ? { redirect } : {},
     }).href;
 
     resetAllState();
@@ -177,7 +179,7 @@ export const useUserStore = defineStore("user", () => {
 
     const { accessToken, refreshToken: newRefreshToken } =
       await AuthAPI.refreshToken(currentRefreshToken);
-    // 续期期间可能切换账号，旧结果不得覆盖新凭证。
+    // 续期期间可能切换账号，旧结果不得覆盖新凭证
     if (revision !== authSessionRevision.value) throw new Error("登录会话已切换");
     if (currentRefreshToken !== AuthStorage.getRefreshToken()) throw new Error("登录凭证已更新");
     AuthStorage.setTokens(accessToken, newRefreshToken, AuthStorage.getRememberMe(), true);

@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-// 显式导入同名组件，避免 Vue 将 TextScroll 解析为当前页面而递归渲染。
+// 显式导入同名组件，避免 Vue 将 TextScroll 解析为当前页面而递归渲染
 import TextScroll from "@/components/TextScroll/index.vue";
 </script>
 

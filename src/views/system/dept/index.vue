@@ -1,31 +1,36 @@
 <template>
   <div class="page-container">
-    <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-form-item label="关键字" prop="keywords">
-          <el-input
-            v-model="queryParams.keywords"
-            placeholder="部门名称"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-
-        <el-form-item label="部门状态" prop="status">
-          <el-select v-model="queryParams.status" placeholder="全部" clearable style="width: 100px">
-            <el-option :value="CommonStatus.ENABLED" label="正常" />
-            <el-option :value="CommonStatus.DISABLED" label="禁用" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">搜索</el-button>
-          <el-button @click="handleResetQuery">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
     <el-card ref="tableWrapperRef" class="page-content" shadow="never">
+      <div class="page-filter">
+        <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+          <el-form-item label="关键字" prop="keywords">
+            <el-input
+              v-model="queryParams.keywords"
+              placeholder="部门名称"
+              clearable
+              @keyup.enter="handleQuery"
+            />
+          </el-form-item>
+
+          <el-form-item label="部门状态" prop="status">
+            <el-select
+              v-model="queryParams.status"
+              placeholder="全部"
+              clearable
+              style="width: 100px"
+            >
+              <el-option :value="CommonStatus.ENABLED" label="正常" />
+              <el-option :value="CommonStatus.DISABLED" label="禁用" />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="handleQuery">搜索</el-button>
+            <el-button @click="handleResetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+
       <div class="page-toolbar">
         <div class="page-toolbar__left">
           <el-button v-hasPerm="['sys:dept:create']" type="primary" @click="openDialog()">
@@ -127,7 +132,7 @@
       width="600px"
       @closed="closeDialog"
     >
-      <el-form ref="deptFormRef" :model="formData" :rules="rules" label-width="80px">
+      <el-form ref="deptFormRef" :model="formData" :rules="rules" label-width="88px">
         <el-form-item label="上级部门" prop="parentId">
           <el-tree-select
             v-model="formData.parentId"

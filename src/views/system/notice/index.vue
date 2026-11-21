@@ -1,37 +1,37 @@
 <template>
   <div class="page-container">
-    <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="params" :inline="true" label-suffix=":">
-        <el-form-item label="标题" prop="title">
-          <el-input
-            v-model="params.title"
-            placeholder="标题"
-            clearable
-            @keyup.enter="handleQuery()"
-          />
-        </el-form-item>
-
-        <el-form-item label="发布状态" prop="publishStatus">
-          <el-select
-            v-model="params.publishStatus"
-            clearable
-            placeholder="全部"
-            style="width: 100px"
-          >
-            <el-option :value="NOTICE_STATUS_DRAFT" label="未发布" />
-            <el-option :value="NOTICE_STATUS_PUBLISHED" label="已发布" />
-            <el-option :value="NOTICE_STATUS_REVOKED" label="已撤回" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery()">搜索</el-button>
-          <el-button @click="handleResetQuery()">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
     <el-card ref="tableWrapperRef" class="page-content" shadow="never">
+      <div class="page-filter">
+        <el-form ref="queryFormRef" :model="params" :inline="true" label-suffix=":">
+          <el-form-item label="标题" prop="title">
+            <el-input
+              v-model="params.title"
+              placeholder="标题"
+              clearable
+              @keyup.enter="handleQuery()"
+            />
+          </el-form-item>
+
+          <el-form-item label="发布状态" prop="publishStatus">
+            <el-select
+              v-model="params.publishStatus"
+              clearable
+              placeholder="全部"
+              style="width: 100px"
+            >
+              <el-option :value="NOTICE_STATUS_DRAFT" label="未发布" />
+              <el-option :value="NOTICE_STATUS_PUBLISHED" label="已发布" />
+              <el-option :value="NOTICE_STATUS_REVOKED" label="已撤回" />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="handleQuery()">搜索</el-button>
+            <el-button @click="handleResetQuery()">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+
       <div class="page-toolbar">
         <div class="page-toolbar__left">
           <el-button v-hasPerm="['sys:notice:create']" type="primary" @click="openDialog()">
@@ -62,7 +62,6 @@
 
       <div class="page-table-wrapper">
         <el-table
-          ref="dataTableRef"
           v-loading="loading"
           :data="list"
           class="page-table"
@@ -337,7 +336,6 @@ const NOTICE_STATUS_REVOKED = -1;
 const NOTICE_TARGET_ALL = 1;
 const NOTICE_TARGET_SPECIFIED = 2;
 
-// 分页表格数据管理
 const { loading, list, total, params, fetchData, handleQuery, handleResetQuery } = usePageTable<
   NoticeItem,
   NoticeQuery
@@ -417,18 +415,10 @@ function normalizeTargetUsers(value?: unknown): number[] {
       if (Array.isArray(parsed)) {
         return toNumberArray(parsed);
       }
-      return value
-        .split(",")
-        .filter(Boolean)
-        .map((v) => Number(v))
-        .filter((v) => Number.isFinite(v));
     } catch {
-      return value
-        .split(",")
-        .filter(Boolean)
-        .map((v) => Number(v))
-        .filter((v) => Number.isFinite(v));
+      // 非 JSON 字符串按逗号分隔格式解析
     }
+    return toNumberArray(value.split(",").filter(Boolean));
   }
   return [];
 }
@@ -447,7 +437,6 @@ function buildSubmitPayload(): Omit<NoticeForm, "targetUsers"> & { targetUserIds
 
 /**
  * 重置表单数据和验证状态
- * 重置表单数据
  */
 function resetForm(): void {
   noticeFormRef.value?.resetFields();

@@ -11,7 +11,7 @@ export interface ApiResult<T = unknown> {
 }
 
 /**
- * 分页与排序条件。
+ * 分页与排序条件
  */
 export interface PageQuery {
   /** 页码 */
@@ -24,12 +24,12 @@ export interface PageQuery {
 }
 
 /**
- * 接口排序方向。
+ * 接口排序方向
  */
-export type SortDirection = "asc" | "desc";
+type SortDirection = "asc" | "desc";
 
 /**
- * 公开排序属性与方向，数组顺序即排序优先级。
+ * 公开排序属性与方向，数组顺序即排序优先级
  */
 export type SortExpression<TField extends string = string> = `${TField},${SortDirection}`;
 
@@ -44,7 +44,7 @@ export interface PageResult<T> {
 }
 
 /**
- * 下拉或树形选项。
+ * 下拉或树形选项
  */
 export interface OptionItem {
   /** 选项值 */

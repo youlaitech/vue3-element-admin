@@ -1,24 +1,24 @@
 <template>
   <div class="page-container">
-    <el-card class="page-search" shadow="never">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-form-item label="关键字" prop="keywords">
-          <el-input
-            v-model="queryParams.keywords"
-            placeholder="菜单名称"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">搜索</el-button>
-          <el-button @click="handleResetQuery">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
     <el-card ref="tableWrapperRef" class="page-content" shadow="never">
+      <div class="page-filter">
+        <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+          <el-form-item label="关键字" prop="keywords">
+            <el-input
+              v-model="queryParams.keywords"
+              placeholder="菜单名称"
+              clearable
+              @keyup.enter="handleQuery"
+            />
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="handleQuery">搜索</el-button>
+            <el-button @click="handleResetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+
       <div class="page-toolbar">
         <div class="page-toolbar__left">
           <el-button v-hasPerm="['sys:menu:create']" type="primary" @click="openDialog()">
@@ -195,7 +195,7 @@
         :rules="rules"
         label-width="96px"
       >
-        <el-form-item label="菜单类型" prop="type" class="menu-type-item">
+        <el-form-item label="菜单类型" prop="type">
           <div class="menu-type-control">
             <el-segmented
               v-model="formData.type"
@@ -220,7 +220,7 @@
           <span>{{ previewText }}</span>
         </div>
 
-        <SectionTitle title="基础信息" />
+        <div class="section-title">基础信息</div>
 
         <el-form-item label="菜单名称" prop="name">
           <div class="menu-form__field">
@@ -267,7 +267,7 @@
           />
         </el-form-item>
 
-        <SectionTitle v-if="showRoutePath || isExternal" title="访问配置" />
+        <div v-if="showRoutePath || isExternal" class="section-title">访问配置</div>
 
         <template v-if="isExternal">
           <el-form-item label="外链地址" prop="externalUrl">
@@ -373,7 +373,7 @@
           <el-input v-model="formData.perm" placeholder="如 sys:user:create（新增用户）" />
         </el-form-item>
 
-        <SectionTitle v-if="!isButton" title="展示设置" />
+        <div v-if="!isButton" class="section-title">展示设置</div>
 
         <el-form-item v-if="!isButton" label="在侧边栏显示">
           <el-switch v-model="visibleSwitch" />
@@ -464,7 +464,7 @@
                   <el-input v-model="item.value" placeholder="参数值" />
 
                   <el-icon
-                    v-if="formData.params.indexOf(item) === formData.params.length - 1"
+                    v-if="index === formData.params.length - 1"
                     class="menu-param-row__action is-add"
                     @click="formData.params.push({ key: '', value: '' })"
                   >
@@ -472,7 +472,7 @@
                   </el-icon>
                   <el-icon
                     class="menu-param-row__action is-delete"
-                    @click="formData.params.splice(formData.params.indexOf(item), 1)"
+                    @click="formData.params.splice(index, 1)"
                   >
                     <DeleteFilled />
                   </el-icon>
@@ -671,7 +671,7 @@ const showKeepAlive = computed(() => isPage.value || isEmbeddedExternal.value);
 
 const showRouteName = computed(() => showKeepAlive.value && isStatusEnabled(formData.keepAlive));
 
-const showAdvanced = computed(() => showKeepAlive.value || isCatalog.value || showRouteName.value);
+const showAdvanced = computed(() => showKeepAlive.value || isCatalog.value);
 
 // 按钮权限只能挂在页面下；已有菜单的类型不可修改
 const typeOptions = computed(() => {
@@ -1210,7 +1210,7 @@ async function handleAiFill(): Promise<void> {
   if (!name) return;
 
   aiLoading.value = true;
-  // 关闭、清空或切换类型会递增序号，使旧推断结果失效。
+  // 关闭、清空或切换类型会递增序号，使旧推断结果失效
   const sequence = ++aiSequence;
   // 记录推断前的值，供撤销恢复；AI 会写入的全部字段都要进快照
   aiSnapshot = {
@@ -1512,12 +1512,18 @@ onMounted(() => {
 }
 
 .menu-address-cell__link,
-.menu-address-cell__text {
-  flex: 1;
-  min-width: 0;
+.menu-address-cell__text,
+.menu-cell-ellipsis,
+.menu-name-cell__text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.menu-address-cell__link,
+.menu-address-cell__text {
+  flex: 1;
+  min-width: 0;
 }
 
 .menu-address-cell__link {
@@ -1532,9 +1538,6 @@ onMounted(() => {
 /* 单行文本列：过长省略，完整内容用 title 悬停查看 */
 .menu-cell-ellipsis {
   display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* 菜单名称列：树形箭头与名称同行并垂直居中，名称过长省略 */
@@ -1562,12 +1565,6 @@ onMounted(() => {
 /* 兜底图标比真实图标浅，便于一眼区分哪些菜单还没配图标 */
 .menu-name-cell__icon.is-default {
   opacity: 0.45;
-}
-
-.menu-name-cell__text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* 目录是最外层的结构节点，加粗以突出层级 */
@@ -1671,10 +1668,6 @@ onMounted(() => {
   border-top: none;
 }
 
-.menu-type-item {
-  margin-bottom: 12px;
-}
-
 .menu-type-control {
   width: 100%;
 }
@@ -1711,5 +1704,25 @@ onMounted(() => {
 
 .menu-param-row__action {
   cursor: pointer;
+}
+
+/* 表单分区标题：左侧竖条 + 标题 */
+.section-title {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 2px 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+}
+
+.section-title::before {
+  flex: none;
+  width: 3px;
+  height: 12px;
+  content: "";
+  background: var(--el-color-primary);
+  border-radius: 2px;
 }
 </style>

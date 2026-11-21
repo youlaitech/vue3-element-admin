@@ -25,6 +25,7 @@ export default defineMock([
           "sys:role:create",
           "sys:role:update",
           "sys:role:delete",
+          "sys:role:assign",
 
           "sys:dept:list",
           "sys:dept:create",

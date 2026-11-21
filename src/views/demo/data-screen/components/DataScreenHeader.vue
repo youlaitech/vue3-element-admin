@@ -25,12 +25,12 @@ import { useKeepTicking } from "../composables/useKeepTicking";
 defineOptions({ name: "DataScreenHeader" });
 
 /**
- * 生成包含日期、时间和星期的大屏时钟文本。
+ * 生成包含日期、时间和星期的大屏时钟文本
  */
 function formatClock(date: Date): string {
   const week = ["日", "一", "二", "三", "四", "五", "六"][date.getDay()];
   /**
-   * 将时间分量补齐为两位数字。
+   * 将时间分量补齐为两位数字
    */
   const pad = (n: number) => String(n).padStart(2, "0");
   const meridiem = date.getHours() < 12 ? "上午" : "下午";
@@ -44,7 +44,7 @@ function formatClock(date: Date): string {
 
 const dateTime = ref("加载中...");
 /**
- * 更新大屏日期和时间。
+ * 更新大屏日期和时间
  */
 const updateCurrentTime = () => (dateTime.value = formatClock(new Date()));
 

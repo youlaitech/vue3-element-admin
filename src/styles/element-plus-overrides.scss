@@ -4,12 +4,14 @@
  */
 
 :root {
-  --el-border-radius-base: 6px;
+  --el-border-radius-base: 8px;
+  // 小圆角档被 checkbox 等 14px 小盒消费：超过 4px 会逼近圆形，
+  // 丢失"方=多选、圆=单选"的语义，故小档封顶 4px
   --el-border-radius-small: 4px;
   --el-font-weight-primary: 400;
-  --el-component-size: 34px;
-  --el-component-size-small: 28px;
-  --el-component-size-large: 38px;
+  --el-component-size: 36px;
+  --el-component-size-small: 30px;
+  --el-component-size-large: 40px;
   --el-transition-duration: 0.16s;
   --el-transition-duration-fast: 0.12s;
 }
@@ -17,7 +19,7 @@
 .el-card {
   --el-card-border-color: var(--card-border);
   --el-card-border-radius: var(--card-radius);
-  --el-card-padding: 18px;
+  --el-card-padding: 20px;
 
   overflow: hidden;
   color: var(--el-text-color-primary);
@@ -39,9 +41,9 @@
   }
 
   .el-card__header {
-    padding: 14px 18px;
-    font-size: 14px;
-    font-weight: 500;
+    padding: 16px 20px;
+    font-size: var(--font-size-card-title);
+    font-weight: 600;
     line-height: 1.4;
     color: var(--el-text-color-primary);
     border-bottom: 1px solid var(--card-border);
@@ -52,17 +54,15 @@
   }
 }
 
-.el-input,
-.el-select,
-.el-date-editor {
-  --el-input-height: var(--el-component-size);
-}
+// 输入类高度不再统一覆写 --el-input-height：EP 自身已将其绑定到
+// --el-component-size*，且在 --small/--large 修饰类上按档重置；
+// 基类统一赋值会因同特异性后置而压掉尺寸档（small/large 被压平成 36）
 
 .el-input__wrapper,
 .el-select__wrapper,
 .el-textarea__inner {
   background-color: var(--el-bg-color);
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   box-shadow: 0 0 0 1px var(--border-color) inset;
   transition:
     background-color 0.16s,
@@ -98,15 +98,21 @@
 }
 
 .el-button {
-  --el-button-border-radius: 6px;
+  --el-button-border-radius: var(--radius-control);
 
-  min-width: 34px;
-  font-weight: 400;
+  min-width: 36px;
+  font-weight: 500;
   letter-spacing: 0;
   box-shadow: none;
+  transition:
+    color 0.16s,
+    background-color 0.16s,
+    border-color 0.16s,
+    box-shadow 0.16s,
+    transform 0.16s;
 
   &:not(.is-link):not(.is-text):not(.el-button--large):not(.el-button--small) {
-    padding: 8px 14px;
+    padding: 8px 16px;
   }
 
   &:focus-visible {
@@ -115,8 +121,40 @@
   }
 }
 
+// 品牌时刻：实心主按钮渐变 + 投影 + hover 抬升
+.el-button--primary:not(.is-plain):not(.is-link):not(.is-text) {
+  background-image: var(--brand-gradient);
+  border-color: transparent;
+  box-shadow: var(--brand-shadow);
+
+  &:hover,
+  &:focus {
+    background-image: var(--brand-gradient);
+    border-color: transparent;
+    box-shadow: var(--brand-shadow-hover);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    box-shadow: var(--brand-shadow);
+    transform: translateY(0);
+  }
+
+  &.is-disabled,
+  &.is-disabled:hover {
+    background-image: none;
+    box-shadow: none;
+    transform: none;
+  }
+}
+
 .el-button--default {
   border-color: var(--border-color);
+
+  &:hover,
+  &:focus {
+    border-color: var(--el-color-primary-light-5);
+  }
 }
 
 .el-button.is-link {
@@ -127,14 +165,14 @@
 
 .el-table {
   --el-table-border-color: var(--el-border-color-extra-light);
-  --el-table-header-bg-color: #f8fafc;
-  --el-table-row-hover-bg-color: #f8fbff;
+  --el-table-header-bg-color: var(--surface-subtle);
+  --el-table-row-hover-bg-color: #f6f9ff;
   --el-table-current-row-bg-color: #eef5ff;
   --el-table-tr-bg-color: var(--el-bg-color);
 
   overflow: hidden;
   color: var(--el-text-color-primary);
-  border-radius: 6px;
+  border-radius: 0;
 
   &::before {
     display: none;
@@ -154,18 +192,34 @@
   }
 
   .el-table__header th {
-    height: 44px;
+    height: 40px;
     padding: 0;
+    font-size: var(--font-size-aux);
     font-weight: 500;
-    color: var(--el-text-color-regular);
+    color: var(--el-text-color-secondary);
     background: var(--el-table-header-bg-color);
     border-bottom: 1px solid var(--el-table-border-color);
   }
 
   .el-table__body td {
-    height: 46px;
+    height: 52px;
     padding: 0;
     border-bottom: 1px solid var(--el-table-border-color);
+  }
+
+  // 去网格化：默认不画竖分隔线，仅固定列边缘保留一条界线
+  &.el-table--border {
+    .el-table__cell {
+      border-right: 0;
+    }
+
+    .el-table-fixed-column--left.is-last-column {
+      border-right: 1px solid var(--el-table-border-color);
+    }
+
+    .el-table-fixed-column--right.is-first-column {
+      border-left: 1px solid var(--el-table-border-color);
+    }
   }
 
   .cell {
@@ -221,26 +275,55 @@
 
   .el-pager li.is-active {
     border-color: var(--el-color-primary);
-    box-shadow: 0 6px 14px rgb(22 93 255 / 18%);
+    box-shadow: 0 4px 10px rgb(22 93 255 / 18%);
   }
 }
 
 .el-tag {
-  height: 24px;
-  padding: 0 8px;
+  // 高度跟随 EP 尺寸档（32/24/20），禁止全局压平使 size prop 失效；
+  // 去边框后按档补回 1px padding
+  padding: 0 10px;
   font-weight: 400;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-pill);
+
+  &.el-tag--large {
+    padding: 0 12px;
+  }
+
+  &.el-tag--small {
+    padding: 0 8px;
+  }
+}
+
+// 分段控件是模式选择：选中态用浅主色底，实心主色留给页面主操作按钮
+// 组件样式按需注入且晚于全局样式，重复类名提高一级特异性才能覆盖默认变量
+.el-segmented.el-segmented {
+  --el-segmented-item-selected-bg-color: var(--el-color-primary-light-9);
+  --el-segmented-item-selected-color: var(--el-color-primary);
+  --el-segmented-item-selected-disabled-bg-color: var(--el-color-primary-light-8);
+}
+
+// 骨架占位条是 16px 小盒：base 8px 会被钳成胶囊，丢失“文本行”隐喻；
+// circle/image 变体保留自身语义（圆头像占位 / 直角图占位）
+.el-skeleton__item:not(.el-skeleton__circle):not(.el-skeleton__image) {
+  border-radius: var(--el-border-radius-small);
+}
+
+// EP 触发器圆角写死 4px，与全站控件 8px 档不齐
+.el-color-picker__trigger {
+  border-radius: var(--radius-control);
 }
 
 .el-tree {
   --el-tree-node-hover-bg-color: var(--el-color-primary-light-9);
+
   color: var(--el-text-color-regular);
 
   .el-tree-node__content {
-    height: 34px;
+    height: 36px;
     padding-right: 8px;
-    border-radius: 6px;
+    border-radius: var(--radius-control);
     transition:
       color 0.16s,
       background-color 0.16s;
@@ -255,39 +338,39 @@
 
 .el-dialog {
   overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 18px 48px rgb(15 23 42 / 18%);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-overlay);
 
   .el-dialog__header {
-    padding: 18px 20px 12px;
+    padding: 20px 24px 14px;
     margin: 0;
     border-bottom: 1px solid var(--border-color);
   }
 
   .el-dialog__body {
-    padding: 20px;
+    padding: 20px 24px;
   }
 
   .el-dialog__footer {
-    padding: 14px 20px;
+    padding: 16px 24px;
     border-top: 1px solid var(--border-color);
   }
 }
 
 .el-drawer {
   .el-drawer__header {
-    padding: 16px 20px;
+    padding: 18px 24px;
     margin: 0;
     color: var(--el-text-color-primary);
     border-bottom: 1px solid var(--border-color);
   }
 
   .el-drawer__body {
-    padding: 20px;
+    padding: 20px 24px;
   }
 
   .el-drawer__footer {
-    padding: 14px 16px;
+    padding: 16px 24px;
     border-top: 1px solid var(--border-color);
   }
 }
@@ -295,7 +378,7 @@
 .el-dropdown-menu__item,
 .el-select-dropdown__item {
   margin: 2px 6px;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
 }
 
 .el-menu--popup {
@@ -305,7 +388,7 @@
   --el-menu-hover-bg-color: var(--menu-hover);
 
   background-color: var(--menu-background);
-  border-radius: 8px;
+  border-radius: var(--card-radius);
 
   .el-menu-item,
   .el-sub-menu__title {
@@ -320,7 +403,7 @@
 
   .el-menu-item.is-active {
     color: var(--menu-active-text) !important;
-    background-color: var(--menu-hover) !important;
+    background-color: var(--menu-active-bg) !important;
   }
 }
 
@@ -332,6 +415,16 @@ html.dark {
 
     .el-table__body td {
       border-bottom-color: rgb(255 255 255 / 8%);
+    }
+
+    &.el-table--border {
+      .el-table-fixed-column--left.is-last-column {
+        border-right-color: rgb(255 255 255 / 8%);
+      }
+
+      .el-table-fixed-column--right.is-first-column {
+        border-left-color: rgb(255 255 255 / 8%);
+      }
     }
   }
 

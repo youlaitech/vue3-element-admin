@@ -33,6 +33,11 @@ const wrapperMap = new Map<string, Component>();
 const currentComponent = (component: Component, route: RouteLocationNormalized) => {
   if (!component) return;
 
+  // 仅缓存页需要按 fullPath 命名的包装层，其余直接渲染以保留 HMR 边界
+  if (!route.meta?.keepAlive) {
+    return component;
+  }
+
   const { fullPath: componentName } = route;
   let wrapper = wrapperMap.get(componentName);
 

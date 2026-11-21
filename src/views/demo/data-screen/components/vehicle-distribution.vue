@@ -16,12 +16,12 @@ onMounted(() => {
 });
 
 /**
- * 生成指定范围内的演示数值。
+ * 生成指定范围内的演示数值
  */
 const randomNum = () => Math.floor(Math.random() * (500 - 2000 + 1)) + 2000;
 
 /**
- * 为地图城市数据附加经纬度。
+ * 为地图城市数据附加经纬度
  */
 const buildGeoData = () =>
   Array.from({ length: 20 }).map(() => {

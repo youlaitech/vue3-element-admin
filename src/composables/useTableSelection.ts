@@ -1,7 +1,7 @@
 import { computed, ref } from "vue";
 
 /**
- * 管理选中 ID；分页、弹窗和表格 UI 勾选由页面持有。
+ * 管理选中 ID；分页、弹窗和表格 UI 勾选由页面持有
  */
 export function useTableSelection<T extends { id?: string | number }>() {
   const selectedIds = ref<(string | number)[]>([]);
@@ -11,7 +11,7 @@ export function useTableSelection<T extends { id?: string | number }>() {
   const hasSelection = computed(() => selectedIds.value.length > 0);
 
   /**
-   * 保存表格勾选记录。
+   * 保存表格勾选记录
    */
   function handleSelectionChange(selection: T[]): void {
     selectedIds.value = selection.flatMap((item) =>
@@ -20,7 +20,7 @@ export function useTableSelection<T extends { id?: string | number }>() {
   }
 
   /**
-   * 检查指定记录是否已被勾选。
+   * 检查指定记录是否已被勾选
    */
   function isSelected(id: string | number): boolean {
     return selectedIds.value.includes(id);
