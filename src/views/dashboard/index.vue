@@ -142,7 +142,7 @@
           </div>
           <div class="stat-card__body">
             <span class="stat-card__label">系统用户</span>
-            <span class="stat-card__num">{{ userStats ? fmt(userStats.users) : "--" }}</span>
+            <span class="stat-card__num">{{ userSummary ? fmt(userSummary.total) : "--" }}</span>
           </div>
         </div>
       </div>
@@ -241,9 +241,8 @@ defineOptions({ name: "Dashboard", inheritAttrs: false });
 
 import { dayjs } from "element-plus";
 import { ref } from "vue";
-import LogAPI from "@/api/system/log";
-import UserAPI from "@/api/system/user";
-import type { VisitOverviewDetail, VisitTrendDetail } from "@/api/system/log";
+import AnalyticsAPI from "@/api/analytics";
+import type { UserSummary, VisitSummary, VisitTrend } from "@/api/analytics";
 import { useUserStore } from "@/stores/user";
 import { useSettingsStore } from "@/stores/settings";
 import { formatGrowthRate } from "@/utils";
@@ -355,49 +354,50 @@ const todoSummaryItems = [
   { label: "今日完成", value: "1" },
 ];
 
-const visitOverviewData = ref<VisitOverviewDetail>({
-  todayUvCount: 0,
-  uvGrowthRate: 0,
-  totalUvCount: 0,
-  todayPvCount: 0,
-  pvGrowthRate: 0,
-  totalPvCount: 0,
+const visitSummary = ref<VisitSummary>({
+  todayUv: 0,
+  yesterdayUv: 0,
+  totalUv: 0,
+  todayPv: 0,
+  yesterdayPv: 0,
+  totalPv: 0,
+  uvGrowthRate: null,
+  pvGrowthRate: null,
 });
 
 const uvGrowthText = computed(() => {
-  const r = visitOverviewData.value.uvGrowthRate;
+  const r = visitSummary.value.uvGrowthRate;
   return r == null ? "--" : formatGrowthRate(r);
 });
 const pvGrowthText = computed(() => {
-  const r = visitOverviewData.value.pvGrowthRate;
+  const r = visitSummary.value.pvGrowthRate;
   return r == null ? "--" : formatGrowthRate(r);
 });
-const uvIsUp = computed(() => (visitOverviewData.value.uvGrowthRate || 0) > 0);
-const pvIsUp = computed(() => (visitOverviewData.value.pvGrowthRate || 0) > 0);
+const uvIsUp = computed(() => (visitSummary.value.uvGrowthRate ?? 0) > 0);
+const pvIsUp = computed(() => (visitSummary.value.pvGrowthRate ?? 0) > 0);
 /** 千分位格式化，空值显示占位符 */
 const fmt = (n?: number | null) => (n == null ? "--" : n.toLocaleString("en-US"));
 
-// 用户统计：总数取接口真实数据，无权限时降级为占位符
-const userStats = ref<{ users: number } | null>(null);
-function fetchUserStats() {
-  UserAPI.getPage({ pageNum: 1, pageSize: 1 })
-    .then((all) => {
-      userStats.value = { users: all.total ?? 0 };
+const userSummary = ref<UserSummary | null>(null);
+function fetchUserSummary() {
+  AnalyticsAPI.getUserSummary()
+    .then((data) => {
+      userSummary.value = data;
     })
     .catch(() => {
-      userStats.value = null;
+      userSummary.value = null;
     });
 }
 
 const tUv = useTransition(
-  computed(() => visitOverviewData.value.todayUvCount),
+  computed(() => visitSummary.value.todayUv),
   {
     duration: 800,
     transition: [0.25, 0.1, 0.25, 1.0],
   },
 );
 const tPv = useTransition(
-  computed(() => visitOverviewData.value.todayPvCount),
+  computed(() => visitSummary.value.todayPv),
   {
     duration: 800,
     transition: [0.25, 0.1, 0.25, 1.0],
@@ -411,7 +411,7 @@ const visitTrendRangeOptions = [
   { label: "近7天", value: 7 },
   { label: "近30天", value: 30 },
 ];
-const visitTrendData = ref<VisitTrendDetail>();
+const visitTrendData = ref<VisitTrend>();
 const visitTrendChartOptions = ref({});
 
 /**
@@ -453,20 +453,20 @@ function colorWithAlpha(color: string, alpha: number) {
 /**
  * 拉取访问概览数据
  */
-function fetchVisitOverviewData() {
-  LogAPI.getVisitOverview().then((d) => {
-    visitOverviewData.value = d;
+function fetchVisitSummary() {
+  AnalyticsAPI.getVisitSummary().then((d) => {
+    visitSummary.value = d;
   });
 }
 
 /**
  * 拉取访问趋势数据
  */
-function fetchVisitTrendData() {
+function fetchVisitTrend() {
   const s = dayjs()
     .subtract(visitTrendDateRange.value - 1, "day")
     .toDate();
-  LogAPI.getVisitTrend({
+  AnalyticsAPI.getVisitTrend({
     startDate: dayjs(s).format("YYYY-MM-DD"),
     endDate: dayjs(new Date()).format("YYYY-MM-DD"),
   }).then((d) => {
@@ -478,7 +478,10 @@ function fetchVisitTrendData() {
 /**
  * 更新访问趋势图表配置
  */
-function updateVisitTrendChartOptions(d: VisitTrendDetail) {
+function updateVisitTrendChartOptions(d: VisitTrend) {
+  const dates = d.points.map((point) => point.date);
+  const pvList = d.points.map((point) => point.pv);
+  const uvList = d.points.map((point) => point.uv);
   const primary = getCssVar("--chart-1", "#165dff");
   const second = getCssVar("--chart-2", "#14c9c9");
   const textSecondary = getCssVar("--el-text-color-secondary", "#909399");
@@ -503,7 +506,7 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
     grid: { left: "0%", right: "3%", bottom: "14%", top: "5%", containLabel: true },
     xAxis: {
       type: "category",
-      data: d.dates,
+      data: dates,
       axisTick: { show: false },
       axisLine: { lineStyle: { color: colorWithAlpha(borderLighter, 0.82) } },
       axisLabel: { fontSize: 11, color: textSecondary },
@@ -520,7 +523,7 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
       {
         name: "浏览量",
         type: "line",
-        data: d.pvList,
+        data: pvList,
         smooth: true,
         symbol: "circle",
         symbolSize: 5,
@@ -546,7 +549,7 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
       {
         name: "访客量",
         type: "line",
-        data: d.uvList,
+        data: uvList,
         smooth: true,
         symbol: "circle",
         symbolSize: 5,
@@ -573,7 +576,7 @@ function updateVisitTrendChartOptions(d: VisitTrendDetail) {
 
 watch(
   () => visitTrendDateRange.value,
-  () => fetchVisitTrendData(),
+  () => fetchVisitTrend(),
   { immediate: true },
 );
 
@@ -589,8 +592,8 @@ watch(
   { deep: true },
 );
 onMounted(() => {
-  fetchVisitOverviewData();
-  fetchUserStats();
+  fetchVisitSummary();
+  fetchUserSummary();
 });
 </script>
 
