@@ -2,8 +2,8 @@
   <div class="page-container page-container--split dict-page">
     <aside class="page-aside" :class="{ 'is-collapsed': sidebarCollapsed }">
       <div class="page-aside__inner">
-        <div class="dict-type">
-          <div class="dict-type__head">
+        <div class="aside-list">
+          <div class="aside-list__head">
             <el-input
               v-model="params.keywords"
               placeholder="搜索字典"
@@ -19,31 +19,30 @@
               v-hasPerm="['sys:dict:create']"
               type="primary"
               plain
-              class="dict-type__create"
-              @click="handleCreateClick()"
+                      @click="handleCreateClick()"
             >
               <el-icon><Plus /></el-icon>
               新增
             </el-button>
           </div>
 
-          <el-scrollbar v-loading="loading" class="dict-type__list">
+          <el-scrollbar v-loading="loading" class="aside-list__scroll">
             <div
               v-for="row in list"
               :key="row.id"
-              class="dict-type__item"
+              class="aside-list__item"
               :class="{ 'is-active': row.dictCode === currentType?.dictCode }"
               @click="handleTypeClick(row)"
             >
-              <div class="dict-type__info">
-                <span class="dict-type__name" :title="row.name">
+              <div class="aside-list__info">
+                <span class="aside-list__label" :title="row.name">
                   <span
                     class="status-dot"
                     :class="{ 'is-stopped': row.status !== CommonStatus.ENABLED }"
                   />
                   {{ row.name }}
                 </span>
-                <span class="dict-type__code" :title="row.dictCode">{{ row.dictCode }}</span>
+                <span class="aside-list__sub" :title="row.dictCode">{{ row.dictCode }}</span>
               </div>
               <div class="aside-actions">
                 <el-button
@@ -115,6 +114,7 @@
       v-model="dialogState.visible"
       :title="dialogState.title"
       width="500px"
+      append-to-body
       @close="closeDialog"
     >
       <el-form ref="dictFormRef" :model="formData" :rules="rules" label-width="88px">
@@ -349,94 +349,5 @@ onMounted(() => {
 <style lang="scss" scoped>
 .dict-page {
   --page-aside-width: 320px;
-}
-
-.dict-type {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  padding: 16px;
-
-  &__head {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 8px;
-
-    :deep(.el-input) {
-      flex: 1;
-      min-width: 0;
-    }
-  }
-
-  &__create {
-    flex-shrink: 0;
-  }
-
-  &__list {
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-
-  &__item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 10px;
-    cursor: pointer;
-    border-radius: var(--radius-control);
-    transition: background-color 0.15s;
-
-    &:hover {
-      background-color: var(--el-fill-color-light);
-    }
-
-    &.is-active {
-      background-color: var(--el-color-primary-light-9);
-    }
-
-    &.is-active::before {
-      position: absolute;
-      top: 6px;
-      bottom: 6px;
-      left: 0;
-      width: 2px;
-      content: "";
-      background-color: var(--el-color-primary);
-      border-radius: 1px;
-    }
-  }
-
-  &__info {
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
-    min-width: 0;
-    line-height: 1.35;
-  }
-
-  &__name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--el-text-color-primary);
-    white-space: nowrap;
-  }
-
-  &__code {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
-    white-space: nowrap;
-  }
-
-  &__item.is-active &__name {
-    font-weight: 600;
-    color: var(--el-color-primary);
-  }
 }
 </style>

@@ -3,8 +3,8 @@
   <div class="page-container page-container--split role-page">
     <aside class="page-aside" :class="{ 'is-collapsed': sidebarCollapsed }">
       <div class="page-aside__inner">
-        <div class="role-list">
-          <div class="role-list__head">
+        <div class="aside-list">
+          <div class="aside-list__head">
             <el-input
               v-model="params.keywords"
               placeholder="搜索角色"
@@ -20,36 +20,35 @@
               v-hasPerm="'sys:role:create'"
               type="primary"
               plain
-              class="role-list__create"
-              @click="handleCreateClick()"
+                      @click="handleCreateClick()"
             >
               <el-icon><Plus /></el-icon>
               新增
             </el-button>
           </div>
 
-          <el-scrollbar v-loading="loading" class="role-list__scroll">
+          <el-scrollbar v-loading="loading" class="aside-list__scroll">
             <div
               v-for="row in list"
               :key="row.id"
-              class="role-list__item"
+              class="aside-list__item"
               :class="{
                 'is-active': row.id === currentRole?.id,
                 'is-disabled': row.status === CommonStatus.DISABLED,
               }"
               @click="handleRoleClick(row)"
             >
-              <div class="role-list__info">
-                <span class="role-list__title">
+              <div class="aside-list__info">
+                <span class="aside-list__title">
                   <span
                     class="status-dot"
                     :class="{ 'is-stopped': row.status !== CommonStatus.ENABLED }"
                   />
-                  <span class="role-list__name" :title="row.name">{{ row.name }}</span>
+                  <span class="aside-list__label" :title="row.name">{{ row.name }}</span>
                 </span>
-                <span class="role-list__meta">
-                  <span class="role-list__code" :title="row.code">{{ row.code }}</span>
-                  <span v-if="row.status !== CommonStatus.ENABLED" class="role-list__stopped">
+                <span class="aside-list__meta">
+                  <span class="aside-list__sub" :title="row.code">{{ row.code }}</span>
+                  <span v-if="row.status !== CommonStatus.ENABLED" class="aside-list__tag">
                     停用
                   </span>
                 </span>
@@ -876,125 +875,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .role-page {
   --page-aside-width: 280px;
-}
-
-.role-list {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  padding: 16px;
-
-  &__head {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 8px;
-
-    :deep(.el-input) {
-      flex: 1;
-      min-width: 0;
-    }
-  }
-
-  &__create {
-    flex-shrink: 0;
-  }
-
-  &__scroll {
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-
-  &__item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 10px;
-    cursor: pointer;
-    border-radius: var(--radius-control);
-    transition: background-color 0.15s;
-
-    &:hover {
-      background-color: var(--el-fill-color-light);
-    }
-
-    &.is-active {
-      background-color: var(--el-color-primary-light-9);
-    }
-
-    &.is-active::before {
-      position: absolute;
-      top: 6px;
-      bottom: 6px;
-      left: 0;
-      width: 2px;
-      content: "";
-      background-color: var(--el-color-primary);
-      border-radius: 1px;
-    }
-  }
-
-  &__info {
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
-    min-width: 0;
-    line-height: 1.35;
-  }
-
-  &__title {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    min-width: 0;
-  }
-
-  &__name {
-    flex: 0 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--el-text-color-primary);
-    white-space: nowrap;
-  }
-
-  &__meta {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    min-width: 0;
-  }
-
-  &__code {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
-    white-space: nowrap;
-  }
-
-  &__stopped {
-    flex-shrink: 0;
-    padding: 0 4px;
-    font-size: 11px;
-    line-height: 16px;
-    color: var(--el-color-warning);
-    background-color: var(--el-color-warning-light-9);
-    border-radius: 3px;
-  }
-
-  &__item.is-active &__name {
-    font-weight: 600;
-    color: var(--el-color-primary);
-  }
-
-  &__item.is-disabled:not(.is-active) &__name {
-    color: var(--el-text-color-secondary);
-  }
 }
 
 .role-perm {
