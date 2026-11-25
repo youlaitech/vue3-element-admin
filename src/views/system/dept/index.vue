@@ -318,7 +318,7 @@ async function openDialog(parentId?: string, deptId?: string): Promise<void> {
     },
   ];
 
-  dialogState.visible = true;
+  resetForm();
   if (deptId) {
     dialogState.title = "修改部门";
     const form = await DeptAPI.getFormData(deptId);
@@ -327,6 +327,7 @@ async function openDialog(parentId?: string, deptId?: string): Promise<void> {
     dialogState.title = "新增部门";
     formData.parentId = parentId || "0";
   }
+  dialogState.visible = true;
 }
 
 /**
