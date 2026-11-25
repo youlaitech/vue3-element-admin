@@ -4,24 +4,10 @@ import { defineMock } from "./base";
 const configList: Array<Record<string, any>> = [
   {
     id: "1",
-    configName: "系统名称",
-    configKey: "system.name",
-    configValue: "vue3-element-admin",
-    remark: "后台管理系统名称",
-  },
-  {
-    id: "2",
-    configName: "系统Logo",
-    configKey: "system.logo",
-    configValue: "https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif",
-    remark: "后台管理系统 Logo 地址",
-  },
-  {
-    id: "3",
-    configName: "系统版本",
-    configKey: "system.version",
-    configValue: "4.8.4",
-    remark: "后台管理系统版本号",
+    configName: "用户管理-账号初始密码",
+    configKey: "sys.user.initPassword",
+    configValue: "123456",
+    remark: "新增用户、导入用户时的默认密码",
   },
 ];
 
