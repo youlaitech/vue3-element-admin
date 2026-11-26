@@ -260,7 +260,6 @@
       v-model="detailDialog.visible"
       :show-close="false"
       width="50%"
-      append-to-body
       @close="closeDetailDialog"
     >
       <template #header>

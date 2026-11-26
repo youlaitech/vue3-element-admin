@@ -217,12 +217,7 @@
     </el-dialog>
 
     <!-- 流程图弹窗：渲染已发布版本的 BPMN（只读，滚轮缩放） -->
-    <el-dialog
-      v-model="diagramState.visible"
-      :title="diagramState.title"
-      width="960px"
-      append-to-body
-    >
+    <el-dialog v-model="diagramState.visible" :title="diagramState.title" width="960px">
       <div v-loading="diagramState.loading" class="workflow-diagram">
         <BpmnViewer v-if="diagramState.xml" :xml="diagramState.xml" />
       </div>

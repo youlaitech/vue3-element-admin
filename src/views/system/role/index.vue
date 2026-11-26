@@ -20,7 +20,7 @@
               v-hasPerm="'sys:role:create'"
               type="primary"
               plain
-                      @click="handleCreateClick()"
+              @click="handleCreateClick()"
             >
               <el-icon><Plus /></el-icon>
               新增
@@ -229,7 +229,6 @@
       v-model="dialogState.visible"
       :title="dialogState.title"
       width="600px"
-      append-to-body
       @close="closeDialog"
     >
       <el-form ref="roleFormRef" :model="formData" :rules="rules" label-width="100px">

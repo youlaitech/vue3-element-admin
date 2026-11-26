@@ -10,47 +10,6 @@
   min-height: 0;
   padding: var(--page-padding);
   background: var(--page-bg);
-
-  // 区块入场动画
-  // fill-mode 用 backwards：both 会在终帧保留 transform，形成层叠上下文盖住悬浮把手
-  > * {
-    animation: page-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-
-    &:nth-child(2) {
-      animation-delay: 0.05s;
-    }
-
-    &:nth-child(3) {
-      animation-delay: 0.1s;
-    }
-
-    &:nth-child(4) {
-      animation-delay: 0.15s;
-    }
-
-    // 第 5 个起固定档位，不再与首个区块同时出现
-    &:nth-child(n + 5) {
-      animation-delay: 0.2s;
-    }
-  }
-}
-
-@keyframes page-rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .page-container > * {
-    animation: none;
-  }
 }
 
 // 页头：标题 + 描述 + 右侧主操作

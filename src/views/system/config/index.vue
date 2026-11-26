@@ -102,7 +102,6 @@
       v-model="dialogState.visible"
       :title="dialogState.title"
       width="500px"
-      append-to-body
       :close-on-click-modal="!isSaving"
       :close-on-press-escape="!isSaving"
       :show-close="!isSaving"

@@ -19,7 +19,7 @@
               v-hasPerm="['sys:dict:create']"
               type="primary"
               plain
-                      @click="handleCreateClick()"
+              @click="handleCreateClick()"
             >
               <el-icon><Plus /></el-icon>
               新增
@@ -114,7 +114,6 @@
       v-model="dialogState.visible"
       :title="dialogState.title"
       width="500px"
-      append-to-body
       @close="closeDialog"
     >
       <el-form ref="dictFormRef" :model="formData" :rules="rules" label-width="88px">

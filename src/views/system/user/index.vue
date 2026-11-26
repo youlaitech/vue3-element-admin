@@ -217,7 +217,6 @@
     <el-drawer
       v-model="dialogState.visible"
       :title="dialogState.title"
-      append-to-body
       :size="drawerSize"
       @close="closeDialog"
     >
@@ -293,7 +292,6 @@
       v-model="resetPasswordDialog.visible"
       title="重置密码"
       :width="resetPasswordDialogWidth"
-      append-to-body
       @closed="clearResetPasswordState"
     >
       <div class="mb-16px">
